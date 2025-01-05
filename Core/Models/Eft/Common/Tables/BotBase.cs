@@ -7,6 +7,198 @@ public class BotBase
     
 }
 
+
+public class EftStats
+{
+    public List<string> CarriedQuestItems { get; set; }
+    public List<Victim> Victims { get; set; }
+    public int TotalSessionExperience { get; set; }
+    public long LastSessionDate { get; set; }
+    public SessionCounters SessionCounters { get; set; }
+    public OverallCounters OverallCounters { get; set; }
+    public float? SessionExperienceMult { get; set; }
+    public float? ExperienceBonusMult { get; set; }
+    public Aggressor? Aggressor { get; set; }
+    public List<DroppedItem>? DroppedItems { get; set; }
+    public List<FoundInRaidItem>? FoundInRaidItems { get; set; }
+    public DamageHistory? DamageHistory { get; set; }
+    public DeathCause? DeathCause { get; set; }
+    public LastPlayerState? LastPlayerState { get; set; }
+    public int TotalInGameTime { get; set; }
+    public string? SurvivorClass { get; set; }
+    [JsonPropertyName("sptLastRaidFenceRepChange")]
+    public float? SptLastRaidFenceRepChange { get; set; }
+}
+
+public class DroppedItem
+{
+    public string QuestId { get; set; }
+    public string ItemId { get; set; }
+    public string ZoneId { get; set; }
+}
+
+public class FoundInRaidItem
+{
+    public string QuestId { get; set; }
+    public string ItemId { get; set; }
+}
+
+// TODO: Same as Aggressor?
+public class Victim
+{
+    public string AccountId { get; set; }
+    public string ProfileId { get; set; }
+    public string Name { get; set; }
+    public string Side { get; set; }
+    public string BodyPart { get; set; }
+    public string Time { get; set; }
+    public float Distance { get; set; }
+    public int Level { get; set; }
+    public string Weapon { get; set; }
+    public string Role { get; set; }
+    public string Location { get; set; }
+}
+
+public class SessionCounters
+{
+    public List<CounterKeyValue> Items { get; set; }
+}
+
+public class OverallCounters
+{
+    public List<CounterKeyValue> Items { get; set; }
+}
+
+public class CounterKeyValue
+{
+    public List<string> Key { get; set; }
+    public int Value { get; set; }
+}
+
+public class Aggressor 
+{
+    public string AccountId { get; set; }
+    public string ProfileId { get; set; }
+    public string MainProfileNickname { get; set; }
+    public string Name { get; set; }
+    public string Side { get; set; }
+    public string BodyPart { get; set; }
+    public string HeadSegment { get; set; }
+    public string WeaponName { get; set; }
+    public string Category { get; set; }
+}
+
+public class DamageHistory 
+{
+    public string LethalDamagePart { get; set; }
+    public LethalDamage LethalDamage { get; set; }
+    public BodyPartsDamageHistory BodyParts { get; set; }
+}
+
+// TODO: this class seems exactly the same as DamageStats, why have it?
+public class LethalDamage 
+{
+    public int Amount { get; set; }
+    public string Type { get; set; }
+    public string SourceId { get; set; }
+    public string OverDamageFrom { get; set; }
+    public bool Blunt { get; set; }
+    public int ImpactsCount { get; set; }
+}
+
+public class BodyPartsDamageHistory
+{
+    public List<DamageStats> Head { get; set; }
+    public List<DamageStats> Chest { get; set; }
+    public List<DamageStats> Stomach { get; set; }
+    public List<DamageStats> LeftArm { get; set; }
+    public List<DamageStats> RightArm { get; set; }
+    public List<DamageStats> LeftLeg { get; set; }
+    public List<DamageStats> RightLeg { get; set; }
+    public List<DamageStats> Common { get; set; }
+}
+
+public class DamageStats
+{
+    public int Amount { get; set; }
+    public string Type { get; set; }
+    public string SourceId { get; set; }
+    public string OverDamageFrom { get; set; }
+    public bool Blunt { get; set; }
+    public int ImpactsCount { get; set; }
+}
+
+public class DeathCause
+{
+    public string DamageType { get; set; }
+    public string Side { get; set; }
+    public string Role { get; set; }
+    public string WeaponId { get; set; }
+}
+
+public class LastPlayerState
+{
+    public LastPlayerStateInfo Info { get; set; }
+    public Dictionary<string, string> Customization { get; set; }
+
+    // TODO: there is no definition on TS just any
+    public object Equipment { get; set; }
+}
+
+public class LastPlayerStateInfo
+{
+    public string Nickname { get; set; }
+    public string Side { get; set; }
+    public int Level { get; set; }
+    public MemberCategory MemberCategory { get; set; }
+}
+
+public class BackendCounter
+{
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+    [JsonPropertyName("qid")]
+    public string? QId { get; set; }
+    [JsonPropertyName("value")]
+    public int Value { get; set; }
+}
+
+public class InsuredItem
+{
+    /** Trader Id item was insured by */
+    [JsonPropertyName("tid")]
+    public string TId { get; set; }
+    [JsonPropertyName("itemId")]
+    public string ItemId { get; set; }
+}
+
+public class Hideout
+{
+    public Dictionary<string, Production> Production { get; set; }
+    public List<BotHideoutArea> Areas { get; set; }
+    public Dictionary<string, HideoutImprovement> Improvements { get; set; }
+    public HideoutCounters HideoutCounters { get; set; }
+    public int Seed { get; set; }
+    public List<string> MannequinPoses { get; set; }
+    [JsonPropertyName("sptUpdateLastRunTimestamp")]
+    public long SptUpdateLastRunTimestamp { get; set; }
+}
+
+public class HideoutCounters
+{
+    [JsonPropertyName("fuelCounter")]
+    public int FuelCounter { get; set; }
+
+    [JsonPropertyName("airFilterCounter")]
+    public int AirFilterCounter { get; set; }
+
+    [JsonPropertyName("waterFilterCounter")]
+    public int WaterFilterCounter { get; set; }
+
+    [JsonPropertyName("craftingTimeCounter")]
+    public int CraftingTimeCounter { get; set; }
+}
+
 public class HideoutImprovement
 {
     [JsonPropertyName("completed")]
@@ -129,7 +321,7 @@ public class HideoutItem
 public class LastCompleted
 {
     [JsonPropertyName("$oid")]
-    public string Oid { get; set; }
+    public string OId { get; set; }
 }
 
 public class Notes
@@ -149,7 +341,7 @@ public enum SurvivorClass {
 public class QuestStatus
 {
     [JsonPropertyName("qid")]
-    public string QuestId { get; set; }
+    public string QId { get; set; }
     [JsonPropertyName("startTime")]
     public long StartTime { get; set; }
     [JsonPropertyName("status")]
