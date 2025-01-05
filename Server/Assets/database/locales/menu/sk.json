@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Nesprávny e-mail alebo heslo",
+        "213 - Error connecting to auth server": "Autorizácia nie je teraz k dispozícii, prosím skúste to znova neskôr.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Údržba serverov",
+        "ASSEMBLE": "ZMONTOVAŤ",
+        "AUTHORIZATION": "OPRÁVNENIE",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Zlá verzia služby",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Anticheat pripojenie zlyhalo",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "Integrita hry sa nepodarila overiť. Preinštalujte anticheat",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Poškodená pamäť. Integritu ochrany sa nepodarilo overiť. Preinštalujte anticheat",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Je spustený nepovolený program",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "Načítanie anticheatu zlyhalo.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Vyžaduje sa reštart hry",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "Hráč bol zabanovaný službou BattlEye",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Pripojenie k anticheatu zlyhalo. Prosím reštartujte hru",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Kritické volanie Windows API zlyhalo",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "Anticheat je zastaraný. Hra vyžaduje reštart",
+        "BATTLEYE_ServiceNotRunningProperly": "Anticheat je spustený nesprávne. Hra vyžaduje reštart",
+        "BATTLEYE_UnknownRestartReason": "Anticheat je spustený nesprávne. Hra vyžaduje reštart",
+        "EXIT": "UKONČIŤ",
+        "NEXT": "ĎALŠÍ",
+        "Place in queue:": "Miesto v poradí:",
+        "Profile data loading...": "Načítanie osobného profilu...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Anticheat pripojenie zlyhalo",
+        "Servers are currently at full capacity": "Servery sú momentálne plné"
+    }
+}

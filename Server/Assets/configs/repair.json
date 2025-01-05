@@ -1,0 +1,186 @@
+{
+    "priceMultiplier": 1,
+    "applyRandomizeDurabilityLoss": true,
+    "weaponSkillRepairGain": 4.06,
+    "armorKitSkillPointGainPerRepairPointMultiplier": 0.05,
+    "repairKitIntellectGainMultiplier": {
+        "weapon": 0.045,
+        "armor": 0.03
+    },
+    "maxIntellectGainPerRepair": {
+        "kit": 0.6,
+        "trader": 0.6
+    },
+    "weaponTreatment": {
+        "critSuccessChance": 0.1,
+        "critSuccessAmount": 4,
+        "critFailureChance": 0.1,
+        "critFailureAmount": 4,
+        "pointGainMultiplier": 0.6
+    },
+    "repairKit": {
+        "armor": {
+            "rarityWeight": {
+                "Common": 5,
+                "Rare": 1
+            },
+            "bonusTypeWeight": {
+                "DamageReduction": 1
+            },
+            "Common": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.9,
+                        "max": 0.98
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            },
+            "Rare": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.8,
+                        "max": 0.9
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            }
+        },
+        "vest": {
+            "rarityWeight": {
+                "Common": 5,
+                "Rare": 1
+            },
+            "bonusTypeWeight": {
+                "DamageReduction": 1
+            },
+            "Common": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.9,
+                        "max": 0.98
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            },
+            "Rare": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.8,
+                        "max": 0.9
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            }
+        },
+        "headwear": {
+            "rarityWeight": {
+                "Common": 5,
+                "Rare": 1
+            },
+            "bonusTypeWeight": {
+                "DamageReduction": 1
+            },
+            "Common": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.9,
+                        "max": 0.98
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            },
+            "Rare": {
+                "DamageReduction": {
+                    "valuesMinMax": {
+                        "min": 0.8,
+                        "max": 0.9
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            }
+        },
+        "weapon": {
+            "rarityWeight": {
+                "Common": 5,
+                "Rare": 1
+            },
+            "bonusTypeWeight": {
+                "WeaponSpread": 1,
+                "MalfunctionProtections": 1
+            },
+            "Common": {
+                "WeaponSpread": {
+                    "valuesMinMax": {
+                        "min": 0.9,
+                        "max": 0.99
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                },
+                "MalfunctionProtections": {
+                    "valuesMinMax": {
+                        "min": 0.94,
+                        "max": 0.96
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            },
+            "Rare": {
+                "WeaponSpread": {
+                    "valuesMinMax": {
+                        "min": 0.8,
+                        "max": 0.9
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                },
+                "MalfunctionProtections": {
+                    "valuesMinMax": {
+                        "min": 0.75,
+                        "max": 0.9
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                },
+                "WeaponDamage": {
+                    "valuesMinMax": {
+                        "min": 0.3,
+                        "max": 0.6
+                    },
+                    "activeDurabilityPercentMinMax": {
+                        "min": 75,
+                        "max": 90
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Yanlış e-posta veya parola",
+        "213 - Error connecting to auth server": "Yetkilendirme şu anda kullanılamıyor, lütfen daha sonra tekrar deneyin.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Sunucu bakımı",
+        "ASSEMBLE": "BİRLEŞTİR",
+        "AUTHORIZATION": "YETKİ",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Hizmet sürümü hatalı",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Anti Hile Sistemine bağlantı başarısız oldu",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "Oyunun bütünlüğü doğrulanamadı. Anti hile sistemini yeniden yükleyin",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Bozuk bellek. Korumanın bütünlüğü doğrulanamadı. Anti hile sistemini yeniden yükleyin",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "İzin verilmeyen program çalışıyor",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "Anti hile sistemi yüklemesi başarısız oldu.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Oyunu yeniden başlatmanız gerekiyor",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "Oyuncu BattleEye tarafından yasaklandı",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Anti Hile Sistemine bağlanılamadı. Lütfen oyunu yeniden başlatın",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Windows API çağrısı başarısız oldu",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "Anti Hile Sistemi sürümü güncel değil. Oyunu yeniden başlatmanız gerekiyor",
+        "BATTLEYE_ServiceNotRunningProperly": "Anti Hile Sistemi hatalı çalışıyor. Oyunu yeniden başlatmanız gerekiyor",
+        "BATTLEYE_UnknownRestartReason": "Anti Hile Sistemi hatalı çalışıyor. Oyunu yeniden başlatmanız gerekiyor",
+        "EXIT": "ÇIKIŞ",
+        "NEXT": "SONRAKİ",
+        "Place in queue:": "Sıradaki yeriniz:",
+        "Profile data loading...": "Profil verileri yükleniyor...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Anti Hile Sistemine bağlantı başarısız oldu",
+        "Servers are currently at full capacity": "Sunucular şu anda tamamen dolu"
+    }
+}

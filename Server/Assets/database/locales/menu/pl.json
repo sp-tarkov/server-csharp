@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Błędy e-mail lub hasło",
+        "213 - Error connecting to auth server": "Autoryzacja jest teraz niedostępna, spróbuj ponownie później.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Prace techniczne na serwerach",
+        "ASSEMBLE": "ZŁÓŻ",
+        "AUTHORIZATION": "AUTORYZACJA",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Zła wersja serwisu",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Błąd połączenia z anticheatem",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "Nie można sprawdzić poprawności gry. Przeinstaluj anticheata",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Uszkodzenie pamięci. Nie udało się sprawdzić integralności systemu bezpieczeństwa. Przeinstaluj anticheata",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Wykryto niedozwolony program",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "Błąd wczytywania anticheata.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Wymagany restart gry",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "Gracz został zbanowany przez BattleEye",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Połączenie z anticheatem nie powiodło się. Uruchom grę ponownie",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Krytyczne wywołanie interfejsu API systemu Windows nie powiodło się",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "Anticheat jest nieaktualny. Wymagany restart gry",
+        "BATTLEYE_ServiceNotRunningProperly": "Anticheat nie działa prawidłowo. Wymagany restart gry",
+        "BATTLEYE_UnknownRestartReason": "Anticheat nie działa prawidłowo. Wymagany restart gry",
+        "EXIT": "WYJŚCIE",
+        "NEXT": "DALEJ",
+        "Place in queue:": "Pozycja w kolejce:",
+        "Profile data loading...": "Wczytywanie danych profilu…",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Błąd połączenia z anticheatem",
+        "Servers are currently at full capacity": "Wszystkie serwery są obecnie pełne"
+    }
+}

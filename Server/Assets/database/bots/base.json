@@ -1,0 +1,92 @@
+{
+    "_id": "60dc8576337fdf54e60e1800",
+    "aid": 0,
+    "savage": null,
+    "Info": {
+        "Nickname": "BOTNAME",
+        "LowerNickname": "",
+        "Side": "Savage",
+        "Voice": "Scav_1",
+        "Level": 1,
+        "Experience": 0,
+        "RegistrationDate": 0,
+        "GameVersion": "",
+        "AccountType": 0,
+        "MemberCategory": 0,
+		"SelectedMemberCategory": 0,
+        "lockedMoveCommands": false,
+        "SavageLockTime": 0,
+        "LastTimePlayedAsSavage": 0,
+        "Settings": {
+            "Role": "assault",
+            "BotDifficulty": "normal",
+            "Experience": -1,
+            "StandingForKill": -0.04,
+            "AggressorBonus": 0.02
+        },
+        "NicknameChangeDate": 0,
+        "NeedWipeOptions": [],
+        "lastCompletedWipe": null,
+        "lastCompletedEvent": null,
+        "BannedState": false,
+        "BannedUntil": 0,
+        "IsStreamerModeAvailable": false,
+        "SquadInviteRestriction": false,
+		"HasCoopExtension": false,
+		"isMigratedSkills": false,
+		"HasPveGame": false
+    },
+    "Customization": {
+        "Head": "5cc2e4d014c02e000d0115f8",
+        "Body": "5cc2e59214c02e000f16684e",
+        "Feet": "5cde9fb87d6c8b0474535da9",
+        "Hands": "5cc2e68f14c02e28b47de290"
+    },
+    "Health": {
+        "UpdateTime": 0,
+		"Immortal": false
+    },
+    "Inventory": {
+        "fastPanel": {},
+        "hideoutAreaStashes": {},
+        "favoriteItems": []
+    },
+    "Skills": {
+        "Common": [],
+        "Mastering": [],
+        "Points": 0
+    },
+    "Stats": {
+        "Eft": {
+            "SessionCounters": {
+                "Items": []
+            },
+            "OverallCounters": {
+                "Items": []
+            },
+            "SessionExperienceMult": 0,
+            "ExperienceBonusMult": 0,
+            "TotalSessionExperience": 0,
+            "LastSessionDate": 0,
+            "Aggressor": null,
+            "DroppedItems": [],
+            "FoundInRaidItems": [],
+            "Victims": [],
+            "CarriedQuestItems": [],
+            "DamageHistory": {
+                "LethalDamagePart": "Head",
+                "LethalDamage": null,
+                "BodyParts": []
+            },
+            "LastPlayerState": null,
+            "TotalInGameTime": 0,
+            "SurvivorClass": "Unknown"
+        }
+    },
+    "Encyclopedia": null,
+    "TaskConditionCounters": {},
+    "InsuredItems": [],
+    "Hideout": null,
+    "Bonuses": [],
+	"WishList": []
+}

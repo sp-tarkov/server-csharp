@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Correo electrónico o contraseña incorrectos",
+        "213 - Error connecting to auth server": "La autorización no está disponible en estos momentos, por favor, inténtalo de nuevo más tarde.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Los servidores están en mantenimiento.",
+        "ASSEMBLE": "ENSAMBLAR",
+        "AUTHORIZATION": "AUTORIZACIÓN",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Versión de servicio incorrecta.",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Falló la conexión del Anticheat.",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "La integridad del juego falló la validación. Reinstala el Anticheat.",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Memoria corrupta. No se pudo validar la integridad de la protección. Reinstala el Anticheat.",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Programa no permitido en ejecución.",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "El Anticheat falló al cargar.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Requiere reiniciar el juego.",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "El jugador ha sido baneado por BattlEye.",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Falló la conexión del Anticheat. Por favor, reinicia el juego.",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Falló la petición a una API crítica de Windows.",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "El Anticheat está desactualizado. Requiere reiniciar el juego.",
+        "BATTLEYE_ServiceNotRunningProperly": "El Anticheat está funcionando de forma incorrecta. Requiere reiniciar el juego.",
+        "BATTLEYE_UnknownRestartReason": "El Anticheat está funcionando de forma incorrecta. Requiere reiniciar el juego.",
+        "EXIT": "SALIR",
+        "NEXT": "SIGUIENTE",
+        "Place in queue:": "Posición en la cola:",
+        "Profile data loading...": "Cargando datos del perfil...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Falló la conexión del Anticheat.",
+        "Servers are currently at full capacity": "Los servidores están llenos ahora mismo."
+    }
+}

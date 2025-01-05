@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Falsche E-Mail oder Passwort",
+        "213 - Error connecting to auth server": "Die Autorisierung ist zurzeit nicht verfügbar, bitte versuche es später nochmal.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Serverwartung",
+        "ASSEMBLE": "MONTIEREN",
+        "AUTHORIZATION": "AUTORISIERUNG",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Falsche Service-Version",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Anticheat-Verbindung fehlgeschlagen",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "Die Integrität des Spiels konnte nicht validiert werden. Neuinstallation des Anticheat erforderlich",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Fehlerhafter Speicher. Die Integrität des Schutzes konnte nicht validiert werden. Neustart des Anticheats erforderlich",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Unzulässiges Programm wird verwendet",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "Laden des Anticheat fehlgeschlagen.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Neustart des Spiels erforderlich",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "Der Spieler wurde durch BattleEye gebannt",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Anticheat-Verbindung fehlgeschlagen. Bitte starte das Spiel neu",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Ein kritischer Windows-API-Call ist fehlgeschlagen",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "Anticheat-Programm ist nicht mehr aktuell. Neustart des Spiels erforderlich",
+        "BATTLEYE_ServiceNotRunningProperly": "Das Anticheat-Programm läuft nicht richtig. Neustart des Spiels erforderlich",
+        "BATTLEYE_UnknownRestartReason": "Das Anticheat-Programm läuft nicht richtig. Neustart des Spiels erforderlich",
+        "EXIT": "BEENDEN",
+        "NEXT": "WEITER",
+        "Place in queue:": "Platz in der Warteschlange:",
+        "Profile data loading...": "Profildaten werden geladen...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Anticheat-Verbindung fehlgeschlagen",
+        "Servers are currently at full capacity": "Server sind derzeit voll ausgelastet"
+    }
+}

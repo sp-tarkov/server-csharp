@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Špatný email nebo heslo",
+        "213 - Error connecting to auth server": "Autorizace není nyní k dispozici, zkuste to prosím později.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Údržba serverů",
+        "ASSEMBLE": "SESTAVIT",
+        "AUTHORIZATION": "AUTORIZACE",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Špatná verze služby",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Připojení k anticheatu selhalo",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "Nepodařilo se ověřit integritu hry. Přeinstalujte anticheat",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Poškozená paměť. Nepodařilo se ověřit integritu ochrany. Přeinstalujte anticheat",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Je spuštěn zakázaný program",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "Načtení anticheatu se nezdařilo.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Je vyžadován restart hry",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "Hráč byl zabanován pomocí BE",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Připojení k anticheatu selhalo. Prosím restartujte hru",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Volání funkce Windows API kriticky selhalo",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "Anticheat je zastaralý. Je vyžadován restart hry",
+        "BATTLEYE_ServiceNotRunningProperly": "Anticheat neběží správně. Je vyžadován restart hry",
+        "BATTLEYE_UnknownRestartReason": "Anticheat neběží správně. Je vyžadován restart hry",
+        "EXIT": "UKONČIT",
+        "NEXT": "DALŠÍ",
+        "Place in queue:": "Místo ve frontě:",
+        "Profile data loading...": "Načítání osobního profilu...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Připojení k anticheatu selhalo",
+        "Servers are currently at full capacity": "Servery jsou momentálně plné"
+    }
+}

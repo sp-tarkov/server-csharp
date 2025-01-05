@@ -1,0 +1,1229 @@
+{
+    "karmaLevel": {
+        "-7": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "labsAccessCardChancePercent": 0,
+            "lootItemsToAddChancePercent": {}
+        },
+        "-6": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 1,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "-5": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "-4": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "-3": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "-2": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "-1": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": -2,
+                    "ArmorVest": -2,
+                    "Backpack": -2,
+                    "FirstPrimaryWeapon": -2,
+                    "Holster": 0,
+                    "Scabbard": -2
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 2,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "0": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 0,
+                    "ArmorVest": 0,
+                    "Backpack": 0,
+                    "FirstPrimaryWeapon": 0,
+                    "Holster": 0,
+                    "Scabbard": 0
+                },
+                "mod": {
+                    "mod_mount": 0,
+                    "mod_mount_000": 0,
+                    "mod_muzzle": 0,
+                    "mod_tactical_001": 0,
+                    "mod_tactical_002": 0,
+                    "mod_stock": 0,
+                    "mod_charge": 0,
+                    "mod_sight_rear": 0,
+                    "mod_sight_front": 0,
+                    "mod_equipment": 0,
+                    "mod_mount_001": 0,
+                    "mod_scope": 0,
+                    "mod_tactical": 0,
+                    "mod_pistol_grip": 0
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {}
+        },
+        "1": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 4,
+                    "ArmorVest": 10,
+                    "Backpack": 15,
+                    "FirstPrimaryWeapon": 2,
+                    "Holster": 5,
+                    "Scabbard": 3
+                },
+                "mod": {
+                    "mod_mount": 5,
+                    "mod_mount_000": 4,
+                    "mod_muzzle": 8,
+                    "mod_tactical_001": 2,
+                    "mod_tactical_002": 8,
+                    "mod_stock": 8,
+                    "mod_charge": 10,
+                    "mod_sight_rear": 16,
+                    "mod_sight_front": 36,
+                    "mod_equipment": 8,
+                    "mod_mount_001": 9,
+                    "mod_scope": 6,
+                    "mod_tactical": 4,
+                    "mod_pistol_grip": 5
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2,
+                        "3": 1,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2,
+                        "3": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "0": 2,
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 3,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        },
+        "2": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": [],
+                "TacticalVest": [],
+                "Backpack": [],
+                "FirstPrimaryWeapon": [],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 8,
+                    "ArmorVest": 20,
+                    "Backpack": 25,
+                    "FirstPrimaryWeapon": 4,
+                    "Holster": 15,
+                    "Scabbard": 6
+                },
+                "mod": {
+                    "mod_mount": 10,
+                    "mod_mount_000": 8,
+                    "mod_muzzle": 16,
+                    "mod_tactical_001": 4,
+                    "mod_tactical_002": 16,
+                    "mod_stock": 16,
+                    "mod_charge": 20,
+                    "mod_sight_rear": 21,
+                    "mod_sight_front": 43,
+                    "mod_equipment": 16,
+                    "mod_mount_001": 18,
+                    "mod_scope": 12,
+                    "mod_tactical": 8,
+                    "mod_pistol_grip": 10
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "0": 1,
+                        "1": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "2": 2,
+                        "3": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "2": 2,
+                        "3": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 6,
+                "62178c4d4ecf221597654e3d": 3,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        },
+        "3": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": ["5df8a2ca86f7740bfe6df777"],
+                "TacticalVest": ["572b7adb24597762ae139821"],
+                "Backpack": ["56e33634d2720bd8058b456b", "5ab8ee7786f7742d8f33f0b9"],
+                "FirstPrimaryWeapon": ["5a38e6bac4a2826c6e06d79b"],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 12,
+                    "ArmorVest": 30,
+                    "Backpack": 35,
+                    "FirstPrimaryWeapon": 6,
+                    "Holster": 25,
+                    "Scabbard": 9
+                },
+                "mod": {
+                    "mod_mount": 15,
+                    "mod_mount_000": 12,
+                    "mod_muzzle": 24,
+                    "mod_tactical_001": 6,
+                    "mod_tactical_002": 24,
+                    "mod_stock": 24,
+                    "mod_charge": 30,
+                    "mod_sight_rear": 26,
+                    "mod_sight_front": 50,
+                    "mod_equipment": 24,
+                    "mod_mount_001": 27,
+                    "mod_scope": 18,
+                    "mod_tactical": 12,
+                    "mod_pistol_grip": 15
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "1": 5,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2,
+                        "4": 1,
+                        "5": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "1": 1,
+                        "2": 2
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 11,
+                "62178c4d4ecf221597654e3d": 8,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        },
+        "4": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": ["59e7635f86f7742cbf2c1095", "5df8a2ca86f7740bfe6df777"],
+                "TacticalVest": ["5fd4c5477a8d854fa0105061", "572b7adb24597762ae139821"],
+                "Backpack": ["56e33680d2720be2748b4576", "56e33634d2720bd8058b456b", "5ab8ee7786f7742d8f33f0b9"],
+                "FirstPrimaryWeapon": ["5a38e6bac4a2826c6e06d79b"],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 16,
+                    "ArmorVest": 40,
+                    "Backpack": 40,
+                    "FirstPrimaryWeapon": 8,
+                    "Holster": 35,
+                    "Scabbard": 12
+                },
+                "mod": {
+                    "mod_mount": 20,
+                    "mod_mount_000": 16,
+                    "mod_muzzle": 32,
+                    "mod_tactical_001": 8,
+                    "mod_tactical_002": 32,
+                    "mod_stock": 32,
+                    "mod_charge": 40,
+                    "mod_sight_rear": 31,
+                    "mod_sight_front": 57,
+                    "mod_equipment": 32,
+                    "mod_mount_001": 36,
+                    "mod_scope": 24,
+                    "mod_tactical": 16,
+                    "mod_pistol_grip": 20
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "3": 2,
+                        "4": 2,
+                        "5": 1,
+                        "6": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2,
+                        "4": 1
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 17,
+                "62178c4d4ecf221597654e3d": 13,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        },
+        "5": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [],
+                "ArmorVest": ["59e7635f86f7742cbf2c1095", "5df8a2ca86f7740bfe6df777"],
+                "TacticalVest": ["5fd4c5477a8d854fa0105061", "572b7adb24597762ae139821"],
+                "Backpack": ["56e33680d2720be2748b4576", "56e33634d2720bd8058b456b", "5ab8ee7786f7742d8f33f0b9"],
+                "FirstPrimaryWeapon": ["5a38e6bac4a2826c6e06d79b"],
+                "Holster": [],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 20,
+                    "ArmorVest": 50,
+                    "Backpack": 48,
+                    "FirstPrimaryWeapon": 8,
+                    "Holster": 45,
+                    "Scabbard": 15
+                },
+                "mod": {
+                    "mod_mount": 25,
+                    "mod_mount_000": 20,
+                    "mod_muzzle": 40,
+                    "mod_tactical_001": 10,
+                    "mod_tactical_002": 40,
+                    "mod_stock": 40,
+                    "mod_charge": 50,
+                    "mod_sight_rear": 36,
+                    "mod_sight_front": 64,
+                    "mod_equipment": 40,
+                    "mod_mount_001": 45,
+                    "mod_scope": 30,
+                    "mod_tactical": 20,
+                    "mod_pistol_grip": 25
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "2": 5,
+                        "3": 1
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "1": 1,
+                        "2": 1
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "3": 1,
+                        "4": 2,
+                        "5": 2,
+                        "6": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "3": 2,
+                        "4": 2
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "2": 2,
+                        "3": 1
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 22,
+                "62178c4d4ecf221597654e3d": 18,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        },
+        "6": {
+            "botTypeForLoot": "assault",
+            "equipmentBlacklist": {
+                "Headwear": [
+                    "61c18db6dfd64163ea78fbb4",
+                    "60361b0b5a45383c122086a1",
+                    "5aa2b87de5b5b00016327c25",
+                    "5aa2ba19e5b5b00014028f4e",
+                    "59e770f986f7742cbe3164ef",
+                    "572b7fa124597762b472f9d2",
+                    "572b7d8524597762b472f9d1",
+                    "60361b5a9a15b10d96792291",
+                    "5f60e7788adaa7100c3adb49",
+                    "5aa2a7e8e5b5b00016327c16"
+                ],
+                "ArmorVest": ["59e7635f86f7742cbf2c1095", "5df8a2ca86f7740bfe6df777"],
+                "TacticalVest": ["5fd4c5477a8d854fa0105061", "572b7adb24597762ae139821"],
+                "Backpack": [
+                    "56e33680d2720be2748b4576",
+                    "56e33634d2720bd8058b456b",
+                    "5ab8ee7786f7742d8f33f0b9",
+                    "5ab8f04f86f774585f4237d8",
+                    "5f5e45cc5021ce62144be7aa"
+                ],
+                "FirstPrimaryWeapon": ["5a38e6bac4a2826c6e06d79b"],
+                "Holster": ["5448bd6b4bdc2dfc2f8b4569", "579204f224597773d619e051", "571a12c42459771f627b58a0"],
+                "Scabbard": []
+            },
+            "modifiers": {
+                "equipment": {
+                    "Headwear": 26,
+                    "ArmorVest": 70,
+                    "Backpack": 58,
+                    "FirstPrimaryWeapon": 8,
+                    "Holster": 65,
+                    "Scabbard": 21
+                },
+                "mod": {
+                    "mod_mount": 35,
+                    "mod_mount_000": 28,
+                    "mod_muzzle": 56,
+                    "mod_tactical_001": 14,
+                    "mod_tactical_002": 56,
+                    "mod_stock": 56,
+                    "mod_charge": 70,
+                    "mod_sight_rear": 46,
+                    "mod_sight_front": 78,
+                    "mod_equipment": 56,
+                    "mod_mount_001": 63,
+                    "mod_scope": 42,
+                    "mod_tactical": 28,
+                    "mod_pistol_grip": 35
+                }
+            },
+            "itemLimits": {
+                "healing": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2
+                    },
+                    "whitelist": []
+                },
+                "drugs": {
+                    "weights": {
+                        "3": 1,
+                        "4": 2
+                    },
+                    "whitelist": []
+                },
+                "stims": {
+                    "weights": {
+                        "2": 1,
+                        "3": 2
+                    },
+                    "whitelist": []
+                },
+                "looseLoot": {
+                    "weights": {
+                        "5": 1,
+                        "6": 2,
+                        "7": 1
+                    },
+                    "whitelist": []
+                },
+                "magazines": {
+                    "weights": {
+                        "3": 1,
+                        "4": 4
+                    },
+                    "whitelist": []
+                },
+                "grenades": {
+                    "weights": {
+                        "3": 1,
+                        "4": 2
+                    },
+                    "whitelist": []
+                }
+            },
+            "lootItemsToAddChancePercent": {
+                "5c94bbff86f7747ee735c08f": 27,
+                "62178c4d4ecf221597654e3d": 23,
+                "64d4b23dc1b37504b41ac2b6": 3
+            }
+        }
+    }
+}

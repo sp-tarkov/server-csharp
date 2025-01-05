@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "Correo electrónico o contraseña incorrectos",
+        "213 - Error connecting to auth server": "La autorización no está disponible en estos momentos, por favor, inténtalo de nuevo más tarde.",
+        "240 - Servers temporarily unavailable. Please, try later.": "Los servidores están en mantenimiento.",
+        "ASSEMBLE": "MONTAR",
+        "AUTHORIZATION": "AUTORIZACIÓN",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "Versión incorrecta del servicio.",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "Ha fallado la conexión con el antitrampas.",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "La integridad del juego ha fallado la validación. Reinstala el antitrampas.",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "Memoria corrupta. No se pudo validar la integridad de la protección. Reinstala el antitrampas.",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "Programa no permitido en ejecución.",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "El antitrampas falló al cargar.",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "Requiere reiniciar el juego.",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "El jugador ha sido baneado por BattlEye.",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "Ha fallado la conexión con el antitrampas. Por favor, reinicia el juego.",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "Ha fallado la petición a una API crítica de Windows.",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "El antitrampas está desactualizado. Requiere reiniciar el juego.",
+        "BATTLEYE_ServiceNotRunningProperly": "El antitrampas está funcionando de forma incorrecta. Requiere reiniciar el juego.",
+        "BATTLEYE_UnknownRestartReason": "El antitrampas está funcionando de forma incorrecta. Requiere reiniciar el juego.",
+        "EXIT": "SALIR",
+        "NEXT": "SIGUIENTE",
+        "Place in queue:": "Puesto en la cola:",
+        "Profile data loading...": "Cargando datos del perfil...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "Ha fallado la conexión con el antitrampas.",
+        "Servers are currently at full capacity": "Los servidores están llenos ahora mismo."
+    }
+}

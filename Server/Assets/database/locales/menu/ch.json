@@ -1,0 +1,28 @@
+{
+    "menu": {
+        "206 - Wrong email or password": "邮箱或密码错误",
+        "213 - Error connecting to auth server": "授权当前不可用，请稍后再试。",
+        "240 - Servers temporarily unavailable. Please, try later.": "服务器维护中",
+        "ASSEMBLE": "组装",
+        "AUTHORIZATION": "授权",
+        "BATTLEYE_ANTICHEAT_BadServiceVersion": "服务版本错误",
+        "BATTLEYE_ANTICHEAT_ClientNotResponding": "反作弊连接失败",
+        "BATTLEYE_ANTICHEAT_CorruptedData": "游戏的完整性验证失败。请重新安装反作弊系统",
+        "BATTLEYE_ANTICHEAT_CorruptedMemory": "文件损坏。完整性验证失败。请重新安装反作弊系统",
+        "BATTLEYE_ANTICHEAT_DisallowedProgram": "非法程序正在运行",
+        "BATTLEYE_ANTICHEAT_FailedToLoadAnticheat": "反作弊载入失败。",
+        "BATTLEYE_ANTICHEAT_GameRestartRequired": "游戏需要重新启动",
+        "BATTLEYE_ANTICHEAT_GlobalBan": "该玩家已被BattleEye封禁",
+        "BATTLEYE_ANTICHEAT_QueryTimeout": "反作弊连接失败。请重新启动游戏",
+        "BATTLEYE_ANTICHEAT_WinAPIFailure": "关键Windows API调用失败",
+        "BATTLEYE_ServiceNeedsToBeUpdated": "反作弊版本过时。游戏需要重新启动",
+        "BATTLEYE_ServiceNotRunningProperly": "反作弊运行不正确。游戏需要重新启动",
+        "BATTLEYE_UnknownRestartReason": "反作弊运行错误。 游戏需要重新启动",
+        "EXIT": "退出游戏",
+        "NEXT": "下一步",
+        "Place in queue:": "在队列中的位置:",
+        "Profile data loading...": "配置数据加载中...",
+        "SABER_ANTICHEAT_AnticheatConnectionFailed": "反作弊连接失败",
+        "Servers are currently at full capacity": "服务器当前已满载"
+    }
+}

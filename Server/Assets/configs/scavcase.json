@@ -1,0 +1,111 @@
+{
+    "rewardItemValueRangeRub": {
+        "common": {
+            "min": 100,
+            "max": 10000
+        },
+        "rare": {
+            "min": 1001,
+            "max": 100000
+        },
+        "superrare": {
+            "min": 10001,
+            "max": 1200000
+        }
+    },
+    "rewardItemParentBlacklist": [
+        "5485a8684bdc2da71d8b4567",
+        "543be5dd4bdc2deb348b4569",
+        "55802f4a4bdc2ddb688b4569",
+        "5448bf274bdc2dfc2f8b456a",
+        "5d52cc5ba4b9367408500062",
+        "62f109593b54472778797866",
+        "65649eb40bf0ed77b8044453"
+    ],
+    "rewardItemBlacklist": [],
+    "moneyRewards": {
+        "moneyRewardChancePercent": 5,
+        "rubCount": {
+            "common": {
+                "min": 2000,
+                "max": 20000
+            },
+            "rare": {
+                "min": 10000,
+                "max": 40000
+            },
+            "superrare": {
+                "min": 50000,
+                "max": 200000
+            }
+        },
+        "usdCount": {
+            "common": {
+                "min": 100,
+                "max": 400
+            },
+            "rare": {
+                "min": 400,
+                "max": 900
+            },
+            "superrare": {
+                "min": 900,
+                "max": 2000
+            }
+        },
+        "eurCount": {
+            "common": {
+                "min": 100,
+                "max": 400
+            },
+            "rare": {
+                "min": 400,
+                "max": 900
+            },
+            "superrare": {
+                "min": 900,
+                "max": 2000
+            }
+        },
+        "gpCount": {
+            "common": {
+                "min": 1,
+                "max": 2
+            },
+            "rare": {
+                "min": 2,
+                "max": 5
+            },
+            "superrare": {
+                "min": 5,
+                "max": 15
+            }
+        }
+    },
+    "ammoRewards": {
+        "ammoRewardChancePercent": 10,
+        "minStackSize": 10,
+        "ammoRewardBlacklist": {
+            "common": ["59e690b686f7746c9f75e848"],
+            "rare": [],
+            "superrare": []
+        },
+        "ammoRewardValueRangeRub": {
+            "common": {
+                "min": 1,
+                "max": 50
+            },
+            "rare": {
+                "min": 35,
+                "max": 350
+            },
+            "superrare": {
+                "min": 250,
+                "max": 50000
+            }
+        }
+    },
+    "allowMultipleMoneyRewardsPerRarity": false,
+    "allowMultipleAmmoRewardsPerRarity": true,
+    "allowBossItemsAsRewards": false
+}

@@ -13,7 +13,7 @@ public static class Program
         
         // TODO: deal with modding overriding services here!
 
-        var httpServer = builder.Services.BuildServiceProvider().GetService<IHttpServer>();
+        var httpServer = builder.Services.BuildServiceProvider().GetService<HttpServer>();
         httpServer.Load(builder);
     }
 

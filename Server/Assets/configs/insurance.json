@@ -1,0 +1,14 @@
+{
+    "returnChancePercent": {
+        "54cb50c76803fa8b248b4571": 85,
+        "54cb57776803fa99248b456e": 95
+    },
+    "blacklistedEquipment": ["SpecialSlot1", "SpecialSlot2", "SpecialSlot3"],
+    "slotIdsToAlwaysRemove": ["cartridges", "patron_in_weapon"],
+    "returnTimeOverrideSeconds": 0,
+    "storageTimeOverrideSeconds": 0,
+    "runIntervalSeconds": 600,
+    "minAttachmentRoublePriceToBeTaken": 15000,
+    "chanceNoAttachmentsTakenPercent": 10,
+    "simulateItemsBeingTaken": true
+}

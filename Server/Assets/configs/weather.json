@@ -1,0 +1,181 @@
+{
+    "acceleration": 7,
+    "weather": {
+        "generateWeatherAmountHours": 24,
+        "clouds": {
+            "values": [-1, -0.8, -0.5, 0.1, 0, 0.15, 0.4, 1],
+            "weights": [80, 22, 22, 15, 15, 15, 5, 4]
+        },
+        "windSpeed": {
+            "values": [0, 1, 2, 3, 4],
+            "weights": [6, 3, 2, 1, 1]
+        },
+        "windDirection": {
+            "values": [1, 2, 3, 4, 5, 6, 7, 8],
+            "weights": [1, 1, 1, 1, 1, 1, 1, 1]
+        },
+        "windGustiness": {
+            "min": 0,
+            "max": 1
+        },
+        "rain": {
+            "values": [1, 2, 3, 4, 5],
+            "weights": [20, 1, 1, 1, 1]
+        },
+        "rainIntensity": {
+            "min": 0,
+            "max": 1
+        },
+        "fog": {
+            "values": [0.0013, 0.0018, 0.002, 0.004, 0.006],
+            "weights": [35, 6, 4, 3, 1]
+        },
+        "temp": {
+            "0": {
+                "day": {
+                    "min": 17,
+                    "max": 32
+                },
+                "night": {
+                    "min": 14,
+                    "max": 24
+                }
+            },
+            "1": {
+                "day": {
+                    "min": 7,
+                    "max": 15
+                },
+                "night": {
+                    "min": 2,
+                    "max": 12
+                }
+            },
+            "2": {
+                "day": {
+                    "min": -10,
+                    "max": 5
+                },
+                "night": {
+                    "min": -20,
+                    "max": 0
+                }
+            },
+            "3": {
+                "day": {
+                    "min": 1,
+                    "max": 15
+                },
+                "night": {
+                    "min": -10,
+                    "max": 5
+                }
+            },
+            "4": {
+                "day": {
+                    "min": 3,
+                    "max": 11
+                },
+                "night": {
+                    "min": -2,
+                    "max": 8
+                }
+            },
+            "5": {
+                "day": {
+                    "min": -4,
+                    "max": 7
+                },
+                "night": {
+                    "min": -10,
+                    "max": 3
+                }
+            },
+            "6": {
+                "day": {
+                    "min": 0,
+                    "max": 24
+                },
+                "night": {
+                    "min": -10,
+                    "max": 8
+                }
+            }
+        },
+        "pressure": {
+            "min": 760,
+            "max": 780
+        },
+        "timePeriod": {
+            "values": [15, 30],
+            "weights": [1, 2]
+        }
+    },
+    "seasonDates": [
+        {
+            "seasonType": 0,
+            "name": "SUMMER",
+            "startDay": "2",
+            "startMonth": "6",
+            "endDay": "15",
+            "endMonth": "10"
+        },
+        {
+            "seasonType": 1,
+            "name": "AUTUMN",
+            "startDay": "15",
+            "startMonth": "10",
+            "endDay": "1",
+            "endMonth": "11"
+        },
+        {
+            "seasonType": 4,
+            "name": "AUTUMN_LATE",
+            "startDay": "1",
+            "startMonth": "11",
+            "endDay": "21",
+            "endMonth": "12"
+        },
+        {
+            "seasonType": 2,
+            "name": "WINTER_START",
+            "startDay": "21",
+            "startMonth": "12",
+            "endDay": "31",
+            "endMonth": "12"
+        },
+        {
+            "seasonType": 2,
+            "name": "WINTER_END",
+            "startDay": "1",
+            "startMonth": "1",
+            "endDay": "9",
+            "endMonth": "1"
+        },
+        {
+            "seasonType": 5,
+            "name": "SPRING_EARLY",
+            "startDay": "9",
+            "startMonth": "1",
+            "endDay": "25",
+            "endMonth": "3"
+        },
+        {
+            "seasonType": 3,
+            "name": "SPRING",
+            "startDay": "25",
+            "startMonth": "3",
+            "endDay": "2",
+            "endMonth": "6"
+        },
+        {
+            "seasonType": 4,
+            "name": "STORM",
+            "startDay": "24",
+            "startMonth": "10",
+            "endDay": "4",
+            "endMonth": "11"
+        }
+    ],
+    "overrideSeason": null
+}

@@ -1,0 +1,49 @@
+{
+    "config": {
+        "MemoryManagementSettings": {
+            "HeapPreAllocationEnabled": false,
+            "HeapPreAllocationMB": 200,
+            "OverrideRamCleanerSettings": false,
+            "RamCleanerEnabled": false,
+            "GigabytesRequiredToDisableGCDuringRaid": 25,
+            "AggressiveGC": true
+        },
+        "ReleaseProfiler": {
+            "Enabled": true,
+            "RecordTriggerValue": 2000,
+            "MaxRecords": 100
+        },
+        "FramerateLimit": {
+            "MinFramerateLimit": 30,
+            "MaxFramerateLobbyLimit": 60,
+            "MaxFramerateGameLimit": 144
+        },
+        "ClientSendRateLimit": 120,
+        "TurnOffLogging": false,
+        "NVidiaHighlights": false,
+        "WebDiagnosticsEnabled": false,
+        "KeepAliveInterval": 140,
+        "GroupStatusInterval": 60,
+        "GroupStatusButtonInterval": 7,
+        "PingServersInterval": 10,
+        "PingServerResultSendInterval": -1,
+        "WeaponOverlapDistanceCulling": 50,
+        "FirstCycleDelaySeconds": 20,
+        "SecondCycleDelaySeconds": 40,
+        "NextCycleDelaySeconds": 60,
+        "AdditionalRandomDelaySeconds": 13,
+        "Mark502and504AsNonImportant": true,
+        "DefaultRetriesCount": 1,
+        "CriticalRetriesCount": 1,
+        "AFKTimeoutSeconds": 604800,
+        "RequestsMadeThroughLobby": ["/client/mail/msg/send"],
+        "LobbyKeepAliveInterval": 1,
+        "RequestConfirmationTimeouts": [0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 18.8],
+        "ShouldEstablishLobbyConnection": false,
+		"NetworkStateView": {
+                "LossThreshold": 10,
+                "RttThreshold": 100
+            },
+		"WsReconnectionDelays": [500, 3000, 5000]
+    }
+}
