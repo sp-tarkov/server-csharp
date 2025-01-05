@@ -8,6 +8,178 @@ public class BotBase
 }
 
 
+public class Info
+{
+    public string EntryPoint { get; set; }
+    public string Nickname { get; set; }
+    public string? MainProfileNickname { get; set; }
+    public string LowerNickname { get; set; }
+    public string Side { get; set; }
+    public bool SquadInviteRestriction { get; set; }
+    public bool HasCoopExtension { get; set; }
+    public bool HasPveGame { get; set; }
+    public string Voice { get; set; }
+    public int Level { get; set; }
+    public int Experience { get; set; }
+    public long RegistrationDate { get; set; }
+    public string GameVersion { get; set; }
+    public int AccountType { get; set; }
+    public MemberCategory MemberCategory { get; set; }
+    public MemberCategory SelectedMemberCategory { get; set; }
+    
+    [JsonPropertyName("lockedMoveCommands")]
+    public bool LockedMoveCommands { get; set; }
+    public long SavageLockTime { get; set; }
+    public long LastTimePlayedAsSavage { get; set; }
+    public BotInfoSettings Settings { get; set; }
+    public long NicknameChangeDate { get; set; }
+    public List<object> NeedWipeOptions { get; set; }
+    
+    [JsonPropertyName("lastCompletedWipe")]
+    public LastCompleted LastCompletedWipe { get; set; }
+    public List<Ban> Bans { get; set; }
+    public bool BannedState { get; set; }
+    public long BannedUntil { get; set; }
+    public bool IsStreamerModeAvailable { get; set; }
+    
+    [JsonPropertyName("lastCompletedEvent")]
+    public LastCompleted? LastCompletedEvent { get; set; }
+    
+    [JsonPropertyName("isMigratedSkills")]
+    public bool IsMigratedSkills { get; set; }
+}
+
+public class BotInfoSettings
+{
+    public string Role { get; set; }
+    public string BotDifficulty { get; set; }
+    public int Experience { get; set; }
+    public int StandingForKill { get; set; }
+    public int AggressorBonus { get; set; }
+    public bool UseSimpleAnimator { get; set; }
+}
+
+public class Ban
+{
+    [JsonPropertyName("banType")]
+    public BanType BanType { get; set; }
+    [JsonPropertyName("dateTime")]
+    public long DateTime { get; set; }
+}
+
+public enum BanType
+{
+    CHAT = 0,
+    RAGFAIR = 1,
+    VOIP = 2,
+    TRADING = 3,
+    ONLINE = 4,
+    FRIENDS = 5,
+    CHANGE_NICKNAME = 6,
+}
+
+public class Customization
+{
+    public string Head { get; set; }
+    public string Body { get; set; }
+    public string Feet { get; set; }
+    public string Hands { get; set; }
+}
+
+public class Health
+{
+    public CurrentMax Hydration { get; set; }
+    public CurrentMax Energy { get; set; }
+    public CurrentMax Temperature { get; set; }
+    public BodyPartsHealth BodyParts { get; set; }
+    public int UpdateTime { get; set; }
+    public bool? Immortal { get; set; }
+}
+
+public class BodyPartsHealth
+{
+    public BodyPartHealth Head { get; set; }
+    public BodyPartHealth Chest { get; set; }
+    public BodyPartHealth Stomach { get; set; }
+    public BodyPartHealth LeftArm { get; set; }
+    public BodyPartHealth RightArm { get; set; }
+    public BodyPartHealth LeftLeg { get; set; }
+    public BodyPartHealth RightLeg { get; set; }
+}
+
+public class BodyPartHealth
+{
+    public CurrentMax Health { get; set; }
+    public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; }
+}
+
+public class BodyPartEffectProperties
+{
+    // TODO: this was any, what actual type is it?
+    public object? ExtraData { get; set; }
+    public int Time { get; set; }
+}
+
+public class CurrentMax
+{
+    public int Current { get; set; }
+    public int Maximum { get; set; }
+}
+
+public class Inventory {
+    [JsonPropertyName("items")]
+    public List<Item> Items { get; set; }
+    [JsonPropertyName("equipment")]
+    public string Equipment { get; set; }
+    [JsonPropertyName("stash")]
+    public string Stash { get; set; }
+    [JsonPropertyName("sortingTable")]
+    public string SortingTable { get; set; }
+    [JsonPropertyName("questRaidItems")]
+    public string QuestRaidItems { get; set; }
+    [JsonPropertyName("questStashItems")]
+    public string QuestStashItems { get; set; }
+    /** Key is hideout area enum numeric as string e.g. "24", value is area _id  */
+    [JsonPropertyName("hideoutAreaStashes")]
+    public Dictionary<string, string> HideoutAreaStashes { get; set; }
+    [JsonPropertyName("fastPanel")]
+    public Dictionary<string, string> FastPanel { get; set; }
+    [JsonPropertyName("favoriteItems")]
+    public List<string> FavoriteItems { get; set; }
+}
+
+public class BaseJsonSkills {
+    public Dictionary<string, Common> Common { get; set; }
+    public Dictionary<string, Mastering> Mastering { get; set; }
+    public int Points { get; set; }
+}
+
+public class Skills {
+    public List<Common> Common { get; set; }
+    public List<Mastering> Mastering { get; set; }
+    public int Points { get; set; }
+}
+
+public class BaseSkill {
+    public string Id { get; set; }
+    public int Progress { get; set; }
+    [JsonPropertyName("max")]
+    public int? Max { get; set; }
+    [JsonPropertyName("min")]
+    public int? Min { get; set; }
+}
+
+public class Common : BaseSkill {
+    public int? PointsEarnedDuringSession { get; set; }
+    public int? LastAccess { get; set; }
+}
+
+public class Mastering : BaseSkill {}
+
+public class Stats {
+    public EftStats? Eft { get; set; }
+}
+
 public class EftStats
 {
     public List<string> CarriedQuestItems { get; set; }
