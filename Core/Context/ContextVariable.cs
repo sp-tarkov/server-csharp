@@ -1,4 +1,4 @@
-﻿namespace Types.Context;
+﻿namespace Core.Context;
 
 public class ContextVariable(object value, ContextVariableType contextVariableType)
 {

@@ -1,4 +1,4 @@
-﻿namespace Types.Servers.Http;
+﻿namespace Core.Servers.Http;
 
 public interface IHttpListener
 {

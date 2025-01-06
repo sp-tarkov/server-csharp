@@ -1,6 +1,6 @@
-﻿using Types.Annotations;
+﻿using Core.Annotations;
 
-namespace Types.Utils;
+namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class TimeUtil
@@ -171,7 +171,6 @@ public class TimeUtil
 	/// </summary>
 	/// <param name="number">The number to pad.</param>
 	/// <returns>The padded number as a string.</returns>
-	/// <exception cref="NotImplementedException"></exception>
 	private static string Pad(int number)
 	{
 		return number.ToString().PadLeft(2, '0');

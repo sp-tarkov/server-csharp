@@ -1,4 +1,4 @@
-﻿namespace Types.Utils;
+﻿namespace Core.Utils;
 
 public class RandomUtil
 {

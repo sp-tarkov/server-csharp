@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Eft.Common.Tables;
+namespace Core.Models.Eft.Common.Tables;
 
 public class BotBase
 {

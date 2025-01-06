@@ -1,9 +1,9 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
-using Types.Annotations;
+using Core.Annotations;
 
-namespace Types.Utils;
+namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public partial class HashUtil
