@@ -1,61 +1,71 @@
-﻿// namespace Types.Models.Spt.Mod;
-//
-// public class NewItemDetails
-// {
-//     export abstract class NewItemDetailsBase {
-//         /** Price of the item on flea market */
-//         fleaPriceRoubles: number;
-//
-//         /** Price of the item in the handbook */
-//         handbookPriceRoubles: number;
-//
-//         /** Handbook ParentId for the new item */
-//         handbookParentId: string;
-//
-//         /**
-//          * A dictionary for locale settings, key = langauge (e.g. en,cn,es-mx,jp,fr)
-//          * If a language is not included, the first item in the array will be used in its place
-//          */
-//         locales: Record<string, LocaleDetails>;
-//     }
-//
-//     export class NewItemFromCloneDetails extends NewItemDetailsBase {
-//         /** Id of the item to copy and use as a base */
-//         itemTplToClone: string;
-//
-//     /** Item properties that should be applied over the top of the cloned base */
-//     overrideProperties: IProps;
-//
-//     /** ParentId for the new item (item type) */
-//     parentId: string;
-//
-//     /**
-//      * the id the new item should have, leave blank to have one generated for you
-//      * This is often known as the TplId, or TemplateId
-//      */
-//     newId = "";
-// }
-//
-// export class NewItemDetails extends NewItemDetailsBase {
-// newItem: ITemplateItem;
-// }
-//
-// export class LocaleDetails {
-//     name: string;
-//     shortName: string;
-//     description: string;
-// }
-//
-// export class CreateItemResult {
-//     constructor() {
-//         this.success = false;
-//         this.errors = [];
-//     }
-//
-//     success: boolean;
-//     itemId: string;
-//     errors: string[];
-// }
-// }
+﻿using System.Text.Json.Serialization;
+
+namespace Core.Models.Spt.Mod;
+
+public class NewItemDetails : NewItemDetailsBase
+{
+    [JsonPropertyName("newItem")]
+    public TemplateItem NewItem { get; set; }
+}
+
+public class NewItemFromCloneDetails : NewItemDetailsBase
+{
+    [JsonPropertyName("itemTplToClone")]
+    public string ItemTplToClone { get; set; }
+    
+    [JsonPropertyName("overrideProperties")]
+    public Props OverrideProperties { get; set; }
+    
+    [JsonPropertyName("parentId")]
+    public string ParentId { get; set; }
+
+    [JsonPropertyName("newId")] 
+    public string NewId { get; set; } = "";
+}
+
+public class NewItemDetailsBase
+{
+    [JsonPropertyName("fleaPriceRoubles")]
+    public float FleaPriceRoubles { get; set; }
+    
+    [JsonPropertyName("handbookPriceRoubles")]
+    public float HandbookPriceRoubles { get; set; }
+    
+    [JsonPropertyName("handbookParentId")]
+    public string HandbookParentId { get; set; }
+    
+    [JsonPropertyName("locales")]
+    public Dictionary<string, LocaleDetails> Locales { get; set; }
+}
+
+public class LocaleDetails
+{
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
+    
+    [JsonPropertyName("shortName")]
+    public string ShortName { get; set; }
+    
+    [JsonPropertyName("description")]
+    public string Description { get; set; }
+}
+
+public class CreateItemResult
+{
+    [JsonPropertyName("success")] 
+    public bool Success { get; set; }
+    
+    [JsonPropertyName("itemId")]
+    public string ItemId { get; set; }
+    
+    [JsonPropertyName("errors")]
+    public List<string> Errors { get; set; }
+
+    public CreateItemResult()
+    {
+        Success = false;
+        Errors = new List<string>();
+    }
+}
 
 // TODO: This needs to be reworked with however we do it for this project

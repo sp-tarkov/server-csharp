@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Location;
+namespace Core.Models.Spt.Location;
 
 public class RaidChanges
 {

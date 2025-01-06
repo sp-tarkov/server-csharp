@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Config;
+namespace Core.Models.Spt.Config;
 
 public class HealthConfig : BaseConfig
 {
@@ -11,7 +11,7 @@ public class HealthConfig : BaseConfig
     public HealthMultipliers HealthMultipliers { get; set; }
 
     [JsonPropertyName("save")]
-    public Save Save { get; set; }
+    public HealthSave Save { get; set; }
 }
 
 public class HealthMultipliers
@@ -23,7 +23,7 @@ public class HealthMultipliers
     public double Blacked { get; set; }
 }
 
-public class Save
+public class HealthSave
 {
     [JsonPropertyName("health")]
     public bool Health { get; set; }

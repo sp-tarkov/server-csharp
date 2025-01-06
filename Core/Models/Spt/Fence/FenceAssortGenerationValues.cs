@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Fence;
+namespace Core.Models.Spt.Fence;
 
 public class FenceAssortGenerationValues
 {

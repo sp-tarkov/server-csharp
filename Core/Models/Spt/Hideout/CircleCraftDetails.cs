@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Types.Models.Spt.Config;
+using Core.Models.Spt.Config;
 
-namespace Types.Models.Spt.Hideout;
+namespace Core.Models.Spt.Hideout;
 
 public class CircleCraftDetails
 {

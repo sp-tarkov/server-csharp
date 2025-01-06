@@ -1,13 +1,16 @@
-﻿// namespace Types.Models.Spt.Mod;
-//
-// public class ModLoader
-// {
-//     export interface IModLoader {
-//         load(container: DependencyContainer): void;
-//
-//         getModPath(mod: string): string;
-//     }
-//
-// }
+﻿namespace Core.Models.Spt.Mod;
+
+public class ModLoader
+{
+    public void Load(DependencyContainer container)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetModPath(string mod)
+    {
+        throw new NotImplementedException();
+    }
+}
 
 // TODO: This needs to be reworked with however we do it for this project

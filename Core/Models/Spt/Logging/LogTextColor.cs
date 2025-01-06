@@ -1,4 +1,4 @@
-﻿namespace Types.Models.Spt.Logging;
+﻿namespace Core.Models.Spt.Logging;
 
 public struct LogTextColor
 {

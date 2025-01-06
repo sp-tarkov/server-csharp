@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Hideout;
+namespace Core.Models.Spt.Hideout;
 
 public class ScavCaseRewardCountsAndPrice
 {

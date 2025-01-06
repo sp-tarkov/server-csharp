@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Dialog;
+namespace Core.Models.Spt.Dialog;
 
 public class SendMessageDetails
 {

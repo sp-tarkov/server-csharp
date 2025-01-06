@@ -1,11 +1,9 @@
-﻿// namespace Types.Models.Spt.Generators;
-//
-// public class RagfairAssortGenerator
-// {
-//     export interface IRagfairAssortGenerator {
-//         getAssortItems(): IItem[];
-//     }
-//
-// }
+﻿namespace Core.Models.Spt.Generators;
 
-// TODO: implement in C#
+public class RagfairAssortGenerator
+{
+    public List<Item> GetAssortItems()
+    {
+        throw new NotImplementedException();
+    }
+}

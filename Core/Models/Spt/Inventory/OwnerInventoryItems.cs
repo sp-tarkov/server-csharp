@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Inventory;
+namespace Core.Models.Spt.Inventory;
 
 public class OwnerInventoryItems
 {

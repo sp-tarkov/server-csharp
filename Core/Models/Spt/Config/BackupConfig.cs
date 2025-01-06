@@ -1,4 +1,4 @@
-﻿namespace Types.Models.Spt.Config;
+﻿namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 

@@ -1,7 +1,7 @@
 ﻿using System.Text.Json.Serialization;
-using Types.Models.Spt.Repeatable;
+using Core.Models.Spt.Repeatable;
 
-namespace Types.Models.Spt.Hideout;
+namespace Core.Models.Spt.Hideout;
 
 public class Hideout
 {

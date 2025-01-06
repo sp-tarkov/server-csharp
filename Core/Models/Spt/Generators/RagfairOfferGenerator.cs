@@ -1,18 +1,10 @@
-﻿// namespace Types.Models.Spt.Generators;
-//
-// public class RagfairOfferGenerator
-// {
-//     export interface IRagfairOfferGenerator {
-//         createOffer(
-//             userID: string,
-//         time: number,
-//         items: IItem[],
-//         barterScheme: IBarterScheme[],
-//         loyalLevel: number,
-//         price: number,
-//         sellInOnePiece: boolean,
-//         ): IRagfairOffer;
-//     }
-// }
+﻿namespace Core.Models.Spt.Generators;
 
-// TODO: implement in C#
+public class RagfairOfferGenerator
+{
+    public RagfairOffer CreateOffer(string userID, float time, List<Item> items, List<BarterScheme> barterScheme, int loyalLevel, int price,
+        bool sellInOnePiece)
+    {
+        throw new NotImplementedException();
+    }
+}

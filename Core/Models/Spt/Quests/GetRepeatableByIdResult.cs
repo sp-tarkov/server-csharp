@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Quests;
+namespace Core.Models.Spt.Quests;
 
 public class GetRepeatableByIdResult
 {

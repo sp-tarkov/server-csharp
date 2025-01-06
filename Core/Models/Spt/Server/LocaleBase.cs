@@ -1,7 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using System.Collections.Generic;
 
-namespace Types.Models.Spt.Server;
+namespace Core.Models.Spt.Server;
 
 public class LocaleBase
 {

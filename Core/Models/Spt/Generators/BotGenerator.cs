@@ -1,16 +1,11 @@
-﻿// namespace Types.Models.Spt.Generators;
-//
-// public class BotGenerator
-// {
-//     export interface IBotGenerator {
-//         generateInventory(
-//             templateInventory: IInventory,
-//         equipmentChances: IChances,
-//         generation: IGeneration,
-//         botRole: string,
-//         isPmc: boolean,
-//         ): PmcInventory;
-//     }
-// }
+﻿using Core.Models.Eft.Common.Tables;
 
-// TODO: implement in C#
+namespace Core.Models.Spt.Generators;
+
+public class BotGenerator
+{
+    public PmcInventory GenerateInventory(Inventory templateInventory, Chances equipmentChances, Generation generation, string botRole, bool isPmc)
+    {
+        throw new NotImplementedException();
+    }
+}

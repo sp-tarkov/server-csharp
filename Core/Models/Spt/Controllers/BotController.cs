@@ -1,16 +1,41 @@
-﻿// namespace Types.Models.Spt.Controllers;
-//
-// public class BotController
-// {
-//     export interface IBotController {
-//         getBotLimit(type: string): number;
-//         getBotDifficulty(type: string, difficulty: string): IBotCore | IDifficultyCategories;
-//         isBotPmc(botRole: string): boolean;
-//         isBotBoss(botRole: string): boolean;
-//         isBotFollower(botRole: string): boolean;
-//         generate(info: IGenerateBotsRequestData, playerScav: boolean): IBotBase[];
-//         getBotCap(): number;
-//     }
-// }
+﻿using Core.Models.Eft.Common.Tables;
 
-// TODO: implement in C#
+namespace Core.Models.Spt.Controllers;
+
+public class BotController
+{
+    public int GetBotLimit(string type)
+    {
+        throw new NotImplementedException();
+    }
+
+    public object GetBotDifficulty(string type, string difficulty) // IBotCore | IDifficultyCategories
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsBotPmc(string botRole)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsBotBoss(string botRole)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsBotFollower(string botRole)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<BotBase> Generate(GenerateBotsRequestData info, bool playerscav)
+    {
+        throw new NotImplementedException();
+    }
+
+    public int GetBotCap()
+    {
+        throw new NotImplementedException();
+    }
+}

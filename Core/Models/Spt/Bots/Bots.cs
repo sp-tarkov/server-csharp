@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 
-namespace Types.Models.Spt.Bots;
+namespace Core.Models.Spt.Bots;
 
 public class Bots
 {

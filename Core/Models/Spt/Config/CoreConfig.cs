@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Config;
+namespace Core.Models.Spt.Config;
 
 public class CoreConfig : BaseConfig
 {
