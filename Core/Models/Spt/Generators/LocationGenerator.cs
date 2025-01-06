@@ -1,4 +1,6 @@
-﻿namespace Core.Models.Spt.Generators;
+﻿using Core.Models.Eft.Common;
+
+namespace Core.Models.Spt.Generators;
 
 public class LocationGenerator
 {

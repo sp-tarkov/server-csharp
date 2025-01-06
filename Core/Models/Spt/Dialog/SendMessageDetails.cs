@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Dialog;
 
@@ -44,7 +45,7 @@ public class SendMessageDetails
     /// Optional - Items to send to player
     /// </summary>
     [JsonPropertyName("items")]
-    public List<IItem>? Items { get; set; }
+    public List<Item>? Items { get; set; }
 
     /// <summary>
     /// Optional - How long items will be stored in mail before expiry
@@ -62,19 +63,19 @@ public class SendMessageDetails
     /// Optional - ragfair related
     /// </summary>
     [JsonPropertyName("systemData")]
-    public ISystemData? SystemData { get; set; }
+    public SystemData? SystemData { get; set; }
 
     /// <summary>
     /// Optional - Used by ragfair messages
     /// </summary>
     [JsonPropertyName("ragfairDetails")]
-    public IMessageContentRagfair? RagfairDetails { get; set; }
+    public MessageContentRagfair? RagfairDetails { get; set; }
 
     /// <summary>
     /// OPTIONAL - allows modification of profile settings via mail
     /// </summary>
     [JsonPropertyName("profileChangeEvents")]
-    public List<IProfileChangeEvent>? ProfileChangeEvents { get; set; }
+    public List<ProfileChangeEvent>? ProfileChangeEvents { get; set; }
 }
 
 public class ProfileChangeEvent
@@ -92,14 +93,14 @@ public class ProfileChangeEvent
     public string? Entity { get; set; }
 }
 
-public struct ProfileChangeEventType
+public enum ProfileChangeEventType
 {
-    public const string TRADER_SALES_SUM = "TraderSalesSum";
-    public const string TRADER_STANDING = "TraderStanding";
-    public const string PROFILE_LEVEL = "ProfileLevel";
-    public const string SKILL_POINTS = "SkillPoints";
-    public const string EXAMINE_ALL_ITEMS = "ExamineAllItems";
-    public const string UNLOCK_TRADER = "UnlockTrader";
-    public const string ASSORT_UNLOCK_RULE = "AssortmentUnlockRule";
-    public const string HIDEOUT_AREA_LEVEL = "HideoutAreaLevel";
+    TraderSalesSum,
+    TraderStanding,
+    ProfileLevel,
+    SkillPoints,
+    ExamineAllItems,
+    UnlockTrader,
+    AssortmentUnlockRule,
+    HideoutAreaLevel
 }

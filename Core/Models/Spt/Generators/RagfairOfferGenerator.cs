@@ -1,4 +1,7 @@
-﻿namespace Core.Models.Spt.Generators;
+﻿using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Ragfair;
+
+namespace Core.Models.Spt.Generators;
 
 public class RagfairOfferGenerator
 {
