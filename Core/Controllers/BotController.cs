@@ -1,6 +1,6 @@
 ﻿using Core.Models.Eft.Common.Tables;
 
-namespace Core.Models.Spt.Controllers;
+namespace Core.Controllers;
 
 public class BotController
 {
