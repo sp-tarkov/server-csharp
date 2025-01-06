@@ -1,4 +1,7 @@
-﻿namespace Core.Models.Spt.Server;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
+
+namespace Core.Models.Spt.Server;
 
 public class DatabaseTables
 {
