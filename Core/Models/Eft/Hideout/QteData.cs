@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Health;
 using Core.Models.Enums;
 using Core.Models.Enums.Hideout;
 
@@ -137,7 +138,7 @@ public class TraderUnlockRequirement : QteRequirement
     public RequirementType Type { get; set; } = RequirementType.TraderUnlock;
 
     [JsonPropertyName("traderId")]
-    public Traders TraderId { get; set; }
+    public string TraderId { get; set; }
 }
 
 public class TraderLoyaltyRequirement : QteRequirement
@@ -146,7 +147,7 @@ public class TraderLoyaltyRequirement : QteRequirement
     public RequirementType Type { get; set; } = RequirementType.TraderLoyalty;
 
     [JsonPropertyName("traderId")]
-    public Traders TraderId { get; set; }
+    public string TraderId { get; set; }
 
     [JsonPropertyName("loyaltyLevel")]
     public int LoyaltyLevel { get; set; }

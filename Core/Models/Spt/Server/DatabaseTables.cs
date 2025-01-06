@@ -2,8 +2,8 @@
 
 public class DatabaseTables
 {
-    public Bots? bots { get; }
-    public Hideout? hideout { get; }
+    public Bots.Bots? bots { get; }
+    public Hideout.Hideout? hideout { get; }
     public LocaleBase? locales { get; }
     public Locations? locations { get; }
     public Match? match { get; }
