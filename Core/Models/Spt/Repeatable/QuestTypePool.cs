@@ -27,7 +27,7 @@ public class QuestPool
 public class ExplorationPool
 {
     [JsonPropertyName("locations")]
-    public Dictionary<ELocationName, List<string>> Locations { get; set; }
+    public Dictionary<ELocationName, List<string>> Locations { get; set; } // TODO: check the type, originally - Partial<Record<ELocationName, string[]>>
 }
 
 public class EliminationPool
@@ -39,37 +39,37 @@ public class EliminationPool
 public class EliminationTargetPool
 {
     [JsonPropertyName("Savage")]
-    public TargetLocation Savage { get; set; }
+    public TargetLocation? Savage { get; set; }
 
     [JsonPropertyName("AnyPmc")]
-    public TargetLocation AnyPmc { get; set; }
+    public TargetLocation? AnyPmc { get; set; }
 
     [JsonPropertyName("bossBully")]
-    public TargetLocation BossBully { get; set; }
+    public TargetLocation? BossBully { get; set; }
 
     [JsonPropertyName("bossGluhar")]
-    public TargetLocation BossGluhar { get; set; }
+    public TargetLocation? BossGluhar { get; set; }
 
     [JsonPropertyName("bossKilla")]
-    public TargetLocation BossKilla { get; set; }
+    public TargetLocation? BossKilla { get; set; }
 
     [JsonPropertyName("bossSanitar")]
-    public TargetLocation BossSanitar { get; set; }
+    public TargetLocation? BossSanitar { get; set; }
 
     [JsonPropertyName("bossTagilla")]
-    public TargetLocation BossTagilla { get; set; }
+    public TargetLocation? BossTagilla { get; set; }
 
     [JsonPropertyName("bossKnight")]
-    public TargetLocation BossKnight { get; set; }
+    public TargetLocation? BossKnight { get; set; }
 
     [JsonPropertyName("bossZryachiy")]
-    public TargetLocation BossZryachiy { get; set; }
+    public TargetLocation? BossZryachiy { get; set; }
 
     [JsonPropertyName("bossBoar")]
-    public TargetLocation BossBoar { get; set; }
+    public TargetLocation? BossBoar { get; set; }
 
     [JsonPropertyName("bossBoarSniper")]
-    public TargetLocation BossBoarSniper { get; set; }
+    public TargetLocation? BossBoarSniper { get; set; }
 }
 
 public class TargetLocation
