@@ -1,4 +1,4 @@
-﻿namespace Types.Models.Logging;
+﻿namespace Core.Models.Logging;
 
 public enum LogTextColor
 {

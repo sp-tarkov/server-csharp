@@ -1,8 +1,8 @@
-﻿using Types.Annotations;
-using Types.Models.Logging;
-using ILogger = Types.Models.Utils.ILogger;
+﻿using Core.Models.Logging;
+using Core.Annotations;
+using ILogger = Core.Models.Utils.ILogger;
 
-namespace Types.Utils.Logging;
+namespace Core.Utils.Logging;
 
 [Injectable(InjectionType.Singleton)]
 public class SimpleTextLogger : ILogger

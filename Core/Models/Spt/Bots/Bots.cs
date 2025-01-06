@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Bots;
+namespace Core.Models.Spt.Bots;
 
 public class Bots
 {

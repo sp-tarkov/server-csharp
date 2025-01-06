@@ -1,4 +1,4 @@
-﻿namespace Types.Models.Enums;
+﻿namespace Core.Models.Enums;
 
 public enum ConfigTypes
 {

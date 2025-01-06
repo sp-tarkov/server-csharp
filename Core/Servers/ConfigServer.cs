@@ -1,6 +1,6 @@
-﻿using Types.Annotations;
+﻿using Core.Annotations;
 
-namespace Types.Servers;
+namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer

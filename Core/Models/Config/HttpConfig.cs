@@ -1,4 +1,4 @@
-﻿namespace Types.Models.Config;
+﻿namespace Core.Models.Config;
 
 public class HttpConfig
 {

@@ -1,4 +1,4 @@
-﻿namespace Types.Servers;
+﻿namespace Core.Servers;
 
 public class DatabaseServer
 {

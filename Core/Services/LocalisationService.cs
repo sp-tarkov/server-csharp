@@ -1,9 +1,9 @@
-﻿using Types.Annotations;
-using Types.Servers;
-using Types.Utils;
-using ILogger = Types.Models.Utils.ILogger;
+﻿using Core.Utils;
+using Core.Annotations;
+using Core.Servers;
+using ILogger = Core.Models.Utils.ILogger;
 
-namespace Types.Services;
+namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocalisationService
