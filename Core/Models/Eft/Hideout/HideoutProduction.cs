@@ -1,0 +1,122 @@
+using System.Text.Json.Serialization;
+using Core.Models.Common;
+
+namespace Core.Models.Eft.Hideout;
+
+public class HideoutProductionData
+{
+    [JsonPropertyName("recipes")]
+    public List<HideoutProduction> Recipes { get; set; }
+
+    [JsonPropertyName("scavRecipes")]
+    public List<ScavRecipe> ScavRecipes { get; set; }
+
+    [JsonPropertyName("cultistRecipes")]
+    public List<CultistRecipe> CultistRecipes { get; set; }
+}
+
+public class HideoutProduction
+{
+    [JsonPropertyName("_id")]
+    public string Id { get; set; }
+
+    [JsonPropertyName("areaType")]
+    public int AreaType { get; set; }
+
+    [JsonPropertyName("requirements")]
+    public List<Requirement> Requirements { get; set; }
+
+    [JsonPropertyName("productionTime")]
+    public int ProductionTime { get; set; }
+
+    /** Tpl of item being crafted */
+    [JsonPropertyName("endProduct")]
+    public string EndProduct { get; set; }
+
+    [JsonPropertyName("isEncoded")]
+    public bool IsEncoded { get; set; }
+
+    [JsonPropertyName("locked")]
+    public bool Locked { get; set; }
+
+    [JsonPropertyName("needFuelForAllProductionTime")]
+    public bool NeedFuelForAllProductionTime { get; set; }
+
+    [JsonPropertyName("continuous")]
+    public bool Continuous { get; set; }
+
+    [JsonPropertyName("count")]
+    public int Count { get; set; }
+
+    [JsonPropertyName("productionLimitCount")]
+    public int ProductionLimitCount { get; set; }
+
+    [JsonPropertyName("isCodeProduction")]
+    public bool IsCodeProduction { get; set; }
+}
+
+public class Requirement : RequirementBase
+{
+    [JsonPropertyName("templateId")]
+    public string? TemplateId { get; set; }
+    
+    [JsonPropertyName("count")]
+    public int? Count { get; set; }
+    
+    [JsonPropertyName("isEncoded")]
+    public bool? IsEncoded { get; set; }
+    
+    [JsonPropertyName("isFunctional")]
+    public bool? IsFunctional { get; set; }
+    
+    [JsonPropertyName("areaType")]
+    public int? AreaType { get; set; }
+    
+    [JsonPropertyName("requiredLevel")]
+    public int? RequiredLevel { get; set; }
+    
+    [JsonPropertyName("resource")]
+    public int? Resource { get; set; }
+    
+    [JsonPropertyName("questId")]
+    public string? QuestId { get; set; }
+}
+
+public class RequirementBase
+{
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
+}
+
+public class ScavRecipe
+{
+    [JsonPropertyName("_id")]
+    public string Id { get; set; }
+    
+    [JsonPropertyName("requirements")]
+    public List<Requirement> Requirements { get; set; }
+    
+    [JsonPropertyName("productionTime")]
+    public int ProductionTime { get; set; }
+    
+    [JsonPropertyName("endProducts")]
+    public EndProducts EndProducts { get; set; }
+}
+
+public class EndProducts
+{
+    [JsonPropertyName("Common")]
+    public MinMax Common { get; set; }
+    
+    [JsonPropertyName("Rare")]
+    public MinMax Rare { get; set; }
+    
+    [JsonPropertyName("Superrare")]
+    public MinMax Superrare { get; set; }
+}
+
+public class CultistRecipe
+{
+    [JsonPropertyName("_id")]
+    public string Id { get; set; }
+}

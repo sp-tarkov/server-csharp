@@ -1,5 +1,5 @@
 ﻿using System.Text.Json.Serialization;
-using Core.Models.Spt.Repeatable;
+using Core.Models.Eft.Hideout;
 
 namespace Core.Models.Spt.Hideout;
 
@@ -18,5 +18,5 @@ public class Hideout
     public HideoutSettingsBase Settings { get; set; }
     
     [JsonPropertyName("qte")]
-    public List<qteData> Qte { get; set; }
+    public List<QteData> Qte { get; set; }
 }
