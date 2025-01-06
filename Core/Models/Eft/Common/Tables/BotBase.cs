@@ -22,9 +22,9 @@ public class BotBase
     [JsonPropertyName("Customization")]
     public Customization Customization { get; set; }
     [JsonPropertyName("Health")]
-    public Health Health { get; set; }
+    public BotBaseHealth Health { get; set; }
     [JsonPropertyName("Inventory")]
-    public Inventory Inventory { get; set; }
+    public BotBaseInventory Inventory { get; set; }
     [JsonPropertyName("Skills")]
     public Skills Skills { get; set; }
     [JsonPropertyName("Stats")]
@@ -180,7 +180,7 @@ public class Customization
     public string Hands { get; set; }
 }
 
-public class Health
+public class BotBaseHealth
 {
     public CurrentMax Hydration { get; set; }
     public CurrentMax Energy { get; set; }
@@ -220,7 +220,7 @@ public class CurrentMax
     public int Maximum { get; set; }
 }
 
-public class Inventory {
+public class BotBaseInventory {
     [JsonPropertyName("items")]
     public List<Item> Items { get; set; }
     [JsonPropertyName("equipment")]

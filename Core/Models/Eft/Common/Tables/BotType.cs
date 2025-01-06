@@ -1,6 +1,372 @@
-﻿namespace Core.Models.Eft.Common.Tables;
+﻿using System.Text.Json.Serialization;
+using Core.Models.Common;
+
+namespace Core.Models.Eft.Common.Tables;
 
 public class BotType
 {
-    
+    [JsonPropertyName("appearance")]
+    public Appearance BotAppearance { get; set; }
+
+    [JsonPropertyName("chances")]
+    public Chances BotChances { get; set; }
+
+    [JsonPropertyName("difficulty")]
+    public Difficulties BotDifficulty { get; set; }
+
+    [JsonPropertyName("experience")]
+    public Experience BotExperience { get; set; }
+
+    [JsonPropertyName("firstName")]
+    public List<string> FirstNames { get; set; }
+
+    [JsonPropertyName("generation")]
+    public Generation BotGeneration { get; set; }
+
+    [JsonPropertyName("health")]
+    public BotTypeHealth BotHealth { get; set; }
+
+    [JsonPropertyName("inventory")]
+    public BotTypeInventory BotInventory { get; set; }
+
+    [JsonPropertyName("lastName")]
+    public List<string> LastNames { get; set; }
+
+    [JsonPropertyName("skills")]
+    public Skills BotSkills { get; set; }
+}
+
+public class Appearance
+{
+    [JsonPropertyName("body")]
+    public Dictionary<string, int> Body { get; set; }
+
+    [JsonPropertyName("feet")]
+    public Dictionary<string, int> Feet { get; set; }
+
+    [JsonPropertyName("hands")]
+    public Dictionary<string, int> Hands { get; set; }
+
+    [JsonPropertyName("head")]
+    public Dictionary<string, int> Head { get; set; }
+
+    [JsonPropertyName("voice")]
+    public Dictionary<string, int> Voice { get; set; }
+}
+
+public class Chances
+{
+    [JsonPropertyName("equipment")]
+    public EquipmentChances EquipmentChances { get; set; }
+
+    [JsonPropertyName("weaponMods")]
+    public ModsChances WeaponModsChances { get; set; }
+
+    [JsonPropertyName("equipmentMods")]
+    public ModsChances EquipmentModsChances { get; set; }
+}
+
+public class EquipmentChances
+{
+    [JsonPropertyName("ArmBand")]
+    public int ArmBand { get; set; }
+
+    [JsonPropertyName("ArmorVest")]
+    public int ArmorVest { get; set; }
+
+    [JsonPropertyName("Backpack")]
+    public int Backpack { get; set; }
+
+    [JsonPropertyName("Earpiece")]
+    public int Earpiece { get; set; }
+
+    [JsonPropertyName("Eyewear")]
+    public int Eyewear { get; set; }
+
+    [JsonPropertyName("FaceCover")]
+    public int FaceCover { get; set; }
+
+    [JsonPropertyName("FirstPrimaryWeapon")]
+    public int FirstPrimaryWeapon { get; set; }
+
+    [JsonPropertyName("Headwear")]
+    public int Headwear { get; set; }
+
+    [JsonPropertyName("Holster")]
+    public int Holster { get; set; }
+
+    [JsonPropertyName("Pockets")]
+    public int Pockets { get; set; }
+
+    [JsonPropertyName("Scabbard")]
+    public int Scabbard { get; set; }
+
+    [JsonPropertyName("SecondPrimaryWeapon")]
+    public int SecondPrimaryWeapon { get; set; }
+
+    [JsonPropertyName("SecuredContainer")]
+    public int SecuredContainer { get; set; }
+
+    [JsonPropertyName("TacticalVest")]
+    public int TacticalVest { get; set; }
+}
+
+public class ModsChances
+{
+    [JsonPropertyName("mod_charge")]
+    public double ModCharge { get; set; }
+
+    [JsonPropertyName("mod_equipment")]
+    public double ModEquipment { get; set; }
+
+    [JsonPropertyName("mod_equipment_000")]
+    public double ModEquipment000 { get; set; }
+
+    [JsonPropertyName("mod_equipment_001")]
+    public double ModEquipment001 { get; set; }
+
+    [JsonPropertyName("mod_equipment_002")]
+    public double ModEquipment002 { get; set; }
+
+    [JsonPropertyName("mod_flashlight")]
+    public double ModFlashlight { get; set; }
+
+    [JsonPropertyName("mod_foregrip")]
+    public double ModForegrip { get; set; }
+
+    [JsonPropertyName("mod_launcher")]
+    public double ModLauncher { get; set; }
+
+    [JsonPropertyName("mod_magazine")]
+    public double ModMagazine { get; set; }
+
+    [JsonPropertyName("mod_mount")]
+    public double ModMount { get; set; }
+
+    [JsonPropertyName("mod_mount_000")]
+    public double ModMount000 { get; set; }
+
+    [JsonPropertyName("mod_mount_001")]
+    public double ModMount001 { get; set; }
+
+    [JsonPropertyName("mod_muzzle")]
+    public double ModMuzzle { get; set; }
+
+    [JsonPropertyName("mod_nvg")]
+    public double ModNvg { get; set; }
+
+    [JsonPropertyName("mod_pistol_grip")]
+    public double ModPistolGrip { get; set; }
+
+    [JsonPropertyName("mod_reciever")]
+    public double ModReceiver { get; set; }
+
+    [JsonPropertyName("mod_scope")]
+    public double ModScope { get; set; }
+
+    [JsonPropertyName("mod_scope_000")]
+    public double ModScope000 { get; set; }
+
+    [JsonPropertyName("mod_scope_001")]
+    public double ModScope001 { get; set; }
+
+    [JsonPropertyName("mod_scope_002")]
+    public double ModScope002 { get; set; }
+
+    [JsonPropertyName("mod_scope_003")]
+    public double ModScope003 { get; set; }
+
+    [JsonPropertyName("mod_sight_front")]
+    public double ModSightFront { get; set; }
+
+    [JsonPropertyName("mod_sight_rear")]
+    public double ModSightRear { get; set; }
+
+    [JsonPropertyName("mod_stock")]
+    public double ModStock { get; set; }
+
+    [JsonPropertyName("mod_stock_000")]
+    public double ModStock000 { get; set; }
+
+    [JsonPropertyName("mod_stock_akms")]
+    public double ModStockAkms { get; set; }
+
+    [JsonPropertyName("mod_tactical")]
+    public double ModTactical { get; set; }
+
+    [JsonPropertyName("mod_tactical_000")]
+    public double ModTactical000 { get; set; }
+
+    [JsonPropertyName("mod_tactical_001")]
+    public double ModTactical001 { get; set; }
+
+    [JsonPropertyName("mod_tactical_002")]
+    public double ModTactical002 { get; set; }
+
+    [JsonPropertyName("mod_tactical_003")]
+    public double ModTactical003 { get; set; }
+
+    [JsonPropertyName("mod_handguard")]
+    public double ModHandguard { get; set; }
+}
+
+public class Difficulties
+{
+    public DifficultyCategories Easy { get; set; }
+    public DifficultyCategories Normal { get; set; }
+    public DifficultyCategories Hard { get; set; }
+    public DifficultyCategories Impossible { get; set; }
+}
+
+public class DifficultyCategories
+{
+    public Dictionary<string, object> Aiming { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Boss { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Change { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Core { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Cover { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Grenade { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Hearing { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Lay { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Look { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Mind { get; set; } // TODO: string | number | boolean | string[]
+    public Dictionary<string, object> Move { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Patrol { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Scattering { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object> Shoot { get; set; } // TODO: string | number | boolean
+}
+
+public class Experience
+{
+    /** key = bot difficulty */
+    [JsonPropertyName("aggressorBonus")]
+    public Dictionary<string, double> AggressorBonus { get; set; }
+
+    public MinMax Level { get; set; }
+
+    /** key = bot difficulty */
+    [JsonPropertyName("reward")]
+    public Dictionary<string, MinMax> Reward { get; set; }
+
+    /** key = bot difficulty */
+    [JsonPropertyName("standingForKill")]
+    public Dictionary<string, double> StandingForKill { get; set; }
+
+    [JsonPropertyName("useSimpleAnimator")]
+    public bool UseSimpleAnimator { get; set; }
+}
+
+public class Generation
+{
+    [JsonPropertyName("items")]
+    public GenerationWeightingItems Items { get; set; }
+}
+
+public class GenerationWeightingItems
+{
+    [JsonPropertyName("grenades")]
+    public GenerationData Grenades { get; set; }
+
+    [JsonPropertyName("healing")]
+    public GenerationData Healing { get; set; }
+
+    [JsonPropertyName("drugs")]
+    public GenerationData Drugs { get; set; }
+
+    [JsonPropertyName("food")]
+    public GenerationData Food { get; set; }
+
+    [JsonPropertyName("drink")]
+    public GenerationData Drink { get; set; }
+
+    [JsonPropertyName("currency")]
+    public GenerationData Currency { get; set; }
+
+    [JsonPropertyName("stims")]
+    public GenerationData Stims { get; set; }
+
+    [JsonPropertyName("backpackLoot")]
+    public GenerationData BackpackLoot { get; set; }
+
+    [JsonPropertyName("pocketLoot")]
+    public GenerationData PocketLoot { get; set; }
+
+    [JsonPropertyName("vestLoot")]
+    public GenerationData VestLoot { get; set; }
+
+    [JsonPropertyName("magazines")]
+    public GenerationData Magazines { get; set; }
+
+    [JsonPropertyName("specialItems")]
+    public GenerationData SpecialItems { get; set; }
+}
+
+public class GenerationData
+{
+    /** key: number of items, value: weighting */
+    [JsonPropertyName("weights")]
+    public Dictionary<string, double> Weights { get; set; }
+
+    /** Array of item tpls */
+    [JsonPropertyName("whitelist")]
+    public Dictionary<string, double> Whitelist { get; set; }
+}
+
+public class BotTypeHealth
+{
+    public List<BodyPart> BodyParts { get; set; }
+    public MinMax Energy { get; set; }
+    public MinMax Hydration { get; set; }
+    public MinMax Temperature { get; set; }
+}
+
+public class BodyPart
+{
+    public MinMax Chest { get; set; }
+    public MinMax Head { get; set; }
+    public MinMax LeftArm { get; set; }
+    public MinMax LeftLeg { get; set; }
+    public MinMax RightArm { get; set; }
+    public MinMax RightLeg { get; set; }
+    public MinMax Stomach { get; set; }
+}
+
+public class BotTypeInventory
+{
+    [JsonPropertyName("equipment")]
+    public Equipment Equipment { get; set; }
+
+    public GlobalAmmo Ammo { get; set; }
+
+    [JsonPropertyName("items")]
+    public ItemPools Items { get; set; }
+
+    public GlobalMods Mods { get; set; }
+}
+
+public class Equipment
+{
+    public Dictionary<string, double> ArmBand { get; set; }
+    public Dictionary<string, double> ArmorVest { get; set; }
+    public Dictionary<string, double> Backpack { get; set; }
+    public Dictionary<string, double> Earpiece { get; set; }
+    public Dictionary<string, double> Eyewear { get; set; }
+    public Dictionary<string, double> FaceCover { get; set; }
+    public Dictionary<string, double> FirstPrimaryWeapon { get; set; }
+    public Dictionary<string, double> Headwear { get; set; }
+    public Dictionary<string, double> Holster { get; set; }
+    public Dictionary<string, double> Pockets { get; set; }
+    public Dictionary<string, double> Scabbard { get; set; }
+    public Dictionary<string, double> SecondPrimaryWeapon { get; set; }
+    public Dictionary<string, double> SecuredContainer { get; set; }
+    public Dictionary<string, double> TacticalVest { get; set; }
+}
+
+public class ItemPools
+{
+    public Dictionary<string, double> Backpack { get; set; }
+    public Dictionary<string, double> Pockets { get; set; }
+    public Dictionary<string, double> SecuredContainer { get; set; }
+    public Dictionary<string, double> SpecialLoot { get; set; }
+    public Dictionary<string, double> TacticalVest { get; set; }
 }
