@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class MatchConfig
+public class MatchConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-match";

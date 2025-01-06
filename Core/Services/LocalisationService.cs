@@ -25,9 +25,13 @@ public class LocalisationService
         _randomUtil = randomUtil;
         _databaseServer = databaseServer;
         _localeService = localeService;
-        _i18nService = new I18nService();
-        
-        File.ReadAllText()
+        _i18nService = new I18nService(
+            localeService.GetServerSupportedLocales(),
+            localeService.GetLocaleFallbacks(),
+            "en",
+            "./Assets/database/locales/server"
+        );
+        _i18nService.SetLocale(localeService.GetDesiredServerLocale());
     }
 
     public string GetText(string key, object? args = null)

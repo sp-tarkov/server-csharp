@@ -1,10 +1,11 @@
 ﻿using System.Net.WebSockets;
 using Core.Context;
-using Core.Models.Config;
 using Core.Servers.Http;
 using Core.Services;
 using Microsoft.Extensions.Primitives;
 using Core.Annotations;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Servers;
@@ -38,8 +39,7 @@ public class HttpServer
         _webSocketServer = webSocketServer;
         _httpListeners = httpListeners;
 
-        // TODO: hook up the config server to put the HttpConfig here
-        httpConfig = new HttpConfig() { Ip = "127.0.0.1", Port = 80, LogRequests = true};
+        httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
     }
 
     public void Load(WebApplicationBuilder builder)
@@ -89,13 +89,13 @@ public class HttpServer
                 var isLocalRequest = IsLocalRequest(clientIp);
                 if (isLocalRequest.HasValue) {
                     if (isLocalRequest.Value) {
-                        _logger.Info(_localisationService.GetText("client_request", req.url));
-                    } else {
+                        _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
+                    } else
+                    {
                         _logger.Info(
-                            _localisationService.GetText("client_request_ip", {
-                            ip: clientIp,
-                            url: req.url.replaceAll("/", "\\"), // Localisation service escapes `/` into hex code `&#x2f;`
-                        }),
+                            _localisationService.GetText("client_request_ip",
+                                new Dictionary<string, string>
+                                    { { "ip", clientIp }, { "url", context.Request.Path.Value } })
                         );
                     }
                 }
