@@ -1,7 +1,7 @@
 ﻿using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 
-namespace Core.Models.Spt.Generators;
+namespace Core.Generators;
 
 public class RagfairOfferGenerator
 {

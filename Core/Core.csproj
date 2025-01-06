@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <Folder Include="Controllers\" />
       <Folder Include="Helpers\" />
       <Folder Include="Models\Spt\Hideout\" />
     </ItemGroup>

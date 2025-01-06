@@ -1,6 +1,6 @@
 ﻿using Core.Models.Eft.Common.Tables;
 
-namespace Core.Models.Spt.Generators;
+namespace Core.Generators;
 
 public class BotGenerator
 {
