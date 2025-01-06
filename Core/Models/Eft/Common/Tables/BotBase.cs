@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Ragfair;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -36,7 +38,7 @@ public class BotBase
     [JsonPropertyName("Hideout")]
     public Hideout Hideout { get; set; }
     [JsonPropertyName("Quests")]
-    public List<QuestStatus> Quests { get; set; }
+    public List<Quests> Quests { get; set; }
     [JsonPropertyName("TradersInfo")]
     public Dictionary<string, TraderInfo> TradersInfo { get; set; }
     [JsonPropertyName("UnlockedInfo")]
@@ -602,7 +604,7 @@ public enum SurvivorClass {
     SURVIVOR = 4,
 }
 
-public class QuestStatus
+public class Quests
 {
     [JsonPropertyName("qid")]
     public string QId { get; set; }
