@@ -6,6 +6,15 @@ using Core.Models.Spt.Dialog;
 
 namespace Core.Models.Spt.Config;
 
+public class GiftsConfig : BaseConfig
+{
+    [JsonPropertyName("kind")]
+    public string Kind { get; set; } = "spt-gifts";
+
+    [JsonPropertyName("gifts")]
+    public Dictionary<string, Gift> Gifts { get; set; }
+}
+
 public class Gift
 {
     /// <summary>

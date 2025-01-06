@@ -4,7 +4,7 @@ namespace Core.Services;
 
 public class I18nService
 {
-    private string[] _locales;
+    private List<string> _locales;
     private Dictionary<string, string> _fallbacks;
     private string _defaultLocale;
     private string _directory;
@@ -13,7 +13,7 @@ public class I18nService
     
     private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
 
-    public I18nService(string[] locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
+    public I18nService(List<string> locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
     {
         _locales = locales;
         _fallbacks = fallbacks;
@@ -30,9 +30,12 @@ public class I18nService
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
         {
-            _loadedLocales.Add(Path.GetFileName(file),
+            _loadedLocales.Add(Path.GetFileNameWithoutExtension(file),
                 JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)) ?? new Dictionary<string, string>());
         }
+        
+        if (!_loadedLocales.ContainsKey(_defaultLocale))
+            throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
     }
 
     public void SetLocale(string locale)
@@ -49,16 +52,28 @@ public class I18nService
                     throw new Exception($"Locale '{locale}' was not defined, and the found fallback locale did not match any of the loaded locales.");
                 _setLocale = foundFallbackLocale;
             }
+
+            _setLocale = _defaultLocale;
         }
     }
 
     public string GetLocalised(string key)
     {
-        return null;
+        if (!_loadedLocales.TryGetValue(_setLocale, out var locales))
+            return key;
+        if (!locales.TryGetValue(key, out var value))
+        {
+            _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
+            defaults.TryGetValue(key, out value);
+            return value ?? key;
+        }
+            
+        return value;
     }
 
     public string GetLocalised(string key, params object[] args)
     {
-        return null;
+        // TODO: Deal with arguments
+        return GetLocalised(key);
     }
 }

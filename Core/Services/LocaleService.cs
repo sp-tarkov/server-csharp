@@ -1,4 +1,7 @@
-﻿using Core.Annotations;
+﻿using System.Globalization;
+using Core.Annotations;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
 using Core.Servers;
 using ILogger = Core.Models.Utils.ILogger;
 
@@ -7,6 +10,7 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class LocaleService
 {
+    private readonly LocaleConfig _localeConfig;
     private readonly ILogger _logger;
     private readonly DatabaseServer _databaseServer;
     private readonly ConfigServer _configServer;
@@ -16,6 +20,7 @@ public class LocaleService
         _logger = logger;
         _databaseServer = databaseServer;
         _configServer = configServer;
+        _localeConfig = configServer.GetConfig<LocaleConfig>(ConfigTypes.LOCALE);
     }
 
     /**
@@ -24,18 +29,16 @@ public class LocaleService
  */
     public Dictionary<string, string> GetLocaleDb()
     {
-        /*
-    const desiredLocale = this.databaseServer.getTables().locales.global[this.getDesiredGameLocale()];
-    if (desiredLocale) {
-        return desiredLocale;
-    }
+        var desiredLocale = _databaseServer.GetTables().locales.Global[GetDesiredGameLocale()];
+        if (desiredLocale != null)
+        {
+            return desiredLocale;
+        }
 
-    this.logger.warning(
-        `Unable to find desired locale file using locale: ${this.getDesiredGameLocale()} from config/locale.json, falling back to 'en'`,
-    );
+        _logger.Warning(
+            $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'");
 
-    return this.databaseServer.getTables().locales.global.en;
-    */
+        return _databaseServer.GetTables().locales.Global["en"];
     }
 
     /**
@@ -45,13 +48,12 @@ public class LocaleService
      */
     public string GetDesiredGameLocale()
     {
-        /*
-        if (this.localeConfig.gameLocale.toLowerCase() === "system") {
-            return this.getPlatformForClientLocale();
+        if (_localeConfig.GameLocale.ToLower() == "system")
+        {
+            return GetPlatformForClientLocale();
         }
 
-        return this.localeConfig.gameLocale.toLowerCase();
-        */
+        return _localeConfig.GameLocale.ToLower();
     }
 
     /**
@@ -61,22 +63,21 @@ public class LocaleService
      */
     public string GetDesiredServerLocale()
     {
-        /*
-        if (this.localeConfig.serverLocale.toLowerCase() === "system") {
-            return this.getPlatformForServerLocale();
+        if (_localeConfig.ServerLocale.ToLower() == "system")
+        {
+            return GetPlatformForServerLocale();
         }
 
-        return this.localeConfig.serverLocale.toLowerCase();
-        */
+        return _localeConfig.ServerLocale.ToLower();
     }
 
     /**
      * Get array of languages supported for localisation
      * @returns array of locales e.g. en/fr/cn
      */
-    public ICollection<string> GetServerSupportedLocales()
+    public List<string> GetServerSupportedLocales()
     {
-        // return this.localeConfig.serverSupportedLocales;
+        return _localeConfig.ServerSupportedLocales;
     }
 
     /**
@@ -85,7 +86,7 @@ public class LocaleService
      */
     public Dictionary<string, string> GetLocaleFallbacks()
     {
-        // return this.localeConfig.fallbacks;
+        return _localeConfig.Fallbacks;
     }
 
     /**
@@ -94,20 +95,22 @@ public class LocaleService
      */
     public string GetPlatformForServerLocale()
     {
-        /*
-        const platformLocale = this.getPlatformLocale();
-        if (!platformLocale) {
-            this.logger.warning("System language could not be found, falling back to english");
-
+        var platformLocale = GetPlatformLocale();
+        if (platformLocale == null)
+        {
+            _logger.Warning("System language could not be found, falling back to english");
             return "en";
         }
 
-        const baseNameCode = platformLocale.baseName.toLowerCase();
-        if (!this.localeConfig.serverSupportedLocales.includes(baseNameCode)) {
-            // Chek if base language (e.g. CN / EN / DE) exists
-            const languageCode = platformLocale.language.toLocaleLowerCase();
-            if (this.localeConfig.serverSupportedLocales.includes(languageCode)) {
-                if (baseNameCode === "zh") {
+        var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLower();
+        if (!_localeConfig.ServerSupportedLocales.Contains(baseNameCode))
+        {
+            // Check if base language (e.g. CN / EN / DE) exists
+            var languageCode = platformLocale.Name.ToLower();
+            if (_localeConfig.ServerSupportedLocales.Contains(languageCode))
+            {
+                if (baseNameCode == "zh")
+                {
                     // Handle edge case of zh
                     return "zh-cn";
                 }
@@ -115,18 +118,18 @@ public class LocaleService
                 return languageCode;
             }
 
-            if (baseNameCode === "pt") {
+            if (baseNameCode == "pt")
+            {
                 // Handle edge case of pt
                 return "pt-pt";
             }
 
-            this.logger.warning(`Unsupported system language found: ${baseNameCode}, falling back to english`);
+            _logger.Warning($"Unsupported system language found: {baseNameCode}, falling back to english");
 
             return "en";
         }
 
         return baseNameCode;
-  */
     }
 
     /**
@@ -135,44 +138,49 @@ public class LocaleService
      */
     protected string GetPlatformForClientLocale()
     {
-        /*
-        const platformLocale = this.getPlatformLocale();
-        if (!platformLocale) {
-            this.logger.warning("System language could not be found, falling back to english");
+        var platformLocale = GetPlatformLocale();
+        if (platformLocale == null)
+        {
+            _logger.Warning("System language could not be found, falling back to english");
             return "en";
         }
 
-        const locales = this.databaseServer.getTables().locales;
-        const baseNameCode = platformLocale.baseName?.toLocaleLowerCase();
-        if (baseNameCode && locales.global[baseNameCode]) {
+        var locales = _databaseServer.GetTables().locales;
+        var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLower();
+        if (locales.Global.ContainsKey(baseNameCode))
+        {
             return baseNameCode;
         }
 
-        const languageCode = platformLocale.language?.toLowerCase();
-        if (languageCode && locales.global[languageCode]) {
+        var languageCode = platformLocale.Name.ToLower();
+        if (locales.Global.ContainsKey(languageCode))
+        {
             return languageCode;
         }
 
+        /*
         const regionCode = platformLocale.region?.toLocaleLowerCase();
         if (regionCode && locales.global[regionCode]) {
             return regionCode;
         }
+        */
 
         // BSG map DE to GE some reason
-        if (platformLocale.language === "de") {
+        if (baseNameCode == "de")
+        {
             return "ge";
         }
 
-        this.logger.warning(`Unsupported system language found: ${languageCode}, falling back to english`);
+        _logger.Warning($"Unsupported system language found: {languageCode}, falling back to english");
         return "en";
-        */
     }
 
     /**
      * This is in a function so we can overwrite it during testing
      * @returns The current platform locale
-    protected getPlatformLocale(): Intl.Locale {
-        return new Intl.Locale(Intl.DateTimeFormat().resolvedOptions().locale);
-    }
      */
+    protected CultureInfo GetPlatformLocale()
+    {
+        return CultureInfo.InstalledUICulture;
+    }
 }
