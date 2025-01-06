@@ -8,5 +8,5 @@ public class Bots
     public Dictionary<string, BotType> types { get; }
     [JsonPropertyName("base")]
     public BotBase Base { get; }
-    public BotCode core { get; }
+    public BotCore core { get; }
 }
