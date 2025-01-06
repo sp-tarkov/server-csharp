@@ -1,6 +1,6 @@
 ﻿using Core.Models.Eft.Common.Tables;
 
-namespace Core.Models.Spt.Callbacks;
+namespace Core.Callbacks;
 
 public class BotCallbacks
 {

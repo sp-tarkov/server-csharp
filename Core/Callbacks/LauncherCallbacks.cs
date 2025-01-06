@@ -1,4 +1,4 @@
-﻿namespace Core.Models.Spt.Callbacks;
+﻿namespace Core.Callbacks;
 
 public class LauncherCallbacks
 {
