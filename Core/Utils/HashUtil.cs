@@ -1,10 +1,12 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
+using Types.Annotations;
 
 namespace Types.Utils;
 
-public static partial class HashUtil
+[Injectable(InjectionType.Singleton)]
+public partial class HashUtil
 {
 	/// <summary>
 	/// Create a 24 character id using the sha256 algorithm + current timestamp
