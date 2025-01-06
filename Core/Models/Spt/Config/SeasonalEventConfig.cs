@@ -70,7 +70,7 @@ public class SeasonalEvent
     public int EndMonth { get; set; }
     
     [JsonPropertyName("settings")]
-    public Dictionary<string, SeasonalEventSettings> Settings { get; set; }
+    public Dictionary<string, object> Settings { get; set; } // TODO: Type was Record<string, ISeasonalEventSettings | IZombieSettings>
 }
 
 public class SeasonalEventSettings

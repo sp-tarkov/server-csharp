@@ -9,7 +9,7 @@ public class BotController
         throw new NotImplementedException();
     }
 
-    public object GetBotDifficulty(string type, string difficulty) // IBotCore | IDifficultyCategories
+    public object GetBotDifficulty(string type, string difficulty) // TODO: return type was: IBotCore | IDifficultyCategories
     {
         throw new NotImplementedException();
     }
