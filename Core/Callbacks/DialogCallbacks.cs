@@ -1,4 +1,9 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Dialog;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.Profile;
+
+namespace Core.Callbacks;
 
 public class DialogCallbacks
 {
@@ -7,7 +12,7 @@ public class DialogCallbacks
         throw new NotImplementedException();
     }
 
-    public GetBodyResponseData<List<object>> GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
+    public GetBodyResponseData<List<ChatServer>> GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }

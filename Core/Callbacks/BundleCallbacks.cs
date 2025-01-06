@@ -1,7 +1,16 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Spt.Config;
+
+namespace Core.Callbacks;
 
 public class BundleCallbacks
 {
+    private HttpConfig _httpConfig;
+    
+    public BundleCallbacks()
+    {
+        
+    }
+    
     public object SendBundle(string sessionID, object req, object res, object body)
     {
         throw new NotImplementedException();
