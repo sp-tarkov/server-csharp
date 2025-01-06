@@ -1,8 +1,13 @@
-﻿namespace Core.Models.Spt.Callbacks;
+﻿namespace Core.Callbacks;
 
-public class BundleCallbacks
+public class ModCallbacks
 {
-    public object SendBundle(string sessionID, object req, object res, object body)
+    public void Load()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SendBundle(string sessionID, object req, object resp, object body)
     {
         throw new NotImplementedException();
     }

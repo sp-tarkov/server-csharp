@@ -1,6 +1,6 @@
 ﻿using Core.Models.Eft.Common;
 
-namespace Core.Models.Spt.Callbacks;
+namespace Core.Callbacks;
 
 public class LocationCallbacks
 {
