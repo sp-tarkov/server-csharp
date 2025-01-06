@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
-using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
+using Props = Core.Models.Eft.Common.Props;
 
 namespace Core.Models.Spt.Mod;
 

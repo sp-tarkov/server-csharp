@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Enums.Hideout;
 using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Hideout;

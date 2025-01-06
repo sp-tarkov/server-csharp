@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Profile;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Dialog;
 
