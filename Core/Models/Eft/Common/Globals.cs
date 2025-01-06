@@ -448,8 +448,8 @@ public class Config
     [JsonPropertyName("ArmorMaterials")]
     public ArmorMaterials ArmorMaterials { get; set; }
 
-    // [JsonPropertyName("ArenaEftTransferSettings")]
-    // public ArenaEftTransferSettings ArenaEftTransferSettings { get; set; } // TODO: this needs to be looked into, there are two types further down commented out with the same name
+    [JsonPropertyName("ArenaEftTransferSettings")]
+    public ArenaEftTransferSettings ArenaEftTransferSettings { get; set; } // TODO: this needs to be looked into, there are two types further down commented out with the same name
 
     [JsonPropertyName("KarmaCalculationSettings")]
     public KarmaCalculationSettings KarmaCalculationSettings { get; set; }
@@ -1723,32 +1723,32 @@ public class KarmaCalculationSettings
     public double MinSurvivedRaidCount { get; set; }
 }
 
-// public class ArenaEftTransferSettings
-// {
-//     [JsonPropertyName("arenaEftTransferSettings")]
-//     public ArenaEftTransferSettings ArenaEftTransferSettings { get; set; }
-// }
-//
-// public class ArenaEftTransferSettings
-// {
-//     [JsonPropertyName("arenaManagerReputationTaxMultiplier")]
-//     public double ArenaManagerReputationTaxMultiplier { get; set; }
-//
-//     [JsonPropertyName("charismaTaxMultiplier")]
-//     public double CharismaTaxMultiplier { get; set; }
-//
-//     [JsonPropertyName("creditPriceTaxMultiplier")]
-//     public double CreditPriceTaxMultiplier { get; set; }
-//
-//     [JsonPropertyName("rubTaxMultiplier")]
-//     public double RubTaxMultiplier { get; set; }
-//
-//     [JsonPropertyName("transferLimitsByGameEdition")]
-//     public Dictionary<string, double> TransferLimitsByGameEdition { get; set; }
-//
-//     [JsonPropertyName("transferLimitsSettings")]
-//     public Dictionary<string, double> TransferLimitsSettings { get; set; }
-// }
+public class ArenaEftTransferSettings
+{
+    [JsonPropertyName("arenaEftTransferSettings")]
+    public ArenaEftTransferSettingsDetails ArenaEftTransferSettingsDetails { get; set; }
+}
+
+public class ArenaEftTransferSettingsDetails
+{
+    [JsonPropertyName("arenaManagerReputationTaxMultiplier")]
+    public double ArenaManagerReputationTaxMultiplier { get; set; }
+
+    [JsonPropertyName("charismaTaxMultiplier")]
+    public double CharismaTaxMultiplier { get; set; }
+
+    [JsonPropertyName("creditPriceTaxMultiplier")]
+    public double CreditPriceTaxMultiplier { get; set; }
+
+    [JsonPropertyName("rubTaxMultiplier")]
+    public double RubTaxMultiplier { get; set; }
+
+    [JsonPropertyName("transferLimitsByGameEdition")]
+    public Dictionary<string, double> TransferLimitsByGameEdition { get; set; }
+
+    [JsonPropertyName("transferLimitsSettings")]
+    public Dictionary<string, double> TransferLimitsSettings { get; set; }
+}
 
 public class ArmorMaterials
 {
