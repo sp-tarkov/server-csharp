@@ -1,4 +1,4 @@
-﻿namespace Core.Models.Spt.Generators;
+﻿namespace Core.Generators;
 
 public class PMCLootGenerator
 {
