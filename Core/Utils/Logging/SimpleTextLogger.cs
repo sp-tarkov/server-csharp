@@ -1,12 +1,11 @@
 ﻿using Core.Models.Logging;
 using Core.Annotations;
 using ILogger = Core.Models.Utils.ILogger;
-using Utils_ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils.Logging;
 
 [Injectable(InjectionType.Singleton)]
-public class SimpleTextLogger : Utils_ILogger
+public class SimpleTextLogger : ILogger
 {
     // TODO: for now we simplify the logger into this barebones console writer
     public void WriteToLogFile(string data)
