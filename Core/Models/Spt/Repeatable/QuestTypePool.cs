@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Repeatable;
+namespace Core.Models.Spt.Repeatable;
 
 public class QuestTypePool
 {

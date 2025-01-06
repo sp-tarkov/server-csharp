@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Types.Models.Spt.Ragfair;
+namespace Core.Models.Spt.Ragfair;
 
 public class TplWithFleaPrice
 {
