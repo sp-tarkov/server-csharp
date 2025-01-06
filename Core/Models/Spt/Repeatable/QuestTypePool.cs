@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Repeatable;
 

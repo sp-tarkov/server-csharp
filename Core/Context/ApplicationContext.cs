@@ -1,6 +1,6 @@
-﻿using Types.Annotations;
+﻿using Core.Annotations;
 
-namespace Types.Context;
+namespace Core.Context;
 
 [Injectable(InjectionType.Singleton)]
 public class ApplicationContext

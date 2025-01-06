@@ -1,6 +1,6 @@
-﻿using Types.Models.Logging;
+﻿using Core.Models.Logging;
 
-namespace Types.Models.Utils;
+namespace Core.Models.Utils;
 
 public interface ILogger
 {

@@ -1,4 +1,4 @@
-﻿namespace Types.Services;
+﻿namespace Core.Services;
 
 public class I18nService
 {

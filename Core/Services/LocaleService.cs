@@ -1,8 +1,8 @@
-﻿using Types.Annotations;
-using Types.Servers;
-using ILogger = Types.Models.Utils.ILogger;
+﻿using Core.Annotations;
+using Core.Servers;
+using ILogger = Core.Models.Utils.ILogger;
 
-namespace Types.Services;
+namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocaleService

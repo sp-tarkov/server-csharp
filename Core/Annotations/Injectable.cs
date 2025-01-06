@@ -1,4 +1,4 @@
-﻿namespace Types.Annotations;
+﻿namespace Core.Annotations;
 
 [AttributeUsage(AttributeTargets.Class)]
 public class Injectable(InjectionType injectionType = InjectionType.Scoped, Type? type = null) : Attribute
