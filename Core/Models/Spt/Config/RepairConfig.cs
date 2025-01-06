@@ -1,8 +1,10 @@
-﻿namespace Core.Models.Spt.Config;
+﻿using Core.Models.Common;
+
+namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 
-public class RepairConfig : IBaseConfig
+public class RepairConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-repair";

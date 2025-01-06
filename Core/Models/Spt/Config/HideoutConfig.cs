@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Common;
 
 namespace Core.Models.Spt.Config;
 
@@ -17,7 +18,7 @@ public class HideoutConfig : BaseConfig
     /// Default values used to hydrate `RunIntervalSeconds` with
     /// </summary>
     [JsonPropertyName("runIntervalValues")]
-    public IRunIntervalValues RunIntervalValues { get; set; }
+    public RunIntervalValues RunIntervalValues { get; set; }
 
     [JsonPropertyName("hoursForSkillCrafting")]
     public int HoursForSkillCrafting { get; set; }

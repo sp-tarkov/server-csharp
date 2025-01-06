@@ -1,4 +1,6 @@
-﻿namespace Core.Models.Spt.Config;
+﻿using Core.Models.Common;
+
+namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 
@@ -70,70 +72,93 @@ public class Chance
 
 public class Dynamic
 {
+    [JsonPropertyName("purchasesAreFoundInRaid")]
     // Should a purchased dynamic offers items be flagged as found in raid
     public bool PurchasesAreFoundInRaid { get; set; }
 
+    [JsonPropertyName("useTraderPriceForOffersIfHigher")]
     /** Use the highest trader price for an offer if its greater than the price in templates/prices.json */
     public bool UseTraderPriceForOffersIfHigher { get; set; }
 
+    [JsonPropertyName("barter")]
     /** Barter offer specific settings */
     public BarterDetails Barter { get; set; }
 
+    [JsonPropertyName("pack")]
     public PackDetails Pack { get; set; }
 
+    [JsonPropertyName("offerAdjustment")]
     /** Dynamic offer price below handbook adjustment values */
     public OfferAdjustment OfferAdjustment { get; set; }
 
+    [JsonPropertyName("expiredOfferThreshold")]
     /** How many offers should expire before an offer regeneration occurs */
     public int ExpiredOfferThreshold { get; set; }
 
+    [JsonPropertyName("offerItemCount")]
     /** How many offers should be listed */
     public MinMax OfferItemCount { get; set; }
 
+    [JsonPropertyName("priceRanges")]
     /** How much should the price of an offer vary by (percent 0.8 = 80%, 1.2 = 120%) */
     public PriceRanges PriceRanges { get; set; }
 
+    [JsonPropertyName("showDefaultPresetsOnly")]
     /** Should default presets to listed only or should non-standard presets found in globals.json be listed too */
     public bool ShowDefaultPresetsOnly { get; set; }
 
+    [JsonPropertyName("ignoreQualityPriceVarianceBlacklist")]
     /** Tpls that should not use the variable price system when their quality is < 100% (lower dura/uses = lower price) */
     public List<string> IgnoreQualityPriceVarianceBlacklist { get; set; }
 
+    [JsonPropertyName("endTimeSeconds")]
     public MinMax EndTimeSeconds { get; set; }
 
+    [JsonPropertyName("condition")]
     /** Settings to control the durability range of item items listed on flea */
     public Condition Condition { get; set; }
 
+    [JsonPropertyName("stackablePercent")]
     /** Size stackable items should be listed for in percent of max stack size */
     public MinMax StackablePercent { get; set; }
 
+    [JsonPropertyName("nonStackableCount")]
     /** Items that cannot be stacked can have multiples sold in one offer, what range of values can be listed */
     public MinMax NonStackableCount { get; set; }
 
+    [JsonPropertyName("rating")]
     /** Range of rating offers for items being listed */
     public MinMax Rating { get; set; }
 
+    [JsonPropertyName("armor")]
     /** Armor specific flea settings */
     public ArmorSettings Armor { get; set; }
 
+    [JsonPropertyName("itemPriceMultiplier")]
     /** A multipler to apply to individual tpls price just prior to item quality adjustment */
     public Dictionary<string, double> ItemPriceMultiplier { get; set; }
 
+    [JsonPropertyName("currencies")]
     /** Percentages to sell offers in each currency */
     public Dictionary<string, double> Currencies { get; set; }
 
+    [JsonPropertyName("showAsSingleStack")]
     /** Item tpls that should be forced to sell as a single item */
     public List<string> ShowAsSingleStack { get; set; }
 
+    [JsonPropertyName("removeSeasonalItemsWhenNotInEvent")]
     /** Should christmas/halloween items be removed from flea when not within the seasonal bounds */
     public bool RemoveSeasonalItemsWhenNotInEvent { get; set; }
 
+    [JsonPropertyName("blacklist")]
     /** Flea blacklist settings */
     public RagfairBlacklist Blacklist { get; set; }
 
+    [JsonPropertyName("unreasonableModPrices")]
     /** Dict of price limits keyed by item type */
     public Dictionary<string, UnreasonableModPrices> UnreasonableModPrices { get; set; }
 
+    [JsonPropertyName("itemPriceOverrideRouble")]
     /** Custom rouble prices for items to override values from prices.json */
     public Dictionary<string, double> ItemPriceOverrideRouble { get; set; }
 }
@@ -293,7 +318,8 @@ public class RagfairBlacklist
     public List<string> CustomItemCategoryList { get; set; }
 }
 
-public class ArmorPlateBlacklistSettings {
+public class ArmorPlateBlacklistSettings
+{
     /// <summary>
     /// Max level of plates an armor can have without being removed
     /// </summary>
@@ -307,7 +333,8 @@ public class ArmorPlateBlacklistSettings {
     public List<string> IgnoreSlots { get; set; }
 }
 
-public class UnreasonableModPrices {
+public class UnreasonableModPrices
+{
     /// <summary>
     /// Enable a system that adjusts very high ragfair prices to be below a max multiple of items the handbook values
     /// </summary>
@@ -327,7 +354,8 @@ public class UnreasonableModPrices {
     public int NewPriceHandbookMultiplier { get; set; }
 }
 
-public class ArmorSettings {
+public class ArmorSettings
+{
     /// <summary>
     /// % chance / 100 that armor plates will be removed from an offer before listing
     /// </summary>
@@ -341,7 +369,8 @@ public class ArmorSettings {
     public List<string> PlateSlotIdToRemovePool { get; set; }
 }
 
-public class TieredFlea {
+public class TieredFlea
+{
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
 

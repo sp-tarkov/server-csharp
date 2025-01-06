@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Common;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
@@ -141,28 +143,28 @@ public class RewardScaling
 {
     [JsonPropertyName("levels")]
     public List<int> Levels { get; set; }
-    
+
     [JsonPropertyName("experience")]
     public List<int> Experience { get; set; }
-    
+
     [JsonPropertyName("roubles")]
     public List<int> Roubles { get; set; }
-    
+
     [JsonPropertyName("gpCoins")]
     public List<int> GpCoins { get; set; }
-    
+
     [JsonPropertyName("items")]
     public List<int> Items { get; set; }
-    
+
     [JsonPropertyName("reputation")]
     public List<int> Reputation { get; set; }
-    
+
     [JsonPropertyName("rewardSpread")]
     public int RewardSpread { get; set; }
-    
+
     [JsonPropertyName("skillRewardChance")]
     public List<int> SkillRewardChance { get; set; }
-    
+
     [JsonPropertyName("skillPointReward")]
     public List<int> SkillPointReward { get; set; }
 }
@@ -171,16 +173,16 @@ public class TraderWhitelist
 {
     [JsonPropertyName("traderId")]
     public string TraderId { get; set; }
-    
+
     [JsonPropertyName("questTypes")]
     public List<string> QuestTypes { get; set; }
-    
+
     [JsonPropertyName("rewardBaseWhitelist")]
     public List<string> RewardBaseWhitelist { get; set; }
-    
+
     [JsonPropertyName("rewardCanBeWeapon")]
     public bool RewardCanBeWeapon { get; set; }
-    
+
     [JsonPropertyName("weaponRewardChancePercent")]
     public double WeaponRewardChancePercent { get; set; }
 }
@@ -189,13 +191,13 @@ public class RepeatableQuestTypesConfig
 {
     [JsonPropertyName("Exploration")]
     public Exploration Exploration { get; set; }
-    
+
     [JsonPropertyName("Completion")]
     public Completion Completion { get; set; }
-    
+
     [JsonPropertyName("Pickup")]
     public Pickup Pickup { get; set; }
-    
+
     [JsonPropertyName("Elimination")]
     public List<EliminationConfig> Elimination { get; set; }
 }
@@ -344,17 +346,20 @@ public class BossInfo
     public bool IsPmc { get; set; }
 }
 
-public class BodyPart : ProbabilityObject {
+public class BodyPart : ProbabilityObject
+{
     [JsonPropertyName("data")]
     public string[] Data { get; set; }
 }
 
-public class WeaponRequirement : ProbabilityObject {
+public class WeaponRequirement : ProbabilityObject
+{
     [JsonPropertyName("data")]
     public string[] Data { get; set; }
 }
 
-public class ProbabilityObject {
+public class ProbabilityObject
+{
     [JsonPropertyName("key")]
     public string Key { get; set; }
 

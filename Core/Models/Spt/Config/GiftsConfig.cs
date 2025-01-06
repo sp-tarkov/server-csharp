@@ -1,4 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
+using Core.Models.Spt.Dialog;
 
 namespace Core.Models.Spt.Config;
 

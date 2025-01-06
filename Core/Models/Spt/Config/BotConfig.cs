@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Core.Models.Common;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Config;
 
