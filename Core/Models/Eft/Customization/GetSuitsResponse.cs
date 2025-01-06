@@ -8,5 +8,5 @@ public class GetSuitsResponse
     public string Id { get; set; }
 
     [JsonPropertyName("suites")]
-    public string[] Suites { get; set; }
+    public List<string> Suites { get; set; }
 }
