@@ -29,13 +29,13 @@ public class SendMessageDetails
     /// Optional - if sender is USER these details are used
     /// </summary>
     [JsonPropertyName("senderDetails")]
-    public IUserDialogInfo? SenderDetails { get; set; }
+    public UserDialogInfo? SenderDetails { get; set; }
 
     /// <summary>
     /// Optional - the trader sending the message
     /// </summary>
     [JsonPropertyName("trader")]
-    public Traders? Trader { get; set; }
+    public string? Trader { get; set; }
 
     /// <summary>
     /// Optional - used in player/system messages, otherwise templateId is used
