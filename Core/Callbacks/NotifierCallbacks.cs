@@ -23,16 +23,42 @@ public class NotifierCallbacks
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Handle push/notifier/get
+    /// Handle push/notifier/getwebsocket
+    /// TODO: removed from client?
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public GetBodyResponseData<List<object>> GetNotifier(string url, object info, string sessionID) // TODO: no types were given
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Handle client/notifier/channel/create
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public GetBodyResponseData<NotifierChannel> CreateNotifierChannel(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Handle client/game/profile/select
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public GetBodyResponseData<SelectProfileResponse> SelectProfile(string url, UIDRequestData info, string sessionID)
     {
         throw new NotImplementedException();

@@ -16,11 +16,25 @@ public class InsuranceCallbacks : OnUpdate
         
     }
 
+    /// <summary>
+    /// Handle client/insurance/items/list/cost
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
     public GetBodyResponseData<GetInsuranceCostResponseData> GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Handle Insure event
+    /// </summary>
+    /// <param name="pmcData"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
     public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {
         throw new NotImplementedException();
