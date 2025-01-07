@@ -7,8 +7,4 @@
         <OutputType>Library</OutputType>
     </PropertyGroup>
 
-    <ItemGroup>
-      <Folder Include="Helpers\" />
-      <Folder Include="Models\Spt\Hideout\" />
-    </ItemGroup>
 </Project>
