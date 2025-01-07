@@ -7,6 +7,11 @@ namespace Core.Callbacks;
 
 public class MatchCallbacks
 {
+    public MatchCallbacks()
+    {
+        
+    }
+    
     public NullResponseData UpdatePing(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();

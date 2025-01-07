@@ -5,6 +5,11 @@ namespace Core.Callbacks;
 
 public class ItemEventCallbacks
 {
+    public ItemEventCallbacks()
+    {
+        
+    }
+    
     public async Task<GetBodyResponseData<ItemEventRouterResponse>> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
     {
         throw new NotImplementedException();

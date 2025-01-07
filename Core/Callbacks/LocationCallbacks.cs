@@ -7,6 +7,11 @@ namespace Core.Callbacks;
 
 public class LocationCallbacks
 {
+    public LocationCallbacks()
+    {
+        
+    }
+    
     public GetBodyResponseData<LocationsGenerateAllResponse> GetLocationData(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();

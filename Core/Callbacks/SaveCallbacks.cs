@@ -1,13 +1,28 @@
-﻿namespace Core.Callbacks;
+﻿using Core.DI;
+using Core.Models.Spt.Config;
 
-public class SaveCallbacks
+namespace Core.Callbacks;
+
+public class SaveCallbacks : OnLoad, OnUpdate
 {
-    public void Load()
+    private CoreConfig _coreConfig;
+
+    public SaveCallbacks()
+    {
+        
+    }
+    
+    public async Task OnLoad()
     {
         throw new NotImplementedException();
     }
 
-    public bool Update(int SecondsSinceLastRun)
+    public async Task<bool> OnUpdate(long SecondsSinceLastRun)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }

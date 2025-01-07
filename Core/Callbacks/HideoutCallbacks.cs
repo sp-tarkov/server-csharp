@@ -1,11 +1,12 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.DI;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Spt.Config;
 
 namespace Core.Callbacks;
 
-public class HideoutCallbacks
+public class HideoutCallbacks : OnUpdate
 {
     private HideoutConfig _hideoutConfig;
     
@@ -94,7 +95,7 @@ public class HideoutCallbacks
         throw new NotImplementedException();
     }
     
-    public async Task<bool> OnUpdate(int timeSinceLastRun)
+    public async Task<bool> OnUpdate(long timeSinceLastRun)
     {
         throw new NotImplementedException();
     }

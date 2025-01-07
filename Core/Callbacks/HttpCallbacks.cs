@@ -1,7 +1,14 @@
-﻿namespace Core.Callbacks;
+﻿using Core.DI;
 
-public class HttpCallbacks
+namespace Core.Callbacks;
+
+public class HttpCallbacks : OnLoad
 {
+    public HttpCallbacks()
+    {
+        
+    }
+    
     public async Task OnLoad()
     {
         throw new NotImplementedException();
