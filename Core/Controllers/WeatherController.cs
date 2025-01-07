@@ -1,3 +1,6 @@
+using Core.Models.Eft.Weather;
+using Core.Models.Spt.Weather;
+
 namespace Core.Controllers;
 
 public class WeatherController

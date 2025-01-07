@@ -1,3 +1,5 @@
+using Core.Models.Eft.InRaid;
+
 namespace Core.Controllers;
 
 public class InRaidController

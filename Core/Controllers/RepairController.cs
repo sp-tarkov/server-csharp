@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Repair;
 
 namespace Core.Controllers;
 

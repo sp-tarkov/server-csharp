@@ -8,5 +8,5 @@ public class GetLocalWeatherResponseData
 	public int Season { get; set; }
 
 	[JsonPropertyName("weather")]
-	public List<Weather> Weather { get; set; }
+	public List<Eft.Weather.Weather> Weather { get; set; }
 }

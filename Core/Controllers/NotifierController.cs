@@ -1,3 +1,5 @@
+using Core.Models.Eft.Notifier;
+
 namespace Core.Controllers;
 
 public class NotifierController
