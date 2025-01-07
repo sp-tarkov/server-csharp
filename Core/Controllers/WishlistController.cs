@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Wishlist;
 
 namespace Core.Controllers;
 
@@ -14,7 +15,7 @@ public class WishlistController
 	/// <returns></returns>
 	public ItemEventRouterResponse AddToWishList(
 		PmcData pmcData,
-		AddItemToWishlistRequest request,
+		AddToWishlistRequest request,
 		string sessionId)
 	{
 		throw new NotImplementedException();

@@ -1,7 +1,10 @@
 ﻿using Core.Models.Common;
+using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Condition = Core.Models.Spt.Config.Condition;
 
 namespace Core.Controllers;
 

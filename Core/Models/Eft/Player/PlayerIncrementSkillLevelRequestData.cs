@@ -1,0 +1,55 @@
+using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
+
+namespace Core.Models.Eft.Player;
+
+public class PlayerIncrementSkillLevelRequestData
+{
+	[JsonPropertyName("_id")]
+	public string Id { get; set; }
+
+	[JsonPropertyName("experience")]
+	public int Experience { get; set; }
+
+	[JsonPropertyName("quests")]
+	public List<object> Quests { get; set; }
+
+	[JsonPropertyName("ragFairOffers")]
+	public List<object> RagFairOffers { get; set; }
+
+	[JsonPropertyName("builds")]
+	public List<object> Builds { get; set; }
+
+	[JsonPropertyName("items")]
+	public Items Items { get; set; }
+
+	[JsonPropertyName("production")]
+	public Production Production { get; set; }
+
+	[JsonPropertyName("skills")]
+	public Skills Skills { get; set; }
+
+	[JsonPropertyName("traderRelations")]
+	public TraderRelations TraderRelations { get; set; }
+}
+
+// TODO: These are all lists of objects.
+public class Items
+{
+	[JsonPropertyName("new")]
+	public List<object> NewItems { get; set; }
+
+	[JsonPropertyName("change")]
+	public List<object> ChangedItems { get; set; }
+
+	[JsonPropertyName("del")]
+	public List<object> DeletedItems { get; set; }
+}
+
+public class Production
+{
+}
+
+public class TraderRelations
+{
+}
