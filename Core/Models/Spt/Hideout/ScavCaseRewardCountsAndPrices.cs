@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Hideout;
 
-public class ScavCaseRewardCountsAndPrice
+public class ScavCaseRewardCountsAndPrices
 {
     [JsonPropertyName("Common")]
     public RewardCountAndPriceDetails Common { get; set; }
