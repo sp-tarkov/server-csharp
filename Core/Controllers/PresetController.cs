@@ -2,5 +2,11 @@ namespace Core.Controllers;
 
 public class PresetController
 {
-	// TODO
+	/// <summary>
+	/// 
+	/// </summary>
+	public void Initialize()
+	{
+		throw new NotImplementedException();
+	}
 }
