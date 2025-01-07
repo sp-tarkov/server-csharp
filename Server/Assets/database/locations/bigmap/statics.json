@@ -16,6 +16,10 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "scontainer_bag_sports1": {
+      "minContainers": 5,
+      "maxContainers": 7
+    },
     "WeapnoBox_N3_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
@@ -48,6 +52,10 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "outside_ind1_toolboxes": {
+      "minContainers": 7,
+      "maxContainers": 9
+    },
     "BagSport_N16_3_custom": {
       "minContainers": 0,
       "maxContainers": 2
@@ -56,9 +64,21 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "scontainer_woods1": {
+      "minContainers": 5,
+      "maxContainers": 7
+    },
+    "corpse_s1": {
+      "minContainers": 5,
+      "maxContainers": 7
+    },
     "PlasticSuitcase_N16_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "LOOTABLE2": {
+      "minContainers": 5,
+      "maxContainers": 7
     },
     "BagSport_N12_2_custom": {
       "minContainers": 0,
@@ -76,9 +96,17 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "New_factory1_suitcase64": {
+      "minContainers": 1,
+      "maxContainers": 2
+    },
     "WeapnoBox_N2_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "New_factory2_Toolbox": {
+      "minContainers": 7,
+      "maxContainers": 10
     },
     "WeapnoBox_N8_2_custom": {
       "minContainers": 0,
@@ -96,9 +124,25 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "New_factory1_suitcase140": {
+      "minContainers": 1,
+      "maxContainers": 2
+    },
+    "New_factory2_suitcase64": {
+      "minContainers": 4,
+      "maxContainers": 7
+    },
+    "card_files": {
+      "minContainers": 6,
+      "maxContainers": 10
+    },
     "PlasticSuitcase_N7_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "LOOTABLE4": {
+      "minContainers": 5,
+      "maxContainers": 7
     },
     "BagSport_N2_3_custom": {
       "minContainers": 0,
@@ -108,9 +152,21 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "New_factory2_weaponbox": {
+      "minContainers": 4,
+      "maxContainers": 6
+    },
     "Blue_Barrel_customs": {
       "minContainers": 12,
       "maxContainers": 16
+    },
+    "PlasticSuitcase_N6_2_custom": {
+      "minContainers": 0,
+      "maxContainers": 2
+    },
+    "outside_ind1": {
+      "minContainers": 2,
+      "maxContainers": 4
     },
     "PlasticSuitcase_N19_2_custom": {
       "minContainers": 0,
@@ -148,13 +204,21 @@
       "minContainers": 0,
       "maxContainers": 2
     },
-    "PlasticSuitcase_N6_2_custom": {
-      "minContainers": 0,
-      "maxContainers": 2
+    "New_factory1_Toolbox": {
+      "minContainers": 4,
+      "maxContainers": 6
     },
     "PlasticSuitcase_N2_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "meds1": {
+      "minContainers": 5,
+      "maxContainers": 7
+    },
+    "New_factory1_weaponbox": {
+      "minContainers": 1,
+      "maxContainers": 3
     },
     "PlasticSuitcase_N11_2_custom": {
       "minContainers": 0,
@@ -163,6 +227,10 @@
     "PlasticSuitcase_N10_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "New_factory2_bagsport": {
+      "minContainers": 5,
+      "maxContainers": 7
     },
     "WeapnoBox_N5_2_custom": {
       "minContainers": 0,
@@ -180,6 +248,10 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "safe_01_As": {
+      "minContainers": 3,
+      "maxContainers": 5
+    },
     "BagSport_N10_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
@@ -192,6 +264,10 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "New_factory2_suitcase140": {
+      "minContainers": 4,
+      "maxContainers": 7
+    },
     "supplyBoxMedicine_N2_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
@@ -199,6 +275,14 @@
     "ContainerGrenade_N2_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "LOOTABLE1_corpses": {
+      "minContainers": 12,
+      "maxContainers": 15
+    },
+    "office_ind1": {
+      "minContainers": 2,
+      "maxContainers": 4
     },
     "WeapnoBox_N11_3_custom": {
       "minContainers": 0,
@@ -216,9 +300,17 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "mill_boxes1": {
+      "minContainers": 12,
+      "maxContainers": 16
+    },
     "PlasticSuitcase_N3_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "New_factory1_bagsport": {
+      "minContainers": 4,
+      "maxContainers": 7
     },
     "WeapnoBox_N18_2_custom": {
       "minContainers": 0,
@@ -240,9 +332,21 @@
       "minContainers": 0,
       "maxContainers": 2
     },
+    "PC_block_01s": {
+      "minContainers": 7,
+      "maxContainers": 10
+    },
+    "scontainer_toolbox_01s1": {
+      "minContainers": 7,
+      "maxContainers": 9
+    },
     "WeapnoBox_N13_2_custom": {
       "minContainers": 0,
       "maxContainers": 2
+    },
+    "scontainer_Weapon_box_01s": {
+      "minContainers": 4,
+      "maxContainers": 6
     },
     "WeapnoBox_N6_2_custom": {
       "minContainers": 0,
@@ -291,340 +395,370 @@
   },
   "containers": {
     "container_custom_DesignStuff_00087": {
-      "groupId": ""
+      "groupId": "card_files"
+    },
+    "container_Custom_Igor_Kulakov_TEMP_00002": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_Custom_Igor_Kulakov_TEMP_00003": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_Custom_Igor_Kulakov_TEMP_00005": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_Custom_Igor_Kulakov_TEMP_00004": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00099": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00074": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00033": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00032": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00034": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00035": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00006": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00007": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00005": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00004": {
-      "groupId": ""
+      "groupId": "card_files"
     },
-    "Lootable_00002": {
-      "groupId": ""
+    "container_custom_DesignStuff_00424": {
+      "groupId": "card_files"
+    },
+    "container_custom_DesignStuff_00423": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_custom_DesignStuff_00422": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_custom_DesignStuff_00420": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_custom_DesignStuff_00421": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00068": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00088": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00094": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00080": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00079": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00102": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00008": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00007": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00005": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00006": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00064": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00112": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00083": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00096": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00001": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00000": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00002": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00003": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00030": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00031": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00029": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00028": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00097": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00092": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00082": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00095": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00066": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00110": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00072": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00107": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00106": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00081": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00071": {
-      "groupId": ""
+      "groupId": "card_files"
     },
-    "Lootable_00000": {
-      "groupId": ""
+    "container_custom_DesignStuff_00425": {
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00093": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00085": {
-      "groupId": ""
+      "groupId": "card_files"
+    },
+    "container_custom_DesignStuff_00416": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00101": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00089": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00076": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00020": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00021": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00023": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00022": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00091": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00109": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00078": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00073": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00104": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00077": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00086": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00001": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00113": {
-      "groupId": ""
+      "groupId": "card_files"
+    },
+    "container_custom_DesignStuff_00417": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00103": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00084": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00042": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00043": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00041": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00040": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00108": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00067": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00090": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00075": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00010": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00011": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00009": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00008": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00065": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00070": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00025": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00024": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00026": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00027": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00100": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00105": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00111": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00018": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00019": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00017": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00016": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00069": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00039": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00038": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00036": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00037": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00098": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00014": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00015": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00013": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00012": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "Lootable_00009": {
-      "groupId": ""
+      "groupId": "card_files"
     },
     "container_custom_DesignStuff_00055": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00054": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00056": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00057": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00058": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00059": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00060": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00061": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00063": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00062": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00382": {
       "groupId": "Blue_Barrel_customs"
@@ -800,20 +934,38 @@
     "container_custom_DesignStuff_00295": {
       "groupId": "BagSport_N19_3_custom"
     },
+    "container_custom_DesignStuff_00411": {
+      "groupId": "LOOTABLE2"
+    },
     "container_custom_DesignStuff_00296": {
       "groupId": "BagSport_N19_3_custom"
+    },
+    "container_custom_Loot_00024": {
+      "groupId": "office_ind1"
     },
     "container_custom_DesignStuff_00291": {
       "groupId": "BagSport_N17_2_custom"
     },
     "container_custom_DesignStuff_00152": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
+    },
+    "container_custom_Loot_00039": {
+      "groupId": "New_factory2_bagsport"
     },
     "container_custom_DesignStuff_00290": {
       "groupId": "BagSport_N16_3_custom"
     },
+    "container_custom_Loot_00020": {
+      "groupId": "New_factory1_bagsport"
+    },
+    "container_custom_Loot_00022": {
+      "groupId": "New_factory1_bagsport"
+    },
     "container_custom_DesignStuff_00154": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
+    },
+    "container_custom_Loot_00059": {
+      "groupId": "New_factory2_bagsport"
     },
     "container_custom_DesignStuff_00278": {
       "groupId": "BagSport_N11_2_custom"
@@ -824,11 +976,17 @@
     "container_custom_DesignStuff_00261": {
       "groupId": "BagSport_N3_3_custom"
     },
+    "container_custom_Loot_00073": {
+      "groupId": "New_factory2_bagsport"
+    },
     "container_custom_DesignStuff_00275": {
       "groupId": "BagSport_N9_2_custom"
     },
     "container_custom_DesignStuff_00270": {
       "groupId": "BagSport_N7_2_custom"
+    },
+    "container_custom_DesignMain_00005": {
+      "groupId": "outside_ind1"
     },
     "container_custom_DesignStuff_00287": {
       "groupId": "BagSport_N15_2_custom"
@@ -840,10 +998,13 @@
       "groupId": "BagSport_N10_2_custom"
     },
     "container_custom_DesignStuff_00151": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00259": {
       "groupId": "BagSport_N2_3_custom"
+    },
+    "container_custom_Loot_00045": {
+      "groupId": "New_factory2_bagsport"
     },
     "container_custom_DesignStuff_00256": {
       "groupId": "BagSport_N1_2_custom"
@@ -857,8 +1018,11 @@
     "container_custom_DesignStuff_00298": {
       "groupId": "BagSport_N20_2_custom"
     },
-    "container_Test_for_export_00000": {
-      "groupId": ""
+    "container_custom_Loot_00060": {
+      "groupId": "New_factory2_bagsport"
+    },
+    "container_custom_DesignStuff_00426": {
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00282": {
       "groupId": "BagSport_N13_2_custom"
@@ -872,11 +1036,14 @@
     "container_custom_DesignStuff_00289": {
       "groupId": "BagSport_N16_3_custom"
     },
+    "container_custom_Loot_00016": {
+      "groupId": "New_factory1_bagsport"
+    },
     "container_custom_DesignStuff_00267": {
       "groupId": "BagSport_N6_2_custom"
     },
     "container_custom_DesignStuff_00148": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00286": {
       "groupId": "BagSport_N15_2_custom"
@@ -888,10 +1055,13 @@
       "groupId": "BagSport_N5_2_custom"
     },
     "container_custom_DesignStuff_00150": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00395": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
+    },
+    "container_custom_Loot_00019": {
+      "groupId": "New_factory1_bagsport"
     },
     "container_custom_DesignStuff_00262": {
       "groupId": "BagSport_N3_3_custom"
@@ -899,11 +1069,20 @@
     "container_custom_DesignStuff_00294": {
       "groupId": "BagSport_N18_3_custom"
     },
+    "container_custom_Loot_00057": {
+      "groupId": "New_factory2_bagsport"
+    },
+    "container_custom_Loot_00018": {
+      "groupId": "New_factory1_bagsport"
+    },
     "container_custom_DesignStuff_00297": {
       "groupId": "BagSport_N19_3_custom"
     },
     "container_custom_DesignStuff_00299": {
       "groupId": "BagSport_N20_2_custom"
+    },
+    "container_custom_Loot_00049": {
+      "groupId": "New_factory2_bagsport"
     },
     "container_custom_DesignStuff_00274": {
       "groupId": "BagSport_N9_2_custom"
@@ -917,11 +1096,17 @@
     "container_custom_DesignStuff_00293": {
       "groupId": "BagSport_N18_3_custom"
     },
+    "container_custom_Loot_00017": {
+      "groupId": "New_factory1_bagsport"
+    },
     "container_custom_DesignStuff_00279": {
       "groupId": "BagSport_N11_2_custom"
     },
+    "container_custom_DesignMain_00018": {
+      "groupId": "outside_ind1"
+    },
     "container_custom_DesignStuff_00155": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00283": {
       "groupId": "BagSport_N13_2_custom"
@@ -932,23 +1117,41 @@
     "container_custom_DesignStuff_00272": {
       "groupId": "BagSport_N8_2_custom"
     },
+    "container_custom_Loot_00014": {
+      "groupId": "New_factory1_bagsport"
+    },
+    "container_custom_Loot_00068": {
+      "groupId": "New_factory2_bagsport"
+    },
     "container_custom_DesignStuff_00276": {
       "groupId": "BagSport_N10_2_custom"
     },
     "container_custom_DesignStuff_00271": {
       "groupId": "BagSport_N8_2_custom"
     },
+    "container_custom_Loot_00006": {
+      "groupId": "New_factory1_bagsport"
+    },
     "container_custom_DesignStuff_00149": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
+    },
+    "container_custom_Loot_00069": {
+      "groupId": "New_factory2_bagsport"
     },
     "container_custom_DesignStuff_00269": {
       "groupId": "BagSport_N7_2_custom"
+    },
+    "container_custom_Loot_00023": {
+      "groupId": "New_factory1_bagsport"
+    },
+    "container_custom_DesignStuff_00415": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00280": {
       "groupId": "BagSport_N12_2_custom"
     },
     "container_custom_DesignStuff_00153": {
-      "groupId": ""
+      "groupId": "scontainer_bag_sports1"
     },
     "container_custom_DesignStuff_00263": {
       "groupId": "BagSport_N4_2_custom"
@@ -960,109 +1163,280 @@
       "groupId": "BagSport_N17_2_custom"
     },
     "Lootable_00068": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00196": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00194": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00192": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00198": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00191": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00197": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00193": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
     },
     "container_custom_DesignStuff_00195": {
-      "groupId": ""
+      "groupId": "scontainer_woods1"
+    },
+    "container_ProfileEditor_00003": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00400": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_Custom_Slava_Shesterov_TEMP_00000": {
+      "groupId": "LOOTABLE4"
+    },
+    "container_custom_DesignStuff_00418": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00179": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00177": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00176": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00175": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00173": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00178": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00172": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00174": {
       "groupId": ""
     },
+    "container_ProfileEditor_00005": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00406": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00399": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00407": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00402": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_ProfileEditor_00000": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_Loot_00028": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00002": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_Loot_00063": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00011": {
+      "groupId": "New_factory1_Toolbox"
+    },
     "container_custom_DesignStuff_00185": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_DesignMain_00012": {
+      "groupId": "outside_ind1_toolboxes"
     },
     "container_custom_DesignStuff_00189": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_Loot_00044": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignMain_00010": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_DesignMain_00006": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_DesignStuff_00419": {
+      "groupId": "LOOTABLE4"
     },
     "container_custom_DesignStuff_00186": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_Loot_00004": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_Loot_00012": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_DesignMain_00009": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00032": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00040": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00005": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_DesignMain_00007": {
+      "groupId": "outside_ind1_toolboxes"
     },
     "container_custom_DesignStuff_00181": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_DesignMain_00011": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_DesignStuff_00410": {
+      "groupId": "LOOTABLE2"
     },
     "container_custom_DesignStuff_00180": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_Loot_00001": {
+      "groupId": "New_factory1_Toolbox"
     },
     "container_custom_DesignStuff_00183": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
     },
     "container_custom_DesignStuff_00182": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
     },
     "container_custom_DesignStuff_00184": {
-      "groupId": ""
+      "groupId": "scontainer_toolbox_01s1"
     },
-    "container_custom_DesignStuff_00187": {
-      "groupId": ""
+    "container_custom_Loot_00026": {
+      "groupId": "New_factory2_Toolbox"
     },
-    "container_custom_DesignStuff_00188": {
-      "groupId": ""
+    "container_custom_Loot_00035": {
+      "groupId": "New_factory2_Toolbox"
     },
     "container_custom_DesignStuff_00190": {
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_DesignMain_00000": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00015": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_DesignMain_00013": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00029": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00031": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignStuff_00398": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_DesignMain_00008": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00030": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignStuff_00412": {
+      "groupId": "LOOTABLE2"
+    },
+    "container_custom_DesignStuff_00187": {
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_Loot_00043": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignStuff_00188": {
+      "groupId": "scontainer_toolbox_01s1"
+    },
+    "container_custom_DesignMain_00014": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00000": {
+      "groupId": "New_factory1_Toolbox"
+    },
+    "container_custom_Loot_00034": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignStuff_00409": {
+      "groupId": "LOOTABLE2"
+    },
+    "container_custom_Loot_00070": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignStuff_00413": {
       "groupId": ""
+    },
+    "container_custom_Loot_00067": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_Loot_00052": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_custom_DesignMain_00003": {
+      "groupId": "outside_ind1_toolboxes"
+    },
+    "container_custom_Loot_00027": {
+      "groupId": "New_factory2_Toolbox"
+    },
+    "container_Factory_Rework_DesignStuff_00131": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00405": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00397": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_ProfileEditor_00002": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00401": {
+      "groupId": "LOOTABLE1_corpses"
+    },
+    "container_custom_DesignStuff_00404": {
+      "groupId": "LOOTABLE1_corpses"
     },
     "container_custom_DesignStuff_00138": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "container_custom_DesignStuff_00137": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "container_custom_DesignStuff_00139": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "Lootable_00004": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "container_custom_DesignStuff_00140": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "container_custom_DesignStuff_00136": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00135": {
-      "groupId": ""
+      "groupId": "safe_01_As"
     },
     "container_custom_DesignStuff_00047": {
       "groupId": ""
@@ -1095,13 +1469,19 @@
       "groupId": "supplyBoxMedicine_N2_2_custom"
     },
     "container_custom_DesignStuff_00051": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00053": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00049": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
+    },
+    "container_Custom_Igor_Kulakov_TEMP_00000": {
+      "groupId": "LOOTABLE2"
+    },
+    "container_custom_DesignStuff_00396": {
+      "groupId": "LOOTABLE2"
     },
     "container_custom_DesignStuff_00157": {
       "groupId": "supplyBoxFood_N1_2_custom"
@@ -1110,19 +1490,22 @@
       "groupId": "supplyBoxTools_N3_2_custom"
     },
     "container_custom_DesignStuff_00050": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00162": {
       "groupId": "supplyBoxTools_N4_2_custom"
     },
     "container_custom_DesignStuff_00052": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00161": {
       "groupId": "supplyBoxTools_N3_2_custom"
     },
+    "container_custom_DesignStuff_00403": {
+      "groupId": "LOOTABLE1_corpses"
+    },
     "container_ProfileEditor_00001": {
-      "groupId": ""
+      "groupId": "corpse_s1"
     },
     "container_custom_DesignStuff_00301": {
       "groupId": "Medbag_N1_2_custom"
@@ -1134,37 +1517,37 @@
       "groupId": "Medbag_N1_2_custom"
     },
     "container_custom_DesignStuff_00169": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00170": {
-      "groupId": ""
+      "groupId": "meds1"
     },
     "container_custom_DesignStuff_00143": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00144": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00145": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00146": {
       "groupId": ""
     },
     "n1": {
-      "groupId": "supplyBoxFood_N2_2_custom"
+      "groupId": ""
     },
     "container_custom_DesignStuff_00254": {
       "groupId": "supplyBoxFood_N2_2_custom"
     },
     "container_custom_DesignStuff_00142": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00147": {
       "groupId": ""
     },
     "container_custom_DesignStuff_00134": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00243": {
       "groupId": "PlasticSuitcase_N23_2_custom"
@@ -1182,7 +1565,7 @@
       "groupId": "PlasticSuitcase_N25_2_custom"
     },
     "container_custom_DesignStuff_00133": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00246": {
       "groupId": "PlasticSuitcase_N24_2_custom"
@@ -1194,46 +1577,46 @@
       "groupId": "PlasticSuitcase_N25_2_custom"
     },
     "container_custom_DesignStuff_00115": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00125": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00114": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00116": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00122": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00124": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00119": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00117": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00120": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00121": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00123": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00118": {
-      "groupId": ""
+      "groupId": "PC_block_01s"
     },
     "container_custom_DesignStuff_00302": {
       "groupId": "WeapnoBox_N1_2_custom"
     },
     "container_custom_DesignStuff_00200": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00324": {
       "groupId": "WeapnoBox_N11_3_custom"
@@ -1245,16 +1628,22 @@
       "groupId": "WeapnoBox_N12_3_custom"
     },
     "container_custom_DesignStuff_00201": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00202": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00307": {
       "groupId": "WeapnoBox_N3_2_custom"
     },
+    "container_Custom_Igor_Kulakov_TEMP_00006": {
+      "groupId": "LOOTABLE2"
+    },
+    "container_custom_Loot_00037": {
+      "groupId": "New_factory2_weaponbox"
+    },
     "container_custom_DesignStuff_00199": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00320": {
       "groupId": "WeapnoBox_N9_3_custom"
@@ -1266,13 +1655,19 @@
       "groupId": "WeapnoBox_N18_2_custom"
     },
     "container_custom_DesignStuff_00203": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00334": {
       "groupId": "WeapnoBox_N15_2_custom"
     },
+    "container_custom_Loot_00010": {
+      "groupId": "New_factory1_weaponbox"
+    },
     "container_custom_DesignStuff_00318": {
       "groupId": "WeapnoBox_N9_3_custom"
+    },
+    "container_custom_Loot_00065": {
+      "groupId": "New_factory2_weaponbox"
     },
     "container_custom_DesignStuff_00322": {
       "groupId": "WeapnoBox_N10_2_custom"
@@ -1302,7 +1697,7 @@
       "groupId": "WeapnoBox_N7_2_custom"
     },
     "container_custom_DesignStuff_00204": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00308": {
       "groupId": "WeapnoBox_N4_2_custom"
@@ -1319,6 +1714,9 @@
     "container_custom_DesignStuff_00306": {
       "groupId": "WeapnoBox_N3_2_custom"
     },
+    "container_custom_Abandoned_Plant_00000": {
+      "groupId": "LOOTABLE2"
+    },
     "container_custom_DesignStuff_00327": {
       "groupId": "WeapnoBox_N12_3_custom"
     },
@@ -1328,11 +1726,14 @@
     "container_custom_DesignStuff_00313": {
       "groupId": "WeapnoBox_N6_2_custom"
     },
+    "container_custom_DesignStuff_00408": {
+      "groupId": "LOOTABLE2"
+    },
     "container_custom_DesignStuff_00319": {
       "groupId": "WeapnoBox_N9_3_custom"
     },
     "container_custom_DesignStuff_00205": {
-      "groupId": ""
+      "groupId": "scontainer_Weapon_box_01s"
     },
     "container_custom_DesignStuff_00336": {
       "groupId": "WeapnoBox_N16_2_custom"
@@ -1340,8 +1741,14 @@
     "container_custom_DesignStuff_00305": {
       "groupId": "WeapnoBox_N2_2_custom"
     },
+    "container_custom_Loot_00072": {
+      "groupId": "New_factory2_weaponbox"
+    },
     "container_custom_DesignStuff_00317": {
       "groupId": "WeapnoBox_N8_2_custom"
+    },
+    "container_custom_Loot_00033": {
+      "groupId": "New_factory2_weaponbox"
     },
     "container_custom_DesignStuff_00312": {
       "groupId": "WeapnoBox_N6_2_custom"
@@ -1352,11 +1759,23 @@
     "container_custom_DesignStuff_00335": {
       "groupId": "WeapnoBox_N16_2_custom"
     },
+    "container_custom_Loot_00008": {
+      "groupId": "New_factory1_weaponbox"
+    },
+    "container_custom_Loot_00007": {
+      "groupId": "New_factory1_weaponbox"
+    },
     "container_custom_DesignStuff_00309": {
       "groupId": "WeapnoBox_N4_2_custom"
     },
     "container_custom_DesignStuff_00321": {
       "groupId": "WeapnoBox_N10_2_custom"
+    },
+    "container_custom_Loot_00055": {
+      "groupId": "New_factory2_weaponbox"
+    },
+    "container_custom_Loot_00056": {
+      "groupId": "New_factory2_weaponbox"
     },
     "container_custom_DesignStuff_00333": {
       "groupId": "WeapnoBox_N15_2_custom"
@@ -1364,20 +1783,23 @@
     "container_custom_DesignStuff_00331": {
       "groupId": "WeapnoBox_N14_2_custom"
     },
+    "container_custom_Loot_00064": {
+      "groupId": "New_factory2_weaponbox"
+    },
     "container_custom_DesignStuff_00323": {
       "groupId": "WeapnoBox_N11_3_custom"
     },
     "container_Test_for_export_00001": {
       "groupId": ""
     },
-    "container_custom_DesignStuff_00252": {
+    "container_custom_DesignStuff_00414": {
       "groupId": "ContainerGrenade_N2_2_custom"
     },
     "container_custom_DesignStuff_00248": {
       "groupId": "ContainerGrenade_N1_2_custom"
     },
     "container_custom_DesignStuff_00141": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00253": {
       "groupId": "ContainerGrenade_N2_2_custom"
@@ -1388,14 +1810,23 @@
     "container_custom_DesignStuff_00247": {
       "groupId": "ContainerGrenade_N1_2_custom"
     },
+    "container_custom_DesignStuff_00252": {
+      "groupId": "ContainerGrenade_N2_2_custom"
+    },
     "container_custom_DesignStuff_00128": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00130": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00129": {
+      "groupId": "mill_boxes1"
+    },
+    "container_custom_DesignStuff_00427": {
       "groupId": ""
+    },
+    "container_custom_Loot_00047": {
+      "groupId": "New_factory2_suitcase64"
     },
     "container_custom_DesignStuff_00210": {
       "groupId": "PlasticSuitcase_N6_2_custom"
@@ -1404,19 +1835,25 @@
       "groupId": "PlasticSuitcase_N11_2_custom"
     },
     "container_custom_DesignStuff_00126": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00221": {
       "groupId": "PlasticSuitcase_N11_2_custom"
+    },
+    "container_custom_Loot_00021": {
+      "groupId": "New_factory1_suitcase64"
     },
     "container_custom_DesignStuff_00222": {
       "groupId": "PlasticSuitcase_N12_2_custom"
     },
     "container_custom_DesignStuff_00127": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
     },
     "container_custom_DesignStuff_00218": {
       "groupId": "PlasticSuitcase_N10_2_custom"
+    },
+    "container_custom_Loot_00041": {
+      "groupId": "New_factory2_suitcase64"
     },
     "container_custom_DesignStuff_00163": {
       "groupId": "PlasticSuitcase_N1_2_custom"
@@ -1433,6 +1870,12 @@
     "container_custom_DesignStuff_00206": {
       "groupId": "PlasticSuitcase_N4_2_custom"
     },
+    "container_custom_DesignMain_00016": {
+      "groupId": "office_ind1"
+    },
+    "container_custom_Loot_00013": {
+      "groupId": "New_factory1_suitcase64"
+    },
     "container_custom_DesignStuff_00219": {
       "groupId": "PlasticSuitcase_N10_2_custom"
     },
@@ -1442,17 +1885,35 @@
     "container_custom_DesignStuff_00216": {
       "groupId": "PlasticSuitcase_N9_2_custom"
     },
+    "container_custom_DesignMain_00015": {
+      "groupId": "office_ind1"
+    },
     "container_custom_DesignStuff_00211": {
       "groupId": "PlasticSuitcase_N6_2_custom"
     },
     "container_custom_DesignStuff_00214": {
       "groupId": "PlasticSuitcase_N8_2_custom"
     },
+    "container_custom_Loot_00048": {
+      "groupId": "New_factory2_suitcase64"
+    },
+    "container_custom_Loot_00050": {
+      "groupId": "New_factory2_suitcase64"
+    },
+    "container_custom_Loot_00051": {
+      "groupId": "New_factory2_suitcase64"
+    },
     "container_custom_DesignStuff_00208": {
       "groupId": "PlasticSuitcase_N5_2_custom"
     },
+    "container_custom_Loot_00025": {
+      "groupId": "New_factory2_suitcase64"
+    },
     "container_custom_DesignStuff_00212": {
       "groupId": "PlasticSuitcase_N7_2_custom"
+    },
+    "container_custom_Loot_00036": {
+      "groupId": "New_factory2_suitcase64"
     },
     "container_custom_DesignStuff_00217": {
       "groupId": "PlasticSuitcase_N9_2_custom"
@@ -1462,6 +1923,9 @@
     },
     "container_custom_DesignStuff_00167": {
       "groupId": "PlasticSuitcase_N3_2_custom"
+    },
+    "container_custom_Loot_00062": {
+      "groupId": "New_factory2_suitcase64"
     },
     "container_custom_DesignStuff_00209": {
       "groupId": "PlasticSuitcase_N5_2_custom"
@@ -1475,23 +1939,44 @@
     "container_custom_DesignStuff_00166": {
       "groupId": "PlasticSuitcase_N2_2_custom"
     },
+    "container_ProfileEditor_00004": {
+      "groupId": "LOOTABLE1_corpses"
+    },
     "container_custom_DesignStuff_00234": {
       "groupId": "PlasticSuitcase_N18_2_custom"
     },
     "container_custom_DesignStuff_00225": {
       "groupId": "PlasticSuitcase_N14_2_custom"
     },
+    "container_custom_Loot_00009": {
+      "groupId": "New_factory1_suitcase140"
+    },
     "container_custom_DesignStuff_00237": {
       "groupId": "PlasticSuitcase_N20_2_custom"
     },
     "container_custom_DesignStuff_00131": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
+    },
+    "container_custom_Loot_00054": {
+      "groupId": "New_factory2_suitcase140"
     },
     "container_custom_DesignStuff_00240": {
       "groupId": "PlasticSuitcase_N21_2_custom"
     },
+    "container_custom_DesignMain_00004": {
+      "groupId": "outside_ind1"
+    },
     "container_custom_DesignStuff_00238": {
       "groupId": "PlasticSuitcase_N20_2_custom"
+    },
+    "container_custom_Loot_00038": {
+      "groupId": "New_factory2_suitcase140"
+    },
+    "container_custom_Loot_00053": {
+      "groupId": "New_factory2_suitcase140"
+    },
+    "container_custom_Loot_00003": {
+      "groupId": "New_factory1_suitcase140"
     },
     "container_custom_DesignStuff_00231": {
       "groupId": "PlasticSuitcase_N17_2_custom"
@@ -1499,14 +1984,32 @@
     "container_custom_DesignStuff_00235": {
       "groupId": "PlasticSuitcase_N19_2_custom"
     },
+    "container_custom_Loot_00058": {
+      "groupId": "New_factory2_suitcase140"
+    },
+    "container_custom_Loot_00061": {
+      "groupId": "New_factory2_suitcase140"
+    },
     "container_custom_DesignStuff_00227": {
       "groupId": "PlasticSuitcase_N15_2_custom"
+    },
+    "container_custom_Loot_00046": {
+      "groupId": "New_factory2_suitcase140"
+    },
+    "container_custom_DesignMain_00017": {
+      "groupId": "outside_ind1"
     },
     "container_custom_DesignStuff_00239": {
       "groupId": "PlasticSuitcase_N21_2_custom"
     },
+    "container_custom_DesignMain_00002": {
+      "groupId": "outside_ind1"
+    },
     "container_custom_DesignStuff_00226": {
       "groupId": "PlasticSuitcase_N14_2_custom"
+    },
+    "container_custom_Loot_00074": {
+      "groupId": "New_factory2_suitcase140"
     },
     "container_custom_DesignStuff_00228": {
       "groupId": "PlasticSuitcase_N15_2_custom"
@@ -1517,8 +2020,14 @@
     "container_custom_DesignStuff_00229": {
       "groupId": "PlasticSuitcase_N16_2_custom"
     },
+    "container_custom_Loot_00071": {
+      "groupId": "New_factory2_suitcase140"
+    },
     "container_custom_DesignStuff_00132": {
-      "groupId": ""
+      "groupId": "mill_boxes1"
+    },
+    "container_custom_Loot_00042": {
+      "groupId": "New_factory2_suitcase140"
     },
     "container_custom_DesignStuff_00224": {
       "groupId": "PlasticSuitcase_N13_2_custom"
@@ -1534,6 +2043,12 @@
     },
     "container_custom_DesignStuff_00223": {
       "groupId": "PlasticSuitcase_N13_2_custom"
+    },
+    "container_custom_Loot_00066": {
+      "groupId": "New_factory2_suitcase140"
+    },
+    "container_custom_DesignMain_00019": {
+      "groupId": "outside_ind1"
     }
   }
 }

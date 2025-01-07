@@ -221,7 +221,7 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 12,
+  "BotMax": 10,
   "BotMaxPlayer": 10,
   "BotMaxPvE": 20,
   "BotMaxTimePlayer": 1000,
@@ -311,7 +311,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -337,32 +336,24 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
+      "minPlayers": 8,
+      "time": 240
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 300
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 360
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 420
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 450
     }
   ],
   "MaxBotPerZone": 5,
@@ -6047,6 +6038,56 @@
   ],
   "UnixDateTime": 1621511450,
   "_Id": "653e6760052c01c1c805532f",
+  "areas": {
+    "SPAWNS/ScavPMCspawn (1)": {
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "infiltrationZone": "Factory",
+      "orientation": 100.615387,
+      "position": {
+        "x": 0.16,
+        "y": 1.36,
+        "z": 137.41
+      },
+      "sides": [
+        "Usec",
+        "Bear",
+        "Savage"
+      ],
+      "size": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "SPAWNS/ScavPMCspawn (2)": {
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "infiltrationZone": "Factory",
+      "orientation": 97.28231,
+      "position": {
+        "x": 2.08,
+        "y": 1.42,
+        "z": 142.93
+      },
+      "sides": [
+        "Usec",
+        "Bear",
+        "Savage"
+      ],
+      "size": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
   "doors": [],
   "exit_access_time": 35,
   "exit_count": 1,
@@ -6170,6 +6211,15 @@
   ],
   "matching_min_seconds": 60,
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaae75a3ab8372d0b02a7",
+      "Name": "groundzero_secret_adaptation"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {

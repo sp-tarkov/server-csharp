@@ -16,6 +16,7 @@
         "container": "",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -27,6 +28,7 @@
         "container": "6401c7b213d9b818bf0e7dd7",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -44,6 +46,7 @@
         "container": "64381b582bb1c5dedd0fc925",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -61,6 +64,7 @@
         "container": "64381b6e44b37a080d0245b9",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -74,6 +78,448 @@
     },
     "takeFromSlotLocked": false,
     "type": 25
+  },
+  {
+    "_id": "65e5bb1713227bb7690cea0a",
+    "craftGivesExp": true,
+    "displayLevel": true,
+    "enableAreaRequirements": true,
+    "enabled": true,
+    "needsFuel": false,
+    "parentArea": null,
+    "requirements": [
+      {
+        "areaType": 22,
+        "requiredLevel": 6,
+        "type": "Area"
+      }
+    ],
+    "stages": {
+      "0": {
+        "autoUpgrade": false,
+        "bonuses": [],
+        "constructionTime": 0,
+        "container": "",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [],
+        "slots": 0
+      },
+      "1": {
+        "autoUpgrade": false,
+        "bonuses": [
+          {
+            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
+            "id": "6698e6d817b8f677b3077ef0",
+            "passive": true,
+            "production": false,
+            "type": "TextBonus",
+            "value": 1,
+            "visible": true
+          }
+        ],
+        "constructionTime": 21600,
+        "container": "65e5957613227bb7690ce9f6",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [
+          {
+            "areaType": 22,
+            "requiredLevel": 6,
+            "type": "Area"
+          },
+          {
+            "areaType": 15,
+            "requiredLevel": 2,
+            "type": "Area"
+          },
+          {
+            "loyaltyLevel": 2,
+            "traderId": "5ac3b934156ae10c4430e83c",
+            "type": "TraderLoyalty"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": false,
+            "templateId": "544fb5454bdc2df8738b456a",
+            "type": "Item"
+          },
+          {
+            "count": 10,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5e2af47786f7746d404f3aaa",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "61bf83814088ec1a363d7097",
+            "type": "Item"
+          },
+          {
+            "count": 8,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590a3cd386f77436f20848cb",
+            "type": "Item"
+          },
+          {
+            "count": 15,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "57347c5b245977448d35f6e1",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "62a0a098de7ac8199358053b",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "59e35de086f7741778269d84",
+            "type": "Item"
+          },
+          {
+            "count": 300000,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": false,
+            "templateId": "5449016a4bdc2d6f028b456f",
+            "type": "Item"
+          }
+        ],
+        "slots": 0
+      },
+      "2": {
+        "autoUpgrade": false,
+        "bonuses": [
+          {
+            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
+            "id": "6698e72c17b8f677b3077ef1",
+            "passive": true,
+            "production": false,
+            "type": "TextBonus",
+            "value": 2,
+            "visible": true
+          }
+        ],
+        "constructionTime": 43200,
+        "container": "65e597266017f07a3204b775",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [
+          {
+            "areaType": 16,
+            "requiredLevel": 1,
+            "type": "Area"
+          },
+          {
+            "loyaltyLevel": 3,
+            "traderId": "5ac3b934156ae10c4430e83c",
+            "type": "TraderLoyalty"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590c311186f77424d1667482",
+            "type": "Item"
+          },
+          {
+            "count": 10,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5e2af4d286f7746d4159f07a",
+            "type": "Item"
+          },
+          {
+            "count": 12,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590a3cd386f77436f20848cb",
+            "type": "Item"
+          },
+          {
+            "count": 8,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590c31c586f774245e3141b2",
+            "type": "Item"
+          },
+          {
+            "count": 3,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590c35a486f774273531c822",
+            "type": "Item"
+          },
+          {
+            "count": 5,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "57347c1124597737fb1379e3",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "59e35de086f7741778269d84",
+            "type": "Item"
+          },
+          {
+            "count": 800000,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": false,
+            "templateId": "5449016a4bdc2d6f028b456f",
+            "type": "Item"
+          }
+        ],
+        "slots": 0
+      },
+      "3": {
+        "autoUpgrade": false,
+        "bonuses": [
+          {
+            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
+            "id": "6698e73c0ab2cbb83904ee2a",
+            "passive": true,
+            "production": false,
+            "type": "TextBonus",
+            "value": 3,
+            "visible": true
+          }
+        ],
+        "constructionTime": 86400,
+        "container": "65e5972a13227bb7690cea07",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [
+          {
+            "areaType": 16,
+            "requiredLevel": 2,
+            "type": "Area"
+          },
+          {
+            "loyaltyLevel": 4,
+            "traderId": "5ac3b934156ae10c4430e83c",
+            "type": "TraderLoyalty"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "60391afc25aff57af81f7085",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "62a0a0bb621468534a797ad5",
+            "type": "Item"
+          },
+          {
+            "count": 15,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590a3cd386f77436f20848cb",
+            "type": "Item"
+          },
+          {
+            "count": 5,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5e2af29386f7746d4159f077",
+            "type": "Item"
+          },
+          {
+            "count": 15,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "61bf7b6302b3924be92fa8c3",
+            "type": "Item"
+          },
+          {
+            "count": 10,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5e2af41e86f774755a234b67",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "591094e086f7747caa7bb2ef",
+            "type": "Item"
+          },
+          {
+            "count": 1200000,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": false,
+            "templateId": "5449016a4bdc2d6f028b456f",
+            "type": "Item"
+          }
+        ],
+        "slots": 0
+      }
+    },
+    "takeFromSlotLocked": false,
+    "type": 26
+  },
+  {
+    "_id": "667298e75ea6b4493c08f266",
+    "craftGivesExp": true,
+    "displayLevel": true,
+    "enableAreaRequirements": false,
+    "enabled": true,
+    "needsFuel": false,
+    "parentArea": null,
+    "requirements": [],
+    "stages": {
+      "0": {
+        "autoUpgrade": false,
+        "bonuses": [],
+        "constructionTime": 0,
+        "container": "",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [],
+        "slots": 0
+      },
+      "1": {
+        "autoUpgrade": false,
+        "bonuses": [
+          {
+            "filter": [
+              "64d0b40fbe2eed70e254e2d4"
+            ],
+            "icon": "/files/Hideout/icon_hideout_fuelslots.png",
+            "id": "669f9fbaddfe0dab8d0f359b",
+            "passive": true,
+            "production": false,
+            "type": "AdditionalSlots",
+            "value": 1,
+            "visible": false
+          },
+          {
+            "icon": "/files/Hideout/Icon_Cultist Zone_Small.png",
+            "id": "669fa357d562926a0e01fd65",
+            "passive": true,
+            "production": false,
+            "type": "TextBonus",
+            "value": 0,
+            "visible": true
+          }
+        ],
+        "constructionTime": 21600,
+        "container": "66740c3739b9da6ce402ee65",
+        "description": "",
+        "displayInterface": true,
+        "globalCounterId": null,
+        "improvements": [],
+        "requirements": [
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": false,
+            "templateId": "5b4391a586f7745321235ab2",
+            "type": "Item"
+          },
+          {
+            "areaType": 1,
+            "requiredLevel": 2,
+            "type": "Area"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "590c2c9c86f774245b1f03f2",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5e2af37686f774755a234b65",
+            "type": "Item"
+          },
+          {
+            "count": 3,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "62a09ee4cf4a99369e262453",
+            "type": "Item"
+          },
+          {
+            "count": 5,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "5d1b392c86f77425243e98fe",
+            "type": "Item"
+          },
+          {
+            "count": 1,
+            "isEncoded": false,
+            "isFunctional": false,
+            "isSpawnedInSession": true,
+            "templateId": "59e3596386f774176c10a2a2",
+            "type": "Item"
+          }
+        ],
+        "slots": 0
+      }
+    },
+    "takeFromSlotLocked": false,
+    "type": 27
   },
   {
     "_id": "5d388e97081959000a123acf",
@@ -92,6 +538,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -112,12 +559,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 25000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -125,6 +574,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347b8b24597737dd42e192",
             "type": "Item"
           }
@@ -147,12 +597,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 50000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -175,6 +627,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af2bc86f7746d3f3c33fc",
             "type": "Item"
           },
@@ -182,6 +635,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a373286f774287540368b",
             "type": "Item"
           },
@@ -189,6 +643,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "56742c284bdc2d98058b456d",
             "type": "Item"
           }
@@ -219,12 +674,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 8,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1c774f86f7746d6620f8db",
             "type": "Item"
           },
@@ -232,6 +689,7 @@
             "count": 8,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -259,6 +717,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -266,6 +725,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "619cbf476b8a1b37a54eebf8",
             "type": "Item"
           }
@@ -293,6 +753,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -318,12 +779,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 100000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -336,6 +799,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3c0a86f774385a33c450",
             "type": "Item"
           }
@@ -363,6 +827,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -379,6 +844,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -386,6 +852,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -393,6 +860,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -405,6 +873,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "619cbfeb6b8a1b37a54eebfa",
             "type": "Item"
           }
@@ -432,6 +901,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -448,6 +918,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -455,6 +926,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -462,6 +934,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3c0a86f774385a33c450",
             "type": "Item"
           },
@@ -469,6 +942,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c2e24597744902c94a1",
             "type": "Item"
           },
@@ -486,6 +960,7 @@
             "count": 7,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           }
@@ -513,6 +988,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -524,12 +1000,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 25000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           }
@@ -543,12 +1021,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -556,6 +1036,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5733279d245977289b77ec24",
             "type": "Item"
           },
@@ -568,6 +1049,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734779624597737e04bf329",
             "type": "Item"
           },
@@ -575,6 +1057,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           }
@@ -588,6 +1071,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -599,6 +1083,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -606,6 +1091,7 @@
             "count": 14,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -613,6 +1099,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3b0486f7743954552bdb",
             "type": "Item"
           },
@@ -620,6 +1107,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5733279d245977289b77ec24",
             "type": "Item"
           },
@@ -637,6 +1125,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           }
@@ -664,6 +1153,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -675,12 +1165,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 20000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -688,6 +1180,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2c9c86f774245b1f03f2",
             "type": "Item"
           }
@@ -701,6 +1194,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -717,6 +1211,7 @@
             "count": 45000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -729,6 +1224,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af04b6486f774195a3ebb49",
             "type": "Item"
           },
@@ -736,6 +1232,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c5bbd86f774785762df04",
             "type": "Item"
           },
@@ -743,6 +1240,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "60391b0fb847c71012789415",
             "type": "Item"
           }
@@ -756,6 +1254,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -767,6 +1266,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b304286f774253763a528",
             "type": "Item"
           },
@@ -774,6 +1274,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -781,6 +1282,7 @@
             "count": 8,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2ffd86f77425243e8d17",
             "type": "Item"
           },
@@ -788,6 +1290,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c392f86f77444754deb29",
             "type": "Item"
           },
@@ -825,6 +1328,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -845,12 +1349,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 2000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -858,6 +1364,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c13cef886f774072e618e82",
             "type": "Item"
           },
@@ -865,6 +1372,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c93245977448d35f6e3",
             "type": "Item"
           },
@@ -872,6 +1380,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c13cd2486f774072c757944",
             "type": "Item"
           },
@@ -879,6 +1388,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a098de7ac8199358053b",
             "type": "Item"
           }
@@ -901,12 +1411,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -914,6 +1426,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -921,6 +1434,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -943,6 +1457,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af29386f7746d4159f077",
             "type": "Item"
           },
@@ -950,6 +1465,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf83814088ec1a363d7097",
             "type": "Item"
           }
@@ -972,12 +1488,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -985,6 +1503,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b327086f7742525194449",
             "type": "Item"
           },
@@ -992,6 +1511,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -1009,6 +1529,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c346786f77423e50ed342",
             "type": "Item"
           },
@@ -1041,6 +1562,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -1062,6 +1584,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -1083,12 +1606,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b317c86f7742523398392",
             "type": "Item"
           },
@@ -1096,6 +1621,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -1103,6 +1629,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c5bbd86f774785762df04",
             "type": "Item"
           },
@@ -1115,6 +1642,7 @@
             "count": 2500000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1127,6 +1655,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c31c586f774245e3141b2",
             "type": "Item"
           }
@@ -1150,6 +1679,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1166,6 +1696,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -1173,6 +1704,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -1180,6 +1712,7 @@
             "count": 8500000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1202,6 +1735,7 @@
             "count": 7,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c31c586f774245e3141b2",
             "type": "Item"
           }
@@ -1225,6 +1759,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1246,6 +1781,7 @@
             "count": 200000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "569668774bdc2da2298b4568",
             "type": "Item"
           },
@@ -1273,6 +1809,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -1280,6 +1817,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c77245977448d35f6e2",
             "type": "Item"
           },
@@ -1287,6 +1825,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c35a486f774273531c822",
             "type": "Item"
           },
@@ -1294,6 +1833,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "60391afc25aff57af81f7085",
             "type": "Item"
           }
@@ -1321,6 +1861,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -1341,12 +1882,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -1354,6 +1897,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -1361,6 +1905,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c77245977448d35f6e2",
             "type": "Item"
           },
@@ -1373,6 +1918,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c1124597737fb1379e3",
             "type": "Item"
           }
@@ -1395,12 +1941,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -1408,6 +1956,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -1415,6 +1964,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -1442,6 +1992,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af29386f7746d4159f077",
             "type": "Item"
           }
@@ -1485,12 +2036,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 20000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1508,6 +2061,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af04b6486f774195a3ebb49",
             "type": "Item"
           },
@@ -1515,6 +2069,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c35a486f774273531c822",
             "type": "Item"
           },
@@ -1532,6 +2087,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "60391afc25aff57af81f7085",
             "type": "Item"
           }
@@ -1559,6 +2115,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -1588,12 +2145,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 50000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1601,6 +2160,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b3f2d86f774253763b735",
             "type": "Item"
           },
@@ -1608,6 +2168,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b3a5d86f774252167ba22",
             "type": "Item"
           },
@@ -1615,6 +2176,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "544fb25a4bdc2dfb738b4567",
             "type": "Item"
           },
@@ -1622,6 +2184,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a043cf4a99369e2624a5",
             "type": "Item"
           }
@@ -1644,6 +2207,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1655,6 +2219,7 @@
             "count": 150000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1672,6 +2237,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5b4335ba86f7744d2837a264",
             "type": "Item"
           },
@@ -1679,6 +2245,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e3606886f77417674759a5",
             "type": "Item"
           },
@@ -1691,6 +2258,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e831507ea0a7c419c2f9bd9",
             "type": "Item"
           },
@@ -1698,6 +2266,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "619cc01e0a7c3a1a2731940c",
             "type": "Item"
           }
@@ -1720,12 +2289,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 500000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1753,6 +2324,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e3606886f77417674759a5",
             "type": "Item"
           },
@@ -1760,6 +2332,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c0530ee86f774697952d952",
             "type": "Item"
           },
@@ -1777,6 +2350,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af0534a86f7743b6f354284",
             "type": "Item"
           }
@@ -1804,6 +2378,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -1824,6 +2399,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1835,6 +2411,7 @@
             "count": 25000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1842,6 +2419,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -1849,6 +2427,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           },
@@ -1856,6 +2435,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a09ee4cf4a99369e262453",
             "type": "Item"
           }
@@ -1886,6 +2466,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1897,6 +2478,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c311186f77424d1667482",
             "type": "Item"
           },
@@ -1904,6 +2486,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -1911,6 +2494,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59faf98186f774067b6be103",
             "type": "Item"
           },
@@ -1923,6 +2507,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           }
@@ -1953,6 +2538,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -1974,6 +2560,7 @@
             "count": 125000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -1991,6 +2578,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af0484c86f7740f02001f7f",
             "type": "Item"
           },
@@ -1998,6 +2586,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35abd86f7741778269d82",
             "type": "Item"
           },
@@ -2005,6 +2594,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af00086f7746d3f3c33f7",
             "type": "Item"
           }
@@ -2032,6 +2622,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -2052,6 +2643,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2063,6 +2655,7 @@
             "count": 10000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -2070,6 +2663,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c1124597737fb1379e3",
             "type": "Item"
           },
@@ -2077,6 +2671,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347b8b24597737dd42e192",
             "type": "Item"
           }
@@ -2107,6 +2702,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2123,6 +2719,7 @@
             "count": 35000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -2140,6 +2737,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734781f24597737e04bf32a",
             "type": "Item"
           },
@@ -2147,6 +2745,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a391c86f774385a33c404",
             "type": "Item"
           },
@@ -2154,6 +2753,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           }
@@ -2184,6 +2784,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2200,6 +2801,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           },
@@ -2207,6 +2809,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06782b86f77426df5407d2",
             "type": "Item"
           },
@@ -2214,6 +2817,7 @@
             "count": 7,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -2221,6 +2825,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2aedd986f7746d404f3aa4",
             "type": "Item"
           },
@@ -2258,6 +2863,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -2295,12 +2901,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c77245977448d35f6e2",
             "type": "Item"
           },
@@ -2308,6 +2916,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -2315,6 +2924,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "544fb5454bdc2df8738b456a",
             "type": "Item"
           }
@@ -2337,6 +2947,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2348,6 +2959,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -2355,6 +2967,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -2362,6 +2975,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -2379,6 +2993,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1c819a86f774771b0acd6c",
             "type": "Item"
           },
@@ -2386,6 +3001,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a0bb621468534a797ad5",
             "type": "Item"
           }
@@ -2408,6 +3024,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2424,6 +3041,7 @@
             "count": 395000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -2441,6 +3059,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af04b6486f774195a3ebb49",
             "type": "Item"
           },
@@ -2448,6 +3067,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5bc9b355d4351e6d1509862a",
             "type": "Item"
           },
@@ -2455,6 +3075,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "60391a8b3364dc22b04d0ce5",
             "type": "Item"
           }
@@ -2482,6 +3103,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -2510,6 +3132,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2526,6 +3149,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c12613b86f7743bbe2c3f76",
             "type": "Item"
           },
@@ -2533,6 +3157,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a124de7ac81993580542",
             "type": "Item"
           },
@@ -2540,6 +3165,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "574eb85c245977648157eec3",
             "type": "Item"
           }
@@ -2570,12 +3196,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c12613b86f7743bbe2c3f76",
             "type": "Item"
           },
@@ -2583,6 +3211,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c621186f774138d11ea29",
             "type": "Item"
           },
@@ -2590,6 +3219,7 @@
             "count": 7,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           },
@@ -2597,6 +3227,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a386e86f77429692b27ab",
             "type": "Item"
           },
@@ -2657,12 +3288,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c052f6886f7746b1e3db148",
             "type": "Item"
           },
@@ -2670,6 +3303,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c05300686f7746dce784e5d",
             "type": "Item"
           },
@@ -2677,6 +3311,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a16d0b9d3c46de5b6e97",
             "type": "Item"
           },
@@ -2684,6 +3319,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d0375ff86f774186372f685",
             "type": "Item"
           },
@@ -2711,6 +3347,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "61bf7c024770ee6f9c6b8b53",
             "type": "Item"
           },
@@ -2718,6 +3355,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "6389c7f115805221fb410466",
             "type": "Item"
           }
@@ -2745,6 +3383,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -2766,6 +3405,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2777,6 +3417,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c77245977448d35f6e2",
             "type": "Item"
           },
@@ -2784,6 +3425,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -2791,6 +3433,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -2798,6 +3441,7 @@
             "count": 20000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           }
@@ -2811,6 +3455,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -2827,6 +3472,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -2834,6 +3480,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -2841,6 +3488,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2c9c86f774245b1f03f2",
             "type": "Item"
           },
@@ -2848,6 +3496,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -2855,6 +3504,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -2862,13 +3512,15 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af22086f7746d3f3c33fa",
             "type": "Item"
           },
           {
-            "count": 6,
+            "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -2876,6 +3528,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -2883,6 +3536,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5b4391a586f7745321235ab2",
             "type": "Item"
           },
@@ -2890,6 +3544,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           }
@@ -2913,12 +3568,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a0bb621468534a797ad5",
             "type": "Item"
           },
@@ -2926,6 +3583,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -2933,6 +3591,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3b0486f7743954552bdb",
             "type": "Item"
           },
@@ -2940,6 +3599,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -2947,6 +3607,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06782b86f77426df5407d2",
             "type": "Item"
           },
@@ -2954,6 +3615,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -2961,6 +3623,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           },
@@ -2968,6 +3631,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "544fb5454bdc2df8738b456a",
             "type": "Item"
           },
@@ -2975,6 +3639,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c639286f774151567fa95",
             "type": "Item"
           }
@@ -3002,6 +3667,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3031,6 +3697,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3042,6 +3709,7 @@
             "count": 400000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -3054,6 +3722,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "573478bc24597738002c6175",
             "type": "Item"
           },
@@ -3061,6 +3730,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "573474f924597738002c6174",
             "type": "Item"
           },
@@ -3068,6 +3738,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c639286f774151567fa95",
             "type": "Item"
           },
@@ -3075,6 +3746,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c645c86f77412b01304d9",
             "type": "Item"
           },
@@ -3082,6 +3754,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c651286f7741e566b6461",
             "type": "Item"
           },
@@ -3089,6 +3762,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a09e73af34e73a266d932a",
             "type": "Item"
           }
@@ -3116,6 +3790,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3137,6 +3812,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3148,6 +3824,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e3639286f7741777737013",
             "type": "Item"
           },
@@ -3155,6 +3832,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d235a5986f77443f6329bc6",
             "type": "Item"
           },
@@ -3162,6 +3840,7 @@
             "count": 8,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734758f24597738025ee253",
             "type": "Item"
           },
@@ -3169,6 +3848,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59faf7ca86f7740dbe19f6c2",
             "type": "Item"
           },
@@ -3176,6 +3856,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b376e86f774252519444e",
             "type": "Item"
           },
@@ -3183,6 +3864,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5b7c710788a4506dec015957",
             "type": "Item"
           },
@@ -3190,6 +3872,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5bc9bc53d4351e00367fbcee",
             "type": "Item"
           }
@@ -3217,6 +3900,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3228,12 +3912,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 10000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -3241,6 +3927,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "56742c284bdc2d98058b456d",
             "type": "Item"
           }
@@ -3254,12 +3941,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 14,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b392c86f77425243e98fe",
             "type": "Item"
           },
@@ -3267,6 +3956,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -3290,6 +3980,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3316,6 +4007,7 @@
             "count": 50000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5449016a4bdc2d6f028b456f",
             "type": "Item"
           },
@@ -3323,6 +4015,7 @@
             "count": 7,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06782b86f77426df5407d2",
             "type": "Item"
           },
@@ -3330,6 +4023,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -3337,6 +4031,7 @@
             "count": 12,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           }
@@ -3370,6 +4065,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3418,6 +4114,7 @@
         "container": "63dbd45917fff4dee40fe16e",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3434,6 +4131,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b31ce86f7742523398394",
             "type": "Item"
           },
@@ -3441,6 +4139,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af47786f7746d404f3aaa",
             "type": "Item"
           },
@@ -3448,6 +4147,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e3658a86f7741776641ac4",
             "type": "Item"
           },
@@ -3455,6 +4155,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b392c86f77425243e98fe",
             "type": "Item"
           },
@@ -3462,6 +4163,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c31c586f774245e3141b2",
             "type": "Item"
           },
@@ -3469,6 +4171,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734795124597738002c6176",
             "type": "Item"
           }
@@ -3519,12 +4222,14 @@
         "container": "65424185a57eea37ed6562e9",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c639286f774151567fa95",
             "type": "Item"
           },
@@ -3532,6 +4237,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af04b6486f774195a3ebb49",
             "type": "Item"
           },
@@ -3539,6 +4245,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -3546,6 +4253,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5bc9bc53d4351e00367fbcee",
             "type": "Item"
           },
@@ -3553,6 +4261,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -3560,6 +4269,7 @@
             "count": 6,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -3567,6 +4277,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c1124597737fb1379e3",
             "type": "Item"
           },
@@ -3574,6 +4285,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c346786f77423e50ed342",
             "type": "Item"
           },
@@ -3581,6 +4293,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af22086f7746d3f3c33fa",
             "type": "Item"
           }
@@ -3631,12 +4344,14 @@
         "container": "6542435ea57eea37ed6562f0",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a0bb621468534a797ad5",
             "type": "Item"
           },
@@ -3644,6 +4359,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -3651,6 +4367,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e3639286f7741777737013",
             "type": "Item"
           },
@@ -3658,6 +4375,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -3665,6 +4383,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af29386f7746d4159f077",
             "type": "Item"
           },
@@ -3672,6 +4391,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347cd0245977445a2d6ff1",
             "type": "Item"
           },
@@ -3679,6 +4399,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -3686,6 +4407,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           }
@@ -3713,6 +4435,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3746,6 +4469,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3762,6 +4486,7 @@
             "count": 25000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "5696686a4bdc2da3298b456a",
             "type": "Item"
           },
@@ -3774,6 +4499,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d0378d486f77420421a5ff4",
             "type": "Item"
           },
@@ -3781,6 +4507,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c595c86f7747884343ad7",
             "type": "Item"
           },
@@ -3788,6 +4515,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "619cbf476b8a1b37a54eebf8",
             "type": "Item"
           }
@@ -3815,6 +4543,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3835,6 +4564,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3851,6 +4581,7 @@
             "count": 25000,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": false,
             "templateId": "569668774bdc2da2298b4568",
             "type": "Item"
           },
@@ -3863,6 +4594,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d0375ff86f774186372f685",
             "type": "Item"
           },
@@ -3870,6 +4602,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d03775b86f774203e7e0c4b",
             "type": "Item"
           },
@@ -3877,6 +4610,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d0378d486f77420421a5ff4",
             "type": "Item"
           },
@@ -3884,6 +4618,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b304286f774253763a528",
             "type": "Item"
           },
@@ -3891,6 +4626,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "6389c85357baa773a825b356",
             "type": "Item"
           }
@@ -3918,6 +4654,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -3939,6 +4676,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -3955,6 +4693,7 @@
             "count": 4,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b39a386f774252339976f",
             "type": "Item"
           },
@@ -3962,6 +4701,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b32c186f774252167a530",
             "type": "Item"
           },
@@ -3969,6 +4709,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b327086f7742525194449",
             "type": "Item"
           },
@@ -3976,6 +4717,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -3983,6 +4725,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "619cbfccbedcde2f5b3f7bdd",
             "type": "Item"
           },
@@ -3990,6 +4733,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1c774f86f7746d6620f8db",
             "type": "Item"
           },
@@ -3997,6 +4741,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           }
@@ -4024,6 +4769,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -4057,6 +4803,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -4068,6 +4815,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734779624597737e04bf329",
             "type": "Item"
           },
@@ -4075,6 +4823,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c2e24597744902c94a1",
             "type": "Item"
           },
@@ -4082,6 +4831,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e36c6f86f774176c10a2a7",
             "type": "Item"
           },
@@ -4089,6 +4839,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c05300686f7746dce784e5d",
             "type": "Item"
           },
@@ -4096,6 +4847,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347cd0245977445a2d6ff1",
             "type": "Item"
           }
@@ -4122,6 +4874,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -4138,6 +4891,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734779624597737e04bf329",
             "type": "Item"
           },
@@ -4145,6 +4899,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c2e24597744902c94a1",
             "type": "Item"
           },
@@ -4152,6 +4907,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3b0486f7743954552bdb",
             "type": "Item"
           },
@@ -4159,6 +4915,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b313086f77425227d1678",
             "type": "Item"
           },
@@ -4166,6 +4923,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d0378d486f77420421a5ff4",
             "type": "Item"
           }
@@ -4192,6 +4950,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -4213,6 +4972,7 @@
             "count": 25,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734779624597737e04bf329",
             "type": "Item"
           },
@@ -4220,6 +4980,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b39a386f774252339976f",
             "type": "Item"
           },
@@ -4227,6 +4988,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b2fa286f77425227d1674",
             "type": "Item"
           },
@@ -4234,6 +4996,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b327086f7742525194449",
             "type": "Item"
           },
@@ -4241,6 +5004,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d03794386f77420415576f5",
             "type": "Item"
           }
@@ -4274,6 +5038,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -4285,12 +5050,14 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -4298,6 +5065,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -4305,6 +5073,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d40419286f774318526545f",
             "type": "Item"
           },
@@ -4312,6 +5081,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c77245977448d35f6e2",
             "type": "Item"
           },
@@ -4319,6 +5089,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -4326,6 +5097,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c5bbd86f774785762df04",
             "type": "Item"
           },
@@ -4333,6 +5105,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734795124597738002c6176",
             "type": "Item"
           },
@@ -4353,71 +5126,6 @@
     "takeFromSlotLocked": false,
     "type": 23
   },
-{
-		"_id": "5df8a81f8f77747fcf5f5702",
-		"type": 21,
-		"enabled": true,
-		"needsFuel": true,
-		"takeFromSlotLocked": false,
-		"craftGivesExp": true,
-		"displayLevel": true,
-		"requirements": [],
-		"stages": {
-			"0": {
-				"requirements": [],
-				"bonuses": [],
-				"slots": 0,
-				"constructionTime": 0.0,
-				"description": "",
-				"container": "",
-				"autoUpgrade": false,
-				"displayInterface": true,
-				"improvements": []
-			},
-			"1": {
-				"requirements": [{
-						"areaType": 4,
-						"requiredLevel": 1,
-						"type": "Area"
-					}, {
-						"templateId": "5449016a4bdc2d6f028b456f",
-						"count": 10000,
-						"isFunctional": false,
-						"isEncoded": false,
-						"type": "Item"
-					}, {
-						"templateId": "5df8a77486f77412672a1e3f",
-						"count": 1,
-						"isFunctional": false,
-						"isEncoded": false,
-						"type": "Item"
-					}, {
-						"templateId": "5df8a72c86f77412640e2e83",
-						"count": 1,
-						"isFunctional": false,
-						"isEncoded": false,
-						"type": "Item"
-					}, {
-						"templateId": "5df8a6a186f77412640e2e80",
-						"count": 1,
-						"isFunctional": false,
-						"isEncoded": false,
-						"type": "Item"
-					}
-				],
-				"bonuses": [],
-				"slots": 0,
-				"constructionTime": 0.0,
-				"description": "",
-				"container": "",
-				"autoUpgrade": false,
-				"displayInterface": true,
-				"improvements": []
-			}
-		},
-		"enableAreaRequirements": false,
-		"parentArea": null
-	},
   {
     "_id": "637b39f02e873739ec490215",
     "craftGivesExp": false,
@@ -4435,6 +5143,7 @@
         "container": "",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -4446,6 +5155,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
@@ -4510,6 +5220,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [
           {
             "bonuses": [
@@ -4562,6 +5273,7 @@
                 "count": 1,
                 "isEncoded": false,
                 "isFunctional": false,
+                "isSpawnedInSession": false,
                 "templateId": "5e2af47786f7746d404f3aaa",
                 "type": "Item"
               }
@@ -4620,6 +5332,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [
           {
             "bonuses": [
@@ -4672,6 +5385,7 @@
                 "count": 1,
                 "isEncoded": false,
                 "isFunctional": false,
+                "isSpawnedInSession": false,
                 "templateId": "5e2af47786f7746d404f3aaa",
                 "type": "Item"
               }
@@ -4730,6 +5444,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [
           {
             "bonuses": [
@@ -4782,6 +5497,7 @@
                 "count": 1,
                 "isEncoded": false,
                 "isFunctional": false,
+                "isSpawnedInSession": false,
                 "templateId": "5e2af47786f7746d404f3aaa",
                 "type": "Item"
               }
@@ -4793,6 +5509,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "63a0b208f444d32d6f03ea1e",
             "type": "Item"
           }
@@ -4848,6 +5565,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [
           {
             "bonuses": [
@@ -4900,6 +5618,7 @@
                 "count": 1,
                 "isEncoded": false,
                 "isFunctional": false,
+                "isSpawnedInSession": false,
                 "templateId": "5e2af47786f7746d404f3aaa",
                 "type": "Item"
               }
@@ -4911,6 +5630,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d40419286f774318526545f",
             "type": "Item"
           },
@@ -4918,6 +5638,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           }
@@ -4973,12 +5694,14 @@
         "container": "",
         "description": "",
         "displayInterface": false,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35cbb86f7741778269d83",
             "type": "Item"
           },
@@ -4986,6 +5709,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c1124597737fb1379e3",
             "type": "Item"
           },
@@ -4993,6 +5717,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c2e1186f77425357b6124",
             "type": "Item"
           },
@@ -5000,6 +5725,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5af04b6486f774195a3ebb49",
             "type": "Item"
           },
@@ -5007,6 +5733,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -5014,6 +5741,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c346786f77423e50ed342",
             "type": "Item"
           },
@@ -5021,6 +5749,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -5028,6 +5757,7 @@
             "count": 2,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b392c86f77425243e98fe",
             "type": "Item"
           }
@@ -5055,6 +5785,7 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
@@ -5066,12 +5797,14 @@
         "container": "6401c7b213d9b818bf0e7dd7",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1b317c86f7742523398392",
             "type": "Item"
           },
@@ -5079,6 +5812,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d40419286f774318526545f",
             "type": "Item"
           },
@@ -5086,6 +5820,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -5093,6 +5828,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c346786f77423e50ed342",
             "type": "Item"
           },
@@ -5100,6 +5836,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c5b245977448d35f6e1",
             "type": "Item"
           },
@@ -5107,6 +5844,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5734795124597738002c6176",
             "type": "Item"
           },
@@ -5114,6 +5852,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c31c586f774245e3141b2",
             "type": "Item"
           },
@@ -5142,12 +5881,14 @@
         "container": "64381b582bb1c5dedd0fc925",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -5155,6 +5896,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "62a0a0bb621468534a797ad5",
             "type": "Item"
           },
@@ -5162,6 +5904,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -5169,6 +5912,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35ef086f7741777737012",
             "type": "Item"
           },
@@ -5176,6 +5920,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "57347c1124597737fb1379e3",
             "type": "Item"
           },
@@ -5183,6 +5928,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -5190,6 +5936,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -5197,6 +5944,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5d1c819a86f774771b0acd6c",
             "type": "Item"
           },
@@ -5204,6 +5952,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af22086f7746d3f3c33fa",
             "type": "Item"
           },
@@ -5237,12 +5986,14 @@
         "container": "64381b6e44b37a080d0245b9",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "59e35de086f7741778269d84",
             "type": "Item"
           },
@@ -5250,6 +6001,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590a3cd386f77436f20848cb",
             "type": "Item"
           },
@@ -5257,6 +6009,7 @@
             "count": 10,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "61bf7b6302b3924be92fa8c3",
             "type": "Item"
           },
@@ -5264,6 +6017,7 @@
             "count": 5,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5e2af29386f7746d4159f077",
             "type": "Item"
           },
@@ -5271,6 +6025,7 @@
             "count": 15,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5c06779c86f77426e00dd782",
             "type": "Item"
           },
@@ -5278,6 +6033,7 @@
             "count": 3,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c35a486f774273531c822",
             "type": "Item"
           },
@@ -5285,6 +6041,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "590c639286f774151567fa95",
             "type": "Item"
           },
@@ -5292,6 +6049,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
+            "isSpawnedInSession": true,
             "templateId": "5bc9b355d4351e6d1509862a",
             "type": "Item"
           },
@@ -5318,312 +6076,12 @@
     "type": 24
   },
   {
-    "_id": "65e5bb1713227bb7690cea0a",
-    "craftGivesExp": true,
-    "displayLevel": true,
-    "enableAreaRequirements": true,
-    "enabled": true,
-    "needsFuel": false,
-    "parentArea": null,
-    "requirements": [
-      {
-        "areaType": 22,
-        "requiredLevel": 6,
-        "type": "Area"
-      }
-    ],
-    "stages": {
-      "0": {
-        "autoUpgrade": false,
-        "bonuses": [],
-        "constructionTime": 0,
-        "container": "",
-        "description": "",
-        "displayInterface": true,
-        "improvements": [],
-        "requirements": [],
-        "slots": 0
-      },
-      "1": {
-        "autoUpgrade": false,
-        "bonuses": [
-          {
-            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
-            "id": "6698e6d817b8f677b3077ef0",
-            "passive": true,
-            "production": false,
-            "type": "TextBonus",
-            "value": 1,
-            "visible": true
-          }
-        ],
-        "constructionTime": 21600,
-        "container": "65e5957613227bb7690ce9f6",
-        "description": "",
-        "displayInterface": true,
-        "improvements": [],
-        "requirements": [
-          {
-            "areaType": 22,
-            "requiredLevel": 6,
-            "type": "Area"
-          },
-          {
-            "areaType": 15,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "loyaltyLevel": 2,
-            "traderId": "5ac3b934156ae10c4430e83c",
-            "type": "TraderLoyalty"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "544fb5454bdc2df8738b456a",
-            "type": "Item"
-          },
-          {
-            "count": 10,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5e2af47786f7746d404f3aaa",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "61bf83814088ec1a363d7097",
-            "type": "Item"
-          },
-          {
-            "count": 8,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590a3cd386f77436f20848cb",
-            "type": "Item"
-          },
-          {
-            "count": 15,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "57347c5b245977448d35f6e1",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "62a0a098de7ac8199358053b",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "59e35de086f7741778269d84",
-            "type": "Item"
-          },
-          {
-            "count": 300000,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5449016a4bdc2d6f028b456f",
-            "type": "Item"
-          }
-        ],
-        "slots": 0
-      },
-      "2": {
-        "autoUpgrade": false,
-        "bonuses": [
-          {
-            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
-            "id": "6698e72c17b8f677b3077ef1",
-            "passive": true,
-            "production": false,
-            "type": "TextBonus",
-            "value": 2,
-            "visible": true
-          }
-        ],
-        "constructionTime": 43200,
-        "container": "65e597266017f07a3204b775",
-        "description": "",
-        "displayInterface": true,
-        "improvements": [],
-        "requirements": [
-          {
-            "areaType": 16,
-            "requiredLevel": 1,
-            "type": "Area"
-          },
-          {
-            "loyaltyLevel": 3,
-            "traderId": "5ac3b934156ae10c4430e83c",
-            "type": "TraderLoyalty"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590c311186f77424d1667482",
-            "type": "Item"
-          },
-          {
-            "count": 10,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5e2af4d286f7746d4159f07a",
-            "type": "Item"
-          },
-          {
-            "count": 12,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590a3cd386f77436f20848cb",
-            "type": "Item"
-          },
-          {
-            "count": 8,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590c31c586f774245e3141b2",
-            "type": "Item"
-          },
-          {
-            "count": 3,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590c35a486f774273531c822",
-            "type": "Item"
-          },
-          {
-            "count": 5,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "57347c1124597737fb1379e3",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "59e35de086f7741778269d84",
-            "type": "Item"
-          },
-          {
-            "count": 800000,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5449016a4bdc2d6f028b456f",
-            "type": "Item"
-          }
-        ],
-        "slots": 0
-      },
-      "3": {
-        "autoUpgrade": false,
-        "bonuses": [
-          {
-            "icon": "/files/Hideout/Icon_Preset-stand_Mannequin_Small.png",
-            "id": "6698e73c0ab2cbb83904ee2a",
-            "passive": true,
-            "production": false,
-            "type": "TextBonus",
-            "value": 3,
-            "visible": true
-          }
-        ],
-        "constructionTime": 86400,
-        "container": "65e5972a13227bb7690cea07",
-        "description": "",
-        "displayInterface": true,
-        "improvements": [],
-        "requirements": [
-          {
-            "areaType": 16,
-            "requiredLevel": 2,
-            "type": "Area"
-          },
-          {
-            "loyaltyLevel": 4,
-            "traderId": "5ac3b934156ae10c4430e83c",
-            "type": "TraderLoyalty"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "60391afc25aff57af81f7085",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "62a0a0bb621468534a797ad5",
-            "type": "Item"
-          },
-          {
-            "count": 15,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "590a3cd386f77436f20848cb",
-            "type": "Item"
-          },
-          {
-            "count": 5,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5e2af29386f7746d4159f077",
-            "type": "Item"
-          },
-          {
-            "count": 15,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "61bf7b6302b3924be92fa8c3",
-            "type": "Item"
-          },
-          {
-            "count": 10,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5e2af41e86f774755a234b67",
-            "type": "Item"
-          },
-          {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "591094e086f7747caa7bb2ef",
-            "type": "Item"
-          },
-          {
-            "count": 1200000,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5449016a4bdc2d6f028b456f",
-            "type": "Item"
-          }
-        ],
-        "slots": 0
-      }
-    },
-    "takeFromSlotLocked": false,
-    "type": 26
-  },
-  {
-    "_id": "667298e75ea6b4493c08f266",
+    "_id": "5df8a81f8f77747fcf5f5702",
     "craftGivesExp": true,
     "displayLevel": true,
     "enableAreaRequirements": false,
     "enabled": true,
-    "needsFuel": false,
+    "needsFuel": true,
     "parentArea": null,
     "requirements": [],
     "stages": {
@@ -5634,86 +6092,48 @@
         "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": null,
         "improvements": [],
         "requirements": [],
         "slots": 0
       },
       "1": {
         "autoUpgrade": false,
-        "bonuses": [
-          {
-            "filter": [
-              "64d0b40fbe2eed70e254e2d4"
-            ],
-            "icon": "/files/Hideout/icon_hideout_fuelslots.png",
-            "id": "669f9fbaddfe0dab8d0f359b",
-            "passive": true,
-            "production": false,
-            "type": "AdditionalSlots",
-            "value": 1,
-            "visible": false
-          },
-          {
-            "icon": "/files/Hideout/Icon_Cultist Zone_Small.png",
-            "id": "669fa357d562926a0e01fd65",
-            "passive": true,
-            "production": false,
-            "type": "TextBonus",
-            "value": 0,
-            "visible": true
-          }
-        ],
-        "constructionTime": 21600,
-        "container": "66740c3739b9da6ce402ee65",
+        "bonuses": [],
+        "constructionTime": 0,
+        "container": "",
         "description": "",
         "displayInterface": true,
+        "globalCounterId": "676e783a37141d44ba0e3e7d",
         "improvements": [],
         "requirements": [
           {
-            "count": 1,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5b4391a586f7745321235ab2",
-            "type": "Item"
-          },
-          {
-            "areaType": 1,
-            "requiredLevel": 2,
+            "areaType": 4,
+            "requiredLevel": 1,
             "type": "Area"
           },
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
-            "templateId": "590c2c9c86f774245b1f03f2",
+            "isSpawnedInSession": true,
+            "templateId": "5df8a77486f77412672a1e3f",
             "type": "Item"
           },
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
-            "templateId": "5e2af37686f774755a234b65",
-            "type": "Item"
-          },
-          {
-            "count": 3,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "62a09ee4cf4a99369e262453",
-            "type": "Item"
-          },
-          {
-            "count": 5,
-            "isEncoded": false,
-            "isFunctional": false,
-            "templateId": "5d1b392c86f77425243e98fe",
+            "isSpawnedInSession": true,
+            "templateId": "5df8a72c86f77412640e2e83",
             "type": "Item"
           },
           {
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
-            "templateId": "59e3596386f774176c10a2a2",
+            "isSpawnedInSession": true,
+            "templateId": "5df8a6a186f77412640e2e80",
             "type": "Item"
           }
         ],
@@ -5721,6 +6141,6 @@
       }
     },
     "takeFromSlotLocked": false,
-    "type": 27
+    "type": 21
   }
 ]
