@@ -300,8 +300,10 @@ public class BaseJsonSkills
 
 public class Skills
 {
-    public List<Common> Common { get; set; }
-    public List<Mastering> Mastering { get; set; }
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    public Dictionary<SkillTypes, Common> Common { get; set; }
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    public Dictionary<string, Mastering> Mastering { get; set; }
     public double Points { get; set; }
 }
 
