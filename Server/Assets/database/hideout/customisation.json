@@ -1,0 +1,1490 @@
+{
+        "globals": [{
+                "id": "6751aedd068276747529227a",
+                "conditions": [],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Default",
+                "isEnabled": true,
+                "itemId": "675844bdf94a97cbbe096f1a"
+            }, {
+                "id": "6751af383e9bd9caef89db33",
+                "conditions": [{
+                        "id": "675b55843631d0f9e2facbad",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "60896e28e4a85c72ef3fa301",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Red",
+                "isEnabled": true,
+                "itemId": "675467d8b784110b2702fe11"
+            }, {
+                "id": "6751af3fcb1d39998bfac87b",
+                "conditions": [],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Default",
+                "isEnabled": true,
+                "itemId": "6758443ff94a97cbbe096f18"
+            }, {
+                "id": "6757f7abb3db18ca36b80fa8",
+                "conditions": [],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Default",
+                "isEnabled": true,
+                "itemId": "67585d416c72998cf60ed85a"
+            }, {
+                "id": "6757f8138582434245011b0b",
+                "conditions": [{
+                        "id": "675a3e33082bf6442ec1cb5c",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "5d25c81b86f77443e625dd71",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Bear",
+                "isEnabled": true,
+                "itemId": "67585bf5428877c04c038ee3"
+            }, {
+                "id": "6757f843ef44ccd9cae9b4cd",
+                "conditions": [{
+                        "id": "675a3cd947fb8657e9dff96e",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "64e7b971f9d6fa49d6769b44",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Boar",
+                "isEnabled": true,
+                "itemId": "67585cf55ec257bf740a446f"
+            }, {
+                "id": "6757f86db8c6e4b9a80b3fd2",
+                "conditions": [{
+                        "id": "675a3c91a85f0fb1bcd3ff92",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "60e71dc67fcf9c556f325056",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Boutle",
+                "isEnabled": true,
+                "itemId": "67585d161840a37ff10ebdd1"
+            }, {
+                "id": "6757f88b8455992ca790d75f",
+                "conditions": [{
+                        "id": "675a3f349eb418eb05a5be68",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "5bc47dbf86f7741ee74e93b9",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Color1",
+                "isEnabled": true,
+                "itemId": "67585d2cd7a2703986067e99"
+            }, {
+                "id": "6757f8a88e1a324c7432def2",
+                "conditions": [{
+                        "id": "675b5508e6dbed91a6b0005b",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "59674cd986f7744ab26e32f2",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_Duck",
+                "isEnabled": true,
+                "itemId": "67585d6ab032beb9b5097e96"
+            }, {
+                "id": "67584568886bcb95b7a4a7f7",
+                "conditions": [{
+                        "id": "676213550cc583932c118d67",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Blue",
+                "isEnabled": true,
+                "itemId": "675467728b3797a0e8038bd4"
+            }, {
+                "id": "675845a78fc07a5b49df8378",
+                "conditions": [{
+                        "id": "675b69f31d0b9bddcf3f5f20",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "65734c186dc1e402c80dc19e",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Loft",
+                "isEnabled": true,
+                "itemId": "675467aa81067119a10938cb"
+            }, {
+                "id": "675845be076a984e69514f91",
+                "conditions": [{
+                        "id": "675b52f9f0ab8cdfdbf9c999",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 10,
+                        "compareMethod": ">=",
+                        "conditionType": "Level"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Orange",
+                "isEnabled": true,
+                "itemId": "675467bb5b7ebafefd0ebc2e"
+            }, {
+                "id": "675845d08f12ba371ca6efa5",
+                "conditions": [{
+                        "id": "67621407d30f7403f30f63ad",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Prestige",
+                "isEnabled": true,
+                "itemId": "675467c924c9a7ccb509d62f"
+            }, {
+                "id": "675845ef558bd99a397f1423",
+                "conditions": [{
+                        "id": "6762146ef342ccd742326633",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Street",
+                "isEnabled": true,
+                "itemId": "675467e643b934b1a7089ad3"
+            }, {
+                "id": "675846123eb1552410f949e5",
+                "conditions": [{
+                        "id": "676215b97ee3fb4955fbc2da",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "wall",
+                "index": 0,
+                "systemName": "Wall_Wallpaper",
+                "isEnabled": true,
+                "itemId": "675467f4c6e063d76309c60d"
+            }, {
+                "id": "67584672d50f6d3dec589959",
+                "conditions": [{
+                        "id": "675b68f2f769cfcca69205db",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 15,
+                        "compareMethod": ">=",
+                        "conditionType": "Level"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Linolium",
+                "isEnabled": true,
+                "itemId": "6754662cc6e063d76309c607"
+            }, {
+                "id": "675846870ef524572ad413b5",
+                "conditions": [{
+                        "id": "675b6c5904dff2670770d47f",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "666314a31cd52e3d040a2e76",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Loft",
+                "isEnabled": true,
+                "itemId": "6754666c76e1f2b24c0cc956"
+            }, {
+                "id": "675846a8606febda61651929",
+                "conditions": [{
+                        "id": "6762184ff080b2e49af3908d",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Prestige",
+                "isEnabled": true,
+                "itemId": "675466825b7ebafefd0ebc2c"
+            }, {
+                "id": "675846ccf4e8484562b07782",
+                "conditions": [{
+                        "id": "676217c22bf006e9cebf7fb5",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Street",
+                "isEnabled": true,
+                "itemId": "675466a8215930ae4c03ac54"
+            }, {
+                "id": "675846f71b2620cfbdcbb438",
+                "conditions": [{
+                        "id": "676216e78d41f9970abe51a1",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Tile",
+                "isEnabled": true,
+                "itemId": "675466bcc6e063d76309c609"
+            }, {
+                "id": "67584709106d54460af75877",
+                "conditions": [{
+                        "id": "675b6b4d7ab666ffffa49112",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "60896b7bfa70fc097863b8f5",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_Wallpaper",
+                "isEnabled": true,
+                "itemId": "675466d57dadca6836092b26"
+            }, {
+                "id": "6758472232e5ca2c980a17ff",
+                "conditions": [{
+                        "id": "675b699e7fc3694d1fbdf193",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "66058cc208308761cf390993",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "floor",
+                "index": 0,
+                "systemName": "Floor_WoodPlane",
+                "isEnabled": true,
+                "itemId": "675466ea8b3797a0e8038bd2"
+            }, {
+                "id": "675851e45338344d8fe1ce6f",
+                "conditions": [],
+                "type": "ceiling",
+                "index": 0,
+                "systemName": "Ceiling_Default",
+                "isEnabled": true,
+                "itemId": "673b3f977038192ee006aa09"
+            }, {
+                "id": "6758521199c7b5040d87468d",
+                "conditions": [{
+                        "id": "675b6da4252d9b5488608d34",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "5ae4498786f7744bde357695",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "ceiling",
+                "index": 0,
+                "systemName": "Ceiling_Loft",
+                "isEnabled": true,
+                "itemId": "675468937dadca6836092b2a"
+            }, {
+                "id": "6758523adf0e5f08d1d5c132",
+                "conditions": [{
+                        "id": "6762190ecbc8b76abf9648f6",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "conditionType": "Block"
+                    }
+                ],
+                "type": "ceiling",
+                "index": 0,
+                "systemName": "Ceiling_Street",
+                "isEnabled": true,
+                "itemId": "675468bdb784110b2702fe13"
+            }, {
+                "id": "6758524ec55b4ffd1b46cfc2",
+                "conditions": [{
+                        "id": "675b6d4e2815170646a4c704",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 20,
+                        "compareMethod": ">=",
+                        "conditionType": "Level"
+                    }
+                ],
+                "type": "ceiling",
+                "index": 0,
+                "systemName": "Ceiling_Strucco",
+                "isEnabled": true,
+                "itemId": "675468cb43b934b1a7089ad7"
+            }, {
+                "id": "67585260c0250fb99b3b9113",
+                "conditions": [{
+                        "id": "675b6e09cccfb56efdfff2e3",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "target": "6179acbdc760af5ad2053585",
+                        "status": [4],
+                        "availableAfter": 0,
+                        "dispersion": 0,
+                        "conditionType": "Quest"
+                    }
+                ],
+                "type": "ceiling",
+                "index": 0,
+                "systemName": "Ceiling_Wallpaper",
+                "isEnabled": true,
+                "itemId": "675468d8c6e063d76309c60f"
+            }, {
+                "id": "675a99f30fba9efc6a40481d",
+                "conditions": [{
+                        "id": "675b54c583e8ee6215546694",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 12,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "shootingRangeMark",
+                "index": 0,
+                "systemName": "Target_White",
+                "isEnabled": true,
+                "itemId": "675a99c17b193086ca09e8a9"
+            }
+        ],
+        "slots": [{
+                "id": "674ed02cb6db2d9636812abc",
+                "conditions": [{
+                        "id": "675a27f01c8bf60fd61ae1e3",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 4,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Generator_1",
+                "isEnabled": true,
+                "slotId": "Poster_Generator_1",
+                "areaTypeId": 4
+            }, {
+                "id": "674ed05f74c3f1d5251895d7",
+                "conditions": [{
+                        "id": "675a27d932f381a4f8fbb50f",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 4,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Generator_2",
+                "isEnabled": true,
+                "slotId": "Poster_Generator_2",
+                "areaTypeId": 4
+            }, {
+                "id": "674ef857f65f1ea0a23c8bf5",
+                "conditions": [{
+                        "id": "675a283ed80fe59ba7187cf0",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 1,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Security_1",
+                "isEnabled": true,
+                "slotId": "Poster_Security_1",
+                "areaTypeId": 1
+            }, {
+                "id": "6758359991a1b673013fed70",
+                "conditions": [{
+                        "id": "675a29a0010dcab0e2aab13b",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 14,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_ScavCase_1",
+                "isEnabled": true,
+                "slotId": "Poster_ScavCase_1",
+                "areaTypeId": 14
+            }, {
+                "id": "675835a355aede7f2319bf9c",
+                "conditions": [{
+                        "id": "675a29c21ae8bbeb99390a31",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 14,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_ScavCase_2",
+                "isEnabled": true,
+                "slotId": "Poster_ScavCase_2",
+                "areaTypeId": 14
+            }, {
+                "id": "67583a9005b183b695bd7ced",
+                "conditions": [{
+                        "id": "675a2a9662328c796fc649cf",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 3,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Stash_1",
+                "isEnabled": true,
+                "slotId": "Poster_Stash_1",
+                "areaTypeId": 3
+            }, {
+                "id": "67583ab2021ac1aa5a4043cf",
+                "conditions": [{
+                        "id": "675a2afdd5a05de62e609dec",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 2,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_WaterCloset_1",
+                "isEnabled": true,
+                "slotId": "Poster_WaterCloset_1",
+                "areaTypeId": 2
+            }, {
+                "id": "67583b0bd1a3cf6b1cba0b4d",
+                "conditions": [{
+                        "id": "675a2b583cce5bba37035ce6",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 12,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_ShootingRange_1",
+                "isEnabled": true,
+                "slotId": "Poster_ShootingRange_1",
+                "areaTypeId": 12
+            }, {
+                "id": "67583b5816a415c929e098aa",
+                "conditions": [{
+                        "id": "675a2d093ebc7555565e7f8e",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 10,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Workbench_1",
+                "isEnabled": true,
+                "slotId": "Poster_Workbench_1",
+                "areaTypeId": 10
+            }, {
+                "id": "67583b9aa83b9258b5d4a647",
+                "conditions": [{
+                        "id": "675a2d4fd5c1e15483ea2374",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 11,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_IntelligenceCenter_1",
+                "isEnabled": true,
+                "slotId": "Poster_IntelligenceCenter_1",
+                "areaTypeId": 11
+            }, {
+                "id": "67583d31e0f368927e51b8b5",
+                "conditions": [{
+                        "id": "675a2dba101341adba50a2d3",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 8,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Kitchen_1",
+                "isEnabled": true,
+                "slotId": "Poster_Kitchen_1",
+                "areaTypeId": 8
+            }, {
+                "id": "67583dc96c811ee6b24b3fcb",
+                "conditions": [{
+                        "id": "675a2ea9f3d03cff837138f3",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 7,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_MedStation_1",
+                "isEnabled": true,
+                "slotId": "Poster_MedStation_1",
+                "areaTypeId": 7
+            }, {
+                "id": "67583e1c391a80d71cba478d",
+                "conditions": [{
+                        "id": "675b49db118a0bc15d47e6a9",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 17,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_AirFilteringUnit_1",
+                "isEnabled": true,
+                "slotId": "Poster_AirFilteringUnit_1",
+                "areaTypeId": 17
+            }, {
+                "id": "67583f05104ec07eda470388",
+                "conditions": [{
+                        "id": "675a2f55d52741f2d68b5415",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_RestSpace_1",
+                "isEnabled": true,
+                "slotId": "Poster_RestSpace_1",
+                "areaTypeId": 9
+            }, {
+                "id": "67583f22e0efa071494fa0e0",
+                "conditions": [{
+                        "id": "675b4fbc285766929bb16499",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_RestSpace_2",
+                "isEnabled": true,
+                "slotId": "Poster_RestSpace_2",
+                "areaTypeId": 9
+            }, {
+                "id": "67583f2e51bec3123cff1eeb",
+                "conditions": [{
+                        "id": "675b4fd2270e7faa92e7aa50",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_RestSpace_3",
+                "isEnabled": true,
+                "slotId": "Poster_RestSpace_3",
+                "areaTypeId": 9
+            }, {
+                "id": "67583f3972ff2399ad03c470",
+                "conditions": [{
+                        "id": "675a2fad1593db19c7b6978e",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_RestSpace_4",
+                "isEnabled": true,
+                "slotId": "Poster_RestSpace_4",
+                "areaTypeId": 9
+            }, {
+                "id": "6758406430119343e0378bc6",
+                "conditions": [{
+                        "id": "675a2fd260ae9fd7cdec53ee",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 5,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Heating_1",
+                "isEnabled": true,
+                "slotId": "Poster_Heating_1",
+                "areaTypeId": 5
+            }, {
+                "id": "6758407e8f1c0d2d7673f935",
+                "conditions": [{
+                        "id": "675a30104401bf064dc505f8",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 5,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Heating_2",
+                "isEnabled": true,
+                "slotId": "Poster_Heating_2",
+                "areaTypeId": 5
+            }, {
+                "id": "6758408e58b7088c49088789",
+                "conditions": [{
+                        "id": "675a30249307c3bbe31db3cc",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 5,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Heating_3",
+                "isEnabled": true,
+                "slotId": "Poster_Heating_3",
+                "areaTypeId": 5
+            }, {
+                "id": "675841991c9876a629f3b5e1",
+                "conditions": [{
+                        "id": "675a3051b5b58a0c86e7f601",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_1",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_1",
+                "areaTypeId": 23
+            }, {
+                "id": "675841b05566baa9587a9f7b",
+                "conditions": [{
+                        "id": "675a306f2607e9ac22a373e5",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_2",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_2",
+                "areaTypeId": 23
+            }, {
+                "id": "675841ba4cef795d3583cb2a",
+                "conditions": [{
+                        "id": "675a3080dcdba44df5085088",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_3",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_3",
+                "areaTypeId": 23
+            }, {
+                "id": "675841c60c8d4968630ad1e7",
+                "conditions": [{
+                        "id": "675a30922c5083d347f22108",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_4",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_4",
+                "areaTypeId": 23
+            }, {
+                "id": "675841d1f0e089562132025c",
+                "conditions": [{
+                        "id": "675a30a2d7f3dc64cc01a3ac",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_5",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_5",
+                "areaTypeId": 23
+            }, {
+                "id": "675841dba623883657ba9479",
+                "conditions": [{
+                        "id": "675a30b31b2ac555757423a6",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Gym_6",
+                "isEnabled": true,
+                "slotId": "Poster_Gym_6",
+                "areaTypeId": 23
+            }, {
+                "id": "675847ec928fc7bc3f534563",
+                "conditions": [{
+                        "id": "675a383636d1010f5423f2f0",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 23,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Gym_1",
+                "isEnabled": true,
+                "slotId": "Statuette_Gym_1",
+                "areaTypeId": 23
+            }, {
+                "id": "67584c49ac0ebfba035ee065",
+                "conditions": [{
+                        "id": "675a38f677a9b5f7bbc6a8cd",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 16,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_PlaceOfFame_1",
+                "isEnabled": true,
+                "slotId": "Statuette_PlaceOfFame_1",
+                "areaTypeId": 16
+            }, {
+                "id": "67584c9eb81a2305ff5a3bc4",
+                "conditions": [{
+                        "id": "675a39611f94c517b5ea46ac",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 16,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_PlaceOfFame_2",
+                "isEnabled": true,
+                "slotId": "Statuette_PlaceOfFame_2",
+                "areaTypeId": 16
+            }, {
+                "id": "67584cacb572b4a81c89a7fd",
+                "conditions": [{
+                        "id": "675a39775876200b25825c64",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 16,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_PlaceOfFame_3",
+                "isEnabled": true,
+                "slotId": "Statuette_PlaceOfFame_3",
+                "areaTypeId": 16
+            }, {
+                "id": "67584cb933c4d178abb0d57a",
+                "conditions": [{
+                        "id": "675a37c373b485bc0457f04c",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 5,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Heating_1",
+                "isEnabled": true,
+                "slotId": "Statuette_Heating_1",
+                "areaTypeId": 5
+            }, {
+                "id": "67584cd6d4b999572dc2e728",
+                "conditions": [{
+                        "id": "675a37e2f07ebb72bc03665a",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 5,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Heating_2",
+                "isEnabled": true,
+                "slotId": "Statuette_Heating_2",
+                "areaTypeId": 5
+            }, {
+                "id": "67584ce6d6dd7fee265fdf4a",
+                "conditions": [{
+                        "id": "675a37fdda34eefb59806947",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 13,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Library_1",
+                "isEnabled": true,
+                "slotId": "Statuette_Library_1",
+                "areaTypeId": 13
+            }, {
+                "id": "67584d0182dfe5bd705bd08a",
+                "conditions": [{
+                        "id": "675a380f48d9f352c721c73e",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 13,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Library_2",
+                "isEnabled": true,
+                "slotId": "Statuette_Library_2",
+                "areaTypeId": 13
+            }, {
+                "id": "67584d165bb0a928e0ed92bc",
+                "conditions": [{
+                        "id": "675a3777d05a3a27cd2c42f8",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_RestSpace_1",
+                "isEnabled": true,
+                "slotId": "Statuette_RestSpace_1",
+                "areaTypeId": 9
+            }, {
+                "id": "67584d2636962ea94f1cee21",
+                "conditions": [{
+                        "id": "675a3786134b87fc21aa1364",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 9,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_RestSpace_2",
+                "isEnabled": true,
+                "slotId": "Statuette_RestSpace_2",
+                "areaTypeId": 9
+            }, {
+                "id": "67584d2f8b351e9ede3721d9",
+                "conditions": [{
+                        "id": "675a32a30554ea7236284455",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 7,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_MedStation_1",
+                "isEnabled": true,
+                "slotId": "Statuette_MedStation_1",
+                "areaTypeId": 7
+            }, {
+                "id": "67584d49b2469f33a3a7c79d",
+                "conditions": [{
+                        "id": "675a3349a87e3f6e58857f5b",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 7,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_MedStation_2",
+                "isEnabled": true,
+                "slotId": "Statuette_MedStation_2",
+                "areaTypeId": 7
+            }, {
+                "id": "67584d5805439e726ecff9b3",
+                "conditions": [{
+                        "id": "675a325b2d4a9435a0f2a8e2",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 8,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Kitchen_1",
+                "isEnabled": true,
+                "slotId": "Statuette_Kitchen_1",
+                "areaTypeId": 8
+            }, {
+                "id": "67584d7025aca5f1005ed705",
+                "conditions": [{
+                        "id": "675a327815dd5978b685ee57",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 8,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Kitchen_2",
+                "isEnabled": true,
+                "slotId": "Statuette_Kitchen_2",
+                "areaTypeId": 8
+            }, {
+                "id": "67584d7dd190e19580af24c5",
+                "conditions": [{
+                        "id": "675a320f0d8def92009c97fc",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 1,
+                        "compareMethod": ">=",
+                        "areaType": 19,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_BoozeGenerator_1",
+                "isEnabled": true,
+                "slotId": "Statuette_BoozeGenerator_1",
+                "areaTypeId": 19
+            }, {
+                "id": "67584d9fdd0f493728a7c1ac",
+                "conditions": [{
+                        "id": "675b506422acdee48a9bb6c5",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 10,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_Workbench_1",
+                "isEnabled": true,
+                "slotId": "Statuette_Workbench_1",
+                "areaTypeId": 10
+            }, {
+                "id": "67584e135e4b1c209f06a5e0",
+                "conditions": [{
+                        "id": "675a31acc92f00fb52798887",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 11,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_IntelligenceCenter_1",
+                "isEnabled": true,
+                "slotId": "Statuette_IntelligenceCenter_1",
+                "areaTypeId": 11
+            }, {
+                "id": "67584e2ffb210dd2b8f14bf4",
+                "conditions": [{
+                        "id": "675a317bbab410bdca93204a",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 12,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "statuetteSlot",
+                "index": 0,
+                "systemName": "Statuette_ShootingRange_1",
+                "isEnabled": true,
+                "slotId": "Statuette_ShootingRange_1",
+                "areaTypeId": 12
+            }, {
+                "id": "675a288a5333fc2e857937eb",
+                "conditions": [{
+                        "id": "675a290ca9cbfcf0a65e6c14",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 2,
+                        "compareMethod": ">=",
+                        "areaType": 1,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Security_2",
+                "isEnabled": true,
+                "slotId": "Poster_Security_2",
+                "areaTypeId": 1
+            }, {
+                "id": "675a29280b304b805ad8d9db",
+                "conditions": [{
+                        "id": "675a2936a2952d695865dfc2",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 1,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_Security_3",
+                "isEnabled": true,
+                "slotId": "Poster_Security_3",
+                "areaTypeId": 1
+            }, {
+                "id": "675a2b7ca059e1338d8325d8",
+                "conditions": [{
+                        "id": "675a2b98ad41cd4369955c8e",
+                        "index": 0,
+                        "dynamicLocale": false,
+                        "visibilityConditions": [],
+                        "globalQuestCounterId": "",
+                        "parentId": "",
+                        "value": 3,
+                        "compareMethod": ">=",
+                        "areaType": 12,
+                        "conditionType": "HideoutArea"
+                    }
+                ],
+                "type": "posterSlot",
+                "index": 0,
+                "systemName": "Poster_ShootingRange_2",
+                "isEnabled": true,
+                "slotId": "Poster_ShootingRange_2",
+                "areaTypeId": 12
+            }
+        ]
+    }

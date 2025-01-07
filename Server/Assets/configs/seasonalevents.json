@@ -1,5 +1,25 @@
 {
     "enableSeasonalEventDetection": true,
+    "botAppearanceChanges": {
+        "CHRISTMAS": {
+            "usec": {
+                "body": {
+                    "675fd6897a57e0b2a00e3405": 10
+                },
+                "feet": {
+                    "675fd6b2f26b0db5f0060eb6": 10
+                }
+            },
+            "bear": {
+                "body": {
+                    "67599500a378f89a3e089b56": 10
+                },
+                "feet": {
+                    "675994c9f7adb892bd080766": 10
+                }
+            }
+        }
+    },
     "eventGear": {
         "halloween": {
             "assault": {
@@ -77,6 +97,14 @@
                     "5a43943586f77416ad2f06e2": 150,
                     "5a43957686f7742a2c2f11b0": 150
                 }
+            },
+			"bosskilla": {
+                "ArmorVest": {
+                    "674d91ce6e862d5a95059ed6": 200
+                },
+				"Headwear": {
+					"6759af0f9c8a538dd70bfae6": 200
+				}
             },
             "bossknight": {
                 "FaceCover": {
@@ -213,7 +241,8 @@
             },
             "bear": {
                 "FaceCover": {
-                    "5c1a1e3f2e221602b66cc4c2": 30
+                    "5c1a1e3f2e221602b66cc4c2": 30,
+					"675ac888803644528007b3f6": 30
                 },
                 "Headwear": {
                     "5a43957686f7742a2c2f11b0": 80,
@@ -222,7 +251,8 @@
             },
             "usec": {
                 "FaceCover": {
-                    "5c1a1e3f2e221602b66cc4c2": 30
+                    "5c1a1e3f2e221602b66cc4c2": 30,
+					"675ac888803644528007b3f6": 30
                 },
                 "Headwear": {
                     "5a43957686f7742a2c2f11b0": 80,
@@ -8333,7 +8363,9 @@
             "endDay": "31",
             "endMonth": "12",
             "settings": {
-                "enableSanta": true
+				"enableChristmasHideout": true,
+                "enableSanta": true,
+				"adjustBotAppearances": true
             }
         },
         {
@@ -8342,8 +8374,27 @@
             "type": "NEWYEARS",
             "startDay": "1",
             "startMonth": "1",
+            "endDay": "1",
+            "endMonth": "1",
+			"settings": {
+				"enableChristmasHideout": true,
+                "enableSanta": true,
+				"adjustBotAppearances": true
+            }
+        },
+		{
+            "enabled": true,
+            "name": "christmas January",
+            "type": "CHRISTMAS",
+            "startDay": "2",
+            "startMonth": "1",
             "endDay": "7",
-            "endMonth": "1"
+            "endMonth": "1",
+            "settings": {
+				"enableChristmasHideout": true,
+                "enableSanta": true,
+				"adjustBotAppearances": true
+            }
         },
         {
             "enabled": true,
@@ -12262,5 +12313,12 @@
                 }
             ]
         }
-    }
+    },
+	"christmasContainerIds": [
+		"container_custom_DesignStuff_00427",
+		"container_Shopping_Mall_DesignStuff_00808",
+		"container_Lighthouse_DesignStuff_00001",
+		"container_shoreline_DesignStuff_00418",
+		"container_woods_design_stuff_00328"
+	]
 }

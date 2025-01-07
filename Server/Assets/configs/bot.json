@@ -2807,19 +2807,19 @@
         }
     },
     "maxBotCap": {
-        "factory4_day": 15,
-        "factory4_night": 15,
-        "bigmap": 23,
-        "woods": 23,
-        "shoreline": 23,
-        "lighthouse": 23,
-        "rezervbase": 22,
-        "interchange": 23,
-        "laboratory": 22,
-        "tarkovstreets": 26,
-        "sandbox": 16,
-        "sandbox_high": 16,
-        "default": 20
+        "factory4_day": 12,
+        "factory4_night": 12,
+        "bigmap": 18,
+        "woods": 19,
+        "shoreline": 20,
+        "lighthouse": 18,
+        "rezervbase": 20,
+        "interchange": 20,
+        "laboratory": 18,
+        "tarkovstreets": 20,
+        "sandbox": 11,
+        "sandbox_high": 12,
+        "default": 18
     },
     "walletLoot": {
         "chancePercent": 35,

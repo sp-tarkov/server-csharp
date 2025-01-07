@@ -301,6 +301,59 @@
         "Warn": [
           "sectactPriestEvent"
         ]
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "assault",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy"
+        ],
+        "BotRole": "bossKilla"
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "bossKilla",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy",
+          "exUsec",
+          "followerBigPipe",
+          "followerBirdEye",
+          "followerBully"
+        ],
+        "BotRole": "assault",
+        "SavagePlayerBehaviour": "Neutral"
       }
     ],
     "DistToActivate": 260,
@@ -317,10 +370,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 22,
+  "BotMax": 19,
   "BotMaxPlayer": 10,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 1200,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -329,7 +382,7 @@
   "BotSpawnTimeOnMax": 350,
   "BotSpawnTimeOnMin": 340,
   "BotStart": 20,
-  "BotStartPlayer": 200,
+  "BotStartPlayer": 550,
   "BotStop": 2400,
   "Description": "The South-Eastern highway interchange is a critical point in the transportation system of the city. Essentially, it is a strategical node connecting the port and harbour infrastructure with the industrial outskirts of Tarkov. ",
   "DisabledForScav": false,
@@ -407,7 +460,9 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
+      "Khorovod": {
+        "Chance": 0
+      },
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -416,6 +471,9 @@
       "ZombieCallPeriodSec": 1,
       "ZombieCallRadiusLimit": 125,
       "ZombieMultiplier": 5
+    },
+    "Khorovod": {
+      "Chance": 0
     }
   },
   "ForceOnlineRaidInPVE": false,
@@ -432,32 +490,36 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
+      "minPlayers": 14,
+      "time": 240
+    },
+    {
+      "minPlayers": 12,
+      "time": 300
+    },
+    {
+      "minPlayers": 10,
+      "time": 360
+    },
+    {
+      "minPlayers": 8,
+      "time": 390
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 420
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 450
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 480
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 510
     }
   ],
   "MaxBotPerZone": 2,
@@ -7545,9 +7607,10 @@
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "INT_TRANSIT_6_COND",
       "description": "INT_TRANSIT_6_DESC",
+      "events": false,
       "id": 6,
       "location": "bigmap",
       "name": "INT_TRANSIT_6",
@@ -7556,14 +7619,27 @@
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "INT_TRANSIT_7_COND",
       "description": "INT_TRANSIT_7_DESC",
+      "events": false,
       "id": 7,
       "location": "TarkovStreets",
       "name": "INT_TRANSIT_7",
       "target": "5714dc692459777137212e12",
       "time": 30
+    },
+    {
+      "activateAfterSec": 300,
+      "active": true,
+      "conditions": "NY_FINAL_COND",
+      "description": "NY_FINAL_DESC",
+      "events": true,
+      "id": 42,
+      "location": "Interchange",
+      "name": "NY_FINAL",
+      "target": "5714dbc024597771384a510d",
+      "time": 20
     }
   ],
   "users_gather_seconds": 0,

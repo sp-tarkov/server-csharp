@@ -411,6 +411,84 @@
         "Warn": [
           "sectactPriestEvent"
         ]
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "assault",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossKilla",
+          "bossBully",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy"
+        ],
+        "BotRole": "bossGluhar"
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "assault",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossKilla",
+          "bossBully",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy"
+        ],
+        "BotRole": "pmcBot"
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "bossKilla",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy",
+          "exUsec",
+          "followerBigPipe",
+          "followerBirdEye",
+          "followerBully",
+          "pmcBot"
+        ],
+        "BotRole": "assault",
+        "SavagePlayerBehaviour": "Neutral"
       }
     ],
     "DistToActivate": 330,
@@ -517,7 +595,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -526,6 +603,9 @@
       "ZombieCallPeriodSec": 1,
       "ZombieCallRadiusLimit": 125,
       "ZombieMultiplier": 5
+    },
+    "Khorovod": {
+      "Chance": 0
     }
   },
   "ForceOnlineRaidInPVE": false,
@@ -542,32 +622,24 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
+      "minPlayers": 9,
+      "time": 240
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 300
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 360
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 420
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 450
     }
   ],
   "MaxBotPerZone": 4,
@@ -681,7 +753,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -800,7 +872,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 30
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -1387,7 +1459,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -2033,7 +2105,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -2208,7 +2280,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -2296,7 +2368,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -3030,7 +3102,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 25
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -3294,7 +3366,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 8
+          "Radius": 15
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -4027,7 +4099,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 8
+          "Radius": 25
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -4467,7 +4539,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 20
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -4496,7 +4568,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 15
+          "Radius": 25
         }
       },
       "DelayToCanSpawnSec": 4,
@@ -6526,16 +6598,30 @@
     {
       "TemplateId": "634959225289190e5e773b3b",
       "Value": 7
+    },
+    {
+      "TemplateId": "675aaa003107dac10006332f",
+      "Value": 2
     }
   ],
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaa003107dac10006332f",
+      "Name": "reserve_secret_minefield"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "REZ_TRANSIT_18_COND",
       "description": "REZ_TRANSIT_18_DESC",
+      "events": false,
       "id": 18,
       "location": "bigmap",
       "name": "REZ_TRANSIT_18",
@@ -6543,21 +6629,23 @@
       "time": 30
     },
     {
-      "activateAfterSec": 60,
+      "activateAfterSec": 300,
       "active": true,
       "conditions": "REZ_TRANSIT_19_COND",
       "description": "REZ_TRANSIT_19_DESC",
+      "events": true,
       "id": 19,
       "location": "Woods",
       "name": "REZ_TRANSIT_19",
       "target": "5704e3c2d2720bac5b8b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "REZ_TRANSIT_20_COND",
       "description": "REZ_TRANSIT_20_DESC",
+      "events": false,
       "id": 20,
       "location": "Lighthouse",
       "name": "REZ_TRANSIT_20",
