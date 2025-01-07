@@ -2,12 +2,12 @@
 
 public class HttpCallbacks
 {
-    public void Load()
+    public async Task OnLoad()
     {
         throw new NotImplementedException();
     }
 
-    public void SendImage(string sessionID, object req, object resp, object body)
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }

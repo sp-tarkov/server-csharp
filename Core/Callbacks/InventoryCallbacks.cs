@@ -1,4 +1,9 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Inventory;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Quests;
+
+namespace Core.Callbacks;
 
 public class InventoryCallbacks
 {
@@ -52,6 +57,11 @@ public class InventoryCallbacks
         throw new NotImplementedException();
     }
     
+    public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+    
     public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID)
     {
         throw new NotImplementedException();
@@ -78,6 +88,32 @@ public class InventoryCallbacks
     }
     
     public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData info, string sessionID,
+        ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData info, string sessionID, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse SetFavoriteItem(PmcData pmcData, SetFavoriteItems info, string sessionID, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, string sessionID, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, string sessionID, ItemEventRouterResponse output)
     {
         throw new NotImplementedException();
     }

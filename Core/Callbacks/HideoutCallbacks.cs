@@ -1,53 +1,105 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Hideout;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Spt.Config;
+
+namespace Core.Callbacks;
 
 public class HideoutCallbacks
 {
-    public ItemEventRouterRepsonse Upgrade(PmcData pmcData, HideoutUpgraderequestData info, string sessionID)
+    private HideoutConfig _hideoutConfig;
+    
+    public HideoutCallbacks()
+    {
+        
+    }
+    
+    public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleterequestData info, string sessionID)
+    public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData info, string sessionID)
+    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData info, string sessionID)
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData info, string sessionID)
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData info, string sessionID)
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionRequestData info, string sessionID)
+    public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public ItemEventRouterRepsonse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData info, string sessionID)
+    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public bool Update(int timeSinceLastRun)
+    public ItemEventRouterResponse HandleQTEEvent(PmcData pmcData, HandleQTEEventRequestData info, string sessionID, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse RecordShootingRangePoints(PmcData pmcData, RecordShootingRangePoints info, string sessionID, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutImproveAreaRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse CicleOfCultistProductionStart(PmcData pmcData, HideoutCircleOfCultistProductionStartRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse HideoutDeleteProductionRequestData(PmcData pmcData, HideoutDeleteProductionRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public async Task<bool> OnUpdate(int timeSinceLastRun)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }
