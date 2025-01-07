@@ -583,7 +583,7 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 15,
+  "BotMax": 14,
   "BotMaxPlayer": 14,
   "BotMaxPvE": 25,
   "BotMaxTimePlayer": 1000,
@@ -698,32 +698,24 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
+      "minPlayers": 8,
+      "time": 240
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 300
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 360
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 420
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 450
     }
   ],
   "MaxBotPerZone": 5,

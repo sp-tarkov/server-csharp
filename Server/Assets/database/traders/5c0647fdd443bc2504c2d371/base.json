@@ -64,7 +64,8 @@
       "6399f54b0a36db13c823ad21",
       "66687bc89111279d600b5062",
       "66d98233302686954b0c6f81",
-      "6707d0804e617ec94f0e562f"
+      "6707d0804e617ec94f0e562f",
+      "67408903268737ef6908d432"
     ]
   },
   "location": "",
@@ -124,6 +125,7 @@
     "currency_coefficient": 1,
     "excluded_category": [],
     "excluded_id_list": [],
+    "price_rate": 0,
     "quality": "0.7"
   },
   "sell_category": [],
