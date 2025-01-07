@@ -22,11 +22,6 @@
         <Content Include="Assets\**">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
-        <Folder Include="Context\" />
-        <Folder Include="Helpers\"/>
-        <Folder Include="Servers\" />
-        <Folder Include="Services\" />
-        <Folder Include="Utils\" />
     </ItemGroup>
 
 </Project>
