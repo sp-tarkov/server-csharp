@@ -15,7 +15,7 @@ public class LocationBase
     public List<AirdropParameter> AirdropParameters { get; set; }
 
     [JsonPropertyName("Area")]
-    public int Area { get; set; }
+    public double Area { get; set; }
 
     [JsonPropertyName("AveragePlayTime")]
     public double AveragePlayTime { get; set; }
@@ -124,10 +124,10 @@ public class LocationBase
     public double GlobalContainerChanceModifier { get; set; }
 
     [JsonPropertyName("IconX")]
-    public int IconX { get; set; }
+    public double IconX { get; set; }
 
     [JsonPropertyName("IconY")]
-    public int IconY { get; set; }
+    public double IconY { get; set; }
 
     [JsonPropertyName("Id")]
     public string Id { get; set; }
@@ -151,7 +151,7 @@ public class LocationBase
     public int MaxBotPerZone { get; set; }
 
     [JsonPropertyName("MaxDistToFreePoint")]
-    public double MaxDistToFreePoint { get; set; }
+    public int MaxDistToFreePoint { get; set; }
 
     [JsonPropertyName("MaxPlayers")]
     public int MaxPlayers { get; set; }
@@ -303,7 +303,7 @@ public class LocationBase
 
 public class Transit {
     [JsonPropertyName("activateAfterSec")]
-    public string ActivateAfterSeconds { get; set; }
+    public int ActivateAfterSeconds { get; set; } // TODO: Int in client
     
     [JsonPropertyName("active")]
     public bool IsActive { get; set; }
@@ -347,38 +347,44 @@ public class NonWaveGroupScenario {
 public class Limit : MinMax {
     [JsonPropertyName("items")]
     public object[] Items { get; set; } // TODO: was on TS any[] hmmm..
+    
+    [JsonPropertyName("min")]
+    public int Min { get; set; }
+    
+    [JsonPropertyName("max")]
+    public int Max { get; set; }
 }
 
 public class AirdropParameter {
     [JsonPropertyName("AirdropPointDeactivateDistance")]
-    public double AirdropPointDeactivateDistance { get; set; }
+    public int AirdropPointDeactivateDistance { get; set; }
     
     [JsonPropertyName("MinPlayersCountToSpawnAirdrop")]
-    public double MinimumPlayersCountToSpawnAirdrop { get; set; }
+    public int MinimumPlayersCountToSpawnAirdrop { get; set; }
     
     [JsonPropertyName("PlaneAirdropChance")]
     public double PlaneAirdropChance { get; set; }
     
     [JsonPropertyName("PlaneAirdropCooldownMax")]
-    public double PlaneAirdropCooldownMax { get; set; }
+    public int PlaneAirdropCooldownMax { get; set; }
     
     [JsonPropertyName("PlaneAirdropCooldownMin")]
-    public double PlaneAirdropCooldownMin { get; set; }
+    public int PlaneAirdropCooldownMin { get; set; }
     
     [JsonPropertyName("PlaneAirdropEnd")]
-    public double PlaneAirdropEnd { get; set; }
+    public int PlaneAirdropEnd { get; set; }
     
     [JsonPropertyName("PlaneAirdropMax")]
-    public double PlaneAirdropMax { get; set; }
+    public int PlaneAirdropMax { get; set; }
     
     [JsonPropertyName("PlaneAirdropStartMax")]
-    public double PlaneAirdropStartMax { get; set; }
+    public int PlaneAirdropStartMax { get; set; }
     
     [JsonPropertyName("PlaneAirdropStartMin")]
-    public double PlaneAirdropStartMin { get; set; }
+    public int PlaneAirdropStartMin { get; set; }
     
     [JsonPropertyName("UnsuccessfulTryPenalty")]
-    public double UnsuccessfulTryPenalty { get; set; }
+    public int UnsuccessfulTryPenalty { get; set; }
 }
 
 public class Banner {
@@ -613,7 +619,7 @@ public class SpawnPointParam
     public int CorePointId { get; set; }
     
     [JsonPropertyName("DelayToCanSpawnSec")]
-    public int DelayToCanSpawnSec { get; set; }
+    public double DelayToCanSpawnSec { get; set; }
     
     [JsonPropertyName("Id")]
     public string Id { get; set; }
@@ -653,7 +659,7 @@ public class Exit
 {
     /** % Chance out of 100 exit will appear in raid */
     [JsonPropertyName("Chance")]
-    public int Chance { get; set; }
+    public double Chance { get; set; }
     
     [JsonPropertyName("ChancePVE")]
     public int ChancePVE { get; set; }
@@ -671,7 +677,7 @@ public class Exit
     public bool EventAvailable { get; set; }
     
     [JsonPropertyName("ExfiltrationTime")]
-    public float ExfiltrationTime { get; set; }
+    public double ExfiltrationTime { get; set; }
     
     [JsonPropertyName("ExfiltrationTimePVE")]
     public float ExfiltrationTimePVE { get; set; }
@@ -686,16 +692,16 @@ public class Exit
     public string Id { get; set; }
     
     [JsonPropertyName("MaxTime")]
-    public float MaxTime { get; set; }
+    public double MaxTime { get; set; }
     
     [JsonPropertyName("MaxTimePVE")]
-    public float MaxTimePVE { get; set; }
+    public double MaxTimePVE { get; set; }
     
     [JsonPropertyName("MinTime")]
-    public float MinTime { get; set; }
+    public double MinTime { get; set; }
     
     [JsonPropertyName("MinTimePVE")]
-    public float MinTimePVE { get; set; }
+    public double MinTimePVE { get; set; }
     
     [JsonPropertyName("Name")]
     public string Name { get; set; }
