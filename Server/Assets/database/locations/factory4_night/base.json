@@ -425,20 +425,24 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
+      "minPlayers": 5,
+      "time": 240
+    },
+    {
       "minPlayers": 4,
-      "time": 60
+      "time": 300
     },
     {
       "minPlayers": 3,
-      "time": 70
+      "time": 360
     },
     {
       "minPlayers": 2,
-      "time": 120
+      "time": 420
     },
     {
       "minPlayers": 1,
-      "time": 330
+      "time": 450
     }
   ],
   "MaxBotPerZone": 0,
@@ -4972,14 +4976,27 @@
     {
       "TemplateId": "634959225289190e5e773b3b",
       "Value": 6
+    },
+    {
+      "TemplateId": "675aaaf674a7619a5304c233",
+      "Value": 2
     }
   ],
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaaf674a7619a5304c233",
+      "Name": "factory_secret_ark"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "FAC_TRANSIT_12_COND",
       "description": "FAC_TRANSIT_12_DESC",
       "id": 12,
@@ -4990,7 +5007,7 @@
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "FAC_TRANSIT_13_COND",
       "description": "FAC_TRANSIT_13_DESC",
       "id": 13,

@@ -485,7 +485,7 @@
         "regular",
         "pve"
       ],
-      "Supports": [],
+      "Supports": null,
       "Time": -1,
       "TriggerId": "",
       "TriggerName": ""
@@ -601,6 +601,59 @@
         "Warn": [
           "sectactPriestEvent"
         ]
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "assault",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy"
+        ],
+        "BotRole": "exUsec"
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "bossKilla",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy",
+          "exUsec",
+          "followerBigPipe",
+          "followerBirdEye",
+          "followerBully"
+        ],
+        "BotRole": "assault",
+        "SavagePlayerBehaviour": "Neutral"
       }
     ],
     "DistToActivate": 330,
@@ -617,10 +670,10 @@
     "VisibleDistance": 1.3
   },
   "BotMarksman": 0,
-  "BotMax": 22,
+  "BotMax": 17,
   "BotMaxPlayer": 7,
   "BotMaxPvE": 29,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 1200,
   "BotNormal": 50,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 15,
@@ -707,7 +760,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -716,6 +768,9 @@
       "ZombieCallPeriodSec": 1,
       "ZombieCallRadiusLimit": 200,
       "ZombieMultiplier": 5
+    },
+    "Khorovod": {
+      "Chance": 0
     }
   },
   "ForceOnlineRaidInPVE": false,
@@ -732,32 +787,24 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
-    },
-    {
-      "minPlayers": 6,
-      "time": 120
-    },
-    {
-      "minPlayers": 5,
-      "time": 180
-    },
-    {
-      "minPlayers": 4,
+      "minPlayers": 11,
       "time": 240
     },
     {
-      "minPlayers": 3,
+      "minPlayers": 8,
       "time": 300
     },
     {
-      "minPlayers": 2,
+      "minPlayers": 5,
       "time": 360
     },
     {
-      "minPlayers": 1,
+      "minPlayers": 2,
       "time": 420
+    },
+    {
+      "minPlayers": 1,
+      "time": 450
     }
   ],
   "MaxBotPerZone": 8,
@@ -846,7 +893,7 @@
           "Radius": 100
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 4,
       "Id": "0156db2d-5136-4bff-a562-9fb4fb952999",
       "Infiltration": "",
@@ -938,7 +985,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 15,
+      "CorePointId": 17,
       "DelayToCanSpawnSec": 3600,
       "Id": "06b05fe3-3a1e-4634-9157-52e02edfb3cc",
       "Infiltration": "",
@@ -1031,7 +1078,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "0a105306-31c1-4408-b1df-86dd3890693c",
       "Infiltration": "",
@@ -1246,7 +1293,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "189bf4a7-9b7c-4038-b6c8-6f319a0e124f",
       "Infiltration": "",
@@ -1369,7 +1416,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 8,
+      "CorePointId": 10,
       "DelayToCanSpawnSec": 3600,
       "Id": "1cd9b175-2223-449f-a63b-064a5a860057",
       "Infiltration": "",
@@ -1400,7 +1447,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 15,
+      "CorePointId": 17,
       "DelayToCanSpawnSec": 3600,
       "Id": "1d327156-2c17-446f-9f62-8400f1178247",
       "Infiltration": "",
@@ -1523,7 +1570,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 19,
+      "CorePointId": 21,
       "DelayToCanSpawnSec": 4,
       "Id": "23c3b739-987a-42d4-a639-0a55f93bd563",
       "Infiltration": "",
@@ -1554,7 +1601,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 4,
+      "CorePointId": 8,
       "DelayToCanSpawnSec": 4,
       "Id": "263cbb1f-5046-49be-8845-652a12561acd",
       "Infiltration": "",
@@ -1644,7 +1691,7 @@
           "Radius": 40
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "27e85a39-0768-4a6f-9d46-c7ec39a5cba1",
       "Infiltration": "",
@@ -1765,7 +1812,7 @@
           "Radius": 140
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "291165b2-16c2-4c7a-8baf-1a7e9f6f83bb",
       "Infiltration": "",
@@ -1858,7 +1905,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "2d1563cd-b15e-4ee0-a528-e1822285b0c5",
       "Infiltration": "",
@@ -2013,7 +2060,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "2ff52f01-f8ad-42c2-977b-e3b136c80057",
       "Infiltration": "",
@@ -2074,7 +2121,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 21,
+      "CorePointId": 23,
       "DelayToCanSpawnSec": 4,
       "Id": "3134f27a-31ed-41ee-866d-0f1e35f0ff7d",
       "Infiltration": "",
@@ -2439,7 +2486,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 8,
+      "CorePointId": 10,
       "DelayToCanSpawnSec": 3600,
       "Id": "41cf4fd7-e698-4aed-8966-180df81dbb59",
       "Infiltration": "",
@@ -2470,7 +2517,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 8,
+      "CorePointId": 10,
       "DelayToCanSpawnSec": 3600,
       "Id": "435828ad-da49-4163-b005-169181c66e4f",
       "Infiltration": "",
@@ -2532,7 +2579,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "4485b593-d7db-4329-82e2-655af293dc13",
       "Infiltration": "",
@@ -2594,7 +2641,7 @@
           "Radius": 100
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 4,
       "Id": "460b507b-ed63-4a4a-8502-eecd321a1d3d",
       "Infiltration": "",
@@ -2745,7 +2792,7 @@
           "Radius": 100
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 4,
       "Id": "4c2205a2-be1a-4abd-addf-7ea9c77a0c0a",
       "Infiltration": "",
@@ -2838,7 +2885,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 12,
+      "CorePointId": 14,
       "DelayToCanSpawnSec": 3600,
       "Id": "4f8bd9ad-447d-4da5-b2d5-fda9cc05d026",
       "Infiltration": "",
@@ -2899,7 +2946,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 21,
+      "CorePointId": 23,
       "DelayToCanSpawnSec": 4,
       "Id": "51349452-d639-43bc-9eef-b9bb80bd6af1",
       "Infiltration": "",
@@ -3022,7 +3069,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "57217803-b7b9-4cc7-83d2-bfe316750c2e",
       "Infiltration": "",
@@ -3113,7 +3160,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 3600,
       "Id": "5c1c074b-9696-435a-81ad-e924202b98f2",
       "Infiltration": "",
@@ -3144,7 +3191,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "5c38a67f-0095-42d3-9ba6-d5726f071972",
       "Infiltration": "",
@@ -3175,7 +3222,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 20,
+      "CorePointId": 22,
       "DelayToCanSpawnSec": 4,
       "Id": "5c814f61-bbe3-48ab-8063-b2a70eb3542c",
       "Infiltration": "",
@@ -3206,7 +3253,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "5e2936bd-1966-4e6a-b731-bce646ca2136",
       "Infiltration": "",
@@ -3358,7 +3405,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "64322540-a704-4d6c-9ba5-1d4ded2bf28a",
       "Infiltration": "",
@@ -3449,7 +3496,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 15,
+      "CorePointId": 17,
       "DelayToCanSpawnSec": 3600,
       "Id": "6643cdd3-37af-45fb-93f4-2c2f9b2ec580",
       "Infiltration": "",
@@ -3511,7 +3558,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "66d74b51-9203-42e6-bef5-9e452ba871dc",
       "Infiltration": "",
@@ -3663,7 +3710,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 26,
+      "CorePointId": 28,
       "DelayToCanSpawnSec": 4,
       "Id": "6b305477-7b1e-4ca1-9139-a4e3848e003c",
       "Infiltration": "",
@@ -3756,7 +3803,7 @@
           "Radius": 100
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "71331f39-d65f-4b08-924e-366209cb46b6",
       "Infiltration": "",
@@ -3909,7 +3956,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 21,
+      "CorePointId": 23,
       "DelayToCanSpawnSec": 4,
       "Id": "74bed501-a620-4f27-bac1-b7e3a556dc22",
       "Infiltration": "",
@@ -3940,7 +3987,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 20,
+      "CorePointId": 22,
       "DelayToCanSpawnSec": 4,
       "Id": "74d88c3b-3b82-4949-9ab1-98c30141e588",
       "Infiltration": "",
@@ -4033,7 +4080,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "76d4a9a5-bcda-46af-b16c-e87fb867492b",
       "Infiltration": "",
@@ -4154,7 +4201,7 @@
           "Radius": 35
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "7cc47cc4-c9b3-4f8a-a5fd-9be54d43f752",
       "Infiltration": "",
@@ -4185,7 +4232,7 @@
           "Radius": 160
         }
       },
-      "CorePointId": 24,
+      "CorePointId": 26,
       "DelayToCanSpawnSec": 4,
       "Id": "800af768-9fbd-407a-9544-f76e13b5a523",
       "Infiltration": "",
@@ -4246,7 +4293,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "81bd9e3f-0ff6-49af-8769-00cb781786c5",
       "Infiltration": "",
@@ -4276,7 +4323,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "84047c7f-e461-460e-8378-6f85a74b835f",
       "Infiltration": "",
@@ -4459,7 +4506,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 4,
+      "CorePointId": 8,
       "DelayToCanSpawnSec": 4,
       "Id": "8a5e9fbb-8014-4711-abc2-bc9010c30721",
       "Infiltration": "",
@@ -4521,7 +4568,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 19,
+      "CorePointId": 21,
       "DelayToCanSpawnSec": 4,
       "Id": "8c8942d2-33d7-4926-b61e-b844b10fb18b",
       "Infiltration": "",
@@ -4552,7 +4599,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "8fae9265-05f2-4210-bdcb-11834b1424a7",
       "Infiltration": "",
@@ -4644,7 +4691,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "91f49ddc-7c01-4569-9b51-6d7ac019120b",
       "Infiltration": "",
@@ -4675,7 +4722,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 25,
+      "CorePointId": 27,
       "DelayToCanSpawnSec": 4,
       "Id": "92c20fd6-5480-4298-a104-dbb7b09f0e6b",
       "Infiltration": "",
@@ -4918,7 +4965,7 @@
           "Radius": 35
         }
       },
-      "CorePointId": 22,
+      "CorePointId": 24,
       "DelayToCanSpawnSec": 4,
       "Id": "98c771f5-a2ab-4979-a514-654576598195",
       "Infiltration": "",
@@ -4980,7 +5027,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "9aae4ab4-74ff-4384-b691-03b1ed0b5fb7",
       "Infiltration": "",
@@ -5041,7 +5088,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "9bc9c196-b64b-465b-ae16-c91ebd5080ef",
       "Infiltration": "",
@@ -5161,7 +5208,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "9eedd190-88a3-42f2-84ae-9483691d9986",
       "Infiltration": "",
@@ -5254,7 +5301,7 @@
           "Radius": 40
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 3600,
       "Id": "a068f918-1c5f-4311-b088-2c294f1bdaa1",
       "Infiltration": "",
@@ -5314,7 +5361,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 17,
+      "CorePointId": 19,
       "DelayToCanSpawnSec": 2000,
       "Id": "a22f75f6-0e9a-4e19-be56-a9099861c045",
       "Infiltration": "",
@@ -5405,7 +5452,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 26,
+      "CorePointId": 28,
       "DelayToCanSpawnSec": 4,
       "Id": "a552c808-942d-4db8-b09b-abfdd3ef45fe",
       "Infiltration": "",
@@ -5436,7 +5483,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 11,
+      "CorePointId": 13,
       "DelayToCanSpawnSec": 3600,
       "Id": "a59edfb4-1545-4908-9391-42ed1653821a",
       "Infiltration": "",
@@ -5467,7 +5514,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 20,
+      "CorePointId": 22,
       "DelayToCanSpawnSec": 4,
       "Id": "a69d60a1-8252-4404-9e58-87b1dfbcd2ac",
       "Infiltration": "",
@@ -5498,7 +5545,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 8,
       "DelayToCanSpawnSec": 4,
       "Id": "a91f971b-d962-4be7-83eb-a4319e0fa8ad",
       "Infiltration": "",
@@ -5559,7 +5606,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 19,
+      "CorePointId": 21,
       "DelayToCanSpawnSec": 4,
       "Id": "ab68fd30-5aa4-4091-9987-a3772136bc00",
       "Infiltration": "",
@@ -5649,7 +5696,7 @@
           "Radius": 50
         }
       },
-      "CorePointId": 18,
+      "CorePointId": 20,
       "DelayToCanSpawnSec": 4,
       "Id": "b10fefc8-e1a2-478a-b2ca-04ac0d0f7cac",
       "Infiltration": "",
@@ -5926,7 +5973,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "be8fb70e-ab66-40ef-a82e-2a49c2d9ed43",
       "Infiltration": "",
@@ -5987,7 +6034,7 @@
           "Radius": 40
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "bf975195-82da-46b7-9f69-9257a3f2dce0",
       "Infiltration": "",
@@ -6049,7 +6096,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 19,
+      "CorePointId": 21,
       "DelayToCanSpawnSec": 4,
       "Id": "c0c2f790-c283-4e6a-aecb-c6e5f06aa9e5",
       "Infiltration": "",
@@ -6110,7 +6157,7 @@
           "Radius": 35
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "c269b7f5-17fa-4c7e-b5a6-bbacb5ce0003",
       "Infiltration": "",
@@ -6140,7 +6187,7 @@
           "Radius": 140
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "c3bcd168-85f1-48c8-a46c-58727bfeb632",
       "Infiltration": "",
@@ -6201,7 +6248,7 @@
           "Radius": 240
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "c4a79941-9132-4067-9678-b5bbe1104713",
       "Infiltration": "",
@@ -6262,7 +6309,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 15,
+      "CorePointId": 17,
       "DelayToCanSpawnSec": 3600,
       "Id": "c820f8ff-0b02-4078-a5ea-27604950b4f8",
       "Infiltration": "",
@@ -6506,7 +6553,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "d0b5c25c-7439-45b9-a830-21a194831752",
       "Infiltration": "",
@@ -6537,7 +6584,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 21,
+      "CorePointId": 23,
       "DelayToCanSpawnSec": 4,
       "Id": "d12dfa52-8fa4-4e79-9d84-1edbc2b5edfb",
       "Infiltration": "",
@@ -6568,7 +6615,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "d26c7492-92de-4513-907a-baeb78f34630",
       "Infiltration": "",
@@ -6599,7 +6646,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 10,
+      "CorePointId": 12,
       "DelayToCanSpawnSec": 3600,
       "Id": "d3097675-4b9b-43d2-a6c7-0dfe4cac7df6",
       "Infiltration": "",
@@ -6660,7 +6707,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "d547f03e-36ca-4e98-a441-91ab2e6c7499",
       "Infiltration": "",
@@ -6691,7 +6738,7 @@
           "Radius": 200
         }
       },
-      "CorePointId": 24,
+      "CorePointId": 26,
       "DelayToCanSpawnSec": 4,
       "Id": "d600851d-0b6a-4aff-855c-1e077c49a5ee",
       "Infiltration": "",
@@ -7000,7 +7047,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 10,
+      "CorePointId": 12,
       "DelayToCanSpawnSec": 3600,
       "Id": "de169321-3165-4434-84b4-c6d39a069191",
       "Infiltration": "",
@@ -7061,7 +7108,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 17,
+      "CorePointId": 19,
       "DelayToCanSpawnSec": 2000,
       "Id": "dffa485d-70ef-4bdb-869b-c42d27ec8987",
       "Infiltration": "",
@@ -7153,7 +7200,7 @@
           "Radius": 40
         }
       },
-      "CorePointId": 13,
+      "CorePointId": 15,
       "DelayToCanSpawnSec": 3600,
       "Id": "e23d24cf-1b50-4ddb-b622-7d4aa930ab7d",
       "Infiltration": "",
@@ -7184,7 +7231,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 12,
+      "CorePointId": 14,
       "DelayToCanSpawnSec": 3600,
       "Id": "e2889fae-f2fb-44ce-a6df-be10d4908137",
       "Infiltration": "",
@@ -7307,7 +7354,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "e9af3bc9-ebf6-4252-8551-ec64bd75c390",
       "Infiltration": "",
@@ -7430,7 +7477,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "ee12a020-cec0-496b-8755-42ddaf928be0",
       "Infiltration": "",
@@ -7461,7 +7508,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 20,
+      "CorePointId": 22,
       "DelayToCanSpawnSec": 4,
       "Id": "ee4478fd-aa92-42b2-aa63-0bcd41d3215b",
       "Infiltration": "",
@@ -7492,7 +7539,7 @@
           "Radius": 60
         }
       },
-      "CorePointId": 9,
+      "CorePointId": 11,
       "DelayToCanSpawnSec": 3600,
       "Id": "ef14df08-71d8-48c8-a8e5-db0c3af8f0ab",
       "Infiltration": "",
@@ -7523,7 +7570,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 6,
+      "CorePointId": 7,
       "DelayToCanSpawnSec": 4,
       "Id": "ef216442-d3df-4ccf-b797-94a695827a57",
       "Infiltration": "",
@@ -7678,7 +7725,7 @@
           "Radius": 30
         }
       },
-      "CorePointId": 15,
+      "CorePointId": 17,
       "DelayToCanSpawnSec": 3600,
       "Id": "f0f76982-288f-4cfa-8c5a-397f7b9422b7",
       "Infiltration": "",
@@ -7708,7 +7755,7 @@
           "Radius": 240
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "f143f0ca-33af-4541-aa88-1e4d18059ec4",
       "Infiltration": "",
@@ -7738,7 +7785,7 @@
           "Radius": 140
         }
       },
-      "CorePointId": 14,
+      "CorePointId": 16,
       "DelayToCanSpawnSec": 3600,
       "Id": "f2b31e14-8d7f-4348-8464-5ab9fe7f462e",
       "Infiltration": "",
@@ -7799,7 +7846,7 @@
           "Radius": 130
         }
       },
-      "CorePointId": 26,
+      "CorePointId": 28,
       "DelayToCanSpawnSec": 4,
       "Id": "f69e3535-6c4d-4607-85e5-7eb5cfa0a111",
       "Infiltration": "",
@@ -7829,7 +7876,7 @@
           "Radius": 35
         }
       },
-      "CorePointId": 7,
+      "CorePointId": 9,
       "DelayToCanSpawnSec": 4,
       "Id": "f6cebfe5-4844-49c7-b424-187b4403bf88",
       "Infiltration": "",
@@ -8043,7 +8090,7 @@
           "Radius": 120
         }
       },
-      "CorePointId": 4,
+      "CorePointId": 8,
       "DelayToCanSpawnSec": 4,
       "Id": "fd71e948-35d6-49c1-b647-5248d6234bb1",
       "Infiltration": "",
@@ -8105,7 +8152,7 @@
           "Radius": 240
         }
       },
-      "CorePointId": 12,
+      "CorePointId": 14,
       "DelayToCanSpawnSec": 3600,
       "Id": "ff80b050-df12-4859-9f5f-37ba90a68599",
       "Infiltration": "",
@@ -8285,15 +8332,30 @@
   "filter_ex": [],
   "limits": [],
   "matching_min_seconds": 60,
-  "maxItemCountInLocation": [],
+  "maxItemCountInLocation": [
+    {
+      "TemplateId": "675aaa8f7f3c962069072b27",
+      "Value": 2
+    }
+  ],
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaa8f7f3c962069072b27",
+      "Name": "lighthouse_secret_minefield"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "LIG_TRANSIT_21_COND",
       "description": "LIG_TRANSIT_21_DESC",
+      "events": false,
       "id": 21,
       "location": "Shoreline",
       "name": "LIG_TRANSIT_21",
@@ -8301,21 +8363,23 @@
       "time": 30
     },
     {
-      "activateAfterSec": 60,
+      "activateAfterSec": 300,
       "active": true,
       "conditions": "LIG_TRANSIT_22_COND",
       "description": "LIG_TRANSIT_22_DESC",
+      "events": true,
       "id": 22,
       "location": "RezervBase",
       "name": "LIG_TRANSIT_22",
       "target": "5704e5fad2720bc05b8b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "LIG_TRANSIT_23_COND",
       "description": "LIG_TRANSIT_23_DESC",
+      "events": false,
       "id": 23,
       "location": "Woods",
       "name": "LIG_TRANSIT_23",

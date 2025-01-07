@@ -577,7 +577,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -603,32 +602,36 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
+      "minPlayers": 14,
+      "time": 240
+    },
+    {
       "minPlayers": 12,
-      "time": 60
+      "time": 300
     },
     {
       "minPlayers": 10,
-      "time": 70
+      "time": 360
     },
     {
       "minPlayers": 8,
-      "time": 120
+      "time": 390
     },
     {
-      "minPlayers": 7,
-      "time": 180
+      "minPlayers": 6,
+      "time": 420
     },
     {
-      "minPlayers": 5,
-      "time": 250
+      "minPlayers": 4,
+      "time": 450
     },
     {
-      "minPlayers": 3,
-      "time": 330
+      "minPlayers": 2,
+      "time": 480
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 510
     }
   ],
   "MaxBotPerZone": 5,
@@ -1236,36 +1239,6 @@
         "z": 291.57
       },
       "Rotation": 130.584167,
-      "Sides": [
-        "Savage"
-      ]
-    },
-    {
-      "BotZoneName": "ZoneColumn",
-      "Categories": [
-        "All"
-      ],
-      "ColliderParams": {
-        "_parent": "SpawnSphereParams",
-        "_props": {
-          "Center": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "Radius": 40
-        }
-      },
-      "CorePointId": 14,
-      "DelayToCanSpawnSec": 40,
-      "Id": "0aea1cd2-c0d4-4aa5-a755-d4980deefa0e",
-      "Infiltration": "",
-      "Position": {
-        "x": 39.23,
-        "y": 2.872,
-        "z": 222.293
-      },
-      "Rotation": 359.110931,
       "Sides": [
         "Savage"
       ]
@@ -11986,36 +11959,6 @@
       ]
     },
     {
-      "BotZoneName": "ZoneColumn",
-      "Categories": [
-        "All"
-      ],
-      "ColliderParams": {
-        "_parent": "SpawnSphereParams",
-        "_props": {
-          "Center": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "Radius": 40
-        }
-      },
-      "CorePointId": 14,
-      "DelayToCanSpawnSec": 40,
-      "Id": "de658a62-65ad-4157-bd1d-282609a69eea",
-      "Infiltration": "",
-      "Position": {
-        "x": 39.309,
-        "y": 2.816,
-        "z": 220.356
-      },
-      "Rotation": 359.110931,
-      "Sides": [
-        "Savage"
-      ]
-    },
-    {
       "BotZoneName": "",
       "Categories": [
         "Player"
@@ -13763,6 +13706,56 @@
   ],
   "UnixDateTime": 1621511450,
   "_Id": "5714dc692459777137212e12",
+  "areas": {
+    "SPAWNS/ScavPMCspawn (1)": {
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "infiltrationZone": "Factory",
+      "orientation": 100.615387,
+      "position": {
+        "x": 0.16,
+        "y": 1.36,
+        "z": 137.41
+      },
+      "sides": [
+        "Usec",
+        "Bear",
+        "Savage"
+      ],
+      "size": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    },
+    "SPAWNS/ScavPMCspawn (2)": {
+      "center": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "infiltrationZone": "Factory",
+      "orientation": 97.28231,
+      "position": {
+        "x": 2.08,
+        "y": 1.42,
+        "z": 142.93
+      },
+      "sides": [
+        "Usec",
+        "Bear",
+        "Savage"
+      ],
+      "size": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      }
+    }
+  },
   "doors": [],
   "exit_access_time": 40,
   "exit_count": 1,
@@ -14045,6 +14038,15 @@
   ],
   "matching_min_seconds": 60,
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaae1dcf102478202c537",
+      "Name": "streets_secret_onyx"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
@@ -14060,7 +14062,7 @@
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "STR_TRANSIT_4_COND",
       "description": "STR_TRANSIT_4_DESC",
       "id": 4,

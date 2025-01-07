@@ -25,9 +25,7 @@
     "id_list": []
   },
   "items_buy_prohibited": {
-    "category": [
-      null
-    ],
+    "category": [],
     "id_list": [
       "64d0b40fbe2eed70e254e2d4",
       "65ddcc9cfa85b9f17d0dfb07",

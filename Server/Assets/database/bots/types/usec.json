@@ -17,11 +17,13 @@
       "618109c96d7ca35d076b3363": 1,
       "6295e8c3e08ed747e64aea00": 1,
       "637b945722e2a933ed0e33c8": 1,
-      "66546f823b51a4d21e0d17d7": 1,
-      "6571cb0923aa6d72760a7f8f": 1,
-      "660437e57502eca33a08caca": 1,
       "64ef3efdb63b74469b6c1499": 1,
-      "66043728333907134309d647": 1
+      "6571cb0923aa6d72760a7f8f": 1,
+      "66043728333907134309d647": 1,
+      "660437e57502eca33a08caca": 1,
+      "66546f823b51a4d21e0d17d7": 1,
+      "6750704650f7ea9dc604afc6": 1,
+      "675fd6897a57e0b2a00e3405": 1
     },
     "feet": {
       "5cde95ef7d6c8b04713c4f2d": 1,
@@ -36,7 +38,8 @@
       "6033a3fee29c9f6c9b14e74e": 1,
       "617c02e24013b06b0b78df80": 1,
       "6295e944e9de5e7b3751c4da": 1,
-      "637ba17aa10a96c2b605dbc2": 1
+      "637ba17aa10a96c2b605dbc2": 1,
+      "675fd6b2f26b0db5f0060eb6": 1
     },
     "hands": {
       "5cde95fa7d6c8b04737c2d13": 1
@@ -48,7 +51,8 @@
       "60a6aa8fd559ae040d0d951f": 1,
       "619f9e338858a474c8685cc9": 1,
       "62aca6a1310e67685a2fc2e7": 1,
-      "6574aabee0423b9ebe0c79cf": 1
+      "6574aabee0423b9ebe0c79cf": 1,
+      "6764194e4dec6d46f106f9f6": 1
     },
     "voice": {
       "Usec_1": 1,
@@ -375,8 +379,8 @@
         "FAR_DIST": 56,
         "HEAR_DELAY_WHEN_HAVE_SMT": 0,
         "HEAR_DELAY_WHEN_PEACE": 0,
-        "LOOK_ONLY_DANGER": true,
-        "LOOK_ONLY_DANGER_DELTA": 5,
+        "LOOK_ONLY_DANGER": false,
+        "LOOK_ONLY_DANGER_DELTA": 9,
         "RESET_TIMER_DIST": 17,
         "SOUND_DIR_DEEFREE": 30
       },
@@ -440,7 +444,6 @@
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-		  "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
         "ACTIVE_FOLLOW_PLAYER_EVENTS": false,
         "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
@@ -474,13 +477,14 @@
         "DEFAULT_BEAR_BEHAVIOUR": "AlwaysEnemies",
         "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
-        "DIST_TO_ENEMY_SPOTTED_ON_HIT": 10,
+        "DIST_TO_ENEMY_SPOTTED_ON_HIT": 19,
         "DIST_TO_ENEMY_YO_CAN_HEAL": 60,
         "DIST_TO_FOUND_SQRT": 400,
         "DIST_TO_STOP_RUN_ENEMY": 15,
         "DOG_FIGHT_IN": 3,
         "DOG_FIGHT_OUT": 6,
         "ENEMY_BOT_TYPES": [],
+        "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
         "ENEMY_LOOK_AT_ME_ANG": 10,
         "FIND_COVER_TO_GET_POSITION_WITH_SHOOT": 2,
         "FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY": true,
@@ -506,7 +510,7 @@
         "MIN_SHOOTS_TIME": 2,
         "MIN_START_AGGRESION_COEF": 1,
         "NO_RUN_AWAY_FOR_SAFE": true,
-        "PART_PERCENT_TO_HEAL": 0.55,
+        "PART_PERCENT_TO_HEAL": 0.65,
         "PISTOL_SHOTGUN_AMBUSH_DIST": 30,
         "PROTECT_DELTA_HEAL_SEC": 10,
         "PROTECT_TIME_REAL": true,
@@ -519,7 +523,7 @@
         "SEC_TO_MORE_DIST_TO_RUN": 10,
         "SHOOT_INSTEAD_DOG_FIGHT": 9,
         "SIMPLE_POINT_CHOOSE_COEF": 0.4,
-        "STANDART_AMBUSH_DIST": 10,
+        "STANDART_AMBUSH_DIST": 100,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
         "TIME_TO_FIND_ENEMY": 22,
@@ -544,7 +548,7 @@
         "REACH_DIST": 0.5,
         "REACH_DIST_COVER": 2,
         "REACH_DIST_RUN": 0.8,
-        "RUN_IF_CANT_SHOOT": true,
+        "RUN_IF_CANT_SHOOT": false,
         "RUN_IF_GAOL_FAR_THEN": 10,
         "RUN_TO_COVER_MIN": 2,
         "SEC_TO_CHANGE_TO_RUN": 3,
@@ -562,7 +566,7 @@
         "CHANCE_TO_CHANGE_WAY_0_100": 30,
         "CHANCE_TO_CUT_WAY_0_100": 75,
         "CHANCE_TO_SHOOT_DEADBODY": 52,
-        "CHANGE_WAY_TIME": 75,
+        "CHANGE_WAY_TIME": 225.1,
         "CLOSE_TO_SELECT_RESERV_WAY": 25,
         "CUT_WAY_MAX_0_1": 0.65,
         "CUT_WAY_MIN_0_1": 0.4,
@@ -619,7 +623,7 @@
         "WorkingScatter": 0.15
       },
       "Shoot": {
-        "AGS_17_DIST_TO_LEAVE": 400,
+        "AGS_17_DIST_TO_LEAVE": 200,
         "AUTOMATIC_FIRE_SCATTERING_COEF": 1.5,
         "BASE_AUTOMATIC_TIME": 0.2,
         "CAN_SHOOTS_TIME_TO_AMBUSH": 993,
@@ -674,7 +678,7 @@
         "BOT_MOVE_IF_DELTA": 3.01,
         "COEF_FROM_COVER": 0.45,
         "COEF_IF_MOVE": 1,
-        "DAMAGE_PANIC_TIME": 0.01,
+        "DAMAGE_PANIC_TIME": 15,
         "DAMAGE_TO_DISCARD_AIM_0_100": 86,
         "DANGER_UP_POINT": 1.3,
         "DIST_TO_SHOOT_NO_OFFSET": 3,
@@ -684,13 +688,13 @@
         "HARD_AIM": 0.75,
         "HARD_AIM_CHANCE_100": 60,
         "MAX_AIMING_UPGRADE_BY_TIME": 0.25,
-        "MAX_AIM_PRECICING": 1,
+        "MAX_AIM_PRECICING": 2,
         "MAX_AIM_TIME": 1.5,
         "MAX_TIME_DISCARD_AIM_SEC": 0.6,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MIN_TIME_DISCARD_AIM_SEC": 0.3,
-        "NEXT_SHOT_MISS_CHANCE_100": 30,
-        "NEXT_SHOT_MISS_Y_OFFSET": 0.1,
+        "NEXT_SHOT_MISS_CHANCE_100": 100,
+        "NEXT_SHOT_MISS_Y_OFFSET": 1,
         "OFFSET_RECAL_ANYWAY_TIME": 1,
         "PANIC_ACCURATY_COEF": 1.2,
         "PANIC_COEF": 1.2,
@@ -717,6 +721,7 @@
         "BOSS_DIST_TO_WARNING_SQRT": 625,
         "CHANCE_TO_SEND_GRENADE_100": 100,
         "CHANCE_USE_RESERVE_PATROL_100": 30,
+        "COUNT_FOLLOWERS_TO_WARN": 0,
         "COVER_TO_SEND": true,
         "DELTA_SEARCH_TIME": 18,
         "EFFECT_PAINKILLER": true,
@@ -797,9 +802,9 @@
         "DIST_CANT_CHANGE_WAY": 5,
         "DIST_CANT_CHANGE_WAY_SQR": 25,
         "DIST_CHECK_SFETY": 15,
-        "DOG_FIGHT_AFTER_LEAVE": 1,
+        "DOG_FIGHT_AFTER_LEAVE": 3,
         "END_HOLD_IF_ENEMY_CLOSE_AND_VISIBLE": 5,
-        "ENEMY_DIST_TO_GO_OUT": 15,
+        "ENEMY_DIST_TO_GO_OUT": 6,
         "GOOD_DIST_TO_POINT_COEF": 9999,
         "HIDE_TO_COVER_TIME": 5,
         "HITS_TO_LEAVE_COVER": 1,
@@ -810,22 +815,22 @@
         "MAX_DIST_OF_COVER": 4,
         "MAX_DIST_OF_COVER_SQR": 16,
         "MAX_SPOTTED_TIME_SEC": 90,
-        "MIN_DEFENCE_LEVEL": 9,
+        "MIN_DEFENCE_LEVEL": 5,
         "MIN_DIST_TO_ENEMY": 9,
         "MIN_TO_ENEMY_TO_BE_NOT_SAFE": 15,
         "MOVE_TO_COVER_WHEN_TARGET": false,
         "NOT_LOOK_AT_WALL_IS_DANGER": true,
         "OFFSET_LOOK_ALONG_WALL_ANG": 20,
-        "RETURN_TO_ATTACK_AFTER_AMBUSH_MAX": 5,
-        "RETURN_TO_ATTACK_AFTER_AMBUSH_MIN": 1,
+        "RETURN_TO_ATTACK_AFTER_AMBUSH_MAX": 20,
+        "RETURN_TO_ATTACK_AFTER_AMBUSH_MIN": 4,
         "RUN_COVER_IF_CAN_AND_NO_ENEMIES": false,
-        "RUN_IF_FAR": 5,
-        "RUN_IF_FAR_SQRT": 25,
-        "SHOOT_NEAR_SEC_PERIOD": 1,
-        "SHOOT_NEAR_TO_LEAVE": 7,
-        "SOUND_TO_GET_SPOTTED": 10,
-        "SPOTTED_COVERS_RADIUS": 12,
-        "SPOTTED_GRENADE_RADIUS": 23,
+        "RUN_IF_FAR": 15,
+        "RUN_IF_FAR_SQRT": 225,
+        "SHOOT_NEAR_SEC_PERIOD": 0.5,
+        "SHOOT_NEAR_TO_LEAVE": 2,
+        "SOUND_TO_GET_SPOTTED": 2,
+        "SPOTTED_COVERS_RADIUS": 2.5,
+        "SPOTTED_GRENADE_RADIUS": 16,
         "SPOTTED_GRENADE_TIME": 7,
         "STATIONARY_CAN_USE": false,
         "STATIONARY_SPOTTED_TIMES_TO_LEAVE": 1,
@@ -834,7 +839,7 @@
         "STAY_IF_FAR": 25,
         "STAY_IF_FAR_SQRT": 625,
         "TIME_CHECK_SAFE": 2,
-        "TIME_TO_MOVE_TO_COVER": 10,
+        "TIME_TO_MOVE_TO_COVER": 15,
         "WAIT_INT_COVER_FINDING_ENEMY": 2
       },
       "Grenade": {
@@ -847,7 +852,7 @@
         "BE_ATTENTION_COEF": 4,
         "CAN_THROW_STRAIGHT_CONTACT": false,
         "CHANCE_RUN_FLASHED_100": 100,
-        "CHANCE_TO_NOTIFY_ENEMY_GR_100": 0,
+        "CHANCE_TO_NOTIFY_ENEMY_GR_100": 25,
         "CHEAT_START_GRENADE_PLACE": false,
         "CLOSE_TO_SMOKE_TIME_DELTA": 5,
         "CLOSE_TO_SMOKE_TO_SHOOT": 10,
@@ -885,8 +890,8 @@
         "WAIT_TIME_TURN_AWAY": 0.2
       },
       "Hearing": {
-        "BOT_CLOSE_PANIC_DIST": 7,
-        "CHANCE_TO_HEAR_SIMPLE_SOUND_0_1": 0.97,
+        "BOT_CLOSE_PANIC_DIST": 2,
+        "CHANCE_TO_HEAR_SIMPLE_SOUND_0_1": 0.87,
         "CLOSE_DIST": 10,
         "DEAD_BODY_SOUND_RAD": 30,
         "DISPERSION_COEF": 10,
@@ -894,8 +899,8 @@
         "FAR_DIST": 56,
         "HEAR_DELAY_WHEN_HAVE_SMT": 0,
         "HEAR_DELAY_WHEN_PEACE": 0,
-        "LOOK_ONLY_DANGER": true,
-        "LOOK_ONLY_DANGER_DELTA": 5,
+        "LOOK_ONLY_DANGER": false,
+        "LOOK_ONLY_DANGER_DELTA": 9,
         "RESET_TIMER_DIST": 17,
         "SOUND_DIR_DEEFREE": 30
       },
@@ -959,10 +964,9 @@
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-		  "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
         "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
-        "AMBUSH_WHEN_UNDER_FIRE": false,
+        "AMBUSH_WHEN_UNDER_FIRE": true,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,
         "ATTACK_ENEMY_IF_PROTECT_DELTA_LAST_TIME_SEEN": 2.5,
         "ATTACK_IMMEDIATLY_CHANCE_0_100": 100,
@@ -996,10 +1000,11 @@
         "DIST_TO_ENEMY_YO_CAN_HEAL": 60,
         "DIST_TO_FOUND_SQRT": 400,
         "DIST_TO_STOP_RUN_ENEMY": 15,
-        "DOG_FIGHT_IN": 2,
-        "DOG_FIGHT_OUT": 4,
+        "DOG_FIGHT_IN": 3,
+        "DOG_FIGHT_OUT": 6,
         "ENEMY_BOT_TYPES": [],
-        "ENEMY_LOOK_AT_ME_ANG": 45,
+        "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
+        "ENEMY_LOOK_AT_ME_ANG": 15,
         "FIND_COVER_TO_GET_POSITION_WITH_SHOOT": 2,
         "FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY": true,
         "FRIENDLY_BOT_TYPES": [],
@@ -1007,7 +1012,7 @@
         "FRIEND_DEAD_AGR_LOW": -0.2,
         "GROUP_ANY_PHRASE_DELAY": 45,
         "GROUP_EXACTLY_PHRASE_DELAY": 60,
-        "HEAL_DELAY_SEC": 1,
+        "HEAL_DELAY_SEC": 2,
         "HIT_DELAY_WHEN_HAVE_SMT": -1,
         "HIT_DELAY_WHEN_PEACE": -1,
         "HIT_POINT_DETECTION": 4,
@@ -1035,13 +1040,13 @@
         "REVENGE_FOR_SAVAGE_PLAYERS": false,
         "SEARCH_TARGET": true,
         "SEC_TO_MORE_DIST_TO_RUN": 10,
-        "SHOOT_INSTEAD_DOG_FIGHT": 0.5,
+        "SHOOT_INSTEAD_DOG_FIGHT": 9,
         "SIMPLE_POINT_CHOOSE_COEF": 0.4,
-        "STANDART_AMBUSH_DIST": 10,
+        "STANDART_AMBUSH_DIST": 100,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": false,
-        "TIME_TO_FIND_ENEMY": 8,
-        "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 180,
+        "TIME_TO_FIND_ENEMY": 14,
+        "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 80,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
         "WARN_BOT_TYPES": []
       },
@@ -1095,6 +1100,9 @@
         "RESERVE_OUT_TIME": 45,
         "RESERVE_TIME_STAY": 12,
         "RESERV_CAN_USE_MEDS": true,
+        "SPRINT_BETWEEN_CACHED_POINTS": 100,
+        "STAY_AFTER_LOOT_TIME_MAX": 20,
+        "STAY_AFTER_LOOT_TIME_MIN": 10,
         "SUSPETION_PLACE_LIFETIME": 7,
         "TALK_DELAY": 120,
         "TALK_DELAY_BIG": 240,
@@ -1136,7 +1144,7 @@
       "Shoot": {
         "AGS_17_DIST_TO_LEAVE": 400,
         "AUTOMATIC_FIRE_SCATTERING_COEF": 1.5,
-        "BASE_AUTOMATIC_TIME": 0.4,
+        "BASE_AUTOMATIC_TIME": 0.3,
         "CAN_SHOOTS_TIME_TO_AMBUSH": 993,
         "CHANCE_TO_CHANGE_TO_AUTOMATIC_FIRE_100": 94,
         "CHANCE_TO_CHANGE_WEAPON": 80,
@@ -1315,7 +1323,7 @@
         "DIST_CHECK_SFETY": 15,
         "DOG_FIGHT_AFTER_LEAVE": 1,
         "END_HOLD_IF_ENEMY_CLOSE_AND_VISIBLE": 5,
-        "ENEMY_DIST_TO_GO_OUT": 15,
+        "ENEMY_DIST_TO_GO_OUT": 5,
         "GOOD_DIST_TO_POINT_COEF": 9999,
         "HIDE_TO_COVER_TIME": 5,
         "HITS_TO_LEAVE_COVER": 1,
@@ -1475,7 +1483,6 @@
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-		  "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
         "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
         "AMBUSH_WHEN_UNDER_FIRE": false,
@@ -1515,6 +1522,7 @@
         "DOG_FIGHT_IN": 2,
         "DOG_FIGHT_OUT": 4,
         "ENEMY_BOT_TYPES": [],
+        "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
         "ENEMY_LOOK_AT_ME_ANG": 45,
         "FIND_COVER_TO_GET_POSITION_WITH_SHOOT": 2,
         "FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY": true,
@@ -1691,38 +1699,38 @@
     },
     "normal": {
       "Aiming": {
-        "AIMING_TYPE": 5,
+        "AIMING_TYPE": 4,
         "ANYTIME_LIGHT_WHEN_AIM_100": 70,
-        "ANY_PART_SHOOT_TIME": 0.4,
+        "ANY_PART_SHOOT_TIME": 5,
         "BAD_SHOOTS_MAX": 3,
         "BAD_SHOOTS_MIN": 1,
-        "BASE_HIT_AFFECTION_DELAY_SEC": 0.1,
-        "BASE_HIT_AFFECTION_MAX_ANG": 4,
+        "BASE_HIT_AFFECTION_DELAY_SEC": 0.3,
+        "BASE_HIT_AFFECTION_MAX_ANG": 7,
         "BASE_HIT_AFFECTION_MIN_ANG": 2,
-        "BASE_SHIEF": 0.03,
+        "BASE_SHIEF": 0.04,
         "BASE_SHIEF_STATIONARY_GRENADE": 1.1,
         "BETTER_PRECICING_COEF": 0.9,
         "BOTTOM_COEF": 0.1,
         "BOT_MOVE_IF_DELTA": 3.01,
         "COEF_FROM_COVER": 0.45,
         "COEF_IF_MOVE": 1,
-        "DAMAGE_PANIC_TIME": 0.01,
+        "DAMAGE_PANIC_TIME": 11,
         "DAMAGE_TO_DISCARD_AIM_0_100": 70,
         "DANGER_UP_POINT": 1.3,
         "DIST_TO_SHOOT_NO_OFFSET": 3,
         "DIST_TO_SHOOT_TO_CENTER": 3,
-        "FIRST_CONTACT_ADD_CHANCE_100": 10,
-        "FIRST_CONTACT_ADD_SEC": 0.01,
+        "FIRST_CONTACT_ADD_CHANCE_100": 80,
+        "FIRST_CONTACT_ADD_SEC": 0.1,
         "HARD_AIM": 0.75,
         "HARD_AIM_CHANCE_100": 80,
         "MAX_AIMING_UPGRADE_BY_TIME": 0.25,
-        "MAX_AIM_PRECICING": 1,
+        "MAX_AIM_PRECICING": 2,
         "MAX_AIM_TIME": 1.5,
         "MAX_TIME_DISCARD_AIM_SEC": 0.6,
         "MIN_DAMAGE_TO_GET_HIT_AFFETS": 1,
         "MIN_TIME_DISCARD_AIM_SEC": 0.3,
         "NEXT_SHOT_MISS_CHANCE_100": 85,
-        "NEXT_SHOT_MISS_Y_OFFSET": 0.15,
+        "NEXT_SHOT_MISS_Y_OFFSET": 0.5,
         "OFFSET_RECAL_ANYWAY_TIME": 1,
         "PANIC_ACCURATY_COEF": 1.2,
         "PANIC_COEF": 1.2,
@@ -1749,6 +1757,7 @@
         "BOSS_DIST_TO_WARNING_SQRT": 625,
         "CHANCE_TO_SEND_GRENADE_100": 100,
         "CHANCE_USE_RESERVE_PATROL_100": 30,
+        "COUNT_FOLLOWERS_TO_WARN": 0,
         "COVER_TO_SEND": true,
         "DELTA_SEARCH_TIME": 18,
         "EFFECT_PAINKILLER": true,
@@ -1801,13 +1810,13 @@
         "STUN_HEARING": 0.01
       },
       "Core": {
-        "AccuratySpeed": 0.05,
+        "AccuratySpeed": 0.15,
         "AimingType": "normal",
         "CanGrenade": true,
         "CanRun": true,
         "DamageCoeff": 1,
-        "GainSightCoef": 0.07,
-        "HearingSense": 1.25,
+        "GainSightCoef": 0.1,
+        "HearingSense": 2.9,
         "PistolFireDistancePref": 35,
         "RifleFireDistancePref": 100,
         "ScatteringClosePerMeter": 0.12,
@@ -1828,10 +1837,10 @@
         "DEPENDS_Y_DIST_TO_BOT": false,
         "DIST_CANT_CHANGE_WAY": 5,
         "DIST_CANT_CHANGE_WAY_SQR": 25,
-        "DIST_CHECK_SFETY": 15,
-        "DOG_FIGHT_AFTER_LEAVE": 1,
+        "DIST_CHECK_SFETY": 10,
+        "DOG_FIGHT_AFTER_LEAVE": 4,
         "END_HOLD_IF_ENEMY_CLOSE_AND_VISIBLE": 5,
-        "ENEMY_DIST_TO_GO_OUT": 15,
+        "ENEMY_DIST_TO_GO_OUT": 3,
         "GOOD_DIST_TO_POINT_COEF": 9999,
         "HIDE_TO_COVER_TIME": 5,
         "HITS_TO_LEAVE_COVER": 1,
@@ -1841,28 +1850,28 @@
         "LOOK_TO_HIT_POINT_IF_LAST_ENEMY": 3,
         "MAX_DIST_OF_COVER": 4,
         "MAX_DIST_OF_COVER_SQR": 16,
-        "MAX_SPOTTED_TIME_SEC": 90,
-        "MIN_DEFENCE_LEVEL": 9,
+        "MAX_SPOTTED_TIME_SEC": 55,
+        "MIN_DEFENCE_LEVEL": 5,
         "MIN_DIST_TO_ENEMY": 9,
         "MIN_TO_ENEMY_TO_BE_NOT_SAFE": 15,
         "MOVE_TO_COVER_WHEN_TARGET": false,
         "NOT_LOOK_AT_WALL_IS_DANGER": true,
         "OFFSET_LOOK_ALONG_WALL_ANG": 20,
-        "RETURN_TO_ATTACK_AFTER_AMBUSH_MAX": 5,
-        "RETURN_TO_ATTACK_AFTER_AMBUSH_MIN": 1,
+        "RETURN_TO_ATTACK_AFTER_AMBUSH_MAX": 50,
+        "RETURN_TO_ATTACK_AFTER_AMBUSH_MIN": 20,
         "RUN_COVER_IF_CAN_AND_NO_ENEMIES": false,
-        "RUN_IF_FAR": 5,
-        "RUN_IF_FAR_SQRT": 25,
-        "SHOOT_NEAR_SEC_PERIOD": 1,
-        "SHOOT_NEAR_TO_LEAVE": 7,
-        "SOUND_TO_GET_SPOTTED": 10,
-        "SPOTTED_COVERS_RADIUS": 12,
-        "SPOTTED_GRENADE_RADIUS": 23,
+        "RUN_IF_FAR": 15,
+        "RUN_IF_FAR_SQRT": 225,
+        "SHOOT_NEAR_SEC_PERIOD": 0.5,
+        "SHOOT_NEAR_TO_LEAVE": 2,
+        "SOUND_TO_GET_SPOTTED": 2,
+        "SPOTTED_COVERS_RADIUS": 2.5,
+        "SPOTTED_GRENADE_RADIUS": 16,
         "SPOTTED_GRENADE_TIME": 7,
         "STATIONARY_CAN_USE": false,
         "STATIONARY_SPOTTED_TIMES_TO_LEAVE": 1,
         "STATIONARY_WEAPON_MAX_DIST_TO_USE": 25,
-        "STATIONARY_WEAPON_NO_ENEMY_GETUP": 5,
+        "STATIONARY_WEAPON_NO_ENEMY_GETUP": 15,
         "STAY_IF_FAR": 25,
         "STAY_IF_FAR_SQRT": 625,
         "TIME_CHECK_SAFE": 2,
@@ -1877,9 +1886,9 @@
         "ANG_TYPE": 4,
         "BEWARE_TYPE": 2,
         "BE_ATTENTION_COEF": 4,
-        "CAN_THROW_STRAIGHT_CONTACT": false,
+        "CAN_THROW_STRAIGHT_CONTACT": true,
         "CHANCE_RUN_FLASHED_100": 100,
-        "CHANCE_TO_NOTIFY_ENEMY_GR_100": 99,
+        "CHANCE_TO_NOTIFY_ENEMY_GR_100": 100,
         "CHEAT_START_GRENADE_PLACE": false,
         "CLOSE_TO_SMOKE_TIME_DELTA": 5,
         "CLOSE_TO_SMOKE_TO_SHOOT": 10,
@@ -1917,17 +1926,17 @@
         "WAIT_TIME_TURN_AWAY": 0.2
       },
       "Hearing": {
-        "BOT_CLOSE_PANIC_DIST": 7,
-        "CHANCE_TO_HEAR_SIMPLE_SOUND_0_1": 0.97,
-        "CLOSE_DIST": 10,
+        "BOT_CLOSE_PANIC_DIST": 1,
+        "CHANCE_TO_HEAR_SIMPLE_SOUND_0_1": 0.88,
+        "CLOSE_DIST": 26,
         "DEAD_BODY_SOUND_RAD": 30,
         "DISPERSION_COEF": 10,
         "DIST_PLACE_TO_FIND_POINT": 70,
         "FAR_DIST": 56,
         "HEAR_DELAY_WHEN_HAVE_SMT": 0,
         "HEAR_DELAY_WHEN_PEACE": 0,
-        "LOOK_ONLY_DANGER": true,
-        "LOOK_ONLY_DANGER_DELTA": 5,
+        "LOOK_ONLY_DANGER": false,
+        "LOOK_ONLY_DANGER_DELTA": 9,
         "RESET_TIMER_DIST": 17,
         "SOUND_DIR_DEEFREE": 30
       },
@@ -1972,7 +1981,7 @@
         "GOAL_TO_FULL_DISSAPEAR": 0.2,
         "GOAL_TO_FULL_DISSAPEAR_SHOOT": 0.03,
         "LOOK_AROUND_DELTA": 1.1,
-        "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 993,
+        "LOOK_LAST_POSENEMY_IF_NO_DANGER_SEC": 25,
         "LightOnVisionDistance": 45,
         "MARKSMAN_VISIBLE_DIST_COEF": 1.15,
         "MAX_VISION_GRASS_METERS": 0.8,
@@ -1991,15 +2000,15 @@
         "WAIT_NEW__LOOK_SENSOR": 7.8
       },
       "Mind": {
-		"ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
+        "ACTIVE_FOLLOW_PLAYER_EVENTS": false,
         "AGGRESSOR_LOYALTY_BONUS": 0,
         "AI_POWER_COEF": 120,
-        "AMBUSH_WHEN_UNDER_FIRE": false,
+        "AMBUSH_WHEN_UNDER_FIRE": true,
         "AMBUSH_WHEN_UNDER_FIRE_TIME_RESIST": 60,
-        "ATTACK_ENEMY_IF_PROTECT_DELTA_LAST_TIME_SEEN": 2.5,
-        "ATTACK_IMMEDIATLY_CHANCE_0_100": 100,
+        "ATTACK_ENEMY_IF_PROTECT_DELTA_LAST_TIME_SEEN": 1.5,
+        "ATTACK_IMMEDIATLY_CHANCE_0_100": 40,
         "BOSS_IGNORE_LOYALTY": true,
-        "BULLET_FEEL_CLOSE_SDIST": 5,
+        "BULLET_FEEL_CLOSE_SDIST": 1,
         "BULLET_FEEL_DIST": 360,
         "CAN_PANIC_IS_PROTECT": false,
         "CAN_RECEIVE_PLAYER_REQUESTS_BEAR": false,
@@ -2025,13 +2034,14 @@
         "DEFAULT_SAVAGE_BEHAVIOUR": "AlwaysEnemies",
         "DEFAULT_USEC_BEHAVIOUR": "AlwaysEnemies",
         "DIST_TO_ENEMY_SPOTTED_ON_HIT": 10,
-        "DIST_TO_ENEMY_YO_CAN_HEAL": 60,
+        "DIST_TO_ENEMY_YO_CAN_HEAL": 40,
         "DIST_TO_FOUND_SQRT": 400,
         "DIST_TO_STOP_RUN_ENEMY": 15,
-        "DOG_FIGHT_IN": 2,
-        "DOG_FIGHT_OUT": 4,
+        "DOG_FIGHT_IN": 3,
+        "DOG_FIGHT_OUT": 6,
         "ENEMY_BOT_TYPES": [],
-        "ENEMY_LOOK_AT_ME_ANG": 45,
+        "ENEMY_BY_GROUPS_SAVAGE_PLAYERS": true,
+        "ENEMY_LOOK_AT_ME_ANG": 15,
         "FIND_COVER_TO_GET_POSITION_WITH_SHOOT": 2,
         "FOLLOWER_AND_BOSS_WARN_EQUAL_PRIORITY": true,
         "FRIENDLY_BOT_TYPES": [],
@@ -2052,11 +2062,11 @@
         "MAX_SHOOTS_TIME": 4,
         "MAX_START_AGGRESION_COEF": 3,
         "MAY_BE_CALLED_FOR_HELP": false,
-        "MIN_DAMAGE_SCARE": 250,
+        "MIN_DAMAGE_SCARE": 25,
         "MIN_SHOOTS_TIME": 2,
         "MIN_START_AGGRESION_COEF": 1,
         "NO_RUN_AWAY_FOR_SAFE": true,
-        "PART_PERCENT_TO_HEAL": 0.8,
+        "PART_PERCENT_TO_HEAL": 0.7,
         "PISTOL_SHOTGUN_AMBUSH_DIST": 30,
         "PROTECT_DELTA_HEAL_SEC": 10,
         "PROTECT_TIME_REAL": true,
@@ -2067,13 +2077,13 @@
         "REVENGE_FOR_SAVAGE_PLAYERS": false,
         "SEARCH_TARGET": true,
         "SEC_TO_MORE_DIST_TO_RUN": 10,
-        "SHOOT_INSTEAD_DOG_FIGHT": 0.5,
+        "SHOOT_INSTEAD_DOG_FIGHT": 5,
         "SIMPLE_POINT_CHOOSE_COEF": 0.4,
-        "STANDART_AMBUSH_DIST": 10,
+        "STANDART_AMBUSH_DIST": 80,
         "SUSPETION_POINT_CHANCE_ADD100": 0,
         "TALK_WITH_QUERY": true,
-        "TIME_TO_FIND_ENEMY": 8,
-        "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 180,
+        "TIME_TO_FIND_ENEMY": 18,
+        "TIME_TO_FORGOR_ABOUT_ENEMY_SEC": 60,
         "TIME_TO_RUN_TO_COVER_CAUSE_SHOOT_SEC": 15,
         "WARN_BOT_TYPES": []
       },
@@ -2082,7 +2092,7 @@
         "BASE_ROTATE_SPEED": 270,
         "BASE_SQRT_START_SERACH": 1225,
         "BASE_START_SERACH": 35,
-        "BREACH_CHANCE_100": 35,
+        "BREACH_CHANCE_100": 55,
         "CHANCE_TO_RUN_IF_NO_AMMO_0_100": 100,
         "DELTA_LAST_SEEN_ENEMY": 20,
         "DIST_TO_CAN_CHANGE_WAY": 8,
@@ -2097,7 +2107,7 @@
         "RUN_IF_CANT_SHOOT": true,
         "RUN_IF_GAOL_FAR_THEN": 10,
         "RUN_TO_COVER_MIN": 2,
-        "SEC_TO_CHANGE_TO_RUN": 8,
+        "SEC_TO_CHANGE_TO_RUN": 2,
         "SLOW_COEF": 7,
         "START_SLOW_DIST": 1.5,
         "UPDATE_TIME_RECAL_WAY": 7,
@@ -2107,14 +2117,15 @@
       "Patrol": {
         "CAN_CHECK_MAGAZINE": true,
         "CAN_CHOOSE_RESERV": true,
+        "CAN_LOOK_TO_DEADBODIES": true,
         "CAN_WATCH_SECOND_WEAPON": true,
-        "CHANCE_TO_CHANGE_WAY_0_100": 98,
-        "CHANCE_TO_CUT_WAY_0_100": 90,
+        "CHANCE_TO_CHANGE_WAY_0_100": 30,
+        "CHANCE_TO_CUT_WAY_0_100": 75,
         "CHANCE_TO_SHOOT_DEADBODY": 52,
-        "CHANGE_WAY_TIME": 15,
+        "CHANGE_WAY_TIME": 200,
         "CLOSE_TO_SELECT_RESERV_WAY": 25,
-        "CUT_WAY_MAX_0_1": 1,
-        "CUT_WAY_MIN_0_1": 0.65,
+        "CUT_WAY_MAX_0_1": 0.65,
+        "CUT_WAY_MIN_0_1": 0.4,
         "DO_RANDOM_DROP_ITEM": true,
         "FRIEND_SEARCH_SEC": 12,
         "LOOK_TIME_BASE": 12,
@@ -2130,7 +2141,7 @@
         "STAY_AFTER_LOOT_TIME_MAX": 15,
         "STAY_AFTER_LOOT_TIME_MIN": 8,
         "SUSPETION_PLACE_LIFETIME": 7,
-        "TALK_DELAY": 15.1,
+        "TALK_DELAY": 12.1,
         "TALK_DELAY_BIG": 25.1,
         "VISION_DIST_COEF_PEACE": 0.75
       },
@@ -2170,7 +2181,7 @@
       "Shoot": {
         "AGS_17_DIST_TO_LEAVE": 400,
         "AUTOMATIC_FIRE_SCATTERING_COEF": 1.5,
-        "BASE_AUTOMATIC_TIME": 0.4,
+        "BASE_AUTOMATIC_TIME": 0.2,
         "CAN_SHOOTS_TIME_TO_AMBUSH": 993,
         "CHANCE_TO_CHANGE_TO_AUTOMATIC_FIRE_100": 94,
         "CHANCE_TO_CHANGE_WEAPON": 80,
@@ -2209,34 +2220,34 @@
   },
   "experience": {
     "aggressorBonus": {
+      "easy": 0.02,
       "hard": 0.03,
-      "normal": 0.02,
-      "easy": 0.02
+      "normal": 0.02
     },
     "level": {
       "max": 79,
       "min": 1
     },
     "reward": {
-		"hard": {
-		  "max": 1400,
-		  "min": 450
-		},
-		"normal": {
-		  "max": 1000,
-		  "min": 250
-		},
-		"easy": {
-		  "max": 800,
-		  "min": 150
-		}
-	},
-    "standingForKill": {
-      "hard": 0.03,
-      "normal": 0.02,
-      "easy": 0.02
+      "easy": {
+        "max": 800,
+        "min": 150
+      },
+      "hard": {
+        "max": 1400,
+        "min": 450
+      },
+      "normal": {
+        "max": 1000,
+        "min": 250
+      }
     },
-	"useSimpleAnimator": false
+    "standingForKill": {
+      "easy": 0.02,
+      "hard": 0.03,
+      "normal": 0.02
+    },
+    "useSimpleAnimator": false
   },
   "firstName": [
     "Bingus",
@@ -2609,28 +2620,33 @@
     "witek",
     "Kuromi",
     "Simdola",
-	"HeresJohnny",
-	"theStraxus",
-	"Archangel",
-	"Nyahahahaha",
-	"Maklane",
-	"VolcanoKevin",
-	"lazheng",
-	"Thekoenman",
-	"poke123321",
-	"mirrox1337",
-	"uno0040",
-	"Cogy",
-	"Crimson",
-	"wooxs",
-	"beamyy",
-	"Sheepy",
-	"rukira",
-  "Ayre",
-  "Cabbit",
-  "Sugar",
-  "stella",
-  "Mock Shelter"
+    "HeresJohnny",
+    "theStraxus",
+    "Archangel",
+    "Nyahahahaha",
+    "Maklane",
+    "VolcanoKevin",
+    "lazheng",
+    "Thekoenman",
+    "poke123321",
+    "mirrox1337",
+    "uno0040",
+    "Cogy",
+    "Crimson",
+    "wooxs",
+    "beamyy",
+    "Sheepy",
+    "rukira",
+    "Ayre",
+    "Cabbit",
+    "Sugar",
+    "stella",
+    "Mock Shelter",
+    "CharlieMike_EFT",
+    "TROMBON",
+    "mr_puudlik_",
+    "TarkovBasement",
+    "Damirka_EA"
   ],
   "generation": {
     "items": {
@@ -2824,7 +2840,11 @@
         "5d6e68dea4b9361bcc29e659": 10,
         "5d6e68e6a4b9361c140bcfe0": 8,
         "5d6e6911a4b9361bd5780d52": 10,
-        "64b8ee384b75259c590fa89b": 10
+        "5e85aac65505fa48730d8af2": 3,
+        "5f647fd3f6e4ab66c82faed6": 3,
+        "64b8ee384b75259c590fa89b": 10,
+        "660137d8481cc6907a0c5cda": 3,
+        "660137ef76c1b56143052be8": 3
       },
       "Caliber20g": {
         "5a38ebd9c4a282000d722a5b": 2,
@@ -2852,6 +2872,7 @@
         "5ede474b0c226a66f5402622": 1,
         "5ede475339ee016e8c534742": 1,
         "5ede475b549eed7c6d5c18fb": 1,
+        "5ede47641cf3836a88318df1": 1,
         "5f0c892565703e5c461894e9": 1
       },
       "Caliber46x30": {
@@ -2932,7 +2953,8 @@
         "5e023e53d4353e3302577c4c": 8,
         "5e023e6e34d52a55c3304f71": 10,
         "5e023e88277cce2b522ff2b1": 5,
-        "5efb0c1bd79ff02a1f5e68d9": 3
+        "5efb0c1bd79ff02a1f5e68d9": 3,
+        "6769b8e3c1a1466c850658a8": 3
       },
       "Caliber762x54R": {
         "560d61e84bdc2da74d8b4571": 90,
@@ -3007,7 +3029,10 @@
         "619bdeb986e01e16f839a99e": 1,
         "619bdef8c9546643a67df6f6": 1,
         "619bdf9cc9546643a67df6f8": 1,
-        "619bdfd4c9546643a67df6fa": 1
+        "619bdfd4c9546643a67df6fa": 1,
+        "67614b3ab8c060ebb204b106": 1,
+        "67614b542eb91250020f2b86": 1,
+        "67614b6b47c71ea3d40256d7": 1
       },
       "ArmorVest": {
         "545cdb794bdc2d3a198b456a": 17,
@@ -3074,7 +3099,10 @@
         "639346cc1c8f182ad90c8972": 3,
         "656e0436d44a1bb4220303a0": 4,
         "656f198fb27298d6fd005466": 3,
-        "66b5f247af44ca0014063c02": 3
+        "66b5f247af44ca0014063c02": 3,
+        "67458730df3c1da90b0b052b": 3,
+        "67458794e21e5d724e066976": 2,
+        "674da107c512807d1a0e7436": 2
       },
       "Earpiece": {
         "5645bcc04bdc2d363b8b4572": 5,
@@ -3120,7 +3148,8 @@
         "60363c0c92ec1c31037959f5": 2,
         "60a7ad2a2198820d95707a2e": 2,
         "62a09dd4621468534a797ac7": 2,
-        "657089638db3adca1009f4ca": 2
+        "657089638db3adca1009f4ca": 2,
+        "675ac888803644528007b3f6": 4
       },
       "FirstPrimaryWeapon": {
         "5447a9cd4bdc2dbd208b4567": 4,
@@ -3228,10 +3257,14 @@
         "661ceb1b9311543c7104149b": 1,
         "661cec09b2c6356b4d0c7a36": 1,
         "6680304edadb7aa61d00cef0": 2,
-		"668e71a8dadf42204c032ce1": 3,
-		"67124dcfa3541f2a1f0e788b": 2,
-		"66ffa9b66e19cc902401c5e8": 2,
-		"6718817435e3cfd9550d2c27": 2
+        "668e71a8dadf42204c032ce1": 3,
+        "66ffa9b66e19cc902401c5e8": 2,
+        "67124dcfa3541f2a1f0e788b": 2,
+        "6718817435e3cfd9550d2c27": 2,
+        "673cab3e03c6a20581028bc1": 1,
+        "674d6121c09f69dfb201a888": 3,
+        "674fe9a75e51f1c47c04ec23": 2,
+        "676176d362e0497044079f4c": 2
       },
       "Headwear": {
         "5645bc214bdc2d363b8b4571": 43,
@@ -3280,7 +3313,12 @@
         "65719f0775149d62ce0a670b": 29,
         "66b5f65ca7f72d197e70bcd6": 29,
         "66b5f661af44ca0014063c05": 29,
-        "66b5f666cad6f002ab7214c2": 29
+        "66b5f666cad6f002ab7214c2": 29,
+        "6745895717824b1ec20570a6": 20,
+        "675956062f6ddfe8ff0e2806": 20,
+        "6759655674aa5e0825040d62": 20,
+        "67597ceea35600b4c10cea86": 20,
+        "67597d241d5a44f2f605df06": 20
       },
       "Holster": {
         "56d59856d2720bd8418b456a": 4,
@@ -3322,7 +3360,8 @@
         "5c012ffc0db834001d23f03f": 5,
         "5c07df7f0db834001b73588a": 5,
         "601948682627df266209af05": 5,
-        "6540d2162ae6d96b540afcaf": 1
+        "6540d2162ae6d96b540afcaf": 1,
+        "674d90b55704568fe60bc8f5": 1
       },
       "SecondPrimaryWeapon": {
         "5926bb2186f7744b1c6c6e60": 10,
@@ -3390,7 +3429,8 @@
         "64be7110bf597ba84a0a41ea": 15,
         "66b6295178bbc0200425f995": 25,
         "66b6295a8ca68c6461709efa": 25,
-        "66b6296d7994640992013b17": 25
+        "66b6296d7994640992013b17": 25,
+        "674589d98dd67746010329e6": 15
       }
     },
     "items": {
@@ -3621,6 +3661,11 @@
           "60194943740c5d77f6705eea",
           "601949593ae8f707c4608daa",
           "5c0d5ae286f7741e46554302"
+        ]
+      },
+      "544a38634bdc2d58388b4568": {
+        "mod_muzzle": [
+          "638612b607dfed1ccb7206ba"
         ]
       },
       "544a3a774bdc2d3a388b4567": {
@@ -4161,15 +4206,6 @@
           "57ae0171245977343c27bfcf"
         ]
       },
-	  "5cadd954ae921500103bb3c2": {
-        "mod_scope": ["577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511"]
-    },
-	  "56ea7293d2720b8d4b8b45ba": {
-        "mod_scope": ["577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511"]
-    },
-	  "5a32aa0cc4a28232996e405f": {
-        "mod_scope": ["5a32aa8bc4a2826c6e06d737"]
-    },
       "5644bd2b4bdc2d3b4c8b4572": {
         "mod_charge": [
           "5648ac824bdc2ded0b8b457d",
@@ -4524,6 +4560,19 @@
           "5d6e68d1a4b93622fe60e845"
         ]
       },
+      "56ea7293d2720b8d4b8b45ba": {
+        "mod_scope": [
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511"
+        ]
+      },
+      "56ea8180d2720bf2698b456a": {
+        "mod_muzzle": [
+          "57da93632459771cb65bf83f",
+          "57dbb57e2459774673234890"
+        ]
+      },
       "56ea8d2fd2720b7c698b4570": {
         "mod_sight_front": [
           "5ba26b01d4351e0085325a51",
@@ -4585,7 +4634,7 @@
         "mod_mount_000": [
           "5947db3f86f77447880cf76f"
         ],
-		"mod_mount_001": [
+        "mod_mount_001": [
           "6710cea62bb09af72f0e6bf8"
         ],
         "mod_muzzle": [
@@ -4611,38 +4660,6 @@
           "57616ca52459773c69055192"
         ]
       },
-	  "6710cea62bb09af72f0e6bf8": {
-		  "mod_tactical_001": ["5a800961159bd4315e3a1657",
-                  "57fd23e32459772d0805bcf1",
-                  "544909bb4bdc2d6f028b4577",
-                  "5c06595c0db834001a66af6c",
-                  "5cc9c20cd7f00c001336c65d",
-                  "5d2369418abbc306c62e0c80",
-                  "5b07dd285acfc4001754240d"
-			],
-			"mod_tactical_002": ["5a800961159bd4315e3a1657",
-                  "57fd23e32459772d0805bcf1",
-                  "544909bb4bdc2d6f028b4577",
-                  "5c06595c0db834001a66af6c",
-                  "5cc9c20cd7f00c001336c65d",
-                  "5d2369418abbc306c62e0c80",
-                  "5b07dd285acfc4001754240d",
-                  "56def37dd2720bec348b456a"
-		],
-		"mod_tactical_000": [
-		"5a800961159bd4315e3a1657",
-                  "57fd23e32459772d0805bcf1",
-                  "544909bb4bdc2d6f028b4577",
-                  "5c06595c0db834001a66af6c",
-                  "5cc9c20cd7f00c001336c65d",
-                  "5d2369418abbc306c62e0c80",
-                  "5b07dd285acfc4001754240d"
-		],
-		"mod_tactical_003": ["57d17c5e2459775a5c57d17d"]
-	  },
-	  "58272b842459774abc128d50": {
-        "mod_scope": ["570fd79bd2720bc7458b4583", "570fd6c2d2720bc6458b457f"]
-    },
       "57616ca52459773c69055192": {
         "mod_stock": [
           "5a0c59791526d8dba737bba7"
@@ -4676,6 +4693,11 @@
           "5a3c16fe86f77452b62de32a",
           "5efb0e16aeb21837e749c7ff",
           "5c0d56a986f774449d5de529"
+        ]
+      },
+      "577d128124597739d65d0e56": {
+        "mod_scope": [
+          "577d141e24597739c5255e01"
         ]
       },
       "57838ad32459774a17445cd2": {
@@ -4809,6 +4831,17 @@
         "mod_sight_rear": [
           "57c44e7b2459772d28133248",
           "57838e1b2459774a256959b1"
+        ]
+      },
+      "57c69dd424597774c03b7bbc": {
+        "mod_scope": [
+          "5b2388675acfc4771e1be0be",
+          "5b3b99475acfc432ff4dcbee",
+          "5a37cb10c4a282329a73b4e7",
+          "57c5ac0824597754771e88a9",
+          "618ba27d9008e4636a67f61d",
+          "617151c1d92c473c770214ab",
+          "6567e7681265c8a131069b0f"
         ]
       },
       "57cffd8224597763b03fc609": {
@@ -4960,6 +4993,12 @@
         ],
         "mod_tactical_002": [
           "5a800961159bd4315e3a1657"
+        ]
+      },
+      "58272b842459774abc128d50": {
+        "mod_scope": [
+          "570fd79bd2720bc7458b4583",
+          "570fd6c2d2720bc6458b457f"
         ]
       },
       "583990e32459771419544dd2": {
@@ -5284,7 +5323,9 @@
           "5c5db5852e2216003a0fe71a",
           "58aeaaa886f7744fc1560f81",
           "5c5db5c62e22160012542255",
-          "5c5db5b82e2216003a0fe71d"
+          "5c5db5b82e2216003a0fe71d",
+          "67614994e889e1972605d6bb",
+          "676149a3e2cf1419500357eb"
         ],
         "mod_handguard": [
           "5894a42086f77426d2590762",
@@ -5329,12 +5370,6 @@
           "5649be884bdc2d79388b4577"
         ]
       },
-	  "6529348224cbe3c74a05e5c4": {
-        "mod_stock": ["6529366450dc782999054ba0"]
-    },
-	"6529366450dc782999054ba0": {
-        "mod_stock_000": ["5fc2369685fd526b824a5713", "606587d11246154cad35d635", "5a9eb32da2750c00171b3f9c", "5bfe86df0db834001b734685", "55d4ae6c4bdc2d8b2f8b456e", "5c87a07c2e2216001219d4a2", "5bb20e70d4351e0035629f8f", "5beec8c20db834001d2c465c", "5fbbaa86f9986c4cff3fe5f6", "5fce16961f152d4312622bc9", "5ae30c9a5acfc408fb139a03", "5d135e83d7ad1a21b83f42d8", "5d135ecbd7ad1a21c176542e", "56eabf3bd2720b75698b4569", "58d2946386f774496974c37e", "58d2946c86f7744e271174b5", "58d2947686f774485c6a1ee5", "58d2947e86f77447aa070d53", "5d44069ca4b9361ebd26fc37", "5d4406a8a4b9361e4f6eb8b7", "5947c73886f7747701588af5", "5c793fde2e221601da358614", "5b39f8db5acfc40016387a1b", "628a85ee6b1d481ff772e9d5", "602e620f9b513876d4338d9a", "6529370c405a5f51dd023db8", "6516e91f609aaf354b34b3e2", "6516e971a3d4c6497930b450"]
-    },
       "58aeaaa886f7744fc1560f81": {
         "mod_muzzle": [
           "58aeac1b86f77457c419f475"
@@ -5363,6 +5398,13 @@
       "58d2947e86f77447aa070d53": {
         "mod_stock": [
           "58d2912286f7744e27117493"
+        ]
+      },
+      "58d39b0386f77443380bf13c": {
+        "mod_scope": [
+          "61657230d92c473c770213d7",
+          "58d399e486f77442e0016fe7",
+          "5b3116595acfc40019476364"
         ]
       },
       "58d39d3d86f77445bb794ae7": {
@@ -5542,7 +5584,9 @@
           "5648ac824bdc2ded0b8b457d"
         ],
         "mod_gas_block": [
-          "59ccd11386f77428f24a488f"
+          "59ccd11386f77428f24a488f",
+          "65ae4f57e343f0acc00824da",
+          "676177df1f08ed5e8800b7ae"
         ],
         "mod_magazine": [
           "599860ac86f77436b225ed1a",
@@ -5773,6 +5817,13 @@
       "59d6514b86f774171a068a08": {
         "mod_stock": [
           "5a0c59791526d8dba737bba7"
+        ]
+      },
+      "59db7eed86f77461f8380365": {
+        "mod_scope": [
+          "5c05293e0db83400232fff80",
+          "5c052a900db834001a66acbd",
+          "59db7e1086f77448be30ddf3"
         ]
       },
       "59e0bdb186f774156f04ce82": {
@@ -6215,9 +6266,18 @@
           "5a16b8a9fcdbcb00165aa6ca"
         ]
       },
-	  "671126b049e181972e0681fa": {
-		  "mod_bipod": ["5888961624597754281f93f3"]
-	  },
+      "5a16b8a9fcdbcb00165aa6ca": {
+        "mod_nvg": [
+          "5c0695860db834001b735461",
+          "5a16b93dfcdbcbcae6687261",
+          "5c11046cd174af02a012e42b"
+        ]
+      },
+      "5a16b93dfcdbcbcae6687261": {
+        "mod_nvg": [
+          "57235b6f24597759bf5a30f1"
+        ]
+      },
       "5a16badafcdbcb001865f72d": {
         "mod_equipment": [
           "5a16ba61fcdbcb098008728a"
@@ -6251,15 +6311,32 @@
           "5a1eaa87fcdbcb001865f75e"
         ]
       },
+      "5a32aa0cc4a28232996e405f": {
+        "mod_scope": [
+          "5a32aa8bc4a2826c6e06d737"
+        ]
+      },
+      "5a33a8ebc4a282000c5a950d": {
+        "mod_scope": [
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511"
+        ]
+      },
       "5a33b2c9c4a282000c5a9511": {
         "mod_scope": [
           "5a32aa8bc4a2826c6e06d737"
         ]
       },
-	  "59db7eed86f77461f8380365": {
-        "mod_scope": ["5c05293e0db83400232fff80", "5c052a900db834001a66acbd", "59db7e1086f77448be30ddf3"]
-    },
       "5a33b652c4a28232996e407c": {
+        "mod_scope": [
+          "5a32aa8bc4a2826c6e06d737"
+        ]
+      },
+      "5a33bab6c4a28200741e22f8": {
         "mod_scope": [
           "5a32aa8bc4a2826c6e06d737"
         ]
@@ -6343,6 +6420,20 @@
         ],
         "mod_stock": [
           "5a33ca0fc4a282000d72292f"
+        ]
+      },
+      "5a37ca54c4a282000d72296a": {
+        "mod_scope_000": [
+          "5b2388675acfc4771e1be0be",
+          "5b3b99475acfc432ff4dcbee",
+          "5a37cb10c4a282329a73b4e7",
+          "57c5ac0824597754771e88a9",
+          "618ba27d9008e4636a67f61d",
+          "617151c1d92c473c770214ab",
+          "6567e7681265c8a131069b0f"
+        ],
+        "mod_scope_001": [
+          "58d268fc86f774111273f8c2"
         ]
       },
       "5a38e6bac4a2826c6e06d79b": {
@@ -6634,6 +6725,17 @@
           "5c0d56a986f774449d5de529"
         ]
       },
+      "5a7ad4af51dfba0013379717": {
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511"
+        ]
+      },
       "5a7ad55551dfba0015068f42": {
         "mod_scope": [
           "57ae0171245977343c27bfcf"
@@ -6677,6 +6779,30 @@
           "5a3c16fe86f77452b62de32a",
           "5efb0e16aeb21837e749c7ff",
           "5c0d56a986f774449d5de529"
+        ]
+      },
+      "5a7b4900e899ef197b331a2a": {
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b652c4a28232996e407c",
+          "5a33b2c9c4a282000c5a9511"
+        ],
+        "mod_tactical": [
+          "5a800961159bd4315e3a1657",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb"
         ]
       },
       "5a7c4850e899ef00150be885": {
@@ -6797,6 +6923,14 @@
         "mod_tactical": [
           "560d657b4bdc2da74d8b4572",
           "5a800961159bd4315e3a1657"
+        ]
+      },
+      "5aa66a9be5b5b0214e506e89": {
+        "mod_scope": [
+          "56ea70acd2720b844b8b4594",
+          "5aa66be6e5b5b0214e506e97",
+          "61714eec290d254f5e6b2ffc",
+          "62850c28da09541f43158cca"
         ]
       },
       "5aa66c72e5b5b00016327c93": {
@@ -7819,12 +7953,6 @@
           "57fd23e32459772d0805bcf1"
         ]
       },
-	  "5c7d560b2e22160bc12c6139": {
-        "mod_scope": ["61659f79d92c473c770213ee", "5c7d55de2e221644f31bff68"]
-    },
-	  "616584766ef05c2ce828ef57": {
-        "mod_scope": ["61659f79d92c473c770213ee", "5c7d55de2e221644f31bff68", "5c7d560b2e22160bc12c6139"]
-    },
       "5addbfe15acfc4001a5fc58b": {
         "mod_scope": [
           "584984812459776a704a82a6",
@@ -7985,9 +8113,6 @@
           "5afd7e095acfc40017541f61"
         ]
       },
-	  "615d8f5dd92c473c770212ef": {
-        "mod_muzzle": ["615d8f8567085e45ef1409ca"]
-    },
       "5afd7e095acfc40017541f61": {
         "mod_stock": [
           "5b39f8db5acfc40016387a1b",
@@ -8162,7 +8287,7 @@
       "5b2389515acfc4771e1be0c0": {
         "mod_scope_000": [
           "5b2388675acfc4771e1be0be",
-		  "5b3b99475acfc432ff4dcbee"
+          "5b3b99475acfc432ff4dcbee"
         ],
         "mod_scope_001": [
           "57ae0171245977343c27bfcf"
@@ -8202,9 +8327,32 @@
           "544909bb4bdc2d6f028b4577"
         ]
       },
+      "5b31163c5acfc400153b71cb": {
+        "mod_scope": [
+          "61657230d92c473c770213d7",
+          "58d399e486f77442e0016fe7",
+          "5b3116595acfc40019476364"
+        ]
+      },
       "5b363dea5acfc4771e1c5e7e": {
         "mod_muzzle": [
           "5b363dd25acfc4001a598fd2"
+        ]
+      },
+      "5b3b6dc75acfc47a8773fb1e": {
+        "mod_scope": [
+          "5b3b6e495acfc4330140bd88"
+        ]
+      },
+      "5b3b99265acfc4704b4a1afb": {
+        "mod_scope": [
+          "5b2388675acfc4771e1be0be",
+          "5b3b99475acfc432ff4dcbee",
+          "5a37cb10c4a282329a73b4e7",
+          "57c5ac0824597754771e88a9",
+          "618ba27d9008e4636a67f61d",
+          "617151c1d92c473c770214ab",
+          "6567e7681265c8a131069b0f"
         ]
       },
       "5b3f7bf05acfc433000ecf6b": {
@@ -8813,9 +8961,6 @@
           "609269c3b0e443224b421cc1"
         ]
       },
-	  "609269c3b0e443224b421cc1": {
-        "mod_muzzle": ["60926df0132d4d12c81fd9df"]
-    },
       "5bb20dadd4351e00367faeff": {
         "mod_gas_block": [
           "5bb20dcad4351e3bac1212da"
@@ -8830,9 +8975,6 @@
           "609269c3b0e443224b421cc1"
         ]
       },
-	  "5f6372e2865db925d54f3869": {
-        "mod_muzzle": ["5f6339d53ada5942720e2dc3"]
-    },
       "5bb20de5d4351e0035629e59": {
         "mod_bipod": [
           "6644920d49817dc7d505ca71"
@@ -9615,9 +9757,6 @@
           "5c05295e0db834001a66acbb"
         ]
       },
-	  "5a33bab6c4a28200741e22f8": {
-        "mod_scope": ["5a32aa8bc4a2826c6e06d737"]
-    },
       "5c05413a0db834001c390617": {
         "cartridges": [
           "59e6920f86f77411d82aa167",
@@ -9648,6 +9787,18 @@
           "5c0d5ae286f7741e46554302"
         ]
       },
+      "5c064c400db834001d23f468": {
+        "mod_scope": [
+          "57ac965c24597706be5f975c",
+          "57aca93d2459771f2c7e26db",
+          "544a3f024bdc2d1d388b4568",
+          "544a3a774bdc2d3a388b4567",
+          "5d2dc3e548f035404a1a4798",
+          "57adff4f24597737f373b6e6",
+          "5c0517910db83400232ffee5",
+          "591c4efa86f7741030027726"
+        ]
+      },
       "5c0672ed0db834001b7353f3": {
         "cartridges": [
           "5efb0da7a29a85116f6ea05f",
@@ -9658,6 +9809,11 @@
           "5a3c16fe86f77452b62de32a",
           "5efb0e16aeb21837e749c7ff",
           "5c0d56a986f774449d5de529"
+        ]
+      },
+      "5c0695860db834001b735461": {
+        "mod_nvg": [
+          "5c0696830db834001d23f5da"
         ]
       },
       "5c06c6a80db834001b735491": {
@@ -10340,6 +10496,16 @@
           "5fc2369685fd526b824a5713"
         ]
       },
+      "5c0fafb6d174af02a96260ba": {
+        "mod_muzzle": [
+          "638612b607dfed1ccb7206ba"
+        ]
+      },
+      "5c11046cd174af02a012e42b": {
+        "mod_nvg": [
+          "5c110624d174af029e69734c"
+        ]
+      },
       "5c17664f2e2216398b5a7e3c": {
         "mod_mount_000": [
           "59e0bed186f774156f04ce84"
@@ -10521,9 +10687,6 @@
           "5943ee5a86f77413872d25ec"
         ]
       },
-	  "56ea8180d2720bf2698b456a": {
-        "mod_muzzle": ["57da93632459771cb65bf83f", "57dbb57e2459774673234890"]
-    },
       "5c501a4d2e221602b412b540": {
         "mod_gas_block": [
           "5c5039be2e221602b177c9ff"
@@ -10611,16 +10774,6 @@
           "6269545d0e57f218e4548ca2"
         ],
         "mod_mount_001": [
-          "5b7be47f5acfc400170e2dd2",
-          "6269220d70b6c02e665f2635",
-          "6269545d0e57f218e4548ca2"
-        ],
-        "mod_mount_002": [
-          "5b7be47f5acfc400170e2dd2",
-          "6269220d70b6c02e665f2635",
-          "6269545d0e57f218e4548ca2"
-        ],
-        "mod_mount_003": [
           "5b7be47f5acfc400170e2dd2",
           "6269220d70b6c02e665f2635",
           "6269545d0e57f218e4548ca2"
@@ -10893,6 +11046,12 @@
           "61659f79d92c473c770213ee"
         ]
       },
+      "5c7d560b2e22160bc12c6139": {
+        "mod_scope": [
+          "61659f79d92c473c770213ee",
+          "5c7d55de2e221644f31bff68"
+        ]
+      },
       "5c7e5f112e221600106f4ede": {
         "mod_muzzle": [
           "5a34fe59c4a282000b1521a2"
@@ -10901,6 +11060,13 @@
       "5c82342f2e221644f31c060e": {
         "mod_tactical": [
           "57f3a5ae2459772b0e0bf19e"
+        ]
+      },
+      "5c86592b2e2216000e69e77c": {
+        "mod_scope": [
+          "56ea70acd2720b844b8b4594",
+          "5aa66be6e5b5b0214e506e97",
+          "61714eec290d254f5e6b2ffc"
         ]
       },
       "5c88f24b2e22160bc12c69a6": {
@@ -11205,7 +11371,14 @@
         ],
         "mod_sight_rear": [
           "5cadd940ae9215051e1c2316",
-		  "5cadd954ae921500103bb3c2"
+          "5cadd954ae921500103bb3c2"
+        ]
+      },
+      "5cadd954ae921500103bb3c2": {
+        "mod_scope": [
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511"
         ]
       },
       "5cadfbf7ae92152ac412eeef": {
@@ -11815,6 +11988,28 @@
           "570fd79bd2720bc7458b4583"
         ]
       },
+      "5d0a29ead7ad1a0026013f27": {
+        "mod_scope": [
+          "5d0a3a58d7ad1a669c15ca14",
+          "5d0a3e8cd7ad1a6f6a3d35bd"
+        ]
+      },
+      "5d0a29fed7ad1a002769ad08": {
+        "mod_scope": [
+          "5d0a3a58d7ad1a669c15ca14",
+          "5d0a3e8cd7ad1a6f6a3d35bd"
+        ]
+      },
+      "5d0a3a58d7ad1a669c15ca14": {
+        "mod_tactical": [
+          "5d0b5cd3d7ad1a3fe32ad263"
+        ]
+      },
+      "5d0a3e8cd7ad1a6f6a3d35bd": {
+        "mod_tactical": [
+          "5d0b5cd3d7ad1a3fe32ad263"
+        ]
+      },
       "5d120a10d7ad1a4e1026ba85": {
         "mod_stock": [
           "5d120a28d7ad1a1c8962e295"
@@ -11924,9 +12119,9 @@
       },
       "5d25d0ac8abbc3054f3e61f7": {
         "mod_mount_000": [
-			"628120d309427b40ab14e76d",
-			"671126a210d67adb5b08e925",
-			"628120dd308cb521f87a8fa1"
+          "628120d309427b40ab14e76d",
+          "671126a210d67adb5b08e925",
+          "628120dd308cb521f87a8fa1"
         ]
       },
       "5d2703038abbc3105103d94c": {
@@ -12142,7 +12337,7 @@
         ],
         "mod_mount_004": [
           "5b7be47f5acfc400170e2dd2",
-		  "671126b049e181972e0681fa"
+          "671126b049e181972e0681fa"
         ],
         "mod_scope": [
           "5649a2464bdc2d91118b45a8"
@@ -12176,9 +12371,6 @@
           "5c0fafb6d174af02a96260ba"
         ]
       },
-	  "5c0fafb6d174af02a96260ba": {
-        "mod_muzzle": ["638612b607dfed1ccb7206ba"]
-    },
       "5d4aaa73a4b9365392071175": {
         "mod_foregrip": [
           "5b7be4895acfc400170e2dd5"
@@ -12552,6 +12744,9 @@
         ]
       },
       "5df25d3bfd6b4e6e2276dc9a": {
+        "mod_bipod": [
+          "5888961624597754281f93f3"
+        ],
         "mod_foregrip": [
           "5df36948bb49d91fb446d5ad"
         ],
@@ -12569,8 +12764,7 @@
         ],
         "mod_mount_003": [
           "5df35eb2b11454561e3923e2"
-        ],
-		"mod_bipod": ["5888961624597754281f93f3"]
+        ]
       },
       "5df35e59c41b2312ea3334d5": {
         "mod_handguard": [
@@ -12728,6 +12922,11 @@
           "558022b54bdc2dac148b458d"
         ]
       },
+      "5dff77c759400025ea5150cf": {
+        "mod_scope": [
+          "5dff772da3651922b360bf91"
+        ]
+      },
       "5dff8db859400025ea5150d4": {
         "mod_scope": [
           "58491f3324597764bc48fa02"
@@ -12834,7 +13033,7 @@
       "5e21ca18e4d47f0da15e77dd": {
         "mod_muzzle": [
           "5c48a2a42e221602b66d1e07",
-		  "5c7e5f112e221600106f4ede"
+          "5c7e5f112e221600106f4ede"
         ]
       },
       "5e4abb5086f77406975c9342": {
@@ -13006,9 +13205,6 @@
           "544a3a774bdc2d3a388b4567"
         ]
       },
-	  "5d0a29fed7ad1a002769ad08": {
-        "mod_scope": ["5d0a3a58d7ad1a669c15ca14", "5d0a3e8cd7ad1a6f6a3d35bd"]
-    },
       "5e81c3cbac2bb513793cdc75": {
         "mod_barrel": [
           "5e81c519cb2b95385c177551"
@@ -13309,7 +13505,7 @@
         ],
         "mod_mount_002": [
           "5b7be47f5acfc400170e2dd2",
-		  "671126b049e181972e0681fa"
+          "671126b049e181972e0681fa"
         ],
         "mod_scope": [
           "5649a2464bdc2d91118b45a8"
@@ -13402,6 +13598,17 @@
           "5efb0fc6aeb21837e749c801",
           "5efb0d4f4bc50b58e81710f3",
           "5ea2a8e200685063ec28c05a"
+        ]
+      },
+      "5ef5d994dfbc9f3c660ded95": {
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511"
         ]
       },
       "5efaf417aeb21837e749c7f2": {
@@ -13534,9 +13741,6 @@
           "5f3e7897ddc4f03b010e204a"
         ]
       },
-	"5ef5d994dfbc9f3c660ded95": {
-			"mod_scope": ["57ae0171245977343c27bfcf", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511"]
-		},
       "5f5f41476bdad616ad46d631": {
         "Back_plate": [
           "657b22485f444d6dff0c6c2f",
@@ -13599,22 +13803,6 @@
           "5a16b8a9fcdbcb00165aa6ca"
         ]
       },
-	  "5a16b8a9fcdbcb00165aa6ca": {
-		  "mod_nvg": [
-		  "5c0695860db834001b735461",
-		  "5a16b93dfcdbcbcae6687261",
-		  "5c11046cd174af02a012e42b"
-		 ]
-	  },
-	  "5c0695860db834001b735461": {
-		  "mod_nvg": ["5c0696830db834001d23f5da"]
-	  },
-	  "5a16b93dfcdbcbcae6687261": {
-		  "mod_nvg": ["57235b6f24597759bf5a30f1"]
-	  },
-	  "5c11046cd174af02a012e42b": {
-		  "mod_nvg": ["5c110624d174af029e69734c"]
-	  },
       "5f60c74e3b85f6263c145586": {
         "Helmet_back": [
           "657bc2c5a1c61ee0c3036333"
@@ -13804,6 +13992,11 @@
           "646f6322f43d0c5d62063715"
         ]
       },
+      "5f6372e2865db925d54f3869": {
+        "mod_muzzle": [
+          "5f6339d53ada5942720e2dc3"
+        ]
+      },
       "5fb64bc92b1b027b1f50bcf2": {
         "mod_barrel": [
           "5fb653962b1b027b1f50bd03",
@@ -13936,6 +14129,25 @@
           "5fc0fa362770a0045c59c677"
         ]
       },
+      "5fbc227aa56d053a3543f79e": {
+        "mod_foregrip": [
+          "615d8fd3290d254f5e6b2edc",
+          "5fc0f9b5d724d907e2077d82",
+          "5fc0f9cbd6fa9c00c571bb90"
+        ],
+        "mod_mount_000": [
+          "5a9d6d00a2750c5c985b5305"
+        ],
+        "mod_mount_001": [
+          "5a9d6d00a2750c5c985b5305"
+        ],
+        "mod_mount_002": [
+          "67112695fe5c8bf33f02476d"
+        ],
+        "mod_sight_front": [
+          "5ba26b01d4351e0085325a51"
+        ]
+      },
       "5fbc22ccf24b94483f726483": {
         "mod_muzzle_000": [
           "5fbcbcf593164a5b6278efb2",
@@ -13999,16 +14211,6 @@
           "57fd23e32459772d0805bcf1"
         ]
       },
-	  "5fbc227aa56d053a3543f79e": {
-		  "mod_mount_000": ["5a9d6d00a2750c5c985b5305"],
-		  "mod_mount_001": ["5a9d6d00a2750c5c985b5305"],
-		  "mod_sight_front": ["5ba26b01d4351e0085325a51"],
-		  "mod_foregrip": ["615d8fd3290d254f5e6b2edc",
-                  "5fc0f9b5d724d907e2077d82",
-                  "5fc0f9cbd6fa9c00c571bb90"
-				  ],
-		  "mod_mount_002": ["67112695fe5c8bf33f02476d"]
-	  },
       "5fc22d7c187fea44d52eda44": {
         "mod_magazine": [
           "5fc23426900b1d5091531e15"
@@ -14265,13 +14467,6 @@
           "5a32a064c4a28200741e22de"
         ]
       },
-	  "5a33a8ebc4a282000c5a950d": {
-        "mod_scope": ["58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511"]
-    },
-	"5a7b4900e899ef197b331a2a": {
-        "mod_scope": ["57ae0171245977343c27bfcf", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b652c4a28232996e407c", "5a33b2c9c4a282000c5a9511"],
-        "mod_tactical": ["5a800961159bd4315e3a1657", "5cc9c20cd7f00c001336c65d", "5d2369418abbc306c62e0c80", "5b07dd285acfc4001754240d", "56def37dd2720bec348b456a", "5a7b483fe899ef0016170d15", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "6272370ee4013c5d7e31f418", "6272379924e29f06af4d5ecb"]
-    },
       "602a9740da11d6478d5a06dc": {
         "mod_barrel": [
           "602a95fe4e02ce1eaa358729",
@@ -14423,7 +14618,7 @@
           "5b7be47f5acfc400170e2dd2",
           "6269220d70b6c02e665f2635",
           "6269545d0e57f218e4548ca2",
-		  "671126b049e181972e0681fa"
+          "671126b049e181972e0681fa"
         ],
         "mod_sight_front": [
           "5c17804b2e2216152006c02f"
@@ -14432,9 +14627,6 @@
           "5649a2464bdc2d91118b45a8"
         ]
       },
-	  "67112695fe5c8bf33f02476d": {
-		  "mod_bipod": ["5888961624597754281f93f3"]
-	  },
       "6038b4b292ec1c3103795a0b": {
         "Back_plate": [
           "656f9d5900d62bcd2e02407c",
@@ -14761,6 +14953,47 @@
         ],
         "soft_armor_right": [
           "657040374e67e8ec7a0d261c"
+        ]
+      },
+      "6086b5392535c57a13424d70": {
+        "mod_tactical": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
+        ]
+      },
+      "6086b5731246154cad35d6c7": {
+        "mod_mount_001": [
+          "6086b5392535c57a13424d70"
+        ],
+        "mod_mount_002": [
+          "6086b5392535c57a13424d70"
+        ],
+        "mod_mount_003": [
+          "6086b5392535c57a13424d70"
+        ]
+      },
+      "609269c3b0e443224b421cc1": {
+        "mod_muzzle": [
+          "60926df0132d4d12c81fd9df"
         ]
       },
       "609a4b4fe2ff132951242d04": {
@@ -15164,6 +15397,12 @@
           "619d36da53b4d42ee724fae4"
         ]
       },
+      "612e0cfc8004cc50514c2d9e": {
+        "mod_muzzle": [
+          "612e0e04568c120fdd294258",
+          "63877c99e785640d436458ea"
+        ]
+      },
       "612e0d3767085e45ef14057f": {
         "mod_muzzle": [
           "612e0e04568c120fdd294258"
@@ -15187,6 +15426,11 @@
           "616442e4faa1272e43152193"
         ]
       },
+      "615d8da4d3a39d50044c10e8": {
+        "mod_scope": [
+          "616442e4faa1272e43152193"
+        ]
+      },
       "615d8dbd290d254f5e6b2ed6": {
         "mod_mount": [
           "615d8da4d3a39d50044c10e8"
@@ -15201,12 +15445,26 @@
           "5a6f5d528dc32e00094b97d9"
         ]
       },
-	  "615d8da4d3a39d50044c10e8": {
-        "mod_scope": ["616442e4faa1272e43152193"]
-    },
-	"5a7ad4af51dfba0013379717": {
-        "mod_scope": ["57ae0171245977343c27bfcf", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511"]
-    },
+      "615d8f5dd92c473c770212ef": {
+        "mod_muzzle": [
+          "615d8f8567085e45ef1409ca"
+        ]
+      },
+      "616554fe50224f204c1da2aa": {
+        "mod_scope": [
+          "61657230d92c473c770213d7",
+          "58d399e486f77442e0016fe7",
+          "5b3116595acfc40019476364",
+          "58d39b0386f77443380bf13c"
+        ]
+      },
+      "616584766ef05c2ce828ef57": {
+        "mod_scope": [
+          "61659f79d92c473c770213ee",
+          "5c7d55de2e221644f31bff68",
+          "5c7d560b2e22160bc12c6139"
+        ]
+      },
       "6165ac306ef05c2ce828ef74": {
         "mod_charge": [
           "6181688c6c780c1e710c9b04"
@@ -15381,7 +15639,13 @@
         "mod_scope_001": [
           "61714b2467085e45ef140b2c"
         ],
-		"mod_scope_002": ["57ae0171245977343c27bfcf", "61605d88ffa6e502ac5e7eeb", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233"]
+        "mod_scope_002": [
+          "57ae0171245977343c27bfcf",
+          "61605d88ffa6e502ac5e7eeb",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233"
+        ]
       },
       "6171407e50224f204c1da3c5": {
         "mod_scope_000": [
@@ -15439,11 +15703,11 @@
       "61816734d8e3106d9806c1f3": {
         "mod_stock_001": [
           "618167528004cc50514c34f9",
-		  "61825d136ef05c2ce828f1cc"
+          "61825d136ef05c2ce828f1cc"
         ],
         "mod_stock_002": [
           "618167441cb55961fa0fdc71",
-		  "61825d24d3a39d50044c13af"
+          "61825d24d3a39d50044c13af"
         ]
       },
       "618167528004cc50514c34f9": {
@@ -15588,12 +15852,6 @@
           "61816fcad92c473c770215cc"
         ]
       },
-	  "544a38634bdc2d58388b4568": {
-        "mod_muzzle": ["638612b607dfed1ccb7206ba"]
-    },
-	"612e0cfc8004cc50514c2d9e": {
-        "mod_muzzle": ["612e0e04568c120fdd294258", "63877c99e785640d436458ea"]
-    },
       "6183fd9e8004cc50514c358f": {
         "mod_muzzle": [
           "618407a850224f204c1da549",
@@ -15731,6 +15989,11 @@
         "mod_stock": [
           "61816734d8e3106d9806c1f3",
           "61825d06d92c473c770215de"
+        ]
+      },
+      "618a75c9a3884f56c957ca1b": {
+        "mod_scope": [
+          "618a75f0bd321d49084cd399"
         ]
       },
       "618b9643526131765025ab35": {
@@ -16109,12 +16372,38 @@
       "622b4d7df9cfc87d675d2ded": {
         "mod_scope": [
           "622efbcb99f4ea1a4d6c9a15",
-		  "622efdf8ec80d870d349b4e5"
+          "622efdf8ec80d870d349b4e5"
         ]
       },
-	  "622efdf8ec80d870d349b4e5": {
-        "mod_scope": ["570fd6c2d2720bc6458b457f", "558022b54bdc2dac148b458d", "58491f3324597764bc48fa02", "584924ec24597768f12ae244", "5b30b0dc5acfc400153b7124", "6165ac8c290d254f5e6b2f6c", "60a23797a37c940de7062d02", "5d2da1e948f035477b1ce2ba", "5c0505e00db834001b735073", "609a63b6e2ff132951242d09", "584984812459776a704a82a6", "59f9d81586f7744c7506ee62", "570fd721d2720bc5458b4596", "57ae0171245977343c27bfcf", "609bab8b455afd752b2e6138", "61605d88ffa6e502ac5e7eeb", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "61714b2467085e45ef140b2c", "5a33b2c9c4a282000c5a9511", "64785e7c19d732620e045e15", "655f13e0a246670fb0373245"]
-    },
+      "622efdf8ec80d870d349b4e5": {
+        "mod_scope": [
+          "570fd6c2d2720bc6458b457f",
+          "558022b54bdc2dac148b458d",
+          "58491f3324597764bc48fa02",
+          "584924ec24597768f12ae244",
+          "5b30b0dc5acfc400153b7124",
+          "6165ac8c290d254f5e6b2f6c",
+          "60a23797a37c940de7062d02",
+          "5d2da1e948f035477b1ce2ba",
+          "5c0505e00db834001b735073",
+          "609a63b6e2ff132951242d09",
+          "584984812459776a704a82a6",
+          "59f9d81586f7744c7506ee62",
+          "570fd721d2720bc5458b4596",
+          "57ae0171245977343c27bfcf",
+          "609bab8b455afd752b2e6138",
+          "61605d88ffa6e502ac5e7eeb",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "61714b2467085e45ef140b2c",
+          "5a33b2c9c4a282000c5a9511",
+          "64785e7c19d732620e045e15",
+          "655f13e0a246670fb0373245"
+        ]
+      },
       "623063e994fc3f7b302a9696": {
         "mod_barrel": [
           "622b38c56762c718e457e246",
@@ -16226,39 +16515,10 @@
           "5a800961159bd4315e3a1657"
         ]
       },
-	  "66ffa9b66e19cc902401c5e8": {
-        "mod_stock": ["66ffac9e316b08f6840a73e6", "670fd23798663bc4b10e911a", "6719023b612cc94b9008e78c"],
-        "mod_magazine": ["66ffaab91f7492c901027bb8", "6709133fa532466d5403fb7c"],
-        "mod_barrel": ["66ffac601f7492c901027bbb", "670fced86a7e274b1a0964e8", "670fd03dc424cf758f006946", "670fd0a8d8d4eae4790c8187"]
-    },
-	"670fced86a7e274b1a0964e8": {
-        "mod_mount": ["6710cea62bb09af72f0e6bf8"]
-    },
-    "670fd03dc424cf758f006946": {
-        "mod_muzzle": ["670fd0eed8d4eae4790c818a"]
-    },
-    "670fd0a8d8d4eae4790c8187": {
-        "mod_muzzle": ["670fd1cc95c92bfc8e0bea39"],
-        "mod_mount": ["6710cea62bb09af72f0e6bf8"]
-    },
-    "67124dcfa3541f2a1f0e788b": {
-        "mod_stock": ["66ffac9e316b08f6840a73e6", "670fd23798663bc4b10e911a", "6719023b612cc94b9008e78c"],
-        "mod_magazine": ["66ffaab91f7492c901027bb8", "6709133fa532466d5403fb7c"],
-        "mod_barrel": ["66ffac601f7492c901027bbb", "670fced86a7e274b1a0964e8", "670fd03dc424cf758f006946", "670fd0a8d8d4eae4790c8187"],
-        "mod_scope": ["57ae0171245977343c27bfcf", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "5c7d55f52e221644f31bff6a", "616584766ef05c2ce828ef57", "615d8d878004cc50514c3233", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5b31163c5acfc400153b71cb", "5a33b652c4a28232996e407c", "5a33b2c9c4a282000c5a9511", "558022b54bdc2dac148b458d", "58491f3324597764bc48fa02", "584924ec24597768f12ae244", "5b30b0dc5acfc400153b7124", "6165ac8c290d254f5e6b2f6c", "60a23797a37c940de7062d02", "5d2da1e948f035477b1ce2ba", "5c0505e00db834001b735073", "609a63b6e2ff132951242d09", "584984812459776a704a82a6", "59f9d81586f7744c7506ee62", "570fd721d2720bc5458b4596", "655f13e0a246670fb0373245"]
-    },
-    "6718817435e3cfd9550d2c27": {
-        "mod_magazine": ["62e7c98b550c8218d602cbb4", "630e1adbbd357927e4007c09", "630e295c984633f1fb0e7c30"],
-        "mod_charge": ["62e7c880f68e7a0676050c7c", "62ebbc53e3c1e1ec7c02c44f"],
-        "mod_reciever": ["62e7c72df68e7a0676050c77", "62ea7c793043d74a0306e19f", "67110d8d388bded67304ceb4"]
-    },
-	"671126a210d67adb5b08e925": {
-		"mod_bipod": ["5888961624597754281f93f3"]
-	},
       "623c3c1f37b4b31470357737": {
         "mod_mount_000": [
           "5a9d6d00a2750c5c985b5305",
-		  "67112695fe5c8bf33f02476d"
+          "67112695fe5c8bf33f02476d"
         ],
         "mod_mount_001": [
           "623c2f652febb22c2777d8d7"
@@ -16466,6 +16726,14 @@
           "62811f828193841aca4a45c3"
         ]
       },
+      "62811f461d5df4475f46a332": {
+        "mod_scope": [
+          "56ea70acd2720b844b8b4594",
+          "5aa66be6e5b5b0214e506e97",
+          "61714eec290d254f5e6b2ffc",
+          "62850c28da09541f43158cca"
+        ]
+      },
       "62811fbf09427b40ab14e767": {
         "mod_barrel": [
           "628121434fa03b6b6c35dc6a"
@@ -16509,7 +16777,7 @@
         ],
         "mod_mount_003": [
           "628120dd308cb521f87a8fa1",
-		  "671126a210d67adb5b08e925"
+          "671126a210d67adb5b08e925"
         ]
       },
       "628120dd308cb521f87a8fa1": {
@@ -17046,14 +17314,6 @@
           "62ea7c793043d74a0306e19f"
         ]
       },
-	  "62e7c8f91cd3fde4d503d690": {
-        "mod_scope": ["57ac965c24597706be5f975c", "57aca93d2459771f2c7e26db", "544a3f024bdc2d1d388b4568", "544a3a774bdc2d3a388b4567"],
-        "mod_sight_front": ["5ba26b01d4351e0085325a51", "5dfa3d950dee1b22f862eae0", "5c17804b2e2216152006c02f", "5fb6567747ce63734e3fa1dc", "5bc09a30d4351e00367fb7c8", "5c18b90d2e2216152142466b", "5fc0fa362770a0045c59c677", "5894a73486f77426d259076c"],
-        "mod_sight_rear": ["61817865d3a39d50044c13a4", "5bb20e49d4351e3bac1212de", "5ba26b17d4351e00367f9bdd", "5dfa3d7ac41b2312ea33362a", "5c1780312e221602b66cc189", "5fb6564947ce63734e3fa1da", "5bc09a18d4351e003562b68e", "5c18b9192e2216398b5a8104", "5fc0fa957283c4046c58147e", "5894a81786f77427140b8347"]
-    },
-	"62ebba1fb658e07ef9082b5a": {
-        "mod_scope": ["57ac965c24597706be5f975c", "57aca93d2459771f2c7e26db", "544a3f024bdc2d1d388b4568", "544a3a774bdc2d3a388b4567", "5d2dc3e548f035404a1a4798"]
-    },
       "62e7c72df68e7a0676050c77": {
         "mod_barrel": [
           "62e7c7f3c34ea971710c32fc",
@@ -17076,10 +17336,6 @@
           "5b07dd285acfc4001754240d"
         ]
       },
-	  "62ebd290c427473eff0baafb": {
-        "mod_scope": ["57ae0171245977343c27bfcf", "58d39d3d86f77445bb794ae7", "616554fe50224f204c1da2aa", "577d128124597739d65d0e56", "58d2664f86f7747fec5834f6", "5a33b2c9c4a282000c5a9511", "61605d88ffa6e502ac5e7eeb"],
-        "mod_tactical": ["626becf9582c3e319310b837", "5cc9c20cd7f00c001336c65d", "57d17e212459775a1179a0f5", "6272370ee4013c5d7e31f418", "5d2369418abbc306c62e0c80", "6272379924e29f06af4d5ecb", "5b07dd285acfc4001754240d", "5a7b483fe899ef0016170d15", "56def37dd2720bec348b456a", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "5b3a337e5acfc4704b4a19a0", "5a800961159bd4315e3a1657", "644a3df63b0b6f03e101e065"]
-    },
       "62e7c7f3c34ea971710c32fc": {
         "mod_foregrip": [
           "634e61b0767cb15c4601a877"
@@ -17095,11 +17351,77 @@
           "630f2982cdb9e392db0cbcc7"
         ]
       },
+      "62e7c8f91cd3fde4d503d690": {
+        "mod_scope": [
+          "57ac965c24597706be5f975c",
+          "57aca93d2459771f2c7e26db",
+          "544a3f024bdc2d1d388b4568",
+          "544a3a774bdc2d3a388b4567"
+        ],
+        "mod_sight_front": [
+          "5ba26b01d4351e0085325a51",
+          "5dfa3d950dee1b22f862eae0",
+          "5c17804b2e2216152006c02f",
+          "5fb6567747ce63734e3fa1dc",
+          "5bc09a30d4351e00367fb7c8",
+          "5c18b90d2e2216152142466b",
+          "5fc0fa362770a0045c59c677",
+          "5894a73486f77426d259076c"
+        ],
+        "mod_sight_rear": [
+          "61817865d3a39d50044c13a4",
+          "5bb20e49d4351e3bac1212de",
+          "5ba26b17d4351e00367f9bdd",
+          "5dfa3d7ac41b2312ea33362a",
+          "5c1780312e221602b66cc189",
+          "5fb6564947ce63734e3fa1da",
+          "5bc09a18d4351e003562b68e",
+          "5c18b9192e2216398b5a8104",
+          "5fc0fa957283c4046c58147e",
+          "5894a81786f77427140b8347"
+        ]
+      },
       "62ea7c793043d74a0306e19f": {
         "mod_barrel": [
           "62e7c7f3c34ea971710c32fc",
           "630e39c3bd357927e4007c15",
           "6333f05d1bc0e6217a0e9d34"
+        ]
+      },
+      "62ebba1fb658e07ef9082b5a": {
+        "mod_scope": [
+          "57ac965c24597706be5f975c",
+          "57aca93d2459771f2c7e26db",
+          "544a3f024bdc2d1d388b4568",
+          "544a3a774bdc2d3a388b4567",
+          "5d2dc3e548f035404a1a4798"
+        ]
+      },
+      "62ebd290c427473eff0baafb": {
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5a33b2c9c4a282000c5a9511",
+          "61605d88ffa6e502ac5e7eeb"
+        ],
+        "mod_tactical": [
+          "626becf9582c3e319310b837",
+          "5cc9c20cd7f00c001336c65d",
+          "57d17e212459775a1179a0f5",
+          "6272370ee4013c5d7e31f418",
+          "5d2369418abbc306c62e0c80",
+          "6272379924e29f06af4d5ecb",
+          "5b07dd285acfc4001754240d",
+          "5a7b483fe899ef0016170d15",
+          "56def37dd2720bec348b456a",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5a800961159bd4315e3a1657",
+          "644a3df63b0b6f03e101e065"
         ]
       },
       "63088377b5cd696784087147": {
@@ -17319,6 +17641,13 @@
       "6386300124a1dc425c00577a": {
         "mod_stock": [
           "5a0c59791526d8dba737bba7"
+        ]
+      },
+      "638db77630c4240f9e06f8b6": {
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "609bab8b455afd752b2e6138",
+          "58d39d3d86f77445bb794ae7"
         ]
       },
       "638de3603a1a4031d8260b8c": {
@@ -17589,6 +17918,11 @@
         ],
         "mod_sight_rear": [
           "5bb20e49d4351e3bac1212de"
+        ]
+      },
+      "63fc449f5bd61c6cf3784a88": {
+        "mod_scope": [
+          "63fc44e2429a8a166c7f61e6"
         ]
       },
       "6410733d5dd49d77bd07847e": {
@@ -18119,28 +18453,17 @@
           "6513f13a8cb24472490ee32f"
         ]
       },
+      "65144f546ddb773afa0e35e1": {
+        "mod_mount": [
+          "67069cf1af4890b09f0006e8",
+          "67069d02ad91f3a63c0bc2b0"
+        ]
+      },
       "65144ff50e00edc79406836f": {
         "mod_mount": [
           "57a3459f245977764a01f703"
         ]
       },
-	  "65144f546ddb773afa0e35e1": {
-		  "mod_mount": ["67069cf1af4890b09f0006e8",
-                  "67069d02ad91f3a63c0bc2b0"]
-	  },
-	  "67069cf1af4890b09f0006e8": {
-		  "mod_tactical_000": ["5a800961159bd4315e3a1657",
-                  "57fd23e32459772d0805bcf1"],
-				  "mod_tactical_001": ["5a800961159bd4315e3a1657",
-                  "57fd23e32459772d0805bcf1"]
-	  },
-	  "6565c3ab977bcc2dbb01c2e7": {
-        "mod_mount": ["67069cf1af4890b09f0006e8", "67069d02ad91f3a63c0bc2b0"]
-    },
-	"67069d02ad91f3a63c0bc2b0": {
-        "mod_tactical_000": ["5a800961159bd4315e3a1657", "57fd23e32459772d0805bcf1", "544909bb4bdc2d6f028b4577", "5c06595c0db834001a66af6c", "5cc9c20cd7f00c001336c65d", "5d2369418abbc306c62e0c80", "5b07dd285acfc4001754240d", "56def37dd2720bec348b456a", "5a7b483fe899ef0016170d15", "61605d88ffa6e502ac5e7eeb", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "5b3a337e5acfc4704b4a19a0", "5c5952732e2216398b5abda2", "57d17e212459775a1179a0f5", "6267c6396b642f77f56f5c1c", "6272370ee4013c5d7e31f418", "6272379924e29f06af4d5ecb", "626becf9582c3e319310b837", "644a3df63b0b6f03e101e065", "646f6322f43d0c5d62063715"],
-        "mod_tactical_001": ["5a800961159bd4315e3a1657", "57fd23e32459772d0805bcf1", "544909bb4bdc2d6f028b4577", "5d10b49bd7ad1a1a560708b0", "5c06595c0db834001a66af6c", "5cc9c20cd7f00c001336c65d", "5d2369418abbc306c62e0c80", "5b07dd285acfc4001754240d", "56def37dd2720bec348b456a", "5a7b483fe899ef0016170d15", "61605d88ffa6e502ac5e7eeb", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "5b3a337e5acfc4704b4a19a0", "5c5952732e2216398b5abda2", "57d17e212459775a1179a0f5", "6267c6396b642f77f56f5c1c", "6272370ee4013c5d7e31f418", "6272379924e29f06af4d5ecb", "626becf9582c3e319310b837", "644a3df63b0b6f03e101e065", "646f6322f43d0c5d62063715"]
-    },
       "651450ce0e00edc794068371": {
         "mod_charge": [
           "6130ca3fd92c473c77020dbd",
@@ -18199,27 +18522,6 @@
           "57c450252459772d28133253"
         ]
       },
-	  "5d0a29ead7ad1a0026013f27": {
-        "mod_scope": ["5d0a3a58d7ad1a669c15ca14", "5d0a3e8cd7ad1a6f6a3d35bd"]
-    },
-	  "618a75c9a3884f56c957ca1b": {
-        "mod_scope": ["618a75f0bd321d49084cd399"]
-    },
-	 "638db77630c4240f9e06f8b6": {
-        "mod_scope": ["57ae0171245977343c27bfcf", "609bab8b455afd752b2e6138", "58d39d3d86f77445bb794ae7"]
-	 },
-	"65f1b1176dbd6c5ba2082eed": {
-			"mod_mount": ["65f1b2a5c14a07890801fc70"]
-		},
-	"65f1b2a5c14a07890801fc70": {
-        "mod_scope": ["57ac965c24597706be5f975c", "57aca93d2459771f2c7e26db", "544a3f024bdc2d1d388b4568", "544a3a774bdc2d3a388b4567"]
-    },
-	"5d0a3a58d7ad1a669c15ca14": {
-        "mod_tactical": ["5d0b5cd3d7ad1a3fe32ad263"]
-    },
-    "5d0a3e8cd7ad1a6f6a3d35bd": {
-        "mod_tactical": ["5d0b5cd3d7ad1a3fe32ad263"]
-    },
       "6516b129609aaf354b34b3a8": {
         "mod_pistolgrip": [
           "5f6341043ada5942720e2dc5",
@@ -18352,6 +18654,60 @@
           "5bb20e49d4351e3bac1212de"
         ]
       },
+      "6529348224cbe3c74a05e5c4": {
+        "mod_stock": [
+          "6529366450dc782999054ba0"
+        ]
+      },
+      "6529366450dc782999054ba0": {
+        "mod_stock_000": [
+          "5fc2369685fd526b824a5713",
+          "606587d11246154cad35d635",
+          "5a9eb32da2750c00171b3f9c",
+          "5bfe86df0db834001b734685",
+          "55d4ae6c4bdc2d8b2f8b456e",
+          "5c87a07c2e2216001219d4a2",
+          "5bb20e70d4351e0035629f8f",
+          "5beec8c20db834001d2c465c",
+          "5fbbaa86f9986c4cff3fe5f6",
+          "5fce16961f152d4312622bc9",
+          "5ae30c9a5acfc408fb139a03",
+          "5d135e83d7ad1a21b83f42d8",
+          "5d135ecbd7ad1a21c176542e",
+          "56eabf3bd2720b75698b4569",
+          "58d2946386f774496974c37e",
+          "58d2946c86f7744e271174b5",
+          "58d2947686f774485c6a1ee5",
+          "58d2947e86f77447aa070d53",
+          "5d44069ca4b9361ebd26fc37",
+          "5d4406a8a4b9361e4f6eb8b7",
+          "5947c73886f7747701588af5",
+          "5c793fde2e221601da358614",
+          "5b39f8db5acfc40016387a1b",
+          "628a85ee6b1d481ff772e9d5",
+          "602e620f9b513876d4338d9a",
+          "6529370c405a5f51dd023db8",
+          "6516e91f609aaf354b34b3e2",
+          "6516e971a3d4c6497930b450"
+        ]
+      },
+      "6565c3ab977bcc2dbb01c2e7": {
+        "mod_mount": [
+          "67069cf1af4890b09f0006e8",
+          "67069d02ad91f3a63c0bc2b0"
+        ]
+      },
+      "6567e751a715f85433025998": {
+        "mod_scope": [
+          "5b2388675acfc4771e1be0be",
+          "5b3b99475acfc432ff4dcbee",
+          "5a37cb10c4a282329a73b4e7",
+          "57c5ac0824597754771e88a9",
+          "618ba27d9008e4636a67f61d",
+          "617151c1d92c473c770214ab",
+          "6567e7681265c8a131069b0f"
+        ]
+      },
       "65719f0775149d62ce0a670b": {
         "Helmet_back": [
           "657fa168e9433140ad0baf8e"
@@ -18372,6 +18728,37 @@
         "mod_nvg": [
           "5c0558060db834001b735271",
           "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "65ae4f57e343f0acc00824da": {
+        "mod_foregrip": [
+          "5c7fc87d2e221644f31c0298",
+          "5cda9bcfd7f00c0c0b53e900",
+          "59f8a37386f7747af3328f06"
+        ],
+        "mod_scope": [
+          "591c4efa86f7741030027726",
+          "570fd79bd2720bc7458b4583",
+          "570fd6c2d2720bc6458b457f"
+        ],
+        "mod_tactical": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c"
+        ]
+      },
+      "65f1b1176dbd6c5ba2082eed": {
+        "mod_mount": [
+          "65f1b2a5c14a07890801fc70"
+        ]
+      },
+      "65f1b2a5c14a07890801fc70": {
+        "mod_scope": [
+          "57ac965c24597706be5f975c",
+          "57aca93d2459771f2c7e26db",
+          "544a3f024bdc2d1d388b4568",
+          "544a3a774bdc2d3a388b4567"
         ]
       },
       "65fb023261d5829b2d090755": {
@@ -18473,30 +18860,6 @@
           "661520fb6f8e1a96340afaa6"
         ]
       },
-	  "577d128124597739d65d0e56": {
-        "mod_scope": ["577d141e24597739c5255e01"]
-    },
-	  "616554fe50224f204c1da2aa": {
-        "mod_scope": ["61657230d92c473c770213d7", "58d399e486f77442e0016fe7", "5b3116595acfc40019476364", "58d39b0386f77443380bf13c"]
-    },
-"58d39b0386f77443380bf13c": {
-        "mod_scope": ["61657230d92c473c770213d7", "58d399e486f77442e0016fe7", "5b3116595acfc40019476364"]
-    },
-	  "5aa66a9be5b5b0214e506e89": {
-        "mod_scope": ["56ea70acd2720b844b8b4594", "5aa66be6e5b5b0214e506e97", "61714eec290d254f5e6b2ffc", "62850c28da09541f43158cca"]
-    },
-	  "5b31163c5acfc400153b71cb": {
-        "mod_scope": ["61657230d92c473c770213d7", "58d399e486f77442e0016fe7", "5b3116595acfc40019476364"]
-    },
-	  "5dff77c759400025ea5150cf": {
-        "mod_scope": ["5dff772da3651922b360bf91"]
-    },
-    "63fc449f5bd61c6cf3784a88": {
-        "mod_scope": ["63fc44e2429a8a166c7f61e6"]
-    },
-	  "6567e751a715f85433025998": {
-        "mod_scope": ["5b2388675acfc4771e1be0be", "5b3b99475acfc432ff4dcbee", "5a37cb10c4a282329a73b4e7", "57c5ac0824597754771e88a9", "618ba27d9008e4636a67f61d", "617151c1d92c473c770214ab", "6567e7681265c8a131069b0f"]
-    },
       "6601257f1347bc1a5f0f4db6": {
         "mod_pistolgrip_001": [
           "660125bf1d087a96c60a54db",
@@ -18887,9 +19250,6 @@
           "661520fb6f8e1a96340afaa6"
         ]
       },
-	  "5b3b99265acfc4704b4a1afb": {
-        "mod_scope": ["5b2388675acfc4771e1be0be", "5b3b99475acfc432ff4dcbee", "5a37cb10c4a282329a73b4e7", "57c5ac0824597754771e88a9", "618ba27d9008e4636a67f61d", "617151c1d92c473c770214ab", "6567e7681265c8a131069b0f"]
-    },
       "661cec09b2c6356b4d0c7a36": {
         "mod_barrel": [
           "6601279cc752a02bbe05e692",
@@ -18989,12 +19349,6 @@
           "661520fb6f8e1a96340afaa6"
         ]
       },
-	  "62811f461d5df4475f46a332": {
-        "mod_scope": ["56ea70acd2720b844b8b4594", "5aa66be6e5b5b0214e506e97", "61714eec290d254f5e6b2ffc", "62850c28da09541f43158cca"]
-    },
-	"5c86592b2e2216000e69e77c": {
-        "mod_scope": ["56ea70acd2720b844b8b4594", "5aa66be6e5b5b0214e506e97", "61714eec290d254f5e6b2ffc"]
-    },
       "661fbe066751ee51930b01f2": {
         "mod_foregrip": [
           "5c7fc87d2e221644f31c0298",
@@ -19177,18 +19531,6 @@
           "669cf78806768ff39504fc1c"
         ]
       },
-	  "668e71a8dadf42204c032ce1": {
-        "mod_magazine": ["668031ffe3e7eb26e8004cdd", "66866f4ec3d473265104f381", "66866f622a2296a8d9099639"],
-        "mod_muzzle_000": ["668670e3fb75ee4a5e02eb16"],
-        "mod_stock": ["668032ba74b8f2050c0b917d", "668672b8c99550c6fd0f0b29", "66867310f3734a938b077f79", "66881008f23233ee9a0742e7", "669cf78806768ff39504fc1c"],
-        "mod_reciever": ["6680326874b8f2050c0b9178"],
-        "mod_barrel": ["6686700a2b934a68630a7fe6", "66867023c3d473265104f384", "668670432b934a68630a7fe8"],
-        "mod_mount_000": ["668ea3f68117e4968b0cff4a"]
-    },
-	"668ea3f68117e4968b0cff4a": {
-        "mod_tactical_000": ["5a800961159bd4315e3a1657", "5cc9c20cd7f00c001336c65d", "5d2369418abbc306c62e0c80", "5b07dd285acfc4001754240d", "56def37dd2720bec348b456a", "5a7b483fe899ef0016170d15", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "5b3a337e5acfc4704b4a19a0", "57d17e212459775a1179a0f5", "6267c6396b642f77f56f5c1c", "6272370ee4013c5d7e31f418", "6272379924e29f06af4d5ecb", "626becf9582c3e319310b837", "646f6322f43d0c5d62063715"],
-        "mod_tactical_001": ["5a800961159bd4315e3a1657", "57fd23e32459772d0805bcf1", "544909bb4bdc2d6f028b4577", "5d10b49bd7ad1a1a560708b0", "5c06595c0db834001a66af6c", "5cc9c20cd7f00c001336c65d", "5d2369418abbc306c62e0c80", "5b07dd285acfc4001754240d", "56def37dd2720bec348b456a", "5a7b483fe899ef0016170d15", "61605d88ffa6e502ac5e7eeb", "5a5f1ce64f39f90b401987bc", "560d657b4bdc2da74d8b4572", "5b3a337e5acfc4704b4a19a0", "5c5952732e2216398b5abda2", "57d17e212459775a1179a0f5", "6267c6396b642f77f56f5c1c", "6272370ee4013c5d7e31f418", "6272379924e29f06af4d5ecb", "626becf9582c3e319310b837", "644a3df63b0b6f03e101e065", "646f6322f43d0c5d62063715"]
-    },
       "668031705014e211b4078046": {
         "mod_muzzle_001": [
           "5cf6935bd7f00c06585fb791",
@@ -19265,19 +19607,6 @@
           "6567e751a715f85433025998"
         ]
       },
-	  "5b3b6dc75acfc47a8773fb1e": {
-        "mod_scope": ["5b3b6e495acfc4330140bd88"]
-    },
-	  "5c064c400db834001d23f468": {
-        "mod_scope": ["57ac965c24597706be5f975c", "57aca93d2459771f2c7e26db", "544a3f024bdc2d1d388b4568", "544a3a774bdc2d3a388b4567", "5d2dc3e548f035404a1a4798", "57adff4f24597737f373b6e6", "5c0517910db83400232ffee5", "591c4efa86f7741030027726"]
-    },
-	  "5a37ca54c4a282000d72296a": {
-        "mod_scope_000": ["5b2388675acfc4771e1be0be", "5b3b99475acfc432ff4dcbee", "5a37cb10c4a282329a73b4e7", "57c5ac0824597754771e88a9", "618ba27d9008e4636a67f61d", "617151c1d92c473c770214ab", "6567e7681265c8a131069b0f"],
-        "mod_scope_001": ["58d268fc86f774111273f8c2"]
-    },
-	  "57c69dd424597774c03b7bbc": {
-        "mod_scope": ["5b2388675acfc4771e1be0be", "5b3b99475acfc432ff4dcbee", "5a37cb10c4a282329a73b4e7", "57c5ac0824597754771e88a9", "618ba27d9008e4636a67f61d", "617151c1d92c473c770214ab", "6567e7681265c8a131069b0f"]
-    },
       "668672b8c99550c6fd0f0b29": {
         "mod_stock_000": [
           "58ac1bf086f77420ed183f9f",
@@ -19287,6 +19616,77 @@
           "5c5db6f82e2216003a0fe914",
           "6529348224cbe3c74a05e5c4",
           "6686717ffb75ee4a5e02eb19"
+        ]
+      },
+      "668e71a8dadf42204c032ce1": {
+        "mod_barrel": [
+          "6686700a2b934a68630a7fe6",
+          "66867023c3d473265104f384",
+          "668670432b934a68630a7fe8"
+        ],
+        "mod_magazine": [
+          "668031ffe3e7eb26e8004cdd",
+          "66866f4ec3d473265104f381",
+          "66866f622a2296a8d9099639"
+        ],
+        "mod_mount_000": [
+          "668ea3f68117e4968b0cff4a"
+        ],
+        "mod_muzzle_000": [
+          "668670e3fb75ee4a5e02eb16"
+        ],
+        "mod_reciever": [
+          "6680326874b8f2050c0b9178"
+        ],
+        "mod_stock": [
+          "668032ba74b8f2050c0b917d",
+          "668672b8c99550c6fd0f0b29",
+          "66867310f3734a938b077f79",
+          "66881008f23233ee9a0742e7",
+          "669cf78806768ff39504fc1c"
+        ]
+      },
+      "668ea3f68117e4968b0cff4a": {
+        "mod_tactical_000": [
+          "5a800961159bd4315e3a1657",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "646f6322f43d0c5d62063715"
+        ],
+        "mod_tactical_001": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5d10b49bd7ad1a1a560708b0",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
         ]
       },
       "668fe5a998b5ad715703ddd6": {
@@ -19690,6 +20090,726 @@
         ],
         "soft_armor_right": [
           "66b88521a7f72d197e70be3b"
+        ]
+      },
+      "66ffa9b66e19cc902401c5e8": {
+        "mod_barrel": [
+          "66ffac601f7492c901027bbb",
+          "670fced86a7e274b1a0964e8",
+          "670fd03dc424cf758f006946",
+          "670fd0a8d8d4eae4790c8187"
+        ],
+        "mod_magazine": [
+          "66ffaab91f7492c901027bb8",
+          "6709133fa532466d5403fb7c"
+        ],
+        "mod_stock": [
+          "66ffac9e316b08f6840a73e6",
+          "670fd23798663bc4b10e911a",
+          "6719023b612cc94b9008e78c"
+        ]
+      },
+      "67069cf1af4890b09f0006e8": {
+        "mod_tactical_000": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1"
+        ],
+        "mod_tactical_001": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1"
+        ]
+      },
+      "67069d02ad91f3a63c0bc2b0": {
+        "mod_tactical_000": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
+        ],
+        "mod_tactical_001": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5d10b49bd7ad1a1a560708b0",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
+        ]
+      },
+      "670fced86a7e274b1a0964e8": {
+        "mod_mount": [
+          "6710cea62bb09af72f0e6bf8"
+        ]
+      },
+      "670fd03dc424cf758f006946": {
+        "mod_muzzle": [
+          "670fd0eed8d4eae4790c818a"
+        ]
+      },
+      "670fd0a8d8d4eae4790c8187": {
+        "mod_mount": [
+          "6710cea62bb09af72f0e6bf8"
+        ],
+        "mod_muzzle": [
+          "670fd1cc95c92bfc8e0bea39"
+        ]
+      },
+      "6710cea62bb09af72f0e6bf8": {
+        "mod_tactical_000": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d"
+        ],
+        "mod_tactical_001": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d"
+        ],
+        "mod_tactical_002": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a"
+        ],
+        "mod_tactical_003": [
+          "57d17c5e2459775a5c57d17d"
+        ]
+      },
+      "67112695fe5c8bf33f02476d": {
+        "mod_bipod": [
+          "5888961624597754281f93f3"
+        ]
+      },
+      "671126a210d67adb5b08e925": {
+        "mod_bipod": [
+          "5888961624597754281f93f3"
+        ]
+      },
+      "671126b049e181972e0681fa": {
+        "mod_bipod": [
+          "5888961624597754281f93f3"
+        ]
+      },
+      "67124dcfa3541f2a1f0e788b": {
+        "mod_barrel": [
+          "66ffac601f7492c901027bbb",
+          "670fced86a7e274b1a0964e8",
+          "670fd03dc424cf758f006946",
+          "670fd0a8d8d4eae4790c8187"
+        ],
+        "mod_magazine": [
+          "66ffaab91f7492c901027bb8",
+          "6709133fa532466d5403fb7c"
+        ],
+        "mod_scope": [
+          "57ae0171245977343c27bfcf",
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "5c7d55f52e221644f31bff6a",
+          "616584766ef05c2ce828ef57",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "5b31163c5acfc400153b71cb",
+          "5a33b652c4a28232996e407c",
+          "5a33b2c9c4a282000c5a9511",
+          "558022b54bdc2dac148b458d",
+          "58491f3324597764bc48fa02",
+          "584924ec24597768f12ae244",
+          "5b30b0dc5acfc400153b7124",
+          "6165ac8c290d254f5e6b2f6c",
+          "60a23797a37c940de7062d02",
+          "5d2da1e948f035477b1ce2ba",
+          "5c0505e00db834001b735073",
+          "609a63b6e2ff132951242d09",
+          "584984812459776a704a82a6",
+          "59f9d81586f7744c7506ee62",
+          "570fd721d2720bc5458b4596",
+          "655f13e0a246670fb0373245"
+        ],
+        "mod_stock": [
+          "66ffac9e316b08f6840a73e6",
+          "670fd23798663bc4b10e911a",
+          "6719023b612cc94b9008e78c"
+        ]
+      },
+      "6718817435e3cfd9550d2c27": {
+        "mod_charge": [
+          "62e7c880f68e7a0676050c7c",
+          "62ebbc53e3c1e1ec7c02c44f"
+        ],
+        "mod_magazine": [
+          "62e7c98b550c8218d602cbb4",
+          "630e1adbbd357927e4007c09",
+          "630e295c984633f1fb0e7c30"
+        ],
+        "mod_reciever": [
+          "62e7c72df68e7a0676050c77",
+          "62ea7c793043d74a0306e19f",
+          "67110d8d388bded67304ceb4"
+        ]
+      },
+      "673cab3e03c6a20581028bc1": {
+        "mod_charge": [
+          "673cb4054ff4aa8f86076f4a"
+        ],
+        "mod_magazine": [
+          "673cbdfad0453ba50c0f76d6"
+        ],
+        "mod_reciever": [
+          "673cb491280680de5e02ff36"
+        ],
+        "mod_stock": [
+          "673cb212e695740be0047a46"
+        ]
+      },
+      "673cb212e695740be0047a46": {
+        "mod_mount_000": [
+          "673ddbb567c759b3c90e5f76"
+        ]
+      },
+      "673cb491280680de5e02ff36": {
+        "mod_barrel": [
+          "673cb551093e0ea7fd0b874a",
+          "67405d760098dcb5940ea1a6",
+          "67405e3b83ac5c69ae025406"
+        ],
+        "mod_handguard": [
+          "673cb5d1280680de5e02ff3b",
+          "67405ef125beb509e8070276",
+          "67405fd0812f476fb2020066"
+        ],
+        "mod_mount": [
+          "673cb51e093e0ea7fd0b8746"
+        ]
+      },
+      "673cb5d1280680de5e02ff3b": {
+        "mod_foregrip": [
+          "673cb81f5b1511adb10cd326"
+        ],
+        "mod_mount_000": [
+          "673dd617912f68467c0615b6",
+          "673dd5f73f92dc7e120d20a9"
+        ],
+        "mod_mount_001": [
+          "673dd617912f68467c0615b6",
+          "673dd5f73f92dc7e120d20a9"
+        ],
+        "mod_sight_front": [
+          "5ba26b01d4351e0085325a51",
+          "5dfa3d950dee1b22f862eae0",
+          "5c17804b2e2216152006c02f",
+          "5fb6567747ce63734e3fa1dc",
+          "5bc09a30d4351e00367fb7c8",
+          "5c18b90d2e2216152142466b",
+          "5fc0fa362770a0045c59c677",
+          "5894a73486f77426d259076c",
+          "55d4af3a4bdc2d972f8b456f"
+        ],
+        "mod_tactical_000": [
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5d10b49bd7ad1a1a560708b0",
+          "5c06595c0db834001a66af6c",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5c5952732e2216398b5abda2",
+          "644a3df63b0b6f03e101e065"
+        ],
+        "mod_tactical_001": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "626becf9582c3e319310b837",
+          "5cc9c20cd7f00c001336c65d",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "644a3df63b0b6f03e101e065",
+          "6644920d49817dc7d505ca71",
+          "646f6322f43d0c5d62063715",
+          "57d17e212459775a1179a0f5"
+        ]
+      },
+      "673dd5f73f92dc7e120d20a9": {
+        "mod_tactical": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
+        ]
+      },
+      "673dd617912f68467c0615b6": {
+        "mod_tactical": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5c06595c0db834001a66af6c",
+          "5cc9c20cd7f00c001336c65d",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "61605d88ffa6e502ac5e7eeb",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "57d17e212459775a1179a0f5",
+          "6267c6396b642f77f56f5c1c",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "626becf9582c3e319310b837",
+          "644a3df63b0b6f03e101e065",
+          "646f6322f43d0c5d62063715"
+        ]
+      },
+      "6745895717824b1ec20570a6": {
+        "Helmet_back": [
+          "657bab6ec6f689d3a205b85f"
+        ],
+        "Helmet_ears": [
+          "657babc6f58ba5a6250107a2"
+        ],
+        "Helmet_top": [
+          "657baaf0b7e9ca9a02045c02"
+        ],
+        "mod_equipment": [
+          "5a800961159bd4315e3a1657",
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577",
+          "5d10b49bd7ad1a1a560708b0",
+          "5c06595c0db834001a66af6c",
+          "626becf9582c3e319310b837",
+          "6272370ee4013c5d7e31f418",
+          "6272379924e29f06af4d5ecb",
+          "5d2369418abbc306c62e0c80",
+          "5b07dd285acfc4001754240d",
+          "56def37dd2720bec348b456a",
+          "5a7b483fe899ef0016170d15",
+          "5a5f1ce64f39f90b401987bc",
+          "560d657b4bdc2da74d8b4572",
+          "5b3a337e5acfc4704b4a19a0",
+          "5c5952732e2216398b5abda2",
+          "6267c6396b642f77f56f5c1c",
+          "57d17e212459775a1179a0f5"
+        ],
+        "mod_nvg": [
+          "5c0558060db834001b735271",
+          "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "674d6121c09f69dfb201a888": {
+        "mod_charge": [
+          "6130ca3fd92c473c77020dbd",
+          "5648ac824bdc2ded0b8b457d"
+        ],
+        "mod_handguard": [
+          "674d5e287075e056160e0176"
+        ],
+        "mod_magazine": [
+          "5c0548ae0db834001966a3c2",
+          "5ac66c5d5acfc4001718d314",
+          "6764139c44b3c96e7b0e2f7b"
+        ],
+        "mod_mount_000": [
+          "5947db3f86f77447880cf76f",
+          "6113d6c3290d254f5e6b27db",
+          "57486e672459770abd687134",
+          "618a5d5852ecee1505530b2a",
+          "5c82342f2e221644f31c060e",
+          "576fd4ec2459777f0b518431",
+          "5c82343a2e221644f31c0611",
+          "5cf638cbd7f00c06595bc936",
+          "5a7c74b3e899ef0014332c29",
+          "591ee00d86f774592f7b841e",
+          "5d0a29ead7ad1a0026013f27",
+          "618a75c9a3884f56c957ca1b",
+          "57acb6222459771ec34b5cb0",
+          "5c90c3622e221601da359851",
+          "638db77630c4240f9e06f8b6",
+          "6544d4187c5457729210d277"
+        ],
+        "mod_pistol_grip": [
+          "619b69037b9de8162902673e",
+          "5f6341043ada5942720e2dc5",
+          "6087e663132d4d12c81fd96b",
+          "623c3be0484b5003161840dc",
+          "5beec8ea0db834001a6f9dbf",
+          "5649ad3f4bdc2df8348b4585",
+          "5649ade84bdc2d1b2b8b4587",
+          "59e62cc886f77440d40b52a1",
+          "5a0071d486f77404e23a12b2",
+          "57e3dba62459770f0c32322b",
+          "5cf54404d7f00c108840b2ef",
+          "5e2192a498a36665e8337386",
+          "5b30ac585acfc433000eb79c",
+          "59e6318286f77444dd62c4cc",
+          "5cf50850d7f00c056e24104c",
+          "5cf508bfd7f00c056e24104e",
+          "628a664bccaab13006640e47",
+          "628c9ab845c59e5b80768a81",
+          "5947f92f86f77427344a76b1",
+          "5947fa2486f77425b47c1a9b",
+          "5c6bf4aa2e2216001219b0ae",
+          "5649ae4a4bdc2d1b2b8b4588",
+          "5998517986f7746017232f7e",
+          "63f4da90f31d4a33b87bd054",
+          "648ae3e356c6310a830fc291",
+          "651580dc71a4f10aec4b6056"
+        ],
+        "mod_reciever": [
+          "5649af094bdc2df8348b4586",
+          "5ac50da15acfc4001718d287",
+          "59d6507c86f7741b846413a2",
+          "59e6449086f7746c9f75e822",
+          "628a665a86cbd9750d2ff5e5"
+        ],
+        "mod_scope": [
+          "58d39d3d86f77445bb794ae7",
+          "616554fe50224f204c1da2aa",
+          "5c7d55f52e221644f31bff6a",
+          "616584766ef05c2ce828ef57",
+          "615d8d878004cc50514c3233",
+          "577d128124597739d65d0e56",
+          "58d2664f86f7747fec5834f6",
+          "61714b2467085e45ef140b2c",
+          "5b31163c5acfc400153b71cb",
+          "5a33b652c4a28232996e407c",
+          "5a33b2c9c4a282000c5a9511",
+          "57ae0171245977343c27bfcf",
+          "558022b54bdc2dac148b458d",
+          "64785e7c19d732620e045e15",
+          "58491f3324597764bc48fa02",
+          "584924ec24597768f12ae244",
+          "6165ac8c290d254f5e6b2f6c",
+          "5b30b0dc5acfc400153b7124",
+          "6477772ea8a38bb2050ed4db",
+          "5d2da1e948f035477b1ce2ba",
+          "584984812459776a704a82a6",
+          "570fd721d2720bc5458b4596"
+        ],
+        "mod_stock_000": [
+          "5649b0fc4bdc2d17108b4588",
+          "5cbdb1b0ae9215000d50e105",
+          "5649b1c04bdc2d16268b457c",
+          "5cf518cfd7f00c065b422214",
+          "5b04473a5acfc40018632f70",
+          "5e217ba4c1434648c13568cd",
+          "59d6514b86f774171a068a08",
+          "5b0e794b5acfc47a877359b2",
+          "59e6227d86f77440d64f5dc2",
+          "59e89d0986f77427600d226e",
+          "6087e2a5232e5a31c233d552",
+          "628a6678ccaab13006640e49",
+          "5649b2314bdc2d79388b4576",
+          "5b222d335acfc4771e1be099"
+        ]
+      },
+      "674fe9a75e51f1c47c04ec23": {
+        "mod_charge": [
+          "6130ca3fd92c473c77020dbd",
+          "5648ac824bdc2ded0b8b457d"
+        ],
+        "mod_handguard": [
+          "5f63418ef5750b524b45f116",
+          "6086b5731246154cad35d6c7",
+          "576169e62459773c69055191",
+          "5827272a24597748c74bdeea",
+          "58272b392459774b4c7b3ccd",
+          "674fe57721a9aa6be6045b96"
+        ],
+        "mod_magazine": [
+          "57616a9e2459773c7a400234",
+          "5cf8f3b0d7f00c00217872ef",
+          "5a966f51a2750c00156aacf6",
+          "674fe8f6f34d761ab8020cc8"
+        ],
+        "mod_mount_000": [
+          "5947db3f86f77447880cf76f",
+          "6113d6c3290d254f5e6b27db",
+          "57486e672459770abd687134",
+          "618a5d5852ecee1505530b2a",
+          "5c82342f2e221644f31c060e",
+          "576fd4ec2459777f0b518431",
+          "5c82343a2e221644f31c0611",
+          "5cf638cbd7f00c06595bc936",
+          "5a7c74b3e899ef0014332c29",
+          "591ee00d86f774592f7b841e",
+          "5d0a29ead7ad1a0026013f27",
+          "618a75c9a3884f56c957ca1b",
+          "57acb6222459771ec34b5cb0",
+          "5c61a40d2e2216001403158d",
+          "5c90c3622e221601da359851",
+          "638db77630c4240f9e06f8b6",
+          "63d114019e35b334d82302f7",
+          "6544d4187c5457729210d277",
+          "65f1b1176dbd6c5ba2082eed"
+        ],
+        "mod_mount_001": [
+          "6710cea62bb09af72f0e6bf8"
+        ],
+        "mod_muzzle": [
+          "58272d7f2459774f6311ddfd",
+          "59fb137a86f7740adb646af1",
+          "576167ab2459773cad038c43",
+          "5b363e1b5acfc4771e1c5e80",
+          "59c0ec5b86f77435b128bfca"
+        ],
+        "mod_pistol_grip": [
+          "5f6341043ada5942720e2dc5",
+          "6087e663132d4d12c81fd96b",
+          "5beec8ea0db834001a6f9dbf",
+          "5649ad3f4bdc2df8348b4585",
+          "5649ade84bdc2d1b2b8b4587",
+          "59e62cc886f77440d40b52a1",
+          "5a0071d486f77404e23a12b2",
+          "57e3dba62459770f0c32322b",
+          "5cf54404d7f00c108840b2ef",
+          "5e2192a498a36665e8337386",
+          "5b30ac585acfc433000eb79c",
+          "59e6318286f77444dd62c4cc",
+          "5cf50850d7f00c056e24104c",
+          "5cf508bfd7f00c056e24104e",
+          "5947f92f86f77427344a76b1",
+          "5947fa2486f77425b47c1a9b",
+          "5c6bf4aa2e2216001219b0ae",
+          "5649ae4a4bdc2d1b2b8b4588",
+          "5998517986f7746017232f7e",
+          "623c3be0484b5003161840dc",
+          "628c9ab845c59e5b80768a81",
+          "628a664bccaab13006640e47",
+          "63f4da90f31d4a33b87bd054",
+          "648ae3e356c6310a830fc291",
+          "651580dc71a4f10aec4b6056"
+        ],
+        "mod_reciever": [
+          "57616c112459773cce774d66",
+          "676017fe8cfeeba9f707c8d6"
+        ],
+        "mod_sight_rear": [
+          "58272b842459774abc128d50",
+          "57a9b9ce2459770ee926038d"
+        ],
+        "mod_stock": [
+          "5cf50fc5d7f00c056c53f83c",
+          "5ac78eaf5acfc4001926317a",
+          "5beec8b20db834001961942a",
+          "57616ca52459773c69055192"
+        ]
+      },
+      "675956062f6ddfe8ff0e2806": {
+        "Helmet_back": [
+          "676307b4d9ec0af3d9001fa8"
+        ],
+        "Helmet_top": [
+          "676307c004856a0b3c0dfffd"
+        ],
+        "mod_mount": [
+          "669a6a4a525be1d2d004b8eb"
+        ],
+        "mod_nvg": [
+          "5c0558060db834001b735271",
+          "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "6759655674aa5e0825040d62": {
+        "Helmet_back": [
+          "676307b4d9ec0af3d9001fa8"
+        ],
+        "Helmet_top": [
+          "676307c004856a0b3c0dfffd"
+        ],
+        "mod_mount": [
+          "669a6a4a525be1d2d004b8eb"
+        ],
+        "mod_nvg": [
+          "5c0558060db834001b735271",
+          "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "67597ceea35600b4c10cea86": {
+        "Helmet_back": [
+          "676307d3d9ec0af3d9001fac"
+        ],
+        "Helmet_top": [
+          "676307ded8b241b4f703a3e8"
+        ],
+        "mod_nvg": [
+          "5c0558060db834001b735271",
+          "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "67597d241d5a44f2f605df06": {
+        "Helmet_back": [
+          "676307d3d9ec0af3d9001fac"
+        ],
+        "Helmet_top": [
+          "676307ded8b241b4f703a3e8"
+        ],
+        "mod_nvg": [
+          "5c0558060db834001b735271",
+          "5a16b8a9fcdbcb00165aa6ca"
+        ]
+      },
+      "67614994e889e1972605d6bb": {
+        "mod_muzzle": [
+          "676149c5062e6212f5058c36"
+        ]
+      },
+      "676149a3e2cf1419500357eb": {
+        "mod_muzzle": [
+          "676149d8e889e1972605d6be"
+        ]
+      },
+      "676176d362e0497044079f4c": {
+        "mod_charge": [
+          "6181688c6c780c1e710c9b04"
+        ],
+        "mod_magazine": [
+          "5df8f535bb49d91fb446d6b0",
+          "5df8f541c41b2312ea3335e3",
+          "65293c38fc460e50a509cb25",
+          "65293c7a17e14363030ad308",
+          "5a3501acc4a282000d72293a",
+          "6761770e48fa5c377e06fc3c"
+        ],
+        "mod_pistol_grip": [
+          "55d4b9964bdc2d1d4e8b456e",
+          "571659bb2459771fb2755a12",
+          "602e71bd53a60014f9705bfa",
+          "6113c3586c780c1e710c90bc",
+          "6113cc78d3a39d50044c065a",
+          "6113cce3d92c473c770200c7",
+          "5cc9bcaed7f00c011c04e179",
+          "5bb20e18d4351e00320205d5",
+          "5bb20e0ed4351e3bac1212dc",
+          "6193dcd0f8ee7e52e4210a28",
+          "5d025cc1d7ad1a53845279ef",
+          "5c6d7b3d2e221600114c9b7d",
+          "57c55efc2459772d2c6271e7",
+          "57af48872459771f0b2ebf11",
+          "57c55f092459772d291a8463",
+          "57c55f112459772d28133310",
+          "57c55f172459772d27602381",
+          "5a339805c4a2826c6e06d73d",
+          "55802f5d4bdc2dac148b458f",
+          "5d15cf3bd7ad1a67e71518b2",
+          "59db3a1d86f77429e05b4e92",
+          "5fbcbd6c187fea44d52eda14",
+          "59db3acc86f7742a2c4ab912",
+          "59db3b0886f77429d72fb895",
+          "615d8faecabb9b7ad90f4d5d",
+          "5b07db875acfc40dc528a5f6",
+          "63f5feead259b42f0b4d6d0f",
+          "652911675ae2ae97b80fdf3c"
+        ],
+        "mod_reciever": [
+          "6165adcdd3a39d50044c120f",
+          "6165aeedfaa1272e431521e3"
+        ],
+        "mod_stock": [
+          "61816734d8e3106d9806c1f3",
+          "61825d06d92c473c770215de",
+          "66ffc246a81a4f85e70d4d06",
+          "66ffbfb1a73a7bce3d0b45a8",
+          "66ffc20ba73a7bce3d0b45ab"
+        ]
+      },
+      "676177df1f08ed5e8800b7ae": {
+        "mod_foregrip": [
+          "57cffb66245977632f391a99",
+          "57cffcd624597763133760c5",
+          "57cffcdd24597763f5110006",
+          "57cffce524597763b31685d8",
+          "651a8e529829226ceb67c319",
+          "651a8bf3a8520e48047bf708"
+        ],
+        "mod_mount_000": [
+          "669a6a4a525be1d2d004b8eb",
+          "5b7be47f5acfc400170e2dd2",
+          "6269220d70b6c02e665f2635",
+          "6269545d0e57f218e4548ca2"
+        ],
+        "mod_mount_001": [
+          "669a6a4a525be1d2d004b8eb",
+          "5b7be47f5acfc400170e2dd2",
+          "6269220d70b6c02e665f2635",
+          "6269545d0e57f218e4548ca2"
+        ],
+        "mod_tactical": [
+          "57fd23e32459772d0805bcf1",
+          "544909bb4bdc2d6f028b4577"
         ]
       }
     }

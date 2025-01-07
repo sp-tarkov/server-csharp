@@ -410,31 +410,23 @@
   "MatchMakerMinPlayersByWaitTime": [
     {
       "minPlayers": 7,
-      "time": 60
+      "time": 240
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 300
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 360
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 420
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 450
     }
   ],
   "MaxBotPerZone": 4,
@@ -4976,14 +4968,27 @@
     {
       "TemplateId": "634959225289190e5e773b3b",
       "Value": 5
+    },
+    {
+      "TemplateId": "675aaaf674a7619a5304c233",
+      "Value": 2
     }
   ],
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aaaf674a7619a5304c233",
+      "Name": "factory_secret_ark"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "FAC_TRANSIT_12_COND",
       "description": "FAC_TRANSIT_12_DESC",
       "id": 12,
@@ -4994,7 +4999,7 @@
     },
     {
       "activateAfterSec": 60,
-      "active": true,
+      "active": false,
       "conditions": "FAC_TRANSIT_13_COND",
       "description": "FAC_TRANSIT_13_DESC",
       "id": 13,
@@ -5031,9 +5036,9 @@
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 0,
-      "slots_max": 2,
+      "slots_max": 3,
       "slots_min": 1,
-      "time_max": 100,
+      "time_max": 150,
       "time_min": 40
     },
     {
@@ -5065,8 +5070,8 @@
       "number": 2,
       "slots_max": 4,
       "slots_min": 2,
-      "time_max": 300,
-      "time_min": 210
+      "time_max": 350,
+      "time_min": 300
     },
     {
       "BotPreset": "normal",
@@ -5081,8 +5086,8 @@
       "number": 3,
       "slots_max": 4,
       "slots_min": 2,
-      "time_max": 350,
-      "time_min": 260
+      "time_max": 400,
+      "time_min": 300
     },
     {
       "BotPreset": "normal",

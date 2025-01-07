@@ -35,9 +35,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 300000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -60,9 +62,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 800000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -85,9 +89,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 175000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -110,9 +116,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 680000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -135,9 +143,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 4500000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -160,9 +170,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 40000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -185,9 +197,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 2500000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -210,9 +224,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 6500000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -235,9 +251,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 25000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -260,9 +278,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1330000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -285,9 +305,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 840000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -312,8 +334,11 @@
       ],
       "itemRequirements": [
         {
+          "id": null,
           "count": 4000000,
-          "_tpl": "5449016a4bdc2d6f028b456f"
+          "_tpl": "5449016a4bdc2d6f028b456f",
+          "onlyFunctional": false,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -338,9 +363,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 2850000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -365,9 +392,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 3100000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -390,9 +419,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 5750000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -415,9 +446,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 270000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -440,9 +473,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 320000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -465,9 +500,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 990000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -490,9 +527,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 600000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -515,9 +554,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1000000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -540,9 +581,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1350000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -565,9 +608,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 700000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -590,9 +635,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 200000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -615,9 +662,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 400000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -640,9 +689,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1950000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -665,9 +716,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 750000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -690,9 +743,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 2400000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -715,9 +770,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 620000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -736,11 +793,19 @@
       "profileLevel": 42,
       "standing": 0.6,
       "skillRequirements": [],
-      "questRequirements": [
-        "64f1d6e732bed22c3e0c7423"
+      "questRequirements": [],
+      "achievementRequirements": [
+        "6529097eccf6aa5f8737b3d0"
       ],
-      "achievementRequirements": [],
-      "itemRequirements": [],
+      "itemRequirements": [
+        {
+          "id": null,
+          "count": 50000,
+          "_tpl": "5696686a4bdc2da3298b456a",
+          "onlyFunctional": false,
+          "type": "ItemRequirement"
+        }
+      ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
     }
   },
@@ -761,9 +826,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 350000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -786,9 +853,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 500000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -811,9 +880,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1450000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -838,9 +909,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 1100000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -865,9 +938,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 700000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -892,9 +967,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 600000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -919,9 +996,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 400000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -963,9 +1042,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 2900000,
           "_tpl": "5449016a4bdc2d6f028b456f",
-          "onlyFunctional": true
+          "onlyFunctional": true,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -988,8 +1069,11 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 800000,
-          "_tpl": "5449016a4bdc2d6f028b456f"
+          "_tpl": "5449016a4bdc2d6f028b456f",
+          "onlyFunctional": false,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"
@@ -1012,8 +1096,158 @@
       "achievementRequirements": [],
       "itemRequirements": [
         {
+          "id": null,
           "count": 600000,
-          "_tpl": "5449016a4bdc2d6f028b456f"
+          "_tpl": "5449016a4bdc2d6f028b456f",
+          "onlyFunctional": false,
+          "type": "ItemRequirement"
+        }
+      ],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "675edf2f47071f5423033819",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "6756997970afee6336051976",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": true,
+    "internalObtain": false,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "675edf529c0d3a0f920f76ab",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "675698eafb0f45813a055a36",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": true,
+    "internalObtain": false,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "675edfd017ad2d0758043e01",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "675070a550f7ea9dc604afc7",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": true,
+    "internalObtain": false,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "675edff217ad2d0758043e02",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "6750713a65b30e16220465d6",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": true,
+    "internalObtain": false,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "6762d8706aea4e46b107b71e",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "675fd71c1c153e52f1050fd6",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": false,
+    "internalObtain": true,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [
+        "675998a894008342eb04e47f"
+      ],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "6762d8ae5ad704bbac091076",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "675fd6dc7a57e0b2a00e340a",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": false,
+    "internalObtain": true,
+    "requirements": {
+      "loyaltyLevel": 1,
+      "profileLevel": 1,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [],
+      "achievementRequirements": [
+        "675998a894008342eb04e47f"
+      ],
+      "itemRequirements": [],
+      "requiredTid": "5ac3b934156ae10c4430e83c"
+    }
+  },
+  {
+    "_id": "6767636f4667ff22db0985d6",
+    "tid": "5ac3b934156ae10c4430e83c",
+    "suiteId": "67603ea391ec8cab9406faa4",
+    "isActive": true,
+    "isHiddenInPVE": false,
+    "externalObtain": false,
+    "internalObtain": true,
+    "requirements": {
+      "loyaltyLevel": 0,
+      "profileLevel": 0,
+      "standing": 0,
+      "skillRequirements": [],
+      "questRequirements": [
+        "675f535f07e24748400973e7"
+      ],
+      "achievementRequirements": [],
+      "itemRequirements": [
+        {
+          "id": null,
+          "count": 500000,
+          "_tpl": "5449016a4bdc2d6f028b456f",
+          "onlyFunctional": false,
+          "type": "ItemRequirement"
         }
       ],
       "requiredTid": "5ac3b934156ae10c4430e83c"

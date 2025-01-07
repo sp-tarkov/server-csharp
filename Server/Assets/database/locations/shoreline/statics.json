@@ -1264,9 +1264,6 @@
     "container_shoreline_DesignStuff_00431": {
       "groupId": "BagSport_N33_4_shoreline"
     },
-    "container_shoreline_DesignStuff_00418": {
-      "groupId": "BagSport_N29_2_shoreline"
-    },
     "container_shoreline_DesignStuff_00396": {
       "groupId": "BagSport_N21_5_shoreline"
     },
@@ -2578,6 +2575,9 @@
     "container_shoreline_DesignStuff_00623": {
       "groupId": "WeaponBox_N11_2_shoreline"
     },
+    "Lootable_00003": {
+      "groupId": ""
+    },
     "container_shoreline_DesignStuff_00628": {
       "groupId": "WeaponBox_N14_3_shoreline"
     },
@@ -2771,6 +2771,9 @@
       "groupId": ""
     },
     "container_shoreline_DesignStuff_00179": {
+      "groupId": ""
+    },
+    "container_shoreline_DesignStuff_00418": {
       "groupId": ""
     },
     "container_shoreline_DesignStuff_00264": {

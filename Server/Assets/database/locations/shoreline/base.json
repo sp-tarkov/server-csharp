@@ -84,7 +84,7 @@
         "regular"
       ],
       "Supports": null,
-      "Time": -1,
+      "Time": 900,
       "TriggerId": "PARTISAN_TRIGGER",
       "TriggerName": "botEvent"
     },
@@ -500,6 +500,60 @@
         "Warn": [
           "sectactPriestEvent"
         ]
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "assault",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossKilla",
+          "bossTagilla",
+          "bossZryachiy"
+        ],
+        "BotRole": "bossSanitar"
+      },
+      {
+        "AlwaysEnemies": [
+          "pmcBEAR",
+          "pmcUSEC"
+        ],
+        "AlwaysFriends": [
+          "bossKilla",
+          "marksman",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter",
+          "bossBoar",
+          "bossBully",
+          "bossGluhar",
+          "bossKnight",
+          "bossKojaniy",
+          "bossKolontay",
+          "bossPartisan",
+          "bossSanitar",
+          "bossTagilla",
+          "bossZryachiy",
+          "exUsec",
+          "followerBigPipe",
+          "followerBirdEye",
+          "followerBully",
+          "pmcBot"
+        ],
+        "BotRole": "assault",
+        "SavagePlayerBehaviour": "Neutral"
       }
     ],
     "DistToActivate": 260,
@@ -520,7 +574,7 @@
   "BotMax": 17,
   "BotMaxPlayer": 9,
   "BotMaxPvE": 31,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 1300,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -529,7 +583,7 @@
   "BotSpawnTimeOnMax": 320,
   "BotSpawnTimeOnMin": 260,
   "BotStart": 20,
-  "BotStartPlayer": 220,
+  "BotStartPlayer": 600,
   "BotStop": 2700,
   "Description": "The coastline that leads to the port.",
   "DisabledForScav": false,
@@ -607,7 +661,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 2,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -616,6 +669,9 @@
       "ZombieCallPeriodSec": 1,
       "ZombieCallRadiusLimit": 200,
       "ZombieMultiplier": 5
+    },
+    "Khorovod": {
+      "Chance": 0
     }
   },
   "ForceOnlineRaidInPVE": false,
@@ -632,32 +688,32 @@
   "Loot": [],
   "MatchMakerMinPlayersByWaitTime": [
     {
-      "minPlayers": 7,
-      "time": 60
+      "minPlayers": 12,
+      "time": 240
+    },
+    {
+      "minPlayers": 10,
+      "time": 300
+    },
+    {
+      "minPlayers": 8,
+      "time": 360
     },
     {
       "minPlayers": 6,
-      "time": 70
-    },
-    {
-      "minPlayers": 5,
-      "time": 120
+      "time": 390
     },
     {
       "minPlayers": 4,
-      "time": 180
-    },
-    {
-      "minPlayers": 3,
-      "time": 250
+      "time": 420
     },
     {
       "minPlayers": 2,
-      "time": 330
+      "time": 450
     },
     {
       "minPlayers": 1,
-      "time": 420
+      "time": 480
     }
   ],
   "MaxBotPerZone": 4,
@@ -783,37 +839,6 @@
         "x": -295.389984,
         "y": -5.134326,
         "z": -127.259995
-      },
-      "Rotation": 0,
-      "Sides": [
-        "Savage"
-      ]
-    },
-    {
-      "BotZoneName": "ZoneGreenHouses",
-      "Categories": [
-        "Bot",
-        "Boss"
-      ],
-      "ColliderParams": {
-        "_parent": "SpawnSphereParams",
-        "_props": {
-          "Center": {
-            "x": 0,
-            "y": 0,
-            "z": 0
-          },
-          "Radius": 35
-        }
-      },
-      "CorePointId": 1,
-      "DelayToCanSpawnSec": 4,
-      "Id": "07a58e70-dbfe-4226-8b2e-237c3e3675f5",
-      "Infiltration": "",
-      "Position": {
-        "x": 183.65,
-        "y": -46.69635,
-        "z": 44.0399933
       },
       "Rotation": 0,
       "Sides": [
@@ -9844,27 +9869,42 @@
     {
       "TemplateId": "634959225289190e5e773b3b",
       "Value": 7
+    },
+    {
+      "TemplateId": "675aab0d6b6addc02a08f097",
+      "Value": 2
     }
   ],
   "sav_summon_seconds": 60,
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15,
+      "Id": "675aab0d6b6addc02a08f097",
+      "Name": "shoreline_secret_heartbeat"
+    }
+  ],
   "tmp_location_field_remove_me": 0,
   "transits": [
     {
-      "activateAfterSec": 60,
+      "activateAfterSec": 300,
       "active": true,
       "conditions": "SHO_TRANSIT_24_COND",
       "description": "SHO_TRANSIT_24_DESC",
+      "events": true,
       "id": 24,
       "location": "Lighthouse",
       "name": "SHO_TRANSIT_24",
       "target": "5704e4dad2720bb55b8b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
       "active": false,
       "conditions": "SHO_TRANSIT_25_COND",
       "description": "SHO_TRANSIT_25_DESC",
+      "events": false,
       "id": 25,
       "location": "Terminal",
       "name": "SHO_TRANSIT_25",
