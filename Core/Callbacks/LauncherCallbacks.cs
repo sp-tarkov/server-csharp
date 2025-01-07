@@ -1,4 +1,7 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Launcher;
+
+namespace Core.Callbacks;
 
 public class LauncherCallbacks
 {
@@ -37,22 +40,12 @@ public class LauncherCallbacks
         throw new NotImplementedException();
     }
 
-    public string GetMiniProfile(string url, GetMiniProfileRequestData info, string sessionID)
-    {
-        throw new NotImplementedException();
-    }
-
-    public string GetAllMiniProfiles(string url, object info, string sessionID)
-    {
-        throw new NotImplementedException();
-    }
-
     public string GetServerVersion()
     {
         throw new NotImplementedException();
     }
 
-    public string Ping(string url, object info, string sessionID)
+    public string Ping(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
@@ -63,6 +56,16 @@ public class LauncherCallbacks
     }
 
     public string GetCompatibleTarkovVersion()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetLoadedServerMods()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetServerModsProfileUsed(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
