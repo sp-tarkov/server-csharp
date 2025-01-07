@@ -125,7 +125,7 @@ public class TradeController
 	private void MailMoneyToPlayer(
 		string sessionId,
 		int roublesToSend,
-		Traders trader) // TODO: This is a static class now and cannot be passed as a param.
+		string trader)
 	{
 		throw new NotImplementedException();
 	}

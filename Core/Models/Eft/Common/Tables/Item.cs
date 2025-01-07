@@ -9,9 +9,13 @@ public class Item
     public string Id { get; set; }
     [JsonPropertyName("_tpl")]
     public string Template { get; set; }
+    [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
+    [JsonPropertyName("slotId")]
     public string? SlotId { get; set; }
+    [JsonPropertyName("location")]
     public object? Location { get; set; } // TODO: Can be IItemLocation or number
+    [JsonPropertyName("upd")]
     public Upd? Update { get; set; }
 }
 

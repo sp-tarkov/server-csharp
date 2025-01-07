@@ -23,7 +23,7 @@ public class HttpConfig : BaseConfig
     public string BackendIp { get; set; }
 
     [JsonPropertyName("backendPort")]
-    public string BackendPort { get; set; }
+    public int BackendPort { get; set; }
 
     [JsonPropertyName("webSocketPingDelayMs")]
     public int WebSocketPingDelayMs { get; set; }

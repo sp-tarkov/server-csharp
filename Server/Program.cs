@@ -1,5 +1,7 @@
 ﻿using Core.Annotations;
+using Core.Context;
 using Core.Servers;
+using Core.Utils;
 
 namespace Server;
 
@@ -8,22 +10,32 @@ public static class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        
+
         RegisterSptComponents(builder.Services);
-        
+
         // TODO: deal with modding overriding services here!
 
-        var httpServer = builder.Services.BuildServiceProvider().GetService<HttpServer>();
-        httpServer.Load(builder);
+        try
+        {
+
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var app = serviceProvider.GetService<App>();
+            var appContext = serviceProvider.GetService<ApplicationContext>();
+            appContext.AddValue(ContextVariableType.APP_BUILDER, builder);
+            app.Load().Wait();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+        }
     }
 
     private static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
     {
-        // We get all injectable services to register them on our services
-        foreach (var injectableType in types)
+        var groupedTypes = types.Select(t =>
         {
-            var attribute = (Injectable) Attribute.GetCustomAttribute(injectableType, typeof(Injectable))!;
-            var registerableType = injectableType;
+            var attribute = (Injectable)Attribute.GetCustomAttribute(t, typeof(Injectable))!;
+            var registerableType = t;
             // if we have a type override this takes priority
             if (attribute.InjectableTypeOverride != null)
             {
@@ -34,28 +46,36 @@ public static class Program
             {
                 registerableType = registerableType.GetInterfaces()[0];
             }
-            
-            switch (attribute.InjectionType)
+
+            return (registerableInterface: registerableType, typeToRegister: t, injectableAttribute: attribute);
+        }).GroupBy(t => t.registerableInterface.FullName);
+        // We get all injectable services to register them on our services
+        foreach (var groupedInjectables in groupedTypes)
+        {
+            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.injectableAttribute.TypePriority))
             {
-                case InjectionType.Singleton:
-                    builderServices.AddSingleton(registerableType, injectableType);
-                    break;
-                case InjectionType.Transient:
-                    builderServices.AddTransient(registerableType, injectableType);
-                    break;
-                case InjectionType.Scoped:
-                    builderServices.AddScoped(registerableType, injectableType);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
+                switch (valueTuple.injectableAttribute.InjectionType)
+                {
+                    case InjectionType.Singleton:
+                        builderServices.AddSingleton(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        break;
+                    case InjectionType.Transient:
+                        builderServices.AddTransient(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        break;
+                    case InjectionType.Scoped:
+                        builderServices.AddScoped(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
             }
-        }        
+        }
     }
-    
+
     private static void RegisterSptComponents(IServiceCollection builderServices)
     {
         // We get all the services from this assembly first, since mods will override them later
-        RegisterComponents(builderServices, typeof(Program).Assembly.GetTypes()
+        RegisterComponents(builderServices, typeof(App).Assembly.GetTypes()
             .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
     }
 }

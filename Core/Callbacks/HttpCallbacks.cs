@@ -1,26 +1,34 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.Context;
+using Core.DI;
+using Core.Servers;
 
 namespace Core.Callbacks;
 
+[Injectable(InjectionType.Singleton, typePriority: 1)]
 public class HttpCallbacks : OnLoad
 {
-    public HttpCallbacks()
+    private readonly HttpServer _httpServer;
+    private readonly ApplicationContext _applicationContext;
+    public HttpCallbacks(HttpServer httpServer, ApplicationContext applicationContext)
     {
-        
+        _httpServer = httpServer;
+        _applicationContext = applicationContext;
     }
     
     public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        _httpServer.Load((WebApplicationBuilder) _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER).Value);
+        _applicationContext.ClearValues(ContextVariableType.APP_BUILDER);
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-http";
     }
 
     public string GetImage()
     {
-        throw new NotImplementedException();
+        return "";
     }
 }

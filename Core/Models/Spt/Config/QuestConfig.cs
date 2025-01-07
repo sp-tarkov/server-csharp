@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
@@ -77,7 +78,8 @@ public class EventQuestData
     public long StartTimestamp { get; set; }
 
     [JsonPropertyName("endTimestamp")]
-    public long EndTimestamp { get; set; }
+    [JsonConverter(typeof(NullableObjectToLongConverter))]
+    public long? EndTimestamp { get; set; }
 
     [JsonPropertyName("yearly")]
     public bool Yearly { get; set; }
@@ -157,13 +159,13 @@ public class RewardScaling
     public List<int> Items { get; set; }
 
     [JsonPropertyName("reputation")]
-    public List<int> Reputation { get; set; }
+    public List<double> Reputation { get; set; }
 
     [JsonPropertyName("rewardSpread")]
-    public int RewardSpread { get; set; }
+    public double RewardSpread { get; set; }
 
     [JsonPropertyName("skillRewardChance")]
-    public List<int> SkillRewardChance { get; set; }
+    public List<double> SkillRewardChance { get; set; }
 
     [JsonPropertyName("skillPointReward")]
     public List<int> SkillPointReward { get; set; }
@@ -217,7 +219,7 @@ public class Exploration : BaseQuestConfig
 public class SpecificExits
 {
     [JsonPropertyName("probability")]
-    public int Probability { get; set; }
+    public double Probability { get; set; }
 
     [JsonPropertyName("passageRequirementWhitelist")]
     public List<string> PassageRequirementWhitelist { get; set; }

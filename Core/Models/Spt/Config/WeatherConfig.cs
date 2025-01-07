@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
@@ -31,15 +32,19 @@ public class SeasonDateTimes
     public string Name { get; set; }
 
     [JsonPropertyName("startDay")]
+    [JsonConverter(typeof(NotNullObjectToIntConverter))]
     public int StartDay { get; set; }
 
     [JsonPropertyName("startMonth")]
+    [JsonConverter(typeof(NotNullObjectToIntConverter))]
     public int StartMonth { get; set; }
 
     [JsonPropertyName("endDay")]
+    [JsonConverter(typeof(NotNullObjectToIntConverter))]
     public int EndDay { get; set; }
 
     [JsonPropertyName("endMonth")]
+    [JsonConverter(typeof(NotNullObjectToIntConverter))]
     public int EndMonth { get; set; }
 }
 
@@ -60,7 +65,7 @@ public class WeatherValues
 public class SeasonalValues
 {
     [JsonPropertyName("clouds")]
-    public WeatherSettings<string> Clouds { get; set; }
+    public WeatherSettings<double> Clouds { get; set; }
 
     [JsonPropertyName("windSpeed")]
     public WeatherSettings<double> WindSpeed { get; set; }
@@ -78,7 +83,7 @@ public class SeasonalValues
     public MinMax RainIntensity { get; set; }
 
     [JsonPropertyName("fog")]
-    public WeatherSettings<string> Fog { get; set; }
+    public WeatherSettings<double> Fog { get; set; }
 
     [JsonPropertyName("temp")]
     public TempDayNight Temp { get; set; }

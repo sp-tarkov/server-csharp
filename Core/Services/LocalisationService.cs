@@ -36,7 +36,7 @@ public class LocalisationService
 
     public string GetText(string key, object? args = null)
     {
-        throw new NotImplementedException();
+        return _i18nService.GetLocalised(key, args);
     }
 
     public ICollection<string> GetKeys()

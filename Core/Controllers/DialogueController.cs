@@ -10,10 +10,12 @@ public class DialogueController
 	/// 
 	/// </summary>
 	/// <param name="chatBot"></param>
+	/*
 	public void RegisterChatBot(DialogueChatBot chatBot) // TODO: this is in with the helper types
 	{
 		throw new NotImplementedException();
 	}
+	*/
 
 	/// <summary>
 	/// Handle onUpdate spt event

@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Bots;

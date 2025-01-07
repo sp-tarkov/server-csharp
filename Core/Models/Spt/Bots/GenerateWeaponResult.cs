@@ -15,7 +15,7 @@ public class GenerateWeaponResult
 	public string ChosenUbglAmmoTemplate { get; set; }
 
 	[JsonPropertyName("weaponMods")]
-	public Mods WeaponMods { get; set; }
+	public GlobalMods WeaponMods { get; set; }
 
 	[JsonPropertyName("weaponTemplate")]
 	public TemplateItem WeaponTemplate { get; set; }

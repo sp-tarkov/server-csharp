@@ -11,7 +11,7 @@ public class GenerateWeaponRequest
 
     /** Pool of compatible mods to attach to weapon */
     [JsonPropertyName("modPool")]
-    public Mods ModPool { get; set; }
+    public GlobalMods ModPool { get; set; }
 
     /** ParentId of weapon */
     [JsonPropertyName("weaponId")]
@@ -71,4 +71,31 @@ public class WeaponStats
 
     [JsonPropertyName("hasRearIronSight")]
     public bool? HasRearIronSight { get; set; }
+}
+
+public class BotModLimits
+{
+    [JsonPropertyName("scope")]
+    public ItemCount Scope { get; set; }
+    
+    [JsonPropertyName("scopeMax")]
+    public int ScopeMax { get; set; }
+    
+    [JsonPropertyName("scopeBaseTypes")]
+    public string[] ScopeBaseTypes { get; set; }
+    
+    [JsonPropertyName("flashlightLaser")]
+    public ItemCount FlashlightLaser { get; set; }
+    
+    [JsonPropertyName("flashlightLaserMax")]
+    public int FlashlightLaserMax { get; set; }
+    
+    [JsonPropertyName("flashlightLaserBaseTypes")]
+    public string[] FlashlightLaserBaseTypes { get; set; }
+}
+
+public class ItemCount
+{
+    [JsonPropertyName("count")]
+    public int Count { get; set; }
 }

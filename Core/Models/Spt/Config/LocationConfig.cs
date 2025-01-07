@@ -205,55 +205,55 @@ public class BotTypeLimit : MinMax
 public class LootMultiplier
 {
     [JsonPropertyName("bigmap")]
-    public int BigMap { get; set; }
+    public double BigMap { get; set; }
     
     [JsonPropertyName("develop")]
-    public int Develop { get; set; }
+    public double Develop { get; set; }
     
     [JsonPropertyName("factory4_day")]
-    public int Factory4Day { get; set; }
+    public double Factory4Day { get; set; }
     
     [JsonPropertyName("factory4_night")]
-    public int Factory4Night { get; set; }
+    public double Factory4Night { get; set; }
     
     [JsonPropertyName("interchange")]
-    public int Interchange { get; set; }
+    public double Interchange { get; set; }
     
     [JsonPropertyName("laboratory")]
-    public int Laboratory { get; set; }
+    public double Laboratory { get; set; }
     
     [JsonPropertyName("rezervbase")]
-    public int RezervBase { get; set; }
+    public double RezervBase { get; set; }
     
     [JsonPropertyName("shoreline")]
-    public int Shoreline { get; set; }
+    public double Shoreline { get; set; }
     
     [JsonPropertyName("woods")]
-    public int Woods { get; set; }
+    public double Woods { get; set; }
     
     [JsonPropertyName("hideout")]
-    public int Hideout { get; set; }
+    public double Hideout { get; set; }
     
     [JsonPropertyName("lighthouse")]
-    public int Lighthouse { get; set; }
+    public double Lighthouse { get; set; }
     
     [JsonPropertyName("privatearea")]
-    public int PrivateArea { get; set; }
+    public double PrivateArea { get; set; }
     
     [JsonPropertyName("suburbs")]
-    public int Suburbs { get; set; }
+    public double Suburbs { get; set; }
     
     [JsonPropertyName("tarkovstreets")]
-    public int TarkovStreets { get; set; }
+    public double TarkovStreets { get; set; }
     
     [JsonPropertyName("terminal")]
-    public int Terminal { get; set; }
+    public double Terminal { get; set; }
     
     [JsonPropertyName("town")]
-    public int Town { get; set; }
+    public double Town { get; set; }
     
     [JsonPropertyName("sandbox")]
-    public int Sandbox { get; set; }
+    public double Sandbox { get; set; }
 }
 
 public class ContainerRandomisationSettings

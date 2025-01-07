@@ -13,4 +13,5 @@ public enum ContextVariableType
     RAID_ADJUSTMENTS = 4,
     /** Data returned from client request object from endLocalRaid() */
     TRANSIT_INFO = 5,
+    APP_BUILDER = 6
 }

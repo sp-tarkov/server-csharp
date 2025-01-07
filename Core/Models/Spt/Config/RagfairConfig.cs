@@ -59,7 +59,7 @@ public class Chance
 
     /** Value to multiply the sell chance by */
     [JsonPropertyName("sellMultiplier")]
-    public int SellMultiplier { get; set; }
+    public double SellMultiplier { get; set; }
 
     /** Max possible sell chance % for a player listed offer */
     [JsonPropertyName("maxSellChancePercent")]

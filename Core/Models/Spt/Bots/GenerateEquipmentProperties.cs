@@ -19,7 +19,7 @@ public class GenerateEquipmentProperties
 	public Dictionary<string, int> RootEquipmentPool { get; set; }
 
 	[JsonPropertyName("modPool")]
-	public Mods ModPool { get; set; }
+	public GlobalMods ModPool { get; set; }
 
 	/// <summary>
 	/// Dictionary of mod items and their chance to spawn for this bot type
@@ -34,7 +34,7 @@ public class GenerateEquipmentProperties
 	public BotData BotData { get; set; }
 
 	[JsonPropertyName("inventory")]
-	public PmcInventory Inventory { get; set; }
+	public BotBaseInventory Inventory { get; set; }
 
 	[JsonPropertyName("botEquipmentConfig")]
 	public EquipmentFilters BotEquipmentConfig { get; set; }

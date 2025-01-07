@@ -70,10 +70,12 @@ public class GameController
 	/// </summary>
 	/// <param name="sessionId"></param>
 	/// <returns></returns>
+	/*
 	public CurrentGroupResponse GetCurrentGroup(string sessionId)
 	{
 		throw new NotImplementedException();
 	}
+	*/
 
 	/// <summary>
 	/// Handle client/checkVersion

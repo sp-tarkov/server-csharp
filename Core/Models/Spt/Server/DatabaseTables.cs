@@ -5,14 +5,14 @@ namespace Core.Models.Spt.Server;
 
 public class DatabaseTables
 {
-    public Bots.Bots? bots { get; }
-    public Hideout.Hideout? hideout { get; }
-    public LocaleBase? locales { get; }
-    public Locations? locations { get; }
-    public Match? match { get; }
-    public Templates.Templates? templates { get; }
-    public Dictionary<string, Trader>? traders { get; }
-    public Globals? globals { get; }
-    public ServerBase? server { get; }
-    public SettingsBase? settings { get; }
+    public Bots.Bots? bots { get; set; }
+    public Hideout.Hideout? hideout { get; set; }
+    public LocaleBase? locales { get; set; }
+    public Locations? locations { get; set; }
+    public Match? match { get; set; }
+    public Templates.Templates? templates { get; set; }
+    public Dictionary<string, Trader>? traders { get; set; }
+    public Globals? globals { get; set; }
+    public ServerBase? server { get; set; }
+    public SettingsBase? settings { get; set; }
 }

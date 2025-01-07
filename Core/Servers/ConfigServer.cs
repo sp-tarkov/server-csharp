@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
@@ -11,8 +12,8 @@ namespace Core.Servers;
 public class ConfigServer
 {
     private ILogger _logger;
-    protected Dictionary<string, object> configs;
-    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected Dictionary<string, object> configs = new();
+    protected readonly string[] acceptableFileExtensions = [".json", ".jsonc"];
 
     public ConfigServer(
         ILogger logger
@@ -53,7 +54,7 @@ public class ConfigServer
             {
                 var fileContent = File.ReadAllText(file);
                 var type = GetConfigTypeByFilename(file);
-                var deserializedContent = JsonSerializer.Deserialize(fileContent, type);
+                var deserializedContent = JsonSerializer.Deserialize(fileContent, type, options: new JsonSerializerOptions() {Converters = { new JsonStringEnumConverter() }});
 
                 if (deserializedContent == null)
                 {
@@ -61,7 +62,7 @@ public class ConfigServer
                     throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
                 }
 
-                this.configs[$"spt-{Path.GetFileNameWithoutExtension(file)}"] = deserializedContent;
+                configs[$"spt-{Path.GetFileNameWithoutExtension(file)}"] = deserializedContent;
             }
         }
 

@@ -1,7 +1,9 @@
-﻿using Core.Models.Spt.Server;
+﻿using Core.Annotations;
+using Core.Models.Spt.Server;
 
 namespace Core.Servers;
 
+[Injectable(InjectionType.Singleton)]
 public class DatabaseServer
 {
     protected DatabaseTables tableData = new();
