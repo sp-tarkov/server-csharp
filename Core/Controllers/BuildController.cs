@@ -41,9 +41,9 @@ public class BuildController
 	/// </summary>
 	/// <param name="sessionId"></param>
 	/// <param name="request"></param>
-	public void RemoveBuild(string sessionId, RemoveBuildReqestData request)
+	public void RemoveBuild(string sessionId, RemoveBuildRequestData request)
 	{
-		RemovePlayerBuild(request.id, sessionId);
+		RemovePlayerBuild(request.Id, sessionId);
 	}
 
 	/// <summary>

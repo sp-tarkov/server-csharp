@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Notes;
 
 namespace Core.Controllers;
 
@@ -14,7 +15,7 @@ public class NoteController
 	/// <returns></returns>
 	public ItemEventRouterResponse AddNote(
 		PmcData pmcData,
-		NoteActionBody body,
+		NoteActionData body,
 		string sessionId)
 	{
 		throw new NotImplementedException();
@@ -29,7 +30,7 @@ public class NoteController
 	/// <returns></returns>
 	public ItemEventRouterResponse EditNote(
 		PmcData pmcData,
-		NoteActionBody body,
+		NoteActionData body,
 		string sessionId)
 	{
 		throw new NotImplementedException();
@@ -44,7 +45,7 @@ public class NoteController
 	/// <returns></returns>
 	public ItemEventRouterResponse DeleteNote(
 		PmcData pmcData,
-		NoteActionBody body,
+		NoteActionData body,
 		string sessionId)
 	{
 		throw new NotImplementedException();

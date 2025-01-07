@@ -30,7 +30,7 @@ public class CustomizationController
 	/// <returns>ItemEventRouterResponse</returns>
 	public ItemEventRouterResponse BuyClothing(
 		PmcData pmcData, 
-		BuyClothingRequest buyClothingRequest, 
+		BuyClothingRequestData buyClothingRequest, 
 		string sessionId)
 	{
 		throw new NotImplementedException();
@@ -84,7 +84,7 @@ public class CustomizationController
 	/// <param name="sessionId"></param>
 	/// <param name="info"></param>
 	/// <returns></returns>
-	public HideoutCustomisationStorage GetHideoutCustomisation(
+	public HideoutCustomisation GetHideoutCustomisation(
 		string sessionId,
 		EmptyRequestData info)
 	{

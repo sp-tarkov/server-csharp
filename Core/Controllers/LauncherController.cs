@@ -1,3 +1,4 @@
+using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Mod;
 
