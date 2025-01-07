@@ -1,4 +1,5 @@
 ﻿using Core.Models.Common;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 
@@ -83,9 +84,13 @@ public class BotController
     {
         throw new NotImplementedException();
     }
-
-
+    
     public int GetBotCap()
+    {
+        throw new NotImplementedException();
+    }
+
+    public object GetAiBotBrainTypes() // TODO: Returns `any` in the node server
     {
         throw new NotImplementedException();
     }
