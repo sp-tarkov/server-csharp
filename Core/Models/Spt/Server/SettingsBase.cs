@@ -65,7 +65,7 @@ public class Config
     public ReleaseProfiler ReleaseProfiler { get; set; }
     
     [JsonPropertyName("RequestConfirmationTimeouts")]
-    public List<int> RequestConfirmationTimeouts { get; set; }
+    public List<double> RequestConfirmationTimeouts { get; set; }
     
     [JsonPropertyName("RequestsMadeThroughLobby")]
     public List<string> RequestsMadeThroughLobby { get; set; }
@@ -89,7 +89,7 @@ public class Config
     public NetworkStateView NetworkStateView { get; set; }
     
     [JsonPropertyName("WsReconnectionDelays")]
-    public List<string> WsReconnectionDelays { get; set; }
+    public List<int> WsReconnectionDelays { get; set; }
 }
 
 public class FramerateLimit
