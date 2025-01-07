@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Health;
+using Core.Models.Eft.ItemEvent;
 
 namespace Core.Controllers;
 

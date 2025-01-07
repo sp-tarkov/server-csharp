@@ -1,4 +1,6 @@
-﻿namespace Core.Controllers;
+﻿using Core.Models.Eft.Profile;
+
+namespace Core.Controllers;
 
 public class AchievementController
 {
