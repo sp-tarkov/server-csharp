@@ -28,7 +28,7 @@ public class BotWeaponGenerator
     /// <param name="botLevel"></param>
     /// <returns>GenerateWeaponResult object</returns>
     public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotBaseInventory botTemplateInventory, string weaponParentId,
-        ModsChances modChances, string botRole, bool isPmc, int botLevel)
+        Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
         throw new NotImplementedException();
     }
@@ -58,7 +58,7 @@ public class BotWeaponGenerator
     /// <param name="botLevel">The level of the bot.</param>
     /// <returns>GenerateWeaponResult object.</returns>
     public GenerateWeaponResult GenerateWeaponByTpl(string sessionId, string weaponTpl, string slotName, BotBaseInventory botTemplateInventory,
-        string weaponParentId, ModsChances modChances, string botRole, bool isPmc, int botLevel)
+        string weaponParentId, Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
         throw new NotImplementedException();
     }

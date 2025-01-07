@@ -95,7 +95,7 @@ public class BotEquipmentModGenerator
     /// <param name="modSpawnChances">Chance dictionary to update</param>
     /// <param name="modSlotsToAdjust"></param>
     /// <param name="newChancePercent"></param>
-    public void AdjustSlotSpawnChances(ModsChances modSpawnChances, List<string> modSlotsToAdjust, double newChancePercent)
+    public void AdjustSlotSpawnChances(Dictionary<string, double> modSpawnChances, List<string> modSlotsToAdjust, double newChancePercent)
     {
         throw new NotImplementedException();
     }
@@ -141,7 +141,7 @@ public class BotEquipmentModGenerator
     /// <param name="modSpawnChances">Chances for various mod spawns</param>
     /// <param name="botEquipConfig">Various config settings for generating this type of bot</param>
     /// <returns>ModSpawn.SPAWN when mod should be spawned, ModSpawn.DEFAULT_MOD when default mod should spawn, ModSpawn.SKIP when mod is skipped</returns>
-    public ModSpawn ShouldModBeSpawned(Slot itemSlot, string modSlotName, ModsChances modSpawnChances, EquipmentFilters botEquipConfig)
+    public ModSpawn ShouldModBeSpawned(Slot itemSlot, string modSlotName, Dictionary<string, double> modSpawnChances, EquipmentFilters botEquipConfig)
     {
         throw new NotImplementedException();
     }

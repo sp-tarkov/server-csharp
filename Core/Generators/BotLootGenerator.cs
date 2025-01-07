@@ -128,7 +128,7 @@ public class BotLootGenerator
     /// <param name="botLevel"></param>
     /// <param name="containersIdFull"></param>
     public void AddLooseWeaponsToInventorySlot(string sessionId, BotBaseInventory botInventory, string equipmentSlot, BotBaseInventory templateInventory, // TODO: type for containersIdFull was Set<string>
-        ModsChances modsChances, string botRole, bool isPmc, int botLevel, List<string>? containersIdFull)
+        Dictionary<string, double> modsChances, string botRole, bool isPmc, int botLevel, List<string>? containersIdFull)
     {
         throw new NotImplementedException();
     }
