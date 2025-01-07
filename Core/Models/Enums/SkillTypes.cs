@@ -73,4 +73,6 @@ public enum SkillTypes
     DMR,
     DrawMaster,
     AimMaster,
+    Physical,
+    Combat
 }

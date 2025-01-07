@@ -45,16 +45,17 @@ public class QteData
 public class QuickTimeEvent
 {
     [JsonPropertyName("type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteType EventType { get; set; }
     
     [JsonPropertyName("position")]
     public Position Coordinates { get; set; }
     
     [JsonPropertyName("startDelay")]
-    public int StartDelayInMilliseconds { get; set; }
+    public double StartDelay { get; set; }
     
     [JsonPropertyName("endDelay")]
-    public int EndDelayInMilliseconds { get; set; }
+    public double EndDelay { get; set; }
     
     [JsonPropertyName("speed")]
     public float MovementSpeed { get; set; }
@@ -87,10 +88,12 @@ public class QteResult
 public class QteEffect
 {
     [JsonPropertyName("type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteRewardType EffectType { get; set; }
     
     [JsonPropertyName("skillId")]
-    public int SkillIdentifier { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SkillTypes SkillIdentifier { get; set; }
     
     [JsonPropertyName("levelMultipliers")]
     public List<SkillLevelMultiplier> LevelMultipliers { get; set; }
@@ -102,6 +105,7 @@ public class QteEffect
     public float EffectWeight { get; set; }
     
     [JsonPropertyName("result")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public QteResultType ResultType { get; set; }
 }
 

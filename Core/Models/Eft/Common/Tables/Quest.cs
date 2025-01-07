@@ -223,6 +223,9 @@ public class QuestCondition
     
     [JsonPropertyName("conditionType")]
     public string? ConditionType { get; set; }
+    
+    [JsonPropertyName("areaType")]
+    public HideoutAreas AreaType { get; set; }
 }
 
 public class QuestConditionCounter

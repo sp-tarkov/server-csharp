@@ -80,6 +80,12 @@ public class Requirement : RequirementBase
     
     [JsonPropertyName("questId")]
     public string? QuestId { get; set; }
+    
+    [JsonPropertyName("isSpawnedInSession")]
+    public bool? IsSpawnedInSession { get; set; }
+    
+    [JsonPropertyName("gameVersions")]
+    public List<string>? GameVersions { get; set; }
 }
 
 public class RequirementBase

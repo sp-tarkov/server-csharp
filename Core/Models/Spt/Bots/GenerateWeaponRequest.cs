@@ -23,7 +23,7 @@ public class GenerateWeaponRequest
 
     /** Chance values mod will be added */
     [JsonPropertyName("modSpawnChances")]
-    public ModsChances ModSpawnChances { get; set; }
+    public Dictionary<string, double> ModSpawnChances { get; set; }
 
     /** Ammo tpl to use when generating magazines/cartridges */
     [JsonPropertyName("ammoTpl")]

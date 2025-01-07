@@ -46,12 +46,15 @@ public class Appearance
     public Dictionary<string, int> Feet { get; set; }
 
     [JsonPropertyName("hands")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, int> Hands { get; set; }
 
     [JsonPropertyName("head")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, int> Head { get; set; }
 
     [JsonPropertyName("voice")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, int> Voice { get; set; }
 }
 
@@ -61,10 +64,13 @@ public class Chances
     public EquipmentChances EquipmentChances { get; set; }
 
     [JsonPropertyName("weaponMods")]
-    public ModsChances WeaponModsChances { get; set; }
+    public Dictionary<string, double> WeaponModsChances { get; set; }
 
     [JsonPropertyName("equipmentMods")]
-    public ModsChances EquipmentModsChances { get; set; }
+    public Dictionary<string, double> EquipmentModsChances { get; set; }
+    
+    [JsonPropertyName("mods")]
+    public Dictionary<string, double> Mods { get; set; }
 }
 
 public class EquipmentChances
@@ -111,7 +117,11 @@ public class EquipmentChances
     [JsonPropertyName("TacticalVest")]
     public int TacticalVest { get; set; }
 }
-
+/* class removed in favor of Dictionary<string, double>
+ used to be used in:
+ Chances.WeaponModsChances
+ Chances.EquipmentModsChances
+ GenerateWeaponRequest.ModSpawnChances
 public class ModsChances
 {
     [JsonPropertyName("mod_charge")]
@@ -263,7 +273,14 @@ public class ModsChances
     
     [JsonPropertyName("mod_muzzle_001")]
     public double ModMuzzle001 { get; set; }
+    
+    [JsonPropertyName("mod_pistol_grip_akms")]
+    public double ModPistolGripAkms { get; set; }
+    
+    [JsonPropertyName("mod_pistolgrip")]
+    public double ModPistol_Grip { get; set; }
 }
+*/
 
 public class Difficulties
 {

@@ -44,7 +44,7 @@ public class HideoutAreaRequirement
     [JsonPropertyName("areaType")]
     public int AreaType { get; set; }
 
-    [JsonPropertyName("requiredlevel")]
+    [JsonPropertyName("requiredLevel")]
     public int RequiredLevel { get; set; }
 
     [JsonPropertyName("type")]
@@ -60,7 +60,7 @@ public class Stage
     public List<StageBonus> Bonuses { get; set; }
 
     [JsonPropertyName("constructionTime")]
-    public int ConstructionTime { get; set; }
+    public double ConstructionTime { get; set; }
 
     /** Containers inventory tpl */
     [JsonPropertyName("container")]
@@ -68,6 +68,9 @@ public class Stage
 
     [JsonPropertyName("description")]
     public string Description { get; set; }
+    
+    [JsonPropertyName("globalCounterId")]
+    public string GlobalCounterId { get; set; }
 
     [JsonPropertyName("displayInterface")]
     public bool DisplayInterface { get; set; }
@@ -99,11 +102,18 @@ public class StageImprovement
 
 public class StageImprovementBonus
 {
+    [JsonPropertyName("id")]
+    public string Id { get; set; }
+    
     [JsonPropertyName("passive")]
     public bool IsPassive { get; set; }
 
     [JsonPropertyName("production")]
     public bool IsProduction { get; set; }
+    
+    [JsonPropertyName("skillType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SkillTypes SkillType { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -128,6 +138,9 @@ public class StageImprovementRequirement
 
     [JsonPropertyName("templateId")]
     public string TemplateId { get; set; }
+
+    [JsonPropertyName("isSpawnedInSession")]
+    public bool IsSpawnedInSession { get; set; }
 
     [JsonPropertyName("type")]
     public string Type { get; set; }
@@ -155,6 +168,9 @@ public class StageRequirement : RequirementBase
 
     [JsonPropertyName("traderId")]
     public string TraderId { get; set; }
+    
+    [JsonPropertyName("isSpawnedInSession")]
+    public bool IsSpawnedInSession { get; set; }
 
     [JsonPropertyName("loyaltyLevel")]
     public int? LoyaltyLevel { get; set; }
@@ -181,9 +197,11 @@ public class StageBonus
     public bool Visible { get; set; }
 
     [JsonPropertyName("skillType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BonusSkillType? SkillType { get; set; }
 
     [JsonPropertyName("type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BonusType Type { get; set; }
 
     [JsonPropertyName("filter")]
