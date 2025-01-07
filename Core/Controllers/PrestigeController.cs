@@ -1,3 +1,4 @@
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Controllers;

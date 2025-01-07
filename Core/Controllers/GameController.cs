@@ -1,4 +1,5 @@
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
 
 namespace Core.Controllers;
