@@ -42,7 +42,7 @@ public class Gift
     /// Optional - supply a trader type to send from, not necessary when sending from SYSTEM or USER
     /// </summary>
     [JsonPropertyName("trader")]
-    public Traders? Trader { get; set; }
+    public string? Trader { get; set; }
 
     [JsonPropertyName("messageText")]
     public string MessageText { get; set; }

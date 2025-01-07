@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 

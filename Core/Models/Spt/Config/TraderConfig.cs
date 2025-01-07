@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Spt.Services;
 
 namespace Core.Models.Spt.Config;
 
