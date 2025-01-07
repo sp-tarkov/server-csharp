@@ -1,3 +1,5 @@
+using Core.Models.Eft.Match;
+
 namespace Core.Controllers;
 
 public class MatchController
@@ -38,7 +40,7 @@ public class MatchController
 	/// </summary>
 	/// <param name="info"></param>
 	/// <returns></returns>
-	public MatchGroupStatusReponse GetGroupStatus(
+	public MatchGroupStatusResponse GetGroupStatus(
 		MatchGroupStatusRequest info)
 	{
 		throw new NotImplementedException();

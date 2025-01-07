@@ -1,8 +1,20 @@
-﻿namespace Core.Callbacks;
+﻿using Core.DI;
 
-public class PresetCallbacks
+namespace Core.Callbacks;
+
+public class PresetCallbacks : OnLoad
 {
-    public void Load()
+    public PresetCallbacks()
+    {
+        
+    }
+    
+    public async Task OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }

@@ -7,6 +7,11 @@ namespace Core.Callbacks;
 
 public class BotCallbacks
 {
+    public BotCallbacks()
+    {
+        
+    }
+    
     public string GetBotLimit(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();

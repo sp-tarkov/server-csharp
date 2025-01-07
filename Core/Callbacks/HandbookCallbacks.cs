@@ -1,8 +1,20 @@
-﻿namespace Core.Callbacks;
+﻿using Core.DI;
 
-public class HandbookCallbacks
+namespace Core.Callbacks;
+
+public class HandbookCallbacks : OnLoad
 {
-    public void Load()
+    public HandbookCallbacks()
+    {
+        
+    }
+    
+    public Task OnLoad()
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }

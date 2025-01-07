@@ -1,3 +1,6 @@
+using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Location;
+
 namespace Core.Controllers;
 
 public class LocationController
@@ -18,7 +21,7 @@ public class LocationController
 	/// </summary>
 	/// <param name="request"></param>
 	/// <returns></returns>
-	public GetAirDropLootResponse GetAirDropLoot(GetAirDropLootRequest request)
+	public GetAirdropLootResponse GetAirDropLoot(GetAirdropLootRequest request)
 	{
 		throw new NotImplementedException();
 	}

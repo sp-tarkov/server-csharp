@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.DI;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Insurance;
 using Core.Models.Eft.ItemEvent;
@@ -6,7 +7,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Callbacks;
 
-public class InsuranceCallbacks
+public class InsuranceCallbacks : OnUpdate
 {
     private InsuranceConfig _insuranceConfig;
 
@@ -25,7 +26,7 @@ public class InsuranceCallbacks
         throw new NotImplementedException();
     }
 
-    public async Task<bool> OnUpdate(int secondsSinceLastRun)
+    public Task<bool> OnUpdate(long timeSinceLastRun)
     {
         throw new NotImplementedException();
     }

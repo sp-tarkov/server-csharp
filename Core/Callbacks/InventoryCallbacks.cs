@@ -7,6 +7,11 @@ namespace Core.Callbacks;
 
 public class InventoryCallbacks
 {
+    public InventoryCallbacks()
+    {
+        
+    }
+    
     public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID)
     {
         throw new NotImplementedException();

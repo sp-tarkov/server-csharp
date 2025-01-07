@@ -1,11 +1,12 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.DI;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.HttpResponse;
 
 namespace Core.Callbacks;
 
-public class GameCallbacks
+public class GameCallbacks : OnLoad
 {
     public GameCallbacks()
     {

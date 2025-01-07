@@ -1,9 +1,18 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Quests;
 
 namespace Core.Callbacks;
 
 public class QuestCallbacks
 {
+    public QuestCallbacks()
+    {
+        
+    }
+    
     public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info, string sessionID)
     {
         throw new NotImplementedException();

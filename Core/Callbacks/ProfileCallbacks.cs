@@ -1,17 +1,22 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.Launcher;
+using Core.Models.Eft.Profile;
+
+namespace Core.Callbacks;
 
 public class ProfileCallbacks
 {
-    public object OnLoad(string sessionID)
+    public ProfileCallbacks()
+    {
+        
+    }
+    
+    public GetBodyResponseData<CreateProfileResponse> CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-
-    public GetBodyResponseData<object> CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
-    {
-        throw new NotImplementedException();
-    }
-
+    
     public GetBodyResponseData<object> GetProfileData(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
@@ -41,13 +46,28 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
-    public GetBodyResponseData<object> GetProfileStatus(string url, EmptyRequestData info, string sessionID)
+
+    public GetBodyResponseData<GetOtherProfileResponse> GetOtherProfile(string url, GetOtherProfileRequest info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public GetBodyResponseData<bool> GetProfileSettings(string url, GetProfileSettingsRequest info, string sessionID)
     {
         throw new NotImplementedException();
     }
     
     public GetBodyResponseData<SearchFriendResponse> SearchFriend(string url, SearchFriendRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetMiniProfile(string url, GetMiniProfileRequestData info, string sessionID)
+    {
+        throw new NotImplementedException();
+    }
+
+    public string GetAllMiniProfiles(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }

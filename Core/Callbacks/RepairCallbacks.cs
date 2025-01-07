@@ -1,7 +1,16 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Repair;
+
+namespace Core.Callbacks;
 
 public class RepairCallbacks
 {
+    public RepairCallbacks()
+    {
+        
+    }
+    
     public ItemEventRouterResponse TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, string sessionID)
     {
         throw new NotImplementedException();

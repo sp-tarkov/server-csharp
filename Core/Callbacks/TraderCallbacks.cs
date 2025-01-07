@@ -1,12 +1,33 @@
-﻿namespace Core.Callbacks;
+﻿using Core.DI;
+using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Spt.Config;
 
-public class TraderCallbacks
+namespace Core.Callbacks;
+
+public class TraderCallbacks : OnLoad, OnUpdate
 {
-    public void Load()
+    public TraderCallbacks()
+    {
+        
+    }
+    
+    public async Task OnLoad()
     {
         throw new NotImplementedException();
     }
 
+    public async Task<bool> OnUpdate(long _)
+    {
+        throw new NotImplementedException();
+    }
+    
+    public string GetRoute()
+    {
+        throw new NotImplementedException();
+    }
+    
     public GetBodyResponseData<List<TraderBase>> GetTraderSettings(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
@@ -22,7 +43,7 @@ public class TraderCallbacks
         throw new NotImplementedException();
     }
 
-    public bool Update()
+    public GetBodyResponseData<ModdedTraders> GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
