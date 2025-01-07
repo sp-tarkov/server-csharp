@@ -1,3 +1,4 @@
+using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 

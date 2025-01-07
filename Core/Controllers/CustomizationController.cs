@@ -1,6 +1,8 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Customization;
 using Core.Models.Eft.Hideout;
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 
 namespace Core.Controllers;

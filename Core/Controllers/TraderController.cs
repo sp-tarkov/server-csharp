@@ -1,4 +1,5 @@
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Game;
 
 namespace Core.Controllers;
 
