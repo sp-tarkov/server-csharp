@@ -10,12 +10,14 @@ public class BundleCallbacks
     {
         
     }
-    
-    public object SendBundle(string sessionID, object req, object res, object body)
-    {
-        throw new NotImplementedException();
-    }
 
+    /// <summary>
+    /// Handle singleplayer/bundles
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
     public string GetBundles(string url, object info, string sessionID)
     {
         throw new NotImplementedException();
@@ -23,6 +25,6 @@ public class BundleCallbacks
 
     public string GetBundle(string url, object info, string sessionID)
     {
-        throw new NotImplementedException();
+        return "BUNDLE";
     }
 }

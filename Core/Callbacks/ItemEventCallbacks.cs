@@ -15,6 +15,12 @@ public class ItemEventCallbacks
         throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Return true if the passed in list of warnings contains critical issues
+    /// </summary>
+    /// <param name="warnings">The list of warnings to check for critical errors</param>
+    /// <returns></returns>
+    /// <exception cref="NotImplementedException"></exception>
     public bool IsCriticalError(List<Warning> warnings)
     {
         throw new NotImplementedException();
