@@ -1,8 +1,19 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Customization;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.ItemEvent;
+
+namespace Core.Callbacks;
 
 public class CustomizationCallbacks
 {
-    public GetBodyResponseData<object> GetSuits(string url, object info, string sessionID)
+    public CustomizationCallbacks()
+    {
+        
+    }
+    
+    public GetBodyResponseData<GetSuitsResponse> GetSuits(string url, EmptyRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
