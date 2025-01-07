@@ -1,23 +1,36 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.Insurance;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Spt.Config;
+
+namespace Core.Callbacks;
 
 public class InsuranceCallbacks
 {
-    public SptProfile OnLoad(string sessionID)
+    private InsuranceConfig _insuranceConfig;
+
+    public InsuranceCallbacks()
+    {
+        
+    }
+
+    public GetBodyResponseData<GetInsuranceCostResponseData> GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public object GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
+    public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public object Insure(PmcData pmcData, InsureRequestData info, string sessionID)
+    public async Task<bool> OnUpdate(int secondsSinceLastRun)
     {
         throw new NotImplementedException();
     }
 
-    public bool Update(int secondsSinceLastRun)
+    public string GetRoute()
     {
         throw new NotImplementedException();
     }

@@ -1,28 +1,33 @@
-﻿namespace Core.Callbacks;
+﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Health;
+using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.ItemEvent;
+
+namespace Core.Callbacks;
 
 public class HealthCallbacks
 {
-    public SptProfile OnLoad(string sessionID)
+    public HealthCallbacks()
+    {
+        
+    }
+
+    public GetBodyResponseData<string> handleWorkoutEffects(string url, WorkoutData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public object SyncHealth(string url, SyncHealthRequestData info, string sessionID)
+    public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public object OffraidEat(PmcData pmcData, OffraidEatRequestData info, string sessionID)
+    public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
 
-    public object OffraidHeal(PmcData pmcData, OffraidHealRequestData info, string sessionID)
-    {
-        throw new NotImplementedException();
-    }
-
-    public object HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, string sessionID)
+    public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
