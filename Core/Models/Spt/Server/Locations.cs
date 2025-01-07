@@ -63,4 +63,22 @@ public class Locations
     /** Holds a mapping of the linkages between locations on the UI */
     [JsonPropertyName("base")]
     public LocationsBase? Base { get; set; }
+
+    public Eft.Common.Location? this[string key]
+    {
+        get
+        {
+            return (Eft.Common.Location?) GetType()
+                .GetProperties()
+                .First(p => p.Name.ToLower() == key.ToLower()).GetGetMethod()?
+                .Invoke(this, null) ?? null;
+        }
+        set
+        {
+            GetType()
+                .GetProperties()
+                .First(p => p.Name.ToLower() == key.ToLower()).GetSetMethod()?
+                .Invoke(this, [value]);
+        }
+    }
 }

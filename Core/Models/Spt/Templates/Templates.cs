@@ -37,7 +37,7 @@ public class Templates
 
     /** Flea prices of items - gathered from online flea market dump */
     [JsonPropertyName("prices")]
-    public Dictionary<string, decimal> Prices { get; set; }
+    public Dictionary<string, double> Prices { get; set; }
 
     /** Default equipment loadouts that show on main inventory screen */
     [JsonPropertyName("defaultEquipmentPresets")]
