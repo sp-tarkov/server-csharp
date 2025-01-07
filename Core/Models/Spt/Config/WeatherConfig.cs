@@ -32,19 +32,19 @@ public class SeasonDateTimes
     public string Name { get; set; }
 
     [JsonPropertyName("startDay")]
-    [JsonConverter(typeof(NotNullObjectToIntConverter))]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int StartDay { get; set; }
 
     [JsonPropertyName("startMonth")]
-    [JsonConverter(typeof(NotNullObjectToIntConverter))]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int StartMonth { get; set; }
 
     [JsonPropertyName("endDay")]
-    [JsonConverter(typeof(NotNullObjectToIntConverter))]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int EndDay { get; set; }
 
     [JsonPropertyName("endMonth")]
-    [JsonConverter(typeof(NotNullObjectToIntConverter))]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int EndMonth { get; set; }
 }
 

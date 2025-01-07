@@ -78,7 +78,7 @@ public class EventQuestData
     public long StartTimestamp { get; set; }
 
     [JsonPropertyName("endTimestamp")]
-    [JsonConverter(typeof(NullableObjectToLongConverter))]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public long? EndTimestamp { get; set; }
 
     [JsonPropertyName("yearly")]

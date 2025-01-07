@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -42,24 +43,44 @@ public class ImporterUtil
             if (onReadCallback != null)
                 onReadCallback(file, fileData);
 
-            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
-            if (matchedProperty == null)
-                throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
-            var propertyType = matchedProperty.PropertyType;
-            var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType, new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
-            if (onObjectDeserialized != null)
-                onObjectDeserialized(file, fileDeserialized);
+            Type propertyType;
+            MethodInfo setMethod;
+            bool isDictionary = false;
+            if (loadedType.IsGenericType && loadedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                propertyType = loadedType.GetGenericArguments()[1];
+                setMethod = loadedType.GetMethod("Add");
+                isDictionary = true;
+            }
+            else
+            {
+                var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
+                if (matchedProperty == null)
+                    throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
+                propertyType = matchedProperty.PropertyType;
+                setMethod = matchedProperty.GetSetMethod();
+            }
+            try
+            {
+                var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType, new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
+                if (onObjectDeserialized != null)
+                    onObjectDeserialized(file, fileDeserialized);
 
-            matchedProperty.SetValue(result, fileDeserialized);
+                setMethod.Invoke(result, isDictionary ? [Path.GetFileNameWithoutExtension(file), fileDeserialized] : [fileDeserialized]);
+            }
+            catch (Exception e)
+            {
+                throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
+            }
         }
 
         // deep tree search
         foreach (var directory in directories)
         {
-            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == directory.ToLower());
+            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().ToLower());
             if (matchedProperty == null)
                 throw new Exception($"Unable to find property '{directory}' for type '{loadedType.Name}'");
-            matchedProperty.GetSetMethod().Invoke(result, [await LoadRecursiveAsync($"{filepath}{directory}/", matchedProperty.PropertyType)]);
+            matchedProperty.GetSetMethod().Invoke(result, [await LoadRecursiveAsync($"{directory}/", matchedProperty.PropertyType)]);
         }
 
         // return the result of all async fetch

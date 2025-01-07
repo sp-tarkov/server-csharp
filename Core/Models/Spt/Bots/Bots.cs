@@ -5,8 +5,13 @@ namespace Core.Models.Spt.Bots;
 
 public class Bots
 {
-    public Dictionary<string, BotType> types { get; }
+    
+    [JsonPropertyName("types")]
+    public Dictionary<string, BotType> Types { get; set; }
+
     [JsonPropertyName("base")]
-    public BotBase Base { get; }
-    public BotCore core { get; }
+    public BotBase Base { get; set; }
+
+    [JsonPropertyName("core")]
+    public Dictionary<string, object> Core { get; set; }
 }

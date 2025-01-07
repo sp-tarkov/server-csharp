@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -188,6 +189,9 @@ public class ModsChances
     [JsonPropertyName("mod_stock_000")]
     public double ModStock000 { get; set; }
 
+    [JsonPropertyName("mod_stock_002")]
+    public double ModStock002 { get; set; }
+
     [JsonPropertyName("mod_stock_akms")]
     public double ModStockAkms { get; set; }
 
@@ -203,18 +207,52 @@ public class ModsChances
     [JsonPropertyName("mod_tactical_002")]
     public double ModTactical002 { get; set; }
 
+    [JsonPropertyName("mod_tactical_2")]
+    public double ModTactical2 { get; set; }
+
     [JsonPropertyName("mod_tactical_003")]
     public double ModTactical003 { get; set; }
 
     [JsonPropertyName("mod_handguard")]
     public double ModHandguard { get; set; }
+    
+    [JsonPropertyName("back_plate")]
+    public double BackPlate { get; set; }
+    
+    [JsonPropertyName("front_plate")]
+    public double FrontPlate { get; set; }
+    
+    [JsonPropertyName("left_side_plate")]
+    public double LeftSidePlate { get; set; }
+    
+    [JsonPropertyName("right_side_plate")]
+    public double RightSidePlate { get; set; }
+    
+    [JsonPropertyName("mod_mount_002")]
+    public double ModMount002 { get; set; }
+    
+    [JsonPropertyName("mod_mount_003")]
+    public double ModMount003 { get; set; }
+    
+    [JsonPropertyName("mod_mount_004")]
+    public double ModMount004 { get; set; }
+    
+    [JsonPropertyName("mod_muzzle_000")]
+    public double ModMuzzle000 { get; set; }
+    
+    [JsonPropertyName("mod_muzzle_001")]
+    public double ModMuzzle001 { get; set; }
 }
 
 public class Difficulties
 {
+    [JsonPropertyName("easy")]
     public DifficultyCategories Easy { get; set; }
+    [JsonPropertyName("normal")]
     public DifficultyCategories Normal { get; set; }
+    [JsonPropertyName("hard")]
     public DifficultyCategories Hard { get; set; }
+    [JsonPropertyName("impossible")]
     public DifficultyCategories Impossible { get; set; }
 }
 
@@ -242,6 +280,7 @@ public class Experience
     [JsonPropertyName("aggressorBonus")]
     public Dictionary<string, double> AggressorBonus { get; set; }
 
+    [JsonPropertyName("level")]
     public MinMax Level { get; set; }
 
     /** key = bot difficulty */
@@ -309,6 +348,7 @@ public class GenerationData
 
     /** Array of item tpls */
     [JsonPropertyName("whitelist")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, double> Whitelist { get; set; }
 }
 
@@ -341,6 +381,7 @@ public class BotTypeInventory
     [JsonPropertyName("items")]
     public ItemPools Items { get; set; }
 
+    [JsonPropertyName("mods")]
     public GlobalMods Mods { get; set; }
 }
 

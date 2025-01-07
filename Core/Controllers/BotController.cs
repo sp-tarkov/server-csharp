@@ -22,7 +22,7 @@ public class BotController
         throw new NotImplementedException();
     }
 
-    public BotCore GetBotCoreDifficulty()
+    public Dictionary<string, object> GetBotCoreDifficulty()
     {
         throw new NotImplementedException();
     }

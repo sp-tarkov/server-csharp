@@ -1,6 +1,8 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Reflection;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -10,7 +12,7 @@ public class BotBase
     public string Id { get; set; }
 
     [JsonPropertyName("aid")]
-    public int Aid { get; set; }
+    public double Aid { get; set; }
 
     /** SPT property - use to store player id - TODO - move to AID ( account id as guid of choice) */
     [JsonPropertyName("sessionId")]
@@ -20,7 +22,7 @@ public class BotBase
     public string? Savage { get; set; }
 
     [JsonPropertyName("karmaValue")]
-    public int KarmaValue { get; set; }
+    public double KarmaValue { get; set; }
 
     [JsonPropertyName("Info")]
     public Info Info { get; set; }
@@ -87,6 +89,7 @@ public class BotBase
     public SurvivorClass SurvivorClass { get; set; }
 
     [JsonPropertyName("WishList")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, int> WishList { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
@@ -147,11 +150,11 @@ public class Info
     public bool HasCoopExtension { get; set; }
     public bool HasPveGame { get; set; }
     public string Voice { get; set; }
-    public int Level { get; set; }
-    public int Experience { get; set; }
+    public double Level { get; set; }
+    public double Experience { get; set; }
     public long RegistrationDate { get; set; }
     public string GameVersion { get; set; }
-    public int AccountType { get; set; }
+    public double AccountType { get; set; }
     public MemberCategory MemberCategory { get; set; }
     public MemberCategory SelectedMemberCategory { get; set; }
 
@@ -183,9 +186,9 @@ public class BotInfoSettings
 {
     public string Role { get; set; }
     public string BotDifficulty { get; set; }
-    public int Experience { get; set; }
-    public int StandingForKill { get; set; }
-    public int AggressorBonus { get; set; }
+    public double Experience { get; set; }
+    public double StandingForKill { get; set; }
+    public double AggressorBonus { get; set; }
     public bool UseSimpleAnimator { get; set; }
 }
 
@@ -223,7 +226,7 @@ public class BotBaseHealth
     public CurrentMax Energy { get; set; }
     public CurrentMax Temperature { get; set; }
     public BodyPartsHealth BodyParts { get; set; }
-    public int UpdateTime { get; set; }
+    public double UpdateTime { get; set; }
     public bool? Immortal { get; set; }
 }
 
@@ -248,13 +251,13 @@ public class BodyPartEffectProperties
 {
     // TODO: this was any, what actual type is it?
     public object? ExtraData { get; set; }
-    public int Time { get; set; }
+    public double Time { get; set; }
 }
 
 public class CurrentMax
 {
-    public int Current { get; set; }
-    public int Maximum { get; set; }
+    public double Current { get; set; }
+    public double Maximum { get; set; }
 }
 
 public class BotBaseInventory
@@ -292,20 +295,20 @@ public class BaseJsonSkills
 {
     public Dictionary<string, Common> Common { get; set; }
     public Dictionary<string, Mastering> Mastering { get; set; }
-    public int Points { get; set; }
+    public double Points { get; set; }
 }
 
 public class Skills
 {
     public List<Common> Common { get; set; }
     public List<Mastering> Mastering { get; set; }
-    public int Points { get; set; }
+    public double Points { get; set; }
 }
 
 public class BaseSkill
 {
     public string Id { get; set; }
-    public int Progress { get; set; }
+    public double Progress { get; set; }
 
     [JsonPropertyName("max")]
     public int? Max { get; set; }
@@ -333,7 +336,7 @@ public class EftStats
 {
     public List<string> CarriedQuestItems { get; set; }
     public List<Victim> Victims { get; set; }
-    public int TotalSessionExperience { get; set; }
+    public double TotalSessionExperience { get; set; }
     public long LastSessionDate { get; set; }
     public SessionCounters SessionCounters { get; set; }
     public OverallCounters OverallCounters { get; set; }
@@ -345,7 +348,7 @@ public class EftStats
     public DamageHistory? DamageHistory { get; set; }
     public DeathCause? DeathCause { get; set; }
     public LastPlayerState? LastPlayerState { get; set; }
-    public int TotalInGameTime { get; set; }
+    public double TotalInGameTime { get; set; }
     public string? SurvivorClass { get; set; }
 
     [JsonPropertyName("sptLastRaidFenceRepChange")]
@@ -375,7 +378,7 @@ public class Victim
     public string BodyPart { get; set; }
     public string Time { get; set; }
     public float Distance { get; set; }
-    public int Level { get; set; }
+    public double Level { get; set; }
     public string Weapon { get; set; }
     public string Role { get; set; }
     public string Location { get; set; }
@@ -394,7 +397,7 @@ public class OverallCounters
 public class CounterKeyValue
 {
     public List<string> Key { get; set; }
-    public int Value { get; set; }
+    public double Value { get; set; }
 }
 
 public class Aggressor
@@ -414,18 +417,19 @@ public class DamageHistory
 {
     public string LethalDamagePart { get; set; }
     public LethalDamage LethalDamage { get; set; }
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public BodyPartsDamageHistory BodyParts { get; set; }
 }
 
 // TODO: this class seems exactly the same as DamageStats, why have it?
 public class LethalDamage
 {
-    public int Amount { get; set; }
+    public double Amount { get; set; }
     public string Type { get; set; }
     public string SourceId { get; set; }
     public string OverDamageFrom { get; set; }
     public bool Blunt { get; set; }
-    public int ImpactsCount { get; set; }
+    public double ImpactsCount { get; set; }
 }
 
 public class BodyPartsDamageHistory
@@ -442,12 +446,12 @@ public class BodyPartsDamageHistory
 
 public class DamageStats
 {
-    public int Amount { get; set; }
+    public double Amount { get; set; }
     public string Type { get; set; }
     public string SourceId { get; set; }
     public string OverDamageFrom { get; set; }
     public bool Blunt { get; set; }
-    public int ImpactsCount { get; set; }
+    public double ImpactsCount { get; set; }
 }
 
 public class DeathCause
@@ -471,7 +475,7 @@ public class LastPlayerStateInfo
 {
     public string Nickname { get; set; }
     public string Side { get; set; }
-    public int Level { get; set; }
+    public double Level { get; set; }
     public MemberCategory MemberCategory { get; set; }
 }
 
@@ -484,7 +488,7 @@ public class BackendCounter
     public string? QId { get; set; }
 
     [JsonPropertyName("value")]
-    public int Value { get; set; }
+    public double Value { get; set; }
 }
 
 public class InsuredItem
@@ -503,7 +507,7 @@ public class Hideout
     public List<BotHideoutArea> Areas { get; set; }
     public Dictionary<string, HideoutImprovement> Improvements { get; set; }
     public HideoutCounters HideoutCounters { get; set; }
-    public int Seed { get; set; }
+    public double Seed { get; set; }
     public List<string> MannequinPoses { get; set; }
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
@@ -513,16 +517,16 @@ public class Hideout
 public class HideoutCounters
 {
     [JsonPropertyName("fuelCounter")]
-    public int FuelCounter { get; set; }
+    public double FuelCounter { get; set; }
 
     [JsonPropertyName("airFilterCounter")]
-    public int AirFilterCounter { get; set; }
+    public double AirFilterCounter { get; set; }
 
     [JsonPropertyName("waterFilterCounter")]
-    public int WaterFilterCounter { get; set; }
+    public double WaterFilterCounter { get; set; }
 
     [JsonPropertyName("craftingTimeCounter")]
-    public int CraftingTimeCounter { get; set; }
+    public double CraftingTimeCounter { get; set; }
 }
 
 public class HideoutImprovement
@@ -613,7 +617,7 @@ public class BotHideoutArea
     public HideoutAreas Type { get; set; }
 
     [JsonPropertyName("level")]
-    public int Level { get; set; }
+    public double Level { get; set; }
 
     [JsonPropertyName("active")]
     public bool Active { get; set; }
@@ -623,7 +627,7 @@ public class BotHideoutArea
 
     /** Must be integer */
     [JsonPropertyName("completeTime")]
-    public int CompleteTime { get; set; }
+    public double CompleteTime { get; set; }
 
     [JsonPropertyName("constructing")]
     public bool Constructing { get; set; }
@@ -641,7 +645,7 @@ public class HideoutSlot
     /// SPT specific value to keep track of what index this slot is (0,1,2,3 etc)
     /// </summary>
     [JsonPropertyName("locationIndex")]
-    public int LocationIndex { get; set; }
+    public double LocationIndex { get; set; }
 
     [JsonPropertyName("item")]
     public List<HideoutItem>? Items { get; set; }
@@ -708,13 +712,13 @@ public class TraderInfo
     public int? LoyaltyLevel { get; set; }
 
     [JsonPropertyName("salesSum")]
-    public int SalesSum { get; set; }
+    public double SalesSum { get; set; }
 
     [JsonPropertyName("standing")]
-    public int Standing { get; set; }
+    public double Standing { get; set; }
 
     [JsonPropertyName("nextResupply")]
-    public int NextResupply { get; set; }
+    public double NextResupply { get; set; }
 
     [JsonPropertyName("unlocked")]
     public bool Unlocked { get; set; }

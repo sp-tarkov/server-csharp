@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-
+/*
 public class BotCore
 {
     [JsonPropertyName("SAVAGE_KILL_DIST")]
@@ -398,3 +398,4 @@ public class BotCore
     [JsonPropertyName("AXE_MAN_KILLS_END")]
     public double AxeManKillsEnd { get; set; }
 }
+*/
