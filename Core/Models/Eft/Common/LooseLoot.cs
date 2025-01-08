@@ -80,7 +80,7 @@ public class GroupPosition
     [JsonPropertyName("Weight")]
     public double Weight { get; set; }
     
-    [JsonPropertyName("Postion")]
+    [JsonPropertyName("Position")]
     public XYZ Position { get; set; }
     
     [JsonPropertyName("Rotation")]

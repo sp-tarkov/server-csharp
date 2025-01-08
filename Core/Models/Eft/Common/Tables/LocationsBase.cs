@@ -23,4 +23,6 @@ public class Path
 
     [JsonPropertyName("Destination")]
     public string Destination { get; set; }
+    
+    public bool Event { get; set; }
 }

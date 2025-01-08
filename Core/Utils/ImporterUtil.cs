@@ -77,7 +77,7 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
-            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().ToLower());
+            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().Replace("_", "").ToLower());
             if (matchedProperty == null)
                 throw new Exception($"Unable to find property '{directory}' for type '{loadedType.Name}'");
             matchedProperty.GetSetMethod().Invoke(result, [await LoadRecursiveAsync($"{directory}/", matchedProperty.PropertyType)]);

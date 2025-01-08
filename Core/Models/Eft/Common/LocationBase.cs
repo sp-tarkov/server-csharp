@@ -14,6 +14,15 @@ public class LocationBase
     [JsonPropertyName("AirdropParameters")]
     public List<AirdropParameter> AirdropParameters { get; set; }
 
+    [JsonPropertyName("NewSpawnForPlayers")]
+    public bool NewSpawnForPlayers { get; set; }
+    
+    [JsonPropertyName("OfflineNewSpawn")]
+    public bool OfflineNewSpawn { get; set; }
+    
+    [JsonPropertyName("OfflineOldSpawn")]
+    public bool OfflineOldSpawn { get; set; }
+    
     [JsonPropertyName("Area")]
     public double Area { get; set; }
 
@@ -29,6 +38,12 @@ public class LocationBase
     [JsonPropertyName("BossLocationSpawn")]
     public List<BossLocationSpawn> BossLocationSpawn { get; set; }
 
+    [JsonPropertyName("secretExits")]
+    public List<Exit> SecretExits { get; set; }
+
+    [JsonPropertyName("BotStartPlayer")]
+    public int BotStartPlayer { get; set; }
+    
     [JsonPropertyName("BotAssault")]
     public int BotAssault { get; set; }
 
@@ -236,7 +251,14 @@ public class LocationBase
 
     [JsonPropertyName("EscapeTimeLimit")]
     public int EscapeTimeLimit { get; set; }
-
+    
+    // BSG fucked up another property name
+    [JsonPropertyName("escape_time_limit")]
+    public int Escape_Time_Limit_Do_Not_Use
+    {
+        set => EscapeTimeLimit = value;
+    }
+    
     [JsonPropertyName("EscapeTimeLimitCoop")]
     public int EscapeTimeLimitCoop { get; set; }
 
@@ -307,6 +329,9 @@ public class Transit {
     
     [JsonPropertyName("active")]
     public bool IsActive { get; set; }
+    
+    [JsonPropertyName("events")]
+    public bool Events { get; set; }
     
     [JsonPropertyName("name")]
     public string Name { get; set; }
@@ -461,7 +486,7 @@ public class BossLocationSpawn {
     [JsonPropertyName("sptId")]
     public string SptId { get; set; }
     
-    [JsonPropertyName("spawnMode")]
+    [JsonPropertyName("SpawnMode")]
     public string[] SpawnMode { get; set; }
 }
 
@@ -651,6 +676,9 @@ public class Props
     [JsonPropertyName("Center")]
     public XYZ Center { get; set; }
     
+    [JsonPropertyName("Size")]
+    public XYZ? Size { get; set; }
+    
     [JsonPropertyName("Radius")]
     public float Radius { get; set; }
 }
@@ -662,19 +690,33 @@ public class Exit
     public double Chance { get; set; }
     
     [JsonPropertyName("ChancePVE")]
-    public int ChancePVE { get; set; }
+    public double ChancePVE { get; set; }
     
     [JsonPropertyName("Count")]
     public int Count { get; set; }
     
+    [JsonPropertyName("CountPve")]
+    public int CountPve { get; set; }
+    
+    // Had to add this property as BSG sometimes names the properties with full PVE capitals
+    // This property will just point the value to CountPve
     [JsonPropertyName("CountPVE")]
-    public int CountPVE { get; set; }
+    public int CountPVE
+    {
+        set => CountPve = value;
+    }
     
     [JsonPropertyName("EntryPoints")]
     public string EntryPoints { get; set; }
     
     [JsonPropertyName("EventAvailable")]
     public bool EventAvailable { get; set; }
+
+    [JsonPropertyName("EligibleForPMC")]
+    public bool? EligibleForPMC { get; set; }
+
+    [JsonPropertyName("EligibleForScav")]
+    public bool? EligibleForScav { get; set; }
     
     [JsonPropertyName("ExfiltrationTime")]
     public double ExfiltrationTime { get; set; }
@@ -743,6 +785,7 @@ public class Wave
     public string SpawnPoints { get; set; }
 
     [JsonPropertyName("WildSpawnType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType WildSpawnType { get; set; }
 
     [JsonPropertyName("isPlayers")]
@@ -779,6 +822,13 @@ public class LocationEvents
 {
     [JsonPropertyName("Halloween2024")]
     public Halloween2024 Halloween2024 { get; set; }
+    
+    public Khorovod? Khorovod { get; set; }
+}
+
+public class Khorovod
+{
+    public double Chance { get; set; }
 }
 
 public class Halloween2024
@@ -824,6 +874,8 @@ public class Halloween2024
 
     [JsonPropertyName("InfectionPercentage")]
     public double InfectionPercentage { get; set; }
+    
+    public Khorovod? Khorovod { get; set; }
 }
 
 public class CrowdAttackSpawnParam

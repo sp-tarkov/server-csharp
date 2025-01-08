@@ -31,6 +31,10 @@ public class Location
     /** All possible map extracts */
     [JsonPropertyName("allExtracts")]
     public Exit[] AllExtracts { get; set; }
+    
+    // TODO: talk to chomp about this type!
+    [JsonPropertyName("statics")]
+    public Dictionary<string, object> Statics { get; set; }
 }
 
 public class StaticContainer
@@ -184,4 +188,7 @@ public class StaticItem
     
     [JsonPropertyName("_tpl")]
     public string Tpl { get; set; }
+    
+    [JsonPropertyName("upd")]
+    public Upd Upd { get; set; }
 }

@@ -40,7 +40,7 @@ public class Upd
     [JsonPropertyName("sptPresetId")]
     public string? SptPresetId { get; set; }
     public UpdFaceShield? FaceShield { get; set; }
-    public int? StackObjectsCount { get; set; }
+    public double? StackObjectsCount { get; set; }
     public bool? UnlimitedCount { get; set; }
     public UpdRepairable? Repairable { get; set; }
     public UpdRecodableComponent? RecodableComponent { get; set; }
