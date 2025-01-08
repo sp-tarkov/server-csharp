@@ -8,60 +8,60 @@ public class RagfairOffer
 {
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults { get; set; }
-    
+
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
-    
+    public string? Id { get; set; }
+
     [JsonPropertyName("items")]
-    public List<Item> Items { get; set; }
-    
+    public List<Item>? Items { get; set; }
+
     [JsonPropertyName("requirements")]
-    public List<OfferRequirement> Requirements { get; set; }
-    
+    public List<OfferRequirement>? Requirements { get; set; }
+
     [JsonPropertyName("root")]
-    public string Root { get; set; }
-    
+    public string? Root { get; set; }
+
     [JsonPropertyName("intId")]
-    public int InternalId { get; set; }
-    
+    public int? InternalId { get; set; }
+
     /** Handbook price */
     [JsonPropertyName("itemsCost")]
-    public decimal ItemsCost { get; set; }
-    
+    public decimal? ItemsCost { get; set; }
+
     /** Rouble price per item */
     [JsonPropertyName("requirementsCost")]
-    public decimal RequirementsCost { get; set; }
-    
+    public decimal? RequirementsCost { get; set; }
+
     [JsonPropertyName("startTime")]
-    public long StartTime { get; set; }
-    
+    public long? StartTime { get; set; }
+
     [JsonPropertyName("endTime")]
-    public long EndTime { get; set; }
-    
+    public long? EndTime { get; set; }
+
     /** True when offer is sold as pack */
     [JsonPropertyName("sellInOnePiece")]
-    public bool SellInOnePiece { get; set; }
-    
+    public bool? SellInOnePiece { get; set; }
+
     /** Rouble price - same as requirementsCost */
     [JsonPropertyName("summaryCost")]
-    public decimal SummaryCost { get; set; }
-    
+    public decimal? SummaryCost { get; set; }
+
     [JsonPropertyName("user")]
-    public RagfairOfferUser User { get; set; }
+    public RagfairOfferUser? User { get; set; }
 
     /** Trader only */
     [JsonPropertyName("unlimitedCount")]
     public bool? UnlimitedCount { get; set; }
-    
+
     [JsonPropertyName("loyaltyLevel")]
-    public int LoyaltyLevel { get; set; }
-    
+    public int? LoyaltyLevel { get; set; }
+
     [JsonPropertyName("buyRestrictionMax")]
     public int? BuyRestrictionMax { get; set; }
-    
+
     [JsonPropertyName("buyRestrictionCurrent")]
     public int? BuyRestrictionCurrent { get; set; }
-    
+
     [JsonPropertyName("locked")]
     public bool? Locked { get; set; }
 }
@@ -69,17 +69,17 @@ public class RagfairOffer
 public class OfferRequirement
 {
     [JsonPropertyName("_tpl")]
-    public string Template { get; set; }
-    
+    public string? Template { get; set; }
+
     [JsonPropertyName("count")]
-    public int Count { get; set; }
-    
+    public int? Count { get; set; }
+
     [JsonPropertyName("onlyFunctional")]
-    public bool OnlyFunctional { get; set; }
-    
+    public bool? OnlyFunctional { get; set; }
+
     [JsonPropertyName("level")]
     public int? Level { get; set; }
-    
+
     [JsonPropertyName("side")]
     public DogtagExchangeSide? Side { get; set; }
 }
@@ -87,26 +87,26 @@ public class OfferRequirement
 public class RagfairOfferUser
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
-    
+    public string? Id { get; set; }
+
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
-    
+
     [JsonPropertyName("rating")]
     public decimal? Rating { get; set; }
-    
+
     [JsonPropertyName("memberType")]
-    public MemberCategory MemberType { get; set; }
-    
+    public MemberCategory? MemberType { get; set; }
+
     [JsonPropertyName("selectedMemberCategory")]
     public MemberCategory? SelectedMemberCategory { get; set; }
-    
+
     [JsonPropertyName("avatar")]
     public string? Avatar { get; set; }
-    
+
     [JsonPropertyName("isRatingGrowing")]
     public bool? IsRatingGrowing { get; set; }
-    
+
     [JsonPropertyName("aid")]
     public int? Aid { get; set; }
 }
@@ -114,8 +114,8 @@ public class RagfairOfferUser
 public class SellResult
 {
     [JsonPropertyName("sellTime")]
-    public long SellTime { get; set; }
-    
+    public long? SellTime { get; set; }
+
     [JsonPropertyName("amount")]
-    public decimal Amount { get; set; }
+    public decimal? Amount { get; set; }
 }
