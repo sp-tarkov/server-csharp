@@ -5,10 +5,10 @@ using System.Text.Json.Serialization;
 public class Prestige
 {
     [JsonPropertyName("elements")]
-    public PretigeElement? Elements { get; set; }
+    public List<PrestigeElement>? Elements { get; set; }
 }
 
-public class PretigeElement
+public class PrestigeElement
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -65,11 +65,11 @@ public class StashPrestigeFilters
 public class PrestigeSkillConfig
 {
     [JsonPropertyName("transferMultiplier")]
-    public int? TransferMultiplier { get; set; }
+    public double? TransferMultiplier { get; set; }
 }
 
 public class PrestigeMasteringConfig
 {
     [JsonPropertyName("transferMultiplier")]
-    public int? TransferMultiplier { get; set; }
+    public double? TransferMultiplier { get; set; }
 }

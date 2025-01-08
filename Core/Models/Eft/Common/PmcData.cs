@@ -5,6 +5,8 @@ namespace Core.Models.Eft.Common;
 
 public class PmcData : BotBase
 {
+    [JsonPropertyName("Prestige")]
+    public Tables.Prestige Prestige { get; set; }
 }
 
 public class PostRaidPmcData : BotBase
