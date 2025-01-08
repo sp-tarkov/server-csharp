@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Health;
 using Core.Models.Enums;
@@ -166,6 +167,7 @@ public class SkillRequirement : QteRequirement
     public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Skill;
 
     [JsonPropertyName("skillName")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public SkillTypes? SkillName { get; set; }
 
     [JsonPropertyName("skillLevel")]

@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core.Annotations;
+using Core.Utils.Json.Converters;
 
 namespace Core.Utils;
 
@@ -12,6 +13,11 @@ public class ImporterUtil
 
     private readonly HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
+    private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
+    {
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, Converters = { new ListOrTConverterFactory(), new DictionaryOrListConverter() }
+    };
+    
     public ImporterUtil(FileUtil fileUtil)
     {
         _fileUtil = fileUtil;
@@ -58,8 +64,7 @@ public class ImporterUtil
                     );
                     try
                     {
-                        var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType,
-                            new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
+                        var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType, jsonSerializerOptions);
                         if (onObjectDeserialized != null)
                             onObjectDeserialized(file, fileDeserialized);
 
@@ -77,13 +82,17 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
+            var dictionaryLock = new object();
             tasks.Add(
                 Task.Factory.StartNew(() =>
                 {
                     var setMethod = GetSetMethod(directory.Split("/").Last().Replace("_", ""), loadedType, out var matchedProperty, out var isDictionary);
                     var loadTask = LoadRecursiveAsync($"{directory}/", matchedProperty);
                     loadTask.Wait();
-                    setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
+                    lock (dictionaryLock)
+                    {
+                        setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
+                    }
                 })
             );
         }

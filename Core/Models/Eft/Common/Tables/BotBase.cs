@@ -2,6 +2,7 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
+using Core.Utils.Json;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -12,6 +13,7 @@ public class BotBase
     public string? Id { get; set; }
 
     [JsonPropertyName("aid")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? Aid { get; set; }
 
     /** SPT property - use to store player id - TODO - move to AID ( account id as guid of choice) */
@@ -293,6 +295,9 @@ public class BotBaseInventory
 
     [JsonPropertyName("favoriteItems")]
     public List<string>? FavoriteItems { get; set; }
+
+    [JsonPropertyName("hideoutCustomizationStashId")]
+    public string? HideoutCustomizationStashId { get; set; }
 }
 
 public class BaseJsonSkills
@@ -304,8 +309,7 @@ public class BaseJsonSkills
 
 public class Skills
 {
-    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<SkillTypes, Common>? Common { get; set; }
+    public DictionaryOrList<string, Common>? Common { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, Mastering>? Mastering { get; set; }
@@ -681,7 +685,7 @@ public class LastCompleted
 
 public class Notes
 {
-    [JsonPropertyName("notes")]
+    [JsonPropertyName("Notes")]
     public List<Note>? DataNotes { get; set; }
 }
 
