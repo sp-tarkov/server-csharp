@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -42,7 +43,7 @@ public class Quest
     public string? Image { get; set; }
 
     [JsonPropertyName("type")]
-    public QuestTypeEnum? Type { get; set; }
+    public string? Type { get; set; }
 
     [JsonPropertyName("isKey")]
     public bool? IsKey { get; set; }
@@ -115,23 +116,59 @@ public class Quest
     /// </summary>
     [JsonPropertyName("sptStatus")]
     public QuestStatus? SptStatus { get; set; }
+    
+    [JsonPropertyName("questStatus")]
+    public QuestStatus? QuestStatus { get; set; }
+    
+    [JsonPropertyName("changeCost")]
+    public List<object> ChangeCost { get; set; }
+    
+    [JsonPropertyName("changeStandingCost")]
+    public double ChangeStandingCost { get; set; }
+}
+
+public class QuestStatus
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+    
+    [JsonPropertyName("uid")]
+    public string? Uid { get; set; }
+    
+    [JsonPropertyName("qid")]
+    public string? Qid { get; set; }
+    
+    [JsonPropertyName("startTime")]
+    public double? StartTime { get; set; }
+    
+    [JsonPropertyName("status")]
+    public double? Status { get; set; }
+    
+    [JsonPropertyName("statusTimers")]
+    public Dictionary<string, double>? StatusTimers { get; set; }
+    
+    [JsonPropertyName("completedConditions")]
+    public List<string>? CompletedConditions { get; set; }
+    
+    [JsonPropertyName("availableAfter")]
+    public double? AvailableAfter { get; set; }
 }
 
 public class QuestConditionTypes
 {
-    [JsonPropertyName("started")]
+    [JsonPropertyName("Started")]
     public List<QuestCondition>? Started { get; set; }
 
-    [JsonPropertyName("availableForFinish")]
+    [JsonPropertyName("AvailableForFinish")]
     public List<QuestCondition>? AvailableForFinish { get; set; }
 
-    [JsonPropertyName("availableForStart")]
+    [JsonPropertyName("AvailableForStart")]
     public List<QuestCondition>? AvailableForStart { get; set; }
 
-    [JsonPropertyName("success")]
+    [JsonPropertyName("Success")]
     public List<QuestCondition>? Success { get; set; }
 
-    [JsonPropertyName("fail")]
+    [JsonPropertyName("Fail")]
     public List<QuestCondition>? Fail { get; set; }
 }
 
@@ -168,7 +205,7 @@ public class QuestCondition
     public object? Type { get; set; } // TODO: boolean | string
 
     [JsonPropertyName("status")]
-    public List<QuestStatus>? Status { get; set; }
+    public List<object>? Status { get; set; }
 
     [JsonPropertyName("availableAfter")]
     public int? AvailableAfter { get; set; }
@@ -226,6 +263,46 @@ public class QuestCondition
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
+    
+    [JsonPropertyName("baseAccuracy")]
+    public ValueCompare? BaseAccuracy { get; set; }
+    
+    [JsonPropertyName("containsItems")]
+    public List<string>? ContainsItems { get; set; }
+    
+    [JsonPropertyName("durability")]
+    public ValueCompare? Durability { get; set; }
+    
+    [JsonPropertyName("effectiveDistance")]
+    public ValueCompare? EffectiveDistance { get; set; }
+    
+    [JsonPropertyName("emptyTacticalSlot")]
+    public ValueCompare? EmptyTacticalSlot { get; set; }
+    
+    [JsonPropertyName("ergonomics")]
+    public ValueCompare? Ergonomics { get; set; }
+    
+    [JsonPropertyName("height")]
+    public ValueCompare? Height { get; set; }
+    
+    [JsonPropertyName("hasItemFromCategory")]
+    public List<string>? HasItemFromCategory { get; set; }
+    
+    [JsonPropertyName("magazineCapacity")]
+    public ValueCompare? MagazineCapacity { get; set; }
+    
+    [JsonPropertyName("muzzleVelocity")]
+    public ValueCompare? MuzzleVelocity { get; set; }
+    
+    [JsonPropertyName("recoil")]
+    public ValueCompare? Recoil { get; set; }
+    
+    [JsonPropertyName("weight")]
+    public ValueCompare? Weight { get; set; }
+    
+    [JsonPropertyName("width")]
+    public ValueCompare? Width { get; set; }
+    
 }
 
 public class QuestConditionCounter
@@ -316,6 +393,16 @@ public class QuestConditionCounterCondition
     
     [JsonPropertyName("bodyPartsWithEffects")]
     public List<EnemyHealthEffect>? BodyPartsWithEffects { get; set; }
+    
+    [JsonPropertyName("IncludeNotEquippedItems")]
+    public bool? IncludeNotEquippedItems { get; set; }
+    
+    [JsonPropertyName("equipmentExclusive")]
+    public List<List<string>>? EquipmentExclusive { get; set; }
+    
+    [JsonPropertyName("zoneIds")]
+    public List<string>? Zones { get; set; }
+    
 }
 
 public class EnemyHealthEffect
@@ -333,7 +420,7 @@ public class ValueCompare
     public string? CompareMethod { get; set; }
 
     [JsonPropertyName("value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 }
 
 public class CounterConditionDistance
@@ -424,7 +511,7 @@ public class QuestReward
 
     /** Hideout area id */
     [JsonPropertyName("traderId")]
-    public string? TraderId { get; set; }
+    public object? TraderId { get; set; } // TODO: string | int
 
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }

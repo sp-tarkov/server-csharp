@@ -78,6 +78,9 @@ public class RepeatableTemplates
 
     [JsonPropertyName("Exploration")]
     public Quest? Exploration { get; set; }
+    
+    [JsonPropertyName("Pickup")]
+    public Quest? Pickup { get; set; }
 }
 
 public class PmcDataRepeatableQuest

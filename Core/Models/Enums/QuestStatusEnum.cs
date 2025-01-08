@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public enum QuestStatus
+public enum QuestStatusEnum
 {
     Locked = 0,
     AvailableForStart = 1,
