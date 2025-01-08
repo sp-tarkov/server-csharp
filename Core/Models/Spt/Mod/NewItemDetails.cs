@@ -7,61 +7,61 @@ namespace Core.Models.Spt.Mod;
 public class NewItemDetails : NewItemDetailsBase
 {
     [JsonPropertyName("newItem")]
-    public TemplateItem NewItem { get; set; }
+    public TemplateItem? NewItem { get; set; }
 }
 
 public class NewItemFromCloneDetails : NewItemDetailsBase
 {
     [JsonPropertyName("itemTplToClone")]
-    public string ItemTplToClone { get; set; }
+    public string? ItemTplToClone { get; set; }
 
     [JsonPropertyName("overrideProperties")]
-    public Props OverrideProperties { get; set; }
+    public Props? OverrideProperties { get; set; }
 
     [JsonPropertyName("parentId")]
-    public string ParentId { get; set; }
+    public string? ParentId { get; set; }
 
     [JsonPropertyName("newId")]
-    public string NewId { get; set; } = "";
+    public string? NewId { get; set; } = "";
 }
 
 public class NewItemDetailsBase
 {
     [JsonPropertyName("fleaPriceRoubles")]
-    public float FleaPriceRoubles { get; set; }
+    public float? FleaPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookPriceRoubles")]
-    public float HandbookPriceRoubles { get; set; }
+    public float? HandbookPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookParentId")]
-    public string HandbookParentId { get; set; }
+    public string? HandbookParentId { get; set; }
 
     [JsonPropertyName("locales")]
-    public Dictionary<string, LocaleDetails> Locales { get; set; }
+    public Dictionary<string, LocaleDetails>? Locales { get; set; }
 }
 
 public class LocaleDetails
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("shortName")]
-    public string ShortName { get; set; }
+    public string? ShortName { get; set; }
 
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
 }
 
 public class CreateItemResult
 {
     [JsonPropertyName("success")]
-    public bool Success { get; set; }
+    public bool? Success { get; set; }
 
     [JsonPropertyName("itemId")]
-    public string ItemId { get; set; }
+    public string? ItemId { get; set; }
 
     [JsonPropertyName("errors")]
-    public List<string> Errors { get; set; }
+    public List<string>? Errors { get; set; }
 
     public CreateItemResult()
     {

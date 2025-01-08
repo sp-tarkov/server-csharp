@@ -7,13 +7,13 @@ namespace Core.Models.Spt.Hideout;
 public class CircleCraftDetails
 {
     [JsonPropertyName("time")]
-    public int Time { get; set; } // this might not be the right "number" type
+    public long Time { get; set; }
 
     [JsonPropertyName("rewardType")]
-    public CircleRewardType RewardType { get; set; }
+    public CircleRewardType? RewardType { get; set; }
 
     [JsonPropertyName("rewardAmountRoubles")]
-    public int RewardAmountRoubles { get; set; }
+    public int? RewardAmountRoubles { get; set; }
 
     [JsonPropertyName("rewardDetails")]
     public CraftTimeThreshhold? RewardDetails { get; set; }

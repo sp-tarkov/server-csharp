@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Customization;
 public class CustomizationSetRequest
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "CustomizationSet";
+    public string? Action { get; set; } = "CustomizationSet";
 
     [JsonPropertyName("customizations")]
     public List<CustomizationSetOption>? Customizations { get; set; }

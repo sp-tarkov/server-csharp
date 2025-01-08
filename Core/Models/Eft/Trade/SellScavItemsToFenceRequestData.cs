@@ -6,14 +6,14 @@ namespace Core.Models.Eft.Trade;
 public class SellScavItemsToFenceRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "SellAllFromSavage";
+    public string? Action { get; set; } = "SellAllFromSavage";
 
     [JsonPropertyName("totalValue")]
-    public double TotalValue { get; set; }
+    public double? TotalValue { get; set; }
 
     [JsonPropertyName("fromOwner")]
-    public OwnerInfo FromOwner { get; set; }
+    public OwnerInfo? FromOwner { get; set; }
 
     [JsonPropertyName("toOwner")]
-    public OwnerInfo ToOwner { get; set; }
+    public OwnerInfo? ToOwner { get; set; }
 }

@@ -5,13 +5,13 @@ namespace Core.Models.Spt.Logging;
 public class ClientLogRequest
 {
     [JsonPropertyName("Source")]
-    public string Source { get; set; }
+    public string? Source { get; set; }
 
     [JsonPropertyName("Level")]
-    public LogLevel Level { get; set; }
+    public LogLevel? Level { get; set; }
 
     [JsonPropertyName("Message")]
-    public string Message { get; set; }
+    public string? Message { get; set; }
 
     [JsonPropertyName("Color")]
     public string? Color { get; set; }

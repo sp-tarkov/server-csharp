@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Ws;
 public class WsGroupMatchLeaderChanged : WsNotificationEvent
 {
     [JsonPropertyName("owner")]
-    public int Owner { get; set; }
+    public int? Owner { get; set; }
 }

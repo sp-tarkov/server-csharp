@@ -326,7 +326,7 @@ public class LocationBase
 public class Transit
 {
     [JsonPropertyName("activateAfterSec")]
-    public int ActivateAfterSeconds { get; set; } // TODO: Int in client
+    public int? ActivateAfterSeconds { get; set; } // TODO: Int in client
 
     [JsonPropertyName("active")]
     public bool? IsActive { get; set; }
@@ -608,7 +608,7 @@ public class ChancedEnemy
 public class MinMaxBot : MinMax
 {
     [JsonPropertyName("WildSpawnType")]
-    public object WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
+    public object? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
 }
 
 public class MinPlayerWaitTime

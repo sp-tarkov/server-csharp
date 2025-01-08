@@ -224,10 +224,10 @@ public class Props
     public bool? DogTagQualities { get; set; }
 
     [JsonPropertyName("Grids")]
-    public List<Grid> Grids { get; set; }
+    public List<Grid>? Grids { get; set; }
 
     [JsonPropertyName("Slots")]
-    public List<Slot> Slots { get; set; }
+    public List<Slot>? Slots { get; set; }
 
     [JsonPropertyName("CanPutIntoDuringTheRaid")]
     public bool? CanPutIntoDuringTheRaid { get; set; }
@@ -620,7 +620,7 @@ public class Props
     public int? RecoilCategoryMultiplierHandRotation { get; set; }
 
     [JsonPropertyName("weapFireType")]
-    public List<string> WeapFireType { get; set; }
+    public List<string>? WeapFireType { get; set; }
 
     [JsonPropertyName("recolDispersion")]
     public int? RecolDispersion { get; set; }
@@ -698,7 +698,7 @@ public class Props
     public XYZ? RotationCenterNoStock { get; set; }
 
     [JsonPropertyName("shotsGroupSettings")]
-    public List<ShotsGroupSettings> ShotsGroupSettings { get; set; }
+    public List<ShotsGroupSettings>? ShotsGroupSettings { get; set; }
 
     [JsonPropertyName("foldedSlot")]
     public string? FoldedSlot { get; set; }
@@ -1178,7 +1178,7 @@ public class Props
     public int? FragmentsCount { get; set; }
 
     [JsonPropertyName("fragmentType")]
-    public string FragmentType { get; set; }
+    public string? FragmentType { get; set; }
 
     [JsonPropertyName("showHitEffectOnExplode")]
     public bool? ShowHitEffectOnExplode { get; set; }
@@ -1190,7 +1190,7 @@ public class Props
     public int? AmmoLifeTimeSec { get; set; }
 
     [JsonPropertyName("ammoTooltipClass")]
-    public string AmmoTooltipClass { get; set; }
+    public string? AmmoTooltipClass { get; set; }
 
     [JsonPropertyName("contusion")]
     public XYZ? Contusion { get; set; }
@@ -1319,46 +1319,46 @@ public class Props
 public class WeaponRecoilSettings
 {
     [JsonPropertyName("Enable")]
-    public bool Enable { get; set; }
+    public bool? Enable { get; set; }
 
     [JsonPropertyName("values")]
-    public List<WeaponRecoilSettingValues> Values { get; set; }
+    public List<WeaponRecoilSettingValues>? Values { get; set; }
 }
 
 public class WeaponRecoilSettingValues
 {
     [JsonPropertyName("Enable")]
-    public bool Enable { get; set; }
+    public bool? Enable { get; set; }
 
     [JsonPropertyName("Process")]
-    public WeaponRecoilProcess Process { get; set; }
+    public WeaponRecoilProcess? Process { get; set; }
 
     [JsonPropertyName("Target")]
-    public string Target { get; set; }
+    public string? Target { get; set; }
 }
 
 public class WeaponRecoilProcess
 {
     [JsonPropertyName("ComponentType")]
-    public string ComponentType { get; set; }
+    public string? ComponentType { get; set; }
 
     [JsonPropertyName("CurveAimingValueMultiply")]
-    public double CurveAimingValueMultiply { get; set; }
+    public double? CurveAimingValueMultiply { get; set; }
 
     [JsonPropertyName("CurveTimeMultiply")]
-    public double CurveTimeMultiply { get; set; }
+    public double? CurveTimeMultiply { get; set; }
 
     [JsonPropertyName("CurveValueMultiply")]
-    public double CurveValueMultiply { get; set; }
+    public double? CurveValueMultiply { get; set; }
 
     [JsonPropertyName("TransformationCurve")]
-    public WeaponRecoilTransformationCurve TransformationCurve { get; set; }
+    public WeaponRecoilTransformationCurve? TransformationCurve { get; set; }
 }
 
 public class WeaponRecoilTransformationCurve
 {
     [JsonPropertyName("Keys")]
-    public List<WeaponRecoilTransformationCurveKey> Keys { get; set; }
+    public List<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
 }
 
 public class WeaponRecoilTransformationCurveKey

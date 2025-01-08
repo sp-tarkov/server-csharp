@@ -5,10 +5,10 @@ namespace Core.Models.Spt.Bots;
 public class FilterPlateModsForSlotByLevelResult
 {
     [JsonPropertyName("result")]
-    public Result Result { get; set; }
+    public Result? Result { get; set; }
 
     [JsonPropertyName("plateModTpls")]
-    public List<string> PlateModTemplates { get; set; }
+    public List<string>? PlateModTemplates { get; set; }
 }
 
 public enum Result
