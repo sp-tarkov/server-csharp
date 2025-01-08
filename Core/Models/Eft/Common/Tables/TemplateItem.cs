@@ -15,7 +15,7 @@ public class TemplateItem
     public string? Parent { get; set; }
 
     [JsonPropertyName("_type")]
-    public ItemType? Type { get; set; }
+    public string? Type { get; set; }
 
     [JsonPropertyName("_props")]
     public Props? Properties { get; set; }
@@ -30,10 +30,10 @@ public class Props
     public List<string>? AllowSpawnOnLocations { get; set; }
 
     [JsonPropertyName("BeltMagazineRefreshCount")]
-    public int? BeltMagazineRefreshCount { get; set; }
+    public double? BeltMagazineRefreshCount { get; set; }
 
     [JsonPropertyName("ChangePriceCoef")]
-    public int? ChangePriceCoef { get; set; }
+    public double? ChangePriceCoef { get; set; }
 
     [JsonPropertyName("FixedPrice")]
     public bool? FixedPrice { get; set; }
@@ -51,28 +51,28 @@ public class Props
     public string? Description { get; set; }
 
     [JsonPropertyName("Weight")]
-    public int? Weight { get; set; }
+    public double? Weight { get; set; }
 
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor { get; set; }
 
     [JsonPropertyName("Width")]
-    public int? Width { get; set; }
+    public double? Width { get; set; }
 
     [JsonPropertyName("Height")]
-    public int? Height { get; set; }
+    public double? Height { get; set; }
 
     [JsonPropertyName("StackMaxSize")]
-    public int? StackMaxSize { get; set; }
+    public double? StackMaxSize { get; set; }
 
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }
 
     [JsonPropertyName("SpawnChance")]
-    public int? SpawnChance { get; set; }
+    public double? SpawnChance { get; set; }
 
     [JsonPropertyName("CreditsPrice")]
-    public int? CreditsPrice { get; set; }
+    public double? CreditsPrice { get; set; }
 
     [JsonPropertyName("ItemSound")]
     public string? ItemSound { get; set; }
@@ -87,7 +87,7 @@ public class Props
     public string? AirDropTemplateId { get; set; }
 
     [JsonPropertyName("StackObjectsCount")]
-    public int? StackObjectsCount { get; set; }
+    public double? StackObjectsCount { get; set; }
 
     [JsonPropertyName("NotShownInSlot")]
     public bool? NotShownInSlot { get; set; }
@@ -96,7 +96,7 @@ public class Props
     public bool? ExaminedByDefault { get; set; }
 
     [JsonPropertyName("ExamineTime")]
-    public int? ExamineTime { get; set; }
+    public double? ExamineTime { get; set; }
 
     [JsonPropertyName("IsUndiscardable")]
     public bool? IsUndiscardable { get; set; }
@@ -132,13 +132,13 @@ public class Props
     public bool? QuestItem { get; set; }
 
     [JsonPropertyName("QuestStashMaxCount")]
-    public int? QuestStashMaxCount { get; set; }
+    public double? QuestStashMaxCount { get; set; }
 
     [JsonPropertyName("LootExperience")]
-    public int? LootExperience { get; set; }
+    public double? LootExperience { get; set; }
 
     [JsonPropertyName("ExamineExperience")]
-    public int? ExamineExperience { get; set; }
+    public double? ExamineExperience { get; set; }
 
     [JsonPropertyName("HideEntrails")]
     public bool? HideEntrails { get; set; }
@@ -147,25 +147,25 @@ public class Props
     public bool? InsuranceDisabled { get; set; }
 
     [JsonPropertyName("RepairCost")]
-    public int? RepairCost { get; set; }
+    public double? RepairCost { get; set; }
 
     [JsonPropertyName("RepairSpeed")]
-    public int? RepairSpeed { get; set; }
+    public double? RepairSpeed { get; set; }
 
     [JsonPropertyName("ExtraSizeLeft")]
-    public int? ExtraSizeLeft { get; set; }
+    public double? ExtraSizeLeft { get; set; }
 
     [JsonPropertyName("ExtraSizeRight")]
-    public int? ExtraSizeRight { get; set; }
+    public double? ExtraSizeRight { get; set; }
 
     [JsonPropertyName("ExtraSizeUp")]
-    public int? ExtraSizeUp { get; set; }
+    public double? ExtraSizeUp { get; set; }
 
     [JsonPropertyName("FlareTypes")]
     public List<string>? FlareTypes { get; set; }
 
     [JsonPropertyName("ExtraSizeDown")]
-    public int? ExtraSizeDown { get; set; }
+    public double? ExtraSizeDown { get; set; }
 
     [JsonPropertyName("ExtraSizeForceAdd")]
     public bool? ExtraSizeForceAdd { get; set; }
@@ -195,7 +195,7 @@ public class Props
     public List<string>? UnlootableFromSide { get; set; }
 
     [JsonPropertyName("AnimationVariantsNumber")]
-    public int? AnimationVariantsNumber { get; set; }
+    public double? AnimationVariantsNumber { get; set; }
 
     [JsonPropertyName("DiscardingBlock")]
     public bool? DiscardingBlock { get; set; }
@@ -204,7 +204,7 @@ public class Props
     public string? DropSoundType { get; set; }
 
     [JsonPropertyName("RagFairCommissionModifier")]
-    public int? RagFairCommissionModifier { get; set; }
+    public double? RagFairCommissionModifier { get; set; }
 
     [JsonPropertyName("RarityPvE")]
     public string? RarityPvE { get; set; }
@@ -213,13 +213,13 @@ public class Props
     public bool? IsAlwaysAvailableForInsurance { get; set; }
 
     [JsonPropertyName("DiscardLimit")]
-    public int? DiscardLimit { get; set; }
+    public double? DiscardLimit { get; set; }
 
     [JsonPropertyName("MaxResource")]
-    public int? MaxResource { get; set; }
+    public double? MaxResource { get; set; }
 
     [JsonPropertyName("Resource")]
-    public int? Resource { get; set; }
+    public double? Resource { get; set; }
 
     [JsonPropertyName("DogTagQualities")]
     public bool? DogTagQualities { get; set; }
@@ -240,31 +240,31 @@ public class Props
     public List<string>? KeyIds { get; set; }
 
     [JsonPropertyName("TagColor")]
-    public int? TagColor { get; set; }
+    public double? TagColor { get; set; }
 
     [JsonPropertyName("TagName")]
     public string? TagName { get; set; }
 
     [JsonPropertyName("Durability")]
-    public int? Durability { get; set; }
+    public double? Durability { get; set; }
 
     [JsonPropertyName("Accuracy")]
-    public int? Accuracy { get; set; }
+    public double? Accuracy { get; set; }
 
     [JsonPropertyName("Recoil")]
-    public int? Recoil { get; set; }
+    public double? Recoil { get; set; }
 
     [JsonPropertyName("Loudness")]
-    public int? Loudness { get; set; }
+    public double? Loudness { get; set; }
 
     [JsonPropertyName("EffectiveDistance")]
-    public int? EffectiveDistance { get; set; }
+    public double? EffectiveDistance { get; set; }
 
     [JsonPropertyName("Ergonomics")]
-    public int? Ergonomics { get; set; }
+    public double? Ergonomics { get; set; }
 
     [JsonPropertyName("Velocity")]
-    public int? Velocity { get; set; }
+    public double? Velocity { get; set; }
 
     [JsonPropertyName("WeaponRecoilSettings")]
     public WeaponRecoilSettings? WeaponRecoilSettings { get; set; }
@@ -279,7 +279,7 @@ public class Props
     public bool? ToolModdable { get; set; }
 
     [JsonPropertyName("UniqueAnimationModID")]
-    public int? UniqueAnimationModID { get; set; }
+    public double? UniqueAnimationModID { get; set; }
 
     [JsonPropertyName("BlocksFolding")]
     public bool? BlocksFolding { get; set; }
@@ -294,25 +294,25 @@ public class Props
     public bool? HasShoulderContact { get; set; }
 
     [JsonPropertyName("SightingRange")]
-    public int? SightingRange { get; set; }
+    public double? SightingRange { get; set; }
 
     [JsonPropertyName("ZoomSensitivity")]
-    public int? ZoomSensitivity { get; set; }
+    public double? ZoomSensitivity { get; set; }
 
     [JsonPropertyName("DoubleActionAccuracyPenaltyMult")]
-    public int? DoubleActionAccuracyPenaltyMult { get; set; }
+    public double? DoubleActionAccuracyPenaltyMult { get; set; }
 
     [JsonPropertyName("ModesCount")]
     public object? ModesCount { get; set; } // TODO: object here
 
     [JsonPropertyName("DurabilityBurnModificator")]
-    public int? DurabilityBurnModificator { get; set; }
+    public double? DurabilityBurnModificator { get; set; }
 
     [JsonPropertyName("HeatFactor")]
-    public int? HeatFactor { get; set; }
+    public double? HeatFactor { get; set; }
 
     [JsonPropertyName("CoolFactor")]
-    public int? CoolFactor { get; set; }
+    public double? CoolFactor { get; set; }
 
     [JsonPropertyName("muzzleModType")]
     public string? MuzzleModType { get; set; }
@@ -330,49 +330,49 @@ public class Props
     public string? SightModType { get; set; }
 
     [JsonPropertyName("aimingSensitivity")]
-    public int? AimingSensitivity { get; set; }
+    public double? AimingSensitivity { get; set; }
 
     [JsonPropertyName("SightModesCount")]
-    public int? SightModesCount { get; set; }
+    public double? SightModesCount { get; set; }
 
     [JsonPropertyName("OpticCalibrationDistances")]
-    public List<int>? OpticCalibrationDistances { get; set; }
+    public List<double>? OpticCalibrationDistances { get; set; }
 
     [JsonPropertyName("ScopesCount")]
-    public int? ScopesCount { get; set; }
+    public double? ScopesCount { get; set; }
 
     [JsonPropertyName("AimSensitivity")]
     public object? AimSensitivity { get; set; } // TODO: object here
 
     [JsonPropertyName("Zooms")]
-    public List<List<int>>? Zooms { get; set; }
+    public List<List<double>>? Zooms { get; set; }
 
     [JsonPropertyName("CalibrationDistances")]
-    public List<List<int>>? CalibrationDistances { get; set; }
+    public List<List<double>>? CalibrationDistances { get; set; }
 
     [JsonPropertyName("Intensity")]
-    public int? Intensity { get; set; }
+    public double? Intensity { get; set; }
 
     [JsonPropertyName("Mask")]
     public string? Mask { get; set; }
 
     [JsonPropertyName("MaskSize")]
-    public int? MaskSize { get; set; }
+    public double? MaskSize { get; set; }
 
     [JsonPropertyName("IsMagazineForStationaryWeapon")]
     public bool? IsMagazineForStationaryWeapon { get; set; }
 
     [JsonPropertyName("NoiseIntensity")]
-    public int? NoiseIntensity { get; set; }
+    public double? NoiseIntensity { get; set; }
 
     [JsonPropertyName("NoiseScale")]
-    public int? NoiseScale { get; set; }
+    public double? NoiseScale { get; set; }
 
     [JsonPropertyName("Color")]
     public Color? Color { get; set; }
 
     [JsonPropertyName("DiffuseIntensity")]
-    public int? DiffuseIntensity { get; set; }
+    public double? DiffuseIntensity { get; set; }
 
     [JsonPropertyName("MagazineWithBelt")]
     public bool? MagazineWithBelt { get; set; }
@@ -384,28 +384,28 @@ public class Props
     public string? RampPalette { get; set; }
 
     [JsonPropertyName("DepthFade")]
-    public int? DepthFade { get; set; }
+    public double? DepthFade { get; set; }
 
     [JsonPropertyName("RoughnessCoef")]
-    public int? RoughnessCoef { get; set; }
+    public double? RoughnessCoef { get; set; }
 
     [JsonPropertyName("SpecularCoef")]
-    public int? SpecularCoef { get; set; }
+    public double? SpecularCoef { get; set; }
 
     [JsonPropertyName("MainTexColorCoef")]
-    public int? MainTexColorCoef { get; set; }
+    public double? MainTexColorCoef { get; set; }
 
     [JsonPropertyName("MinimumTemperatureValue")]
-    public int? MinimumTemperatureValue { get; set; }
+    public double? MinimumTemperatureValue { get; set; }
 
     [JsonPropertyName("RampShift")]
-    public int? RampShift { get; set; }
+    public double? RampShift { get; set; }
 
     [JsonPropertyName("HeatMin")]
-    public int? HeatMin { get; set; }
+    public double? HeatMin { get; set; }
 
     [JsonPropertyName("ColdMax")]
-    public int? ColdMax { get; set; }
+    public double? ColdMax { get; set; }
 
     [JsonPropertyName("IsNoisy")]
     public bool? IsNoisy { get; set; }
@@ -423,13 +423,13 @@ public class Props
     public bool? IsPixelated { get; set; }
 
     [JsonPropertyName("PixelationBlockCount")]
-    public int? PixelationBlockCount { get; set; }
+    public double? PixelationBlockCount { get; set; }
 
     [JsonPropertyName("ShiftsAimCamera")]
-    public int? ShiftsAimCamera { get; set; }
+    public double? ShiftsAimCamera { get; set; }
 
     [JsonPropertyName("magAnimationIndex")]
-    public int? MagAnimationIndex { get; set; }
+    public double? MagAnimationIndex { get; set; }
 
     [JsonPropertyName("Cartridges")]
     public List<Slot>? Cartridges { get; set; }
@@ -444,13 +444,13 @@ public class Props
     public bool? CanAdmin { get; set; }
 
     [JsonPropertyName("loadUnloadModifier")]
-    public int? LoadUnloadModifier { get; set; }
+    public double? LoadUnloadModifier { get; set; }
 
     [JsonPropertyName("checkTimeModifier")]
-    public int? CheckTimeModifier { get; set; }
+    public double? CheckTimeModifier { get; set; }
 
     [JsonPropertyName("checkOverride")]
-    public int? CheckOverride { get; set; }
+    public double? CheckOverride { get; set; }
 
     [JsonPropertyName("reloadMagType")]
     public string? ReloadMagType { get; set; }
@@ -459,7 +459,7 @@ public class Props
     public string? VisibleAmmoRangesString { get; set; }
 
     [JsonPropertyName("malfunctionChance")]
-    public int? MalfunctionChance { get; set; }
+    public double? MalfunctionChance { get; set; }
 
     [JsonPropertyName("isShoulderContact")]
     public bool? IsShoulderContact { get; set; }
@@ -471,19 +471,19 @@ public class Props
     public bool? Retractable { get; set; }
 
     [JsonPropertyName("sizeReduceRight")]
-    public int? SizeReduceRight { get; set; }
+    public double? SizeReduceRight { get; set; }
 
     [JsonPropertyName("centerOfImpact")]
-    public int? CenterOfImpact { get; set; }
+    public double? CenterOfImpact { get; set; }
 
     [JsonPropertyName("isSilencer")]
     public bool? IsSilencer { get; set; }
 
     [JsonPropertyName("deviationCurve")]
-    public int? DeviationCurve { get; set; }
+    public double? DeviationCurve { get; set; }
 
     [JsonPropertyName("deviationMax")]
-    public int? DeviationMax { get; set; }
+    public double? DeviationMax { get; set; }
 
     [JsonPropertyName("searchSound")]
     public string? SearchSound { get; set; }
@@ -492,13 +492,13 @@ public class Props
     public bool? BlocksArmorVest { get; set; }
 
     [JsonPropertyName("speedPenaltyPercent")]
-    public int? SpeedPenaltyPercent { get; set; }
+    public double? SpeedPenaltyPercent { get; set; }
 
     [JsonPropertyName("gridLayoutName")]
     public string? GridLayoutName { get; set; }
 
     [JsonPropertyName("containerSpawnChanceModifier")]
-    public int? ContainerSpawnChanceModifier { get; set; }
+    public double? ContainerSpawnChanceModifier { get; set; }
 
     [JsonPropertyName("spawnExcludedFilter")]
     public List<string>? SpawnExcludedFilter { get; set; }
@@ -510,10 +510,10 @@ public class Props
     public List<object>? ContainType { get; set; } // TODO: object here
 
     [JsonPropertyName("sizeWidth")]
-    public int? SizeWidth { get; set; }
+    public double? SizeWidth { get; set; }
 
     [JsonPropertyName("sizeHeight")]
-    public int? SizeHeight { get; set; }
+    public double? SizeHeight { get; set; }
 
     [JsonPropertyName("isSecured")]
     public bool? IsSecured { get; set; }
@@ -528,10 +528,10 @@ public class Props
     public string? SpawnRarity { get; set; }
 
     [JsonPropertyName("minCountSpawn")]
-    public int? MinCountSpawn { get; set; }
+    public double? MinCountSpawn { get; set; }
 
     [JsonPropertyName("maxCountSpawn")]
-    public int? MaxCountSpawn { get; set; }
+    public double? MaxCountSpawn { get; set; }
 
     [JsonPropertyName("openedByKeyID")]
     public List<string>? OpenedByKeyID { get; set; }
@@ -540,7 +540,7 @@ public class Props
     public string? RigLayoutName { get; set; }
 
     [JsonPropertyName("maxDurability")]
-    public int? MaxDurability { get; set; }
+    public double? MaxDurability { get; set; }
 
     [JsonPropertyName("armorZone")]
     public List<string>? ArmorZone { get; set; }
@@ -558,13 +558,13 @@ public class Props
     public bool? BluntDamageReduceFromSoftArmor { get; set; }
 
     [JsonPropertyName("mousePenalty")]
-    public int? MousePenalty { get; set; }
+    public double? MousePenalty { get; set; }
 
     [JsonPropertyName("weaponErgonomicPenalty")]
-    public int? WeaponErgonomicPenalty { get; set; }
+    public double? WeaponErgonomicPenalty { get; set; }
 
     [JsonPropertyName("bluntThroughput")]
-    public int? BluntThroughput { get; set; }
+    public double? BluntThroughput { get; set; }
 
     [JsonPropertyName("armorMaterial")]
     public string? ArmorMaterial { get; set; }
@@ -582,7 +582,7 @@ public class Props
     public string? AmmoCaliber { get; set; }
 
     [JsonPropertyName("operatingResource")]
-    public int? OperatingResource { get; set; }
+    public double? OperatingResource { get; set; }
 
     [JsonPropertyName("postRecoilHorizontalRangeHandRotation")]
     public XYZ? PostRecoilHorizontalRangeHandRotation { get; set; }
@@ -594,52 +594,52 @@ public class Props
     public XYZ? ProgressRecoilAngleOnStable { get; set; }
 
     [JsonPropertyName("repairComplexity")]
-    public int? RepairComplexity { get; set; }
+    public double? RepairComplexity { get; set; }
 
     [JsonPropertyName("durabSpawnMin")]
-    public int? DurabSpawnMin { get; set; }
+    public double? DurabSpawnMin { get; set; }
 
     [JsonPropertyName("durabSpawnMax")]
-    public int? DurabSpawnMax { get; set; }
+    public double? DurabSpawnMax { get; set; }
 
     [JsonPropertyName("isFastReload")]
     public bool? IsFastReload { get; set; }
 
     [JsonPropertyName("recoilForceUp")]
-    public int? RecoilForceUp { get; set; }
+    public double? RecoilForceUp { get; set; }
 
     [JsonPropertyName("recoilForceBack")]
-    public int? RecoilForceBack { get; set; }
+    public double? RecoilForceBack { get; set; }
 
     [JsonPropertyName("recoilAngle")]
-    public int? RecoilAngle { get; set; }
+    public double? RecoilAngle { get; set; }
 
     [JsonPropertyName("recoilCamera")]
-    public int? RecoilCamera { get; set; }
+    public double? RecoilCamera { get; set; }
 
     [JsonPropertyName("recoilCategoryMultiplierHandRotation")]
-    public int? RecoilCategoryMultiplierHandRotation { get; set; }
+    public double? RecoilCategoryMultiplierHandRotation { get; set; }
 
     [JsonPropertyName("weapFireType")]
     public List<string>? WeapFireType { get; set; }
 
     [JsonPropertyName("recolDispersion")]
-    public int? RecolDispersion { get; set; }
+    public double? RecolDispersion { get; set; }
 
     [JsonPropertyName("singleFireRate")]
-    public int? SingleFireRate { get; set; }
+    public double? SingleFireRate { get; set; }
 
     [JsonPropertyName("canQueueSecondShot")]
     public bool? CanQueueSecondShot { get; set; }
 
     [JsonPropertyName("bFirerate")]
-    public int? BFirerate { get; set; }
+    public double? BFirerate { get; set; }
 
     [JsonPropertyName("bEffDist")]
-    public int? BEffDist { get; set; }
+    public double? BEffDist { get; set; }
 
     [JsonPropertyName("bHearDist")]
-    public int? BHearDist { get; set; }
+    public double? BHearDist { get; set; }
 
     [JsonPropertyName("blockLeftStance")]
     public bool? BlockLeftStance { get; set; }
@@ -648,7 +648,7 @@ public class Props
     public bool? IsChamberLoad { get; set; }
 
     [JsonPropertyName("chamberAmmoCount")]
-    public int? ChamberAmmoCount { get; set; }
+    public double? ChamberAmmoCount { get; set; }
 
     [JsonPropertyName("isBoltCatch")]
     public bool? IsBoltCatch { get; set; }
@@ -663,31 +663,31 @@ public class Props
     public bool? AdjustCollimatorsToTrajectory { get; set; }
 
     [JsonPropertyName("shotgunDispersion")]
-    public int? ShotgunDispersion { get; set; }
+    public double? ShotgunDispersion { get; set; }
 
     [JsonPropertyName("chambers")]
     public List<Slot>? Chambers { get; set; }
 
     [JsonPropertyName("cameraSnap")]
-    public int? CameraSnap { get; set; }
+    public double? CameraSnap { get; set; }
 
     [JsonPropertyName("cameraToWeaponAngleSpeedRange")]
     public XYZ? CameraToWeaponAngleSpeedRange { get; set; }
 
     [JsonPropertyName("cameraToWeaponAngleStep")]
-    public int? CameraToWeaponAngleStep { get; set; }
+    public double? CameraToWeaponAngleStep { get; set; }
 
     [JsonPropertyName("reloadMode")]
     public string? ReloadMode { get; set; }
 
     [JsonPropertyName("aimPlane")]
-    public int? AimPlane { get; set; }
+    public double? AimPlane { get; set; }
 
     [JsonPropertyName("tacticalReloadStiffnes")]
     public XYZ? TacticalReloadStiffnes { get; set; }
 
     [JsonPropertyName("tacticalReloadFixation")]
-    public int? TacticalReloadFixation { get; set; }
+    public double? TacticalReloadFixation { get; set; }
 
     [JsonPropertyName("recoilCenter")]
     public XYZ? RecoilCenter { get; set; }
@@ -714,13 +714,13 @@ public class Props
     public bool? CompactHandling { get; set; }
 
     [JsonPropertyName("minRepairDegradation")]
-    public int? MinRepairDegradation { get; set; }
+    public double? MinRepairDegradation { get; set; }
 
     [JsonPropertyName("maxRepairDegradation")]
-    public int? MaxRepairDegradation { get; set; }
+    public double? MaxRepairDegradation { get; set; }
 
     [JsonPropertyName("ironSightRange")]
-    public int? IronSightRange { get; set; }
+    public double? IronSightRange { get; set; }
 
     [JsonPropertyName("isBeltMachineGun")]
     public bool? IsBeltMachineGun { get; set; }
@@ -747,22 +747,22 @@ public class Props
     public bool? BoltAction { get; set; }
 
     [JsonPropertyName("hipAccuracyRestorationDelay")]
-    public int? HipAccuracyRestorationDelay { get; set; }
+    public double? HipAccuracyRestorationDelay { get; set; }
 
     [JsonPropertyName("hipAccuracyRestorationSpeed")]
-    public int? HipAccuracyRestorationSpeed { get; set; }
+    public double? HipAccuracyRestorationSpeed { get; set; }
 
     [JsonPropertyName("hipInnaccuracyGain")]
-    public int? HipInnaccuracyGain { get; set; }
+    public double? HipInnaccuracyGain { get; set; }
 
     [JsonPropertyName("manualBoltCatch")]
     public bool? ManualBoltCatch { get; set; }
 
     [JsonPropertyName("burstShotsCount")]
-    public int? BurstShotsCount { get; set; }
+    public double? BurstShotsCount { get; set; }
 
     [JsonPropertyName("baseMalfunctionChance")]
-    public int? BaseMalfunctionChance { get; set; }
+    public double? BaseMalfunctionChance { get; set; }
 
     [JsonPropertyName("allowJam")]
     public bool? AllowJam { get; set; }
@@ -777,64 +777,64 @@ public class Props
     public bool? AllowSlide { get; set; }
 
     [JsonPropertyName("durabilityBurnRatio")]
-    public int? DurabilityBurnRatio { get; set; }
+    public double? DurabilityBurnRatio { get; set; }
 
     [JsonPropertyName("heatFactorGun")]
-    public int? HeatFactorGun { get; set; }
+    public double? HeatFactorGun { get; set; }
 
     [JsonPropertyName("coolFactorGun")]
-    public int? CoolFactorGun { get; set; }
+    public double? CoolFactorGun { get; set; }
 
     [JsonPropertyName("coolFactorGunMods")]
-    public int? CoolFactorGunMods { get; set; }
+    public double? CoolFactorGunMods { get; set; }
 
     [JsonPropertyName("heatFactorByShot")]
-    public int? HeatFactorByShot { get; set; }
+    public double? HeatFactorByShot { get; set; }
 
     [JsonPropertyName("allowOverheat")]
     public bool? AllowOverheat { get; set; }
 
     [JsonPropertyName("doubleActionAccuracyPenalty")]
-    public int? DoubleActionAccuracyPenalty { get; set; }
+    public double? DoubleActionAccuracyPenalty { get; set; }
 
     [JsonPropertyName("recoilPosZMult")]
-    public int? RecoilPosZMult { get; set; }
+    public double? RecoilPosZMult { get; set; }
 
     [JsonPropertyName("recoilReturnPathDampingHandRotation")]
-    public int? RecoilReturnPathDampingHandRotation { get; set; }
+    public double? RecoilReturnPathDampingHandRotation { get; set; }
 
     [JsonPropertyName("recoilReturnPathOffsetHandRotation")]
-    public int? RecoilReturnPathOffsetHandRotation { get; set; }
+    public double? RecoilReturnPathOffsetHandRotation { get; set; }
 
     [JsonPropertyName("recoilReturnSpeedHandRotation")]
-    public int? RecoilReturnSpeedHandRotation { get; set; }
+    public double? RecoilReturnSpeedHandRotation { get; set; }
 
     [JsonPropertyName("recoilStableAngleIncreaseStep")]
-    public int? RecoilStableAngleIncreaseStep { get; set; }
+    public double? RecoilStableAngleIncreaseStep { get; set; }
 
     [JsonPropertyName("recoilStableIndexShot")]
-    public int? RecoilStableIndexShot { get; set; }
+    public double? RecoilStableIndexShot { get; set; }
 
     [JsonPropertyName("minRepairKitDegradation")]
-    public int? MinRepairKitDegradation { get; set; }
+    public double? MinRepairKitDegradation { get; set; }
 
     [JsonPropertyName("maxRepairKitDegradation")]
-    public int? MaxRepairKitDegradation { get; set; }
+    public double? MaxRepairKitDegradation { get; set; }
 
     [JsonPropertyName("mountCameraSnapMultiplier")]
-    public int? MountCameraSnapMultiplier { get; set; }
+    public double? MountCameraSnapMultiplier { get; set; }
 
     [JsonPropertyName("mountHorizontalRecoilMultiplier")]
-    public int? MountHorizontalRecoilMultiplier { get; set; }
+    public double? MountHorizontalRecoilMultiplier { get; set; }
 
     [JsonPropertyName("mountReturnSpeedHandMultiplier")]
-    public int? MountReturnSpeedHandMultiplier { get; set; }
+    public double? MountReturnSpeedHandMultiplier { get; set; }
 
     [JsonPropertyName("mountVerticalRecoilMultiplier")]
-    public int? MountVerticalRecoilMultiplier { get; set; }
+    public double? MountVerticalRecoilMultiplier { get; set; }
 
     [JsonPropertyName("mountingHorizontalOutOfBreathMultiplier")]
-    public int? MountingHorizontalOutOfBreathMultiplier { get; set; }
+    public double? MountingHorizontalOutOfBreathMultiplier { get; set; }
 
     [JsonPropertyName("mountingPosition")]
     public XYZ? MountingPosition { get; set; }
@@ -855,7 +855,7 @@ public class Props
     public bool? BlocksFaceCover { get; set; }
 
     [JsonPropertyName("indestructibility")]
-    public int? Indestructibility { get; set; }
+    public double? Indestructibility { get; set; }
 
     [JsonPropertyName("headSegments")]
     public List<string>? HeadSegments { get; set; }
@@ -876,49 +876,49 @@ public class Props
     public string? DeafStrength { get; set; }
 
     [JsonPropertyName("blindnessProtection")]
-    public int? BlindnessProtection { get; set; }
+    public double? BlindnessProtection { get; set; }
 
     [JsonPropertyName("distortion")]
-    public int? Distortion { get; set; }
+    public double? Distortion { get; set; }
 
     [JsonPropertyName("compressorTreshold")]
-    public int? CompressorTreshold { get; set; }
+    public double? CompressorTreshold { get; set; }
 
     [JsonPropertyName("compressorAttack")]
-    public int? CompressorAttack { get; set; }
+    public double? CompressorAttack { get; set; }
 
     [JsonPropertyName("compressorRelease")]
-    public int? CompressorRelease { get; set; }
+    public double? CompressorRelease { get; set; }
 
     [JsonPropertyName("compressorGain")]
-    public int? CompressorGain { get; set; }
+    public double? CompressorGain { get; set; }
 
     [JsonPropertyName("cutoffFreq")]
-    public int? CutoffFreq { get; set; }
+    public double? CutoffFreq { get; set; }
 
     [JsonPropertyName("resonance")]
-    public int? Resonance { get; set; }
+    public double? Resonance { get; set; }
 
     [JsonPropertyName("rolloffMultiplier")]
-    public int? RolloffMultiplier { get; set; }
+    public double? RolloffMultiplier { get; set; }
 
     [JsonPropertyName("reverbVolume")]
-    public int? ReverbVolume { get; set; }
+    public double? ReverbVolume { get; set; }
 
     [JsonPropertyName("compressorVolume")]
-    public int? CompressorVolume { get; set; }
+    public double? CompressorVolume { get; set; }
 
     [JsonPropertyName("ambientVolume")]
-    public int? AmbientVolume { get; set; }
+    public double? AmbientVolume { get; set; }
 
     [JsonPropertyName("dryVolume")]
-    public int? DryVolume { get; set; }
+    public double? DryVolume { get; set; }
 
     [JsonPropertyName("highFrequenciesGain")]
-    public int? HighFrequenciesGain { get; set; }
+    public double? HighFrequenciesGain { get; set; }
 
     [JsonPropertyName("foodUseTime")]
-    public int? FoodUseTime { get; set; }
+    public double? FoodUseTime { get; set; }
 
     [JsonPropertyName("foodEffectType")]
     public string? FoodEffectType { get; set; }
@@ -930,52 +930,53 @@ public class Props
     public object? EffectsHealth { get; set; } // TODO: object here
 
     [JsonPropertyName("effects_damage")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, EffectDamageProps>? EffectsDamage { get; set; }
 
     [JsonPropertyName("maximumNumberOfUsage")]
-    public int? MaximumNumberOfUsage { get; set; }
+    public double? MaximumNumberOfUsage { get; set; }
 
     [JsonPropertyName("knifeHitDelay")]
-    public int? KnifeHitDelay { get; set; }
+    public double? KnifeHitDelay { get; set; }
 
     [JsonPropertyName("knifeHitSlashRate")]
-    public int? KnifeHitSlashRate { get; set; }
+    public double? KnifeHitSlashRate { get; set; }
 
     [JsonPropertyName("knifeHitStabRate")]
-    public int? KnifeHitStabRate { get; set; }
+    public double? KnifeHitStabRate { get; set; }
 
     [JsonPropertyName("knifeHitRadius")]
-    public int? KnifeHitRadius { get; set; }
+    public double? KnifeHitRadius { get; set; }
 
     [JsonPropertyName("knifeHitSlashDam")]
-    public int? KnifeHitSlashDam { get; set; }
+    public double? KnifeHitSlashDam { get; set; }
 
     [JsonPropertyName("knifeHitStabDam")]
-    public int? KnifeHitStabDam { get; set; }
+    public double? KnifeHitStabDam { get; set; }
 
     [JsonPropertyName("knifeDurab")]
-    public int? KnifeDurab { get; set; }
+    public double? KnifeDurab { get; set; }
 
     [JsonPropertyName("primaryDistance")]
-    public int? PrimaryDistance { get; set; }
+    public double? PrimaryDistance { get; set; }
 
     [JsonPropertyName("secondryDistance")]
-    public int? SecondryDistance { get; set; }
+    public double? SecondryDistance { get; set; }
 
     [JsonPropertyName("slashPenetration")]
-    public int? SlashPenetration { get; set; }
+    public double? SlashPenetration { get; set; }
 
     [JsonPropertyName("stabPenetration")]
-    public int? StabPenetration { get; set; }
+    public double? StabPenetration { get; set; }
 
     [JsonPropertyName("primaryConsumption")]
-    public int? PrimaryConsumption { get; set; }
+    public double? PrimaryConsumption { get; set; }
 
     [JsonPropertyName("secondryConsumption")]
-    public int? SecondryConsumption { get; set; }
+    public double? SecondryConsumption { get; set; }
 
     [JsonPropertyName("deflectionConsumption")]
-    public int? DeflectionConsumption { get; set; }
+    public double? DeflectionConsumption { get; set; }
 
     [JsonPropertyName("appliedTrunkRotation")]
     public XYZ? AppliedTrunkRotation { get; set; }
@@ -987,10 +988,10 @@ public class Props
     public bool? DisplayOnModel { get; set; }
 
     [JsonPropertyName("additionalAnimationLayer")]
-    public int? AdditionalAnimationLayer { get; set; }
+    public double? AdditionalAnimationLayer { get; set; }
 
     [JsonPropertyName("staminaBurnRate")]
-    public int? StaminaBurnRate { get; set; }
+    public double? StaminaBurnRate { get; set; }
 
     [JsonPropertyName("colliderScaleMultiplier")]
     public XYZ? ColliderScaleMultiplier { get; set; }
@@ -999,139 +1000,139 @@ public class Props
     public string? ConfigPathStr { get; set; }
 
     [JsonPropertyName("maxMarkersCount")]
-    public int? MaxMarkersCount { get; set; }
+    public double? MaxMarkersCount { get; set; }
 
     [JsonPropertyName("scaleMin")]
-    public int? ScaleMin { get; set; }
+    public double? ScaleMin { get; set; }
 
     [JsonPropertyName("scaleMax")]
-    public int? ScaleMax { get; set; }
+    public double? ScaleMax { get; set; }
 
     [JsonPropertyName("medUseTime")]
-    public int? MedUseTime { get; set; }
+    public double? MedUseTime { get; set; }
 
     [JsonPropertyName("medEffectType")]
     public string? MedEffectType { get; set; }
 
     [JsonPropertyName("maxHpResource")]
-    public int? MaxHpResource { get; set; }
+    public double? MaxHpResource { get; set; }
 
     [JsonPropertyName("hpResourceRate")]
-    public int? HpResourceRate { get; set; }
+    public double? HpResourceRate { get; set; }
 
     [JsonPropertyName("apResource")]
-    public int? ApResource { get; set; }
+    public double? ApResource { get; set; }
 
     [JsonPropertyName("krResource")]
-    public int? KrResource { get; set; }
+    public double? KrResource { get; set; }
 
     [JsonPropertyName("maxOpticZoom")]
-    public int? MaxOpticZoom { get; set; }
+    public double? MaxOpticZoom { get; set; }
 
     [JsonPropertyName("maxRepairResource")]
-    public int? MaxRepairResource { get; set; }
+    public double? MaxRepairResource { get; set; }
 
     [JsonPropertyName("targetItemFilter")]
     public List<string>? TargetItemFilter { get; set; }
 
     [JsonPropertyName("repairQuality")]
-    public int? RepairQuality { get; set; }
+    public double? RepairQuality { get; set; }
 
     [JsonPropertyName("repairType")]
     public string? RepairType { get; set; }
 
     [JsonPropertyName("stackMinRandom")]
-    public int? StackMinRandom { get; set; }
+    public double? StackMinRandom { get; set; }
 
     [JsonPropertyName("stackMaxRandom")]
-    public int? StackMaxRandom { get; set; }
+    public double? StackMaxRandom { get; set; }
 
     [JsonPropertyName("ammoType")]
     public string? AmmoType { get; set; }
 
     [JsonPropertyName("initialSpeed")]
-    public int? InitialSpeed { get; set; }
+    public double? InitialSpeed { get; set; }
 
     [JsonPropertyName("ballisticCoefficient")]
-    public int? BallisticCoefficient { get; set; }
+    public double? BallisticCoefficient { get; set; }
 
     [JsonPropertyName("bulletMassGram")]
-    public int? BulletMassGram { get; set; }
+    public double? BulletMassGram { get; set; }
 
     [JsonPropertyName("bulletDiameterMillimeters")]
-    public int? BulletDiameterMillimeters { get; set; }
+    public double? BulletDiameterMillimeters { get; set; }
 
     [JsonPropertyName("damage")]
-    public int? Damage { get; set; }
+    public double? Damage { get; set; }
 
     [JsonPropertyName("ammoAccr")]
-    public int? AmmoAccr { get; set; }
+    public double? AmmoAccr { get; set; }
 
     [JsonPropertyName("ammoRec")]
-    public int? AmmoRec { get; set; }
+    public double? AmmoRec { get; set; }
 
     [JsonPropertyName("ammoDist")]
-    public int? AmmoDist { get; set; }
+    public double? AmmoDist { get; set; }
 
     [JsonPropertyName("buckshotBullets")]
-    public int? BuckshotBullets { get; set; }
+    public double? BuckshotBullets { get; set; }
 
     [JsonPropertyName("penetrationPower")]
-    public int? PenetrationPower { get; set; }
+    public double? PenetrationPower { get; set; }
 
     [JsonPropertyName("penetrationPowerDeviation")]
-    public int? PenetrationPowerDeviation { get; set; }
+    public double? PenetrationPowerDeviation { get; set; }
 
     [JsonPropertyName("ammoHear")]
-    public int? AmmoHear { get; set; }
+    public double? AmmoHear { get; set; }
 
     [JsonPropertyName("ammoSfx")]
     public string? AmmoSfx { get; set; }
 
     [JsonPropertyName("misfireChance")]
-    public int? MisfireChance { get; set; }
+    public double? MisfireChance { get; set; }
 
     [JsonPropertyName("minFragmentsCount")]
-    public int? MinFragmentsCount { get; set; }
+    public double? MinFragmentsCount { get; set; }
 
     [JsonPropertyName("maxFragmentsCount")]
-    public int? MaxFragmentsCount { get; set; }
+    public double? MaxFragmentsCount { get; set; }
 
     [JsonPropertyName("ammoShiftChance")]
-    public int? AmmoShiftChance { get; set; }
+    public double? AmmoShiftChance { get; set; }
 
     [JsonPropertyName("casingName")]
     public string? CasingName { get; set; }
 
     [JsonPropertyName("casingEjectPower")]
-    public int? CasingEjectPower { get; set; }
+    public double? CasingEjectPower { get; set; }
 
     [JsonPropertyName("casingMass")]
-    public int? CasingMass { get; set; }
+    public double? CasingMass { get; set; }
 
     [JsonPropertyName("casingSounds")]
     public string? CasingSounds { get; set; }
 
     [JsonPropertyName("projectileCount")]
-    public int? ProjectileCount { get; set; }
+    public double? ProjectileCount { get; set; }
 
     [JsonPropertyName("penetrationChanceObstacle")]
-    public int? PenetrationChanceObstacle { get; set; }
+    public double? PenetrationChanceObstacle { get; set; }
 
     [JsonPropertyName("penetrationDamageMod")]
-    public int? PenetrationDamageMod { get; set; }
+    public double? PenetrationDamageMod { get; set; }
 
     [JsonPropertyName("ricochetChance")]
-    public int? RicochetChance { get; set; }
+    public double? RicochetChance { get; set; }
 
     [JsonPropertyName("fragmentationChance")]
-    public int? FragmentationChance { get; set; }
+    public double? FragmentationChance { get; set; }
 
     [JsonPropertyName("deterioration")]
-    public int? Deterioration { get; set; }
+    public double? Deterioration { get; set; }
 
     [JsonPropertyName("speedRetardation")]
-    public int? SpeedRetardation { get; set; }
+    public double? SpeedRetardation { get; set; }
 
     [JsonPropertyName("tracer")]
     public bool? Tracer { get; set; }
@@ -1140,22 +1141,22 @@ public class Props
     public string? TracerColor { get; set; }
 
     [JsonPropertyName("tracerDistance")]
-    public int? TracerDistance { get; set; }
+    public double? TracerDistance { get; set; }
 
     [JsonPropertyName("armorDamage")]
-    public int? ArmorDamage { get; set; }
+    public double? ArmorDamage { get; set; }
 
     [JsonPropertyName("caliber")]
     public string? Caliber { get; set; }
 
     [JsonPropertyName("staminaBurnPerDamage")]
-    public int? StaminaBurnPerDamage { get; set; }
+    public double? StaminaBurnPerDamage { get; set; }
 
     [JsonPropertyName("heavyBleedingDelta")]
-    public int? HeavyBleedingDelta { get; set; }
+    public double? HeavyBleedingDelta { get; set; }
 
     [JsonPropertyName("lightBleedingDelta")]
-    public int? LightBleedingDelta { get; set; }
+    public double? LightBleedingDelta { get; set; }
 
     [JsonPropertyName("showBullet")]
     public bool? ShowBullet { get; set; }
@@ -1164,19 +1165,19 @@ public class Props
     public bool? HasGrenaderComponent { get; set; }
 
     [JsonPropertyName("fuzeArmTimeSec")]
-    public int? FuzeArmTimeSec { get; set; }
+    public double? FuzeArmTimeSec { get; set; }
 
     [JsonPropertyName("explosionStrength")]
-    public int? ExplosionStrength { get; set; }
+    public double? ExplosionStrength { get; set; }
 
     [JsonPropertyName("minExplosionDistance")]
-    public int? MinExplosionDistance { get; set; }
+    public double? MinExplosionDistance { get; set; }
 
     [JsonPropertyName("maxExplosionDistance")]
-    public int? MaxExplosionDistance { get; set; }
+    public double? MaxExplosionDistance { get; set; }
 
     [JsonPropertyName("fragmentsCount")]
-    public int? FragmentsCount { get; set; }
+    public double? FragmentsCount { get; set; }
 
     [JsonPropertyName("fragmentType")]
     public string? FragmentType { get; set; }
@@ -1188,7 +1189,7 @@ public class Props
     public string? ExplosionType { get; set; }
 
     [JsonPropertyName("ammoLifeTimeSec")]
-    public int? AmmoLifeTimeSec { get; set; }
+    public double? AmmoLifeTimeSec { get; set; }
 
     [JsonPropertyName("ammoTooltipClass")]
     public string? AmmoTooltipClass { get; set; }
@@ -1206,19 +1207,19 @@ public class Props
     public bool? IsLightAndSoundShot { get; set; }
 
     [JsonPropertyName("lightAndSoundShotAngle")]
-    public int? LightAndSoundShotAngle { get; set; }
+    public double? LightAndSoundShotAngle { get; set; }
 
     [JsonPropertyName("lightAndSoundShotSelfContusionTime")]
-    public int? LightAndSoundShotSelfContusionTime { get; set; }
+    public double? LightAndSoundShotSelfContusionTime { get; set; }
 
     [JsonPropertyName("lightAndSoundShotSelfContusionStrength")]
-    public int? LightAndSoundShotSelfContusionStrength { get; set; }
+    public double? LightAndSoundShotSelfContusionStrength { get; set; }
 
     [JsonPropertyName("malfMisfireChance")]
-    public int? MalfMisfireChance { get; set; }
+    public double? MalfMisfireChance { get; set; }
 
     [JsonPropertyName("malfFeedChance")]
-    public int? MalfFeedChance { get; set; }
+    public double? MalfFeedChance { get; set; }
 
     [JsonPropertyName("stackSlots")]
     public List<StackSlot>? StackSlots { get; set; }
@@ -1227,31 +1228,31 @@ public class Props
     public string? Type { get; set; }
 
     [JsonPropertyName("eqMin")]
-    public int? EqMin { get; set; }
+    public double? EqMin { get; set; }
 
     [JsonPropertyName("eqMax")]
-    public int? EqMax { get; set; }
+    public double? EqMax { get; set; }
 
     [JsonPropertyName("rate")]
-    public int? Rate { get; set; }
+    public double? Rate { get; set; }
 
     [JsonPropertyName("throwType")]
     public string? ThrowType { get; set; }
 
     [JsonPropertyName("explDelay")]
-    public int? ExplDelay { get; set; }
+    public double? ExplDelay { get; set; }
 
     [JsonPropertyName("strength")]
-    public int? Strength { get; set; }
+    public double? Strength { get; set; }
 
     [JsonPropertyName("contusionDistance")]
-    public int? ContusionDistance { get; set; }
+    public double? ContusionDistance { get; set; }
 
     [JsonPropertyName("throwDamMax")]
-    public int? ThrowDamMax { get; set; }
+    public double? ThrowDamMax { get; set; }
 
     [JsonPropertyName("emitTime")]
-    public int? EmitTime { get; set; }
+    public double? EmitTime { get; set; }
 
     [JsonPropertyName("canBeHiddenDuringThrow")]
     public bool? CanBeHiddenDuringThrow { get; set; }
@@ -1260,7 +1261,7 @@ public class Props
     public bool? CanPlantOnGround { get; set; }
 
     [JsonPropertyName("minTimeToContactExplode")]
-    public int? MinTimeToContactExplode { get; set; }
+    public double? MinTimeToContactExplode { get; set; }
 
     [JsonPropertyName("explosionEffectType")]
     public string? ExplosionEffectType { get; set; }
@@ -1275,7 +1276,7 @@ public class Props
     public RandomLootSettings? RandomLootSettings { get; set; }
 
     [JsonPropertyName("recoilDampingHandRotation")]
-    public int? RecoilDampingHandRotation { get; set; }
+    public double? RecoilDampingHandRotation { get; set; }
 
     [JsonPropertyName("leanWeaponAgainstBody")]
     public bool? LeanWeaponAgainstBody { get; set; }
@@ -1296,25 +1297,25 @@ public class Props
     public Prefab? Lower75Prefab { get; set; }
 
     [JsonPropertyName("maxUsages")]
-    public int? MaxUsages { get; set; }
+    public double? MaxUsages { get; set; }
 
     [JsonPropertyName("scavKillExpPenalty")]
-    public int? ScavKillExpPenalty { get; set; }
+    public double? ScavKillExpPenalty { get; set; }
 
     [JsonPropertyName("scavKillExpPenaltyPVE")]
-    public int? ScavKillExpPenaltyPVE { get; set; }
+    public double? ScavKillExpPenaltyPVE { get; set; }
 
     [JsonPropertyName("scavKillStandingPenalty")]
-    public int? ScavKillStandingPenalty { get; set; }
+    public double? ScavKillStandingPenalty { get; set; }
 
     [JsonPropertyName("scavKillStandingPenaltyPVE")]
-    public int? ScavKillStandingPenaltyPVE { get; set; }
+    public double? ScavKillStandingPenaltyPVE { get; set; }
 
     [JsonPropertyName("tradersDiscount")]
-    public int? TradersDiscount { get; set; }
+    public double? TradersDiscount { get; set; }
 
     [JsonPropertyName("tradersDiscountPVE")]
-    public int? TradersDiscountPVE { get; set; }
+    public double? TradersDiscountPVE { get; set; }
     
     [JsonPropertyName("AvailableAsDefault")]
     public bool? AvailableAsDefault { get; set; }
@@ -1358,7 +1359,7 @@ public class WeaponRecoilSettings
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
 
-    [JsonPropertyName("values")]
+    [JsonPropertyName("Values")]
     public List<WeaponRecoilSettingValues>? Values { get; set; }
 }
 
@@ -1455,19 +1456,19 @@ public class GridProps
     public List<GridFilter>? Filters { get; set; }
 
     [JsonPropertyName("cellsH")]
-    public int? CellsH { get; set; }
+    public double? CellsH { get; set; }
 
     [JsonPropertyName("cellsV")]
-    public int? CellsV { get; set; }
+    public double? CellsV { get; set; }
 
     [JsonPropertyName("minCount")]
-    public int? MinCount { get; set; }
+    public double? MinCount { get; set; }
 
     [JsonPropertyName("maxCount")]
-    public int? MaxCount { get; set; }
+    public double? MaxCount { get; set; }
 
     [JsonPropertyName("maxWeight")]
-    public int? MaxWeight { get; set; }
+    public double? MaxWeight { get; set; }
 
     [JsonPropertyName("isSortingTable")]
     public bool? IsSortingTable { get; set; }
@@ -1500,7 +1501,7 @@ public class Slot
     public SlotProps? Props { get; set; }
 
     [JsonPropertyName("_max_count")]
-    public int? MaxCount { get; set; }
+    public double? MaxCount { get; set; }
 
     [JsonPropertyName("_required")]
     public bool? Required { get; set; }
@@ -1518,13 +1519,13 @@ public class SlotProps
     public List<SlotFilter>? Filters { get; set; }
 
     [JsonPropertyName("MaxStackCount")]
-    public int? MaxStackCount { get; set; }
+    public double? MaxStackCount { get; set; }
 }
 
 public class SlotFilter
 {
     [JsonPropertyName("Shift")]
-    public int? Shift { get; set; }
+    public double? Shift { get; set; }
 
     [JsonPropertyName("locked")]
     public bool? Locked { get; set; }
@@ -1542,7 +1543,13 @@ public class SlotFilter
     public List<string>? Filter { get; set; }
 
     [JsonPropertyName("AnimationIndex")]
-    public int? AnimationIndex { get; set; }
+    public double? AnimationIndex { get; set; }
+    
+    [JsonPropertyName("MaxStackCount")]
+    public double? MaxStackCount { get; set; }
+    
+    [JsonPropertyName("bluntDamageReduceFromSoftArmor")]
+    public bool? BluntDamageReduceFromSoftArmor { get; set; }
 }
 
 public class StackSlot
@@ -1557,7 +1564,7 @@ public class StackSlot
     public string? Parent { get; set; }
 
     [JsonPropertyName("_max_count")]
-    public int? MaxCount { get; set; }
+    public double? MaxCount { get; set; }
 
     [JsonPropertyName("_props")]
     public StackSlotProps? Props { get; set; }
@@ -1596,10 +1603,10 @@ public class RandomLootSettings
     public bool? FindInRaid { get; set; }
 
     [JsonPropertyName("maxCount")]
-    public int? MaxCount { get; set; }
+    public double? MaxCount { get; set; }
 
     [JsonPropertyName("minCount")]
-    public int? MinCount { get; set; }
+    public double? MinCount { get; set; }
 }
 
 public class RandomLootExcluded
@@ -1626,7 +1633,7 @@ public class EffectsHealth
 public class EffectsHealthProps
 {
     [JsonPropertyName("value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 }
 
 public class EffectsDamage
@@ -1656,43 +1663,43 @@ public class EffectsDamage
 public class EffectDamageProps
 {
     [JsonPropertyName("delay")]
-    public int? Delay { get; set; }
+    public double? Delay { get; set; }
 
     [JsonPropertyName("duration")]
-    public int? Duration { get; set; }
+    public double? Duration { get; set; }
 
     [JsonPropertyName("fadeOut")]
-    public int? FadeOut { get; set; }
+    public double? FadeOut { get; set; }
 
     [JsonPropertyName("cost")]
-    public int? Cost { get; set; }
+    public double? Cost { get; set; }
 
     [JsonPropertyName("healthPenaltyMin")]
-    public int? HealthPenaltyMin { get; set; }
+    public double? HealthPenaltyMin { get; set; }
 
     [JsonPropertyName("healthPenaltyMax")]
-    public int? HealthPenaltyMax { get; set; }
+    public double? HealthPenaltyMax { get; set; }
 }
 
 public class Color
 {
     [JsonPropertyName("r")]
-    public int? R { get; set; }
+    public double? R { get; set; }
 
     [JsonPropertyName("g")]
-    public int? G { get; set; }
+    public double? G { get; set; }
 
     [JsonPropertyName("b")]
-    public int? B { get; set; }
+    public double? B { get; set; }
 
     [JsonPropertyName("a")]
-    public int? A { get; set; }
+    public double? A { get; set; }
 }
 
 public class ShotsGroupSettings
 {
     [JsonPropertyName("EndShotIndex")]
-    public int? EndShotIndex { get; set; }
+    public double? EndShotIndex { get; set; }
 
     [JsonPropertyName("ShotRecoilPositionStrength")]
     public XYZ? ShotRecoilPositionStrength { get; set; }
@@ -1704,7 +1711,7 @@ public class ShotsGroupSettings
     public XYZ? ShotRecoilRotationStrength { get; set; }
 
     [JsonPropertyName("StartShotIndex")]
-    public int? StartShotIndex { get; set; }
+    public double? StartShotIndex { get; set; }
 }
 
 public enum ItemType

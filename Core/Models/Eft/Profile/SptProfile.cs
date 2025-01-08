@@ -169,7 +169,7 @@ public class DefaultEquipmentPreset : UserBuild
     public string? Root { get; set; }
 
     [JsonPropertyName("BuildType")]
-    public EquipmentBuildType? BuildType { get; set; }
+    public string? BuildType { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }

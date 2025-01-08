@@ -68,6 +68,7 @@ public class BotBase
 
     /** Achievement id and timestamp */
     [JsonPropertyName("Achievements")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, int>? Achievements { get; set; }
 
     [JsonPropertyName("RepeatableQuests")]

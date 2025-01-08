@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -20,25 +21,25 @@ public class TraderServerSettings
 public class TraderServices
 {
     [JsonPropertyName("ExUsecLoyalty")]
-    public TraderServices? ExUsecLoyalty { get; set; }
+    public TraderService? ExUsecLoyalty { get; set; }
 
     [JsonPropertyName("ZryachiyAid")]
-    public TraderServices? ZryachiyAid { get; set; }
+    public TraderService? ZryachiyAid { get; set; }
 
     [JsonPropertyName("CultistsAid")]
-    public TraderServices? CultistsAid { get; set; }
+    public TraderService? CultistsAid { get; set; }
 
     [JsonPropertyName("PlayerTaxi")]
-    public TraderServices? PlayerTaxi { get; set; }
+    public TraderService? PlayerTaxi { get; set; }
 
     [JsonPropertyName("BtrItemsDelivery")]
-    public TraderServices? BtrItemsDelivery { get; set; }
+    public TraderService? BtrItemsDelivery { get; set; }
 
     [JsonPropertyName("BtrBotCover")]
-    public TraderServices? BtrBotCover { get; set; }
+    public TraderService? BtrBotCover { get; set; }
 
     [JsonPropertyName("TransitItemsDelivery")]
-    public TraderServices? TransitItemsDelivery { get; set; }
+    public TraderService? TransitItemsDelivery { get; set; }
 }
 
 public class TraderService
@@ -53,6 +54,7 @@ public class TraderService
     public ServiceRequirements? Requirements { get; set; }
 
     [JsonPropertyName("ServiceItemCost")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, ServiceItemCostDetails>? ServiceItemCost { get; set; }
 
     [JsonPropertyName("UniqueItems")]
@@ -65,6 +67,7 @@ public class ServiceRequirements
     public List<CompletedQuest>? CompletedQuests { get; set; }
 
     [JsonPropertyName("Standings")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, StandingRequirement>? Standings { get; set; }
 }
 
@@ -77,7 +80,7 @@ public class CompletedQuest
 public class StandingRequirement
 {
     [JsonPropertyName("Value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 }
 
 public class ServiceItemCostDetails
