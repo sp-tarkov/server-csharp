@@ -9,10 +9,9 @@ public class InventoryMagGen
     private TemplateItem _weaponTemplate;
     private TemplateItem _ammoTemplate;
     private BotBaseInventory _pmcInventory;
-    
+
     public InventoryMagGen()
     {
-        
     }
 
     public GenerationData GetMagCount()

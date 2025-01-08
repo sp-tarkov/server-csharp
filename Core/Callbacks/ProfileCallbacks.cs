@@ -9,9 +9,8 @@ public class ProfileCallbacks
 {
     public ProfileCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/create
     /// </summary>
@@ -23,7 +22,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/list
     /// Get the complete player profile (scav + pmc character)
@@ -36,7 +35,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/savage/regenerate
     /// Handle the creation of a scav profile for player
@@ -50,7 +49,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/voice/change event
     /// </summary>
@@ -62,7 +61,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/nickname/change event
     /// Client allows player to adjust their profile name
@@ -75,7 +74,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/nickname/validate
     /// </summary>
@@ -87,7 +86,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/nickname/reserved
     /// </summary>
@@ -137,7 +136,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/profile/settings
     /// </summary>
@@ -149,7 +148,7 @@ public class ProfileCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle launcher/profile/info
     /// </summary>

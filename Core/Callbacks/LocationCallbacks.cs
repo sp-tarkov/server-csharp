@@ -9,9 +9,8 @@ public class LocationCallbacks
 {
     public LocationCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/locations
     /// </summary>

@@ -6,7 +6,7 @@ public class MatchGroupStatusResponse
 {
     [JsonPropertyName("players")]
     public List<GroupCharacter>? Players { get; set; }
-    
+
     [JsonPropertyName("maxPveCountExceeded")]
     public bool? MaxPveCountExceeded { get; set; }
 }

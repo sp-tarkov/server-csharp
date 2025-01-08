@@ -20,5 +20,5 @@ public enum BodyPart
     RightArm,
     LeftLeg,
     RightLeg,
-    Common,
+    Common
 }

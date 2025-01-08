@@ -8,9 +8,8 @@ public class RepairCallbacks
 {
     public RepairCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle TraderRepair event
     /// use trader to repair item

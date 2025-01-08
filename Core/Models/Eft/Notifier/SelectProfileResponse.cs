@@ -4,6 +4,6 @@ namespace Core.Models.Eft.Notifier;
 
 public class SelectProfileResponse
 {
-	[JsonPropertyName("status")]
-	public string? Status { get; set; }
+    [JsonPropertyName("status")]
+    public string? Status { get; set; }
 }

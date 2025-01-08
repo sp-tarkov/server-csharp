@@ -22,13 +22,13 @@ public class HideoutConfig : BaseConfig
 
     [JsonPropertyName("hoursForSkillCrafting")]
     public int HoursForSkillCrafting { get; set; }
-    
+
     [JsonPropertyName("expCraftAmount")]
     public int ExpCraftAmount { get; set; }
-    
+
     [JsonPropertyName("overrideCraftTimeSeconds")]
     public int OverrideCraftTimeSeconds { get; set; }
-    
+
     [JsonPropertyName("overrideBuildTimeSeconds")]
     public int OverrideBuildTimeSeconds { get; set; }
 
@@ -46,10 +46,10 @@ public class CultistCircleSettings
 {
     [JsonPropertyName("maxRewardItemCount")]
     public int MaxRewardItemCount { get; set; }
-    
+
     [JsonPropertyName("maxAttemptsToPickRewardsWithinBudget")]
     public int MaxAttemptsToPickRewardsWithinBudget { get; set; }
-    
+
     [JsonPropertyName("rewardPriceMultiplerMinMax")]
     public MinMax RewardPriceMultiplerMinMax { get; set; }
 
@@ -58,7 +58,7 @@ public class CultistCircleSettings
     /// </summary>
     [JsonPropertyName("bonusAmountMultiplier")]
     public double BonusAmountMultiplier { get; set; }
-    
+
     [JsonPropertyName("bonusChanceMultiplier")]
     public double BonusChanceMultiplier { get; set; }
 
@@ -79,10 +79,10 @@ public class CultistCircleSettings
     /// </summary>
     [JsonPropertyName("hideoutCraftSacrificeThresholdRub")]
     public int HideoutCraftSacrificeThresholdRub { get; set; }
-    
+
     [JsonPropertyName("craftTimeThreshholds")]
     public List<CraftTimeThreshhold> CraftTimeThreshholds { get; set; }
-    
+
     /// <summary>
     /// -1 means no override, value in seconds
     /// </summary>
@@ -127,10 +127,10 @@ public class DirectRewardSettings
 {
     [JsonPropertyName("reward")]
     public List<string> Reward { get; set; }
-    
+
     [JsonPropertyName("requiredItems")]
     public List<string> RequiredItems { get; set; }
-    
+
     [JsonPropertyName("craftTimeSeconds")]
     public int CraftTimeSeconds { get; set; }
 

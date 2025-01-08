@@ -6,9 +6,8 @@ public class PMCLootGenerator
 {
     public PMCLootGenerator()
     {
-        
     }
-    
+
     /// <summary>
     /// Create a List of loot items a PMC can have in their pockets
     /// </summary>

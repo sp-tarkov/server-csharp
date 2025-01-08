@@ -7,9 +7,8 @@ public class LauncherCallbacks
 {
     public LauncherCallbacks()
     {
-        
     }
-    
+
     public string Connect()
     {
         throw new NotImplementedException();

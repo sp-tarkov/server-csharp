@@ -15,7 +15,7 @@ public class ImporterUtil
     {
         _fileUtil = fileUtil;
     }
-    
+
     /**
      * Load files into js objects recursively (asynchronous)
      * @param filepath Path to folder with files
@@ -26,7 +26,8 @@ public class ImporterUtil
         Type loadedType,
         Action<string, string>? onReadCallback = null,
         Action<string, object>? onObjectDeserialized = null
-    ) {
+    )
+    {
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
@@ -45,7 +46,7 @@ public class ImporterUtil
 
             Type propertyType;
             MethodInfo setMethod;
-            bool isDictionary = false;
+            var isDictionary = false;
             if (loadedType.IsGenericType && loadedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
                 propertyType = loadedType.GetGenericArguments()[1];
@@ -54,15 +55,18 @@ public class ImporterUtil
             }
             else
             {
-                var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
+                var matchedProperty = loadedType.GetProperties()
+                    .FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
                 if (matchedProperty == null)
                     throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
                 propertyType = matchedProperty.PropertyType;
                 setMethod = matchedProperty.GetSetMethod();
             }
+
             try
             {
-                var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType, new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
+                var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType,
+                    new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
                 if (onObjectDeserialized != null)
                     onObjectDeserialized(file, fileDeserialized);
 
@@ -77,7 +81,8 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
-            var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().Replace("_", "").ToLower());
+            var matchedProperty = loadedType.GetProperties()
+                .FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().Replace("_", "").ToLower());
             if (matchedProperty == null)
                 throw new Exception($"Unable to find property '{directory}' for type '{loadedType.Name}'");
             matchedProperty.GetSetMethod().Invoke(result, [await LoadRecursiveAsync($"{directory}/", matchedProperty.PropertyType)]);
@@ -106,14 +111,14 @@ public class ImporterUtil
         var directories = Directory.GetDirectories(filepath);
 
         foreach (var file in files)
-        {
-            if (Path.GetExtension(file) == "json") 
+            if (Path.GetExtension(file) == "json")
             {
                 // const filename = this.vfs.stripExtension(file);
                 // const filePathAndName = `${filepath}${file}`;
                 var fileData = File.ReadAllText(file);
                 onReadCallback(file, fileData);
-                var matchedProperty = loadedType.GetProperties().FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
+                var matchedProperty = loadedType.GetProperties()
+                    .FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
                 if (matchedProperty == null)
                     throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
                 var propertyType = matchedProperty.PropertyType;
@@ -122,7 +127,6 @@ public class ImporterUtil
 
                 matchedProperty.GetSetMethod().Invoke(result, [fileDeserialized]);
             }
-        }
 
         // deep tree search
         foreach (var directory in directories)
@@ -149,11 +153,10 @@ public class ImporterUtil
         var promises = new List<Task<object>>();
         var filesToProcess = new Queue<string>(_fileUtil.GetFiles(filepath, true));
 
-        while (filesToProcess.Count != 0) {
+        while (filesToProcess.Count != 0)
+        {
             var fileNode = filesToProcess.Dequeue();
-            if (fileNode == null || _fileUtil.GetFileExtension(fileNode) != "json") {
-                continue;
-            }
+            if (fileNode == null || _fileUtil.GetFileExtension(fileNode) != "json") continue;
 
             promises.Add(File.ReadAllTextAsync(fileNode).ContinueWith(fd =>
             {

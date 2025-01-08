@@ -13,5 +13,5 @@ public enum MemberCategory
     UNIT_TEST = 128,
     SHERPA = 256,
     EMISSARY = 512,
-    UNHEARD = 1024,
+    UNHEARD = 1024
 }

@@ -6,7 +6,7 @@ public class LocaleConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-locale";
-    
+
     /** e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting */
     [JsonPropertyName("gameLocale")]
     public string GameLocale { get; set; }

@@ -8,13 +8,13 @@ namespace Core.Utils;
 public class RandomUtil
 {
     public readonly Random Random = new();
-    
+
     /// <summary>
     /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
     /// integer + fractional parts) to about 15–17 significant digits. 15 is a safe upper bound, so we'll use that.
     /// </summary>
     public const int MaxSignificantDigits = 15;
-    
+
     /// <summary>
     /// Generates a random integer between the specified minimum and maximum values, inclusive.
     /// </summary>
@@ -24,11 +24,8 @@ public class RandomUtil
     public int GetInt(int min, int max)
     {
         // Prevents a potential integer overflow.
-        if (max == int.MaxValue)
-        {
-            max -= 1;
-        }
-        
+        if (max == int.MaxValue) max -= 1;
+
         // maxVal is exclusive of the passed value, so add 1
         return max > min ? Random.Next(min, max + 1) : min;
     }
@@ -54,7 +51,7 @@ public class RandomUtil
     {
         return (float)GetSecureRandomNumber() * (max - min) + min;
     }
-    
+
     /// <summary>
     /// Generates a random floating-point number within the specified range ~15-17 digits (8 bytes).
     /// </summary>
@@ -85,7 +82,7 @@ public class RandomUtil
     public float GetPercentOfValue(float percent, float number, int toFixed = 2)
     {
         var num = percent * number / 100;
-        
+
         return (float)Math.Round(num, toFixed);
     }
 
@@ -98,7 +95,7 @@ public class RandomUtil
     public float ReduceValueByPercent(float number, float percentage)
     {
         var reductionAmount = number * percentage / 100;
-        
+
         return number - reductionAmount;
     }
 
@@ -110,7 +107,7 @@ public class RandomUtil
     public bool GetChance100(float chancePercent)
     {
         chancePercent = Math.Clamp(chancePercent, 0f, 100f);
-        
+
         return GetIntEx(100) <= chancePercent;
     }
 
@@ -125,7 +122,7 @@ public class RandomUtil
     {
         return collection.ElementAt(GetInt(0, collection.Count() - 1));
     }
-    
+
     /// <summary>
     /// Returns a random type T from the provided collection of type T.
     /// </summary>
@@ -177,28 +174,26 @@ public class RandomUtil
     public double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
     {
         double u, v;
-        
+
         do
         {
             u = GetSecureRandomNumber();
         } while (u == 0);
-        
+
         do
         {
             v = GetSecureRandomNumber();
         } while (v == 0);
-        
+
         // Apply the Box-Muller transform
         var w = Math.Sqrt(-2.0 * Math.Log(u)) * Math.Cos(2.0 * Math.PI * v);
         var valueDrawn = mean + w * sigma;
-        
+
         // Check if the generated value is valid
         if (valueDrawn < 0)
-        {
-            return attempt > 100 
+            return attempt > 100
                 ? GetDouble(0.01f, mean * 2f)
                 : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
-        }
 
         return valueDrawn;
     }
@@ -212,11 +207,8 @@ public class RandomUtil
     public int RandInt(int low, int? high = null)
     {
         // Return a random integer from 0 to low if high is not provided
-        if (high is null)
-        {
-            return Random.Next(0, low);
-        }
-        
+        if (high is null) return Random.Next(0, low);
+
         // Return low directly when low and high are equal
         return low == high
             ? low
@@ -235,11 +227,8 @@ public class RandomUtil
     /// <returns></returns>
     public double RandNum(double val1, double val2 = 0, byte? precision = null)
     {
-        if (!double.IsFinite(val1) || !double.IsFinite(val2))
-        {
-            throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
-        }
-        
+        if (!double.IsFinite(val1) || !double.IsFinite(val2)) throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
+
         // Determine the range
         var min = Math.Min(val1, val2);
         var max = Math.Max(val1, val2);
@@ -248,33 +237,29 @@ public class RandomUtil
         if (precision is not null)
         {
             if (precision > MaxSignificantDigits)
-            {
                 throw new ArgumentOutOfRangeException(
                     nameof(precision), "Must be less than 16");
-            }
-            
+
             // Calculate the number of whole-number digits in the maximum absolute value of the range
             var maxAbsoluteValue = Math.Max(Math.Abs(min), Math.Abs(max));
             var wholeNumberDigits = (int)Math.Floor(Math.Log10(maxAbsoluteValue)) + 1;
-            
+
             var maxAllowedPrecision = Math.Max(0, MaxSignificantDigits - wholeNumberDigits);
 
             if (precision > maxAllowedPrecision)
-            {
                 throw new ArgumentException(
                     $"RandNum() precision of {precision} exceeds the allowable precision ({maxAllowedPrecision}) for the given values."
                 );
-            }
         }
-        
+
         var result = GetSecureRandomNumber() * (max - min) + min;
-        
+
         // Determine effective precision
         var maxPrecision = Math.Max(GetNumberPrecision(val1), GetNumberPrecision(val2));
         var effectivePrecision = precision ?? maxPrecision;
 
         var factor = Math.Pow(2, effectivePrecision);
-        
+
         return Math.Round(result * factor) / factor;
     }
 
@@ -329,7 +314,7 @@ public class RandomUtil
          * Here's a place where you can play around with the 'n' and 'shift' values to see how the distribution changes:
          * http://jsfiddle.net/e08cumyx/
          */
-        
+
         throw new NotImplementedException("This honestly went over my head...");
     }
 
@@ -342,19 +327,19 @@ public class RandomUtil
     public List<T> Shuffle<T>(List<T> originalList)
     {
         var currentIndex = originalList.Count;
-        
+
         while (currentIndex != 0)
         {
             var randomIndex = GetInt(0, currentIndex);
             currentIndex--;
-            
+
             // Swap it with the current element.
             (originalList[currentIndex], originalList[randomIndex]) = (originalList[randomIndex], originalList[currentIndex]);
         }
-        
+
         return originalList;
     }
-    
+
     /// <summary>
     /// Generates a secure random number between 0 (inclusive) and 1 (exclusive).
     /// 
@@ -368,18 +353,15 @@ public class RandomUtil
         var buffer = new byte[6];
 
         using var rng = RandomNumberGenerator.Create();
-        
+
         // Fill buffer with random bytes
         rng.GetBytes(buffer);
-        
+
         var integer = 0;
-        for (var i = 0; i < 6; i++)
-        {
-            integer = (integer << 8) | buffer[i];
-        }
+        for (var i = 0; i < 6; i++) integer = (integer << 8) | buffer[i];
 
         const ulong maxInt = 1UL << 48;
-        
+
         return (double)Math.Abs(integer) / maxInt;
     }
 
@@ -391,9 +373,9 @@ public class RandomUtil
     public int GetNumberPrecision(double num)
     {
         var parts = num.ToString($"G{MaxSignificantDigits}").Split('.');
-        
-        return parts.Length > 1 
-            ? parts[1].Length 
+
+        return parts.Length > 1
+            ? parts[1].Length
             : 0;
     }
 }

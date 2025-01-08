@@ -6,7 +6,6 @@ public class AchievementController
 {
     public AchievementController()
     {
-        
     }
 
     public GetAchievementsResponse GetAchievements(string sessionID)

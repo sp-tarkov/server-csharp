@@ -12,10 +12,10 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter) Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter)Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
     }
-    
-    class ArrayToObjectConverter<T> : JsonConverter<T>
+
+    private class ArrayToObjectConverter<T> : JsonConverter<T>
     {
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

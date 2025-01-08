@@ -10,106 +10,106 @@ public class Quest
     /// </summary>
     [JsonPropertyName("QuestName")]
     public string? QuestName { get; set; }
-    
+
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("canShowNotificationsInGame")]
     public bool? CanShowNotificationsInGame { get; set; }
-    
+
     [JsonPropertyName("conditions")]
     public QuestConditionTypes? Conditions { get; set; }
-    
+
     [JsonPropertyName("description")]
     public string? Description { get; set; }
-    
+
     [JsonPropertyName("failMessageText")]
     public string? FailMessageText { get; set; }
-    
+
     [JsonPropertyName("name")]
     public string? Name { get; set; }
-    
+
     [JsonPropertyName("note")]
     public string? Note { get; set; }
-    
+
     [JsonPropertyName("traderId")]
     public string? TraderId { get; set; }
-    
+
     [JsonPropertyName("location")]
     public string? Location { get; set; }
-    
+
     [JsonPropertyName("image")]
     public string? Image { get; set; }
-    
+
     [JsonPropertyName("type")]
     public QuestTypeEnum? Type { get; set; }
-    
+
     [JsonPropertyName("isKey")]
     public bool? IsKey { get; set; }
-    
+
     [JsonPropertyName("restartable")]
     public bool? Restartable { get; set; }
-    
+
     [JsonPropertyName("instantComplete")]
     public bool? InstantComplete { get; set; }
-    
+
     [JsonPropertyName("secretQuest")]
     public bool? SecretQuest { get; set; }
-    
+
     [JsonPropertyName("startedMessageText")]
     public string? StartedMessageText { get; set; }
-    
+
     [JsonPropertyName("successMessageText")]
     public string? SuccessMessageText { get; set; }
-    
+
     [JsonPropertyName("acceptPlayerMessage")]
     public string? AcceptPlayerMessage { get; set; }
-    
+
     [JsonPropertyName("declinePlayerMessage")]
     public string? DeclinePlayerMessage { get; set; }
-    
+
     [JsonPropertyName("completePlayerMessage")]
     public string? CompletePlayerMessage { get; set; }
-    
+
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
-    
+
     [JsonPropertyName("rewards")]
     public QuestRewards? Rewards { get; set; }
-    
+
     /// <summary>
     /// Becomes 'AppearStatus' inside client
     /// </summary>
     [JsonPropertyName("status")]
     public object? Status { get; set; } // TODO: string | number
-    
+
     [JsonPropertyName("KeyQuest")]
     public bool? KeyQuest { get; set; }
-    
+
     [JsonPropertyName("changeQuestMessageText")]
     public string? ChangeQuestMessageText { get; set; }
-    
+
     /// <summary>
     /// "Pmc" or "Scav"
     /// </summary>
     [JsonPropertyName("side")]
     public string? Side { get; set; }
-    
+
     [JsonPropertyName("acceptanceAndFinishingSource")]
     public string? AcceptanceAndFinishingSource { get; set; }
-    
+
     [JsonPropertyName("progressSource")]
     public string? ProgressSource { get; set; }
-    
+
     [JsonPropertyName("rankingModes")]
     public List<string>? RankingModes { get; set; }
-    
+
     [JsonPropertyName("gameModes")]
     public List<string>? GameModes { get; set; }
-    
+
     [JsonPropertyName("arenaLocations")]
     public List<string>? ArenaLocations { get; set; }
-    
+
     /// <summary>
     /// Status of quest to player
     /// </summary>
@@ -121,16 +121,16 @@ public class QuestConditionTypes
 {
     [JsonPropertyName("Started")]
     public List<QuestCondition>? Started { get; set; }
-    
+
     [JsonPropertyName("AvailableForFinish")]
     public List<QuestCondition>? AvailableForFinish { get; set; }
-    
+
     [JsonPropertyName("AvailableForStart")]
     public List<QuestCondition>? AvailableForStart { get; set; }
-    
+
     [JsonPropertyName("Success")]
     public List<QuestCondition>? Success { get; set; }
-    
+
     [JsonPropertyName("Fail")]
     public List<QuestCondition>? Fail { get; set; }
 }
@@ -139,91 +139,91 @@ public class QuestCondition
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("index")]
     public int? Index { get; set; }
-    
+
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }
-    
+
     [JsonPropertyName("dynamicLocale")]
     public bool? DynamicLocale { get; set; }
-    
+
     [JsonPropertyName("visibilityConditions")]
     public List<VisibilityCondition>? VisibilityConditions { get; set; }
-    
+
     [JsonPropertyName("globalQuestCounterId")]
     public string? GlobalQuestCounterId { get; set; }
-    
+
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
-    
+
     [JsonPropertyName("target")]
     public object? Target { get; set; } // TODO: string[] | string
-    
+
     [JsonPropertyName("value")]
     public object? Value { get; set; } // TODO: string | number
-    
+
     [JsonPropertyName("type")]
     public object? Type { get; set; } // TODO: boolean | string
-    
+
     [JsonPropertyName("status")]
     public List<QuestStatus>? Status { get; set; }
-    
+
     [JsonPropertyName("availableAfter")]
     public int? AvailableAfter { get; set; }
-    
+
     [JsonPropertyName("dispersion")]
     public double? Dispersion { get; set; }
-    
+
     [JsonPropertyName("onlyFoundInRaid")]
     public bool? OnlyFoundInRaid { get; set; }
-    
+
     [JsonPropertyName("oneSessionOnly")]
     public bool? OneSessionOnly { get; set; }
-    
+
     [JsonPropertyName("isResetOnConditionFailed")]
     public bool? IsResetOnConditionFailed { get; set; }
-    
+
     [JsonPropertyName("isNecessary")]
     public bool? IsNecessary { get; set; }
-    
+
     [JsonPropertyName("doNotResetIfCounterCompleted")]
     public bool? DoNotResetIfCounterCompleted { get; set; }
-    
+
     [JsonPropertyName("dogtagLevel")]
     public object? DogtagLevel { get; set; } // TODO: number | string
-    
+
     [JsonPropertyName("traderId")]
     public string? TraderId { get; set; }
-    
+
     [JsonPropertyName("maxDurability")]
     public object? MaxDurability { get; set; } // TODO: number | string
-    
+
     [JsonPropertyName("minDurability")]
     public object? MinDurability { get; set; } // TODO: number | string
-    
+
     [JsonPropertyName("counter")]
     public QuestConditionCounter? Counter { get; set; }
-    
+
     [JsonPropertyName("plantTime")]
     public int? PlantTime { get; set; }
-    
+
     [JsonPropertyName("zoneId")]
     public string? ZoneId { get; set; }
-    
+
     [JsonPropertyName("countInRaid")]
     public bool? CountInRaid { get; set; }
-    
+
     [JsonPropertyName("completeInSeconds")]
     public int? CompleteInSeconds { get; set; }
-    
+
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }
-    
+
     [JsonPropertyName("conditionType")]
     public string? ConditionType { get; set; }
-    
+
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
 }
@@ -232,7 +232,7 @@ public class QuestConditionCounter
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("conditions")]
     public List<QuestConditionCounterCondition>? Conditions { get; set; }
 }
@@ -241,76 +241,76 @@ public class QuestConditionCounterCondition
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("dynamicLocale")]
     public bool? DynamicLocale { get; set; }
-    
+
     [JsonPropertyName("target")]
     public object? Target { get; set; } // TODO: string[] | string
-    
+
     [JsonPropertyName("completeInSeconds")]
     public int? CompleteInSeconds { get; set; }
-    
+
     [JsonPropertyName("energy")]
     public ValueCompare? Energy { get; set; }
-    
+
     [JsonPropertyName("exitName")]
     public string? ExitName { get; set; }
-    
+
     [JsonPropertyName("hydration")]
     public ValueCompare? Hydration { get; set; }
-    
+
     [JsonPropertyName("time")]
     public ValueCompare? Time { get; set; }
-    
+
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }
-    
+
     [JsonPropertyName("value")]
     public object? Value { get; set; } // TODO: number | string
-    
+
     [JsonPropertyName("weapon")]
     public List<string>? Weapon { get; set; }
-    
+
     [JsonPropertyName("distance")]
     public CounterConditionDistance? Distance { get; set; }
-    
+
     [JsonPropertyName("equipmentInclusive")]
     public List<List<string>>? EquipmentInclusive { get; set; }
-    
+
     [JsonPropertyName("weaponModsInclusive")]
     public List<List<string>>? WeaponModsInclusive { get; set; }
-    
+
     [JsonPropertyName("weaponModsExclusive")]
     public List<List<string>>? WeaponModsExclusive { get; set; }
-    
+
     [JsonPropertyName("enemyEquipmentInclusive")]
     public List<List<string>>? EnemyEquipmentInclusive { get; set; }
-    
+
     [JsonPropertyName("enemyEquipmentExclusive")]
     public List<List<string>>? EnemyEquipmentExclusive { get; set; }
-    
+
     [JsonPropertyName("weaponCaliber")]
     public List<string>? WeaponCaliber { get; set; }
-    
+
     [JsonPropertyName("savageRole")]
     public List<string>? SavageRole { get; set; }
-    
+
     [JsonPropertyName("status")]
     public List<string>? Status { get; set; }
-    
+
     [JsonPropertyName("bodyPart")]
     public List<string>? BodyPart { get; set; }
-    
+
     [JsonPropertyName("daytime")]
     public DaytimeCounter? Daytime { get; set; }
-    
+
     [JsonPropertyName("conditionType")]
     public string? ConditionType { get; set; }
-    
+
     [JsonPropertyName("enemyHealthEffects")]
     public List<EnemyHealthEffect>? EnemyHealthEffects { get; set; }
-    
+
     [JsonPropertyName("resetOnSessionEnd")]
     public bool? ResetOnSessionEnd { get; set; }
 }

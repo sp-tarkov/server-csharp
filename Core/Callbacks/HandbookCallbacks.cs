@@ -6,9 +6,8 @@ public class HandbookCallbacks : OnLoad
 {
     public HandbookCallbacks()
     {
-        
     }
-    
+
     public Task OnLoad()
     {
         throw new NotImplementedException();

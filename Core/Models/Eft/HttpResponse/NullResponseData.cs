@@ -9,7 +9,7 @@ public class NullResponseData
 
     [JsonPropertyName("errmsg")]
     public object? ErrMsg { get; set; }
-    
+
     [JsonPropertyName("data")]
     public object? Data { get; set; }
 }

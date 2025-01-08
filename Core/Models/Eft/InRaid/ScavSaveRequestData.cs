@@ -4,5 +4,4 @@ namespace Core.Models.Eft.InRaid;
 
 public class ScavSaveRequestData : PostRaidPmcData
 {
-    
 }

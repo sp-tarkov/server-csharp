@@ -9,12 +9,11 @@ namespace Core.Callbacks;
 public class HideoutCallbacks : OnUpdate
 {
     private HideoutConfig _hideoutConfig;
-    
+
     public HideoutCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle HideoutUpgrade event
     /// </summary>
@@ -208,7 +207,7 @@ public class HideoutCallbacks : OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     public async Task<bool> OnUpdate(long timeSinceLastRun)
     {
         throw new NotImplementedException();

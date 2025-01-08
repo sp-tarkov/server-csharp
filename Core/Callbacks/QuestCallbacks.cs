@@ -10,9 +10,8 @@ public class QuestCallbacks
 {
     public QuestCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle RepeatableQuestChange event
     /// </summary>

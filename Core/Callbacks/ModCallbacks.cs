@@ -6,9 +6,8 @@ public class ModCallbacks : OnLoad
 {
     public ModCallbacks()
     {
-        
     }
-    
+
     public async Task OnLoad()
     {
         throw new NotImplementedException();

@@ -8,7 +8,6 @@ public class WishlistCallbacks
 {
     public WishlistCallbacks()
     {
-        
     }
 
     /// <summary>

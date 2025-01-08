@@ -3,7 +3,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Models.Eft.Builds;
 
-public class SetMagazineRequest 
+public class SetMagazineRequest
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

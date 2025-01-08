@@ -23,13 +23,10 @@ public class ConfigServer
         _logger = logger;
         Initialize();
     }
-    
+
     public T GetConfig<T>(ConfigTypes configType) where T : BaseConfig
     {
-        if (!configs.ContainsKey(configType.GetValue()))
-        {
-            throw new Exception($"Config: {configType} is undefined. Ensure you have not broken it via editing");
-        }
+        if (!configs.ContainsKey(configType.GetValue())) throw new Exception($"Config: {configType} is undefined. Ensure you have not broken it via editing");
 
         return configs[configType.GetValue()] as T;
     }
@@ -49,12 +46,12 @@ public class ConfigServer
 
         // Add file content to result
         foreach (var file in files)
-        {
             if (acceptableFileExtensions.Contains(Path.GetExtension(file)))
             {
                 var fileContent = File.ReadAllText(file);
                 var type = GetConfigTypeByFilename(file);
-                var deserializedContent = JsonSerializer.Deserialize(fileContent, type, options: new JsonSerializerOptions() {Converters = { new JsonStringEnumConverter() }});
+                var deserializedContent =
+                    JsonSerializer.Deserialize(fileContent, type, new JsonSerializerOptions() { Converters = { new JsonStringEnumConverter() } });
 
                 if (deserializedContent == null)
                 {
@@ -64,7 +61,6 @@ public class ConfigServer
 
                 configs[$"spt-{Path.GetFileNameWithoutExtension(file)}"] = deserializedContent;
             }
-        }
 
         /** TODO: deal with this:
         this.logger.info(`Commit hash: ${

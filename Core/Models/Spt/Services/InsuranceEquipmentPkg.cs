@@ -6,15 +6,15 @@ namespace Core.Models.Spt.Services;
 
 public class InsuranceEquipmentPkg
 {
-	[JsonPropertyName("sessionID")]
-	public string SessionId { get; set; }
+    [JsonPropertyName("sessionID")]
+    public string SessionId { get; set; }
 
-	[JsonPropertyName("pmcData")]
-	public PmcData PmcData { get; set; }
+    [JsonPropertyName("pmcData")]
+    public PmcData PmcData { get; set; }
 
-	[JsonPropertyName("itemToReturnToPlayer")]
-	public Item ItemToReturnToPlayer { get; set; }
+    [JsonPropertyName("itemToReturnToPlayer")]
+    public Item ItemToReturnToPlayer { get; set; }
 
-	[JsonPropertyName("traderId")]
-	public string TraderId { get; set; }
+    [JsonPropertyName("traderId")]
+    public string TraderId { get; set; }
 }

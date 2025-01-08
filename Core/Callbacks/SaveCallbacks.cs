@@ -9,9 +9,8 @@ public class SaveCallbacks : OnLoad, OnUpdate
 
     public SaveCallbacks()
     {
-        
     }
-    
+
     public async Task OnLoad()
     {
         throw new NotImplementedException();

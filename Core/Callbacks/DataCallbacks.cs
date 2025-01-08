@@ -11,7 +11,6 @@ public class DataCallbacks
 {
     public DataCallbacks()
     {
-        
     }
 
     /// <summary>

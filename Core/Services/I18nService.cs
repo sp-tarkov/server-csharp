@@ -10,7 +10,7 @@ public class I18nService
     private string _directory;
 
     private string _setLocale;
-    
+
     private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
 
     public I18nService(List<string> locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
@@ -29,11 +29,9 @@ public class I18nService
         if (files.Length == 0)
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
-        {
             _loadedLocales.Add(Path.GetFileNameWithoutExtension(file),
                 JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)) ?? new Dictionary<string, string>());
-        }
-        
+
         if (!_loadedLocales.ContainsKey(_defaultLocale))
             throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
     }
@@ -41,7 +39,9 @@ public class I18nService
     public void SetLocale(string locale)
     {
         if (_loadedLocales.ContainsKey(locale))
+        {
             _setLocale = locale;
+        }
         else
         {
             var fallback = _fallbacks.Where(kv => locale.StartsWith(kv.Key.Replace("*", "")));
@@ -67,7 +67,7 @@ public class I18nService
             defaults.TryGetValue(key, out value);
             return value ?? key;
         }
-            
+
         return value;
     }
 

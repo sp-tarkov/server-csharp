@@ -8,7 +8,6 @@ public class PrestigeCallbacks
 {
     public PrestigeCallbacks()
     {
-        
     }
 
     /// <summary>

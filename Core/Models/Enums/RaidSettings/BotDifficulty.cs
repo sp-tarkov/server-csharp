@@ -7,5 +7,5 @@ public enum BotDifficulty
     MEDIUM,
     HARD,
     IMPOSSIBLE,
-    RANDOM,
+    RANDOM
 }

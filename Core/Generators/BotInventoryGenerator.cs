@@ -12,7 +12,6 @@ public class BotInventoryGenerator
 
     public BotInventoryGenerator()
     {
-        
     }
 
     /// <summary>
@@ -109,7 +108,8 @@ public class BotInventoryGenerator
     /// <param name="isPmc">Is the bot being generated as a pmc</param>
     /// <param name="itemGenerationLimitsMinMax">Limits for items the bot can have</param>
     /// <param name="botLevel">level of bot having weapon generated</param>
-    public void GenerateAndAddWeaponsToBot(BotBaseInventory templateInventory, Chances equipmentChances, string sessionId, BotBaseInventory botInventory, string botRole,
+    public void GenerateAndAddWeaponsToBot(BotBaseInventory templateInventory, Chances equipmentChances, string sessionId, BotBaseInventory botInventory,
+        string botRole,
         bool isPmc, Generation itemGenerationLimitsMinMax, int botLevel)
     {
         throw new NotImplementedException();
@@ -124,7 +124,7 @@ public class BotInventoryGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Add weapon + spare mags/ammo to bots inventory
     /// </summary>
@@ -137,7 +137,8 @@ public class BotInventoryGenerator
     /// <param name="isPmc">Is the bot being generated as a pmc</param>
     /// <param name="itemGenerationWeights"></param>
     /// <param name="botLevel"></param>
-    public void AddWeaponAndMagazineToInventory(string sessionId, object weaponSlot, BotBaseInventory templateInventory, BotBaseInventory botInventory, Chances equipmentChances, string botRole,
+    public void AddWeaponAndMagazineToInventory(string sessionId, object weaponSlot, BotBaseInventory templateInventory, BotBaseInventory botInventory,
+        Chances equipmentChances, string botRole,
         bool isPmc, Generation itemGenerationWeights, int botLevel)
     {
         throw new NotImplementedException();

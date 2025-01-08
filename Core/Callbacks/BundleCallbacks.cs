@@ -5,10 +5,9 @@ namespace Core.Callbacks;
 public class BundleCallbacks
 {
     private HttpConfig _httpConfig;
-    
+
     public BundleCallbacks()
     {
-        
     }
 
     /// <summary>

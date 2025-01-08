@@ -19,13 +19,15 @@ public class DatabaseImporter : OnLoad
 
     protected readonly ILogger _logger;
     protected readonly LocalisationService _localisationService;
+
     protected readonly DatabaseServer _databaseServer;
+
     //protected readonly ImageRouter _imageRouter;
     protected readonly EncodingUtil _encodingUtil;
     protected readonly HashUtil _hashUtil;
     protected readonly ImporterUtil _importerUtil;
     protected readonly ConfigServer _configServer;
-    
+
     public DatabaseImporter(
         ILogger logger,
         // TODO: are we gonna use this? @inject("JsonUtil") protected jsonUtil: JsonUtil,
@@ -36,7 +38,8 @@ public class DatabaseImporter : OnLoad
         HashUtil hashUtil,
         ImporterUtil importerUtil,
         ConfigServer configServer
-    ) {
+    )
+    {
         _logger = logger;
         _localisationService = localisationService;
         _databaseServer = databaseServer;
@@ -51,7 +54,8 @@ public class DatabaseImporter : OnLoad
      * Get path to spt data
      * @returns path to data
      */
-    public string GetSptDataPath() {
+    public string GetSptDataPath()
+    {
         return "./Assets/";
     }
 
@@ -113,9 +117,9 @@ public class DatabaseImporter : OnLoad
             OnReadValidate
         );
 
-        var validation = valid == ValidationResult.FAILED || this.valid == ValidationResult.NOT_FOUND ? "." : "";
+        var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
-        _databaseServer.SetTables((DatabaseTables) dataToImport);
+        _databaseServer.SetTables((DatabaseTables)dataToImport);
     }
 
     protected void OnReadValidate(string fileWithPath, string data)
@@ -201,9 +205,10 @@ public class DatabaseImporter : OnLoad
     }
 }
 
-enum ValidationResult {
+internal enum ValidationResult
+{
     SUCCESS = 0,
     FAILED = 1,
     NOT_FOUND = 2,
-    UNDEFINED = 3,
+    UNDEFINED = 3
 }

@@ -30,10 +30,7 @@ public class LocaleService
     public Dictionary<string, string> GetLocaleDb()
     {
         var desiredLocale = _databaseServer.GetTables().locales.Global[GetDesiredGameLocale()];
-        if (desiredLocale != null)
-        {
-            return desiredLocale;
-        }
+        if (desiredLocale != null) return desiredLocale;
 
         _logger.Warning(
             $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'");
@@ -48,10 +45,7 @@ public class LocaleService
      */
     public string GetDesiredGameLocale()
     {
-        if (_localeConfig.GameLocale.ToLower() == "system")
-        {
-            return GetPlatformForClientLocale();
-        }
+        if (_localeConfig.GameLocale.ToLower() == "system") return GetPlatformForClientLocale();
 
         return _localeConfig.GameLocale.ToLower();
     }
@@ -63,10 +57,7 @@ public class LocaleService
      */
     public string GetDesiredServerLocale()
     {
-        if (_localeConfig.ServerLocale.ToLower() == "system")
-        {
-            return GetPlatformForServerLocale();
-        }
+        if (_localeConfig.ServerLocale.ToLower() == "system") return GetPlatformForServerLocale();
 
         return _localeConfig.ServerLocale.ToLower();
     }
@@ -110,19 +101,15 @@ public class LocaleService
             if (_localeConfig.ServerSupportedLocales.Contains(languageCode))
             {
                 if (baseNameCode == "zh")
-                {
                     // Handle edge case of zh
                     return "zh-cn";
-                }
 
                 return languageCode;
             }
 
             if (baseNameCode == "pt")
-            {
                 // Handle edge case of pt
                 return "pt-pt";
-            }
 
             _logger.Warning($"Unsupported system language found: {baseNameCode}, falling back to english");
 
@@ -147,16 +134,10 @@ public class LocaleService
 
         var locales = _databaseServer.GetTables().locales;
         var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLower();
-        if (locales.Global.ContainsKey(baseNameCode))
-        {
-            return baseNameCode;
-        }
+        if (locales.Global.ContainsKey(baseNameCode)) return baseNameCode;
 
         var languageCode = platformLocale.Name.ToLower();
-        if (locales.Global.ContainsKey(languageCode))
-        {
-            return languageCode;
-        }
+        if (locales.Global.ContainsKey(languageCode)) return languageCode;
 
         /*
         const regionCode = platformLocale.region?.toLocaleLowerCase();
@@ -166,10 +147,7 @@ public class LocaleService
         */
 
         // BSG map DE to GE some reason
-        if (baseNameCode == "de")
-        {
-            return "ge";
-        }
+        if (baseNameCode == "de") return "ge";
 
         _logger.Warning($"Unsupported system language found: {languageCode}, falling back to english");
         return "en";

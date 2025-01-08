@@ -6,9 +6,8 @@ public class PresetCallbacks : OnLoad
 {
     public PresetCallbacks()
     {
-        
     }
-    
+
     public async Task OnLoad()
     {
         throw new NotImplementedException();

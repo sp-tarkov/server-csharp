@@ -8,9 +8,8 @@ public class TradeCallbacks
 {
     public TradeCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/items/moving TradingConfirm event
     /// </summary>

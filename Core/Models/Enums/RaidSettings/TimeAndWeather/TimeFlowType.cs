@@ -9,5 +9,5 @@ public enum TimeFlowType
     X1,
     X2,
     X4,
-    X8,
+    X8
 }

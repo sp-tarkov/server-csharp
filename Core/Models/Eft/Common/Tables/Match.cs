@@ -2,7 +2,6 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-
 public class Match
 {
     [JsonPropertyName("metrics")]

@@ -29,91 +29,91 @@ public class TraderBase
 {
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers { get; set; }
-    
+
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("availableInRaid")]
     public bool? AvailableInRaid { get; set; }
-    
+
     [JsonPropertyName("avatar")]
     public string? Avatar { get; set; }
-    
+
     [JsonPropertyName("balance_dol")]
     public decimal? BalanceDollar { get; set; }
-    
+
     [JsonPropertyName("balance_eur")]
     public decimal? BalanceEuro { get; set; }
-    
+
     [JsonPropertyName("balance_rub")]
     public decimal? BalanceRub { get; set; }
-    
+
     [JsonPropertyName("buyer_up")]
     public bool? BuyerUp { get; set; }
-    
+
     [JsonPropertyName("currency")]
     public string? Currency { get; set; }
-    
+
     [JsonPropertyName("customization_seller")]
     public bool? CustomizationSeller { get; set; }
-    
+
     [JsonPropertyName("discount")]
     public decimal? Discount { get; set; }
-    
+
     [JsonPropertyName("discount_end")]
     public decimal? DiscountEnd { get; set; }
-    
+
     [JsonPropertyName("gridHeight")]
     public int? GridHeight { get; set; }
-    
+
     [JsonPropertyName("sell_modifier_for_prohibited_items")]
     public decimal? SellModifierForProhibitedItems { get; set; }
-    
+
     [JsonPropertyName("insurance")]
     public TraderInsurance? Insurance { get; set; }
-    
+
     [JsonPropertyName("items_buy")]
     public ItemBuyData? ItemsBuy { get; set; }
-    
+
     [JsonPropertyName("items_buy_prohibited")]
     public ItemBuyData? ItemsBuyProhibited { get; set; }
-    
+
     [JsonPropertyName("isCanTransferItems")]
     public bool? IsCanTransferItems { get; set; }
-    
+
     [JsonPropertyName("transferableItems")]
     public ItemBuyData? TransferableItems { get; set; }
-    
+
     [JsonPropertyName("prohibitedTransferableItems")]
     public ItemBuyData? ProhibitedTransferableItems { get; set; }
-    
+
     [JsonPropertyName("location")]
     public string? Location { get; set; }
-    
+
     [JsonPropertyName("loyaltyLevels")]
     public List<TraderLoyaltyLevel>? LoyaltyLevels { get; set; }
-    
+
     [JsonPropertyName("medic")]
     public bool? Medic { get; set; }
-    
+
     [JsonPropertyName("name")]
     public string? Name { get; set; }
-    
+
     [JsonPropertyName("nextResupply")]
     public int? NextResupply { get; set; }
-    
+
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
-    
+
     [JsonPropertyName("repair")]
     public TraderRepair? Repair { get; set; }
-    
+
     [JsonPropertyName("sell_category")]
     public List<string>? SellCategory { get; set; }
-    
+
     [JsonPropertyName("surname")]
     public string? Surname { get; set; }
-    
+
     [JsonPropertyName("unlockedByDefault")]
     public bool? UnlockedByDefault { get; set; }
 }
@@ -122,7 +122,7 @@ public class ItemBuyData
 {
     [JsonPropertyName("category")]
     public List<string>? Category { get; set; }
-    
+
     [JsonPropertyName("id_list")]
     public List<string>? IdList { get; set; }
 }
@@ -232,7 +232,7 @@ public class BarterScheme
     public DogtagExchangeSide? Side { get; set; }
 }
 
-public class Suit 
+public class Suit
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -259,7 +259,7 @@ public class Suit
     public SuitRequirements? Requirements { get; set; }
 }
 
-public class SuitRequirements 
+public class SuitRequirements
 {
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements { get; set; }
@@ -286,7 +286,7 @@ public class SuitRequirements
     public string? RequiredTid { get; set; }
 }
 
-public class ItemRequirement 
+public class ItemRequirement
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -298,7 +298,7 @@ public class ItemRequirement
     public string? Id { get; set; }
 
     [JsonPropertyName("onlyFunctional")]
-    public bool ?OnlyFunctional { get; set; }
+    public bool? OnlyFunctional { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }

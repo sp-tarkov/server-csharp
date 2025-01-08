@@ -4,7 +4,6 @@ public class UbglExternalMagGen : InventoryMagGen
 {
     public UbglExternalMagGen()
     {
-        
     }
 
     public int GetPriority()

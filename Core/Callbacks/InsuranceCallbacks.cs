@@ -13,7 +13,6 @@ public class InsuranceCallbacks : OnUpdate
 
     public InsuranceCallbacks()
     {
-        
     }
 
     /// <summary>

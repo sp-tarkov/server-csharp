@@ -13,7 +13,7 @@ public class App
 {
     protected Dictionary<string, long> _onUpdateLastRun;
     protected CoreConfig _coreConfig;
-    
+
     private ILogger _logger;
     private TimeUtil _timeUtil;
     private LocalisationService _localisationService;
@@ -23,7 +23,7 @@ public class App
     private DatabaseService _databaseService;
     private IEnumerable<OnLoad> _onLoad;
     private IEnumerable<OnUpdate> _onUpdate;
-    
+
     public App(
         ILogger logger,
         TimeUtil timeUtil,
@@ -34,7 +34,8 @@ public class App
         DatabaseService databaseService,
         IEnumerable<OnLoad> onLoadComponents,
         IEnumerable<OnUpdate> onUpdateComponents
-    ) {
+    )
+    {
         _logger = logger;
         _timeUtil = timeUtil;
         _localisationService = localisationService;
@@ -44,10 +45,10 @@ public class App
         _databaseService = databaseService;
         _onLoad = onLoadComponents;
         _onUpdate = onUpdateComponents;
-        
+
         _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
-    
+
     public async Task Load()
     {
         // execute onLoad callbacks
@@ -78,23 +79,15 @@ public class App
             _logger.Debug("Commit: ${ProgramStatics.COMMIT}");
         }
         */
-        foreach (var onLoad in _onLoad)
-        {
-            await onLoad.OnLoad();
-        }
+        foreach (var onLoad in _onLoad) await onLoad.OnLoad();
 
-        var timer = new Timer(_ =>
-        {
-            update(_onUpdate);
-        }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+        var timer = new Timer(_ => { update(_onUpdate); }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
     }
 
     protected async Task update(IEnumerable<OnUpdate> onUpdateComponents)
     {
         // If the server has failed to start, skip any update calls
-        if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid()) {
-            return;
-        }
+        if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid()) return;
 
         foreach (var updateable in onUpdateComponents)
         {
@@ -103,26 +96,31 @@ public class App
                 lastRunTimeTimestamp = 0;
             var secondsSinceLastRun = _timeUtil.GetTimeStamp() - lastRunTimeTimestamp;
 
-            try {
+            try
+            {
                 success = await updateable.OnUpdate(secondsSinceLastRun);
-            } catch (Exception err) {
+            }
+            catch (Exception err)
+            {
                 LogUpdateException(err, updateable);
             }
 
-            if (success) {
+            if (success)
+            {
                 _onUpdateLastRun[updateable.GetRoute()] = _timeUtil.GetTimeStamp();
-            } else {
+            }
+            else
+            {
                 /* temporary for debug */
                 var warnTime = 20 * 60;
 
-                if (secondsSinceLastRun % warnTime == 0) {
-                    _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
-                }
+                if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
             }
         }
     }
 
-    protected void LogUpdateException(Exception err, OnUpdate updateable) {
+    protected void LogUpdateException(Exception err, OnUpdate updateable)
+    {
         _logger.Error(_localisationService.GetText("scheduled_event_failed_to_run", updateable.GetRoute()));
         _logger.Error(err.ToString());
     }

@@ -9,9 +9,8 @@ public class WeatherCallbacks
 {
     public WeatherCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/weather
     /// </summary>

@@ -13,9 +13,10 @@ public class BotController
 {
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
-    
+
     public BotController()
-    {}
+    {
+    }
 
     public int GetBotPresetGenerationLimit(string type)
     {
@@ -26,7 +27,7 @@ public class BotController
     {
         throw new NotImplementedException();
     }
-    
+
     public object GetBotDifficulty(string type, string difficulty) // TODO: return type was: IBotCore | IDifficultyCategories
     {
         throw new NotImplementedException();
@@ -36,7 +37,7 @@ public class BotController
     {
         throw new NotImplementedException();
     }
-    
+
     public async Task<List<BotBase>> Generate(GenerateBotsRequestData info, bool playerscav)
     {
         throw new NotImplementedException();
@@ -67,7 +68,7 @@ public class BotController
     {
         throw new NotImplementedException();
     }
-    
+
     public int GetBotLimit(string type)
     {
         throw new NotImplementedException();
@@ -88,7 +89,7 @@ public class BotController
     {
         throw new NotImplementedException();
     }
-    
+
     public int GetBotCap()
     {
         throw new NotImplementedException();

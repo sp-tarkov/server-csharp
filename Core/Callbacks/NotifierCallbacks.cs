@@ -9,9 +9,8 @@ public class NotifierCallbacks
 {
     public NotifierCallbacks()
     {
-        
     }
-    
+
     /**
      * If we don't have anything to send, it's ok to not send anything back
      * because notification requests can be long-polling. In fact, we SHOULD wait

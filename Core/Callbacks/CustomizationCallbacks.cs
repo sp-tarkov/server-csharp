@@ -11,9 +11,8 @@ public class CustomizationCallbacks
 {
     public CustomizationCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/trading/customization/storage
     /// </summary>
@@ -49,7 +48,7 @@ public class CustomizationCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/hideout/customization/offer/list
     /// </summary>
@@ -85,5 +84,4 @@ public class CustomizationCallbacks
     {
         throw new NotImplementedException();
     }
-
 }

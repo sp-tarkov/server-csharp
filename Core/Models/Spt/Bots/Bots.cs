@@ -5,7 +5,6 @@ namespace Core.Models.Spt.Bots;
 
 public class Bots
 {
-    
     [JsonPropertyName("types")]
     public Dictionary<string, BotType> Types { get; set; }
 

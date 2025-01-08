@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Inventory;
 public class OpenRandomLootContainerRequestData
 {
     public string? Action { get; set; } = "OpenRandomLootContainer";
-    
+
     /// <summary>
     /// Container item id being opened
     /// </summary>
