@@ -25,7 +25,24 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
                     var value = reader.GetString();
                     if (string.IsNullOrWhiteSpace(value))
                         return default;
-                    goto case JsonTokenType.Number;
+                    var type = typeToConvert;
+                    try
+                    {
+                        if (typeToConvert.IsGenericType &&
+                            typeToConvert.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
+                            type = typeToConvert.GenericTypeArguments[0];
+                        }
+                        return (T) type.GetMethods().First(m =>
+                            m.Name == "Parse" && m.GetParameters().Length == 1 &&
+                            m.GetParameters().First().ParameterType == typeof(string)).Invoke(null, [value]);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Tried to convert {value} into {type.Name} but failed to parse it, null value will be used instead.");
+                    }
+
+                    return default;
                 case JsonTokenType.Number:
                     using (var jsonDocument = JsonDocument.ParseValue(ref reader))
                     {

@@ -6,6 +6,7 @@ namespace Core.Models.Spt.Services;
 public class TraderServiceModel
 {
     [JsonPropertyName("serviceType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public TraderServiceType? ServiceType { get; set; }
 
     [JsonPropertyName("itemsToPay")]
@@ -27,5 +28,5 @@ public class TraderServiceRequirementsModel
     public List<string>? CompletedQuests { get; set; }
 
     [JsonPropertyName("standings")]
-    public Dictionary<string, int>? Standings { get; set; }
+    public Dictionary<string, double>? Standings { get; set; }
 }

@@ -1,11 +1,13 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common;
 
 public class PmcData : BotBase
 {
     [JsonPropertyName("Prestige")]
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Tables.Prestige Prestige { get; set; }
 }
 

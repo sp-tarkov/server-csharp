@@ -153,6 +153,7 @@ public class Info
     public string? Voice { get; set; }
     public double? Level { get; set; }
     public double? Experience { get; set; }
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public long? RegistrationDate { get; set; }
     public string? GameVersion { get; set; }
     public double? AccountType { get; set; }
@@ -181,6 +182,7 @@ public class Info
 
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
+    public double? PrestigeLevel { get; set; }
 }
 
 public class BotInfoSettings
@@ -219,6 +221,7 @@ public class Customization
     public string? Body { get; set; }
     public string? Feet { get; set; }
     public string? Hands { get; set; }
+    public string? DogTag { get; set; }
 }
 
 public class BotBaseHealth
@@ -518,6 +521,7 @@ public class Hideout
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
     public long? SptUpdateLastRunTimestamp { get; set; }
+    public Dictionary<string, string>? Customization { get; set; }
 }
 
 public class HideoutCounters
@@ -751,6 +755,7 @@ public class Bonus
     public string? Id { get; set; }
 
     [JsonPropertyName("type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BonusType? Type { get; set; }
 
     [JsonPropertyName("templateId")]
