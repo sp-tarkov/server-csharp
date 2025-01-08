@@ -209,7 +209,7 @@ public class RandomUtil
     /// <param name="low">The lower bound of the range (inclusive).</param>
     /// <param name="high">The upper bound of the range (exclusive). If not provided, the range will be from 0 to `low`.</param>
     /// <returns>A random integer within the specified range.</returns>
-    public int RandInt(int low, int? high)
+    public int RandInt(int low, int? high = null)
     {
         // Return a random integer from 0 to low if high is not provided
         if (high is null)
@@ -276,6 +276,83 @@ public class RandomUtil
         var factor = Math.Pow(2, effectivePrecision);
         
         return Math.Round(result * factor) / factor;
+    }
+
+    /// <summary>
+    /// Draws a specified number of random elements from a given list.
+    /// </summary>
+    /// <param name="originalList">The list to draw elements from.</param>
+    /// <param name="count">The number of elements to draw. Defaults to 1.</param>
+    /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <returns>A List containing the drawn elements.</returns>
+    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
+    {
+        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+    }
+
+    /// <summary>
+    /// Draws a specified number of random keys from a given dictionary.
+    /// </summary>
+    /// <param name="dict">The dictionary from which to draw keys.</param>
+    /// <param name="count">The number of keys to draw. Defaults to 1.</param>
+    /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
+    /// <typeparam name="TKey">The type of elements in keys</typeparam>
+    /// <typeparam name="TVal">The type of elements in values</typeparam>
+    /// <returns>A list of randomly drawn keys from the dictionary.</returns>
+    public List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true) where TKey : notnull
+    {
+        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+    }
+
+    /// <summary>
+    /// Generates a biased random number within a specified range.
+    /// </summary>
+    /// <param name="min">The minimum value of the range (inclusive).</param>
+    /// <param name="max">The maximum value of the range (inclusive).</param>
+    /// <param name="shift">The bias shift to apply to the random number generation.</param>
+    /// <param name="n">The number of iterations to use for generating a Gaussian random number.</param>
+    /// <returns>A biased random number within the specified range.</returns>
+    public double GetBiasedRandomNumber(double min, double max, double shift, double n)
+    {
+        /***
+         * This function generates a random number based on a gaussian distribution with an option to add a bias via shifting.
+         *
+         * Here's an example graph of how the probabilities can be distributed:
+         * https://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/graphs/normal_pdf.png
+         *
+         * Our parameter 'n' is sort of like σ (sigma) in the example graph.
+         *
+         * An 'n' of 1 means all values are equally likely. Increasing 'n' causes numbers near the edge to become less likely.
+         * By setting 'shift' to whatever 'max' is, we can make values near 'min' very likely, while values near 'max' become extremely unlikely.
+         *
+         * Here's a place where you can play around with the 'n' and 'shift' values to see how the distribution changes:
+         * http://jsfiddle.net/e08cumyx/
+         */
+        
+        throw new NotImplementedException("This honestly went over my head...");
+    }
+
+    /// <summary>
+    /// Shuffles a list in place using the Fisher-Yates algorithm.
+    /// </summary>
+    /// <param name="originalList">The list to shuffle.</param>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <returns>The shuffled list.</returns>
+    public List<T> Shuffle<T>(List<T> originalList)
+    {
+        var currentIndex = originalList.Count;
+        
+        while (currentIndex != 0)
+        {
+            var randomIndex = GetInt(0, currentIndex);
+            currentIndex--;
+            
+            // Swap it with the current element.
+            (originalList[currentIndex], originalList[randomIndex]) = (originalList[randomIndex], originalList[currentIndex]);
+        }
+        
+        return originalList;
     }
     
     /// <summary>

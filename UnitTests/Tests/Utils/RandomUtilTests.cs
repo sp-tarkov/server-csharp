@@ -121,7 +121,7 @@ public sealed class RandomUtilTests
 		
 		for (var i = 0; i < 100; i++)
 		{
-			var result = _randomUtil.RandInt(10, null);
+			var result = _randomUtil.RandInt(10);
 
 			if (result < 0 || result > 9)
 			{
@@ -162,5 +162,22 @@ public sealed class RandomUtilTests
 				Assert.Fail($"RandNum(10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values.");
 			}
 		}
+	}
+
+	[TestMethod]
+	public void ShuffleTest()
+	{
+		var testList = new List<int>()
+		{
+			1,2,3,4,5,6,7,8,9,10
+		};
+		
+		var orig = new List<int>(testList);
+		
+		var result = _randomUtil.Shuffle(testList);
+		
+		Assert.IsFalse(
+			result.SequenceEqual(orig), 
+			$"Shuffle test failed. Expected: {string.Join(", ", orig)}, but got {string.Join(", ", result)}");
 	}
 }
