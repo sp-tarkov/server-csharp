@@ -5,7 +5,26 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class HashUtilTests
 {
-	private readonly HashUtil _hashUtil = new();
+	private readonly HashUtil _hashUtil = new(new RandomUtil());
+	
+	[TestMethod]
+	public void GenerateTest()
+	{
+		// Generate 100 MongoId's
+		for (var i = 0; i < 100; i++)
+		{
+			// Invalid mongoId character
+			var result = _hashUtil.Generate();
+		
+			// Invalid mongoId length
+			var test = _hashUtil.IsValidMongoId(result);
+		
+			Assert.AreEqual(
+				true, 
+				test,
+				$"IsValidMongoId() `{result}` is not a valid MongoId.");
+		}
+	}
 	
 	[TestMethod]
 	public void IsValidMongoIdTest()

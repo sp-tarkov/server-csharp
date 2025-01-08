@@ -7,7 +7,7 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil
 {
-    private readonly Random _random = new();
+    public readonly Random Random = new();
     
     /// <summary>
     /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
@@ -30,7 +30,7 @@ public class RandomUtil
         }
         
         // maxVal is exclusive of the passed value, so add 1
-        return max > min ? _random.Next(min, max + 1) : min;
+        return max > min ? Random.Next(min, max + 1) : min;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class RandomUtil
     /// <returns>A random integer between 1 and max - 1, or 1 if max is less than or equal to 1.</returns>
     public int GetIntEx(int max)
     {
-        return max > 2 ? _random.Next(1, max - 1) : 1;
+        return max > 2 ? Random.Next(1, max - 1) : 1;
     }
 
     /// <summary>
@@ -214,13 +214,13 @@ public class RandomUtil
         // Return a random integer from 0 to low if high is not provided
         if (high is null)
         {
-            return _random.Next(0, low);
+            return Random.Next(0, low);
         }
         
         // Return low directly when low and high are equal
         return low == high
             ? low
-            : _random.Next(low, (int)high);
+            : Random.Next(low, (int)high);
     }
 
     /// <summary>
