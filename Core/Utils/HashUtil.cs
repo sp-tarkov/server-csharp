@@ -9,14 +9,40 @@ namespace Core.Utils;
 public class HashUtil
 {
 	private readonly Regex MongoIdRegex = new Regex("^[a-fA-F0-9]{24}$");
+
+	private readonly RandomUtil _randomUtil;
+	
+	public HashUtil(RandomUtil randomUtil)
+	{
+		_randomUtil = randomUtil;
+	}
 	
 	/// <summary>
-	/// Create a 24 character id using the sha256 algorithm + current timestamp
+	/// Create a 24 character MongoId
 	/// </summary>
-	/// <returns>24 character hash</returns>
+	/// <returns>24 character objectId</returns>
 	public string Generate()
 	{
-		throw new NotImplementedException();
+		var objectId = new byte[12];
+		
+		// Time stamp (4 bytes)
+		var timestamp = BitConverter.GetBytes((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+		// Convert to big-endian
+		Array.Reverse(timestamp); 
+		Array.Copy(timestamp, 0, objectId, 0, 4);
+		
+		// Random value (5 bytes)
+		var randomValue = new byte[5];
+		_randomUtil.Random.NextBytes(randomValue);
+		Array.Copy(randomValue, 0, objectId, 4, 5);
+		
+		// Incrementing counter (3 bytes)
+		// 24-bit counter
+		var counter = BitConverter.GetBytes(_randomUtil.GetInt(0, 16777215)); 
+		Array.Reverse(counter);
+		Array.Copy(counter, 0, objectId, 9, 3);
+		
+		return Convert.ToHexStringLower(objectId);
 	}
 	
 	/// <summary>

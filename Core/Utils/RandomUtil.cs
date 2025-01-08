@@ -7,7 +7,13 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil
 {
-    private readonly Random _random = new();
+    public readonly Random Random = new();
+    
+    /// <summary>
+    /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
+    /// integer + fractional parts) to about 15–17 significant digits. 15 is a safe upper bound, so we'll use that.
+    /// </summary>
+    public const int MaxSignificantDigits = 15;
     
     /// <summary>
     /// Generates a random integer between the specified minimum and maximum values, inclusive.
@@ -24,7 +30,7 @@ public class RandomUtil
         }
         
         // maxVal is exclusive of the passed value, so add 1
-        return max > min ? _random.Next(min, max + 1) : min;
+        return max > min ? Random.Next(min, max + 1) : min;
     }
 
     /// <summary>
@@ -35,11 +41,11 @@ public class RandomUtil
     /// <returns>A random integer between 1 and max - 1, or 1 if max is less than or equal to 1.</returns>
     public int GetIntEx(int max)
     {
-        return max > 2 ? _random.Next(1, max - 1) : 1;
+        return max > 2 ? Random.Next(1, max - 1) : 1;
     }
 
     /// <summary>
-    /// Generates a random floating-point number within the specified range.
+    /// Generates a random floating-point number within the specified range ~6-9 digits (4 bytes).
     /// </summary>
     /// <param name="min">The minimum value of the range (inclusive).</param>
     /// <param name="max">The maximum value of the range (exclusive).</param>
@@ -47,6 +53,17 @@ public class RandomUtil
     public float GetFloat(float min, float max)
     {
         return (float)GetSecureRandomNumber() * (max - min) + min;
+    }
+    
+    /// <summary>
+    /// Generates a random floating-point number within the specified range ~15-17 digits (8 bytes).
+    /// </summary>
+    /// <param name="min">The minimum value of the range (inclusive).</param>
+    /// <param name="max">The maximum value of the range (exclusive).</param>
+    /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
+    public double GetDouble(double min, double max)
+    {
+        return GetSecureRandomNumber() * (max - min) + min;
     }
 
     /// <summary>
@@ -110,9 +127,9 @@ public class RandomUtil
     }
     
     /// <summary>
-    /// Returns a random string from the provided collection of strings.
+    /// Returns a random type T from the provided collection of type T.
     /// </summary>
-    /// <param name="collection"></param>
+    /// <param name="collection">The collection to get the random element from</param>
     /// <typeparam name="T">The type of elements in the collection.</typeparam>
     /// <returns>A random element from the collection.</returns>
     /// <remarks>This was formerly getArrayValue() in the node server</remarks>
@@ -131,6 +148,211 @@ public class RandomUtil
     public TKey GetKey<TKey, TVal>(Dictionary<TKey, TVal> dictionary) where TKey : notnull
     {
         return GetCollectionValue(dictionary.Keys);
+    }
+
+    /// <summary>
+    /// Gets a random val from the given dictionary
+    /// </summary>
+    /// <param name="dictionary">The dictionary from which to retrieve a value.</param>
+    /// <typeparam name="TKey">Type of key</typeparam>
+    /// <typeparam name="TVal">Type of Value</typeparam>
+    /// <returns>A random TVal representing one of the values of the dictionary.</returns>
+    public TVal GetVal<TKey, TVal>(Dictionary<TKey, TVal> dictionary) where TKey : notnull
+    {
+        return GetCollectionValue(dictionary.Values);
+    }
+
+    /// <summary>
+    /// Generates a normally distributed random number using the Box-Muller transform.
+    /// </summary>
+    /// <param name="mean">The mean (μ) of the normal distribution.</param>
+    /// <param name="sigma">The standard deviation (σ) of the normal distribution.</param>
+    /// <param name="attempt">The current attempt count to generate a valid number (default is 0).</param>
+    /// <returns>A normally distributed random number.</returns>
+    /// <remarks>
+    /// This function uses the Box-Muller transform to generate a normally distributed random number.
+    /// If the generated number is less than 0, it will recursively attempt to generate a valid number up to 100 times.
+    /// If it fails to generate a valid number after 100 attempts, it will return a random float between 0.01 and twice the mean.
+    /// </remarks>
+    public double GetNormallyDistributedRandomNumber(double mean, double sigma, int attempt = 0)
+    {
+        double u, v;
+        
+        do
+        {
+            u = GetSecureRandomNumber();
+        } while (u == 0);
+        
+        do
+        {
+            v = GetSecureRandomNumber();
+        } while (v == 0);
+        
+        // Apply the Box-Muller transform
+        var w = Math.Sqrt(-2.0 * Math.Log(u)) * Math.Cos(2.0 * Math.PI * v);
+        var valueDrawn = mean + w * sigma;
+        
+        // Check if the generated value is valid
+        if (valueDrawn < 0)
+        {
+            return attempt > 100 
+                ? GetDouble(0.01f, mean * 2f)
+                : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
+        }
+
+        return valueDrawn;
+    }
+
+    /// <summary>
+    /// Generates a random integer between the specified range.
+    /// </summary>
+    /// <param name="low">The lower bound of the range (inclusive).</param>
+    /// <param name="high">The upper bound of the range (exclusive). If not provided, the range will be from 0 to `low`.</param>
+    /// <returns>A random integer within the specified range.</returns>
+    public int RandInt(int low, int? high = null)
+    {
+        // Return a random integer from 0 to low if high is not provided
+        if (high is null)
+        {
+            return Random.Next(0, low);
+        }
+        
+        // Return low directly when low and high are equal
+        return low == high
+            ? low
+            : Random.Next(low, (int)high);
+    }
+
+    /// <summary>
+    /// Generates a random number between two given values with optional precision.
+    /// </summary>
+    /// <param name="val1">The first value to determine the range.</param>
+    /// <param name="val2">The second value to determine the range. If not provided, 0 is used.</param>
+    /// <param name="precision">
+    /// The number of decimal places to round the result to. Must be a positive integer between 0
+    /// and MaxSignificantDigits(15), inclusive. If not provided, precision is determined by the input values.
+    /// </param>
+    /// <returns></returns>
+    public double RandNum(double val1, double val2 = 0, byte? precision = null)
+    {
+        if (!double.IsFinite(val1) || !double.IsFinite(val2))
+        {
+            throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
+        }
+        
+        // Determine the range
+        var min = Math.Min(val1, val2);
+        var max = Math.Max(val1, val2);
+
+        // Validate and adjust precision
+        if (precision is not null)
+        {
+            if (precision > MaxSignificantDigits)
+            {
+                throw new ArgumentOutOfRangeException(
+                    nameof(precision), "Must be less than 16");
+            }
+            
+            // Calculate the number of whole-number digits in the maximum absolute value of the range
+            var maxAbsoluteValue = Math.Max(Math.Abs(min), Math.Abs(max));
+            var wholeNumberDigits = (int)Math.Floor(Math.Log10(maxAbsoluteValue)) + 1;
+            
+            var maxAllowedPrecision = Math.Max(0, MaxSignificantDigits - wholeNumberDigits);
+
+            if (precision > maxAllowedPrecision)
+            {
+                throw new ArgumentException(
+                    $"RandNum() precision of {precision} exceeds the allowable precision ({maxAllowedPrecision}) for the given values."
+                );
+            }
+        }
+        
+        var result = GetSecureRandomNumber() * (max - min) + min;
+        
+        // Determine effective precision
+        var maxPrecision = Math.Max(GetNumberPrecision(val1), GetNumberPrecision(val2));
+        var effectivePrecision = precision ?? maxPrecision;
+
+        var factor = Math.Pow(2, effectivePrecision);
+        
+        return Math.Round(result * factor) / factor;
+    }
+
+    /// <summary>
+    /// Draws a specified number of random elements from a given list.
+    /// </summary>
+    /// <param name="originalList">The list to draw elements from.</param>
+    /// <param name="count">The number of elements to draw. Defaults to 1.</param>
+    /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <returns>A List containing the drawn elements.</returns>
+    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
+    {
+        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+    }
+
+    /// <summary>
+    /// Draws a specified number of random keys from a given dictionary.
+    /// </summary>
+    /// <param name="dict">The dictionary from which to draw keys.</param>
+    /// <param name="count">The number of keys to draw. Defaults to 1.</param>
+    /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
+    /// <typeparam name="TKey">The type of elements in keys</typeparam>
+    /// <typeparam name="TVal">The type of elements in values</typeparam>
+    /// <returns>A list of randomly drawn keys from the dictionary.</returns>
+    public List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true) where TKey : notnull
+    {
+        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+    }
+
+    /// <summary>
+    /// Generates a biased random number within a specified range.
+    /// </summary>
+    /// <param name="min">The minimum value of the range (inclusive).</param>
+    /// <param name="max">The maximum value of the range (inclusive).</param>
+    /// <param name="shift">The bias shift to apply to the random number generation.</param>
+    /// <param name="n">The number of iterations to use for generating a Gaussian random number.</param>
+    /// <returns>A biased random number within the specified range.</returns>
+    public double GetBiasedRandomNumber(double min, double max, double shift, double n)
+    {
+        /***
+         * This function generates a random number based on a gaussian distribution with an option to add a bias via shifting.
+         *
+         * Here's an example graph of how the probabilities can be distributed:
+         * https://www.boost.org/doc/libs/1_49_0/libs/math/doc/sf_and_dist/graphs/normal_pdf.png
+         *
+         * Our parameter 'n' is sort of like σ (sigma) in the example graph.
+         *
+         * An 'n' of 1 means all values are equally likely. Increasing 'n' causes numbers near the edge to become less likely.
+         * By setting 'shift' to whatever 'max' is, we can make values near 'min' very likely, while values near 'max' become extremely unlikely.
+         *
+         * Here's a place where you can play around with the 'n' and 'shift' values to see how the distribution changes:
+         * http://jsfiddle.net/e08cumyx/
+         */
+        
+        throw new NotImplementedException("This honestly went over my head...");
+    }
+
+    /// <summary>
+    /// Shuffles a list in place using the Fisher-Yates algorithm.
+    /// </summary>
+    /// <param name="originalList">The list to shuffle.</param>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <returns>The shuffled list.</returns>
+    public List<T> Shuffle<T>(List<T> originalList)
+    {
+        var currentIndex = originalList.Count;
+        
+        while (currentIndex != 0)
+        {
+            var randomIndex = GetInt(0, currentIndex);
+            currentIndex--;
+            
+            // Swap it with the current element.
+            (originalList[currentIndex], originalList[randomIndex]) = (originalList[randomIndex], originalList[currentIndex]);
+        }
+        
+        return originalList;
     }
     
     /// <summary>
@@ -158,7 +380,7 @@ public class RandomUtil
 
         const ulong maxInt = 1UL << 48;
         
-        return (double)integer / maxInt;
+        return (double)Math.Abs(integer) / maxInt;
     }
 
     /// <summary>
@@ -166,8 +388,12 @@ public class RandomUtil
     /// </summary>
     /// <param name="num">The number to analyze.</param>
     /// <returns>The number of decimal places, or 0 if none exist.</returns>
-    private static int GetNumberPrecision(double num)
+    public int GetNumberPrecision(double num)
     {
-        return num.ToString().Split('.')[1]?.Length ?? 0;
+        var parts = num.ToString($"G{MaxSignificantDigits}").Split('.');
+        
+        return parts.Length > 1 
+            ? parts[1].Length 
+            : 0;
     }
 }

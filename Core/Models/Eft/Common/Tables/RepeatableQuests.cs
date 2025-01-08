@@ -5,79 +5,79 @@ namespace Core.Models.Eft.Common.Tables;
 public class RepeatableQuest : Quest
 {
     [JsonPropertyName("changeCost")]
-    public List<ChangeCost> ChangeCost { get; set; }
+    public List<ChangeCost?>? ChangeCost { get; set; }
     
     [JsonPropertyName("changeStandingCost")]
-    public int ChangeStandingCost { get; set; }
+    public int? ChangeStandingCost { get; set; }
     
     [JsonPropertyName("sptRepatableGroupName")]
-    public string SptRepatableGroupName { get; set; }
+    public string? SptRepatableGroupName { get; set; }
     
     [JsonPropertyName("acceptanceAndFinishingSource")]
-    public string AcceptanceAndFinishingSource { get; set; }
+    public string? AcceptanceAndFinishingSource { get; set; }
     
     [JsonPropertyName("progressSource")]
-    public string ProgressSource { get; set; }
+    public string? ProgressSource { get; set; }
     
     [JsonPropertyName("rankingModes")]
-    public List<string> RankingModes { get; set; }
+    public List<string?>? RankingModes { get; set; }
     
     [JsonPropertyName("gameModes")]
-    public List<string> GameModes { get; set; }
+    public List<string>? GameModes { get; set; }
     
     [JsonPropertyName("arenaLocations")]
-    public List<string> ArenaLocations { get; set; }
+    public List<string>? ArenaLocations { get; set; }
     
     [JsonPropertyName("questStatus")]
-    public RepeatableQuestStatus QuestStatus { get; set; }
+    public RepeatableQuestStatus? QuestStatus { get; set; }
 }
 
 public class RepeatableQuestDatabase
 {
     [JsonPropertyName("templates")]
-    public RepeatableTemplates Templates { get; set; }
+    public RepeatableTemplates? Templates { get; set; }
     
     [JsonPropertyName("rewards")]
-    public RewardOptions Rewards { get; set; }
+    public RewardOptions? Rewards { get; set; }
     
     [JsonPropertyName("data")]
-    public Options Data { get; set; }
+    public Options? Data { get; set; }
     
     [JsonPropertyName("samples")]
-    public List<SampleQuests> Samples { get; set; }
+    public List<SampleQuests?>? Samples { get; set; }
 }
 
 public class RepeatableQuestStatus
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("uid")]
-    public string Uid { get; set; }
+    public string? Uid { get; set; }
     
     [JsonPropertyName("qid")]
-    public string Qid { get; set; }
+    public string? Qid { get; set; }
     
     [JsonPropertyName("startTime")]
-    public long StartTime { get; set; }
+    public long? StartTime { get; set; }
     
     [JsonPropertyName("status")]
-    public int Status { get; set; }
+    public int? Status { get; set; }
     
     [JsonPropertyName("statusTimers")]
-    public object StatusTimers { get; set; } // Use object for any type
+    public object? StatusTimers { get; set; } // Use object for any type
 }
 
 public class RepeatableTemplates
 {
     [JsonPropertyName("Elimination")]
-    public Quest Elimination { get; set; }
+    public Quest? Elimination { get; set; }
     
     [JsonPropertyName("Completion")]
-    public Quest Completion { get; set; }
+    public Quest? Completion { get; set; }
     
     [JsonPropertyName("Exploration")]
-    public Quest Exploration { get; set; }
+    public Quest? Exploration { get; set; }
 }
 
 public class PmcDataRepeatableQuest
@@ -86,46 +86,46 @@ public class PmcDataRepeatableQuest
     public string? Id { get; set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [JsonPropertyName("unavailableTime")]
     public string? UnavailableTime { get; set; }
     
     [JsonPropertyName("activeQuests")]
-    public List<RepeatableQuest> ActiveQuests { get; set; }
+    public List<RepeatableQuest?>? ActiveQuests { get; set; }
     
     [JsonPropertyName("inactiveQuests")]
-    public List<RepeatableQuest> InactiveQuests { get; set; }
+    public List<RepeatableQuest>? InactiveQuests { get; set; }
     
     [JsonPropertyName("endTime")]
-    public long EndTime { get; set; }
+    public long? EndTime { get; set; }
     
     [JsonPropertyName("changeRequirement")]
-    public Dictionary<string, ChangeRequirement> ChangeRequirement { get; set; }
+    public Dictionary<string?, ChangeRequirement?>? ChangeRequirement { get; set; }
     
     [JsonPropertyName("freeChanges")]
-    public int FreeChanges { get; set; }
+    public int? FreeChanges { get; set; }
     
     [JsonPropertyName("freeChangesAvailable")]
-    public int FreeChangesAvailable { get; set; }
+    public int? FreeChangesAvailable { get; set; }
 }
 
 public class ChangeRequirement
 {
     [JsonPropertyName("changeCost")]
-    public List<ChangeCost> ChangeCost { get; set; }
+    public List<ChangeCost?>? ChangeCost { get; set; }
     
     [JsonPropertyName("changeStandingCost")]
-    public int ChangeStandingCost { get; set; }
+    public int? ChangeStandingCost { get; set; }
 }
 
 public class ChangeCost
 {
     [JsonPropertyName("templateId")]
-    public string TemplateId { get; set; }
+    public string? TemplateId { get; set; }
     
     [JsonPropertyName("count")]
-    public int Count { get; set; }
+    public int? Count { get; set; }
 }
 
 // Config Options
@@ -133,98 +133,98 @@ public class ChangeCost
 public class RewardOptions
 {
     [JsonPropertyName("itemsBlacklist")]
-    public List<string> ItemsBlacklist { get; set; }
+    public List<string>? ItemsBlacklist { get; set; }
 }
 
 public class Options
 {
     [JsonPropertyName("Completion")]
-    public CompletionFilter Completion { get; set; }
+    public CompletionFilter? Completion { get; set; }
 }
 
 public class CompletionFilter
 {
     [JsonPropertyName("itemsBlacklist")]
-    public List<ItemsBlacklist> ItemsBlacklist { get; set; }
+    public List<ItemsBlacklist>? ItemsBlacklist { get; set; }
     
     [JsonPropertyName("itemsWhitelist")]
-    public List<ItemsWhitelist> ItemsWhitelist { get; set; }
+    public List<ItemsWhitelist>? ItemsWhitelist { get; set; }
 }
 
 public class ItemsBlacklist
 {
     [JsonPropertyName("minPlayerLevel")]
-    public int MinPlayerLevel { get; set; }
+    public int? MinPlayerLevel { get; set; }
     
     [JsonPropertyName("itemIds")]
-    public List<string> ItemIds { get; set; }
+    public List<string>? ItemIds { get; set; }
 }
 
 public class ItemsWhitelist
 {
     [JsonPropertyName("minPlayerLevel")]
-    public int MinPlayerLevel { get; set; }
+    public int? MinPlayerLevel { get; set; }
     
     [JsonPropertyName("itemIds")]
-    public List<string> ItemIds { get; set; }
+    public List<string>? ItemIds { get; set; }
 }
 
 public class SampleQuests
 {
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; }
+    public string? TraderId { get; set; }
     
     [JsonPropertyName("location")]
-    public string Location { get; set; }
+    public string? Location { get; set; }
     
     [JsonPropertyName("image")]
-    public string Image { get; set; }
+    public string? Image { get; set; }
     
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
     
     [JsonPropertyName("isKey")]
-    public bool IsKey { get; set; }
+    public bool? IsKey { get; set; }
     
     [JsonPropertyName("restartable")]
-    public bool Restartable { get; set; }
+    public bool? Restartable { get; set; }
     
     [JsonPropertyName("instantComplete")]
-    public bool InstantComplete { get; set; }
+    public bool? InstantComplete { get; set; }
     
     [JsonPropertyName("secretQuest")]
-    public bool SecretQuest { get; set; }
+    public bool? SecretQuest { get; set; }
     
     [JsonPropertyName("canShowNotificationsInGame")]
-    public bool CanShowNotificationsInGame { get; set; }
+    public bool? CanShowNotificationsInGame { get; set; }
     
     [JsonPropertyName("rewards")]
-    public QuestRewards Rewards { get; set; }
+    public QuestRewards? Rewards { get; set; }
     
     [JsonPropertyName("conditions")]
-    public QuestConditionTypes Conditions { get; set; }
+    public QuestConditionTypes? Conditions { get; set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [JsonPropertyName("note")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
     
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     [JsonPropertyName("successMessageText")]
-    public string SuccessMessageText { get; set; }
+    public string? SuccessMessageText { get; set; }
     
     [JsonPropertyName("failMessageText")]
-    public string FailMessageText { get; set; }
+    public string? FailMessageText { get; set; }
     
     [JsonPropertyName("startedMessageText")]
-    public string StartedMessageText { get; set; }
+    public string? StartedMessageText { get; set; }
     
     [JsonPropertyName("templateId")]
-    public string TemplateId { get; set; }
+    public string? TemplateId { get; set; }
 }

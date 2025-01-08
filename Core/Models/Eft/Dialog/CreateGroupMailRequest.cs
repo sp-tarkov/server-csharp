@@ -5,8 +5,8 @@ namespace Core.Models.Eft.Dialog;
 public class CreateGroupMailRequest
 {
     [JsonPropertyName("Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("Users")]
-    public List<string> Users { get; set; }
+    public List<string>? Users { get; set; }
 }

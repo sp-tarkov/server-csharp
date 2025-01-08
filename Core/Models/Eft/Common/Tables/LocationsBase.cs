@@ -5,10 +5,10 @@ namespace Core.Models.Eft.Common.Tables;
 public class LocationsBase
 {
     [JsonPropertyName("locations")]
-    public Locations Locations { get; set; }
+    public Locations? Locations { get; set; }
 
     [JsonPropertyName("paths")]
-    public List<Path> Paths { get; set; }
+    public List<Path>? Paths { get; set; }
 }
 
 public class Locations
@@ -19,10 +19,10 @@ public class Locations
 public class Path
 {
     [JsonPropertyName("Source")]
-    public string Source { get; set; }
+    public string? Source { get; set; }
 
     [JsonPropertyName("Destination")]
-    public string Destination { get; set; }
+    public string? Destination { get; set; }
     
-    public bool Event { get; set; }
+    public bool? Event { get; set; }
 }

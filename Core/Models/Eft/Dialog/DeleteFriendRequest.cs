@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Dialog;
 public class DeleteFriendRequest
 {
     [JsonPropertyName("friend_id")]
-    public string FriendId { get; set; }
+    public string? FriendId { get; set; }
 }

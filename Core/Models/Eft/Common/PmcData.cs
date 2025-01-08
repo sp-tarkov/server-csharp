@@ -5,21 +5,20 @@ namespace Core.Models.Eft.Common;
 
 public class PmcData : BotBase
 {
-    
 }
 
 public class PostRaidPmcData : BotBase
 {
-    [JsonPropertyName("Stats")]
-    public PostRaidStats Stats { get; set; }
+	[JsonPropertyName("Stats")]
+	public PostRaidStats? Stats { get; set; }
 }
 
 public class PostRaidStats
 {
-    [JsonPropertyName("Eft")]
-    public EftStats Eft { get; set; }
+	[JsonPropertyName("Eft")]
+	public EftStats? Eft { get; set; }
 
-    /** Only found in profile we get from client post raid */
-    [JsonPropertyName("Arena")]
-    public EftStats Arena { get; set; }
+	/** Only found in profile we get from client post raid */
+	[JsonPropertyName("Arena")]
+	public EftStats? Arena { get; set; }
 }

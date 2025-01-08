@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Dialog;
 public class RemoveDialogRequestData
 {
     [JsonPropertyName("dialogId")]
-    public string DialogId { get; set; }
+    public string? DialogId { get; set; }
 }

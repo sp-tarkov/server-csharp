@@ -12,61 +12,61 @@ public class Quest
     public string? QuestName { get; set; }
     
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("canShowNotificationsInGame")]
-    public bool CanShowNotificationsInGame { get; set; }
+    public bool? CanShowNotificationsInGame { get; set; }
     
     [JsonPropertyName("conditions")]
-    public QuestConditionTypes Conditions { get; set; }
+    public QuestConditionTypes? Conditions { get; set; }
     
     [JsonPropertyName("description")]
-    public string Description { get; set; }
+    public string? Description { get; set; }
     
     [JsonPropertyName("failMessageText")]
-    public string FailMessageText { get; set; }
+    public string? FailMessageText { get; set; }
     
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
     
     [JsonPropertyName("note")]
-    public string Note { get; set; }
+    public string? Note { get; set; }
     
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; }
+    public string? TraderId { get; set; }
     
     [JsonPropertyName("location")]
-    public string Location { get; set; }
+    public string? Location { get; set; }
     
     [JsonPropertyName("image")]
-    public string Image { get; set; }
+    public string? Image { get; set; }
     
     [JsonPropertyName("type")]
-    public QuestTypeEnum Type { get; set; }
+    public QuestTypeEnum? Type { get; set; }
     
     [JsonPropertyName("isKey")]
-    public bool IsKey { get; set; }
+    public bool? IsKey { get; set; }
     
     [JsonPropertyName("restartable")]
-    public bool Restartable { get; set; }
+    public bool? Restartable { get; set; }
     
     [JsonPropertyName("instantComplete")]
-    public bool InstantComplete { get; set; }
+    public bool? InstantComplete { get; set; }
     
     [JsonPropertyName("secretQuest")]
-    public bool SecretQuest { get; set; }
+    public bool? SecretQuest { get; set; }
     
     [JsonPropertyName("startedMessageText")]
-    public string StartedMessageText { get; set; }
+    public string? StartedMessageText { get; set; }
     
     [JsonPropertyName("successMessageText")]
-    public string SuccessMessageText { get; set; }
+    public string? SuccessMessageText { get; set; }
     
     [JsonPropertyName("acceptPlayerMessage")]
     public string? AcceptPlayerMessage { get; set; }
     
     [JsonPropertyName("declinePlayerMessage")]
-    public string DeclinePlayerMessage { get; set; }
+    public string? DeclinePlayerMessage { get; set; }
     
     [JsonPropertyName("completePlayerMessage")]
     public string? CompletePlayerMessage { get; set; }
@@ -75,7 +75,7 @@ public class Quest
     public string? TemplateId { get; set; }
     
     [JsonPropertyName("rewards")]
-    public QuestRewards Rewards { get; set; }
+    public QuestRewards? Rewards { get; set; }
     
     /// <summary>
     /// Becomes 'AppearStatus' inside client
@@ -87,28 +87,28 @@ public class Quest
     public bool? KeyQuest { get; set; }
     
     [JsonPropertyName("changeQuestMessageText")]
-    public string ChangeQuestMessageText { get; set; }
+    public string? ChangeQuestMessageText { get; set; }
     
     /// <summary>
     /// "Pmc" or "Scav"
     /// </summary>
     [JsonPropertyName("side")]
-    public string Side { get; set; }
+    public string? Side { get; set; }
     
     [JsonPropertyName("acceptanceAndFinishingSource")]
-    public string AcceptanceAndFinishingSource { get; set; }
+    public string? AcceptanceAndFinishingSource { get; set; }
     
     [JsonPropertyName("progressSource")]
-    public string ProgressSource { get; set; }
+    public string? ProgressSource { get; set; }
     
     [JsonPropertyName("rankingModes")]
-    public List<string> RankingModes { get; set; }
+    public List<string>? RankingModes { get; set; }
     
     [JsonPropertyName("gameModes")]
-    public List<string> GameModes { get; set; }
+    public List<string>? GameModes { get; set; }
     
     [JsonPropertyName("arenaLocations")]
-    public List<string> ArenaLocations { get; set; }
+    public List<string>? ArenaLocations { get; set; }
     
     /// <summary>
     /// Status of quest to player
@@ -123,22 +123,22 @@ public class QuestConditionTypes
     public List<QuestCondition>? Started { get; set; }
     
     [JsonPropertyName("AvailableForFinish")]
-    public List<QuestCondition> AvailableForFinish { get; set; }
+    public List<QuestCondition>? AvailableForFinish { get; set; }
     
     [JsonPropertyName("AvailableForStart")]
-    public List<QuestCondition> AvailableForStart { get; set; }
+    public List<QuestCondition>? AvailableForStart { get; set; }
     
     [JsonPropertyName("Success")]
     public List<QuestCondition>? Success { get; set; }
     
     [JsonPropertyName("Fail")]
-    public List<QuestCondition> Fail { get; set; }
+    public List<QuestCondition>? Fail { get; set; }
 }
 
 public class QuestCondition
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("index")]
     public int? Index { get; set; }
@@ -147,7 +147,7 @@ public class QuestCondition
     public string? CompareMethod { get; set; }
     
     [JsonPropertyName("dynamicLocale")]
-    public bool DynamicLocale { get; set; }
+    public bool? DynamicLocale { get; set; }
     
     [JsonPropertyName("visibilityConditions")]
     public List<VisibilityCondition>? VisibilityConditions { get; set; }
@@ -225,22 +225,22 @@ public class QuestCondition
     public string? ConditionType { get; set; }
     
     [JsonPropertyName("areaType")]
-    public HideoutAreas AreaType { get; set; }
+    public HideoutAreas? AreaType { get; set; }
 }
 
 public class QuestConditionCounter
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("conditions")]
-    public List<QuestConditionCounterCondition> Conditions { get; set; }
+    public List<QuestConditionCounterCondition>? Conditions { get; set; }
 }
 
 public class QuestConditionCounterCondition
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
     
     [JsonPropertyName("dynamicLocale")]
     public bool? DynamicLocale { get; set; }
@@ -318,46 +318,46 @@ public class QuestConditionCounterCondition
 public class EnemyHealthEffect
 {
     [JsonPropertyName("bodyParts")]
-    public List<string> BodyParts { get; set; }
+    public List<string>? BodyParts { get; set; }
 
     [JsonPropertyName("effects")]
-    public List<string> Effects { get; set; }
+    public List<string>? Effects { get; set; }
 }
 
 public class ValueCompare
 {
     [JsonPropertyName("compareMethod")]
-    public string CompareMethod { get; set; }
+    public string? CompareMethod { get; set; }
 
     [JsonPropertyName("value")]
-    public int Value { get; set; }
+    public int? Value { get; set; }
 }
 
 public class CounterConditionDistance
 {
     [JsonPropertyName("value")]
-    public int Value { get; set; }
+    public int? Value { get; set; }
 
     [JsonPropertyName("compareMethod")]
-    public string CompareMethod { get; set; }
+    public string? CompareMethod { get; set; }
 }
 
 public class DaytimeCounter
 {
     [JsonPropertyName("from")]
-    public int From { get; set; }
+    public int? From { get; set; }
 
     [JsonPropertyName("to")]
-    public int To { get; set; }
+    public int? To { get; set; }
 }
 
 public class VisibilityCondition
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("target")]
-    public string Target { get; set; }
+    public string? Target { get; set; }
 
     [JsonPropertyName("value")]
     public int? Value { get; set; }
@@ -369,59 +369,59 @@ public class VisibilityCondition
     public bool? OneSessionOnly { get; set; }
 
     [JsonPropertyName("conditionType")]
-    public string ConditionType { get; set; }
+    public string? ConditionType { get; set; }
 }
 
 public class QuestRewards
 {
     [JsonPropertyName("AvailableForStart")]
-    public List<QuestReward> AvailableForStart { get; set; }
+    public List<QuestReward>? AvailableForStart { get; set; }
 
     [JsonPropertyName("AvailableForFinish")]
-    public List<QuestReward> AvailableForFinish { get; set; }
+    public List<QuestReward>? AvailableForFinish { get; set; }
 
     [JsonPropertyName("Started")]
-    public List<QuestReward> Started { get; set; }
+    public List<QuestReward>? Started { get; set; }
 
     [JsonPropertyName("Success")]
-    public List<QuestReward> Success { get; set; }
+    public List<QuestReward>? Success { get; set; }
 
     [JsonPropertyName("Fail")]
-    public List<QuestReward> Fail { get; set; }
+    public List<QuestReward>? Fail { get; set; }
 
     [JsonPropertyName("FailRestartable")]
-    public List<QuestReward> FailRestartable { get; set; }
+    public List<QuestReward>? FailRestartable { get; set; }
 
     [JsonPropertyName("Expired")]
-    public List<QuestReward> Expired { get; set; }
+    public List<QuestReward>? Expired { get; set; }
 }
 
 public class QuestReward
 {
     [JsonPropertyName("value")]
-    public object Value { get; set; } // TODO: Can be either string or number
+    public object? Value { get; set; } // TODO: Can be either string or number
 
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public QuestRewardType Type { get; set; }
+    public QuestRewardType? Type { get; set; }
 
     [JsonPropertyName("index")]
-    public int Index { get; set; }
+    public int? Index { get; set; }
 
     [JsonPropertyName("target")]
-    public string Target { get; set; }
+    public string? Target { get; set; }
 
     [JsonPropertyName("items")]
-    public List<Item> Items { get; set; }
+    public List<Item>? Items { get; set; }
 
     [JsonPropertyName("loyaltyLevel")]
     public int? LoyaltyLevel { get; set; }
 
     /** Hideout area id */
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; }
+    public string? TraderId { get; set; }
 
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }
@@ -433,13 +433,13 @@ public class QuestReward
     public bool? FindInRaid { get; set; }
 
     [JsonPropertyName("gameMode")]
-    public List<string> GameMode { get; set; }
+    public List<string>? GameMode { get; set; }
 
     /** Game editions whitelisted to get reward */
     [JsonPropertyName("availableInGameEditions")]
-    public List<string> AvailableInGameEditions { get; set; }
+    public List<string>? AvailableInGameEditions { get; set; }
 
     /** Game editions blacklisted from getting reward */
     [JsonPropertyName("notAvailableInGameEditions")]
-    public List<string> NotAvailableInGameEditions { get; set; }
+    public List<string>? NotAvailableInGameEditions { get; set; }
 }
