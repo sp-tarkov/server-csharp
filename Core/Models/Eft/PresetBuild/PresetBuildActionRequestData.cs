@@ -6,18 +6,18 @@ namespace Core.Models.Eft.PresetBuild;
 public class PresetBuildActionRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; }
+    public string? Action { get; set; }
 
     [JsonPropertyName("Id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     /** name of preset given by player */
     [JsonPropertyName("Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("Root")]
-    public string Root { get; set; }
+    public string? Root { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<Item> Items { get; set; }
+    public List<Item>? Items { get; set; }
 }

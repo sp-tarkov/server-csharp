@@ -5,11 +5,11 @@ namespace Core.Models.Eft.Inventory;
 public class InventoryToggleRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "Toggle";
+    public string? Action { get; set; } = "Toggle";
 
     [JsonPropertyName("item")]
-    public string Item { get; set; }
+    public string? Item { get; set; }
 
     [JsonPropertyName("value")]
-    public bool Value { get; set; }
+    public bool? Value { get; set; }
 }

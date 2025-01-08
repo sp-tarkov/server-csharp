@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Profile;
 public class ProfileChangeNicknameRequestData
 {
 	[JsonPropertyName("nickname")]
-	public string Nickname { get; set; }
+	public string? Nickname { get; set; }
 }

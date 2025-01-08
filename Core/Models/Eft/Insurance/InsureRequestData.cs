@@ -6,11 +6,11 @@ namespace Core.Models.Eft.Insurance;
 public class InsureRequestData : BaseInteractionRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "Insure";
+    public string? Action { get; set; } = "Insure";
 
     [JsonPropertyName("tid")]
-    public string TransactionId { get; set; }
+    public string? TransactionId { get; set; }
 
     [JsonPropertyName("items")]
-    public string[] Items { get; set; }
+    public List<string>? Items { get; set; }
 }

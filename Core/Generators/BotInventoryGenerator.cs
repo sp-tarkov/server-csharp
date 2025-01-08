@@ -4,7 +4,7 @@ using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Equipment = Core.Models.Eft.Common.Tables.Equipment;
 
-namespace Core.Generators.WeaponGen;
+namespace Core.Generators;
 
 public class BotInventoryGenerator
 {

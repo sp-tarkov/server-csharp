@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Match;
 public class MatchGroupPlayerRemoveRequest
 {
     [JsonPropertyName("aidToKick")]
-    public string AidToKick { get; set; }
+    public string? AidToKick { get; set; }
 }

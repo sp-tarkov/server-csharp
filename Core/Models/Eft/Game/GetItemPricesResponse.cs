@@ -5,11 +5,11 @@ namespace Core.Models.Eft.Game;
 public class GetItemPricesResponse
 {
     [JsonPropertyName("supplyNextTime")]
-    public double SupplyNextTime { get; set; }
+    public double? SupplyNextTime { get; set; }
 
     [JsonPropertyName("prices")]
-    public Dictionary<string, double> Prices { get; set; }
+    public Dictionary<string, double>? Prices { get; set; }
 
     [JsonPropertyName("currencyCourses")]
-    public Dictionary<string, double> CurrencyCourses { get; set; }
+    public Dictionary<string, double>? CurrencyCourses { get; set; }
 }

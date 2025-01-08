@@ -6,14 +6,14 @@ namespace Core.Models.Eft.Hideout;
 public class HideoutUpgradeRequestData 
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "HideoutUpgrade";
+    public string? Action { get; set; } = "HideoutUpgrade";
     
     [JsonPropertyName("areaType")]
-    public int AreaType { get; set; }
+    public int? AreaType { get; set; }
     
     [JsonPropertyName("items")]
-    public List<HideoutItem> Items { get; set; }
+    public List<HideoutItem>? Items { get; set; }
     
     [JsonPropertyName("timestamp")]
-    public long Timestamp { get; set; }
+    public long? Timestamp { get; set; }
 }

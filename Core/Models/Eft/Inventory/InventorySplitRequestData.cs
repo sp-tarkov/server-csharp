@@ -5,19 +5,19 @@ namespace Core.Models.Eft.Inventory;
 public class InventorySplitRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; } = "Split";
+    public string? Action { get; } = "Split";
 
     /** Id of item to split */
     [JsonPropertyName("splitItem")]
-    public string SplitItem { get; set; }
+    public string? SplitItem { get; set; }
 
     /** Id of new item stack */
     [JsonPropertyName("newItem")]
-    public string NewItem { get; set; }
+    public string? NewItem { get; set; }
 
     /** Destination new item will be placed in */
     [JsonPropertyName("container")]
-    public Container Container { get; set; }
+    public Container? Container { get; set; }
 
-    public int Count { get; set; }
+    public int? Count { get; set; }
 }

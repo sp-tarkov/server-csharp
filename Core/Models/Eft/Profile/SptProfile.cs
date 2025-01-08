@@ -9,234 +9,234 @@ namespace Core.Models.Eft.Profile;
 public class SptProfile
 {
     [JsonPropertyName("info")]
-    public Info ProfileInfo { get; set; }
+    public Info? ProfileInfo { get; set; }
 
     [JsonPropertyName("characters")]
-    public Characters CharacterData { get; set; }
+    public Characters? CharacterData { get; set; }
 
     /** Clothing purchases */
     [JsonPropertyName("suits")]
-    public List<string> ClothingPurchases { get; set; }
+    public List<string>? ClothingPurchases { get; set; }
 
     [JsonPropertyName("userbuilds")]
-    public UserBuilds UserBuildData { get; set; }
+    public UserBuilds? UserBuildData { get; set; }
 
     [JsonPropertyName("dialogues")]
-    public Dictionary<string, Dialogue> DialogueRecords { get; set; }
+    public Dictionary<string, Dialogue>? DialogueRecords { get; set; }
 
     [JsonPropertyName("spt")]
-    public Spt SptData { get; set; }
+    public Spt? SptData { get; set; }
 
     [JsonPropertyName("vitality")]
-    public Vitality VitalityData { get; set; }
+    public Vitality? VitalityData { get; set; }
 
     [JsonPropertyName("inraid")]
-    public Inraid InraidData { get; set; }
+    public Inraid? InraidData { get; set; }
 
     [JsonPropertyName("insurance")]
-    public List<Insurance> InsuranceList { get; set; }
+    public List<Insurance>? InsuranceList { get; set; }
 
     /** Assort purchases made by player since last trader refresh */
     [JsonPropertyName("traderPurchases")]
-    public Dictionary<string, Dictionary<string, TraderPurchaseData>> TraderPurchases { get; set; }
+    public Dictionary<string, Dictionary<string, TraderPurchaseData>>? TraderPurchases { get; set; }
 
     /** Achievements earned by player */
     [JsonPropertyName("achievements")]
-    public Dictionary<string, int> PlayerAchievements { get; set; }
+    public Dictionary<string, int>? PlayerAchievements { get; set; }
 
     /** List of friend profile IDs */
     [JsonPropertyName("friends")]
-    public List<string> FriendProfileIds { get; set; }
+    public List<string>? FriendProfileIds { get; set; }
 }
 
 public class TraderPurchaseData
 {
     [JsonPropertyName("count")]
-    public int PurchaseCount { get; set; }
+    public int? PurchaseCount { get; set; }
 
     [JsonPropertyName("purchaseTimestamp")]
-    public long PurchaseTimestamp { get; set; }
+    public long? PurchaseTimestamp { get; set; }
 }
 
 public class Info
 {
     /** main profile id */
     [JsonPropertyName("id")]
-    public string ProfileId { get; set; }
+    public string? ProfileId { get; set; }
 
     [JsonPropertyName("scavId")]
-    public string ScavengerId { get; set; }
+    public string? ScavengerId { get; set; }
 
     [JsonPropertyName("aid")]
-    public int Aid { get; set; }
+    public int? Aid { get; set; }
 
     [JsonPropertyName("username")]
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
 
     [JsonPropertyName("password")]
-    public string Password { get; set; }
+    public string? Password { get; set; }
 
     [JsonPropertyName("wipe")]
-    public bool IsWiped { get; set; }
+    public bool? IsWiped { get; set; }
 
     [JsonPropertyName("edition")]
-    public string Edition { get; set; }
+    public string? Edition { get; set; }
 }
 
 public class Characters
 {
     [JsonPropertyName("pmc")]
-    public PmcData PmcData { get; set; }
+    public PmcData? PmcData { get; set; }
 
     [JsonPropertyName("scav")]
-    public PmcData ScavData { get; set; }
+    public PmcData? ScavData { get; set; }
 }
 
 /** used by profile.userbuilds */
 public class UserBuilds
 {
     [JsonPropertyName("weaponBuilds")]
-    public List<WeaponBuild> WeaponBuilds { get; set; }
+    public List<WeaponBuild>? WeaponBuilds { get; set; }
 
     [JsonPropertyName("equipmentBuilds")]
-    public List<EquipmentBuild> EquipmentBuilds { get; set; }
+    public List<EquipmentBuild>? EquipmentBuilds { get; set; }
 
     [JsonPropertyName("magazineBuilds")]
-    public List<MagazineBuild> MagazineBuilds { get; set; }
+    public List<MagazineBuild>? MagazineBuilds { get; set; }
 }
 
 public class UserBuild
 {
     [JsonPropertyName("Id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("Name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }
 
 public class WeaponBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string Root { get; set; }
+    public string? Root { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<Item> Items { get; set; } // Same as PMC inventory items
+    public List<Item>? Items { get; set; } // Same as PMC inventory items
 }
 
 public class EquipmentBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string Root { get; set; }
+    public string? Root { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<Item> Items { get; set; } // Same as PMC inventory items
+    public List<Item>? Items { get; set; } // Same as PMC inventory items
 
     [JsonPropertyName("BuildType")]
-    public EquipmentBuildType BuildType { get; set; }
+    public EquipmentBuildType? BuildType { get; set; }
 }
 
 public class MagazineBuild : UserBuild
 {
     [JsonPropertyName("Caliber")]
-    public string Caliber { get; set; }
+    public string? Caliber { get; set; }
 
     [JsonPropertyName("TopCount")]
-    public int TopCount { get; set; }
+    public int? TopCount { get; set; }
 
     [JsonPropertyName("BottomCount")]
-    public int BottomCount { get; set; }
+    public int? BottomCount { get; set; }
 
     [JsonPropertyName("Items")]
-    public List<MagazineTemplateAmmoItem> Items { get; set; }
+    public List<MagazineTemplateAmmoItem>? Items { get; set; }
 }
 
 public class MagazineTemplateAmmoItem
 {
     [JsonPropertyName("TemplateId")]
-    public string TemplateId { get; set; }
+    public string? TemplateId { get; set; }
 
     [JsonPropertyName("Count")]
-    public int Count { get; set; }
+    public int? Count { get; set; }
 }
 
 /** Used by defaultEquipmentPresets.json */
 public class DefaultEquipmentPreset : UserBuild
 {
     [JsonPropertyName("Items")]
-    public List<Item> Items { get; set; }
+    public List<Item>? Items { get; set; }
 
     [JsonPropertyName("Root")]
-    public string Root { get; set; }
+    public string? Root { get; set; }
 
     [JsonPropertyName("BuildType")]
-    public EquipmentBuildType BuildType { get; set; }
+    public EquipmentBuildType? BuildType { get; set; }
 
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 }
 
 public class Dialogue
 {
     [JsonPropertyName("attachmentsNew")]
-    public int AttachmentsNew { get; set; }
+    public int? AttachmentsNew { get; set; }
 
     [JsonPropertyName("new")]
-    public int New { get; set; }
+    public int? New { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType Type { get; set; }
+    public MessageType? Type { get; set; }
 
     [JsonPropertyName("Users")]
-    public List<UserDialogInfo> Users { get; set; }
+    public List<UserDialogInfo>? Users { get; set; }
 
     [JsonPropertyName("pinned")]
-    public bool Pinned { get; set; }
+    public bool? Pinned { get; set; }
 
     [JsonPropertyName("messages")]
-    public List<Message> Messages { get; set; }
+    public List<Message>? Messages { get; set; }
 
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 }
 
 // @Cleanup: Maybe the same as Dialogue?
 public class DialogueInfo
 {
     [JsonPropertyName("attachmentsNew")]
-    public int AttachmentsNew { get; set; }
+    public int? AttachmentsNew { get; set; }
 
     [JsonPropertyName("new")]
-    public int New { get; set; }
+    public int? New { get; set; }
 
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType Type { get; set; }
+    public MessageType? Type { get; set; }
 
     [JsonPropertyName("pinned")]
-    public bool Pinned { get; set; }
+    public bool? Pinned { get; set; }
 
     [JsonPropertyName("Users")]
-    public List<UserDialogInfo> Users { get; set; }
+    public List<UserDialogInfo>? Users { get; set; }
 
     [JsonPropertyName("message")]
-    public MessagePreview Message { get; set; }
+    public MessagePreview? Message { get; set; }
 }
 
 public class Message
 {
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("uid")]
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType MessageType { get; set; }
+    public MessageType? MessageType { get; set; }
 
     [JsonPropertyName("dt")]
-    public long DateTime { get; set; }
+    public long? DateTime { get; set; }
 
     [JsonPropertyName("UtcDateTime")]
     public long? UtcDateTime { get; set; }
@@ -257,7 +257,7 @@ public class Message
     public bool? HasRewards { get; set; }
 
     [JsonPropertyName("rewardCollected")]
-    public bool RewardCollected { get; set; }
+    public bool? RewardCollected { get; set; }
 
     [JsonPropertyName("items")]
     public MessageItems? Items { get; set; }
@@ -275,16 +275,16 @@ public class Message
 public class ReplyTo
 {
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("uid")]
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType MessageType { get; set; }
+    public MessageType? MessageType { get; set; }
 
     [JsonPropertyName("dt")]
-    public long DateTime { get; set; }
+    public long? DateTime { get; set; }
 
     [JsonPropertyName("text")]
     public string? Text { get; set; }
@@ -293,16 +293,16 @@ public class ReplyTo
 public class MessagePreview
 {
     [JsonPropertyName("uid")]
-    public string UserId { get; set; }
+    public string? UserId { get; set; }
 
     [JsonPropertyName("type")]
-    public MessageType MessageType { get; set; }
+    public MessageType? MessageType { get; set; }
 
     [JsonPropertyName("dt")]
-    public long DateTime { get; set; }
+    public long? DateTime { get; set; }
 
     [JsonPropertyName("templateId")]
-    public string TemplateId { get; set; }
+    public string? TemplateId { get; set; }
 
     [JsonPropertyName("text")]
     public string? Text { get; set; }
@@ -323,29 +323,29 @@ public class MessageItems
 public class UpdatableChatMember
 {
     [JsonPropertyName("Nickname")]
-    public string Nickname { get; set; }
+    public string? Nickname { get; set; }
 
     [JsonPropertyName("Side")]
-    public string Side { get; set; }
+    public string? Side { get; set; }
 
     [JsonPropertyName("Level")]
-    public int Level { get; set; }
+    public int? Level { get; set; }
 
     [JsonPropertyName("MemberCategory")]
-    public MemberCategory MemberCategory { get; set; }
+    public MemberCategory? MemberCategory { get; set; }
 
     [JsonPropertyName("Ignored")]
-    public bool IsIgnored { get; set; }
+    public bool? IsIgnored { get; set; }
 
     [JsonPropertyName("Banned")]
-    public bool IsBanned { get; set; }
+    public bool? IsBanned { get; set; }
 }
 
 public class Spt
 {
     /** What version of SPT was this profile made with */
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string? Version { get; set; }
 
     /** What mods has this profile loaded at any point in time */
     [JsonPropertyName("mods")]
@@ -375,109 +375,109 @@ public class Spt
 public class AcceptedCultistReward
 {
     [JsonPropertyName("timestamp")]
-    public long Timestamp { get; set; }
+    public long? Timestamp { get; set; }
 
     [JsonPropertyName("sacrificeItems")]
-    public List<string> SacrificeItems { get; set; }
+    public List<string>? SacrificeItems { get; set; }
 
     [JsonPropertyName("rewardItems")]
-    public List<string> RewardItems { get; set; }
+    public List<string>? RewardItems { get; set; }
 }
 
 public class ModDetails
 {
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string? Version { get; set; }
 
     [JsonPropertyName("author")]
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     [JsonPropertyName("dateAdded")]
-    public long DateAdded { get; set; }
+    public long? DateAdded { get; set; }
 
     [JsonPropertyName("url")]
-    public string Url { get; set; }
+    public string? Url { get; set; }
 }
 
 public class ReceivedGift
 {
     [JsonPropertyName("giftId")]
-    public string GiftId { get; set; }
+    public string? GiftId { get; set; }
 
     [JsonPropertyName("timestampLastAccepted")]
-    public long TimestampLastAccepted { get; set; }
+    public long? TimestampLastAccepted { get; set; }
 
     [JsonPropertyName("current")]
-    public int Current { get; set; }
+    public int? Current { get; set; }
 }
 
 public class Vitality
 {
     [JsonPropertyName("health")]
-    public Health Health { get; set; }
+    public Health? Health { get; set; }
 
     [JsonPropertyName("effects")]
-    public Effects Effects { get; set; }
+    public Effects? Effects { get; set; }
 }
 
 public class Health
 {
     [JsonPropertyName("Hydration")]
-    public double Hydration { get; set; }
+    public double? Hydration { get; set; }
 
     [JsonPropertyName("Energy")]
-    public double Energy { get; set; }
+    public double? Energy { get; set; }
 
     [JsonPropertyName("Temperature")]
-    public double Temperature { get; set; }
+    public double? Temperature { get; set; }
 
     [JsonPropertyName("Head")]
-    public double Head { get; set; }
+    public double? Head { get; set; }
 
     [JsonPropertyName("Chest")]
-    public double Chest { get; set; }
+    public double? Chest { get; set; }
 
     [JsonPropertyName("Stomach")]
-    public double Stomach { get; set; }
+    public double? Stomach { get; set; }
 
     [JsonPropertyName("LeftArm")]
-    public double LeftArm { get; set; }
+    public double? LeftArm { get; set; }
 
     [JsonPropertyName("RightArm")]
-    public double RightArm { get; set; }
+    public double? RightArm { get; set; }
 
     [JsonPropertyName("LeftLeg")]
-    public double LeftLeg { get; set; }
+    public double? LeftLeg { get; set; }
 
     [JsonPropertyName("RightLeg")]
-    public double RightLeg { get; set; }
+    public double? RightLeg { get; set; }
 }
 
 public class Effects
 {
     [JsonPropertyName("Head")]
-    public Head Head { get; set; }
+    public Head? Head { get; set; }
 
     [JsonPropertyName("Chest")]
-    public Chest Chest { get; set; }
+    public Chest? Chest { get; set; }
 
     [JsonPropertyName("Stomach")]
-    public Stomach Stomach { get; set; }
+    public Stomach? Stomach { get; set; }
 
     [JsonPropertyName("LeftArm")]
-    public LeftArm LeftArm { get; set; }
+    public LeftArm? LeftArm { get; set; }
 
     [JsonPropertyName("RightArm")]
-    public RightArm RightArm { get; set; }
+    public RightArm? RightArm { get; set; }
 
     [JsonPropertyName("LeftLeg")]
-    public LeftLeg LeftLeg { get; set; }
+    public LeftLeg? LeftLeg { get; set; }
 
     [JsonPropertyName("RightLeg")]
-    public RightLeg RightLeg { get; set; }
+    public RightLeg? RightLeg { get; set; }
 }
 
 public class Head
@@ -519,44 +519,44 @@ public class RightLeg
 public class Inraid
 {
     [JsonPropertyName("location")]
-    public string Location { get; set; }
+    public string? Location { get; set; }
 
     [JsonPropertyName("character")]
-    public string Character { get; set; }
+    public string? Character { get; set; }
 }
 
 public class Insurance
 {
     [JsonPropertyName("scheduledTime")]
-    public int ScheduledTime { get; set; }
+    public int? ScheduledTime { get; set; }
 
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; }
+    public string? TraderId { get; set; }
 
     [JsonPropertyName("maxStorageTime")]
-    public int MaxStorageTime { get; set; }
+    public int? MaxStorageTime { get; set; }
 
     [JsonPropertyName("systemData")]
-    public SystemData SystemData { get; set; }
+    public SystemData? SystemData { get; set; }
 
     [JsonPropertyName("messageType")]
-    public MessageType MessageType { get; set; }
+    public MessageType? MessageType { get; set; }
 
     [JsonPropertyName("messageTemplateId")]
-    public string MessageTemplateId { get; set; }
+    public string? MessageTemplateId { get; set; }
 
     [JsonPropertyName("items")]
-    public List<Item> Items { get; set; }
+    public List<Item>? Items { get; set; }
 }
 
 public class MessageContentRagfair
 {
     [JsonPropertyName("offerId")]
-    public string OfferId { get; set; }
+    public string? OfferId { get; set; }
 
     [JsonPropertyName("count")]
-    public int Count { get; set; }
+    public int? Count { get; set; }
 
     [JsonPropertyName("handbookId")]
-    public string HandbookId { get; set; }
+    public string? HandbookId { get; set; }
 }

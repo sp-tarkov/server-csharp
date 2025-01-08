@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Profile;
 public class ProfileChangeVoiceRequestData 
 {
 	[JsonPropertyName("voice")]
-	public string Voice { get; set; }
+	public string? Voice { get; set; }
 }
