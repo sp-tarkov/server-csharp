@@ -61,6 +61,12 @@ public class TemplateSide
 
     [JsonPropertyName("trader")]
     public ProfileTraderTemplate? Trader { get; set; }
+    
+    [JsonPropertyName("equipmentBuilds")]
+    public object? EquipmentBuilds { get; set; }
+    
+    [JsonPropertyName("weaponbuilds")]
+    public object? WeaponBuilds { get; set; }
 }
 
 public class ProfileTraderTemplate
@@ -69,7 +75,7 @@ public class ProfileTraderTemplate
     public Dictionary<string, int>? InitialLoyaltyLevel { get; set; }
 
     [JsonPropertyName("initialStanding")]
-    public Dictionary<string, int>? InitialStanding { get; set; }
+    public Dictionary<string, double>? InitialStanding { get; set; }
 
     [JsonPropertyName("setQuestsAvailableForStart")]
     public bool? SetQuestsAvailableForStart { get; set; }

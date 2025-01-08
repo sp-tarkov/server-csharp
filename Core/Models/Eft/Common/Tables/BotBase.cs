@@ -13,6 +13,7 @@ public class BotBase
     public string? Id { get; set; }
 
     [JsonPropertyName("aid")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? Aid { get; set; }
 
     /** SPT property - use to store player id - TODO - move to AID ( account id as guid of choice) */
