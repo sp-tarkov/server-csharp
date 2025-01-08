@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Ws;
 public class WsAid : WsNotificationEvent
 {
 	[JsonPropertyName("aid")]
-	public int Aid { get; set; }
+	public int? Aid { get; set; }
 }

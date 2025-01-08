@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Bot;
 public class GenerateBotsRequestData
 {
     [JsonPropertyName("conditions")]
-    public List<Condition> Conditions { get; set; }
+    public List<Condition>? Conditions { get; set; }
 }
 
 public class Condition
@@ -14,11 +14,11 @@ public class Condition
     /// e.g. assault/pmcBot/bossKilla
     /// </summary>
     [JsonPropertyName("Role")]
-    public string Role { get; set; }
+    public string? Role { get; set; }
 
     [JsonPropertyName("Limit")]
     public int Limit { get; set; }
 
     [JsonPropertyName("Difficulty")]
-    public string Difficulty { get; set; }
+    public string? Difficulty { get; set; }
 }

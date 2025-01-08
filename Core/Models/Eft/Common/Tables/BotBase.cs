@@ -9,91 +9,91 @@ namespace Core.Models.Eft.Common.Tables;
 public class BotBase
 {
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("aid")]
-    public double Aid { get; set; }
+    public double? Aid { get; set; }
 
     /** SPT property - use to store player id - TODO - move to AID ( account id as guid of choice) */
     [JsonPropertyName("sessionId")]
-    public string SessionId { get; set; }
+    public string? SessionId { get; set; }
 
     [JsonPropertyName("savage")]
     public string? Savage { get; set; }
 
     [JsonPropertyName("karmaValue")]
-    public double KarmaValue { get; set; }
+    public double? KarmaValue { get; set; }
 
     [JsonPropertyName("Info")]
-    public Info Info { get; set; }
+    public Info? Info { get; set; }
 
     [JsonPropertyName("Customization")]
-    public Customization Customization { get; set; }
+    public Customization? Customization { get; set; }
 
     [JsonPropertyName("Health")]
-    public BotBaseHealth Health { get; set; }
+    public BotBaseHealth? Health { get; set; }
 
     [JsonPropertyName("Inventory")]
-    public BotBaseInventory Inventory { get; set; }
+    public BotBaseInventory? Inventory { get; set; }
 
     [JsonPropertyName("Skills")]
-    public Skills Skills { get; set; }
+    public Skills? Skills { get; set; }
 
     [JsonPropertyName("Stats")]
-    public Stats Stats { get; set; }
+    public Stats? Stats { get; set; }
 
     [JsonPropertyName("Encyclopedia")]
-    public Dictionary<string, bool> Encyclopedia { get; set; }
+    public Dictionary<string, bool>? Encyclopedia { get; set; }
 
     [JsonPropertyName("TaskConditionCounters")]
-    public Dictionary<string, TaskConditionCounter> TaskConditionCounters { get; set; }
+    public Dictionary<string, TaskConditionCounter>? TaskConditionCounters { get; set; }
 
     [JsonPropertyName("InsuredItems")]
-    public List<InsuredItem> InsuredItems { get; set; }
+    public List<InsuredItem>? InsuredItems { get; set; }
 
     [JsonPropertyName("Hideout")]
-    public Hideout Hideout { get; set; }
+    public Hideout? Hideout { get; set; }
 
     [JsonPropertyName("Quests")]
-    public List<Quests> Quests { get; set; }
+    public List<Quests>? Quests { get; set; }
 
     [JsonPropertyName("TradersInfo")]
-    public Dictionary<string, TraderInfo> TradersInfo { get; set; }
+    public Dictionary<string, TraderInfo>? TradersInfo { get; set; }
 
     [JsonPropertyName("UnlockedInfo")]
-    public UnlockedInfo UnlockedInfo { get; set; }
+    public UnlockedInfo? UnlockedInfo { get; set; }
 
     [JsonPropertyName("RagfairInfo")]
-    public RagfairInfo RagfairInfo { get; set; }
+    public RagfairInfo? RagfairInfo { get; set; }
 
     /** Achievement id and timestamp */
     [JsonPropertyName("Achievements")]
-    public Dictionary<string, int> Achievements { get; set; }
+    public Dictionary<string, int>? Achievements { get; set; }
 
     [JsonPropertyName("RepeatableQuests")]
-    public List<PmcDataRepeatableQuest> RepeatableQuests { get; set; }
+    public List<PmcDataRepeatableQuest>? RepeatableQuests { get; set; }
 
     [JsonPropertyName("Bonuses")]
-    public List<Bonus> Bonuses { get; set; }
+    public List<Bonus>? Bonuses { get; set; }
 
     [JsonPropertyName("Notes")]
-    public Notes Notes { get; set; }
+    public Notes? Notes { get; set; }
 
     [JsonPropertyName("CarExtractCounts")]
-    public Dictionary<string, int> CarExtractCounts { get; set; }
+    public Dictionary<string, int>? CarExtractCounts { get; set; }
 
     [JsonPropertyName("CoopExtractCounts")]
-    public Dictionary<string, int> CoopExtractCounts { get; set; }
+    public Dictionary<string, int>? CoopExtractCounts { get; set; }
 
     [JsonPropertyName("SurvivorClass")]
-    public SurvivorClass SurvivorClass { get; set; }
+    public SurvivorClass? SurvivorClass { get; set; }
 
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int> WishList { get; set; }
+    public Dictionary<string, int>? WishList { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
-    public MoneyTransferLimits MoneyTransferLimitData { get; set; }
+    public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
 
     /** SPT specific property used during bot generation in raid */
     [JsonPropertyName("sptIsPmc")]
@@ -105,7 +105,7 @@ public class MoneyTransferLimits
     // Resets every 24 hours in live
     /** TODO: Implement */
     [JsonPropertyName("nextResetTime")]
-    public double NextResetTime { get; set; }
+    public double? NextResetTime { get; set; }
 
     [JsonPropertyName("remainingLimit")]
     public double RemainingLimit { get; set; }

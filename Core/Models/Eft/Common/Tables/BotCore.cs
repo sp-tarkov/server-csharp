@@ -2,83 +2,83 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-/*
+
 public class BotCore
 {
     [JsonPropertyName("SAVAGE_KILL_DIST")]
-    public double SavageKillDistance { get; set; }
+    public double? SavageKillDistance { get; set; }
     
     [JsonPropertyName("SOUND_DOOR_BREACH_METERS")]
-    public double SoundDoorBreachMeters { get; set; }
+    public double? SoundDoorBreachMeters { get; set; }
     
     [JsonPropertyName("SOUND_DOOR_OPEN_METERS")]
-    public double SoundDoorOpenMeters { get; set; }
+    public double? SoundDoorOpenMeters { get; set; }
     
     [JsonPropertyName("STEP_NOISE_DELTA")]
-    public double StepNoiseDelta { get; set; }
+    public double? StepNoiseDelta { get; set; }
     
     [JsonPropertyName("JUMP_NOISE_DELTA")]
-    public double JumpNoiseDelta { get; set; }
+    public double? JumpNoiseDelta { get; set; }
     
     [JsonPropertyName("GUNSHOT_SPREAD")]
-    public double GunshotSpread { get; set; }
+    public double? GunshotSpread { get; set; }
     
     [JsonPropertyName("GUNSHOT_SPREAD_SILENCE")]
-    public double GunshotSpreadSilence { get; set; }
+    public double? GunshotSpreadSilence { get; set; }
     
     [JsonPropertyName("BASE_WALK_SPEREAD2")]
-    public double BaseWalkSpread2 { get; set; }
+    public double? BaseWalkSpread2 { get; set; }
     
     [JsonPropertyName("MOVE_SPEED_COEF_MAX")]
-    public double MoveSpeedCoefficientMax { get; set; }
+    public double? MoveSpeedCoefficientMax { get; set; }
     
     [JsonPropertyName("SPEED_SERV_SOUND_COEF_A")]
-    public double SpeedServiceSoundCoefficientA { get; set; }
+    public double? SpeedServiceSoundCoefficientA { get; set; }
     
     [JsonPropertyName("SPEED_SERV_SOUND_COEF_B")]
-    public double SpeedServiceSoundCoefficientB { get; set; }
+    public double? SpeedServiceSoundCoefficientB { get; set; }
     
     [JsonPropertyName("G")]
-    public double Gravity { get; set; }
+    public double? Gravity { get; set; }
     
     [JsonPropertyName("STAY_COEF")]
-    public double StayCoefficient { get; set; }
+    public double? StayCoefficient { get; set; }
     
     [JsonPropertyName("SIT_COEF")]
-    public double SitCoefficient { get; set; }
+    public double? SitCoefficient { get; set; }
     
     [JsonPropertyName("LAY_COEF")]
-    public double LayCoefficient { get; set; }
+    public double? LayCoefficient { get; set; }
     
     [JsonPropertyName("MAX_ITERATIONS")]
-    public double MaxIterations { get; set; }
+    public double? MaxIterations { get; set; }
     
     [JsonPropertyName("START_DIST_TO_COV")]
-    public double StartDistanceToCover { get; set; }
+    public double? StartDistanceToCover { get; set; }
     
     [JsonPropertyName("MAX_DIST_TO_COV")]
-    public double MaxDistanceToCover { get; set; }
+    public double? MaxDistanceToCover { get; set; }
     
     [JsonPropertyName("STAY_HEIGHT")]
-    public double StayHeight { get; set; }
+    public double? StayHeight { get; set; }
     
     [JsonPropertyName("CLOSE_POINTS")]
-    public double ClosePoints { get; set; }
+    public double? ClosePoints { get; set; }
     
     [JsonPropertyName("COUNT_TURNS")]
-    public double CountTurns { get; set; }
+    public double? CountTurns { get; set; }
     
     [JsonPropertyName("SIMPLE_POINT_LIFE_TIME_SEC")]
-    public double SimplePointLifetimeSeconds { get; set; }
+    public double? SimplePointLifetimeSeconds { get; set; }
     
     [JsonPropertyName("DANGER_POINT_LIFE_TIME_SEC")]
-    public double DangerPointLifetimeSeconds { get; set; }
+    public double? DangerPointLifetimeSeconds { get; set; }
     
     [JsonPropertyName("DANGER_POWER")]
-    public double DangerPower { get; set; }
+    public double? DangerPower { get; set; }
     
     [JsonPropertyName("COVER_DIST_CLOSE")]
-    public double CoverDistanceClose { get; set; }
+    public double? CoverDistanceClose { get; set; }
     
     [JsonPropertyName("GOOD_DIST_TO_POINT")]
     public double GoodDistanceToPoint { get; set; }
@@ -398,4 +398,3 @@ public class BotCore
     [JsonPropertyName("AXE_MAN_KILLS_END")]
     public double AxeManKillsEnd { get; set; }
 }
-*/
