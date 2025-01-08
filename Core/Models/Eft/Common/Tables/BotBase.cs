@@ -308,8 +308,7 @@ public class BaseJsonSkills
 
 public class Skills
 {
-    [JsonConverter(typeof(DictionaryOfListOrTConverter))]
-    public Dictionary<SkillTypes, ListOrT<Common>>? Common { get; set; }
+    public DictionaryOrList<string, Common>? Common { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, Mastering>? Mastering { get; set; }

@@ -15,7 +15,7 @@ public class ImporterUtil
 
     private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
     {
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, Converters = { new ListOrTConverterFactory() }
+        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, Converters = { new ListOrTConverterFactory(), new DictionaryOrListConverter() }
     };
     
     public ImporterUtil(FileUtil fileUtil)
