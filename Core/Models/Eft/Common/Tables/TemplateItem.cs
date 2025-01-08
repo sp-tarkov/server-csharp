@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -76,8 +77,8 @@ public class Props
     [JsonPropertyName("ItemSound")]
     public string? ItemSound { get; set; }
 
-    [JsonPropertyName("Prefab")]
-    public Prefab? Prefab { get; set; }
+    [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
+    public object? Prefab { get; set; }
 
     [JsonPropertyName("UsePrefab")]
     public Prefab? UsePrefab { get; set; }
@@ -1314,6 +1315,42 @@ public class Props
 
     [JsonPropertyName("tradersDiscountPVE")]
     public int? TradersDiscountPVE { get; set; }
+    
+    [JsonPropertyName("AvailableAsDefault")]
+    public bool? AvailableAsDefault { get; set; }
+    
+    [JsonPropertyName("ProfileVersions")]
+    public List<string>? ProfileVersions { get; set; }
+    
+    [JsonPropertyName("Side")]
+    public List<string>? Side { get; set; }
+    
+    [JsonPropertyName("BodyPart")]
+    public string? BodyPart { get; set; }
+    
+    [JsonPropertyName("IntegratedArmorVest")]
+    public bool? IntegratedArmorVest { get; set; }
+    
+    [JsonPropertyName("WatchPosition")]
+    public XYZ? WatchPosition { get; set; }
+    
+    [JsonPropertyName("WatchPrefab")]
+    public Prefab? WatchPrefab { get; set; }
+    
+    [JsonPropertyName("WatchRotation")]
+    public XYZ? WatchRotation { get; set; }
+    
+    [JsonPropertyName("Game")]
+    public List<string>? Game { get; set; }
+    
+    [JsonPropertyName("Body")]
+    public string? Body { get; set; }
+    
+    [JsonPropertyName("Hands")]
+    public string? Hands { get; set; }
+    
+    [JsonExtensionData] 
+    public Dictionary<string, object> OtherProperties { get; set; } 
 }
 
 public class WeaponRecoilSettings

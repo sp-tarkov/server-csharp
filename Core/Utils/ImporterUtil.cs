@@ -38,6 +38,8 @@ public class ImporterUtil
         foreach (var file in files)
         {
             if (_fileUtil.GetFileExtension(file) != "json") continue;
+            // to skip ArchivedQuests.json
+            if (file.ToLower().Contains("archived")) continue;
             // const filename = this.vfs.stripExtension(file);
             // const filePathAndName = `${filepath}${file}`;
             var fileData = await File.ReadAllTextAsync(file);
