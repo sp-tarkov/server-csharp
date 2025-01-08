@@ -17,5 +17,5 @@ public class DeclineFriendRequestData : BaseFriendRequest
 public class BaseFriendRequest
 {
     [JsonPropertyName("profileId")]
-    public string ProfileId { get; set; }
+    public string? ProfileId { get; set; }
 }
