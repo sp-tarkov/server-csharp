@@ -13,5 +13,7 @@ public enum QuestRewardType
     TraderStandingRestore,
     StashRows,
     Achievement,
-    Pockets
+    Pockets,
+    CustomizationOffer,
+    CustomizationDirect
 }

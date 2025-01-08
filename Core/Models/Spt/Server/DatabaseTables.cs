@@ -1,18 +1,28 @@
-﻿using Core.Models.Eft.Common;
+﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Server;
 
 public class DatabaseTables
 {
-    public Bots.Bots? bots { get; set; }
-    public Hideout.Hideout? hideout { get; set; }
-    public LocaleBase? locales { get; set; }
-    public Locations? locations { get; set; }
-    public Match? match { get; set; }
-    public Templates.Templates? templates { get; set; }
-    public Dictionary<string, Trader>? traders { get; set; }
-    public Globals? globals { get; set; }
-    public ServerBase? server { get; set; }
-    public SettingsBase? settings { get; set; }
+    public Bots.Bots? Bots { get; set; }
+    
+    public Hideout.Hideout? Hideout { get; set; }
+    
+    public LocaleBase? Locales { get; set; }
+    
+    public Locations? Locations { get; set; }
+    
+    public Match? Match { get; set; }
+    
+    public Templates.Templates? Templates { get; set; }
+    
+    public Dictionary<string, Trader>? Traders { get; set; }
+    
+    public Globals? Globals { get; set; }
+    
+    public ServerBase? Server { get; set; }
+    
+    public SettingsBase? Settings { get; set; }
 }

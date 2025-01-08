@@ -119,19 +119,19 @@ public class Quest
 
 public class QuestConditionTypes
 {
-    [JsonPropertyName("Started")]
+    [JsonPropertyName("started")]
     public List<QuestCondition>? Started { get; set; }
 
-    [JsonPropertyName("AvailableForFinish")]
+    [JsonPropertyName("availableForFinish")]
     public List<QuestCondition>? AvailableForFinish { get; set; }
 
-    [JsonPropertyName("AvailableForStart")]
+    [JsonPropertyName("availableForStart")]
     public List<QuestCondition>? AvailableForStart { get; set; }
 
-    [JsonPropertyName("Success")]
+    [JsonPropertyName("success")]
     public List<QuestCondition>? Success { get; set; }
 
-    [JsonPropertyName("Fail")]
+    [JsonPropertyName("fail")]
     public List<QuestCondition>? Fail { get; set; }
 }
 
@@ -313,6 +313,9 @@ public class QuestConditionCounterCondition
 
     [JsonPropertyName("resetOnSessionEnd")]
     public bool? ResetOnSessionEnd { get; set; }
+    
+    [JsonPropertyName("bodyPartsWithEffects")]
+    public List<EnemyHealthEffect>? BodyPartsWithEffects { get; set; }
 }
 
 public class EnemyHealthEffect
@@ -405,7 +408,7 @@ public class QuestReward
     public string? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public QuestRewardType? Type { get; set; }
+    public string? Type { get; set; } // QuestRewardType
 
     [JsonPropertyName("index")]
     public int? Index { get; set; }
@@ -442,4 +445,11 @@ public class QuestReward
     /** Game editions blacklisted from getting reward */
     [JsonPropertyName("notAvailableInGameEditions")]
     public List<string>? NotAvailableInGameEditions { get; set; }
+    
+    // This is always Null atm in the achievements.json
+    [JsonPropertyName("illustrationConfig")]
+    public object? IllustrationConfig { get; set; }
+    
+    [JsonPropertyName("isHidden")]
+    public bool? IsHidden { get; set; }
 }

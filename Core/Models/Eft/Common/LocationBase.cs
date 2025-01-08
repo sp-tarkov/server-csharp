@@ -239,6 +239,9 @@ public class LocationBase
 
     [JsonPropertyName("SpawnPointParams")]
     public List<SpawnPointParam>? SpawnPointParams { get; set; }
+    
+    [JsonPropertyName("areas")]
+    public Dictionary<string, Area>? Areas { get; set; }
 
     [JsonPropertyName("UnixDateTime")]
     public long? UnixDateTime { get; set; }
@@ -273,6 +276,9 @@ public class LocationBase
 
     [JsonPropertyName("ForceOnlineRaidInPVE")]
     public bool? ForceOnlineRaidInPVE { get; set; }
+    
+    [JsonPropertyName("ExitZones")]
+    public string? ExitZones { get; set; }
 
     [JsonPropertyName("exit_count")]
     public int? ExitCount { get; set; }
@@ -756,6 +762,12 @@ public class Exit
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
+    
+    [JsonPropertyName("_Name")]
+    public string? _Name { get; set; }
+    
+    [JsonPropertyName("_name")]
+    public string? _NameLower { get; set; }
 
     [JsonPropertyName("PassageRequirement")]
     public string? PassageRequirement { get; set; }
@@ -897,6 +909,27 @@ public class CrowdAttackSpawnParam
 
     [JsonPropertyName("Weight")]
     public int? Weight { get; set; }
+}
+
+public class Area
+{
+    [JsonPropertyName("center")]
+    public XYZ? Center { get; set; }
+    
+    [JsonPropertyName("infiltrationZone")]
+    public string? InfiltrationZone { get; set; }
+    
+    [JsonPropertyName("orientation")]
+    public double? Orientation { get; set; }
+    
+    [JsonPropertyName("position")]
+    public XYZ? Position { get; set; }
+    
+    [JsonPropertyName("sides")]
+    public List<string>? Sides { get; set; }
+    
+    [JsonPropertyName("size")]
+    public XYZ? Size { get; set; }
 }
 
 public enum WildSpawnType

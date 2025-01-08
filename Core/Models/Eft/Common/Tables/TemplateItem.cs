@@ -1314,6 +1314,36 @@ public class Props
 
     [JsonPropertyName("tradersDiscountPVE")]
     public int? TradersDiscountPVE { get; set; }
+    
+    [JsonPropertyName("AvailableAsDefault")]
+    public bool? AvailableAsDefault { get; set; }
+    
+    [JsonPropertyName("ProfileVersions")]
+    public List<string>? ProfileVersions { get; set; }
+    
+    [JsonPropertyName("Side")]
+    public List<string>? Side { get; set; }
+    
+    [JsonPropertyName("BodyPart")]
+    public string? BodyPart { get; set; }
+    
+    [JsonPropertyName("IntegratedArmorVest")]
+    public bool? IntegratedArmorVest { get; set; }
+    
+    [JsonPropertyName("WatchPosition")]
+    public XYZ? WatchPosition { get; set; }
+    
+    [JsonPropertyName("WatchPrefab")]
+    public Prefab? WatchPrefab { get; set; }
+    
+    [JsonPropertyName("WatchRotation")]
+    public XYZ? WatchRotation { get; set; }
+    
+    [JsonPropertyName("Game")]
+    public List<string>? Game { get; set; }
+    
+    [JsonPropertyName("Body")]
+    public string? Body { get; set; }
 }
 
 public class WeaponRecoilSettings

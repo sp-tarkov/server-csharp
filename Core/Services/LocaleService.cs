@@ -29,13 +29,13 @@ public class LocaleService
  */
     public Dictionary<string, string> GetLocaleDb()
     {
-        var desiredLocale = _databaseServer.GetTables().locales.Global[GetDesiredGameLocale()];
+        var desiredLocale = _databaseServer.GetTables().Locales.Global[GetDesiredGameLocale()];
         if (desiredLocale != null) return desiredLocale;
 
         _logger.Warning(
             $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'");
 
-        return _databaseServer.GetTables().locales.Global["en"];
+        return _databaseServer.GetTables().Locales.Global["en"];
     }
 
     /**
@@ -132,7 +132,7 @@ public class LocaleService
             return "en";
         }
 
-        var locales = _databaseServer.GetTables().locales;
+        var locales = _databaseServer.GetTables().Locales;
         var baseNameCode = platformLocale.TwoLetterISOLanguageName.ToLower();
         if (locales.Global.ContainsKey(baseNameCode)) return baseNameCode;
 
