@@ -158,7 +158,9 @@ public class RandomUtil
 
         const ulong maxInt = 1UL << 48;
         
-        return (double)integer / maxInt;
+        Console.WriteLine(integer);
+        
+        return (double)Math.Abs(integer) / maxInt;
     }
 
     /// <summary>
