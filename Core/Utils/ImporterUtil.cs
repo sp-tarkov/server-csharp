@@ -21,13 +21,14 @@ public class ImporterUtil
      * @param filepath Path to folder with files
      * @returns Promise<T> return T type associated with this class
      */
-    public async Task<object> LoadRecursiveAsync(
+    public Task<object> LoadRecursiveAsync(
         string filepath,
         Type loadedType,
         Action<string, string>? onReadCallback = null,
         Action<string, object>? onObjectDeserialized = null
     )
     {
+        var tasks = new List<Task>();
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
@@ -40,58 +41,83 @@ public class ImporterUtil
             if (_fileUtil.GetFileExtension(file) != "json") continue;
             // to skip ArchivedQuests.json
             if (file.ToLower().Contains("archived")) continue;
-            // const filename = this.vfs.stripExtension(file);
-            // const filePathAndName = `${filepath}${file}`;
-            var fileData = await File.ReadAllTextAsync(file);
-            if (onReadCallback != null)
-                onReadCallback(file, fileData);
+            tasks.Add(
+                Task.Factory.StartNew(() =>
+                {
+                    // const filename = this.vfs.stripExtension(file);
+                    // const filePathAndName = `${filepath}${file}`;
+                    var fileData = File.ReadAllText(file);
+                    if (onReadCallback != null)
+                        onReadCallback(file, fileData);
 
-            Type propertyType;
-            MethodInfo setMethod;
-            var isDictionary = false;
-            if (loadedType.IsGenericType && loadedType.GetGenericTypeDefinition() == typeof(Dictionary<,>))
-            {
-                propertyType = loadedType.GetGenericArguments()[1];
-                setMethod = loadedType.GetMethod("Add");
-                isDictionary = true;
-            }
-            else
-            {
-                var matchedProperty = loadedType.GetProperties()
-                    .FirstOrDefault(prop => prop.Name.ToLower() == Path.GetFileNameWithoutExtension(file).ToLower());
-                if (matchedProperty == null)
-                    throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
-                propertyType = matchedProperty.PropertyType;
-                setMethod = matchedProperty.GetSetMethod();
-            }
+                    var setMethod = GetSetMethod(
+                        Path.GetFileNameWithoutExtension(file).ToLower(),
+                        loadedType,
+                        out var propertyType,
+                        out var isDictionary
+                    );
+                    try
+                    {
+                        var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType,
+                            new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
+                        if (onObjectDeserialized != null)
+                            onObjectDeserialized(file, fileDeserialized);
 
-            try
-            {
-                var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType,
-                    new JsonSerializerOptions { UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow });
-                if (onObjectDeserialized != null)
-                    onObjectDeserialized(file, fileDeserialized);
-
-                setMethod.Invoke(result, isDictionary ? [Path.GetFileNameWithoutExtension(file), fileDeserialized] : [fileDeserialized]);
-            }
-            catch (Exception e)
-            {
-                throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
-            }
+                        setMethod.Invoke(result,
+                            isDictionary ? [Path.GetFileNameWithoutExtension(file), fileDeserialized] : [fileDeserialized]);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
+                    }
+                })
+            );
         }
 
         // deep tree search
         foreach (var directory in directories)
         {
-            var matchedProperty = loadedType.GetProperties()
-                .FirstOrDefault(prop => prop.Name.ToLower() == directory.Split("/").Last().Replace("_", "").ToLower());
-            if (matchedProperty == null)
-                throw new Exception($"Unable to find property '{directory}' for type '{loadedType.Name}'");
-            matchedProperty.GetSetMethod().Invoke(result, [await LoadRecursiveAsync($"{directory}/", matchedProperty.PropertyType)]);
+            tasks.Add(
+                Task.Factory.StartNew(() =>
+                {
+                    var setMethod = GetSetMethod(directory.Split("/").Last().Replace("_", ""), loadedType, out var matchedProperty, out var isDictionary);
+                    var loadTask = LoadRecursiveAsync($"{directory}/", matchedProperty);
+                    loadTask.Wait();
+                    setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
+                })
+            );
         }
 
         // return the result of all async fetch
-        return result;
+        return Task.WhenAll(tasks).ContinueWith((t) =>
+        {
+            if (t.IsCanceled || t.IsFaulted)
+                tasks.Where(t => t.IsFaulted || t.IsCanceled).ToList().ForEach(t => Console.WriteLine(t.Exception));
+        }).ContinueWith(_ => result);
+    }
+
+    public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
+    {
+        MethodInfo setMethod;
+        isDictionary = false;
+        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        {
+            propertyType = type.GetGenericArguments()[1];
+            setMethod = type.GetMethod("Add");
+            isDictionary = true;
+        }
+        else
+        {
+            var matchedProperty = type.GetProperties()
+                .FirstOrDefault(prop =>
+                    prop.Name.ToLower() == Path.GetFileNameWithoutExtension(propertyName).ToLower());
+            if (matchedProperty == null)
+                throw new Exception(
+                    $"Unable to find property '{Path.GetFileNameWithoutExtension(propertyName)}' for type '{type.Name}'");
+            propertyType = matchedProperty.PropertyType;
+            setMethod = matchedProperty.GetSetMethod();
+        }
+        return setMethod;
     }
 
     /**

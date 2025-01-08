@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
 using Core.Models.Spt.Services;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -64,7 +65,7 @@ public class TraderBase
     public decimal? DiscountEnd { get; set; }
 
     [JsonPropertyName("gridHeight")]
-    public int? GridHeight { get; set; }
+    public double? GridHeight { get; set; }
 
     [JsonPropertyName("sell_modifier_for_prohibited_items")]
     public decimal? SellModifierForProhibitedItems { get; set; }
@@ -100,7 +101,7 @@ public class TraderBase
     public string? Name { get; set; }
 
     [JsonPropertyName("nextResupply")]
-    public int? NextResupply { get; set; }
+    public double? NextResupply { get; set; }
 
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
@@ -136,43 +137,44 @@ public class TraderInsurance
     public List<string>? ExcludedCategory { get; set; }
 
     [JsonPropertyName("max_return_hour")]
-    public int? MaxReturnHour { get; set; }
+    public double? MaxReturnHour { get; set; }
 
     [JsonPropertyName("max_storage_time")]
-    public int? MaxStorageTime { get; set; }
+    public double? MaxStorageTime { get; set; }
 
     [JsonPropertyName("min_payment")]
-    public int? MinPayment { get; set; }
+    public double? MinPayment { get; set; }
 
     [JsonPropertyName("min_return_hour")]
-    public int? MinReturnHour { get; set; }
+    public double? MinReturnHour { get; set; }
 }
 
 public class TraderLoyaltyLevel
 {
     [JsonPropertyName("buy_price_coef")]
-    public int? BuyPriceCoefficient { get; set; }
+    public double? BuyPriceCoefficient { get; set; }
 
     [JsonPropertyName("exchange_price_coef")]
-    public int? ExchangePriceCoefficient { get; set; }
+    public double? ExchangePriceCoefficient { get; set; }
 
     [JsonPropertyName("heal_price_coef")]
-    public int? HealPriceCoefficient { get; set; }
+    public double? HealPriceCoefficient { get; set; }
 
     [JsonPropertyName("insurance_price_coef")]
-    public int? InsurancePriceCoefficient { get; set; }
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? InsurancePriceCoefficient { get; set; }
 
     [JsonPropertyName("minLevel")]
-    public int? MinLevel { get; set; }
+    public double? MinLevel { get; set; }
 
     [JsonPropertyName("minSalesSum")]
-    public int? MinSalesSum { get; set; }
+    public double? MinSalesSum { get; set; }
 
     [JsonPropertyName("minStanding")]
-    public int? MinStanding { get; set; }
+    public double? MinStanding { get; set; }
 
     [JsonPropertyName("repair_price_coef")]
-    public int? RepairPriceCoefficient { get; set; }
+    public double? RepairPriceCoefficient { get; set; }
 }
 
 public class TraderRepair
@@ -193,13 +195,14 @@ public class TraderRepair
     public List<string>? ExcludedIdList { get; set; } // Doesn't exist in client object
 
     [JsonPropertyName("quality")]
-    public int? Quality { get; set; }
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? Quality { get; set; }
 }
 
 public class TraderAssort
 {
     [JsonPropertyName("nextResupply")]
-    public int? NextResupply { get; set; }
+    public double? NextResupply { get; set; }
 
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
@@ -214,7 +217,7 @@ public class TraderAssort
 public class BarterScheme
 {
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
@@ -226,9 +229,10 @@ public class BarterScheme
     public bool? SptQuestLocked { get; set; }
 
     [JsonPropertyName("level")]
-    public int? Level { get; set; }
+    public double? Level { get; set; }
 
     [JsonPropertyName("side")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public DogtagExchangeSide? Side { get; set; }
 }
 
@@ -265,13 +269,13 @@ public class SuitRequirements
     public List<string>? AchievementRequirements { get; set; }
 
     [JsonPropertyName("loyaltyLevel")]
-    public int? LoyaltyLevel { get; set; }
+    public double? LoyaltyLevel { get; set; }
 
     [JsonPropertyName("profileLevel")]
-    public int? ProfileLevel { get; set; }
+    public double? ProfileLevel { get; set; }
 
     [JsonPropertyName("standing")]
-    public int? Standing { get; set; }
+    public double? Standing { get; set; }
 
     [JsonPropertyName("skillRequirements")]
     public List<string>? SkillRequirements { get; set; }
@@ -289,7 +293,7 @@ public class SuitRequirements
 public class ItemRequirement
 {
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 
     [JsonPropertyName("_tpl")]
     public string? Tpl { get; set; }
