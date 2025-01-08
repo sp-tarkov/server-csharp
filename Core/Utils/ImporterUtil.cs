@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core.Annotations;
@@ -10,6 +9,8 @@ namespace Core.Utils;
 public class ImporterUtil
 {
     private readonly FileUtil _fileUtil;
+
+    private readonly HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
     public ImporterUtil(FileUtil fileUtil)
     {
@@ -39,8 +40,7 @@ public class ImporterUtil
         foreach (var file in files)
         {
             if (_fileUtil.GetFileExtension(file) != "json") continue;
-            // to skip ArchivedQuests.json
-            if (file.ToLower().Contains("archived")) continue;
+            if (filesToIgnore.Contains(Path.GetFileName(file).ToLower())) continue;
             tasks.Add(
                 Task.Factory.StartNew(() =>
                 {
