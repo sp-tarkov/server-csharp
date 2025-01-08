@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -76,8 +77,8 @@ public class Props
     [JsonPropertyName("ItemSound")]
     public string? ItemSound { get; set; }
 
-    [JsonPropertyName("Prefab")]
-    public Prefab? Prefab { get; set; }
+    [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
+    public object? Prefab { get; set; }
 
     [JsonPropertyName("UsePrefab")]
     public Prefab? UsePrefab { get; set; }
@@ -1344,6 +1345,12 @@ public class Props
     
     [JsonPropertyName("Body")]
     public string? Body { get; set; }
+    
+    [JsonPropertyName("Hands")]
+    public string? Hands { get; set; }
+    
+    [JsonExtensionData] 
+    public Dictionary<string, object> OtherProperties { get; set; } 
 }
 
 public class WeaponRecoilSettings
