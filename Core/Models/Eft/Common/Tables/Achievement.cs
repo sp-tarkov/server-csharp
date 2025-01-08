@@ -17,7 +17,7 @@ public class Achievement
     public List<QuestReward>? Rewards { get; set; }
 
     [JsonPropertyName("conditions")]
-    public QuestConditionTypes? Conditions { get; set; }
+    public AchievementQuestConditionTypes? Conditions { get; set; }
 
     [JsonPropertyName("instantComplete")]
     public bool? InstantComplete { get; set; }
@@ -48,4 +48,22 @@ public class Achievement
 
     [JsonPropertyName("index")]
     public int? Index { get; set; }
+}
+
+public class AchievementQuestConditionTypes
+{
+    [JsonPropertyName("started")]
+    public List<QuestCondition>? Started { get; set; }
+
+    [JsonPropertyName("availableForFinish")]
+    public List<QuestCondition>? AvailableForFinish { get; set; }
+
+    [JsonPropertyName("availableForStart")]
+    public List<QuestCondition>? AvailableForStart { get; set; }
+
+    [JsonPropertyName("success")]
+    public List<QuestCondition>? Success { get; set; }
+
+    [JsonPropertyName("fail")]
+    public List<QuestCondition>? Fail { get; set; }
 }
