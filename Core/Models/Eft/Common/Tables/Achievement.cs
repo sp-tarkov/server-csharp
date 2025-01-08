@@ -17,7 +17,7 @@ public class Achievement
     public List<QuestReward>? Rewards { get; set; }
 
     [JsonPropertyName("conditions")]
-    public QuestConditionTypes? Conditions { get; set; }
+    public AchievementQuestConditionTypes? Conditions { get; set; }
 
     [JsonPropertyName("instantComplete")]
     public bool? InstantComplete { get; set; }
