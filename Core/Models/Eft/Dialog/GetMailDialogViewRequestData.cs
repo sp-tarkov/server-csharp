@@ -15,5 +15,5 @@ public class GetMailDialogViewRequestData
     public int? Limit { get; set; }
 
     [JsonPropertyName("time")]
-    public decimal Time { get; set; } // decimal
+    public decimal? Time { get; set; } // decimal
 }

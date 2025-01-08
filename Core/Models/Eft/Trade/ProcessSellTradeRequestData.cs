@@ -5,29 +5,29 @@ namespace Core.Models.Eft.Trade;
 public class ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "sell_to_trader";
+    public string? Action { get; set; } = "sell_to_trader";
 
     [JsonPropertyName("type")]
-    public string Type { get; set; }
+    public string? Type { get; set; }
 
     [JsonPropertyName("tid")]
-    public string Tid { get; set; }
+    public string? Tid { get; set; }
 
     [JsonPropertyName("price")]
-    public double Price { get; set; }
+    public double? Price { get; set; }
 
     [JsonPropertyName("items")]
-    public List<SoldItem> Items { get; set; }
+    public List<SoldItem>? Items { get; set; }
 }
 
 public class SoldItem
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("count")]
-    public int Count { get; set; }
+    public int? Count { get; set; }
 
     [JsonPropertyName("scheme_id")]
-    public int SchemeId { get; set; }
+    public int? SchemeId { get; set; }
 }

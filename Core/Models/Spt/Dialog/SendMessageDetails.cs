@@ -11,13 +11,13 @@ public class SendMessageDetails
     /// Player id
     /// </summary>
     [JsonPropertyName("recipientId")]
-    public string RecipientId { get; set; }
+    public string? RecipientId { get; set; }
 
     /// <summary>
     /// Who is sending this message
     /// </summary>
     [JsonPropertyName("sender")]
-    public MessageType Sender { get; set; }
+    public MessageType? Sender { get; set; }
 
     /// <summary>
     /// Optional - leave blank to use sender value
@@ -83,13 +83,13 @@ public class SendMessageDetails
 public class ProfileChangeEvent
 {
     [JsonPropertyName("_id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("Type")]
-    public ProfileChangeEventType Type { get; set; }
+    public ProfileChangeEventType? Type { get; set; }
 
     [JsonPropertyName("value")]
-    public double Value { get; set; }
+    public double? Value { get; set; }
 
     [JsonPropertyName("entity")]
     public string? Entity { get; set; }

@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Customization;
 public class BuyClothingRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "CustomizationBuy";
+    public string? Action { get; set; } = "CustomizationBuy";
 
     [JsonPropertyName("offer")]
     public string? Offer { get; set; }

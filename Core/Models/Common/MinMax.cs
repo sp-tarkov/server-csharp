@@ -5,8 +5,8 @@ namespace Core.Models.Common;
 public class MinMax
 {
     [JsonPropertyName("max")]
-    public double Max { get; set; }
+    public double? Max { get; set; }
 
     [JsonPropertyName("min")]
-    public double Min { get; set; }
+    public double? Min { get; set; }
 }

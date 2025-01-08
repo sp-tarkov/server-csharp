@@ -20,38 +20,38 @@ public class PackageJsonData
     public Dictionary<string, string>? ModDependencies { get; set; }
 
     [JsonPropertyName("name")]
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     [JsonPropertyName("url")]
-    public string Url { get; set; }
+    public string? Url { get; set; }
 
     [JsonPropertyName("author")]
-    public string Author { get; set; }
+    public string? Author { get; set; }
 
     [JsonPropertyName("version")]
-    public string Version { get; set; }
+    public string? Version { get; set; }
 
     [JsonPropertyName("sptVersion")]
-    public string SptVersion { get; set; }
+    public string? SptVersion { get; set; }
 
     // We deliberately purge this data
     [JsonPropertyName("scripts")]
-    public Dictionary<string, string> Scripts { get; set; }
+    public Dictionary<string, string>? Scripts { get; set; }
 
     [JsonPropertyName("devDependencies")]
     public Dictionary<string, string>? DevDependencies { get; set; }
 
     [JsonPropertyName("licence")]
-    public string Licence { get; set; }
+    public string? Licence { get; set; }
 
     [JsonPropertyName("main")]
-    public string Main { get; set; }
+    public string? Main { get; set; }
 
     [JsonPropertyName("isBundleMod")]
-    public bool IsBundleMod { get; set; }
+    public bool? IsBundleMod { get; set; }
 
     [JsonPropertyName("contributors")]
-    public List<string> Contributors { get; set; }
+    public List<string>? Contributors { get; set; }
 }
 
 // TODO: this will need changing to however we implement it in this project

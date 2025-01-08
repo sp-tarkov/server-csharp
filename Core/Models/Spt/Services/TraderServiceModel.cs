@@ -6,7 +6,7 @@ namespace Core.Models.Spt.Services;
 public class TraderServiceModel
 {
     [JsonPropertyName("serviceType")]
-    public TraderServiceType ServiceType { get; set; }
+    public TraderServiceType? ServiceType { get; set; }
 
     [JsonPropertyName("itemsToPay")]
     public Dictionary<string, int>? ItemsToPay { get; set; }

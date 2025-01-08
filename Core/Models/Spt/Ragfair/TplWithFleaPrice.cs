@@ -5,9 +5,9 @@ namespace Core.Models.Spt.Ragfair;
 public class TplWithFleaPrice
 {
     [JsonPropertyName("tpl")]
-    public string Tpl { get; set; }
+    public string? Tpl { get; set; }
 
     // Roubles
     [JsonPropertyName("price")]
-    public decimal Price { get; set; }
+    public decimal? Price { get; set; }
 }

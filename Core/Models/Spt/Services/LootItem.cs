@@ -8,11 +8,11 @@ public class LootItem
     public string? Id { get; set; }
 
     [JsonPropertyName("tpl")]
-    public string Tpl { get; set; }
+    public string? Tpl { get; set; }
 
     [JsonPropertyName("isPreset")]
-    public bool IsPreset { get; set; }
+    public bool? IsPreset { get; set; }
 
     [JsonPropertyName("stackCount")]
-    public int StackCount { get; set; }
+    public int? StackCount { get; set; }
 }
