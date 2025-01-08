@@ -130,7 +130,7 @@ public class Position
 public class AreaRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Area;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Area;
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
@@ -142,7 +142,7 @@ public class AreaRequirement : QteRequirement
 public class TraderUnlockRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.TraderUnlock;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.TraderUnlock;
 
     [JsonPropertyName("traderId")]
     public string? TraderId { get; set; }
@@ -151,7 +151,7 @@ public class TraderUnlockRequirement : QteRequirement
 public class TraderLoyaltyRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.TraderLoyalty;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.TraderLoyalty;
 
     [JsonPropertyName("traderId")]
     public string? TraderId { get; set; }
@@ -163,7 +163,7 @@ public class TraderLoyaltyRequirement : QteRequirement
 public class SkillRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Skill;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Skill;
 
     [JsonPropertyName("skillName")]
     public SkillTypes? SkillName { get; set; }
@@ -175,7 +175,7 @@ public class SkillRequirement : QteRequirement
 public class ResourceRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Resource;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Resource;
 
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -187,7 +187,7 @@ public class ResourceRequirement : QteRequirement
 public class ItemRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Item;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Item;
 
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -205,7 +205,7 @@ public class ItemRequirement : QteRequirement
 public class ToolRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Tool;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Tool;
 
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -223,7 +223,7 @@ public class ToolRequirement : QteRequirement
 public class QuestRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.QuestComplete;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.QuestComplete;
 
     [JsonPropertyName("questId")]
     public string? QuestId { get; set; }
@@ -232,7 +232,7 @@ public class QuestRequirement : QteRequirement
 public class HealthRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.Health;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.Health;
 
     [JsonPropertyName("energy")]
     public int? Energy { get; set; }
@@ -244,7 +244,7 @@ public class HealthRequirement : QteRequirement
 public class BodyPartBuffRequirement : QteRequirement
 {
     [JsonPropertyName("type")]
-    public RequirementType? Type { get; set; } = RequirementType.BodyPartBuff;
+    public RequirementType? Type { get; set; } = Models.Enums.Hideout.RequirementType.BodyPartBuff;
 
     [JsonPropertyName("effectName")]
     public Effect? EffectName { get; set; }
