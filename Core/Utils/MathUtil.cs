@@ -107,7 +107,7 @@ public class MathUtil
 		{
 			if (xp >= x[i] && xp <= x[i + 1])
 			{
-				return y[i] + ((xp - x[i]) * (y[i + 1] - y[i])) / (x[i + 1] - x[i]);
+				return y[i] + (xp - x[i]) * (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
 			}
 		}
 
