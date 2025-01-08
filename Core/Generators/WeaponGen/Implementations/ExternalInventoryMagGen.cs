@@ -6,7 +6,6 @@ public class ExternalInventoryMagGen : InventoryMagGen
 {
     public ExternalInventoryMagGen()
     {
-        
     }
 
     public int GetPriority()

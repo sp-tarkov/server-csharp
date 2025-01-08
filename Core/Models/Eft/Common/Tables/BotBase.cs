@@ -209,7 +209,7 @@ public enum BanType
     TRADING = 3,
     ONLINE = 4,
     FRIENDS = 5,
-    CHANGE_NICKNAME = 6,
+    CHANGE_NICKNAME = 6
 }
 
 public class Customization
@@ -302,8 +302,10 @@ public class Skills
 {
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<SkillTypes, Common> Common { get; set; }
+
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, Mastering> Mastering { get; set; }
+
     public double Points { get; set; }
 }
 
@@ -419,6 +421,7 @@ public class DamageHistory
 {
     public string LethalDamagePart { get; set; }
     public LethalDamage LethalDamage { get; set; }
+
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public BodyPartsDamageHistory BodyParts { get; set; }
 }
@@ -683,7 +686,7 @@ public enum SurvivorClass
     NEUTRALIZER = 1,
     MARAUDER = 2,
     PARAMEDIC = 3,
-    SURVIVOR = 4,
+    SURVIVOR = 4
 }
 
 public class Quests

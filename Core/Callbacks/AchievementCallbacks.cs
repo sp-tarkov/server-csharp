@@ -8,7 +8,6 @@ public class AchievementCallbacks
 {
     public AchievementCallbacks()
     {
-        
     }
 
     /// <summary>

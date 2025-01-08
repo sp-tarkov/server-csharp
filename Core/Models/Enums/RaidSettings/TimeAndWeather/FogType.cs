@@ -6,5 +6,5 @@ public enum FogType
     FAINT,
     FOG,
     HEAVY,
-    CONTINUOUS,
+    CONTINUOUS
 }

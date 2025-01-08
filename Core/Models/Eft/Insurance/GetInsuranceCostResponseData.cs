@@ -2,5 +2,4 @@
 
 public class GetInsuranceCostResponseData : Dictionary<string, Dictionary<string, double>>
 {
-    
 }

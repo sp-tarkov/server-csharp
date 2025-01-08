@@ -30,25 +30,25 @@ public class AirdropChancePercent
 {
     [JsonPropertyName("bigmap")]
     public double Bigmap { get; set; }
-    
+
     [JsonPropertyName("woods")]
     public double Woods { get; set; }
-    
+
     [JsonPropertyName("lighthouse")]
     public double Lighthouse { get; set; }
-    
+
     [JsonPropertyName("shoreline")]
     public double Shoreline { get; set; }
-    
+
     [JsonPropertyName("interchange")]
     public double Interchange { get; set; }
-    
+
     [JsonPropertyName("reserve")]
     public double Reserve { get; set; }
-    
+
     [JsonPropertyName("tarkovStreets")]
     public double TarkovStreets { get; set; }
-    
+
     [JsonPropertyName("sandbox")]
     public double Sandbox { get; set; }
 }

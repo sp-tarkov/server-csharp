@@ -9,9 +9,8 @@ public class MatchCallbacks
 {
     public MatchCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/match/updatePing
     /// </summary>
@@ -47,7 +46,7 @@ public class MatchCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/match/group/current
     /// </summary>

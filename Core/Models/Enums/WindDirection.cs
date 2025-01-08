@@ -1,6 +1,7 @@
 namespace Core.Models.Enums;
 
-public enum WindDirection {
+public enum WindDirection
+{
     EAST = 1,
     NORTH = 2,
     WEST = 3,
@@ -8,5 +9,5 @@ public enum WindDirection {
     SE = 5,
     SW = 6,
     NW = 7,
-    NE = 8,
+    NE = 8
 }

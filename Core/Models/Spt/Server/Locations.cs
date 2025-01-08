@@ -68,7 +68,7 @@ public class Locations
     {
         get
         {
-            return (Eft.Common.Location?) GetType()
+            return (Eft.Common.Location?)GetType()
                 .GetProperties()
                 .First(p => p.Name.ToLower() == key.ToLower()).GetGetMethod()?
                 .Invoke(this, null) ?? null;

@@ -23,7 +23,7 @@ public class LocationConfig : BaseConfig
 
     [JsonPropertyName("looseLootMultiplier")]
     public LootMultiplier LooseLootMultiplier { get; set; }
-    
+
     [JsonPropertyName("staticLootMultiplier")]
     public LootMultiplier StaticLootMultiplier { get; set; }
 
@@ -74,7 +74,7 @@ public class LocationConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("botTypeLimits")]
     public Dictionary<string, List<BotTypeLimit>> BotTypeLimits { get; set; }
-    
+
     /// <summary>
     /// Container randomisation settings
     /// </summary>
@@ -143,7 +143,7 @@ public class ReserveRaiderSpawnChanceOverrides
 {
     [JsonPropertyName("nonTriggered")]
     public int NonTriggered { get; set; }
-    
+
     [JsonPropertyName("triggered")]
     public int Triggered { get; set; }
 }
@@ -159,7 +159,7 @@ public class FixEmptyBotWavesSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
-    
+
     [JsonPropertyName("ignoreMaps")]
     public List<string> IgnoreMaps { get; set; }
 }
@@ -168,7 +168,7 @@ public class RogueLighthouseSpawnTimeSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
-    
+
     [JsonPropertyName("waitTimeSeconds")]
     public int WaitTimeSeconds { get; set; }
 }
@@ -177,10 +177,10 @@ public class SplitWaveSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
-    
+
     [JsonPropertyName("ignoreMaps")]
     public List<string> IgnoreMaps { get; set; }
-    
+
     [JsonPropertyName("waveSizeThreshold")]
     public int WaveSizeThreshold { get; set; }
 }
@@ -190,7 +190,7 @@ public class CustomWaves
     /** Bosses spawn on raid start */
     [JsonPropertyName("boss")]
     public Dictionary<string, List<BossLocationSpawn>> Boss { get; set; }
-    
+
     [JsonPropertyName("normal")]
     public Dictionary<string, List<Wave>> Normal { get; set; }
 }
@@ -206,52 +206,52 @@ public class LootMultiplier
 {
     [JsonPropertyName("bigmap")]
     public double BigMap { get; set; }
-    
+
     [JsonPropertyName("develop")]
     public double Develop { get; set; }
-    
+
     [JsonPropertyName("factory4_day")]
     public double Factory4Day { get; set; }
-    
+
     [JsonPropertyName("factory4_night")]
     public double Factory4Night { get; set; }
-    
+
     [JsonPropertyName("interchange")]
     public double Interchange { get; set; }
-    
+
     [JsonPropertyName("laboratory")]
     public double Laboratory { get; set; }
-    
+
     [JsonPropertyName("rezervbase")]
     public double RezervBase { get; set; }
-    
+
     [JsonPropertyName("shoreline")]
     public double Shoreline { get; set; }
-    
+
     [JsonPropertyName("woods")]
     public double Woods { get; set; }
-    
+
     [JsonPropertyName("hideout")]
     public double Hideout { get; set; }
-    
+
     [JsonPropertyName("lighthouse")]
     public double Lighthouse { get; set; }
-    
+
     [JsonPropertyName("privatearea")]
     public double PrivateArea { get; set; }
-    
+
     [JsonPropertyName("suburbs")]
     public double Suburbs { get; set; }
-    
+
     [JsonPropertyName("tarkovstreets")]
     public double TarkovStreets { get; set; }
-    
+
     [JsonPropertyName("terminal")]
     public double Terminal { get; set; }
-    
+
     [JsonPropertyName("town")]
     public double Town { get; set; }
-    
+
     [JsonPropertyName("sandbox")]
     public double Sandbox { get; set; }
 }
@@ -260,18 +260,18 @@ public class ContainerRandomisationSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
-    
+
     /** What maps can use the container randomisation feature */
     [JsonPropertyName("maps")]
     public Dictionary<string, bool> Maps { get; set; }
-    
+
     /** Some container types don't work when randomised */
     [JsonPropertyName("containerTypesToNotRandomise")]
     public List<string> ContainerTypesToNotRandomise { get; set; }
-    
+
     [JsonPropertyName("containerGroupMinSizeMultiplier")]
     public double ContainerGroupMinSizeMultiplier { get; set; }
-    
+
     [JsonPropertyName("containerGroupMaxSizeMultiplier")]
     public double ContainerGroupMaxSizeMultiplier { get; set; }
 }
@@ -280,7 +280,7 @@ public class ScavRaidTimeSettings
 {
     [JsonPropertyName("settings")]
     public ScavRaidTimeConfigSettings Settings { get; set; }
-    
+
     [JsonPropertyName("maps")]
     public Dictionary<string, ScavRaidTimeLocationSettings> Maps { get; set; }
 }
@@ -296,23 +296,23 @@ public class ScavRaidTimeLocationSettings
     /** Should loot be reduced by same percent length of raid is reduced by */
     [JsonPropertyName("reduceLootByPercent")]
     public bool ReduceLootByPercent { get; set; }
-    
+
     /** Smallest % of container loot that should be spawned */
     [JsonPropertyName("minStaticLootPercent")]
     public double MinStaticLootPercent { get; set; }
-    
+
     /** Smallest % of loose loot that should be spawned */
     [JsonPropertyName("minDynamicLootPercent")]
     public double MinDynamicLootPercent { get; set; }
-    
+
     /** Chance raid time is reduced */
     [JsonPropertyName("reducedChancePercent")]
     public double ReducedChancePercent { get; set; }
-    
+
     /** How much should raid time be reduced - weighted */
     [JsonPropertyName("reductionPercentWeights")]
     public Dictionary<string, double> ReductionPercentWeights { get; set; }
-    
+
     /** Should bot waves be removed / spawn times be adjusted */
     [JsonPropertyName("adjustWaves")]
     public bool AdjustWaves { get; set; }

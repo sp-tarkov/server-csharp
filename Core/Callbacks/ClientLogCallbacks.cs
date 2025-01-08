@@ -7,7 +7,6 @@ public class ClientLogCallbacks
 {
     public ClientLogCallbacks()
     {
-        
     }
 
     /// <summary>

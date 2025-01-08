@@ -9,9 +9,8 @@ public class BotCallbacks
 {
     public BotCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle singleplayer/settings/bot/limit
     /// Is called by client to define each bot roles wave limit

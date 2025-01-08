@@ -9,7 +9,6 @@ public class BotLevelGenerator
 {
     public BotLevelGenerator()
     {
-        
     }
 
     /// <summary>

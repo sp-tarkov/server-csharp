@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class ProfileStatusResponse 
+public class ProfileStatusResponse
 {
     [JsonPropertyName("maxPveCountExceeded")]
     public bool? MaxPveCountExceeded { get; set; }

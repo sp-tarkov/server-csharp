@@ -40,6 +40,7 @@ public enum SkillTypes
     NightOps,
     SilentOps,
     Lockpicking,
+
     // Also called Weapon Maintenance
     WeaponTreatment,
     MagDrills,

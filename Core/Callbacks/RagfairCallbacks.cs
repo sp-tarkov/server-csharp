@@ -13,9 +13,8 @@ public class RagfairCallbacks : OnLoad, OnUpdate
 
     public RagfairCallbacks()
     {
-        
     }
-    
+
     public async Task OnLoad()
     {
         throw new NotImplementedException();
@@ -83,7 +82,7 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle RagFairRenewOffer event
     /// </summary>
@@ -128,7 +127,7 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/ragfair/offer/findbyid
     /// </summary>

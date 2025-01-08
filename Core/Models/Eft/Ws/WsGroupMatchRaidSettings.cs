@@ -5,6 +5,6 @@ namespace Core.Models.Eft.Ws;
 
 public class WsGroupMatchRaidSettings : WsNotificationEvent
 {
-	[JsonPropertyName("raidSettings")]
-	public RaidSettings RaidSettings { get; set; }
+    [JsonPropertyName("raidSettings")]
+    public RaidSettings RaidSettings { get; set; }
 }

@@ -38,7 +38,7 @@ public static class ConfigTypesExtension
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
         };
     }
-    
+
     public static Type GetConfigType(this ConfigTypes type)
     {
         return type switch

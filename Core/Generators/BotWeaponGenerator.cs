@@ -229,14 +229,14 @@ public class BotWeaponGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Fill each Camora with a bullet
     /// </summary>
     /// <param name="weaponMods">Weapon mods to find and update camora mod(s) from</param>
     /// <param name="magazineId">Magazine id to find and add to</param>
     /// <param name="ammoTpl">Ammo template id to hydrate with</param>
-    protected void FillCamorasWithAmmo(List<Item> weaponMods, string magazineId, string ammoTpl) 
+    protected void FillCamorasWithAmmo(List<Item> weaponMods, string magazineId, string ammoTpl)
     {
         throw new NotImplementedException();
     }

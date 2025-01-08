@@ -8,9 +8,8 @@ public class NoteCallbacks
 {
     public NoteCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle AddNote event
     /// </summary>

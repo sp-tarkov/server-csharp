@@ -4,7 +4,6 @@ public class InternalMagazineInventoryMagGen : InventoryMagGen
 {
     public InternalMagazineInventoryMagGen()
     {
-        
     }
 
     public int GetPriority()

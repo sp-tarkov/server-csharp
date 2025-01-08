@@ -79,7 +79,7 @@ public enum OfferOwnerType
 {
     ANYOWNERTYPE = 0,
     TRADEROWNERTYPE = 1,
-    PLAYEROWNERTYPE = 2,
+    PLAYEROWNERTYPE = 2
 }
 
 public class BuildItems

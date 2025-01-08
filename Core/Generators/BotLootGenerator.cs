@@ -12,7 +12,6 @@ public class BotLootGenerator
 
     public BotLootGenerator()
     {
-        
     }
 
     /// <summary>
@@ -86,7 +85,8 @@ public class BotLootGenerator
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
     /// <exception cref="NotImplementedException"></exception>
-    public void AddLootFromPool(Dictionary<string, int> pool, List<string> equipmentSlots, int totalItemCount, BotBaseInventory inventoryToAddItemsTo, // TODO: type for containersIdFull was Set<string>
+    public void AddLootFromPool(Dictionary<string, int> pool, List<string> equipmentSlots, int totalItemCount,
+        BotBaseInventory inventoryToAddItemsTo, // TODO: type for containersIdFull was Set<string>
         string botRole, ItemSpawnLimitSettings? itemSpawnLimits, List<string> containersIdFull, int totalValueLimitRub = 0, bool isPmc = false)
     {
         throw new NotImplementedException();
@@ -127,7 +127,8 @@ public class BotLootGenerator
     /// <param name="isPmc">are we generating for a pmc</param>
     /// <param name="botLevel"></param>
     /// <param name="containersIdFull"></param>
-    public void AddLooseWeaponsToInventorySlot(string sessionId, BotBaseInventory botInventory, string equipmentSlot, BotBaseInventory templateInventory, // TODO: type for containersIdFull was Set<string>
+    public void AddLooseWeaponsToInventorySlot(string sessionId, BotBaseInventory botInventory, string equipmentSlot,
+        BotBaseInventory templateInventory, // TODO: type for containersIdFull was Set<string>
         Dictionary<string, double> modsChances, string botRole, bool isPmc, int botLevel, List<string>? containersIdFull)
     {
         throw new NotImplementedException();

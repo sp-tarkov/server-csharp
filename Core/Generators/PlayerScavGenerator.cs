@@ -10,15 +10,14 @@ public class PlayerScavGenerator
 
     public PlayerScavGenerator()
     {
-        
     }
-    
+
     /// <summary>
     /// Update a player profile to include a new player scav profile
     /// </summary>
     /// <param name="sessionID">session id to specify what profile is updated</param>
     /// <returns>profile object</returns>
-    public PmcData Generate(string sessionID) 
+    public PmcData Generate(string sessionID)
     {
         throw new NotImplementedException();
     }
@@ -40,7 +39,7 @@ public class PlayerScavGenerator
     /// </summary>
     /// <param name="pmcData">pmc profile</param>
     /// <returns>karma level</returns>
-    protected double GetScavKarmaLevel(PmcData pmcData) 
+    protected double GetScavKarmaLevel(PmcData pmcData)
     {
         throw new NotImplementedException();
     }
@@ -51,7 +50,7 @@ public class PlayerScavGenerator
     /// </summary>
     /// <param name="botTypeForLoot">bot type to use for inventory/chances</param>
     /// <returns>IBotType object</returns>
-    protected BotType ConstructBotBaseTemplate(string botTypeForLoot) 
+    protected BotType ConstructBotBaseTemplate(string botTypeForLoot)
     {
         throw new NotImplementedException();
     }
@@ -61,32 +60,32 @@ public class PlayerScavGenerator
     /// </summary>
     /// <param name="karmaSettings">Values to modify the bot template with</param>
     /// <param name="baseBotNode">bot template to modify according to karama level settings</param>
-    protected void AdjustBotTemplateWithKarmaSpecificSettings(KarmaLevel karmaSettings, BotType baseBotNode) 
-    {
-        throw new NotImplementedException();
-    }
-    
-    protected Skills GetScavSkills(PmcData scavProfile) 
+    protected void AdjustBotTemplateWithKarmaSpecificSettings(KarmaLevel karmaSettings, BotType baseBotNode)
     {
         throw new NotImplementedException();
     }
 
-    protected Skills GetDefaultScavSkills() 
+    protected Skills GetScavSkills(PmcData scavProfile)
     {
         throw new NotImplementedException();
     }
 
-    protected Stats GetScavStats(PmcData scavProfile) 
+    protected Skills GetDefaultScavSkills()
     {
         throw new NotImplementedException();
     }
 
-    protected int GetScavLevel(PmcData scavProfile) 
+    protected Stats GetScavStats(PmcData scavProfile)
     {
         throw new NotImplementedException();
     }
 
-    protected int GetScavExperience(PmcData scavProfile) 
+    protected int GetScavLevel(PmcData scavProfile)
+    {
+        throw new NotImplementedException();
+    }
+
+    protected int GetScavExperience(PmcData scavProfile)
     {
         throw new NotImplementedException();
     }
@@ -98,7 +97,7 @@ public class PlayerScavGenerator
     /// <param name="scavData">scav profile</param>
     /// <param name="pmcData">pmc profile</param>
     /// <returns></returns>
-    protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData) 
+    protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
     {
         throw new NotImplementedException();
     }

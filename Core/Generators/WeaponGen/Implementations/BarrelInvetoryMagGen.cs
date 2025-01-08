@@ -4,7 +4,6 @@ public class BarrelInvetoryMagGen : InventoryMagGen
 {
     public BarrelInvetoryMagGen()
     {
-        
     }
 
     public int GetPriority()

@@ -9,7 +9,6 @@ public class HealthCallbacks
 {
     public HealthCallbacks()
     {
-        
     }
 
     /// <summary>

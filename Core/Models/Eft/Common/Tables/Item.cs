@@ -2,19 +2,23 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-
 public class Item
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
+
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
+
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
+
     [JsonPropertyName("slotId")]
     public string? SlotId { get; set; }
+
     [JsonPropertyName("location")]
     public object? Location { get; set; } // TODO: Can be IItemLocation or number
+
     [JsonPropertyName("upd")]
     public Upd? Update { get; set; }
 }
@@ -25,6 +29,7 @@ public class ItemLocation
     public float? Y { get; set; }
     public object? R { get; set; } // TODO: Can be string or number
     public bool? IsSearched { get; set; }
+
     /** SPT property? */
     public object? Rotation { get; set; } // TODO: Can be string or boolean
 }
@@ -36,9 +41,11 @@ public class Upd
     public UpdTogglable? Togglable { get; set; }
     public UpdMap? Map { get; set; }
     public UpdTag? Tag { get; set; }
+
     /** SPT specific property, not made by BSG */
     [JsonPropertyName("sptPresetId")]
     public string? SptPresetId { get; set; }
+
     public UpdFaceShield? FaceShield { get; set; }
     public double? StackObjectsCount { get; set; }
     public bool? UnlimitedCount { get; set; }
@@ -62,7 +69,8 @@ public class Upd
     public PinLockState? PinLockState { get; set; }
 }
 
-public enum PinLockState {
+public enum PinLockState
+{
     Free,
     Locked,
     Pinned
@@ -72,13 +80,13 @@ public class UpdBuff
 {
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }
-    
+
     [JsonPropertyName("BuffType")]
     public string? BuffType { get; set; }
-    
+
     [JsonPropertyName("Value")]
     public int? Value { get; set; }
-    
+
     [JsonPropertyName("ThresholdDurability")]
     public int? ThresholdDurability { get; set; }
 }
@@ -99,7 +107,7 @@ public class MapMarker
 {
     [JsonPropertyName("X")]
     public int? X { get; set; }
-    
+
     [JsonPropertyName("Y")]
     public int? Y { get; set; }
 }
@@ -108,7 +116,7 @@ public class UpdTag
 {
     [JsonPropertyName("Color")]
     public int? Color { get; set; }
-    
+
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
 }
@@ -123,7 +131,7 @@ public class UpdRepairable
 {
     [JsonPropertyName("Durability")]
     public int? Durability { get; set; }
-    
+
     [JsonPropertyName("MaxDurability")]
     public int? MaxDurability { get; set; }
 }
@@ -144,10 +152,10 @@ public class UpdSight
 {
     [JsonPropertyName("ScopesCurrentCalibPointIndexes")]
     public List<int>? ScopesCurrentCalibPointIndexes { get; set; }
-    
+
     [JsonPropertyName("ScopesSelectedModes")]
     public List<int>? ScopesSelectedModes { get; set; }
-    
+
     [JsonPropertyName("SelectedScope")]
     public int? SelectedScope { get; set; }
 }

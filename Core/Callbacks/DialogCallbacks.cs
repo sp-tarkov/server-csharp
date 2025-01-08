@@ -11,9 +11,8 @@ public class DialogCallbacks : OnUpdate
 {
     public DialogCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/friend/list
     /// </summary>
@@ -97,7 +96,7 @@ public class DialogCallbacks : OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/mail/dialog/unpin
     /// </summary>
@@ -109,7 +108,7 @@ public class DialogCallbacks : OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/mail/dialog/read
     /// </summary>
@@ -145,7 +144,7 @@ public class DialogCallbacks : OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/friend/request/list/outbox
     /// </summary>
@@ -169,7 +168,7 @@ public class DialogCallbacks : OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/friend/request/send
     /// </summary>

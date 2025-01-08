@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Achievement 
+public class Achievement
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

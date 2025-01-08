@@ -56,7 +56,8 @@ public class EncodingUtil
     }
 }
 
-public enum EncodeType {
+public enum EncodeType
+{
     BASE64,
     HEX,
     ASCII,

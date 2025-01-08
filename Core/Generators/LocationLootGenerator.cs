@@ -153,9 +153,10 @@ public class LocationLootGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     // TODO: rewrite, BIG yikes
-    protected ContainerItem CreateStaticLootItem(string chosenTemplate, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDistribution, string? parentIdentifier = null)
+    protected ContainerItem CreateStaticLootItem(string chosenTemplate, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDistribution,
+        string? parentIdentifier = null)
     {
         throw new NotImplementedException();
     }

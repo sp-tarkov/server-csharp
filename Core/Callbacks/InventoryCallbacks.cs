@@ -9,9 +9,8 @@ public class InventoryCallbacks
 {
     public InventoryCallbacks()
     {
-        
     }
-    
+
     /// <summary>
     /// Handle client/game/profile/items/moving Move event
     /// </summary>
@@ -24,7 +23,7 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle Remove event
     /// </summary>
@@ -37,7 +36,7 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle Split event
     /// </summary>
@@ -50,17 +49,17 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle Swap
     /// </summary>
@@ -73,37 +72,37 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle ReadEncyclopedia
     /// </summary>
@@ -116,7 +115,7 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle ApplyInventoryChanges
     /// </summary>
@@ -129,17 +128,17 @@ public class InventoryCallbacks
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionID)
     {
         throw new NotImplementedException();
     }
-    
+
     public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID)
     {
         throw new NotImplementedException();

@@ -77,19 +77,19 @@ public class BotModLimits
 {
     [JsonPropertyName("scope")]
     public ItemCount Scope { get; set; }
-    
+
     [JsonPropertyName("scopeMax")]
     public int ScopeMax { get; set; }
-    
+
     [JsonPropertyName("scopeBaseTypes")]
     public string[] ScopeBaseTypes { get; set; }
-    
+
     [JsonPropertyName("flashlightLaser")]
     public ItemCount FlashlightLaser { get; set; }
-    
+
     [JsonPropertyName("flashlightLaserMax")]
     public int FlashlightLaserMax { get; set; }
-    
+
     [JsonPropertyName("flashlightLaserBaseTypes")]
     public string[] FlashlightLaserBaseTypes { get; set; }
 }

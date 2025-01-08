@@ -10,7 +10,6 @@ public class GameCallbacks : OnLoad
 {
     public GameCallbacks()
     {
-        
     }
 
     public async Task OnLoad()
@@ -22,7 +21,7 @@ public class GameCallbacks : OnLoad
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/version/validate
     /// </summary>
@@ -34,7 +33,7 @@ public class GameCallbacks : OnLoad
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/start
     /// </summary>
@@ -107,7 +106,7 @@ public class GameCallbacks : OnLoad
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/checkVersion
     /// </summary>
@@ -119,7 +118,7 @@ public class GameCallbacks : OnLoad
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/game/keepalive
     /// </summary>
@@ -131,7 +130,7 @@ public class GameCallbacks : OnLoad
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle singleplayer/settings/version
     /// </summary>

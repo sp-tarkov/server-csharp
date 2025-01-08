@@ -12,10 +12,10 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter) Activator.CreateInstance(typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter)Activator.CreateInstance(typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert));
     }
-    
-    class StringToNumberConverter<T> : JsonConverter<T>
+
+    private class StringToNumberConverter<T> : JsonConverter<T>
     {
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {

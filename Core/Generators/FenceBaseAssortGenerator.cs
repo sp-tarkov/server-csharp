@@ -9,9 +9,8 @@ public class FenceBaseAssortGenerator
 
     public FenceBaseAssortGenerator()
     {
-        
     }
-    
+
     /// <summary>
     /// Create base fence assorts dynamically and store in memory
     /// </summary>
@@ -19,7 +18,7 @@ public class FenceBaseAssortGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Check ammo in boxes and loose ammos has a penetration value above the configured value in trader.json / ammoMaxPenLimit
     /// </summary>
@@ -29,7 +28,7 @@ public class FenceBaseAssortGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Gets the penetration power value of an ammo, works with ammo boxes and raw ammos.
     /// </summary>
@@ -39,7 +38,7 @@ public class FenceBaseAssortGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Add soft inserts and armor plates to an armor.
     /// </summary>
@@ -49,7 +48,7 @@ public class FenceBaseAssortGenerator
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Check if item is valid for being added to fence assorts
     /// </summary>

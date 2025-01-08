@@ -10,9 +10,8 @@ public class TraderCallbacks : OnLoad, OnUpdate
 {
     public TraderCallbacks()
     {
-        
     }
-    
+
     public async Task OnLoad()
     {
         throw new NotImplementedException();
@@ -22,12 +21,12 @@ public class TraderCallbacks : OnLoad, OnUpdate
     {
         throw new NotImplementedException();
     }
-    
+
     public string GetRoute()
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Handle client/trading/api/traderSettings
     /// </summary>

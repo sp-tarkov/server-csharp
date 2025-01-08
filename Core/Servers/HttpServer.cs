@@ -69,7 +69,7 @@ public class HttpServer
         {
             context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
             _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
-            
+
             // Extract headers for original IP detection
             StringValues? realIp = null;
             if (context.Request.Headers.ContainsKey("x-real-ip"))
@@ -87,21 +87,20 @@ public class HttpServer
             if (httpConfig.LogRequests)
             {
                 var isLocalRequest = IsLocalRequest(clientIp);
-                if (isLocalRequest.HasValue) {
-                    if (isLocalRequest.Value) {
+                if (isLocalRequest.HasValue)
+                {
+                    if (isLocalRequest.Value)
                         _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
-                    } else
-                    {
+                    else
                         _logger.Info(
                             _localisationService.GetText("client_request_ip",
                                 new Dictionary<string, string>
                                     { { "ip", clientIp }, { "url", context.Request.Path.Value } })
                         );
-                    }
                 }
             }
-            
-            
+
+
             //_httpListeners.Single()
             // This http request would be passed through the SPT Router and handled by an ICallback
         }
@@ -111,25 +110,18 @@ public class HttpServer
 
     private bool? IsLocalRequest(string? remoteAddress)
     {
-        if (remoteAddress == null) {
-            return null;
-        }
+        if (remoteAddress == null) return null;
 
-        return (
-            remoteAddress.StartsWith("127.0.0") ||
-            remoteAddress.StartsWith("192.168.") ||
-            remoteAddress.StartsWith("localhost")
-        );
+        return remoteAddress.StartsWith("127.0.0") ||
+               remoteAddress.StartsWith("192.168.") ||
+               remoteAddress.StartsWith("localhost");
     }
 
     protected Dictionary<string, string> GetCookies(HttpRequest req)
     {
         var found = new Dictionary<string, string>();
-        
-        foreach (var keyValuePair in req.Cookies)
-        {
-            found.Add(keyValuePair.Key, keyValuePair.Value);
-        }
+
+        foreach (var keyValuePair in req.Cookies) found.Add(keyValuePair.Key, keyValuePair.Value);
 
         return found;
     }
@@ -162,5 +154,8 @@ public class HttpServer
             CancellationToken.None);
     }
 
-    public bool IsStarted() => started;
+    public bool IsStarted()
+    {
+        return started;
+    }
 }
