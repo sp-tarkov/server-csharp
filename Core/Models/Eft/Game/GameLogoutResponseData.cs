@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Game;
 public class GameLogoutResponseData
 {
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
 }

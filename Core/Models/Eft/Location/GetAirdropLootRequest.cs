@@ -5,5 +5,5 @@ namespace Core.Models.Eft.Location;
 public class GetAirdropLootRequest
 {
     [JsonPropertyName("containerId")]
-    public string ContainerId { get; set; }
+    public string? ContainerId { get; set; }
 }

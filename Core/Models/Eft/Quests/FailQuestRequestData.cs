@@ -2,14 +2,14 @@
 
 namespace Core.Models.Eft.Quests;
 
-public class FailQuestRequestData 
+public class FailQuestRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "QuestFail";
+    public string? Action { get; set; } = "QuestFail";
 
     [JsonPropertyName("qid")]
-    public string QuestId { get; set; }
+    public string? QuestId { get; set; }
 
     [JsonPropertyName("removeExcessItems")]
-    public bool RemoveExcessItems { get; set; }
+    public bool? RemoveExcessItems { get; set; }
 }

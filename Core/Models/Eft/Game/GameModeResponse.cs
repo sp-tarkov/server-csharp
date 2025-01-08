@@ -11,8 +11,8 @@ public enum SessionMode
 public class GameModeResponse
 {
     [JsonPropertyName("gameMode")]
-    public SessionMode GameMode { get; set; }
+    public SessionMode? GameMode { get; set; }
 
     [JsonPropertyName("backendUrl")]
-    public string BackendUrl { get; set; }
+    public string? BackendUrl { get; set; }
 }

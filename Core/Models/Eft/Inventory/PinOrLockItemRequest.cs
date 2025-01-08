@@ -6,13 +6,13 @@ namespace Core.Models.Eft.Inventory;
 public class PinOrLockItemRequest
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "PinLock";
+    public string? Action { get; set; } = "PinLock";
 
     /** Id of item being pinned */
     [JsonPropertyName("Item")]
-    public string Item { get; set; }
+    public string? Item { get; set; }
 
     /** "Pinned"/"Locked"/"Free" */
     [JsonPropertyName("State")]
-    public PinLockState State { get; set; }
+    public PinLockState? State { get; set; }
 }

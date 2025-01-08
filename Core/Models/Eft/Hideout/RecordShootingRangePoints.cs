@@ -5,8 +5,8 @@ namespace Core.Models.Eft.Hideout;
 public class RecordShootingRangePoints
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "RecordShootingRangePoints";
+    public string? Action { get; set; } = "RecordShootingRangePoints";
 
     [JsonPropertyName("points")]
-    public int Points { get; set; }
+    public int? Points { get; set; }
 }

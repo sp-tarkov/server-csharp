@@ -1,6 +1,6 @@
 ﻿using Core.Models.Eft.Common.Tables;
 
-namespace Core.Generators.WeaponGen.Implementations;
+namespace Core.Generators.WeaponGen;
 
 public class InventoryMagGen
 {

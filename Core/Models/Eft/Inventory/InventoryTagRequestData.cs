@@ -5,14 +5,14 @@ namespace Core.Models.Eft.Inventory;
 public class InventoryTagRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "Tag";
+    public string? Action { get; set; } = "Tag";
 
     [JsonPropertyName("item")]
-    public string Item { get; set; }
+    public string? Item { get; set; }
 
     [JsonPropertyName("TagName")]
-    public string TagName { get; set; }
+    public string? TagName { get; set; }
 
     [JsonPropertyName("TagColor")]
-    public int TagColor { get; set; }
+    public int? TagColor { get; set; }
 }

@@ -4,48 +4,48 @@ namespace Core.Models.Eft.Profile;
 
 public class GetProfileStatusResponseData
 {
-	[JsonPropertyName("maxPveCountExceeded")]
-	public bool MaxPveCountExceeded { get; set; } = false;
+    [JsonPropertyName("maxPveCountExceeded")]
+    public bool? MaxPveCountExceeded { get; set; } = false;
 
-	[JsonPropertyName("profiles")]
-	public List<ProfileStatusData> Profiles { get; set; }
+    [JsonPropertyName("profiles")]
+    public List<ProfileStatusData>? Profiles { get; set; }
 }
 
 public class ProfileStatusData
 {
-	[JsonPropertyName("profileid")]
-	public string ProfileId { get; set; }
+    [JsonPropertyName("profileid")]
+    public string? ProfileId { get; set; }
 
-	[JsonPropertyName("profileToken")]
-	public string ProfileToken { get; set; }
+    [JsonPropertyName("profileToken")]
+    public string? ProfileToken { get; set; }
 
-	[JsonPropertyName("status")]
-	public string Status { get; set; }
+    [JsonPropertyName("status")]
+    public string? Status { get; set; }
 
-	[JsonPropertyName("ip")]
-	public string Ip { get; set; }
+    [JsonPropertyName("ip")]
+    public string? Ip { get; set; }
 
-	[JsonPropertyName("port")]
-	public int Port { get; set; }
+    [JsonPropertyName("port")]
+    public int? Port { get; set; }
 
-	[JsonPropertyName("sid")]
-	public string Sid { get; set; }
+    [JsonPropertyName("sid")]
+    public string? Sid { get; set; }
 
-	[JsonPropertyName("version")]
-	public string? Version { get; set; }
+    [JsonPropertyName("version")]
+    public string? Version { get; set; }
 
-	[JsonPropertyName("location")]
-	public string? Location { get; set; }
+    [JsonPropertyName("location")]
+    public string? Location { get; set; }
 
-	[JsonPropertyName("raidMode")]
-	public string? RaidMode { get; set; }
+    [JsonPropertyName("raidMode")]
+    public string? RaidMode { get; set; }
 
-	[JsonPropertyName("mode")]
-	public string? Mode { get; set; }
+    [JsonPropertyName("mode")]
+    public string? Mode { get; set; }
 
-	[JsonPropertyName("shortId")]
-	public string? ShortId { get; set; }
+    [JsonPropertyName("shortId")]
+    public string? ShortId { get; set; }
 
-	[JsonPropertyName("additional_info")]
-	public List<object>? AdditionalInfo { get; set; } // TODO: Was `any` in the node server
+    [JsonPropertyName("additional_info")]
+    public List<object>? AdditionalInfo { get; set; } // TODO: Was `any` in the node server
 }

@@ -5,22 +5,22 @@ namespace Core.Models.Eft.Match;
 public class SessionStatus
 {
     [JsonPropertyName("profileid")]
-    public string ProfileId { get; set; }
+    public string? ProfileId { get; set; }
 
     [JsonPropertyName("profileToken")]
-    public string ProfileToken { get; set; }
+    public string? ProfileToken { get; set; }
 
     [JsonPropertyName("status")]
-    public string Status { get; set; }
+    public string? Status { get; set; }
 
     [JsonPropertyName("ip")]
-    public string Ip { get; set; }
+    public string? Ip { get; set; }
 
     [JsonPropertyName("port")]
-    public int Port { get; set; }
+    public int? Port { get; set; }
 
     [JsonPropertyName("sid")]
-    public string Sid { get; set; }
+    public string? Sid { get; set; }
 
     [JsonPropertyName("version")]
     public string? Version { get; set; }

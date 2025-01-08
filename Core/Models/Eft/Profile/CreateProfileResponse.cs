@@ -4,6 +4,6 @@ namespace Core.Models.Eft.Profile;
 
 public class CreateProfileResponse
 {
-	[JsonPropertyName("uid")]
-	public string UserId { get; set; }
+    [JsonPropertyName("uid")]
+    public string? UserId { get; set; }
 }

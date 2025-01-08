@@ -4,12 +4,12 @@ namespace Core.Models.Eft.Quests;
 
 public class AcceptQuestRequestData
 {
-	[JsonPropertyName("Action")]
-	public string Action { get; set; } = "QuestAccept";
+    [JsonPropertyName("Action")]
+    public string? Action { get; set; } = "QuestAccept";
 
-	[JsonPropertyName("qid")]
-	public string QuestId { get; set; }
+    [JsonPropertyName("qid")]
+    public string? QuestId { get; set; }
 
-	[JsonPropertyName("type")]
-	public string Type { get; set; }
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
 }

@@ -5,11 +5,11 @@ namespace Core.Models.Eft.Hideout;
 public class HideoutContinuousProductionStartRequestData 
 {
     [JsonPropertyName("Action")]
-    public string Action { get; } = "HideoutContinuousProductionStart";
+    public string? Action { get; } = "HideoutContinuousProductionStart";
     
     [JsonPropertyName("recipeId")]
-    public string RecipeId { get; set; }
+    public string? RecipeId { get; set; }
     
     [JsonPropertyName("timestamp")]
-    public double Timestamp { get; set; }
+    public double? Timestamp { get; set; }
 }

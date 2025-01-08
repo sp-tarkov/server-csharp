@@ -5,14 +5,14 @@ namespace Core.Models.Eft.Hideout;
 public class HideoutTakeItemOutRequestData
 {
     [JsonPropertyName("Action")]
-    public string Action { get; set; } = "HideoutTakeItemsFromAreaSlots";
+    public string? Action { get; set; } = "HideoutTakeItemsFromAreaSlots";
 
     [JsonPropertyName("areaType")]
-    public int AreaType { get; set; }
+    public int? AreaType { get; set; }
 
     [JsonPropertyName("slots")]
-    public int[] Slots { get; set; }
+    public List<int>? Slots { get; set; }
 
     [JsonPropertyName("timestamp")]
-    public long Timestamp { get; set; }
+    public long? Timestamp { get; set; }
 }

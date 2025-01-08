@@ -5,5 +5,5 @@ namespace Core.Models.Eft.PresetBuild;
 public class RemoveBuildRequestData
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string? Id { get; set; }
 }

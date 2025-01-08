@@ -6,20 +6,20 @@ namespace Core.Models.Eft.Notes;
 public class NoteActionData : BaseInteractionRequestData
 {
 	[JsonPropertyName("Action")]
-	public string Action { get; set; }
+	public string? Action { get; set; }
 
 	[JsonPropertyName("index")]
-	public int Index { get; set; }
+	public int? Index { get; set; }
 
 	[JsonPropertyName("note")]
-	public Note Note { get; set; }
+	public Note? Note { get; set; }
 }
 
 public class Note
 {
 	[JsonPropertyName("Time")]
-	public int Time { get; set; }
+	public int? Time { get; set; }
 
 	[JsonPropertyName("Text")]
-	public string Text { get; set; }
+	public string? Text { get; set; }
 }
