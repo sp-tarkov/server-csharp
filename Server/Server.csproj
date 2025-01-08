@@ -1,6 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
