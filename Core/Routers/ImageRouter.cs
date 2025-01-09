@@ -1,0 +1,46 @@
+using System.Runtime.InteropServices.JavaScript;
+using Core.Annotations;
+using Core.Services.Mod.Image;
+using Core.Utils;
+
+namespace Core.Routers;
+
+[Injectable]
+public class ImageRouter
+{
+    protected FileUtil _fileUtil;
+    protected ImageRouterService _imageRouterService;
+    protected HttpFileUtil _httpFileUtil;
+
+    public ImageRouter(
+        FileUtil fileUtil,
+        ImageRouterService imageRouteService,
+        HttpFileUtil httpFileUtil
+    )
+    {
+        _fileUtil = fileUtil;
+        _imageRouterService = imageRouteService;
+        _httpFileUtil = httpFileUtil;
+    }
+
+    public void AddRoute(string key, string valueToAdd)
+    {
+        _imageRouterService.addRoute(key, valueToAdd);
+    }
+
+    public Task SendImage(string sessionID, HttpRequest req, HttpResponse resp, object body)
+    {
+        // remove file extension
+        var url = _fileUtil.StripExtension(req.Path);
+
+        // send image
+        if (_imageRouterService.ExistsByKey(url)) {
+            return _httpFileUtil.SendFileAsync(resp, _imageRouterService.getByKey(url));
+        }
+        return Task.CompletedTask;
+    }
+
+    public string GetImage() {
+        return "IMAGE";
+    }
+}

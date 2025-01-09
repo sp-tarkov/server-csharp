@@ -3,6 +3,7 @@ using Core.DI;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
+using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using ILogger = Core.Models.Utils.ILogger;
@@ -22,18 +23,20 @@ public class DatabaseImporter : OnLoad
 
     protected readonly DatabaseServer _databaseServer;
 
-    //protected readonly ImageRouter _imageRouter;
+    protected readonly ImageRouter _imageRouter;
     protected readonly EncodingUtil _encodingUtil;
     protected readonly HashUtil _hashUtil;
     protected readonly ImporterUtil _importerUtil;
     protected readonly ConfigServer _configServer;
+    protected readonly FileUtil _fileUtil;
 
     public DatabaseImporter(
         ILogger logger,
         // TODO: are we gonna use this? @inject("JsonUtil") protected jsonUtil: JsonUtil,
+        FileUtil fileUtil,
         LocalisationService localisationService,
         DatabaseServer databaseServer,
-        //ImageRouter imageRouter,
+        ImageRouter imageRouter,
         EncodingUtil encodingUtil,
         HashUtil hashUtil,
         ImporterUtil importerUtil,
@@ -47,6 +50,7 @@ public class DatabaseImporter : OnLoad
         _hashUtil = hashUtil;
         _importerUtil = importerUtil;
         _configServer = configServer;
+        _fileUtil = fileUtil;
         httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
     }
 
@@ -88,9 +92,8 @@ public class DatabaseImporter : OnLoad
         await HydrateDatabase(filepath);
 
         var imageFilePath = $"${filepath}images/";
-        /*
-        var directories = this.vfs.getDirs(imageFilePath);
-        this.loadImages(imageFilePath, directories, [
+        //var directories = this.vfs.getDirs(imageFilePath);
+        LoadImages(imageFilePath, _fileUtil.GetDirectories(imageFilePath), [
             "/files/achievement/",
             "/files/CONTENT/banners/",
             "/files/handbook/",
@@ -100,7 +103,6 @@ public class DatabaseImporter : OnLoad
             "/files/quest/icon/",
             "/files/trader/avatar/",
         ]);
-        */
     }
 
     /**
@@ -167,18 +169,18 @@ public class DatabaseImporter : OnLoad
      * Find and map files with image router inside a designated path
      * @param filepath Path to find files in
      */
-    public void LoadImages(string filepath, List<string> directories, List<string> routes)
+    public void LoadImages(string filepath, string[] directories, List<string> routes)
     {
-        /*
-        for (const directoryIndex in directories) {
+        for (var i = 0; i < directories.Length; i++)
+        {
             // Get all files in directory
-            const filesInDirectory = this.vfs.getFiles(`${filepath}${directories[directoryIndex]}`);
-            for (const file of filesInDirectory) {
+            var filesInDirectory = _fileUtil.GetFiles(directories[i]);
+            foreach (var file in filesInDirectory) {
                 // Register each file in image router
-                const filename = this.vfs.stripExtension(file);
-                const routeKey = `${routes[directoryIndex]}${filename}`;
-                let imagePath = `${filepath}${directories[directoryIndex]}/${file}`;
-
+                var filename = _fileUtil.StripExtension(file);
+                var routeKey = $"{routes[i]}{filename}";
+                var imagePath = $"{filepath}{directories[i]}/{file}";
+/*
                 const pathOverride = this.getImagePathOverride(imagePath);
                 if (pathOverride) {
                     this.logger.debug(`overrode route: ${routeKey} endpoint: ${imagePath} with ${pathOverride}`);
@@ -186,12 +188,12 @@ public class DatabaseImporter : OnLoad
                 }
 
                 this.imageRouter.addRoute(routeKey, imagePath);
+                */
             }
         }
 
         // Map icon file separately
-        this.imageRouter.addRoute("/favicon.ico", `${filepath}icon.ico`);
-        */
+        //this.imageRouter.addRoute("/favicon.ico", `${filepath}icon.ico`);
     }
 
     /**
