@@ -25,22 +25,23 @@ public class ImageRouter
 
     public void AddRoute(string key, string valueToAdd)
     {
-        _imageRouterService.addRoute(key, valueToAdd);
+        _imageRouterService.AddRoute(key, valueToAdd);
     }
 
-    public Task SendImage(string sessionID, HttpRequest req, HttpResponse resp, object body)
+    public void SendImage(string sessionID, HttpRequest req, HttpResponse resp, object body)
     {
         // remove file extension
-        var url = _fileUtil.StripExtension(req.Path);
+        var url = _fileUtil.StripExtension(req.Path, true);
 
         // send image
-        if (_imageRouterService.ExistsByKey(url)) {
-            return _httpFileUtil.SendFileAsync(resp, _imageRouterService.getByKey(url));
+        if (_imageRouterService.ExistsByKey(url))
+        {
+            _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
         }
-        return Task.CompletedTask;
     }
 
-    public string GetImage() {
+    public string GetImage()
+    {
         return "IMAGE";
     }
 }

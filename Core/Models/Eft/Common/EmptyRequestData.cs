@@ -1,5 +1,7 @@
-﻿namespace Core.Models.Eft.Common;
+﻿using Core.Models.Utils;
 
-public class EmptyRequestData
+namespace Core.Models.Eft.Common;
+
+public class EmptyRequestData : IRequestData
 {
 }

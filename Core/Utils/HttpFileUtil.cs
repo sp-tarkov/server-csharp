@@ -13,12 +13,12 @@ public class HttpFileUtil
         _httpServerHelper = httpServerHelper;
     }
 
-    public Task SendFileAsync(HttpResponse resp,string filePath) {
+    public void SendFile(HttpResponse resp,string filePath) {
         var pathSlice = filePath.Split("/");
         var mimePath = _httpServerHelper.GetMimeText(pathSlice[^1].Split(".")[^1]);
         var type = string.IsNullOrWhiteSpace(mimePath) ? _httpServerHelper.GetMimeText("txt") : mimePath;
-        resp.Headers.Add("Content-Type", type);
-        return resp.SendFileAsync(filePath, CancellationToken.None);
+        resp.Headers.Append("Content-Type", type);
+        resp.SendFileAsync(filePath, CancellationToken.None).Wait();
         // maybe the above is correct?
         // await pipeline(fs.createReadStream(filePath), resp);
     }

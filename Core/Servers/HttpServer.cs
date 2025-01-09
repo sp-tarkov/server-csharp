@@ -53,7 +53,11 @@ public class HttpServer
         app.UseWebSockets();
 
         app.UseRouting();
-        app.UseEndpoints(endpointBuilder => { endpointBuilder.MapFallback(HandleFallback); });
+        app.Use((HttpContext req, RequestDelegate _) =>
+        {
+            return Task.Factory.StartNew(() => HandleFallback(req));
+        });
+        // app.UseEndpoints(endpointBuilder => { endpointBuilder.MapFallback(HandleFallback); });
         started = true;
         app.Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
     }
@@ -101,7 +105,7 @@ public class HttpServer
             }
 
 
-            //_httpListeners.Single()
+            _httpListeners.SingleOrDefault(l => l.CanHandle(sessionId, context.Request))?.Handle(sessionId, context.Request, context.Response);
             // This http request would be passed through the SPT Router and handled by an ICallback
         }
 

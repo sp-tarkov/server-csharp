@@ -60,7 +60,7 @@ public class HttpServerHelper
 
     public void SendTextJson(HttpResponse resp, object output)
     {
-        resp.Headers.Add("Content-Type", mime["json"]);
+        resp.Headers.Append("Content-Type", mime["json"]);
         resp.StatusCode = 200;
         /* TODO: figure this one out
         resp.writeHead(200, "OK",  {

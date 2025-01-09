@@ -51,6 +51,7 @@ public class DatabaseImporter : OnLoad
         _importerUtil = importerUtil;
         _configServer = configServer;
         _fileUtil = fileUtil;
+        _imageRouter = imageRouter;
         httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
     }
 
@@ -91,7 +92,7 @@ public class DatabaseImporter : OnLoad
 
         await HydrateDatabase(filepath);
 
-        var imageFilePath = $"${filepath}images/";
+        var imageFilePath = $"{filepath}images/";
         //var directories = this.vfs.getDirs(imageFilePath);
         LoadImages(imageFilePath, _fileUtil.GetDirectories(imageFilePath), [
             "/files/achievement/",
@@ -175,25 +176,26 @@ public class DatabaseImporter : OnLoad
         {
             // Get all files in directory
             var filesInDirectory = _fileUtil.GetFiles(directories[i]);
-            foreach (var file in filesInDirectory) {
+            foreach (var file in filesInDirectory)
+            {
+                var imagePath = file;
                 // Register each file in image router
                 var filename = _fileUtil.StripExtension(file);
                 var routeKey = $"{routes[i]}{filename}";
-                var imagePath = $"{filepath}{directories[i]}/{file}";
-/*
-                const pathOverride = this.getImagePathOverride(imagePath);
-                if (pathOverride) {
-                    this.logger.debug(`overrode route: ${routeKey} endpoint: ${imagePath} with ${pathOverride}`);
+                //var imagePath = $"{filepath}{directories[i]}/{file}";
+                
+                var pathOverride = GetImagePathOverride(imagePath);
+                if (!string.IsNullOrEmpty(pathOverride)) {
+                    _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
                     imagePath = pathOverride;
                 }
 
-                this.imageRouter.addRoute(routeKey, imagePath);
-                */
+                _imageRouter.AddRoute(routeKey, imagePath);
             }
         }
 
         // Map icon file separately
-        //this.imageRouter.addRoute("/favicon.ico", `${filepath}icon.ico`);
+        _imageRouter.AddRoute("/favicon.ico", $"{filepath}icon.ico");
     }
 
     /**
@@ -201,9 +203,11 @@ public class DatabaseImporter : OnLoad
      * @param imagePath Key
      * @returns override for key
      */
-    protected string GetImagePathOverride(string imagePath)
+    protected string? GetImagePathOverride(string imagePath)
     {
-        return httpConfig.ServerImagePathOverride[imagePath];
+        if (httpConfig.ServerImagePathOverride.TryGetValue(imagePath, out var value))
+            return value;
+        return null;
     }
 }
 

@@ -2,6 +2,6 @@
 
 public interface IHttpListener
 {
-    bool CanHandle(string sessionId, object req);
-    Task Handle(string sessionId, object req, object resp);
+    bool CanHandle(string sessionId, HttpRequest req);
+    void Handle(string sessionId, HttpRequest req, HttpResponse resp);
 }
