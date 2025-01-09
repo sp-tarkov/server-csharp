@@ -24,4 +24,9 @@ public class FileUtil
     {
         return Path.GetExtension(path).Replace(".", "");
     }
+    
+    public string StripExtension(string path)
+    {
+        return Path.GetFileNameWithoutExtension(path);
+    }
 }
