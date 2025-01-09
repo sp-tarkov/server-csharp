@@ -16,5 +16,5 @@ public class CircleCraftDetails
     public int? RewardAmountRoubles { get; set; }
 
     [JsonPropertyName("rewardDetails")]
-    public CraftTimeThreshhold? RewardDetails { get; set; }
+    public CraftTimeThreshold? RewardDetails { get; set; }
 }

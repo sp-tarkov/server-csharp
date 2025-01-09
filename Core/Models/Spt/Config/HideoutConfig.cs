@@ -81,7 +81,7 @@ public class CultistCircleSettings
     public int HideoutCraftSacrificeThresholdRub { get; set; }
 
     [JsonPropertyName("craftTimeThreshholds")]
-    public List<CraftTimeThreshhold> CraftTimeThreshholds { get; set; }
+    public List<CraftTimeThreshold> CraftTimeThreshholds { get; set; }
 
     /// <summary>
     /// -1 means no override, value in seconds
@@ -117,7 +117,7 @@ public class CultistCircleSettings
     public Dictionary<string, MinMax> CurrencyRewards { get; set; }
 }
 
-public class CraftTimeThreshhold : MinMax
+public class CraftTimeThreshold : MinMax
 {
     [JsonPropertyName("craftTimeSeconds")]
     public int CraftTimeSeconds { get; set; }
