@@ -548,15 +548,3 @@ public class Insurance
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
 }
-
-public class MessageContentRagfair
-{
-    [JsonPropertyName("offerId")]
-    public string? OfferId { get; set; }
-
-    [JsonPropertyName("count")]
-    public int? Count { get; set; }
-
-    [JsonPropertyName("handbookId")]
-    public string? HandbookId { get; set; }
-}
