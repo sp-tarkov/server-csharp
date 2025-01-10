@@ -1,28 +1,51 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class SaveCallbacks : OnLoad, OnUpdate
 {
-    private CoreConfig _coreConfig;
+    protected SaveServer _saveServer;
+    protected CoreConfig _coreConfig;
+    protected BackupService _backupService;
 
-    public SaveCallbacks()
+    public SaveCallbacks(
+        SaveServer saveServer,
+        ConfigServer configServer,
+        BackupService backupService
+    )
     {
+        _saveServer = saveServer;
+        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _backupService = backupService;
     }
 
-    public async Task OnLoad()
+    public Task OnLoad()
     {
-        throw new NotImplementedException();
+        _backupService.InitAsync();
+        _saveServer.Load();
+        
+        return Task.CompletedTask;
     }
 
     public async Task<bool> OnUpdate(long SecondsSinceLastRun)
     {
-        throw new NotImplementedException();
+        if (SecondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
+        {
+            _saveServer.Save();
+            return true;
+        }
+
+        return false;
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-save";
     }
 }

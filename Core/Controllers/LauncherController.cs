@@ -102,7 +102,7 @@ public class LauncherController
         return _saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
     }
 
-    public string Login(LoginRequestData info)
+    public string? Login(LoginRequestData info)
     {
         foreach (var sessionID in _saveServer.GetProfiles()) {
             var account = _saveServer.GetProfile(sessionID.Key).ProfileInfo;
@@ -111,7 +111,7 @@ public class LauncherController
             }
         }
 
-        return "";
+        return null;
     }
 
     public string Register(RegisterData info)
