@@ -24,7 +24,7 @@ public class GetOtherProfileResponse
     public OtherProfileEquipment? Equipment { get; set; }
 
     [JsonPropertyName("achievements")]
-    public Dictionary<string, int>? Achievements { get; set; }
+    public Dictionary<string, long>? Achievements { get; set; }
 
     [JsonPropertyName("favoriteItems")]
     public List<Item>? FavoriteItems { get; set; }
