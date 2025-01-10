@@ -106,6 +106,7 @@ public class SptHttpListener : IHttpListener
         if (IsDebugRequest(req)) {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
+            Console.WriteLine($"Response: {output}");
             // TODO: this.logRequest(req, output);
             return;
         }
@@ -118,7 +119,7 @@ public class SptHttpListener : IHttpListener
             // No serializer can handle the request (majority of requests dont), zlib the output and send response back
             SendZlibJson(resp, output, sessionID);
         }
-
+        Console.WriteLine($"Response: {output}");
         // TODO: this.LogRequest(req, output);
     }
 
@@ -181,8 +182,15 @@ public class SptHttpListener : IHttpListener
 
     public void SendZlibJson(HttpResponse resp, string? output, string sessionID)
     {
-        if (!string.IsNullOrEmpty(output))
-            new ZLibStream(resp.Body, CompressionLevel.SmallestSize, false).WriteAsync(Encoding.UTF8.GetBytes(output)).AsTask().Wait();
+        using (var ms = new MemoryStream())
+        {
+            using (var deflateStream = new ZLibStream(ms, CompressionLevel.SmallestSize))
+            {
+                deflateStream.WriteAsync(Encoding.UTF8.GetBytes(output)).AsTask().Wait();
+            }
+            var bytes = ms.ToArray();
+            resp.Body.WriteAsync(bytes, 0, bytes.Length).Wait();
+        }
         resp.StartAsync().Wait();
         resp.CompleteAsync().Wait();
     }
