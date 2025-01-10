@@ -68,7 +68,7 @@ public class Watermark {
         sptConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
 
-    public void Initialize()
+    public virtual void Initialize()
     {
         var description = _watermarkLocale.GetDescription();
         var warning = _watermarkLocale.GetWarning();

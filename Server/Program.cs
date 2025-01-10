@@ -1,6 +1,6 @@
-﻿using Core.Annotations;
+﻿using System.Reflection;
+using Core.Annotations;
 using Core.Context;
-using Core.Servers;
 using Core.Utils;
 
 namespace Server;
@@ -9,12 +9,13 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        var assemblies = ModDllLoader.LoadAllMods();
+        HarmonyBootstrapper.LoadAllPatches(assemblies);
         var builder = WebApplication.CreateBuilder(args);
 
         RegisterSptComponents(builder.Services);
-
-        // TODO: deal with modding overriding services here!
-
+        RegisterModOverrideComponents(builder.Services, assemblies);
+        
         try
         {
 
@@ -31,6 +32,13 @@ public static class Program
         {
             Console.WriteLine(ex.ToString());
         }
+    }
+
+    private static void RegisterModOverrideComponents(IServiceCollection builderServices, List<Assembly> assemblies)
+    {
+        // We get all the services from this assembly first, since mods will override them later
+        RegisterComponents(builderServices, assemblies.SelectMany(a => a.GetTypes())
+            .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
     }
 
     private static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
