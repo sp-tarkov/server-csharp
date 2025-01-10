@@ -1255,7 +1255,7 @@ public class Level
 public class ExpTable
 {
     [JsonPropertyName("exp")]
-    public double? Experience { get; set; }
+    public int? Experience { get; set; }
 }
 
 public class LootAttempt

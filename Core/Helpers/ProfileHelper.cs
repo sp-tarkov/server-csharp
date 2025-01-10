@@ -168,11 +168,11 @@ public class ProfileHelper
     /// </summary>
     /// <param name="level">Level to get xp for</param>
     /// <returns>Number of xp points for level</returns>
-    public double? GetExperience(int level)
+    public int? GetExperience(int level)
     {
         var playerLevel = level;
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
-        double? exp = null;
+        int? exp = null;
 
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
             playerLevel = expTable.Length - 1;
