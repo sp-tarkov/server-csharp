@@ -60,13 +60,27 @@ public class SptHttpListener : IHttpListener
                 // determine if the payload is compressed. All PUT requests are, and POST requests without
                 // debug = 1 are as well. This should be fixed.
                 // let compressed = req.headers["content-encoding"] === "deflate";
-                var requestIsCompressed = req.Headers.TryGetValue("requestcompressed", out var compressHeader) &&
+                var requestIsCompressed = !req.Headers.TryGetValue("requestcompressed", out var compressHeader) ||
                                           compressHeader != "0";
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
-                var fullTextBody = new StreamReader(req.Body).ReadToEnd();
-                ;
-                var value = requestCompressed ? new StreamReader(new ZLibStream(req.Body, CompressionLevel.SmallestSize, false)).ReadToEnd() : fullTextBody;
+                var length = req.Headers.ContentLength;
+                var memory = new Memory<byte>(new byte[(int)length]);
+                req.Body.ReadAsync(memory).AsTask().Wait();
+                string value;
+                if (requestCompressed)
+                {
+                    using var uncompressedDataStream = new MemoryStream();
+                    using var compressedDataStream = new MemoryStream(memory.ToArray());
+                    using var deflateStream = new ZLibStream(compressedDataStream, CompressionMode.Decompress, true);
+                    deflateStream.CopyTo(uncompressedDataStream);
+                    value = Encoding.UTF8.GetString(uncompressedDataStream.ToArray());
+                }
+                else
+                {
+                    value = Encoding.UTF8.GetString(memory.ToArray());
+                }
+                
                 if (!requestIsCompressed) {
                     _logger.Debug(value, true);
                 }

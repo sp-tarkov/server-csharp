@@ -3,6 +3,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
+using Core.Models.Enums;
 
 namespace Core.Helpers;
 
@@ -355,7 +356,7 @@ public class QuestHelper
     /// <param name="sessionId">Session id</param>
     /// <param name="questResponse">Response to send back to client</param>
     /// <returns>Array of reward objects</returns>
-    public Item[] ApplyQuestReward(PmcData profileData, string questId, QuestStatus state, string sessionId, ItemEventRouterResponse questResponse)
+    public Item[] ApplyQuestReward(PmcData profileData, string questId, QuestStatusEnum state, string sessionId, ItemEventRouterResponse questResponse)
     {
         throw new NotImplementedException();
     }
@@ -427,7 +428,7 @@ public class QuestHelper
      * @param pmcProfile profile to update
      * @param statuses statuses quests should have
      */
-    public void AddAllQuestsToProfile(PmcData pmcProfile, List<QuestStatus> statuses)
+    public void AddAllQuestsToProfile(PmcData pmcProfile, List<QuestStatusEnum> statuses)
     {
         throw new NotImplementedException();
     }

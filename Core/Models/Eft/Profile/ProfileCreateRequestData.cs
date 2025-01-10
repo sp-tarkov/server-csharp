@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Profile;
 
-public class ProfileCreateRequestData
+public class ProfileCreateRequestData : IRequestData
 {
     [JsonPropertyName("side")]
     public string? Side { get; set; }

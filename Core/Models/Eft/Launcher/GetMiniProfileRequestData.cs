@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Launcher;
 
-public class GetMiniProfileRequestData
+public class GetMiniProfileRequestData : IRequestData
 {
     [JsonPropertyName("username")]
     public string? Username { get; set; }

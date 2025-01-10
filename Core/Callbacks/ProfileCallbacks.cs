@@ -1,175 +1,166 @@
-﻿using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Helpers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class ProfileCallbacks
 {
-    public ProfileCallbacks()
+    protected HttpResponseUtil _httpResponse;
+   protected TimeUtil _timeUtil;
+   protected ProfileController _profileController;
+   protected ProfileHelper _profileHelper;
+
+   public ProfileCallbacks(
+       HttpResponseUtil httpResponse,
+       TimeUtil timeUtil,
+       ProfileController profileController,
+       ProfileHelper profileHelper
+   )
+   {
+       _httpResponse = httpResponse;
+       _timeUtil = timeUtil;
+       _profileController = profileController;
+       _profileHelper = profileHelper;
+   }
+
+    /**
+     * Handle client/game/profile/create
+     */
+    public string CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
+        var id = _profileController.CreateProfile(info, sessionID);
+        return _httpResponse.GetBody(new CreateProfileResponse(){ UserId = id });
     }
 
-    /// <summary>
-    /// Handle client/game/profile/create
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<CreateProfileResponse> CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
+    /**
+     * Handle client/game/profile/list
+     * Get the complete player profile (scav + pmc character)
+     */
+    public string GetProfileData(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody(_profileController.GetCompleteProfile(sessionID));
     }
 
-    /// <summary>
-    /// Handle client/game/profile/list
-    /// Get the complete player profile (scav + pmc character)
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<object> GetProfileData(string url, EmptyRequestData info, string sessionID)
-    {
-        throw new NotImplementedException();
+    /**
+     * Handle client/game/profile/savage/regenerate
+     * Handle the creation of a scav profile for player
+     * Occurs post-raid and when profile first created immediately after character details are confirmed by player
+     * @param url
+     * @param info empty
+     * @param sessionID Session id
+     * @returns Profile object
+     */
+    public string RegenerateScav(string url, EmptyRequestData info, string sessionID) {
+        return _httpResponse.GetBody(new List<PmcData>() { _profileController.GeneratePlayerScav(sessionID) });
     }
 
-    /// <summary>
-    /// Handle client/game/profile/savage/regenerate
-    /// Handle the creation of a scav profile for player
-    /// Occurs post-raid and when profile first created immediately after character details are confirmed by player
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<object> RegenerateScav(string url, EmptyRequestData info, string sessionID)
+    /**
+     * Handle client/game/profile/voice/change event
+     */
+    public string ChangeVoice(string url, ProfileChangeVoiceRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _profileController.ChangeVoice(info, sessionID);
+        return _httpResponse.NullResponse();
     }
 
-    /// <summary>
-    /// Handle client/game/profile/voice/change event
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public NullResponseData ChangeVoice(string url, ProfileChangeVoiceRequestData info, string sessionID)
+    /**
+     * Handle client/game/profile/nickname/change event
+     * Client allows player to adjust their profile name
+     */
+    public string ChangeNickname(string url, ProfileChangeNicknameRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _profileController.ChangeNickname(info, sessionID);
+
+        if (output == "taken") {
+            return _httpResponse.GetBody<object?>(null, 255, "The nickname is already in use");
+        }
+
+        if (output == "tooshort") {
+            return _httpResponse.GetBody<object?>(null, 1, "The nickname is too short");
+        }
+
+        return _httpResponse.GetBody<object>(new { status = 0, nicknamechangedate = _timeUtil.GetTimeStamp() });
     }
 
-    /// <summary>
-    /// Handle client/game/profile/nickname/change event
-    /// Client allows player to adjust their profile name
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<object> ChangeNickname(string url, ProfileChangeNicknameRequestData info, string sessionID)
+    /**
+     * Handle client/game/profile/nickname/validate
+     */
+    public string ValidateNickname(string url, ValidateNicknameRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _profileController.ValidateNickname(info, sessionID);
+
+        if (output == "taken") {
+            return _httpResponse.GetBody<object?>(null, 255, "225 - ");
+        }
+
+        if (output == "tooshort") {
+            return _httpResponse.GetBody<object?>(null, 256, "256 - ");
+        }
+
+        return _httpResponse.GetBody(new { status = "ok" });
     }
 
-    /// <summary>
-    /// Handle client/game/profile/nickname/validate
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<object> ValidateNickname(string url, ValidateNicknameRequestData info, string sessionID)
+    /**
+     * Handle client/game/profile/nickname/reserved
+     */
+    public string GetReservedNickname(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody("SPTarkov");
     }
 
-    /// <summary>
-    /// Handle client/game/profile/nickname/reserved
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<string> GetReservedNickname(string url, EmptyRequestData info, string sessionID)
+    /**
+     * Handle client/profile/status
+     * Called when creating a character when choosing a character face/voice
+     */
+    public string GetProfileStatus(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody(_profileController.GetProfileStatus(sessionID));
     }
 
-    /// <summary>
-    /// Handle client/profile/status
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<GetProfileStatusResponseData> GetProfileStatus(string url, EmptyRequestData info, string sessionID)
+    /**
+     * Handle client/profile/view
+     * Called when viewing another players profile
+     */
+    public string GetOtherProfile(string url, GetOtherProfileRequest request, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody(_profileController.GetOtherProfile(sessionID, request));
     }
 
-    /// <summary>
-    /// Handle client/profile/status
-    /// Called when creating a character when choosing a character face/voice
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<GetOtherProfileResponse> GetOtherProfile(string url, GetOtherProfileRequest info, string sessionID)
+    /**
+     * Handle client/profile/settings
+     */
+    public string GetProfileSettings(string url, GetProfileSettingsRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody(_profileController.SetChosenProfileIcon(sessionID, info));
     }
 
-    /// <summary>
-    /// Handle client/profile/view
-    /// Called when viewing another players profile
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<bool> GetProfileSettings(string url, GetProfileSettingsRequest info, string sessionID)
+    /**
+     * Handle client/game/profile/search
+     */
+    public string SearchFriend(string url, SearchFriendRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.GetBody(_profileController.GetFriends(info, sessionID));
     }
 
-    /// <summary>
-    /// Handle client/profile/settings
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public GetBodyResponseData<SearchFriendResponse> SearchFriend(string url, SearchFriendRequestData info, string sessionID)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Handle launcher/profile/info
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
+    /**
+     * Handle launcher/profile/info
+     */
     public string GetMiniProfile(string url, GetMiniProfileRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.NoBody(_profileController.GetMiniProfile(sessionID));
     }
 
-    /// <summary>
-    /// Handle /launcher/profiles
-    /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
+    /**
+     * Handle /launcher/profiles
+     */
     public string GetAllMiniProfiles(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponse.NoBody(_profileController.GetMiniProfiles());
     }
 }

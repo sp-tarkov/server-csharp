@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Profile;
+using Core.Utils.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -31,6 +32,14 @@ public class ProfileTemplates
 
     [JsonPropertyName("SPT Zero to hero")]
     public ProfileSides? SPTZeroToHero { get; set; }
+
+    public ProfileSides? this[string? lookupKey]
+    {
+        get
+        {
+            return (ProfileSides?) GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == lookupKey)?.GetValue(this);
+        }
+    }
 }
 
 public class ProfileSides
@@ -43,6 +52,14 @@ public class ProfileSides
 
     [JsonPropertyName("bear")]
     public TemplateSide? Bear { get; set; }
+
+    public TemplateSide this[string toLower]
+    {
+        get
+        {
+            return (TemplateSide?) GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == toLower)?.GetValue(this);
+        }
+    }
 }
 
 public class TemplateSide

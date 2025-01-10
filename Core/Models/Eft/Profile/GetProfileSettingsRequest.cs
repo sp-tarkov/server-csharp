@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Profile;
 
-public class GetProfileSettingsRequest
+public class GetProfileSettingsRequest : IRequestData
 {
     /// <summary>
     /// Chosen value for profile.Info.SelectedMemberCategory

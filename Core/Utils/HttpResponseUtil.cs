@@ -33,9 +33,9 @@ public class HttpResponseUtil
         new("[\\t]")
     ];
 
-    protected string ClearString(string s)
+    protected string ClearString(string? s)
     {
-        var value = s;
+        var value = s ?? "";
         foreach (var regex in _cleanupRegexList)
         {
             value = regex.Replace(value, string.Empty);

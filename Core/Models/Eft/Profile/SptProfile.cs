@@ -16,7 +16,7 @@ public class SptProfile
 
     /** Clothing purchases */
     [JsonPropertyName("suits")]
-    public List<string>? ClothingPurchases { get; set; }
+    public List<string>? Suits { get; set; }
 
     [JsonPropertyName("userbuilds")]
     public UserBuilds? UserBuildData { get; set; }
