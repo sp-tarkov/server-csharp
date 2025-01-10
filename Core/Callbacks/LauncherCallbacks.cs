@@ -1,12 +1,26 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
+using Core.Servers;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class LauncherCallbacks
 {
-    public LauncherCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected LauncherController _launcherController;
+    protected SaveServer _saveServer;
+    protected Watermark _watermark;
+    public LauncherCallbacks(
+        HttpResponseUtil httpResponse,
+        LauncherController launcherController,
+        SaveServer saveServer,
+        Watermark watermark)
     {
+        
     }
 
     public string Connect()

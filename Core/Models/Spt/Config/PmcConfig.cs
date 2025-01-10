@@ -53,6 +53,9 @@ public class PmcConfig : BaseConfig
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
     public MinMax LooseWeaponInBackpackLootMinMax { get; set; }
 
+    [JsonPropertyName("_isUsec")]
+    public string? IsUsecDescription { get; set; }
+    
     /** Percentage chance PMC will be USEC */
     [JsonPropertyName("isUsec")]
     public double IsUsec { get; set; }
@@ -64,6 +67,9 @@ public class PmcConfig : BaseConfig
     /** WildSpawnType enum value BEAR PMCs use */
     [JsonPropertyName("bearType")]
     public string BearType { get; set; }
+
+    [JsonPropertyName("_pmcType")]
+    public string? PmcTypeDescription { get; set; }
 
     /** What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear */
     [JsonPropertyName("pmcType")]
@@ -106,6 +112,9 @@ public class PmcConfig : BaseConfig
     /** Should secure container loot from usec.json/bear.json be added to pmc bots secure */
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
     public bool AddSecureContainerLootFromBotConfig { get; set; }
+    
+    [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
+    public int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
 }
 
 public class HostilitySettings

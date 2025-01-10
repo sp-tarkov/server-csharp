@@ -26,6 +26,9 @@ public class KarmaLevel
     [JsonPropertyName("equipmentBlacklist")]
     public Dictionary<string, string[]> EquipmentBlacklist { get; set; }
 
+    [JsonPropertyName("labsAccessCardChancePercent")]
+    public double? LabsAccessCardChancePercent { get; set; }
+
     [JsonPropertyName("lootItemsToAddChancePercent")]
     public Dictionary<string, double> LootItemsToAddChancePercent { get; set; }
 }

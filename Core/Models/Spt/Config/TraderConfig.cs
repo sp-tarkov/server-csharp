@@ -34,6 +34,9 @@ public class TraderConfig : BaseConfig
 
 public class UpdateTime
 {
+    [JsonPropertyName("_name")]
+    public string Name { get; set; }
+
     [JsonPropertyName("traderId")]
     public string TraderId { get; set; }
 
@@ -139,6 +142,9 @@ public class CoopExtractReward : LootRequest
 {
     [JsonPropertyName("sendGift")]
     public bool SendGift { get; set; }
+    
+    [JsonPropertyName("useRewarditemBlacklist")]
+    public bool UseRewarditemBlacklist { get; set; }
 
     [JsonPropertyName("messageLocaleIds")]
     public List<string> MessageLocaleIds { get; set; }

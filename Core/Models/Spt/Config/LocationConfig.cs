@@ -254,6 +254,9 @@ public class LootMultiplier
 
     [JsonPropertyName("sandbox")]
     public double Sandbox { get; set; }
+
+    [JsonPropertyName("sandbox_high")]
+    public double SandboxHigh { get; set; }
 }
 
 public class ContainerRandomisationSettings

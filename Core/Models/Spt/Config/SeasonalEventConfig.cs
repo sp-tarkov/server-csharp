@@ -1,6 +1,7 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
@@ -20,6 +21,7 @@ public class SeasonalEventConfig : BaseConfig
     [JsonPropertyName("eventLoot")]
     public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot { get; set; }
 
+    [JsonPropertyName("events")]
     public List<SeasonalEvent> Events { get; set; }
 
     [JsonPropertyName("eventBotMapping")]
@@ -59,19 +61,26 @@ public class SeasonalEvent
     public SeasonalEventType Type { get; set; }
 
     [JsonPropertyName("startDay")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int StartDay { get; set; }
 
     [JsonPropertyName("startMonth")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int StartMonth { get; set; }
 
     [JsonPropertyName("endDay")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int EndDay { get; set; }
 
     [JsonPropertyName("endMonth")]
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int EndMonth { get; set; }
 
     [JsonPropertyName("settings")]
     public Dictionary<string, object> Settings { get; set; } // TODO: Type was Record<string, ISeasonalEventSettings | IZombieSettings>
+    
+    [JsonPropertyName("setting")]
+    public Dictionary<string, object> SettingsDoNOTUse { set => Settings = value; }
 }
 
 public class SeasonalEventSettings

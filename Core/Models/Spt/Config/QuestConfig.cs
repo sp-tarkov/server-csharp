@@ -56,14 +56,17 @@ public class PlayerTypeQuestIds
 
 public class QuestTypeIds
 {
-    [JsonPropertyName("Elimination")]
+    [JsonPropertyName("elimination")]
     public string Elimination { get; set; }
 
-    [JsonPropertyName("Completion")]
+    [JsonPropertyName("completion")]
     public string Completion { get; set; }
 
-    [JsonPropertyName("Exploration")]
+    [JsonPropertyName("exploration")]
     public string Exploration { get; set; }
+    
+    [JsonPropertyName("pickup")]
+    public string Pickup { get; set; }
 }
 
 public class EventQuestData
@@ -173,6 +176,8 @@ public class RewardScaling
 
 public class TraderWhitelist
 {
+    [JsonPropertyName("name")]
+    public string Name { get; set; }
     [JsonPropertyName("traderId")]
     public string TraderId { get; set; }
 
@@ -253,6 +258,11 @@ public class Pickup : BaseQuestConfig
 {
     [JsonPropertyName("ItemTypeToFetchWithMaxCount")]
     public List<PickupTypeWithMaxCount> ItemTypeToFetchWithMaxCount { get; set; }
+    
+    public List<string> ItemTypesToFetch { get; set; }
+    
+    [JsonPropertyName("maxItemFetchCount")]
+    public int? MaxItemFetchCount { get; set; }
 }
 
 public class PickupTypeWithMaxCount

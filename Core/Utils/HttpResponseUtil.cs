@@ -13,13 +13,15 @@ namespace Core.Utils;
 public class HttpResponseUtil
 {
     protected readonly LocalisationService _localisationService;
+    protected readonly JsonUtil _jsonUtil;
 
     public HttpResponseUtil(
-        // JsonUtil jsonUtil,
+        JsonUtil jsonUtil,
         LocalisationService localisationService
     )
     {
         _localisationService = localisationService;
+        _jsonUtil = jsonUtil;
     }
 
     private readonly ImmutableList<Regex> _cleanupRegexList =
@@ -49,7 +51,7 @@ public class HttpResponseUtil
      */
     public string NoBody<T>(T data)
     {
-        return ClearString(JsonSerializer.Serialize(data));
+        return ClearString(_jsonUtil.Serialize(data));
     }
 
     /**
@@ -68,7 +70,7 @@ public class HttpResponseUtil
 
     public string GetUnclearedBody<T>(T? data, int err = 0, string? errmsg = null)
     {
-        return JsonSerializer.Serialize(new GetBodyResponseData<T> { Err = err, ErrMsg = errmsg, Data = data });
+        return _jsonUtil.Serialize(new GetBodyResponseData<T> { Err = err, ErrMsg = errmsg, Data = data });
     }
 
     public string EmptyResponse()

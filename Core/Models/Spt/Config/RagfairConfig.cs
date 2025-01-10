@@ -116,7 +116,7 @@ public class Dynamic
 
     [JsonPropertyName("condition")]
     /** Settings to control the durability range of item items listed on flea */
-    public Condition Condition { get; set; }
+    public Dictionary<string, Condition> Condition { get; set; }
 
     [JsonPropertyName("stackablePercent")]
     /** Size stackable items should be listed for in percent of max stack size */
@@ -138,6 +138,9 @@ public class Dynamic
     /** A multipler to apply to individual tpls price just prior to item quality adjustment */
     public Dictionary<string, double> ItemPriceMultiplier { get; set; }
 
+    [JsonPropertyName("_currencies")]
+    public string? CurrenciesDescription { get; set; }
+    
     [JsonPropertyName("currencies")]
     /** Percentages to sell offers in each currency */
     public Dictionary<string, double> Currencies { get; set; }
@@ -265,6 +268,9 @@ public class Condition
 
     [JsonPropertyName("max")]
     public MinMax Max { get; set; }
+
+    [JsonPropertyName("_name")]
+    public string Name { get; set; }
 }
 
 public class RagfairBlacklist
@@ -352,6 +358,9 @@ public class UnreasonableModPrices
     /// </summary>
     [JsonPropertyName("newPriceHandbookMultiplier")]
     public int NewPriceHandbookMultiplier { get; set; }
+    
+    [JsonPropertyName("itemType")]
+    public string ItemType { get; set; }
 }
 
 public class ArmorSettings
@@ -386,8 +395,9 @@ public class TieredFlea
     [JsonPropertyName("unlocksType")]
     public Dictionary<string, int> UnlocksType { get; set; }
 
-    public bool AmmoTiersEnabled { get; set; }
-
     [JsonPropertyName("ammoTplUnlocks")]
     public Dictionary<string, int> AmmoTplUnlocks { get; set; }
+    
+    [JsonPropertyName("ammoTiersEnabled")]
+    public bool AmmoTiersEnabled { get; set; }
 }

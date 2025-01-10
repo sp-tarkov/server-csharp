@@ -1,7 +1,9 @@
+using System.Text.Json;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 using Core.Models.Utils;
+using Core.Utils;
 
 namespace Core.DI;
 
@@ -39,22 +41,27 @@ public abstract class Router
             .Where((r) => !r.dynamic)
             .Any((r) => r.route == url);
     }
-
-    public abstract Type? GetBodyDeserializationType();
 }
 
 public abstract class StaticRouter : Router
 {
-    private List<RouteAction<IRequestData>> actions;
+    private List<RouteAction> actions;
+    private JsonUtil _jsonUtil;
 
-    public StaticRouter(List<RouteAction<IRequestData>> routes) : base()
+    public StaticRouter(JsonUtil jsonUtil, List<RouteAction> routes) : base()
     {
         actions = routes;
+        _jsonUtil = jsonUtil;
     }
 
-    public object HandleStatic(string url, IRequestData? info, string sessionID, string output)
+    public object HandleStatic(string url, string? body, string sessionID, string output)
     {
-        return actions.Single(route => route.url == url).action(url, info, sessionID, output);
+        var action = actions.Single(route => route.url == url);
+        var type = action.bodyType;
+        IRequestData? info = null;
+        if (type != null && !string.IsNullOrEmpty(body))
+            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+        return action.action(url, info, sessionID, output);
     }
 
     protected override List<HandledRoute> GetHandledRoutes()
@@ -65,16 +72,23 @@ public abstract class StaticRouter : Router
 
 public abstract class DynamicRouter : Router
 {
-    private List<RouteAction<IRequestData>> actions;
+    private List<RouteAction> actions;
+    private JsonUtil _jsonUtil;
 
-    public DynamicRouter(List<RouteAction<IRequestData>> routes) : base()
+    public DynamicRouter(JsonUtil jsonUtil, List<RouteAction> routes) : base()
     {
         actions = routes;
+        _jsonUtil = jsonUtil;
     }
 
-    public object HandleDynamic(string url, IRequestData? info, string sessionID, string output)
+    public object HandleDynamic(string url, string? body, string sessionID, string output)
     {
-        return actions.First(r => url.Contains(r.url)).action(url, info, sessionID, output);
+        var action = actions.First(r => url.Contains(r.url));
+        var type = action.bodyType;
+        IRequestData? info = null;
+        if (type != null && !string.IsNullOrEmpty(body))
+            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+        return action.action(url, info, sessionID, output);
     }
 
     protected override List<HandledRoute> GetHandledRoutes()
@@ -103,5 +117,9 @@ public abstract class SaveLoadRouter : Router
 
 public record HandledRoute(string route, bool dynamic);
 
-public record RouteAction<T>(string url, Func<string, T?, string?, string?, object> action) where T : IRequestData;
+public record RouteAction(
+    string url,
+    Func<string, IRequestData?, string?, string?, object> action,
+    Type? bodyType = null
+);
 //public action: (url: string, info: any, sessionID: string, output: string) => Promise<any>,

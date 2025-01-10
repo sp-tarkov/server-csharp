@@ -82,6 +82,12 @@ public class RepairKit
 
     [JsonPropertyName("weapon")]
     public BonusSettings Weapon { get; set; }
+    
+    [JsonPropertyName("vest")]
+    public BonusSettings Vest { get; set; }
+    
+    [JsonPropertyName("headwear")]
+    public BonusSettings Headwear { get; set; }
 }
 
 public class BonusSettings
@@ -92,10 +98,10 @@ public class BonusSettings
     [JsonPropertyName("bonusTypeWeight")]
     public Dictionary<string, double> BonusTypeWeight { get; set; }
 
-    [JsonPropertyName("common")]
+    [JsonPropertyName("Common")]
     public Dictionary<string, BonusValues> Common { get; set; }
 
-    [JsonPropertyName("rare")]
+    [JsonPropertyName("Rare")]
     public Dictionary<string, BonusValues> Rare { get; set; }
 }
 

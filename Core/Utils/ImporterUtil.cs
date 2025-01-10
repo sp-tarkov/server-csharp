@@ -10,17 +10,14 @@ namespace Core.Utils;
 public class ImporterUtil
 {
     private readonly FileUtil _fileUtil;
+    private readonly JsonUtil _jsonUtil;
 
     private readonly HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
-
-    private readonly JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions
-    {
-        UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow, Converters = { new ListOrTConverterFactory(), new DictionaryOrListConverter() }
-    };
     
-    public ImporterUtil(FileUtil fileUtil)
+    public ImporterUtil(FileUtil fileUtil, JsonUtil jsonUtil)
     {
         _fileUtil = fileUtil;
+        _jsonUtil = jsonUtil;
     }
 
     /**
@@ -64,7 +61,7 @@ public class ImporterUtil
                     );
                     try
                     {
-                        var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType, jsonSerializerOptions);
+                        var fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
                         if (onObjectDeserialized != null)
                             onObjectDeserialized(file, fileDeserialized);
 
@@ -159,7 +156,7 @@ public class ImporterUtil
                 if (matchedProperty == null)
                     throw new Exception($"Unable to find property '{Path.GetFileNameWithoutExtension(file)}' for type '{loadedType.Name}'");
                 var propertyType = matchedProperty.PropertyType;
-                var fileDeserialized = JsonSerializer.Deserialize(fileData, propertyType);
+                var fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
                 onObjectDeserialized(file, fileDeserialized);
 
                 matchedProperty.GetSetMethod().Invoke(result, [fileDeserialized]);
@@ -198,7 +195,7 @@ public class ImporterUtil
             promises.Add(File.ReadAllTextAsync(fileNode).ContinueWith(fd =>
             {
                 onReadCallback(fileNode, fd.Result);
-                return JsonSerializer.Deserialize(fd.Result, typeof(object));
+                return _jsonUtil.Deserialize(fd.Result, typeof(object));
             }));
             /*
             this.vfs

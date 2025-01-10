@@ -11,43 +11,43 @@ public class BotDurability
     public PmcDurability Pmc { get; set; }
 
     [JsonPropertyName("boss")]
-    public BotDurability Boss { get; set; }
+    public PmcDurability Boss { get; set; }
 
     [JsonPropertyName("follower")]
-    public BotDurability Follower { get; set; }
+    public PmcDurability Follower { get; set; }
 
     [JsonPropertyName("assault")]
-    public BotDurability Assault { get; set; }
+    public PmcDurability Assault { get; set; }
 
     [JsonPropertyName("cursedassault")]
-    public BotDurability CursedAssault { get; set; }
+    public PmcDurability CursedAssault { get; set; }
 
     [JsonPropertyName("marksman")]
-    public BotDurability Marksman { get; set; }
+    public PmcDurability Marksman { get; set; }
 
     [JsonPropertyName("pmcbot")]
-    public BotDurability PmcBot { get; set; }
+    public PmcDurability PmcBot { get; set; }
 
     [JsonPropertyName("arenafighterevent")]
-    public BotDurability ArenaFighterEvent { get; set; }
+    public PmcDurability ArenaFighterEvent { get; set; }
 
     [JsonPropertyName("arenafighter")]
-    public BotDurability ArenaFighter { get; set; }
+    public PmcDurability ArenaFighter { get; set; }
 
     [JsonPropertyName("crazyassaultevent")]
-    public BotDurability CrazyAssaultEvent { get; set; }
+    public PmcDurability CrazyAssaultEvent { get; set; }
 
     [JsonPropertyName("exusec")]
-    public BotDurability Exusec { get; set; }
+    public PmcDurability Exusec { get; set; }
 
     [JsonPropertyName("gifter")]
-    public BotDurability Gifter { get; set; }
+    public PmcDurability Gifter { get; set; }
 
     [JsonPropertyName("sectantpriest")]
-    public BotDurability SectantPriest { get; set; }
+    public PmcDurability SectantPriest { get; set; }
 
     [JsonPropertyName("sectantwarrior")]
-    public BotDurability SectantWarrior { get; set; }
+    public PmcDurability SectantWarrior { get; set; }
 }
 
 /** Durability values to be used when a more specific bot type can't be found */
@@ -82,6 +82,9 @@ public class PmcDurabilityArmor
 
     [JsonPropertyName("minDelta")]
     public double MinDelta { get; set; }
+
+    [JsonPropertyName("minLimitPercent")]
+    public double MinLimitPercent { get; set; }
 }
 
 public class ArmorDurability

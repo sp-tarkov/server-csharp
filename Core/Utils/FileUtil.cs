@@ -29,4 +29,42 @@ public class FileUtil
     {
         return keepPath ? path.Split('.').First() : Path.GetFileNameWithoutExtension(path);
     }
+
+    public bool DirectoryExists(string path)
+    {
+        return Directory.Exists(path);
+    }
+    
+    public void CreateDirectory(string path)
+    {
+        Directory.CreateDirectory(path);
+    }
+
+    
+    public bool FileExists(string path)
+    {
+        return File.Exists(path);
+    }
+    
+    public string ReadFile(string path)
+    {
+        return File.ReadAllText(path);
+    }
+
+    public void WriteFile(string filePath, string jsonProfile)
+    {
+        if (!FileExists(filePath))
+            CreateFile(filePath);
+        File.WriteAllText(filePath, jsonProfile);
+    }
+
+    private void CreateFile(string filePath)
+    {
+        File.Create(filePath);
+    }
+
+    public void DeleteFile(string filePath)
+    {
+        File.Delete(filePath);
+    }
 }

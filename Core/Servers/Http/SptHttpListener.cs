@@ -19,12 +19,13 @@ public class SptHttpListener : IHttpListener
     protected readonly ILogger _logger;
     protected readonly HttpResponseUtil _httpResponseUtil;
     protected readonly LocalisationService _localisationService;
+    protected readonly JsonUtil _jsonUtil;
     public SptHttpListener(
         HttpRouter httpRouter, // TODO: delay required
         IEnumerable<ISerializer> serializers,
         ILogger logger,
         // TODO: requestsLogger: ILogger,
-        // TODO: JsonUtil jsonUtil,
+        JsonUtil jsonUtil,
         HttpResponseUtil httpHttpResponseUtil,
         LocalisationService localisationService
     )
@@ -34,6 +35,7 @@ public class SptHttpListener : IHttpListener
         _logger = logger;
         _httpResponseUtil = httpHttpResponseUtil;
         _localisationService = localisationService;
+        _jsonUtil = jsonUtil;
     }
 
     private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"]; 
@@ -98,8 +100,8 @@ public class SptHttpListener : IHttpListener
     )
     {
         if (body == null)
-            body = "{}";
-        var bodyInfo = JsonSerializer.Serialize(body);
+            body = new object();
+        var bodyInfo = _jsonUtil.Serialize(body);
 
         if (IsDebugRequest(req)) {
             // Send only raw response without transformation
@@ -160,7 +162,7 @@ public class SptHttpListener : IHttpListener
         /* route doesn't exist or response is not properly set up */
         if (string.IsNullOrEmpty(output)) {
             _logger.Error(_localisationService.GetText("unhandled_response", req.Path));
-            _logger.Info(JsonSerializer.Serialize(deserializedObject));
+            _logger.Info(_jsonUtil.Serialize(deserializedObject));
             output = _httpResponseUtil.GetBody<object?>(null, 404, $"UNHANDLED RESPONSE: {req.Path}");
         }
         return output;

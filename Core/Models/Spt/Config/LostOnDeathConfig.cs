@@ -60,4 +60,10 @@ public class LostEquipment
 
     [JsonPropertyName("Scabbard")]
     public bool Scabbard { get; set; }
+
+    [JsonPropertyName("Compass")]
+    public bool Compass { get; set; }
+
+    [JsonPropertyName("SecuredContainer")]
+    public bool SecuredContainer { get; set; }
 }

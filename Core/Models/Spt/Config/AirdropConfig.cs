@@ -58,7 +58,8 @@ public class AirdropChancePercent
 /// </summary>
 public class AirdropLoot
 {
-    [JsonPropertyName("Icon")]
+    [JsonPropertyName("icon")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public AirdropTypeEnum Icon { get; set; }
 
     /// <summary>

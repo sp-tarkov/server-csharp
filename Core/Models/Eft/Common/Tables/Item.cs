@@ -18,6 +18,9 @@ public class Item
 
     [JsonPropertyName("location")]
     public object? Location { get; set; } // TODO: Can be IItemLocation or number
+    
+    [JsonPropertyName("desc")]
+    public string? Desc { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Update { get; set; }

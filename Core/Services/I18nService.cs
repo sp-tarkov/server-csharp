@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using Core.Utils;
 
 namespace Core.Services;
 
@@ -8,17 +9,18 @@ public class I18nService
     private Dictionary<string, string> _fallbacks;
     private string _defaultLocale;
     private string _directory;
-
+    private JsonUtil _jsonUtil;
     private string _setLocale;
 
     private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
 
-    public I18nService(List<string> locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
+    public I18nService(JsonUtil jsonUtil, List<string> locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
     {
         _locales = locales;
         _fallbacks = fallbacks;
         _defaultLocale = defaultLocale;
         _directory = directory;
+        _jsonUtil = jsonUtil;
 
         Initialize();
     }
@@ -30,7 +32,7 @@ public class I18nService
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
             _loadedLocales.Add(Path.GetFileNameWithoutExtension(file),
-                JsonSerializer.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)) ?? new Dictionary<string, string>());
+                _jsonUtil.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)) ?? new Dictionary<string, string>());
 
         if (!_loadedLocales.ContainsKey(_defaultLocale))
             throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");

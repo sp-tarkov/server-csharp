@@ -73,13 +73,10 @@ public class HttpRouter
         foreach (var route in routers)
         {
             if (route.CanHandle(url, dynamic)) {
-                var type = route.GetBodyDeserializationType();
-                if (type != null && !string.IsNullOrEmpty(body))
-                    deserializedObject = JsonSerializer.Deserialize(body, type);
                 if (dynamic) {
-                    wrapper.Output = (route as DynamicRouter).HandleDynamic(url, deserializedObject, sessionID, wrapper.Output) as string;
+                    wrapper.Output = (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
                 } else {
-                    wrapper.Output = (route as StaticRouter).HandleStatic(url, deserializedObject, sessionID, wrapper.Output) as string;
+                    wrapper.Output = (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
                 }
                 matched = true;
             }

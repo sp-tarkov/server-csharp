@@ -19,6 +19,9 @@ public static class Program
         {
 
             var serviceProvider = builder.Services.BuildServiceProvider();
+            var watermark = serviceProvider.GetService<Watermark>();
+            watermark.Initialize();
+            // TODO: var preSptModLoader = serviceProvider.GetService<PreSptModLoader>();
             var app = serviceProvider.GetService<App>();
             var appContext = serviceProvider.GetService<ApplicationContext>();
             appContext.AddValue(ContextVariableType.APP_BUILDER, builder);

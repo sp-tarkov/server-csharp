@@ -33,6 +33,9 @@ public class InventoryConfig : BaseConfig
 
 public class RewardDetails
 {
+    [JsonPropertyName("_type")]
+    public string? Type { get; set; }
+    
     [JsonPropertyName("rewardCount")]
     public int RewardCount { get; set; }
 

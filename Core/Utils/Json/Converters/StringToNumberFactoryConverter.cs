@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -39,7 +40,7 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"Tried to convert {value} into {type.Name} but failed to parse it, null value will be used instead.");
+                        Debug.WriteLine($"Tried to convert {value} into {type.Name} but failed to parse it, null value will be used instead.");
                     }
 
                     return default;

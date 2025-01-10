@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Servers;
@@ -11,16 +12,18 @@ namespace Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    private ILogger _logger;
+    protected ILogger _logger;
+    protected JsonUtil _jsonUtil;
     protected Dictionary<string, object> configs = new();
     protected readonly string[] acceptableFileExtensions = [".json", ".jsonc"];
 
     public ConfigServer(
-        ILogger logger
-        // TODO: We need JsonUtil here => JsonUtil jsonUtil,
+        ILogger logger,
+        JsonUtil jsonUtil
     )
     {
         _logger = logger;
+        _jsonUtil = jsonUtil;
         Initialize();
     }
 
@@ -50,8 +53,7 @@ public class ConfigServer
             {
                 var fileContent = File.ReadAllText(file);
                 var type = GetConfigTypeByFilename(file);
-                var deserializedContent =
-                    JsonSerializer.Deserialize(fileContent, type, new JsonSerializerOptions() { Converters = { new JsonStringEnumConverter() } });
+                var deserializedContent = _jsonUtil.Deserialize(fileContent, type);
 
                 if (deserializedContent == null)
                 {

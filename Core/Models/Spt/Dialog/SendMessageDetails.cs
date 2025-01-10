@@ -93,6 +93,9 @@ public class ProfileChangeEvent
 
     [JsonPropertyName("entity")]
     public string? Entity { get; set; }
+    
+    [JsonPropertyName("data")]
+    public string? Data { get; set; }
 }
 
 public enum ProfileChangeEventType

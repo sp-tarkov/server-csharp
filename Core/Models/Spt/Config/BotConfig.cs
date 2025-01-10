@@ -138,6 +138,15 @@ public class PresetBatch
     [JsonPropertyName("bossKnight")]
     public int BossKnight { get; set; }
 
+    [JsonPropertyName("bossZryachiy")]
+    public int BossZryachiy { get; set; }
+
+    [JsonPropertyName("bossKolontay")]
+    public int BossKolontay { get; set; }
+
+    [JsonPropertyName("bossPartisan")]
+    public int BossPartisan { get; set; }
+
     [JsonPropertyName("bossTest")]
     public int BossTest { get; set; }
 
@@ -180,6 +189,21 @@ public class PresetBatch
     [JsonPropertyName("followerBoar")]
     public int FollowerBoar { get; set; }
 
+    [JsonPropertyName("followerBoarClose1")]
+    public int FollowerBoarClose1 { get; set; }
+
+    [JsonPropertyName("followerBoarClose2")]
+    public int FollowerBoarClose2 { get; set; }
+
+    [JsonPropertyName("followerZryachiy")]
+    public int FollowerZryachiy { get; set; }
+
+    [JsonPropertyName("followerKolontayAssault")]
+    public int FollowerKolontayAssault { get; set; }
+
+    [JsonPropertyName("followerKolontaySecurity")]
+    public int FollowerKolontaySecurity { get; set; }
+
     [JsonPropertyName("marksman")]
     public int Marksman { get; set; }
 
@@ -221,6 +245,12 @@ public class PresetBatch
 
     [JsonPropertyName("pmcBEAR")]
     public int PmcBEAR { get; set; }
+
+    [JsonPropertyName("shooterBTR")]
+    public int ShooterBTR { get; set; }
+    
+    [JsonExtensionData]
+    public IDictionary<string, object> AdditionalData { get; set; }
 }
 
 public class WalletLootSettings
@@ -288,7 +318,7 @@ public class EquipmentFilters
     /// <summary>
     /// Chance NODS are down/active during the day
     /// </summary>
-    [JsonPropertyName("NvgIsActiveChanceDayPercent")]
+    [JsonPropertyName("nvgIsActiveChanceDayPercent")]
     public float? NvgIsActiveChanceDayPercent { get; set; }
 
     /// <summary>

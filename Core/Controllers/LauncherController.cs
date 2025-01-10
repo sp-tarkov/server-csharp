@@ -1,9 +1,11 @@
+using Core.Annotations;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Mod;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class LauncherController
 {
     /// <summary>
