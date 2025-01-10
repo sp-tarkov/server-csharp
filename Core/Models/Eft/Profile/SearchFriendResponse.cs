@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.Profile;
 
@@ -8,7 +9,7 @@ public class SearchFriendResponse
     public string? Id { get; set; }
 
     [JsonPropertyName("aid")]
-    public int? Aid { get; set; }
+    public double? Aid { get; set; }
 
     [JsonPropertyName("Info")]
     public FriendInfo? Info { get; set; }
@@ -24,11 +25,11 @@ public class FriendInfo
     public string? Side { get; set; }
 
     [JsonPropertyName("Level")]
-    public int? Level { get; set; }
+    public double? Level { get; set; }
 
     [JsonPropertyName("MemberCategory")]
-    public int? MemberCategory { get; set; }
+    public MemberCategory? MemberCategory { get; set; }
 
     [JsonPropertyName("SelectedMemberCategory")]
-    public int? SelectedMemberCategory { get; set; }
+    public MemberCategory? SelectedMemberCategory { get; set; }
 }

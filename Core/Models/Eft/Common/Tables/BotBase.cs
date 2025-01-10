@@ -71,7 +71,7 @@ public class BotBase
     /** Achievement id and timestamp */
     [JsonPropertyName("Achievements")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Achievements { get; set; }
+    public Dictionary<string, long>? Achievements { get; set; }
 
     [JsonPropertyName("RepeatableQuests")]
     public List<PmcDataRepeatableQuest>? RepeatableQuests { get; set; }
@@ -332,7 +332,7 @@ public class BaseSkill
 public class Common : BaseSkill
 {
     public int? PointsEarnedDuringSession { get; set; }
-    public int? LastAccess { get; set; }
+    public long? LastAccess { get; set; }
 }
 
 public class Mastering : BaseSkill
