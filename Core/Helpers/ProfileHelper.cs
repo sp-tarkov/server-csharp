@@ -34,8 +34,8 @@ public class ProfileHelper
         ItemHelper itemHelper,
         TimeUtil timeUtil,
         LocalisationService localisationService,
-        InventoryConfig inventoryConfig,
-        HashUtil hashUtil
+        HashUtil hashUtil,
+        ConfigServer configServer
     )
     {
         _cloner = cloner;
@@ -45,8 +45,8 @@ public class ProfileHelper
         _itemHelper = itemHelper;
         _timeUtil = timeUtil;
         _localisationService = localisationService;
-        _inventoryConfig = inventoryConfig;
         _hashUtil = hashUtil;
+        _inventoryConfig = configServer.GetConfig<InventoryConfig>(ConfigTypes.INVENTORY);
     }
 
     /// <summary>
