@@ -1,10 +1,12 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Location;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class RaidTimeAdjustmentService
 {
     /// <summary>

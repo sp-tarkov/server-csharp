@@ -1,8 +1,10 @@
 ﻿using System.Text.Json;
+using Core.Annotations;
 using Core.Utils;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class I18nService
 {
     private List<string> _locales;

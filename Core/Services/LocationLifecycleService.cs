@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Match;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class LocationLifecycleService
 {
     /** Handle client/match/local/start */

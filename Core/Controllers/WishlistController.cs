@@ -1,9 +1,11 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class WishlistController
 {
     /// <summary>

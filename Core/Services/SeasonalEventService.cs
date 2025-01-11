@@ -1,10 +1,12 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class SeasonalEventService
 {
     /// <summary>

@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Ragfair;
+﻿using Core.Annotations;
+using Core.Models.Eft.Ragfair;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class RagfairRequiredItemsService
 {
     public List<RagfairOffer> GetRequiredItemsById(string searchId)

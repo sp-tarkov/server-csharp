@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Profile;
+﻿using Core.Annotations;
+using Core.Models.Eft.Profile;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class TraderPurchasePersisterService
 {
     /**

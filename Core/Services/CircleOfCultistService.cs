@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
@@ -8,6 +9,7 @@ using Hideout = Core.Models.Eft.Common.Tables.Hideout;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class CircleOfCultistService
 {
     /// <summary>

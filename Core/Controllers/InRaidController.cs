@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.InRaid;
@@ -9,6 +10,7 @@ using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class InRaidController
 {
     protected ILogger _logger;

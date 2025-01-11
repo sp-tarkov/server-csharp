@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class BotNameService
 {
     /// <summary>

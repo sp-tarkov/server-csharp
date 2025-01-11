@@ -1,10 +1,12 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Location;
 using Core.Models.Enums;
 using Core.Models.Spt.Services;
 
 namespace Core.Services;
 
+[Injectable]
 public class AirdropService
 {
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)

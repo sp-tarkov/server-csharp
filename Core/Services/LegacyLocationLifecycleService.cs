@@ -1,9 +1,11 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Match;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class LegacyLocationLifecycleService
 {
     /// <summary>

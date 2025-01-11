@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class RagfairLinkedItemService
 {
     public HashSet<string> GetLinkedItems(string linkedSearchId)

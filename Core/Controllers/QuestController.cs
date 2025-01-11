@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
@@ -5,6 +6,7 @@ using Core.Models.Eft.Quests;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class QuestController
 {
     // TODO

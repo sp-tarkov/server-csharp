@@ -1,8 +1,10 @@
-﻿using Core.Models.Enums;
+﻿using Core.Annotations;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class GiftService
 {
     /**

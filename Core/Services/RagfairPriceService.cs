@@ -1,9 +1,11 @@
-﻿using Core.Models.Common;
+﻿using Core.Annotations;
+using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class RagfairPriceService
 {
     /// <summary>

@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Weather;
+﻿using Core.Annotations;
+using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class RaidWeatherService
 {
     /// <summary>

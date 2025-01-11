@@ -1,7 +1,9 @@
+using Core.Annotations;
 using Core.Models.Eft.Notifier;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class NotifierController
 {
     /// <summary>

@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Props = Core.Models.Eft.Common.Props;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class BotLootCacheService
 {
     /// <summary>
