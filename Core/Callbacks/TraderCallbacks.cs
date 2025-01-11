@@ -1,4 +1,5 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
@@ -6,6 +7,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
 public class TraderCallbacks : OnLoad, OnUpdate
 {
     public TraderCallbacks()

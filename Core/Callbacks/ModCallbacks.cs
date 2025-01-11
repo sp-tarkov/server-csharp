@@ -1,7 +1,9 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnLoadOrder.ModCallbacks)]
 public class ModCallbacks : OnLoad
 {
     public ModCallbacks()

@@ -1,7 +1,9 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnLoadOrder.HandbookCallbacks)]
 public class HandbookCallbacks : OnLoad
 {
     public HandbookCallbacks()

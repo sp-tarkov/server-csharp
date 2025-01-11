@@ -1,4 +1,5 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
@@ -7,6 +8,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks)]
 public class RagfairCallbacks : OnLoad, OnUpdate
 {
     private RagfairConfig _ragfairConfig;

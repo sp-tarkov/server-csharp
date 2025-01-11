@@ -1,4 +1,5 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Dialog;
@@ -7,6 +8,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnUpdateOrder.DialogCallbacks)]
 public class DialogCallbacks : OnUpdate
 {
     public DialogCallbacks()

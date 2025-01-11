@@ -1,6 +1,6 @@
 ﻿namespace Core.Annotations;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = true, Inherited = false)]
 public class Injectable(InjectionType injectionType = InjectionType.Scoped, Type? type = null, int typePriority = int.MaxValue) : Attribute
 {
     public InjectionType InjectionType { get; set; } = injectionType;

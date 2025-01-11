@@ -1,4 +1,5 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
@@ -6,6 +7,7 @@ using Core.Models.Eft.HttpResponse;
 
 namespace Core.Callbacks;
 
+[Injectable(TypePriority = OnLoadOrder.GameCallbacks)]
 public class GameCallbacks : OnLoad
 {
     public GameCallbacks()
