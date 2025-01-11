@@ -13,7 +13,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks)]
 public class RagfairCallbacks : OnLoad, OnUpdate
 {
     protected HttpResponseUtil _httpResponseUtil;

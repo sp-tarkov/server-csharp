@@ -10,7 +10,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.GameCallbacks)]
 public class GameCallbacks : OnLoad
 {
     protected HttpResponseUtil _httpResponseUtil;

@@ -7,7 +7,7 @@ using Core.Services;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
 public class SaveCallbacks : OnLoad, OnUpdate
 {
     protected SaveServer _saveServer;
