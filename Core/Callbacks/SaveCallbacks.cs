@@ -26,12 +26,10 @@ public class SaveCallbacks : OnLoad, OnUpdate
         _backupService = backupService;
     }
 
-    public Task OnLoad()
+    public async Task OnLoad()
     {
         _backupService.InitAsync();
         _saveServer.Load();
-        
-        return Task.CompletedTask;
     }
 
     public async Task<bool> OnUpdate(long SecondsSinceLastRun)

@@ -10,6 +10,6 @@ public class PresetController
     /// </summary>
     public void Initialize()
     {
-        throw new NotImplementedException();
+        return; // TODO: actually implement
     }
 }

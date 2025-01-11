@@ -43,7 +43,7 @@ public class ModCallbacks : OnLoad
         // if (ProgramStatics.MODS) {
         //     await this.postSptModLoader.load();
         // } TODO: needs to be implemented
-        throw new NotImplementedException();
+        return;
     }
 
     public string GetRoute()

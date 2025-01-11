@@ -79,9 +79,23 @@ public class App
             _logger.Debug("Commit: ${ProgramStatics.COMMIT}");
         }
         */
-        foreach (var onLoad in _onLoad) await onLoad.OnLoad();
+        foreach (var onLoad in _onLoad)
+        {
+            Console.WriteLine($"Start Onload: {onLoad.GetRoute()}");
+            await onLoad.OnLoad();
+            Console.WriteLine($"finish Onload: {onLoad.GetRoute()}");
+        }
 
-        var timer = new Timer(_ => { update(_onUpdate); }, null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+        var timer = new Timer(_ =>
+        {
+            Console.WriteLine($"Start OnUpdate");
+            update(_onUpdate);
+            Console.WriteLine($"Finish OnUpdate");
+
+        },
+            null, 
+            TimeSpan.Zero, 
+            TimeSpan.FromMilliseconds(5000));
     }
 
     protected async Task update(IEnumerable<OnUpdate> onUpdateComponents)
