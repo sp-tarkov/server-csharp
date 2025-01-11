@@ -1,34 +1,72 @@
 ﻿using Core.Annotations;
+using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable(TypePriority = OnLoadOrder.RagfairCallbacks)]
 public class RagfairCallbacks : OnLoad, OnUpdate
 {
+    protected HttpResponseUtil _httpResponseUtil;
+    // protected RagfairServer _ragfairServer;
+    protected RagfairController _ragfairController;
+    protected RagfairTaxService _ragfairTaxService;
+    protected ConfigServer _configServer;
+
     private RagfairConfig _ragfairConfig;
 
-    public RagfairCallbacks()
+    public RagfairCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        // RagfairServer ragfairServer,
+        RagfairController ragfairController,
+        RagfairTaxService ragfairTaxService,
+        ConfigServer configServer
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        // _ragfairServer = ragfairServer;
+        _ragfairController = ragfairController;
+        _ragfairTaxService = ragfairTaxService;
+        _configServer = configServer;
+        _ragfairConfig = _configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
     }
 
     public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        // await _ragfairServer.Load();
+        // TODO: implement RagfairServer
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-ragfair";
     }
 
     public async Task<bool> OnUpdate(long timeSinceLastRun)
     {
+        // if (timeSinceLastRun > this.ragfairConfig.runIntervalSeconds) {
+        //     // There is a flag inside this class that only makes it run once.
+        //     this.ragfairServer.addPlayerOffers();
+        //
+        //     // Check player offers and mail payment to player if sold
+        //     this.ragfairController.update();
+        //
+        //     // Process all offers / expire offers
+        //     await this.ragfairServer.update();
+        //
+        //     return true;
+        // }
+        // return false;
         throw new NotImplementedException();
     }
 
@@ -40,10 +78,9 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<GetOffersResult> Search(string url, SearchRequestData info, string sessionID)
+    public string Search(string url, SearchRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_ragfairController.GetOffers(sessionID, info));
     }
 
     /// <summary>
@@ -53,49 +90,45 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<GetItemPriceResult> GetMarketPrice(string url, GetMarketPriceRequestData info, string sessionID)
+    public string GetMarketPrice(string url, GetMarketPriceRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_ragfairController.GetItemMinAvgMaxFleaPriceValues(info));
     }
 
     /// <summary>
     /// Handle RagFairAddOffer event
     /// </summary>
-    /// <param name="url"></param>
+    /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public ItemEventRouterResponse AddOffer(string url, AddOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _ragfairController.AddPlayerOffer(pmcData, info, sessionID);
     }
 
     /// <summary>
     /// Handle RagFairRemoveOffer event
     /// </summary>
-    /// <param name="url"></param>
+    /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public ItemEventRouterResponse RemoveOffer(string url, RemoveOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _ragfairController.RemoveOffer(pmcData, info, sessionID);
     }
 
     /// <summary>
     /// Handle RagFairRenewOffer event
     /// </summary>
-    /// <param name="url"></param>
+    /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public ItemEventRouterResponse ExtendOffer(string url, ExtendOfferRequestData info, string sessionID)
+    public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _ragfairController.ExtendOffer(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -106,10 +139,9 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<Dictionary<string, int>> GetFleaPrices(string url, EmptyRequestData info, string sessionID)
+    public string GetFleaPrices(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_ragfairController.GetAllFleaPrices());
     }
 
     /// <summary>
@@ -119,15 +151,15 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public NullResponseData SendReport(string url, SendRagfairReportRequestData info, string sessionID)
+    public string SendReport(string url, SendRagfairReportRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
-    public NullResponseData StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, string sessionID)
+    public string StorePlayerOfferTaxAmount(string url, StorePlayerOfferTaxAmountRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _ragfairTaxService.StoreClientOfferTaxValue(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -137,9 +169,8 @@ public class RagfairCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<RagfairOffer> GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
+    public string GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_ragfairController.GetOfferById(sessionID, info));
     }
 }

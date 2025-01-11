@@ -1,14 +1,31 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Helpers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class HealthCallbacks
 {
-    public HealthCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected ProfileHelper _profileHelper;
+    protected HealthController _healthController;
+
+    public HealthCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        ProfileHelper profileHelper,
+        HealthController healthController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _profileHelper = profileHelper;
+        _healthController = healthController;
     }
 
     /// <summary>
@@ -18,9 +35,10 @@ public class HealthCallbacks
     /// <param name="info">HealthListener.Instance.CurrentHealth class</param>
     /// <param name="sessionID">session id</param>
     /// <returns>empty response, no data sent back to client</returns>
-    public GetBodyResponseData<string> handleWorkoutEffects(string url, WorkoutData info, string sessionID)
+    public string handleWorkoutEffects(string url, WorkoutData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _healthController.ApplyWorkoutChanges(_profileHelper.GetPmcProfile(sessionID), info, sessionID);
+        return _httpResponseUtil.EmptyResponse();
     }
 
     /// <summary>
@@ -33,7 +51,7 @@ public class HealthCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _healthController.OffRaidEat(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -46,7 +64,7 @@ public class HealthCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _healthController.OffRaidHeal(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -59,6 +77,6 @@ public class HealthCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _healthController.HealthTreatment(pmcData, info, sessionID);
     }
 }

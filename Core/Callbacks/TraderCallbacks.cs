@@ -1,32 +1,48 @@
 ﻿using Core.Annotations;
+using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
 public class TraderCallbacks : OnLoad, OnUpdate
 {
-    public TraderCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected TraderController _traderController;
+    protected ConfigServer _configServer;
+
+    public TraderCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        TraderController traderController,
+        ConfigServer configServer
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _traderController = traderController;
+        _configServer = configServer;
     }
 
     public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        _traderController.Load();
     }
 
     public async Task<bool> OnUpdate(long _)
     {
-        throw new NotImplementedException();
+        return _traderController.Update();
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-traders";
     }
 
     /// <summary>
@@ -36,10 +52,9 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<List<TraderBase>> GetTraderSettings(string url, EmptyRequestData info, string sessionID)
+    public string GetTraderSettings(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_traderController.GetAllTraders(sessionID));
     }
 
     /// <summary>
@@ -49,10 +64,10 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<TraderBase> GetTrader(string url, EmptyRequestData info, string sessionID)
+    public string GetTrader(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var traderID = url.Replace("/client/trading/api/getTrader/", "");
+        return _httpResponseUtil.GetBody(_traderController.GetTrader(sessionID, traderID));
     }
 
     /// <summary>
@@ -62,10 +77,10 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<TraderAssort> GetAssort(string url, EmptyRequestData info, string sessionID)
+    public string GetAssort(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var traderID = url.Replace("/client/trading/api/getTraderAssort/", "");
+        return _httpResponseUtil.GetBody(_traderController.GetAssort(sessionID, traderID));
     }
 
     /// <summary>
@@ -75,9 +90,9 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<ModdedTraders> GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
+    public string GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        return _httpResponseUtil.NoBody(traderConfig.ModdedTraders);
     }
 }

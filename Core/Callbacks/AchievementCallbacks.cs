@@ -1,13 +1,27 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
 public class AchievementCallbacks
 {
-    public AchievementCallbacks()
+    protected AchievementController _achievementController;
+    protected ProfileController _profileController;
+    protected HttpResponseUtil _httpResponseUtil;
+    
+    public AchievementCallbacks
+    (
+        AchievementController achievementController,
+        ProfileController profileController,
+        HttpResponseUtil httpResponseUtil
+    )
     {
+        _achievementController = achievementController;
+        _profileController = profileController;
+        _httpResponseUtil = httpResponseUtil;
     }
 
     /// <summary>
@@ -17,9 +31,9 @@ public class AchievementCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GetAchievementsResponse> GetAchievements(string url, EmptyRequestData info, string sessionID)
+    public string GetAchievements(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_achievementController.GetAchievements(sessionID));
     }
 
     /// <summary>
@@ -29,8 +43,8 @@ public class AchievementCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<CompletedAchievementsResponse> Statistic(string url, EmptyRequestData info, string sessionID)
+    public string Statistic(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_achievementController.GetAchievementStatics(sessionID));
     }
 }

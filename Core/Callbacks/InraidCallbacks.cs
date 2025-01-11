@@ -1,13 +1,26 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.InRaid;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class InraidCallbacks
 {
-    public InraidCallbacks()
+    protected InRaidController _inRaidController;
+    protected HttpResponseUtil _httpResponseUtil;
+
+    public InraidCallbacks
+    (
+        InRaidController inRaidController,
+        HttpResponseUtil httpResponseUtil
+    )
     {
+        _inRaidController = inRaidController;
+        _httpResponseUtil = httpResponseUtil;
     }
 
     /// <summary>
@@ -18,9 +31,10 @@ public class InraidCallbacks
     /// <param name="info">register player request</param>
     /// <param name="sessionID">Session id</param>
     /// <returns>Null http response</returns>
-    public NullResponseData RegisterPlayer(string url, RegisterPlayerRequestData info, string sessionID)
+    public string RegisterPlayer(string url, RegisterPlayerRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _inRaidController.AddPlayer(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -30,9 +44,10 @@ public class InraidCallbacks
     /// <param name="info">Save progress request</param>
     /// <param name="sessionID">Session id</param>
     /// <returns>Null http response</returns>
-    public NullResponseData SaveProgress(string url, ScavSaveRequestData info, string sessionID)
+    public string SaveProgress(string url, ScavSaveRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _inRaidController.SavePostRaidProfileForScav(info, sessionID);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -41,16 +56,16 @@ public class InraidCallbacks
     /// <returns>JSON as string</returns>
     public string GetRaidMenuSettings()
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NoBody(_inRaidController.GetInRaidConfig().RaidMenuSettings);
     }
 
     public string GetTraitorScavHostileChance(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NoBody(_inRaidController.GetTraitorScavHostileChance(url, sessionID));
     }
 
     public string GetBossConvertSettings(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NoBody(_inRaidController.GetBossConvertSettings(url, sessionID));
     }
 }

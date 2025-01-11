@@ -1,4 +1,5 @@
 ﻿using Core.Annotations;
+using Core.Controllers;
 using Core.DI;
 
 namespace Core.Callbacks;
@@ -6,17 +7,23 @@ namespace Core.Callbacks;
 [Injectable(TypePriority = OnLoadOrder.PresetCallbacks)]
 public class PresetCallbacks : OnLoad
 {
-    public PresetCallbacks()
+    protected PresetController _presetController;
+
+    public PresetCallbacks
+    (
+        PresetController presetController
+    )
     {
+        _presetController = presetController;
     }
 
     public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        _presetController.Initialize();
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-presets";
     }
 }

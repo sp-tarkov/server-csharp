@@ -1,27 +1,48 @@
 ﻿using Core.Annotations;
+using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.HttpResponse;
+using Core.Servers;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable(TypePriority = OnLoadOrder.GameCallbacks)]
 public class GameCallbacks : OnLoad
 {
-    public GameCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected Watermark _watermark;
+    protected SaveServer _saveServer;
+    protected GameController _gameController;
+    protected TimeUtil _timeUtil;
+
+    public GameCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        Watermark watermark,
+        SaveServer saveServer,
+        GameController gameController,
+        TimeUtil timeUtil
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _watermark = watermark;
+        _saveServer = saveServer;
+        _gameController = gameController;
+        _timeUtil = timeUtil;
     }
 
     public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        _gameController.Load();
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-game";
     }
 
     /// <summary>
@@ -31,9 +52,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData VersionValidate(string url, VersionValidateRequestData info, string sessionID)
+    public string VersionValidate(string url, VersionValidateRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -43,9 +64,12 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GameStartResponse> GameStart(string url, EmptyRequestData info, string sessionID)
+    public string GameStart(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var today = _timeUtil.GetDate();
+        var startTimestampMS = _timeUtil.GetTimeStamp();
+        _gameController.GameStart(url, info, sessionID, startTimestampMS);
+        return _httpResponseUtil.GetBody(new GameStartResponse() { UtcTime = startTimestampMS / 1000 });
     }
 
     /// <summary>
@@ -56,9 +80,10 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GameLogoutResponseData> GameLogout(string url, EmptyRequestData info, string sessionID)
+    public string GameLogout(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _saveServer.Save();
+        return _httpResponseUtil.GetBody(new GameLogoutResponseData() { Status = "ok" });
     }
 
     /// <summary>
@@ -68,9 +93,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GameConfigResponse> GetGameConfig(string url, GameEmptyCrcRequestData info, string sessionID)
+    public string GetGameConfig(string url, GameEmptyCrcRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetGameConfig(sessionID));
     }
 
     /// <summary>
@@ -80,9 +105,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GameModeResponse> GetGameMode(string url, GameModeRequestData info, string sessionID)
+    public string GetGameMode(string url, GameModeRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetGameMode(sessionID, info));
     }
 
     /// <summary>
@@ -92,9 +117,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<ServerDetails>> GetServer(string url, EmptyRequestData info, string sessionID)
+    public string GetServer(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetServer(sessionID));
     }
 
     /// <summary>
@@ -104,9 +129,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<CurrentGroupResponse> GetCurrentGroup(string url, EmptyRequestData info, string sessionID)
+    public string GetCurrentGroup(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetCurrentGroup(sessionID));
     }
 
     /// <summary>
@@ -116,9 +141,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<CheckVersionResponse> ValidateGameVersion(string url, EmptyRequestData info, string sessionID)
+    public string ValidateGameVersion(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetValidGameVersion(sessionID));
     }
 
     /// <summary>
@@ -128,9 +153,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GameKeepAliveResponse> GameKeepalive(string url, EmptyRequestData info, string sessionID)
+    public string GameKeepalive(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetKeepAlive(sessionID));
     }
 
     /// <summary>
@@ -142,7 +167,8 @@ public class GameCallbacks : OnLoad
     /// <returns></returns>
     public string GetVersion(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        // change to be a proper type
+        return _httpResponseUtil.NoBody(new { Version = _watermark.GetInGameVersionLabel() });
     }
 
     /// <summary>
@@ -152,9 +178,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData ReportNickname(string url, UIDRequestData info, string sessionID)
+    public string ReportNickname(string url, UIDRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -164,9 +190,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetRaidTimeResponse GetRaidTime(string url, GetRaidTimeRequest info, string sessionID)
+    public string GetRaidTime(string url, GetRaidTimeRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NoBody(_gameController.GetRaidTime(sessionID, info));
     }
 
     /// <summary>
@@ -176,9 +202,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public object GetSurvey(string url, EmptyRequestData info, string sessionID) // TODO: Types given was NullResponseData | GetBodyResponseData<SurveyResponseData>
+    public string GetSurvey(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_gameController.GetSurvey(sessionID));
     }
 
     /// <summary>
@@ -188,9 +214,9 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData GetSurveyView(string url, object info, string sessionID)
+    public string GetSurveyView(string url, object info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -200,8 +226,8 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData SendSurveyOpinion(string url, SendSurveyOpinionRequest info, string sessionID)
+    public string SendSurveyOpinion(string url, SendSurveyOpinionRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 }

@@ -1,15 +1,28 @@
-﻿using Core.Models.Eft.Builds;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Builds;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.PresetBuild;
 using Core.Models.Eft.Profile;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class BuildsCallbacks
 {
-    public BuildsCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected BuildController _buildController;
+
+    public BuildsCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        BuildController buildController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _buildController = buildController;
     }
 
     /// <summary>
@@ -19,9 +32,9 @@ public class BuildsCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<UserBuilds> GetBuilds(string url, EmptyRequestData info, string sessionID)
+    public string GetBuilds(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_buildController.GetUserBuilds(sessionID));
     }
 
     /// <summary>
@@ -31,9 +44,10 @@ public class BuildsCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData CreateMagazineTemplate(string url, SetMagazineRequest info, string sessionID)
+    public string CreateMagazineTemplate(string url, SetMagazineRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        _buildController.CreateMagazineTemplate(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -43,9 +57,10 @@ public class BuildsCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData SetWeapon(string url, PresetBuildActionRequestData info, string sessionID)
+    public string SetWeapon(string url, PresetBuildActionRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _buildController.SaveWeaponBuild(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -55,9 +70,10 @@ public class BuildsCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData SetEquipment(string url, PresetBuildActionRequestData info, string sessionID)
+    public string SetEquipment(string url, PresetBuildActionRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _buildController.SaveEquipmentBuild(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -67,8 +83,9 @@ public class BuildsCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData DeleteBuild(string url, RemoveBuildRequestData info, string sessionID)
+    public string DeleteBuild(string url, RemoveBuildRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _buildController.RemoveBuild(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 }

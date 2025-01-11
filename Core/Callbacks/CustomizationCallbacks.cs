@@ -1,16 +1,33 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Customization;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
+using Core.Servers;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class CustomizationCallbacks
 {
-    public CustomizationCallbacks()
+    protected CustomizationController _customizationController;
+    protected SaveServer _saveServer;
+    protected HttpResponseUtil _httpResponseUtil;
+    
+    public CustomizationCallbacks
+    (
+        CustomizationController customizationController,
+        SaveServer saveServer,
+        HttpResponseUtil httpResponseUtil
+    )
     {
+        _customizationController = customizationController;
+        _saveServer = saveServer;
+        _httpResponseUtil = httpResponseUtil;
     }
 
     /// <summary>
@@ -20,9 +37,15 @@ public class CustomizationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GetSuitsResponse> GetSuits(string url, EmptyRequestData info, string sessionID)
+    public string GetSuits(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var result = new GetSuitsResponse
+        {
+            Id = sessionID,
+            Suites = _saveServer.GetProfile(sessionID).Suits
+        };
+
+        return _httpResponseUtil.GetBody(result);
     }
 
     /// <summary>
@@ -32,9 +55,12 @@ public class CustomizationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<Suit>> GetTraderSuits(string url, object info, string sessionID)
+    public string GetTraderSuits(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var splitUrl = url.Split('/');
+        var traderId = splitUrl[splitUrl.Length - 3];
+
+        return _httpResponseUtil.GetBody(_customizationController.GetTraderSuits(traderId, sessionID));
     }
 
     /// <summary>
@@ -44,9 +70,9 @@ public class CustomizationCallbacks
     /// <param name="body"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyClothing(PmcData pmcData, BuyClothingRequestData body, string sessionID)
+    public ItemEventRouterResponse BuyClothing(PmcData pmcData, BuyClothingRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _customizationController.BuyClothing(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -56,9 +82,9 @@ public class CustomizationCallbacks
     /// <param name="body"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<HideoutCustomisation> GetHideoutCustomisation(PmcData pmcData, EmptyRequestData body, string sessionID)
+    public string GetHideoutCustomisation(PmcData pmcData, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID, info));
     }
 
     /// <summary>
@@ -68,9 +94,9 @@ public class CustomizationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<CustomisationStorage>> GetStorage(string url, EmptyRequestData info, string sessionID)
+    public string GetStorage(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_customizationController.GetCustomisationStorage(sessionID, info));
     }
 
     /// <summary>
@@ -82,6 +108,6 @@ public class CustomizationCallbacks
     /// <returns></returns>
     public ItemEventRouterResponse SetClothing(PmcData pmcData, CustomizationSetRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _customizationController.SetClothing(sessionID, info, pmcData);
     }
 }
