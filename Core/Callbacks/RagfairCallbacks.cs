@@ -2,7 +2,6 @@
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
@@ -13,7 +12,8 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.RagfairCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.RagfairCallbacks)]
 public class RagfairCallbacks : OnLoad, OnUpdate
 {
     protected HttpResponseUtil _httpResponseUtil;

@@ -4,7 +4,7 @@ using Core.DI;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.HandbookCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HandbookCallbacks)]
 public class HandbookCallbacks : OnLoad
 {
     protected HandBookController _handBookController;

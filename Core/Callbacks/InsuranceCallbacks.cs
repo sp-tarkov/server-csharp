@@ -13,7 +13,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
 public class InsuranceCallbacks : OnUpdate
 {
     protected InsuranceController _insuranceController;

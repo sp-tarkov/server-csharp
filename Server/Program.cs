@@ -43,38 +43,42 @@ public static class Program
 
     private static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
     {
-        var groupedTypes = types.Select(t =>
+        var groupedTypes = types.SelectMany(t =>
         {
-            var attribute = (Injectable)Attribute.GetCustomAttribute(t, typeof(Injectable))!;
+            var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable))!;
             var registerableType = t;
-            // if we have a type override this takes priority
-            if (attribute.InjectableTypeOverride != null)
+            var registerableComponents = new List<RegisterableType>();
+            foreach (var attribute in attributes)
             {
-                registerableType = attribute.InjectableTypeOverride;
+                // if we have a type override this takes priority
+                if (attribute.InjectableTypeOverride != null)
+                {
+                    registerableType = attribute.InjectableTypeOverride;
+                }
+                // if this class only has 1 interface we register it on that interface
+                else if (registerableType.GetInterfaces().Length == 1)
+                {
+                    registerableType = registerableType.GetInterfaces()[0];
+                }
+                registerableComponents.Add(new(registerableType, t, attribute));
             }
-            // if this class only has 1 interface we register it on that interface
-            else if (registerableType.GetInterfaces().Length == 1)
-            {
-                registerableType = registerableType.GetInterfaces()[0];
-            }
-
-            return (registerableInterface: registerableType, typeToRegister: t, injectableAttribute: attribute);
-        }).GroupBy(t => t.registerableInterface.FullName);
+            return registerableComponents;
+        }).GroupBy(t => t.RegisterableInterface.FullName);
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
         {
-            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.injectableAttribute.TypePriority))
+            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
             {
-                switch (valueTuple.injectableAttribute.InjectionType)
+                switch (valueTuple.InjectableAttribute.InjectionType)
                 {
                     case InjectionType.Singleton:
-                        builderServices.AddSingleton(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        builderServices.AddSingleton(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
                         break;
                     case InjectionType.Transient:
-                        builderServices.AddTransient(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        builderServices.AddTransient(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
                         break;
                     case InjectionType.Scoped:
-                        builderServices.AddScoped(valueTuple.registerableInterface, valueTuple.typeToRegister);
+                        builderServices.AddScoped(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -88,5 +92,12 @@ public static class Program
         // We get all the services from this assembly first, since mods will override them later
         RegisterComponents(builderServices, typeof(App).Assembly.GetTypes()
             .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
+    }
+
+    class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
+    {
+        public Type RegisterableInterface { get; } = registerableInterface;
+        public Type TypeToRegister { get; } = typeToRegister;
+        public Injectable InjectableAttribute { get; } = injectableAttribute;
     }
 }

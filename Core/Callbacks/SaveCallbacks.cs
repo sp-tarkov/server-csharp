@@ -7,7 +7,8 @@ using Core.Services;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.SaveCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.SaveCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.SaveCallbacks)]
 public class SaveCallbacks : OnLoad, OnUpdate
 {
     protected SaveServer _saveServer;

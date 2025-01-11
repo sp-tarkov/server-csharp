@@ -10,7 +10,7 @@ using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils;
 
-[Injectable(InjectionType.Singleton, TypePriority = OnLoadOrder.Database)]
+[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.Database)]
 public class DatabaseImporter : OnLoad
 {
     private object hashedFile;

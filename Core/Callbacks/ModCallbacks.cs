@@ -9,7 +9,7 @@ using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.ModCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.ModCallbacks)]
 public class ModCallbacks : OnLoad
 {
     protected ILogger _logger;

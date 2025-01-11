@@ -8,15 +8,15 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnUpdateOrder.DialogCallbacks)]
-public class DialogCallbacks : OnUpdate
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogCallbacks)]
+public class DialogueCallbacks : OnUpdate
 {
     protected HashUtil _hashUtil;
     protected TimeUtil _timeUtil;
     protected HttpResponseUtil _httpResponseUtil;
     protected DialogueController _dialogueController;
 
-    public DialogCallbacks
+    public DialogueCallbacks
     (
         HashUtil hashUtil,
         TimeUtil timeUtil,

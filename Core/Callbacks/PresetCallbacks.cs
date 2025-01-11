@@ -4,7 +4,7 @@ using Core.DI;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.PresetCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PresetCallbacks)]
 public class PresetCallbacks : OnLoad
 {
     protected PresetController _presetController;

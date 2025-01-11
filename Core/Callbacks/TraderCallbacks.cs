@@ -11,7 +11,8 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable(TypePriority = OnLoadOrder.TraderCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.TraderCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
 public class TraderCallbacks : OnLoad, OnUpdate
 {
     protected HttpResponseUtil _httpResponseUtil;

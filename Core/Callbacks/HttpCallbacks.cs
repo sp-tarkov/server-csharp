@@ -5,7 +5,7 @@ using Core.Servers;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectionType.Singleton, typePriority: OnLoadOrder.HttpCallbacks)]
+[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
 public class HttpCallbacks : OnLoad
 {
     private readonly HttpServer _httpServer;
