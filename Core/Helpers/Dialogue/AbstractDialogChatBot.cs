@@ -1,9 +1,11 @@
-﻿using Core.Helpers.Dialog.Commando;
+﻿using Core.Annotations;
+using Core.Helpers.Dialog.Commando;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 
 namespace Core.Helpers.Dialogue;
 
+[Injectable]
 public class AbstractDialogChatBot : IDialogueChatBot
 {
     public UserDialogInfo GetChatBot()

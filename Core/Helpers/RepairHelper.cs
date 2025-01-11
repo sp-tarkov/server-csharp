@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Props = Core.Models.Eft.Common.Props;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RepairHelper
 {
     /// <summary>

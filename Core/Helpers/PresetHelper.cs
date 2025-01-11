@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Enums;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class PresetHelper
 {
     public void HydratePresetStore(Dictionary<string, List<string>> input)

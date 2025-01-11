@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class InRaidHelper
 {
     /// <summary>

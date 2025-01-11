@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Dialog;
+﻿using Core.Annotations;
+using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Dialog;
 
 namespace Core.Helpers.Dialog.Commando.SptCommands.ProfileCommand;
 
+[Injectable]
 public class ProfileSptCommand : ISptCommand
 {
     public string GetCommand()

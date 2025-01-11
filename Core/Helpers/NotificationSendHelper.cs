@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Profile;
+﻿using Core.Annotations;
+using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ws;
 using Core.Models.Enums;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class NotificationSendHelper
 {
     /// <summary>

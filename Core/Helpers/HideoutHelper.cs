@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
@@ -6,6 +7,7 @@ using Core.Models.Enums;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class HideoutHelper
 {
     /// <summary>

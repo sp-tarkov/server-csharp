@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Profile;
+﻿using Core.Annotations;
+using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ws;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class NotifierHelper
 {
     public WsNotificationEvent GetDefaultNotification()

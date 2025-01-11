@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -7,6 +8,7 @@ using Core.Utils;
 
 namespace Core.Routers.Static;
 
+[Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class ProfileStaticRouter : StaticRouter
 {
     public ProfileStaticRouter(ProfileCallbacks profileCallbacks, JsonUtil jsonUtil) : base(
@@ -28,8 +30,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData)),
+                ) => profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/game/profile/savage/regenerate",
                 (
@@ -37,8 +38,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData)),
+                ) => profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/game/profile/voice/change",
                 (url, info, sessionID, output) =>
@@ -69,8 +69,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData)),
+                ) => profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/profile/status",
                 (
@@ -78,8 +77,7 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData)),
+                ) => profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/profile/view",
                 (
@@ -115,8 +113,7 @@ public class ProfileStaticRouter : StaticRouter
             new RouteAction(
                 "/launcher/profiles",
                 (url, info, sessionID, output) =>
-                    profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData)),
+                    profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID)),
         ])
     {
     }

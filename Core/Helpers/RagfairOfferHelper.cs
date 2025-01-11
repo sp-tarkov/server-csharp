@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
@@ -7,6 +8,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RagfairOfferHelper
 {
     /// <summary>

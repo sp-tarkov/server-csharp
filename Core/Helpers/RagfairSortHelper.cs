@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Ragfair;
+﻿using Core.Annotations;
+using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RagfairSortHelper
 {
     /**

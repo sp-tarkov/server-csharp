@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Match;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
@@ -6,6 +7,7 @@ using Equipment = Core.Models.Eft.Common.Tables.Equipment;
 
 namespace Core.Generators;
 
+[Injectable]
 public class BotInventoryGenerator
 {
     private BotConfig _botConfig;

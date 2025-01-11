@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class PlayerScavGenerator
 {
     private PlayerScavConfig _playerScavConfig;

@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Generators.WeaponGen;
 
+[Injectable]
 public class InventoryMagGen
 {
     private GenerationData _magCounts;

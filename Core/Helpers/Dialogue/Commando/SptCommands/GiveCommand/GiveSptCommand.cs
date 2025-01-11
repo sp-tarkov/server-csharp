@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 
 namespace Core.Helpers.Dialog.Commando.SptCommands.GiveCommand;
 
+[Injectable]
 public class GiveSptCommand
 {
     public string GetCommand()

@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Generators;
 
+[Injectable]
 public class PMCLootGenerator
 {
     public PMCLootGenerator()

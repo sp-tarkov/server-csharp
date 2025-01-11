@@ -1,7 +1,9 @@
-﻿using Core.Models.Spt.Config;
+﻿using Core.Annotations;
+using Core.Models.Spt.Config;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RepeatableQuestHelper
 {
     /// <summary>

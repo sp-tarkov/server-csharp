@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.Profile;
@@ -7,6 +8,7 @@ using Health = Core.Models.Eft.Profile.Health;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class HealthHelper
 {
     /// <summary>

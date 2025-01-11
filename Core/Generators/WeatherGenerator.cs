@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Weather;
+﻿using Core.Annotations;
+using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class WeatherGenerator
 {
     public WeatherGenerator()

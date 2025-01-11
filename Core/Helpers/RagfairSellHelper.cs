@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Ragfair;
+﻿using Core.Annotations;
+using Core.Models.Eft.Ragfair;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RagfairSellHelper
 {
     /// <summary>

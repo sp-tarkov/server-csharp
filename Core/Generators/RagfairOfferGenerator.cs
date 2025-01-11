@@ -1,10 +1,12 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Ragfair;
 
 namespace Core.Generators;
 
+[Injectable]
 public class RagfairOfferGenerator
 {
     public RagfairOfferGenerator()

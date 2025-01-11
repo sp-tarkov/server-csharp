@@ -1,5 +1,8 @@
-﻿namespace Core.Generators.WeaponGen.Implementations;
+﻿using Core.Annotations;
 
+namespace Core.Generators.WeaponGen.Implementations;
+
+[Injectable]
 public class InternalMagazineInventoryMagGen : InventoryMagGen
 {
     public InternalMagazineInventoryMagGen()
