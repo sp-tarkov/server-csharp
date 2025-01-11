@@ -110,7 +110,7 @@ public class Watermark {
         var versionTag = /*ProgramStatics.DEBUG&*/ $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
 
         if (withEftVersion) {
-            var tarkovVersion = sptConfig.CompatibleTarkovVersion.Split(".").First();
+            var tarkovVersion = sptConfig.CompatibleTarkovVersion.Split(".").Last();
             return $"{versionTag} ({tarkovVersion})";
         }
 

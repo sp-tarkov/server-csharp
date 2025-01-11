@@ -85,9 +85,11 @@ public class SaveServer
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
-        foreach (var file in files) {
+        foreach (var file in files)
+        {
             LoadProfile(_vfs.StripExtension(file));
         }
+
         stopwatch.Stop();
         _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
     }
@@ -99,7 +101,8 @@ public class SaveServer
     {
         // Save every profile
         var totalTime = 0L;
-        foreach ( var sessionID  in profiles) {
+        foreach (var sessionID in profiles)
+        {
             totalTime += SaveProfile(sessionID.Key);
         }
 
@@ -139,7 +142,7 @@ public class SaveServer
      * @returns Dictionary of ISptProfile
      */
     public Dictionary<string, SptProfile> GetProfiles() => profiles;
-    
+
     /**
      * Delete a profile by id
      * @param sessionID Id of profile to remove
@@ -171,7 +174,7 @@ public class SaveServer
             new SptProfile()
             {
                 ProfileInfo = profileInfo,
-                CharacterData = new Characters() { PmcData = new PmcData(), ScavData = new PmcData() }
+                CharacterData = new Characters() { PmcData = new(), ScavData = new() }
             });
     }
 
@@ -191,8 +194,8 @@ public class SaveServer
      */
     public void LoadProfile(string sessionID)
     {
-        var filename  = $"{sessionID}.json";
-        var filePath  = $"{profileFilepath}{filename}";
+        var filename = $"{sessionID}.json";
+        var filePath = $"{profileFilepath}{filename}";
         if (_vfs.FileExists(filePath))
         {
             // File found, store in profiles[]
@@ -200,7 +203,8 @@ public class SaveServer
         }
 
         // Run callbacks
-        foreach (var callback in _saveLoadRouters) {
+        foreach (var callback in _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
+        {
             profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
         }
     }
@@ -216,9 +220,9 @@ public class SaveServer
         var filePath = $"{profileFilepath}{sessionID}.json";
 
         // Run pre-save callbacks before we save into json
-        foreach ( var callback  in onBeforeSaveCallbacks) 
+        foreach (var callback in onBeforeSaveCallbacks)
         {
-            var previous  = profiles[sessionID];
+            var previous = profiles[sessionID];
             try
             {
                 profiles[sessionID] = onBeforeSaveCallbacks[callback.Key](profiles[sessionID]);
@@ -231,9 +235,10 @@ public class SaveServer
         }
 
         var start = Stopwatch.StartNew();
-        var jsonProfile  = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).Features.CompressProfile);
-        var fmd5  = _hashUtil.GenerateMd5ForData(jsonProfile);
-        if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5) {
+        var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).Features.CompressProfile);
+        var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
+        if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
+        {
             saveMd5[sessionID] = fmd5;
             // save profile to disk
             _vfs.WriteFile(filePath, jsonProfile);
@@ -256,6 +261,7 @@ public class SaveServer
             profiles.Remove(sessionID);
             _vfs.DeleteFile(file);
         }
+
         return !_vfs.FileExists(file);
     }
 }
