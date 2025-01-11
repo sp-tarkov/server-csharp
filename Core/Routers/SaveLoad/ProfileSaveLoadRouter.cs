@@ -4,7 +4,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Routers.SaveLoad;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(SaveLoadRouter))]
 public class ProfileSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
