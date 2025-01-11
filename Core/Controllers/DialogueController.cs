@@ -1,4 +1,5 @@
 using Core.Models.Eft.Dialog;
+using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 
@@ -85,7 +86,7 @@ public class DialogueController
     /// <param name="sessionId">Session id</param>
     /// <returns>GetMailDialogViewResponseData object</returns>
     public GetMailDialogViewResponseData GenerateDialogueView(
-        GetMailDialogViewResponseData request,
+        GetMailDialogViewRequestData request,
         string sessionId)
     {
         throw new NotImplementedException();
@@ -174,7 +175,7 @@ public class DialogueController
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
     public void SetRead(
-        HashSet<string> dialogueIds,
+        List<string> dialogueIds,
         string sessionId)
     {
         throw new NotImplementedException();
@@ -247,6 +248,16 @@ public class DialogueController
     private void RemoveExpiredItemsFromMessage(
         string sessionId,
         string dialogueId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public FriendRequestSendResponse SendFriendRequest(string sessionId, FriendRequestData request)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteFriend(string sessionID, DeleteFriendRequest request)
     {
         throw new NotImplementedException();
     }

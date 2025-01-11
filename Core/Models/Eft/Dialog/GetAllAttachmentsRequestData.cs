@@ -2,8 +2,8 @@
 
 namespace Core.Models.Eft.Dialog;
 
-public class SetDialogReadRequestData
+public class GetAllAttachmentsRequestData
 {
     [JsonPropertyName("dialogId")]
-    public List<string>? Dialogs { get; set; }
+    public string DialogId { get; set; }
 }

@@ -1,14 +1,27 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Location;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class LocationCallbacks
 {
-    public LocationCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected LocationController _locationController;
+
+    public LocationCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        LocationController locationController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _locationController = locationController;
     }
 
     /// <summary>
@@ -18,10 +31,9 @@ public class LocationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<LocationsGenerateAllResponse> GetLocationData(string url, EmptyRequestData info, string sessionID)
+    public string GetLocationData(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_locationController.GenerateAll(sessionID));
     }
 
     /// <summary>
@@ -31,9 +43,8 @@ public class LocationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<GetAirdropLootResponse> GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
+    public string GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_locationController.GetAirDropLoot(info));
     }
 }

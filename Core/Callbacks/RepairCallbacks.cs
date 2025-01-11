@@ -1,13 +1,22 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class RepairCallbacks
 {
-    public RepairCallbacks()
+    protected RepairController _repairController;
+
+    public RepairCallbacks
+    (
+        RepairController repairController
+    )
     {
+        _repairController = repairController;
     }
 
     /// <summary>
@@ -18,10 +27,9 @@ public class RepairCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _repairController.TraderRepair(sessionID, info, pmcData);
     }
 
     /// <summary>
@@ -32,9 +40,8 @@ public class RepairCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse Repair(PmcData pmcData, RepairActionDataRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _repairController.RepairWithKit(sessionID, info, pmcData);
     }
 }

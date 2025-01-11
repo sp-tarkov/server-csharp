@@ -1,13 +1,22 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class NoteCallbacks
 {
-    public NoteCallbacks()
+    protected NoteController _noteController;
+
+    public NoteCallbacks
+    (
+        NoteController noteController
+    )
     {
+        _noteController = noteController;
     }
 
     /// <summary>
@@ -20,7 +29,7 @@ public class NoteCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _noteController.AddNote(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -33,7 +42,7 @@ public class NoteCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _noteController.EditNote(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -46,6 +55,6 @@ public class NoteCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _noteController.DeleteNote(pmcData, info, sessionID);
     }
 }

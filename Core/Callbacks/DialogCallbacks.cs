@@ -1,16 +1,35 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class DialogCallbacks : OnUpdate
 {
-    public DialogCallbacks()
+    protected HashUtil _hashUtil;
+    protected TimeUtil _timeUtil;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected DialogueController _dialogueController;
+
+    public DialogCallbacks
+    (
+        HashUtil hashUtil,
+        TimeUtil timeUtil,
+        HttpResponseUtil httpResponseUtil,
+        DialogueController dialogueController
+    )
     {
+        _hashUtil = hashUtil;
+        _timeUtil = timeUtil;
+        _httpResponseUtil = httpResponseUtil;
+        _dialogueController = dialogueController;
     }
 
     /// <summary>
@@ -20,9 +39,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GetFriendListDataResponse> GetFriendList(string url, EmptyRequestData info, string sessionID)
+    public string GetFriendList(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.GetFriendList(sessionID));
     }
 
     /// <summary>
@@ -32,9 +51,26 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<ChatServer>> GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
+    public string GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        var chatServer = new List<ChatServer>()
+        {
+            new ChatServer()
+            {
+                Id = _hashUtil.Generate(),
+                RegistrationId = 20,
+                DateTime = _timeUtil.GetTimeStamp(),
+                IsDeveloper = true,
+                Regions = new() { "EUR" },
+                VersionId = "bgkidft87ddd",
+                Ip = "",
+                Port = 0,
+                Chats = [new() { Id = "0", Members = 0 }],
+            }
+        };
+
+
+        return _httpResponseUtil.GetBody(chatServer);
     }
 
     /// <summary>
@@ -44,9 +80,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<DialogueInfo>> GetMailDialogList(string url, GetMailDialogListRequestData info, string sessionID)
+    public string GetMailDialogList(string url, GetMailDialogListRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueList(sessionID), 0, null, false);
     }
 
     /// <summary>
@@ -56,9 +92,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<GetMailDialogViewResponseData> GetMailDialogView(string url, GetMailDialogViewRequestData info, string sessionID)
+    public string GetMailDialogView(string url, GetMailDialogViewRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueView(info, sessionID), 0, null, false);
     }
 
     /// <summary>
@@ -68,9 +104,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<DialogueInfo> GetMailDialogInfo(string url, GetMailDialogInfoRequestData info, string sessionID)
+    public string GetMailDialogInfo(string url, GetMailDialogInfoRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.GetDialogueInfo(info.DialogId, sessionID));
     }
 
     /// <summary>
@@ -80,9 +116,10 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> RemoveDialog(string url, RemoveDialogRequestData info, string sessionID)
+    public string RemoveDialog(string url, RemoveDialogRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _dialogueController.RemoveDialogue(info.DialogId, sessionID);
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -92,9 +129,10 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> PinDialog(string url, PinDialogRequestData info, string sessionID)
+    public string PinDialog(string url, PinDialogRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _dialogueController.SetDialoguePin(info.DialogId, true, sessionID);
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -104,9 +142,10 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> UnpinDialog(string url, PinDialogRequestData info, string sessionID)
+    public string UnpinDialog(string url, PinDialogRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _dialogueController.SetDialoguePin(info.DialogId, false, sessionID);
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -116,9 +155,10 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> SetRead(string url, SetDialogReadRequestData info, string sessionID)
+    public string SetRead(string url, SetDialogReadRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _dialogueController.SetRead(info.Dialogs, sessionID);
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -128,9 +168,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<object> GetAllAttachments(string url, EmptyRequestData info, string sessionID) // TODO: Fix type - GetBodyResponseData<GetAllAttachmentsResponse | Undefined>
+    public string GetAllAttachments(string url, GetAllAttachmentsRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.GetAllAttachments(info.DialogId, sessionID));
     }
 
     /// <summary>
@@ -140,9 +180,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<string> SendMessage(string url, SendMessageRequest info, string sessionID)
+    public string SendMessage(string url, SendMessageRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.SendMessage(sessionID, info));
     }
 
     /// <summary>
@@ -152,9 +192,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> ListOutbox(string url, EmptyRequestData info, string sessionID)
+    public string ListOutbox(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -164,9 +204,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<object>> ListInbox(string url, EmptyRequestData info, string sessionID)
+    public string ListInbox(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -176,9 +216,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<FriendRequestSendResponse> SendFriendRequest(string url, FriendRequestData info, string sessionID)
+    public string SendFriendRequest(string url, FriendRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_dialogueController.SendFriendRequest(sessionID, info));
     }
 
     /// <summary>
@@ -188,9 +228,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData AcceptAllFriendRequests(string url, EmptyRequestData info, string sessionID)
+    public string AcceptAllFriendRequests(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -200,9 +240,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> AcceptFriendRequest(string url, AcceptFriendRequestData info, string sessionID)
+    public string AcceptFriendRequest(string url, AcceptFriendRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -212,9 +252,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> DeclineFriendRequest(string url, DeclineFriendRequestData info, string sessionID)
+    public string DeclineFriendRequest(string url, DeclineFriendRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -224,9 +264,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> CancelFriendRequest(string url, CancelFriendRequestData info, string sessionID)
+    public string CancelFriendRequest(string url, CancelFriendRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -236,9 +276,10 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData DeleteFriend(string url, DeleteFriendRequest info, string sessionID)
+    public string DeleteFriend(string url, DeleteFriendRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        _dialogueController.DeleteFriend(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -248,9 +289,9 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData IgnoreFriend(string url, UIDRequestData info, string sessionID)
+    public string IgnoreFriend(string url, UIDRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -260,48 +301,49 @@ public class DialogCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData UnIgnoreFriend(string url, UIDRequestData info, string sessionID)
+    public string UnIgnoreFriend(string url, UIDRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
-    public GetBodyResponseData<List<object>> ClearMail(string url, ClearMailMessageRequest info, string sessionID)
+    public string ClearMail(string url, ClearMailMessageRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public GetBodyResponseData<List<object>> RemoveMail(string url, RemoveMailMessageRequest info, string sessionID)
+    public string RemoveMail(string url, RemoveMailMessageRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public GetBodyResponseData<List<object>> CreateGroupMail(string url, CreateGroupMailRequest info, string sessionID)
+    public string CreateGroupMail(string url, CreateGroupMailRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public GetBodyResponseData<List<object>> ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest info, string sessionID)
+    public string ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); // Not implemented in Node
     }
 
-    public GetBodyResponseData<List<object>> AddUserToMail(string url, AddUserGroupMailRequest info, string sessionID)
+    public string AddUserToMail(string url, AddUserGroupMailRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); // Not implemented in Node
     }
 
-    public GetBodyResponseData<List<object>> RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
+    public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        throw new NotImplementedException(); // Not implemented in Node
     }
 
     public async Task<bool> OnUpdate(long timeSinceLastRun)
     {
-        throw new NotImplementedException();
+        _dialogueController.Update();
+        return true;
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-dialogue";
     }
 }

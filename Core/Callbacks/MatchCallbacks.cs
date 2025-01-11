@@ -1,14 +1,34 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Match;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class MatchCallbacks
 {
-    public MatchCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected JsonUtil _jsonUtil;
+    protected MatchController _matchController;
+    protected DatabaseService _databaseService;
+
+    public MatchCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        JsonUtil jsonUtil,
+        MatchController matchController,
+        DatabaseService databaseService
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _jsonUtil = jsonUtil;
+        _matchController = matchController;
+        _databaseService = databaseService;
     }
 
     /// <summary>
@@ -18,9 +38,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData UpdatePing(string url, EmptyRequestData info, string sessionID)
+    public string UpdatePing(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -30,9 +50,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData ExitMatch(string url, EmptyRequestData info, string sessionID)
+    public string ExitMatch(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -42,9 +62,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData ExitFromMenu(string url, EmptyRequestData info, string sessionID)
+    public string ExitFromMenu(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -54,9 +74,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<MatchGroupCurrentResponse> GroupCurrent(string url, EmptyRequestData info, string sessionID)
+    public string GroupCurrent(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(new MatchGroupCurrentResponse() { Squad = new() });
     }
 
     /// <summary>
@@ -66,9 +86,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData StartGroupSearch(string url, EmptyRequestData info, string sessionID)
+    public string StartGroupSearch(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -78,9 +98,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData StopGroupSearch(string url, EmptyRequestData info, string sessionID)
+    public string StopGroupSearch(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -90,9 +110,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<string> SendGroupInvite(string url, MatchGroupInviteSendRequest info, string sessionID)
+    public string SendGroupInvite(string url, MatchGroupInviteSendRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody("2427943f23698ay9f2863735");
     }
 
     /// <summary>
@@ -102,9 +122,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<List<GroupCharacter>> AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
+    public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(new List<GroupCharacter>() { new GroupCharacter() });
     }
 
     /// <summary>
@@ -114,9 +134,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> DeclineGroupInvite(string url, RequestIdRequest info, string sessionID)
+    public string DeclineGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -126,9 +146,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> CancelGroupInvite(string url, RequestIdRequest info, string sessionID)
+    public string CancelGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -138,9 +158,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> TransferGroup(string url, MatchGroupTransferRequest info, string sessionID)
+    public string TransferGroup(string url, MatchGroupTransferRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -150,9 +170,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> CancelAllGroupInvite(string url, EmptyRequestData info, string sessionID)
+    public string CancelAllGroupInvite(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -162,9 +182,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData PutMetrics(string url, PutMetricsRequestData info, string sessionID)
+    public string PutMetrics(string url, PutMetricsRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -174,9 +194,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData EventDisconnect(string url, PutMetricsRequestData info, string sessionID)
+    public string EventDisconnect(string url, PutMetricsRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -186,9 +206,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> ServerAvailable(string url, EmptyRequestData info, string sessionID)
+    public string ServerAvailable(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_matchController.GetEnabled());
     }
 
     /// <summary>
@@ -198,9 +218,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<ProfileStatusResponse> JoinMatch(string url, MatchGroupStartGameRequest info, string sessionID)
+    public string JoinMatch(string url, MatchGroupStartGameRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_matchController.JoinMatch(info, sessionID));
     }
 
     /// <summary>
@@ -210,9 +230,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<Metrics> GetMetrics(string url, object info, string sessionID) // TODO: No type given
+    public string GetMetrics(string url, object info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_databaseService.GetMatch().Metrics);
     }
 
     /// <summary>
@@ -223,9 +243,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<MatchGroupStatusResponse> GetGroupStatus(string url, MatchGroupStatusRequest info, string sessionID)
+    public string GetGroupStatus(string url, MatchGroupStatusRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_matchController.GetGroupStatus(info));
     }
 
     /// <summary>
@@ -235,9 +255,10 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> DeleteGroup(string url, EmptyRequestData info, string sessionID)
+    public string DeleteGroup(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _matchController.DeleteGroup(info);
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -247,9 +268,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> LeaveGroup(string url, EmptyRequestData info, string sessionID)
+    public string LeaveGroup(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -259,9 +280,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, string sessionID)
+    public string RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -271,9 +292,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<StartLocalRaidResponseData> StartLocalRaid(string url, StartLocalRaidRequestData info, string sessionID)
+    public string StartLocalRaid(string url, StartLocalRaidRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_matchController.StartLocalRaid(sessionID, info));
     }
 
     /// <summary>
@@ -283,9 +304,10 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData EndLocalRaid(string url, EndLocalRaidRequestData info, string sessionID)
+    public string EndLocalRaid(string url, EndLocalRaidRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        _matchController.EndLocalRaid(sessionID, info);
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -295,9 +317,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
+    public string GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -307,9 +329,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public NullResponseData GetConfigurationByProfile(string url, GetRaidConfigurationRequestData info, string sessionID)
+    public string GetConfigurationByProfile(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
@@ -319,9 +341,9 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> RaidReady(string url, EmptyRequestData info, string sessionID)
+    public string RaidReady(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 
     /// <summary>
@@ -331,8 +353,8 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public GetBodyResponseData<bool> NotRaidReady(string url, EmptyRequestData info, string sessionID)
+    public string NotRaidReady(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(true);
     }
 }

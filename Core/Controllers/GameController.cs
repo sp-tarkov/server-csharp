@@ -48,7 +48,7 @@ public class GameController
     /// <param name="sessionId"></param>
     /// <param name="requestData"></param>
     /// <returns></returns>
-    public object GetGameMode( // TODO: Returns `any` in node server
+    public GameModeResponse GetGameMode(
         string sessionId,
         GameModeRequestData requestData)
     {
@@ -70,12 +70,12 @@ public class GameController
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
-    /*
+    
     public CurrentGroupResponse GetCurrentGroup(string sessionId)
     {
         throw new NotImplementedException();
     }
-    */
+    
 
     /// <summary>
     /// Handle client/checkVersion
@@ -179,6 +179,11 @@ public class GameController
     /// </summary>
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Load()
     {
         throw new NotImplementedException();
     }
