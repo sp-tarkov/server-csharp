@@ -1,8 +1,10 @@
+using Core.Annotations;
 using Core.Models.Eft.Weather;
 using Core.Models.Spt.Weather;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class WeatherController
 {
     /// <summary>

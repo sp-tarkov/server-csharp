@@ -1,8 +1,10 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class PrestigeController
 {
     /// <summary>

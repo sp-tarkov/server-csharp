@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
@@ -7,6 +8,7 @@ using Core.Models.Enums;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class TradeController
 {
     /// <summary>

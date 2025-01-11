@@ -1,9 +1,11 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class NoteController
 {
     /// <summary>

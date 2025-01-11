@@ -1,7 +1,9 @@
+using Core.Annotations;
 using Core.Models.Spt.Logging;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class ClientLogController
 {
     /// <summary>

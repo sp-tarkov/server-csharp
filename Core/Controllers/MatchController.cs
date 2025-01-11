@@ -1,7 +1,9 @@
+using Core.Annotations;
 using Core.Models.Eft.Match;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class MatchController
 {
     /// <summary>

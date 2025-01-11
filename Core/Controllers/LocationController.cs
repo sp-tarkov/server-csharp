@@ -1,8 +1,10 @@
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Location;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class LocationController
 {
     /// <summary>

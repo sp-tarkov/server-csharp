@@ -1,5 +1,8 @@
-﻿namespace Core.Services;
+﻿using Core.Annotations;
 
+namespace Core.Services;
+
+[Injectable(InjectionType.Singleton)]
 public class ProfileActivityService
 {
     /**

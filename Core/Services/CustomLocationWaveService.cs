@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class CustomLocationWaveService
 {
     /// <summary>

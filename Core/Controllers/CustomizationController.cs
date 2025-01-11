@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Customization;
@@ -7,6 +8,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class CustomizationController
 {
     /// <summary>

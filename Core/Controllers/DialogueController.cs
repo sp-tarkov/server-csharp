@@ -1,3 +1,4 @@
+using Core.Annotations;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
@@ -5,6 +6,7 @@ using Core.Models.Enums;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class DialogueController
 {
     /// <summary>

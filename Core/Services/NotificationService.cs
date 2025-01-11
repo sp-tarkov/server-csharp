@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Ws;
+﻿using Core.Annotations;
+using Core.Models.Eft.Ws;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class NotificationService
 {
     public Dictionary<string, List<object>> GetMessageQueue()

@@ -1,4 +1,5 @@
-﻿using Core.Context;
+﻿using Core.Annotations;
+using Core.Context;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Common;
@@ -18,6 +19,7 @@ using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class BotController
 {
     protected ILogger _logger;

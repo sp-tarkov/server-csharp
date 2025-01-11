@@ -1,9 +1,11 @@
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
 
 namespace Core.Controllers;
 
+[Injectable]
 public class GameController
 {
     /// <summary>

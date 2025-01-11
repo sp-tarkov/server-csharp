@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.Profile;
@@ -7,6 +8,7 @@ using Core.Models.Spt.Dialog;
 
 namespace Core.Services;
 
+[Injectable(InjectionType.Singleton)]
 public class MapMarkerService
 {
     /// <summary>
