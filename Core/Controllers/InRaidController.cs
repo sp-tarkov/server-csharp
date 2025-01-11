@@ -1,9 +1,46 @@
+using Core.Context;
+using Core.Helpers;
 using Core.Models.Eft.InRaid;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 public class InRaidController
 {
+    protected ILogger _logger;
+    protected SaveServer _saveServer;
+    protected ProfileHelper _profileHelper;
+    protected LocalisationService _localisationService;
+    protected ApplicationContext _applicationContext;
+    protected ConfigServer _configServer;
+
+    protected InRaidConfig _inRaidConfig;
+    protected BotConfig _botConfig;
+
+    public InRaidController
+    (
+        ILogger logger,
+        SaveServer saveServer,
+        ProfileHelper profileHelper,
+        LocalisationService localisationService,
+        ApplicationContext applicationContext,
+        ConfigServer configServer
+    )
+    {
+        _logger = logger;
+        _saveServer = saveServer;
+        _profileHelper = profileHelper;
+        _localisationService = localisationService;
+        _applicationContext = applicationContext;
+        _configServer = configServer;
+        _inRaidConfig = configServer.GetConfig<InRaidConfig>(ConfigTypes.IN_RAID);
+        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+    }
+
     /// <summary>
     /// Save locationId to active profiles in-raid object AND app context
     /// </summary>
@@ -33,9 +70,9 @@ public class InRaidController
     /// <summary>
     /// Get the inraid config from configs/inraid.json
     /// </summary>
-    public void GetInRaidConfig()
+    public InRaidConfig GetInRaidConfig()
     {
-        throw new NotImplementedException();
+        return _inRaidConfig;
     }
 
     /// <summary>

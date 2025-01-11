@@ -1,13 +1,30 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Helpers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class PrestigeCallbacks
 {
-    public PrestigeCallbacks()
+    protected HttpServerHelper _httpServerHelper;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected PrestigeController _prestigeController;
+
+    public PrestigeCallbacks
+    (
+        HttpServerHelper httpServerHelper,
+        HttpResponseUtil httpResponseUtil,
+        PrestigeController prestigeController
+    )
     {
+        _httpServerHelper = httpServerHelper;
+        _httpResponseUtil = httpResponseUtil;
+        _prestigeController = prestigeController;
     }
 
     /// <summary>
@@ -18,9 +35,9 @@ public class PrestigeCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<Prestige> GetPrestige(string url, EmptyRequestData info, string sessionID)
+    public string GetPrestige(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_prestigeController.GetPrestige(sessionID, info));
     }
 
     /// <summary>
@@ -31,8 +48,8 @@ public class PrestigeCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<object> ObtainPrestige(string url, EmptyRequestData info, string sessionID)
+    public string ObtainPrestige(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_prestigeController.ObtainPrestige(sessionID, info));
     }
 }

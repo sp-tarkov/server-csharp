@@ -1,13 +1,22 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Trade;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class TradeCallbacks
 {
-    public TradeCallbacks()
+    protected TradeController _tradeController;
+
+    public TradeCallbacks
+    (
+        TradeController tradeController
+    )
     {
+        _tradeController = tradeController;
     }
 
     /// <summary>
@@ -17,10 +26,9 @@ public class TradeCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse ProcessTrade(PmcData pmcData, ProcessBaseTradeRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _tradeController.ConfirmTrading(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -30,10 +38,9 @@ public class TradeCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse ProcessRagfairTrade(PmcData pmcData, ProcessRagfairTradeRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _tradeController.ConfirmRagfairTrading(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -43,9 +50,8 @@ public class TradeCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse SellAllFromSavage(PmcData pmcData, SellScavItemsToFenceRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _tradeController.SellScavItemsToFence(pmcData, info, sessionID);
     }
 }

@@ -1,14 +1,34 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Helpers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Notifier;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class NotifierCallbacks
 {
-    public NotifierCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected HttpServerHelper _httpServerHelper;
+    protected JsonUtil _jsonUtil;
+    protected NotifierController _notifierController;
+
+    public NotifierCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        HttpServerHelper httpServerHelper,
+        JsonUtil jsonUtil,
+        NotifierController notifierController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _httpServerHelper = httpServerHelper;
+        _jsonUtil = jsonUtil;
+        _notifierController = notifierController;
     }
 
     /**
@@ -19,6 +39,14 @@ public class NotifierCallbacks
      */
     public void SendNotification(string sessionID, object req, object resp, object data) // TODO: no types were given
     {
+        // var splitUrl = req.Url.Split("/");
+        // var tmpSessionID = splitUrl[splitUrl.Length - 1].Split("?last_id")[0];
+        
+        /**
+         * Take our array of JSON message objects and cast them to JSON strings, so that they can then
+         *  be sent to client as NEWLINE separated strings... yup.
+         */
+        // _notifierController.NotifyAsync(tmpSessionID)
         throw new NotImplementedException();
     }
 
@@ -32,9 +60,9 @@ public class NotifierCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<List<object>> GetNotifier(string url, object info, string sessionID) // TODO: no types were given
+    public string GetNotifier(string url, object info, string sessionID) // TODO: no types were given
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.EmptyArrayResponse();
     }
 
     /// <summary>
@@ -45,9 +73,9 @@ public class NotifierCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<NotifierChannel> CreateNotifierChannel(string url, EmptyRequestData info, string sessionID)
+    public string CreateNotifierChannel(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_notifierController.GetChannel(sessionID));
     }
 
     /// <summary>
@@ -58,13 +86,20 @@ public class NotifierCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<SelectProfileResponse> SelectProfile(string url, UIDRequestData info, string sessionID)
+    public string SelectProfile(string url, UIDRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(new SelectProfileResponse() { Status = "ok" });
     }
 
-    public string Notify(string url, object info, string sessionID) // TODO: no types were given
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
+    public string Notify(string url, object info, string sessionID)
     {
-        throw new NotImplementedException();
+        return "NOTIFY";
     }
 }

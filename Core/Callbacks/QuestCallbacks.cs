@@ -1,15 +1,31 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class QuestCallbacks
 {
-    public QuestCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected QuestController _questController;
+    protected RepeatableQuestController _repeatableQuestController;
+
+    public QuestCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        QuestController questController,
+        RepeatableQuestController repeatableQuestController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _questController = questController;
+        _repeatableQuestController = repeatableQuestController;
     }
 
     /// <summary>
@@ -22,7 +38,7 @@ public class QuestCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _repeatableQuestController.ChangeRepeatableQuest(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -35,7 +51,10 @@ public class QuestCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        if (info.Type == "repeatable")
+            return _questController.AcceptRepeatableQuest(pmcData, info, sessionID);
+        
+        return _questController.AcceptQuest(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -48,7 +67,7 @@ public class QuestCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _questController.CompleteQuest(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -61,7 +80,7 @@ public class QuestCallbacks
     /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _questController.HandoverQuest(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -72,9 +91,9 @@ public class QuestCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<List<Quest>> ListQuests(string url, ListQuestsRequestData info, string sessionID)
+    public string ListQuests(string url, ListQuestsRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_questController.GetClientQuest(sessionID));
     }
 
     /// <summary>
@@ -85,8 +104,8 @@ public class QuestCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<List<PmcDataRepeatableQuest>> ActivityPeriods(string url, EmptyRequestData info, string sessionID)
+    public string ActivityPeriods(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_repeatableQuestController.GetClientRepeatableQuests(sessionID));
     }
 }

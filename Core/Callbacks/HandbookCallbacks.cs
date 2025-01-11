@@ -1,20 +1,29 @@
-﻿using Core.DI;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.DI;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class HandbookCallbacks : OnLoad
 {
-    public HandbookCallbacks()
+    protected HandBookController _handBookController;
+
+    public HandbookCallbacks
+    (
+        HandBookController handBookController
+    )
     {
+        _handBookController = handBookController;
     }
 
-    public Task OnLoad()
+    public async Task OnLoad()
     {
-        throw new NotImplementedException();
+        _handBookController.Load();
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "spt-handbook";
     }
 }

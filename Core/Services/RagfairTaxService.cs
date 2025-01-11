@@ -1,8 +1,10 @@
-﻿namespace Core.Services;
+﻿using Core.Models.Eft.Ragfair;
+
+namespace Core.Services;
 
 public class RagfairTaxService
 {
-    public void StoreClientOfferTaxValue(string sessionId, Dictionary<string, object> offer)
+    public void StoreClientOfferTaxValue(string sessionId, StorePlayerOfferTaxAmountRequestData offer)
     {
         throw new NotImplementedException();
     }

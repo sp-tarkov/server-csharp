@@ -79,7 +79,7 @@ public class TraderController
     /// Handle client/items/prices/TRADERID
     /// </summary>
     /// <returns></returns>
-    public GetItemPricesResponse GetItemPrices()
+    public GetItemPricesResponse GetItemPrices(string sessionId, string traderId)
     {
         throw new NotImplementedException();
     }

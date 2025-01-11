@@ -1,14 +1,27 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Weather;
 using Core.Models.Spt.Weather;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class WeatherCallbacks
 {
-    public WeatherCallbacks()
+    protected HttpResponseUtil _httpResponseUtil;
+    protected WeatherController _weatherController;
+
+    public WeatherCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        WeatherController weatherController
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        _weatherController = weatherController;
     }
 
     /// <summary>
@@ -18,10 +31,9 @@ public class WeatherCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<WeatherData> GetWeather(string url, EmptyRequestData info, string sessionID)
+    public string GetWeather(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_weatherController.Generate());
     }
 
     /// <summary>
@@ -31,9 +43,8 @@ public class WeatherCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
-    public GetBodyResponseData<GetLocalWeatherResponseData> GetLocalWeather(string url, EmptyRequestData info, string sessionID)
+    public string GetLocalWeather(string url, EmptyRequestData info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _httpResponseUtil.GetBody(_weatherController.GenerateLocal(sessionID));
     }
 }

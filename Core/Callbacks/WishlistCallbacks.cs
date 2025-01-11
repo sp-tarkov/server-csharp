@@ -1,13 +1,22 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Controllers;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class WishlistCallbacks
 {
-    public WishlistCallbacks()
+    protected WishlistController _wishlistController;
+
+    public WishlistCallbacks
+    (
+        WishlistController wishlistController
+    )
     {
+        _wishlistController = wishlistController;
     }
 
     /// <summary>
@@ -17,10 +26,9 @@ public class WishlistCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse AddToWishlist(PmcData pmcData, AddToWishlistRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _wishlistController.AddToWishList(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -30,10 +38,9 @@ public class WishlistCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse RemoveFromWishlist(PmcData pmcData, RemoveFromWishlistRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _wishlistController.RemoveFromWishList(pmcData, info, sessionID);
     }
 
     /// <summary>
@@ -43,9 +50,8 @@ public class WishlistCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse ChangeWishlistItemCategory(PmcData pmcData, ChangeWishlistItemCategoryRequest info, string sessionID)
     {
-        throw new NotImplementedException();
+        return _wishlistController.ChangeWishListItemCategory(pmcData, info, sessionID);
     }
 }

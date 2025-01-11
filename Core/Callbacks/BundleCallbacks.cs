@@ -1,13 +1,30 @@
-﻿using Core.Models.Spt.Config;
+﻿using Core.Annotations;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable]
 public class BundleCallbacks
 {
-    private HttpConfig _httpConfig;
+    protected HttpResponseUtil _httpResponseUtil;
+    // protected BundleLoader _bundleLoader; TODO: this needs implementing
+    protected ConfigServer _configServer;
+    protected HttpConfig _httpConfig;
 
-    public BundleCallbacks()
+    public BundleCallbacks
+    (
+        HttpResponseUtil httpResponseUtil,
+        // BundleLoader bundleLoader,
+        ConfigServer configServer
+    )
     {
+        _httpResponseUtil = httpResponseUtil;
+        // _bundleLoader = bundleLoader;
+        _configServer = configServer;
+        _httpConfig = configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
     }
 
     /// <summary>
@@ -19,6 +36,7 @@ public class BundleCallbacks
     /// <returns></returns>
     public string GetBundles(string url, object info, string sessionID)
     {
+        // return _httpResponseUtil.NoBody(_bundleLoader.GetBundles());
         throw new NotImplementedException();
     }
 
