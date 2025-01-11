@@ -1,7 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Annotations;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class ContainerHelper
 {
     /// <summary>

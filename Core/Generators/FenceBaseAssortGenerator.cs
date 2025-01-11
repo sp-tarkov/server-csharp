@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class FenceBaseAssortGenerator
 {
     private TraderConfig _traderConfig;

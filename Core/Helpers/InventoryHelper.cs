@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
@@ -8,6 +9,7 @@ using Core.Models.Spt.Inventory;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class InventoryHelper
 {
     /// <summary>

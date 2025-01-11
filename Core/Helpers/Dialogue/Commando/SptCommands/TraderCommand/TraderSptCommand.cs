@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Dialog;
+﻿using Core.Annotations;
+using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 
 namespace Core.Helpers.Dialog.Commando.SptCommands.TraderCommand;
 
+[Injectable]
 public class TraderSptCommand : ISptCommand
 {
     public string GetCommand()

@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class BotWeaponGenerator
 {
     private const string _modMagazineSlotId = "mod_magazine";

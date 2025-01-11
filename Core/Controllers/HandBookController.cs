@@ -8,6 +8,6 @@ public class HandBookController
 {
     public void Load()
     {
-        throw new NotImplementedException();
+        // throw new NotImplementedException();
     }
 }

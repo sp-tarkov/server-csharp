@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class RagfairHelper
 {
     /// <summary>

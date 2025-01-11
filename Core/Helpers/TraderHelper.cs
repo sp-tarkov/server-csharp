@@ -1,4 +1,5 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
@@ -6,6 +7,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Helpers;
 
+[Injectable]
 public class TraderHelper
 {
     private TraderConfig _traderConfig;

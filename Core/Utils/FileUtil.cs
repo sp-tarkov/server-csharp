@@ -60,7 +60,8 @@ public class FileUtil
 
     private void CreateFile(string filePath)
     {
-        File.Create(filePath);
+        var stream = File.Create(filePath);
+        stream.Close();
     }
 
     public void DeleteFile(string filePath)

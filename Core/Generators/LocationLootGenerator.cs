@@ -1,10 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class LocationLootGenerator
 {
     private LocationConfig _locationConfig;

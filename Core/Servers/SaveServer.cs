@@ -113,7 +113,7 @@ public class SaveServer
      */
     public SptProfile GetProfile(string sessionId)
     {
-        if (!string.IsNullOrEmpty(sessionId))
+        if (string.IsNullOrEmpty(sessionId))
         {
             throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }

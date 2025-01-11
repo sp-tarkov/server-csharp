@@ -1,4 +1,5 @@
-﻿using Core.Models.Common;
+﻿using Core.Annotations;
+using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
@@ -7,6 +8,7 @@ using BodyPart = Core.Models.Eft.Common.Tables.BodyPart;
 
 namespace Core.Generators;
 
+[Injectable]
 public class BotGenerator
 {
     private BotConfig _botConfig;

@@ -1,10 +1,12 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 
 namespace Core.Generators;
 
+[Injectable]
 public class BotLootGenerator
 {
     private BotConfig _botConfig;

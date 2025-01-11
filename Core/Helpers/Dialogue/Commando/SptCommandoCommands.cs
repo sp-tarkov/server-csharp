@@ -1,9 +1,11 @@
-﻿using Core.Helpers.Dialog.Commando.SptCommands;
+﻿using Core.Annotations;
+using Core.Helpers.Dialog.Commando.SptCommands;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 
 namespace Core.Helpers.Dialog.Commando;
 
+[Injectable]
 public class SptCommandoCommands : IChatCommand
 {
     public void RegisterSptCommandoCommand(ISptCommand command)

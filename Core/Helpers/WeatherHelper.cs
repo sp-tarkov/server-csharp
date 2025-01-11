@@ -1,5 +1,8 @@
-﻿namespace Core.Helpers;
+﻿using Core.Annotations;
 
+namespace Core.Helpers;
+
+[Injectable]
 public class WeatherHelper
 {
     public WeatherHelper()

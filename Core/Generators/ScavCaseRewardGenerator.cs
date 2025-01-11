@@ -1,9 +1,11 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Spt.Hideout;
 
 namespace Core.Generators;
 
+[Injectable]
 public class ScavCaseRewardGenerator
 {
     public ScavCaseRewardGenerator()

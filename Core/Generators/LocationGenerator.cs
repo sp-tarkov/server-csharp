@@ -1,7 +1,9 @@
-﻿using Core.Models.Eft.Common;
+﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 
 namespace Core.Generators;
 
+[Injectable]
 public class LocationGenerator
 {
     public StaticContainerProps GenerateContainerLoot(StaticContainerProps containerIn, List<StaticForcedProps> staticForced,

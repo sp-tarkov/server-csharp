@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -7,6 +8,7 @@ using Core.Models.Spt.Services;
 
 namespace Core.Generators;
 
+[Injectable]
 public class LootGenerator
 {
     public LootGenerator()
