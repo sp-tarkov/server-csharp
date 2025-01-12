@@ -14,13 +14,13 @@ public class LocationController
     private readonly ILogger _logger;
     private readonly DatabaseService _databaseService;
     private readonly AirdropService _airdropService;
-    private readonly JsonCloner _cloner;
+    private readonly ICloner _cloner;
 
     public LocationController(
         ILogger logger,
         DatabaseService databaseService,
         AirdropService airdropService,
-        JsonCloner cloner)
+        ICloner cloner)
     {
         _logger = logger;
         _databaseService = databaseService;
