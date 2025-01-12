@@ -1,12 +1,17 @@
 using Core.Annotations;
+using Core.Models.Spt.Helper;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class WeightedRandomHelper
 {
-    public WeightedRandomHelper()
+    private readonly ILogger _logger;
+
+    public WeightedRandomHelper(
+        ILogger logger)
     {
+        _logger = logger;
     }
 
     /// <summary>
@@ -33,10 +38,48 @@ public class WeightedRandomHelper
     /// <param name="items">List of items</param>
     /// <param name="weights">List of weights</param>
     /// <returns>Dictionary with item and index</returns>
-    public object WeightedRandom<T>(List<T> items, List<double> weights)
+    public WeightedRandomResult<T> WeightedRandom<T>(List<T> items, List<int> weights)
     {
-        // TODO - create return type  { item: any; index: number }
-        throw new NotImplementedException();
+        if (items.Count == 0)
+        {
+            _logger.LogError("Items must not be empty");
+        }
+
+        if (weights.Count == 0)
+        {
+            _logger.LogError("Item weights must not be empty");
+        }
+
+        if (items.Count != weights.Count)
+        {
+            _logger.LogError("Items and weight inputs must be of the same length");
+        }
+
+        // Preparing the cumulative weights list.
+        List<int> cumulativeWeights = [];
+        for (var i = 0; i < weights.Count; i++)
+        {
+            cumulativeWeights.Add(weights[i] + (i > 0 ? cumulativeWeights[i - 1] : 0));
+        }
+
+        // Getting the random number in a range of [0...sum(weights)]
+        int maxCumulativeWeight = cumulativeWeights[cumulativeWeights.Count - 1];
+        double randomNumber = maxCumulativeWeight * new Random().NextDouble();
+
+        // Picking the random item based on its weight.
+        for (int itemIndex = 0; itemIndex < items.Count; itemIndex++)
+        {
+            if (cumulativeWeights[itemIndex] >= randomNumber)
+            {
+                return new WeightedRandomResult<T>()
+                {
+                    Item = items[itemIndex],
+                    Index = itemIndex,
+                };
+            }
+        }
+
+        throw new InvalidOperationException("No item was picked.");
     }
 
     /// <summary>

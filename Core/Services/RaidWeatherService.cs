@@ -75,13 +75,11 @@ public class RaidWeatherService
     /// <returns>milliseconds</returns>
     protected long GetWeightedWeatherTimePeriodMs()
     {
-        //var chosenTimePeriodMinutes = _weightedRandomHelper.WeightedRandom(
-        //    _weatherConfig.Weather.TimePeriod.Values,
-        //    _weatherConfig.Weather.TimePeriod.Weights).Item;
+        var chosenTimePeriodMinutes = _weightedRandomHelper.WeightedRandom(
+            _weatherConfig.Weather.TimePeriod.Values,
+            _weatherConfig.Weather.TimePeriod.Weights).Item;
 
-        //return chosenTimePeriodMinutes * 60 * 1000; // Convert to milliseconds
-
-        throw new NotImplementedException();
+        return chosenTimePeriodMinutes * 60 * 1000; // Convert to milliseconds
     }
 
     /// <summary>
