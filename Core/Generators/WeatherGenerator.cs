@@ -1,4 +1,4 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;

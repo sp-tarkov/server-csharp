@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;

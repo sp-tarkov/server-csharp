@@ -1,4 +1,4 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
