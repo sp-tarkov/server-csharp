@@ -27,6 +27,7 @@ public class TraderController
     private PaymentHelper _paymentHelper;
     private RagfairPriceService _ragfairPriceService;
     private TraderPurchasePersisterService _traderPurchasePersisterService;
+    private FenceService _fenceService;
     private FenceBaseAssortGenerator _fenceBaseAssortGenerator;
     private ConfigServer _configServer;
     private ICloner _cloner;
@@ -45,6 +46,7 @@ public class TraderController
         PaymentHelper paymentHelper,
         RagfairPriceService ragfairPriceService,
         TraderPurchasePersisterService traderPurchasePersisterService,
+        FenceService fenceService,
         FenceBaseAssortGenerator fenceBaseAssortGenerator,
         ConfigServer configServer,
         ICloner cloner
@@ -60,6 +62,7 @@ public class TraderController
         _paymentHelper = paymentHelper;
         _ragfairPriceService = ragfairPriceService;
         _traderPurchasePersisterService = traderPurchasePersisterService;
+        _fenceService = fenceService;
         _fenceBaseAssortGenerator = fenceBaseAssortGenerator;
         _configServer = configServer;
         _cloner = cloner;
@@ -74,7 +77,48 @@ public class TraderController
     /// </summary>
     public void Load()
     {
-        return; // TODO: actually implement
+        var nextHourTimestamp = _timeUtil.GetTimeStampOfNextHour();
+        var traderResetStartsWithServer = _traderConfig.TradersResetFromServerStart;
+
+        var traders = _databaseService.GetTraders();
+        foreach (var trader in traders)
+        {
+            if (trader.Key == "ragfair" || trader.Key == Traders.LIGHTHOUSEKEEPER)
+                continue;
+
+            if (trader.Key == Traders.FENCE)
+            {
+                _fenceBaseAssortGenerator.GenerateFenceBaseAssorts();
+                _fenceService.GenerateFenceAssorts();
+                continue;
+            }
+
+            // Adjust price by traderPriceMultipler config property
+            if (_traderConfig.TraderPriceMultipler != 1)
+            {
+                foreach (var scheme in trader.Value?.Assort?.BarterScheme)
+                {
+                    var barterSchemeItem = scheme.Value[0][0];
+
+                    if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem?.Template))
+                    {
+                        barterSchemeItem.Count += Math.Round((barterSchemeItem?.Count * _traderConfig?.TraderPriceMultipler) ?? 0D, 2);
+                    }
+                }
+            }
+
+            // Create dict of pristine trader assorts on server start
+            if (_traderAssortService.GetPristineTraderAssort(trader.Key) != null)
+            {
+                var assortsClone = _cloner.Clone(trader.Value.Assort);
+                _traderAssortService.SetPristineTraderAssort(trader.Key, assortsClone);
+            }
+            
+            _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(trader.Key);
+            
+            // Set to next hour on clock or current time + 60 mins
+            trader.Value.Base.NextResupply = traderResetStartsWithServer ? _traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : nextHourTimestamp;
+        }
     }
 
     /// <summary>
@@ -85,7 +129,30 @@ public class TraderController
     /// <returns></returns>
     public bool Update()
     {
-        throw new NotImplementedException();
+        foreach (var trader in _databaseService.GetTables().Traders)
+        {
+            if (trader.Key == "ragfair" || trader.Key == Traders.LIGHTHOUSEKEEPER)
+                continue;
+            
+            if (trader.Key == Traders.FENCE)
+            {
+                if (_fenceService.NeedsPartialRefresh())
+                    _fenceService.GenerateFenceAssorts();
+                
+                continue;
+            }
+
+            // Trader needs to be refreshed
+            if (_traderAssortHelper.TraderAssortsHaveExpired(trader.Key))
+            {
+                _traderAssortHelper.ResetExpiredTrader(trader.Value);
+                
+                // Reset purchase data per trader as they have independent reset times
+                _traderPurchasePersisterService.ResetTraderPurchasesStoredInProfile(trader.Key);
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -101,13 +168,13 @@ public class TraderController
         {
             if (trader.Value.Base.Id == "ragfair")
                 continue;
-            
+
             traders.Add(_traderHelper.GetTrader(trader.Key, sessionId));
-            
+
             if (pmcData?.Info != null)
                 _traderHelper.LevelUp(trader.Key, pmcData);
         }
-        
+
         // traders.Sort((a, b) => SortByTraderId(a, b));
         return traders;
     }
@@ -131,11 +198,9 @@ public class TraderController
     /// <param name="sessionId"></param>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public TraderBase GetTrader(
-        string sessionId,
-        string traderId)
+    public TraderBase GetTrader(string sessionId, string traderId)
     {
-        throw new NotImplementedException();
+        return _traderHelper.GetTrader(sessionId, traderId);
     }
 
     /// <summary>
@@ -144,11 +209,9 @@ public class TraderController
     /// <param name="sessionId"></param>
     /// <param name="traderId"></param>
     /// <returns></returns>
-    public TraderAssort GetAssort(
-        string sessionId,
-        string traderId)
+    public TraderAssort GetAssort(string sessionId, string traderId)
     {
-        throw new NotImplementedException();
+        return _traderAssortHelper.GetAssort(sessionId, traderId);
     }
 
     /// <summary>
@@ -157,6 +220,19 @@ public class TraderController
     /// <returns></returns>
     public GetItemPricesResponse GetItemPrices(string sessionId, string traderId)
     {
-        throw new NotImplementedException();
+        var handbookPrices = _ragfairPriceService.GetAllStaticPrices();
+        var handbookPricesClone = _cloner.Clone(handbookPrices);
+
+        return new()
+        {
+            SupplyNextTime = _traderHelper.GetNextUpdateTimestamp(traderId),
+            Prices = handbookPricesClone,
+            CurrencyCourses = new Dictionary<string, double>()
+            {
+                { "5449016a4bdc2d6f028b456f", handbookPrices[Money.ROUBLES] },
+                { "569668774bdc2da2298b4568", handbookPrices[Money.EUROS] },
+                { "5696686a4bdc2da3298b456a", handbookPrices[Money.DOLLARS] }
+            }
+        };
     }
 }
