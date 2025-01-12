@@ -1,11 +1,11 @@
 using Core.Annotations;
 using Core.Helpers;
+using Core.Helpers.Dialogue;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Servers;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Core.Controllers;
 
@@ -13,13 +13,17 @@ namespace Core.Controllers;
 public class DialogueController
 {
     private readonly DialogueHelper _dialogueHelper;
+    private readonly ProfileHelper _profileHelper;
     private readonly SaveServer _saveServer;
+    private readonly List<IDialogueChatBot> _dialogueChatBots;
 
     public DialogueController(
         DialogueHelper dialogueHelper,
+        ProfileHelper profileHelper,
         SaveServer saveServer)
     {
         _dialogueHelper = dialogueHelper;
+        _profileHelper = profileHelper;
         _saveServer = saveServer;
     }
 
@@ -49,7 +53,33 @@ public class DialogueController
     /// <returns>GetFriendListDataResponse</returns>
     public GetFriendListDataResponse GetFriendList(string sessionId)
     {
-        throw new NotImplementedException();
+        // Add all chatbots to the friends list
+        var friends = _dialogueChatBots.Select((bot) => bot.GetChatBot()).ToList();
+
+        // Add any friends the user has after the chatbots
+        var profile = _profileHelper.GetFullProfile(sessionId);
+        if (profile?.FriendProfileIds is not null)
+        {
+            foreach (var friendId in profile.FriendProfileIds) {
+                var friendProfile = _profileHelper.GetChatRoomMemberFromSessionId(friendId);
+                if (friendProfile is not null)
+                {
+                    friends.Add(new UserDialogInfo
+                    {
+                        Id = friendProfile.Id,
+                        Aid = friendProfile.Aid,
+                        Info = friendProfile.Info,
+                    } );
+                }
+            }
+        }
+
+        return new GetFriendListDataResponse
+        {
+            Friends = friends,
+            Ignore = [],
+            InIgnoreList = []
+        };
     }
 
     /// <summary>
