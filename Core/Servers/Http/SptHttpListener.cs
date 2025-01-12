@@ -120,7 +120,7 @@ public class SptHttpListener : IHttpListener
         if (IsDebugRequest(req)) {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
-            Console.WriteLine($"Response: {output}");
+            // Console.WriteLine($"Response: {output}");
             // TODO: this.logRequest(req, output);
             return;
         }
@@ -133,7 +133,7 @@ public class SptHttpListener : IHttpListener
             // No serializer can handle the request (majority of requests dont), zlib the output and send response back
             SendZlibJson(resp, output, sessionID);
         }
-        Console.WriteLine($"Response: {output}");
+        // Console.WriteLine($"Response: {output}");
         // TODO: this.LogRequest(req, output);
     }
 
