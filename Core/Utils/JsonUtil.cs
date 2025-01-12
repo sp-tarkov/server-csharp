@@ -22,7 +22,8 @@ public class JsonUtil
             new EftEnumConverter<SptAirdropTypeEnum>(),
             new EftEnumConverter<GiftSenderType>(),
             new EftEnumConverter<SeasonalEventType>(),
-            new EftEnumConverter<ProfileChangeEventType>()
+            new EftEnumConverter<ProfileChangeEventType>(),
+            new EftEnumConverter<QuestStatusEnum>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
