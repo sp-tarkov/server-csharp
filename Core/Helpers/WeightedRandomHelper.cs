@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 
 namespace Core.Helpers;
 
@@ -33,8 +33,9 @@ public class WeightedRandomHelper
     /// <param name="items">List of items</param>
     /// <param name="weights">List of weights</param>
     /// <returns>Dictionary with item and index</returns>
-    public Dictionary<string, object> WeightedRandom(List<object> items, List<double> weights)
+    public object WeightedRandom<T>(List<T> items, List<double> weights)
     {
+        // TODO - create return type  { item: any; index: number }
         throw new NotImplementedException();
     }
 
