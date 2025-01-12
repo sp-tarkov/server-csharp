@@ -2,12 +2,21 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
+using Core.Routers;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class WishlistController
 {
+    private readonly EventOutputHolder _eventOutputHolder;
+
+    public WishlistController(
+        EventOutputHolder eventOutputHolder)
+    {
+        _eventOutputHolder = eventOutputHolder;
+    }
+
     /// <summary>
     /// Handle AddToWishList
     /// </summary>
@@ -20,7 +29,12 @@ public class WishlistController
         AddToWishlistRequest request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        foreach (var item in request.Items)
+        {
+            pmcData.WishList.Add(item.Key, item.Value);
+        }
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -35,7 +49,12 @@ public class WishlistController
         RemoveFromWishlistRequest request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        foreach (var itemId in request.Items)
+        {
+            pmcData.WishList.Remove(itemId);
+        }
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -50,6 +69,8 @@ public class WishlistController
         ChangeWishlistItemCategoryRequest request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        pmcData.WishList[request.Item] = request.Category.Value;
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 }
