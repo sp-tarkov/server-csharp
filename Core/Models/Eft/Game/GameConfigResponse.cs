@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Game;
 public class GameConfigResponse
 {
     [JsonPropertyName("aid")]
-    public int? Aid { get; set; }
+    public double? Aid { get; set; }
 
     [JsonPropertyName("lang")]
     public string? Language { get; set; }
@@ -33,7 +33,7 @@ public class GameConfigResponse
 
     /** Total in game time */
     [JsonPropertyName("totalInGame")]
-    public int? TotalInGame { get; set; }
+    public double? TotalInGame { get; set; }
 
     [JsonPropertyName("reportAvailable")]
     public bool? IsReportAvailable { get; set; }

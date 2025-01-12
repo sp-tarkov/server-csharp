@@ -20,7 +20,9 @@ public class GameController
     private readonly ILogger _logger;
     private readonly ConfigServer _configServer;
     private readonly DatabaseService _databaseService;
+
     private readonly TimeUtil _timeUtil;
+
     // private readonly PreSptModLoader _preSptModLoader;
     private readonly HttpServerHelper _httpServerHelper;
     private readonly InventoryHelper _inventoryHelper;
@@ -39,7 +41,7 @@ public class GameController
     private readonly ProfileActivityService _profileActivityService;
     private readonly ApplicationContext _applicationContext;
     private readonly ICloner _cloner;
-    
+
     private readonly CoreConfig _coreConfig;
     private readonly HttpConfig _httpConfig;
     private readonly RagfairConfig _ragfairConfig;
@@ -68,7 +70,7 @@ public class GameController
         ProfileActivityService profileActivityService,
         ApplicationContext applicationContext,
         ICloner cloner
-        )
+    )
     {
         _logger = logger;
         _configServer = configServer;
@@ -98,7 +100,7 @@ public class GameController
         _hideoutConfig = configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
         _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
     }
-    
+
     /// <summary>
     /// Handle client/game/start
     /// </summary>
@@ -110,9 +112,9 @@ public class GameController
     {
         // Store client start time in app context
         _applicationContext.AddValue(ContextVariableType.CLIENT_START_TIMESTAMP, $"{sessionId}_{startTimeStampMs}");
-        
+
         _profileActivityService.SetActivityTimestamp(sessionId);
-        
+
         // repeatableQuests are stored by in profile.Quests due to the responses of the client (e.g. Quests in
         // offraidData). Since we don't want to clutter the Quests list, we need to remove all completed (failed or
         // successful) repeatable quests. We also have to remove the Counters from the repeatableQuests
@@ -124,7 +126,7 @@ public class GameController
 
             if (fullProfile.SptData.Migrations == null)
                 fullProfile.SptData.Migrations = new();
-            
+
             if (fullProfile.FriendProfileIds == null)
                 fullProfile.FriendProfileIds = new();
 
@@ -132,12 +134,12 @@ public class GameController
             {
                 _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData.PmcData.Inventory.Items);
                 Migrate39xProfile(fullProfile);
-                
+
                 // flag as migrated
                 fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
                 _logger.Success($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
             }
-            
+
             // with our method of converting type from array for this prop, we *might* not need this?
             // if (Array.isArray(fullProfile.characters.pmc.WishList)) {
             //     fullProfile.characters.pmc.WishList = {};
@@ -146,17 +148,17 @@ public class GameController
             // if (Array.isArray(fullProfile.characters.scav.WishList)) {
             //     fullProfile.characters.scav.WishList = {};
             // }
-            
+
             if (fullProfile.DialogueRecords != null)
                 _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
-            
+
             _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo.Username}");
 
             var pmcProfile = fullProfile.CharacterData.PmcData;
 
             if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
                 _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
-            
+
             if (pmcProfile.Health != null)
                 UpdateProfileHealthValues(pmcProfile);
 
@@ -165,7 +167,7 @@ public class GameController
                 SendPraporGiftsToNewProfiles(pmcProfile);
                 _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
             }
-            
+
             _profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
             _profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
 
@@ -175,7 +177,7 @@ public class GameController
                 _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
                 _hideoutHelper.UnlockHideoutWallInProfile(pmcProfile);
             }
-            
+
             LogProfileDetails(fullProfile);
             SaveActiveModsToProfile(fullProfile);
 
@@ -184,10 +186,10 @@ public class GameController
                 AddPlayerToPmcNames(pmcProfile);
                 CheckForAndRemoveUndefinedDialogues(fullProfile);
             }
-            
+
             if (pmcProfile.Skills.Common != null)
                 WarnOnActiveBotReloadSkill(pmcProfile);
-            
+
             _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
         }
     }
@@ -214,7 +216,41 @@ public class GameController
     /// <returns></returns>
     public GameConfigResponse GetGameConfig(string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetPmcProfile(sessionId);
+        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items.FirstOrDefault(c => 
+            c.Key.Contains("LifeTime") && 
+            c.Key.Contains("Pmc")).Value ?? 0D;
+
+        var config = new GameConfigResponse
+        {
+            Languages = _databaseService.GetLocales().Languages,
+            IsNdaFree = false,
+            IsReportAvailable = false,
+            IsTwitchEventMember = false,
+            Language = "en",
+            Aid = profile.Aid,
+            Taxonomy = 6,
+            ActiveProfileId = sessionId,
+            Backend = new()
+            {
+                Lobby = _httpServerHelper.GetBackendUrl(),
+                Trading = _httpServerHelper.GetBackendUrl(),
+                Messaging = _httpServerHelper.GetBackendUrl(),
+                Main = _httpServerHelper.GetBackendUrl(),
+                RagFair = _httpServerHelper.GetBackendUrl()
+            },
+            UseProtobuf = false,
+            UtcTime = _timeUtil.GetTimeStamp(),
+            TotalInGame = gameTime,
+            SessionMode = "pve",
+            PurchasedGames = new()
+            {
+                IsEftPurchased = true,
+                IsArenaPurchased = false
+            }
+        };
+        
+        return config;
     }
 
     /// <summary>
@@ -257,7 +293,6 @@ public class GameController
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
-    
     public CurrentGroupResponse GetCurrentGroup(string sessionId)
     {
         return new CurrentGroupResponse
@@ -265,7 +300,7 @@ public class GameController
             Squad = []
         };
     }
-    
+
 
     /// <summary>
     /// Handle client/checkVersion
