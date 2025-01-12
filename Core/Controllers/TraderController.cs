@@ -14,7 +14,7 @@ public class TraderController
     /// </summary>
     public void Load()
     {
-        throw new NotImplementedException();
+        return; // TODO: actually implement
     }
 
     /// <summary>

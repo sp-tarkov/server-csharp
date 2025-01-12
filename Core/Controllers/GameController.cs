@@ -187,6 +187,6 @@ public class GameController
 
     public void Load()
     {
-        throw new NotImplementedException();
+        return; // TODO: actually implement
     }
 }
