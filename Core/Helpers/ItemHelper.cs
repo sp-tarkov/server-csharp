@@ -795,6 +795,11 @@ public class ItemHelper
     {
         throw new NotImplementedException();
     }
+
+    public bool IsOfBaseclass(string valueEncyclopedia, string weapon)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public class ItemSize
