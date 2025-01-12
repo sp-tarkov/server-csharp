@@ -1,5 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
-using System.Text.Json;
 using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
@@ -40,6 +38,7 @@ public class ProfileController
     protected TraderHelper _traderHelper;
     protected DialogueHelper _dialogueHelper;
     protected QuestHelper _questHelper;
+    private readonly QuestRewardHelper _questRewardHelper;
     protected ProfileHelper _profileHelper;
 
     public ProfileController(
@@ -59,6 +58,7 @@ public class ProfileController
         TraderHelper traderHelper,
         DialogueHelper dialogueHelper,
         QuestHelper questHelper,
+        QuestRewardHelper questRewardHelper,
         ProfileHelper profileHelper
     )
     {
@@ -77,6 +77,7 @@ public class ProfileController
         _traderHelper = traderHelper;
         _dialogueHelper = dialogueHelper;
         _questHelper = questHelper;
+        _questRewardHelper = questRewardHelper;
         _profileHelper = profileHelper;
     }
 
@@ -365,7 +366,7 @@ public class ProfileController
                 questFromDb.StartedMessageText,
                 questFromDb.Description
             );
-            var itemRewards = _questHelper.ApplyQuestReward(
+            var itemRewards = _questRewardHelper.ApplyQuestReward(
                 profileDetails.CharacterData.PmcData,
                 quest.QId,
                 QuestStatusEnum.Started,

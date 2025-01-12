@@ -1,7 +1,6 @@
 using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
@@ -9,7 +8,9 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 using ILogger = Core.Models.Utils.ILogger;
+using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Helpers;
 
@@ -22,6 +23,8 @@ public class QuestHelper
     private readonly QuestConditionHelper _questConditionHelper;
     private readonly ProfileHelper _profileHelper;
     private readonly LocalisationService _localisationService;
+    private readonly LocaleService _localeService;
+    private readonly ICloner _cloner;
     private readonly QuestConfig _questConfig;
 
     public QuestHelper(
@@ -31,7 +34,9 @@ public class QuestHelper
         QuestConditionHelper questConditionHelper,
         ProfileHelper profileHelper,
         LocalisationService localisationService,
-        ConfigServer configServer)
+        LocaleService localeService,
+        ConfigServer configServer,
+        ICloner Cloner)
     {
         _logger = logger;
         _timeUtil = timeUtil;
@@ -39,6 +44,8 @@ public class QuestHelper
         _questConditionHelper = questConditionHelper;
         _profileHelper = profileHelper;
         _localisationService = localisationService;
+        _localeService = localeService;
+        _cloner = Cloner;
 
         _questConfig = configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
     }
@@ -49,9 +56,11 @@ public class QuestHelper
     /// <param name="pmcData">Profile to search</param>
     /// <param name="questId">Quest id to look up</param>
     /// <returns>QuestStatus enum</returns>
-    public QuestStatus GetQuestStatus(PmcData pmcData, string questId)
+    public QuestStatusEnum GetQuestStatus(PmcData pmcData, string questId)
     {
-        throw new System.NotImplementedException();
+        var quest = pmcData.Quests?.FirstOrDefault((q) => q.QId == questId);
+
+        return quest?.Status ?? QuestStatusEnum.Locked;
     }
 
     /// <summary>
@@ -117,7 +126,8 @@ public class QuestHelper
     /// <returns></returns>
     public string GetQuestNameFromLocale(string questId)
     {
-        throw new System.NotImplementedException();
+        var questNameKey = $"{ questId} name";
+        return _localeService.GetLocaleDb().GetValueOrDefault(questNameKey, "UNKNOWN");
     }
 
     /// <summary>
@@ -144,38 +154,26 @@ public class QuestHelper
 
     protected bool CompareAvailableForValues(int current, int required, string compareMethod)
     {
-        throw new NotImplementedException();
-    }
+        switch (compareMethod)
+        {
+            case ">=":
+                return current >= required;
+            case ">":
+                return current > required;
+            case "<=":
+                return current <= required;
+            case "<":
+                return current < required;
+            case "!=":
+                return current != required;
+            case "==":
+                return current == required;
 
-    /**
-     * Take reward item from quest and set FiR status + fix stack sizes + fix mod Ids
-     * @param questReward Reward item to fix
-     * @returns Fixed rewards
-     */
-    protected List<Item> ProcessReward(QuestReward questReward)
-    {
-        throw new NotImplementedException();
-    }
+            default:
+                _logger.Error(_localisationService.GetText("quest-compare_operator_unhandled", compareMethod));
 
-    /**
-     * Add missing mod items to a quest armor reward
-     * @param originalRewardRootItem Original armor reward item from QuestReward.items object
-     * @param questReward Armor reward from quest
-     */
-    protected void GenerateArmorRewardChildSlots(Item originalRewardRootItem, QuestReward questReward)
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
-     * Gets a flat list of reward items for the given quest at a specific state for the specified game version (e.g. Fail/Success)
-     * @param quest quest to get rewards for
-     * @param status Quest status that holds the items (Started, Success, Fail)
-     * @returns List of items with the correct maxStack
-     */
-    public List<Item> GetQuestRewardItems(Quest quest, QuestStatus status, string gameVersion)
-    {
-        throw new NotImplementedException();
+                return false;
+        }
     }
 
     /**
@@ -258,7 +256,14 @@ public class QuestHelper
      */
     protected bool QuestIsProfileWhitelisted(string gameVersion, string questId)
     {
-        throw new NotImplementedException();
+        var questBlacklist = _questConfig.ProfileBlacklist.GetValueOrDefault(gameVersion);
+        if (questBlacklist is null)
+        {
+            // Not blacklisted
+            return false;
+        }
+
+        return questBlacklist.Contains(questId);
     }
 
     /**
@@ -268,18 +273,6 @@ public class QuestHelper
      * @returns List of Quest
      */
     public List<Quest> FailedUnlocked(string failedQuestId, string sessionId)
-    {
-        throw new NotImplementedException();
-    }
-
-    /**
- * Adjust quest money rewards by passed in multiplier
- * @param quest Quest to multiple money rewards
- * @param bonusPercent Percent to adjust money rewards by
- * @param questStatus Status of quest to apply money boost to rewards of
- * @returns Updated quest
- */
-    public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatus questStatus)
     {
         throw new NotImplementedException();
     }
@@ -314,7 +307,14 @@ public class QuestHelper
         string sessionId,
         Item item)
     {
-        throw new NotImplementedException();
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add( new Product{
+            Id = item.Id,
+            Template = item.Template,
+            ParentId = item.ParentId,
+            SlotId = item.SlotId,
+            Location = (ItemLocation)item.Location,
+            Upd = new Upd { StackObjectsCount = item.Upd.StackObjectsCount },
+        });
     }
 
     /**
@@ -324,7 +324,7 @@ public class QuestHelper
      */
     protected List<Quest> GetQuestsWithOnlyLevelRequirementStartCondition(List<Quest> quests)
     {
-        throw new NotImplementedException();
+        return quests.Select(GetQuestWithOnlyLevelRequirementStartCondition).ToList();
     }
 
     /**
@@ -334,7 +334,11 @@ public class QuestHelper
      */
     public Quest GetQuestWithOnlyLevelRequirementStartCondition(Quest quest)
     {
-        throw new NotImplementedException();
+        var updatedQuest = _cloner.Clone(quest);
+        updatedQuest.Conditions.AvailableForStart = updatedQuest.Conditions.AvailableForStart.Where(
+            (q) => q.ConditionType == "Level").ToList();
+
+        return updatedQuest;
     }
 
     /**
@@ -367,7 +371,7 @@ public class QuestHelper
      * Get quest by id from database (repeatables are stored in profile, check there if questId not found)
      * @param questId Id of quest to find
      * @param pmcData Player profile
-     * @returns Quest object
+     * @returns IQuest object
      */
     public Quest GetQuestFromDb(string questId, PmcData pmcData)
     {
@@ -382,7 +386,19 @@ public class QuestHelper
     /// <returns>message id</returns>
     public string GetMessageIdForQuestStart(string startedMessageTextId, string questDescriptionId)
     {
-        throw new NotImplementedException();
+        // Blank or is a guid, use description instead
+        var startedMessageText = GetQuestLocaleIdFromDb(startedMessageTextId);
+        if (
+            startedMessageText is null ||
+            startedMessageText.Trim() == "" ||
+                startedMessageText.ToLower() == "test" ||
+                startedMessageText.Length == 24
+        )
+        {
+            return questDescriptionId;
+        }
+
+        return startedMessageTextId;
     }
 
     /// <summary>
@@ -392,7 +408,8 @@ public class QuestHelper
     /// <returns>Locale Id from locale db</returns>
     public string GetQuestLocaleIdFromDb(string questMessageId)
     {
-        throw new NotImplementedException();
+        var locale = _localeService.GetLocaleDb();
+        return locale.GetValueOrDefault(questMessageId, null);
     }
 
     /// <summary>
@@ -401,9 +418,15 @@ public class QuestHelper
     /// <param name="pmcData">Profile to update</param>
     /// <param name="newQuestState">New state the quest should be in</param>
     /// <param name="questId">Id of the quest to alter the status of</param>
-    public void UpdateQuestState(PmcData pmcData, QuestStatus newQuestState, string questId)
+    public void UpdateQuestState(PmcData pmcData, QuestStatusEnum newQuestState, string questId)
     {
-        throw new NotImplementedException();
+        // Find quest in profile, update status to desired status
+        var questToUpdate = pmcData.Quests.FirstOrDefault((quest) => quest.QId == questId);
+        if (questToUpdate is not null)
+        {
+            questToUpdate.Status = newQuestState;
+            questToUpdate.StatusTimers[newQuestState] = _timeUtil.GetTimeStamp();
+        }
     }
 
     /// <summary>
@@ -413,67 +436,6 @@ public class QuestHelper
     /// <param name="newQuestState">New state the quest should be in</param>
     /// <param name="questId">Id of the quest to alter the status of</param>
     public void ResetQuestState(PmcData pmcData, QuestStatus newQuestState, string questId)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Give player quest rewards - Skills/exp/trader standing/items/assort unlocks - Returns reward items player earned
-    /// </summary>
-    /// <param name="profileData">Player profile (scav or pmc)</param>
-    /// <param name="questId">questId of quest to get rewards for</param>
-    /// <param name="state">State of the quest to get rewards for</param>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="questResponse">Response to send back to client</param>
-    /// <returns>Array of reward objects</returns>
-    public Item[] ApplyQuestReward(PmcData profileData, string questId, QuestStatusEnum state, string sessionId, ItemEventRouterResponse questResponse)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Does the provided quest reward have a game version requirement to be given and does it match
-    /// </summary>
-    /// <param name="reward">Reward to check</param>
-    /// <param name="gameVersion">Version of game to check reward against</param>
-    /// <returns>True if it has requirement, false if it doesnt pass check</returns>
-    protected bool QuestRewardIsForGameEdition(QuestReward reward, string gameVersion)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// WIP - Find hideout craft id and add to unlockedProductionRecipe array in player profile
-    /// also update client response recipeUnlocked array with craft id
-    /// </summary>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="craftUnlockReward">Reward item from quest with craft unlock details</param>
-    /// <param name="questDetails">Quest with craft unlock reward</param>
-    /// <param name="sessionID">Session id</param>
-    /// <param name="response">Response to send back to client</param>
-    protected void FindAndAddHideoutProductionIdToProfile(PmcData pmcData, QuestReward craftUnlockReward, Quest questDetails, string sessionID,
-        ItemEventRouterResponse response)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Find hideout craft for the specified quest reward
-    /// </summary>
-    /// <param name="craftUnlockReward">Reward item from quest with craft unlock details</param>
-    /// <param name="questDetails">Quest with craft unlock reward</param>
-    /// <returns>Hideout craft</returns>
-    public List<HideoutProduction> GetRewardProductionMatch(QuestReward craftUnlockReward, Quest questDetails)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Get players money reward bonus from profile
-    /// </summary>
-    /// <param name="pmcData">player profile</param>
-    /// <returns>bonus as a percent</returns>
-    protected double GetQuestMoneyRewardBonusMultiplier(PmcData pmcData)
     {
         throw new NotImplementedException();
     }
@@ -543,7 +505,12 @@ public class QuestHelper
 
     public void FindAndRemoveQuestFromArrayIfExists(string questId, List<QuestStatus> quests)
     {
-        throw new NotImplementedException();
+        var pmcQuestToReplaceStatus = quests.FirstOrDefault((quest) => quest.QId == questId);
+        if (pmcQuestToReplaceStatus is not null)
+        {
+            var index = quests.IndexOf(pmcQuestToReplaceStatus);
+            quests.RemoveAt(index);
+        }
     }
 
     /**

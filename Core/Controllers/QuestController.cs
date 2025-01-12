@@ -4,18 +4,32 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
+using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class QuestController
 {
+    private readonly ILogger _logger;
+    private readonly TimeUtil _timeUtil;
+    private readonly HttpResponseUtil _httpResponseUtil;
     private readonly QuestHelper _questHelper;
+    private readonly QuestRewardHelper _questRewardHelper;
 
     public QuestController(
-        QuestHelper questHelper)
+        ILogger logger,
+        TimeUtil timeUtil,
+        HttpResponseUtil httpResponseUtil,
+        QuestHelper questHelper,
+        QuestRewardHelper questRewardHelper)
     {
+        _logger = logger;
+        _timeUtil = timeUtil;
+        _httpResponseUtil = httpResponseUtil;
         _questHelper = questHelper;
+        _questRewardHelper = questRewardHelper;
     }
     // TODO
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionId)
