@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetMailDialogViewRequestData
+public class GetMailDialogViewRequestData : IRequestData
 {
     [JsonPropertyName("type")]
     public MessageType? Type { get; set; }

@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupStartGameRequest
+public class MatchGroupStartGameRequest : IRequestData
 {
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }

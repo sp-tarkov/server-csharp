@@ -2,10 +2,11 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class EndLocalRaidRequestData
+public class EndLocalRaidRequestData : IRequestData
 {
     /// <summary>
     /// ID of server player just left

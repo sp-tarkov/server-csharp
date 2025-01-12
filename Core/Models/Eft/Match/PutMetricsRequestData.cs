@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class PutMetricsRequestData
+public class PutMetricsRequestData : IRequestData
 {
     [JsonPropertyName("sid")]
     public string? SessionId { get; set; }

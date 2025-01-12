@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class VersionValidateRequestData
+public class VersionValidateRequestData : IRequestData
 {
     [JsonPropertyName("version")]
     public Version? Version { get; set; }

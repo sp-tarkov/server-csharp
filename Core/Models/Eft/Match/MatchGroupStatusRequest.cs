@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupStatusRequest
+public class MatchGroupStatusRequest : IRequestData
 {
     [JsonPropertyName("location")]
     public string? Location { get; set; }

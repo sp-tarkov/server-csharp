@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.InRaid;
 
-public class RegisterPlayerRequestData
+public class RegisterPlayerRequestData : IRequestData
 {
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

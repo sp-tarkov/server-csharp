@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.ItemEvent;
 
-public class ItemEventRouterRequest
+public class ItemEventRouterRequest : IRequestData
 {
     [JsonPropertyName("data")]
     public List<Daum>? Data { get; set; }

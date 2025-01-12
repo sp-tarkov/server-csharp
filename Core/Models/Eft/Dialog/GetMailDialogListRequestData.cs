@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetMailDialogListRequestData
+public class GetMailDialogListRequestData : IRequestData
 {
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }
