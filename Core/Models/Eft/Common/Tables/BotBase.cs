@@ -14,7 +14,7 @@ public class BotBase
 
     [JsonPropertyName("aid")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public double? Aid { get; set; }
+    public int? Aid { get; set; }
 
     /** SPT property - use to store player id - TODO - move to AID ( account id as guid of choice) */
     [JsonPropertyName("sessionId")]
@@ -153,7 +153,7 @@ public class Info
     public bool? HasCoopExtension { get; set; }
     public bool? HasPveGame { get; set; }
     public string? Voice { get; set; }
-    public double? Level { get; set; }
+    public int? Level { get; set; }
     public double? Experience { get; set; }
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public long? RegistrationDate { get; set; }

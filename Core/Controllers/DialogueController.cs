@@ -1,14 +1,28 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Servers;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class DialogueController
 {
+    private readonly DialogueHelper _dialogueHelper;
+    private readonly SaveServer _saveServer;
+
+    public DialogueController(
+        DialogueHelper dialogueHelper,
+        SaveServer saveServer)
+    {
+        _dialogueHelper = dialogueHelper;
+        _saveServer = saveServer;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -47,7 +61,13 @@ public class DialogueController
     /// <returns>list of dialogs</returns>
     public List<DialogueInfo> GenerateDialogueList(string sessionId)
     {
-        throw new NotImplementedException();
+        var data = new List<DialogueInfo>();
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
+        {
+            data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
+        }
+
+        return data;
     }
 
     /// <summary>
@@ -60,7 +80,20 @@ public class DialogueController
         string dialogueId,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialogue = dialogs.GetValueOrDefault(dialogueId);
+
+        var result = new DialogueInfo {
+            Id = dialogueId,
+            Type = dialogue.Type ?? MessageType.NPC_TRADER,
+            Message = _dialogueHelper.GetMessagePreview(dialogue),
+            New = dialogue.New,
+            AttachmentsNew = dialogue.AttachmentsNew,
+            Pinned = dialogue.Pinned,
+            Users = GetDialogueUsers(dialogue, dialogue.Type.Value, sessionId),
+        };
+
+        return result;
     }
 
     /// <summary>
@@ -71,11 +104,36 @@ public class DialogueController
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
     public List<UserDialogInfo> GetDialogueUsers(
-        Dialogue dialogue,
+        Dialogue dialog,
         MessageType messageType,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _saveServer.GetProfile(sessionId);
+
+        // User to user messages are special in that they need the player to exist in them, add if they don't
+        if (
+            messageType == MessageType.USER_MESSAGE &&
+            !dialog.Users.Any((userDialog) => userDialog.Id == profile.CharacterData.PmcData.SessionId))
+        {
+            // nullguard
+            dialog.Users ??= [];
+
+            dialog.Users.Add( new UserDialogInfo
+            {
+                Id = profile.CharacterData.PmcData.SessionId,
+                Aid = profile.CharacterData.PmcData.Aid,
+                Info = new UserDialogDetails
+                {
+                    Level = profile.CharacterData.PmcData.Info.Level,
+                    Nickname = profile.CharacterData.PmcData.Info.Nickname,
+                    Side = profile.CharacterData.PmcData.Info.Side,
+                    MemberCategory = profile.CharacterData.PmcData.Info.MemberCategory,
+                    SelectedMemberCategory = profile.CharacterData.PmcData.Info.SelectedMemberCategory,
+                },
+            });
+        }
+
+        return dialog.Users;
     }
 
     /// <summary>
