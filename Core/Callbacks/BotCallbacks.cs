@@ -10,7 +10,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(BotCallbacks))]
 public class BotCallbacks
 {
     protected BotController _botController;
