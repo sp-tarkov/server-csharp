@@ -241,7 +241,15 @@ public class GameController
     /// <returns></returns>
     public List<ServerDetails> GetServer(string sessionId)
     {
-        throw new NotImplementedException();
+        return
+        [
+            new ServerDetails
+            {
+                Ip = _httpConfig.BackendIp,
+                Port = _httpConfig.BackendPort
+            }
+
+        ];
     }
 
     /// <summary>
@@ -266,7 +274,11 @@ public class GameController
     /// <returns></returns>
     public CheckVersionResponse GetValidGameVersion(string sessionId)
     {
-        throw new NotImplementedException();
+        return new CheckVersionResponse
+        {
+            IsValid = true,
+            LatestVersion = _coreConfig.CompatibleTarkovVersion
+        };
     }
 
     /// <summary>
