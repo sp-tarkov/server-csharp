@@ -57,7 +57,7 @@ public class BotBase
     public Hideout? Hideout { get; set; }
 
     [JsonPropertyName("Quests")]
-    public List<Quests>? Quests { get; set; }
+    public List<QuestStatus>? Quests { get; set; }
 
     [JsonPropertyName("TradersInfo")]
     public Dictionary<string, TraderInfo>? TradersInfo { get; set; }
@@ -710,7 +710,7 @@ public class Quests
     public QuestStatusEnum? Status { get; set; }
 
     [JsonPropertyName("statusTimers")]
-    public Dictionary<string, long>? StatusTimers { get; set; }
+    public Dictionary<QuestStatusEnum, long>? StatusTimers { get; set; }
 
     /** Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client */
     [JsonPropertyName("completedConditions")]

@@ -106,7 +106,7 @@ public class SaveServer
             totalTime += SaveProfile(sessionID.Key);
         }
 
-        _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms", false);
+        _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
     }
 
     /**

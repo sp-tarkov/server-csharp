@@ -4,12 +4,13 @@ namespace Core.Models.Utils;
 
 public interface ILogger
 {
-    void WriteToLogFile(string data);
-    void Log(string data, string color, string? backgroundColor = null);
-    void LogWithColor(string data, LogTextColor textColor, LogBackgroundColor? backgroundColor = null);
+    // TODO: Removing these 4 methods for now, revisit in the future
+    // void WriteToLogFile(string data);
+    // void Log(string data, LogTextColor? color, string? backgroundColor = null);
+    // void LogWithColor(string data, LogTextColor textColor, LogBackgroundColor? backgroundColor = null);
+    // void Success(string data);
     void Error(string data);
     void Warning(string data);
-    void Success(string data);
     void Info(string data);
-    void Debug(string data, bool? onlyShowInConsole = null);
+    void Debug(string data);
 }

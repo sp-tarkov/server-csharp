@@ -82,7 +82,7 @@ public class SptHttpListener : IHttpListener
                 }
                 
                 if (!requestIsCompressed) {
-                    _logger.Debug(value, true);
+                    _logger.Debug(value);
                 }
 
                 var response = GetResponse(sessionId, req, value);

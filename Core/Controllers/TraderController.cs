@@ -118,17 +118,11 @@ public class TraderController
     /// <param name="traderA">First trader to compare</param>
     /// <param name="traderB">Second trader to compare</param>
     /// <returns>1,-1 or 0</returns>
-    private int SortByTraderId(TraderBase traderA, TraderBase traderB)
+    private int SortByTraderId(
+        TraderBase traderA,
+        TraderBase traderB)
     {
-        // if (traderA.Id > traderB.Id)
-        //     return 1;
-        //
-        // if (traderA.Id < traderB.Id)
-        //     return -1;
-        //
-        // return 0;
         throw new NotImplementedException();
-        // TODO: implement me
     }
 
     /// <summary>
