@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using System.Reflection;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Common;
 
@@ -80,5 +81,24 @@ public class Locations
                 .First(p => p.Name.ToLower() == key.ToLower()).GetSetMethod()?
                 .Invoke(this, [value]);
         }
+    }
+
+    private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
+
+    /// <summary>
+    /// Get map locations as a dictionary, keyed by its name e.g. factory4_day
+    /// </summary>
+    /// <returns></returns>
+    public Dictionary<string, Eft.Common.Location> GetDictionary()
+    {
+        if (_locationDictionaryCache is null)
+        {
+            var classProps = GetType()
+                .GetProperties();
+            _locationDictionaryCache = classProps
+                .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
+        }
+
+        return _locationDictionaryCache;
     }
 }
