@@ -1,15 +1,37 @@
 ﻿using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
+using Core.Services;
+using Core.Utils.Cloners;
 
 namespace Core.Helpers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class PresetHelper
 {
+    protected DatabaseService _databaseService;
+    protected ItemHelper _itemHelper;
+    protected ICloner _primaryCloner;
+
+    protected Dictionary<string, List<string>> _lookup = new();
+    protected Dictionary<string, Preset> _defaultEquipmentPresets;
+    protected Dictionary<string, Preset> _defaultWeaponPresets;
+
+    public PresetHelper
+    (
+        DatabaseService databaseService,
+        ItemHelper itemHelper,
+        ICloner primaryCloner
+    )
+    {
+        _databaseService = databaseService;
+        _itemHelper = itemHelper;
+        _primaryCloner = primaryCloner;
+    }
+
     public void HydratePresetStore(Dictionary<string, List<string>> input)
     {
-        throw new NotImplementedException();
+        _lookup = input;
     }
 
     /**
@@ -18,7 +40,10 @@ public class PresetHelper
      */
     public Dictionary<string, Preset> GetDefaultPresets()
     {
-        throw new NotImplementedException();
+        var weapons = GetDefaultWeaponPresets();
+        var equipment = GetDefaultEquipmentPresets();
+
+        return weapons.Union(equipment).ToDictionary();
     }
 
     /**
@@ -27,7 +52,15 @@ public class PresetHelper
      */
     public Dictionary<string, Preset> GetDefaultWeaponPresets()
     {
-        throw new NotImplementedException();
+        if (_defaultWeaponPresets == null)
+        {
+            var tempPresets = _databaseService.GetGlobals().ItemPresets;
+            tempPresets = tempPresets.Where(p =>
+                p.Value.Encyclopedia != null &&
+                _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)).ToDictionary();
+        }
+
+        return _defaultWeaponPresets;
     }
 
     /**
@@ -36,7 +69,15 @@ public class PresetHelper
      */
     public Dictionary<string, Preset> GetDefaultEquipmentPresets()
     {
-        throw new NotImplementedException();
+        if (_defaultEquipmentPresets == null)
+        {
+            var tempPresets = _databaseService.GetGlobals().ItemPresets;
+            tempPresets = tempPresets.Where(p =>
+                p.Value.Encyclopedia != null &&
+                _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)).ToDictionary();
+        }
+
+        return _defaultWeaponPresets;
     }
 
     public bool IsPreset(string id)
