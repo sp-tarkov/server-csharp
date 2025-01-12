@@ -9,6 +9,7 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(DialogueCallbacks))]
 public class DialogueCallbacks : OnUpdate
 {
     protected HashUtil _hashUtil;

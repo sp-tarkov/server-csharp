@@ -1,4 +1,4 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 
 namespace Core.Utils;
 

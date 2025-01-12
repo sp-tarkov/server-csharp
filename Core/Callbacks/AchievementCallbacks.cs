@@ -1,4 +1,5 @@
-﻿using Core.Controllers;
+﻿using Core.Annotations;
+using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
@@ -6,6 +7,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
+[Injectable(InjectableTypeOverride = typeof(AchievementCallbacks))]
 public class AchievementCallbacks
 {
     protected AchievementController _achievementController;

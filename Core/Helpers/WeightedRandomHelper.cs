@@ -1,5 +1,6 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Spt.Helper;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
 
@@ -42,17 +43,17 @@ public class WeightedRandomHelper
     {
         if (items.Count == 0)
         {
-            _logger.LogError("Items must not be empty");
+            _logger.Error("Items must not be empty");
         }
 
         if (weights.Count == 0)
         {
-            _logger.LogError("Item weights must not be empty");
+            _logger.Error("Item weights must not be empty");
         }
 
         if (items.Count != weights.Count)
         {
-            _logger.LogError("Items and weight inputs must be of the same length");
+            _logger.Error("Items and weight inputs must be of the same length");
         }
 
         // Preparing the cumulative weights list.

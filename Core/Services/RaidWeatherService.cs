@@ -1,4 +1,4 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
@@ -6,6 +6,7 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
