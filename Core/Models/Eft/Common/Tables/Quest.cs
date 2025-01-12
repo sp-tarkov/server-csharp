@@ -198,6 +198,9 @@ public class QuestCondition
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
 
+    /// <summary>
+    /// Can be: string[] or string
+    /// </summary>
     [JsonPropertyName("target")]
     public object? Target { get; set; } // TODO: string[] | string
 
@@ -208,7 +211,7 @@ public class QuestCondition
     public object? Type { get; set; } // TODO: boolean | string
 
     [JsonPropertyName("status")]
-    public List<object>? Status { get; set; }
+    public List<QuestStatusEnum>? Status { get; set; }
 
     [JsonPropertyName("availableAfter")]
     public int? AvailableAfter { get; set; }

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
@@ -707,7 +707,7 @@ public class Quests
     public long? StartTime { get; set; }
 
     [JsonPropertyName("status")]
-    public QuestStatus? Status { get; set; }
+    public QuestStatusEnum? Status { get; set; }
 
     [JsonPropertyName("statusTimers")]
     public Dictionary<string, long>? StatusTimers { get; set; }

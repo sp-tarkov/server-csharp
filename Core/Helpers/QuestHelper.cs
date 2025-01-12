@@ -6,6 +6,7 @@ using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
 using Core.Services;
+using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
@@ -14,17 +15,20 @@ namespace Core.Helpers;
 public class QuestHelper
 {
     private readonly ILogger _logger;
+    private readonly TimeUtil _timeUtil;
     private readonly DatabaseService _databaseService;
     private readonly QuestConditionHelper _questConditionHelper;
     private readonly ProfileHelper _profileHelper;
 
     public QuestHelper(
         ILogger logger,
+        TimeUtil timeUtil,
         DatabaseService databaseService,
         QuestConditionHelper questConditionHelper,
         ProfileHelper profileHelper)
     {
         _logger = logger;
+        _timeUtil = timeUtil;
         _databaseService = databaseService;
         _questConditionHelper = questConditionHelper;
         _profileHelper = profileHelper;
@@ -47,7 +51,7 @@ public class QuestHelper
     /// <param name="playerLevel">Players level</param>
     /// <param name="condition">Quest condition</param>
     /// <returns>true if player level is greater than or equal to quest</returns>
-    public bool DoesPlayerLevelFulfilCondition(int playerLevel, QuestCondition condition)
+    public bool DoesPlayerLevelFulfilCondition(double playerLevel, QuestCondition condition)
     {
         throw new System.NotImplementedException();
     }
@@ -497,8 +501,127 @@ public class QuestHelper
      */
     public List<Quest> GetClientQuests(string sessionID)
     {
-        throw new NotImplementedException();
+        List<Quest> questsToShowPlayer = new List<Quest>();
+        var profile = _profileHelper.GetPmcProfile(sessionID);
+
+        var allQuests = GetQuestsFromDb();
+        foreach (var quest in allQuests)
+        {
+            // Player already accepted the quest, show it regardless of status
+            var questInProfile = profile.Quests.FirstOrDefault(x => x.QId == quest.Id);
+            if (questInProfile is not null)
+            {
+                quest.SptStatus = questInProfile.Status;
+                questsToShowPlayer.Add(quest);
+                continue;
+            }
+
+            // Filter out bear quests for usec and vice versa
+            if (QuestIsForOtherSide(profile.Info.Side, quest.Id))
+            {
+                continue;
+            }
+
+            if (!ShowEventQuestToPlayer(quest.Id))
+            {
+                continue;
+            }
+
+            // Don't add quests that have a level higher than the user's
+            if (!PlayerLevelFulfillsQuestRequirement(quest, profile.Info.Level.Value))
+            {
+                continue;
+            }
+
+            // Player can use trader mods then remove them, leaving quests behind
+            if (!profile.TradersInfo.TryGetValue(quest.TraderId, out var trader))
+            {
+                _logger.Debug($"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists.");
+                continue;
+            }
+
+            var questRequirements = _questConditionHelper.GetQuestConditions(quest.Conditions.AvailableForStart);
+            var loyaltyRequirements = _questConditionHelper.GetLoyaltyConditions(quest.Conditions.AvailableForStart);
+            var standingRequirements = _questConditionHelper.GetStandingConditions(quest.Conditions.AvailableForStart);
+
+            // Quest has no conditions, standing or loyalty conditions, add to visible quest list
+            if (questRequirements.Count == 0 && loyaltyRequirements.Count == 0 && standingRequirements.Count == 0)
+            {
+                quest.SptStatus = QuestStatusEnum.AvailableForStart;
+                questsToShowPlayer.Add(quest);
+                continue;
+            }
+
+            // Check the status of each quest condition, if any are not completed
+            // then this quest should not be visible
+            bool haveCompletedPreviousQuest = true;
+            foreach (var conditionToFulfil in questRequirements)
+            {
+                // If the previous quest isn't in the user profile, it hasn't been completed or started
+                var prerequisiteQuest = profile.Quests.FirstOrDefault(profileQuest => (conditionToFulfil.Target as string[]).Contains(profileQuest.QId));
+
+                if (prerequisiteQuest is null)
+                {
+                    haveCompletedPreviousQuest = false;
+                    break;
+                }
+
+                // Prereq does not have its status requirement fulfilled
+                // Some bsg status ids are strings, MUST convert to number before doing includes check
+                if (!conditionToFulfil.Status.Contains(prerequisiteQuest.Status.Value))
+                {
+                    haveCompletedPreviousQuest = false;
+                    break;
+                }
+
+                // Has a wait timer
+                if (conditionToFulfil.AvailableAfter > 0)
+                {
+                    // Compare current time to unlock time for previous quest
+                    prerequisiteQuest.StatusTimers.TryGetValue(prerequisiteQuest.Status.ToString(), out var previousQuestCompleteTime);
+                    var unlockTime = previousQuestCompleteTime + conditionToFulfil.AvailableAfter;
+                    if (unlockTime > _timeUtil.GetTimeStamp())
+                    {
+                        _logger.Debug(
+                            $"Quest ${ quest.QuestName} is locked for another ${unlockTime - _timeUtil.GetTimeStamp()} seconds");
+                    }
+                }
+            }
+
+            // Previous quest not completed, skip
+            if (!haveCompletedPreviousQuest)
+            {
+                continue;
+            }
+
+            var passesLoyaltyRequirements = true;
+            foreach (var condition in loyaltyRequirements) {
+                if (!TraderLoyaltyLevelRequirementCheck(condition, profile))
+                {
+                    passesLoyaltyRequirements = false;
+                    break;
+                }
+            }
+
+            var passesStandingRequirements = true;
+            foreach (var condition in standingRequirements) {
+                if (!TraderStandingRequirementCheck(condition, profile))
+                {
+                    passesStandingRequirements = false;
+                    break;
+                }
+            }
+
+            if (haveCompletedPreviousQuest && passesLoyaltyRequirements && passesStandingRequirements)
+            {
+                quest.SptStatus = QuestStatusEnum.AvailableForStart;
+                questsToShowPlayer.Add(quest);
+            }
+        }
+
+        return questsToShowPlayer;
     }
+
 
     /**
      * Create a clone of the given quest array with the rewards updated to reflect the
@@ -600,6 +723,26 @@ public class QuestHelper
      */
     protected bool PlayerLevelFulfillsQuestRequirement(Quest quest, double playerLevel)
     {
-        throw new NotImplementedException();
+        if (quest.Conditions is null)
+        {
+            // No conditions
+            return true;
+        }
+
+        var levelConditions = _questConditionHelper.GetLevelConditions(quest.Conditions.AvailableForStart);
+        if (levelConditions is not null)
+        {
+            foreach (var levelCondition in levelConditions)
+            {
+                if (!DoesPlayerLevelFulfilCondition(playerLevel, levelCondition))
+                {
+                    // Not valid, exit out
+                    return false;
+                }
+            }
+        }
+
+        // All conditions passed / has no level requirement, valid
+        return true;
     }
 }
