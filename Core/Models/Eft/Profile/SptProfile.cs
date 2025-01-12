@@ -1,4 +1,4 @@
-﻿using Core.Models.Eft.Common;
+using Core.Models.Eft.Common;
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -47,6 +47,9 @@ public class SptProfile
     /** List of friend profile IDs */
     [JsonPropertyName("friends")]
     public List<string>? FriendProfileIds { get; set; }
+
+    [JsonPropertyName("customisationUnlocks")]
+    public List<CustomisationStorage> CustomisationUnlocks { get; set; }
 }
 
 public class TraderPurchaseData
