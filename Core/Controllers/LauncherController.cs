@@ -106,7 +106,7 @@ public class LauncherController
     {
         foreach (var sessionID in _saveServer.GetProfiles()) {
             var account = _saveServer.GetProfile(sessionID.Key).ProfileInfo;
-            if (info.Username == account.UserName) {
+            if (info.Username == account.Username) {
                 return sessionID.Key;
             }
         }
@@ -117,7 +117,7 @@ public class LauncherController
     public string Register(RegisterData info)
     {
         foreach (var sessionID in _saveServer.GetProfiles()) {
-            if (info.Username == _saveServer.GetProfile(sessionID.Key).ProfileInfo.UserName) {
+            if (info.Username == _saveServer.GetProfile(sessionID.Key).ProfileInfo.Username) {
                 return "";
             }
         }
@@ -133,7 +133,7 @@ public class LauncherController
             ProfileId = profileId,
             ScavengerId = scavId,
             Aid = _hashUtil.GenerateAccountId(),
-            UserName = info.Username,
+            Username = info.Username,
             Password = info.Password,
             IsWiped = true,
             Edition = info.Edition,
@@ -167,7 +167,7 @@ public class LauncherController
         var sessionID = Login(info);
 
         if (!string.IsNullOrEmpty(sessionID)) {
-            _saveServer.GetProfile(sessionID).ProfileInfo.UserName = info.Change;
+            _saveServer.GetProfile(sessionID).ProfileInfo.Username = info.Change;
         }
 
         return sessionID;
