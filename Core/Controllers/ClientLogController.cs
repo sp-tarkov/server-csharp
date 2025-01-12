@@ -1,17 +1,59 @@
 using Core.Annotations;
+using Core.Models.Logging;
 using Core.Models.Spt.Logging;
+using ILogger = Core.Models.Utils.ILogger;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class ClientLogController
 {
+    private readonly ILogger _logger;
+
+    public ClientLogController(
+        ILogger logger)
+    {
+        _logger = logger;
+    }
+
     /// <summary>
     /// Handle /singleplayer/log
     /// </summary>
     /// <param name="logRequest"></param>
     public void ClientLog(ClientLogRequest logRequest)
     {
-        throw new NotImplementedException();
+        var message = $"[{logRequest.Source}] {logRequest.Message}";
+        var color = logRequest.Color ?? LogTextColor.White;
+        var backgroundColor = logRequest.BackgroundColor ?? LogBackgroundColor.Default;
+
+
+        // Allow supporting either string or enum levels
+        // Required due to the C# modules serializing enums as their name
+
+        switch (logRequest.Level)
+        {
+            case LogLevel.ERROR:
+                this._logger.Error(message);
+                break;
+            case LogLevel.WARN:
+                this._logger.Warning(message);
+                break;
+            case LogLevel.SUCCESS:
+                this._logger.Success(message);
+                break;
+            case LogLevel.INFO:
+                this._logger.Info(message);
+                break;
+            case LogLevel.CUSTOM:
+                this._logger.Log(message, color.ToString(), backgroundColor.ToString());
+                break;
+            case LogLevel.DEBUG:
+                this._logger.Debug(message);
+                break;
+            default:
+                this._logger.Info(message);
+                break;
+        }
     }
 }

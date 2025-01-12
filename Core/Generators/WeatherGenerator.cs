@@ -1,15 +1,36 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Generators;
 
 [Injectable]
 public class WeatherGenerator
 {
-    public WeatherGenerator()
+    private readonly TimeUtil _timeUtil;
+    private readonly SeasonalEventService _seasonalEventService;
+    private readonly WeatherHelper _weatherHelper;
+    private readonly ConfigServer _configServer;
+
+    private readonly WeatherConfig _weatherConfig;
+
+    public WeatherGenerator(
+    TimeUtil timeUtil,
+        SeasonalEventService seasonalEventService,
+        WeatherHelper weatherHelper,
+        ConfigServer configServer)
     {
+        _timeUtil = timeUtil;
+        _seasonalEventService = seasonalEventService;
+        _weatherHelper = weatherHelper;
+        _configServer = configServer;
+
+        _weatherConfig = _configServer.GetConfig<WeatherConfig>(ConfigTypes.WEATHER);
     }
 
     /**
@@ -17,9 +38,16 @@ public class WeatherGenerator
      * @param data Weather data
      * @returns WeatherData
      */
-    public WeatherData CalculateGameTime(WeatherData data)
+    public void CalculateGameTime(WeatherData data)
     {
-        throw new NotImplementedException();
+        var computedDate = new DateTime();
+        var formattedDate = this._timeUtil.FormatDate(computedDate);
+
+        data.Date = formattedDate;
+        data.Time = GetBsgFormattedInRaidTime();
+        data.Acceleration = this._weatherConfig.Acceleration;
+
+        data.Season = this._seasonalEventService.GetActiveWeatherSeason();
     }
 
     /**
@@ -30,7 +58,9 @@ public class WeatherGenerator
      */
     protected string GetBsgFormattedInRaidTime()
     {
-        throw new NotImplementedException();
+        var clientAcceleratedDate = this._weatherHelper.GetInRaidTime();
+
+        return GetBsgFormattedTime(clientAcceleratedDate);
     }
 
     /**
@@ -40,7 +70,7 @@ public class WeatherGenerator
      */
     protected string GetBsgFormattedTime(DateTime date)
     {
-        throw new NotImplementedException();
+        return _timeUtil.FormatTime(date).Replace("-", ":").Replace("-", ":");
     }
 
     /**
@@ -49,14 +79,20 @@ public class WeatherGenerator
      * @param timestamp OPTIONAL what timestamp to generate the weather data at, defaults to now when not supplied
      * @returns Randomised weather data
      */
-    public Weather GenerateWeather(Season currentSeason, int? timestamp = null)
+    public Weather GenerateWeather(Season currentSeason, long? timestamp = null)
     {
         throw new NotImplementedException();
     }
 
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
-        throw new NotImplementedException();
+        var result = this._weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
+        if (!result)
+        {
+            return this._weatherConfig.Weather.SeasonValues["default"];
+        }
+
+        return value;
     }
 
     /**

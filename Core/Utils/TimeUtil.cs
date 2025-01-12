@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 
 namespace Core.Utils;
 
@@ -149,7 +149,7 @@ public class TimeUtil
     /// e.g. current time: 13th March 14:22 will return 13th March 00:00
     /// </summary>
     /// <returns>Timestamp</returns>
-    public long GetTodayMidNightTimeStamp()
+    public long GetTodayMidnightTimeStamp()
     {
         var now = DateTime.UtcNow;
 
