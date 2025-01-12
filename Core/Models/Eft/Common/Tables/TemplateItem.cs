@@ -1350,6 +1350,9 @@ public class Props
     [JsonPropertyName("Hands")]
     public string? Hands { get; set; }
     
+    [JsonPropertyName("Feet")]
+    public string? Feet { get; set; }
+    
     [JsonExtensionData] 
     public Dictionary<string, object> OtherProperties { get; set; } 
 }
