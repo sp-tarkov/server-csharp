@@ -2,6 +2,7 @@
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Quests;
 using Core.Utils;
 
 namespace Core.Routers.Static;
@@ -24,7 +25,8 @@ public class QuestStaticRouter : StaticRouter
                     info, 
                     sessionID, 
                     output
-                ) => _questCallbacks.ListQuests(url, info as EmptyRequestData, sessionID)),
+                ) => _questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
+                typeof(ListQuestsRequestData)),
             new RouteAction(
                 "",
                 (
@@ -32,7 +34,7 @@ public class QuestStaticRouter : StaticRouter
                     info, 
                     sessionID, 
                     output
-                ) => _questCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)),]
+                ) => _questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)),]
     )
     {
         _questCallbacks = questCallbacks;
