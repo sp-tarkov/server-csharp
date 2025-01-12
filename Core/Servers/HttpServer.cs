@@ -59,7 +59,7 @@ public class HttpServer
         });
         // app.UseEndpoints(endpointBuilder => { endpointBuilder.MapFallback(HandleFallback); });
         started = true;
-        app.Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+        _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
 
     private Task HandleFallback(HttpContext context)

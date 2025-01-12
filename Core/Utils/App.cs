@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Core.Annotations;
 using Core.DI;
 using Core.Models.Enums;
@@ -49,7 +50,7 @@ public class App
         _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
 
-    public async Task Load()
+    public async Task Run()
     {
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
@@ -86,10 +87,10 @@ public class App
             Console.WriteLine($"finish Onload: {onLoad.GetRoute()}");
         }
 
-        var timer = new Timer(_ =>
+        new Timer(_ =>
         {
             Console.WriteLine($"Start OnUpdate");
-            update(_onUpdate);
+            Update(_onUpdate);
             Console.WriteLine($"Finish OnUpdate");
 
         },
@@ -98,7 +99,7 @@ public class App
             TimeSpan.FromMilliseconds(5000));
     }
 
-    protected async Task update(IEnumerable<OnUpdate> onUpdateComponents)
+    protected async Task Update(IEnumerable<OnUpdate> onUpdateComponents)
     {
         // If the server has failed to start, skip any update calls
         if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid()) return;

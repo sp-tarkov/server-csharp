@@ -1,6 +1,10 @@
 ﻿using System.Reflection;
+using System.Security.Cryptography;
 using Core.Annotations;
 using Core.Context;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
 using Core.Utils;
 
 namespace Server;
@@ -24,9 +28,16 @@ public static class Program
             // TODO: var preSptModLoader = serviceProvider.GetService<PreSptModLoader>();
             var app = serviceProvider.GetService<App>();
             var appContext = serviceProvider.GetService<ApplicationContext>();
+            // These are the mod assemblies we are gonna use on the PreSpt, PostDb and PostSpt loaders
             appContext.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
+            // This is the builder that will get use by the HttpServer to start up the web application
             appContext.AddValue(ContextVariableType.APP_BUILDER, builder);
-            app.Load().Wait();
+            app.Run().Wait();
+
+            var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>(ConfigTypes.HTTP);
+            // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
+            // object, which we can use here to start the webapp.
+            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).Value as WebApplication).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
         }
         catch (Exception ex)
         {
