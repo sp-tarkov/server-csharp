@@ -1,18 +1,19 @@
 using Core.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Services;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class AchievementController
 {
-    protected Core.Models.Utils.ILogger _logger;
+    protected ILogger _logger;
     protected DatabaseService _databaseService;
     
     public AchievementController
     (
-        Core.Models.Utils.ILogger logger,
+        ILogger logger,
         DatabaseService databaseService
     )
     {
