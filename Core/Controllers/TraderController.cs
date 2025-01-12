@@ -1,12 +1,72 @@
 using Core.Annotations;
+using Core.Generators;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Game;
+using Core.Models.Eft.ItemEvent;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class TraderController
 {
+    private ILogger _logger;
+    private TimeUtil _timeUtil;
+    private DatabaseService _databaseService;
+    private TraderAssortHelper _traderAssortHelper;
+    private TraderAssortService _traderAssortService;
+    private ProfileHelper _profileHelper;
+    private TraderHelper _traderHelper;
+    private PaymentHelper _paymentHelper;
+    private RagfairPriceService _ragfairPriceService;
+    private TraderPurchasePersisterService _traderPurchasePersisterService;
+    private FenceBaseAssortGenerator _fenceBaseAssortGenerator;
+    private ConfigServer _configServer;
+    private ICloner _cloner;
+
+    private TraderConfig _traderConfig;
+
+    public TraderController
+    (
+        ILogger logger,
+        TimeUtil timeUtil,
+        DatabaseService databaseService,
+        TraderAssortHelper traderAssortHelper,
+        TraderAssortService traderAssortService,
+        ProfileHelper profileHelper,
+        TraderHelper traderHelper,
+        PaymentHelper paymentHelper,
+        RagfairPriceService ragfairPriceService,
+        TraderPurchasePersisterService traderPurchasePersisterService,
+        FenceBaseAssortGenerator fenceBaseAssortGenerator,
+        ConfigServer configServer,
+        ICloner cloner
+    )
+    {
+        _logger = logger;
+        _timeUtil = timeUtil;
+        _databaseService = databaseService;
+        _traderAssortHelper = traderAssortHelper;
+        _traderAssortService = traderAssortService;
+        _profileHelper = profileHelper;
+        _traderHelper = traderHelper;
+        _paymentHelper = paymentHelper;
+        _ragfairPriceService = ragfairPriceService;
+        _traderPurchasePersisterService = traderPurchasePersisterService;
+        _fenceBaseAssortGenerator = fenceBaseAssortGenerator;
+        _configServer = configServer;
+        _cloner = cloner;
+
+        _traderConfig = configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+    }
+
     /// <summary>
     /// Runs when onLoad event is fired
     /// Iterate over traders, ensure a pristine copy of their assorts is stored in traderAssortService
@@ -36,6 +96,19 @@ public class TraderController
     public List<TraderBase> GetAllTraders(string sessionId)
     {
         var traders = new List<TraderBase>();
+        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        foreach (var trader in _databaseService.GetTables().Traders)
+        {
+            if (trader.Value.Base.Id == "ragfair")
+                continue;
+            
+            traders.Add(_traderHelper.GetTrader(trader.Key, sessionId));
+            
+            if (pmcData?.Info != null)
+                _traderHelper.LevelUp(trader.Key, pmcData);
+        }
+        
+        // traders.Sort((a, b) => SortByTraderId(a, b));
         return traders;
     }
 
