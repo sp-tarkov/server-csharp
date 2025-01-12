@@ -1,4 +1,5 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Notifier;
 
 namespace Core.Controllers;
@@ -6,6 +7,17 @@ namespace Core.Controllers;
 [Injectable]
 public class NotifierController
 {
+    private readonly HttpServerHelper _httpServerHelper;
+    private readonly NotifierHelper _notifierHelper;
+
+    public NotifierController(
+        HttpServerHelper httpServerHelper,
+        NotifierHelper notifierHelper)
+    {
+        _httpServerHelper = httpServerHelper;
+        _notifierHelper = notifierHelper;
+    }
+
     /// <summary>
     /// Resolve an array of session notifications.
     ///
@@ -20,22 +32,29 @@ public class NotifierController
     }
 
     /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="sessionId"></param>
-    /// <returns></returns>
-    public string GetServer(string sessionId)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
     /// Handle client/notifier/channel/create
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
     public NotifierChannel GetChannel(string sessionId)
     {
-        throw new NotImplementedException();
+        return new NotifierChannel
+        {
+            Server = _httpServerHelper.BuildUrl(),
+            ChannelId = sessionId,
+            Url = "",
+            NotifierServer = GetServer(sessionId),
+            WebSocket = _notifierHelper.GetWebSocketServer(sessionId)
+        };
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns></returns>
+    public string GetServer(string sessionId)
+    {
+        return $"{_httpServerHelper.GetBackendUrl()}/notifierServer/get/{sessionId}";
     }
 }
