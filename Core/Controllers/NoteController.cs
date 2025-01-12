@@ -2,12 +2,21 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
+using Core.Routers;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class NoteController
 {
+    private readonly EventOutputHolder _eventOutputHolder;
+
+    public NoteController(
+        EventOutputHolder eventOutputHolder)
+    {
+        _eventOutputHolder = eventOutputHolder;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -20,7 +29,7 @@ public class NoteController
         NoteActionData body,
         string sessionId)
     {
-        throw new NotImplementedException();
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -35,7 +44,7 @@ public class NoteController
         NoteActionData body,
         string sessionId)
     {
-        throw new NotImplementedException();
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
@@ -50,6 +59,8 @@ public class NoteController
         NoteActionData body,
         string sessionId)
     {
-        throw new NotImplementedException();
+        pmcData.Notes.DataNotes.RemoveAt(body.Index.Value);
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 }
