@@ -45,7 +45,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID)
+    public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.RemoveItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -60,7 +60,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID)
+    public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.SplitItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -75,7 +75,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID)
+    public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.MergeItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -90,7 +90,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID)
+    public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.TransferItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -165,7 +165,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID)
+    public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.BindItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -180,7 +180,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID)
+    public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.UnBindItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -195,7 +195,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID)
+    public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.ExamineItem(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -225,7 +225,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID)
+    public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.SortInventory(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -240,7 +240,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionID)
+    public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.CreateMapMarker(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -255,7 +255,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionID)
+    public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.DeleteMapMarker(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
@@ -270,7 +270,7 @@ public class InventoryCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID)
+    public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
         // _inventoryController.EditMapMarker(pmcData, info, sessionID, output);
         // TODO: InventoryController is not implemented rn
