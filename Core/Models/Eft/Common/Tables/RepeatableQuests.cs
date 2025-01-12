@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -56,7 +56,7 @@ public class RepeatableQuestStatus
     public string? Uid { get; set; }
 
     [JsonPropertyName("qid")]
-    public string? Qid { get; set; }
+    public string? QId { get; set; }
 
     [JsonPropertyName("startTime")]
     public long? StartTime { get; set; }

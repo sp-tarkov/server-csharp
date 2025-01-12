@@ -496,11 +496,49 @@ public class QuestHelper
     /**
      * Add all quests to a profile with the provided statuses
      * @param pmcProfile profile to update
-     * @param statuses statuses quests should have
+     * @param statuses statuses quests should have added to profile
      */
     public void AddAllQuestsToProfile(PmcData pmcProfile, List<QuestStatusEnum> statuses)
     {
-        throw new NotImplementedException();
+        // Iterate over all quests in db
+        var quests = _databaseService.GetQuests();
+        foreach (var (key, questData) in quests) {
+            // Quest from db matches quests in profile, skip
+            if (pmcProfile.Quests.Any((x) => x.QId == questData.Id))
+            {
+                continue;
+            }
+
+            // Create dict of status to add to quest in profile
+            var statusesDict = new Dictionary<QuestStatusEnum, long>();
+            foreach (var status in statuses)
+            {
+                statusesDict.Add(status, _timeUtil.GetTimeStamp());
+            }
+
+            var questRecordToAdd = new QuestStatus {
+                QId = key,
+                StartTime = _timeUtil.GetTimeStamp(),
+                Status = statuses[^1], // Get last status in list as currently active status
+                StatusTimers = statusesDict,
+                CompletedConditions = [],
+                AvailableAfter = 0,
+            };
+
+            // Check if the quest already exists in the profile
+            var existingQuest = pmcProfile.Quests.FirstOrDefault(x => x.QId == key);
+            if (existingQuest != null)
+            {
+                // Update existing quest
+                existingQuest.Status = questRecordToAdd.Status;
+                existingQuest.StatusTimers = questRecordToAdd.StatusTimers;
+            }
+            else
+            {
+                // Add new quest to the profile
+                pmcProfile.Quests.Add(questRecordToAdd);
+            }
+        }
     }
 
     public void FindAndRemoveQuestFromArrayIfExists(string questId, List<QuestStatus> quests)
@@ -623,7 +661,7 @@ public class QuestHelper
                 if (conditionToFulfil.AvailableAfter > 0)
                 {
                     // Compare current time to unlock time for previous quest
-                    prerequisiteQuest.StatusTimers.TryGetValue(prerequisiteQuest.Status.ToString(), out var previousQuestCompleteTime);
+                    prerequisiteQuest.StatusTimers.TryGetValue(prerequisiteQuest.Status.Value, out var previousQuestCompleteTime);
                     var unlockTime = previousQuestCompleteTime + conditionToFulfil.AvailableAfter;
                     if (unlockTime > _timeUtil.GetTimeStamp())
                     {

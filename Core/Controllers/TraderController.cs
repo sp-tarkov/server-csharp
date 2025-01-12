@@ -36,7 +36,7 @@ public class TraderController
     public List<TraderBase> GetAllTraders(string sessionId)
     {
         var traders = new List<TraderBase>();
-        
+        return traders;
     }
 
     /// <summary>
