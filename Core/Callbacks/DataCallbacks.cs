@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -127,11 +127,25 @@ public class DataCallbacks
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Settings);
     }
 
+    /// <summary>
+    /// Handle client/hideout/areas
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
     public string GetHideoutAreas(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Areas);
     }
 
+    /// <summary>
+    /// Handle client/hideout/production/recipes
+    /// </summary>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
+    /// <param name="sessionID"></param>
+    /// <returns></returns>
     public string GetHideoutProduction(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Production);
