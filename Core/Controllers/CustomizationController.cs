@@ -57,10 +57,10 @@ public class CustomizationController
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var clothing = _databaseService.GetCustomization();
-        var suits = _databaseService.GetTrader(traderId).Suits;
+        var suits = _databaseService.GetTrader(traderId)?.Suits;
 
-        var matchingSuits = suits.Where(s => clothing.ContainsKey(s.SuiteId)).ToList();
-        matchingSuits = matchingSuits?.Where(s => clothing[s.SuiteId].Properties.Side.Contains(pmcData.Info.Side)).ToList();
+        var matchingSuits = suits.Where(s => clothing.ContainsKey(s?.SuiteId)).ToList();
+        matchingSuits = matchingSuits?.Where(s => clothing[s?.SuiteId].Properties.Side.Contains(pmcData?.Info?.Side)).ToList();
 
         if (matchingSuits == null)
             throw new Exception(_localisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
@@ -83,21 +83,21 @@ public class CustomizationController
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
-        var traderOffer = GetTraderClothingOffer(sessionId, buyClothingRequest.Offer);
+        var traderOffer = GetTraderClothingOffer(sessionId, buyClothingRequest?.Offer);
         if (traderOffer == null)
         {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer));
             return output;
         }
 
-        var suitId = traderOffer.SuiteId;
+        var suitId = traderOffer?.SuiteId;
         if (OutfitAlreadyPurchased(suitId, sessionId))
         {
             var suitDetails = _databaseService.GetCustomization()[suitId];
             _logger.Error(_localisationService.GetText("customisation-item_already_purchased", new
             {
-                ItemId = suitDetails.Id,
-                ItemName = suitDetails.Name,
+                ItemId = suitDetails?.Id,
+                ItemName = suitDetails?.Name,
             }));
         }
 
@@ -111,7 +111,7 @@ public class CustomizationController
 
     private Suit GetTraderClothingOffer(string sessionId, string? offerId)
     {
-        var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
+        var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s?.Id == offerId);
         if (foundSuit == null)
             throw new Exception(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
 
@@ -143,61 +143,61 @@ public class CustomizationController
     /// <param name="output">Client response</param>
     private void PayForClothingItem(string sessionId, PmcData pmcData, PaymentItemForClothing paymentItemDetails, ItemEventRouterResponse output)
     {
-        var inventoryItem = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == paymentItemDetails.Id);
+        var inventoryItem = pmcData?.Inventory?.Items?.FirstOrDefault(x => x?.Id == paymentItemDetails?.Id);
         if (inventoryItem == null)
         {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_clothing_item_in_inventory", paymentItemDetails.Id));
             return;
         }
 
-        if (paymentItemDetails.Del != null)
+        if (paymentItemDetails?.Del != null)
         {
-            output.ProfileChanges[sessionId].Items.DeletedItems.Add(new Product
+            output?.ProfileChanges[sessionId]?.Items?.DeletedItems?.Add(new Product
             {
-                Id = inventoryItem.Id,
-                Template = inventoryItem.Template,
-                ParentId = inventoryItem.ParentId,
-                SlotId = inventoryItem.SlotId,
-                Location = (ItemLocation)inventoryItem.Location,
-                Upd = inventoryItem.Upd
+                Id = inventoryItem?.Id,
+                Template = inventoryItem?.Template,
+                ParentId = inventoryItem?.ParentId,
+                SlotId = inventoryItem?.SlotId,
+                Location = (ItemLocation)inventoryItem?.Location,
+                Upd = inventoryItem?.Upd
             });
 
-            pmcData.Inventory.Items.Remove(inventoryItem);
+            pmcData?.Inventory?.Items?.Remove(inventoryItem);
         }
 
-        if (inventoryItem.Upd == null)
+        if (inventoryItem?.Upd == null)
             inventoryItem.Upd = new() { StackObjectsCount = 1 };
         
-        if (inventoryItem.Upd.StackObjectsCount == null)
+        if (inventoryItem?.Upd?.StackObjectsCount == null)
             inventoryItem.Upd.StackObjectsCount = 1;
 
-        if (inventoryItem.Upd.StackObjectsCount == paymentItemDetails.Count)
+        if (inventoryItem?.Upd?.StackObjectsCount == paymentItemDetails?.Count)
         {
-            output.ProfileChanges[sessionId].Items.DeletedItems.Add(new Product
+            output?.ProfileChanges[sessionId]?.Items?.DeletedItems?.Add(new Product
             {
-                Id = inventoryItem.Id,
-                Template = inventoryItem.Template,
-                ParentId = inventoryItem.ParentId,
-                SlotId = inventoryItem.SlotId,
-                Location = (ItemLocation)inventoryItem.Location,
-                Upd = inventoryItem.Upd
+                Id = inventoryItem?.Id,
+                Template = inventoryItem?.Template,
+                ParentId = inventoryItem?.ParentId,
+                SlotId = inventoryItem?.SlotId,
+                Location = (ItemLocation)inventoryItem?.Location,
+                Upd = inventoryItem?.Upd
             });
             
-            pmcData.Inventory.Items.Remove(inventoryItem);
+            pmcData?.Inventory?.Items?.Remove(inventoryItem);
             return;
         }
 
-        if (inventoryItem.Upd.StackObjectsCount > paymentItemDetails.Count)
+        if (inventoryItem.Upd.StackObjectsCount > paymentItemDetails?.Count)
         {
-            inventoryItem.Upd.StackObjectsCount -= paymentItemDetails.Count;
-            output.ProfileChanges[sessionId].Items.ChangedItems.Add(new Product
+            inventoryItem.Upd.StackObjectsCount -= paymentItemDetails?.Count;
+            output?.ProfileChanges[sessionId]?.Items?.ChangedItems.Add(new Product
             {
-                Id = inventoryItem.Id,
-                Template = inventoryItem.Template,
-                ParentId = inventoryItem.ParentId,
-                SlotId = inventoryItem.SlotId,
-                Location = (ItemLocation)inventoryItem.Location,
-                Upd = inventoryItem.Upd
+                Id = inventoryItem?.Id,
+                Template = inventoryItem?.Template,
+                ParentId = inventoryItem?.ParentId,
+                SlotId = inventoryItem?.SlotId,
+                Location = (ItemLocation)inventoryItem?.Location,
+                Upd = inventoryItem?.Upd
             });
         }
     }
@@ -291,7 +291,7 @@ public class CustomizationController
                 throw new Exception($"Unknown game edition given from profile {profile}");
         }
 
-        var prestigeLevel = profile.CharacterData.PmcData.Info.PrestigeLevel;
+        var prestigeLevel = profile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
         if (prestigeLevel != null)
         {
             if (prestigeLevel >= 1)
@@ -324,10 +324,10 @@ public class CustomizationController
     /// <returns></returns>
     private string GetGameEdition(SptProfile profile)
     {
-        var edition = profile.CharacterData.PmcData.Info.GameVersion;
+        var edition = profile?.CharacterData?.PmcData?.Info?.GameVersion;
         if (edition == null)
         {
-            var launcherEdition = profile.ProfileInfo.Edition;
+            var launcherEdition = profile?.ProfileInfo?.Edition;
             switch (launcherEdition.ToLower())
             {
                 case "edge of darkness":
@@ -351,18 +351,18 @@ public class CustomizationController
     /// <returns></returns>
     public ItemEventRouterResponse SetClothing(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
-        foreach (var customisation in request.Customizations)
+        foreach (var customisation in request?.Customizations)
         {
             switch (customisation.Id)
             {
                 case "dogTag":
-                    pmcData.Customization.DogTag = customisation.Id;
+                    pmcData.Customization.DogTag = customisation?.Id;
                     break;
                 case "suite":
                     ApplyClothingItemToProfile(customisation, pmcData);
                     break;
                 default:
-                    _logger.Error($"Unhandled customisation type: {customisation.Type}");
+                    _logger.Error($"Unhandled customisation type: {customisation?.Type}");
                     break;
             }
         }
@@ -377,24 +377,24 @@ public class CustomizationController
     /// <param name="pmcData">Profile to update</param>
     private void ApplyClothingItemToProfile(CustomizationSetOption customisation, PmcData pmcData)
     {
-        var dbSuit = _databaseService.GetCustomization()[customisation.Id];
+        var dbSuit = _databaseService.GetCustomization()[customisation?.Id];
         if (dbSuit == null)
         {
-            _logger.Error($"Unable to find suit customisation id: {customisation.Id}, cannot apply clothing to player profile: {pmcData.Id}");
+            _logger.Error($"Unable to find suit customisation id: {customisation?.Id}, cannot apply clothing to player profile: {pmcData.Id}");
             return;
         }
 
         if (dbSuit.Parent == "5cd944d01388ce000a659df9")
         {
-            pmcData.Customization.Body = dbSuit.Properties.Body;
-            pmcData.Customization.Hands = dbSuit.Properties.Hands;
+            pmcData.Customization.Body = dbSuit?.Properties?.Body;
+            pmcData.Customization.Hands = dbSuit?.Properties?.Hands;
 
             return;
         }
 
         if (dbSuit.Parent == "5cd944ca1388ce03a44dc2a4")
         {
-            pmcData.Customization.Feet = dbSuit.Properties.Feet;
+            pmcData.Customization.Feet = dbSuit?.Properties?.Feet;
         }
     }
 }
