@@ -8,7 +8,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogueCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(DialogueCallbacks))]
 public class DialogueCallbacks : OnUpdate
 {

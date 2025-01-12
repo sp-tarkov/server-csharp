@@ -135,7 +135,7 @@ public class GameController
                 
                 // flag as migrated
                 fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
-                _logger.Success($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
+                _logger.Info($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
             }
             
             // with our method of converting type from array for this prop, we *might* not need this?

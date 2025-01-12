@@ -182,7 +182,7 @@ public class Watermark {
 
         // Log watermark to screen
         foreach (var text in result) {
-            _logger.LogWithColor(text, LogTextColor.Yellow);
+            _logger.Warning(text);
         }
     }
 }

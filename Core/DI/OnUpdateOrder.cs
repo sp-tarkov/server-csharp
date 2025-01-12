@@ -2,10 +2,10 @@ namespace Core.DI;
 
 public static class OnUpdateOrder
 {
-    public const int DialogCallbacks = 0;
-    public const int HideoutCallbacks = 1;
-    public const int TraderCallbacks = 2;
-    public const int RagfairCallbacks = 3;
-    public const int InsuranceCallbacks = 4;
-    public const int SaveCallbacks = 5;
+    public const int DialogueCallbacks = 0;
+    public const int HideoutCallbacks = 100;
+    public const int TraderCallbacks = 200;
+    public const int RagfairCallbacks = 300;
+    public const int InsuranceCallbacks = 400;
+    public const int SaveCallbacks = 500;
 }
