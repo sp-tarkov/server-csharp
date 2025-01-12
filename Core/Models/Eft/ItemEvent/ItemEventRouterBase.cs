@@ -1,4 +1,4 @@
-﻿using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 
@@ -12,11 +12,7 @@ public class ItemEventRouterBase
     public List<Warning>? Warnings { get; set; }
 
     [JsonPropertyName("profileChanges")]
-    public object ProfileChanges { get; set; } // TODO: Types given TProfileChanges | ""
-}
-
-public class TProfileChanges : Dictionary<string, ProfileChange>
-{
+    public Dictionary<string, ProfileChange> ProfileChanges { get; set; }
 }
 
 public class Warning
@@ -40,7 +36,7 @@ public class ProfileChange
     public string? Id { get; set; }
 
     [JsonPropertyName("experience")]
-    public int? Experience { get; set; }
+    public double? Experience { get; set; }
 
     [JsonPropertyName("quests")]
     public List<Quest>? Quests { get; set; }
@@ -68,7 +64,7 @@ public class ProfileChange
     public Skills? Skills { get; set; }
 
     [JsonPropertyName("health")]
-    public Common.Health Health { get; set; }
+    public BotBaseHealth Health { get; set; }
 
     [JsonPropertyName("traderRelations")]
     public Dictionary<string, TraderData>? TraderRelations { get; set; }
