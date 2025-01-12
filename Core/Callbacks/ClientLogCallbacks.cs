@@ -55,6 +55,18 @@ public class ClientLogCallbacks
     public string ReleaseNotes()
     {
         var data = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).Release;
+        data.BetaDisclaimerText = "BetaDisclaimerText";
+        data.BetaDisclaimerAcceptText = "BetaDisclaimerAcceptText";
+        data.ServerModsLoadedText = "ServerModsLoadedText";
+        data.ClientModsLoadedText = "clientModsLoadedText";
+        data.ClientModsLoadedDebugText = "clientModsLoadedDebugText";
+        data.ClientModsLoadedDebugText = "clientModsLoadedDebugText";
+        data.IllegalPluginsExceptionText = "IllegalPluginsExceptionText";
+        data.ReleaseSummaryText = "ReleaseSummaryText";
+        data.IsBeta = false;
+        data.IsModdable = true;
+        data.IsModded = false;
+        
         
         // data.betaDisclaimerText = ProgramStatics.MODS
         //     ? this.localisationService.getText("release-beta-disclaimer-mods-enabled")
