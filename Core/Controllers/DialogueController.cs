@@ -1,14 +1,32 @@
 using Core.Annotations;
+using Core.Helpers;
+using Core.Helpers.Dialogue;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Servers;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class DialogueController
 {
+    private readonly DialogueHelper _dialogueHelper;
+    private readonly ProfileHelper _profileHelper;
+    private readonly SaveServer _saveServer;
+    private readonly List<IDialogueChatBot> _dialogueChatBots;
+
+    public DialogueController(
+        DialogueHelper dialogueHelper,
+        ProfileHelper profileHelper,
+        SaveServer saveServer)
+    {
+        _dialogueHelper = dialogueHelper;
+        _profileHelper = profileHelper;
+        _saveServer = saveServer;
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -35,7 +53,33 @@ public class DialogueController
     /// <returns>GetFriendListDataResponse</returns>
     public GetFriendListDataResponse GetFriendList(string sessionId)
     {
-        throw new NotImplementedException();
+        // Add all chatbots to the friends list
+        var friends = _dialogueChatBots.Select((bot) => bot.GetChatBot()).ToList();
+
+        // Add any friends the user has after the chatbots
+        var profile = _profileHelper.GetFullProfile(sessionId);
+        if (profile?.FriendProfileIds is not null)
+        {
+            foreach (var friendId in profile.FriendProfileIds) {
+                var friendProfile = _profileHelper.GetChatRoomMemberFromSessionId(friendId);
+                if (friendProfile is not null)
+                {
+                    friends.Add(new UserDialogInfo
+                    {
+                        Id = friendProfile.Id,
+                        Aid = friendProfile.Aid,
+                        Info = friendProfile.Info,
+                    } );
+                }
+            }
+        }
+
+        return new GetFriendListDataResponse
+        {
+            Friends = friends,
+            Ignore = [],
+            InIgnoreList = []
+        };
     }
 
     /// <summary>
@@ -47,7 +91,13 @@ public class DialogueController
     /// <returns>list of dialogs</returns>
     public List<DialogueInfo> GenerateDialogueList(string sessionId)
     {
-        throw new NotImplementedException();
+        var data = new List<DialogueInfo>();
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
+        {
+            data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
+        }
+
+        return data;
     }
 
     /// <summary>
@@ -60,7 +110,20 @@ public class DialogueController
         string dialogueId,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialogue = dialogs.GetValueOrDefault(dialogueId);
+
+        var result = new DialogueInfo {
+            Id = dialogueId,
+            Type = dialogue.Type ?? MessageType.NPC_TRADER,
+            Message = _dialogueHelper.GetMessagePreview(dialogue),
+            New = dialogue.New,
+            AttachmentsNew = dialogue.AttachmentsNew,
+            Pinned = dialogue.Pinned,
+            Users = GetDialogueUsers(dialogue, dialogue.Type.Value, sessionId),
+        };
+
+        return result;
     }
 
     /// <summary>
@@ -71,11 +134,36 @@ public class DialogueController
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
     public List<UserDialogInfo> GetDialogueUsers(
-        Dialogue dialogue,
+        Dialogue dialog,
         MessageType messageType,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _saveServer.GetProfile(sessionId);
+
+        // User to user messages are special in that they need the player to exist in them, add if they don't
+        if (
+            messageType == MessageType.USER_MESSAGE &&
+            !dialog.Users.Any((userDialog) => userDialog.Id == profile.CharacterData.PmcData.SessionId))
+        {
+            // nullguard
+            dialog.Users ??= [];
+
+            dialog.Users.Add( new UserDialogInfo
+            {
+                Id = profile.CharacterData.PmcData.SessionId,
+                Aid = profile.CharacterData.PmcData.Aid,
+                Info = new UserDialogDetails
+                {
+                    Level = profile.CharacterData.PmcData.Info.Level,
+                    Nickname = profile.CharacterData.PmcData.Info.Nickname,
+                    Side = profile.CharacterData.PmcData.Info.Side,
+                    MemberCategory = profile.CharacterData.PmcData.Info.MemberCategory,
+                    SelectedMemberCategory = profile.CharacterData.PmcData.Info.SelectedMemberCategory,
+                },
+            });
+        }
+
+        return dialog.Users;
     }
 
     /// <summary>

@@ -130,6 +130,9 @@ public class Quest
     public double ChangeStandingCost { get; set; }
 }
 
+/// <summary>
+/// Same as BotBase.Quests
+/// </summary>
 public class QuestStatus
 {
     [JsonPropertyName("id")]
@@ -139,16 +142,16 @@ public class QuestStatus
     public string? Uid { get; set; }
     
     [JsonPropertyName("qid")]
-    public string? Qid { get; set; }
+    public string? QId { get; set; }
     
     [JsonPropertyName("startTime")]
     public double? StartTime { get; set; }
     
     [JsonPropertyName("status")]
-    public double? Status { get; set; }
+    public QuestStatusEnum? Status { get; set; }
     
     [JsonPropertyName("statusTimers")]
-    public Dictionary<string, double>? StatusTimers { get; set; }
+    public Dictionary<QuestStatusEnum, long>? StatusTimers { get; set; }
     
     [JsonPropertyName("completedConditions")]
     public List<string>? CompletedConditions { get; set; }

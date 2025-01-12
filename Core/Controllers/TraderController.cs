@@ -35,7 +35,8 @@ public class TraderController
     /// <returns>Return a list of all traders</returns>
     public List<TraderBase> GetAllTraders(string sessionId)
     {
-        throw new NotImplementedException();
+        var traders = new List<TraderBase>();
+        return traders;
     }
 
     /// <summary>

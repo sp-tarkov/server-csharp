@@ -1,10 +1,13 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Enums;
 
 namespace Core.Models.Eft.Profile;
 
 public class UserDialogInfo
 {
+    /// <summary>
+    /// _id
+    /// </summary>
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 

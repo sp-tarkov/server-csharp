@@ -13,6 +13,7 @@ public class JsonUtil
     private static readonly JsonSerializerOptions jsonSerializerOptionsNoIndent = new()
     {
         WriteIndented = false,
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
         Converters =
         {

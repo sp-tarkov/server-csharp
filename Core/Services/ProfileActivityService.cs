@@ -1,10 +1,19 @@
 ﻿using Core.Annotations;
+using Core.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ProfileActivityService
 {
+    private TimeUtil _timeUtil;
+    private Dictionary<string, long> profileActivityTimestamps = new();
+
+    public ProfileActivityService(TimeUtil timeUtil)
+    {
+        _timeUtil = timeUtil;
+    }
+
     /**
      * Was the requested profile active in the last requested minutes
      * @param sessionId Profile to check
@@ -13,7 +22,13 @@ public class ProfileActivityService
      */
     public bool ActiveWithinLastMinutes(string sessionId, int minutes)
     {
-        throw new NotImplementedException();
+        var currentTimestamp = _timeUtil.GetTimeStamp();
+        var storedActivityTimestamp = profileActivityTimestamps[sessionId];
+
+        if (storedActivityTimestamp != null)
+            return false;
+
+        return currentTimestamp - storedActivityTimestamp < minutes * 60;
     }
 
     /**
@@ -23,7 +38,21 @@ public class ProfileActivityService
      */
     public List<string> GetActiveProfileIdsWithinMinutes(int minutes)
     {
-        throw new NotImplementedException();
+        var currentTimestamp = _timeUtil.GetTimeStamp();
+        var result = new List<string>();
+
+        foreach (var activity in profileActivityTimestamps ?? new())
+        {
+            var lastActivityTimestamp = activity.Value;
+            if (lastActivityTimestamp == null)
+                continue;
+            
+            // Profile was active in last x minutes, add to return list
+            if (currentTimestamp - lastActivityTimestamp < minutes * 60)
+                result.Add(activity.Key);
+        }
+        
+        return result;
     }
 
     /**
@@ -32,6 +61,6 @@ public class ProfileActivityService
      */
     public void SetActivityTimestamp(string sessionId)
     {
-        throw new NotImplementedException();
+        profileActivityTimestamps[sessionId] = _timeUtil.GetTimeStamp();
     }
 }
