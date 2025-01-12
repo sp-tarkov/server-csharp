@@ -100,6 +100,6 @@ public class InRaidController
         string url,
         string sessionId)
     {
-        throw new NotImplementedException();
+        return _botConfig.AssaultToBossConversion.BossesToConvertToWeights.Keys.ToList();
     }
 }
