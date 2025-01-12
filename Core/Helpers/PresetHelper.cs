@@ -77,12 +77,12 @@ public class PresetHelper
                 _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)).ToDictionary();
         }
 
-        return _defaultWeaponPresets;
+        return _defaultEquipmentPresets;
     }
 
     public bool IsPreset(string id)
     {
-        throw new NotImplementedException();
+        return _databaseService.GetGlobals().ItemPresets.ContainsKey(id);
     }
 
     /**
