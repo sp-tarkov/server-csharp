@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
@@ -107,5 +107,5 @@ public class WeatherSettings<T>
     public List<T> Values { get; set; }
 
     [JsonPropertyName("weights")]
-    public List<double> Weights { get; set; }
+    public List<int> Weights { get; set; }
 }
