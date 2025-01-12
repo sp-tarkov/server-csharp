@@ -252,7 +252,10 @@ public class GameController
     
     public CurrentGroupResponse GetCurrentGroup(string sessionId)
     {
-        throw new NotImplementedException();
+        return new CurrentGroupResponse
+        {
+            Squad = []
+        };
     }
     
 
