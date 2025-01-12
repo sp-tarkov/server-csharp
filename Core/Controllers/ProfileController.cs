@@ -107,7 +107,7 @@ public class ProfileController
         {
             return new MiniProfile()
             {
-                Username = profile.ProfileInfo?.UserName ?? "",
+                Username = profile.ProfileInfo?.Username ?? "",
                 Nickname = "unknown",
                 Side = "unknown",
                 CurrentLevel = 0,
@@ -125,7 +125,7 @@ public class ProfileController
         var nextlvl = _profileHelper.GetExperience((int)(currlvl + 1));
         return new MiniProfile()
         {
-            Username = profile.ProfileInfo.UserName,
+            Username = profile.ProfileInfo.Username,
             Nickname = pmc.Info.Nickname,
             Side = pmc.Info.Side,
             CurrentLevel = (int)(pmc.Info.Level),
@@ -167,7 +167,7 @@ public class ProfileController
         pmcData.Savage = account.ScavengerId;
         pmcData.SessionId = sessionID;
         pmcData.Info.Nickname = info.Nickname;
-        pmcData.Info.LowerNickname = account.UserName.ToLower();
+        pmcData.Info.LowerNickname = account.Username.ToLower();
         pmcData.Info.RegistrationDate = _timeUtil.GetTimeStamp();
         pmcData.Info.Voice = _databaseService.GetCustomization()[info.VoiceId].Name;
         pmcData.Stats = _profileHelper.GetDefaultCounters();
