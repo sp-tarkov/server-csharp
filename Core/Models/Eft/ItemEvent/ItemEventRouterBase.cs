@@ -169,6 +169,9 @@ public class Product
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
+    /// <summary>
+    /// _tpl
+    /// </summary>
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
 
