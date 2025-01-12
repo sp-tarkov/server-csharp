@@ -5,6 +5,8 @@ using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
@@ -19,19 +21,26 @@ public class QuestHelper
     private readonly DatabaseService _databaseService;
     private readonly QuestConditionHelper _questConditionHelper;
     private readonly ProfileHelper _profileHelper;
+    private readonly LocalisationService _localisationService;
+    private readonly QuestConfig _questConfig;
 
     public QuestHelper(
         ILogger logger,
         TimeUtil timeUtil,
         DatabaseService databaseService,
         QuestConditionHelper questConditionHelper,
-        ProfileHelper profileHelper)
+        ProfileHelper profileHelper,
+        LocalisationService localisationService,
+        ConfigServer configServer)
     {
         _logger = logger;
         _timeUtil = timeUtil;
         _databaseService = databaseService;
         _questConditionHelper = questConditionHelper;
         _profileHelper = profileHelper;
+        _localisationService = localisationService;
+
+        _questConfig = configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
     }
 
     /// <summary>
@@ -53,7 +62,30 @@ public class QuestHelper
     /// <returns>true if player level is greater than or equal to quest</returns>
     public bool DoesPlayerLevelFulfilCondition(double playerLevel, QuestCondition condition)
     {
-        throw new System.NotImplementedException();
+        if (condition.ConditionType == "Level")
+        {
+            var conditionValue = double.Parse(condition.Value.ToString());
+            switch (condition.CompareMethod)
+            {
+                case ">=":
+                    return playerLevel >= conditionValue;
+                case ">":
+                    return playerLevel > conditionValue;
+                case "<":
+                    return playerLevel < conditionValue;
+                case "<=":
+                    return playerLevel <= conditionValue;
+                case "=":
+                    return playerLevel == conditionValue;
+                default:
+                    _logger.Error(
+                        _localisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod));
+
+                    return false;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -189,7 +221,20 @@ public class QuestHelper
      */
     public bool QuestIsForOtherSide(string playerSide, string questId)
     {
-        throw new NotImplementedException();
+        var isUsec = playerSide.ToLower() == "usec";
+        if (isUsec && _questConfig.BearOnlyQuests.Contains(questId))
+        {
+            // Player is usec and quest is bear only, skip
+            return true;
+        }
+
+        if (!isUsec && _questConfig.UsecOnlyQuests.Contains(questId))
+        {
+            // Player is bear and quest is usec only, skip
+            return true;
+        }
+
+        return false;
     }
 
     /**
