@@ -9,6 +9,7 @@ using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
@@ -34,8 +35,8 @@ public class ProfileController
 
     // TODO: MailSendService mailSendService: MailSendService
     protected PlayerScavGenerator _playerScavGenerator;
+    private readonly EventOutputHolder _eventOutputHolder;
 
-    // TODO: EventOutputHolder eventOutputHolder: EventOutputHolder
     protected TraderHelper _traderHelper;
     protected DialogueHelper _dialogueHelper;
     protected QuestHelper _questHelper;
@@ -52,9 +53,9 @@ public class ProfileController
         ProfileFixerService profileFixerService,
         LocalisationService localisationService,
         SeasonalEventService seasonalEventService,
-        // TODO: MailSendService mailSendService: MailSendService,
+        // TODO: MailSendService mailSendService,
         PlayerScavGenerator playerScavGenerator,
-        // TODO: EventOutputHolder eventOutputHolder: EventOutputHolder,
+        EventOutputHolder eventOutputHolder,
         TraderHelper traderHelper,
         DialogueHelper dialogueHelper,
         QuestHelper questHelper,
@@ -72,6 +73,7 @@ public class ProfileController
         _localisationService = localisationService;
         _seasonalEventService = seasonalEventService;
         _playerScavGenerator = playerScavGenerator;
+        _eventOutputHolder = eventOutputHolder;
         _traderHelper = traderHelper;
         _dialogueHelper = dialogueHelper;
         _questHelper = questHelper;
@@ -233,7 +235,7 @@ public class ProfileController
             ]);
 
             // Make unused response so applyQuestReward works
-            ItemEventRouterResponse? response = null; // TODO => _eventOutputHolder.GetOutput(sessionID);
+            ItemEventRouterResponse? response = _eventOutputHolder.GetOutput(sessionID);
 
             // Add rewards for starting quests to profile
             GivePlayerStartingQuestRewards(profileDetails, sessionID, response);
