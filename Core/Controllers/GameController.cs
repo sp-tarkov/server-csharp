@@ -2,6 +2,9 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
@@ -9,12 +12,19 @@ namespace Core.Controllers;
 [Injectable]
 public class GameController
 {
-    protected ILogger _logger;
-    
-    
-    public GameController()
+    private readonly ConfigServer _configServer;
+    private readonly ILogger _logger;
+    private readonly CoreConfig _coreConfig;
+
+
+    public GameController(
+        ILogger logger,
+        ConfigServer configServer)
     {
-        
+        _logger = logger;
+        _configServer = configServer;
+
+        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
     
     /// <summary>
@@ -132,7 +142,7 @@ public class GameController
     /// <returns></returns>
     public SurveyResponseData GetSurvey(string sessionId)
     {
-        throw new NotImplementedException();
+        return this._coreConfig.Survey;
     }
 
     /// <summary>
