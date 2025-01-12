@@ -1,4 +1,5 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
@@ -9,6 +10,13 @@ namespace Core.Controllers;
 [Injectable]
 public class QuestController
 {
+    private readonly QuestHelper _questHelper;
+
+    public QuestController(
+        QuestHelper questHelper)
+    {
+        _questHelper = questHelper;
+    }
     // TODO
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionId)
     {
@@ -32,6 +40,6 @@ public class QuestController
 
     public List<Quest> GetClientQuest(string sessionId)
     {
-        throw new NotImplementedException();
+        return _questHelper.GetClientQuests(sessionId);
     }
 }

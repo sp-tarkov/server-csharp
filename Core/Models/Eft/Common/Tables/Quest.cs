@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
 
@@ -12,6 +12,9 @@ public class Quest
     [JsonPropertyName("QuestName")]
     public string? QuestName { get; set; }
 
+    /// <summary>
+    /// _id
+    /// </summary>
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
@@ -115,7 +118,7 @@ public class Quest
     /// Status of quest to player
     /// </summary>
     [JsonPropertyName("sptStatus")]
-    public QuestStatus? SptStatus { get; set; }
+    public QuestStatusEnum? SptStatus { get; set; }
     
     [JsonPropertyName("questStatus")]
     public QuestStatus? QuestStatus { get; set; }

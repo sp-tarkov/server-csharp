@@ -1,16 +1,35 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
+using Core.Services;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class QuestHelper
 {
+    private readonly ILogger _logger;
+    private readonly DatabaseService _databaseService;
+    private readonly QuestConditionHelper _questConditionHelper;
+    private readonly ProfileHelper _profileHelper;
+
+    public QuestHelper(
+        ILogger logger,
+        DatabaseService databaseService,
+        QuestConditionHelper questConditionHelper,
+        ProfileHelper profileHelper)
+    {
+        _logger = logger;
+        _databaseService = databaseService;
+        _questConditionHelper = questConditionHelper;
+        _profileHelper = profileHelper;
+    }
+
     /// <summary>
     /// Get status of a quest in player profile by its id
     /// </summary>
@@ -292,7 +311,7 @@ public class QuestHelper
      */
     public List<Quest> GetQuestsFromDb()
     {
-        throw new NotImplementedException();
+        return _databaseService.GetQuests().Values.ToList();
     }
 
     /**
@@ -579,7 +598,7 @@ public class QuestHelper
      * @param playerLevel level of player to test against quest
      * @returns true if quest can be seen/accepted by player of defined level
      */
-    protected bool PlayerLevelFulfillsQuestRequirement(Quest quest, int playerLevel)
+    protected bool PlayerLevelFulfillsQuestRequirement(Quest quest, double playerLevel)
     {
         throw new NotImplementedException();
     }

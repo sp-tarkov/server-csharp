@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Services;
 
@@ -22,7 +22,7 @@ public class AchievementController
 
     public GetAchievementsResponse GetAchievements(string sessionID)
     {
-        return new()
+        return new GetAchievementsResponse
         {
             Achievements = _databaseService.GetAchievements()
         };
