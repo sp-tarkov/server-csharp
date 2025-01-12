@@ -1,10 +1,15 @@
 using Core.Annotations;
+using Core.Context;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
@@ -12,19 +17,86 @@ namespace Core.Controllers;
 [Injectable]
 public class GameController
 {
-    private readonly ConfigServer _configServer;
     private readonly ILogger _logger;
+    private readonly ConfigServer _configServer;
+    private readonly DatabaseService _databaseService;
+    private readonly TimeUtil _timeUtil;
+    // private readonly PreSptModLoader _preSptModLoader;
+    private readonly HttpServerHelper _httpServerHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly RandomUtil _randomUtil;
+    private readonly HideoutHelper _hideoutHelper;
+    private readonly ProfileHelper _profileHelper;
+    private readonly ProfileFixerService _profileFixerService;
+    private readonly LocalisationService _localisationService;
+    private readonly PostDbLoadService _postDbLoadService;
+    private readonly CustomLocationWaveService _customLocationWaveService;
+    private readonly OpenZoneService _openZoneService;
+    private readonly SeasonalEventService _seasonalEventService;
+    private readonly ItemBaseClassService _itemBaseClassService;
+    private readonly GiftService _giftService;
+    private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
+    private readonly ProfileActivityService _profileActivityService;
+    private readonly ApplicationContext _applicationContext;
+    private readonly ICloner _cloner;
+    
     private readonly CoreConfig _coreConfig;
-
+    private readonly HttpConfig _httpConfig;
+    private readonly RagfairConfig _ragfairConfig;
+    private readonly HideoutConfig _hideoutConfig;
+    private readonly BotConfig _botConfig;
 
     public GameController(
         ILogger logger,
-        ConfigServer configServer)
+        ConfigServer configServer,
+        DatabaseService databaseService,
+        TimeUtil timeUtil,
+        HttpServerHelper httpServerHelper,
+        InventoryHelper inventoryHelper,
+        RandomUtil randomUtil,
+        HideoutHelper hideoutHelper,
+        ProfileHelper profileHelper,
+        ProfileFixerService profileFixerService,
+        LocalisationService localisationService,
+        PostDbLoadService postDbLoadService,
+        CustomLocationWaveService customLocationWaveService,
+        OpenZoneService openZoneService,
+        SeasonalEventService seasonalEventService,
+        ItemBaseClassService itemBaseClassService,
+        GiftService giftService,
+        RaidTimeAdjustmentService raidTimeAdjustmentService,
+        ProfileActivityService profileActivityService,
+        ApplicationContext applicationContext,
+        ICloner cloner
+        )
     {
         _logger = logger;
         _configServer = configServer;
+        _databaseService = databaseService;
+        _timeUtil = timeUtil;
+        _httpServerHelper = httpServerHelper;
+        _inventoryHelper = inventoryHelper;
+        _randomUtil = randomUtil;
+        _hideoutHelper = hideoutHelper;
+        _profileHelper = profileHelper;
+        _profileFixerService = profileFixerService;
+        _localisationService = localisationService;
+        _postDbLoadService = postDbLoadService;
+        _customLocationWaveService = customLocationWaveService;
+        _openZoneService = openZoneService;
+        _seasonalEventService = seasonalEventService;
+        _itemBaseClassService = itemBaseClassService;
+        _giftService = giftService;
+        _raidTimeAdjustmentService = raidTimeAdjustmentService;
+        _profileActivityService = profileActivityService;
+        _applicationContext = applicationContext;
+        _cloner = cloner;
 
         _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _httpConfig = configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        _ragfairConfig = configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
+        _hideoutConfig = configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
+        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
     }
     
     /// <summary>
@@ -34,11 +106,93 @@ public class GameController
     /// <param name="info"></param>
     /// <param name="sessionId"></param>
     /// <param name="startTimeStampMs"></param>
-    public void GameStart(
-        string url,
-        EmptyRequestData info,
-        string sessionId,
-        long startTimeStampMs)
+    public void GameStart(string url, EmptyRequestData info, string sessionId, long startTimeStampMs)
+    {
+        // Store client start time in app context
+        _applicationContext.AddValue(ContextVariableType.CLIENT_START_TIMESTAMP, $"{sessionId}_{startTimeStampMs}");
+        
+        _profileActivityService.SetActivityTimestamp(sessionId);
+        
+        // repeatableQuests are stored by in profile.Quests due to the responses of the client (e.g. Quests in
+        // offraidData). Since we don't want to clutter the Quests list, we need to remove all completed (failed or
+        // successful) repeatable quests. We also have to remove the Counters from the repeatableQuests
+        if (sessionId != null)
+        {
+            var fullProfile = _profileHelper.GetFullProfile(sessionId);
+            if (fullProfile.ProfileInfo.IsWiped.Value)
+                return;
+
+            if (fullProfile.SptData.Migrations == null)
+                fullProfile.SptData.Migrations = new();
+            
+            if (fullProfile.FriendProfileIds == null)
+                fullProfile.FriendProfileIds = new();
+
+            if (fullProfile.SptData.Version.Contains("3.9.") && !fullProfile.SptData.Migrations.Any(m => m.Key == "39x"))
+            {
+                _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData.PmcData.Inventory.Items);
+                Migrate39xProfile(fullProfile);
+                
+                // flag as migrated
+                fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
+                _logger.Success($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
+            }
+            
+            // with our method of converting type from array for this prop, we *might* not need this?
+            // if (Array.isArray(fullProfile.characters.pmc.WishList)) {
+            //     fullProfile.characters.pmc.WishList = {};
+            // }
+            //
+            // if (Array.isArray(fullProfile.characters.scav.WishList)) {
+            //     fullProfile.characters.scav.WishList = {};
+            // }
+            
+            if (fullProfile.DialogueRecords != null)
+                _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+            
+            _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo.Username}");
+
+            var pmcProfile = fullProfile.CharacterData.PmcData;
+
+            if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+                _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+            
+            if (pmcProfile.Health != null)
+                UpdateProfileHealthValues(pmcProfile);
+
+            if (pmcProfile.Inventory != null)
+            {
+                SendPraporGiftsToNewProfiles(pmcProfile);
+                _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
+            }
+            
+            _profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
+            _profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
+
+            if (pmcProfile.Hideout != null)
+            {
+                _profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile);
+                _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
+                _hideoutHelper.UnlockHideoutWallInProfile(pmcProfile);
+            }
+            
+            LogProfileDetails(fullProfile);
+            SaveActiveModsToProfile(fullProfile);
+
+            if (pmcProfile.Info != null)
+            {
+                AddPlayerToPmcNames(pmcProfile);
+                CheckForAndRemoveUndefinedDialogues(fullProfile);
+            }
+            
+            if (pmcProfile.Skills.Common != null)
+                WarnOnActiveBotReloadSkill(pmcProfile);
+            
+            _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
+        }
+    }
+
+    private void Migrate39xProfile(SptProfile fullProfile)
     {
         throw new NotImplementedException();
     }
@@ -210,6 +364,6 @@ public class GameController
 
     public void Load()
     {
-        return; // TODO: actually implement
+        _postDbLoadService.PerformPostDbLoadActions();
     }
 }
