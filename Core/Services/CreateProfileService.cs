@@ -1,17 +1,18 @@
 using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
-using Core.Models.Eft.Profile;
-using Core.Servers;
-using Core.Services;
-using Core.Utils.Cloners;
-using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Routers;
+using Core.Servers;
+using Core.Utils;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
+
+namespace Core.Services;
 
 [Injectable]
 public class CreateProfileService
@@ -173,9 +174,9 @@ public class CreateProfileService
     }
 
     /**
-     * Delete a profile
-     * @param sessionID Id of profile to delete
-     */
+ * Delete a profile
+ * @param sessionID Id of profile to delete
+ */
     protected void DeleteProfileBySessionId(string sessionID)
     {
         if (_saveServer.GetProfiles().ContainsKey(sessionID))
@@ -191,9 +192,9 @@ public class CreateProfileService
     }
 
     /**
-     * make profiles pmcData.Inventory.equipment unique
-     * @param pmcData Profile to update
-     */
+ * make profiles pmcData.Inventory.equipment unique
+ * @param pmcData Profile to update
+ */
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
     {
         var oldEquipmentId = pmcData.Inventory.Equipment;
@@ -215,9 +216,9 @@ public class CreateProfileService
     }
 
     /**
-     * For each trader reset their state to what a level 1 player would see
-     * @param sessionId Session id of profile to reset
-     */
+ * For each trader reset their state to what a level 1 player would see
+ * @param sessionId Session id of profile to reset
+ */
     protected void ResetAllTradersInProfile(string sessionId)
     {
         foreach (var traderId in _databaseService.GetTraders().Keys)
@@ -227,10 +228,10 @@ public class CreateProfileService
     }
 
     /**
-         * Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable
-         * DOES NOT check that stash exists
-         * @param pmcData Profile to check
-         */
+     * Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable
+     * DOES NOT check that stash exists
+     * @param pmcData Profile to check
+     */
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
@@ -278,7 +279,7 @@ public class CreateProfileService
             case GameEditions.EDGE_OF_DARKNESS:
                 // Gets EoD tags
                 fullProfile.CustomisationUnlocks.Add( new CustomisationStorage {
-                Id = "6746fd09bafff85008048838",
+                    Id = "6746fd09bafff85008048838",
                     Source = CustomisationSource.DEFAULT,
                     Type = CustomisationType.DOG_TAG,
                 });
@@ -347,12 +348,12 @@ public class CreateProfileService
     }
 
     /**
-         * Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
-         * and send rewards to them in mail
-         * @param profileDetails Player profile
-         * @param sessionID Session id
-         * @param response Event router response
-         */
+     * Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
+     * and send rewards to them in mail
+     * @param profileDetails Player profile
+     * @param sessionID Session id
+     * @param response Event router response
+     */
     protected void GivePlayerStartingQuestRewards(
         SptProfile profileDetails,
         string sessionID,
@@ -378,15 +379,15 @@ public class CreateProfileService
             );
 
             /* TODO:
-            _mailSendService.sendLocalisedNpcMessageToPlayer(
-                sessionID,
-                this.traderHelper.getTraderById(questFromDb.traderId),
-                MessageType.QUEST_START,
-                messageId,
-                itemRewards,
-                this.timeUtil.getHoursAsSeconds(100),
-            );
-            */
+        _mailSendService.sendLocalisedNpcMessageToPlayer(
+            sessionID,
+            this.traderHelper.getTraderById(questFromDb.traderId),
+            MessageType.QUEST_START,
+            messageId,
+            itemRewards,
+            this.timeUtil.getHoursAsSeconds(100),
+        );
+        */
         }
     }
 }
