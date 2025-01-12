@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
+using Core.Models.Logging;
 using Core.Models.Utils;
 
 namespace Core.Models.Spt.Logging;
@@ -15,8 +16,8 @@ public class ClientLogRequest : IRequestData
     public string? Message { get; set; }
 
     [JsonPropertyName("Color")]
-    public string? Color { get; set; }
+    public LogTextColor? Color { get; set; }
 
     [JsonPropertyName("BackgroundColor")]
-    public string? BackgroundColor { get; set; }
+    public LogBackgroundColor? BackgroundColor { get; set; }
 }
