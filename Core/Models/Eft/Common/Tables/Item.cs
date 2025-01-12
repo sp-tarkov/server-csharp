@@ -23,7 +23,7 @@ public class Item
     public string? Desc { get; set; }
 
     [JsonPropertyName("upd")]
-    public Upd? Update { get; set; }
+    public Upd? Upd { get; set; }
 }
 
 public class ItemLocation

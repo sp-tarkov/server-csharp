@@ -18,7 +18,7 @@ public class CustomizationDynamicRouter : DynamicRouter
         jsonUtil,
         [
             new RouteAction(
-                "",
+                "/client/trading/customization/",
                 (
                     url,
                     info,

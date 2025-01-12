@@ -71,7 +71,7 @@ public class Info
     public int? Aid { get; set; }
 
     [JsonPropertyName("username")]
-    public string? UserName { get; set; }
+    public string? Username { get; set; }
 
     [JsonPropertyName("password")]
     public string? Password { get; set; }
