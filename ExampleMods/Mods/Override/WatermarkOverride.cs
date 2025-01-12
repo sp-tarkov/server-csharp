@@ -4,7 +4,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 
-namespace ExampleOverrideMod;
+namespace ExampleMods.Mods.Override;
 
 [Injectable(InjectableTypeOverride = typeof(Watermark))]
 public class WatermarkOverride : Watermark

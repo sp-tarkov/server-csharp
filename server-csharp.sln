@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6C0681F9-4013-4579-82DA-0A9297984FD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleOverrideMod", "ExampleOverrideMod\ExampleOverrideMod.csproj", "{0B9E34E4-04E1-4644-B508-2A53D198F059}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMods", "ExampleMods\ExampleMods.csproj", "{0A144F80-31B1-4CA0-AB98-1DC77169A56D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -26,9 +26,12 @@ Global
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0B9E34E4-04E1-4644-B508-2A53D198F059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0B9E34E4-04E1-4644-B508-2A53D198F059}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0B9E34E4-04E1-4644-B508-2A53D198F059}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0B9E34E4-04E1-4644-B508-2A53D198F059}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
