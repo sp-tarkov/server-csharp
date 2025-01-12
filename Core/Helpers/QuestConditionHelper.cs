@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Helpers;
@@ -10,28 +10,28 @@ public class QuestConditionHelper
         List<QuestCondition> questConditions,
         Func<QuestCondition, List<QuestCondition>> furtherFilter = null)
     {
-        throw new NotImplementedException();
+        return FilterConditions(questConditions, "Quest", furtherFilter);
     }
 
     public List<QuestCondition> GetLevelConditions(
         List<QuestCondition> questConditions,
         Func<QuestCondition, List<QuestCondition>> furtherFilter = null)
     {
-        throw new NotImplementedException();
+        return FilterConditions(questConditions, "Level", furtherFilter);
     }
 
     public List<QuestCondition> GetLoyaltyConditions(
         List<QuestCondition> questConditions,
         Func<QuestCondition, List<QuestCondition>> furtherFilter = null)
     {
-        throw new NotImplementedException();
+        return FilterConditions(questConditions, "TraderLoyalty", furtherFilter);
     }
 
     public List<QuestCondition> GetStandingConditions(
         List<QuestCondition> questConditions,
         Func<QuestCondition, List<QuestCondition>> furtherFilter = null)
     {
-        throw new NotImplementedException();
+        return FilterConditions(questConditions, "TraderStanding", furtherFilter);
     }
 
     protected List<QuestCondition> FilterConditions(
@@ -39,6 +39,15 @@ public class QuestConditionHelper
         string questType,
         Func<QuestCondition, List<QuestCondition>> furtherFilter = null)
     {
-        throw new NotImplementedException();
+        var filteredQuests = questConditions.Where((c) => {
+            if (c.ConditionType == questType)
+            {
+                // return true or run the passed in function
+                return furtherFilter is null || furtherFilter(c).Any();
+            }
+            return false;
+        }).ToList();
+
+        return filteredQuests;
     }
 }

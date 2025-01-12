@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
