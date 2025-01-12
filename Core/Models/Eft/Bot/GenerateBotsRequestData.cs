@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Bot;
 
-public class GenerateBotsRequestData
+public class GenerateBotsRequestData : IRequestData
 {
     [JsonPropertyName("conditions")]
     public List<Condition>? Conditions { get; set; }

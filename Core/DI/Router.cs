@@ -11,7 +11,7 @@ public abstract class Router
 {
     protected List<HandledRoute> handledRoutes = [];
 
-    public string GetTopLevelRoute()
+    public virtual string GetTopLevelRoute()
     {
         return "spt";
     }

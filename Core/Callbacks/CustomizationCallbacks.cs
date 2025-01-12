@@ -82,7 +82,7 @@ public class CustomizationCallbacks
     /// <param name="body"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetHideoutCustomisation(PmcData pmcData, EmptyRequestData info, string sessionID)
+    public string GetHideoutCustomisation(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID, info));
     }

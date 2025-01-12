@@ -12,7 +12,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(DataCallbacks))]
 public class DataCallbacks
 {
     protected HttpResponseUtil _httpResponseUtil;

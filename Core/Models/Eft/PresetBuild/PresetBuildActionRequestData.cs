@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.PresetBuild;
 
-public class PresetBuildActionRequestData
+public class PresetBuildActionRequestData  : IRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

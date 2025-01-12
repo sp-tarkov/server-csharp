@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Profile;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Builds;
 
-public class SetMagazineRequest
+public class SetMagazineRequest : IRequestData
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

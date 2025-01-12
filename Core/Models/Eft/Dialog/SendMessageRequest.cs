@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class SendMessageRequest
+public class SendMessageRequest : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

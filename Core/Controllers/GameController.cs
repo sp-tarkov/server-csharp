@@ -2,12 +2,21 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class GameController
 {
+    protected ILogger _logger;
+    
+    
+    public GameController()
+    {
+        
+    }
+    
     /// <summary>
     /// Handle client/game/start
     /// </summary>
@@ -54,7 +63,11 @@ public class GameController
         string sessionId,
         GameModeRequestData requestData)
     {
-        throw new NotImplementedException();
+        return new()
+        {
+            GameMode = "pve",
+            BackendUrl = "127.0.0.1:6969"
+        };
     }
 
     /// <summary>

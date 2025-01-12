@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class FriendRequestData
+public class FriendRequestData : IRequestData
 {
     [JsonPropertyName("status")]
     public int? Status { get; set; }

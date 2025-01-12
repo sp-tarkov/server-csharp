@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class SendSurveyOpinionRequest
+public class SendSurveyOpinionRequest : IRequestData
 {
     [JsonPropertyName("surveyId")]
     public int? SurveyId { get; set; }

@@ -1,4 +1,5 @@
 ﻿using Core.Annotations;
+using Core.Models.Eft.Common;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
@@ -6,7 +7,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(BundleCallbacks))]
 public class BundleCallbacks
 {
     protected HttpResponseUtil _httpResponseUtil;
@@ -34,10 +35,10 @@ public class BundleCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetBundles(string url, object info, string sessionID)
+    public string GetBundles(string url, EmptyRequestData info, string sessionID)
     {
         // return _httpResponseUtil.NoBody(_bundleLoader.GetBundles());
-        throw new NotImplementedException();
+        return _httpResponseUtil.NoBody(new List<object>());
     }
 
     public string GetBundle(string url, object info, string sessionID)

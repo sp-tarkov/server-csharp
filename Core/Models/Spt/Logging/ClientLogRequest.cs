@@ -1,8 +1,9 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Spt.Logging;
 
-public class ClientLogRequest
+public class ClientLogRequest : IRequestData
 {
     [JsonPropertyName("Source")]
     public string? Source { get; set; }

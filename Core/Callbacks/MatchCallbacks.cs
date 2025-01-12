@@ -38,7 +38,7 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string UpdatePing(string url, EmptyRequestData info, string sessionID)
+    public string UpdatePing(string url, UpdatePingRequestData info, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -230,7 +230,7 @@ public class MatchCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetMetrics(string url, object info, string sessionID)
+    public string GetMetrics(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetMatch().Metrics);
     }

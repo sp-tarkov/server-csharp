@@ -9,7 +9,7 @@ using Core.Utils;
 
 namespace Core.Callbacks;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(NotifierCallbacks))]
 public class NotifierCallbacks
 {
     protected HttpResponseUtil _httpResponseUtil;

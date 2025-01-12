@@ -11,6 +11,7 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.GameCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(GameCallbacks))]
 public class GameCallbacks : OnLoad
 {
     protected HttpResponseUtil _httpResponseUtil;
@@ -214,7 +215,7 @@ public class GameCallbacks : OnLoad
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetSurveyView(string url, object info, string sessionID)
+    public string GetSurveyView(string url, SendSurveyOpinionRequest info, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
