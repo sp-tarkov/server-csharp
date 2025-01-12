@@ -14,6 +14,7 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(InsuranceCallbacks))]
 public class InsuranceCallbacks : OnUpdate
 {
     protected InsuranceController _insuranceController;

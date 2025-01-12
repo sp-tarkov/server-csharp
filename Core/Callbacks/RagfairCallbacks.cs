@@ -14,6 +14,7 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.RagfairCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(RagfairCallbacks))]
 public class RagfairCallbacks : OnLoad, OnUpdate
 {
     protected HttpResponseUtil _httpResponseUtil;

@@ -7,6 +7,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Spt.Weather;
 using Core.Servers;
 using Core.Services;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 

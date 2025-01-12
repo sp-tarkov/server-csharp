@@ -6,6 +6,7 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
