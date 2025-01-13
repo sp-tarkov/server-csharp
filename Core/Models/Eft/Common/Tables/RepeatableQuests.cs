@@ -95,7 +95,7 @@ public class PmcDataRepeatableQuest
     public string? UnavailableTime { get; set; }
 
     [JsonPropertyName("activeQuests")]
-    public List<RepeatableQuest?>? ActiveQuests { get; set; }
+    public List<RepeatableQuest>? ActiveQuests { get; set; }
 
     [JsonPropertyName("inactiveQuests")]
     public List<RepeatableQuest>? InactiveQuests { get; set; }
