@@ -633,7 +633,7 @@ public class QuestHelper
                     if (unlockTime > _timeUtil.GetTimeStamp())
                     {
                         _logger.Debug(
-                            $"Quest ${ quest.QuestName} is locked for another ${unlockTime - _timeUtil.GetTimeStamp()} seconds");
+                            $"Quest { quest.QuestName} is locked for another: {unlockTime - _timeUtil.GetTimeStamp()} seconds");
                     }
                 }
             }

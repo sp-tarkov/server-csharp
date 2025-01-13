@@ -123,7 +123,7 @@ public class SaveServer
 
         if (profiles == null || profiles.Count == 0)
         {
-            throw new Exception($"no profiles found in saveServer with id: ${sessionId}");
+            throw new Exception($"no profiles found in saveServer with id: {sessionId}");
         }
 
         if (!profiles.TryGetValue(sessionId, out var sptProfile))
