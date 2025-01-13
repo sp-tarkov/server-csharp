@@ -18,7 +18,7 @@ public class WeatherStaticRouter : StaticRouter
         jsonUtil,
         [
             new RouteAction(
-                "",
+                "/client/weather",
                 (
                     url,
                     info,
@@ -26,7 +26,7 @@ public class WeatherStaticRouter : StaticRouter
                     output
                 ) => _weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
-                "",
+                "/client/localGame/weather",
                 (
                     url,
                     info,
