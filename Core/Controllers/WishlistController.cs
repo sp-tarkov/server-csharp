@@ -31,7 +31,7 @@ public class WishlistController
     {
         foreach (var item in request.Items)
         {
-            pmcData.WishList.Add(item.Key, item.Value);
+            pmcData.WishList.Dictionary.Add(item.Key, item.Value);
         }
 
         return _eventOutputHolder.GetOutput(sessionId);
@@ -51,7 +51,7 @@ public class WishlistController
     {
         foreach (var itemId in request.Items)
         {
-            pmcData.WishList.Remove(itemId);
+            pmcData.WishList.Dictionary.Remove(itemId);
         }
 
         return _eventOutputHolder.GetOutput(sessionId);
@@ -69,7 +69,7 @@ public class WishlistController
         ChangeWishlistItemCategoryRequest request,
         string sessionId)
     {
-        pmcData.WishList[request.Item] = request.Category.Value;
+        pmcData.WishList.Dictionary[request.Item] = request.Category.Value;
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
