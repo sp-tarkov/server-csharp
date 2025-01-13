@@ -245,75 +245,11 @@ public class CustomizationController
         var customisationResultsClone = _cloner.Clone(_databaseService.GetTemplates().CustomisationStorage);
 
         var profile = _profileHelper.GetFullProfile(sessionId);
-        switch (GetGameEdition(profile))
-        {
-            case GameEditions.EDGE_OF_DARKNESS:
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "6746fd09bafff85008048838",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "67471938bafff850080488b7",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                break;
-            case GameEditions.UNHEARD:
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "6746fd09bafff85008048838",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "67471938bafff850080488b7",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "67471928d17d6431550563b5",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "6747193f170146228c0d2226",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-                break;
-            default:
-                throw new Exception($"Unknown game edition given from profile {profile}");
-        }
-
-        var prestigeLevel = profile?.CharacterData?.PmcData?.Info?.PrestigeLevel;
-        if (prestigeLevel != null)
-        {
-            if (prestigeLevel >= 1)
-            {
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "674dbf593bee1152d407f005",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-            }
-            if (prestigeLevel >= 2)
-            {
-                customisationResultsClone.Add(new ()
-                {
-                    Id = "675dcfea7ae1a8792107ca99",
-                    Source = "default",
-                    Type = "dogTag"
-                });
-            }
-        }
+        if (profile != null)
+            return customisationResultsClone;
         
+        customisationResultsClone.AddRange(profile.CustomisationUnlocks ?? new());
+
         return customisationResultsClone;
     }
 
