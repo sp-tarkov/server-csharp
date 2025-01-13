@@ -58,9 +58,10 @@ public class ClientLogCallbacks
         data.BetaDisclaimerText = "BetaDisclaimerText";
         data.BetaDisclaimerAcceptText = "BetaDisclaimerAcceptText";
         data.ServerModsLoadedText = "ServerModsLoadedText";
+        data.ServerModsLoadedDebugText = "ServerModsLoadedDebugText";
         data.ClientModsLoadedText = "clientModsLoadedText";
         data.ClientModsLoadedDebugText = "clientModsLoadedDebugText";
-        data.ClientModsLoadedDebugText = "clientModsLoadedDebugText";
+        data.IllegalPluginsLoadedText = "IllegalPluginsLoadedText";
         data.IllegalPluginsExceptionText = "IllegalPluginsExceptionText";
         data.ReleaseSummaryText = "ReleaseSummaryText";
         data.IsBeta = false;
