@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
@@ -353,7 +353,7 @@ public class ProfileHelper
     {
         var items = profile.Inventory.Items;
         var secureContainer = items.First(i => i.SlotId == "SecuredContainer");
-        if (secureContainer != null)
+        if (secureContainer is not null)
         {
             // Find and remove container + children
             var childItemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
