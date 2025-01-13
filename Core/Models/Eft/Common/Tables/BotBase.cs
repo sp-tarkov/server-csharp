@@ -231,20 +231,9 @@ public class BotBaseHealth
     public CurrentMax? Hydration { get; set; }
     public CurrentMax? Energy { get; set; }
     public CurrentMax? Temperature { get; set; }
-    public BodyPartsHealth? BodyParts { get; set; }
+    public Dictionary<string, BodyPartHealth>? BodyParts { get; set; }
     public double? UpdateTime { get; set; }
     public bool? Immortal { get; set; }
-}
-
-public class BodyPartsHealth
-{
-    public BodyPartHealth? Head { get; set; }
-    public BodyPartHealth? Chest { get; set; }
-    public BodyPartHealth? Stomach { get; set; }
-    public BodyPartHealth? LeftArm { get; set; }
-    public BodyPartHealth? RightArm { get; set; }
-    public BodyPartHealth? LeftLeg { get; set; }
-    public BodyPartHealth? RightLeg { get; set; }
 }
 
 public class BodyPartHealth
