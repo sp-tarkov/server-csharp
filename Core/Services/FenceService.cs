@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
@@ -9,6 +9,14 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class FenceService
 {
+    private readonly DatabaseService _databaseService;
+
+    public FenceService(
+        DatabaseService databaseService)
+    {
+        _databaseService = databaseService;
+    }
+
     /// <summary>
     /// Replace main fence assort with new assort
     /// </summary>
@@ -495,7 +503,30 @@ public class FenceService
     /// <returns>FenceLevel object</returns>
     public FenceLevel GetFenceInfo(PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var fenceSettings = _databaseService.GetGlobals().Configuration.FenceSettings;
+        pmcData.TradersInfo.TryGetValue(fenceSettings.FenceIdentifier, out var pmcFenceInfo);
+
+        if (pmcFenceInfo is null)
+        {
+            return fenceSettings.Levels["0"];
+        }
+
+        var fenceLevels = fenceSettings.Levels.Select(x => x.Key);
+        var minLevel = fenceLevels.Min();
+        var maxLevel = fenceLevels.Max();
+        var pmcFenceLevel = Math.Floor(pmcFenceInfo.Standing.Value);
+        
+        if (pmcFenceLevel < int.Parse(minLevel))
+        {
+            return fenceSettings.Levels[minLevel];
+        }
+
+        if (pmcFenceLevel > int.Parse(maxLevel))
+        {
+            return fenceSettings.Levels[maxLevel];
+        }
+
+        return fenceSettings.Levels[pmcFenceLevel.ToString()];
     }
 
     /// <summary>

@@ -352,7 +352,7 @@ public class ProfileHelper
     public PmcData RemoveSecureContainer(PmcData profile)
     {
         var items = profile.Inventory.Items;
-        var secureContainer = items.First(i => i.SlotId == "SecuredContainer");
+        var secureContainer = items.FirstOrDefault(i => i.SlotId == "SecuredContainer");
         if (secureContainer is not null)
         {
             // Find and remove container + children
