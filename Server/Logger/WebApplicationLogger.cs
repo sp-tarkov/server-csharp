@@ -12,6 +12,11 @@ public class WebApplicationLogger : ILogger
         _logger = provider.CreateLogger("SptLogger");
     }
 
+    public void Success(string data)
+    {
+        _logger.LogInformation(data);
+    }
+
     public void Error(string data)
     {
         _logger.LogError(data);
