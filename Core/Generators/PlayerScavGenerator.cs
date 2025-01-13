@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -207,10 +207,8 @@ public class PlayerScavGenerator
     /// <returns>karma level</returns>
     protected double GetScavKarmaLevel(PmcData pmcData)
     {
-        var fenceInfo = pmcData.TradersInfo[Traders.FENCE];
-
         // can be empty during profile creation
-        if (fenceInfo == null)
+        if (!pmcData.TradersInfo.TryGetValue(Traders.FENCE, out var fenceInfo))
         {
             _logger.Warning(_localisationService.GetText("scav-missing_karma_level_getting_default"));
             return 0;
