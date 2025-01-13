@@ -375,7 +375,20 @@ public class QuestHelper
      */
     public Quest GetQuestFromDb(string questId, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        // May be a repeatable quest
+        var quest = _databaseService.GetQuests()[questId];
+        if (quest == null)
+        {
+            // Check daily/weekly objects
+            foreach (var repeatableQuest in pmcData.RepeatableQuests)
+            {
+                quest = repeatableQuest.ActiveQuests.FirstOrDefault(r => r.Id == questId);
+                if (quest != null)
+                    break;
+            }
+        }
+        
+        return quest;
     }
 
     /// <summary>
