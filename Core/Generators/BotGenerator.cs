@@ -112,7 +112,7 @@ public class BotGenerator
     {
         _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
 
-        return new BotBase();
+        return bot;
     }
 
     /// <summary>
