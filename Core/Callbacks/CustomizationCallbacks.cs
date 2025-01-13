@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -37,15 +37,9 @@ public class CustomizationCallbacks
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetSuits(string url, EmptyRequestData info, string sessionID)
+    public string GetCustomisationUnlocks(string url, EmptyRequestData info, string sessionID)
     {
-        var result = new GetSuitsResponse
-        {
-            Id = sessionID,
-            Suites = _saveServer.GetProfile(sessionID).Suits
-        };
-
-        return _httpResponseUtil.GetBody(result);
+        return _httpResponseUtil.GetBody(_saveServer.GetProfile(sessionID).CustomisationUnlocks);
     }
 
     /// <summary>

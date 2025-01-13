@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -24,7 +24,7 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _customizationCallbacks.GetSuits(url, info as EmptyRequestData, sessionID)),
+                ) => _customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/hideout/customization/offer/list",
                 (
