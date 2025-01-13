@@ -1,8 +1,8 @@
-﻿namespace Core.Models.Enums;
+namespace Core.Models.Enums;
 
 public enum SideType
 {
-    PMC,
-    SAVAGE,
-    RANDOM
+    Pmc,
+    Savage,
+    Random
 }

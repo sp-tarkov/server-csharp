@@ -1,21 +1,36 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
+using Core.Models.Enums.RaidSettings;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Services;
+using Core.Utils.Cloners;
 using BodyPart = Core.Models.Eft.Common.Tables.BodyPart;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotGenerator
 {
+    private readonly ILogger _logger;
+    private readonly DatabaseService _databaseService;
+    private readonly ICloner _cloner;
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
 
-    public BotGenerator()
+    public BotGenerator(
+        ILogger logger,
+        DatabaseService databaseService,
+        ICloner cloner
+        )
     {
+        _logger = logger;
+        _databaseService = databaseService;
+        _cloner = cloner;
     }
 
     /// <summary>
@@ -27,9 +42,30 @@ public class BotGenerator
     /// <param name="botTemplate">base bot template to use  (e.g. assault/pmcbot)</param>
     /// <param name="profile">profile of player generating pscav</param>
     /// <returns>BotBase</returns>
-    public PmcData GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
+    public BotBase GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
     {
-        throw new NotImplementedException();
+        var bot = GetCloneOfBotBase();
+        bot.Info.Settings.BotDifficulty = difficulty;
+        bot.Info.Settings.Role = role;
+        bot.Info.Side = "Savage";
+
+        var botGenDetails = new BotGenerationDetails{
+            IsPmc = false,
+            Side = "Savage",
+            Role = role,
+            BotRelativeLevelDeltaMax = 0,
+            BotRelativeLevelDeltaMin = 0,
+            BotCountToGenerate = 1,
+            BotDifficulty = difficulty,
+            IsPlayerScav = true,
+        };
+
+        bot = GenerateBot(sessionId, bot, botTemplate, botGenDetails);
+
+        // Sets the name after scav name shown in parentheses
+        bot.Info.MainProfileNickname = profile.Info.Nickname;
+
+        return bot;
     }
 
     /// <summary>
@@ -61,7 +97,7 @@ public class BotGenerator
     /// <returns>BotBase object</returns>
     public BotBase GetCloneOfBotBase()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_databaseService.GetBots().Base);
     }
 
     /// <summary>

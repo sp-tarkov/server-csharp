@@ -24,7 +24,8 @@ public class JsonUtil
             new EftEnumConverter<SeasonalEventType>(),
             new EftEnumConverter<ProfileChangeEventType>(),
             new EftEnumConverter<QuestStatusEnum>(),
-            new EftEnumConverter<QuestRewardType>()
+            new EftEnumConverter<QuestRewardType>(),
+            new EftEnumConverter<SideType>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
