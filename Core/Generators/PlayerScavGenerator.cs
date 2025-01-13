@@ -133,7 +133,7 @@ public class PlayerScavGenerator
         scavData.Quests = existingScavDataClone.Quests ?? [];
         scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new();
         scavData.Notes = existingScavDataClone.Notes ?? new() { DataNotes = new() };
-        scavData.WishList = existingScavDataClone.WishList ?? new();
+        scavData.WishList = existingScavDataClone.WishList ?? new(new(), new());
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
 
         // Add additional items to player scav as loot
@@ -306,7 +306,7 @@ public class PlayerScavGenerator
         return new()
         {
             Common = new(new(), new()),
-            Mastering = new(),
+            Mastering = new (),
             Points = 0
         };
     }
@@ -370,7 +370,7 @@ public class PlayerScavGenerator
             scavLockDuration = 10;
 
         if (scavData?.Info != null)
-            scavData.Info.SavageLockTime = _timeUtil.GetTimeStamp() / 1000 + (long)scavLockDuration;
+            scavData.Info.SavageLockTime = Math.Round(_timeUtil.GetTimeStamp() / 1000 + scavLockDuration ?? 0);
 
         return scavData;
     }
