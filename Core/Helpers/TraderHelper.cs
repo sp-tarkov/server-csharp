@@ -28,14 +28,14 @@ public class TraderHelper
         TimeUtil timeUtil,
         RandomUtil randomUtil,
         LocalisationService localisationService,
-        ConfigServer configServer, Dictionary<string, int>? highestTraderPriceItems)
+        ConfigServer configServer)
     {
         _logger = logger;
         _timeUtil = timeUtil;
         _randomUtil = randomUtil;
         _localisationService = localisationService;
         _configServer = configServer;
-        _highestTraderPriceItems = highestTraderPriceItems;
+        _highestTraderPriceItems = new Dictionary<string, int>();
 
         _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
     }
