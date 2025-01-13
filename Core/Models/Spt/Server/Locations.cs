@@ -93,8 +93,7 @@ public class Locations
     {
         if (_locationDictionaryCache is null)
         {
-            var classProps = GetType()
-                .GetProperties();
+            var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
             _locationDictionaryCache = classProps
                 .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
         }
