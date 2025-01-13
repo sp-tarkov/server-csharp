@@ -93,7 +93,7 @@ public class BotBase
 
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? WishList { get; set; }
+    public DictionaryOrList<string, int>? WishList { get; set; }
 
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
@@ -165,7 +165,7 @@ public class Info
     [JsonPropertyName("lockedMoveCommands")]
     public bool? LockedMoveCommands { get; set; }
 
-    public long? SavageLockTime { get; set; }
+    public double? SavageLockTime { get; set; }
     public long? LastTimePlayedAsSavage { get; set; }
     public BotInfoSettings? Settings { get; set; }
     public long? NicknameChangeDate { get; set; }
