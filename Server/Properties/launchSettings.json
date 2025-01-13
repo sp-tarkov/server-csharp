@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Spt Server Debug": {
+      "commandName": "Project",
+      "hotReloadEnabled": false
+    }
+  }
+}
