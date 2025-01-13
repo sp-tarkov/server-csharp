@@ -1,8 +1,9 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.Profile;
+using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;
 using Effects = Core.Models.Eft.Profile.Effects;
 using Health = Core.Models.Eft.Profile.Health;
 
@@ -53,7 +54,7 @@ public class HealthHelper
     /// </summary>
     /// <param name="postRaidBodyParts">Post-raid body part data</param>
     /// <param name="profileData">Player profile on server</param>
-    protected void TransferPostRaidLimbEffectsToProfile(BodyPartsHealth postRaidBodyParts, PmcData profileData)
+    protected void TransferPostRaidLimbEffectsToProfile(Dictionary<string, BodyPartHealth> postRaidBodyParts, PmcData profileData)
     {
         throw new NotImplementedException();
     }
