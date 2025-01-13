@@ -126,10 +126,10 @@ public class PlayerScavGenerator
         // Persist previous scav data into new scav
         scavData.Id = existingScavDataClone.Id ?? pmcDataClone.Savage;
         scavData.SessionId = existingScavDataClone.SessionId ?? pmcDataClone.SessionId;
-        scavData.Skills = this.GetScavSkills(existingScavDataClone);
-        scavData.Stats = this.GetScavStats(existingScavDataClone);
-        scavData.Info.Level = this.GetScavLevel(existingScavDataClone);
-        scavData.Info.Experience = this.GetScavExperience(existingScavDataClone);
+        scavData.Skills = GetScavSkills(existingScavDataClone);
+        scavData.Stats = GetScavStats(existingScavDataClone);
+        scavData.Info.Level = GetScavLevel(existingScavDataClone);
+        scavData.Info.Experience = GetScavExperience(existingScavDataClone);
         scavData.Quests = existingScavDataClone.Quests ?? [];
         scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new();
         scavData.Notes = existingScavDataClone.Notes ?? new() { DataNotes = new() };

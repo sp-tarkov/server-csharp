@@ -1,19 +1,45 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Generators;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
-using Props = Core.Models.Eft.Common.Props;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotLootCacheService
 {
+    private readonly ILogger _logger;
+    private readonly ItemHelper _itemHelper;
+    private readonly PMCLootGenerator _pmcLootGenerator;
+    private readonly RagfairPriceService _ragfairPriceService;
+    private readonly ICloner _cloner;
+
+    private readonly Dictionary<string, BotLootCache> _lootCache = new();
+
+    public BotLootCacheService(
+        ILogger logger,
+        ItemHelper itemHelper,
+        PMCLootGenerator pmcLootGenerator,
+        RagfairPriceService ragfairPriceService,
+        ICloner cloner
+        )
+    {
+        _logger = logger;
+        _itemHelper = itemHelper;
+        _pmcLootGenerator = pmcLootGenerator;
+        _ragfairPriceService = ragfairPriceService;
+        _cloner = cloner;
+    }
+
     /// <summary>
     /// Remove cached bot loot data
     /// </summary>
     public void ClearCache()
     {
-        throw new NotImplementedException();
+        _lootCache.Clear();
     }
 
     /// <summary>
@@ -76,7 +102,7 @@ public class BotLootCacheService
     /// <returns></returns>
     protected bool IsMagazine(Props props)
     {
-        throw new NotImplementedException();
+        return props.ReloadMagType is not null;
     }
 
     /// <summary>

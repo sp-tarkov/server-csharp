@@ -110,7 +110,9 @@ public class BotGenerator
     /// <returns>BotBase object</returns>
     public BotBase GenerateBot(string sessionId, BotBase bot, BotType botJsonTemplate, BotGenerationDetails botGenerationDetails)
     {
-        throw new NotImplementedException();
+        _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
+
+        return new BotBase();
     }
 
     /// <summary>

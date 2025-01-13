@@ -323,7 +323,8 @@ public class GameController
     /// <returns></returns>
     public GameKeepAliveResponse GetKeepAlive(string sessionId)
     {
-        throw new NotImplementedException();
+        _profileActivityService.SetActivityTimestamp(sessionId);
+        return new GameKeepAliveResponse(){ Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
     }
 
     /// <summary>
