@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -534,19 +534,30 @@ public class ItemHelper
                 dupes[item.Id] += 1;
             }
         }
-            
 
         foreach (var item in items)
         {
-            // register the parents
-            if (dupes[item.Id] > 1)
+            if (!(dupes[item.Id] > 1))
             {
-                var newId = _hashUtil.Generate();
-                newParents.Add(item.ParentId, newParents[item.ParentId] ?? new());
-                newParents[item.ParentId].Add(item);
-                oldToNewIds[item.Id] = oldToNewIds[item.Id] ?? new();
-                oldToNewIds[item.Id].Add(newId);
+                continue;
             }
+
+            var newId = _hashUtil.Generate();
+            if (!newParents.ContainsKey(item.ParentId))
+            {
+                newParents.Add(item.ParentId, []);
+            }
+
+            var newParentsItems = newParents.GetValueOrDefault(item.ParentId);
+            newParentsItems.Add(item);
+
+            if (!oldToNewIds.ContainsKey(item.Id))
+            {
+                oldToNewIds.Add(item.Id, []);
+            }
+
+            var oldToNewIdsItems = oldToNewIds.GetValueOrDefault(item.Id);
+            oldToNewIdsItems.Add(newId);
         }
 
         foreach (var item in items)
@@ -554,8 +565,8 @@ public class ItemHelper
             if (dupes[item.Id] > 1)
             {
                 var oldId = item.Id;
-                oldToNewIds[oldId].RemoveAt(0);
                 var newId = oldToNewIds[oldId][0];
+                oldToNewIds[oldId].RemoveAt(0);
                 item.Id = newId;
 
                 // Extract one of the children that's also duplicated.
