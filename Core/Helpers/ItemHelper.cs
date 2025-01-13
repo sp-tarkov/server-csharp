@@ -528,7 +528,13 @@ public class ItemHelper
         // Second scan - Map parents to items.
         // Third scan - Resolve IDs.
         foreach (var item in items)
-            dupes.Add(item.Id, (dupes.ContainsKey(item.Id) ? dupes[item.Id] : 0) + 1);
+        {
+            if (!dupes.TryAdd(item.Id, 0))
+            {
+                dupes[item.Id] += 1;
+            }
+        }
+            
 
         foreach (var item in items)
         {
