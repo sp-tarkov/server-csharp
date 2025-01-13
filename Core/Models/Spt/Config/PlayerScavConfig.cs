@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Config;
@@ -21,7 +21,7 @@ public class KarmaLevel
     public Modifiers Modifiers { get; set; }
 
     [JsonPropertyName("itemLimits")]
-    public ItemLimits ItemLimits { get; set; }
+    public Dictionary<string, GenerationData> ItemLimits { get; set; }
 
     [JsonPropertyName("equipmentBlacklist")]
     public Dictionary<string, string[]> EquipmentBlacklist { get; set; }

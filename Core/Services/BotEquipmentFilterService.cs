@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
@@ -31,7 +31,7 @@ public class BotEquipmentFilterService
     /// <param name="baseValues">data to update</param>
     protected void AdjustChances(
         Dictionary<string, int> equipmentChanges,
-        EquipmentChances baseValues)
+        object baseValues)
     {
         throw new NotImplementedException();
     }

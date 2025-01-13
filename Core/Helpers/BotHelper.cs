@@ -1,13 +1,25 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
+using Core.Services;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class BotHelper
 {
+    private readonly ILogger _logger;
+    private readonly DatabaseService _databaseService;
+
+    public BotHelper(
+        ILogger logger,
+        DatabaseService databaseService)
+    {
+        _logger = logger;
+        _databaseService = databaseService;
+    }
     /// <summary>
     /// Get a template object for the specified botRole from bots.types db
     /// </summary>
@@ -15,7 +27,14 @@ public class BotHelper
     /// <returns>BotType object</returns>
     public BotType GetBotTemplate(string role)
     {
-        throw new NotImplementedException();
+        if (!_databaseService.GetBots().Types.TryGetValue(role.ToLower(), out var bot))
+        {
+            _logger.Error($"Unable to get bot of type: {role} from DB");
+
+            return null;
+        }
+
+        return bot;
     }
 
     /// <summary>

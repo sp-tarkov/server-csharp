@@ -251,43 +251,44 @@ public class PlayerScavGenerator
     protected void AdjustBotTemplateWithKarmaSpecificSettings(KarmaLevel karmaSettings, BotType baseBotNode)
     {
         // Adjust equipment chance values
-        foreach (var equipment in karmaSettings.Modifiers.Equipment)
-        {
-            if (equipment.Value == 0)
-                continue;
+        foreach (var equipmentKvP in karmaSettings.Modifiers.Equipment) {
 
-            var prop = typeof(EquipmentChances).GetProperties().FirstOrDefault(p => p.Name == equipment.Key);
-            var value = (int)prop.GetValue(baseBotNode.BotChances.EquipmentChances);
-            var newValue = (int)value + karmaSettings.Modifiers.Equipment[equipment.Key];
-            prop.SetValue(baseBotNode.BotChances.EquipmentChances, newValue);
+            // Adjustment value zero, nothing to do
+            if (equipmentKvP.Value == 0)
+            {
+                continue;
+            }
+
+            // Try add new key with value
+            if (!baseBotNode.BotChances.EquipmentChances.TryAdd(equipmentKvP.Key, equipmentKvP.Value))
+            {
+                // Unable to add new, update existing
+                baseBotNode.BotChances.EquipmentChances[equipmentKvP.Key] += equipmentKvP.Value;
+            }
         }
 
         // Adjust mod chance values
-        foreach (var mod in karmaSettings.Modifiers.Mod)
+        foreach (var modKvP in karmaSettings.Modifiers.Mod)
         {
-            if (mod.Value == 0)
+            // Adjustment value zero, nothing to do
+            if (modKvP.Value == 0)
                 continue;
 
-            baseBotNode.BotChances.WeaponModsChances[mod.Key] += karmaSettings.Modifiers.Mod[mod.Key];
+            baseBotNode.BotChances.WeaponModsChances[modKvP.Key] += karmaSettings.Modifiers.Mod[modKvP.Key];
         }
 
         // Adjust item spawn quantity values
-        var props = karmaSettings.ItemLimits.GetType().GetProperties();
-        var botGenProps = baseBotNode.BotGeneration.Items.GetType().GetProperties();
-        foreach (var prop in props)
+        foreach (var itemLimitKvP in karmaSettings.ItemLimits)
         {
-            botGenProps.FirstOrDefault(p => p.Name == prop.Name).SetValue(baseBotNode.BotGeneration.Items, prop.GetValue(karmaSettings.ItemLimits));
+            baseBotNode.BotGeneration.Items[itemLimitKvP.Key] = itemLimitKvP.Value;
         }
 
-        // Blacklist equipment
-        props = baseBotNode.BotInventory.Equipment.GetType().GetProperties();
-        foreach (var equipment in karmaSettings.EquipmentBlacklist)
-        {
-            var blacklistedItemTpls = equipment.Value;
-            foreach (var itemToRemove in blacklistedItemTpls)
+        // Blacklist equipment, keyed by equipment slot
+        foreach (var equipmentBlacklistKvP in karmaSettings.EquipmentBlacklist) {
+            baseBotNode.BotInventory.Equipment.TryGetValue(equipmentBlacklistKvP.Key, out var equipmentDict);
+            foreach (var itemToRemove in equipmentBlacklistKvP.Value)
             {
-                var dict = (Dictionary<string, double>?)props.FirstOrDefault(p => p.Name == equipment.Key).GetValue(baseBotNode.BotInventory.Equipment);
-                dict.Remove(itemToRemove);
+                equipmentDict.Remove(itemToRemove);
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using System.Collections.Generic;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Utils.Json.Converters;
 
@@ -61,7 +62,7 @@ public class Appearance
 public class Chances
 {
     [JsonPropertyName("equipment")]
-    public EquipmentChances? EquipmentChances { get; set; }
+    public Dictionary<string, double>? EquipmentChances { get; set; }
 
     [JsonPropertyName("weaponMods")]
     public Dictionary<string, double>? WeaponModsChances { get; set; }
@@ -73,50 +74,6 @@ public class Chances
     public Dictionary<string, double>? Mods { get; set; }
 }
 
-public class EquipmentChances
-{
-    [JsonPropertyName("ArmBand")]
-    public int? ArmBand { get; set; }
-
-    [JsonPropertyName("ArmorVest")]
-    public int? ArmorVest { get; set; }
-
-    [JsonPropertyName("Backpack")]
-    public int? Backpack { get; set; }
-
-    [JsonPropertyName("Earpiece")]
-    public int? Earpiece { get; set; }
-
-    [JsonPropertyName("Eyewear")]
-    public int? Eyewear { get; set; }
-
-    [JsonPropertyName("FaceCover")]
-    public int? FaceCover { get; set; }
-
-    [JsonPropertyName("FirstPrimaryWeapon")]
-    public int? FirstPrimaryWeapon { get; set; }
-
-    [JsonPropertyName("Headwear")]
-    public int? Headwear { get; set; }
-
-    [JsonPropertyName("Holster")]
-    public int? Holster { get; set; }
-
-    [JsonPropertyName("Pockets")]
-    public int? Pockets { get; set; }
-
-    [JsonPropertyName("Scabbard")]
-    public int? Scabbard { get; set; }
-
-    [JsonPropertyName("SecondPrimaryWeapon")]
-    public int? SecondPrimaryWeapon { get; set; }
-
-    [JsonPropertyName("SecuredContainer")]
-    public int? SecuredContainer { get; set; }
-
-    [JsonPropertyName("TacticalVest")]
-    public int? TacticalVest { get; set; }
-}
 /* class removed in favor of Dictionary<string, double>
  used to be used in:
  Chances.WeaponModsChances
@@ -339,46 +296,7 @@ public class Experience
 public class Generation
 {
     [JsonPropertyName("items")]
-    public GenerationWeightingItems? Items { get; set; }
-}
-
-public class GenerationWeightingItems
-{
-    [JsonPropertyName("grenades")]
-    public GenerationData? Grenades { get; set; }
-
-    [JsonPropertyName("healing")]
-    public GenerationData? Healing { get; set; }
-
-    [JsonPropertyName("drugs")]
-    public GenerationData? Drugs { get; set; }
-
-    [JsonPropertyName("food")]
-    public GenerationData? Food { get; set; }
-
-    [JsonPropertyName("drink")]
-    public GenerationData? Drink { get; set; }
-
-    [JsonPropertyName("currency")]
-    public GenerationData? Currency { get; set; }
-
-    [JsonPropertyName("stims")]
-    public GenerationData? Stims { get; set; }
-
-    [JsonPropertyName("backpackLoot")]
-    public GenerationData? BackpackLoot { get; set; }
-
-    [JsonPropertyName("pocketLoot")]
-    public GenerationData? PocketLoot { get; set; }
-
-    [JsonPropertyName("vestLoot")]
-    public GenerationData? VestLoot { get; set; }
-
-    [JsonPropertyName("magazines")]
-    public GenerationData? Magazines { get; set; }
-
-    [JsonPropertyName("specialItems")]
-    public GenerationData? SpecialItems { get; set; }
+    public Dictionary<string, GenerationData>? Items { get; set; }
 }
 
 public class GenerationData
@@ -415,7 +333,7 @@ public class BodyPart
 public class BotTypeInventory
 {
     [JsonPropertyName("equipment")]
-    public Equipment? Equipment { get; set; }
+    public Dictionary<string, Dictionary<string, double>>? Equipment { get; set; }
 
     public GlobalAmmo? Ammo { get; set; }
 
