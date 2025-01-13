@@ -650,7 +650,7 @@ public class ProfileHelper
         return fullFavorites;
     }
 
-    public void AddHideoutCustomisationUnlock(SptProfile fullProfile, QuestReward reward, CustomisationSource source)
+    public void AddHideoutCustomisationUnlock(SptProfile fullProfile, QuestReward reward, string source)
     {
         if (fullProfile?.CustomisationUnlocks == null)
             fullProfile.CustomisationUnlocks = new();
