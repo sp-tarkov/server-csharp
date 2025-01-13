@@ -1,16 +1,80 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Eft.Trade;
 using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Routers;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class TradeController
 {
+    private readonly ILogger _logger;
+    private readonly DatabaseService _databaseService;
+    private readonly EventOutputHolder _eventOutputHolder;
+    private readonly TradeHelper _tradeHelper;
+    private readonly TimeUtil _timeUtil;
+    private readonly HashUtil _hashUtil;
+    private readonly ItemHelper _itemHelper;
+    private readonly ProfileHelper _profileHelper;
+    private readonly RagfairOfferHelper _ragfairOfferHelper;
+    private readonly TraderHelper _traderHelper;
+    // private readonly RagfairServer _ragfairServer;
+    private readonly HttpResponseUtil _httpResponseUtil;
+    private readonly LocalisationService _localisationService;
+    private readonly RagfairPriceService _ragfairPriceService;
+    // private readonly MailSendService _mailSendService;
+    private readonly ConfigServer _configServer;
+    
+    private readonly RagfairConfig _ragfairConfig;
+    private readonly TraderConfig _traderConfig;
+
+    public TradeController
+    (
+        ILogger logger,
+        DatabaseService databaseService,
+        EventOutputHolder eventOutputHolder,
+        TradeHelper tradeHelper,
+        TimeUtil timeUtil,
+        HashUtil hashUtil,
+        ItemHelper itemHelper,
+        ProfileHelper profileHelper,
+        RagfairOfferHelper ragfairOfferHelper,
+        TraderHelper traderHelper,
+        HttpResponseUtil httpResponseUtil,
+        LocalisationService localisationService,
+        RagfairPriceService ragfairPriceService,
+        ConfigServer configServer
+    )
+    {
+        _logger = logger;
+        _databaseService = databaseService;
+        _eventOutputHolder = eventOutputHolder;
+        _tradeHelper = tradeHelper;
+        _timeUtil = timeUtil;
+        _hashUtil = hashUtil;
+        _itemHelper = itemHelper;
+        _profileHelper = profileHelper;
+        _ragfairOfferHelper = ragfairOfferHelper;
+        _traderHelper = traderHelper;
+        _httpResponseUtil = httpResponseUtil;
+        _localisationService = localisationService;
+        _ragfairPriceService = ragfairPriceService;
+        _configServer = configServer;
+
+        _ragfairConfig = _configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
+        _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+    }
+
     /// <summary>
     /// Handle TradingConfirm event
     /// </summary>
