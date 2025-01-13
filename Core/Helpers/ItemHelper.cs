@@ -685,7 +685,7 @@ public class ItemHelper
                 slot?.Name == item?.SlotId &&
                 (slot?.Required ?? false)
             ) ?? false;
-        
+
         return itemTemplate.Key && parentTemplate.Key && (isNotRaidModdable || isRequiredSlot);
     }
 
@@ -714,7 +714,7 @@ public class ItemHelper
             if (currentItem == null)
                 return null;
         }
-        
+
         return currentItem;
     }
 
@@ -728,7 +728,6 @@ public class ItemHelper
     {
         // TODO: actually implement
         return true;
-        
     }
 
     /**
@@ -976,22 +975,24 @@ public class ItemHelper
         throw new NotImplementedException();
     }
 
-// Update a root items _id property value to be unique
-// Item to update root items _id property
-// Optional: new id to use
-// Returns New root id
-    public string RemapRootItemId(List<Item> itemWithChildren, string newId) // TODO: string newId = this.hashUtil.Generate()
+    // Update a root items _id property value to be unique
+    // Item to update root items _id property
+    // Optional: new id to use
+    // Returns New root id
+    // TODO: string newId used to default with _hashUtil.Generate(), Now pass this in
+
+    public string RemapRootItemId(List<Item> itemWithChildren, string newId = null)
     {
         throw new NotImplementedException();
     }
 
-// Adopts orphaned items by resetting them as root "hideout" items. Helpful in situations where a parent has been
-// deleted from a group of items and there are children still referencing the missing parent. This method will
-// remove the reference from the children to the parent and set item properties to root values.
-//
-// The ID of the "root" of the container.
-// Array of Items that should be adjusted.
-// Returns Array of Items that have been adopted.
+    // Adopts orphaned items by resetting them as root "hideout" items. Helpful in situations where a parent has been
+    // deleted from a group of items and there are children still referencing the missing parent. This method will
+    // remove the reference from the children to the parent and set item properties to root values.
+    //
+    // The ID of the "root" of the container.
+    // Array of Items that should be adjusted.
+    // Returns Array of Items that have been adopted.
     public List<Item> AdoptOrphanedItems(string rootId, List<Item> items)
     {
         throw new NotImplementedException();
