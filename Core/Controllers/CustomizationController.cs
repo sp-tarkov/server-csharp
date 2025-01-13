@@ -99,8 +99,27 @@ public class CustomizationController
                 ItemId = suitDetails?.Id,
                 ItemName = suitDetails?.Name,
             }));
+            
+        return output;
+        
         }
 
+        
+        PayForClothingItems(sessionId, pmcData, buyClothingRequest.Items, output);
+
+        var profile = _saveServer.GetProfile(sessionId);
+        
+        profile.Suits.Add(suitId);
+        
+        //TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
+        var rewardToStore = new CustomisationStorage()
+        {
+            Id = suitId,
+            Source = CustomisationSource.UNLOCKED_IN_GAME,
+            Type = CustomisationType.SUITE
+        };
+        profile.CustomisationUnlocks.Add(rewardToStore);
+        
         return output;
     }
 
