@@ -219,7 +219,7 @@ public class GameController
     public GameConfigResponse GetGameConfig(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
-        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items.FirstOrDefault(c => 
+        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(c => 
             c.Key.Contains("LifeTime") && 
             c.Key.Contains("Pmc")).Value ?? 0D;
 
