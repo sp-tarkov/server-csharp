@@ -60,7 +60,7 @@ public class ProfileHelper
         {
             var conditionId = questId.Value;
             var profileQuest = pmcData.Quests.FirstOrDefault(q => q.QId == conditionId);
-            
+
             if (profileQuest != null) // Remove condition
                 profileQuest.CompletedConditions.Remove(conditionId);
         }
@@ -88,7 +88,7 @@ public class ProfileHelper
             return output;
 
         var FullProfileClone = _cloner.Clone(GetFullProfile(sessionId));
-        
+
         // Sanitize any data the client can not receive
         SanitizeProfileForClient(FullProfileClone);
 
@@ -316,7 +316,7 @@ public class ProfileHelper
             Eft = new()
             {
                 CarriedQuestItems = new(),
-                DamageHistory = new() { LethalDamagePart = "Head", LethalDamage = null, BodyParts = new()},
+                DamageHistory = new() { LethalDamagePart = "Head", LethalDamage = null, BodyParts = new() },
                 DroppedItems = new(),
                 ExperienceBonusMult = 0,
                 FoundInRaidItems = new(),
@@ -361,7 +361,7 @@ public class ProfileHelper
             // Remove child items + secure container
             profile.Inventory.Items = items.Where(i => !childItemsInSecureContainer.Contains(i.Id)).ToList();
         }
-        
+
         return profile;
     }
 
@@ -376,7 +376,7 @@ public class ProfileHelper
     {
         var profileToUpdate = GetFullProfile(playerId);
         profileToUpdate.SptData.ReceivedGifts ??= new();
-        
+
         var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftData != null)
         {
@@ -384,7 +384,7 @@ public class ProfileHelper
             giftData.Current++;
             return;
         }
-        
+
         // Player has never received gift, make a new object
         profileToUpdate.SptData.ReceivedGifts.Add(new()
         {
@@ -412,11 +412,11 @@ public class ProfileHelper
 
         if (profile.SptData.ReceivedGifts == null)
             return false;
-        
+
         var giftDataFromProfile = profile.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftDataFromProfile == null)
             return false;
-        
+
         return giftDataFromProfile.Current >= maxGiftCount;
     }
 
@@ -444,14 +444,14 @@ public class ProfileHelper
         var profileSkills = pmcProfile.Skills.Common;
         if (profileSkills == null)
             return false;
-        
+
         var profileSkill = profileSkills.Dictionary.FirstOrDefault(s => s.Value.Id == skill.ToString()).Value;
         if (profileSkill == null)
         {
             _logger.Error(_localisationService.GetText("quest-no_skill_found", skill));
             return false;
         }
-        
+
         return profileSkill.Progress >= 5100; // 51
     }
 
@@ -491,10 +491,10 @@ public class ProfileHelper
             var skillProgressRate = _databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
             pointsToAddToSkill *= skillProgressRate;
         }
-        
+
         if (_inventoryConfig.SkillGainMultipliers[skill.ToString()] != null)
             pointsToAddToSkill *= _inventoryConfig.SkillGainMultipliers[skill.ToString()];
-        
+
         profileSkill.Progress += pointsToAddToSkill;
         profileSkill.Progress = Math.Min(profileSkill?.Progress ?? 0D, 5100); // Prevent skill from ever going above level 51 (5100)
         profileSkill.LastAccess = _timeUtil.GetTimeStamp();
@@ -563,7 +563,7 @@ public class ProfileHelper
         var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
         if (bonuses.Count() == 0)
             return 0;
-        
+
         // Sum all bonuses found above
         return bonuses?.Sum(new Func<Bonus, double>(bonus => bonus?.Value ?? 0)) ?? 0;
     }
@@ -579,9 +579,10 @@ public class ProfileHelper
     /// </summary>
     /// <param name="pmcProfile">Profile to add achievement to</param>
     /// <param name="achievementId">Id of achievement to add</param>
-    public void AddAchievementToProfile(PmcData pmcProfile, string achievementId)
+    public void AddAchievementToProfile(SptProfile pmcProfile, string achievementId)
     {
-        pmcProfile.Achievements[achievementId] =  _timeUtil.GetTimeStamp();
+        pmcProfile.CharacterData.PmcData.Achievements[achievementId] = _timeUtil.GetTimeStamp();
+        // TODO: finish off implementation
     }
 
     protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
@@ -641,11 +642,69 @@ public class ProfileHelper
                 // To get the client to actually see the items, we set the main item's parent to null, so it's treated as a root item
                 var clonedItems = _cloner.Clone(itemAndChildren);
                 clonedItems.First().ParentId = null;
-                
+
                 fullFavorites.AddRange(clonedItems);
             }
         }
 
         return fullFavorites;
+    }
+
+    public void AddHideoutCustomisationUnlock(SptProfile fullProfile, QuestReward reward, CustomisationSource source)
+    {
+        if (fullProfile?.CustomisationUnlocks == null)
+            fullProfile.CustomisationUnlocks = new();
+
+        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == (string)reward.Target) ?? false)
+        {
+            _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
+            return;
+        }
+
+        var customisationTemplateDb = _databaseService.GetTemplates().Customization;
+        var matchingCustomisation = customisationTemplateDb[reward.Target];
+
+        if (matchingCustomisation != null)
+        {
+            var rewardToStore = new CustomisationStorage
+            {
+                Id = reward.Target,
+                Source = source,
+                Type = null
+            };
+
+            switch (matchingCustomisation.Parent)
+            {
+                case "675ff48ce8d2356707079617":
+                    // MannequinPose
+                    rewardToStore.Type = CustomisationType.MANNEQUIN_POSE;
+                    break;
+                case "6751848eba5968fd800a01d6":
+                    // Gestures
+                    rewardToStore.Type = CustomisationType.GESTURE;
+                    break;
+                case "67373f170eca6e03ab0d5391":
+                    // Floor
+                    rewardToStore.Type = CustomisationType.FLOOR;
+                    break;
+                case "6746fafabafff8500804880e":
+                    // DogTags
+                    rewardToStore.Type = CustomisationType.DOG_TAG;
+                    break;
+                case "673b3f595bf6b605c90fcdc2":
+                    // Ceiling
+                    rewardToStore.Type = CustomisationType.CEILING;
+                    break;
+                case "67373f1e5a5ee73f2a081baf":
+                    // Wall
+                    rewardToStore.Type = CustomisationType.WALL;
+                    break;
+                default:
+                    _logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
+                    return;
+            }
+            
+            fullProfile.CustomisationUnlocks.Add(rewardToStore);
+        }
     }
 }
