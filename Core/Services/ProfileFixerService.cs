@@ -5,8 +5,11 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.Spt.Templates;
+using Core.Servers;
 using Core.Utils;
 using System.Text.RegularExpressions;
+using Core.Models.Spt.Config;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
@@ -18,20 +21,35 @@ public class ProfileFixerService
     private readonly HashUtil _hashUtil;
     private readonly JsonUtil _jsonUtil;
     private readonly ItemHelper _itemHelper;
+    private readonly QuestRewardHelper _questRewardHelper;
+    private readonly TraderHelper _traderHelper;
     private readonly DatabaseService _databaseService;
+    private readonly LocalisationService _localisationService;
+    private readonly ConfigServer _configServer;
+    private readonly CoreConfig _coreConfig;
 
     public ProfileFixerService(
         ILogger logger,
         HashUtil hashUtil,
         JsonUtil jsonUtil,
         ItemHelper itemHelper,
-        DatabaseService databaseService)
+        QuestRewardHelper questRewardHelper,
+        TraderHelper traderHelper,
+        DatabaseService databaseService,
+        LocalisationService localisationService,
+        ConfigServer configServer)
     {
         _logger = logger;
         _hashUtil = hashUtil;
         _jsonUtil = jsonUtil;
         _itemHelper = itemHelper;
+        _questRewardHelper = questRewardHelper;
+        _traderHelper = traderHelper;
         _databaseService = databaseService;
+        _localisationService = localisationService;
+        _configServer = configServer;
+
+        _coreConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
 
     /// <summary>
@@ -44,7 +62,6 @@ public class ProfileFixerService
         RemoveDanglingTaskConditionCounters(pmcProfile);
         RemoveOrphanedQuests(pmcProfile);
         VerifyQuestProductionUnlocks(pmcProfile);
-        FixFavorites(pmcProfile);
 
         if (pmcProfile.Hideout is not null)
         {
@@ -314,7 +331,46 @@ public class ProfileFixerService
     /// <param name="pmcProfile">The profile to validate quest productions for</param>
     protected void VerifyQuestProductionUnlocks(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+
+        var quests = _databaseService.GetQuests();
+        var profileQuests = pmcProfile.Quests;
+
+        foreach (var profileQuest in profileQuests)
+        {
+            var quest = quests.GetValueOrDefault(profileQuest.QId, null);
+            if (quest is null)
+            {
+                continue;
+            }
+
+            // For started or successful quests, check for unlocks in the `Started` rewards
+            if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
+            {
+                var productionRewards = quest.Rewards.Started?.Where(
+                    (reward) => reward.Type == QuestRewardType.ProductionScheme);
+
+                if (productionRewards is not null)
+                {
+                    foreach (var reward in productionRewards) {
+                        VerifyQuestProductionUnlock(pmcProfile, reward, quest);
+                    }
+                }
+            }
+
+            // For successful quests, check for unlocks in the `Success` rewards
+            if (profileQuest.Status is QuestStatusEnum.Success)
+            {
+                var productionRewards = quest.Rewards.Success?.Where(
+                    (reward) => reward.Type == QuestRewardType.ProductionScheme);
+
+                if (productionRewards is not null)
+                {
+                    foreach (var reward in productionRewards) {
+                        VerifyQuestProductionUnlock(pmcProfile, reward, quest);
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -325,17 +381,26 @@ public class ProfileFixerService
     /// <param name="questDetails">The quest the reward belongs to</param>
     protected void VerifyQuestProductionUnlock(PmcData pmcProfile, QuestReward productionUnlockReward, Quest questDetails)
     {
-        throw new NotImplementedException();
-    }
+        var matchingProductions = _questRewardHelper.GetRewardProductionMatch(
+            productionUnlockReward,
+            questDetails);
 
-    /// <summary>
-    /// Initial release of SPT 3.10 used an incorrect favorites structure, reformat
-    /// the structure to the correct MongoID array structure
-    /// </summary>
-    /// <param name="pmcProfile"></param>
-    protected void FixFavorites(PmcData pmcProfile)
-    {
-        throw new NotImplementedException();
+        if (matchingProductions.Count != 1)
+        {
+            _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new {
+                questName = questDetails.QuestName,
+                matchCount = matchingProductions.Count}));
+
+            return;
+        }
+
+        // Add above match to pmc profile
+        var matchingProductionId = matchingProductions[0].Id;
+        if (!pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Contains(matchingProductionId))
+        {
+            pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId);
+            _logger.Debug($"Added production: { matchingProductionId} to unlocked production recipes for: { questDetails.QuestName}");
+        }
     }
 
     /// <summary>
@@ -361,7 +426,15 @@ public class ProfileFixerService
 
     protected IList<HideoutSlot> AddObjectsToList(int count, List<HideoutSlot> slots)
     {
-        throw new NotImplementedException();
+        for (var i = 0; i < count; i++)
+        {
+            if (!slots.Any((x) => x.LocationIndex == i))
+            {
+                slots.Add(new HideoutSlot{ LocationIndex = i });
+            }
+        }
+
+        return slots;
     }
 
     /**
@@ -370,7 +443,13 @@ public class ProfileFixerService
      */
     protected void CheckForSkillsOverMaxLevel(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var skills = pmcProfile.Skills.Common;
+
+        foreach (var skill in skills.List
+                     .Where(skill => skill.Progress > 5100))
+        {
+            skill.Progress = 5100;
+        }
     }
 
     /**
@@ -394,7 +473,22 @@ public class ProfileFixerService
         WeaponBuild equipmentBuild,
         Dictionary<string, TemplateItem> itemsDb)
     {
-        throw new NotImplementedException();
+        // Get items not found in items db
+        foreach (var item in equipmentBuild.Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+        {
+            _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+
+            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+            {
+                _logger.Warning($"Item: { item.Template} has resulted in the deletion of { buildType} build: { equipmentBuild.Name}");
+
+                return true;
+            }
+
+            break;
+        }
+
+        return false;
     }
 
     /**
@@ -431,6 +525,32 @@ public class ProfileFixerService
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        foreach (var traderKvP in fullProfile.CharacterData.PmcData.TradersInfo)
+        {
+            var traderId = traderKvP.Key;
+            if (!_traderHelper.TraderEnumHasValue(traderId))
+            {
+                _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
+                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                {
+                    _logger.Warning($"Non - default trader: { traderId} removed from PMC TradersInfo in: { fullProfile.ProfileInfo.ProfileId} profile");
+                    fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
+                }
+            }
+        }
+
+        foreach (var traderKvP in fullProfile.CharacterData.ScavData.TradersInfo)
+        {
+            var traderId = traderKvP.Key;
+            if (!_traderHelper.TraderEnumHasValue(traderId))
+            {
+                _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
+                if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
+                {
+                    _logger.Warning($"Non - default trader: {traderId} removed from Scav TradersInfo in: { fullProfile.ProfileInfo.ProfileId} profile");
+                    fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
+                }
+            }
+        }
     }
 }
