@@ -21,21 +21,28 @@ public class TraderHelper
     private readonly LocalisationService _localisationService;
     private readonly ConfigServer _configServer;
     private readonly TraderConfig _traderConfig;
-    private Dictionary<string, int>? _highestTraderPriceItems;
+    private readonly ProfileHelper _profileHelper;
+    private readonly DatabaseService _databaseService;
+
+    private Dictionary<string, int> _highestTraderPriceItems = new();
 
     public TraderHelper(
         ILogger logger,
         TimeUtil timeUtil,
         RandomUtil randomUtil,
         LocalisationService localisationService,
-        ConfigServer configServer)
+        ConfigServer configServer,
+        ProfileHelper profileHelper,
+        DatabaseService databaseService
+    )
     {
         _logger = logger;
         _timeUtil = timeUtil;
         _randomUtil = randomUtil;
         _localisationService = localisationService;
         _configServer = configServer;
-        _highestTraderPriceItems = new Dictionary<string, int>();
+        _profileHelper = profileHelper;
+        _databaseService = databaseService;
 
         _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
     }
@@ -49,7 +56,31 @@ public class TraderHelper
     /// <returns>Trader base</returns>
     public TraderBase GetTrader(string traderID, string sessionID)
     {
-        throw new NotImplementedException();
+        if (traderID == "ragfair")
+        {
+            return new()
+            {
+                Currency = "RUB"
+            };
+        }
+
+        var pmcData = _profileHelper.GetPmcProfile(sessionID);
+        if (pmcData == null)
+            throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID));
+        
+        // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
+        if (pmcData?.TradersInfo != null && (pmcData?.TradersInfo?.ContainsKey(traderID) ?? false))
+        {
+            // Add trader values to profile
+            ResetTrader(sessionID, traderID);
+            LevelUp(traderID, pmcData);
+        }
+
+        var traderBase = _databaseService.GetTrader(traderID).Base;
+        if (traderBase == null)
+            _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_by_id", traderID));
+        
+        return traderBase;
     }
 
     /// <summary>
@@ -81,7 +112,8 @@ public class TraderHelper
     /// <param name="traderID">trader id to reset</param>
     public void ResetTrader(string sessionID, string traderID)
     {
-        throw new NotImplementedException();
+        // TODO: implement actually
+        return;
     }
 
     /// <summary>
@@ -155,7 +187,8 @@ public class TraderHelper
     /// <param name="pmcData">Profile to update trader in.</param>
     public void LevelUp(string traderID, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        // TODO: implement actually
+        return;
     }
 
     /// <summary>
@@ -180,17 +213,18 @@ public class TraderHelper
         var traderDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
         if (traderDetails is null || traderDetails.Seconds?.Min is null || traderDetails.Seconds.Max is null)
         {
-            _logger.Warning(_localisationService.GetText("trader-missing_trader_details_using_default_refresh_time", new {
+            _logger.Warning(_localisationService.GetText("trader-missing_trader_details_using_default_refresh_time", new
+            {
                 traderId = traderId,
                 updateTime = _traderConfig.UpdateTimeDefault,
             }));
 
-            _traderConfig.UpdateTime.Add( new UpdateTime
-            // create temporary entry to prevent logger spam
-            {
-                TraderId = traderId,
-                Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
-            });
+            _traderConfig.UpdateTime.Add(new UpdateTime
+                // create temporary entry to prevent logger spam
+                {
+                    TraderId = traderId,
+                    Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
+                });
 
             return null;
         }
@@ -202,7 +236,7 @@ public class TraderHelper
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Store the purchase of an assort from a trader in the player profile
     /// </summary>
@@ -257,7 +291,7 @@ public class TraderHelper
     {
         throw new NotImplementedException();
     }
-    
+
     /// <summary>
     /// Validates that the provided traderEnumValue exists in the Traders enum. If the value is valid, it returns the
     /// same enum value, effectively serving as a trader ID; otherwise, it logs an error and returns an empty string.
