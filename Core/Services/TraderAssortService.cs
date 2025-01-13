@@ -8,9 +8,11 @@ public class TraderAssortService
 {
     private Dictionary<string, TraderAssort> _pristineTraderAssorts = new();
     
-    public TraderAssort GetPristineTraderAssort(string traderId)
+    public TraderAssort? GetPristineTraderAssort(string traderId)
     {
-        return _pristineTraderAssorts[traderId];
+        _pristineTraderAssorts.TryGetValue(traderId, out var result);
+        
+        return result;
     }
 
     /// <summary>

@@ -1,11 +1,13 @@
 using Core.Annotations;
 using Core.DI;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
+using Core.Utils.Cloners;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils;
@@ -114,11 +116,25 @@ public class DatabaseImporter : OnLoad
     {
         _logger.Info(_localisationService.GetText("importing_database"));
 
-        var dataToImport = await _importerUtil.LoadRecursiveAsync(
+        var dataToImport = (DatabaseTables) await _importerUtil.LoadRecursiveAsync(
             $"{filepath}database/",
             typeof(DatabaseTables),
             OnReadValidate
         );
+        
+        // TODO: Fix loading of traders, so their full path is not included as the key
+
+        var tempTraders = new Dictionary<string, Trader>();
+        
+        // temp fix for trader keys
+        foreach (var trader in dataToImport.Traders)
+        {
+            // fix string for key
+            var tempKey = trader.Key.Split("/").Last();
+            tempTraders.Add(tempKey, trader.Value);
+        }
+        
+        dataToImport.Traders = tempTraders;
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
