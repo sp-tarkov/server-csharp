@@ -1,5 +1,6 @@
 ﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Helpers;
@@ -14,7 +15,7 @@ public class BotGeneratorHelper
     /// <param name="itemTemplate">Item extra properties are being generated for</param>
     /// <param name="botRole">Used by weapons to randomize the durability values. Null for non-equipped items</param>
     /// <returns>Item Upd object with extra properties</returns>
-    public object GenerateExtraPropertiesForItem(TemplateItem itemTemplate, string botRole = null)
+    public Upd GenerateExtraPropertiesForItem(TemplateItem itemTemplate, string botRole = null)
     {
         throw new NotImplementedException();
     }
@@ -95,7 +96,7 @@ public class BotGeneratorHelper
     /// <param name="itemWithChildren">Item to add</param>
     /// <param name="inventory">Inventory to add item+children into</param>
     /// <returns>ItemAddedResult result object</returns>
-    public object AddItemWithChildrenToEquipmentSlot(
+    public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
         List<string> equipmentSlots,
         string rootItemId,
         string rootItemTplId,
