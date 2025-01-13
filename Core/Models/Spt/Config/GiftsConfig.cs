@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
@@ -63,7 +63,7 @@ public class Gift
     public SeasonalEventType AssociatedEvent { get; set; }
 
     [JsonPropertyName("collectionTimeHours")]
-    public int CollectionTimeHours { get; set; }
+    public int? CollectionTimeHours { get; set; }
 
     /// <summary>
     /// Optional, can be used to change profile settings like level/skills
