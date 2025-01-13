@@ -1,4 +1,4 @@
-﻿namespace Core.Models.Enums;
+namespace Core.Models.Enums;
 
 public enum QuestRewardType
 {
@@ -15,5 +15,6 @@ public enum QuestRewardType
     Achievement,
     Pockets,
     CustomizationOffer,
-    CustomizationDirect
+    CustomizationDirect,
+    ExtraDailyQuest
 }

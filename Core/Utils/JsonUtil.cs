@@ -23,7 +23,8 @@ public class JsonUtil
             new EftEnumConverter<GiftSenderType>(),
             new EftEnumConverter<SeasonalEventType>(),
             new EftEnumConverter<ProfileChangeEventType>(),
-            new EftEnumConverter<QuestStatusEnum>()
+            new EftEnumConverter<QuestStatusEnum>(),
+            new EftEnumConverter<QuestRewardType>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)

@@ -504,7 +504,7 @@ public class QuestReward
     public string? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; } // QuestRewardType
+    public QuestRewardType? Type { get; set; } // QuestRewardType
 
     [JsonPropertyName("index")]
     public int? Index { get; set; }
