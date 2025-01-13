@@ -6,9 +6,11 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class TraderAssortService
 {
+    private Dictionary<string, TraderAssort> _pristineTraderAssorts = new();
+    
     public TraderAssort GetPristineTraderAssort(string traderId)
     {
-        throw new NotImplementedException();
+        return _pristineTraderAssorts[traderId];
     }
 
     /// <summary>
@@ -18,6 +20,6 @@ public class TraderAssortService
     /// <param name="assort">Assorts to store</param>
     public void SetPristineTraderAssort(string traderId, TraderAssort assort)
     {
-        throw new NotImplementedException();
+        _pristineTraderAssorts[traderId] = assort;
     }
 }
