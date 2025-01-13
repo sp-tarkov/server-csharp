@@ -35,6 +35,6 @@ public class EftEnumConverter<T> : JsonConverter<T>
 
     public override void WriteAsPropertyName(Utf8JsonWriter writer, [DisallowNull] T value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, value, _options);
+        writer.WritePropertyName(value.ToString());
     }
 }
