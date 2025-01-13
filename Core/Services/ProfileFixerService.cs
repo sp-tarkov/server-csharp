@@ -410,6 +410,7 @@ public class ProfileFixerService
     /// <param name="pmcProfile">profile to add slots to</param>
     protected void AddHideoutEliteSlots(PmcData pmcProfile)
     {
+        _logger.Error("AddHideoutEliteSlots NOT IMPLEMENTED");
         throw new NotImplementedException();
     }
 
