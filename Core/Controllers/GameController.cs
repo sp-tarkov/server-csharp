@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
@@ -40,6 +41,7 @@ public class GameController
     private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
     private readonly ProfileActivityService _profileActivityService;
     private readonly ApplicationContext _applicationContext;
+    //private readonly PreSptModLoader preSptModLoader
     private readonly ICloner _cloner;
 
     private readonly CoreConfig _coreConfig;
@@ -356,7 +358,11 @@ public class GameController
     /// <param name="pmcProfile">Player profile</param>
     private void WarnOnActiveBotReloadSkill(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var botReloadSkill = _profileHelper.GetSkillFromProfile(pmcProfile, SkillTypes.BotReload);
+        if (botReloadSkill?.Progress > 0)
+        {
+            _logger.Warning(_localisationService.GetText("server_start_player_active_botreload_skill"));
+        }
     }
 
     /// <summary>
@@ -365,7 +371,98 @@ public class GameController
     /// <param name="pmcProfile">Profile to adjust values for</param>
     private void UpdateProfileHealthValues(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var healthLastUpdated = pmcProfile.Health.UpdateTime;
+        var currentTimeStamp = _timeUtil.GetTimeStamp();
+        var diffSeconds = currentTimeStamp - healthLastUpdated;
+
+        // Last update is in past
+        if (healthLastUpdated < currentTimeStamp)
+        {
+            // Base values
+            double energyRegenPerHour = 60;
+            double hydrationRegenPerHour = 60;
+            double hpRegenPerHour = 456.6;
+
+            // Set new values, whatever is smallest
+            energyRegenPerHour += pmcProfile.Bonuses
+                .Where((bonus) => bonus.Type == BonusType.EnergyRegeneration)
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
+            hydrationRegenPerHour += pmcProfile.Bonuses
+                .Where((bonus) => bonus.Type == BonusType.HydrationRegeneration)
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
+            hpRegenPerHour += pmcProfile.Bonuses
+                .Where((bonus) => bonus.Type == BonusType.HealthRegeneration)
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
+
+            // Player has energy deficit
+            if (pmcProfile.Health.Energy.Current != pmcProfile.Health.Energy.Maximum)
+            {
+                // Set new value, whatever is smallest
+                pmcProfile.Health.Energy.Current += Math.Round(energyRegenPerHour * (diffSeconds.Value / 3600));
+                if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum)
+                {
+                    pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
+                }
+            }
+
+            // Player has hydration deficit
+            if (pmcProfile.Health.Hydration.Current != pmcProfile.Health.Hydration.Maximum)
+            {
+                pmcProfile.Health.Hydration.Current += Math.Round(hydrationRegenPerHour * (diffSeconds.Value / 3600));
+                if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
+                {
+                    pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
+                }
+            }
+
+            // Check all body parts
+            foreach (var bodyPart in pmcProfile.Health.BodyParts
+                         .Select(bodyPartKvP => bodyPartKvP.Value))
+            {
+                // Check part hp
+                if (bodyPart.Health.Current < bodyPart.Health.Maximum)
+                {
+                    bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds.Value / 3600));
+                }
+                if (bodyPart.Health.Current > bodyPart.Health.Maximum)
+                {
+                    bodyPart.Health.Current = bodyPart.Health.Maximum;
+                }
+
+                
+                if (bodyPart.Effects is null || bodyPart.Effects.Count == 0)
+                {
+                    continue;
+                }
+
+                // Look for effects
+                foreach (var effectKvP in bodyPart.Effects) {
+                    // remove effects below 1, .e.g. bleeds at -1
+                    if (effectKvP.Value.Time < 1)
+                    {
+                        // More than 30 mins has passed
+                        if (diffSeconds > 1800)
+                        {
+                            bodyPart.Effects.Remove(effectKvP.Key);
+                        }
+
+                        continue;
+                    }
+
+                    // Decrement effect time value by difference between current time and time health was last updated
+                    effectKvP.Value.Time -= diffSeconds;
+                    if (effectKvP.Value.Time < 1)
+                    {
+                        // Effect time was sub 1, set floor it can be
+                        effectKvP.Value.Time = 1;
+                    }
+                }
+            }
+
+            // Update both values as they've both been updated
+            pmcProfile.Health.UpdateTime = currentTimeStamp;
+        }
+
     }
 
     /// <summary>
@@ -374,7 +471,21 @@ public class GameController
     /// <param name="pmcProfile">Profile to add gifts to</param>
     private void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var timeStampProfileCreated = pmcProfile.Info.RegistrationDate;
+        var oneDaySeconds = _timeUtil.GetHoursAsSeconds(24);
+        var currentTimeStamp = _timeUtil.GetTimeStamp();
+
+        // One day post-profile creation
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 1);
+        }
+
+        // Two day post-profile creation
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 2);
+        }
     }
 
     /// <summary>
@@ -383,7 +494,36 @@ public class GameController
     /// <param name="fullProfile">Profile to add mod details to</param>
     private void SaveActiveModsToProfile(SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        // Add empty mod array if undefined
+        if (fullProfile.SptData.Mods is null)
+        {
+            fullProfile.SptData.Mods = [];
+        }
+
+        // Get active mods
+        //var activeMods = _preSptModLoader.GetImportedModDetails(); //TODO IMPLEMENT _preSptModLoader
+        var activeMods = new Dictionary<string, ModDetails>();
+        foreach (var modKvP in activeMods) {
+            var modDetails = modKvP.Value;
+            if (
+                fullProfile.SptData.Mods.Any(
+                    (mod) =>
+                        mod.Author == modDetails.Author &&
+                            mod.Name == modDetails.Name &&
+                            mod.Version == modDetails.Version))
+            {
+                // Exists already, skip
+                continue;
+            }
+
+            fullProfile.SptData.Mods.Add( new ModDetails{
+                Author = modDetails.Author,
+                DateAdded = _timeUtil.GetTimeStamp(),
+                Name = modDetails.Name,
+                Version = modDetails.Version,
+                Url = modDetails.Url,
+            });
+        }
     }
 
     /// <summary>
@@ -392,7 +532,34 @@ public class GameController
     /// <param name="pmcProfile">Profile of player to get name from</param>
     private void AddPlayerToPmcNames(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var playerName = pmcProfile.Info.Nickname;
+        if (playerName is not null)
+        {
+            var bots = _databaseService.GetBots().Types;
+
+            // Official names can only be 15 chars in length
+            if (playerName.Length > _botConfig.BotNameLengthLimit)
+            {
+                return;
+            }
+
+            // Skip if player name exists already
+            if (bots.TryGetValue("bear", out var bearBot))
+            {
+                if (bearBot is not null && bearBot.FirstNames.Any(x => x == playerName))
+                {
+                    bearBot.FirstNames.Add(playerName);
+                }
+            }
+
+            if (bots.TryGetValue("bear", out var usecBot))
+            {
+                if (usecBot is not null && usecBot.FirstNames.Any(x => x == playerName))
+                {
+                    usecBot.FirstNames.Add(playerName);
+                }
+            }
+        }
     }
 
     /// <summary>

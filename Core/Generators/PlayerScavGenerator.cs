@@ -100,7 +100,7 @@ public class PlayerScavGenerator
         var baseBotNode = ConstructBotBaseTemplate(playerScavKarmaSettings.BotTypeForLoot);
         AdjustBotTemplateWithKarmaSpecificSettings(playerScavKarmaSettings, baseBotNode);
 
-        var scavData = (PmcData)_botGenerator.GeneratePlayerScav(
+        var scavData = _botGenerator.GeneratePlayerScav(
             sessionID,
             playerScavKarmaSettings.BotTypeForLoot.ToLower(),
             "easy",

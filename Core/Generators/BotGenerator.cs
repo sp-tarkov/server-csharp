@@ -42,7 +42,7 @@ public class BotGenerator
     /// <param name="botTemplate">base bot template to use  (e.g. assault/pmcbot)</param>
     /// <param name="profile">profile of player generating pscav</param>
     /// <returns>BotBase</returns>
-    public BotBase GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
+    public PmcData GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
     {
         var bot = GetCloneOfBotBase();
         bot.Info.Settings.BotDifficulty = difficulty;
@@ -65,7 +65,39 @@ public class BotGenerator
         // Sets the name after scav name shown in parentheses
         bot.Info.MainProfileNickname = profile.Info.Nickname;
 
-        return bot;
+        return new PmcData
+        {
+            Id = bot.Id,
+            Aid = bot.Aid,
+            SessionId = bot.SessionId,
+            Savage = bot.Savage,
+            KarmaValue = bot.KarmaValue,
+            Info = bot.Info,
+            Customization = bot.Customization,
+            Health = bot.Health,
+            Inventory = bot.Inventory,
+            Skills = bot.Skills,
+            Stats = bot.Stats,
+            Encyclopedia = bot.Encyclopedia,
+            TaskConditionCounters = bot.TaskConditionCounters,
+            InsuredItems = bot.InsuredItems,
+            Hideout = bot.Hideout,
+            Quests = bot.Quests,
+            TradersInfo = bot.TradersInfo,
+            UnlockedInfo = bot.UnlockedInfo,
+            RagfairInfo = bot.RagfairInfo,
+            Achievements = bot.Achievements,
+            RepeatableQuests = bot.RepeatableQuests,
+            Bonuses = bot.Bonuses,
+            Notes = bot.Notes,
+            CarExtractCounts = bot.CarExtractCounts,
+            CoopExtractCounts = bot.CoopExtractCounts,
+            SurvivorClass = bot.SurvivorClass,
+            WishList = bot.WishList,
+            MoneyTransferLimitData = bot.MoneyTransferLimitData,
+            IsPmc = bot.IsPmc,
+            Prestige = new Prestige()
+        };
     }
 
     /// <summary>
@@ -111,6 +143,8 @@ public class BotGenerator
     public BotBase GenerateBot(string sessionId, BotBase bot, BotType botJsonTemplate, BotGenerationDetails botGenerationDetails)
     {
         _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
+
+        bot.Inventory.Items = [];
 
         return bot;
     }

@@ -27,6 +27,7 @@ public class ProfileFixerService
     private readonly LocalisationService _localisationService;
     private readonly ConfigServer _configServer;
     private readonly CoreConfig _coreConfig;
+    private readonly InventoryHelper _inventoryHelper;
 
     public ProfileFixerService(
         ILogger logger,
@@ -37,7 +38,9 @@ public class ProfileFixerService
         TraderHelper traderHelper,
         DatabaseService databaseService,
         LocalisationService localisationService,
-        ConfigServer configServer)
+        ConfigServer configServer,
+        InventoryHelper inventoryHelper
+    )
     {
         _logger = logger;
         _hashUtil = hashUtil;
@@ -48,6 +51,7 @@ public class ProfileFixerService
         _databaseService = databaseService;
         _localisationService = localisationService;
         _configServer = configServer;
+        _inventoryHelper = inventoryHelper;
 
         _coreConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
@@ -89,7 +93,8 @@ public class ProfileFixerService
             }
 
             var traderDialogues = traderDialoguesKvP.Value;
-            foreach (var message in traderDialogues.Messages) {
+            foreach (var message in traderDialogues.Messages)
+            {
                 // Skip any messages without attached items
                 if (message.Items?.Data is null || message.Items?.Stash is null)
                 {
@@ -135,14 +140,15 @@ public class ProfileFixerService
             .GroupBy(item => item.Id)
             .ToDictionary(x => x.Key, x => x.ToList());
 
-        foreach (var mappingKvP in itemMapping) {
+        foreach (var mappingKvP in itemMapping)
+        {
             // Only one item for this id, not a dupe
             if (mappingKvP.Value.Count == 1)
             {
                 continue;
             }
 
-            _logger.Warning($"{ mappingKvP.Value.Count - 1} duplicate(s) found for item: {mappingKvP.Key}");
+            _logger.Warning($"{mappingKvP.Value.Count - 1} duplicate(s) found for item: {mappingKvP.Key}");
             var itemAJson = _jsonUtil.Serialize(mappingKvP.Value[0]);
             var itemBJson = _jsonUtil.Serialize(mappingKvP.Value[1]);
             if (itemAJson == itemBJson)
@@ -167,7 +173,8 @@ public class ProfileFixerService
         }
 
         // Iterate over all inventory items
-        foreach (var item in pmcProfile.Inventory.Items.Where((x) => x.SlotId is not null)) {
+        foreach (var item in pmcProfile.Inventory.Items.Where((x) => x.SlotId is not null))
+        {
             if (item.Upd is null)
             {
                 // Ignore items without a upd object
@@ -178,7 +185,7 @@ public class ProfileFixerService
             Regex regxp = new Regex("[^a-zA-Z0-9 -]");
             if (item.Upd.Tag?.Name is not null && !regxp.IsMatch(item.Upd.Tag.Name))
             {
-                _logger.Warning($"Fixed item: { item.Id}s Tag value, removed invalid characters");
+                _logger.Warning($"Fixed item: {item.Id}s Tag value, removed invalid characters");
                 item.Upd.Tag.Name = regxp.Replace(item.Upd.Tag.Name, "");
             }
 
@@ -208,8 +215,8 @@ public class ProfileFixerService
         if (customizationDb[pmcProfile.Customization.Body] is null)
         {
             var defaultBody = playerIsUsec
-                    ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecBody")
-                    : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearBody");
+                ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecBody")
+                : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearBody");
             pmcProfile.Customization.Body = defaultBody.Id;
         }
 
@@ -217,8 +224,8 @@ public class ProfileFixerService
         if (customizationDb[pmcProfile.Customization.Hands] is null)
         {
             var defaultHands = playerIsUsec
-                    ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecHands")
-                    : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearHands");
+                ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecHands")
+                : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearHands");
             pmcProfile.Customization.Hands = defaultHands.Id;
         }
 
@@ -226,8 +233,8 @@ public class ProfileFixerService
         if (customizationDb[pmcProfile.Customization.Feet] is null)
         {
             var defaultFeet = playerIsUsec
-                    ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecFeet")
-                    : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearFeet");
+                ? customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultUsecFeet")
+                : customizationDbArray.FirstOrDefault((x) => x.Name == "DefaultBearFeet");
             pmcProfile.Customization.Feet = defaultFeet.Id;
         }
     }
@@ -267,7 +274,8 @@ public class ProfileFixerService
         var achievements = _databaseService.GetAchievements();
 
         // Loop over TaskConditionCounters objects and add once we want to remove to counterKeysToRemove
-        foreach (var TaskConditionCounterKvP in pmcProfile.TaskConditionCounters) {
+        foreach (var TaskConditionCounterKvP in pmcProfile.TaskConditionCounters)
+        {
             // Only check if profile has repeatable quests
             if (pmcProfile.RepeatableQuests is not null && activeRepeatableQuests.Count > 0)
             {
@@ -286,7 +294,8 @@ public class ProfileFixerService
             }
         }
 
-        foreach (var counterKeyToRemove in taskConditionKeysToRemove) {
+        foreach (var counterKeyToRemove in taskConditionKeysToRemove)
+        {
             _logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
             pmcProfile.TaskConditionCounters.Remove(counterKeyToRemove);
         }
@@ -295,9 +304,10 @@ public class ProfileFixerService
     protected List<RepeatableQuest> GetActiveRepeatableQuests(List<PmcDataRepeatableQuest> repeatableQuests)
     {
         var activeQuests = new List<RepeatableQuest>();
-        foreach (var repeatableQuest in repeatableQuests.Where(questType => questType.ActiveQuests?.Count > 0)) {
-                // daily/weekly collection has active quests in them, add to array and return
-                activeQuests.AddRange(repeatableQuest.ActiveQuests);
+        foreach (var repeatableQuest in repeatableQuests.Where(questType => questType.ActiveQuests?.Count > 0))
+        {
+            // daily/weekly collection has active quests in them, add to array and return
+            activeQuests.AddRange(repeatableQuest.ActiveQuests);
         }
 
         return activeQuests;
@@ -316,7 +326,6 @@ public class ProfileFixerService
 
         for (var i = profileQuests.Count - 1; i >= 0; i--)
         {
-            
             if (!quests.ContainsKey(profileQuests[i].QId) || activeRepeatableQuests.Any((x) => x.Id == profileQuests[i].QId))
             {
                 profileQuests.RemoveAt(i);
@@ -331,7 +340,6 @@ public class ProfileFixerService
     /// <param name="pmcProfile">The profile to validate quest productions for</param>
     protected void VerifyQuestProductionUnlocks(PmcData pmcProfile)
     {
-
         var quests = _databaseService.GetQuests();
         var profileQuests = pmcProfile.Quests;
 
@@ -351,7 +359,8 @@ public class ProfileFixerService
 
                 if (productionRewards is not null)
                 {
-                    foreach (var reward in productionRewards) {
+                    foreach (var reward in productionRewards)
+                    {
                         VerifyQuestProductionUnlock(pmcProfile, reward, quest);
                     }
                 }
@@ -365,7 +374,8 @@ public class ProfileFixerService
 
                 if (productionRewards is not null)
                 {
-                    foreach (var reward in productionRewards) {
+                    foreach (var reward in productionRewards)
+                    {
                         VerifyQuestProductionUnlock(pmcProfile, reward, quest);
                     }
                 }
@@ -387,9 +397,11 @@ public class ProfileFixerService
 
         if (matchingProductions.Count != 1)
         {
-            _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new {
+            _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new
+            {
                 questName = questDetails.QuestName,
-                matchCount = matchingProductions.Count}));
+                matchCount = matchingProductions.Count
+            }));
 
             return;
         }
@@ -399,7 +411,7 @@ public class ProfileFixerService
         if (!pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Contains(matchingProductionId))
         {
             pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId);
-            _logger.Debug($"Added production: { matchingProductionId} to unlocked production recipes for: { questDetails.QuestName}");
+            _logger.Debug($"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}");
         }
     }
 
@@ -430,7 +442,7 @@ public class ProfileFixerService
         {
             if (!slots.Any((x) => x.LocationIndex == i))
             {
-                slots.Add(new HideoutSlot{ LocationIndex = i });
+                slots.Add(new HideoutSlot { LocationIndex = i });
             }
         }
 
@@ -452,6 +464,8 @@ public class ProfileFixerService
         }
     }
 
+    private readonly List<string> _areas = ["hideout", "main"];
+
     /**
      * Checks profile inventory for items that do not exist inside the items db
      * @param sessionId Session id
@@ -459,7 +473,150 @@ public class ProfileFixerService
      */
     public void CheckForOrphanedModdedItems(string sessionId, SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        var itemsDb = _databaseService.GetItems();
+        var pmcProfile = fullProfile.CharacterData.PmcData;
+
+        // Get items placed in root of stash
+        // TODO: extend to other areas / sub items
+        var inventoryItemsToCheck = pmcProfile.Inventory.Items.Where(item => _areas.Contains(item.SlotId ?? ""));
+        if (inventoryItemsToCheck is not null)
+        {
+            // Check each item in inventory to ensure item exists in itemdb
+            foreach (var item in inventoryItemsToCheck)
+            {
+                if (itemsDb[item.Template] is not null)
+                {
+                    _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+
+                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                    {
+                        _logger.Success($"Deleting item from inventory and insurance with id: {item.Id} tpl: {item.Template}");
+
+                        // also deletes from insured array
+                        _inventoryHelper.RemoveItem(pmcProfile, item.Id, sessionId);
+                    }
+                }
+            }
+        }
+
+        if (fullProfile.UserBuildData is not null)
+        {
+            // Remove invalid builds from weapon, equipment and magazine build lists
+            var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? new List<WeaponBuild>();
+            fullProfile.UserBuildData.WeaponBuilds = weaponBuilds.Where(build =>
+            {
+                return !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb);
+            }).ToList();
+            
+            var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? new List<EquipmentBuild>();
+            fullProfile.UserBuildData.EquipmentBuilds = equipmentBuilds.Where(build =>
+            {
+                return !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb);
+            }).ToList();
+            
+            var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? new List<MagazineBuild>();
+            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build =>
+            {
+                return !ShouldRemoveMagazineBuild(build, itemsDb);
+            }).ToList();
+        }
+        
+        // Iterate over dialogs, looking for messages with items not found in item db, remove message if item found
+        foreach (var dialog in fullProfile.DialogueRecords)
+        {
+            if (dialog.Value.Messages is null)
+                continue; // Skip dialog with no messages
+
+            foreach (var message in dialog.Value.Messages)
+            {
+                if (message.Items.Data is null)
+                    continue; // skip messages with no items
+                
+                // Fix message with no items but have the flags to indicate items to collect
+                if (message.Items.Data.Count == 0 && (message.HasRewards ?? false))
+                {
+                    message.HasRewards = false;
+                    message.RewardCollected = true;
+                    continue;
+                }
+
+                // Iterate over all items in message
+                foreach (var item in message.Items.Data)
+                {
+                    // Check item exists in itemsDb
+                    if (itemsDb[item.Template] is null)
+                        _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+
+                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                    {
+                        dialog.Value.Messages.Remove(message);
+                        _logger.Warning($"Item: {item.Template} has resulted in the deletion of message: {message.Id} from dialog {dialog}");
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        var clothing = _databaseService.GetTemplates().Customization;
+        foreach (var suit in fullProfile.Suits)
+        {
+            if (suit is null)
+            {
+                _logger.Error(_localisationService.GetText("fixer-clothing_item_found", suit));
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    fullProfile.Suits.Remove(suit);
+                    _logger.Warning($"Non-default suit purchase: {suit} removed from profile");
+                }
+            }
+        }
+
+        foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests ?? new())
+        {
+            foreach (var activeQuest in repeatable.ActiveQuests ?? new())
+            {
+                if (!_traderHelper.TraderEnumHasValue(activeQuest.TraderId))
+                {
+                    _logger.Error(_localisationService.GetText("fixer-trader_found", activeQuest.TraderId));
+                    if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                    {
+                        _logger.Warning($"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile");
+                        repeatable.ActiveQuests.Remove(activeQuest);
+                    }
+                    
+                    continue;
+                }
+
+                foreach (var successReward in activeQuest.Rewards.Success ?? new())
+                {
+                    if (successReward.Type.ToString() == "Item")
+                    {
+                        foreach (var item in successReward.Items)
+                        {
+                            if (itemsDb[item.Template] is null)
+                            {
+                                _logger.Warning($"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile");
+                                repeatable.ActiveQuests.Remove(activeQuest);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach (var TraderPurchase in fullProfile.TraderPurchases)
+        {
+            if (_traderHelper.TraderEnumHasValue(TraderPurchase.Key))
+            {
+                _logger.Error(_localisationService.GetText("fixer-trader_found", TraderPurchase.Key));
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    _logger.Warning($"Non-default trader: {TraderPurchase.Key} purchase removed from traderPurchases list in profile");
+                    fullProfile.TraderPurchases.Remove(TraderPurchase.Key);
+                }
+            }
+        }
     }
 
     /**
@@ -470,22 +627,45 @@ public class ProfileFixerService
      */
     protected bool ShouldRemoveWeaponEquipmentBuild(
         string buildType,
-        WeaponBuild equipmentBuild,
+        UserBuild build,
         Dictionary<string, TemplateItem> itemsDb)
     {
-        // Get items not found in items db
-        foreach (var item in equipmentBuild.Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+        if (buildType == "weapon")
         {
-            _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
-
-            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+            // Get items not found in items db
+            foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
             {
-                _logger.Warning($"Item: { item.Template} has resulted in the deletion of { buildType} build: { equipmentBuild.Name}");
+                _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
-                return true;
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    _logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
+
+                    return true;
+                }
+
+                break;
             }
+        }
+        
+        // TODO: refactor to be generic
 
-            break;
+        if (buildType == "equipment")
+        {
+            // Get items not found in items db
+            foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+            {
+                _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    _logger.Warning($"Item: {item.Template} has resulted in the deletion of {buildType} build: {build.Name}");
+
+                    return true;
+                }
+
+                break;
+            }
         }
 
         return false;
@@ -533,7 +713,7 @@ public class ProfileFixerService
                 _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning($"Non - default trader: { traderId} removed from PMC TradersInfo in: { fullProfile.ProfileInfo.ProfileId} profile");
+                    _logger.Warning($"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo.ProfileId} profile");
                     fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
                 }
             }
@@ -547,7 +727,7 @@ public class ProfileFixerService
                 _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning($"Non - default trader: {traderId} removed from Scav TradersInfo in: { fullProfile.ProfileInfo.ProfileId} profile");
+                    _logger.Warning($"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo.ProfileId} profile");
                     fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
                 }
             }
