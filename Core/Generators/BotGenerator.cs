@@ -144,6 +144,8 @@ public class BotGenerator
     {
         _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
 
+        bot.Inventory.Items = [];
+
         return bot;
     }
 
