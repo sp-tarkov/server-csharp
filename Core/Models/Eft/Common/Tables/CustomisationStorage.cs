@@ -8,7 +8,7 @@ public class CustomisationStorage
     public string? Id { get; set; }
 
     [JsonPropertyName("source")]
-    public CustomisationSource? Source { get; set; }
+    public string? Source { get; set; }
 
     [JsonPropertyName("type")]
     public string? Type { get; set; }
