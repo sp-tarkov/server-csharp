@@ -49,7 +49,7 @@ public class CharacterInfo
     public string? GameVersion { get; set; }
 
     [JsonPropertyName("SavageLockTime")]
-    public int? SavageLockTime { get; set; }
+    public double? SavageLockTime { get; set; }
 
     [JsonPropertyName("SavageNickname")]
     public string? SavageNickname { get; set; }
