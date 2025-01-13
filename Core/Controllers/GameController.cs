@@ -3,9 +3,9 @@ using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
-using Core.Models.Eft.Health;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
@@ -41,6 +41,7 @@ public class GameController
     private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
     private readonly ProfileActivityService _profileActivityService;
     private readonly ApplicationContext _applicationContext;
+    //private readonly PreSptModLoader preSptModLoader
     private readonly ICloner _cloner;
 
     private readonly CoreConfig _coreConfig;
@@ -470,7 +471,21 @@ public class GameController
     /// <param name="pmcProfile">Profile to add gifts to</param>
     private void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var timeStampProfileCreated = pmcProfile.Info.RegistrationDate;
+        var oneDaySeconds = _timeUtil.GetHoursAsSeconds(24);
+        var currentTimeStamp = _timeUtil.GetTimeStamp();
+
+        // One day post-profile creation
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 1);
+        }
+
+        // Two day post-profile creation
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 2);
+        }
     }
 
     /// <summary>
@@ -479,7 +494,36 @@ public class GameController
     /// <param name="fullProfile">Profile to add mod details to</param>
     private void SaveActiveModsToProfile(SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        // Add empty mod array if undefined
+        if (fullProfile.SptData.Mods is null)
+        {
+            fullProfile.SptData.Mods = [];
+        }
+
+        // Get active mods
+        //var activeMods = _preSptModLoader.GetImportedModDetails(); //TODO IMPLEMENT _preSptModLoader
+        var activeMods = new Dictionary<string, ModDetails>();
+        foreach (var modKvP in activeMods) {
+            var modDetails = modKvP.Value;
+            if (
+                fullProfile.SptData.Mods.Any(
+                    (mod) =>
+                        mod.Author == modDetails.Author &&
+                            mod.Name == modDetails.Name &&
+                            mod.Version == modDetails.Version))
+            {
+                // Exists already, skip
+                continue;
+            }
+
+            fullProfile.SptData.Mods.Add( new ModDetails{
+                Author = modDetails.Author,
+                DateAdded = _timeUtil.GetTimeStamp(),
+                Name = modDetails.Name,
+                Version = modDetails.Version,
+                Url = modDetails.Url,
+            });
+        }
     }
 
     /// <summary>
@@ -488,7 +532,34 @@ public class GameController
     /// <param name="pmcProfile">Profile of player to get name from</param>
     private void AddPlayerToPmcNames(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var playerName = pmcProfile.Info.Nickname;
+        if (playerName is not null)
+        {
+            var bots = _databaseService.GetBots().Types;
+
+            // Official names can only be 15 chars in length
+            if (playerName.Length > _botConfig.BotNameLengthLimit)
+            {
+                return;
+            }
+
+            // Skip if player name exists already
+            if (bots.TryGetValue("bear", out var bearBot))
+            {
+                if (bearBot is not null && bearBot.FirstNames.Any(x => x == playerName))
+                {
+                    bearBot.FirstNames.Add(playerName);
+                }
+            }
+
+            if (bots.TryGetValue("bear", out var usecBot))
+            {
+                if (usecBot is not null && usecBot.FirstNames.Any(x => x == playerName))
+                {
+                    usecBot.FirstNames.Add(playerName);
+                }
+            }
+        }
     }
 
     /// <summary>
