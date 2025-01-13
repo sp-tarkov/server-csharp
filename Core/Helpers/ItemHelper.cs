@@ -2,12 +2,74 @@
 using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class ItemHelper
 {
+    private readonly ILogger _logger;
+    private readonly HashUtil _hashUtil;
+    private readonly JsonUtil _jsonUtil;
+    private readonly RandomUtil _randomUtil;
+    private readonly MathUtil _mathUtil;
+    private readonly DatabaseService _databaseService;
+    private readonly HandbookHelper _handbookHelper;
+    private readonly ItemBaseClassService _itemBaseClassService;
+    private readonly ItemFilterService _itemFilterService;
+    private readonly LocalisationService _localisationService;
+    private readonly LocaleService _localeService;
+    private readonly CompareUtil _compareUtil;
+    private readonly ICloner _cloner;
+
+    private readonly List<string> _defaultInvalidBaseTypes =
+    [
+        BaseClasses.LOOT_CONTAINER,
+        BaseClasses.MOB_CONTAINER,
+        BaseClasses.STASH,
+        BaseClasses.SORTING_TABLE,
+        BaseClasses.INVENTORY,
+        BaseClasses.STATIONARY_CONTAINER,
+        BaseClasses.POCKETS
+    ];
+
+    public ItemHelper
+    (
+        ILogger logger,
+        HashUtil hashUtil,
+        JsonUtil jsonUtil,
+        RandomUtil randomUtil,
+        MathUtil mathUtil,
+        DatabaseService databaseService,
+        HandbookHelper handbookHelper,
+        ItemBaseClassService itemBaseClassService,
+        ItemFilterService itemFilterService,
+        LocalisationService localisationService,
+        LocaleService localeService,
+        CompareUtil compareUtil,
+        ICloner cloner
+    )
+    {
+        _logger = logger;
+        _hashUtil = hashUtil;
+        _jsonUtil = jsonUtil;
+        _randomUtil = randomUtil;
+        _mathUtil = mathUtil;
+        _databaseService = databaseService;
+        _handbookHelper = handbookHelper;
+        _itemBaseClassService = itemBaseClassService;
+        _itemFilterService = itemFilterService;
+        _localisationService = localisationService;
+        _localeService = localeService;
+        _compareUtil = compareUtil;
+        _cloner = cloner;
+    }
+
     /**
  * Does the provided pool of items contain the desired item
  * @param itemPool Item collection to check
@@ -219,7 +281,7 @@ public class ItemHelper
  * @param tpl items template id to look up
  * @returns bool - is valid + template item object as array
  */
-    public (bool, Dictionary<string, TemplateItem>) GetItem(string tpl)
+    public KeyValuePair<bool, TemplateItem> GetItem(string tpl)
     {
         throw new NotImplementedException();
     }
@@ -409,13 +471,111 @@ public class ItemHelper
     /// <param name="insuredItems">Insured items that should not have their IDs replaced</param>
     /// <param name="fastPanel">Quick slot panel</param>
     /// <returns>List<Item></returns>
-    public List<Item> ReplaceIDs(
-        List<Item> originalItems,
-        PmcData pmcData = null,
-        List<InsuredItem> insuredItems = null,
-        object fastPanel = null)
+    public List<Item> ReplaceIDs(List<Item> originalItems, PmcData pmcData = null, List<InsuredItem> insuredItems = null,
+        Dictionary<string, string> fastPanel = null)
     {
-        throw new NotImplementedException();
+        var items = _cloner.Clone(originalItems);
+        var serialisedInventory = _jsonUtil.Serialize(items);
+        var hideoutAreaStashes = pmcData?.Inventory?.HideoutAreaStashes ?? new();
+
+        foreach (var item in items)
+        {
+            if (pmcData != null)
+            {
+                // Insured items should not be renamed. Only works for PMCs.
+                if (insuredItems?.FirstOrDefault(i => i.ItemId == item.Id) != null)
+                    continue;
+
+                // Do not replace the IDs of specific types of items.
+                if (item.Id == pmcData?.Inventory?.Equipment ||
+                    item.Id == pmcData?.Inventory?.QuestRaidItems ||
+                    item.Id == pmcData?.Inventory?.QuestStashItems ||
+                    item.Id == pmcData?.Inventory?.SortingTable ||
+                    item.Id == pmcData?.Inventory?.Stash ||
+                    item.Id == pmcData?.Inventory?.HideoutCustomizationStashId ||
+                    (hideoutAreaStashes?.ContainsKey(item.Id) ?? false))
+                {
+                    continue;
+                }
+            }
+
+            // Replace the ID of the item in the serialised inventory using a regular expression.
+            var oldId = item.Id;
+            var newId = _hashUtil.Generate();
+            serialisedInventory = serialisedInventory.Replace(oldId, newId); // Node uses regex with "g" flag to replace all instances
+
+            // Also replace in quick slot if the old ID exists.
+            if (fastPanel != null)
+            {
+                foreach (var itemSlot in fastPanel)
+                {
+                    if (fastPanel[itemSlot.Key] == oldId)
+                        fastPanel[itemSlot.Key] = fastPanel[itemSlot.Key].Replace(oldId, newId); // Node uses regex with "g" flag to replace all instances
+                }
+            }
+        }
+
+        items = _jsonUtil.Deserialize<List<Item>>(serialisedInventory);
+
+        // fix dupe id's
+        var dupes = new Dictionary<string, double?>();
+        var newParents = new Dictionary<string, List<Item>>();
+        var childrenMapping = new Dictionary<string, Dictionary<string, double?>>();
+        var oldToNewIds = new Dictionary<string, List<string>>();
+
+        // Finding duplicate IDs involves scanning the item three times.
+        // First scan - Check which ids are duplicated.
+        // Second scan - Map parents to items.
+        // Third scan - Resolve IDs.
+        foreach (var item in items)
+            dupes[item.Id] = (dupes[item.Id] ?? 0) + 1;
+
+        foreach (var item in items)
+        {
+            // register the parents
+            if (dupes[item.Id] > 1)
+            {
+                var newId = _hashUtil.Generate();
+                newParents.Add(item.ParentId, newParents[item.ParentId] ?? new());
+                newParents[item.ParentId].Add(item);
+                oldToNewIds[item.Id] = oldToNewIds[item.Id] ?? new();
+                oldToNewIds[item.Id].Add(newId);
+            }
+        }
+
+        foreach (var item in items)
+        {
+            if (dupes[item.Id] > 1)
+            {
+                var oldId = item.Id;
+                oldToNewIds[oldId].RemoveAt(0);
+                var newId = oldToNewIds[oldId][0];
+                item.Id = newId;
+
+                // Extract one of the children that's also duplicated.
+                if (newParents.ContainsKey(oldId) && newParents[oldId].Count > 0)
+                {
+                    childrenMapping[newId] = new();
+                    for (int i = 0; i < newParents[oldId].Count; i++)
+                    {
+                        // Make sure we haven't already assigned another duplicate child of
+                        // same slot and location to this parent.
+                        var childId = GetChildId(newParents[oldId][i]);
+
+                        if (!childrenMapping.ContainsKey(childId))
+                        {
+                            childrenMapping[newId][childId] = 1;
+                            newParents[oldId][i].ParentId = newId;
+                            // Some very fucking sketchy stuff on this childIndex
+                            // No clue wth was that childIndex supposed to be, but its not
+                            newParents[oldId].RemoveAt(i);
+                        }
+                    }
+                }
+            }
+        }
+
+        return items;
     }
 
     /// <summary>
@@ -425,7 +585,13 @@ public class ItemHelper
     /// <param name="items">The list of items to mark as FiR</param>
     public void SetFoundInRaid(List<Item> items)
     {
-        throw new NotImplementedException();
+        foreach (var item in items)
+        {
+            if (item.Upd == null)
+                item.Upd = new();
+
+            item.Upd.SpawnedInSession = true;
+        }
     }
 
     /// <summary>
@@ -436,7 +602,27 @@ public class ItemHelper
     /// <returns>bool Match found</returns>
     public bool DoesItemOrParentsIdMatch(string tpl, List<string> tplsToCheck)
     {
-        throw new NotImplementedException();
+        var itemDetails = GetItem(tpl);
+        var itemExists = itemDetails.Key;
+        var item = itemDetails.Value;
+
+        // not an item, drop out
+        if (!itemExists)
+            return false;
+
+        // no parent to check
+        if (item.Parent == null)
+            return false;
+
+        // Does templateId match any values in tplsToCheck array
+        if (tplsToCheck.Contains(item.Id))
+            return true;
+
+        // check items parent with same method
+        if (tplsToCheck.Contains(item.Parent))
+            return true;
+
+        return DoesItemOrParentsIdMatch(item.Parent, tplsToCheck);
     }
 
     /// <summary>
@@ -446,7 +632,11 @@ public class ItemHelper
     /// <returns>true if item is flagged as quest item</returns>
     public bool IsQuestItem(string tpl)
     {
-        throw new NotImplementedException();
+        var itemDetails = GetItem(tpl);
+        if (itemDetails.Key && itemDetails.Value.Properties.QuestItem != null)
+            return true;
+
+        return false;
     }
 
     /// <summary>
@@ -459,18 +649,56 @@ public class ItemHelper
     /// <returns>True if the item is actually moddable, false if it is not, and null if the check cannot be performed.</returns>
     public bool? IsRaidModdable(Item item, Item parent)
     {
-        throw new NotImplementedException();
+        // This check requires the item to have the slotId property populated.
+        if (item.SlotId == null)
+            return null;
+
+        var itemTemplate = GetItem(item.Template);
+        var parentTemplate = GetItem(parent.Template);
+
+        // Check for RaidModdable property on the item template.
+        var isNotRaidModdable = false;
+        if (itemTemplate.Key)
+            isNotRaidModdable = itemTemplate.Value?.Properties?.RaidModdable == false;
+
+        // Check to see if the slot that the item is attached to is marked as required in the parent item's template.
+        var isRequiredSlot = false;
+        if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
+            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(slot =>
+                slot?.Name == item?.SlotId &&
+                (slot?.Required ?? false)
+            ) ?? false;
+        
+        return itemTemplate.Key && parentTemplate.Key && (isNotRaidModdable || isRequiredSlot);
     }
 
     /// <summary>
     /// Retrieves the main parent item for a given attachment item.
+    ///
+    /// This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the main parent
+    /// item that is not an attached attachment itself. In other words, if you pass it an item id of a suppressor, it
+    /// will traverse up the muzzle brake, barrel, upper receiver, and return the gun that the suppressor is ultimately
+    /// attached to, even if that gun is located within multiple containers.
+    ///
+    /// It's important to note that traversal is expensive, so this method requires that you pass it a Map of the items
+    /// to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
+    /// some of the performance concerns, as it allows for quick lookups of items by ID.
     /// </summary>
     /// <param name="itemId">The unique identifier of the item for which to find the main parent.</param>
     /// <param name="itemsMap">A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.</param>
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
     public Item GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
     {
-        throw new NotImplementedException();
+        var currentItem = itemsMap.FirstOrDefault(x => x.Key == itemId).Value;
+
+        while (currentItem != null && IsAttachmentAttached(currentItem))
+        {
+            currentItem = itemsMap.FirstOrDefault(x => x.Key == currentItem.ParentId).Value;
+            if (currentItem == null)
+                return null;
+        }
+        
+        return currentItem;
     }
 
     /**
@@ -481,7 +709,9 @@ public class ItemHelper
  */
     public bool IsAttachmentAttached(Item item)
     {
-        throw new NotImplementedException();
+        // TODO: actually implement
+        return true;
+        
     }
 
     /**
@@ -806,7 +1036,7 @@ public class ItemSize
 {
     [JsonPropertyName("width")]
     public double Width { get; set; }
-    
+
     [JsonPropertyName("height")]
     public double Height { get; set; }
 }
