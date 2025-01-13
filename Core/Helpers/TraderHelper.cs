@@ -1,20 +1,43 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class TraderHelper
 {
-    private TraderConfig _traderConfig;
+    private readonly ILogger _logger;
+    private readonly TimeUtil _timeUtil;
+    private readonly RandomUtil _randomUtil;
+    private readonly LocalisationService _localisationService;
+    private readonly ConfigServer _configServer;
+    private readonly TraderConfig _traderConfig;
     private Dictionary<string, int>? _highestTraderPriceItems;
 
-    public TraderHelper()
+    public TraderHelper(
+        ILogger logger,
+        TimeUtil timeUtil,
+        RandomUtil randomUtil,
+        LocalisationService localisationService,
+        ConfigServer configServer, Dictionary<string, int>? highestTraderPriceItems)
     {
+        _logger = logger;
+        _timeUtil = timeUtil;
+        _randomUtil = randomUtil;
+        _localisationService = localisationService;
+        _configServer = configServer;
+        _highestTraderPriceItems = highestTraderPriceItems;
+
+        _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
     }
 
     /// <summary>
@@ -142,7 +165,9 @@ public class TraderHelper
     /// <returns>Future timestamp.</returns>
     public long GetNextUpdateTimestamp(string traderID)
     {
-        throw new NotImplementedException();
+        var time = _timeUtil.GetTimeStamp();
+        var updateSeconds = GetTraderUpdateSeconds(traderID) ?? 0;
+        return time + updateSeconds;
     }
 
     /// <summary>
@@ -152,7 +177,25 @@ public class TraderHelper
     /// <returns>Time in seconds.</returns>
     public long? GetTraderUpdateSeconds(string traderId)
     {
-        throw new NotImplementedException();
+        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
+        if (traderDetails is null || traderDetails.Seconds?.Min is null || traderDetails.Seconds.Max is null)
+        {
+            _logger.Warning(_localisationService.GetText("trader-missing_trader_details_using_default_refresh_time", new {
+                traderId = traderId,
+                updateTime = _traderConfig.UpdateTimeDefault,
+            }));
+
+            _traderConfig.UpdateTime.Add( new UpdateTime
+            // create temporary entry to prevent logger spam
+            {
+                TraderId = traderId,
+                Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
+            });
+
+            return null;
+        }
+
+        return _randomUtil.GetInt((int)traderDetails.Seconds.Min, (int)traderDetails.Seconds.Max);
     }
 
     public TraderLoyaltyLevel GetLoyaltyLevel(string traderID, PmcData pmcData)
