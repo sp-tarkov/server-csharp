@@ -18,7 +18,8 @@ public class FenceBaseAssortGenerator
     /// </summary>
     public void GenerateFenceBaseAssorts()
     {
-        throw new NotImplementedException();
+        // TODO: actually implement
+        return;
     }
 
     /// <summary>

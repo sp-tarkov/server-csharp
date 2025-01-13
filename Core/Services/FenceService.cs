@@ -244,7 +244,8 @@ public class FenceService
     /// </summary>
     public void GenerateFenceAssorts()
     {
-        throw new NotImplementedException();
+        // TODO: actually implement
+        return;
     }
 
     /// <summary>
