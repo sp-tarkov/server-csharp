@@ -27,7 +27,7 @@ public class BotGenerator
     /// <param name="botTemplate">base bot template to use  (e.g. assault/pmcbot)</param>
     /// <param name="profile">profile of player generating pscav</param>
     /// <returns>BotBase</returns>
-    public BotBase GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
+    public PmcData GeneratePlayerScav(string sessionId, string role, string difficulty, BotType botTemplate, PmcData profile)
     {
         throw new NotImplementedException();
     }
