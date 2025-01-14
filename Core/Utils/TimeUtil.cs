@@ -184,4 +184,16 @@ public class TimeUtil
     {
         return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).DateTime;
     }
+    
+    /// <summary>
+    /// Takes a timestamp and gets difference between Epoch time and time provided resulting in a unixtimestamp (date defaults to utcnow)
+    /// </summary>
+    /// <param name="date"></param>
+    /// <returns></returns>
+    public long GetTimeStampFromEpoch(DateTime? date = null)
+    {
+        var dateToCompare = date ?? DateTime.UtcNow;
+        return (long)(dateToCompare - DateTime.UnixEpoch).TotalSeconds;
+    }
+    
 }

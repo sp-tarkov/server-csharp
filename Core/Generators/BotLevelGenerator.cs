@@ -43,7 +43,8 @@ public class BotLevelGenerator
 
         // Get random level based on the exp table.
         int exp = 0;
-        var level = int.Parse(ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15).ToString()); // TODO - nasty double to string to int conversion
+        var level = int.Parse(ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
+            .ToString()); // TODO - nasty double to string to int conversion
         for (var i = 0; i < level; i++)
         {
             exp += expTable[i].Experience.Value;
@@ -55,7 +56,7 @@ public class BotLevelGenerator
             exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
         }
 
-        return new RandomisedBotLevelResult{ Level = level, Exp = exp };
+        return new RandomisedBotLevelResult { Level = level, Exp = exp };
     }
 
     public double ChooseBotLevel(double min, double max, int shift, double number)
@@ -76,24 +77,29 @@ public class BotLevelGenerator
         var pmcOverride = botGenerationDetails.LocationSpecificPmcLevelOverride;
 
         var minPossibleLevel = isPmc && pmcOverride is not null
-                                ? Math.Min(
-                                    Math.Max(levelDetails.Min.Value, pmcOverride.Min.Value), // Biggest between json min and the botgen min
-                                    maxAvailableLevel // Fallback if value above is crazy (default is 79)
-                                )
-                                : Math.Min(levelDetails.Min.Value, maxAvailableLevel); // Not pmc with override or non-pmc
+            ? Math.Min(
+                Math.Max(levelDetails.Min.Value, pmcOverride.Min.Value), // Biggest between json min and the botgen min
+                maxAvailableLevel // Fallback if value above is crazy (default is 79)
+            )
+            : Math.Min(levelDetails.Min.Value, maxAvailableLevel); // Not pmc with override or non-pmc
 
         var maxPossibleLevel = isPmc && pmcOverride is not null
             ? Math.Min(pmcOverride.Max.Value, maxAvailableLevel) // Was a PMC and they have a level override
             : Math.Min(levelDetails.Max.Value, maxAvailableLevel); // Not pmc with override or non-pmc
 
-        var minLevel = botGenerationDetails.PlayerLevel.Value - botGenerationDetails.BotRelativeLevelDeltaMin.Value;
-        var maxLevel = botGenerationDetails.PlayerLevel.Value + botGenerationDetails.BotRelativeLevelDeltaMin.Value;
+        var minLevel = botGenerationDetails.PlayerLevel.HasValue
+            ? botGenerationDetails.PlayerLevel.Value
+            : 0 - botGenerationDetails.BotRelativeLevelDeltaMin.Value;
+        var maxLevel = botGenerationDetails.PlayerLevel.HasValue
+            ? botGenerationDetails.PlayerLevel.Value
+            : 0 + botGenerationDetails.BotRelativeLevelDeltaMin.Value;
 
         // Bound the level to the min/max possible
         maxLevel = Math.Min(Math.Max(maxLevel, minPossibleLevel), maxPossibleLevel);
         minLevel = Math.Min(Math.Max(minLevel, minPossibleLevel), maxPossibleLevel);
 
-        return new MinMax{
+        return new MinMax
+        {
             Min = minLevel,
             Max = maxLevel,
         };
