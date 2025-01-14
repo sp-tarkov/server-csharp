@@ -119,7 +119,7 @@ public class ChangeRequirement
     public List<ChangeCost?>? ChangeCost { get; set; }
 
     [JsonPropertyName("changeStandingCost")]
-    public int? ChangeStandingCost { get; set; }
+    public double? ChangeStandingCost { get; set; }
 }
 
 public class ChangeCost

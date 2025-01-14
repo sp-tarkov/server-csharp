@@ -53,7 +53,7 @@ public class SendMessageDetails
     /// Optional - How long items will be stored in mail before expiry
     /// </summary>
     [JsonPropertyName("itemsMaxStorageLifetimeSeconds")]
-    public int? ItemsMaxStorageLifetimeSeconds { get; set; }
+    public long? ItemsMaxStorageLifetimeSeconds { get; set; }
 
     /// <summary>
     /// Optional - Used when sending messages from traders who send text from locale json
