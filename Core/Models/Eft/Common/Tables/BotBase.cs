@@ -511,7 +511,7 @@ public class Hideout
     public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
     public HideoutCounters? HideoutCounters { get; set; }
     public double? Seed { get; set; }
-    public List<string>? MannequinPoses { get; set; }
+    public object? MannequinPoses { get; set; }
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
     public long? SptUpdateLastRunTimestamp { get; set; }
