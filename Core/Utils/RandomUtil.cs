@@ -10,8 +10,10 @@ public class RandomUtil
 {
     private readonly ILogger _logger;
 
-    public RandomUtil(
-        ILogger logger)
+    public RandomUtil
+    (
+        ILogger logger
+    )
     {
         _logger = logger;
     }
@@ -348,10 +350,11 @@ public class RandomUtil
              * A shift that is equal to the available range only has a 50% chance of rolling correctly, theoretically halving performance.
              * Shifting even further drops the success chance very rapidly - so we want to warn against that
              **/
-            _logger.Warning("Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact");
-            _logger.Warning($"min-> { min}; max-> { max}; shift-> { shift}");
+            _logger.Warning(
+                "Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact");
+            _logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
         }
-       
+
 
         var biasedMin = shift >= 0 ? min - shift : min;
         var biasedMax = shift < 0 ? max + shift : max;
@@ -373,20 +376,21 @@ public class RandomUtil
     private double GetGaussianRandom(double n)
     {
         var rand = 0d;
-        for (var i = 0; i<n; i += 1)
+        for (var i = 0; i < n; i += 1)
         {
             rand += GetSecureRandomNumber();
         }
+
         return rand / n;
     }
 
-/// <summary>
-/// Shuffles a list in place using the Fisher-Yates algorithm.
-/// </summary>
-/// <param name="originalList">The list to shuffle.</param>
-/// <typeparam name="T">The type of elements in the list.</typeparam>
-/// <returns>The shuffled list.</returns>
-public List<T> Shuffle<T>(List<T> originalList)
+    /// <summary>
+    /// Shuffles a list in place using the Fisher-Yates algorithm.
+    /// </summary>
+    /// <param name="originalList">The list to shuffle.</param>
+    /// <typeparam name="T">The type of elements in the list.</typeparam>
+    /// <returns>The shuffled list.</returns>
+    public List<T> Shuffle<T>(List<T> originalList)
     {
         var currentIndex = originalList.Count;
 
