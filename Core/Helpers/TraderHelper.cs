@@ -306,9 +306,11 @@ public class TraderHelper
     /// </summary>
     /// <param name="traderEnumValue">The trader enum value to validate</param>
     /// <returns>The validated trader enum value as a string, or an empty string if invalid</returns>
-    public string GetValidTraderIdByEnumValue(object traderEnumValue) // TODO: param was Traders
+    public string GetValidTraderIdByEnumValue(string traderEnumValue) // TODO: param was Traders
     {
-        throw new NotImplementedException();
+        var traderId = _databaseService.GetTraders();
+        var id = traderId.FirstOrDefault(x => x.Value.Base.Nickname.ToLower() == traderEnumValue.ToLower()).Key;
+        return id;
     }
 
     /// <summary>

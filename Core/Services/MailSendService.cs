@@ -517,7 +517,7 @@ public class MailSendService
             throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
         
         // Does dialog exist
-        var senderDialog = dialogsInProfile[senderId];
+        var senderDialog = dialogsInProfile.FirstOrDefault(x => x.Key == senderId).Value;
         if (senderDialog is null)
         {
             // create if doesnt
