@@ -8,7 +8,7 @@ namespace Core.Models.Eft.Hideout
         public string? Action { get; set; } = "HideoutCustomizationSetMannequinPose";
 
         [JsonPropertyName("poses")]
-        public string Poses { get; set; }
+        public Dictionary<string, string> Poses { get; set; }
 
         [JsonPropertyName("timestamp")]
         public double Timestamp { get; set; }

@@ -101,7 +101,11 @@ public class HideoutController
      */
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(string sessionId, PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request)
     {
-        throw new NotImplementedException();
+        foreach (var poseKvP in request.Poses) {
+            pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
+        }
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 
     public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionId, ItemEventRouterResponse output)
