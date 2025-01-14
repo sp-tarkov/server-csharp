@@ -501,6 +501,7 @@ public class GameController
         }
 
         // Get active mods
+        _logger.Error("NOT IMPLEMENTED - _preSptModLoader SaveActiveModsToProfile()");
         //var activeMods = _preSptModLoader.GetImportedModDetails(); //TODO IMPLEMENT _preSptModLoader
         var activeMods = new Dictionary<string, ModDetails>();
         foreach (var modKvP in activeMods) {

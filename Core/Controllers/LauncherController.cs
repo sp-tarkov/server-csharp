@@ -42,7 +42,7 @@ public class LauncherController
         ProfileHelper profileHelper,
         DatabaseService databaseService,
         LocalisationService localisationService,
-        // TODO => @inject("PreSptModLoader") protected preSptModLoader: PreSptModLoader,
+        // TODO => PreSptModLoader preSptModLoader,
         ConfigServer configServer
     ) {
      _logger = logger;
@@ -217,6 +217,7 @@ public class LauncherController
      */
     public Dictionary<string, PackageJsonData> GetLoadedServerMods()
     {
+        _logger.Error("NOT IMPLEMENTED - _preSptModLoader GetLoadedServerMods()");
         return new Dictionary<string, PackageJsonData>();
         // TODO => return this.preSptModLoader.getImportedModDetails();
     }
@@ -230,6 +231,7 @@ public class LauncherController
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
 
+        _logger.Error("NOT IMPLEMENTED - _preSptModLoader GetServerModsProfileUsed()");
         /* TODO => modding
         if (profile?.spt?.mods) {
             return this.preSptModLoader.GetProfileModsGroupedByModName(profile?.spt?.mods);
