@@ -7,8 +7,8 @@ using Core.Models.Spt.Server;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
-using Core.Utils.Cloners;
 using ILogger = Core.Models.Utils.ILogger;
+using Path = System.IO.Path;
 
 namespace Core.Utils;
 
@@ -95,17 +95,31 @@ public class DatabaseImporter : OnLoad
         await HydrateDatabase(filepath);
 
         var imageFilePath = $"{filepath}images/";
-        //var directories = this.vfs.getDirs(imageFilePath);
-        LoadImages(imageFilePath, _fileUtil.GetDirectories(imageFilePath), [
-            "/files/achievement/",
-            "/files/CONTENT/banners/",
-            "/files/handbook/",
-            "/files/Hideout/",
-            "/files/launcher/",
-            "/files/prestige/",
-            "/files/quest/icon/",
-            "/files/trader/avatar/",
-        ]);
+        CreateRouteMapping(imageFilePath, "files");
+    }
+
+    private void CreateRouteMapping(string directory, string newBasePath)
+    {
+        var directoryContent = GetAllFilesInDirectory(directory);
+
+        foreach (var fileNameWithPath in directoryContent) {
+            var bsgPath = $"/{newBasePath}/{Path.GetFileNameWithoutExtension(fileNameWithPath)}";
+            var sptPath = $"{directory}{ fileNameWithPath}";
+            _imageRouter.AddRoute(bsgPath, sptPath);
+        }
+    }
+
+    private List<string> GetAllFilesInDirectory(string directoryPath)
+    {
+        List<string> result = [];
+        result.AddRange(Directory.GetFiles(directoryPath));
+
+        foreach (var subdirectory in Directory.GetDirectories(directoryPath))
+        {
+            result.AddRange(GetAllFilesInDirectory(subdirectory));
+        }
+
+        return result;
     }
 
     /**
@@ -183,9 +197,11 @@ public class DatabaseImporter : OnLoad
     }
 
     /**
+     * absolute dogshit, do not use
      * Find and map files with image router inside a designated path
      * @param filepath Path to find files in
      */
+    [Obsolete]
     public void LoadImages(string filepath, string[] directories, List<string> routes)
     {
         for (var i = 0; i < directories.Length; i++)
