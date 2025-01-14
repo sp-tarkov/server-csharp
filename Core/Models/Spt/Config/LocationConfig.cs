@@ -131,6 +131,9 @@ public class LocationConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("reserveRaiderSpawnChanceOverrides")]
     public ReserveRaiderSpawnChanceOverrides ReserveRaiderSpawnChanceOverrides { get; set; }
+    
+    [JsonPropertyName("tplsToStripChildItemsFrom")]
+    public List<string> TplsToStripChildItemsFrom { get; set; }
 
     /// <summary>
     /// Map ids players cannot visit

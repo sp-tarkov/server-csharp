@@ -11,6 +11,7 @@ public class Item
     public string? Template { get; set; }
 
     [JsonPropertyName("parentId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? ParentId { get; set; }
 
     [JsonPropertyName("slotId")]
