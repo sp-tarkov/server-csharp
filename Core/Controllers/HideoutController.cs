@@ -92,22 +92,6 @@ public class HideoutController
         _hideoutConfig = _configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
     }
 
-    /**
-     * Handle HideoutCustomizationSetMannequinPose event
-     * @param sessionId Session id
-     * @param pmcData Player profile
-     * @param request Client request data
-     * @returns Client response
-     */
-    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(string sessionId, PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request)
-    {
-        foreach (var poseKvP in request.Poses) {
-            pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
-        }
-
-        return _eventOutputHolder.GetOutput(sessionId);
-    }
-
     public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionId, ItemEventRouterResponse output)
     {
         throw new NotImplementedException();
@@ -186,5 +170,23 @@ public class HideoutController
     public ItemEventRouterResponse HideoutCustomizationApply(string sessionId, PmcData pmcData, HideoutCustomizationApplyRequestData request)
     {
         throw new NotImplementedException();
+    }
+
+
+    /// <summary>
+    /// Handle HideoutCustomizationSetMannequinPose event
+    /// </summary>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="pmcData">Player profile</param>
+    /// <param name="request">Client request</param>
+    /// <returns></returns>
+    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(string sessionId, PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request)
+    {
+        foreach (var poseKvP in request.Poses)
+        {
+            pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
+        }
+
+        return _eventOutputHolder.GetOutput(sessionId);
     }
 }
