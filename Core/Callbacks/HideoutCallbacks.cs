@@ -32,9 +32,9 @@ public class HideoutCallbacks : OnUpdate
     /// <summary>
     /// Handle HideoutUpgrade event
     /// </summary>
-    public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-         _hideoutController.StartUpgrade(pmcData, info, sessionID, output);
+         _hideoutController.StartUpgrade(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -42,9 +42,9 @@ public class HideoutCallbacks : OnUpdate
     /// <summary>
     /// Handle HideoutUpgradeComplete event
     /// </summary>
-    public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-         _hideoutController.UpgradeComplete(pmcData, info, sessionID, output);
+         _hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -52,49 +52,49 @@ public class HideoutCallbacks : OnUpdate
     /// <summary>
     /// Handle HideoutPutItemsInAreaSlots
     /// </summary>
-    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData info, string sessionID)
+    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, string sessionID)
     {
-         return _hideoutController.PutItemsInAreaSlots(pmcData, info, sessionID);
+         return _hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutTakeItemsFromAreaSlots event
     /// </summary>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData info, string sessionID)
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, string sessionID)
     {
-         return _hideoutController.TakeItemsFromAreaSlots(pmcData, info, sessionID);
+         return _hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutToggleArea event
     /// </summary>
-    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData info, string sessionID)
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, string sessionID)
     {
-         return _hideoutController.ToggleArea(pmcData, info, sessionID);
+         return _hideoutController.ToggleArea(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutSingleProductionStart event
     /// </summary>
-    public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData request, string sessionID)
     {
-         return _hideoutController.SingleProductionStart(pmcData, info, sessionID);
+         return _hideoutController.SingleProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutScavCaseProductionStart event
     /// </summary>
-    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData info, string sessionID)
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, string sessionID)
     {
-         return _hideoutController.ScavCaseProductionStart(pmcData, info, sessionID);
+         return _hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutContinuousProductionStart
     /// </summary>
-    public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData request, string sessionID)
     {
-         return _hideoutController.ContinuousProductionStart(pmcData, info, sessionID);
+         return _hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
