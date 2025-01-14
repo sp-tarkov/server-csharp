@@ -1,4 +1,5 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -6,7 +7,9 @@ using Core.Models.Enums;
 using Core.Models.Enums.RaidSettings;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Servers;
 using Core.Services;
+using Core.Utils;
 using Core.Utils.Cloners;
 using BodyPart = Core.Models.Eft.Common.Tables.BodyPart;
 using ILogger = Core.Models.Utils.ILogger;
@@ -17,20 +20,65 @@ namespace Core.Generators;
 public class BotGenerator
 {
     private readonly ILogger _logger;
+    private readonly HashUtil _hashUtil;
+    private readonly RandomUtil _randomUtil;
+    private readonly TimeUtil _timeUtil;
+    private readonly ProfileHelper _profileHelper;
     private readonly DatabaseService _databaseService;
+    private readonly BotInventoryGenerator _botInventoryGenerator;
+    private readonly BotLevelGenerator _botLevelGenerator;
+    private readonly BotEquipmentFilterService _botEquipmentFilterService;
+    private readonly WeightedRandomHelper _weightedRandomHelper;
+    private readonly BotHelper _botHelper;
+    private readonly BotGeneratorHelper _botGeneratorHelper;
+    private readonly SeasonalEventService _seasonalEventService;
+    private readonly ItemFilterService _itemFilterService;
+    private readonly BotNameService _botNameService;
+    private readonly ConfigServer _configServer;
     private readonly ICloner _cloner;
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
 
     public BotGenerator(
         ILogger logger,
+        HashUtil hashUtil,
+        RandomUtil randomUtil,
+        TimeUtil timeUtil,
+        ProfileHelper profileHelper,
         DatabaseService databaseService,
+        BotInventoryGenerator botInventoryGenerator,
+        BotLevelGenerator botLevelGenerator,
+        BotEquipmentFilterService botEquipmentFilterService,
+        WeightedRandomHelper weightedRandomHelper,
+        BotHelper botHelper,
+        BotGeneratorHelper botGeneratorHelper,
+        SeasonalEventService seasonalEventService,
+        ItemFilterService itemFilterService,
+        BotNameService botNameService,
+        ConfigServer configServer,
         ICloner cloner
         )
     {
         _logger = logger;
+        _hashUtil = hashUtil;
+        _randomUtil = randomUtil;
+        _timeUtil = timeUtil;
+        _profileHelper = profileHelper;
         _databaseService = databaseService;
+        _botInventoryGenerator = botInventoryGenerator;
+        _botLevelGenerator = botLevelGenerator;
+        _botEquipmentFilterService = botEquipmentFilterService;
+        _weightedRandomHelper = weightedRandomHelper;
+        _botHelper = botHelper;
+        _botGeneratorHelper = botGeneratorHelper;
+        _seasonalEventService = seasonalEventService;
+        _itemFilterService = itemFilterService;
+        _botNameService = botNameService;
+        _configServer = configServer;
         _cloner = cloner;
+
+        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _pmcConfig = _configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
     }
 
     /// <summary>
@@ -140,11 +188,122 @@ public class BotGenerator
     /// <param name="botJsonTemplate">Bot template from db/bots/x.json</param>
     /// <param name="botGenerationDetails">details on how to generate the bot</param>
     /// <returns>BotBase object</returns>
-    public BotBase GenerateBot(string sessionId, BotBase bot, BotType botJsonTemplate, BotGenerationDetails botGenerationDetails)
+    public BotBase GenerateBot(
+        string sessionId,
+        BotBase bot,
+        BotType botJsonTemplate,
+        BotGenerationDetails botGenerationDetails)
     {
         _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
 
-        bot.Inventory.Items = [];
+        var botRoleLowercase = botGenerationDetails.Role.ToLower();
+        var botLevel = _botLevelGenerator.GenerateBotLevel(
+            botJsonTemplate.BotExperience.Level,
+            botGenerationDetails,
+            bot);
+
+        // Only filter bot equipment, never players
+        if (!botGenerationDetails.IsPlayerScav.GetValueOrDefault(false))
+        {
+            _botEquipmentFilterService.FilterBotEquipment(
+                sessionId,
+                botJsonTemplate,
+                botLevel.Level.Value,
+                botGenerationDetails);
+        }
+
+        bot.Info.Nickname = _botNameService.GenerateUniqueBotNickname(
+            botJsonTemplate,
+            botGenerationDetails,
+            botRoleLowercase,
+            _botConfig.BotRolesThatMustHaveUniqueName);
+        bot.Info.LowerNickname = bot.Info.Nickname.ToLower();
+
+        // Only run when generating a 'fake' playerscav, not actual player scav
+        if (!botGenerationDetails.IsPlayerScav.GetValueOrDefault(false) && ShouldSimulatePlayerScav(botRoleLowercase))
+        {
+            _botNameService.AddRandomPmcNameToBotMainProfileNicknameProperty(bot);
+            SetRandomisedGameVersionAndCategory(bot.Info);
+        }
+
+        if (!_seasonalEventService.ChristmasEventEnabled())
+        {
+            // Process all bots EXCEPT gifter, he needs christmas items
+            if (botGenerationDetails.Role != "gifter")
+            {
+                _seasonalEventService.RemoveChristmasItemsFromBotInventory(
+                    botJsonTemplate.BotInventory,
+                    botGenerationDetails.Role);
+            }
+        }
+
+        RemoveBlacklistedLootFromBotTemplate(botJsonTemplate.BotInventory);
+
+        // Remove hideout data if bot is not a PMC or pscav - match what live sends
+        if (!(botGenerationDetails.IsPmc.GetValueOrDefault(false) || botGenerationDetails.IsPlayerScav.GetValueOrDefault(false)))
+        {
+            bot.Hideout = null;
+        }
+
+        bot.Info.Experience = botLevel.Exp;
+        bot.Info.Level = botLevel.Level;
+        bot.Info.Settings.Experience = GetExperienceRewardForKillByDifficulty(
+            botJsonTemplate.BotExperience.Reward,
+            botGenerationDetails.BotDifficulty,
+            botGenerationDetails.Role);
+        bot.Info.Settings.StandingForKill = GetStandingChangeForKillByDifficulty(
+            botJsonTemplate.BotExperience.StandingForKill,
+            botGenerationDetails.BotDifficulty,
+            botGenerationDetails.Role);
+        bot.Info.Settings.AggressorBonus = GetAgressorBonusByDifficulty(
+            botJsonTemplate.BotExperience.StandingForKill,
+            botGenerationDetails.BotDifficulty,
+            botGenerationDetails.Role);
+        bot.Info.Settings.UseSimpleAnimator = botJsonTemplate.BotExperience.UseSimpleAnimator ?? false;
+        bot.Info.Voice = _weightedRandomHelper.GetWeightedValue<string, int>(botJsonTemplate.BotAppearance.Voice);
+        bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav.GetValueOrDefault(false));
+        bot.Skills = GenerateSkills(botJsonTemplate.BotSkills); // TODO: fix bad type, bot jsons store skills in dict, output needs to be array
+
+        if (botGenerationDetails.IsPmc.GetValueOrDefault(false))
+        {
+            bot.Info.IsStreamerModeAvailable = true; // Set to true so client patches can pick it up later - client sometimes alters botrole to assaultGroup
+            SetRandomisedGameVersionAndCategory(bot.Info);
+            if (bot.Info.GameVersion == GameEditions.UNHEARD)
+            {
+                AddAdditionalPocketLootWeightsForUnheardBot(botJsonTemplate);
+            }
+        }
+
+        // Add drip
+        SetBotAppearance(bot, botJsonTemplate.BotAppearance, botGenerationDetails);
+
+        // Filter out blacklisted gear from the base template
+        FilterBlacklistedGear(botJsonTemplate, botGenerationDetails);
+
+        bot.Inventory = _botInventoryGenerator.generateInventory(
+            sessionId,
+            botJsonTemplate,
+            botRoleLowercase,
+            botGenerationDetails.IsPmc.GetValueOrDefault(false),
+            botLevel.Level.Value,
+            bot.Info.GameVersion);
+
+        if (_botConfig.BotRolesWithDogTags.Contains(botRoleLowercase))
+        {
+            AddDogtagToBot(bot);
+        }
+
+        // Generate new bot ID
+        AddIdsToBot(bot);
+
+        // Generate new inventory ID
+        GenerateInventoryId(bot);
+
+        // Set role back to originally requested now its been generated
+        if (botGenerationDetails.EventRole is not null)
+        {
+            bot.Info.Settings.Role = botGenerationDetails.EventRole;
+        }
 
         return bot;
     }
@@ -178,7 +337,7 @@ public class BotGenerator
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public int GetStandingChangeForKillByDifficulty(Dictionary<string, int> standingForKill, string botDifficulty, string role)
+    public int GetStandingChangeForKillByDifficulty(Dictionary<string, double> standingForKill, string botDifficulty, string role)
     {
         throw new NotImplementedException();
     }
@@ -190,7 +349,7 @@ public class BotGenerator
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public int GetAgressorBonusByDifficulty(Dictionary<string, int> aggressorBonus, string botDifficulty, string role)
+    public int GetAgressorBonusByDifficulty(Dictionary<string, double> aggressorBonus, string botDifficulty, string role)
     {
         throw new NotImplementedException();
     }
@@ -249,7 +408,7 @@ public class BotGenerator
     /// <param name="healthObj">health object from bot json</param>
     /// <param name="playerScav">Is a pscav bot being generated</param>
     /// <returns>Health object</returns>
-    public Health GenerateHealth(Health healthObj, bool playerScav = false)
+    public BotBaseHealth GenerateHealth(BotTypeHealth healthObj, bool playerScav = false)
     {
         throw new NotImplementedException();
     }
@@ -269,7 +428,7 @@ public class BotGenerator
     /// </summary>
     /// <param name="botSkills">Skills that should have their progress value randomised</param>
     /// <returns>Skills</returns>
-    public Skills GenerateSkills(BaseJsonSkills botSkills)
+    public Skills GenerateSkills(BotDbSkills botSkills)
     {
         throw new NotImplementedException();
     }
