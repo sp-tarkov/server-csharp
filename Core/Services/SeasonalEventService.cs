@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -199,7 +199,7 @@ public class SeasonalEventService
     /// </summary>
     /// <param name="botInventory">Bots inventory to iterate over</param>
     /// <param name="botRole">the role of the bot being processed</param>
-    public void RemoveChristmasItemsFromBotInventory(BotBaseInventory botInventory, string botRole)
+    public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
         throw new NotImplementedException();
     }
