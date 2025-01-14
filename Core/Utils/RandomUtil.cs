@@ -1,5 +1,6 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Core.Annotations;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils;
 
@@ -7,6 +8,14 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil
 {
+    private readonly ILogger _logger;
+
+    public RandomUtil(
+        ILogger logger)
+    {
+        _logger = logger;
+    }
+
     public readonly Random Random = new();
 
     /// <summary>
@@ -300,7 +309,7 @@ public class RandomUtil
     /// <returns>A biased random number within the specified range.</returns>
     public double GetBiasedRandomNumber(double min, double max, double shift, double n)
     {
-        /***
+        /**
          * This function generates a random number based on a gaussian distribution with an option to add a bias via shifting.
          *
          * Here's an example graph of how the probabilities can be distributed:
@@ -314,17 +323,70 @@ public class RandomUtil
          * Here's a place where you can play around with the 'n' and 'shift' values to see how the distribution changes:
          * http://jsfiddle.net/e08cumyx/
          */
+        if (max < min)
+        {
+            _logger.Error($"Invalid argument, Bounded random number generation max is smaller than min({max} < {min}");
+            return -1;
+        }
 
-        throw new NotImplementedException("This honestly went over my head...");
+        if (n < 1)
+        {
+            _logger.Error($"Invalid argument, 'n' must be 1 or greater(received {n})");
+            return -1;
+        }
+
+        if (min == max)
+        {
+            return min;
+        }
+
+        if (shift > max - min)
+        {
+            /**
+             * If a rolled number is out of bounds (due to bias being applied), we roll it again.
+             * As the shifting increases, the chance of rolling a number within bounds decreases.
+             * A shift that is equal to the available range only has a 50% chance of rolling correctly, theoretically halving performance.
+             * Shifting even further drops the success chance very rapidly - so we want to warn against that
+             **/
+            _logger.Warning("Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact");
+            _logger.Warning($"min-> { min}; max-> { max}; shift-> { shift}");
+        }
+       
+
+        var biasedMin = shift >= 0 ? min - shift : min;
+        var biasedMax = shift < 0 ? max + shift : max;
+
+        double num;
+        do
+        {
+            num = GetBoundedGaussian(biasedMin, biasedMax, n);
+        } while (num < min || num > max);
+
+        return num;
     }
 
-    /// <summary>
-    /// Shuffles a list in place using the Fisher-Yates algorithm.
-    /// </summary>
-    /// <param name="originalList">The list to shuffle.</param>
-    /// <typeparam name="T">The type of elements in the list.</typeparam>
-    /// <returns>The shuffled list.</returns>
-    public List<T> Shuffle<T>(List<T> originalList)
+    private double GetBoundedGaussian(double start, double end, double n)
+    {
+        return Math.Round(start + GetGaussianRandom(n) * (end - start + 1));
+    }
+
+    private double GetGaussianRandom(double n)
+    {
+        var rand = 0d;
+        for (var i = 0; i<n; i += 1)
+        {
+            rand += GetSecureRandomNumber();
+        }
+        return rand / n;
+    }
+
+/// <summary>
+/// Shuffles a list in place using the Fisher-Yates algorithm.
+/// </summary>
+/// <param name="originalList">The list to shuffle.</param>
+/// <typeparam name="T">The type of elements in the list.</typeparam>
+/// <returns>The shuffled list.</returns>
+public List<T> Shuffle<T>(List<T> originalList)
     {
         var currentIndex = originalList.Count;
 
