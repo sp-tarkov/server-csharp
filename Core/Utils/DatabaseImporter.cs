@@ -126,12 +126,12 @@ public class DatabaseImporter : OnLoad
      * Read all json files in database folder and map into a json object
      * @param filepath path to database folder
      */
-    protected async Task HydrateDatabase(string filepath)
+    protected async Task HydrateDatabase(string filePath)
     {
         _logger.Info(_localisationService.GetText("importing_database"));
 
         var dataToImport = (DatabaseTables) await _importerUtil.LoadRecursiveAsync(
-            $"{filepath}database/",
+            $"{filePath}database/",
             typeof(DatabaseTables),
             OnReadValidate
         );
