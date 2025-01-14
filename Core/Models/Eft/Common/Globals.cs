@@ -1294,13 +1294,13 @@ public class Mastering
 public class Customization
 {
     [JsonPropertyName("SavageHead")]
-    public Dictionary<string, Dictionary<string, WildHead>>? Head { get; set; }
+    public Dictionary<string, WildHead>? Head { get; set; }
 
     [JsonPropertyName("SavageBody")]
-    public Dictionary<string, Dictionary<string, WildBody>>? Body { get; set; }
+    public Dictionary<string, WildBody>? Body { get; set; }
 
     [JsonPropertyName("SavageFeet")]
-    public Dictionary<string, Dictionary<string, WildFeet>>? Feet { get; set; }
+    public Dictionary<string, WildFeet>? Feet { get; set; }
 
     [JsonPropertyName("CustomizationVoice")]
     public List<CustomizationVoice>? VoiceOptions { get; set; }
@@ -1312,36 +1312,36 @@ public class Customization
 public class WildHead
 {
     [JsonPropertyName("head")]
-    public string Head { get; set; }
+    public string? Head { get; set; }
 
     [JsonPropertyName("isNotRandom")]
-    public string IsNotRandom { get; set; }
+    public bool? IsNotRandom { get; set; }
 
     [JsonPropertyName("NotRandom")]
-    public string NotRandom { get; set; }
+    public bool? NotRandom { get; set; }
 }
 
 public class WildBody
 {
     [JsonPropertyName("body")]
-    public string Body { get; set; }
+    public string? Body { get; set; }
 
     [JsonPropertyName("hands")]
-    public string Hands { get; set; }
+    public string? Hands { get; set; }
 
     [JsonPropertyName("isNotRandom")]
-    public string IsNotRandom { get; set; }
+    public bool? IsNotRandom { get; set; }
 }
 public class WildFeet
 {
-    [JsonPropertyName("head")]
-    public string Head { get; set; }
+    [JsonPropertyName("feet")]
+    public string? Feet { get; set; }
 
     [JsonPropertyName("isNotRandom")]
-    public string IsNotRandom { get; set; }
+    public bool? IsNotRandom { get; set; }
 
     [JsonPropertyName("NotRandom")]
-    public string NotRandom { get; set; }
+    public bool? NotRandom { get; set; }
 }
 
 public class CustomizationVoice
