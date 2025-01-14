@@ -15,7 +15,7 @@ public class SeasonalEventService
 {
     private readonly ILogger _logger;
     private readonly DatabaseService _databaseService;
-    private readonly DatabaseImporter _databaseImporter;
+    //private readonly DatabaseImporter _databaseImporter;
     private readonly GiftService _giftService;
     private readonly LocalisationService _localisationService;
     private readonly BotHelper _botHelper;
@@ -65,7 +65,7 @@ public class SeasonalEventService
     public SeasonalEventService(
         ILogger logger,
         DatabaseService databaseService,
-        DatabaseImporter databaseImporter,
+        //DatabaseImporter databaseImporter,
         GiftService giftService,
         LocalisationService localisationService,
         BotHelper botHelper,
@@ -75,7 +75,7 @@ public class SeasonalEventService
     {
         _logger = logger;
         _databaseService = databaseService;
-        _databaseImporter = databaseImporter;
+        //_databaseImporter = databaseImporter;
         _giftService = giftService;
         _localisationService = localisationService;
         _botHelper = botHelper;
