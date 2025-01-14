@@ -33,6 +33,7 @@ public class ImporterUtil
     )
     {
         var tasks = new List<Task>();
+        var dictionaryLock = new object();
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
@@ -63,8 +64,11 @@ public class ImporterUtil
                         if (onObjectDeserialized != null)
                             onObjectDeserialized(file, fileDeserialized);
 
-                        setMethod.Invoke(result,
-                            isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                        lock (dictionaryLock)
+                        {
+                            setMethod.Invoke(result,
+                                isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -77,7 +81,6 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
-            var dictionaryLock = new object();
             tasks.Add(
                 Task.Factory.StartNew(() =>
                 {
