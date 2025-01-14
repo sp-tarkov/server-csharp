@@ -94,6 +94,7 @@ public class MailSendService
             DialogType = MessageType.NPC_TRADER,
             Trader = trader,
             MessageText = message,
+            Items = new ()
         };
 
         // Add items to message
@@ -150,6 +151,7 @@ public class MailSendService
             DialogType = MessageType.NPC_TRADER,
             Trader = trader,
             TemplateId = messageLocaleId,
+            Items = new()
         };
 
         // add items to message
@@ -188,6 +190,7 @@ public class MailSendService
             RecipientId = sessionId,
             Sender = MessageType.SYSTEM_MESSAGE,
             MessageText = message,
+            Items = new()
         };
 
         // add items to message
@@ -217,7 +220,8 @@ public class MailSendService
         {
             RecipientId = sessionId,
             Sender = MessageType.SYSTEM_MESSAGE,
-            TemplateId = messageLocaleId
+            TemplateId = messageLocaleId,
+            Items = new()
         };
 
         // add items to message
@@ -254,7 +258,8 @@ public class MailSendService
             RecipientId = sessionId,
             Sender = MessageType.USER_MESSAGE,
             SenderDetails = senderDetails,
-            MessageText = message
+            MessageText = message,
+            Items = new ()
         };
 
         // add items to message
