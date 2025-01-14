@@ -42,7 +42,7 @@ public class WeatherHelper
         var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
         var currentTimestampMilliSeconds = timestamp.HasValue
             ? timestamp ?? 0
-            : (DateTime.UtcNow - DateTime.UnixEpoch).TotalMilliseconds; //_timeUtil.GetTimeStampFromEpoch();
+            : (DateTime.UtcNow - DateTime.UnixEpoch).TotalMilliseconds;
 
         return _timeUtil.GetDateTimeFromTimeStamp((long)
             (russiaOffsetMilliseconds + currentTimestampMilliSeconds * _weatherConfig.Acceleration) %
