@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Spt.Helper;
 using ILogger = Core.Models.Utils.ILogger;
 
@@ -20,7 +20,7 @@ public class WeightedRandomHelper
     /// </summary>
     /// <param name="itemArray">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T>(Dictionary<string, object> itemArray)
+    public T GetWeightedValue<T, U>(Dictionary<string, U> itemArray)
     {
         throw new NotImplementedException();
     }

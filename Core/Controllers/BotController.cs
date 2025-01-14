@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Context;
 using Core.Generators;
 using Core.Helpers;
@@ -14,7 +14,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using Condition = Core.Models.Spt.Config.Condition;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
@@ -33,6 +32,7 @@ public class BotController
     protected MatchBotDeatilsCacheService _matchBotDeatilsCacheService;
     protected LocalisationService _localisationService;
     protected SeasonalEventService _seasonalEventService;
+    private readonly MatchBotDetailsCacheService _matchBotDetailsCacheService;
     protected ProfileHelper _profileHelper;
     protected ConfigServer _configServer;
     protected ApplicationContext _applicationContext;
@@ -54,6 +54,7 @@ public class BotController
         MatchBotDeatilsCacheService matchBotDeatilsCacheService,
         LocalisationService localisationService,
         SeasonalEventService seasonalEventService,
+        MatchBotDetailsCacheService matchBotDetailsCacheService,
         ProfileHelper profileHelper,
         ConfigServer configServer,
         ApplicationContext applicationContext,
@@ -71,6 +72,7 @@ public class BotController
         _matchBotDeatilsCacheService = matchBotDeatilsCacheService;
         _localisationService = localisationService;
         _seasonalEventService = seasonalEventService;
+        _matchBotDetailsCacheService = matchBotDetailsCacheService;
         _profileHelper = profileHelper;
         _configServer = configServer;
         _applicationContext = applicationContext;
@@ -129,12 +131,177 @@ public class BotController
 
     public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
     {
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+
+        // Use this opportunity to create and cache bots for later retrieval
+        var multipleBotTypesRequested = info.Conditions.Count > 1;
+        if (multipleBotTypesRequested)
+        {
+            return GenerateMultipleBotsAndCache(info, pmcProfile, sessionId);
+        }
+
+        return ReturnSingleBotFromCache(sessionId, info);
+    }
+
+    public List<BotBase> GenerateMultipleBotsAndCache(GenerateBotsRequestData request, PmcData pmcProfile, string sessionId)
+    {
+        var raidSettings = GetMostRecentRaidSettings();
+
+        var allPmcsHaveSameNameAsPlayer = _randomUtil.GetChance100(
+            _pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance);
+
+        // Map conditions to promises for bot generation
+        foreach (var condition in request.Conditions)
+        {
+            var botGenerationDetails = GetBotGenerationDetailsForWave(
+                condition,
+                pmcProfile,
+                allPmcsHaveSameNameAsPlayer,
+                raidSettings,
+                _botConfig.PresetBatch.GetValueOrDefault(condition.Role, 15),
+                _botHelper.IsBotPmc(condition.Role));
+
+            // Generate bots for the current condition
+            GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+        }
+
+        return [];
+    }
+
+    private void GenerateWithBotDetails(object condition, BotGenerationDetails botGenerationDetails, string sessionId)
+    {
         throw new NotImplementedException();
     }
 
-    public async Task<List<BotBase>> GenerateMultipleBotsAndCache()
+    private List<BotBase> ReturnSingleBotFromCache(string sessionId, GenerateBotsRequestData request)
     {
-        throw new NotImplementedException();
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+        var requestedBot = request.Conditions[0];
+
+        var raidSettings = GetMostRecentRaidSettings();
+
+        // Create generation request for when cache is empty
+        var condition = new GenerateCondition{
+            Role = requestedBot.Role,
+            Limit= 5,
+            Difficulty= requestedBot.Difficulty,
+        };
+        var botGenerationDetails = GetBotGenerationDetailsForWave(
+            condition,
+            pmcProfile,
+            false,
+            raidSettings,
+            _botConfig.PresetBatch[requestedBot.Role],
+            _botHelper.IsBotPmc(requestedBot.Role)
+        );
+
+        // Event bots need special actions to occur, set data up for them
+        var isEventBot = requestedBot.Role.ToLower().Contains("event");
+        if (isEventBot)
+        {
+            // Add eventRole data + reassign role property
+            botGenerationDetails.EventRole = requestedBot.Role;
+            botGenerationDetails.Role = _seasonalEventService.GetBaseRoleForEventBot(
+                botGenerationDetails.EventRole);
+        }
+
+        // Does non pmc bot have a chance of being converted into a pmc
+        var convertIntoPmcChanceMinMax = GetPmcConversionMinMaxForLocation(
+            requestedBot.Role,
+            raidSettings?.Location);
+        if (convertIntoPmcChanceMinMax is not null && !botGenerationDetails.IsPmc.Value)
+        {
+            // Bot has % chance to become pmc and isnt one pmc already
+            var convertToPmc = _botHelper.RollChanceToBePmc(convertIntoPmcChanceMinMax);
+            if (convertToPmc)
+            {
+                // Update requirements
+                botGenerationDetails.IsPmc = true;
+                botGenerationDetails.Role = _botHelper.GetRandomizedPmcRole();
+                botGenerationDetails.Side = _botHelper.GetPmcSideByRole(botGenerationDetails.Role);
+                botGenerationDetails.BotDifficulty = GetPmcDifficulty(requestedBot.Difficulty);
+                botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch[botGenerationDetails.Role];
+            }
+        }
+        // Only convert to boss when not already converted to PMC & Boss Convert is enabled
+        var bossConvertEnabled = _botConfig.AssaultToBossConversion.BossConvertEnabled;
+        var bossConvertMinMax = _botConfig.AssaultToBossConversion.BossConvertMinMax;
+        var bossesToConvertToWeights = _botConfig.AssaultToBossConversion.BossesToConvertToWeights;
+        if (bossConvertEnabled && !botGenerationDetails.IsPmc.Value)
+        {
+            var bossConvertPercent = bossConvertMinMax[requestedBot.Role.ToLower()];
+            if (bossConvertPercent is not null)
+            {
+                // Roll a percentage check if we should convert scav to boss
+                if (
+                    _randomUtil.GetChance100(_randomUtil.GetDouble(bossConvertPercent.Min.Value, bossConvertPercent.Max.Value))
+                )
+                {
+                    UpdateBotGenerationDetailsToRandomBoss(botGenerationDetails, bossesToConvertToWeights);
+                }
+            }
+        }
+
+        // Create a compound key to store bots in cache against
+        var cacheKey = _botGenerationCacheService.CreateCacheKey(
+            botGenerationDetails.EventRole ?? botGenerationDetails.Role,
+            botGenerationDetails.BotDifficulty);
+
+        // Check cache for bot using above key
+        if (!_botGenerationCacheService.CacheHasBotWithKey(cacheKey))
+        {
+            // No bot in cache, generate new and store in cache
+            GenerateSingleBotAndStoreInCache(botGenerationDetails, sessionId, cacheKey);
+
+            _logger.Debug($"Generated { botGenerationDetails.BotCountToGenerate} " +
+                              $"{ botGenerationDetails.Role} ({botGenerationDetails.EventRole ?? ""}) {botGenerationDetails.BotDifficulty} bots");
+        }
+
+        var desiredBot = _botGenerationCacheService.GetBot(cacheKey);
+        _botGenerationCacheService.StoreUsedBot(desiredBot);
+
+        return [desiredBot];
+    }
+
+    private void GenerateSingleBotAndStoreInCache(BotGenerationDetails botGenerationDetails, string sessionId, string cacheKey)
+    {
+        var botToCache = _botGenerator.PrepareAndGenerateBot(sessionId, botGenerationDetails);
+        _botGenerationCacheService.StoreBots(cacheKey, [botToCache]);
+
+        // Store bot details in cache so post-raid PMC messages can use data
+        _matchBotDetailsCacheService.CacheBot(botToCache);
+    }
+
+    private void UpdateBotGenerationDetailsToRandomBoss(BotGenerationDetails botGenerationDetails, Dictionary<string, int> bossesToConvertToWeights)
+    {
+        // Seems Actual bosses have the same Brain issues like PMC gaining Boss Brains We can't use all bosses
+        botGenerationDetails.Role = _weightedRandomHelper.GetWeightedValue<string, int>(bossesToConvertToWeights);
+
+        // Bosses are only ever 'normal'
+        botGenerationDetails.BotDifficulty = "normal";
+        botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch[botGenerationDetails.Role];
+    }
+
+    private string GetPmcDifficulty(string requestedBotDifficulty)
+    {
+        var difficulty = _pmcConfig.Difficulty.ToLower();
+        return difficulty switch
+        {
+            "asonline" => requestedBotDifficulty,
+            "random" => _botDifficultyHelper.ChooseRandomDifficulty(),
+            _ => _pmcConfig.Difficulty
+        };
+    }
+
+    private MinMax GetPmcConversionMinMaxForLocation(string requestedBotRole, string location)
+    {
+        var mapSpecificConversionValues = _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault(location.ToLower(), null);
+        if (mapSpecificConversionValues is null)
+        {
+            return _pmcConfig.ConvertIntoPmcChance["default"][requestedBotRole];
+        }
+
+        return mapSpecificConversionValues[requestedBotRole.ToLower()];
     }
 
     public GetRaidConfigurationRequestData GetMostRecentRaidSettings()
@@ -147,7 +314,7 @@ public class BotController
         throw new NotImplementedException();
     }
 
-    public BotGenerationDetails GetBotGenerationDetailsForWave(Condition condition, PmcData pmcProfile, bool AllPmcsHaveSameNameAsPlayer,
+    public BotGenerationDetails GetBotGenerationDetailsForWave(GenerateCondition condition, PmcData pmcProfile, bool AllPmcsHaveSameNameAsPlayer,
         GetRaidConfigurationRequestData raidSettings, int botCountToGenerate, bool generateAsPmc)
     {
         throw new NotImplementedException();
