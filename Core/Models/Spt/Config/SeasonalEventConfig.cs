@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
@@ -15,11 +15,11 @@ public class SeasonalEventConfig : BaseConfig
 
     /** event / botType / equipSlot / itemid */
     [JsonPropertyName("eventGear")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear { get; set; }
+    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear { get; set; }
 
     /** event / bot type / equipSlot / itemid */
     [JsonPropertyName("eventLoot")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot { get; set; }
+    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot { get; set; }
 
     [JsonPropertyName("events")]
     public List<SeasonalEvent> Events { get; set; }
