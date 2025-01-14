@@ -20,9 +20,15 @@ public class WeightedRandomHelper
     /// </summary>
     /// <param name="itemArray">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T, U>(Dictionary<string, U> itemArray)
+    public T GetWeightedValue<T>(Dictionary<T, int> itemArray)
     {
-        throw new NotImplementedException();
+        var itemKeys = itemArray.Keys.ToList();
+        var weights = itemArray.Values.ToList();
+
+        var chosenItem = WeightedRandom<T>(itemKeys, weights);
+
+        return chosenItem.Item;
+        // SORRY IF THIS BLEW UP, I DONT SEE A REASON ITS GENERIC - CWX
     }
 
     /// <summary>
