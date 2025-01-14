@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Context;
 using Core.DI;
 using Core.Servers;
@@ -18,7 +18,7 @@ public class HttpCallbacks : OnLoad
     
     public async Task OnLoad()
     {
-        _httpServer.Load((WebApplicationBuilder) _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER).Value);
+        _httpServer.Load( _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER).GetValue<WebApplicationBuilder>());
         _applicationContext.ClearValues(ContextVariableType.APP_BUILDER);
     }
 
