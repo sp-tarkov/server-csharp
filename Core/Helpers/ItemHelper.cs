@@ -1044,9 +1044,9 @@ public class ItemHelper
         throw new NotImplementedException();
     }
 
-    public bool IsOfBaseclass(string valueEncyclopedia, string weapon)
+    public bool IsOfBaseclass(string tpl, List<string> baseClassTpls)
     {
-        throw new NotImplementedException();
+        return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }
 }
 

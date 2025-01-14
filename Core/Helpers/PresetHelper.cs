@@ -57,7 +57,7 @@ public class PresetHelper
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
             tempPresets = tempPresets.Where(p =>
                 p.Value.Encyclopedia != null &&
-                _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)).ToDictionary();
+                _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, [BaseClasses.WEAPON])).ToDictionary();
         }
 
         return _defaultWeaponPresets;
