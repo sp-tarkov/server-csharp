@@ -12,7 +12,7 @@ public class TimeUtil
     /// </summary>
     /// <param name="dateTime">The date to format in UTC.</param>
     /// <returns>The formatted time as 'HH-MM-SS'.</returns>
-    public string FormatTime(DateTime dateTime)
+    public string FormatTime(DateTimeOffset dateTime)
     {
         var hour = Pad(dateTime.ToUniversalTime().Hour);
         var minute = Pad(dateTime.ToUniversalTime().Minute);
@@ -26,7 +26,7 @@ public class TimeUtil
     /// </summary>
     /// <param name="dateTime">The date to format in UTC.</param>
     /// <returns>The formatted date as 'YYYY-MM-DD'.</returns>
-    public string FormatDate(DateTime dateTime)
+    public string FormatDate(DateTimeOffset dateTime)
     {
         var day = Pad(dateTime.ToUniversalTime().Day);
         var month = Pad(dateTime.ToUniversalTime().Month);
@@ -41,7 +41,7 @@ public class TimeUtil
     /// <returns>The current date as 'YYYY-MM-DD'.</returns>
     public string GetDate()
     {
-        return FormatDate(DateTime.Now);
+        return FormatDate(DateTimeOffset.UtcNow);
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public class TimeUtil
     /// <returns>The current time as 'HH-MM-SS'.</returns>
     public string GetTime()
     {
-        return FormatTime(DateTime.Now);
+        return FormatTime(DateTimeOffset.UtcNow);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class TimeUtil
     /// <returns>The current timestamp in seconds since the Unix epoch in UTC.</returns>
     public long GetTimeStamp()
     {
-        return DateTimeOffset.Now.ToUnixTimeSeconds();
+        return DateTimeOffset.Now.ToUnixTimeMilliseconds();
     }
 
     /// <summary>
@@ -67,12 +67,14 @@ public class TimeUtil
     /// </summary>
     /// <param name="dateTime">datetime to get the time stamp for, if null it uses current date.</param>
     /// <returns>Unix epoch for the start of day of the calculated date</returns>
-    public long GetStartOfDayTimeStamp(DateTime? dateTime)
+    public long GetStartOfDayTimeStamp(long? timestamp)
     {
-        var now = dateTime ?? DateTime.Now;
-
-        return new DateTimeOffset(new DateTime(now.Year, now.Month, now.Day, 0, 0, 0))
-            .ToUnixTimeSeconds();
+        DateTime now = timestamp.HasValue 
+            ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).DateTime
+            : DateTime.Now;
+    
+        DateTime startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+        return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();
     }
 
     /// <summary>
@@ -82,7 +84,7 @@ public class TimeUtil
     /// <returns></returns>
     public long GetTimeStampFromNowDays(int daysFromNow)
     {
-        return DateTimeOffset.Now.AddDays(daysFromNow).ToUnixTimeSeconds();
+        return DateTimeOffset.UtcNow.AddDays(daysFromNow).ToUnixTimeSeconds();
     }
 
     /// <summary>
@@ -92,16 +94,17 @@ public class TimeUtil
     /// <returns></returns>
     public long GetTimeStampFromNowHours(int hoursFromNow)
     {
-        return DateTimeOffset.Now.AddHours(hoursFromNow).ToUnixTimeSeconds();
+        return DateTimeOffset.UtcNow.AddHours(hoursFromNow).ToUnixTimeSeconds();
     }
 
     /// <summary>
     /// Gets the current time in UTC in a format suitable for mail in EFT.
     /// </summary>
     /// <returns>The current time as 'HH:MM' in UTC.</returns>
+    /// GetTimeMailFormat
     public string GetTimeMailFormat()
     {
-        return DateTime.UtcNow.ToString("HH:mm");
+        return DateTimeOffset.UtcNow.ToString("HH:mm");
     }
 
     /// <summary>
@@ -110,7 +113,7 @@ public class TimeUtil
     /// <returns>The current date as 'DD.MM.YYYY' in UTC.</returns>
     public string GetDateMailFormat()
     {
-        return DateTime.UtcNow.ToString("dd.MM.yyyy");
+        return DateTimeOffset.UtcNow.ToString("dd.MM.yyyy");
     }
 
     /// <summary>
@@ -129,19 +132,14 @@ public class TimeUtil
     /// <returns>Time stamp of the next hour in unix time seconds</returns>
     public long GetTimeStampOfNextHour()
     {
-        var now = DateTime.UtcNow;
+        DateTime now = DateTime.Now;
+        TimeSpan timeUntilNextHour = TimeSpan.FromMinutes(60 - now.Minute)
+            .Subtract(TimeSpan.FromSeconds(now.Second))
+            .Subtract(TimeSpan.FromMilliseconds(now.Millisecond));
+        
+        var time = ((DateTimeOffset)now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
 
-        var nextHour = new DateTime(
-            now.Year,
-            now.Month,
-            now.Day,
-            now.Hour,
-            0,
-            0,
-            DateTimeKind.Utc
-        ).AddHours(1);
-
-        return new DateTimeOffset(nextHour).ToUnixTimeSeconds();
+        return time;
     }
 
     /// <summary>
@@ -151,19 +149,20 @@ public class TimeUtil
     /// <returns>Timestamp</returns>
     public long GetTodayMidnightTimeStamp()
     {
-        var now = DateTime.UtcNow;
-
-        var midNight = new DateTime(
-            now.Year,
-            now.Month,
-            now.Day,
-            0,
-            0,
-            0,
-            DateTimeKind.Utc
-        );
-
-        return new DateTimeOffset(midNight).ToUnixTimeSeconds();
+        DateTime now = DateTime.Now;
+        int hours = now.Hour;
+        int minutes = now.Minute;
+    
+        // If minutes greater than 0, subtract 1 hour
+        if (minutes > 0)
+        {
+            hours--;
+        }
+    
+        // Create a new DateTime with the last full hour, 0 minutes, and 0 seconds
+        DateTime lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
+    
+        return ((DateTimeOffset)lastFullHour).ToUnixTimeMilliseconds();
     }
 
     /// <summary>
