@@ -319,7 +319,7 @@ public class BotController
     private void UpdateBotGenerationDetailsToRandomBoss(BotGenerationDetails botGenerationDetails, Dictionary<string, int> bossesToConvertToWeights)
     {
         // Seems Actual bosses have the same Brain issues like PMC gaining Boss Brains We can't use all bosses
-        botGenerationDetails.Role = _weightedRandomHelper.GetWeightedValue<string, int>(bossesToConvertToWeights);
+        botGenerationDetails.Role = _weightedRandomHelper.GetWeightedValue(bossesToConvertToWeights);
 
         // Bosses are only ever 'normal'
         botGenerationDetails.BotDifficulty = "normal";

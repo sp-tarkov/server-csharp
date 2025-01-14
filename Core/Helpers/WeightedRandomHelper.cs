@@ -16,14 +16,14 @@ public class WeightedRandomHelper
     }
 
     /// <summary>
-    /// Choos an item from the passed in array based on the weightings of each
+    /// Choose an item from the passed in array based on the weightings of each
     /// </summary>
-    /// <param name="itemArray">Items and weights to use</param>
+    /// <param name="values">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T>(Dictionary<T, int> itemArray)
+    public T GetWeightedValue<T>(Dictionary<T, int> values) where T : notnull
     {
-        var itemKeys = itemArray.Keys.ToList();
-        var weights = itemArray.Values.ToList();
+        var itemKeys = values.Keys.ToList();
+        var weights = values.Values.ToList();
 
         var chosenItem = WeightedRandom<T>(itemKeys, weights);
 

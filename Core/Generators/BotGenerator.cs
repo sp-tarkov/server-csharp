@@ -260,7 +260,7 @@ public class BotGenerator
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role);
         bot.Info.Settings.UseSimpleAnimator = botJsonTemplate.BotExperience.UseSimpleAnimator ?? false;
-        bot.Info.Voice = _weightedRandomHelper.GetWeightedValue<string, int>(botJsonTemplate.BotAppearance.Voice);
+        bot.Info.Voice = _weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
         bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav.GetValueOrDefault(false));
         bot.Skills = GenerateSkills(botJsonTemplate.BotSkills); // TODO: fix bad type, bot jsons store skills in dict, output needs to be array
 
