@@ -39,6 +39,7 @@ public class BotNameService
         _configServer = configServer;
 
         _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _usedNameCache = new HashSet<string>();
     }
 
     /// <summary>
