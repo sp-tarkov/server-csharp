@@ -74,7 +74,7 @@ public class BotEquipmentFilterService
     /// <param name="botRole">Role of the bot we want the blacklist for</param>
     /// <param name="playerLevel">Level of the player</param>
     /// <returns>EquipmentBlacklistDetails object</returns>
-    public EquipmentFilterDetails GetBotEquipmentBlacklist(string botRole, int playerLevel)
+    public EquipmentFilterDetails GetBotEquipmentBlacklist(string botRole, double playerLevel)
     {
         throw new NotImplementedException();
     }

@@ -309,25 +309,33 @@ public class BotGenerator
     }
 
     /// <summary>
-    /// Should this bot have a name like "name (Pmc Name)" and be alterd by client patch to be hostile to player
+    /// Should this bot have a name like "name (Pmc Name)" and be altered by client patch to be hostile to player
     /// </summary>
     /// <param name="botRole">Role bot has</param>
     /// <returns>True if name should be simulated pscav</returns>
     public bool ShouldSimulatePlayerScav(string botRole)
     {
-        throw new NotImplementedException();
+        return botRole == "assault" && _randomUtil.GetChance100(_botConfig.ChanceAssaultScavHasPlayerScavName);
     }
 
     /// <summary>
     /// Get exp for kill by bot difficulty
     /// </summary>
-    /// <param name="experience">Dict of difficulties and experience</param>
+    /// <param name="experiences">Dict of difficulties and experience</param>
     /// <param name="botDifficulty">the killed bots difficulty</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Experience for kill</returns>
-    public int GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax> experience, string botDifficulty, string role)
+    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax> experiences, string botDifficulty, string role)
     {
-        throw new NotImplementedException();
+        var result = experiences[botDifficulty.ToLower()];
+        if (result is null)
+        {
+            _logger.Debug("Unable to find experience for kill value for: ${ role} ${ botDifficulty}, falling back to `normal`");
+
+            return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
+        }
+
+        return _randomUtil.GetDouble(result.Min.Value, result.Max.Value);
     }
 
     /// <summary>
@@ -337,9 +345,16 @@ public class BotGenerator
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public int GetStandingChangeForKillByDifficulty(Dictionary<string, double> standingForKill, string botDifficulty, string role)
+    public double GetStandingChangeForKillByDifficulty(Dictionary<string, double> standingsForKill, string botDifficulty, string role)
     {
-        throw new NotImplementedException();
+        if (!standingsForKill.TryGetValue(botDifficulty.ToLower(), out var result))
+        {
+            _logger.Warning($"Unable to find standing for kill value for: {role} {botDifficulty}, falling back to `normal`");
+
+            return standingsForKill["normal"];
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -349,9 +364,16 @@ public class BotGenerator
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public int GetAgressorBonusByDifficulty(Dictionary<string, double> aggressorBonus, string botDifficulty, string role)
+    public double GetAgressorBonusByDifficulty(Dictionary<string, double> aggressorBonuses, string botDifficulty, string role)
     {
-        throw new NotImplementedException();
+        if (!aggressorBonuses.TryGetValue(botDifficulty.ToLower(), out var result))
+        {
+            _logger.Warning($"Unable to find aggressor bonus for kill value for: {role} {botDifficulty}, falling back to `normal`");
+
+            return aggressorBonuses["normal"];
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -361,7 +383,24 @@ public class BotGenerator
     /// <param name="botGenerationDetails">Generation details of bot</param>
     public void FilterBlacklistedGear(BotType botJsonTemplate, BotGenerationDetails botGenerationDetails)
     {
-        throw new NotImplementedException();
+        var blacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
+            _botGeneratorHelper.GetBotEquipmentRole(botGenerationDetails.Role),
+            botGenerationDetails.PlayerLevel.Value);
+
+        if (blacklist?.Gear is null)
+        {
+            // Nothing to filter by
+            return;
+        }
+
+        foreach (var equipmentKvP in blacklist.Gear) {
+            var equipmentDict = botJsonTemplate.BotInventory.Equipment[equipmentKvP.Key];
+
+            foreach (var blacklistedTpl in equipmentKvP.Value) {
+                // Set weighting to 0, will never be picked
+                equipmentDict[blacklistedTpl] = 0;
+            }
+        }
     }
 
     /// <summary>
@@ -370,7 +409,10 @@ public class BotGenerator
     /// <param name="botJsonTemplate">Bot data to adjust</param>
     public void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
     {
-        throw new NotImplementedException();
+        // Adjust pocket loot weights to allow for 5 or 6 items
+        var pocketWeights = botJsonTemplate.BotGeneration.Items["pocketLoot"].Weights;
+        pocketWeights["5"] = 1;
+        pocketWeights["6"] = 1;
     }
 
     /// <summary>

@@ -1,12 +1,12 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Bot;
 
 public class RandomisedBotLevelResult
 {
     [JsonPropertyName("level")]
-    public int? Level { get; set; }
+    public double? Level { get; set; }
 
     [JsonPropertyName("exp")]
-    public int? Exp { get; set; }
+    public double? Exp { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 
 namespace Core.Models.Eft.Common;
@@ -1255,7 +1255,7 @@ public class Level
 public class ExpTable
 {
     [JsonPropertyName("exp")]
-    public int? Experience { get; set; }
+    public double? Experience { get; set; }
 }
 
 public class LootAttempt
