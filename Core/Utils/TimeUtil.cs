@@ -174,4 +174,14 @@ public class TimeUtil
     {
         return number.ToString().PadLeft(2, '0');
     }
+
+    /// <summary>
+    /// Takes a timestamp and converts to its date with Epoch
+    /// </summary>
+    /// <param name="timeStamp"></param>
+    /// <returns></returns>
+    public DateTime GetDateTimeFromTimeStamp(long timeStamp)
+    {
+        return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).DateTime;
+    }
 }
