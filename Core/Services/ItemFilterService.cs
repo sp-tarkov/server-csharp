@@ -89,4 +89,9 @@ public class ItemFilterService
     {
         throw new NotImplementedException();
     }
+
+    public static bool IsLootableItemBlacklisted(string itemKey)
+    {
+        throw new NotImplementedException();
+    }
 }

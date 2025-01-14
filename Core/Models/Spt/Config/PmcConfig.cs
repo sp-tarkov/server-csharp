@@ -12,11 +12,11 @@ public class PmcConfig : BaseConfig
 
     /** What game version should the PMC have */
     [JsonPropertyName("gameVersionWeight")]
-    public Dictionary<string, double> GameVersionWeight { get; set; }
+    public Dictionary<string, int> GameVersionWeight { get; set; }
 
     /** What account type should the PMC have */
     [JsonPropertyName("accountTypeWeight")]
-    public Dictionary<MemberCategory, double> AccountTypeWeight { get; set; }
+    public Dictionary<MemberCategory, int> AccountTypeWeight { get; set; }
 
     /** Global whitelist/blacklist of vest loot for PMCs */
     [JsonPropertyName("vestLoot")]
