@@ -106,7 +106,7 @@ public class HashUtil
 
         var random = new Random();
 
-        return random.Next() * (max - min + 1) + min;
+        return random.Next(min, max + 1);
     }
 }
 
