@@ -117,7 +117,8 @@ public class ImporterUtil
         {
             var matchedProperty = type.GetProperties()
                 .FirstOrDefault(prop =>
-                    prop.Name.ToLower() == _fileUtil.StripExtension(propertyName).ToLower());
+                    string.Equals(prop.Name.ToLower(), _fileUtil.StripExtension(propertyName).ToLower(),
+                        StringComparison.Ordinal));
             if (matchedProperty == null)
                 throw new Exception(
                     $"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
