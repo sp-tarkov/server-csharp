@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Security.Cryptography;
 using Core.Annotations;
 using Core.Context;
@@ -52,7 +52,7 @@ public static class Program
             var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>(ConfigTypes.HTTP);
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.
-            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).Value as WebApplication).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).GetValue<WebApplication>()).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
         }
         catch (Exception ex)
         {
