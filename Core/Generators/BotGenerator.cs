@@ -463,7 +463,7 @@ public class BotGenerator
             List<string> tplsToRemove = [];
             foreach (var item in propValue)
             {
-                if (ItemFilterService.IsLootableItemBlacklisted(item.Key))
+                if (_itemFilterService.IsLootableItemBlacklisted(item.Key))
                 {
                     tplsToRemove.Add(item.Key);
                 }
@@ -677,10 +677,10 @@ public class BotGenerator
     /// <param name="skills">Skills to randomise</param>
     /// <param name="isCommonSkills">Are the skills 'common' skills</param>
     /// <returns>Skills with randomised progress values as an array</returns>
-    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax> skills, bool isCommonSkills)
+    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax>? skills, bool isCommonSkills)
     {
-        if (!skills.Any())
-            return new List<BaseSkill>();
+        if (skills is null)
+            return [];
 
         return skills.Select(kvp =>
         {
