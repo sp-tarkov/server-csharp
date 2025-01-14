@@ -123,20 +123,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 1,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -146,21 +146,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -208,20 +208,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -231,21 +231,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -293,20 +293,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -316,21 +316,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -378,20 +378,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -401,21 +401,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -463,20 +463,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -486,21 +486,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -548,20 +548,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -571,21 +571,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 2,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -633,20 +633,20 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -656,21 +656,21 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {}
@@ -718,7 +718,7 @@
                         "0": 2,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
@@ -726,13 +726,13 @@
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -741,7 +741,7 @@
                         "3": 1,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
@@ -749,7 +749,7 @@
                         "2": 2,
                         "3": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
@@ -757,7 +757,7 @@
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {
@@ -808,42 +808,42 @@
                         "1": 1,
                         "2": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "1": 1,
                         "2": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "0": 1,
                         "1": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
                         "2": 2,
                         "3": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "2": 2,
                         "3": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {
@@ -895,21 +895,21 @@
                         "1": 1,
                         "2": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "1": 1,
                         "2": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "1": 5,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -918,7 +918,7 @@
                         "4": 1,
                         "5": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
@@ -926,14 +926,14 @@
                         "3": 2,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "1": 1,
                         "2": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {
@@ -984,21 +984,21 @@
                     "weights": {
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "2": 1,
                         "3": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -1007,7 +1007,7 @@
                         "5": 1,
                         "6": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
@@ -1015,14 +1015,14 @@
                         "3": 2,
                         "4": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "2": 1,
                         "3": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {
@@ -1074,21 +1074,21 @@
                         "2": 5,
                         "3": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "2": 1,
                         "3": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "1": 1,
                         "2": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -1097,21 +1097,21 @@
                         "5": 2,
                         "6": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "3": 2,
                         "4": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "2": 2,
                         "3": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {
@@ -1180,21 +1180,21 @@
                         "2": 1,
                         "3": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "drugs": {
                     "weights": {
                         "3": 1,
                         "4": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "stims": {
                     "weights": {
                         "2": 1,
                         "3": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "looseLoot": {
                     "weights": {
@@ -1202,21 +1202,21 @@
                         "6": 2,
                         "7": 1
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "magazines": {
                     "weights": {
                         "3": 1,
                         "4": 4
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 },
                 "grenades": {
                     "weights": {
                         "3": 1,
                         "4": 2
                     },
-                    "whitelist": {}
+                    "whitelist": []
                 }
             },
             "lootItemsToAddChancePercent": {

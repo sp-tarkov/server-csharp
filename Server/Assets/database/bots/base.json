@@ -76,9 +76,7 @@
             "DamageHistory": {
                 "LethalDamagePart": "Head",
                 "LethalDamage": null,
-                "BodyParts": {
-                    "Head": []
-                }
+                "BodyParts": []
             },
             "LastPlayerState": null,
             "TotalInGameTime": 0,

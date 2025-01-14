@@ -30,21 +30,6 @@
           "conditionType": "Quest"
         },
         {
-          "id": "6761fe66b41bc1e8222b5b6e",
-          "index": 2,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
-          "parentId": "",
-          "target": "6761f28a022f60bb320f3e95",
-          "status": [
-            4
-          ],
-          "availableAfter": 0,
-          "dispersion": 0,
-          "conditionType": "Quest"
-        },
-        {
           "id": "675d723b026308c637193c83",
           "index": 3,
           "dynamicLocale": false,
