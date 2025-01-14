@@ -5,6 +5,7 @@ using Core.Models.Eft.Dialog;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.Spt.Config;
 using Core.Servers;
 
 namespace Core.Controllers;
@@ -14,17 +15,23 @@ public class DialogueController
 {
     private readonly DialogueHelper _dialogueHelper;
     private readonly ProfileHelper _profileHelper;
+    private readonly ConfigServer _configServer;
     private readonly SaveServer _saveServer;
     private readonly List<IDialogueChatBot> _dialogueChatBots;
+    private readonly CoreConfig _coreConfig;
 
     public DialogueController(
         DialogueHelper dialogueHelper,
         ProfileHelper profileHelper,
+        ConfigServer configServer,
         SaveServer saveServer)
     {
         _dialogueHelper = dialogueHelper;
         _profileHelper = profileHelper;
+        _configServer = configServer;
         _saveServer = saveServer;
+
+        _coreConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
     }
 
     /// <summary>
@@ -54,7 +61,7 @@ public class DialogueController
     public GetFriendListDataResponse GetFriendList(string sessionId)
     {
         // Add all chatbots to the friends list
-        var friends = _dialogueChatBots.Select((bot) => bot.GetChatBot()).ToList();
+        var friends = GetActiveChatBots();
 
         // Add any friends the user has after the chatbots
         var profile = _profileHelper.GetFullProfile(sessionId);
@@ -80,6 +87,22 @@ public class DialogueController
             Ignore = [],
             InIgnoreList = []
         };
+    }
+
+    private List<UserDialogInfo> GetActiveChatBots()
+    {
+        var activeBots = new List<UserDialogInfo>();
+
+        var chatBotConfig = _coreConfig.Features.ChatbotFeatures;
+        foreach (var bot in _dialogueChatBots)
+        {
+            var botData = bot.GetChatBot();
+            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id)) {
+                activeBots.Add(botData);
+            }
+        }
+
+        return activeBots;
     }
 
     /// <summary>
