@@ -247,11 +247,18 @@ public class HideoutCallbacks : OnUpdate
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData info, string sessionID)
+    public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData request, string sessionID)
     {
         // return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, info);
         // TODO: HideoutController is not implemented rn
         throw new NotImplementedException();
+    }
+
+    /**
+     * Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
+     */
+    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId) {
+        return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 
     public async Task<bool> OnUpdate(long timeSinceLastRun)
