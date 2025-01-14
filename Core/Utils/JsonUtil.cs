@@ -28,7 +28,8 @@ public class JsonUtil
             new EftEnumConverter<ProfileChangeEventType>(),
             new EftEnumConverter<QuestStatusEnum>(),
             new EftEnumConverter<QuestRewardType>(),
-            new EftEnumConverter<SideType>()
+            new EftEnumConverter<SideType>(),
+            new EftEnumConverter<BonusSkillType>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
