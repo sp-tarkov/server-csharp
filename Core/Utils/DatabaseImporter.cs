@@ -18,19 +18,19 @@ public class DatabaseImporter : OnLoad
     private object hashedFile;
     private ValidationResult valid = ValidationResult.UNDEFINED;
     private string filepath;
-    protected HttpConfig httpConfig;
+    private HttpConfig httpConfig;
 
-    protected readonly ILogger _logger;
-    protected readonly LocalisationService _localisationService;
+    private readonly ILogger _logger;
+    private readonly LocalisationService _localisationService;
 
-    protected readonly DatabaseServer _databaseServer;
+    private readonly DatabaseServer _databaseServer;
 
-    protected readonly ImageRouter _imageRouter;
-    protected readonly EncodingUtil _encodingUtil;
-    protected readonly HashUtil _hashUtil;
-    protected readonly ImporterUtil _importerUtil;
-    protected readonly ConfigServer _configServer;
-    protected readonly FileUtil _fileUtil;
+    private readonly ImageRouter _imageRouter;
+    private readonly EncodingUtil _encodingUtil;
+    private readonly HashUtil _hashUtil;
+    private readonly ImporterUtil _importerUtil;
+    private readonly ConfigServer _configServer;
+    private readonly FileUtil _fileUtil;
 
     public DatabaseImporter(
         ILogger logger,
@@ -103,7 +103,7 @@ public class DatabaseImporter : OnLoad
         var directoryContent = GetAllFilesInDirectory(directory);
 
         foreach (var fileNameWithPath in directoryContent) {
-            var bsgPath = $"/{newBasePath}/{Path.GetFileNameWithoutExtension(fileNameWithPath)}";
+            var bsgPath = $"/{newBasePath}/{_fileUtil.StripExtension(fileNameWithPath)}";
             var sptPath = $"{directory}{ fileNameWithPath}";
             _imageRouter.AddRoute(bsgPath, sptPath);
         }
