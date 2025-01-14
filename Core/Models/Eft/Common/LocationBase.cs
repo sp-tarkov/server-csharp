@@ -521,7 +521,7 @@ public class BotLocationModifier
     public double? AccuracySpeed { get; set; }
 
     [JsonPropertyName("AdditionalHostilitySettings")]
-    public AdditionalHostilitySettings[] AdditionalHostilitySettings { get; set; }
+    public List<AdditionalHostilitySettings> AdditionalHostilitySettings { get; set; }
 
     [JsonPropertyName("DistToActivate")]
     public double? DistanceToActivate { get; set; }

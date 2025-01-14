@@ -540,7 +540,7 @@ public class Config
     public BTRSettings? BTRSettings { get; set; }
 
     [JsonPropertyName("EventType")]
-    public string[] EventType { get; set; }
+    public List<string> EventType { get; set; }
 
     [JsonPropertyName("WalkSpeed")]
     public XYZ? WalkSpeed { get; set; }
