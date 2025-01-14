@@ -1,9 +1,10 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.HttpResponse;
+using Core.Models.Eft.Prestige;
 using Core.Utils;
 
 namespace Core.Callbacks;
@@ -48,8 +49,10 @@ public class PrestigeCallbacks
     /// <param name="sessionID"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public string ObtainPrestige(string url, EmptyRequestData info, string sessionID)
+    public string ObtainPrestige(string url, List<ObtainPrestigeRequest> info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_prestigeController.ObtainPrestige(sessionID, info));
+        _prestigeController.ObtainPrestige(sessionID, info);
+
+        return _httpResponseUtil.NullResponse();
     }
 }

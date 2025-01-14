@@ -184,7 +184,7 @@ public class Info
 
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
-    public double? PrestigeLevel { get; set; }
+    public int? PrestigeLevel { get; set; }
 }
 
 public class BotInfoSettings
@@ -291,17 +291,18 @@ public class BotBaseInventory
 
 public class BaseJsonSkills
 {
-    public Dictionary<string, Common>? Common { get; set; }
-    public Dictionary<string, Mastering>? Mastering { get; set; }
+    public List<Common>? Common { get; set; }
+
+
+    public List<Mastering>? Mastering { get; set; }
     public double? Points { get; set; }
 }
 
 public class Skills
 {
-    public DictionaryOrList<string, Common>? Common { get; set; }
+    public List<Common>? Common { get; set; }
 
-    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, Mastering>? Mastering { get; set; }
+    public List<Mastering>? Mastering { get; set; }
 
     public double? Points { get; set; }
 }

@@ -305,7 +305,7 @@ public class PlayerScavGenerator
     {
         return new()
         {
-            Common = new(new(), new()),
+            Common = new(),
             Mastering = new (),
             Points = 0
         };

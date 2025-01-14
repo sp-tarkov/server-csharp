@@ -1,7 +1,8 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Prestige;
 using Core.Utils;
 
 namespace Core.Routers.Static;
@@ -32,7 +33,7 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.ObtainPrestige(url, info as EmptyRequestData, sessionID))
+                ) => _presetCallbacks.ObtainPrestige(url, info as List<ObtainPrestigeRequest>, sessionID))
         ]
     )
     {

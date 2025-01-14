@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Utils.Json.Converters;
@@ -35,7 +34,7 @@ public class BotType
     public List<string>? LastNames { get; set; }
 
     [JsonPropertyName("skills")]
-    public Skills? BotSkills { get; set; }
+    public BotDbSkills? BotSkills { get; set; }
 }
 
 public class Appearance
@@ -369,4 +368,11 @@ public class ItemPools
     public Dictionary<string, double>? SecuredContainer { get; set; }
     public Dictionary<string, double>? SpecialLoot { get; set; }
     public Dictionary<string, double>? TacticalVest { get; set; }
+}
+
+public class BotDbSkills
+{
+    public Dictionary<string, MinMax>? Common { get; set; }
+
+    public Dictionary<string, MinMax>? Mastering { get; set; }
 }

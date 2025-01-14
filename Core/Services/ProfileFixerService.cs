@@ -457,7 +457,7 @@ public class ProfileFixerService
     {
         var skills = pmcProfile.Skills.Common;
 
-        foreach (var skill in skills.List
+        foreach (var skill in skills
                      .Where(skill => skill.Progress > 5100))
         {
             skill.Progress = 5100;

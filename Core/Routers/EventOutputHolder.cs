@@ -63,7 +63,7 @@ public class EventOutputHolder
                         Items = new ItemChanges(){ NewItems = [], ChangedItems = [], DeletedItems = []},
                         Production = new Dictionary<string, Productive>(),
                         Improvements = new Dictionary<string, HideoutImprovement>(),
-                        Skills = new Skills{ Common = new DictionaryOrList<string, Common>(null, []), Mastering = new Dictionary<string, Mastering>(), Points = 0},
+                        Skills = new Skills{ Common = [], Mastering = [], Points = 0},
                         Health = _cloner.Clone(pmcProfile.Health),
                         TraderRelations = new Dictionary<string, TraderData>(),
                         RecipeUnlocked = {},

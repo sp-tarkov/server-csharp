@@ -42,7 +42,7 @@ public class SptProfile
 
     /** Achievements earned by player */
     [JsonPropertyName("achievements")]
-    public Dictionary<string, int>? PlayerAchievements { get; set; }
+    public Dictionary<string, long>? PlayerAchievements { get; set; }
 
     /** List of friend profile IDs */
     [JsonPropertyName("friends")]
