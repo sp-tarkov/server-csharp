@@ -16,12 +16,8 @@ namespace Server
 
         public static void Initialize()
         {
-            ProgramStatics._entryType = buildInfo.entryType.Value;
-
-
-            ProgramStatics._sptVersion = buildInfo.sptVersion ?? "";
-            ProgramStatics._commit = buildInfo.commit ?? "";
-            ProgramStatics._buildTime = buildInfo.buildTime ?? 0;
+            buildInfo = new BuildInfo();
+            ProgramStatics._entryType = buildInfo.entryType.GetValueOrDefault(EntryType.LOCAL);
 
             switch (ProgramStatics._entryType)
             {
@@ -92,6 +88,13 @@ namespace Server
 
     public class BuildInfo
     {
+        public BuildInfo()
+        {
+            sptVersion = "";
+            commit = "";
+            buildTime = 0;
+        }
+
         public EntryType? entryType { get; set; }
         public string? sptVersion { get; set; }
         public string? commit { get; set; }

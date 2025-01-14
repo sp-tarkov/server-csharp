@@ -1,5 +1,4 @@
 using System.Reflection;
-using System.Security.Cryptography;
 using Core.Annotations;
 using Core.Context;
 using Core.Models.Enums;
@@ -23,6 +22,8 @@ public static class Program
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
         CreateAndRegisterLogger(builder);
+
+        ProgramStatics.Initialize();
 
         RegisterSptComponents(builder.Services);
         RegisterModOverrideComponents(builder.Services, assemblies);
