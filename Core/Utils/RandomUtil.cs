@@ -440,4 +440,10 @@ public List<T> Shuffle<T>(List<T> originalList)
             ? parts[1].Length
             : 0;
     }
+
+    public T GetArrayValue<T>(IEnumerable<T> list)
+    {
+        var rand = new Random();
+        return list.ElementAt(rand.Next(0, list.Count()));
+    }
 }
