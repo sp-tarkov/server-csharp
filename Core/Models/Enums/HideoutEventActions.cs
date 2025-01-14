@@ -1,4 +1,4 @@
-﻿namespace Core.Models.Enums;
+namespace Core.Models.Enums;
 
 public class HideoutEventActions
 {
@@ -17,4 +17,5 @@ public class HideoutEventActions
     public const string HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START = "HideoutCircleOfCultistProductionStart";
     public const string HIDEOUT_DELETE_PRODUCTION_COMMAND = "HideoutDeleteProductionCommand";
     public const string HIDEOUT_CUSTOMIZATION_APPLY_COMMAND = "HideoutCustomizationApply";
+    public const string HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE = "HideoutCustomizationSetMannequinPose";
 }
