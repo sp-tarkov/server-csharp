@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Utils;
 
 namespace Core.Models.Eft.Bot;
@@ -6,10 +6,10 @@ namespace Core.Models.Eft.Bot;
 public class GenerateBotsRequestData : IRequestData
 {
     [JsonPropertyName("conditions")]
-    public List<Condition>? Conditions { get; set; }
+    public List<GenerateCondition>? Conditions { get; set; }
 }
 
-public class Condition
+public class GenerateCondition
 {
     /// <summary>
     /// e.g. assault/pmcBot/bossKilla

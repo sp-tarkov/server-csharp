@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
@@ -12,7 +12,7 @@ public class BotConfig : BaseConfig
 
     /** How many variants of each bot should be generated on raid start */
     [JsonPropertyName("presetBatch")]
-    public PresetBatch PresetBatch { get; set; }
+    public Dictionary<string, int> PresetBatch { get; set; }
 
     /** Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to */
     [JsonPropertyName("botsToNotAddPMCsAsEnemiesTo")]
