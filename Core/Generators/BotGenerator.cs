@@ -57,7 +57,7 @@ public class BotGenerator
         BotNameService botNameService,
         ConfigServer configServer,
         ICloner cloner
-        )
+    )
     {
         _logger = logger;
         _hashUtil = hashUtil;
@@ -97,7 +97,8 @@ public class BotGenerator
         bot.Info.Settings.Role = role;
         bot.Info.Side = "Savage";
 
-        var botGenDetails = new BotGenerationDetails{
+        var botGenDetails = new BotGenerationDetails
+        {
             IsPmc = false,
             Side = "Savage",
             Role = role,
@@ -156,7 +157,23 @@ public class BotGenerator
     /// <returns>constructed bot</returns>
     public BotBase PrepareAndGenerateBot(string sessionId, BotGenerationDetails botGenerationDetails)
     {
-        throw new NotImplementedException();
+        var preparedBotBase = GetPreparedBotBase(
+            botGenerationDetails.EventRole ?? botGenerationDetails.Role, // Use eventRole if provided,
+            botGenerationDetails.Side,
+            botGenerationDetails.BotDifficulty
+        );
+
+        // Get raw json data for bot (Cloned)
+        var botRole = botGenerationDetails.IsPmc ?? false
+            ? preparedBotBase.Info.Side // Use side to get usec.json or bear.json when bot will be PMC
+            : botGenerationDetails.Role;
+        var botJsonTemplateClone = _cloner.Clone(_botHelper.GetBotTemplate(botRole));
+        if (botJsonTemplateClone is not null)
+        {
+            _logger.Error($"Unable to retrieve: {botRole} bot template, cannot generate bot of this type");
+        }
+
+        return GenerateBot(sessionId, preparedBotBase, botJsonTemplateClone, botGenerationDetails);
     }
 
     /// <summary>
@@ -168,7 +185,12 @@ public class BotGenerator
     /// <returns>Cloned bot base</returns>
     public BotBase GetPreparedBotBase(string botRole, string botSide, string difficulty)
     {
-        throw new NotImplementedException();
+        var botBaseClone = GetCloneOfBotBase();
+        botBaseClone.Info.Settings.Role = botRole;
+        botBaseClone.Info.Side = botSide;
+        botBaseClone.Info.Settings.BotDifficulty = difficulty;
+
+        return botBaseClone;
     }
 
     /// <summary>
@@ -393,10 +415,12 @@ public class BotGenerator
             return;
         }
 
-        foreach (var equipmentKvP in blacklist.Gear) {
+        foreach (var equipmentKvP in blacklist.Gear)
+        {
             var equipmentDict = botJsonTemplate.BotInventory.Equipment[equipmentKvP.Key];
 
-            foreach (var blacklistedTpl in equipmentKvP.Value) {
+            foreach (var blacklistedTpl in equipmentKvP.Value)
+            {
                 // Set weighting to 0, will never be picked
                 equipmentDict[blacklistedTpl] = 0;
             }
@@ -421,7 +445,37 @@ public class BotGenerator
     /// <param name="botInventory">Bot to filter</param>
     public void RemoveBlacklistedLootFromBotTemplate(BotTypeInventory botInventory)
     {
-        throw new NotImplementedException();
+        List<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
+        var props = botInventory.Items.GetType().GetProperties();
+
+        // Remove blacklisted loot from loot containers
+        foreach (var lootContainerKey in lootContainersToFilter)
+        {
+            var prop = props.FirstOrDefault(x => x.Name.ToLower() == lootContainerKey.ToLower());
+            var propValue = (Dictionary<string, double>)prop.GetValue(botInventory.Items);
+
+            // No container, skip
+            if (propValue?.Count == 0)
+            {
+                continue;
+            }
+
+            List<string> tplsToRemove = [];
+            foreach (var item in propValue)
+            {
+                if (ItemFilterService.IsLootableItemBlacklisted(item.Key))
+                {
+                    tplsToRemove.Add(item.Key);
+                }
+            }
+
+            foreach (var blacklistedTplToRemove in tplsToRemove)
+            {
+                propValue.Remove(blacklistedTplToRemove);
+            }
+
+            prop.SetValue(botInventory.Items, propValue);
+        }
     }
 
     /// <summary>
@@ -432,7 +486,19 @@ public class BotGenerator
     /// <param name="botGenerationDetails">Generation details</param>
     public void SetBotAppearance(BotBase bot, Appearance appearance, BotGenerationDetails botGenerationDetails)
     {
-        throw new NotImplementedException();
+        // Choose random values by weight
+        bot.Customization.Head = _weightedRandomHelper.GetWeightedValue<string>(appearance.Head);
+        bot.Customization.Feet = _weightedRandomHelper.GetWeightedValue<string>(appearance.Feet);
+        bot.Customization.Body = _weightedRandomHelper.GetWeightedValue<string>(appearance.Body);
+
+        var bodyGlobalDictDb = _databaseService.GetGlobals().Configuration.Customization.Body;
+        var chosenBodyTemplate = _databaseService.GetCustomization()[bot.Customization.Body];
+
+        // Some bodies have matching hands, look up body to see if this is the case
+        var chosenBody = bodyGlobalDictDb[chosenBodyTemplate?.Name.Trim()];
+        bot.Customization.Hands = chosenBody?.IsNotRandom ?? false
+            ? chosenBody.Hands // Has fixed hands for chosen body, update to match
+            : _weightedRandomHelper.GetWeightedValue<string>(appearance.Hands); // Hands can be random, choose any from weighted dict
     }
 
     /// <summary>
@@ -441,7 +507,8 @@ public class BotGenerator
     /// <param name="output">Generated bot array, ready to send to client</param>
     public void LogPmcGeneratedCount(List<BotBase> output)
     {
-        throw new NotImplementedException();
+        var pmcCount = output.Aggregate(0, (acc, cur) => { return cur.Info.Side == "Bear" || cur.Info.Side == "Usec" ? acc + 1 : acc; });
+        _logger.Debug($"Generated {output.Count} total bots. Replaced ${pmcCount} with PMCs");
     }
 
     /// <summary>
@@ -452,7 +519,105 @@ public class BotGenerator
     /// <returns>Health object</returns>
     public BotBaseHealth GenerateHealth(BotTypeHealth healthObj, bool playerScav = false)
     {
-        throw new NotImplementedException();
+        var bodyParts = playerScav
+            ? GetLowestHpBody(healthObj.BodyParts)
+            : _randomUtil.GetArrayValue(healthObj.BodyParts);
+
+        BotBaseHealth health = new()
+        {
+            Hydration = new()
+            {
+                Current = _randomUtil.GetInt((int)healthObj.Hydration.Min, (int)healthObj.Hydration.Max),
+                Maximum = healthObj.Hydration.Max
+            },
+            Energy = new()
+            {
+                Current = _randomUtil.GetInt((int)healthObj.Energy.Min, (int)healthObj.Energy.Max),
+                Maximum = healthObj.Energy.Max
+            },
+            Temperature = new()
+            {
+                Current = _randomUtil.GetInt((int)healthObj.Temperature.Min, (int)healthObj.Temperature.Max),
+                Maximum = healthObj.Temperature.Max
+            },
+            BodyParts = new Dictionary<string, BodyPartHealth>()
+            {
+                {
+                    "Head", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.Head.Min, (int)bodyParts.Head.Max),
+                            Maximum = Math.Round(bodyParts.Head.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "Chest", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.Chest.Min, (int)bodyParts.Chest.Max),
+                            Maximum = Math.Round(bodyParts.Chest.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "Stomach", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.Stomach.Min, (int)bodyParts.Stomach.Max),
+                            Maximum = Math.Round(bodyParts.Stomach.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "LeftArm", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.LeftArm.Min, (int)bodyParts.LeftArm.Max),
+                            Maximum = Math.Round(bodyParts.LeftArm.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "RightArm", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.RightArm.Min, (int)bodyParts.RightArm.Max),
+                            Maximum = Math.Round(bodyParts.RightArm.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "LeftLeg", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.LeftLeg.Min, (int)bodyParts.LeftLeg.Max),
+                            Maximum = Math.Round(bodyParts.LeftLeg.Max ?? 0)
+                        }
+                    }
+                },
+                {
+                    "RightLeg", new BodyPartHealth
+                    {
+                        Health = new()
+                        {
+                            Current = _randomUtil.GetInt((int)bodyParts.RightLeg.Min, (int)bodyParts.RightLeg.Max),
+                            Maximum = Math.Round(bodyParts.RightLeg.Max ?? 0)
+                        }
+                    }
+                }
+            },
+            UpdateTime = _timeUtil.GetTimeStamp(),
+            Immortal = false
+        };
+
+        return health;
     }
 
     /// <summary>
@@ -460,9 +625,33 @@ public class BotGenerator
     /// </summary>
     /// <param name="bodies">Body parts to sum up</param>
     /// <returns>Lowest hp collection</returns>
-    public BodyPart? GetLowestHpBody(List<BodyPart> bodies) // TODO: there are two types of body parts
+    public BodyPart? GetLowestHpBody(List<BodyPart> bodies)
     {
-        throw new NotImplementedException();
+        if (bodies.Count == 0)
+            return null;
+
+        BodyPart result = new();
+        var props = result.GetType().GetProperties();
+        double? currentHighest = double.MaxValue;
+        foreach (var bodyPart in bodies)
+        {
+            double? hpTotal = 0;
+
+            foreach (var prop in props)
+            {
+                var value = (MinMax)prop.GetValue(bodyPart);
+                hpTotal += value.Max;
+            }
+
+            if (hpTotal < currentHighest)
+            {
+                // Found collection with lower value that previous, use it
+                currentHighest = hpTotal;
+                result = bodyPart;
+            }
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -472,7 +661,14 @@ public class BotGenerator
     /// <returns>Skills</returns>
     public Skills GenerateSkills(BotDbSkills botSkills)
     {
-        throw new NotImplementedException();
+        var skillsToReturn = new Skills
+        {
+            Common = GetSkillsWithRandomisedProgressValue(botSkills.Common, true),
+            Mastering = GetSkillsWithRandomisedProgressValue(botSkills.Mastering, false),
+            Points = 0
+        };
+
+        return skillsToReturn;
     }
 
     /// <summary>
@@ -481,19 +677,49 @@ public class BotGenerator
     /// <param name="skills">Skills to randomise</param>
     /// <param name="isCommonSkills">Are the skills 'common' skills</param>
     /// <returns>Skills with randomised progress values as an array</returns>
-    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, BaseSkill> skills, bool isCommonSkills)
+    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax> skills, bool isCommonSkills)
     {
-        throw new NotImplementedException();
+        if (!skills.Any())
+            return new List<BaseSkill>();
+
+        return skills.Select(kvp =>
+        {
+            // Get skill from dict, skip if not found
+            var skill = kvp.Value;
+            if (skill == null)
+            {
+                return null;
+            }
+
+            // All skills have id and progress props
+            var skillToAdd = new BaseSkill
+            {
+                Id = kvp.Key,
+                Progress = _randomUtil.GetInt((int)skill.Min, (int)skill.Max)
+            };
+
+            // Common skills have additional props
+            if (isCommonSkills)
+            {
+                ((Common)skillToAdd).PointsEarnedDuringSession = 0;
+                ((Common)skillToAdd).LastAccess = 0;
+            }
+
+            return skillToAdd;
+        }).Where(baseSkill => baseSkill != null).ToList();
     }
 
     /// <summary>
     /// Generate an id+aid for a bot and apply
     /// </summary>
     /// <param name="bot">bot to update</param>
-    /// <returns>updated IBotBase object</returns> // TODO: Node server claims this in summary but is void
+    /// <returns></returns>
     public void AddIdsToBot(BotBase bot)
     {
-        throw new NotImplementedException();
+        var botId = _hashUtil.Generate();
+        
+        bot.Id = botId;
+        bot.Aid = _hashUtil.GenerateAccountId();
     }
 
     /// <summary>
@@ -503,7 +729,30 @@ public class BotGenerator
     /// <param name="profile">Profile to update</param>
     public void GenerateInventoryId(BotBase profile)
     {
-        throw new NotImplementedException();
+        var newInventoryItemId = _hashUtil.Generate();
+
+        foreach (var item in profile.Inventory.Items) {
+            // Root item found, update its _id value to newly generated id
+            if (item.Template == ItemTpl.INVENTORY_DEFAULT) {
+                item.Id = newInventoryItemId;
+
+                continue;
+            }
+
+            // Optimisation - skip items without a parentId
+            // They are never linked to root inventory item + we already handled root item above
+            if (item.ParentId is null) {
+                continue;
+            }
+
+            // Item is a child of root inventory item, update its parentId value to newly generated id
+            if (item.ParentId == profile.Inventory.Equipment) {
+                item.ParentId = newInventoryItemId;
+            }
+        }
+
+        // Update inventory equipment id to new one we generated
+        profile.Inventory.Equipment = newInventoryItemId;
     }
 
     /// <summary>
@@ -513,19 +762,57 @@ public class BotGenerator
     /// </summary>
     /// <param name="botInfo">bot info object to update</param>
     /// <returns>Chosen game version</returns>
-    public string SetRandomisedGameVersionAndCategory(Info botInfo) // TODO: there are two types of Info
+    public string SetRandomisedGameVersionAndCategory(Info botInfo)
     {
-        throw new NotImplementedException();
+        // Special case
+        if (botInfo.Nickname?.ToLower() == "nikita") {
+            botInfo.GameVersion = GameEditions.UNHEARD;
+            botInfo.MemberCategory = MemberCategory.DEVELOPER;
+
+            return botInfo.GameVersion;
+        }
+
+        // Choose random weighted game version for bot
+        botInfo.GameVersion = _weightedRandomHelper.GetWeightedValue(_pmcConfig.GameVersionWeight);
+
+        // Choose appropriate member category value
+        switch (botInfo.GameVersion) {
+            case GameEditions.EDGE_OF_DARKNESS:
+                botInfo.MemberCategory = MemberCategory.UNIQUE_ID;
+                break;
+            case GameEditions.UNHEARD:
+                botInfo.MemberCategory = MemberCategory.UNHEARD;
+                break;
+            default:
+                // Everyone else gets a weighted randomised category
+                botInfo.MemberCategory = _weightedRandomHelper.GetWeightedValue<MemberCategory>(_pmcConfig.AccountTypeWeight);
+                break;
+        }
+
+        // Ensure selected category matches
+        botInfo.SelectedMemberCategory = botInfo.MemberCategory;
+
+        return botInfo.GameVersion;
     }
 
     /// <summary>
     /// Add a side-specific (usec/bear) dogtag item to a bots inventory
     /// </summary>
     /// <param name="bot">bot to add dogtag to</param>
-    /// <returns>Bot with dogtag added</returns> // TODO: Node server claims this in summary but is void
+    /// <returns></returns>
     public void AddDogtagToBot(BotBase bot)
     {
-        throw new NotImplementedException();
+        Item inventoryItem = new () {
+            Id = _hashUtil.Generate(),
+            Template = GetDogtagTplByGameVersionAndSide(bot.Info.Side, bot.Info.GameVersion),
+            ParentId = bot.Inventory.Equipment,
+            SlotId = "Dogtag",
+            Upd = new () {
+                SpawnedInSession = true,
+            },
+        };
+
+        bot.Inventory.Items.Add(inventoryItem);
     }
 
     /// <summary>
@@ -536,7 +823,25 @@ public class BotGenerator
     /// <returns>item tpl</returns>
     public string GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
     {
-        throw new NotImplementedException();
+        if (side.ToLower() == "usec") {
+            switch (gameVersion) {
+                case GameEditions.EDGE_OF_DARKNESS:
+                    return ItemTpl.BARTER_DOGTAG_USEC_EOD;
+                case GameEditions.UNHEARD:
+                    return ItemTpl.BARTER_DOGTAG_USEC_TUE;
+                default:
+                    return ItemTpl.BARTER_DOGTAG_USEC;
+            }
+        }
+
+        switch (gameVersion) {
+            case GameEditions.EDGE_OF_DARKNESS:
+                return ItemTpl.BARTER_DOGTAG_BEAR_EOD;
+            case GameEditions.UNHEARD:
+                return ItemTpl.BARTER_DOGTAG_BEAR_TUE;
+            default:
+                return ItemTpl.BARTER_DOGTAG_BEAR;
+        }
     }
 
     /// <summary>
@@ -545,6 +850,9 @@ public class BotGenerator
     /// <param name="bot">Pmc object to adjust</param>
     public void SetPmcPocketsByGameVersion(BotBase bot)
     {
-        throw new NotImplementedException();
+        if (bot.Info.GameVersion == GameEditions.UNHEARD) {
+            var pockets = bot.Inventory.Items.FirstOrDefault((item) => item.SlotId == "Pockets");
+            pockets.Template = ItemTpl.POCKETS_1X4_TUE;
+        }
     }
 }
