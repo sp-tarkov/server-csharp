@@ -8,6 +8,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
 using Serilog;
+using Serilog.Events;
 
 namespace Server;
 
@@ -18,7 +19,7 @@ public static class Program
         var assemblies = ModDllLoader.LoadAllMods();
         HarmonyBootstrapper.LoadAllPatches(assemblies);
         var builder = WebApplication.CreateBuilder(args);
-
+        
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
         CreateAndRegisterLogger(builder);
@@ -64,6 +65,7 @@ public static class Program
         builder.Logging.ClearProviders();
         var logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
+            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
             .CreateLogger();
         builder.Logging.AddSerilog(logger);
     }

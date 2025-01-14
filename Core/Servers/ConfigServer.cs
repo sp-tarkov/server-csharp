@@ -14,16 +14,19 @@ public class ConfigServer
 {
     protected ILogger _logger;
     protected JsonUtil _jsonUtil;
+    protected FileUtil _fileUtil;
     protected Dictionary<string, object> configs = new();
-    protected readonly string[] acceptableFileExtensions = [".json", ".jsonc"];
+    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
 
     public ConfigServer(
         ILogger logger,
-        JsonUtil jsonUtil
+        JsonUtil jsonUtil,
+        FileUtil fileUtil
     )
     {
         _logger = logger;
         _jsonUtil = jsonUtil;
+        _fileUtil = fileUtil;
         Initialize();
     }
 
@@ -45,13 +48,13 @@ public class ConfigServer
 
         // Get all filepaths
         var filepath = "./assets/configs/";
-        var files = Directory.GetFiles(filepath);
+        var files = _fileUtil.GetFiles(filepath);
 
         // Add file content to result
         foreach (var file in files)
-            if (acceptableFileExtensions.Contains(Path.GetExtension(file)))
+            if (acceptableFileExtensions.Contains(_fileUtil.GetFileExtension(file)))
             {
-                var fileContent = File.ReadAllText(file);
+                var fileContent = _fileUtil.ReadFile(file);
                 var type = GetConfigTypeByFilename(file);
                 var deserializedContent = _jsonUtil.Deserialize(fileContent, type);
 
@@ -61,7 +64,7 @@ public class ConfigServer
                     throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
                 }
 
-                configs[$"spt-{Path.GetFileNameWithoutExtension(file)}"] = deserializedContent;
+                configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
             }
 
         /** TODO: deal with this:
@@ -77,7 +80,7 @@ public class ConfigServer
     private Type GetConfigTypeByFilename(string filename)
     {
         var type = Enum.GetValues<ConfigTypes>()
-            .First(en => en.GetValue().Contains(Path.GetFileNameWithoutExtension(filename)));
+            .First(en => en.GetValue().Contains(_fileUtil.StripExtension(filename)));
         return type.GetConfigType();
     }
 }
