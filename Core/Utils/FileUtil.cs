@@ -25,6 +25,11 @@ public class FileUtil
         return Path.GetExtension(path).Replace(".", "");
     }
     
+    public string GetFileName(string path)
+    {
+        return Path.GetFileName(path);
+    }
+    
     public string StripExtension(string path, bool keepPath = false)
     {
         return keepPath ? path.Split('.').First() : Path.GetFileNameWithoutExtension(path);

@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
-using Core.Annotations;
-using Core.Utils;
+﻿using Core.Utils;
+using Core.Utils.Extensions;
 
 namespace Core.Services;
 
-[Injectable(InjectionType.Singleton)]
 public class I18nService
 {
     private List<string> _locales;
@@ -12,29 +10,39 @@ public class I18nService
     private string _defaultLocale;
     private string _directory;
     private JsonUtil _jsonUtil;
+    private FileUtil _fileUtil;
     private string _setLocale;
 
     private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
 
-    public I18nService(JsonUtil jsonUtil, List<string> locales, Dictionary<string, string> fallbacks, string defaultLocale, string directory)
+    public I18nService(
+        FileUtil fileUtil,
+        JsonUtil jsonUtil,
+        List<string> locales,
+        Dictionary<string, string> fallbacks,
+        string defaultLocale,
+        string directory
+    )
     {
         _locales = locales;
         _fallbacks = fallbacks;
         _defaultLocale = defaultLocale;
         _directory = directory;
         _jsonUtil = jsonUtil;
+        _fileUtil = fileUtil;
 
         Initialize();
     }
 
     private void Initialize()
     {
-        var files = Directory.GetFiles(_directory, "*.json");
-        if (files.Length == 0)
+        var files = _fileUtil.GetFiles(_directory, true).Where(f => _fileUtil.GetFileExtension(f) == "json").ToList();
+        if (files.Count == 0)
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
-            _loadedLocales.Add(Path.GetFileNameWithoutExtension(file),
-                _jsonUtil.Deserialize<Dictionary<string, string>>(File.ReadAllText(file)) ?? new Dictionary<string, string>());
+            _loadedLocales.Add(_fileUtil.StripExtension(file),
+                _jsonUtil.Deserialize<Dictionary<string, string>>(_fileUtil.ReadFile(file)) ??
+                new Dictionary<string, string>());
 
         if (!_loadedLocales.ContainsKey(_defaultLocale))
             throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
@@ -53,7 +61,8 @@ public class I18nService
             {
                 var foundFallbackLocale = fallback.First().Value;
                 if (!_loadedLocales.ContainsKey(foundFallbackLocale))
-                    throw new Exception($"Locale '{locale}' was not defined, and the found fallback locale did not match any of the loaded locales.");
+                    throw new Exception(
+                        $"Locale '{locale}' was not defined, and the found fallback locale did not match any of the loaded locales.");
                 _setLocale = foundFallbackLocale;
             }
 
@@ -75,9 +84,26 @@ public class I18nService
         return value;
     }
 
-    public string GetLocalised(string key, params object[] args)
+    public string GetLocalised(string key, object? args)
     {
-        // TODO: Deal with arguments
-        return GetLocalised(key);
+        var rawLocalizedString = GetLocalised(key);
+        if (args == null)
+            return rawLocalizedString;
+        if (args is string value)
+        {
+            return rawLocalizedString.Replace("%s", value);
+        }
+        else
+        {
+            foreach (var propertyInfo in args.GetType().GetProperties())
+            {
+                var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
+                if (rawLocalizedString.Contains(localizedName))
+                {
+                    rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args, null)?.ToString() ?? string.Empty);
+                }
+            }
+            return rawLocalizedString;
+        }
     }
 }

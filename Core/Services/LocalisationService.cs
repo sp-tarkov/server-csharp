@@ -19,7 +19,8 @@ public class LocalisationService
         RandomUtil randomUtil,
         DatabaseServer databaseServer,
         LocaleService localeService,
-        JsonUtil jsonUtil
+        JsonUtil jsonUtil,
+        FileUtil fileUtil
     )
     {
         _logger = logger;
@@ -27,6 +28,7 @@ public class LocalisationService
         _databaseServer = databaseServer;
         _localeService = localeService;
         _i18nService = new I18nService(
+            fileUtil,
             jsonUtil,
             localeService.GetServerSupportedLocales(),
             localeService.GetLocaleFallbacks(),

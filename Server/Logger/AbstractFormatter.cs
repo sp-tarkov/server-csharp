@@ -14,7 +14,8 @@ public abstract class AbstractFormatter : ITextFormatter
         var logLevel = logEvent.Level.ToString().ToUpper().Substring(0, 4);
         var message = logEvent.RenderMessage();
         var exception = logEvent.Exception != null ? $"{newLine}{logEvent.Exception}{newLine}{logEvent.Exception.StackTrace}" : "";
-        var logMessage = ProcessText($"[{timestamp} {logLevel}] {message}{exception}");
+        var sourceContext = logEvent.Properties["SourceContext"].ToString().Replace("\"", "");
+        var logMessage = ProcessText($"[{timestamp} {logLevel}][{sourceContext}] {message}{exception}");
         output.WriteLine(logMessage);
     }
 }
