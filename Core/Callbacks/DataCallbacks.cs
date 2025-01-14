@@ -49,7 +49,8 @@ public class DataCallbacks
     /// <returns></returns>
     public string GetSettings(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_databaseService.GetSettings());
+        var returns = _httpResponseUtil.GetBody(_databaseService.GetSettings());
+        return returns;
     }
 
     /// <summary>
@@ -62,9 +63,10 @@ public class DataCallbacks
     public string GetGlobals(string url, EmptyRequestData info, string sessionID)
     {
         var globals = _databaseService.GetGlobals();
-        globals.Time = _timeUtil.GetTimeStamp();
+        globals.Time = _timeUtil.GetTimeStamp() / 1000;
+        var returns = _httpResponseUtil.GetBody(globals);
 
-        return _httpResponseUtil.GetBody(globals);
+        return returns;
     }
 
     /// <summary>
