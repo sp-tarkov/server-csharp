@@ -1,2 +1,2 @@
 ﻿global using GlobalAmmo = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int>>;
-global using GlobalMods = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, string[]>>;
+global using GlobalMods = System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>>;
