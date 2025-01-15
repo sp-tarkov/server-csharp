@@ -1,6 +1,7 @@
 using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
+using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Core.Servers;
 
@@ -84,7 +85,7 @@ public class BotGeneratorHelper
     /// <param name="tplToCheck">Tpl of the item to check for incompatibilities</param>
     /// <param name="equipmentSlot">Slot the item will be placed into</param>
     /// <returns>false if no incompatibilities, also has incompatibility reason</returns>
-    public object IsItemIncompatibleWithCurrentItems(List<Item> itemsEquipped, string tplToCheck, string equipmentSlot)
+    public ChooseRandomCompatibleModResult IsItemIncompatibleWithCurrentItems(List<Item> itemsEquipped, string tplToCheck, string equipmentSlot)
     {
         throw new NotImplementedException();
     }
