@@ -1,69 +1,79 @@
 using Core.Annotations;
 using Core.Models.Logging;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Server.Logger;
 
 [Injectable]
-public class WebApplicationLogger : ILogger
+public class SptWebApplicationLogger<T> : ISptLogger<T>
 {
-    private Microsoft.Extensions.Logging.ILogger _logger;
-    public WebApplicationLogger(ILoggerProvider provider)
+    private ILogger _logger;
+
+    public SptWebApplicationLogger(ILoggerProvider provider)
     {
-        _logger = provider.CreateLogger("SptLogger");
+        _logger = provider.CreateLogger(typeof(T).FullName);
     }
 
-    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null)
+    public void LogWithColor(
+        string data,
+        Exception? ex = null,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null
+    )
     {
         if (textColor != null || backgroundColor != null)
         {
-            _logger.LogInformation(GetColorizedText(data, textColor, backgroundColor));
+            _logger.LogInformation(ex, GetColorizedText(data, textColor, backgroundColor));
         }
-        else 
-            _logger.LogInformation(data);
+        else
+            _logger.LogInformation(ex, data);
     }
 
-    private string GetColorizedText(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null)
+    private string GetColorizedText(
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null
+    )
     {
         var colorString = string.Empty;
         if (textColor != null)
             colorString += ((int)textColor.Value).ToString();
-            
+
         if (backgroundColor != null)
             colorString += string.IsNullOrEmpty(colorString)
                 ? ((int)backgroundColor.Value).ToString()
                 : $";{((int)backgroundColor.Value).ToString()}";
-        
+
         return $"\x1b[{colorString}m{data}\x1b[0m";
     }
 
-    public void Success(string data)
+    public void Success(string data, Exception? ex = null)
     {
-        _logger.LogInformation(GetColorizedText(data, LogTextColor.Green));
+        _logger.LogInformation(ex, GetColorizedText(data, LogTextColor.Green));
     }
 
-    public void Error(string data)
+    public void Error(string data, Exception? ex = null)
     {
-        _logger.LogError(GetColorizedText(data, LogTextColor.Red));
+        _logger.LogError(ex, GetColorizedText(data, LogTextColor.Red));
     }
 
-    public void Warning(string data)
+    public void Warning(string data, Exception? ex = null)
     {
-        _logger.LogWarning(GetColorizedText(data, LogTextColor.Yellow));
-    }
-    
-    public void Info(string data)
-    {
-        _logger.LogInformation(data);
+        _logger.LogWarning(ex, GetColorizedText(data, LogTextColor.Yellow));
     }
 
-    public void Debug(string data)
+    public void Info(string data, Exception? ex = null)
     {
-        _logger.LogDebug(data);
+        _logger.LogInformation(ex, data);
     }
 
-    public void Critical(string data)
+    public void Debug(string data, Exception? ex = null)
     {
-        _logger.LogCritical(GetColorizedText(data, LogTextColor.Black, LogBackgroundColor.Red));
+        _logger.LogDebug(ex, data);
+    }
+
+    public void Critical(string data, Exception? ex = null)
+    {
+        _logger.LogCritical(ex, GetColorizedText(data, LogTextColor.Black, LogBackgroundColor.Red));
     }
 }

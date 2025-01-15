@@ -5,7 +5,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public sealed class RandomUtilTests
 {
-	// private readonly RandomUtil _randomUtil = new();
+	// protected RandomUtil _randomUtil = new();
 	//
 	// [TestMethod]
 	// public void GetIntTest()

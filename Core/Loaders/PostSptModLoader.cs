@@ -1,18 +1,19 @@
 ﻿using Core.Annotations;
 using Core.DI;
 using Core.Models.External;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
+
 
 namespace Core.Loaders;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PostSptModLoader)]
 public class PostSptModLoader : OnLoad
 {
-    private readonly ILogger _logger;
-    private readonly IEnumerable<IPostSptLoadMod> _postSptLoadMods;
+    protected ISptLogger<PostSptModLoader> _logger;
+    protected IEnumerable<IPostSptLoadMod> _postSptLoadMods;
 
     public PostSptModLoader(
-        ILogger logger,
+        ISptLogger<PostSptModLoader> logger,
         IEnumerable<IPostSptLoadMod> postSptLoadMods
     )
     {

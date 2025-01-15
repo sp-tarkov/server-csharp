@@ -7,11 +7,12 @@ using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Mod;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Extensions;
-using ILogger = Core.Models.Utils.ILogger;
+
 using Info = Core.Models.Eft.Profile.Info;
 
 namespace Core.Controllers;
@@ -21,7 +22,7 @@ public class LauncherController
 {
  protected CoreConfig _coreConfig;
 
- protected ILogger _logger;
+ protected ISptLogger<LauncherController> _logger;
  protected HashUtil _hashUtil;
  protected TimeUtil _timeUtil;
  protected RandomUtil _randomUtil;
@@ -33,7 +34,7 @@ public class LauncherController
  
 
  public LauncherController(
-        Models.Utils.ILogger logger,
+        ISptLogger<LauncherController> logger,
         HashUtil hashUtil,
         TimeUtil timeUtil,
         RandomUtil randomUtil,

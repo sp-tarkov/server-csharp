@@ -5,26 +5,27 @@ using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Weather;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class WeatherController
 {
-    private readonly ILogger _logger;
-    private readonly WeatherGenerator _weatherGenerator;
-    private readonly SeasonalEventService _seasonalEventService;
-    private readonly RaidWeatherService _raidWeatherService;
-    private readonly WeatherHelper _weatherHelper;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<WeatherController> _logger;
+    protected WeatherGenerator _weatherGenerator;
+    protected SeasonalEventService _seasonalEventService;
+    protected RaidWeatherService _raidWeatherService;
+    protected WeatherHelper _weatherHelper;
+    protected ConfigServer _configServer;
 
-    private readonly WeatherConfig _weatherConfig;
+    protected WeatherConfig _weatherConfig;
 
     public WeatherController(
-        ILogger logger,
+        ISptLogger<WeatherController> logger,
         WeatherGenerator weatherGenerator,
         SeasonalEventService seasonalEventService,
         RaidWeatherService raidWeatherService,

@@ -4,29 +4,29 @@ using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RaidWeatherService
 {
-    private readonly ILogger _logger;
-    private readonly DatabaseService _databaseService;
-    private readonly TimeUtil _timeUtil;
-    private readonly WeatherGenerator _weatherGenerator;
-    private readonly SeasonalEventService _seasonalEventService;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<RaidWeatherService> _logger;
+    protected DatabaseService _databaseService;
+    protected TimeUtil _timeUtil;
+    protected WeatherGenerator _weatherGenerator;
+    protected SeasonalEventService _seasonalEventService;
+    protected WeightedRandomHelper _weightedRandomHelper;
+    protected ConfigServer _configServer;
 
-    private readonly List<Weather> _weatherForecast = [];
+    protected List<Weather> _weatherForecast = [];
 
-    private readonly WeatherConfig _weatherConfig;
+    protected WeatherConfig _weatherConfig;
 
     public RaidWeatherService(
-        ILogger logger,
+        ISptLogger<RaidWeatherService> logger,
         DatabaseService databaseService,
         TimeUtil timeUtil,
         WeatherGenerator weatherGenerator,

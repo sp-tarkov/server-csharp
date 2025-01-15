@@ -9,7 +9,7 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class FenceService
 {
-    private readonly DatabaseService _databaseService;
+    protected DatabaseService _databaseService;
 
     public FenceService(
         DatabaseService databaseService)

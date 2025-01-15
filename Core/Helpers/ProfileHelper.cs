@@ -4,6 +4,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
@@ -14,7 +15,7 @@ namespace Core.Helpers;
 [Injectable]
 public class ProfileHelper
 {
-    protected Models.Utils.ILogger _logger;
+    protected ISptLogger<ProfileHelper> _logger;
 
     protected ICloner _cloner;
     protected SaveServer _saveServer;
@@ -27,6 +28,7 @@ public class ProfileHelper
     protected HashUtil _hashUtil;
 
     public ProfileHelper(
+        ISptLogger<ProfileHelper> logger,
         ICloner cloner,
         SaveServer saveServer,
         DatabaseService databaseService,
@@ -38,6 +40,7 @@ public class ProfileHelper
         ConfigServer configServer
     )
     {
+        _logger = logger;
         _cloner = cloner;
         _saveServer = saveServer;
         _databaseService = databaseService;

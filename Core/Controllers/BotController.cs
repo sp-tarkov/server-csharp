@@ -7,21 +7,20 @@ using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Match;
-using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class BotController
 {
-    protected ILogger _logger;
+    protected ISptLogger<BotController> _logger;
 
     protected DatabaseService _databaseService;
     protected BotGenerator _botGenerator;
@@ -32,7 +31,7 @@ public class BotController
     protected MatchBotDeatilsCacheService _matchBotDeatilsCacheService;
     protected LocalisationService _localisationService;
     protected SeasonalEventService _seasonalEventService;
-    private readonly MatchBotDetailsCacheService _matchBotDetailsCacheService;
+    protected MatchBotDetailsCacheService _matchBotDetailsCacheService;
     protected ProfileHelper _profileHelper;
     protected ConfigServer _configServer;
     protected ApplicationContext _applicationContext;
@@ -44,7 +43,7 @@ public class BotController
 
     public BotController
     (
-        ILogger logger,
+        ISptLogger<BotController> logger,
         DatabaseService databaseService,
         BotGenerator botGenerator,
         BotHelper botHelper,

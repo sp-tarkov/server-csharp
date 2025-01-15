@@ -11,11 +11,11 @@ namespace Core.Routers;
 [Injectable]
 public class EventOutputHolder
 {
-    private readonly ProfileHelper _profileHelper;
-    private readonly TimeUtil _timeUtil;
-    private readonly ICloner _cloner;
+    protected ProfileHelper _profileHelper;
+    protected TimeUtil _timeUtil;
+    protected ICloner _cloner;
 
-    private readonly Dictionary<string, ItemEventRouterResponse> _outputStore = new();
+    protected Dictionary<string, ItemEventRouterResponse> _outputStore = new();
 
     public EventOutputHolder(
         ProfileHelper profileHelper,

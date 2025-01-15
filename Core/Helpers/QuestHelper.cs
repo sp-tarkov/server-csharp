@@ -5,11 +5,12 @@ using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Helpers;
@@ -17,18 +18,18 @@ namespace Core.Helpers;
 [Injectable]
 public class QuestHelper
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly QuestConditionHelper _questConditionHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly LocaleService _localeService;
-    private readonly ICloner _cloner;
-    private readonly QuestConfig _questConfig;
+    protected ISptLogger<QuestHelper> _logger;
+    protected TimeUtil _timeUtil;
+    protected DatabaseService _databaseService;
+    protected QuestConditionHelper _questConditionHelper;
+    protected ProfileHelper _profileHelper;
+    protected LocalisationService _localisationService;
+    protected LocaleService _localeService;
+    protected ICloner _cloner;
+    protected QuestConfig _questConfig;
 
     public QuestHelper(
-        ILogger logger,
+        ISptLogger<QuestHelper> logger,
         TimeUtil timeUtil,
         DatabaseService databaseService,
         QuestConditionHelper questConditionHelper,

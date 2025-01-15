@@ -1,7 +1,6 @@
 using Core.Annotations;
-using Core.Models.Logging;
 using Core.Models.Spt.Logging;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
@@ -9,10 +8,11 @@ namespace Core.Controllers;
 [Injectable]
 public class ClientLogController
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<ClientLogController> _logger;
 
     public ClientLogController(
-        ILogger logger)
+        ISptLogger<ClientLogController> logger
+    )
     {
         _logger = logger;
     }
@@ -45,7 +45,7 @@ public class ClientLogController
                 this._logger.Info(message);
                 break;
             case LogLevel.CUSTOM:
-                this._logger.Info(message/* TODO: , color.ToString(), backgroundColor.ToString()*/);
+                this._logger.Info(message /* TODO: , color.ToString(), backgroundColor.ToString()*/);
                 break;
             case LogLevel.DEBUG:
                 this._logger.Debug(message);

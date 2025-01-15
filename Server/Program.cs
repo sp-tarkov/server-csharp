@@ -27,8 +27,8 @@ public static class Program
 
         ProgramStatics.Initialize();
 
-        RegisterSptComponents(builder.Services);
-        RegisterModOverrideComponents(builder.Services, assemblies);
+        DependencyInjectionRegistrator.RegisterSptComponents(builder.Services);
+        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, assemblies);
         ILogger logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {
@@ -64,8 +64,8 @@ public static class Program
             // throw ex;
         }
     }
-
-    private static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)
+    
+    public static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)
     {
         builder.Logging.ClearProviders();
         logger = new LoggerConfiguration()
@@ -76,74 +76,5 @@ public static class Program
             .Enrich.WithExceptionDetails()
             .CreateLogger();
         builder.Logging.AddSerilog(logger);
-    }
-
-    private static void RegisterModOverrideComponents(IServiceCollection builderServices, List<Assembly> assemblies)
-    {
-        // We get all the services from this assembly first, since mods will override them later
-        RegisterComponents(builderServices, assemblies.SelectMany(a => a.GetTypes())
-            .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
-    }
-
-    private static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
-    {
-        var groupedTypes = types.SelectMany(t =>
-        {
-            var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable))!;
-            var registerableType = t;
-            var registerableComponents = new List<RegisterableType>();
-            foreach (var attribute in attributes)
-            {
-                // if we have a type override this takes priority
-                if (attribute.InjectableTypeOverride != null)
-                {
-                    registerableType = attribute.InjectableTypeOverride;
-                }
-                // if this class only has 1 interface we register it on that interface
-                else if (registerableType.GetInterfaces().Length == 1)
-                {
-                    registerableType = registerableType.GetInterfaces()[0];
-                }
-                registerableComponents.Add(new(registerableType, t, attribute));
-            }
-            return registerableComponents;
-        }).GroupBy(t => t.RegisterableInterface.FullName);
-        // We get all injectable services to register them on our services
-        foreach (var groupedInjectables in groupedTypes)
-        {
-            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
-            {
-                switch (valueTuple.InjectableAttribute.InjectionType)
-                {
-                    case InjectionType.Singleton:
-                        builderServices.AddSingleton(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
-                        break;
-                    case InjectionType.Transient:
-                        builderServices.AddTransient(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
-                        break;
-                    case InjectionType.Scoped:
-                        builderServices.AddScoped(valueTuple.RegisterableInterface, valueTuple.TypeToRegister);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
-            }
-        }
-    }
-
-    private static void RegisterSptComponents(IServiceCollection builderServices)
-    {
-        // We get all the services from this assembly first, since mods will override them later
-        RegisterComponents(builderServices, typeof(Program).Assembly.GetTypes()
-            .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
-        RegisterComponents(builderServices, typeof(App).Assembly.GetTypes()
-            .Where(type => Attribute.IsDefined(type, typeof(Injectable))));
-    }
-
-    class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
-    {
-        public Type RegisterableInterface { get; } = registerableInterface;
-        public Type TypeToRegister { get; } = typeToRegister;
-        public Injectable InjectableAttribute { get; } = injectableAttribute;
     }
 }

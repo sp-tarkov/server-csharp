@@ -5,33 +5,34 @@ using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class QuestRewardHelper
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly ItemHelper _itemHelper;
-    private readonly PaymentHelper _paymentHelper;
-    private readonly TraderHelper _traderHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly QuestConditionHelper _questConditionHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly PresetHelper _presetHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly QuestConfig _questConfig;
-    private readonly ICloner _cloner;
+    protected ISptLogger<QuestRewardHelper> _logger;
+    protected HashUtil _hashUtil;
+    protected TimeUtil _timeUtil;
+    protected ItemHelper _itemHelper;
+    protected PaymentHelper _paymentHelper;
+    protected TraderHelper _traderHelper;
+    protected DatabaseService _databaseService;
+    protected QuestConditionHelper _questConditionHelper;
+    protected ProfileHelper _profileHelper;
+    protected PresetHelper _presetHelper;
+    protected LocalisationService _localisationService;
+    protected QuestConfig _questConfig;
+    protected ICloner _cloner;
 
     public QuestRewardHelper(
-        ILogger logger,
+        ISptLogger<QuestRewardHelper> logger,
         HashUtil hashUtil,
         TimeUtil timeUtil,
         ItemHelper itemHelper,

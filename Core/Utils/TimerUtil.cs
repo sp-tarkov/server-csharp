@@ -6,7 +6,7 @@ namespace Core.Utils
     [Injectable]
     public class TimerUtil
     {
-        private readonly Stopwatch _stopwatch;
+        protected Stopwatch _stopwatch;
 
         public TimerUtil()
         {

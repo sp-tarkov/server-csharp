@@ -5,7 +5,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class HashUtilTests
 {
-	// private readonly HashUtil _hashUtil = new(new RandomUtil());
+	// protected HashUtil _hashUtil = new(new RandomUtil());
 	//
 	// [TestMethod]
 	// public void GenerateTest()

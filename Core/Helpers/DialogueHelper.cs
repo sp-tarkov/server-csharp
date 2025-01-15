@@ -1,28 +1,29 @@
 ﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class DialogueHelper
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly SaveServer _saveServer;
-    private readonly DatabaseServer _databaseServer;
-    private readonly NotifierHelper _notifierHelper;
-    private readonly NotificationSendHelper _notificationSendHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly ItemHelper _itemHelper;
+    protected ISptLogger<DialogueHelper> _logger;
+    protected HashUtil _hashUtil;
+    protected SaveServer _saveServer;
+    protected DatabaseServer _databaseServer;
+    protected NotifierHelper _notifierHelper;
+    protected NotificationSendHelper _notificationSendHelper;
+    protected LocalisationService _localisationService;
+    protected ItemHelper _itemHelper;
 
     public DialogueHelper
     (
-        ILogger logger,
+        ISptLogger<DialogueHelper> logger,
         HashUtil hashUtil,
         SaveServer saveServer,
         DatabaseServer databaseServer,

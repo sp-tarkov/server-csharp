@@ -1,16 +1,18 @@
 using Core.Annotations;
 using Core.Models.Spt.Helper;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class WeightedRandomHelper
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<WeightedRandomHelper> _logger;
 
     public WeightedRandomHelper(
-        ILogger logger)
+        ISptLogger<WeightedRandomHelper> logger
+    )
     {
         _logger = logger;
     }

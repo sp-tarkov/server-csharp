@@ -4,29 +4,30 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Match;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class BotHelper
 {
-    private readonly ILogger _logger;
-    private readonly DatabaseService _databaseService;
-    private readonly RandomUtil _randomUtil;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<BotHelper> _logger;
+    protected DatabaseService _databaseService;
+    protected RandomUtil _randomUtil;
+    protected ConfigServer _configServer;
 
-    private readonly BotConfig _botConfig;
-    private readonly PmcConfig _pmcConfig;
+    protected BotConfig _botConfig;
+    protected PmcConfig _pmcConfig;
 
-    private readonly List<string> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected List<string> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
 
     public BotHelper
     (
-        ILogger logger,
+        ISptLogger<BotHelper> logger,
         DatabaseService databaseService,
         RandomUtil randomUtil,
         ConfigServer configServer

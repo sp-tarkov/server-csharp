@@ -7,40 +7,41 @@ using Core.Models.Enums;
 using Core.Models.Enums.RaidSettings;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using BodyPart = Core.Models.Eft.Common.Tables.BodyPart;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotGenerator
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly ProfileHelper _profileHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly BotInventoryGenerator _botInventoryGenerator;
-    private readonly BotLevelGenerator _botLevelGenerator;
-    private readonly BotEquipmentFilterService _botEquipmentFilterService;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly BotHelper _botHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly SeasonalEventService _seasonalEventService;
-    private readonly ItemFilterService _itemFilterService;
-    private readonly BotNameService _botNameService;
-    private readonly ConfigServer _configServer;
-    private readonly ICloner _cloner;
+    protected ISptLogger<BotGenerator> _logger;
+    protected HashUtil _hashUtil;
+    protected RandomUtil _randomUtil;
+    protected TimeUtil _timeUtil;
+    protected ProfileHelper _profileHelper;
+    protected DatabaseService _databaseService;
+    protected BotInventoryGenerator _botInventoryGenerator;
+    protected BotLevelGenerator _botLevelGenerator;
+    protected BotEquipmentFilterService _botEquipmentFilterService;
+    protected WeightedRandomHelper _weightedRandomHelper;
+    protected BotHelper _botHelper;
+    protected BotGeneratorHelper _botGeneratorHelper;
+    protected SeasonalEventService _seasonalEventService;
+    protected ItemFilterService _itemFilterService;
+    protected BotNameService _botNameService;
+    protected ConfigServer _configServer;
+    protected ICloner _cloner;
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
 
     public BotGenerator(
-        ILogger logger,
+        ISptLogger<BotGenerator> logger,
         HashUtil hashUtil,
         RandomUtil randomUtil,
         TimeUtil timeUtil,

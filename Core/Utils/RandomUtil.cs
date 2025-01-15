@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 using Core.Annotations;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Core.Utils;
 
@@ -8,11 +8,11 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<RandomUtil> _logger;
 
     public RandomUtil
     (
-        ILogger logger
+        ISptLogger<RandomUtil> logger
     )
     {
         _logger = logger;

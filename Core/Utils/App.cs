@@ -2,9 +2,9 @@ using Core.Annotations;
 using Core.DI;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils;
 
@@ -14,7 +14,7 @@ public class App
     protected Dictionary<string, long> _onUpdateLastRun;
     protected CoreConfig _coreConfig;
 
-    private ILogger _logger;
+    private ISptLogger<App> _logger;
     private TimeUtil _timeUtil;
     private LocalisationService _localisationService;
     private ConfigServer _configServer;
@@ -25,7 +25,7 @@ public class App
     private IEnumerable<OnUpdate> _onUpdate;
 
     public App(
-        ILogger logger,
+        ISptLogger<App> logger,
         TimeUtil timeUtil,
         LocalisationService localisationService,
         ConfigServer configServer,

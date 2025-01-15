@@ -3,31 +3,32 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class ItemHelper
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly JsonUtil _jsonUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly MathUtil _mathUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly ItemBaseClassService _itemBaseClassService;
-    private readonly ItemFilterService _itemFilterService;
-    private readonly LocalisationService _localisationService;
-    private readonly LocaleService _localeService;
-    private readonly CompareUtil _compareUtil;
-    private readonly ICloner _cloner;
+    protected ISptLogger<ItemHelper> _logger;
+    protected HashUtil _hashUtil;
+    protected JsonUtil _jsonUtil;
+    protected RandomUtil _randomUtil;
+    protected MathUtil _mathUtil;
+    protected DatabaseService _databaseService;
+    protected HandbookHelper _handbookHelper;
+    protected ItemBaseClassService _itemBaseClassService;
+    protected ItemFilterService _itemFilterService;
+    protected LocalisationService _localisationService;
+    protected LocaleService _localeService;
+    protected CompareUtil _compareUtil;
+    protected ICloner _cloner;
 
-    private readonly List<string> _defaultInvalidBaseTypes =
+    protected List<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -40,7 +41,7 @@ public class ItemHelper
 
     public ItemHelper
     (
-        ILogger logger,
+        ISptLogger<ItemHelper> logger,
         HashUtil hashUtil,
         JsonUtil jsonUtil,
         RandomUtil randomUtil,

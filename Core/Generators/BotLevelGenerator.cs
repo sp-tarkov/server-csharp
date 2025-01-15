@@ -3,22 +3,23 @@ using Core.Models.Common;
 using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
+using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotLevelGenerator
 {
-    private readonly ILogger _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly MathUtil _mathUtil;
-    private readonly DatabaseService _databaseService;
+    protected ISptLogger<BotLevelGenerator> _logger;
+    protected RandomUtil _randomUtil;
+    protected MathUtil _mathUtil;
+    protected DatabaseService _databaseService;
 
     public BotLevelGenerator(
-        ILogger logger,
+        ISptLogger<BotLevelGenerator> logger,
         RandomUtil randomUtil,
         MathUtil mathUtil,
         DatabaseService databaseService)

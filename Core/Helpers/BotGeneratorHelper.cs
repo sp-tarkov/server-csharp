@@ -9,8 +9,8 @@ namespace Core.Helpers;
 [Injectable]
 public class BotGeneratorHelper
 {
-    private readonly ConfigServer _configServer;
-    private readonly PmcConfig _pmcConfig;
+    protected ConfigServer _configServer;
+    protected PmcConfig _pmcConfig;
 
     public BotGeneratorHelper(
         ConfigServer configServer

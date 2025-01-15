@@ -1,8 +1,8 @@
 using Core.Annotations;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace ExampleMods.Mods.Override;
 
@@ -10,7 +10,7 @@ namespace ExampleMods.Mods.Override;
 public class WatermarkOverride : Watermark
 {
     public WatermarkOverride(
-        ILogger logger,
+        ISptLogger<Watermark> logger,
         ConfigServer configServer,
         LocalisationService localisationService,
         WatermarkLocale watermarkLocale

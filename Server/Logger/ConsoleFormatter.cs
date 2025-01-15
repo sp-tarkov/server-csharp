@@ -7,5 +7,10 @@ public class ConsoleFormatter : AbstractFormatter
         return text;
     }
 
-    public static ConsoleFormatter Default { get; } = new ConsoleFormatter();
+    protected override string GetFormattedText(string timestamp, string logLevel, string sourceContext, string message)
+    {
+        return message;
+    }
+
+    public static ConsoleFormatter Default { get; } = new();
 }

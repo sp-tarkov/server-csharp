@@ -4,8 +4,9 @@ using Core.Models.Spt.Bots;
 using Core.Helpers;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
-using ILogger = Core.Models.Utils.ILogger;
+
 using Core.Utils;
 
 namespace Core.Services;
@@ -13,18 +14,18 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotNameService
 {
-    private readonly ILogger _logger;
-    private readonly BotHelper _botHelper;
-    private readonly RandomUtil _randomUtil;
-    private readonly LocalisationService _localisationService;
-    private readonly DatabaseService _databaseService;
-    private readonly ConfigServer _configServer;
-    private readonly BotConfig _botConfig;
+    protected ISptLogger<BotNameService> _logger;
+    protected BotHelper _botHelper;
+    protected RandomUtil _randomUtil;
+    protected LocalisationService _localisationService;
+    protected DatabaseService _databaseService;
+    protected ConfigServer _configServer;
+    protected BotConfig _botConfig;
 
-    private readonly HashSet<string> _usedNameCache;
+    protected HashSet<string> _usedNameCache;
 
     public BotNameService(
-        ILogger logger,
+        ISptLogger<BotNameService> logger,
         BotHelper botHelper,
         RandomUtil randomUtil,
         LocalisationService localisationService,

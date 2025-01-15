@@ -1,25 +1,25 @@
 using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService
 {
-    private readonly ILogger _logger;
-    private readonly ICloner _cloner;
-    private readonly DatabaseServer _databaseServer;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<ItemFilterService> _logger;
+    protected ICloner _cloner;
+    protected DatabaseServer _databaseServer;
+    protected ConfigServer _configServer;
 
-    private readonly HashSet<string> _lootableItemBlacklistCache = [];
-    private readonly ItemConfig _itemConfig;
+    protected HashSet<string> _lootableItemBlacklistCache = [];
+    protected ItemConfig _itemConfig;
 
     public ItemFilterService(
-        ILogger logger,
+        ISptLogger<ItemFilterService> logger,
         ICloner cloner,
         DatabaseServer databaseServer,
         ConfigServer configServer

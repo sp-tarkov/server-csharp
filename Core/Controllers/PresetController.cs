@@ -1,20 +1,21 @@
 using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
+using Core.Models.Utils;
 using Core.Services;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class PresetController
 {
-    private readonly ILogger _logger;
-    private readonly PresetHelper _presetHelper;
-    private readonly DatabaseService _databaseService;
+    protected ISptLogger<PresetController> _logger;
+    protected PresetHelper _presetHelper;
+    protected DatabaseService _databaseService;
 
     public PresetController(
-        ILogger logger,
+        ISptLogger<PresetController> logger,
         PresetHelper presetHelper,
         DatabaseService databaseService
         )

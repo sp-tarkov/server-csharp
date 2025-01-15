@@ -13,12 +13,12 @@ namespace Core.Controllers;
 [Injectable]
 public class DialogueController
 {
-    private readonly DialogueHelper _dialogueHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ConfigServer _configServer;
-    private readonly SaveServer _saveServer;
-    private readonly List<IDialogueChatBot> _dialogueChatBots;
-    private readonly CoreConfig _coreConfig;
+    protected DialogueHelper _dialogueHelper;
+    protected ProfileHelper _profileHelper;
+    protected ConfigServer _configServer;
+    protected SaveServer _saveServer;
+    protected List<IDialogueChatBot> _dialogueChatBots;
+    protected CoreConfig _coreConfig;
 
     public DialogueController(
         DialogueHelper dialogueHelper,

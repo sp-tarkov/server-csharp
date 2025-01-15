@@ -7,40 +7,41 @@ using Core.Models.Eft.Ragfair;
 using Core.Models.Eft.Trade;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class TradeController
 {
-    private readonly ILogger _logger;
-    private readonly DatabaseService _databaseService;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly TradeHelper _tradeHelper;
-    private readonly TimeUtil _timeUtil;
-    private readonly HashUtil _hashUtil;
-    private readonly ItemHelper _itemHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly RagfairOfferHelper _ragfairOfferHelper;
-    private readonly TraderHelper _traderHelper;
-    // private readonly RagfairServer _ragfairServer;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly LocalisationService _localisationService;
-    private readonly RagfairPriceService _ragfairPriceService;
-    // private readonly MailSendService _mailSendService;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<TradeController> _logger;
+    protected DatabaseService _databaseService;
+    protected EventOutputHolder _eventOutputHolder;
+    protected TradeHelper _tradeHelper;
+    protected TimeUtil _timeUtil;
+    protected HashUtil _hashUtil;
+    protected ItemHelper _itemHelper;
+    protected ProfileHelper _profileHelper;
+    protected RagfairOfferHelper _ragfairOfferHelper;
+    protected TraderHelper _traderHelper;
+    // protected RagfairServer _ragfairServer;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected LocalisationService _localisationService;
+    protected RagfairPriceService _ragfairPriceService;
+    // protected MailSendService _mailSendService;
+    protected ConfigServer _configServer;
     
-    private readonly RagfairConfig _ragfairConfig;
-    private readonly TraderConfig _traderConfig;
+    protected RagfairConfig _ragfairConfig;
+    protected TraderConfig _traderConfig;
 
     public TradeController
     (
-        ILogger logger,
+        ISptLogger<TradeController> logger,
         DatabaseService databaseService,
         EventOutputHolder eventOutputHolder,
         TradeHelper tradeHelper,

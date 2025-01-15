@@ -7,8 +7,8 @@ namespace Core.Controllers;
 [Injectable]
 public class NotifierController
 {
-    private readonly HttpServerHelper _httpServerHelper;
-    private readonly NotifierHelper _notifierHelper;
+    protected HttpServerHelper _httpServerHelper;
+    protected NotifierHelper _notifierHelper;
 
     public NotifierController(
         HttpServerHelper httpServerHelper,

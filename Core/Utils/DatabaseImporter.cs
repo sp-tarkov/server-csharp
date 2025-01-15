@@ -1,14 +1,12 @@
 using Core.Annotations;
 using Core.DI;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
-using ILogger = Core.Models.Utils.ILogger;
-using Path = System.IO.Path;
 
 namespace Core.Utils;
 
@@ -20,20 +18,20 @@ public class DatabaseImporter : OnLoad
     private string filepath;
     private HttpConfig httpConfig;
 
-    private readonly ILogger _logger;
-    private readonly LocalisationService _localisationService;
+    protected ISptLogger<DatabaseImporter> _logger;
+    protected LocalisationService _localisationService;
 
-    private readonly DatabaseServer _databaseServer;
+    protected DatabaseServer _databaseServer;
 
-    private readonly ImageRouter _imageRouter;
-    private readonly EncodingUtil _encodingUtil;
-    private readonly HashUtil _hashUtil;
-    private readonly ImporterUtil _importerUtil;
-    private readonly ConfigServer _configServer;
-    private readonly FileUtil _fileUtil;
+    protected ImageRouter _imageRouter;
+    protected EncodingUtil _encodingUtil;
+    protected HashUtil _hashUtil;
+    protected ImporterUtil _importerUtil;
+    protected ConfigServer _configServer;
+    protected FileUtil _fileUtil;
 
     public DatabaseImporter(
-        ILogger logger,
+        ISptLogger<DatabaseImporter> logger,
         // TODO: are we gonna use this? @inject("JsonUtil") protected jsonUtil: JsonUtil,
         FileUtil fileUtil,
         LocalisationService localisationService,

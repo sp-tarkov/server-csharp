@@ -3,22 +3,18 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
-using Core.Models.Eft.Profile;
-using Core.Models.Enums;
-using Core.Models.Spt.Dialog;
-using ILogger = Core.Models.Utils.ILogger;
-using MapMarker = Core.Models.Eft.Common.Tables.MapMarker;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable]
 public class MapMarkerService
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<MapMarkerService> _logger;
 
     public MapMarkerService
     (
-        ILogger logger
+        ISptLogger<MapMarkerService> logger
     )
     {
         _logger = logger;

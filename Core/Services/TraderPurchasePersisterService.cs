@@ -3,26 +3,26 @@ using Core.Helpers;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class TraderPurchasePersisterService
 {
-    private readonly ILogger _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly ProfileHelper _profileHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<TraderPurchasePersisterService> _logger;
+    protected RandomUtil _randomUtil;
+    protected TimeUtil _timeUtil;
+    protected ProfileHelper _profileHelper;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
 
-    private readonly TraderConfig _traderConfig;
+    protected TraderConfig _traderConfig;
 
     public TraderPurchasePersisterService(
-        ILogger logger,
+        ISptLogger<TraderPurchasePersisterService> logger,
         RandomUtil randomUtil,
         TimeUtil timeUtil,
         ProfileHelper profileHelper,

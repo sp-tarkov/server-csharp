@@ -1,22 +1,19 @@
 using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Core.Annotations;
-using Core.Utils.Json.Converters;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class ImporterUtil
 {
-    private readonly FileUtil _fileUtil;
-    private readonly JsonUtil _jsonUtil;
-    private readonly Models.Utils.ILogger _logger;
+    protected FileUtil _fileUtil;
+    protected JsonUtil _jsonUtil;
+    protected ISptLogger<ImporterUtil> _logger;
 
-    private readonly HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
-    
-    public ImporterUtil(ILogger logger, FileUtil fileUtil, JsonUtil jsonUtil)
+    protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
+
+    public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
         _logger = logger;
         _fileUtil = fileUtil;
@@ -49,35 +46,41 @@ public class ImporterUtil
             if (_fileUtil.GetFileExtension(file) != "json") continue;
             if (filesToIgnore.Contains(_fileUtil.GetFileName(file).ToLower())) continue;
             tasks.Add(
-                Task.Factory.StartNew(() =>
-                {
-                    var fileData = _fileUtil.ReadFile(file);
-                    if (onReadCallback != null)
-                        onReadCallback(file, fileData);
-
-                    var setMethod = GetSetMethod(
-                        _fileUtil.StripExtension(file).ToLower(),
-                        loadedType,
-                        out var propertyType,
-                        out var isDictionary
-                    );
-                    try
+                Task.Factory.StartNew(
+                    () =>
                     {
-                        var fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
-                        if (onObjectDeserialized != null)
-                            onObjectDeserialized(file, fileDeserialized);
+                        var fileData = _fileUtil.ReadFile(file);
+                        if (onReadCallback != null)
+                            onReadCallback(file, fileData);
 
-                        lock (dictionaryLock)
+                        var setMethod = GetSetMethod(
+                            _fileUtil.StripExtension(file).ToLower(),
+                            loadedType,
+                            out var propertyType,
+                            out var isDictionary
+                        );
+                        try
                         {
-                            setMethod.Invoke(result,
-                                isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                            var fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
+                            if (onObjectDeserialized != null)
+                                onObjectDeserialized(file, fileDeserialized);
+
+                            lock (dictionaryLock)
+                            {
+                                setMethod.Invoke(
+                                    result,
+                                    isDictionary
+                                        ? [_fileUtil.StripExtension(file), fileDeserialized]
+                                        : [fileDeserialized]
+                                );
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
                         }
                     }
-                    catch (Exception e)
-                    {
-                        throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
-                    }
-                })
+                )
             );
         }
 
@@ -85,33 +88,51 @@ public class ImporterUtil
         foreach (var directory in directories)
         {
             tasks.Add(
-                Task.Factory.StartNew(() =>
-                {
-                    var setMethod = GetSetMethod(directory.Split("/").Last().Replace("_", ""), loadedType, out var matchedProperty, out var isDictionary);
-                    var loadTask = LoadRecursiveAsync($"{directory}/", matchedProperty);
-                    loadTask.Wait();
-                    lock (dictionaryLock)
+                Task.Factory.StartNew(
+                    () =>
                     {
-                        setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
+                        var setMethod = GetSetMethod(
+                            directory.Split("/").Last().Replace("_", ""),
+                            loadedType,
+                            out var matchedProperty,
+                            out var isDictionary
+                        );
+                        var loadTask = LoadRecursiveAsync($"{directory}/", matchedProperty);
+                        loadTask.Wait();
+                        lock (dictionaryLock)
+                        {
+                            setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
+                        }
                     }
-                })
+                )
             );
         }
 
         // return the result of all async fetch
-        return Task.WhenAll(tasks).ContinueWith((t) =>
-        {
-            if (t.IsCanceled || t.IsFaulted)
-            {
-                var exceptionList = tasks.Where(t => t.IsFaulted || t.IsCanceled).Select(t => t.Exception!).ToList();
-                throw new Exception("Error processing one or more DatabaseFiles", new AggregateException(exceptionList));
-            }
-        }).ContinueWith(t =>
-        {
-            if (t.IsFaulted || t.IsCanceled)
-                throw t.Exception!;
-            return result;
-        });
+        return Task.WhenAll(tasks)
+            .ContinueWith(
+                (t) =>
+                {
+                    if (t.IsCanceled || t.IsFaulted)
+                    {
+                        var exceptionList = tasks.Where(t => t.IsFaulted || t.IsCanceled)
+                            .Select(t => t.Exception!)
+                            .ToList();
+                        throw new Exception(
+                            "Error processing one or more DatabaseFiles",
+                            new AggregateException(exceptionList)
+                        );
+                    }
+                }
+            )
+            .ContinueWith(
+                t =>
+                {
+                    if (t.IsFaulted || t.IsCanceled)
+                        throw t.Exception!;
+                    return result;
+                }
+            );
     }
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
@@ -127,15 +148,22 @@ public class ImporterUtil
         else
         {
             var matchedProperty = type.GetProperties()
-                .FirstOrDefault(prop =>
-                    string.Equals(prop.Name.ToLower(), _fileUtil.StripExtension(propertyName).ToLower(),
-                        StringComparison.Ordinal));
+                .FirstOrDefault(
+                    prop =>
+                        string.Equals(
+                            prop.Name.ToLower(),
+                            _fileUtil.StripExtension(propertyName).ToLower(),
+                            StringComparison.Ordinal
+                        )
+                );
             if (matchedProperty == null)
                 throw new Exception(
-                    $"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");
+                    $"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'"
+                );
             propertyType = matchedProperty.PropertyType;
             setMethod = matchedProperty.GetSetMethod();
         }
+
         return setMethod;
     }
 }

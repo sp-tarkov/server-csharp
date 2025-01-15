@@ -6,7 +6,8 @@ using Microsoft.Extensions.Primitives;
 using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
+
 
 namespace Core.Servers;
 
@@ -16,15 +17,15 @@ public class HttpServer
     protected HttpConfig httpConfig;
     protected bool started;
 
-    private readonly ILogger _logger;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
-    private readonly ApplicationContext _applicationContext;
-    private readonly WebSocketServer _webSocketServer;
-    private readonly IEnumerable<IHttpListener> _httpListeners;
+    protected ISptLogger<HttpServer> _logger;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+    protected ApplicationContext _applicationContext;
+    protected WebSocketServer _webSocketServer;
+    protected IEnumerable<IHttpListener> _httpListeners;
 
     public HttpServer(
-        ILogger logger,
+        ISptLogger<HttpServer> logger,
         LocalisationService localisationService,
         ConfigServer configServer,
         ApplicationContext applicationContext,
@@ -66,8 +67,7 @@ public class HttpServer
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            return context.WebSockets.AcceptWebSocketAsync()
-                .ContinueWith(task => Converse(task.Result));
+            return _webSocketServer.OnConnection(context);
         }
         else
         {
@@ -128,34 +128,6 @@ public class HttpServer
         foreach (var keyValuePair in req.Cookies) found.Add(keyValuePair.Key, keyValuePair.Value);
 
         return found;
-    }
-
-    private void Converse(WebSocket connection)
-    {
-        var buffer = new byte[1024 * 4];
-        var receive = connection.ReceiveAsync(
-            new ArraySegment<byte>(buffer), CancellationToken.None);
-        receive.Wait();
-        var receiveResult = receive.Result;
-
-        while (!receiveResult.CloseStatus.HasValue)
-        {
-            connection.SendAsync(
-                new ArraySegment<byte>(buffer, 0, receiveResult.Count),
-                receiveResult.MessageType,
-                receiveResult.EndOfMessage,
-                CancellationToken.None);
-
-            receive = connection.ReceiveAsync(
-                new ArraySegment<byte>(buffer), CancellationToken.None);
-            receive.Wait();
-            receiveResult = receive.Result;
-        }
-
-        connection.CloseAsync(
-            receiveResult.CloseStatus.Value,
-            receiveResult.CloseStatusDescription,
-            CancellationToken.None);
     }
 
     public bool IsStarted()

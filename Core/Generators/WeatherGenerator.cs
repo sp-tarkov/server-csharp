@@ -12,13 +12,13 @@ namespace Core.Generators;
 [Injectable]
 public class WeatherGenerator
 {
-    private readonly TimeUtil _timeUtil;
-    private readonly SeasonalEventService _seasonalEventService;
-    private readonly WeatherHelper _weatherHelper;
-    private readonly ConfigServer _configServer;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly RandomUtil _randomUtil;
-    private readonly WeatherConfig _weatherConfig;
+    protected TimeUtil _timeUtil;
+    protected SeasonalEventService _seasonalEventService;
+    protected WeatherHelper _weatherHelper;
+    protected ConfigServer _configServer;
+    protected WeightedRandomHelper _weightedRandomHelper;
+    protected RandomUtil _randomUtil;
+    protected WeatherConfig _weatherConfig;
 
     public WeatherGenerator(
     TimeUtil timeUtil,

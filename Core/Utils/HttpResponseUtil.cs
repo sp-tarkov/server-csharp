@@ -24,7 +24,7 @@ public class HttpResponseUtil
         _jsonUtil = jsonUtil;
     }
 
-    private readonly ImmutableList<Regex> _cleanupRegexList =
+    protected ImmutableList<Regex> _cleanupRegexList =
     [
         new("[\\b]"),
         new("[\\f]"),

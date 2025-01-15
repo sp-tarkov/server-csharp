@@ -8,9 +8,9 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class HashUtil
 {
-    private readonly Regex MongoIdRegex = new("^[a-fA-F0-9]{24}$");
+    protected Regex MongoIdRegex = new("^[a-fA-F0-9]{24}$");
 
-    private readonly RandomUtil _randomUtil;
+    protected RandomUtil _randomUtil;
 
     public HashUtil(RandomUtil randomUtil)
     {

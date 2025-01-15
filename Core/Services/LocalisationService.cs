@@ -1,21 +1,21 @@
 ﻿using Core.Utils;
 using Core.Annotations;
+using Core.Models.Utils;
 using Core.Servers;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocalisationService
 {
-    private readonly ILogger _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly DatabaseServer _databaseServer;
-    private readonly LocaleService _localeService;
-    private readonly I18nService _i18nService;
+    protected ISptLogger<LocalisationService> _logger;
+    protected RandomUtil _randomUtil;
+    protected DatabaseServer _databaseServer;
+    protected LocaleService _localeService;
+    protected I18nService _i18nService;
 
     public LocalisationService(
-        ILogger logger,
+        ISptLogger<LocalisationService> logger,
         RandomUtil randomUtil,
         DatabaseServer databaseServer,
         LocaleService localeService,

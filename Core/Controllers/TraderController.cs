@@ -6,18 +6,19 @@ using Core.Models.Eft.Game;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class TraderController
 {
-    private ILogger _logger;
+    private ISptLogger<TraderController> _logger;
     private TimeUtil _timeUtil;
     private DatabaseService _databaseService;
     private TraderAssortHelper _traderAssortHelper;
@@ -36,7 +37,7 @@ public class TraderController
 
     public TraderController
     (
-        ILogger logger,
+        ISptLogger<TraderController> logger,
         TimeUtil timeUtil,
         DatabaseService databaseService,
         TraderAssortHelper traderAssortHelper,

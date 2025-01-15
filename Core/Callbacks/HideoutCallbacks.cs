@@ -14,9 +14,9 @@ namespace Core.Callbacks;
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
 public class HideoutCallbacks : OnUpdate
 {
-    private readonly HideoutController _hideoutController;
-    private readonly ConfigServer _configServer;
-    private readonly HideoutConfig _hideoutConfig;
+    protected HideoutController _hideoutController;
+    protected ConfigServer _configServer;
+    protected HideoutConfig _hideoutConfig;
 
     public HideoutCallbacks
     (

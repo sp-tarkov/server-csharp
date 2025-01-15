@@ -8,8 +8,8 @@ namespace Core.Callbacks;
 [Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
 public class HttpCallbacks : OnLoad
 {
-    private readonly HttpServer _httpServer;
-    private readonly ApplicationContext _applicationContext;
+    protected HttpServer _httpServer;
+    protected ApplicationContext _applicationContext;
     public HttpCallbacks(HttpServer httpServer, ApplicationContext applicationContext)
     {
         _httpServer = httpServer;

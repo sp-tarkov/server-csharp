@@ -4,10 +4,11 @@ using System.Text;
 using System.Text.Json;
 using Core.Annotations;
 using Core.DI;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Servers.Http;
 
@@ -16,15 +17,15 @@ public class SptHttpListener : IHttpListener
 {
     protected readonly HttpRouter _router;
     protected readonly IEnumerable<ISerializer> _serializers;
-    protected readonly ILogger _logger;
+    protected readonly ISptLogger<SptHttpListener> _logger;
     protected readonly HttpResponseUtil _httpResponseUtil;
     protected readonly LocalisationService _localisationService;
     protected readonly JsonUtil _jsonUtil;
     public SptHttpListener(
         HttpRouter httpRouter, // TODO: delay required
         IEnumerable<ISerializer> serializers,
-        ILogger logger,
-        // TODO: requestsLogger: ILogger,
+        ISptLogger<SptHttpListener> logger,
+        // TODO: requestsLogger: ISptLogger,
         JsonUtil jsonUtil,
         HttpResponseUtil httpHttpResponseUtil,
         LocalisationService localisationService

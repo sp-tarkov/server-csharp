@@ -3,29 +3,29 @@ using Core.Helpers;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Dialog;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class GiftService
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<GiftService> _logger;
 
-    private readonly MailSendService _mailSendService;
-    private readonly LocalisationService _localisationService;
-    private readonly HashUtil _hashUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ConfigServer _configServer;
+    protected MailSendService _mailSendService;
+    protected LocalisationService _localisationService;
+    protected HashUtil _hashUtil;
+    protected TimeUtil _timeUtil;
+    protected ProfileHelper _profileHelper;
+    protected ConfigServer _configServer;
 
-    private readonly GiftsConfig _giftConfig;
+    protected GiftsConfig _giftConfig;
 
     public GiftService
     (
-        ILogger logger,
+        ISptLogger<GiftService> logger,
         MailSendService mailSendService,
         LocalisationService localisationService,
         HashUtil hashUtil,

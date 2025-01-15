@@ -10,27 +10,27 @@ using Core.Servers;
 using Core.Utils;
 using System.Text.RegularExpressions;
 using Core.Models.Spt.Config;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ProfileFixerService
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly JsonUtil _jsonUtil;
-    private readonly ItemHelper _itemHelper;
-    private readonly QuestRewardHelper _questRewardHelper;
-    private readonly TraderHelper _traderHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
-    private readonly CoreConfig _coreConfig;
-    private readonly InventoryHelper _inventoryHelper;
+    protected ISptLogger<ProfileFixerService> _logger;
+    protected HashUtil _hashUtil;
+    protected JsonUtil _jsonUtil;
+    protected ItemHelper _itemHelper;
+    protected QuestRewardHelper _questRewardHelper;
+    protected TraderHelper _traderHelper;
+    protected DatabaseService _databaseService;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+    protected CoreConfig _coreConfig;
+    protected InventoryHelper _inventoryHelper;
 
     public ProfileFixerService(
-        ILogger logger,
+        ISptLogger<ProfileFixerService> logger,
         HashUtil hashUtil,
         JsonUtil jsonUtil,
         ItemHelper itemHelper,
@@ -464,7 +464,7 @@ public class ProfileFixerService
         }
     }
 
-    private readonly List<string> _areas = ["hideout", "main"];
+    protected List<string> _areas = ["hideout", "main"];
 
     /**
      * Checks profile inventory for items that do not exist inside the items db

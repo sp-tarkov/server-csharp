@@ -1,21 +1,19 @@
 using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Spt.Bots;
-using System.Text.RegularExpressions;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Core.Services
 {
     [Injectable(InjectionType.Singleton)]
     public class MatchBotDetailsCacheService
     {
-        private readonly ILogger _logger;
-        private readonly LocalisationService _localisationService;
+        protected ISptLogger<MatchBotDetailsCacheService> _logger;
+        protected LocalisationService _localisationService;
 
-        private readonly Dictionary<string, BotBase> _botDetailsCache;
+        protected Dictionary<string, BotBase> _botDetailsCache;
 
         public MatchBotDetailsCacheService(
-            ILogger logger,
+            ISptLogger<MatchBotDetailsCacheService> logger,
             LocalisationService localisationService)
         {
             _logger = logger;

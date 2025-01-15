@@ -6,10 +6,11 @@ using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
 using Core.Models.Spt.Templates;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Hideout = Core.Models.Spt.Hideout.Hideout;
-using ILogger = Core.Models.Utils.ILogger;
+
 using Locations = Core.Models.Spt.Server.Locations;
 
 namespace Core.Services;
@@ -20,13 +21,13 @@ public class DatabaseService
     protected LocationConfig locationConfig;
     protected bool isDataValid;
 
-    private readonly ILogger _logger;
-    private readonly DatabaseServer _databaseServer;
-    private readonly LocalisationService _localisationService;
-    private readonly HashUtil _hashUtil;
+    protected ISptLogger<DatabaseService> _logger;
+    protected DatabaseServer _databaseServer;
+    protected LocalisationService _localisationService;
+    protected HashUtil _hashUtil;
 
     public DatabaseService(
-        ILogger logger,
+        ISptLogger<DatabaseService> logger,
         DatabaseServer databaseServer,
         LocalisationService localisationService,
         HashUtil hashUtil

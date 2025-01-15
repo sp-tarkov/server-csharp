@@ -1,21 +1,20 @@
 ﻿using System.Globalization;
 using Core.Annotations;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocaleService
 {
-    private readonly LocaleConfig _localeConfig;
-    private readonly ILogger _logger;
-    private readonly DatabaseServer _databaseServer;
-    private readonly ConfigServer _configServer;
+    protected LocaleConfig _localeConfig;
+    protected ISptLogger<LocaleService> _logger;
+    protected DatabaseServer _databaseServer;
+    protected ConfigServer _configServer;
 
-    public LocaleService(ILogger logger, DatabaseServer databaseServer, ConfigServer configServer)
+    public LocaleService(ISptLogger<LocaleService> logger, DatabaseServer databaseServer, ConfigServer configServer)
     {
         _logger = logger;
         _databaseServer = databaseServer;

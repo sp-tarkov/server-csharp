@@ -5,7 +5,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class MathUtilTests
 {
-	private readonly MathUtil _mathUtil = new();
+	protected MathUtil _mathUtil = new();
 	
 	[TestMethod]
 	public void ListSumTest()

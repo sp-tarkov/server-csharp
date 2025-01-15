@@ -3,24 +3,25 @@ using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
+using Core.Models.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotLootCacheService
 {
-    private readonly ILogger _logger;
-    private readonly ItemHelper _itemHelper;
-    private readonly PMCLootGenerator _pmcLootGenerator;
-    private readonly RagfairPriceService _ragfairPriceService;
-    private readonly ICloner _cloner;
+    protected ISptLogger<BotLootCacheService> _logger;
+    protected ItemHelper _itemHelper;
+    protected PMCLootGenerator _pmcLootGenerator;
+    protected RagfairPriceService _ragfairPriceService;
+    protected ICloner _cloner;
 
-    private readonly Dictionary<string, BotLootCache> _lootCache = new();
+    protected Dictionary<string, BotLootCache> _lootCache = new();
 
     public BotLootCacheService(
-        ILogger logger,
+        ISptLogger<BotLootCacheService> logger,
         ItemHelper itemHelper,
         PMCLootGenerator pmcLootGenerator,
         RagfairPriceService ragfairPriceService,

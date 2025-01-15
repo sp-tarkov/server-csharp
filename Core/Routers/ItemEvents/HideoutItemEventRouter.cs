@@ -11,7 +11,7 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class HideoutItemEventRouter : ItemEventRouterDefinition
 {
-    private readonly HideoutCallbacks _hideoutCallbacks;
+    protected HideoutCallbacks _hideoutCallbacks;
 
     public HideoutItemEventRouter
     (

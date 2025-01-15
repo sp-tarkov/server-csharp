@@ -4,16 +4,17 @@ using Core.Helpers;
 using Core.Models.Eft.InRaid;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class InRaidController
 {
-    protected ILogger _logger;
+    protected ISptLogger<InRaidController> _logger;
     protected SaveServer _saveServer;
     protected ProfileHelper _profileHelper;
     protected LocalisationService _localisationService;
@@ -25,7 +26,7 @@ public class InRaidController
 
     public InRaidController
     (
-        ILogger logger,
+        ISptLogger<InRaidController> logger,
         SaveServer saveServer,
         ProfileHelper profileHelper,
         LocalisationService localisationService,

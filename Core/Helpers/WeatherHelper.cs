@@ -1,24 +1,25 @@
 ﻿using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class WeatherHelper
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<WeatherHelper> _logger;
+    protected TimeUtil _timeUtil;
+    protected ConfigServer _configServer;
 
-    private readonly WeatherConfig _weatherConfig;
+    protected WeatherConfig _weatherConfig;
 
     public WeatherHelper
     (
-        ILogger logger,
+        ISptLogger<WeatherHelper> logger,
         TimeUtil timeUtil,
         ConfigServer configServer
     )

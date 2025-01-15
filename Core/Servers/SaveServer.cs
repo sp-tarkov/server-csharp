@@ -6,9 +6,10 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Servers;
 
@@ -28,7 +29,7 @@ public class SaveServer
     protected readonly JsonUtil _jsonUtil;
     protected readonly HashUtil _hashUtil;
     protected readonly LocalisationService _localisationService;
-    protected readonly ILogger _logger;
+    protected readonly ISptLogger<SaveServer> _logger;
     protected readonly ConfigServer _configServer;
 
     public SaveServer(
@@ -37,7 +38,7 @@ public class SaveServer
         JsonUtil jsonUtil,
         HashUtil hashUtil,
         LocalisationService localisationService,
-        ILogger logger,
+        ISptLogger<SaveServer> logger,
         ConfigServer configServer
     )
     {

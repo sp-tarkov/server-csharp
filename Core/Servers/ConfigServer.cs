@@ -1,22 +1,23 @@
 ﻿using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected ILogger _logger;
+    protected ISptLogger<ConfigServer> _logger;
     protected JsonUtil _jsonUtil;
     protected FileUtil _fileUtil;
     protected Dictionary<string, object> configs = new();
     protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
 
     public ConfigServer(
-        ILogger logger,
+        ISptLogger<ConfigServer> logger,
         JsonUtil jsonUtil,
         FileUtil fileUtil
     )

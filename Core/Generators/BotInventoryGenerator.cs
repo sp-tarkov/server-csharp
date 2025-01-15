@@ -6,39 +6,41 @@ using Core.Models.Eft.Match;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
+using Core.Services;
 using Core.Utils;
 using Equipment = Core.Models.Eft.Common.Tables.Equipment;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotInventoryGenerator
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly ApplicationContext _applicationContext;
-    private readonly BotWeaponGenerator _botWeaponGenerator;
-    private readonly BotLootGenerator _botLootGenerator;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly BotHelper _botHelper;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly WeatherHelper _weatherHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly BotEquipmentFilterService _botEquipmentFilterService;
-    private readonly BotEquipmentModPoolService _botEquipmentModPoolService;
-    private readonly BotEquipmentModGenerator _botEquipmentModGenerator;
-    private readonly ConfigServer _configServer;
+    protected ISptLogger<BotInventoryGenerator> _logger;
+    protected HashUtil _hashUtil;
+    protected RandomUtil _randomUtil;
+    protected DatabaseService _databaseService;
+    protected ApplicationContext _applicationContext;
+    protected BotWeaponGenerator _botWeaponGenerator;
+    protected BotLootGenerator _botLootGenerator;
+    protected BotGeneratorHelper _botGeneratorHelper;
+    protected ProfileHelper _profileHelper;
+    protected BotHelper _botHelper;
+    protected WeightedRandomHelper _weightedRandomHelper;
+    protected ItemHelper _itemHelper;
+    protected WeatherHelper _weatherHelper;
+    protected LocalisationService _localisationService;
+    protected BotEquipmentFilterService _botEquipmentFilterService;
+    protected BotEquipmentModPoolService _botEquipmentModPoolService;
+    protected BotEquipmentModGenerator _botEquipmentModGenerator;
+    protected ConfigServer _configServer;
 
     private BotConfig _botConfig;
 
     public BotInventoryGenerator(
-        ILogger logger,
+        ISptLogger<BotInventoryGenerator> logger,
         HashUtil hashUtil,
         RandomUtil randomUtil,
         DatabaseService databaseService,

@@ -2,9 +2,9 @@ namespace Core.Context;
 
 public class ContextVariable
 {
-    private readonly object _value;
-    private readonly ContextVariableType _internalType;
-    private readonly DateTime _timestamp;
+    protected object _value;
+    protected ContextVariableType _internalType;
+    protected DateTime _timestamp;
 
     public ContextVariable(object value, ContextVariableType contextVariableInternalType)
     {

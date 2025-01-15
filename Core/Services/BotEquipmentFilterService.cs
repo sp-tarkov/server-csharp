@@ -10,8 +10,8 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentFilterService
 {
-    private readonly ConfigServer _configServer;
-    private readonly BotConfig _botConfig;
+    protected ConfigServer _configServer;
+    protected BotConfig _botConfig;
 
     public BotEquipmentFilterService(
         ConfigServer configServer)

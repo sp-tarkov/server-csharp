@@ -4,37 +4,37 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class SeasonalEventService
 {
-    private readonly ILogger _logger;
+    protected ISptLogger<SeasonalEventService> _logger;
 
-    private readonly DatabaseService _databaseService;
+    protected DatabaseService _databaseService;
 
-    //private readonly DatabaseImporter _databaseImporter;
-    private readonly GiftService _giftService;
-    private readonly LocalisationService _localisationService;
-    private readonly BotHelper _botHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ConfigServer _configServer;
+    //protected DatabaseImporter _databaseImporter;
+    protected GiftService _giftService;
+    protected LocalisationService _localisationService;
+    protected BotHelper _botHelper;
+    protected ProfileHelper _profileHelper;
+    protected ConfigServer _configServer;
 
     private bool _christmasEventActive = false;
     private bool _halloweenEventActive = false;
 
-    private readonly SeasonalEventConfig _seasonalEventConfig;
-    private readonly QuestConfig _questConfig;
-    private readonly HttpConfig _httpConfig;
-    private readonly WeatherConfig _weatherConfig;
-    private readonly LocationConfig _locationConfig;
+    protected SeasonalEventConfig _seasonalEventConfig;
+    protected QuestConfig _questConfig;
+    protected HttpConfig _httpConfig;
+    protected WeatherConfig _weatherConfig;
+    protected LocationConfig _locationConfig;
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
 
-    private readonly IReadOnlyList<string> _christmasEventItems =
+    protected IReadOnlyList<string> _christmasEventItems =
     [
         ItemTpl.FACECOVER_FAKE_WHITE_BEARD,
         ItemTpl.BARTER_CHRISTMAS_TREE_ORNAMENT_RED,
@@ -48,7 +48,7 @@ public class SeasonalEventService
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_SMALL
     ];
 
-    private readonly IReadOnlyList<string> _halloweenEventItems =
+    protected IReadOnlyList<string> _halloweenEventItems =
     [
         ItemTpl.FACECOVER_SPOOKY_SKULL_MASK,
         ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER,
@@ -65,7 +65,7 @@ public class SeasonalEventService
 
     public SeasonalEventService
     (
-        ILogger logger,
+        ISptLogger<SeasonalEventService> logger,
         DatabaseService databaseService,
         //DatabaseImporter databaseImporter,
         GiftService giftService,

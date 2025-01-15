@@ -6,44 +6,45 @@ using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class HideoutController
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly RandomUtil _randomUtil;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly SaveServer _saveServer;
-    private readonly PlayerService _playerService;
-    private readonly PresetHelper _presetHelper;
-    private readonly PaymentHelper _paymentHelper;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly ProfileHelper _profileHelper;
-    private readonly HideoutHelper _hideoutHelper;
-    private readonly ScavCaseRewardGenerator _scavCaseRewardGenerator;
-    private readonly LocalisationService _localisationService;
-    private readonly ProfileActivityService _profileActivityService;
-    private readonly FenceService _fenceService;
-    private readonly CircleOfCultistService _circleOfCultistService;
-    private readonly ICloner _cloner;
-    private readonly ConfigServer _configServer;
-    private readonly HideoutConfig _hideoutConfig;
+    protected ISptLogger<HideoutController> _logger;
+    protected HashUtil _hashUtil;
+    protected TimeUtil _timeUtil;
+    protected DatabaseService _databaseService;
+    protected RandomUtil _randomUtil;
+    protected InventoryHelper _inventoryHelper;
+    protected ItemHelper _itemHelper;
+    protected SaveServer _saveServer;
+    protected PlayerService _playerService;
+    protected PresetHelper _presetHelper;
+    protected PaymentHelper _paymentHelper;
+    protected EventOutputHolder _eventOutputHolder;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected ProfileHelper _profileHelper;
+    protected HideoutHelper _hideoutHelper;
+    protected ScavCaseRewardGenerator _scavCaseRewardGenerator;
+    protected LocalisationService _localisationService;
+    protected ProfileActivityService _profileActivityService;
+    protected FenceService _fenceService;
+    protected CircleOfCultistService _circleOfCultistService;
+    protected ICloner _cloner;
+    protected ConfigServer _configServer;
+    protected HideoutConfig _hideoutConfig;
 
     public HideoutController(
-        ILogger logger,
+        ISptLogger<HideoutController> logger,
         HashUtil hashUtil,
         TimeUtil timeUtil,
         DatabaseService databaseService,

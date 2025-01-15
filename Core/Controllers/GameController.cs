@@ -7,51 +7,52 @@ using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class GameController
 {
-    private readonly ILogger _logger;
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
+    protected ISptLogger<GameController> _logger;
+    protected ConfigServer _configServer;
+    protected DatabaseService _databaseService;
 
-    private readonly TimeUtil _timeUtil;
+    protected TimeUtil _timeUtil;
 
-    // private readonly PreSptModLoader _preSptModLoader;
-    private readonly HttpServerHelper _httpServerHelper;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly RandomUtil _randomUtil;
-    private readonly HideoutHelper _hideoutHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ProfileFixerService _profileFixerService;
-    private readonly LocalisationService _localisationService;
-    private readonly PostDbLoadService _postDbLoadService;
-    private readonly CustomLocationWaveService _customLocationWaveService;
-    private readonly OpenZoneService _openZoneService;
-    private readonly SeasonalEventService _seasonalEventService;
-    private readonly ItemBaseClassService _itemBaseClassService;
-    private readonly GiftService _giftService;
-    private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
-    private readonly ProfileActivityService _profileActivityService;
-    private readonly ApplicationContext _applicationContext;
-    //private readonly PreSptModLoader preSptModLoader
-    private readonly ICloner _cloner;
+    // protected PreSptModLoader _preSptModLoader;
+    protected HttpServerHelper _httpServerHelper;
+    protected InventoryHelper _inventoryHelper;
+    protected RandomUtil _randomUtil;
+    protected HideoutHelper _hideoutHelper;
+    protected ProfileHelper _profileHelper;
+    protected ProfileFixerService _profileFixerService;
+    protected LocalisationService _localisationService;
+    protected PostDbLoadService _postDbLoadService;
+    protected CustomLocationWaveService _customLocationWaveService;
+    protected OpenZoneService _openZoneService;
+    protected SeasonalEventService _seasonalEventService;
+    protected ItemBaseClassService _itemBaseClassService;
+    protected GiftService _giftService;
+    protected RaidTimeAdjustmentService _raidTimeAdjustmentService;
+    protected ProfileActivityService _profileActivityService;
+    protected ApplicationContext _applicationContext;
+    //protected PreSptModLoader preSptModLoader
+    protected ICloner _cloner;
 
-    private readonly CoreConfig _coreConfig;
-    private readonly HttpConfig _httpConfig;
-    private readonly RagfairConfig _ragfairConfig;
-    private readonly HideoutConfig _hideoutConfig;
-    private readonly BotConfig _botConfig;
+    protected CoreConfig _coreConfig;
+    protected HttpConfig _httpConfig;
+    protected RagfairConfig _ragfairConfig;
+    protected HideoutConfig _hideoutConfig;
+    protected BotConfig _botConfig;
 
     public GameController(
-        ILogger logger,
+        ISptLogger<GameController> logger,
         ConfigServer configServer,
         DatabaseService databaseService,
         TimeUtil timeUtil,

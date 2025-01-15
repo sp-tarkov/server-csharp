@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.Unicode;
 using Core.Annotations;
+using Core.Models.Eft.Ws;
 using Core.Models.Enums;
 using Core.Models.Spt.Dialog;
 using Core.Utils.Json.Converters;
@@ -29,7 +30,8 @@ public class JsonUtil
             new EftEnumConverter<QuestStatusEnum>(),
             new EftEnumConverter<QuestRewardType>(),
             new EftEnumConverter<SideType>(),
-            new EftEnumConverter<BonusSkillType>()
+            new EftEnumConverter<BonusSkillType>(),
+            new EftEnumConverter<NotificationEventType>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)

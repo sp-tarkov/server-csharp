@@ -9,7 +9,7 @@ namespace Core.Controllers;
 [Injectable]
 public class WishlistController
 {
-    private readonly EventOutputHolder _eventOutputHolder;
+    protected EventOutputHolder _eventOutputHolder;
 
     public WishlistController(
         EventOutputHolder eventOutputHolder)

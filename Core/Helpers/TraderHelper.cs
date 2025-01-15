@@ -5,29 +5,30 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Helpers;
 
 [Injectable]
 public class TraderHelper
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
-    private readonly TraderConfig _traderConfig;
-    private readonly ProfileHelper _profileHelper;
-    private readonly DatabaseService _databaseService;
+    protected ISptLogger<TraderHelper> _logger;
+    protected TimeUtil _timeUtil;
+    protected RandomUtil _randomUtil;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+    protected TraderConfig _traderConfig;
+    protected ProfileHelper _profileHelper;
+    protected DatabaseService _databaseService;
 
     private Dictionary<string, int> _highestTraderPriceItems = new();
 
     public TraderHelper(
-        ILogger logger,
+        ISptLogger<TraderHelper> logger,
         TimeUtil timeUtil,
         RandomUtil randomUtil,
         LocalisationService localisationService,

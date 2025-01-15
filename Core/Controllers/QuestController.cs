@@ -4,22 +4,23 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
+using Core.Models.Utils;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class QuestController
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly QuestHelper _questHelper;
-    private readonly QuestRewardHelper _questRewardHelper;
+    protected ISptLogger<QuestController> _logger;
+    protected TimeUtil _timeUtil;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected QuestHelper _questHelper;
+    protected QuestRewardHelper _questRewardHelper;
 
     public QuestController(
-        ILogger logger,
+        ISptLogger<QuestController> logger,
         TimeUtil timeUtil,
         HttpResponseUtil httpResponseUtil,
         QuestHelper questHelper,

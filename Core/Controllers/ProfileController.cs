@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
@@ -16,7 +17,7 @@ namespace Core.Controllers;
 [Injectable]
 public class ProfileController
 {
-    protected Models.Utils.ILogger _logger;
+    protected ISptLogger<ProfileController> _logger;
 
     protected HashUtil _hashUtil;
     protected ICloner _cloner;
@@ -26,22 +27,22 @@ public class ProfileController
     protected ItemHelper _itemHelper;
     protected ProfileFixerService _profileFixerService;
     protected LocalisationService _localisationService;
-    private readonly CreateProfileService _createProfileService;
+    protected CreateProfileService _createProfileService;
 
     protected SeasonalEventService _seasonalEventService;
 
     // TODO: MailSendService mailSendService: MailSendService
     protected PlayerScavGenerator _playerScavGenerator;
-    private readonly EventOutputHolder _eventOutputHolder;
+    protected EventOutputHolder _eventOutputHolder;
 
     protected TraderHelper _traderHelper;
     protected DialogueHelper _dialogueHelper;
     protected QuestHelper _questHelper;
-    private readonly QuestRewardHelper _questRewardHelper;
+    protected QuestRewardHelper _questRewardHelper;
     protected ProfileHelper _profileHelper;
 
     public ProfileController(
-        Models.Utils.ILogger logger,
+        ISptLogger<ProfileController> logger,
         HashUtil hashUtil,
         ICloner cloner,
         TimeUtil timeUtil,

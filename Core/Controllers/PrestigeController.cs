@@ -5,29 +5,30 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.Prestige;
 using Core.Models.Eft.Profile;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class PrestigeController
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly CreateProfileService _createProfileService;
+    protected ISptLogger<PrestigeController> _logger;
+    protected TimeUtil _timeUtil;
+    protected InventoryHelper _inventoryHelper;
+    protected ProfileHelper _profileHelper;
+    protected EventOutputHolder _eventOutputHolder;
+    protected CreateProfileService _createProfileService;
     private DatabaseService _databaseService;
-    private readonly ICloner _cloner;
+    protected ICloner _cloner;
 
     public PrestigeController
     (
-        ILogger logger,
+        ISptLogger<PrestigeController> logger,
         TimeUtil timeUtil,
         InventoryHelper inventoryHelper,
         ProfileHelper profileHelper,

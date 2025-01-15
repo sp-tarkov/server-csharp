@@ -8,8 +8,8 @@ namespace Core.Helpers;
 [Injectable]
 public class PaymentHelper
 {
-    private readonly ConfigServer _configServer;
-    private readonly InventoryConfig _inventoryConfig;
+    protected ConfigServer _configServer;
+    protected InventoryConfig _inventoryConfig;
 
     public PaymentHelper(
         ConfigServer configServer)

@@ -1,7 +1,7 @@
 using Core.Annotations;
-using Core.Models.Enums;
 using Core.Models.Logging;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 
@@ -51,12 +51,12 @@ public class Watermark {
     protected List<string> text = [];
     protected string versionLabel = "";
 
-    protected Models.Utils.ILogger _logger;
+    protected ISptLogger<Watermark> _logger;
     protected ConfigServer _configServer;
     protected LocalisationService _localisationService;
     protected WatermarkLocale _watermarkLocale;
     public Watermark(
-        Models.Utils.ILogger logger,
+        ISptLogger<Watermark> logger,
         ConfigServer configServer,
         LocalisationService localisationService,
         WatermarkLocale watermarkLocale
@@ -182,7 +182,7 @@ public class Watermark {
 
         // Log watermark to screen
         foreach (var text in result) {
-            _logger.LogWithColor(text, LogTextColor.Yellow);
+            _logger.LogWithColor(text, textColor: LogTextColor.Yellow);
         }
     }
 }

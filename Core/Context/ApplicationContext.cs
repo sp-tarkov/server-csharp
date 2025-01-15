@@ -6,8 +6,8 @@ namespace Core.Context;
 public class ApplicationContext
 {
     private const short MaxSavedValues = 10;
-    private readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
-    private readonly object variablesLock = new();
+    protected Dictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
+    protected object variablesLock = new();
 
     public ContextVariable? GetLatestValue(ContextVariableType type)
     {

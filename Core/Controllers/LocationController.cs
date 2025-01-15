@@ -2,22 +2,23 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Location;
+using Core.Models.Utils;
 using Core.Services;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Controllers;
 
 [Injectable]
 public class LocationController
 {
-    private readonly ILogger _logger;
-    private readonly DatabaseService _databaseService;
-    private readonly AirdropService _airdropService;
-    private readonly ICloner _cloner;
+    protected ISptLogger<LocationController> _logger;
+    protected DatabaseService _databaseService;
+    protected AirdropService _airdropService;
+    protected ICloner _cloner;
 
     public LocationController(
-        ILogger logger,
+        ISptLogger<LocationController> logger,
         DatabaseService databaseService,
         AirdropService airdropService,
         ICloner cloner)

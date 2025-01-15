@@ -6,35 +6,36 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Services;
 
 [Injectable]
 public class CreateProfileService
 {
-    private readonly ILogger _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly HashUtil _hashUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly LocalisationService _localisationService;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly TraderHelper _traderHelper;
-    private readonly QuestHelper _questHelper;
-    private readonly QuestRewardHelper _questRewardHelper;
-    private readonly ProfileFixerService _profileFixerService;
-    private readonly SaveServer _saveServer;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly PlayerScavGenerator _playerScavGenerator;
-    private readonly ICloner _cloner;
+    protected ISptLogger<CreateProfileService> _logger;
+    protected TimeUtil _timeUtil;
+    protected HashUtil _hashUtil;
+    protected DatabaseService _databaseService;
+    protected LocalisationService _localisationService;
+    protected ProfileHelper _profileHelper;
+    protected ItemHelper _itemHelper;
+    protected TraderHelper _traderHelper;
+    protected QuestHelper _questHelper;
+    protected QuestRewardHelper _questRewardHelper;
+    protected ProfileFixerService _profileFixerService;
+    protected SaveServer _saveServer;
+    protected EventOutputHolder _eventOutputHolder;
+    protected PlayerScavGenerator _playerScavGenerator;
+    protected ICloner _cloner;
 
     public CreateProfileService(
-        ILogger logger,
+        ISptLogger<CreateProfileService> logger,
         TimeUtil timeUtil,
         HashUtil hashUtil,
         DatabaseService databaseService,

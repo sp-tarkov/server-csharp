@@ -7,11 +7,12 @@ using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Controllers;
@@ -19,7 +20,7 @@ namespace Core.Controllers;
 [Injectable]
 public class CustomizationController
 {
-    protected ILogger _logger;
+    protected ISptLogger<CustomizationController> _logger;
     protected EventOutputHolder _eventOutputHolder;
     protected DatabaseService _databaseService;
     protected SaveServer _saveServer;
@@ -29,7 +30,7 @@ public class CustomizationController
 
     public CustomizationController
     (
-        ILogger logger,
+        ISptLogger<CustomizationController> logger,
         EventOutputHolder eventOutputHolder,
         DatabaseService databaseService,
         SaveServer saveServer,

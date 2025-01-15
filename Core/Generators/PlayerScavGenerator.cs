@@ -4,39 +4,40 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
+
 
 namespace Core.Generators;
 
 [Injectable]
 public class PlayerScavGenerator
 {
-    private readonly ILogger _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly HashUtil _hashUtil;
-    private readonly ItemHelper _itemHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly SaveServer _saveServer;
-    private readonly ProfileHelper _profileHelper;
-    private readonly BotHelper _botHelper;
-    private readonly FenceService _fenceService;
-    private readonly BotLootCacheService _botLootCacheService;
-    private readonly LocalisationService _localisationService;
-    private readonly BotGenerator _botGenerator;
-    private readonly ConfigServer _configServer;
-    private readonly ICloner _cloner;
-    private readonly TimeUtil _timeUtil;
+    protected ISptLogger<PlayerScavGenerator> _logger;
+    protected RandomUtil _randomUtil;
+    protected DatabaseService _databaseService;
+    protected HashUtil _hashUtil;
+    protected ItemHelper _itemHelper;
+    protected BotGeneratorHelper _botGeneratorHelper;
+    protected SaveServer _saveServer;
+    protected ProfileHelper _profileHelper;
+    protected BotHelper _botHelper;
+    protected FenceService _fenceService;
+    protected BotLootCacheService _botLootCacheService;
+    protected LocalisationService _localisationService;
+    protected BotGenerator _botGenerator;
+    protected ConfigServer _configServer;
+    protected ICloner _cloner;
+    protected TimeUtil _timeUtil;
 
     private PlayerScavConfig _playerScavConfig;
 
     public PlayerScavGenerator
     (
-        ILogger logger,
+        ISptLogger<PlayerScavGenerator> logger,
         RandomUtil randomUtil,
         DatabaseService databaseService,
         HashUtil hashUtil,

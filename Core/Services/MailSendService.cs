@@ -4,34 +4,34 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Dialog;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable]
 public class MailSendService
 {
-    private readonly ILogger _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly TimeUtil _timeUtil;
-    private readonly SaveServer _saveServer;
-    private readonly DatabaseService _databaseService;
-    private readonly NotifierHelper _notifierHelper;
-    private readonly DialogueHelper _dialogueHelper;
-    private readonly NotificationSendHelper _notificationSendHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly ItemHelper _itemHelper;
-    private readonly TraderHelper _traderHelper;
+    protected ISptLogger<MailSendService> _logger;
+    protected HashUtil _hashUtil;
+    protected TimeUtil _timeUtil;
+    protected SaveServer _saveServer;
+    protected DatabaseService _databaseService;
+    protected NotifierHelper _notifierHelper;
+    protected DialogueHelper _dialogueHelper;
+    protected NotificationSendHelper _notificationSendHelper;
+    protected LocalisationService _localisationService;
+    protected ItemHelper _itemHelper;
+    protected TraderHelper _traderHelper;
 
     private const string _systemSenderId = "59e7125688a45068a6249071";
-    private readonly List<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
-    private readonly List<string> _slotNames = ["hideout", "main"];
+    protected List<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
+    protected List<string> _slotNames = ["hideout", "main"];
 
     public MailSendService
     (
-        ILogger logger,
+        ISptLogger<MailSendService> logger,
         HashUtil hashUtil,
         TimeUtil timeUtil,
         SaveServer saveServer,

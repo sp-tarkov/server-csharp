@@ -9,7 +9,7 @@ namespace Core.Controllers;
 [Injectable]
 public class NoteController
 {
-    private readonly EventOutputHolder _eventOutputHolder;
+    protected EventOutputHolder _eventOutputHolder;
 
     public NoteController(
         EventOutputHolder eventOutputHolder)
