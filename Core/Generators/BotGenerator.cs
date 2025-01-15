@@ -145,7 +145,7 @@ public class BotGenerator
             WishList = bot.WishList,
             MoneyTransferLimitData = bot.MoneyTransferLimitData,
             IsPmc = bot.IsPmc,
-            Prestige = new Prestige()
+            Prestige = new Dictionary<string, long>()
         };
     }
 

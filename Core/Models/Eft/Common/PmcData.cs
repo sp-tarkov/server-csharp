@@ -8,7 +8,7 @@ public class PmcData : BotBase
 {
     [JsonPropertyName("Prestige")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Tables.Prestige? Prestige { get; set; }
+    public Dictionary<string, long>? Prestige { get; set; }
 }
 
 public class PostRaidPmcData : BotBase
