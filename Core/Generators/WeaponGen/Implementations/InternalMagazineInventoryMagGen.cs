@@ -3,7 +3,7 @@
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class InternalMagazineInventoryMagGen : InventoryMagGen
+public class InternalMagazineInventoryMagGen : InventoryMagGen, IInventoryMagGen
 {
     public InternalMagazineInventoryMagGen()
     {

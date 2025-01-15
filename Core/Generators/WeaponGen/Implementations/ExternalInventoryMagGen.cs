@@ -4,7 +4,7 @@ using Core.Models.Eft.Common.Tables;
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class ExternalInventoryMagGen : InventoryMagGen
+public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
 {
     public ExternalInventoryMagGen()
     {

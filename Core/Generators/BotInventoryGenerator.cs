@@ -631,7 +631,7 @@ public class BotInventoryGenerator
     {
         var generatedweapon = _botWeaponGenerator.GenerateRandomWeapon(
             sessionId,
-            weaponSlot.Slot,
+            weaponSlot.Slot.ToString(),
             templateInventory,
             botInventory.Equipment,
             equipmentChances.WeaponModsChances,

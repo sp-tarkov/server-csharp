@@ -16,6 +16,22 @@ public class InventoryMagGen
     {
     }
 
+    public InventoryMagGen
+    (
+        GenerationData magCounts,
+        TemplateItem magazineTemplate,
+        TemplateItem weaponTemplate,
+        TemplateItem ammoTemplate,
+        BotBaseInventory pmcInventory
+    )
+    {
+        _magCounts = magCounts;
+        _magazineTemplate = magazineTemplate;
+        _weaponTemplate = weaponTemplate;
+        _ammoTemplate = ammoTemplate;
+        _pmcInventory = pmcInventory;
+    }
+
     public GenerationData GetMagCount()
     {
         return _magCounts;

@@ -3,7 +3,7 @@
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class UbglExternalMagGen : InventoryMagGen
+public class UbglExternalMagGen : InventoryMagGen, IInventoryMagGen
 {
     public UbglExternalMagGen()
     {

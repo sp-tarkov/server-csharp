@@ -154,7 +154,7 @@ public class RepairService
     /// </summary>
     /// <param name="itemConfig">weapon/armor config</param>
     /// <param name="repairDetails">Details for item to repair</param>
-    public void AddBuff(BonusSettings itemConfig, Item item)
+    public void AddBuff(Core.Models.Spt.Config.BonusSettings itemConfig, Item item)
     {
         throw new NotImplementedException();
     }
