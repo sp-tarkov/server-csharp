@@ -316,7 +316,7 @@ public class BotController
         _matchBotDetailsCacheService.CacheBot(botToCache);
     }
 
-    private void UpdateBotGenerationDetailsToRandomBoss(BotGenerationDetails botGenerationDetails, Dictionary<string, int> bossesToConvertToWeights)
+    private void UpdateBotGenerationDetailsToRandomBoss(BotGenerationDetails botGenerationDetails, Dictionary<string, double> bossesToConvertToWeights)
     {
         // Seems Actual bosses have the same Brain issues like PMC gaining Boss Brains We can't use all bosses
         botGenerationDetails.Role = _weightedRandomHelper.GetWeightedValue(bossesToConvertToWeights);

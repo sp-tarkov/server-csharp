@@ -41,22 +41,22 @@ public class BotType
 public class Appearance
 {
     [JsonPropertyName("body")]
-    public Dictionary<string, int>? Body { get; set; }
+    public Dictionary<string, double>? Body { get; set; }
 
     [JsonPropertyName("feet")]
-    public Dictionary<string, int>? Feet { get; set; }
+    public Dictionary<string, double>? Feet { get; set; }
 
     [JsonPropertyName("hands")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Hands { get; set; }
+    public Dictionary<string, double>? Hands { get; set; }
 
     [JsonPropertyName("head")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Head { get; set; }
+    public Dictionary<string, double>? Head { get; set; }
 
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Voice { get; set; }
+    public Dictionary<string, double>? Voice { get; set; }
 }
 
 public class Chances
@@ -303,7 +303,7 @@ public class GenerationData
 {
     /** key: number of items, value: weighting */
     [JsonPropertyName("weights")]
-    public Dictionary<int, int>? Weights { get; set; }
+    public Dictionary<int, double>? Weights { get; set; }
 
     /** Array of item tpls */
     [JsonPropertyName("whitelist")]

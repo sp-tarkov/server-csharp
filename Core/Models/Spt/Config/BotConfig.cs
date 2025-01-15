@@ -106,7 +106,7 @@ public class AssaultToBossConversion
     public bool BossConvertEnabled { get; set; }
 
     [JsonPropertyName("bossesToConvertToWeights")]
-    public Dictionary<string, int> BossesToConvertToWeights { get; set; }
+    public Dictionary<string, double> BossesToConvertToWeights { get; set; }
 
     [JsonPropertyName("bossConvertMinMax")]
     public Dictionary<string, MinMax> BossConvertMinMax { get; set; }

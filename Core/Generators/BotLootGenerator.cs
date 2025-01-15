@@ -97,36 +97,33 @@ public class BotLootGenerator
         var itemCounts = botJsonTemplate.BotGeneration.Items;
 
         if (
-            itemCounts["backpackLoot"].Weights is null ||
-            itemCounts["pocketLoot"].Weights is null ||
-            itemCounts["vestLoot"].Weights is null ||
-            itemCounts["specialItems"].Weights is null ||
-            itemCounts["healing"].Weights is null ||
-            itemCounts["drugs"].Weights is null ||
-            itemCounts["food"].Weights is null ||
-            itemCounts["drink"].Weights is null ||
-            itemCounts["currency"].Weights is null ||
-            itemCounts["stims"].Weights is null ||
-            itemCounts["grenades"].Weights is null
+            itemCounts.BackpackLoot.Weights is null ||
+            itemCounts.PocketLoot.Weights is null ||
+            itemCounts.VestLoot.Weights is null ||
+            itemCounts.SpecialItems.Weights is null ||
+            itemCounts.Healing.Weights is null ||
+            itemCounts.Drugs.Weights is null ||
+            itemCounts.Food.Weights is null ||
+            itemCounts.Drink.Weights is null ||
+            itemCounts.Currency.Weights is null ||
+            itemCounts.Stims.Weights is null ||
+            itemCounts.Grenades.Weights is null
         )
         {
             _logger.Warning(_localisationService.GetText("bot-unable_to_generate_bot_loot", botRole));
             return;
         }
-        var backpackLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts["backpackLoot"].Weights);
-        var pocketLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts["pocketLoot"].Weights);
-        var vestLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts["vestLoot"].Weights);
-        var specialLootItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["specialItems"].Weights);
-        var healingItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["healing"].Weights);
-        var drugItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["drugs"].Weights);
-
-        var foodItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["food"].Weights);
-        var drinkItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["drink"].Weights);
-
-        var currencyItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["currency"].Weights);
-
-        var stimItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts["stims"].Weights);
-        var grenadeCount = _weightedRandomHelper.GetWeightedValue(itemCounts["grenades"].Weights);
+        var backpackLootCount = _weightedRandomHelper.GetWeightedValue<int>(itemCounts.BackpackLoot.Weights);
+        var pocketLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.PocketLoot.Weights);
+        var vestLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.VestLoot.Weights);
+        var specialLootItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.SpecialItems.Weights);
+        var healingItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Healing.Weights);
+        var drugItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Drugs.Weights);
+        var foodItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Food.Weights);
+        var drinkItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Drink.Weights);
+        var currencyItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Currency.Weights);
+        var stimItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Stims.Weights);
+        var grenadeCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Grenades.Weights);
 
         // If bot has been flagged as not having loot, set below counts to 0
         if (_botConfig.DisableLootOnBotTypes.Contains(botRole.ToLower()))

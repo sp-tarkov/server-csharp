@@ -434,7 +434,7 @@ public class BotGenerator
     public void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
     {
         // Adjust pocket loot weights to allow for 5 or 6 items
-        var pocketWeights = botJsonTemplate.BotGeneration.Items["pocketLoot"].Weights;
+        var pocketWeights = botJsonTemplate.BotGeneration.Items.PocketLoot.Weights;
         pocketWeights[5] = 1;
         pocketWeights[6] = 1;
     }
