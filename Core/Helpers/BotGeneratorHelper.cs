@@ -1,13 +1,25 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class BotGeneratorHelper
 {
+    private readonly ConfigServer _configServer;
+    private readonly PmcConfig _pmcConfig;
+
+    public BotGeneratorHelper(
+        ConfigServer configServer
+        )
+    {
+        _configServer = configServer;
+        _pmcConfig = _configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
+    }
+
     /// <summary>
     /// Adds properties to an item
     /// e.g. Repairable / HasHinge / Foldable / MaxDurability
@@ -84,7 +96,11 @@ public class BotGeneratorHelper
     /// <returns>Equipment role (e.g. pmc / assault / bossTagilla)</returns>
     public string GetBotEquipmentRole(string botRole)
     {
-        throw new NotImplementedException();
+        string[] pmcs = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
+        return pmcs.Contains(
+            botRole.ToLower())
+            ? "pmc"
+            : botRole;
     }
 
     /// <summary>

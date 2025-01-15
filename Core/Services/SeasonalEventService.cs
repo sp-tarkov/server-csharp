@@ -5,7 +5,6 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
-using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
@@ -363,7 +362,7 @@ public class SeasonalEventService
     public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
         var christmasItems = GetChristmasEventItems();
-        List<string> equipmentSlotsToFilter = ["FaceCover", "Headwear", "Backpack", "TacticalVest"];
+        List<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
         List<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
 
         // Remove christmas related equipment

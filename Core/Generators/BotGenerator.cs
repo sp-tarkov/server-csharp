@@ -302,7 +302,7 @@ public class BotGenerator
         // Filter out blacklisted gear from the base template
         FilterBlacklistedGear(botJsonTemplate, botGenerationDetails);
 
-        bot.Inventory = _botInventoryGenerator.generateInventory(
+        bot.Inventory = _botInventoryGenerator.GenerateInventory(
             sessionId,
             botJsonTemplate,
             botRoleLowercase,
@@ -407,7 +407,7 @@ public class BotGenerator
     {
         var blacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
             _botGeneratorHelper.GetBotEquipmentRole(botGenerationDetails.Role),
-            botGenerationDetails.PlayerLevel.Value);
+            botGenerationDetails.PlayerLevel.GetValueOrDefault(1));
 
         if (blacklist?.Gear is null)
         {

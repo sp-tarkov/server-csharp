@@ -1,13 +1,26 @@
 using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Servers;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentFilterService
 {
+    private readonly ConfigServer _configServer;
+    private readonly BotConfig _botConfig;
+
+    public BotEquipmentFilterService(
+        ConfigServer configServer)
+    {
+        _configServer = configServer;
+
+        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+    }
+
     /// <summary>
     /// Filter a bots data to exclude equipment and cartridges defines in the botConfig
     /// </summary>
@@ -74,9 +87,12 @@ public class BotEquipmentFilterService
     /// <param name="botRole">Role of the bot we want the blacklist for</param>
     /// <param name="playerLevel">Level of the player</param>
     /// <returns>EquipmentBlacklistDetails object</returns>
-    public EquipmentFilterDetails GetBotEquipmentBlacklist(string botRole, double playerLevel)
+    public EquipmentFilterDetails? GetBotEquipmentBlacklist(string botRole, double playerLevel)
     {
-        throw new NotImplementedException();
+        var blacklistDetailsForBot = _botConfig.Equipment.GetValueOrDefault(botRole, null);
+
+        return blacklistDetailsForBot?.Blacklist?.FirstOrDefault(
+            (equipmentFilter) => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max);
     }
 
     /// <summary>

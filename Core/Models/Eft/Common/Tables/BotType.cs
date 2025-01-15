@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Enums;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -332,7 +333,7 @@ public class BodyPart
 public class BotTypeInventory
 {
     [JsonPropertyName("equipment")]
-    public Dictionary<string, Dictionary<string, double>>? Equipment { get; set; }
+    public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment { get; set; }
 
     public GlobalAmmo? Ammo { get; set; }
 

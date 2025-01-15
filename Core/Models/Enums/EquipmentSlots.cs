@@ -1,19 +1,19 @@
-﻿namespace Core.Models.Enums;
+namespace Core.Models.Enums;
 
 public enum EquipmentSlots
 {
-    HEADWEAR,
-    EARPIECE,
-    FACE_COVER,
-    ARMOR_VEST,
-    EYEWEAR,
-    ARM_BAND,
-    TACTICAL_VEST,
-    POCKETS,
-    BACKPACK,
-    SECURED_CONTAINER,
-    FIRST_PRIMARY_WEAPON,
-    SECOND_PRIMARY_WEAPON,
-    HOLSTER,
-    SCABBARD
+    Headwear,
+    Earpiece,
+    FaceCover,
+    ArmorVest,
+    Eyewear,
+    ArmBand,
+    TacticalVest,
+    Pockets,
+    Backpack,
+    SecuredContainer,
+    FirstPrimaryWeapon,
+    SecondPrimaryWeapon,
+    Holster,
+    Scabbard
 }

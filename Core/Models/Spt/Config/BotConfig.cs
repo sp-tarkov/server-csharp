@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
@@ -479,7 +480,7 @@ public class EquipmentFilterDetails
     /// Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
     /// </summary>
     [JsonPropertyName("gear")]
-    public Dictionary<string, List<string>>? Gear { get; set; }
+    public Dictionary<EquipmentSlots, List<string>>? Gear { get; set; }
 
     /// <summary>
     /// Key: cartridge type e.g. Caliber23x75, value: item tpls
