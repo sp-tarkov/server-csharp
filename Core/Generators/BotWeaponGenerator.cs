@@ -4,17 +4,17 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotWeaponGenerator
 {
-    private readonly ILogger _logger;
+    private readonly ISptLogger<BotWeaponGenerator> _logger;
     private readonly HashUtil _hashUtil;
     private readonly RandomUtil _randomUtil;
     private readonly LocalisationService _localisationService;
@@ -29,7 +29,7 @@ public class BotWeaponGenerator
     private RepairConfig _repairConfig;
 
     public BotWeaponGenerator(
-        ILogger logger,
+        ISptLogger<BotWeaponGenerator> logger,
         HashUtil hashUtil,
         RandomUtil randomUtil,
         LocalisationService localisationService,
