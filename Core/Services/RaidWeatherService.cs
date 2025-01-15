@@ -54,7 +54,7 @@ public class RaidWeatherService
         var staringTimestampMs = _timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReachMs = staringTimestampMs + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours) * 1000; // Convert to milliseconds
+        var futureTimestampToReachMs = staringTimestampMs + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1) * 1000; // Convert to milliseconds
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestampMs = staringTimestampMs;

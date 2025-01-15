@@ -22,7 +22,7 @@ public class WeightedRandomHelper
     /// </summary>
     /// <param name="values">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T>(Dictionary<T, int> values) where T : notnull
+    public T GetWeightedValue<T>(Dictionary<T, double> values) where T : notnull
     {
         var itemKeys = values.Keys.ToList();
         var weights = values.Values.ToList();
@@ -30,7 +30,6 @@ public class WeightedRandomHelper
         var chosenItem = WeightedRandom<T>(itemKeys, weights);
 
         return chosenItem.Item;
-        // SORRY IF THIS BLEW UP, I DONT SEE A REASON ITS GENERIC - CWX
     }
 
     /// <summary>
@@ -47,7 +46,7 @@ public class WeightedRandomHelper
     /// <param name="items">List of items</param>
     /// <param name="weights">List of weights</param>
     /// <returns>Dictionary with item and index</returns>
-    public WeightedRandomResult<T> WeightedRandom<T>(List<T> items, List<int> weights)
+    public WeightedRandomResult<T> WeightedRandom<T>(List<T> items, List<double> weights)
     {
         if (items.Count == 0)
         {
@@ -68,7 +67,7 @@ public class WeightedRandomHelper
         List<int> cumulativeWeights = [];
         for (var i = 0; i < weights.Count; i++)
         {
-            cumulativeWeights.Add(weights[i] + (i > 0 ? cumulativeWeights[i - 1] : 0));
+            cumulativeWeights.Add((int)(weights[i]) + (i > 0 ? (cumulativeWeights[i - 1]) : 0));
         }
 
         // Getting the random number in a range of [0...sum(weights)]

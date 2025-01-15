@@ -320,13 +320,14 @@ public class SeasonalEventService
             if (
                 DateIsBetweenTwoDates(
                     currentDate,
-                    seasonRange.StartMonth,
-                    seasonRange.StartDay,
-                    seasonRange.EndMonth,
-                    seasonRange.EndDay)
+                    seasonRange.StartMonth ?? 0,
+                    seasonRange.StartDay ?? 0,
+                    seasonRange.EndMonth ?? 0,
+                    seasonRange.EndDay ?? 0
+                )
             )
             {
-                return seasonRange.SeasonType;
+                return seasonRange.SeasonType ?? Season.SUMMER;
             }
         }
 

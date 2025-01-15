@@ -279,9 +279,11 @@ public class PlayerScavGenerator
         }
 
         // Adjust item spawn quantity values
+        var props = baseBotNode.BotGeneration.Items.GetType().GetProperties();
         foreach (var itemLimitKvP in karmaSettings.ItemLimits)
         {
-            baseBotNode.BotGeneration.Items[itemLimitKvP.Key] = itemLimitKvP.Value;
+            var prop = props.FirstOrDefault(x => x.Name.ToLower() == itemLimitKvP.Key.ToLower());
+            prop.SetValue(baseBotNode.BotGeneration.Items, itemLimitKvP.Value);
         }
 
         // Blacklist equipment, keyed by equipment slot

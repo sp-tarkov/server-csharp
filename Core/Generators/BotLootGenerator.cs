@@ -1,19 +1,74 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Utils;
+using Core.Helpers;
+using Core.Services;
+using Core.Servers;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotLootGenerator
 {
+    private readonly ILogger _logger;
+    private readonly HashUtil _hashUtil;
+    private readonly RandomUtil _randomUtil;
+    private readonly ItemHelper _itemHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly DatabaseService _databaseService;
+    private readonly HandbookHelper _handbookHelper;
+    private readonly BotGeneratorHelper _botGeneratorHelper;
+    private readonly BotWeaponGenerator _botWeaponGenerator;
+    private readonly WeightedRandomHelper _weightedRandomHelper;
+    private readonly BotHelper _botHelper;
+    private readonly BotLootCacheService _botLootCacheService;
+    private readonly LocalisationService _localisationService;
+    private readonly ConfigServer _configServer;
+    private readonly ICloner _cloner;
+
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
 
-    public BotLootGenerator()
+    public BotLootGenerator(
+        ILogger logger,
+        HashUtil hashUtil,
+        RandomUtil randomUtil,
+        ItemHelper itemHelper,
+        InventoryHelper inventoryHelper,
+        DatabaseService databaseService,
+        HandbookHelper handbookHelper,
+        BotGeneratorHelper botGeneratorHelper,
+        BotWeaponGenerator botWeaponGenerator,
+        WeightedRandomHelper weightedRandomHelper,
+        BotHelper botHelper,
+        BotLootCacheService botLootCacheService,
+        LocalisationService localisationService,
+        ConfigServer configServer,
+        ICloner cloner)
     {
+        _logger = logger;
+        _hashUtil = hashUtil;
+        _randomUtil = randomUtil;
+        _itemHelper = itemHelper;
+        _inventoryHelper = inventoryHelper;
+        _databaseService = databaseService;
+        _handbookHelper = handbookHelper;
+        _botGeneratorHelper = botGeneratorHelper;
+        _botWeaponGenerator = botWeaponGenerator;
+        _weightedRandomHelper = weightedRandomHelper;
+        _botHelper = botHelper;
+        _botLootCacheService = botLootCacheService;
+        _localisationService = localisationService;
+        _configServer = configServer;
+        _cloner = cloner;
+
+        _botConfig = _configServer.GetConfig<BotConfig>();
+        _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
     /// <summary>
@@ -38,7 +93,261 @@ public class BotLootGenerator
     /// <param name="botLevel">Level of bot</param>
     public void GenerateLoot(string sessionId, BotType botJsonTemplate, bool isPmc, string botRole, BotBaseInventory botInventory, int botLevel)
     {
-        throw new NotImplementedException();
+        // Limits on item types to be added as loot
+        var itemCounts = botJsonTemplate.BotGeneration.Items;
+
+        if (
+            itemCounts.BackpackLoot.Weights is null ||
+            itemCounts.PocketLoot.Weights is null ||
+            itemCounts.VestLoot.Weights is null ||
+            itemCounts.SpecialItems.Weights is null ||
+            itemCounts.Healing.Weights is null ||
+            itemCounts.Drugs.Weights is null ||
+            itemCounts.Food.Weights is null ||
+            itemCounts.Drink.Weights is null ||
+            itemCounts.Currency.Weights is null ||
+            itemCounts.Stims.Weights is null ||
+            itemCounts.Grenades.Weights is null
+        )
+        {
+            _logger.Warning(_localisationService.GetText("bot-unable_to_generate_bot_loot", botRole));
+            return;
+        }
+        var backpackLootCount = _weightedRandomHelper.GetWeightedValue<int>(itemCounts.BackpackLoot.Weights);
+        var pocketLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.PocketLoot.Weights);
+        var vestLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.VestLoot.Weights);
+        var specialLootItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.SpecialItems.Weights);
+        var healingItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Healing.Weights);
+        var drugItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Drugs.Weights);
+        var foodItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Food.Weights);
+        var drinkItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Drink.Weights);
+        var currencyItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Currency.Weights);
+        var stimItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Stims.Weights);
+        var grenadeCount = _weightedRandomHelper.GetWeightedValue(itemCounts.Grenades.Weights);
+
+        // If bot has been flagged as not having loot, set below counts to 0
+        if (_botConfig.DisableLootOnBotTypes.Contains(botRole.ToLower()))
+        {
+            backpackLootCount = 0;
+            pocketLootCount = 0;
+            vestLootCount = 0;
+            currencyItemCount = 0;
+        }
+
+        // Forced pmc healing loot into secure container
+        if (isPmc && _pmcConfig.ForceHealingItemsIntoSecure)
+        {
+            AddForcedMedicalItemsToPmcSecure(botInventory, botRole);
+        }
+
+        var botItemLimits = GetItemSpawnLimitsForBot(botRole);
+
+        var containersBotHasAvailable = GetAvailableContainersBotCanStoreItemsIn(botInventory);
+
+        // This set is passed as a reference to fill up the containers that are already full, this alleviates
+        // generation of the bots by avoiding checking the slots of containers we already know are full
+        var containersIdFull = new List<string>();
+
+        // Special items
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Special, botJsonTemplate),
+            containersBotHasAvailable,
+            specialLootItemCount,
+            botInventory,
+            botRole,
+            botItemLimits,
+            containersIdFull);
+
+        // Healing items / Meds
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.HealingItems, botJsonTemplate),
+            containersBotHasAvailable,
+            healingItemCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Drugs
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrugItems, botJsonTemplate),
+            containersBotHasAvailable,
+            drugItemCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Food
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.FoodItems, botJsonTemplate),
+            containersBotHasAvailable,
+            foodItemCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Drink
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.DrinkItems, botJsonTemplate),
+            containersBotHasAvailable,
+            drinkItemCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Currency
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.CurrencyItems, botJsonTemplate),
+            containersBotHasAvailable,
+            currencyItemCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Stims
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.StimItems, botJsonTemplate),
+            containersBotHasAvailable,
+            stimItemCount,
+            botInventory,
+            botRole,
+            botItemLimits,
+            containersIdFull,
+            0,
+            isPmc);
+
+        // Grenades
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.GrenadeItems, botJsonTemplate),
+            [EquipmentSlots.Pockets, EquipmentSlots.TacticalVest], // Can't use containersBotHasEquipped as we don't want grenades added to backpack
+            grenadeCount,
+            botInventory,
+            botRole,
+            null,
+            containersIdFull,
+            0,
+            isPmc);
+
+        var itemPriceLimits = GetSingleItemLootPriceLimits(botLevel, isPmc);
+
+        // Backpack - generate loot if they have one
+        if (containersBotHasAvailable.Contains(EquipmentSlots.Backpack))
+        {
+            // Add randomly generated weapon to PMC backpacks
+            if (isPmc && _randomUtil.GetChance100(_pmcConfig.LooseWeaponInBackpackChancePercent))
+            {
+                AddLooseWeaponsToInventorySlot(
+                    sessionId,
+                    botInventory,
+                    EquipmentSlots.Backpack,
+                    botJsonTemplate.BotInventory,
+                    botJsonTemplate.BotChances.WeaponModsChances,
+                    botRole,
+                    isPmc,
+                    botLevel,
+                    containersIdFull);
+            }
+
+            var backpackLootRoubleTotal = GetBackpackRoubleTotalByLevel(botLevel, isPmc);
+            AddLootFromPool(
+                _botLootCacheService.GetLootFromCache(
+                    botRole,
+                    isPmc,
+                    LootCacheType.Backpack,
+                    botJsonTemplate,
+                    itemPriceLimits?.Backpack),
+                [EquipmentSlots.Backpack],
+                backpackLootCount,
+                botInventory,
+                botRole,
+                botItemLimits,
+                containersIdFull,
+                backpackLootRoubleTotal,
+                isPmc);
+        }
+
+        // TacticalVest - generate loot if they have one
+        if (containersBotHasAvailable.Contains(EquipmentSlots.TacticalVest))
+        {
+            // Vest
+            AddLootFromPool(
+                _botLootCacheService.GetLootFromCache(
+                    botRole,
+                    isPmc,
+                    LootCacheType.Vest,
+                    botJsonTemplate,
+                    itemPriceLimits?.Vest),
+                [EquipmentSlots.TacticalVest],
+                vestLootCount,
+                botInventory,
+                botRole,
+                botItemLimits,
+                containersIdFull,
+                _pmcConfig.MaxVestLootTotalRub,
+                isPmc);
+        }
+
+        // Pockets
+        AddLootFromPool(
+            _botLootCacheService.GetLootFromCache(
+                botRole,
+                isPmc,
+                LootCacheType.Pocket,
+                botJsonTemplate,
+                itemPriceLimits?.Pocket),
+            [EquipmentSlots.Pockets],
+            pocketLootCount,
+            botInventory,
+            botRole,
+            botItemLimits,
+            containersIdFull,
+            _pmcConfig.MaxPocketLootTotalRub,
+            isPmc);
+
+        // Secure
+
+        // only add if not a pmc or is pmc and flag is true
+        if (!isPmc || (isPmc && _pmcConfig.AddSecureContainerLootFromBotConfig))
+        {
+            AddLootFromPool(
+                _botLootCacheService.GetLootFromCache(botRole, isPmc, LootCacheType.Secure, botJsonTemplate),
+                [EquipmentSlots.SecuredContainer],
+                50,
+                botInventory,
+                botRole,
+                null,
+                containersIdFull,
+                - 1,
+                isPmc);
+        }
+    }
+
+    private MinMaxLootItemValue? GetSingleItemLootPriceLimits(int botLevel, bool isPmc)
+    {
+        // TODO - extend to other bot types
+        if (isPmc)
+        {
+            var matchingValue = _pmcConfig.LootItemLimitsRub.FirstOrDefault(
+                (minMaxValue) => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max);
+
+            return matchingValue;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -87,9 +396,16 @@ public class BotLootGenerator
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
     /// <exception cref="NotImplementedException"></exception>
-    public void AddLootFromPool(Dictionary<string, int> pool, List<string> equipmentSlots, int totalItemCount,
+    public void AddLootFromPool(
+        Dictionary<string, int> pool,
+        List<EquipmentSlots> equipmentSlots,
+        int totalItemCount,
         BotBaseInventory inventoryToAddItemsTo, // TODO: type for containersIdFull was Set<string>
-        string botRole, ItemSpawnLimitSettings? itemSpawnLimits, List<string> containersIdFull, int totalValueLimitRub = 0, bool isPmc = false)
+        string botRole,
+        ItemSpawnLimitSettings itemSpawnLimits,
+        List<string> containersIdFull,
+        int totalValueLimitRub = 0,
+        bool isPmc = false)
     {
         throw new NotImplementedException();
     }
@@ -129,9 +445,15 @@ public class BotLootGenerator
     /// <param name="isPmc">are we generating for a pmc</param>
     /// <param name="botLevel"></param>
     /// <param name="containersIdFull"></param>
-    public void AddLooseWeaponsToInventorySlot(string sessionId, BotBaseInventory botInventory, string equipmentSlot,
-        BotBaseInventory templateInventory, // TODO: type for containersIdFull was Set<string>
-        Dictionary<string, double> modsChances, string botRole, bool isPmc, int botLevel, List<string>? containersIdFull)
+    public void AddLooseWeaponsToInventorySlot(string sessionId,
+        BotBaseInventory botInventory,
+        EquipmentSlots equipmentSlot,
+        BotTypeInventory templateInventory, 
+        Dictionary<string, double> modsChances,
+        string botRole,
+        bool isPmc,
+        int botLevel,
+        List<string>? containersIdFull) // TODO: type for containersIdFull was Set<string>
     {
         throw new NotImplementedException();
     }

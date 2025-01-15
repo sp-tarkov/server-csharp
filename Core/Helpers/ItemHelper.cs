@@ -1045,7 +1045,12 @@ public class ItemHelper
         throw new NotImplementedException();
     }
 
-    public bool IsOfBaseclass(string tpl, List<string> baseClassTpls)
+    public bool IsOfBaseclass(string tpl, string baseClassTpl)
+    {
+        return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
+    }
+
+    public bool isOfBaseclasses(string tpl, List<string> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }

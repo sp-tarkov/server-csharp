@@ -450,7 +450,7 @@ public class MailSendService
                 }
 
                 // Boxes can contain sub-items
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, [BaseClasses.AMMO_BOX]))
+                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     var boxAndCartridges = new List<Item>();
                     boxAndCartridges.Add(reward);

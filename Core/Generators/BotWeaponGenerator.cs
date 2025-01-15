@@ -29,7 +29,7 @@ public class BotWeaponGenerator
     /// <param name="isPmc">Is weapon generated for a pmc</param>
     /// <param name="botLevel"></param>
     /// <returns>GenerateWeaponResult object</returns>
-    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotBaseInventory botTemplateInventory, string weaponParentId,
+    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotTypeInventory botTemplateInventory, string weaponParentId,
         Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
         throw new NotImplementedException();
@@ -41,7 +41,7 @@ public class BotWeaponGenerator
     /// <param name="equipmentSlot">Primary/secondary/holster</param>
     /// <param name="botTemplateInventory">e.g. assault.json</param>
     /// <returns>Weapon template</returns>
-    public string PickWeightedWeaponTemplateFromPool(string equipmentSlot, BotBaseInventory botTemplateInventory)
+    public string PickWeightedWeaponTemplateFromPool(string equipmentSlot, BotTypeInventory botTemplateInventory)
     {
         throw new NotImplementedException();
     }

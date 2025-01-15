@@ -146,7 +146,7 @@ public class BotGenerator
             WishList = bot.WishList,
             MoneyTransferLimitData = bot.MoneyTransferLimitData,
             IsPmc = bot.IsPmc,
-            Prestige = new Prestige()
+            Prestige = new Dictionary<string, long>()
         };
     }
 
@@ -435,9 +435,9 @@ public class BotGenerator
     public void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
     {
         // Adjust pocket loot weights to allow for 5 or 6 items
-        var pocketWeights = botJsonTemplate.BotGeneration.Items["pocketLoot"].Weights;
-        pocketWeights["5"] = 1;
-        pocketWeights["6"] = 1;
+        var pocketWeights = botJsonTemplate.BotGeneration.Items.PocketLoot.Weights;
+        pocketWeights[5] = 1;
+        pocketWeights[6] = 1;
     }
 
     /// <summary>
@@ -496,9 +496,9 @@ public class BotGenerator
         var chosenBodyTemplate = _databaseService.GetCustomization()[bot.Customization.Body];
 
         // Some bodies have matching hands, look up body to see if this is the case
-        var chosenBody = bodyGlobalDictDb[chosenBodyTemplate?.Name.Trim()];
-        bot.Customization.Hands = chosenBody?.IsNotRandom ?? false
-            ? chosenBody.Hands // Has fixed hands for chosen body, update to match
+        var chosenBody = bodyGlobalDictDb.FirstOrDefault(c => c.Key == chosenBodyTemplate?.Name.Trim());
+        bot.Customization.Hands = chosenBody.Value.IsNotRandom ?? false
+            ? chosenBody.Value.Hands // Has fixed hands for chosen body, update to match
             : _weightedRandomHelper.GetWeightedValue<string>(appearance.Hands); // Hands can be random, choose any from weighted dict
     }
 

@@ -41,22 +41,22 @@ public class BotType
 public class Appearance
 {
     [JsonPropertyName("body")]
-    public Dictionary<string, int>? Body { get; set; }
+    public Dictionary<string, double>? Body { get; set; }
 
     [JsonPropertyName("feet")]
-    public Dictionary<string, int>? Feet { get; set; }
+    public Dictionary<string, double>? Feet { get; set; }
 
     [JsonPropertyName("hands")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Hands { get; set; }
+    public Dictionary<string, double>? Hands { get; set; }
 
     [JsonPropertyName("head")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Head { get; set; }
+    public Dictionary<string, double>? Head { get; set; }
 
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, int>? Voice { get; set; }
+    public Dictionary<string, double>? Voice { get; set; }
 }
 
 public class Chances
@@ -296,19 +296,61 @@ public class Experience
 public class Generation
 {
     [JsonPropertyName("items")]
-    public Dictionary<string, GenerationData>? Items { get; set; }
+    public GenerationWeightingItems? Items { get; set; }
 }
 
 public class GenerationData
 {
     /** key: number of items, value: weighting */
     [JsonPropertyName("weights")]
-    public Dictionary<string, double>? Weights { get; set; }
+    public Dictionary<int, double>? Weights { get; set; }
 
     /** Array of item tpls */
     [JsonPropertyName("whitelist")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, double>? Whitelist { get; set; }
+}
+
+public class GenerationWeightingItems
+{
+    [JsonPropertyName("grenades")]
+    public GenerationData Grenades { get; set; }
+    
+    [JsonPropertyName("healing")]
+    public GenerationData Healing { get; set; }
+    
+    [JsonPropertyName("drugs")]
+    public GenerationData Drugs { get; set; }
+    
+    [JsonPropertyName("food")]
+    public GenerationData Food { get; set; }
+    
+    [JsonPropertyName("drink")]
+    public GenerationData Drink { get; set; }
+    
+    [JsonPropertyName("currency")]
+    public GenerationData Currency { get; set; }
+    
+    [JsonPropertyName("stims")]
+    public GenerationData Stims { get; set; }
+    
+    [JsonPropertyName("backpackLoot")]
+    public GenerationData BackpackLoot { get; set; }
+    
+    [JsonPropertyName("pocketLoot")]
+    public GenerationData PocketLoot { get; set; }
+    
+    [JsonPropertyName("vestLoot")]
+    public GenerationData VestLoot { get; set; }
+    
+    [JsonPropertyName("magazines")]
+    public GenerationData Magazines { get; set; }
+    
+    [JsonPropertyName("specialItems")]
+    public GenerationData SpecialItems { get; set; }
+    
+    [JsonPropertyName("looseLoot")]
+    public GenerationData LooseLoot { get; set; }
 }
 
 public class BotTypeHealth
