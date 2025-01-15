@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using Core.Annotations;
 using Core.DI;
 using Core.Models.Enums;
@@ -55,31 +54,21 @@ public class App
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
 
-        /*
-        _logger.Debug($"OS: {os.arch()} | {os.version()} | {process.platform}");
-        _logger.Debug($"CPU: {os.cpus()[0]?.model} cores: {os.cpus().length}");
-        _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
-        _logger.Debug($"PATH: {this.encodingUtil.toBase64(process.argv[0])}");
-        _logger.Debug($"PATH: {this.encodingUtil.toBase64(process.execPath)}");
-        _logger.Debug($"Server: {ProgramStatics.SPT_VERSION || this.coreConfig.sptVersion}");
+        _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
+        //_logger.Debug($"CPU: {ApplicationId.ProcessorArchitecture} cores: {os.cpus().length}");
+        //_logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
+        //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.argv[0])}");
+        //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.execPath)}");
+        //_logger.Debug($"Server: {ProgramStatics.SPT_VERSION || _coreConfig.SptVersion}");
 
-        const nodeVersion = process.version.replace(/^v/, "");
-        if (ProgramStatics.EXPECTED_NODE && nodeVersion !== ProgramStatics.EXPECTED_NODE) {
-            this.logger.error(
-                "Node version mismatch. Required: ${ProgramStatics.EXPECTED_NODE} | Current: ${nodeVersion}",
-            );
-            process.exit(1);
-        }
-        _logger.Debug("Node: ${nodeVersion}");
-
-        if (ProgramStatics.BUILD_TIME) {
-            _logger.Debug("Date: ${ProgramStatics.BUILD_TIME}");
-        }
-
-        if (ProgramStatics.COMMIT) {
-            _logger.Debug("Commit: ${ProgramStatics.COMMIT}");
-        }
-        */
+        //if (ProgramStatics.BUILD_TIME) {
+        //    _logger.Debug($"Date: {ProgramStatics.BUILD_TIME}");
+        //}
+        
+        //if (ProgramStatics.COMMIT) {
+        //    _logger.Debug($"Commit: {ProgramStatics.COMMIT}");
+        //}
+        
         foreach (var onLoad in _onLoad) 
             await onLoad.OnLoad();
 

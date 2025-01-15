@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Game;
 
 namespace Core.Models.Spt.Config;
@@ -172,14 +172,8 @@ public class ServerFeatures
 
 public class ChatbotFeatures
 {
-    [JsonPropertyName("sptFriendEnabled")]
-    public bool SptFriendEnabled { get; set; }
-
     [JsonPropertyName("sptFriendGiftsEnabled")]
     public bool SptFriendGiftsEnabled { get; set; }
-
-    [JsonPropertyName("commandoEnabled")]
-    public bool CommandoEnabled { get; set; }
 
     [JsonPropertyName("commandoFeatures")]
     public CommandoFeatures CommandoFeatures { get; set; }
@@ -189,6 +183,9 @@ public class ChatbotFeatures
 
     [JsonPropertyName("ids")]
     public Dictionary<string, string> Ids { get; set; }
+
+    [JsonPropertyName("enabledBots")]
+    public Dictionary<string, bool> EnabledBots { get; set; }
 }
 
 public class CommandoFeatures

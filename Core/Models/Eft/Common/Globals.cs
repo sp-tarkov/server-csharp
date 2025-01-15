@@ -1,4 +1,4 @@
-﻿using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 
 namespace Core.Models.Eft.Common;
@@ -540,7 +540,7 @@ public class Config
     public BTRSettings? BTRSettings { get; set; }
 
     [JsonPropertyName("EventType")]
-    public string[] EventType { get; set; }
+    public List<string> EventType { get; set; }
 
     [JsonPropertyName("WalkSpeed")]
     public XYZ? WalkSpeed { get; set; }
@@ -1294,19 +1294,54 @@ public class Mastering
 public class Customization
 {
     [JsonPropertyName("SavageHead")]
-    public Dictionary<string, Dictionary<string, object>>? Head { get; set; }
+    public Dictionary<string, WildHead>? Head { get; set; }
 
     [JsonPropertyName("SavageBody")]
-    public Dictionary<string, Dictionary<string, object>>? Body { get; set; }
+    public Dictionary<string, WildBody>? Body { get; set; }
 
     [JsonPropertyName("SavageFeet")]
-    public Dictionary<string, Dictionary<string, object>>? Feet { get; set; }
+    public Dictionary<string, WildFeet>? Feet { get; set; }
 
     [JsonPropertyName("CustomizationVoice")]
     public List<CustomizationVoice>? VoiceOptions { get; set; }
 
     [JsonPropertyName("BodyParts")]
     public BodyParts? BodyParts { get; set; }
+}
+
+public class WildHead
+{
+    [JsonPropertyName("head")]
+    public string? Head { get; set; }
+
+    [JsonPropertyName("isNotRandom")]
+    public bool? IsNotRandom { get; set; }
+
+    [JsonPropertyName("NotRandom")]
+    public bool? NotRandom { get; set; }
+}
+
+public class WildBody
+{
+    [JsonPropertyName("body")]
+    public string? Body { get; set; }
+
+    [JsonPropertyName("hands")]
+    public string? Hands { get; set; }
+
+    [JsonPropertyName("isNotRandom")]
+    public bool? IsNotRandom { get; set; }
+}
+public class WildFeet
+{
+    [JsonPropertyName("feet")]
+    public string? Feet { get; set; }
+
+    [JsonPropertyName("isNotRandom")]
+    public bool? IsNotRandom { get; set; }
+
+    [JsonPropertyName("NotRandom")]
+    public bool? NotRandom { get; set; }
 }
 
 public class CustomizationVoice

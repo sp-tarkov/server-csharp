@@ -6,6 +6,7 @@ public class MinMax
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
+    
     [JsonPropertyName("max")]
     public double? Max { get; set; }
 

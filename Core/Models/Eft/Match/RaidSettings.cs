@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Enums;
 using Core.Models.Enums.RaidSettings;
 using Core.Models.Enums.RaidSettings.TimeAndWeather;
@@ -17,7 +17,7 @@ public class RaidSettings
     public bool? IsLocationTransition { get; set; }
 
     [JsonPropertyName("timeVariant")]
-    public DateTime? TimeVariant { get; set; }
+    public DateTimeEnum TimeVariant { get; set; }
 
     [JsonPropertyName("metabolismDisabled")]
     public bool? MetabolismDisabled { get; set; }

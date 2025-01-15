@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Bots;
@@ -10,13 +11,13 @@ public class GenerateEquipmentProperties
     /// Root Slot being generated
     /// </summary>
     [JsonPropertyName("rootEquipmentSlot")]
-    public string? RootEquipmentSlot { get; set; }
+    public EquipmentSlots RootEquipmentSlot { get; set; }
 
     /// <summary>
     /// Equipment pool for root slot being generated
     /// </summary>
     [JsonPropertyName("rootEquipmentPool")]
-    public Dictionary<string, int>? RootEquipmentPool { get; set; }
+    public Dictionary<string, double>? RootEquipmentPool { get; set; }
 
     [JsonPropertyName("modPool")]
     public GlobalMods? ModPool { get; set; }

@@ -1,16 +1,32 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
+using Core.Services;
+using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotLevelGenerator
 {
-    public BotLevelGenerator()
+    private readonly ILogger _logger;
+    private readonly RandomUtil _randomUtil;
+    private readonly MathUtil _mathUtil;
+    private readonly DatabaseService _databaseService;
+
+    public BotLevelGenerator(
+        ILogger logger,
+        RandomUtil randomUtil,
+        MathUtil mathUtil,
+        DatabaseService databaseService)
     {
+        _logger = logger;
+        _randomUtil = randomUtil;
+        _mathUtil = mathUtil;
+        _databaseService = databaseService;
     }
 
     /// <summary>
@@ -22,12 +38,30 @@ public class BotLevelGenerator
     /// <returns>IRandomisedBotLevelResult object</returns>
     public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
-        throw new NotImplementedException();
+        var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
+        var botLevelRange = GetRelativeBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
+
+        // Get random level based on the exp table.
+        int exp = 0;
+        var level = int.Parse(ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
+            .ToString()); // TODO - nasty double to string to int conversion
+        for (var i = 0; i < level; i++)
+        {
+            exp += expTable[i].Experience.Value;
+        }
+
+        // Sprinkle in some random exp within the level, unless we are at max level.
+        if (level < expTable.Length - 1)
+        {
+            exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
+        }
+
+        return new RandomisedBotLevelResult { Level = level, Exp = exp };
     }
 
-    public int ChooseBotLevel(int min, int max, int shift, int number)
+    public double ChooseBotLevel(double min, double max, int shift, double number)
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetBiasedRandomNumber(min, max, shift, number);
     }
 
     /// <summary>
@@ -39,6 +73,35 @@ public class BotLevelGenerator
     /// <returns>A MinMax of the lowest and highest level to generate the bots</returns>
     public MinMax GetRelativeBotLevelRange(BotGenerationDetails botGenerationDetails, MinMax levelDetails, int maxAvailableLevel)
     {
-        throw new NotImplementedException();
+        var isPmc = botGenerationDetails.IsPmc.GetValueOrDefault(false);
+        var pmcOverride = botGenerationDetails.LocationSpecificPmcLevelOverride;
+
+        var minPossibleLevel = isPmc && pmcOverride is not null
+            ? Math.Min(
+                Math.Max(levelDetails.Min.Value, pmcOverride.Min.Value), // Biggest between json min and the botgen min
+                maxAvailableLevel // Fallback if value above is crazy (default is 79)
+            )
+            : Math.Min(levelDetails.Min.Value, maxAvailableLevel); // Not pmc with override or non-pmc
+
+        var maxPossibleLevel = isPmc && pmcOverride is not null
+            ? Math.Min(pmcOverride.Max.Value, maxAvailableLevel) // Was a PMC and they have a level override
+            : Math.Min(levelDetails.Max.Value, maxAvailableLevel); // Not pmc with override or non-pmc
+
+        var minLevel = botGenerationDetails.PlayerLevel.HasValue
+            ? botGenerationDetails.PlayerLevel.Value
+            : 0 - botGenerationDetails.BotRelativeLevelDeltaMin.Value;
+        var maxLevel = botGenerationDetails.PlayerLevel.HasValue
+            ? botGenerationDetails.PlayerLevel.Value
+            : 0 + botGenerationDetails.BotRelativeLevelDeltaMin.Value;
+
+        // Bound the level to the min/max possible
+        maxLevel = Math.Min(Math.Max(maxLevel, minPossibleLevel), maxPossibleLevel);
+        minLevel = Math.Min(Math.Max(minLevel, minPossibleLevel), maxPossibleLevel);
+
+        return new MinMax
+        {
+            Min = minLevel,
+            Max = maxLevel,
+        };
     }
 }

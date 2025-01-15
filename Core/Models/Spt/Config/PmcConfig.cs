@@ -12,11 +12,11 @@ public class PmcConfig : BaseConfig
 
     /** What game version should the PMC have */
     [JsonPropertyName("gameVersionWeight")]
-    public Dictionary<string, double> GameVersionWeight { get; set; }
+    public Dictionary<string, int> GameVersionWeight { get; set; }
 
     /** What account type should the PMC have */
     [JsonPropertyName("accountTypeWeight")]
-    public Dictionary<MemberCategory, double> AccountTypeWeight { get; set; }
+    public Dictionary<MemberCategory, int> AccountTypeWeight { get; set; }
 
     /** Global whitelist/blacklist of vest loot for PMCs */
     [JsonPropertyName("vestLoot")]
@@ -76,7 +76,7 @@ public class PmcConfig : BaseConfig
     public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType { get; set; }
 
     [JsonPropertyName("maxBackpackLootTotalRub")]
-    public List<IMinMaxLootValue> MaxBackpackLootTotalRub { get; set; }
+    public List<MinMaxLootValue> MaxBackpackLootTotalRub { get; set; }
 
     [JsonPropertyName("maxPocketLootTotalRub")]
     public double MaxPocketLootTotalRub { get; set; }
@@ -115,6 +115,9 @@ public class PmcConfig : BaseConfig
     
     [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
     public int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
+    
+    [JsonPropertyName("lootItemLimitsRub")]
+    public List<MinMaxLootValue>? LootItemLimitsRub { get; set; }
 }
 
 public class HostilitySettings
@@ -164,8 +167,17 @@ public class SlotLootSettings
     public List<string> Blacklist { get; set; }
 }
 
-public class IMinMaxLootValue : MinMax
+public class MinMaxLootValue : MinMax
 {
     [JsonPropertyName("value")]
     public double Value { get; set; }
+    
+    [JsonPropertyName("backpack")]
+    public MinMax Backpack { get; set; }
+    
+    [JsonPropertyName("pocket")]
+    public MinMax Pocket { get; set; }
+    
+    [JsonPropertyName("vest")]
+    public MinMax Vest { get; set; }
 }

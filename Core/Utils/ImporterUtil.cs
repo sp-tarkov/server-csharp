@@ -36,6 +36,7 @@ public class ImporterUtil
     )
     {
         var tasks = new List<Task>();
+        var dictionaryLock = new object();
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
@@ -66,8 +67,11 @@ public class ImporterUtil
                         if (onObjectDeserialized != null)
                             onObjectDeserialized(file, fileDeserialized);
 
-                        setMethod.Invoke(result,
-                            isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                        lock (dictionaryLock)
+                        {
+                            setMethod.Invoke(result,
+                                isDictionary ? [_fileUtil.StripExtension(file), fileDeserialized] : [fileDeserialized]);
+                        }
                     }
                     catch (Exception e)
                     {
@@ -80,7 +84,6 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
-            var dictionaryLock = new object();
             tasks.Add(
                 Task.Factory.StartNew(() =>
                 {
@@ -125,7 +128,8 @@ public class ImporterUtil
         {
             var matchedProperty = type.GetProperties()
                 .FirstOrDefault(prop =>
-                    prop.Name.ToLower() == _fileUtil.StripExtension(propertyName).ToLower());
+                    string.Equals(prop.Name.ToLower(), _fileUtil.StripExtension(propertyName).ToLower(),
+                        StringComparison.Ordinal));
             if (matchedProperty == null)
                 throw new Exception(
                     $"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'");

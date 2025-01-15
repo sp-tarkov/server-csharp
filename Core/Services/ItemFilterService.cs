@@ -1,10 +1,38 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Utils.Cloners;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService
 {
+    private readonly ILogger _logger;
+    private readonly ICloner _cloner;
+    private readonly DatabaseServer _databaseServer;
+    private readonly ConfigServer _configServer;
+
+    private readonly HashSet<string> _lootableItemBlacklistCache = [];
+    private readonly ItemConfig _itemConfig;
+
+    public ItemFilterService(
+        ILogger logger,
+        ICloner cloner,
+        DatabaseServer databaseServer,
+        ConfigServer configServer
+        )
+    {
+        _logger = logger;
+        _cloner = cloner;
+        _databaseServer = databaseServer;
+        _configServer = configServer;
+
+        _itemConfig = _configServer.GetConfig<ItemConfig>(ConfigTypes.ITEM);
+    }
+
     /**
      * Check if the provided template id is blacklisted in config/item.json/blacklist
      * @param tpl template id
@@ -88,5 +116,17 @@ public class ItemFilterService
     public List<string> GetBossItems()
     {
         throw new NotImplementedException();
+    }
+
+    public bool IsLootableItemBlacklisted(string itemKey)
+    {
+        if (_lootableItemBlacklistCache.Count == 0)
+        {
+            foreach (var item in _itemConfig.LootableItemBlacklist) {
+                _lootableItemBlacklistCache.Add(item);
+            }
+        }
+
+        return _lootableItemBlacklistCache.Contains(itemKey);
     }
 }

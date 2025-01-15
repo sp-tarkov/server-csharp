@@ -15,11 +15,11 @@ public class SeasonalEventConfig : BaseConfig
 
     /** event / botType / equipSlot / itemid */
     [JsonPropertyName("eventGear")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear { get; set; }
+    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear { get; set; }
 
     /** event / bot type / equipSlot / itemid */
     [JsonPropertyName("eventLoot")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot { get; set; }
+    public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot { get; set; }
 
     [JsonPropertyName("events")]
     public List<SeasonalEvent> Events { get; set; }
@@ -77,38 +77,78 @@ public class SeasonalEvent
     public int EndMonth { get; set; }
 
     [JsonPropertyName("settings")]
-    public Dictionary<string, object> Settings { get; set; } // TODO: Type was Record<string, ISeasonalEventSettings | IZombieSettings>
+    public SeasonalEventSettings? Settings { get; set; }
     
     [JsonPropertyName("setting")]
-    public Dictionary<string, object> SettingsDoNOTUse { set => Settings = value; }
+    public SeasonalEventSettings? SettingsDoNOTUse { set => Settings = value; }
 }
 
 public class SeasonalEventSettings
 {
-    [JsonPropertyName("enabled")]
-    public bool Enabled { get; set; }
+    [JsonPropertyName("enableSummoning")]
+    public bool? EnableSummoning { get; set; }
+    
+    [JsonPropertyName("enableHalloweenHideout")]
+    public bool? EnableHalloweenHideout { get; set; }
+    
+    [JsonPropertyName("enableChristmasHideout")]
+    public bool? EnableChristmasHideout { get; set; }
+    
+    [JsonPropertyName("enableSanta")]
+    public bool? EnableSanta { get; set; }
+    
+    [JsonPropertyName("adjustBotAppearances")]
+    public bool? AdjustBotAppearances { get; set; }
+    
+    [JsonPropertyName("addEventGearToBots")]
+    public bool? AddEventGearToBots { get; set; }
+    
+    [JsonPropertyName("addEventLootToBots")]
+    public bool? AddEventLootToBots { get; set; }
+    
+    [JsonPropertyName("removeEntryRequirement")]
+    public List<string>? RemoveEntryRequirement { get; set; }
+    
+    [JsonPropertyName("replaceBotHostility")]
+    public bool? ReplaceBotHostility { get; set; }
+    
+    [JsonPropertyName("forceSeason")]
+    public Season? ForceSeason { get; set; }
+    
+    [JsonPropertyName("zombieSettings")]
+    public ZombieSettings? ZombieSettings { get; set; }
+    
+    [JsonPropertyName("disableBosses")]
+    public List<string>? DisableBosses { get; set; }
+    
+    [JsonPropertyName("disableWaves")]
+    public List<string>? DisableWaves { get; set; }
+    
 }
 
-public class ZombieSettings : SeasonalEventSettings
+public class ZombieSettings
 {
+    [JsonPropertyName("enabled")]
+    public bool? Enabled { get; set; }
+    
     [JsonPropertyName("mapInfectionAmount")]
-    public Dictionary<string, int> MapInfectionAmount { get; set; }
+    public Dictionary<string, int>? MapInfectionAmount { get; set; }
 
     [JsonPropertyName("disableBosses")]
-    public List<string> DisableBosses { get; set; }
+    public List<string>? DisableBosses { get; set; }
 
     [JsonPropertyName("disableWaves")]
-    public List<string> DisableWaves { get; set; }
+    public List<string>? DisableWaves { get; set; }
 }
 
 public class GifterSetting
 {
     [JsonPropertyName("map")]
-    public string Map { get; set; }
+    public string? Map { get; set; }
 
     [JsonPropertyName("zones")]
-    public string Zones { get; set; }
+    public string? Zones { get; set; }
 
     [JsonPropertyName("spawnChance")]
-    public int SpawnChance { get; set; }
+    public int? SpawnChance { get; set; }
 }

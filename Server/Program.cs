@@ -1,12 +1,10 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Core.Annotations;
 using Core.Context;
-using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
-using Microsoft.Extensions.Logging.Configuration;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
@@ -26,6 +24,8 @@ public static class Program
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
         CreateAndRegisterLogger(builder, out var registeredLogger);
+
+        ProgramStatics.Initialize();
 
         RegisterSptComponents(builder.Services);
         RegisterModOverrideComponents(builder.Services, assemblies);
@@ -56,7 +56,7 @@ public static class Program
             var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>();
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.
-            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).Value as WebApplication).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).GetValue<WebApplication>()).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
         }
         catch (Exception ex)
         {

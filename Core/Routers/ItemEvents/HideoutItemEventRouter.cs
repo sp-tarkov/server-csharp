@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -11,7 +11,7 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class HideoutItemEventRouter : ItemEventRouterDefinition
 {
-    protected HideoutCallbacks _hideoutCallbacks;
+    private readonly HideoutCallbacks _hideoutCallbacks;
 
     public HideoutItemEventRouter
     (
@@ -38,7 +38,8 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
             new HandledRoute(HideoutEventActions.HIDEOUT_CANCEL_PRODUCTION_COMMAND, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_DELETE_PRODUCTION_COMMAND, false),
-            new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND, false)
+            new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND, false),
+            new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE, false)
         };
     }
 
@@ -75,6 +76,8 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
                 return _hideoutCallbacks.HideoutDeleteProductionCommand(pmcData, body as HideoutDeleteProductionRequestData, sessionID);
             case HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND:
                 return _hideoutCallbacks.HideoutCustomizationApplyCommand(pmcData, body as HideoutCustomizationApplyRequestData, sessionID);
+            case HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE:
+                return _hideoutCallbacks.HideoutCustomizationSetMannequinPose(pmcData, body as HideoutCustomizationSetMannequinPoseRequest, sessionID);
             default:
                 throw new Exception($"HideoutItemEventRouter being used when it cant handle route {url}");
         }

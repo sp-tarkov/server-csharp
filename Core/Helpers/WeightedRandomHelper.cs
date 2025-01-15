@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Spt.Helper;
 using ILogger = Core.Models.Utils.ILogger;
 
@@ -16,13 +16,19 @@ public class WeightedRandomHelper
     }
 
     /// <summary>
-    /// Choos an item from the passed in array based on the weightings of each
+    /// Choose an item from the passed in array based on the weightings of each
     /// </summary>
-    /// <param name="itemArray">Items and weights to use</param>
+    /// <param name="values">Items and weights to use</param>
     /// <returns>Chosen item from array</returns>
-    public T GetWeightedValue<T>(Dictionary<string, object> itemArray)
+    public T GetWeightedValue<T>(Dictionary<T, int> values) where T : notnull
     {
-        throw new NotImplementedException();
+        var itemKeys = values.Keys.ToList();
+        var weights = values.Values.ToList();
+
+        var chosenItem = WeightedRandom<T>(itemKeys, weights);
+
+        return chosenItem.Item;
+        // SORRY IF THIS BLEW UP, I DONT SEE A REASON ITS GENERIC - CWX
     }
 
     /// <summary>

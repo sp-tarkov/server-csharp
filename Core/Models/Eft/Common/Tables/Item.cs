@@ -11,6 +11,7 @@ public class Item
     public string? Template { get; set; }
 
     [JsonPropertyName("parentId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? ParentId { get; set; }
 
     [JsonPropertyName("slotId")]
@@ -108,11 +109,17 @@ public class UpdMap
 
 public class MapMarker
 {
+    [JsonPropertyName("Type")]
+    public string? Type { get; set; }
+
     [JsonPropertyName("X")]
-    public int? X { get; set; }
+    public double? X { get; set; }
 
     [JsonPropertyName("Y")]
-    public int? Y { get; set; }
+    public double? Y { get; set; }
+
+    [JsonPropertyName("Note")]
+    public string? Note { get; set; }
 }
 
 public class UpdTag

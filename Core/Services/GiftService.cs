@@ -2,7 +2,9 @@ using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Dialog;
 using Core.Servers;
+using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
@@ -11,18 +13,34 @@ namespace Core.Services;
 public class GiftService
 {
     private readonly ILogger _logger;
-    private readonly ConfigServer _configServer;
+
+    private readonly MailSendService _mailSendService;
+    private readonly LocalisationService _localisationService;
+    private readonly HashUtil _hashUtil;
+    private readonly TimeUtil _timeUtil;
     private readonly ProfileHelper _profileHelper;
+    private readonly ConfigServer _configServer;
+
     private readonly GiftsConfig _giftConfig;
 
-    public GiftService(
+    public GiftService
+    (
         ILogger logger,
-        ConfigServer configServer,
-        ProfileHelper profileHelper)
+        MailSendService mailSendService,
+        LocalisationService localisationService,
+        HashUtil hashUtil,
+        TimeUtil timeUtil,
+        ProfileHelper profileHelper,
+        ConfigServer configServer
+    )
     {
         _logger = logger;
-        _configServer = configServer;
+        _mailSendService = mailSendService;
+        _localisationService = localisationService;
+        _hashUtil = hashUtil;
+        _timeUtil = timeUtil;
         _profileHelper = profileHelper;
+        _configServer = configServer;
 
         _giftConfig = _configServer.GetConfig<GiftsConfig>();
     }
@@ -34,7 +52,7 @@ public class GiftService
      */
     public bool GiftExists(string giftId)
     {
-        throw new NotImplementedException();
+        return _giftConfig.Gifts[giftId] is not null;
     }
 
     public Gift GetGiftById(string giftId)
@@ -50,7 +68,7 @@ public class GiftService
      */
     public Dictionary<string, Gift> GetGifts()
     {
-        throw new NotImplementedException();
+        return _giftConfig.Gifts;
     }
 
     /**
@@ -59,7 +77,7 @@ public class GiftService
      */
     public List<string> GetGiftIds()
     {
-        throw new NotImplementedException();
+        return _giftConfig.Gifts.Keys.ToList();
     }
 
     /**
@@ -90,7 +108,96 @@ public class GiftService
             _logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
         }
 
-        throw new NotImplementedException();
+        // Handle system messsages
+        if (giftData.Sender == GiftSenderType.System)
+        {
+            // Has a localisable text id to send to player
+            if (giftData.LocaleTextId is not null)
+            {
+                _mailSendService.SendLocalisedSystemMessageToPlayer(
+                    playerId,
+                    giftData.LocaleTextId,
+                    giftData.Items,
+                    giftData.ProfileChangeEvents,
+                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1));
+            }
+            else
+            {
+                _mailSendService.SendSystemMessageToPlayer(
+                    playerId,
+                    giftData.MessageText,
+                    giftData.Items,
+                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
+                    giftData.ProfileChangeEvents);
+            }
+        }
+        // Handle user messages
+        else if (giftData.Sender == GiftSenderType.User)
+        {
+            _mailSendService.SendUserMessageToPlayer(
+                playerId,
+                giftData.SenderDetails,
+                giftData.MessageText,
+                giftData.Items,
+                _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1));
+        }
+        else if (giftData.Sender == GiftSenderType.Trader)
+        {
+            if (giftData.LocaleTextId is not null)
+            {
+                _mailSendService.SendLocalisedNpcMessageToPlayer(
+                    playerId,
+                    giftData.Trader,
+                    MessageType.MESSAGE_WITH_ITEMS,
+                    giftData.LocaleTextId,
+                    giftData.Items,
+                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
+                    null,
+                    null
+                );
+            }
+            else
+            {
+                _mailSendService.SendLocalisedNpcMessageToPlayer(
+                    playerId,
+                    giftData.Trader,
+                    MessageType.MESSAGE_WITH_ITEMS,
+                    giftData.MessageText,
+                    giftData.Items,
+                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
+                    null,
+                    null
+                );
+            }
+        }
+        else
+        {
+            // TODO: further split out into different message systems like above SYSTEM method
+            // Trader / ragfair
+            SendMessageDetails details = new () {
+                RecipientId = playerId,
+                Sender = GetMessageType(giftData),
+                SenderDetails = new ()
+                {
+                    Id = GetSenderId(giftData),
+                    Aid = 1234567, // TODO - pass proper aid value
+                    Info = null,
+                },
+                MessageText = giftData.MessageText,
+                Items = giftData.Items,
+                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0),
+            };
+
+            if (giftData.Trader is not null) {
+                details.Trader = giftData.Trader;
+            }
+
+            _mailSendService.SendMessageToPlayer(details);
+        }
+        
+        _profileHelper.FlagGiftReceivedInProfile(playerId, giftId, maxGiftsToSendCount);
+
+        return GiftSentResult.SUCCESS;
     }
 
     /**
@@ -98,9 +205,19 @@ public class GiftService
      * @param giftData Gift to send player
      * @returns trader/user/system id
      */
-    protected string? GetSenderId(Gift giftData)
+    private string? GetSenderId(Gift giftData)
     {
-        throw new NotImplementedException();
+        if (giftData.Sender == GiftSenderType.Trader)
+        {
+            return Enum.GetName(typeof(GiftSenderType), giftData.Sender);
+        }
+
+        if (giftData.Sender == GiftSenderType.User)
+        {
+            return giftData.Sender.ToString();
+        }
+
+        return null;
     }
 
     /**
@@ -110,7 +227,18 @@ public class GiftService
      */
     protected MessageType? GetMessageType(Gift giftData)
     {
-        throw new NotImplementedException();
+        switch (giftData.Sender)
+        {
+            case GiftSenderType.System:
+                return MessageType.SYSTEM_MESSAGE;
+            case GiftSenderType.Trader:
+                return MessageType.NPC_TRADER;
+            case GiftSenderType.User:
+                return MessageType.USER_MESSAGE;
+            default:
+                _logger.Error(_localisationService.GetText("gift-unable_to_handle_message_type_command", giftData.Sender));
+                return null;
+        }
     }
 
     /**

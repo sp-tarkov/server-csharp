@@ -1,5 +1,7 @@
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Dialog;
@@ -15,6 +17,7 @@ public class JsonUtil
         WriteIndented = false,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         Converters =
         {
             new ListOrTConverterFactory(),
@@ -25,7 +28,8 @@ public class JsonUtil
             new EftEnumConverter<ProfileChangeEventType>(),
             new EftEnumConverter<QuestStatusEnum>(),
             new EftEnumConverter<QuestRewardType>(),
-            new EftEnumConverter<SideType>()
+            new EftEnumConverter<SideType>(),
+            new EftEnumConverter<BonusSkillType>()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)

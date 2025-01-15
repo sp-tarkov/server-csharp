@@ -300,15 +300,17 @@ public class BaseJsonSkills
 
 public class Skills
 {
-    public List<Common>? Common { get; set; }
+    public List<BaseSkill>? Common { get; set; }
 
-    public List<Mastering>? Mastering { get; set; }
+    public List<BaseSkill>? Mastering { get; set; }
 
     public double? Points { get; set; }
 }
 
 public class BaseSkill
 {
+    public int? PointsEarnedDuringSession { get; set; }
+    public long? LastAccess { get; set; }
     public string? Id { get; set; }
     public double? Progress { get; set; }
 
@@ -321,8 +323,7 @@ public class BaseSkill
 
 public class Common : BaseSkill
 {
-    public int? PointsEarnedDuringSession { get; set; }
-    public long? LastAccess { get; set; }
+
 }
 
 public class Mastering : BaseSkill
@@ -511,7 +512,7 @@ public class Hideout
     public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
     public HideoutCounters? HideoutCounters { get; set; }
     public double? Seed { get; set; }
-    public List<string>? MannequinPoses { get; set; }
+    public Dictionary<string, string>? MannequinPoses { get; set; }
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
     public long? SptUpdateLastRunTimestamp { get; set; }

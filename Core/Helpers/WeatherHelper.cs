@@ -35,16 +35,18 @@ public class WeatherHelper
     /// </summary>
     /// <param name="currentDate">(new Date())</param>
     /// <returns>Date object of current in-raid time</returns>
-    public DateTime GetInRaidTime(double? timestamp = null)
+    public DateTime GetInRaidTime(long? timestamp = null)
     {
         // tarkov time = (real time * 7 % 24 hr) + 3 hour
         var russiaOffsetMilliseconds = _timeUtil.GetHoursAsSeconds(3) * 1000;
         var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
-        var currentTimestampMilliSeconds = (timestamp is not null) ? timestamp : _timeUtil.GetTimeStamp();
+        var currentTimestampMilliSeconds = timestamp.HasValue
+            ? timestamp ?? 0
+            : (DateTime.UtcNow - DateTime.UnixEpoch).TotalMilliseconds;
 
-        return new DateTime().AddMilliseconds(
-            (russiaOffsetMilliseconds + russiaOffsetMilliseconds * _weatherConfig.Acceleration) %
-                                              twentyFourHoursMilliseconds);
+        return _timeUtil.GetDateTimeFromTimeStamp((long)
+            (russiaOffsetMilliseconds + currentTimestampMilliSeconds * _weatherConfig.Acceleration) %
+            twentyFourHoursMilliseconds);
     }
 
     /// <summary>

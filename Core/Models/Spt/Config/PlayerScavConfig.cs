@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
@@ -24,7 +25,7 @@ public class KarmaLevel
     public Dictionary<string, GenerationData> ItemLimits { get; set; }
 
     [JsonPropertyName("equipmentBlacklist")]
-    public Dictionary<string, string[]> EquipmentBlacklist { get; set; }
+    public Dictionary<EquipmentSlots, string[]> EquipmentBlacklist { get; set; }
 
     [JsonPropertyName("labsAccessCardChancePercent")]
     public double? LabsAccessCardChancePercent { get; set; }

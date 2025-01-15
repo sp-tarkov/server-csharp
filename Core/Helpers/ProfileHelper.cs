@@ -506,7 +506,7 @@ public class ProfileHelper
     /// <param name="pmcData">Player profile</param>
     /// <param name="skill">Skill to look up and return value from</param>
     /// <returns>Common skill object from desired profile</returns>
-    public Common? GetSkillFromProfile(PmcData pmcData, SkillTypes skill)
+    public BaseSkill? GetSkillFromProfile(PmcData pmcData, SkillTypes skill)
     {
         var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s => s.Id == skill.ToString());
         if (skillToReturn == null)
@@ -662,9 +662,9 @@ public class ProfileHelper
         }
 
         var customisationTemplateDb = _databaseService.GetTemplates().Customization;
-        var matchingCustomisation = customisationTemplateDb[reward.Target];
+        var matchingCustomisation = customisationTemplateDb.GetValueOrDefault(reward.Target, null);
 
-        if (matchingCustomisation != null)
+        if (matchingCustomisation is null)
         {
             var rewardToStore = new CustomisationStorage
             {

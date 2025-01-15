@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Context;
 using Core.Controllers;
 using Core.Models.Eft.Bot;
@@ -60,7 +60,7 @@ public class BotCallbacks
         if (difficulty == "core")
             return _httpResponseUtil.NoBody(_botController.GetBotCoreDifficulty());
 
-        var raidConfig = (GetRaidConfigurationRequestData)_applicationContext.GetLatestValue(ContextVariableType.RAID_CONFIGURATION)?.Value;
+        var raidConfig = _applicationContext.GetLatestValue(ContextVariableType.RAID_CONFIGURATION)?.GetValue<GetRaidConfigurationRequestData>();
 
         return _httpResponseUtil.NoBody(_botController.GetBotDifficulty(type, difficulty, raidConfig));
     }

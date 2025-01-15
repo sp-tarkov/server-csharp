@@ -7,8 +7,8 @@ using Core.Models.Spt.Server;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
-using Core.Utils.Cloners;
 using ILogger = Core.Models.Utils.ILogger;
+using Path = System.IO.Path;
 
 namespace Core.Utils;
 
@@ -18,19 +18,19 @@ public class DatabaseImporter : OnLoad
     private object hashedFile;
     private ValidationResult valid = ValidationResult.UNDEFINED;
     private string filepath;
-    protected HttpConfig httpConfig;
+    private HttpConfig httpConfig;
 
-    protected readonly ILogger _logger;
-    protected readonly LocalisationService _localisationService;
+    private readonly ILogger _logger;
+    private readonly LocalisationService _localisationService;
 
-    protected readonly DatabaseServer _databaseServer;
+    private readonly DatabaseServer _databaseServer;
 
-    protected readonly ImageRouter _imageRouter;
-    protected readonly EncodingUtil _encodingUtil;
-    protected readonly HashUtil _hashUtil;
-    protected readonly ImporterUtil _importerUtil;
-    protected readonly ConfigServer _configServer;
-    protected readonly FileUtil _fileUtil;
+    private readonly ImageRouter _imageRouter;
+    private readonly EncodingUtil _encodingUtil;
+    private readonly HashUtil _hashUtil;
+    private readonly ImporterUtil _importerUtil;
+    private readonly ConfigServer _configServer;
+    private readonly FileUtil _fileUtil;
 
     public DatabaseImporter(
         ILogger logger,
@@ -95,29 +95,43 @@ public class DatabaseImporter : OnLoad
         await HydrateDatabase(filepath);
 
         var imageFilePath = $"{filepath}images/";
-        //var directories = this.vfs.getDirs(imageFilePath);
-        LoadImages(imageFilePath, _fileUtil.GetDirectories(imageFilePath), [
-            "/files/achievement/",
-            "/files/CONTENT/banners/",
-            "/files/handbook/",
-            "/files/Hideout/",
-            "/files/launcher/",
-            "/files/prestige/",
-            "/files/quest/icon/",
-            "/files/trader/avatar/",
-        ]);
+        CreateRouteMapping(imageFilePath, "files");
+    }
+
+    private void CreateRouteMapping(string directory, string newBasePath)
+    {
+        var directoryContent = GetAllFilesInDirectory(directory);
+
+        foreach (var fileNameWithPath in directoryContent) {
+            var bsgPath = $"/{newBasePath}/{_fileUtil.StripExtension(fileNameWithPath)}";
+            var sptPath = $"{directory}{ fileNameWithPath}";
+            _imageRouter.AddRoute(bsgPath, sptPath);
+        }
+    }
+
+    private List<string> GetAllFilesInDirectory(string directoryPath)
+    {
+        List<string> result = [];
+        result.AddRange(Directory.GetFiles(directoryPath));
+
+        foreach (var subdirectory in Directory.GetDirectories(directoryPath))
+        {
+            result.AddRange(GetAllFilesInDirectory(subdirectory));
+        }
+
+        return result;
     }
 
     /**
      * Read all json files in database folder and map into a json object
      * @param filepath path to database folder
      */
-    protected async Task HydrateDatabase(string filepath)
+    protected async Task HydrateDatabase(string filePath)
     {
         _logger.Info(_localisationService.GetText("importing_database"));
 
         var dataToImport = (DatabaseTables) await _importerUtil.LoadRecursiveAsync(
-            $"{filepath}database/",
+            $"{filePath}database/",
             typeof(DatabaseTables),
             OnReadValidate
         );
@@ -183,9 +197,11 @@ public class DatabaseImporter : OnLoad
     }
 
     /**
+     * absolute dogshit, do not use
      * Find and map files with image router inside a designated path
      * @param filepath Path to find files in
      */
+    [Obsolete]
     public void LoadImages(string filepath, string[] directories, List<string> routes)
     {
         for (var i = 0; i < directories.Length; i++)

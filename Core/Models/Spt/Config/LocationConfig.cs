@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 
@@ -131,6 +131,12 @@ public class LocationConfig : BaseConfig
     /// </summary>
     [JsonPropertyName("reserveRaiderSpawnChanceOverrides")]
     public ReserveRaiderSpawnChanceOverrides ReserveRaiderSpawnChanceOverrides { get; set; }
+
+    /// <summary>
+    /// Containers to remove all children from when generating static/loose loot
+    /// </summary>
+    [JsonPropertyName("tplsToStripChildItemsFrom")]
+    public List<string> TplsToStripChildItemsFrom { get; set; }
 
     /// <summary>
     /// Map ids players cannot visit

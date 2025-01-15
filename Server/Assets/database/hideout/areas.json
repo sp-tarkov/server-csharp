@@ -3355,7 +3355,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
-            "isSpawnedInSession": true,
+            "isSpawnedInSession": false,
             "templateId": "6389c7f115805221fb410466",
             "type": "Item"
           }
@@ -4626,7 +4626,7 @@
             "count": 1,
             "isEncoded": false,
             "isFunctional": false,
-            "isSpawnedInSession": true,
+            "isSpawnedInSession": false,
             "templateId": "6389c85357baa773a825b356",
             "type": "Item"
           }

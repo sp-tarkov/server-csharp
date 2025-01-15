@@ -1,40 +1,122 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class SeasonalEventService
 {
+    private readonly ILogger _logger;
+
+    private readonly DatabaseService _databaseService;
+
+    //private readonly DatabaseImporter _databaseImporter;
+    private readonly GiftService _giftService;
+    private readonly LocalisationService _localisationService;
+    private readonly BotHelper _botHelper;
+    private readonly ProfileHelper _profileHelper;
+    private readonly ConfigServer _configServer;
+
+    private bool _christmasEventActive = false;
+    private bool _halloweenEventActive = false;
+
+    private readonly SeasonalEventConfig _seasonalEventConfig;
+    private readonly QuestConfig _questConfig;
+    private readonly HttpConfig _httpConfig;
+    private readonly WeatherConfig _weatherConfig;
+    private readonly LocationConfig _locationConfig;
+
+    private List<SeasonalEvent> _currentlyActiveEvents = [];
+
+    private readonly IReadOnlyList<string> _christmasEventItems =
+    [
+        ItemTpl.FACECOVER_FAKE_WHITE_BEARD,
+        ItemTpl.BARTER_CHRISTMAS_TREE_ORNAMENT_RED,
+        ItemTpl.BARTER_CHRISTMAS_TREE_ORNAMENT_VIOLET,
+        ItemTpl.BARTER_CHRISTMAS_TREE_ORNAMENT_SILVER,
+        ItemTpl.HEADWEAR_DED_MOROZ_HAT,
+        ItemTpl.HEADWEAR_SANTA_HAT,
+        ItemTpl.BACKPACK_SANTAS_BAG,
+        ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_BIG,
+        ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_MEDIUM,
+        ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_SMALL
+    ];
+
+    private readonly IReadOnlyList<string> _halloweenEventItems =
+    [
+        ItemTpl.FACECOVER_SPOOKY_SKULL_MASK,
+        ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER,
+        ItemTpl.HEADWEAR_JACKOLANTERN_TACTICAL_PUMPKIN_HELMET,
+        ItemTpl.FACECOVER_FACELESS_MASK,
+        ItemTpl.FACECOVER_JASON_MASK,
+        ItemTpl.FACECOVER_MISHA_MAYOROV_MASK,
+        ItemTpl.FACECOVER_SLENDER_MASK,
+        ItemTpl.FACECOVER_GHOUL_MASK,
+        ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_CAPTAIN,
+        ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_BRAWLER,
+        ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_QUIET
+    ];
+
+    public SeasonalEventService
+    (
+        ILogger logger,
+        DatabaseService databaseService,
+        //DatabaseImporter databaseImporter,
+        GiftService giftService,
+        LocalisationService localisationService,
+        BotHelper botHelper,
+        ProfileHelper profileHelper,
+        ConfigServer configServer
+    )
+    {
+        _logger = logger;
+        _databaseService = databaseService;
+        //_databaseImporter = databaseImporter;
+        _giftService = giftService;
+        _localisationService = localisationService;
+        _botHelper = botHelper;
+        _profileHelper = profileHelper;
+        _configServer = configServer;
+
+        _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>(ConfigTypes.SEASONAL_EVENT);
+        _questConfig = _configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
+        _httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        _weatherConfig = _configServer.GetConfig<WeatherConfig>(ConfigTypes.WEATHER);
+        _locationConfig = _configServer.GetConfig<LocationConfig>(ConfigTypes.LOCATION);
+    }
+
     /// <summary>
     /// Get an array of christmas items found in bots inventories as loot
     /// </summary>
     /// <returns>array</returns>
-    public string[] GetChristmasEventItems()
+    public IEnumerable<string> GetChristmasEventItems()
     {
-        throw new NotImplementedException();
+        return _christmasEventItems;
     }
 
     /// <summary>
     /// Get an array of halloween items found in bots inventories as loot
     /// </summary>
     /// <returns>array</returns>
-    public string[] GetHalloweenEventItems()
+    public IEnumerable<string> GetHalloweenEventItems()
     {
-        throw new NotImplementedException();
+        return _halloweenEventItems;
     }
 
     public bool ItemIsChristmasRelated(string itemTpl)
     {
-        throw new NotImplementedException();
+        return _christmasEventItems.Contains(itemTpl);
     }
 
     public bool ItemIsHalloweenRelated(string itemTpl)
     {
-        throw new NotImplementedException();
+        return _halloweenEventItems.Contains(itemTpl);
     }
 
     /// <summary>
@@ -44,7 +126,7 @@ public class SeasonalEventService
     /// <returns></returns>
     public bool ItemIsSeasonalRelated(string itemTpl)
     {
-        throw new NotImplementedException();
+        return _christmasEventItems.Contains(itemTpl) || _halloweenEventItems.Contains(itemTpl);
     }
 
     /// <summary>
@@ -53,7 +135,7 @@ public class SeasonalEventService
     /// <returns>Array of active events</returns>
     public List<SeasonalEvent> GetActiveEvents()
     {
-        throw new NotImplementedException();
+        return _currentlyActiveEvents;
     }
 
     /// <summary>
@@ -62,9 +144,20 @@ public class SeasonalEventService
     /// or, if halloween and christmas are inactive, return both sets of items
     /// </summary>
     /// <returns>array of tpl strings</returns>
-    public string[] GetInactiveSeasonalEventItems()
+    public List<string> GetInactiveSeasonalEventItems()
     {
-        throw new NotImplementedException();
+        var items = new List<string>();
+        if (!ChristmasEventEnabled())
+        {
+            items.AddRange(_christmasEventItems);
+        }
+
+        if (!HalloweenEventEnabled())
+        {
+            items.AddRange(_halloweenEventItems);
+        }
+
+        return items;
     }
 
     /// <summary>
@@ -73,7 +166,7 @@ public class SeasonalEventService
     /// <returns>true if event is active</returns>
     public bool SeasonalEventEnabled()
     {
-        throw new NotImplementedException();
+        return _christmasEventActive || _halloweenEventActive;
     }
 
     /// <summary>
@@ -82,7 +175,7 @@ public class SeasonalEventService
     /// <returns>true if active</returns>
     public bool ChristmasEventEnabled()
     {
-        throw new NotImplementedException();
+        return _christmasEventActive;
     }
 
     /// <summary>
@@ -91,7 +184,7 @@ public class SeasonalEventService
     /// <returns>true if active</returns>
     public bool HalloweenEventEnabled()
     {
-        throw new NotImplementedException();
+        return _halloweenEventActive;
     }
 
     /// <summary>
@@ -100,7 +193,7 @@ public class SeasonalEventService
     /// <returns>true if seasonal events should be checked for</returns>
     public bool IsAutomaticEventDetectionEnabled()
     {
-        throw new NotImplementedException();
+        return _seasonalEventConfig.EnableSeasonalEventDetection;
     }
 
     /// <summary>
@@ -110,7 +203,7 @@ public class SeasonalEventService
     /// <returns>bots with equipment changes</returns>
     protected Dictionary<string, Dictionary<string, Dictionary<string, int>>> GetEventBotGear(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        return _seasonalEventConfig.EventGear.GetValueOrDefault(eventType, null);
     }
 
     /// <summary>
@@ -120,7 +213,7 @@ public class SeasonalEventService
     /// <returns>bots with loot changes</returns>
     protected Dictionary<string, Dictionary<string, Dictionary<string, int>>> GetEventBotLoot(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        return _seasonalEventConfig.EventLoot.GetValueOrDefault(eventType, null);
     }
 
     /// <summary>
@@ -129,7 +222,7 @@ public class SeasonalEventService
     /// <returns>Record with event name + start/end date</returns>
     public List<SeasonalEvent> GetEventDetails()
     {
-        throw new NotImplementedException();
+        return _seasonalEventConfig.Events;
     }
 
     /// <summary>
@@ -140,7 +233,13 @@ public class SeasonalEventService
     /// <returns>true if related</returns>
     public bool IsQuestRelatedToEvent(string questId, SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        var eventQuestData = _questConfig.EventQuests.GetValueOrDefault(questId, null);
+        if (eventQuestData?.Season == eventType)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -148,7 +247,14 @@ public class SeasonalEventService
     /// </summary>
     public void EnableSeasonalEvents()
     {
-        throw new NotImplementedException();
+        if (_currentlyActiveEvents.Count > 0)
+        {
+            var globalConfig = _databaseService.GetGlobals().Configuration;
+            foreach (var activeEvent in _currentlyActiveEvents)
+            {
+                UpdateGlobalEvents(globalConfig, activeEvent);
+            }
+        }
     }
 
     /// <summary>
@@ -158,7 +264,17 @@ public class SeasonalEventService
     /// <returns>True if event was successfully force enabled</returns>
     public bool ForceSeasonalEvent(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        var globalConfig = _databaseService.GetGlobals().Configuration;
+        var seasonEvent = _seasonalEventConfig.Events.FirstOrDefault((e) => e.Type == eventType);
+        if (seasonEvent is null)
+        {
+            _logger.Warning($"Unable to force event: {eventType} as it cannot be found in events config");
+            return false;
+        }
+
+        UpdateGlobalEvents(globalConfig, seasonEvent);
+
+        return true;
     }
 
     /// <summary>
@@ -166,7 +282,25 @@ public class SeasonalEventService
     /// </summary>
     public void CacheActiveEvents()
     {
-        throw new NotImplementedException();
+        var currentDate = DateTimeOffset.UtcNow.DateTime;
+        var seasonalEvents = GetEventDetails();
+
+        // reset existing data
+        _currentlyActiveEvents = new();
+
+        // Add active events to array
+        foreach (var events in seasonalEvents)
+        {
+            if (!events.Enabled)
+            {
+                continue;
+            }
+
+            if (DateIsBetweenTwoDates(currentDate, events.StartMonth, events.StartDay, events.EndMonth, events.EndDay))
+            {
+                _currentlyActiveEvents.Add(events);
+            }
+        }
     }
 
     /// <summary>
@@ -175,7 +309,30 @@ public class SeasonalEventService
     /// <returns>Season enum value</returns>
     public Season GetActiveWeatherSeason()
     {
-        throw new NotImplementedException();
+        if (_weatherConfig.OverrideSeason.HasValue)
+        {
+            return _weatherConfig.OverrideSeason.Value;
+        }
+
+        var currentDate = new DateTime();
+        foreach (var seasonRange in _weatherConfig.SeasonDates)
+        {
+            if (
+                DateIsBetweenTwoDates(
+                    currentDate,
+                    seasonRange.StartMonth,
+                    seasonRange.StartDay,
+                    seasonRange.EndMonth,
+                    seasonRange.EndDay)
+            )
+            {
+                return seasonRange.SeasonType;
+            }
+        }
+
+        _logger.Warning(_localisationService.GetText("season-no_matching_season_found_for_date"));
+
+        return Season.SUMMER;
     }
 
     /// <summary>
@@ -189,9 +346,12 @@ public class SeasonalEventService
     /// <param name="endMonth">Upper bound for month</param>
     /// <param name="endDay">Upper bound for day</param>
     /// <returns>True when inside date range</returns>
-    protected bool DateIsBetweenTwoDates(DateTime dateToCheck, int startMonth, int startDay, int endMonth, int endDay)
+    private bool DateIsBetweenTwoDates(DateTime dateToCheck, int startMonth, int startDay, int endMonth, int endDay)
     {
-        throw new NotImplementedException();
+        var eventStartDate = new DateTime(dateToCheck.Year, startMonth, startDay);
+        var eventEndDate = new DateTime(dateToCheck.Year, endMonth, endDay, 23, 59, 0);
+
+        return dateToCheck >= eventStartDate && dateToCheck <= eventEndDate;
     }
 
     /// <summary>
@@ -199,9 +359,78 @@ public class SeasonalEventService
     /// </summary>
     /// <param name="botInventory">Bots inventory to iterate over</param>
     /// <param name="botRole">the role of the bot being processed</param>
-    public void RemoveChristmasItemsFromBotInventory(BotBaseInventory botInventory, string botRole)
+    public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
-        throw new NotImplementedException();
+        var christmasItems = GetChristmasEventItems();
+        List<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
+        List<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
+
+        // Remove christmas related equipment
+        foreach (var equipmentSlotKey in equipmentSlotsToFilter)
+        {
+            if (botInventory.Equipment[equipmentSlotKey] is null)
+            {
+                _logger.Warning(
+                    _localisationService.GetText("seasonal-missing_equipment_slot_on_bot", new
+                    {
+                        EquipmentSlot = equipmentSlotKey,
+                        BotRole = botRole,
+                    })
+                );
+            }
+
+            Dictionary<string, double> equipment = botInventory.Equipment[equipmentSlotKey];
+            botInventory.Equipment[equipmentSlotKey] = equipment.Where(i => !_christmasEventItems.Contains(i.Key)).ToDictionary();
+        }
+
+        // Remove christmas related loot from loot containers
+        var props = botInventory.Items.GetType().GetProperties();
+        foreach (var lootContainerKey in lootContainersToFilter)
+        {
+            var prop = (Dictionary<string, double>?)props.FirstOrDefault(p => p.Name.ToLower() == lootContainerKey.ToLower()).GetValue(botInventory.Items);
+
+            if (prop is null)
+            {
+                _logger.Warning(
+                    _localisationService.GetText("seasonal-missing_loot_container_slot_on_bot", new
+                    {
+                        LootContainer = lootContainerKey,
+                        BotRole = botRole,
+                    })
+                );
+            }
+
+            List<string> tplsToRemove = [];
+            foreach (var tplKey in prop)
+            {
+                if (christmasItems.Contains(tplKey.Key))
+                {
+                    tplsToRemove.Add(tplKey.Key);
+                }
+            }
+
+            foreach (var tplToRemove in tplsToRemove)
+            {
+                prop.Remove(tplToRemove);
+            }
+
+            // Get non-christmas items
+            var nonChristmasTpls = prop.Where(tpl => !christmasItems.Contains(tpl.Key));
+            if (nonChristmasTpls.Count() == 0)
+            {
+                continue;
+            }
+
+            Dictionary<string, double> intermediaryDict = new();
+
+            foreach (var tpl in nonChristmasTpls)
+            {
+                intermediaryDict[tpl.Key] = prop[tpl.Key];
+            }
+
+            // Replace the original containerItems with the updated one
+            prop = intermediaryDict;
+        }
     }
 
     /// <summary>
@@ -209,44 +438,229 @@ public class SeasonalEventService
     /// </summary>
     /// <param name="globalConfig">globals.json</param>
     /// <param name="event">Name of the event to enable. e.g. Christmas</param>
-    protected void UpdateGlobalEvents(Config globalConfig, SeasonalEvent eventType)
+    private void UpdateGlobalEvents(Config globalConfig, SeasonalEvent eventType)
     {
-        throw new NotImplementedException();
+        _logger.Success(_localisationService.GetText("season-event_is_active", eventType.Type));
+        _christmasEventActive = false;
+        _halloweenEventActive = false;
+
+        switch (eventType.Type)
+        {
+            case SeasonalEventType.Halloween:
+                ApplyHalloweenEvent(eventType, globalConfig);
+                break;
+            case SeasonalEventType.Christmas:
+                ApplyChristmasEvent(eventType, globalConfig);
+                break;
+            case SeasonalEventType.NewYears:
+                ApplyNewYearsEvent(eventType, globalConfig);
+
+                break;
+            case SeasonalEventType.AprilFools:
+                AddGifterBotToMaps();
+                AddLootItemsToGifterDropItemsList();
+                AddEventGearToBots(SeasonalEventType.Halloween);
+                AddEventGearToBots(SeasonalEventType.Christmas);
+                AddEventLootToBots(SeasonalEventType.Christmas);
+                AddEventBossesToMaps(SeasonalEventType.Halloween.ToString());
+                EnableHalloweenSummonEvent();
+                AddPumpkinsToScavBackpacks();
+                RenameBitcoin();
+                EnableSnow();
+                break;
+            default:
+                // Likely a mod event
+                HandleModEvent(eventType, globalConfig);
+                break;
+        }
     }
 
-    protected void ApplyHalloweenEvent(SeasonalEvent eventType, Config globalConfig)
+    private void ApplyHalloweenEvent(SeasonalEvent eventType, Config globalConfig)
     {
-        throw new NotImplementedException();
+        _halloweenEventActive = true;
+
+        globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
+        globalConfig.EventType.Add("Halloween");
+        globalConfig.EventType.Add("HalloweenIllumination");
+        globalConfig.Health.ProfileHealthSettings.DefaultStimulatorBuff = "Buffs_Halloween";
+        AddEventGearToBots(eventType.Type);
+        AdjustZryachiyMeleeChance();
+        if (eventType.Settings?.EnableSummoning ?? false)
+        {
+            EnableHalloweenSummonEvent();
+            AddEventBossesToMaps("halloweensummon");
+        }
+
+        if (eventType.Settings?.ZombieSettings?.Enabled ?? false)
+        {
+            ConfigureZombies(eventType.Settings.ZombieSettings);
+        }
+
+        if (eventType.Settings?.RemoveEntryRequirement is not null)
+        {
+            RemoveEntryRequirement(eventType.Settings.RemoveEntryRequirement);
+        }
+
+        if (eventType.Settings?.ReplaceBotHostility ?? false)
+        {
+            ReplaceBotHostility(_seasonalEventConfig.HostilitySettingsForEvent.FirstOrDefault(x => x.Key == "zombies").Value);
+        }
+
+        if (eventType.Settings?.AdjustBotAppearances ?? false)
+        {
+            AdjustBotAppearanceValues(eventType.Type);
+        }
+
+        AddPumpkinsToScavBackpacks();
+        AdjustTraderIcons(eventType.Type);
     }
 
-    protected void ApplyChristmasEvent(SeasonalEvent eventType, Config globalConfig)
+    private void ApplyChristmasEvent(SeasonalEvent eventType, Config globalConfig)
     {
-        throw new NotImplementedException();
+        _christmasEventActive = true;
+
+        if (eventType.Settings?.EnableChristmasHideout ?? false)
+        {
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
+            globalConfig.EventType.Add("Christmas");
+        }
+
+        AddEventGearToBots(eventType.Type);
+        AddEventLootToBots(eventType.Type);
+
+        if (eventType.Settings?.EnableSanta ?? false)
+        {
+            AddGifterBotToMaps();
+            AddLootItemsToGifterDropItemsList();
+        }
+
+        EnableDancingTree();
+        if (eventType.Settings?.AdjustBotAppearances ?? false)
+        {
+            AdjustBotAppearanceValues(eventType.Type);
+        }
     }
 
-    protected void ApplyNewYearsEvent(SeasonalEvent eventType, Config globalConfig)
+    private void ApplyNewYearsEvent(SeasonalEvent eventType, Config globalConfig)
     {
-        throw new NotImplementedException();
+        _christmasEventActive = true;
+
+        if (eventType.Settings?.EnableChristmasHideout ?? false)
+        {
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
+            globalConfig.EventType.Add("Christmas");
+        }
+
+        AddEventGearToBots(SeasonalEventType.Christmas);
+        AddEventLootToBots(SeasonalEventType.Christmas);
+
+        if (eventType.Settings?.EnableSanta ?? false)
+        {
+            AddGifterBotToMaps();
+            AddLootItemsToGifterDropItemsList();
+        }
+
+        EnableDancingTree();
+
+        if (eventType.Settings?.AdjustBotAppearances ?? false)
+        {
+            AdjustBotAppearanceValues(SeasonalEventType.Christmas);
+        }
     }
 
-    protected void AdjustBotAppearanceValues(SeasonalEventType season)
+    private void AdjustBotAppearanceValues(SeasonalEventType season)
     {
-        throw new NotImplementedException();
+        var adjustments = _seasonalEventConfig.BotAppearanceChanges[season];
+        if (adjustments is null)
+        {
+            return;
+        }
+
+        foreach (var botTypeKey in adjustments)
+        {
+            var botDb = _databaseService.GetBots().Types[botTypeKey.Key];
+            if (botDb is null)
+            {
+                continue;
+            }
+
+            var botAppearanceAdjustments = botTypeKey.Value;
+            foreach (var appearanceKey in botAppearanceAdjustments)
+            {
+                var weightAdjustments = appearanceKey.Value;
+                var props = botDb.BotAppearance.GetType().GetProperties();
+                foreach (var itemKey in weightAdjustments)
+                {
+                    var prop = props.FirstOrDefault(x => x.Name.ToLower() == appearanceKey.Key.ToLower());
+                    var propValue = (Dictionary<string, int>)prop.GetValue(botDb.BotAppearance);
+                    propValue[itemKey.Key] = weightAdjustments[itemKey.Key];
+                    prop.SetValue(botDb.BotAppearance, propValue);
+                }
+            }
+        }
     }
 
-    protected void ReplaceBotHostility(Dictionary<string, AdditionalHostilitySettings[]> hostilitySettings)
+    private void ReplaceBotHostility(Dictionary<string, List<AdditionalHostilitySettings>> hostilitySettings)
     {
-        throw new NotImplementedException();
+        var locations = _databaseService.GetLocations();
+        var ignoreList = _locationConfig.NonMaps;
+        var useDefault = hostilitySettings is null;
+
+        var props = locations.GetType().GetProperties();
+
+        foreach (var locationProp in props)
+        {
+            if (ignoreList.Contains(locationProp.Name))
+            {
+                continue;
+            }
+
+            Location location = (Location)locationProp.GetValue(locations);
+            if (location?.Base?.BotLocationModifier?.AdditionalHostilitySettings is null)
+            {
+                continue;
+            }
+
+            List<AdditionalHostilitySettings> newHostilitySettings = useDefault ? new() : hostilitySettings[locationProp.Name];
+            if (newHostilitySettings is null)
+            {
+                continue;
+            }
+
+            location.Base.BotLocationModifier.AdditionalHostilitySettings = new();
+        }
     }
 
-    protected void RemoveEntryRequirement(List<string> locationIds)
+    private void RemoveEntryRequirement(List<string> locationIds)
     {
-        throw new NotImplementedException();
+        foreach (var locationId in locationIds)
+        {
+            var location = _databaseService.GetLocation(locationId);
+            location.Base.AccessKeys = [];
+            location.Base.AccessKeysPvE = [];
+        }
     }
 
     public void GivePlayerSeasonalGifts(string sessionId)
     {
-        throw new NotImplementedException();
+        if (_currentlyActiveEvents is null)
+        {
+            return;
+        }
+
+        foreach (var seasonEvent in _currentlyActiveEvents)
+        {
+            switch (seasonEvent.Type)
+            {
+                case SeasonalEventType.Christmas:
+                    GiveGift(sessionId, "Christmas2022");
+                    break;
+                case SeasonalEventType.NewYears:
+                    GiveGift(sessionId, "NewYear2023");
+                    GiveGift(sessionId, "NewYear2024");
+                    break;
+            }
+        }
     }
 
     /// <summary>
@@ -254,7 +668,21 @@ public class SeasonalEventService
     /// </summary>
     protected void AdjustZryachiyMeleeChance()
     {
-        throw new NotImplementedException();
+        var zyrach = _databaseService.GetBots().Types.FirstOrDefault(x => x.Key.ToLower() == "bosszryachiy");
+        var value = new Dictionary<string, double>();
+
+        foreach (var chance in zyrach.Value.BotChances.EquipmentChances)
+        {
+            if (chance.Key.ToLower() == "Scabbard")
+            {
+                value.Add(chance.Key, 100);
+                continue;
+            }
+
+            value.Add(chance.Key, chance.Value);
+        }
+
+        zyrach.Value.BotChances.EquipmentChances = value;
     }
 
     /// <summary>
@@ -262,7 +690,7 @@ public class SeasonalEventService
     /// </summary>
     protected void EnableHalloweenSummonEvent()
     {
-        throw new NotImplementedException();
+        _databaseService.GetGlobals().Configuration.EventSettings.EventActive = true;
     }
 
     protected void ConfigureZombies(ZombieSettings zombieSettings)
@@ -319,7 +747,12 @@ public class SeasonalEventService
     /// </summary>
     protected void AddLootItemsToGifterDropItemsList()
     {
-        throw new NotImplementedException();
+        var gifterBot = _databaseService.GetBots().Types["gifter"];
+        var items = gifterBot.BotInventory.Items.Backpack.Keys.ToList();
+        gifterBot.BotDifficulty.Easy.Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty.Normal.Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty.Hard.Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty.Impossible.Patrol["ITEMS_TO_DROP"] = items;
     }
 
     /// <summary>
@@ -345,12 +778,16 @@ public class SeasonalEventService
     /// </summary>
     protected void AddPumpkinsToScavBackpacks()
     {
-        throw new NotImplementedException();
+        _databaseService.GetBots().Types["assault"].BotInventory.Items.Backpack[
+            ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER
+        ] = 400;
     }
 
     protected void RenameBitcoin()
     {
-        throw new NotImplementedException();
+        var enLocale = _databaseService.GetLocales().Global["en"];
+        enLocale[$"{ItemTpl.BARTER_PHYSICAL_BITCOIN} Name"] = "Physical SPT Coin";
+        enLocale[$"{ItemTpl.BARTER_PHYSICAL_BITCOIN} ShortName"] = "0.2SPT";
     }
 
     /// <summary>
@@ -381,7 +818,11 @@ public class SeasonalEventService
     /// <param name="giftKey">Key of gift to give</param>
     protected void GiveGift(string playerId, string giftKey)
     {
-        throw new NotImplementedException();
+        var gitftData = _giftService.GetGiftById(giftKey);
+        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(playerId, giftKey, gitftData.MaxToSendPlayer ?? 5))
+        {
+            _giftService.SendGiftToPlayer(playerId, giftKey);
+        }
     }
 
     /// <summary>
@@ -391,7 +832,7 @@ public class SeasonalEventService
     /// <returns>Bot role as string</returns>
     public string GetBaseRoleForEventBot(string eventBotRole)
     {
-        throw new NotImplementedException();
+        return _seasonalEventConfig.EventBotMapping.GetValueOrDefault(eventBotRole, null);
     }
 
     /// <summary>
@@ -399,6 +840,6 @@ public class SeasonalEventService
     /// </summary>
     public void EnableSnow()
     {
-        throw new NotImplementedException();
+        _weatherConfig.OverrideSeason = Season.WINTER;
     }
 }

@@ -34670,6 +34670,41 @@
         "MaxInLobby": 0,
         "MaxInRaid": 0,
         "TemplateId": "676aa450fe1fc45172014df2"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "5b7c710788a4506dec015957"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "5c093db286f7740a1b2617e3"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "5c0a840b86f7742ffa4f2482"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "5aafbcd986f7745e590fff23"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "59fb016586f7746d0d4b423a"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "59fb042886f7746c5005a7b2"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "5b6d9ce188a4501afc1b2b25"
       }
     ],
     "RunddansSettings": {

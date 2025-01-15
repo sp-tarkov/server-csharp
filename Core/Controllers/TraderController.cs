@@ -175,7 +175,7 @@ public class TraderController
                 _traderHelper.LevelUp(trader.Key, pmcData);
         }
 
-        // traders.Sort((a, b) => SortByTraderId(a, b));
+        traders.Sort((a, b) => SortByTraderId(a, b));
         return traders;
     }
 
@@ -185,11 +185,9 @@ public class TraderController
     /// <param name="traderA">First trader to compare</param>
     /// <param name="traderB">Second trader to compare</param>
     /// <returns>1,-1 or 0</returns>
-    private int SortByTraderId(
-        TraderBase traderA,
-        TraderBase traderB)
+    private int SortByTraderId(TraderBase traderA, TraderBase traderB)
     {
-        throw new NotImplementedException();
+        return string.Compare(traderA.Id, traderB.Id);
     }
 
     /// <summary>

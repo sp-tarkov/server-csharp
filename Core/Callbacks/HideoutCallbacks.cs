@@ -2,6 +2,7 @@ using Core.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
@@ -13,9 +14,9 @@ namespace Core.Callbacks;
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
 public class HideoutCallbacks : OnUpdate
 {
-    protected HideoutController _hideoutController;
-    protected ConfigServer _configServer;
-    protected HideoutConfig _hideoutConfig;
+    private readonly HideoutController _hideoutController;
+    private readonly ConfigServer _configServer;
+    private readonly HideoutConfig _hideoutConfig;
 
     public HideoutCallbacks
     (
@@ -31,227 +32,144 @@ public class HideoutCallbacks : OnUpdate
     /// <summary>
     /// Handle HideoutUpgrade event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-        // _hideoutController.StartUpgrade(pmcData, info, sessionID, output);
-        // TODO: HideoutController is not implemented rn
+         _hideoutController.StartUpgrade(pmcData, request, sessionID, output);
+
         return output;
     }
 
     /// <summary>
     /// Handle HideoutUpgradeComplete event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-        // _hideoutController.UpgradeComplete(pmcData, info, sessionID, output);
-        // TODO: HideoutController is not implemented rn
+         _hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
+
         return output;
     }
 
     /// <summary>
     /// Handle HideoutPutItemsInAreaSlots
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData info, string sessionID)
+    public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, string sessionID)
     {
-        // return _hideoutController.PutItemsInAreaSlots(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutTakeItemsFromAreaSlots event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData info, string sessionID)
+    public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, string sessionID)
     {
-        // return _hideoutController.TakeItemsFromAreaSlots(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutToggleArea event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData info, string sessionID)
+    public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, string sessionID)
     {
-        // return _hideoutController.ToggleArea(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.ToggleArea(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutSingleProductionStart event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData request, string sessionID)
     {
-        // return _hideoutController.SingleProductionStart(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.SingleProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutScavCaseProductionStart event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData info, string sessionID)
+    public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, string sessionID)
     {
-        // return _hideoutController.ScavCaseProductionStart(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutContinuousProductionStart
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData request, string sessionID)
     {
-        // return _hideoutController.ContinuousProductionStart(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutTakeProduction event
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData info, string sessionID)
+    public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, string sessionID)
     {
-        // return _hideoutController.TakeProduction(pmcData, info, sessionID);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.TakeProduction(pmcData, request, sessionID);
     }
 
     /// <summary>
     /// Handle HideoutQuickTimeEvent
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse HandleQTEEvent(PmcData pmcData, HandleQTEEventRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse HandleQTEEvent(PmcData pmcData, HandleQTEEventRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-        // _hideoutController.HandleQTEEventOutcome(sessionID, pmcData, info, output);
-        // TODO: HideoutController is not implemented rn
+         _hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
+
         return output;
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse RecordShootingRangePoints(PmcData pmcData, RecordShootingRangePoints info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse RecordShootingRangePoints(PmcData pmcData, RecordShootingRangePoints request, string sessionID, ItemEventRouterResponse output)
     {
-        // _hideoutController.RecordShootingRangePoints(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
+         _hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
+
         return output;
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData info, string sessionID)
+    public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, string sessionID)
     {
-        // return _hideoutController.ImproveArea(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.ImproveArea(sessionID, pmcData, request);
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - HideoutCancelProductionCommand
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutImproveAreaRequestData info, string sessionID)
+    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutImproveAreaRequestData request, string sessionID)
     {
-        // return _hideoutController.CancelProduction(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.CancelProduction(sessionID, pmcData, request);
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - HideoutCircleOfCultistProductionStart
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse CicleOfCultistProductionStart(PmcData pmcData, HideoutCircleOfCultistProductionStartRequestData info, string sessionID)
+    public ItemEventRouterResponse CicleOfCultistProductionStart(PmcData pmcData, HideoutCircleOfCultistProductionStartRequestData request, string sessionID)
     {
-        // return _hideoutController.CicleOfCultistProductionStart(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.CicleOfCultistProductionStart(sessionID, pmcData, request);
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - HideoutDeleteProductionCommand
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse HideoutDeleteProductionCommand(PmcData pmcData, HideoutDeleteProductionRequestData info, string sessionID)
+    public ItemEventRouterResponse HideoutDeleteProductionCommand(PmcData pmcData, HideoutDeleteProductionRequestData request, string sessionID)
     {
-        // return _hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
     }
 
     /// <summary>
     /// Handle client/game/profile/items/moving - HideoutCustomizationApply
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <returns></returns>
-    public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData info, string sessionID)
+    public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData request, string sessionID)
     {
-        // return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, info);
-        // TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
+    }
+
+    /**
+     * Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
+     */
+    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId) {
+        return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 
     public async Task<bool> OnUpdate(long timeSinceLastRun)
