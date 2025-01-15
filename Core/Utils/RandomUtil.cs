@@ -90,7 +90,7 @@ public class RandomUtil
     /// <param name="number">The number to calculate the percentage of.</param>
     /// <param name="toFixed">The number of decimal places to round the result to (default is 2).</param>
     /// <returns>The calculated percentage of the given number, rounded to the specified number of decimal places.</returns>
-    public float GetPercentOfValue(float percent, float number, int toFixed = 2)
+    public float GetPercentOfValue(double percent, double number, int toFixed = 2)
     {
         var num = percent * number / 100;
 

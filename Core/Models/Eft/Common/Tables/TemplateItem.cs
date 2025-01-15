@@ -546,7 +546,8 @@ public class Props
     public List<string>? ArmorZone { get; set; }
 
     [JsonPropertyName("armorClass")]
-    public object? ArmorClass { get; set; } // TODO: object here
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? ArmorClass { get; set; } // TODO: object here
 
     [JsonPropertyName("armorColliders")]
     public List<string>? ArmorColliders { get; set; }

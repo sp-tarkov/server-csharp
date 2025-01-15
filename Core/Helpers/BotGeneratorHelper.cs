@@ -1,23 +1,60 @@
 using Core.Annotations;
+using Core.Context;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Match;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class BotGeneratorHelper
 {
-    protected ConfigServer _configServer;
-    protected PmcConfig _pmcConfig;
+    private readonly ISptLogger<BotGeneratorHelper> _logger;
+    private readonly RandomUtil _randomUtil;
+    private readonly DatabaseService _databaseService;
+    private readonly DurabilityLimitsHelper _durabilityLimitsHelper;
+    private readonly ItemHelper _itemHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly ContainerHelper _containerHelper;
+    private readonly ApplicationContext _applicationContext;
+    private readonly LocalisationService _localisationService;
+    private readonly ConfigServer _configServer;
 
-    public BotGeneratorHelper(
+    private readonly BotConfig _botConfig;
+    private readonly PmcConfig _pmcConfig;
+
+    public BotGeneratorHelper
+    (
+        ISptLogger<BotGeneratorHelper> logger,
+        RandomUtil randomUtil,
+        DatabaseService databaseService,
+        DurabilityLimitsHelper durabilityLimitsHelper,
+        ItemHelper itemHelper,
+        InventoryHelper inventoryHelper,
+        ContainerHelper containerHelper,
+        ApplicationContext applicationContext,
+        LocalisationService localisationService,
         ConfigServer configServer
-        )
+    )
     {
+        _logger = logger;
+        _randomUtil = randomUtil;
+        _databaseService = databaseService;
+        _durabilityLimitsHelper = durabilityLimitsHelper;
+        _itemHelper = itemHelper;
+        _inventoryHelper = inventoryHelper;
+        _containerHelper = containerHelper;
+        _applicationContext = applicationContext;
+        _localisationService = localisationService;
         _configServer = configServer;
+
+        _botConfig = _configServer.GetConfig<BotConfig>();
         _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
@@ -30,7 +67,128 @@ public class BotGeneratorHelper
     /// <returns>Item Upd object with extra properties</returns>
     public Upd GenerateExtraPropertiesForItem(TemplateItem itemTemplate, string botRole = null)
     {
-        throw new NotImplementedException();
+        // Get raid settings, if no raid, default to day
+        var raidSettings = _applicationContext
+            .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
+            ?.GetValue<GetRaidConfigurationRequestData>();
+        var raidIsNight = raidSettings?.TimeVariant == DateTimeEnum.PAST;
+
+        Upd itemProperties = new();
+
+        if (itemTemplate.Properties.MaxDurability is not null)
+        {
+            if (itemTemplate.Properties.WeapClass is not null)
+            {
+                // Is weapon
+                itemProperties.Repairable = GenerateWeaponRepairableProperties(itemTemplate, botRole);
+            }
+            else if (itemTemplate.Properties.ArmorClass is not null)
+            {
+                // Is armor
+                itemProperties.Repairable = GenerateArmorRepairableProperties(itemTemplate, botRole);
+            }
+        }
+
+        if (itemTemplate.Properties.HasHinge ?? false)
+        {
+            itemProperties.Togglable = new() { On = true };
+        }
+
+        if (itemTemplate.Properties.Foldable ?? false)
+        {
+            itemProperties.Foldable = new() { Folded = false };
+        }
+
+        if (itemTemplate.Properties.WeapFireType?.Any() ?? false)
+        {
+            if (itemTemplate.Properties.WeapFireType.Contains("fullauto"))
+            {
+                itemProperties.FireMode = new() { FireMode = "fullauto" };
+            }
+            else
+            {
+                itemProperties.FireMode = new() { FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType) };
+            }
+        }
+
+        if (itemTemplate.Properties.MaxHpResource is not null)
+        {
+            itemProperties.MedKit = new()
+            {
+                HpResource = (int)GetRandomizedResourceValue(
+                    itemTemplate.Properties.MaxHpResource ?? 0,
+                    _botConfig.LootItemResourceRandomization[botRole]?.Meds
+                )
+            };
+        }
+
+        if (itemTemplate.Properties.MaxResource is not null && itemTemplate.Properties.FoodUseTime is not null)
+        {
+            itemProperties.FoodDrink = new()
+            {
+                HpPercent = (int)GetRandomizedResourceValue(
+                    itemTemplate.Properties.MaxResource ?? 0,
+                    _botConfig.LootItemResourceRandomization[botRole]?.Food
+                ),
+            };
+        }
+
+        if (itemTemplate.Parent == BaseClasses.FLASHLIGHT)
+        {
+            // Get chance from botconfig for bot type
+            var lightLaserActiveChance = raidIsNight
+                ? GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveNightChancePercent", 50)
+                : GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveDayChancePercent", 25);
+            itemProperties.Light = new()
+            {
+                IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
+                SelectedMode = 0,
+            };
+        }
+        else if (itemTemplate.Parent == BaseClasses.TACTICAL_COMBO)
+        {
+            // Get chance from botconfig for bot type, use 50% if no value found
+            var lightLaserActiveChance = GetBotEquipmentSettingFromConfig(
+                botRole,
+                "laserIsActiveChancePercent",
+                50
+            );
+            itemProperties.Light = new()
+            {
+                IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
+                SelectedMode = 0,
+            };
+        }
+
+        if (itemTemplate.Parent == BaseClasses.NIGHTVISION)
+        {
+            // Get chance from botconfig for bot type
+            var nvgActiveChance = raidIsNight
+                ? GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceNightPercent", 90)
+                : GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceDayPercent", 15);
+            itemProperties.Togglable = new()
+            {
+                On = _randomUtil.GetChance100(nvgActiveChance)
+            };
+        }
+
+        // Togglable face shield
+        if ((itemTemplate.Properties.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
+        {
+            // Get chance from botconfig for bot type, use 75% if no value found
+            var faceShieldActiveChance = GetBotEquipmentSettingFromConfig(
+                botRole,
+                "faceShieldIsActiveChancePercent",
+                75
+            );
+            itemProperties.Togglable = new()
+                {
+                    On = _randomUtil.GetChance100(faceShieldActiveChance)
+                }
+                ;
+        }
+
+        return itemProperties;
     }
 
     /// <summary>
@@ -41,7 +199,20 @@ public class BotGeneratorHelper
     /// <returns>Randomized value from maxHpResource</returns>
     protected double GetRandomizedResourceValue(double maxResource, RandomisedResourceValues randomizationValues)
     {
-        throw new NotImplementedException();
+        if (randomizationValues is null)
+        {
+            return maxResource;
+        }
+
+        if (_randomUtil.GetChance100(randomizationValues.ChanceMaxResourcePercent))
+        {
+            return maxResource;
+        }
+
+        return _randomUtil.GetInt(
+            (int)_randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
+            (int)maxResource
+        );
     }
 
     /// <summary>
@@ -53,7 +224,50 @@ public class BotGeneratorHelper
     /// <returns>Percent chance to be active</returns>
     protected double GetBotEquipmentSettingFromConfig(string botRole, string setting, double defaultValue)
     {
-        throw new NotImplementedException();
+        if (botRole is null)
+        {
+            return defaultValue;
+        }
+
+        var botEquipmentSettings = _botConfig.Equipment[GetBotEquipmentRole(botRole)];
+        if (botEquipmentSettings is null)
+        {
+            _logger.Warning(
+                _localisationService.GetText(
+                    "bot-missing_equipment_settings",
+                    new
+                    {
+                        BotRole = botRole,
+                        Setting = setting,
+                        DefaultValue = defaultValue
+                    }
+                )
+            );
+
+            return defaultValue;
+        }
+
+        var props = botEquipmentSettings.GetType().GetProperties();
+        var propValue = (double?)props.FirstOrDefault(x => x.Name.ToLower() == setting.ToLower()).GetValue(botEquipmentSettings);
+
+        if (propValue is null)
+        {
+            _logger.Warning(
+                _localisationService.GetText(
+                    "bot-missing_equipment_settings_property",
+                    new
+                    {
+                        BotRole = botRole,
+                        Setting = setting,
+                        DefaultValue = defaultValue
+                    }
+                )
+            );
+
+            return defaultValue;
+        }
+
+        return propValue ?? 0;
     }
 
     /// <summary>
@@ -62,9 +276,16 @@ public class BotGeneratorHelper
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected object GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string botRole = null)
+    protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string botRole = null)
     {
-        throw new NotImplementedException();
+        var maxDurability = _durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
+        var currentDurability = _durabilityLimitsHelper.GetRandomizedWeaponDurability(
+            itemTemplate,
+            botRole,
+            maxDurability
+        );
+
+        return new() { Durability = (int)currentDurability, MaxDurability = (int)maxDurability };
     }
 
     /// <summary>
@@ -73,9 +294,26 @@ public class BotGeneratorHelper
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    protected object GenerateArmorRepairableProperties(TemplateItem itemTemplate, string botRole = null)
+    protected UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string botRole = null)
     {
-        throw new NotImplementedException();
+        double? maxDurability = null;
+        double? currentDurability = null;
+        if (itemTemplate.Properties.ArmorClass == 0)
+        {
+            maxDurability = itemTemplate.Properties.MaxDurability;
+            currentDurability = itemTemplate.Properties.MaxDurability;
+        }
+        else
+        {
+            maxDurability = _durabilityLimitsHelper.GetRandomizedMaxArmorDurability(itemTemplate, botRole);
+            currentDurability = _durabilityLimitsHelper.GetRandomizedArmorDurability(
+                itemTemplate,
+                botRole,
+                maxDurability ?? 0
+            );
+        }
+
+        return new() { Durability = (int)currentDurability, MaxDurability = (int)maxDurability };
     }
 
     /// <summary>
@@ -99,7 +337,8 @@ public class BotGeneratorHelper
     {
         string[] pmcs = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
         return pmcs.Contains(
-            botRole.ToLower())
+            botRole.ToLower()
+        )
             ? "pmc"
             : botRole;
     }

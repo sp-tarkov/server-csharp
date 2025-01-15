@@ -296,37 +296,37 @@ public class EquipmentFilters
     /// Chance face shield is down/active
     /// </summary>
     [JsonPropertyName("faceShieldIsActiveChancePercent")]
-    public float? FaceShieldIsActiveChancePercent { get; set; }
+    public double? FaceShieldIsActiveChancePercent { get; set; }
 
     /// <summary>
     /// Chance gun flashlight is active during the day
     /// </summary>
     [JsonPropertyName("lightIsActiveDayChancePercent")]
-    public float? LightIsActiveDayChancePercent { get; set; }
+    public double? LightIsActiveDayChancePercent { get; set; }
 
     /// <summary>
     /// Chance gun flashlight is active during the night
     /// </summary>
     [JsonPropertyName("lightIsActiveNightChancePercent")]
-    public float? LightIsActiveNightChancePercent { get; set; }
+    public double? LightIsActiveNightChancePercent { get; set; }
 
     /// <summary>
     /// Chance gun laser is active during the day
     /// </summary>
     [JsonPropertyName("laserIsActiveChancePercent")]
-    public float? LaserIsActiveChancePercent { get; set; }
+    public double? LaserIsActiveChancePercent { get; set; }
 
     /// <summary>
     /// Chance NODS are down/active during the day
     /// </summary>
     [JsonPropertyName("nvgIsActiveChanceDayPercent")]
-    public float? NvgIsActiveChanceDayPercent { get; set; }
+    public double? NvgIsActiveChanceDayPercent { get; set; }
 
     /// <summary>
     /// Chance NODS are down/active during the night
     /// </summary>
     [JsonPropertyName("nvgIsActiveChanceNightPercent")]
-    public float? NvgIsActiveChanceNightPercent { get; set; }
+    public double? NvgIsActiveChanceNightPercent { get; set; }
 
     [JsonPropertyName("forceOnlyArmoredRigWhenNoArmor")]
     public bool? ForceOnlyArmoredRigWhenNoArmor { get; set; }
