@@ -54,6 +54,7 @@ public class BotWeaponGenerator
         LocalisationService localisationService,
         RepairService repairService,
         ICloner cloner,
+        ConfigServer configServer,
         IEnumerable<IInventoryMagGen> inventoryMagGenComponents
     )
     {
@@ -70,7 +71,8 @@ public class BotWeaponGenerator
         _localisationService = localisationService;
         _repairService = repairService;
         _cloner = cloner;
-
+        _configServer = configServer;
+        
         inventoryMagGenComponents.ToList()
             .Sort(
                 (a, b) =>
@@ -78,7 +80,7 @@ public class BotWeaponGenerator
                     b.GetPriority()
             );
         _inventoryMagGenComponents = inventoryMagGenComponents.ToList();
-
+        
         _botConfig = _configServer.GetConfig<BotConfig>();
         _pmcConfig = _configServer.GetConfig<PmcConfig>();
         _repairConfig = _configServer.GetConfig<RepairConfig>();
