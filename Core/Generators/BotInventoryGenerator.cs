@@ -18,38 +18,66 @@ public class BotInventoryGenerator
 {
     private readonly ILogger _logger;
     private readonly HashUtil _hashUtil;
-    private readonly BotLootGenerator _botLootGenerator;
-    private readonly BotHelper _botHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly WeatherHelper _weatherHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly ConfigServer _configServer;
+    private readonly RandomUtil _randomUtil;
+    private readonly DatabaseService _databaseService;
     private readonly ApplicationContext _applicationContext;
+    private readonly BotWeaponGenerator _botWeaponGenerator;
+    private readonly BotLootGenerator _botLootGenerator;
+    private readonly BotGeneratorHelper _botGeneratorHelper;
+    private readonly ProfileHelper _profileHelper;
+    private readonly BotHelper _botHelper;
+    private readonly WeightedRandomHelper _weightedRandomHelper;
+    private readonly ItemHelper _itemHelper;
+    private readonly WeatherHelper _weatherHelper;
+    private readonly LocalisationService _localisationService;
+    private readonly BotEquipmentFilterService _botEquipmentFilterService;
+    private readonly BotEquipmentModPoolService _botEquipmentModPoolService;
+    private readonly BotEquipmentModGenerator _botEquipmentModGenerator;
+    private readonly ConfigServer _configServer;
+
     private BotConfig _botConfig;
 
     public BotInventoryGenerator(
         ILogger logger,
         HashUtil hashUtil,
+        RandomUtil randomUtil,
+        DatabaseService databaseService,
+        ApplicationContext applicationContext,
+        BotWeaponGenerator botWeaponGenerator,
         BotLootGenerator botLootGenerator,
-        BotHelper botHelper,
         BotGeneratorHelper botGeneratorHelper,
-        WeatherHelper weatherHelper,
         ProfileHelper profileHelper,
-        ConfigServer configServer,
-        ApplicationContext applicationContext
-        )
+        BotHelper botHelper,
+        WeightedRandomHelper weightedRandomHelper,
+        ItemHelper itemHelper,
+        WeatherHelper weatherHelper,
+        LocalisationService localisationService,
+        BotEquipmentFilterService botEquipmentFilterService,
+        BotEquipmentModPoolService botEquipmentModPoolService,
+        BotEquipmentModGenerator botEquipmentModGenerator,
+        ConfigServer configServer
+    )
     {
         _logger = logger;
         _hashUtil = hashUtil;
-        _botLootGenerator = botLootGenerator;
-        _botHelper = botHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _weatherHelper = weatherHelper;
-        _profileHelper = profileHelper;
-        _configServer = configServer;
+        _randomUtil = randomUtil;
+        _databaseService = databaseService;
         _applicationContext = applicationContext;
+        _botWeaponGenerator = botWeaponGenerator;
+        _botLootGenerator = botLootGenerator;
+        _botGeneratorHelper = botGeneratorHelper;
+        _profileHelper = profileHelper;
+        _botHelper = botHelper;
+        _weightedRandomHelper = weightedRandomHelper;
+        _itemHelper = itemHelper;
+        _weatherHelper = weatherHelper;
+        _localisationService = localisationService;
+        _botEquipmentFilterService = botEquipmentFilterService;
+        _botEquipmentModPoolService = botEquipmentModPoolService;
+        _botEquipmentModGenerator = botEquipmentModGenerator;
+        _configServer = configServer;
 
-        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _botConfig = _configServer.GetConfig<BotConfig>();
     }
 
     /// <summary>
