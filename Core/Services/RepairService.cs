@@ -5,6 +5,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
 using Core.Models.Enums;
+using BonusSettings = Core.Models.Spt.Config.BonusSettings;
 
 namespace Core.Services;
 

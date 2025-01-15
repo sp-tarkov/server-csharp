@@ -1,20 +1,55 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotWeaponGenerator
 {
+    private readonly ILogger _logger;
+    private readonly HashUtil _hashUtil;
+    private readonly RandomUtil _randomUtil;
+    private readonly LocalisationService _localisationService;
+    private readonly ItemHelper _itemHelper;
+    private readonly BotGeneratorHelper _botGeneratorHelper;
+    private readonly WeightedRandomHelper _weightedRandomHelper;
+    private readonly RepairService _repairService;
+    private readonly ConfigServer _configServer;
     private const string _modMagazineSlotId = "mod_magazine";
     private BotConfig _botConfig;
     private PmcConfig _pmcConfig;
     private RepairConfig _repairConfig;
 
-    public BotWeaponGenerator()
+    public BotWeaponGenerator(
+        ILogger logger,
+        HashUtil hashUtil,
+        RandomUtil randomUtil,
+        LocalisationService localisationService,
+        ItemHelper itemHelper,
+        BotGeneratorHelper botGeneratorHelper,
+        WeightedRandomHelper weightedRandomHelper,
+        RepairService repairService,
+        ConfigServer configServer)
     {
+        _logger = logger;
+        _hashUtil = hashUtil;
+        _randomUtil = randomUtil;
+        _localisationService = localisationService;
+        _itemHelper = itemHelper;
+        _botGeneratorHelper = botGeneratorHelper;
+        _weightedRandomHelper = weightedRandomHelper;
+        _repairService = repairService;
+        _configServer = configServer;
+
+        _botConfig = _configServer.GetConfig<BotConfig>();
     }
 
     /// <summary>
@@ -29,10 +64,20 @@ public class BotWeaponGenerator
     /// <param name="isPmc">Is weapon generated for a pmc</param>
     /// <param name="botLevel"></param>
     /// <returns>GenerateWeaponResult object</returns>
-    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotTypeInventory botTemplateInventory, string weaponParentId,
+    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, EquipmentSlots equipmentSlot, BotTypeInventory botTemplateInventory, string weaponParentId,
         Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
-        throw new NotImplementedException();
+        var weaponTpl = PickWeightedWeaponTemplateFromPool(equipmentSlot, botTemplateInventory);
+        return GenerateWeaponByTpl(
+            sessionId,
+            weaponTpl,
+            equipmentSlot,
+            botTemplateInventory,
+            weaponParentId,
+            modChances,
+            botRole,
+            isPmc,
+            botLevel);
     }
 
     /// <summary>
@@ -41,9 +86,10 @@ public class BotWeaponGenerator
     /// <param name="equipmentSlot">Primary/secondary/holster</param>
     /// <param name="botTemplateInventory">e.g. assault.json</param>
     /// <returns>Weapon template</returns>
-    public string PickWeightedWeaponTemplateFromPool(string equipmentSlot, BotTypeInventory botTemplateInventory)
+    public string PickWeightedWeaponTemplateFromPool(EquipmentSlots equipmentSlot, BotTypeInventory botTemplateInventory)
     {
-        throw new NotImplementedException();
+        var weaponPool = botTemplateInventory.Equipment[equipmentSlot];
+        return _weightedRandomHelper.GetWeightedValue(weaponPool);
     }
 
     /// <summary>
@@ -59,9 +105,46 @@ public class BotWeaponGenerator
     /// <param name="isPmc">Is weapon being generated for a PMC.</param>
     /// <param name="botLevel">The level of the bot.</param>
     /// <returns>GenerateWeaponResult object.</returns>
-    public GenerateWeaponResult GenerateWeaponByTpl(string sessionId, string weaponTpl, string slotName, BotBaseInventory botTemplateInventory,
+    public GenerateWeaponResult? GenerateWeaponByTpl(string sessionId, string weaponTpl, EquipmentSlots slotName, BotTypeInventory botTemplateInventory,
         string weaponParentId, Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
+        var modPool = botTemplateInventory.Mods;
+        var weaponItemTemplate = _itemHelper.GetItem(weaponTpl).Value;
+
+        if (weaponItemTemplate is null)
+        {
+            _logger.Error(_localisationService.GetText("bot-missing_item_template", weaponTpl));
+            _logger.Error($"WeaponSlot-> { slotName}");
+
+            return null;
+        }
+
+        // Find ammo to use when filling magazines/chamber
+        if (botTemplateInventory.Ammo is not null)
+        {
+            _logger.Error(_localisationService.GetText("bot-no_ammo_found_in_bot_json", botRole));
+            _logger.Error(_localisationService.GetText("bot-generation_failed"));
+
+            return null;
+        }
+        var ammoTpl = GetWeightedCompatibleAmmo(botTemplateInventory.Ammo, weaponItemTemplate);
+
+        // Create with just base weapon item
+        var weaponWithModsArray = ConstructWeaponBaseList(
+            weaponTpl,
+            weaponParentId,
+            slotName,
+            weaponItemTemplate,
+            botRole);
+
+        // Chance to add randomised weapon enhancement
+        if (isPmc && _randomUtil.GetChance100(_pmcConfig.WeaponHasEnhancementChancePercent))
+        {
+            // Add buff to weapon root
+            _repairService.AddBuff(_repairConfig.RepairKit.Weapon, weaponWithModsArray[0]);
+        }
+        
+
         throw new NotImplementedException();
     }
 
@@ -87,10 +170,20 @@ public class BotWeaponGenerator
     /// <param name="weaponItemTemplate">Database template for weapon</param>
     /// <param name="botRole">For durability values</param>
     /// <returns>Base weapon item in a list</returns>
-    protected List<Item> ConstructWeaponBaseList(string weaponTemplate, string weaponParentId, string equipmentSlot, TemplateItem weaponItemTemplate,
+    protected List<Item> ConstructWeaponBaseList(string weaponTemplate, string weaponParentId, EquipmentSlots equipmentSlot, TemplateItem weaponItemTemplate,
         string botRole)
     {
-        throw new NotImplementedException();
+        return
+        [
+            new()
+            {
+                Id = _hashUtil.Generate(),
+                Template = weaponTemplate,
+                ParentId = weaponParentId,
+                SlotId = equipmentSlot.ToString(),
+                Upd = _botGeneratorHelper.GenerateExtraPropertiesForItem(weaponItemTemplate, botRole)
+            }
+        ];
     }
 
     /// <summary>
