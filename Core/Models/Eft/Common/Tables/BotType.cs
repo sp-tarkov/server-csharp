@@ -313,7 +313,7 @@ public class GenerationData
 
 public class GenerationWeightingItems
 {
-    [JsonPropertyName("greandes")]
+    [JsonPropertyName("grenades")]
     public GenerationData Grenades { get; set; }
     
     [JsonPropertyName("healing")]
