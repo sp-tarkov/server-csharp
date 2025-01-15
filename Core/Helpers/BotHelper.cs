@@ -1,8 +1,12 @@
 using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Match;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Servers;
 using Core.Services;
+using Core.Utils;
 using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Helpers;
@@ -12,14 +16,30 @@ public class BotHelper
 {
     private readonly ILogger _logger;
     private readonly DatabaseService _databaseService;
+    private readonly RandomUtil _randomUtil;
+    private readonly ConfigServer _configServer;
 
-    public BotHelper(
+    private readonly BotConfig _botConfig;
+    private readonly PmcConfig _pmcConfig;
+
+    private readonly List<string> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+
+    public BotHelper
+    (
         ILogger logger,
-        DatabaseService databaseService)
+        DatabaseService databaseService,
+        RandomUtil randomUtil,
+        ConfigServer configServer
+    )
     {
         _logger = logger;
         _databaseService = databaseService;
+        _randomUtil = randomUtil;
+        _configServer = configServer;
+        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _pmcConfig = configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
     }
+
     /// <summary>
     /// Get a template object for the specified botRole from bots.types db
     /// </summary>
@@ -44,17 +64,17 @@ public class BotHelper
     /// <returns>true if is pmc</returns>
     public bool IsBotPmc(string botRole)
     {
-        throw new NotImplementedException();
+        return _pmcNames.Contains(botRole?.ToLower());
     }
 
     public bool IsBotBoss(string botRole)
     {
-        throw new NotImplementedException();
+        return _botConfig.Bosses.Any(x => x.ToLower() == botRole.ToLower());
     }
 
     public bool IsBotFollower(string botRole)
     {
-        throw new NotImplementedException();
+        return botRole?.ToLower().StartsWith("follower") ?? false;
     }
 
     /// <summary>
@@ -64,7 +84,15 @@ public class BotHelper
     /// <param name="typeToAdd">bot type to add to friendly list</param>
     public void AddBotToFriendlyList(DifficultyCategories difficultySettings, string typeToAdd)
     {
-        throw new NotImplementedException();
+        var friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
+
+        // Null guard
+        if (difficultySettings.Mind[friendlyBotTypesKey] is null)
+        {
+            difficultySettings.Mind[friendlyBotTypesKey] = new List<string>();
+        }
+
+        ((List<string>)difficultySettings.Mind[friendlyBotTypesKey]).Add(typeToAdd);
     }
 
     /// <summary>
@@ -74,17 +102,44 @@ public class BotHelper
     /// <param name="typesToAdd">bot type to add to revenge list</param>
     public void AddBotToRevengeList(DifficultyCategories difficultySettings, string[] typesToAdd)
     {
-        throw new NotImplementedException();
+        var revengePropKey = "REVENGE_BOT_TYPES";
+
+        // Nothing to add
+        if (typesToAdd is null)
+        {
+            return;
+        }
+
+        // Null guard
+        if (difficultySettings.Mind[revengePropKey] is null)
+        {
+            difficultySettings.Mind[revengePropKey] = new List<string>();
+        }
+
+        var revengeArray = (List<string>)difficultySettings.Mind[revengePropKey];
+        foreach (var botTypeToAdd in typesToAdd)
+        {
+            if (!revengeArray.Contains(botTypeToAdd))
+            {
+                revengeArray.Add(botTypeToAdd);
+            }
+        }
     }
 
     public bool RollChanceToBePmc(MinMax botConvertMinMax)
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetChance100(_randomUtil.GetInt((int)botConvertMinMax.Min, (int)botConvertMinMax.Max));
     }
 
-    protected void GetPmcConversionValuesForLocation(string location)
+    protected Dictionary<string, MinMax> GetPmcConversionValuesForLocation(string location)
     {
-        throw new NotImplementedException();
+        var result = _pmcConfig.ConvertIntoPmcChance[location.ToLower()];
+        if (result is null)
+        {
+            _pmcConfig.ConvertIntoPmcChance = new();
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -94,7 +149,10 @@ public class BotHelper
     /// <returns>True if role is PMC</returns>
     public bool BotRoleIsPmc(string botRole)
     {
-        throw new NotImplementedException();
+        List<string> ListToCheck = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
+        return ListToCheck.Contains(
+            botRole.ToLower()
+        );
     }
 
     /// <summary>
@@ -105,7 +163,15 @@ public class BotHelper
     /// <returns>RandomisationDetails</returns>
     public RandomisationDetails GetBotRandomizationDetails(int botLevel, EquipmentFilters botEquipConfig)
     {
-        throw new NotImplementedException();
+        // No randomisation details found, skip
+        if (botEquipConfig is null || botEquipConfig.Randomisation is null)
+        {
+            return null;
+        }
+
+        return botEquipConfig.Randomisation.FirstOrDefault(
+            (randDetails) => botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
+        );
     }
 
     /// <summary>
@@ -114,7 +180,7 @@ public class BotHelper
     /// <returns>pmc role</returns>
     public string GetRandomizedPmcRole()
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? _pmcConfig.UsecType : _pmcConfig.BearType;
     }
 
     /// <summary>
@@ -124,7 +190,13 @@ public class BotHelper
     /// <returns>side (usec/bear)</returns>
     public string GetPmcSideByRole(string botRole)
     {
-        throw new NotImplementedException();
+        if (_pmcConfig.BearType.ToLower() == botRole.ToLower())
+            return "Bear";
+        
+        if (_pmcConfig.UsecType.ToLower() == botRole.ToLower())
+            return "Usec";
+
+        return GetRandomizedPmcSide();
     }
 
     /// <summary>
@@ -133,7 +205,7 @@ public class BotHelper
     /// <returns>pmc side as string</returns>
     protected string GetRandomizedPmcSide()
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? "Usec" : "Bear";
     }
 
     /// <summary>
@@ -144,6 +216,15 @@ public class BotHelper
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string side = null)
     {
-        throw new NotImplementedException();
+        var randomType = (side is not null) ? side : (_randomUtil.GetInt(0, 1) == 0) ? "usec" : "bear";
+        var allNames = _databaseService.GetBots().Types[randomType.ToLower()].FirstNames;
+        var filteredNames = allNames.Where((name) => name.Length <= maxLength);
+        if (filteredNames.Count() == 0) {
+            _logger.Warning($"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n");
+
+            return _randomUtil.GetStringCollectionValue(allNames);
+        }
+
+        return _randomUtil.GetStringCollectionValue(filteredNames);
     }
 }
