@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Generators;
@@ -15,7 +15,7 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, int> GeneratePMCPocketLootPool(string botRole)
+    public Dictionary<string, double> GeneratePMCPocketLootPool(string botRole)
     {
         throw new NotImplementedException();
     }
@@ -25,7 +25,7 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, int> GeneratePMCVestLootPool(string botRole)
+    public Dictionary<string, double> GeneratePMCVestLootPool(string botRole)
     {
         throw new NotImplementedException();
     }
@@ -57,7 +57,7 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, int> GeneratePMCBackpackLootPool(string botRole)
+    public Dictionary<string, double> GeneratePMCBackpackLootPool(string botRole)
     {
         throw new NotImplementedException();
     }
