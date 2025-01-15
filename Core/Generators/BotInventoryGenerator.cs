@@ -359,7 +359,7 @@ public class BotInventoryGenerator
         var tacVestsWithArmor = templateEquipment[EquipmentSlots.TacticalVest].Where(kvp => _itemHelper.ItemHasSlots(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-        if (tacVestsWithArmor.Count() == 0)
+        if (!tacVestsWithArmor.Any())
         {
             _logger.Debug($"Unable to filter to only armored rigs as bot: {botRole} has none in pool");
 
@@ -381,7 +381,7 @@ public class BotInventoryGenerator
         var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest].Where(kvp => !_itemHelper.ItemHasSlots(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-        if (!allowEmptyResult && tacVestsWithoutArmor.Count() == 0)
+        if (!allowEmptyResult && !tacVestsWithoutArmor.Any())
         {
             _logger.Debug($"Unable to filter to only unarmored rigs as bot: {botRole} has none in pool");
 
@@ -398,13 +398,12 @@ public class BotInventoryGenerator
     /// <returns>true when item added</returns>
     public bool GenerateEquipment(GenerateEquipmentProperties settings)
     {
-        _logger.Error("NOT IMPLEMENTED - GenerateEquipment");
         List<string> slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
         double? spawnChance = slotsToCheck.Contains(settings.RootEquipmentSlot.ToString())
             ? 100
-            : settings.SpawnChances.EquipmentChances[settings.RootEquipmentSlot.ToString()];
+            : settings.SpawnChances.EquipmentChances.GetValueOrDefault(settings.RootEquipmentSlot.ToString());
 
-        if (spawnChance is null)
+        if (!spawnChance.HasValue)
         {
             _logger.Warning(_localisationService.GetText("bot-no_spawn_chance_defined_for_equipment_slot",
                 settings.RootEquipmentSlot));
@@ -414,22 +413,22 @@ public class BotInventoryGenerator
 
         // Roll dice on equipment item
         var shouldSpawn = _randomUtil.GetChance100(spawnChance ?? 0);
-        if (shouldSpawn && settings.RootEquipmentPool.Count() == 0)
+        if (shouldSpawn && !settings.RootEquipmentPool.Any())
         {
-            TemplateItem pickedItemDb = new TemplateItem();
+            var pickedItemDb = new TemplateItem();
             var found = false;
 
-            // Limit attempts to find a compatible item as its expensive to check them all
+            // Limit attempts to find a compatible item as it's expensive to check them all
             var maxAttempts = Math.Round(settings.RootEquipmentPool.Count() * 0.75); // Roughly 75% of pool size
             var attempts = 0;
             while (!found)
             {
-                if (settings.RootEquipmentPool.Count() == 0)
+                if (!settings.RootEquipmentPool.Any())
                 {
                     return false;
                 }
 
-                var chosenItemTpl = _weightedRandomHelper.GetWeightedValue<string>(settings.RootEquipmentPool);
+                var chosenItemTpl = _weightedRandomHelper.GetWeightedValue(settings.RootEquipmentPool);
                 var dbResult = _itemHelper.GetItem(chosenItemTpl);
 
                 if (!dbResult.Key)
@@ -490,8 +489,8 @@ public class BotInventoryGenerator
             );
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
-            if ((_botConfig.Equipment[settings.BotData.EquipmentRole] is not null) &&
-                (settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString())))
+            if (_botConfig.Equipment[settings.BotData.EquipmentRole] is not null &&
+                settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString()))
             {
                 // Filter out mods from relevant blacklist
                 settings.ModPool[pickedItemDb.Id] = GetFilteredDynamicModsForItem(
@@ -501,7 +500,7 @@ public class BotInventoryGenerator
             }
 
             // Does item have slots for sub-mods to be inserted into
-            if (pickedItemDb.Properties.Slots?.Count() > 0 && (settings.GenerateModsBlacklist.Contains(pickedItemDb.Id)))
+            if (pickedItemDb.Properties.Slots.Any() && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
                     [item],
