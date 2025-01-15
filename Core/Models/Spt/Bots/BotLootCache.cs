@@ -44,7 +44,7 @@ public class BotLootCache
     public Dictionary<string, int>? GrenadeItems { get; set; }
 }
 
-public static class LootCacheType
+public class LootCacheType
 {
     public const string Special = "Special";
     public const string Backpack = "Backpack";

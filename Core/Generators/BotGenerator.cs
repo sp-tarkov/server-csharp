@@ -435,8 +435,8 @@ public class BotGenerator
     {
         // Adjust pocket loot weights to allow for 5 or 6 items
         var pocketWeights = botJsonTemplate.BotGeneration.Items["pocketLoot"].Weights;
-        pocketWeights["5"] = 1;
-        pocketWeights["6"] = 1;
+        pocketWeights[5] = 1;
+        pocketWeights[6] = 1;
     }
 
     /// <summary>

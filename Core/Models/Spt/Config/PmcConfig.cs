@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
@@ -79,10 +79,10 @@ public class PmcConfig : BaseConfig
     public List<MinMaxLootValue> MaxBackpackLootTotalRub { get; set; }
 
     [JsonPropertyName("maxPocketLootTotalRub")]
-    public double MaxPocketLootTotalRub { get; set; }
+    public int MaxPocketLootTotalRub { get; set; }
 
     [JsonPropertyName("maxVestLootTotalRub")]
-    public double MaxVestLootTotalRub { get; set; }
+    public int MaxVestLootTotalRub { get; set; }
 
     /** Percentage chance a bot from a wave is converted into a PMC, first key = map, second key = bot wildspawn type (assault/exusec), value: min+max chance to be converted */
     [JsonPropertyName("convertIntoPmcChance")]
@@ -117,7 +117,7 @@ public class PmcConfig : BaseConfig
     public int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
     
     [JsonPropertyName("lootItemLimitsRub")]
-    public List<MinMaxLootValue>? LootItemLimitsRub { get; set; }
+    public List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
 }
 
 public class HostilitySettings
@@ -171,13 +171,16 @@ public class MinMaxLootValue : MinMax
 {
     [JsonPropertyName("value")]
     public double Value { get; set; }
-    
+}
+
+public class MinMaxLootItemValue : MinMax
+{
     [JsonPropertyName("backpack")]
     public MinMax Backpack { get; set; }
-    
+
     [JsonPropertyName("pocket")]
     public MinMax Pocket { get; set; }
-    
+
     [JsonPropertyName("vest")]
     public MinMax Vest { get; set; }
 }

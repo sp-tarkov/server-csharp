@@ -303,7 +303,7 @@ public class GenerationData
 {
     /** key: number of items, value: weighting */
     [JsonPropertyName("weights")]
-    public Dictionary<string, double>? Weights { get; set; }
+    public Dictionary<int, int>? Weights { get; set; }
 
     /** Array of item tpls */
     [JsonPropertyName("whitelist")]

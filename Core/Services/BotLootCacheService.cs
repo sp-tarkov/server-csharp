@@ -1,6 +1,7 @@
 using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
+using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Utils.Cloners;
@@ -54,7 +55,8 @@ public class BotLootCacheService
         string botRole,
         bool isPmc,
         string lootType,
-        BotType botJsonTemplate)
+        BotType botJsonTemplate,
+        MinMax? itemPriceMinMax = null)
     {
         throw new NotImplementedException();
     }
