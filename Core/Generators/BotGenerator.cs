@@ -495,9 +495,9 @@ public class BotGenerator
         var chosenBodyTemplate = _databaseService.GetCustomization()[bot.Customization.Body];
 
         // Some bodies have matching hands, look up body to see if this is the case
-        var chosenBody = bodyGlobalDictDb[chosenBodyTemplate?.Name.Trim()];
-        bot.Customization.Hands = chosenBody?.IsNotRandom ?? false
-            ? chosenBody.Hands // Has fixed hands for chosen body, update to match
+        var chosenBody = bodyGlobalDictDb.FirstOrDefault(c => c.Key == chosenBodyTemplate?.Name.Trim());
+        bot.Customization.Hands = chosenBody.Value.IsNotRandom ?? false
+            ? chosenBody.Value.Hands // Has fixed hands for chosen body, update to match
             : _weightedRandomHelper.GetWeightedValue<string>(appearance.Hands); // Hands can be random, choose any from weighted dict
     }
 

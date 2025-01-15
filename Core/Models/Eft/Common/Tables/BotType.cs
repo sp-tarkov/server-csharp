@@ -348,6 +348,9 @@ public class GenerationWeightingItems
     
     [JsonPropertyName("specialItems")]
     public GenerationData SpecialItems { get; set; }
+    
+    [JsonPropertyName("looseLoot")]
+    public GenerationData LooseLoot { get; set; }
 }
 
 public class BotTypeHealth
