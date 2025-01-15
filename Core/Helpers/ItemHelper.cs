@@ -173,7 +173,7 @@ public class ItemHelper
     // @returns Does item have the possibility ot need soft inserts
     public bool ArmorItemCanHoldMods(string itemTpl)
     {
-        throw new NotImplementedException();
+        return IsOfBaseclasses(itemTpl, [BaseClasses.HEADWEAR, BaseClasses.VEST, BaseClasses.ARMOR]);
     }
 
     // Does the provided item tpl need soft/removable inserts to function
@@ -274,17 +274,23 @@ public class ItemHelper
     /// <returns>List of TemplateItem objects</returns>
     public List<TemplateItem> GetItems()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_databaseService.GetItems().Values).ToList();
     }
 
     /**
- * Gets item data from items.json
- * @param tpl items template id to look up
- * @returns bool - is valid + template item object as array
- */
-    public KeyValuePair<bool, TemplateItem> GetItem(string tpl)
+     * Gets item data from items.json
+     * @param tpl items template id to look up
+     * @returns bool - is valid + template item object as array
+     */
+    public KeyValuePair<bool, TemplateItem?> GetItem(string tpl)
     {
-        throw new NotImplementedException();
+        // -> Gets item from <input: _tpl>
+        if (_databaseService.GetItems().Keys.Contains(tpl))
+        {
+            return new(true, _databaseService.GetItems()[tpl]);
+        }
+
+        return new(false, null);
     }
 
     /**
@@ -294,7 +300,7 @@ public class ItemHelper
      */
     public bool ItemHasSlots(string itemTpl)
     {
-        throw new NotImplementedException();
+        return GetItem(itemTpl).Value.Properties.Slots?.Count() > 0;
     }
 
     /**
@@ -354,7 +360,19 @@ public class ItemHelper
      */
     public List<string> FindAndReturnChildrenByItems(List<Item> items, string baseItemId)
     {
-        throw new NotImplementedException();
+        List<string> list = [];
+
+        foreach (var childitem in items)
+        {
+            if (childitem.ParentId == baseItemId)
+            {
+                list.AddRange(FindAndReturnChildrenByItems(items, childitem.Id));
+            }
+        }
+
+        list.Add(baseItemId); // Required, push original item id onto array
+
+        return list;
     }
 
     /**
@@ -366,7 +384,30 @@ public class ItemHelper
      */
     public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
     {
-        throw new NotImplementedException();
+        List<Item> list = [];
+        foreach (var childItem in items)
+        {
+            // Include itself
+            if (childItem.Id == baseItemId)
+            {
+                list.Insert(0, childItem);
+                continue;
+            }
+
+            // Is stored in parent and disallowed
+            if (modsOnly && childItem.Location is not null)
+            {
+                continue;
+            }
+
+            // Items parentid matches root item AND returned items doesnt contain current child
+            if (childItem.ParentId == baseItemId && !list.Any((item) => childItem.Id == item.Id))
+            {
+                list.AddRange(FindAndReturnChildrenAsItems(items, childItem.Id));
+            }
+        }
+
+        return list;
     }
 
     /**
@@ -407,7 +448,14 @@ public class ItemHelper
     /// <returns>SlotId OR slotid, locationX, locationY.</returns>
     public string GetChildId(Item item)
     {
-        throw new NotImplementedException();
+        if (item.Location is null)
+        {
+            return item.SlotId;
+        }
+        
+        var LocationTyped = (ItemLocation)item.Location;
+
+        return $"{item.SlotId},{LocationTyped.X},{LocationTyped.Y}";
     }
 
     /// <summary>
@@ -427,7 +475,36 @@ public class ItemHelper
     /// <returns>List of root item + children.</returns>
     public List<Item> SplitStack(Item itemToSplit)
     {
-        throw new NotImplementedException();
+        if (itemToSplit?.Upd?.StackObjectsCount is null)
+        {
+            return [itemToSplit];
+        }
+
+        var maxStackSize = GetItem(itemToSplit.Template).Value.Properties.StackMaxSize;
+        var remainingCount = itemToSplit.Upd.StackObjectsCount;
+        List<Item> rootAndChildren = [];
+
+        // If the current count is already equal or less than the max
+        // return the item as is.
+        if (remainingCount <= maxStackSize)
+        {
+            rootAndChildren.Add(_cloner.Clone(itemToSplit));
+
+            return rootAndChildren;
+        }
+
+        while (remainingCount.Value != 0)
+        {
+            var amount = Math.Min(remainingCount ?? 0, maxStackSize ?? 0);
+            var newStackClone = _cloner.Clone(itemToSplit);
+
+            newStackClone.Id = _hashUtil.Generate();
+            newStackClone.Upd.StackObjectsCount = amount;
+            remainingCount -= amount;
+            rootAndChildren.Add(newStackClone);
+        }
+
+        return rootAndChildren;
     }
 
     /// <summary>
@@ -682,10 +759,12 @@ public class ItemHelper
         // Check to see if the slot that the item is attached to is marked as required in the parent item's template.
         var isRequiredSlot = false;
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
-            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(slot =>
-                slot?.Name == item?.SlotId &&
-                (slot?.Required ?? false)
-            ) ?? false;
+            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(
+                                 slot =>
+                                     slot?.Name == item?.SlotId &&
+                                     (slot?.Required ?? false)
+                             ) ??
+                             false;
 
         return itemTemplate.Key && parentTemplate.Key && (isNotRaidModdable || isRequiredSlot);
     }
@@ -720,11 +799,11 @@ public class ItemHelper
     }
 
     /**
- * Determines if an item is an attachment that is currently attached to its parent item.
- *
- * @param item The item to check.
- * @returns true if the item is attached attachment, otherwise false.
- */
+     * Determines if an item is an attachment that is currently attached to its parent item.
+     *
+     * @param item The item to check.
+     * @returns true if the item is attached attachment, otherwise false.
+     */
     public bool IsAttachmentAttached(Item item)
     {
         // TODO: actually implement
@@ -779,7 +858,48 @@ public class ItemHelper
      */
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
-        throw new NotImplementedException();
+        var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots[0].MaxCount;
+        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots[0].Props.Filters[0].Filter[0];
+        var cartridgeDetails = GetItem(cartridgeTpl);
+        var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
+
+        // Exit if ammo already exists in box
+        if (ammoBox.Any((item) => item.Template == cartridgeTpl))
+        {
+            return;
+        }
+
+        // Add new stack-size-correct items to ammo box
+        double? currentStoredCartridgeCount = 0;
+        var maxPerStack = Math.Min(ammoBoxMaxCartridgeCount ?? 0, cartridgeMaxStackSize ?? 0);
+        // Find location based on Max ammo box size
+        var location = Math.Ceiling(ammoBoxMaxCartridgeCount / maxPerStack ?? 0) - 1;
+
+        while (currentStoredCartridgeCount < ammoBoxMaxCartridgeCount)
+        {
+            var remainingSpace = ammoBoxMaxCartridgeCount - currentStoredCartridgeCount;
+            var cartridgeCountToAdd = remainingSpace < maxPerStack ? remainingSpace : maxPerStack;
+
+            // Add cartridge item into items array
+            var cartridgeItemToAdd = CreateCartridges(
+                ammoBox[0].Id,
+                cartridgeTpl,
+                cartridgeCountToAdd ?? 0,
+                location,
+                ammoBox[0].Upd?.SpawnedInSession ?? false
+            );
+
+            // In live no ammo box has the first cartridge item with a location
+            if (location == 0)
+            {
+                cartridgeItemToAdd.Location = null;
+            }
+
+            ammoBox.Add(cartridgeItemToAdd);
+
+            currentStoredCartridgeCount += cartridgeCountToAdd;
+            location--;
+        }
     }
 
     /**
@@ -840,7 +960,78 @@ public class ItemHelper
         double minSizeMultiplier = 0.25
     )
     {
-        throw new NotImplementedException();
+        // Get cartridge properties and max allowed stack size
+        var cartridgeDetails = GetItem(cartridgeTpl);
+        if (!cartridgeDetails.Key)
+        {
+            _logger.Error(_localisationService.GetText("item-invalid_tpl_item", cartridgeTpl));
+        }
+
+        var cartridgeMaxStackSize = cartridgeDetails.Value.Properties?.StackMaxSize;
+        if (cartridgeMaxStackSize is null)
+        {
+            _logger.Error($"Item with tpl: {cartridgeTpl} lacks a _props or StackMaxSize property");
+        }
+
+        // Get max number of cartridges in magazine, choose random value between min/max
+        var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
+            ? magTemplate.Properties.Slots.Count() // Edge case for rotating grenade launcher magazine
+            : magTemplate.Properties.Cartridges[0]?.MaxCount;
+
+        if (magazineCartridgeMaxCount is null)
+        {
+            _logger.Warning($"Magazine: {magTemplate.Id} {magTemplate.Name} lacks a Cartridges array, unable to fill magazine with ammo");
+
+            return;
+        }
+
+        var desiredStackCount = _randomUtil.GetInt(
+            (int)
+            Math.Round(minSizeMultiplier * magazineCartridgeMaxCount ?? 0),
+            (int)magazineCartridgeMaxCount
+        );
+
+        if (magazineWithChildCartridges.Count() > 1)
+        {
+            _logger.Warning($"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues");
+        }
+
+        // Loop over cartridge count and add stacks to magazine
+        double? currentStoredCartridgeCount = 0;
+        var location = 0;
+        while (currentStoredCartridgeCount < desiredStackCount)
+        {
+            // Get stack size of cartridges
+            var cartridgeCountToAdd =
+                desiredStackCount <= cartridgeMaxStackSize ? desiredStackCount : cartridgeMaxStackSize;
+
+            // Ensure we don't go over the max stackcount size
+            var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
+            if (cartridgeCountToAdd > remainingSpace)
+            {
+                cartridgeCountToAdd = remainingSpace;
+            }
+
+            // Add cartridge item object into items array
+            magazineWithChildCartridges.Add(
+                CreateCartridges(
+                    magazineWithChildCartridges[0].Id,
+                    cartridgeTpl,
+                    cartridgeCountToAdd ?? 0,
+                    location,
+                    magazineWithChildCartridges[0].Upd?.SpawnedInSession ?? false
+                )
+            );
+
+            currentStoredCartridgeCount += cartridgeCountToAdd;
+            location++;
+        }
+
+        // Only one cartridge stack added, remove location property as its only used for 2 or more stacks
+        if (location == 1)
+        {
+            magazineWithChildCartridges[1].Location = null;
+        }
     }
 
     /// <summary>
@@ -883,12 +1074,19 @@ public class ItemHelper
     public Item CreateCartridges(
         string parentId,
         string ammoTpl,
-        int stackCount,
-        int location,
+        double stackCount,
+        double location,
         bool foundInRaid = false
     )
     {
-        throw new NotImplementedException();
+        return new () {
+            Id = _hashUtil.Generate(),
+            Template = ammoTpl,
+            ParentId = parentId,
+            SlotId = "cartridges",
+            Location = location,
+            Upd = new () { StackObjectsCount = stackCount, SpawnedInSession = foundInRaid },
+        };
     }
 
     /// <summary>
@@ -961,16 +1159,16 @@ public class ItemHelper
     }
 
     // Get a list of slot names that hold removable plates
-// Returns Array of slot ids (e.g. front_plate)
+    // Returns Array of slot ids (e.g. front_plate)
     public List<string> GetRemovablePlateSlotIds()
     {
         throw new NotImplementedException();
     }
 
-// Generate new unique ids for child items while preserving hierarchy
-// Base/primary item
-// Primary item + children of primary item
-// Returns Item array with updated IDs
+    // Generate new unique ids for child items while preserving hierarchy
+    // Base/primary item
+    // Primary item + children of primary item
+    // Returns Item array with updated IDs
     public List<Item> ReparentItemAndChildren(Item rootItem, List<Item> itemWithChildren)
     {
         throw new NotImplementedException();
@@ -999,35 +1197,35 @@ public class ItemHelper
         throw new NotImplementedException();
     }
 
-// Populate a Map object of items for quick lookup using their ID.
-//
-// An array of Items that should be added to a Map.
-// Returns A Map where the keys are the item IDs and the values are the corresponding Item objects.
+    // Populate a Map object of items for quick lookup using their ID.
+    //
+    // An array of Items that should be added to a Map.
+    // Returns A Map where the keys are the item IDs and the values are the corresponding Item objects.
     public Dictionary<string, Item> GenerateItemsMap(List<Item> items)
     {
         throw new NotImplementedException();
     }
 
-// Add a blank upd object to passed in item if it does not exist already
-// item to add upd to
-// text to write to log when upd object was not found
-// Returns True when upd object was added
+    // Add a blank upd object to passed in item if it does not exist already
+    // item to add upd to
+    // text to write to log when upd object was not found
+    // Returns True when upd object was added
     public bool AddUpdObjectToItem(Item item, string warningMessageWhenMissing = null)
     {
         throw new NotImplementedException();
     }
 
-// Return all tpls from Money enum
-// Returns string tpls
+    // Return all tpls from Money enum
+    // Returns string tpls
     public List<string> GetMoneyTpls()
     {
         throw new NotImplementedException();
     }
 
-// Get a randomised stack size for the passed in ammo
-// Ammo to get stack size for
-// Default: Limit to 60 to prevent crazy values when players use stack increase mods
-// Returns number
+    // Get a randomised stack size for the passed in ammo
+    // Ammo to get stack size for
+    // Default: Limit to 60 to prevent crazy values when players use stack increase mods
+    // Returns number
     public int GetRandomisedAmmoStackSize(TemplateItem ammoItemTemplate, int maxLimit = 60)
     {
         throw new NotImplementedException();
@@ -1038,8 +1236,8 @@ public class ItemHelper
         throw new NotImplementedException();
     }
 
-// Remove FiR status from passed in items
-// Items to update FiR status of
+    // Remove FiR status from passed in items
+    // Items to update FiR status of
     public void RemoveSpawnedInSessionPropertyFromItems(List<Item> items)
     {
         throw new NotImplementedException();
@@ -1050,7 +1248,7 @@ public class ItemHelper
         return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
     }
 
-    public bool isOfBaseclasses(string tpl, List<string> baseClassTpls)
+    public bool IsOfBaseclasses(string tpl, List<string> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }
