@@ -3,6 +3,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Utils.Json.Converters;
+using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Utils;
 
@@ -11,11 +12,13 @@ public class ImporterUtil
 {
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
+    private readonly Models.Utils.ILogger _logger;
 
     private readonly HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
     
-    public ImporterUtil(FileUtil fileUtil, JsonUtil jsonUtil)
+    public ImporterUtil(ILogger logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
+        _logger = logger;
         _fileUtil = fileUtil;
         _jsonUtil = jsonUtil;
     }
@@ -96,8 +99,16 @@ public class ImporterUtil
         return Task.WhenAll(tasks).ContinueWith((t) =>
         {
             if (t.IsCanceled || t.IsFaulted)
-                tasks.Where(t => t.IsFaulted || t.IsCanceled).ToList().ForEach(t => Console.WriteLine(t.Exception));
-        }).ContinueWith(_ => result);
+            {
+                var exceptionList = tasks.Where(t => t.IsFaulted || t.IsCanceled).Select(t => t.Exception!).ToList();
+                throw new Exception("Error processing one or more DatabaseFiles", new AggregateException(exceptionList));
+            }
+        }).ContinueWith(t =>
+        {
+            if (t.IsFaulted || t.IsCanceled)
+                throw t.Exception!;
+            return result;
+        });
     }
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)

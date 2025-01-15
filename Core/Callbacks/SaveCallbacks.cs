@@ -22,7 +22,7 @@ public class SaveCallbacks : OnLoad, OnUpdate
     )
     {
         _saveServer = saveServer;
-        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _coreConfig = configServer.GetConfig<CoreConfig>();
         _backupService = backupService;
     }
 

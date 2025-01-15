@@ -1,7 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Utils;
@@ -30,11 +27,20 @@ public class ConfigServer
         Initialize();
     }
 
-    public T GetConfig<T>(ConfigTypes configType) where T : BaseConfig
+    public T GetConfig<T>() where T : BaseConfig
     {
-        if (!configs.ContainsKey(configType.GetValue())) throw new Exception($"Config: {configType} is undefined. Ensure you have not broken it via editing");
+        var configKey = GetConfigKey(typeof(T));
+        if (!configs.ContainsKey(configKey.GetValue())) throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
 
-        return configs[configType.GetValue()] as T;
+        return configs[configKey.GetValue()] as T;
+    }
+
+    private ConfigTypes GetConfigKey(Type type)
+    {
+        var configEnumerable = Enum.GetValues<ConfigTypes>().Where(e => e.GetConfigType() == type);
+        if (!configEnumerable.Any())
+            throw new Exception($"Config of type {type.Name} is not mapped to any ConfigTypes");
+        return configEnumerable.First();
     }
 
     public T GetConfigByString<T>(string configType) where T : BaseConfig

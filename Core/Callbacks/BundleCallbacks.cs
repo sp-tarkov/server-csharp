@@ -25,7 +25,7 @@ public class BundleCallbacks
         _httpResponseUtil = httpResponseUtil;
         // _bundleLoader = bundleLoader;
         _configServer = configServer;
-        _httpConfig = configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        _httpConfig = configServer.GetConfig<HttpConfig>();
     }
 
     /// <summary>

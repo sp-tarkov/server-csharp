@@ -71,7 +71,7 @@ public class PlayerScavGenerator
         _cloner = cloner;
         _timeUtil = timeUtil;
 
-        _playerScavConfig = configServer.GetConfig<PlayerScavConfig>(ConfigTypes.PLAYERSCAV);
+        _playerScavConfig = configServer.GetConfig<PlayerScavConfig>();
     }
 
     /// <summary>

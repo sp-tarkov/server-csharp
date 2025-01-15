@@ -16,7 +16,7 @@ public class PaymentHelper
     {
         _configServer = configServer;
 
-        _inventoryConfig = _configServer.GetConfig<InventoryConfig>(ConfigTypes.INVENTORY);
+        _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     }
 
     /// <summary>

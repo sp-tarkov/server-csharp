@@ -47,7 +47,7 @@ public class QuestHelper
         _localeService = localeService;
         _cloner = Cloner;
 
-        _questConfig = configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
+        _questConfig = configServer.GetConfig<QuestConfig>();
     }
 
     /// <summary>

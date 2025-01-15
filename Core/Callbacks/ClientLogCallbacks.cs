@@ -54,7 +54,7 @@ public class ClientLogCallbacks
     /// <returns></returns>
     public string ReleaseNotes()
     {
-        var data = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).Release;
+        var data = _configServer.GetConfig<CoreConfig>().Release;
         data.BetaDisclaimerText = "BetaDisclaimerText";
         data.BetaDisclaimerAcceptText = "BetaDisclaimerAcceptText";
         data.ServerModsLoadedText = "ServerModsLoadedText";
@@ -97,7 +97,7 @@ public class ClientLogCallbacks
     /// <returns></returns>
     public string BsgLogging()
     {
-        var data = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).BsgLogging;
+        var data = _configServer.GetConfig<CoreConfig>().BsgLogging;
         return _httpResponseUtil.NoBody(data);
     }
 }

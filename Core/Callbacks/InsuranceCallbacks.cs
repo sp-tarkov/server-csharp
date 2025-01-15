@@ -36,7 +36,7 @@ public class InsuranceCallbacks : OnUpdate
         _insuranceService = insuranceService;
         _httpResponseUtil = httpResponseUtil;
         _configServer = configServer;
-        _insuranceConfig = configServer.GetConfig<InsuranceConfig>(ConfigTypes.INSURANCE);
+        _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
     }
 
     /// <summary>

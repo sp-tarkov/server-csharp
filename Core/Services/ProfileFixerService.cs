@@ -53,7 +53,7 @@ public class ProfileFixerService
         _configServer = configServer;
         _inventoryHelper = inventoryHelper;
 
-        _coreConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _coreConfig = _configServer.GetConfig<CoreConfig>();
     }
 
     /// <summary>

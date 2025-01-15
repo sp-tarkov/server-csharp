@@ -42,7 +42,7 @@ public class RaidWeatherService
         _weightedRandomHelper = weightedRandomHelper;
         _configServer = configServer;
 
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>(ConfigTypes.WEATHER);
+        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
     }
 
     /// <summary>

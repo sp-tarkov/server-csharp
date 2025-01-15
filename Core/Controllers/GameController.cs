@@ -96,11 +96,11 @@ public class GameController
         _applicationContext = applicationContext;
         _cloner = cloner;
 
-        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
-        _httpConfig = configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
-        _ragfairConfig = configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
-        _hideoutConfig = configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
-        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _coreConfig = configServer.GetConfig<CoreConfig>();
+        _httpConfig = configServer.GetConfig<HttpConfig>();
+        _ragfairConfig = configServer.GetConfig<RagfairConfig>();
+        _hideoutConfig = configServer.GetConfig<HideoutConfig>();
+        _botConfig = configServer.GetConfig<BotConfig>();
     }
 
     /// <summary>

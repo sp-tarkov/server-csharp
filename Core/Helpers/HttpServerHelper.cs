@@ -26,7 +26,7 @@ public class HttpServerHelper
 
     public HttpServerHelper(ConfigServer configServer) 
     {
-        _httpConfig = configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        _httpConfig = configServer.GetConfig<HttpConfig>();
     }
 
     public string GetMimeText(string key)

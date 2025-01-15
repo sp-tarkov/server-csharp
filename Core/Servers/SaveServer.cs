@@ -235,7 +235,7 @@ public class SaveServer
         }
 
         var start = Stopwatch.StartNew();
-        var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>(ConfigTypes.CORE).Features.CompressProfile);
+        var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>().Features.CompressProfile);
         var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
         if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
         {

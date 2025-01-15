@@ -46,7 +46,7 @@ public class ProfileHelper
         _timeUtil = timeUtil;
         _localisationService = localisationService;
         _hashUtil = hashUtil;
-        _inventoryConfig = configServer.GetConfig<InventoryConfig>(ConfigTypes.INVENTORY);
+        _inventoryConfig = configServer.GetConfig<InventoryConfig>();
     }
 
     /// <summary>

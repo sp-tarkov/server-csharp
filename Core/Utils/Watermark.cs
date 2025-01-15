@@ -65,7 +65,7 @@ public class Watermark {
         _configServer = configServer;
         _localisationService = localisationService;
         _watermarkLocale = watermarkLocale;
-        sptConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        sptConfig = _configServer.GetConfig<CoreConfig>();
     }
 
     public virtual void Initialize()

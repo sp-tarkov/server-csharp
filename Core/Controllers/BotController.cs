@@ -76,8 +76,8 @@ public class BotController
         _applicationContext = applicationContext;
         _randomUtil = randomUtil;
         _cloner = cloner;
-        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
-        _pmcConfig = _configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
+        _botConfig = _configServer.GetConfig<BotConfig>();
+        _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
     public int GetBotPresetGenerationLimit(string type)

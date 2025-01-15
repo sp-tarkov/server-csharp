@@ -54,7 +54,7 @@ public class DatabaseImporter : OnLoad
         _configServer = configServer;
         _fileUtil = fileUtil;
         _imageRouter = imageRouter;
-        httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        httpConfig = _configServer.GetConfig<HttpConfig>();
     }
 
     /**

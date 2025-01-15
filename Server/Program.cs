@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Security.Cryptography;
 using Core.Annotations;
 using Core.Context;
 using Core.Models.Enums;
@@ -7,8 +6,12 @@ using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
+using Microsoft.Extensions.Logging.Configuration;
 using Serilog;
 using Serilog.Events;
+using Serilog.Exceptions;
+using Serilog.Extensions.Logging;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Server;
 
@@ -22,10 +25,11 @@ public static class Program
         
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
-        CreateAndRegisterLogger(builder);
+        CreateAndRegisterLogger(builder, out var registeredLogger);
 
         RegisterSptComponents(builder.Services);
         RegisterModOverrideComponents(builder.Services, assemblies);
+        ILogger logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {
             var serviceProvider = builder.Services.BuildServiceProvider();
@@ -49,23 +53,27 @@ public static class Program
             var app = serviceProvider.GetService<App>();
             app.Run().Wait();
 
-            var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>(ConfigTypes.HTTP);
+            var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>();
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.
             (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).Value as WebApplication).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex.ToString());
+            logger.LogCritical(ex, "Critical exception, stopping server...");
+            // throw ex;
         }
     }
 
-    private static void CreateAndRegisterLogger(WebApplicationBuilder builder)
+    private static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)
     {
         builder.Logging.ClearProviders();
-        var logger = new LoggerConfiguration()
+        logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithThreadId()
+            .Enrich.WithExceptionDetails()
             .CreateLogger();
         builder.Logging.AddSerilog(logger);
     }

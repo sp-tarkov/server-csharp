@@ -39,7 +39,7 @@ public class RagfairCallbacks : OnLoad, OnUpdate
         _ragfairController = ragfairController;
         _ragfairTaxService = ragfairTaxService;
         _configServer = configServer;
-        _ragfairConfig = _configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
+        _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
     }
 
     public async Task OnLoad()

@@ -30,7 +30,7 @@ public class WeatherGenerator
         _weatherHelper = weatherHelper;
         _configServer = configServer;
 
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>(ConfigTypes.WEATHER);
+        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
     }
 
     /**

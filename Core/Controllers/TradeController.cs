@@ -71,8 +71,8 @@ public class TradeController
         _ragfairPriceService = ragfairPriceService;
         _configServer = configServer;
 
-        _ragfairConfig = _configServer.GetConfig<RagfairConfig>(ConfigTypes.RAGFAIR);
-        _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+        _traderConfig = _configServer.GetConfig<TraderConfig>();
     }
 
     /// <summary>

@@ -39,7 +39,7 @@ public class HttpServer
         _webSocketServer = webSocketServer;
         _httpListeners = httpListeners;
 
-        httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
+        httpConfig = _configServer.GetConfig<HttpConfig>();
     }
 
     public void Load(WebApplicationBuilder builder)

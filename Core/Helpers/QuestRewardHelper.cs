@@ -59,7 +59,7 @@ public class QuestRewardHelper
         _localisationService = localisationService;
         _cloner = cloner;
 
-        _questConfig = configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
+        _questConfig = configServer.GetConfig<QuestConfig>();
     }
 
     /**

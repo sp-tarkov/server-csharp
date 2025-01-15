@@ -94,7 +94,7 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <returns></returns>
     public string GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
     {
-        var traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        var traderConfig = _configServer.GetConfig<TraderConfig>();
         return _httpResponseUtil.NoBody(traderConfig.ModdedTraders);
     }
 }

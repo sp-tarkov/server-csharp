@@ -54,7 +54,7 @@ public class LauncherController
      _profileHelper = profileHelper;
      _databaseService = databaseService;
      _localisationService = localisationService;
-        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _coreConfig = configServer.GetConfig<CoreConfig>();
     }
 
     public ConnectResponse Connect()

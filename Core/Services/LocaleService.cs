@@ -20,7 +20,7 @@ public class LocaleService
         _logger = logger;
         _databaseServer = databaseServer;
         _configServer = configServer;
-        _localeConfig = configServer.GetConfig<LocaleConfig>(ConfigTypes.LOCALE);
+        _localeConfig = configServer.GetConfig<LocaleConfig>();
     }
 
     /**

@@ -47,7 +47,7 @@ public class App
         _onLoad = onLoadComponents;
         _onUpdate = onUpdateComponents;
 
-        _coreConfig = configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _coreConfig = configServer.GetConfig<CoreConfig>();
     }
 
     public async Task Run()

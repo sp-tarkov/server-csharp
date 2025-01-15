@@ -44,7 +44,7 @@ public class TraderHelper
         _profileHelper = profileHelper;
         _databaseService = databaseService;
 
-        _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        _traderConfig = _configServer.GetConfig<TraderConfig>();
     }
 
     /// <summary>

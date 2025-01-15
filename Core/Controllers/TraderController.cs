@@ -67,7 +67,7 @@ public class TraderController
         _configServer = configServer;
         _cloner = cloner;
 
-        _traderConfig = configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        _traderConfig = configServer.GetConfig<TraderConfig>();
     }
 
     /// <summary>

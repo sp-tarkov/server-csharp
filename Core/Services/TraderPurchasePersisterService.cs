@@ -36,7 +36,7 @@ public class TraderPurchasePersisterService
         _localisationService = localisationService;
         _configServer = configServer;
 
-        _traderConfig = _configServer.GetConfig<TraderConfig>(ConfigTypes.TRADER);
+        _traderConfig = _configServer.GetConfig<TraderConfig>();
     }
 
     /**

@@ -39,8 +39,8 @@ public class InRaidController
         _localisationService = localisationService;
         _applicationContext = applicationContext;
         _configServer = configServer;
-        _inRaidConfig = configServer.GetConfig<InRaidConfig>(ConfigTypes.IN_RAID);
-        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _inRaidConfig = configServer.GetConfig<InRaidConfig>();
+        _botConfig = configServer.GetConfig<BotConfig>();
     }
 
     /// <summary>

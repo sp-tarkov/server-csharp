@@ -25,7 +25,7 @@ public class HideoutCallbacks : OnUpdate
     {
         _hideoutController = hideoutController;
         _configServer = configServer;
-        _hideoutConfig = configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
+        _hideoutConfig = configServer.GetConfig<HideoutConfig>();
     }
 
     /// <summary>

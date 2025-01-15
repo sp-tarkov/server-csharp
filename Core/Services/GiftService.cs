@@ -24,7 +24,7 @@ public class GiftService
         _configServer = configServer;
         _profileHelper = profileHelper;
 
-        _giftConfig = _configServer.GetConfig<GiftsConfig>(ConfigTypes.GIFTS);
+        _giftConfig = _configServer.GetConfig<GiftsConfig>();
     }
 
     /**
