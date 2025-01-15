@@ -159,7 +159,7 @@ public class WeatherGenerator
         var formattedDate = _timeUtil.FormatDate(timestamp.HasValue ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow);
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
         
-        weather.Timestamp = timestamp ?? _timeUtil.GetTimeStampFromEpoch(inRaidTime); // matches weather.date We use to divide by 1000
+        weather.Timestamp = timestamp ?? _timeUtil.GetTimeStampFromEpoch(inRaidTime) / 1000; // matches weather.date
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp
         weather.SptInRaidTimestamp = _timeUtil.GetTimeStampFromEpoch(inRaidTime);

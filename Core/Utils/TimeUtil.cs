@@ -186,14 +186,15 @@ public class TimeUtil
     }
     
     /// <summary>
-    /// Takes a timestamp and gets difference between Epoch time and time provided resulting in a unixtimestamp (date defaults to utcnow)
+    /// Takes a date and gets difference between Epoch time and time provided resulting in a timestamp (date defaults to utcnow)
+    /// This attempts to mimic gettime() in js
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
     public long GetTimeStampFromEpoch(DateTime? date = null)
     {
         var dateToCompare = date ?? DateTime.UtcNow;
-        return (long)(dateToCompare - DateTime.UnixEpoch).TotalSeconds;
+        return (long)(dateToCompare - DateTime.UnixEpoch).TotalMilliseconds;
     }
     
 }
