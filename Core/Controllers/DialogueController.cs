@@ -31,7 +31,7 @@ public class DialogueController
         _configServer = configServer;
         _saveServer = saveServer;
 
-        _coreConfig = _configServer.GetConfig<CoreConfig>(ConfigTypes.CORE);
+        _coreConfig = _configServer.GetConfig<CoreConfig>();
     }
 
     /// <summary>

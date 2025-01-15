@@ -84,11 +84,11 @@ public class SeasonalEventService
         _profileHelper = profileHelper;
         _configServer = configServer;
 
-        _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>(ConfigTypes.SEASONAL_EVENT);
-        _questConfig = _configServer.GetConfig<QuestConfig>(ConfigTypes.QUEST);
-        _httpConfig = _configServer.GetConfig<HttpConfig>(ConfigTypes.HTTP);
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>(ConfigTypes.WEATHER);
-        _locationConfig = _configServer.GetConfig<LocationConfig>(ConfigTypes.LOCATION);
+        _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
+        _questConfig = _configServer.GetConfig<QuestConfig>();
+        _httpConfig = _configServer.GetConfig<HttpConfig>();
+        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+        _locationConfig = _configServer.GetConfig<LocationConfig>();
     }
 
     /// <summary>

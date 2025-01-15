@@ -17,7 +17,7 @@ public class BotGeneratorHelper
         )
     {
         _configServer = configServer;
-        _pmcConfig = _configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
+        _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
     /// <summary>

@@ -18,7 +18,7 @@ public class BotEquipmentFilterService
     {
         _configServer = configServer;
 
-        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
+        _botConfig = _configServer.GetConfig<BotConfig>();
     }
 
     /// <summary>

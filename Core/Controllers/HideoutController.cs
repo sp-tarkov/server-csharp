@@ -89,7 +89,7 @@ public class HideoutController
         _cloner = cloner;
         _configServer = configServer;
 
-        _hideoutConfig = _configServer.GetConfig<HideoutConfig>(ConfigTypes.HIDEOUT);
+        _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     }
 
     public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionId, ItemEventRouterResponse output)

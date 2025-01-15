@@ -77,8 +77,8 @@ public class BotGenerator
         _configServer = configServer;
         _cloner = cloner;
 
-        _botConfig = _configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
-        _pmcConfig = _configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
+        _botConfig = _configServer.GetConfig<BotConfig>();
+        _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
     /// <summary>

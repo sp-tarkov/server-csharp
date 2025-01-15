@@ -36,8 +36,8 @@ public class BotHelper
         _databaseService = databaseService;
         _randomUtil = randomUtil;
         _configServer = configServer;
-        _botConfig = configServer.GetConfig<BotConfig>(ConfigTypes.BOT);
-        _pmcConfig = configServer.GetConfig<PmcConfig>(ConfigTypes.PMC);
+        _botConfig = configServer.GetConfig<BotConfig>();
+        _pmcConfig = configServer.GetConfig<PmcConfig>();
     }
 
     /// <summary>

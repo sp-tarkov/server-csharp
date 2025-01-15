@@ -30,7 +30,7 @@ public class ItemFilterService
         _databaseServer = databaseServer;
         _configServer = configServer;
 
-        _itemConfig = _configServer.GetConfig<ItemConfig>(ConfigTypes.ITEM);
+        _itemConfig = _configServer.GetConfig<ItemConfig>();
     }
 
     /**
