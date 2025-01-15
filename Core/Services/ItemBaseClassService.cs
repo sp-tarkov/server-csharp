@@ -1,13 +1,13 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
-using ILogger = Core.Models.Utils.ILogger;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ItemBaseClassService
 {
-    private readonly ILogger _logger;
+    private readonly ISptLogger<ItemBaseClassService> _logger;
     private readonly DatabaseService _databaseService;
     private readonly LocalisationService _localisationService;
 
@@ -15,7 +15,7 @@ public class ItemBaseClassService
     private Dictionary<string, List<string>> _itemBaseClassesCache;
 
     public ItemBaseClassService(
-        ILogger logger,
+        ISptLogger<ItemBaseClassService> logger,
         DatabaseService databaseService,
         LocalisationService localisationService)
     {

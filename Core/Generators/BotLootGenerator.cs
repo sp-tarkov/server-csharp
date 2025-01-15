@@ -1,21 +1,21 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Core.Utils;
 using Core.Helpers;
+using Core.Models.Utils;
 using Core.Services;
 using Core.Servers;
 using Core.Utils.Cloners;
-using ILogger = Core.Models.Utils.ILogger;
 
 namespace Core.Generators;
 
 [Injectable]
 public class BotLootGenerator
 {
-    private readonly ILogger _logger;
+    private readonly ISptLogger<BotLootGenerator> _logger;
     private readonly HashUtil _hashUtil;
     private readonly RandomUtil _randomUtil;
     private readonly ItemHelper _itemHelper;
@@ -35,7 +35,7 @@ public class BotLootGenerator
     private PmcConfig _pmcConfig;
 
     public BotLootGenerator(
-        ILogger logger,
+        ISptLogger<BotLootGenerator> logger,
         HashUtil hashUtil,
         RandomUtil randomUtil,
         ItemHelper itemHelper,
