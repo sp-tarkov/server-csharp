@@ -224,8 +224,9 @@ public class BotWeaponGenerator
             );
         }
 
+        var tempList = _cloner.Clone(weaponWithModsArray.Where((item) => item.SlotId == _modMagazineSlotId));
         // Fill existing magazines to full and sync ammo type
-        foreach (var magazine in weaponWithModsArray.Where((item) => item.SlotId == _modMagazineSlotId))
+        foreach (var magazine in tempList)
         {
             FillExistingMagazines(weaponWithModsArray, magazine, ammoTpl);
         }
