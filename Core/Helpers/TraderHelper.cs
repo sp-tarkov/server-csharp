@@ -331,6 +331,7 @@ public class TraderHelper
     /// <returns>True if Traders enum has the param as a value</returns>
     public bool TraderEnumHasValue(string traderId)
     {
-        throw new NotImplementedException();
+        _logger.Error("HACK TraderEnumHasValue");
+        return Traders.TradersDictionary.ContainsValue(traderId);
     }
 }
