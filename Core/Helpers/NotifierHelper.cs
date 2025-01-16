@@ -4,20 +4,19 @@ using Core.Models.Eft.Ws;
 
 namespace Core.Helpers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class NotifierHelper
 {
     private readonly HttpServerHelper _httpServerHelper;
+    protected WsPing ping = new WsPing();
 
     public NotifierHelper(
         HttpServerHelper httpServerHelper)
     {
         _httpServerHelper = httpServerHelper;
     }
-    public WsNotificationEvent GetDefaultNotification()
-    {
-        throw new NotImplementedException();
-    }
+
+    public WsNotificationEvent GetDefaultNotification() => ping;
 
     /**
      * Create a new notification that displays the "Your offer was sold!" prompt and removes sold offer from "My Offers" on clientside
@@ -55,6 +54,6 @@ public class NotifierHelper
 
     public string GetWebSocketServer(string sessionID)
     {
-        return $"{ _httpServerHelper.GetWebsocketUrl()}/ notifierServer / getwebsocket /{sessionID}";
+        return $"{_httpServerHelper.GetWebsocketUrl()}/notifierServer/getwebsocket/{sessionID}";
     }
 }

@@ -222,7 +222,7 @@ public class ItemHelper
     /// </summary>
     /// <param name="tpl">Item to look price up of</param>
     /// <returns>Price in roubles</returns>
-    public decimal GetItemPrice(string tpl)
+    public double GetItemPrice(string tpl)
     {
         throw new NotImplementedException();
     }
@@ -233,7 +233,7 @@ public class ItemHelper
     /// </summary>
     /// <param name="tpl">Item to look price up of</param>
     /// <returns>Price in roubles</returns>
-    public decimal GetItemMaxPrice(string tpl)
+    public double GetItemMaxPrice(string tpl)
     {
         throw new NotImplementedException();
     }
@@ -243,7 +243,7 @@ public class ItemHelper
     /// </summary>
     /// <param name="tpl">Items tpl id to look up price</param>
     /// <returns>Price in roubles (0 if not found)</returns>
-    public decimal GetStaticItemPrice(string tpl)
+    public double GetStaticItemPrice(string tpl)
     {
         throw new NotImplementedException();
     }
@@ -253,7 +253,7 @@ public class ItemHelper
     /// </summary>
     /// <param name="tpl">Items tpl id to look up price</param>
     /// <returns>Price in roubles (undefined if not found)</returns>
-    public decimal GetDynamicItemPrice(string tpl)
+    public double GetDynamicItemPrice(string tpl)
     {
         throw new NotImplementedException();
     }
