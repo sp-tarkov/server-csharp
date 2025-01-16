@@ -55,7 +55,7 @@ public class HttpServerHelper
     /** Get websocket url + port */
     public string GetWebsocketUrl() 
     {
-        return $"ws://${BuildUrl()}";
+        return $"ws://{BuildUrl()}";
     }
 
     public void SendTextJson(HttpResponse resp, object output)

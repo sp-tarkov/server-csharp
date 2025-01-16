@@ -34,20 +34,20 @@ public class ClientLogController
 
         switch (logRequest.Level)
         {
-            case LogLevel.ERROR:
+            case LogLevel.Error:
                 this._logger.Error(message);
                 break;
-            case LogLevel.WARN:
+            case LogLevel.Warn:
                 this._logger.Warning(message);
                 break;
-            case LogLevel.SUCCESS:
-            case LogLevel.INFO:
+            case LogLevel.Success:
+            case LogLevel.Info:
                 this._logger.Info(message);
                 break;
-            case LogLevel.CUSTOM:
+            case LogLevel.Custom:
                 this._logger.Info(message /* TODO: , color.ToString(), backgroundColor.ToString()*/);
                 break;
-            case LogLevel.DEBUG:
+            case LogLevel.Debug:
                 this._logger.Debug(message);
                 break;
             default:
