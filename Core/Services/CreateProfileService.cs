@@ -83,7 +83,7 @@ public class CreateProfileService
         pmcData.SessionId = sessionId;
         pmcData.Info.Nickname = request.Nickname;
         pmcData.Info.LowerNickname = account.Username.ToLower();
-        pmcData.Info.RegistrationDate = _timeUtil.GetTimeStamp();
+        pmcData.Info.RegistrationDate = (int)_timeUtil.GetTimeStamp();
         pmcData.Info.Voice = _databaseService.GetCustomization()[request.VoiceId].Name;
         pmcData.Stats = _profileHelper.GetDefaultCounters();
         pmcData.Info.NeedWipeOptions = [];

@@ -25,7 +25,7 @@ public class RepeatableQuestGenerator
     /// <returns>RepeatableQuest</returns>
     public RepeatableQuest GenerateRepeatableQuest(
         string sessionId,
-        int pmcLevel,
+        int? pmcLevel,
         Dictionary<string, TraderInfo> pmcTraderInfo,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
