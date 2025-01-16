@@ -237,9 +237,9 @@ public class BotGeneratorHelper
                     "bot-missing_equipment_settings",
                     new
                     {
-                        BotRole = botRole,
-                        Setting = setting,
-                        DefaultValue = defaultValue
+                        botRole = botRole,
+                        setting = setting,
+                        defaultValue = defaultValue
                     }
                 )
             );
@@ -257,9 +257,9 @@ public class BotGeneratorHelper
                     "bot-missing_equipment_settings_property",
                     new
                     {
-                        BotRole = botRole,
-                        Setting = setting,
-                        DefaultValue = defaultValue
+                        botRole = botRole,
+                        setting = setting,
+                        defaultValue = defaultValue
                     }
                 )
             );

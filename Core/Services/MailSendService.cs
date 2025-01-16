@@ -81,8 +81,8 @@ public class MailSendService
         {
             _logger.Error(_localisationService.GetText("mailsend-missing_trader", new
             {
-                MessageType = messageType,
-                SessionId = sessionId,
+                messageType = messageType,
+                sessionId = sessionId,
             }));
 
             return;
@@ -138,8 +138,8 @@ public class MailSendService
         {
             _logger.Error(_localisationService.GetText("mailsend-missing_trader", new
             {
-                MessageType = messageType,
-                SessionId = sessionId,
+                messageType = messageType,
+                sessionId = sessionId,
             }));
 
             return;
@@ -408,8 +408,8 @@ public class MailSendService
             {
                 _localisationService.GetText("mailsend-missing_parent", new
                 {
-                    TraderId = messageDetails.Trader,
-                    Sender = messageDetails.Sender,
+                    traderId = messageDetails.Trader,
+                    sender = messageDetails.Sender,
                 });
 
                 return itemsToSendToPlayer;
@@ -436,8 +436,8 @@ public class MailSendService
                 {
                     _logger.Error(_localisationService.GetText("dialog-missing_item_template", new
                     {
-                        Tpl = reward.Template,
-                        Type = dialogType,
+                        tpl = reward.Template,
+                        type = dialogType,
                     }));
 
                     continue;

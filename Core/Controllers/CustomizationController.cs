@@ -97,8 +97,8 @@ public class CustomizationController
             var suitDetails = _databaseService.GetCustomization()[suitId];
             _logger.Error(_localisationService.GetText("customisation-item_already_purchased", new
             {
-                ItemId = suitDetails?.Id,
-                ItemName = suitDetails?.Name,
+                itemId = suitDetails?.Id,
+                itemName = suitDetails?.Name,
             }));
             
         return output;

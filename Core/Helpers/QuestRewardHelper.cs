@@ -152,8 +152,8 @@ public class QuestRewardHelper
                 default:
                     _logger.Error(_localisationService.GetText("quest-reward_type_not_handled", new
                     {
-                        RewardType = reward.Type,
-                        QuestId = questId,
+                        rewardType = reward.Type,
+                        questId = questId,
                         questName = questDetails.QuestName
                     }));
                     break;
@@ -280,8 +280,8 @@ public class QuestRewardHelper
         {
             _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new
             {
-                QuestName = questDetails.QuestName,
-                MatchCount = matchingProductions.Count
+                questName = questDetails.QuestName,
+                matchCount = matchingProductions.Count
             }));
 
             return;

@@ -374,8 +374,8 @@ public class SeasonalEventService
                 _logger.Warning(
                     _localisationService.GetText("seasonal-missing_equipment_slot_on_bot", new
                     {
-                        EquipmentSlot = equipmentSlotKey,
-                        BotRole = botRole,
+                        equipmentSlot = equipmentSlotKey,
+                        botRole = botRole,
                     })
                 );
             }
@@ -395,8 +395,8 @@ public class SeasonalEventService
                 _logger.Warning(
                     _localisationService.GetText("seasonal-missing_loot_container_slot_on_bot", new
                     {
-                        LootContainer = lootContainerKey,
-                        BotRole = botRole,
+                        lootContainer = lootContainerKey,
+                        botRole = botRole,
                     })
                 );
             }

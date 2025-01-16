@@ -299,9 +299,9 @@ public class BotEquipmentModGenerator
                     "bot-unable_to_add_mods_to_weapon_missing_ammo_slot",
                     new
                     {
-                        WeaponName = request.ParentTemplate.Name,
-                        WeaponId = request.ParentTemplate.Id,
-                        BotRole = request.BotData.Role,
+                        weaponName = request.ParentTemplate.Name,
+                        weaponId = request.ParentTemplate.Id,
+                        botRole = request.BotData.Role,
                     }
                 )
             );
@@ -332,10 +332,10 @@ public class BotEquipmentModGenerator
                         "bot-weapon_missing_mod_slot",
                         new
                         {
-                            ModSlot = modSlot,
-                            WeaponId = request.ParentTemplate.Id,
-                            WeaponName = request.ParentTemplate.Name,
-                            BotRole = request.BotData.Role,
+                            modSlot = modSlot,
+                            weaponId = request.ParentTemplate.Id,
+                            weaponName = request.ParentTemplate.Name,
+                            botRole = request.BotData.Role,
                         }
                     )
                 );
@@ -1315,8 +1315,8 @@ public class BotEquipmentModGenerator
                     "bot-no_item_template_found_when_adding_mod",
                     new
                     {
-                        ModId = modBeingAddedDbTemplate.Value?.Id ?? "UNKNOWN",
-                        ModSlot = modSlot,
+                        modId = modBeingAddedDbTemplate.Value?.Id ?? "UNKNOWN",
+                        modSlot = modSlot,
                     }
                 )
             );
@@ -1336,10 +1336,10 @@ public class BotEquipmentModGenerator
                         "bot-unable_to_add_mod_item_invalid",
                         new
                         {
-                            ItemName = modBeingAddedDbTemplate.Value?.Name ?? "UNKNOWN",
-                            ModSlot = modSlot,
-                            ParentItemName = parentTemplate.Name,
-                            BotRole = botRole,
+                            itemName = modBeingAddedDbTemplate.Value?.Name ?? "UNKNOWN",
+                            iodSlot = modSlot,
+                            parentItemName = parentTemplate.Name,
+                            botRole = botRole,
                         }
                     )
                 );
@@ -1377,8 +1377,8 @@ public class BotEquipmentModGenerator
                             "bot-unable_to_filter_mods_all_blacklisted",
                             new
                             {
-                                SlotName = desiredSlotObject.Name,
-                                ItemName = modTemplate.Name,
+                                slotName = desiredSlotObject.Name,
+                                itemName = modTemplate.Name,
                             }
                         )
                     );
@@ -1464,8 +1464,8 @@ public class BotEquipmentModGenerator
                     "bot-unable_to_fill_camora_slot_mod_pool_empty",
                     new
                     {
-                        WeaponId = cylinderMagTemplate.Id,
-                        WeaponName = cylinderMagTemplate.Name,
+                        weaponId = cylinderMagTemplate.Id,
+                        weaponName = cylinderMagTemplate.Name,
                     }
                 )
             );
