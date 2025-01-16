@@ -504,24 +504,24 @@ public class BotGeneratorHelper
     /// <param name="inventory">Inventory to add item+children into</param>
     /// <returns>ItemAddedResult result object</returns>
     public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
-        List<string> equipmentSlots,
+        List<EquipmentSlots> equipmentSlots,
         string rootItemId,
         string rootItemTplId,
         List<Item> itemWithChildren,
         BotBaseInventory inventory,
-        HashSet<string> containersIdFull = null)
+        List<string> containersIdFull = null)
     {
         /** Track how many containers are unable to be found */
         var missingContainerCount = 0;
         foreach (var equipmentSlotId in equipmentSlots)
         {
-            if (containersIdFull?.Contains(equipmentSlotId) ?? false)
+            if (containersIdFull?.Contains(equipmentSlotId.ToString()) ?? false)
             {
                 continue;
             }
 
             // Get container to put item into
-            var container = inventory.Items.FirstOrDefault((item) => item.SlotId == equipmentSlotId);
+            var container = inventory.Items.FirstOrDefault((item) => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
@@ -642,7 +642,7 @@ public class BotGeneratorHelper
                 // if the item was a one by one, we know it must be full. Or if the maps cant find a slot for a one by one
                 if (itemSize[0] == 1 && itemSize[1] == 1)
                 {
-                    containersIdFull.Add(equipmentSlotId);
+                    containersIdFull.Add(equipmentSlotId.ToString());
                 }
             }
         }

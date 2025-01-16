@@ -53,7 +53,7 @@ public class BotLootCacheService
     /// <param name="lootType">what type of loot is needed (backpack/pocket/stim/vest etc)</param>
     /// <param name="botJsonTemplate">Base json db file for the bot having its loot generated</param>
     /// <returns>Dictionary<string, int></returns>
-    public Dictionary<string, int> GetLootFromCache(
+    public Dictionary<string, double> GetLootFromCache(
         string botRole,
         bool isPmc,
         string lootType,

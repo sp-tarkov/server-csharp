@@ -69,7 +69,7 @@ public class InventoryHelper
     /// <param name="sessionId">Player id</param>
     /// <param name="itemsWithChildren">Array of items with children to try and fit</param>
     /// <returns>True all items fit</returns>
-    public bool CanPlaceItemsInInventory(string sessionId, Item[][] itemsWithChildren)
+    public bool CanPlaceItemsInInventory(string sessionId, List<List<Item>> itemsWithChildren)
     {
         throw new NotImplementedException();
     }
@@ -80,7 +80,7 @@ public class InventoryHelper
     /// <param name="containerFS2D">Container grid to fit items into</param>
     /// <param name="itemsWithChildren">Items to try and fit into grid</param>
     /// <returns>True all fit</returns>
-    public bool CanPlaceItemsInContainer(int[][] containerFS2D, Item[][] itemsWithChildren)
+    public bool CanPlaceItemsInContainer(List<List<double>> containerFS2D, List<List<Item>> itemsWithChildren)
     {
         throw new NotImplementedException();
     }
@@ -91,7 +91,7 @@ public class InventoryHelper
     /// <param name="containerFS2D">Container grid</param>
     /// <param name="itemWithChildren">Item to check fits</param>
     /// <returns>True it fits</returns>
-    public bool CanPlaceItemInContainer(int[][] containerFS2D, Item[] itemWithChildren)
+    public bool CanPlaceItemInContainer(List<List<int>> containerFS2D, List<Item> itemWithChildren)
     {
         throw new NotImplementedException();
     }
@@ -104,8 +104,8 @@ public class InventoryHelper
     /// <param name="containerId">Id of the container we're fitting item into</param>
     /// <param name="desiredSlotId">Slot id value to use, default is "hideout"</param>
     public void PlaceItemInContainer(
-        int[][] containerFS2D,
-        Item[] itemWithChildren,
+        List<List<double>> containerFS2D,
+        List<Item> itemWithChildren,
         string containerId,
         string desiredSlotId = "hideout")
     {
@@ -122,9 +122,9 @@ public class InventoryHelper
     /// <param name="useSortingTable">Should sorting table to be used if main stash has no space</param>
     /// <param name="output">Output to send back to client</param>
     protected void PlaceItemInInventory(
-        int[][] stashFS2D,
-        int[][] sortingTableFS2D,
-        Item[] itemWithChildren,
+        List<List<double>> stashFS2D,
+        List<List<double>> sortingTableFS2D,
+        List<Item> itemWithChildren,
         BotBaseInventory playerInventory,
         bool useSortingTable,
         ItemEventRouterResponse output)
@@ -262,7 +262,7 @@ public class InventoryHelper
     /// </summary>
     /// <param name="containerTpl">Container to get data for</param>
     /// <returns>blank two-dimensional array</returns>
-    public int[,] GetContainerSlotMap(string containerTpl)
+    public List<List<double>> GetContainerSlotMap(string containerTpl)
     {
         throw new NotImplementedException();
     }
@@ -272,7 +272,7 @@ public class InventoryHelper
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <returns>two-dimensional array</returns>
-    protected int[,] GetSortingTableSlotMap(PmcData pmcData)
+    protected List<List<double>> GetSortingTableSlotMap(PmcData pmcData)
     {
         throw new NotImplementedException();
     }
@@ -282,7 +282,7 @@ public class InventoryHelper
     /// </summary>
     /// <param name="sessionID">Players id</param>
     /// <returns>Dictionary of 2 values, horizontal and vertical stash size</returns>
-    protected Dictionary<int, int> GetPlayerStashSize(string sessionID)
+    protected Dictionary<double, double> GetPlayerStashSize(string sessionID)
     {
         throw new NotImplementedException();
     }
