@@ -771,7 +771,6 @@ public class Bonus
     public double? Value { get; set; }
 
     [JsonPropertyName("icon")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? Icon { get; set; }
 
     [JsonPropertyName("filter")]
