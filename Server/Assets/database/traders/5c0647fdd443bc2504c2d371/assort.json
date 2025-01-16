@@ -2188,7 +2188,7 @@
         "FireMode": {
           "FireMode": "single"
         },
-        "StackObjectsCount": 1990,
+        "StackObjectsCount": 2000,
         "BuyRestrictionMax": 2,
         "BuyRestrictionCurrent": 0
       }
@@ -5310,7 +5310,7 @@
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
-        "StackObjectsCount": 19900,
+        "StackObjectsCount": 20000,
         "BuyRestrictionMax": 4,
         "BuyRestrictionCurrent": 0
       }
@@ -5401,7 +5401,7 @@
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
-        "StackObjectsCount": 19900,
+        "StackObjectsCount": 20000,
         "BuyRestrictionMax": 10,
         "BuyRestrictionCurrent": 0
       }
@@ -5620,7 +5620,7 @@
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
-        "StackObjectsCount": 19500,
+        "StackObjectsCount": 20000,
         "BuyRestrictionMax": 150,
         "BuyRestrictionCurrent": 0
       }

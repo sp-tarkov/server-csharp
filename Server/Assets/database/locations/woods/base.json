@@ -62,7 +62,7 @@
         "pve"
       ],
       "Supports": null,
-      "Time": 900,
+      "Time": -1,
       "TriggerId": "PARTISAN_TRIGGER",
       "TriggerName": "botEvent"
     },
@@ -515,10 +515,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 20,
-  "BotMax": 17,
-  "BotMaxPlayer": 9,
+  "BotMax": 30,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -527,7 +527,7 @@
   "BotSpawnTimeOnMax": 320,
   "BotSpawnTimeOnMin": 260,
   "BotStart": 10,
-  "BotStartPlayer": 200,
+  "BotStartPlayer": 0,
   "BotStop": 1900,
   "Description": "The Priozersk Natural Reserve was recently included into the list of state-protected wildlife reserves of the North-Western Federal District.",
   "DisabledForScav": false,
@@ -11151,7 +11151,7 @@
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "WOO_TRANSIT_15_COND",
       "description": "WOO_TRANSIT_15_DESC",
       "events": false,
@@ -11159,11 +11159,11 @@
       "location": "factory4_day",
       "name": "WOO_TRANSIT_15",
       "target": "55f2d3fd4bdc2d5f408b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "WOO_TRANSIT_16_COND",
       "description": "WOO_TRANSIT_16_DESC",
       "events": false,
@@ -11171,11 +11171,11 @@
       "location": "RezervBase",
       "name": "WOO_TRANSIT_16",
       "target": "5704e5fad2720bc05b8b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "WOO_TRANSIT_17_COND",
       "description": "WOO_TRANSIT_17_DESC",
       "events": false,
@@ -11183,14 +11183,14 @@
       "location": "Lighthouse",
       "name": "WOO_TRANSIT_17",
       "target": "5704e4dad2720bb55b8b4567",
-      "time": 30
+      "time": 20
     },
     {
-      "activateAfterSec": 300,
+      "activateAfterSec": 60,
       "active": true,
       "conditions": "WOO_TRANSIT_41_COND",
       "description": "WOO_TRANSIT_41_DESC",
-      "events": true,
+      "events": false,
       "id": 41,
       "location": "bigmap",
       "name": "WOO_TRANSIT_41",
@@ -11202,5 +11202,262 @@
   "users_spawn_seconds_n": 120,
   "users_spawn_seconds_n2": 200,
   "users_summon_seconds": 0,
-  "waves": []
+  "waves": [
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneClearVill",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 3,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneHouse",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 1,
+      "slots_max": 3,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneScavBase2",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 2,
+      "slots_max": 3,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneHouse",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 3,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneWoodCutter",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 4,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneHouse",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 5,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneWoodCutter",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 6,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneBigRocks",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 7,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "easy",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneRoad",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 8,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneHighRocks",
+      "WildSpawnType": "marksman",
+      "isPlayers": false,
+      "number": 9,
+      "slots_max": 1,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneMiniHouse",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneBigRocks",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneRoad",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "easy",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 3,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 3,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    }
+  ]
 }

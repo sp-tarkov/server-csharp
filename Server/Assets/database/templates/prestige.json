@@ -1,251 +1,250 @@
 {
   "elements": [
     {
-      "id": "672df12f97f0469cea52f55e",
+      "bigImage": "/files/prestige/675864f826d0e0d6b602ce17.png",
       "conditions": [
         {
+          "compareMethod": ">=",
+          "conditionType": "Level",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "672df325cea63f5a813f7227",
           "index": 0,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 55,
-          "compareMethod": ">=",
-          "conditionType": "Level"
+          "visibilityConditions": []
         },
         {
+          "availableAfter": 0,
+          "conditionType": "Quest",
+          "dispersion": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f02c85b4b593b8eb67b3",
           "index": 1,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "target": "5c51aac186f77432ea65c552",
           "status": [
             4
           ],
-          "availableAfter": 0,
-          "dispersion": 0,
-          "conditionType": "Quest"
+          "target": "5c51aac186f77432ea65c552",
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "675d723b026308c637193c83",
           "index": 3,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Strength",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761ef9d5fdfa30b6d6cfaa5",
           "index": 4,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Endurance",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761ef47e43316fd75ddcbc2",
           "index": 5,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Charisma",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "areaType": 11,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761efd8f619f2e097536690",
           "index": 6,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 2,
-          "compareMethod": ">=",
-          "areaType": 11,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "areaType": 1,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761eff54217b75d0a62d188",
           "index": 7,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 3,
-          "compareMethod": ">=",
-          "areaType": 1,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "areaType": 9,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761efeabbe49f4699336bf5",
           "index": 8,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 3,
-          "compareMethod": ">=",
-          "areaType": 9,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "conditionType": "HasItem",
+          "dogtagLevel": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "675d724875542400d1f90100",
           "index": 9,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
+          "isEncoded": false,
+          "maxDurability": 100,
+          "minDurability": 0,
+          "onlyFoundInRaid": false,
           "parentId": "",
           "target": [
             "5449016a4bdc2d6f028b456f"
           ],
           "value": 20000000,
-          "minDurability": 0.0,
-          "maxDurability": 100.0,
-          "dogtagLevel": 0,
-          "onlyFoundInRaid": false,
-          "isEncoded": false,
-          "conditionType": "HasItem"
+          "visibilityConditions": []
         }
       ],
+      "id": "672df12f97f0469cea52f55e",
+      "image": "/files/prestige/675864eb86778bc82004127c.png",
       "rewards": [
         {
-          "id": "6761eee84a6a8e7371ed0607",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6761eee84a6a8e7371ed0607",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/6767341d5b13f778d10f1950.png",
             "bigImage": "/files/prestige/reward/big/6767326b276497e8c60a7e68.png",
+            "image": "/files/prestige/reward/small/6767341d5b13f778d10f1950.png",
             "isBigImage": true
           },
           "isHidden": false,
           "target": "675466825b7ebafefd0ebc2c",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "6756d928059fff622454b65b",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6756d928059fff622454b65b",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/6767340793816ce19c0c8660.png",
             "bigImage": "/files/prestige/reward/big/6767325b9680f649230b1c89.png",
+            "image": "/files/prestige/reward/small/6767340793816ce19c0c8660.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "675198f2a34a61ba7f053e4d",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d7271dac02e00ac3b8782",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d7271dac02e00ac3b8782",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733ff4fe29db8170e5a0f.png",
             "bigImage": "/files/prestige/reward/big/676732574ae0a2016608ebd7.png",
+            "image": "/files/prestige/reward/small/676733ff4fe29db8170e5a0f.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "67519925ba5968fd800a01e4",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d7292a13ffe5ef9046e96",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d7292a13ffe5ef9046e96",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/6767340bed053537070a13da.png",
             "bigImage": "/files/prestige/reward/big/676732609b1325e747028435.png",
+            "image": "/files/prestige/reward/small/6767340bed053537070a13da.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "6751990a490b32072c06f1b3",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d74067a685b35c69cdd71",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "arena",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d74067a685b35c69cdd71",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
             "bigImage": "/files/prestige/reward/big/676c7ffa005e2661180b0d5c.png",
+            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "Charisma",
-          "value": 100,
-          "type": "Skill"
+          "type": "Skill",
+          "unknown": false,
+          "value": 100
         },
         {
-          "id": "675d743af8c76434a9ead47b",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d743af8c76434a9ead47b",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733dca49c2307370ea30f.png",
             "bigImage": "/files/prestige/reward/big/67673232a49c2307370ea305.png",
+            "image": "/files/prestige/reward/small/676733dca49c2307370ea30f.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "674dbf593bee1152d407f005",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d745aaf070f34a1f403c7",
-          "unknown": false,
+          "availableInGameEditions": [],
+          "findInRaid": true,
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d745aaf070f34a1f403c7",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/6767343d9680f649230b1c8f.png",
             "bigImage": "/files/prestige/reward/big/6767329bed053537070a13d5.png",
+            "image": "/files/prestige/reward/small/6767343d9680f649230b1c8f.png",
             "isBigImage": false
           },
-          "isHidden": false,
-          "target": "67714d37954bfbcd4f0cf2ff",
-          "value": 1,
           "isEncoded": false,
-          "findInRaid": true,
+          "isHidden": false,
           "items": [
             {
-              "_id": "67714d37954bfbcd4f0cf2ff",
+              "_id": "6787cc8ba341a264260c8f4a",
               "_tpl": "6759bb94b8913ff13e049669",
               "upd": {
                 "SpawnedInSession": true,
@@ -253,29 +252,29 @@
               }
             }
           ],
-          "type": "Item"
+          "target": "6787cc8ba341a264260c8f4a",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "6761fca4ca2f4ab1b7898d4b",
-          "unknown": false,
+          "availableInGameEditions": [],
+          "findInRaid": true,
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6761fca4ca2f4ab1b7898d4b",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733e5276497e8c60a7e6d.png",
             "bigImage": "/files/prestige/reward/big/6767323ff6f30887d5038c38.png",
+            "image": "/files/prestige/reward/small/676733e5276497e8c60a7e6d.png",
             "isBigImage": false
           },
-          "isHidden": false,
-          "target": "67714d37954bfbcd4f0cf301",
-          "value": 1,
           "isEncoded": false,
-          "findInRaid": true,
+          "isHidden": false,
           "items": [
             {
-              "_id": "67714d37954bfbcd4f0cf301",
+              "_id": "6787cc8ba341a264260c8f4c",
               "_tpl": "67614b542eb91250020f2b86",
               "upd": {
                 "SpawnedInSession": true,
@@ -283,31 +282,39 @@
               }
             }
           ],
-          "type": "Item"
+          "target": "6787cc8ba341a264260c8f4c",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "6761eeccceeec74c65d3d3a8",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6761eeccceeec74c65d3d3a8",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/67673431a49c2307370ea311.png",
             "bigImage": "/files/prestige/reward/big/6767328e276497e8c60a7e69.png",
+            "image": "/files/prestige/reward/small/67673431a49c2307370ea311.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "67604ac650dfa9253901a548",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         }
       ],
       "transferConfigs": {
+        "masteringConfig": {
+          "transferMultiplier": 0.95
+        },
+        "skillConfig": {
+          "transferMultiplier": 0.95
+        },
         "stashConfig": {
-          "xCellCount": 8,
-          "yCellCount": 3,
           "filters": {
+            "excludedItems": [],
             "includedItems": [
               "5e2aee0a86f774755a234b62",
               "5e2aedd986f7746d404f3aa4",
@@ -511,177 +518,169 @@
               "67614b3ab8c060ebb204b106",
               "619bdfd4c9546643a67df6fa",
               "664a5480bfcc521bad3192ca"
-            ],
-            "excludedItems": []
-          }
-        },
-        "skillConfig": {
-          "transferMultiplier": 0.95
-        },
-        "masteringConfig": {
-          "transferMultiplier": 0.95
+            ]
+          },
+          "xCellCount": 8,
+          "yCellCount": 3
         }
-      },
-      "image": "/files/prestige/675864eb86778bc82004127c.png",
-      "bigImage": "/files/prestige/675864f826d0e0d6b602ce17.png"
+      }
     },
     {
-      "id": "672df4281ab8d9c8849a0c88",
+      "bigImage": "/files/prestige/675864ffa4c475834b0de8ff.png",
       "conditions": [
         {
+          "compareMethod": ">=",
+          "conditionType": "Level",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "672df4281e1344e35bcbd670",
           "index": 0,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 55,
-          "compareMethod": ">=",
-          "conditionType": "Level"
+          "visibilityConditions": []
         },
         {
+          "availableAfter": 0,
+          "conditionType": "Quest",
+          "dispersion": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "675d71ff4f6cbb631b79016a",
           "index": 2,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "target": "5c51aac186f77432ea65c552",
           "status": [
             4
           ],
-          "availableAfter": 0,
-          "dispersion": 0,
-          "conditionType": "Quest"
+          "target": "5c51aac186f77432ea65c552",
+          "visibilityConditions": []
         },
         {
+          "availableAfter": 0,
+          "conditionType": "Quest",
+          "dispersion": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "67620a1f2e64e3f5c982585c",
           "index": 2,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "target": "6761ff17cdc36bd66102e9d0",
           "status": [
             4
           ],
-          "availableAfter": 0,
-          "dispersion": 0,
-          "conditionType": "Quest"
+          "target": "6761ff17cdc36bd66102e9d0",
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f0951e241947b3439dbd",
           "index": 3,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Strength",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f08995d00b8a8594bfbf",
           "index": 4,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Endurance",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "compareMethod": ">=",
+          "conditionType": "Skill",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f0a11961e431bb8b7915",
           "index": 5,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
-          "value": 20,
-          "compareMethod": ">=",
           "target": "Charisma",
-          "conditionType": "Skill"
+          "value": 20,
+          "visibilityConditions": []
         },
         {
+          "areaType": 11,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f0e136ae4b74063f0301",
           "index": 6,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 2,
-          "compareMethod": ">=",
-          "areaType": 11,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "areaType": 1,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f0c3fa7b4e2f2f7a0ba0",
           "index": 7,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 3,
-          "compareMethod": ">=",
-          "areaType": 1,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "areaType": 9,
+          "compareMethod": ">=",
+          "conditionType": "HideoutArea",
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "6761f0db439c5eb5cb24748e",
           "index": 8,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
           "parentId": "",
           "value": 3,
-          "compareMethod": ">=",
-          "areaType": 9,
-          "conditionType": "HideoutArea"
+          "visibilityConditions": []
         },
         {
+          "conditionType": "HasItem",
+          "dogtagLevel": 0,
+          "dynamicLocale": false,
+          "globalQuestCounterId": "",
           "id": "675d71e9bd393adc11c40d14",
           "index": 9,
-          "dynamicLocale": false,
-          "visibilityConditions": [],
-          "globalQuestCounterId": "",
+          "isEncoded": false,
+          "maxDurability": 100,
+          "minDurability": 0,
+          "onlyFoundInRaid": false,
           "parentId": "",
           "target": [
             "5449016a4bdc2d6f028b456f"
           ],
           "value": 20000000,
-          "minDurability": 0.0,
-          "maxDurability": 100.0,
-          "dogtagLevel": 0,
-          "onlyFoundInRaid": false,
-          "isEncoded": false,
-          "conditionType": "HasItem"
+          "visibilityConditions": []
         }
       ],
+      "id": "672df4281ab8d9c8849a0c88",
+      "image": "/files/prestige/675864efbe287595450c7686.png",
       "rewards": [
         {
-          "id": "672df428fbdea27ec6abfd42",
-          "unknown": false,
+          "availableInGameEditions": [],
+          "findInRaid": true,
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "672df428fbdea27ec6abfd42",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676ab01ff444b79e7306741b.png",
             "bigImage": "/files/prestige/reward/big/676aaff96fd0e0b7f20715db.png",
+            "image": "/files/prestige/reward/small/676ab01ff444b79e7306741b.png",
             "isBigImage": true
           },
-          "isHidden": false,
-          "target": "67714d37954bfbcd4f0cf303",
-          "value": 1,
           "isEncoded": false,
-          "findInRaid": true,
+          "isHidden": false,
           "items": [
             {
-              "_id": "67714d37954bfbcd4f0cf303",
+              "_id": "6787cc8ba341a264260c8f4e",
               "_tpl": "674d90b55704568fe60bc8f5",
               "upd": {
                 "SpawnedInSession": true,
@@ -689,135 +688,135 @@
               }
             }
           ],
-          "type": "Item"
+          "target": "6787cc8ba341a264260c8f4e",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "6751cafb9466ef534837321d",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6751cafb9466ef534837321d",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676c801b77d346999f0ac3b1.png",
             "bigImage": "/files/prestige/reward/big/676c7ff49767102f9807a17a.png",
+            "image": "/files/prestige/reward/small/676c801b77d346999f0ac3b1.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "615ffc701c97c768137e719b",
-          "value": 1,
-          "type": "ExtraDailyQuest"
+          "type": "ExtraDailyQuest",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "6751caffdc8101797a4d556a",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6751caffdc8101797a4d556a",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676c801f9767102f9807a17b.png",
             "bigImage": "/files/prestige/reward/big/676c8005fa48d79dfa063bce.png",
+            "image": "/files/prestige/reward/small/676c801f9767102f9807a17b.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "618035d38012292db3081bf0",
-          "value": 1,
-          "type": "ExtraDailyQuest"
+          "type": "ExtraDailyQuest",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "675d6cce01b51fbdafa46096",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "arena",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d6cce01b51fbdafa46096",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
             "bigImage": "/files/prestige/reward/big/676c7ffa005e2661180b0d5c.png",
+            "image": "/files/prestige/reward/small/676c801645d80f6cea04f0bc.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "Charisma",
-          "value": 100,
-          "type": "Skill"
+          "type": "Skill",
+          "unknown": false,
+          "value": 100
         },
         {
-          "id": "675b0d14dd24b1cb7c2c2e7d",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675b0d14dd24b1cb7c2c2e7d",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/6767342c4fe29db8170e5a10.png",
             "bigImage": "/files/prestige/reward/big/67673283aa94e661930dadfc.png",
+            "image": "/files/prestige/reward/small/6767342c4fe29db8170e5a10.png",
             "isBigImage": true
           },
           "isHidden": false,
           "target": "67585108def253bd97084552",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d7107ad3b67a1b9465653",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d7107ad3b67a1b9465653",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733fb8073dabc2e06df2c.png",
             "bigImage": "/files/prestige/reward/big/676732538073dabc2e06df28.png",
+            "image": "/files/prestige/reward/small/676733fb8073dabc2e06df2c.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "675184a9490b32072c06f1a7",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d712cf1d6153a75d77db1",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d712cf1d6153a75d77db1",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733e15b13f778d10f194e.png",
             "bigImage": "/files/prestige/reward/big/67673239b3ee94a38c056c27.png",
+            "image": "/files/prestige/reward/small/676733e15b13f778d10f194e.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "675dcfea7ae1a8792107ca99",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d71551692b38879ad814b",
-          "unknown": false,
+          "availableInGameEditions": [],
+          "findInRaid": true,
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d71551692b38879ad814b",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/67673438276497e8c60a7e6f.png",
             "bigImage": "/files/prestige/reward/big/676732974fe29db8170e5a09.png",
+            "image": "/files/prestige/reward/small/67673438276497e8c60a7e6f.png",
             "isBigImage": false
           },
-          "isHidden": false,
-          "target": "67714d37954bfbcd4f0cf305",
-          "value": 1,
           "isEncoded": false,
-          "findInRaid": true,
+          "isHidden": false,
           "items": [
             {
-              "_id": "67714d37954bfbcd4f0cf305",
+              "_id": "6787cc8ba341a264260c8f50",
               "_tpl": "6759e07e4ff23436160d7fed",
               "upd": {
                 "SpawnedInSession": true,
@@ -825,63 +824,63 @@
               }
             }
           ],
-          "type": "Item"
+          "target": "6787cc8ba341a264260c8f50",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
         },
         {
-          "id": "6761f15fdeea87dbc4110644",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6761f15fdeea87dbc4110644",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676734278073dabc2e06df2d.png",
             "bigImage": "/files/prestige/reward/big/676732768073dabc2e06df29.png",
+            "image": "/files/prestige/reward/small/676734278073dabc2e06df2d.png",
             "isBigImage": true
           },
           "isHidden": false,
           "target": "675467c924c9a7ccb509d62f",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "6761f18f9432dcfed5cb1c78",
-          "unknown": false,
+          "availableInGameEditions": [],
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "6761f18f9432dcfed5cb1c78",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676734355b13f778d10f1951.png",
             "bigImage": "/files/prestige/reward/big/676732928073dabc2e06df2a.png",
+            "image": "/files/prestige/reward/small/676734355b13f778d10f1951.png",
             "isBigImage": false
           },
           "isHidden": false,
           "target": "67604abb8491fd0a830f3578",
-          "type": "CustomizationDirect"
+          "type": "CustomizationDirect",
+          "unknown": false
         },
         {
-          "id": "675d718662cee92b1f4ddf07",
-          "unknown": false,
+          "availableInGameEditions": [],
+          "findInRaid": true,
           "gameMode": [
             "regular",
             "pve"
           ],
-          "availableInGameEditions": [],
+          "id": "675d718662cee92b1f4ddf07",
           "illustrationConfig": {
-            "image": "/files/prestige/reward/small/676733ea1814da542d050f2c.png",
             "bigImage": "/files/prestige/reward/big/67673244378a51df670bc6c8.png",
+            "image": "/files/prestige/reward/small/676733ea1814da542d050f2c.png",
             "isBigImage": false
           },
-          "isHidden": false,
-          "target": "67714d37954bfbcd4f0cf307",
-          "value": 1,
           "isEncoded": false,
-          "findInRaid": true,
+          "isHidden": false,
           "items": [
             {
-              "_id": "67714d37954bfbcd4f0cf307",
+              "_id": "6787cc8ba341a264260c8f52",
               "_tpl": "67614b6b47c71ea3d40256d7",
               "upd": {
                 "SpawnedInSession": true,
@@ -889,14 +888,22 @@
               }
             }
           ],
-          "type": "Item"
+          "target": "6787cc8ba341a264260c8f52",
+          "type": "Item",
+          "unknown": false,
+          "value": 1
         }
       ],
       "transferConfigs": {
+        "masteringConfig": {
+          "transferMultiplier": 0.9
+        },
+        "skillConfig": {
+          "transferMultiplier": 0.9
+        },
         "stashConfig": {
-          "xCellCount": 8,
-          "yCellCount": 4,
           "filters": {
+            "excludedItems": [],
             "includedItems": [
               "5448f3a14bdc2d27728b4569",
               "5448f3ac4bdc2dce718b4569",
@@ -1080,19 +1087,12 @@
               "619bdf9cc9546643a67df6f8",
               "619bdfd4c9546643a67df6fa",
               "67614b3ab8c060ebb204b106"
-            ],
-            "excludedItems": []
-          }
-        },
-        "skillConfig": {
-          "transferMultiplier": 0.9
-        },
-        "masteringConfig": {
-          "transferMultiplier": 0.9
+            ]
+          },
+          "xCellCount": 8,
+          "yCellCount": 4
         }
-      },
-      "image": "/files/prestige/675864efbe287595450c7686.png",
-      "bigImage": "/files/prestige/675864ffa4c475834b0de8ff.png"
+      }
     }
   ]
 }

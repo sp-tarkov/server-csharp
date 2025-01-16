@@ -361,6 +361,28 @@
       "Time": -1,
       "TriggerId": "",
       "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "gifter",
+      "BossName": "gifter",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve",
+        "regular"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
     }
   ],
   "BotAssault": 80,
@@ -487,10 +509,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 20,
-  "BotMax": 23,
-  "BotMaxPlayer": 10,
+  "BotMax": 48,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 48,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 40,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 14,
@@ -499,7 +521,7 @@
   "BotSpawnTimeOnMax": 360,
   "BotSpawnTimeOnMin": 290,
   "BotStart": 122,
-  "BotStartPlayer": 550,
+  "BotStartPlayer": 0,
   "BotStop": 2200,
   "Description": "The downtown Tarkov with banks, malls, hotels and all the other things a striving modern city could have needed.",
   "DisabledForScav": false,
@@ -3935,7 +3957,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 70
         }
       },
       "CorePointId": 0,
@@ -4626,7 +4648,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 70
         }
       },
       "CorePointId": 0,
@@ -5258,7 +5280,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 70
         }
       },
       "CorePointId": 0,
@@ -7454,7 +7476,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 70
         }
       },
       "CorePointId": 0,
@@ -7492,11 +7514,11 @@
       "Id": "8285cec6-97d0-431f-82ff-e57d864866ca",
       "Infiltration": "E1_2",
       "Position": {
-        "x": -31.202,
-        "y": 2.615,
-        "z": 465.022
+        "x": -77.602,
+        "y": 3.235,
+        "z": 336.713
       },
-      "Rotation": 181.253433,
+      "Rotation": 4.12763071,
       "Sides": [
         "All"
       ]
@@ -7966,7 +7988,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 70
         }
       },
       "CorePointId": 0,
@@ -8094,11 +8116,11 @@
       "Id": "8ee254ee-954f-4f9f-b04d-23abb8cecf7e",
       "Infiltration": "E1_2",
       "Position": {
-        "x": -31.017,
-        "y": 2.615,
-        "z": 466.544
+        "x": -81.37,
+        "y": 3.296,
+        "z": 338.106
       },
-      "Rotation": 181.253433,
+      "Rotation": 5.292642,
       "Sides": [
         "All"
       ]
@@ -8184,11 +8206,11 @@
       "Id": "906d71d5-db71-47c1-8a58-0f48f58daea1",
       "Infiltration": "E1_2",
       "Position": {
-        "x": -32.585,
-        "y": 2.615,
-        "z": 466.542
+        "x": -78.998,
+        "y": 3.308,
+        "z": 336.759
       },
-      "Rotation": 181.253433,
+      "Rotation": 0.5500601,
       "Sides": [
         "All"
       ]
@@ -8365,11 +8387,11 @@
       "Id": "95453f5c-5ca5-405f-8872-ea088ca155c3",
       "Infiltration": "E1_2",
       "Position": {
-        "x": -32.607,
-        "y": 2.615,
-        "z": 465.087
+        "x": -81.293,
+        "y": 3.301,
+        "z": 336.31
       },
-      "Rotation": 181.253433,
+      "Rotation": 355.580658,
       "Sides": [
         "All"
       ]
@@ -13303,11 +13325,11 @@
       "Id": "f6cc8fe9-efc2-4b01-bd68-87565e068436",
       "Infiltration": "E1_2",
       "Position": {
-        "x": -29.893,
-        "y": 2.615,
-        "z": 465.548
+        "x": -76.262,
+        "y": 3.337,
+        "z": 336.625
       },
-      "Rotation": 181.253433,
+      "Rotation": 350.739258,
       "Sides": [
         "All"
       ]
@@ -14058,18 +14080,18 @@
       "location": "Sandbox_high",
       "name": "STR_TRANSIT_3",
       "target": "65b8d6f5cdde2479cb2a3125",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "STR_TRANSIT_4_COND",
       "description": "STR_TRANSIT_4_DESC",
       "id": 4,
       "location": "Interchange",
       "name": "STR_TRANSIT_4",
       "target": "5714dbc024597771384a510d",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
@@ -14080,7 +14102,7 @@
       "location": "laboratory",
       "name": "STR_TRANSIT_5",
       "target": "5b0fc42d86f7744a585f9105",
-      "time": 30
+      "time": 20
     }
   ],
   "users_gather_seconds": 0,
