@@ -800,7 +800,99 @@ public class BotEquipmentModGenerator
     /// <returns>itemHelper.getItem() result</returns>
     public KeyValuePair<bool, TemplateItem>? ChooseModToPutIntoSlot(ModToSpawnRequest request) // TODO: type fuckery: [boolean, ITemplateItem] | undefined
     {
-        throw new NotImplementedException();
+        /** Slot mod will fill */
+        var parentSlot = request.ParentTemplate.Properties.Slots?.FirstOrDefault((i) => i.Name == request.ModSlot);
+        var weaponTemplate = _itemHelper.GetItem(request.Weapon[0].Template).Value;
+
+        // It's ammo, use predefined ammo parameter
+        if (GetAmmoContainers().Contains(request.ModSlot) && request.ModSlot != "mod_magazine") {
+            return _itemHelper.GetItem(request.AmmoTpl);
+        }
+
+        // Ensure there's a pool of mods to pick from
+        var modPool = GetModPoolForSlot(request, weaponTemplate);
+        if (modPool is null && !(parentSlot?.Required ?? false)) {
+            // Nothing in mod pool + item not required
+            _logger.Debug($"Mod pool for optional slot: {request.ModSlot} on item: {request.ParentTemplate.Name} was empty, skipping mod");
+            return null;
+        }
+
+        // Filter out non-whitelisted scopes, use full modpool if filtered pool would have no elements
+        if (request.ModSlot.Contains("mod_scope") && request.BotWeaponSightWhitelist is not null) {
+            // scope pool has more than one scope
+            if (modPool.Count > 1) {
+                modPool = FilterSightsByWeaponType(request.Weapon[0], modPool, request.BotWeaponSightWhitelist);
+            }
+        }
+
+        if (request.ModSlot == "mod_gas_block") {
+            if (request.WeaponStats.HasOptic ?? false && modPool.Count > 1) {
+                // Attempt to limit modpool to low profile gas blocks when weapon has an optic
+                var onlyLowProfileGasBlocks = modPool.Where((tpl) =>
+                    _botConfig.LowProfileGasBlockTpls.Contains(tpl)
+                );
+                if (onlyLowProfileGasBlocks.Count() > 0) {
+                    modPool = onlyLowProfileGasBlocks.ToList();
+                }
+            } else if (request.WeaponStats.HasRearIronSight ?? false && modPool.Count() > 1) {
+                // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
+                var onlyHighProfileGasBlocks = modPool.Where(
+                    (tpl) => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
+                );
+                if (onlyHighProfileGasBlocks.Count() > 0) {
+                    modPool = onlyHighProfileGasBlocks.ToList();
+                }
+            }
+        }
+
+        // Check if weapon has min magazine size limit
+        if (
+            request?.ModSlot == "mod_magazine" &&
+            (request?.IsRandomisableSlot ?? false) &&
+            request.RandomisationSettings.MinimumMagazineSize is not null
+        ) {
+            modPool = GetFilterdMagazinePoolByCapacity(request, modPool);
+        }
+
+        // Pick random mod that's compatible
+        var chosenModResult = GetCompatibleWeaponModTplForSlotFromPool(
+            request,
+            modPool,
+            parentSlot,
+            request.ModSpawnResult,
+            request.Weapon,
+            request.ModSlot
+        );
+        if (chosenModResult.SlotBlocked ?? false && !(parentSlot.Required ?? false)) {
+            // Don't bother trying to fit mod, slot is completely blocked
+            return null;
+        }
+
+        // Log if mod chosen was incompatible
+        if (chosenModResult.Incompatible ?? false && !(parentSlot.Required ?? false)) {
+            _logger.Debug(chosenModResult.Reason);
+        }
+
+        // Get random mod to attach from items db for required slots if none found above
+        if (!(chosenModResult.Found ?? false) && parentSlot != null && (parentSlot.Required ?? false)) {
+            chosenModResult.ChosenTemplate = GetRandomModTplFromItemDb("", parentSlot, request.ModSlot, request.Weapon);
+            chosenModResult.Found = true;
+        }
+
+        // Compatible item not found + not required
+        if (!(chosenModResult.Found ?? false) && parentSlot != null && (!parentSlot.Required ?? false)) {
+            return null;
+        }
+
+        if (!(chosenModResult.Found ?? false) && parentSlot != null) {
+            if (parentSlot.Required ?? false) {
+                _logger.Warning($"Required slot unable to be filled, {request.ModSlot} on {request.ParentTemplate.Name} {request.ParentTemplate.Id} for weapon: {request.Weapon[0].Template}");
+            }
+
+            return null;
+        }
+
+        return _itemHelper.GetItem(chosenModResult.ChosenTemplate);
     }
 
     /// <summary>
@@ -827,7 +919,7 @@ public class BotEquipmentModGenerator
     /// <param name="modSlotName">Name of slot picked mod will be placed into</param>
     /// <returns>Chosen weapon details</returns>
     public ChooseRandomCompatibleModResult GetCompatibleWeaponModTplForSlotFromPool(ModToSpawnRequest request, List<string> modPool, Slot parentSlot,
-        ModSpawn choiceTypeEnum, List<Item> weapon, string modSlotName)
+        ModSpawn? choiceTypeEnum, List<Item> weapon, string modSlotName)
     {
         throw new NotImplementedException();
     }
