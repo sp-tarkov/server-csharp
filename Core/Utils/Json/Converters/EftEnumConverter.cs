@@ -25,7 +25,19 @@ public class EftEnumConverter<T> : JsonConverter<T>
 
     public override void Write(Utf8JsonWriter writer, T value, JsonSerializerOptions options)
     {
-        JsonSerializer.Serialize(writer, value, _options);
+        if (typeof(T).GetFields().Any(f => f.FieldType == typeof(string)))
+        {
+            JsonSerializer.Serialize(writer, value as string, _options);
+        }
+        else
+        {
+            if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
+                JsonSerializer.Serialize(writer, Convert.ToInt32(value), _options);
+            else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
+                JsonSerializer.Serialize(writer, Convert.ToByte(value), _options);
+            else
+                throw new Exception($"Could not convert enum {value.GetType()} with value {value}");
+        }
     }
 
     public override T ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

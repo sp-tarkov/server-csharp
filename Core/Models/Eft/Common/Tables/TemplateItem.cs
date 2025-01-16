@@ -932,6 +932,7 @@ public class Props
 
     [JsonPropertyName("effects_damage")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Dictionary<string, EffectDamageProps>? EffectsDamage { get; set; }
 
     [JsonPropertyName("maximumNumberOfUsage")]

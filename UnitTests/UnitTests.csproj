@@ -20,7 +20,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Tests\Mock\" />
+        <Content Include="TestAssets\**">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
