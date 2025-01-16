@@ -265,8 +265,11 @@ public class CustomizationController
         var customisationResultsClone = _cloner.Clone(_databaseService.GetTemplates().CustomisationStorage);
 
         var profile = _profileHelper.GetFullProfile(sessionId);
-        if (profile != null)
+        if (profile is null)
+        {
             return customisationResultsClone;
+        }
+
         
         customisationResultsClone.AddRange(profile.CustomisationUnlocks ?? new());
 
