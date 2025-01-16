@@ -78,7 +78,13 @@ public class BotEquipmentFilterService
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
     public Dictionary<string, List<string>> GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
-        throw new NotImplementedException();
+        var botEquipmentSettings = _botConfig.Equipment[botEquipmentRole];
+
+        if (botEquipmentSettings is null) {
+            return null;
+        }
+
+        return botEquipmentSettings.WeaponSightWhitelist;
     }
 
     /// <summary>
