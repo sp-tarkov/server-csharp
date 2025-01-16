@@ -10,14 +10,15 @@ public class ClientLogRequest : IRequestData
     public string? Source { get; set; }
 
     [JsonPropertyName("Level")]
+    [JsonConverter(typeof(JsonStringEnumConverter))] // TODO: Fix in modules to send enumValue instead of string
     public LogLevel? Level { get; set; }
 
     [JsonPropertyName("Message")]
     public string? Message { get; set; }
 
     [JsonPropertyName("Color")]
-    public LogTextColor? Color { get; set; }
+    public string? Color { get; set; } // TODO: FIX THIS SHIT FOR COLOURS
 
     [JsonPropertyName("BackgroundColor")]
-    public LogBackgroundColor? BackgroundColor { get; set; }
+    public string? BackgroundColor { get; set; }
 }

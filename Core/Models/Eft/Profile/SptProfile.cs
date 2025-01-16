@@ -135,6 +135,7 @@ public class EquipmentBuild : UserBuild
     public List<Item>? Items { get; set; } // Same as PMC inventory items
 
     [JsonPropertyName("BuildType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EquipmentBuildType? BuildType { get; set; }
 }
 
@@ -165,15 +166,6 @@ public class MagazineTemplateAmmoItem
 /** Used by defaultEquipmentPresets.json */
 public class DefaultEquipmentPreset : EquipmentBuild
 {
-    [JsonPropertyName("Items")]
-    public List<Item>? Items { get; set; }
-
-    [JsonPropertyName("Root")]
-    public string? Root { get; set; }
-
-    [JsonPropertyName("BuildType")]
-    public string? BuildType { get; set; }
-
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }
