@@ -12,13 +12,13 @@ namespace Core.Helpers;
 [Injectable]
 public class NotificationSendHelper
 {
-    private readonly SptWebSocketConnectionHandler _sptWebSocketConnectionHandler;
+    private readonly IWebSocketConnectionHandler _sptWebSocketConnectionHandler;
     private readonly HashUtil _hashUtil;
     private readonly SaveServer _saveServer;
     private readonly NotificationService _notificationService;
 
     public NotificationSendHelper(
-        SptWebSocketConnectionHandler sptWebSocketConnectionHandler,
+        IWebSocketConnectionHandler sptWebSocketConnectionHandler,
         HashUtil hashUtil,
         SaveServer saveServer,
         NotificationService notificationService
@@ -39,7 +39,7 @@ public class NotificationSendHelper
     {
         if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
-            _sptWebSocketConnectionHandler.SendMessageAsync(sessionID, notificationMessage);
+            _sptWebSocketConnectionHandler.SendMessageAsync(sessionID, notificationMessage).Wait();
         }
         else
         {
