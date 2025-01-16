@@ -26,5 +26,4 @@ public class Test
         var result = new JsonUtil().Serialize(_templates);
         Console.WriteLine(result);
     }
-    
 }
