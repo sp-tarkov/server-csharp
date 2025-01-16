@@ -1412,6 +1412,58 @@ public class BotEquipmentModGenerator
     /// <returns>Array of scope tpls that have been filtered to just ones allowed for that weapon type</returns>
     public List<string> FilterSightsByWeaponType(Item weapon, List<string> scopes, Dictionary<string, List<string>> botWeaponSightWhitelist)
     {
-        throw new NotImplementedException();
+        var weaponDetails = _itemHelper.GetItem(weapon.Template);
+
+        // Return original scopes array if whitelist not found
+        var whitelistedSightTypes = botWeaponSightWhitelist[weaponDetails.Value.Parent];
+        if (whitelistedSightTypes is null) {
+            _logger.Debug($"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering");
+
+            return scopes;
+        }
+
+        // Filter items that are not directly scopes OR mounts that do not hold the type of scope we allow for this weapon type
+        List<string> filteredScopesAndMods = [];
+        foreach (var item in scopes) {
+            // Mods is a scope, check base class is allowed
+            if (_itemHelper.IsOfBaseclasses(item, whitelistedSightTypes)) {
+                // Add mod to allowed list
+                filteredScopesAndMods.Add(item);
+                continue;
+            }
+
+            // Edge case, what if item is a mount for a scope and not directly a scope?
+            // Check item is mount + has child items
+            var itemDetails = _itemHelper.GetItem(item).Value;
+            if (_itemHelper.IsOfBaseclass(item, BaseClasses.MOUNT) && itemDetails.Properties.Slots.Count() > 0) {
+                // Check to see if mount has a scope slot (only include primary slot, ignore the rest like the backup sight slots)
+                // Should only find 1 as there's currently no items with a mod_scope AND a mod_scope_000
+                List<string> filter = ["mod_scope", "mod_scope_000"];
+                var scopeSlot = itemDetails.Properties.Slots.Where((slot) =>
+                    filter.Contains(slot.Name)
+                );
+
+                // Mods scope slot found must allow ALL whitelisted scope types OR be a mount
+                if (scopeSlot?.All((slot) =>
+                        slot.Props.Filters[0].Filter.All((tpl) =>
+                                _itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes) ||
+                                _itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
+                        )
+                ) ?? false) 
+                {
+                    // Add mod to allowed list
+                    filteredScopesAndMods.Add(item);
+                }
+            }
+        }
+
+        // No mods added to return list after filtering has occurred, send back the original mod list
+        if (filteredScopesAndMods is null || filteredScopesAndMods.Count() == 0) {
+            _logger.Debug($"Scope whitelist too restrictive for: {weapon.Template} {weaponDetails.Value.Name}, skipping filter");
+
+            return scopes;
+        }
+
+        return filteredScopesAndMods;
     }
 }
