@@ -510,6 +510,8 @@ public class Hideout
     public Dictionary<string, Production>? Production { get; set; }
     public List<BotHideoutArea>? Areas { get; set; }
     public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
+    
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public HideoutCounters? HideoutCounters { get; set; }
     public double? Seed { get; set; }
     public Dictionary<string, string>? MannequinPoses { get; set; }
@@ -769,6 +771,7 @@ public class Bonus
     public double? Value { get; set; }
 
     [JsonPropertyName("icon")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? Icon { get; set; }
 
     [JsonPropertyName("filter")]

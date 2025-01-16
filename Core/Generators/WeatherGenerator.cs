@@ -46,7 +46,7 @@ public class WeatherGenerator
      */
     public void CalculateGameTime(WeatherData data)
     {
-        var computedDate = new DateTime();
+        var computedDate = DateTime.Now;
         var formattedDate = this._timeUtil.FormatDate(computedDate);
 
         data.Date = formattedDate;

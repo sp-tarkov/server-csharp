@@ -20,6 +20,7 @@ public class HandbookCategory
     public string? ParentId { get; set; }
 
     [JsonPropertyName("Icon")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? Icon { get; set; }
 
     [JsonPropertyName("Color")]
@@ -35,6 +36,7 @@ public class HandbookItem
     public string? Id { get; set; }
 
     [JsonPropertyName("ParentId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? ParentId { get; set; }
 
     [JsonPropertyName("Price")]

@@ -1,4 +1,7 @@
-﻿namespace Core.Models.Eft.Health;
+﻿using Core.Models.Eft.Common.Tables;
+using Mastering = Core.Models.Eft.Common.Mastering;
+
+namespace Core.Models.Eft.Health;
 
 using System.Text.Json.Serialization;
 
@@ -14,10 +17,10 @@ public class WorkoutSkills
     public List<WorkoutSkillCommon>? Common { get; set; }
 
     [JsonPropertyName("Mastering")]
-    public List<object>? Mastering { get; set; }
+    public List<Mastering>? Mastering { get; set; }
 
     [JsonPropertyName("Bonuses")]
-    public object? Bonuses { get; set; }
+    public Bonus? Bonuses { get; set; }
 
     [JsonPropertyName("Points")]
     public int? Points { get; set; }
