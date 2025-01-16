@@ -491,7 +491,7 @@ public class ProfileFixerService
             // Check each item in inventory to ensure item exists in itemdb
             foreach (var item in inventoryItemsToCheck)
             {
-                if (itemsDb[item.Template] is not null)
+                if (!itemsDb.ContainsKey(item.Template))
                 {
                     _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
