@@ -100,10 +100,15 @@ public class DatabaseImporter : OnLoad
     {
         var directoryContent = GetAllFilesInDirectory(directory);
 
-        foreach (var fileNameWithPath in directoryContent) {
-            var bsgPath = $"/{newBasePath}/{_fileUtil.StripExtension(fileNameWithPath)}";
-            var sptPath = $"{directory}{ fileNameWithPath}";
-            _imageRouter.AddRoute(bsgPath, sptPath);
+        foreach (var fileNameWithPath in directoryContent)
+        {
+            var fileNameWithNoSPTPath = fileNameWithPath.Replace(directory, "");
+            var filePathNoExtension = _fileUtil.StripExtension(fileNameWithNoSPTPath, true);
+            if (filePathNoExtension.StartsWith("/") || fileNameWithPath.StartsWith("\\"))
+                filePathNoExtension = $"{filePathNoExtension.Substring(1)}";
+            
+            var bsgPath = $"/{newBasePath}/{filePathNoExtension}".Replace("\\", "/");
+            _imageRouter.AddRoute(bsgPath, fileNameWithPath);
         }
     }
 
