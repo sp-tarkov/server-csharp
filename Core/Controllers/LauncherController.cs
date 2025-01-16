@@ -63,6 +63,7 @@ public class LauncherController
         // Get all possible profile types + filter out any that are blacklisted
 
         var profiles = typeof(ProfileTemplates).GetProperties()
+            .Where(p => p.CanWrite)
             .Select(p => p.GetJsonName())
             .Where(profileName => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName))
             .ToList();
