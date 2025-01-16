@@ -28,7 +28,7 @@ public class BotGenerationDetails
     /// Active players current level
     /// </summary>
     [JsonPropertyName("playerLevel")]
-    public int? PlayerLevel { get; set; }
+    public double? PlayerLevel { get; set; }
 
     [JsonPropertyName("playerName")]
     public string? PlayerName { get; set; }

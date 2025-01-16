@@ -184,7 +184,7 @@ public class Info
 
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
-    public int? PrestigeLevel { get; set; }
+    public double? PrestigeLevel { get; set; }
 }
 
 public class BotInfoSettings

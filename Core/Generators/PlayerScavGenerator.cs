@@ -322,7 +322,7 @@ public class PlayerScavGenerator
         return _profileHelper.GetDefaultCounters();
     }
 
-    protected int GetScavLevel(PmcData scavProfile)
+    protected double GetScavLevel(PmcData scavProfile)
     {
         // Info can be null on initial account creation
         if (scavProfile?.Info?.Level == null)

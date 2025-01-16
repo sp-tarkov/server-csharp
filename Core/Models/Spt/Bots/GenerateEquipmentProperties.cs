@@ -53,5 +53,5 @@ public class GenerateEquipmentProperties
     public List<string>? GenerateModsBlacklist { get; set; }
 
     [JsonPropertyName("generatingPlayerLevel")]
-    public int? GeneratingPlayerLevel { get; set; }
+    public double? GeneratingPlayerLevel { get; set; }
 }

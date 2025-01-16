@@ -18,5 +18,5 @@ public class ProfileCreateRequestData : IRequestData
     public string? VoiceId { get; set; }
 
     [JsonPropertyName("sptForcePrestigeLevel")]
-    public int? SptForcePrestigeLevel { get; set; }
+    public double? SptForcePrestigeLevel { get; set; }
 }

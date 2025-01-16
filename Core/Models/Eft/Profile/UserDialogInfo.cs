@@ -27,7 +27,7 @@ public class UserDialogDetails
     public string? Side { get; set; }
 
     [JsonPropertyName("Level")]
-    public int? Level { get; set; }
+    public double? Level { get; set; }
 
     [JsonPropertyName("MemberCategory")]
     public MemberCategory? MemberCategory { get; set; }

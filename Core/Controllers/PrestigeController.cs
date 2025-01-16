@@ -121,7 +121,7 @@ public class PrestigeController
         }
 
         var indexToGet = Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
-        var rewards = _databaseService.GetTemplates().Prestige.Elements[indexToGet].Rewards;
+        var rewards = _databaseService.GetTemplates().Prestige.Elements[(int)indexToGet].Rewards;
         AddPrestigeRewardsToProfile(sessionId, newProfile, rewards);
 
         // Copy transferred items
