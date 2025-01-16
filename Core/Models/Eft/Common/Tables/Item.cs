@@ -139,10 +139,10 @@ public class UpdFaceShield
 public class UpdRepairable
 {
     [JsonPropertyName("Durability")]
-    public int? Durability { get; set; }
+    public double? Durability { get; set; }
 
     [JsonPropertyName("MaxDurability")]
-    public int? MaxDurability { get; set; }
+    public double? MaxDurability { get; set; }
 }
 
 public class UpdRecodableComponent
@@ -154,7 +154,7 @@ public class UpdRecodableComponent
 public class UpdMedKit
 {
     [JsonPropertyName("HpResource")]
-    public int? HpResource { get; set; }
+    public double? HpResource { get; set; }
 }
 
 public class UpdSight
