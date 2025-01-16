@@ -839,7 +839,7 @@ public class Wave
     public List<string>? SpawnMode { get; set; }
 
     [JsonPropertyName("OpenZones")]
-    public List<string>? OpenZones { get; set; }
+    public string? OpenZones { get; set; }
 }
 
 public class LocationEvents
