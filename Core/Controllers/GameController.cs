@@ -3,6 +3,7 @@ using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
+using Core.Models.Eft.Match;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.External;
@@ -12,6 +13,8 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Diagnostics;
 
 
 namespace Core.Controllers;
@@ -222,7 +225,7 @@ public class GameController
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(c => 
             c.Key.Contains("LifeTime") && 
-            c.Key.Contains("Pmc")).Value ?? 0D;
+            c.Key.Contains("Pmc"))?.Value ?? 0D;
 
         var config = new GameConfigResponse
         {
@@ -570,7 +573,11 @@ public class GameController
     /// <param name="fullProfile">Profile to check for dialog in</param>
     private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        
+        if (fullProfile.DialogueRecords.TryGetValue("undefined", out var undefinedDialog))
+        {
+            fullProfile.DialogueRecords.Remove("undefined");
+        }
     }
 
     /// <summary>
@@ -579,7 +586,12 @@ public class GameController
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)
     {
-        throw new NotImplementedException();
+        _logger.Error("NOT IMPLEMENTED LogProfileDetails");
+        _logger.Debug($"Profile made with: ${ fullProfile.SptData.Version}");
+        _logger.Debug($"{fullProfile.SptData.Mods.Count} Mods used");
+        //_logger.Debug($"Server version: ${ ProgramStatics.SPT_VERSION || _coreConfig.SptVersion} ${ ProgramStatics.COMMIT}");
+        //_logger.Debug($"Debug enabled: ${ ProgramStatics.DEBUG}");
+        //_logger.Debug($"Mods enabled: ${ ProgramStatics.MODS}");
     }
 
     public void Load()

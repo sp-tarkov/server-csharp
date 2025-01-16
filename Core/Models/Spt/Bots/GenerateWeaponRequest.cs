@@ -43,7 +43,7 @@ public class GenerateWeaponRequest
 
     /** Array of item tpls the weapon does not support */
     [JsonPropertyName("conflictingItemTpls")]
-    public HashSet<string>? ConflictingItemTpls { get; set; }
+    public List<string>? ConflictingItemTpls { get; set; }
 }
 
 public class BotData

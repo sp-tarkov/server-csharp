@@ -1,15 +1,32 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
+using Core.Models.Utils;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class HideoutHelper
 {
+    private readonly ISptLogger<HideoutHelper> _logger;
+    protected TimeUtil _timeUtil;
+    private readonly LocalisationService _localisationService;
+
+    public HideoutHelper(
+        ISptLogger<HideoutHelper> logger,
+        TimeUtil timeUtil,
+        LocalisationService localisationService)
+    {
+        _logger = logger;
+        _timeUtil = timeUtil;
+        _localisationService = localisationService;
+    }
+
     /// <summary>
     /// Add production to profiles' Hideout.Production array
     /// </summary>
@@ -52,9 +69,41 @@ public class HideoutHelper
     /// </summary>
     /// <param name="profileData">Profile to add bonus to</param>
     /// <param name="bonus">Bonus to add to profile</param>
-    public void ApplyPlayerUpgradesBonuses(PmcData profileData, StageBonus bonus)
+    public void ApplyPlayerUpgradesBonuses(PmcData profileData, Bonus bonus)
     {
-        throw new NotImplementedException();
+        // Handle additional changes some bonuses need before being added
+        var bonusToAdd = new Bonus();
+        switch (bonus.Type)
+        {
+            case BonusType.StashSize:
+            {
+                // Find stash item and adjust tpl to new tpl from bonus
+                var stashItem = profileData.Inventory.Items.FirstOrDefault((x) => x.Id == profileData.Inventory.Stash);
+                if (stashItem is null)
+                {
+                    _logger.Warning(_localisationService.GetText("hideout-unable_to_apply_stashsize_bonus_no_stash_found", profileData.Inventory.Stash));
+                }
+
+                stashItem.Template = bonus.TemplateId;
+
+                break;
+            }
+            case BonusType.MaximumEnergyReserve:
+                // Amend max energy in profile
+                profileData.Health.Energy.Maximum += bonus.Value;
+                break;
+            case BonusType.TextBonus:
+                // Delete values before they're added to profile
+                bonus.IsPassive = null;
+                bonus.IsProduction = null;
+                bonus.IsVisible = null;
+                break;
+        }
+
+        // Add bonus to player bonuses array in profile
+        // EnergyRegeneration, HealthRegeneration, RagfairCommission, ScavCooldownTimer, SkillGroupLevelingBoost, ExperienceRate, QuestMoneyReward etc
+        _logger.Debug($"Adding bonus: {bonus.Type} to profile, value: {bonus.Value}");
+        profileData.Bonuses.Add(bonus);
     }
 
     /// <summary>
@@ -420,7 +469,22 @@ public class HideoutHelper
     /// <param name="profileData">Profile to upgrade wall in</param>
     public void UnlockHideoutWallInProfile(PmcData profileData)
     {
-        throw new NotImplementedException();
+        var profileHideoutAreas = profileData.Hideout.Areas;
+        var waterCollector = profileHideoutAreas.FirstOrDefault((x) => x.Type == HideoutAreas.WATER_COLLECTOR);
+        var medStation = profileHideoutAreas.FirstOrDefault((x) => x.Type == HideoutAreas.MEDSTATION);
+        var wall = profileHideoutAreas.FirstOrDefault((x) => x.Type == HideoutAreas.EMERGENCY_WALL);
+
+        // No collector or med station, skip
+        if ((waterCollector is null && medStation is null))
+        {
+            return;
+        }
+
+        // If med-station > level 1 AND water collector > level 1 AND wall is level 0
+        if (waterCollector?.Level >= 1 && medStation?.Level >= 1 && wall?.Level <= 0)
+        {
+            wall.Level = 3;
+        }
     }
 
     /// <summary>
@@ -439,7 +503,20 @@ public class HideoutHelper
     /// <param name="profileData">Profile to adjust</param>
     public void SetHideoutImprovementsToCompleted(PmcData profileData)
     {
-        throw new NotImplementedException();
+        foreach (var improvementId in profileData.Hideout.Improvements)
+        {
+            if (!profileData.Hideout.Improvements.TryGetValue(improvementId.Key, out var improvementDetails))
+            {
+                continue;
+            }
+
+            if (improvementDetails.Completed == false
+                && improvementDetails.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()
+            )
+            {
+                improvementDetails.Completed = true;
+            }
+        }
     }
 
     /// <summary>

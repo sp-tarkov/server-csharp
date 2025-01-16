@@ -11,6 +11,10 @@ using Core.Utils;
 using System.Text.RegularExpressions;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using Core.Models.Spt.Bots;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Reflection.Emit;
+using System.Security.AccessControl;
 
 namespace Core.Services;
 
@@ -23,6 +27,7 @@ public class ProfileFixerService
     protected ItemHelper _itemHelper;
     protected QuestRewardHelper _questRewardHelper;
     protected TraderHelper _traderHelper;
+    protected HideoutHelper _hideoutHelper;
     protected DatabaseService _databaseService;
     protected LocalisationService _localisationService;
     protected ConfigServer _configServer;
@@ -36,6 +41,7 @@ public class ProfileFixerService
         ItemHelper itemHelper,
         QuestRewardHelper questRewardHelper,
         TraderHelper traderHelper,
+        HideoutHelper hideoutHelper,
         DatabaseService databaseService,
         LocalisationService localisationService,
         ConfigServer configServer,
@@ -48,6 +54,7 @@ public class ProfileFixerService
         _itemHelper = itemHelper;
         _questRewardHelper = questRewardHelper;
         _traderHelper = traderHelper;
+        _hideoutHelper = hideoutHelper;
         _databaseService = databaseService;
         _localisationService = localisationService;
         _configServer = configServer;
@@ -484,7 +491,7 @@ public class ProfileFixerService
             // Check each item in inventory to ensure item exists in itemdb
             foreach (var item in inventoryItemsToCheck)
             {
-                if (itemsDb[item.Template] is not null)
+                if (!itemsDb.ContainsKey(item.Template))
                 {
                     _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -690,7 +697,54 @@ public class ProfileFixerService
      */
     public void AddMissingHideoutBonusesToProfile(PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var dbHideoutAreas = _databaseService.GetHideout().Areas;
+
+        foreach (var profileArea in pmcProfile.Hideout.Areas) {
+            var areaType = profileArea.Type;
+            var level = profileArea.Level;
+
+            if (level.GetValueOrDefault(0) == 0)
+            {
+                continue;
+            }
+
+            // Get array of hideout area upgrade levels to check for bonuses
+            // Zero indexed
+            var areaLevelsToCheck = new List<string>();
+            for (var index = 0; index < level + 1; index++)
+            {
+                // Stage key is saved as string in db
+                areaLevelsToCheck.Add(index.ToString());
+            }
+
+            // Iterate over area levels, check for bonuses, add if needed
+            var dbArea = dbHideoutAreas.FirstOrDefault((area) => area.Type == areaType);
+            if (dbArea is null)
+            {
+                continue;
+            }
+
+            foreach (var areaLevel in areaLevelsToCheck) {
+                // Get areas level bonuses from db
+                var levelBonuses = dbArea.Stages[areaLevel]?.Bonuses;
+                if (levelBonuses is null || levelBonuses.Count == 0)
+                {
+                    continue;
+                }
+
+                // Iterate over each bonus for the areas level
+                foreach (var bonus in levelBonuses) {
+                    // Check if profile has bonus
+                    var profileBonus = GetBonusFromProfile(pmcProfile.Bonuses, bonus);
+                    if (profileBonus is null)
+                    {
+                        // no bonus, add to profile
+                        _logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding { bonus.Type}");
+                        _hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -698,9 +752,24 @@ public class ProfileFixerService
      * @param bonus bonus to find
      * @returns matching bonus
      */
-    protected Bonus GetBonusFromProfile(List<Bonus> profileBonuses, StageBonus bonus)
+    protected Bonus? GetBonusFromProfile(List<Bonus> profileBonuses, Bonus bonus)
     {
-        throw new NotImplementedException();
+        // match by id first, used by "TextBonus" bonuses
+        if (bonus.Id is null)
+        {
+            return profileBonuses.FirstOrDefault((x) => x.Id == bonus.Id);
+        }
+
+        return bonus.Type switch
+        {
+            BonusType.StashSize => profileBonuses.FirstOrDefault(
+                (x) => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId
+            ),
+            BonusType.AdditionalSlots => profileBonuses.FirstOrDefault(
+                (x) => x.Type == bonus.Type && x.Value == bonus.Value && x.IsVisible == bonus.IsVisible
+            ),
+            _ => profileBonuses.FirstOrDefault((x) => x.Type == bonus.Type && x.Value == bonus.Value)
+        };
     }
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)

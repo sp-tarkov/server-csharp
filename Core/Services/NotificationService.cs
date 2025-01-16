@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Ws;
 
 namespace Core.Services;
@@ -6,6 +6,8 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class NotificationService
 {
+    protected Dictionary<string, List<WsNotificationEvent>> _messageQueue = new();
+
     public Dictionary<string, List<object>> GetMessageQueue()
     {
         throw new NotImplementedException();
@@ -16,20 +18,20 @@ public class NotificationService
         throw new NotImplementedException();
     }
 
-    public void UpdateMessageOnQueue(string sessionId, List<object> value)
+    public void UpdateMessageOnQueue(string sessionId, List<WsNotificationEvent> value)
     {
         throw new NotImplementedException();
     }
 
     public bool Has(string sessionID)
     {
-        throw new NotImplementedException();
+        return _messageQueue.ContainsKey(sessionID);
     }
 
     /// <summary>
     /// Pop first message from queue.
     /// </summary>
-    public object Pop(string sessionID)
+    public WsNotificationEvent Pop(string sessionID)
     {
         throw new NotImplementedException();
     }
@@ -39,15 +41,25 @@ public class NotificationService
     /// </summary>
     public void Add(string sessionID, WsNotificationEvent message)
     {
-        throw new NotImplementedException();
+        Get(sessionID).Add(message);
     }
 
     /// <summary>
     /// Get message queue for session
     /// </summary>
     /// <param name="sessionID"></param>
-    public List<object> Get(string sessionID)
+    public List<WsNotificationEvent> Get(string sessionID)
     {
-        throw new NotImplementedException();
+        if (sessionID is null)
+        {
+            throw new Exception("sessionID missing");
+        }
+
+        if (!_messageQueue.ContainsKey(sessionID))
+        {
+            _messageQueue[sessionID] = [];
+        }
+
+        return _messageQueue[sessionID];
     }
 }

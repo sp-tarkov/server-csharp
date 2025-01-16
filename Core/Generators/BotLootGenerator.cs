@@ -113,7 +113,8 @@ public class BotLootGenerator
             _logger.Warning(_localisationService.GetText("bot-unable_to_generate_bot_loot", botRole));
             return;
         }
-        var backpackLootCount = _weightedRandomHelper.GetWeightedValue<int>(itemCounts.BackpackLoot.Weights);
+
+        var backpackLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.BackpackLoot.Weights);
         var pocketLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.PocketLoot.Weights);
         var vestLootCount = _weightedRandomHelper.GetWeightedValue(itemCounts.VestLoot.Weights);
         var specialLootItemCount = _weightedRandomHelper.GetWeightedValue(itemCounts.SpecialItems.Weights);
@@ -156,7 +157,8 @@ public class BotLootGenerator
             botInventory,
             botRole,
             botItemLimits,
-            containersIdFull);
+            containersIdFull
+        );
 
         // Healing items / Meds
         AddLootFromPool(
@@ -168,7 +170,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Drugs
         AddLootFromPool(
@@ -180,7 +183,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Food
         AddLootFromPool(
@@ -192,7 +196,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Drink
         AddLootFromPool(
@@ -204,7 +209,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Currency
         AddLootFromPool(
@@ -216,7 +222,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Stims
         AddLootFromPool(
@@ -228,7 +235,8 @@ public class BotLootGenerator
             botItemLimits,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         // Grenades
         AddLootFromPool(
@@ -240,7 +248,8 @@ public class BotLootGenerator
             null,
             containersIdFull,
             0,
-            isPmc);
+            isPmc
+        );
 
         var itemPriceLimits = GetSingleItemLootPriceLimits(botLevel, isPmc);
 
@@ -259,7 +268,8 @@ public class BotLootGenerator
                     botRole,
                     isPmc,
                     botLevel,
-                    containersIdFull);
+                    containersIdFull
+                );
             }
 
             var backpackLootRoubleTotal = GetBackpackRoubleTotalByLevel(botLevel, isPmc);
@@ -269,7 +279,8 @@ public class BotLootGenerator
                     isPmc,
                     LootCacheType.Backpack,
                     botJsonTemplate,
-                    itemPriceLimits?.Backpack),
+                    itemPriceLimits?.Backpack
+                ),
                 [EquipmentSlots.Backpack],
                 backpackLootCount,
                 botInventory,
@@ -277,7 +288,8 @@ public class BotLootGenerator
                 botItemLimits,
                 containersIdFull,
                 backpackLootRoubleTotal,
-                isPmc);
+                isPmc
+            );
         }
 
         // TacticalVest - generate loot if they have one
@@ -290,7 +302,8 @@ public class BotLootGenerator
                     isPmc,
                     LootCacheType.Vest,
                     botJsonTemplate,
-                    itemPriceLimits?.Vest),
+                    itemPriceLimits?.Vest
+                ),
                 [EquipmentSlots.TacticalVest],
                 vestLootCount,
                 botInventory,
@@ -298,7 +311,8 @@ public class BotLootGenerator
                 botItemLimits,
                 containersIdFull,
                 _pmcConfig.MaxVestLootTotalRub,
-                isPmc);
+                isPmc
+            );
         }
 
         // Pockets
@@ -308,7 +322,8 @@ public class BotLootGenerator
                 isPmc,
                 LootCacheType.Pocket,
                 botJsonTemplate,
-                itemPriceLimits?.Pocket),
+                itemPriceLimits?.Pocket
+            ),
             [EquipmentSlots.Pockets],
             pocketLootCount,
             botInventory,
@@ -316,7 +331,8 @@ public class BotLootGenerator
             botItemLimits,
             containersIdFull,
             _pmcConfig.MaxPocketLootTotalRub,
-            isPmc);
+            isPmc
+        );
 
         // Secure
 
@@ -331,8 +347,9 @@ public class BotLootGenerator
                 botRole,
                 null,
                 containersIdFull,
-                - 1,
-                isPmc);
+                -1,
+                isPmc
+            );
         }
     }
 
@@ -342,7 +359,8 @@ public class BotLootGenerator
         if (isPmc)
         {
             var matchingValue = _pmcConfig.LootItemLimitsRub.FirstOrDefault(
-                (minMaxValue) => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max);
+                (minMaxValue) => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
+            );
 
             return matchingValue;
         }
@@ -399,12 +417,12 @@ public class BotLootGenerator
     public void AddLootFromPool(
         Dictionary<string, int> pool,
         List<EquipmentSlots> equipmentSlots,
-        int totalItemCount,
+        double totalItemCount,
         BotBaseInventory inventoryToAddItemsTo, // TODO: type for containersIdFull was Set<string>
         string botRole,
         ItemSpawnLimitSettings itemSpawnLimits,
         List<string> containersIdFull,
-        int totalValueLimitRub = 0,
+        double totalValueLimitRub = 0,
         bool isPmc = false)
     {
         throw new NotImplementedException();
@@ -448,7 +466,7 @@ public class BotLootGenerator
     public void AddLooseWeaponsToInventorySlot(string sessionId,
         BotBaseInventory botInventory,
         EquipmentSlots equipmentSlot,
-        BotTypeInventory templateInventory, 
+        BotTypeInventory templateInventory,
         Dictionary<string, double> modsChances,
         string botRole,
         bool isPmc,

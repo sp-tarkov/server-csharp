@@ -396,10 +396,10 @@ public class BotWeaponGenerator
                             "bot-weapons_required_slot_missing_item",
                             new
                             {
-                                ModSlot = modSlotTemplate.Name,
-                                ModName = modTemplate.Name,
-                                SlotId = mod.SlotId,
-                                BotRole = botRole,
+                                modSlot = modSlotTemplate.Name,
+                                modName = modTemplate.Name,
+                                slotId = mod.SlotId,
+                                botRole = botRole,
                             }
                         )
                     );
@@ -561,8 +561,8 @@ public class BotWeaponGenerator
                         "bot-weapon_missing_magazine_or_chamber",
                         new
                         {
-                            WeaponId = weaponTemplate.Id,
-                            BotRole = botRole,
+                            weaponId = weaponTemplate.Id,
+                            botRole = botRole,
                         }
                     )
                 );
@@ -597,9 +597,9 @@ public class BotWeaponGenerator
                     "bot-no_caliber_data_for_weapon_falling_back_to_default",
                     new
                     {
-                        WeaponId = weaponTemplate.Id,
-                        WeaponName = weaponTemplate.Name,
-                        DefaultAmmo = weaponTemplate.Properties.DefAmmo,
+                        weaponId = weaponTemplate.Id,
+                        weaponName = weaponTemplate.Name,
+                        defaultAmmo = weaponTemplate.Properties.DefAmmo,
                     }
                 )
             );
