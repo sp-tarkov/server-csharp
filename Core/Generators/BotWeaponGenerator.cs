@@ -522,7 +522,7 @@ public class BotWeaponGenerator
         {
             var id = _hashUtil.Generate();
             _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
-                new() { EquipmentSlots.SecuredContainer.ToString() },
+                new() { EquipmentSlots.SecuredContainer },
                 id,
                 ammoTemplate,
                 new()

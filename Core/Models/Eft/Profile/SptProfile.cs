@@ -163,7 +163,7 @@ public class MagazineTemplateAmmoItem
 }
 
 /** Used by defaultEquipmentPresets.json */
-public class DefaultEquipmentPreset : UserBuild
+public class DefaultEquipmentPreset : EquipmentBuild
 {
     [JsonPropertyName("Items")]
     public List<Item>? Items { get; set; }

@@ -139,9 +139,9 @@ public class PlayerScavGenerator
 
         // Add additional items to player scav as loot
         AddAdditionalLootToPlayerScavContainers(playerScavKarmaSettings.LootItemsToAddChancePercent, scavData, [
-            "TacticalVest",
-            "Pockets",
-            "Backpack"
+            EquipmentSlots.TacticalVest,
+            EquipmentSlots.Pockets,
+            EquipmentSlots.Backpack
         ]);
 
         // Remove secure container
@@ -162,7 +162,7 @@ public class PlayerScavGenerator
     /// <param name="possibleItemsToAdd">dict of tpl + % chance to be added</param>
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>
-    protected void AddAdditionalLootToPlayerScavContainers(Dictionary<string, double> possibleItemsToAdd, BotBase scavData, List<string> containersToAddTo)
+    protected void AddAdditionalLootToPlayerScavContainers(Dictionary<string, double> possibleItemsToAdd, BotBase scavData, List<EquipmentSlots> containersToAddTo)
     {
         foreach (var tpl in possibleItemsToAdd)
         {

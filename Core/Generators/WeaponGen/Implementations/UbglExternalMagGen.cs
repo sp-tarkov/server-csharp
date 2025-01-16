@@ -37,7 +37,7 @@ public class UbglExternalMagGen : InventoryMagGen, IInventoryMagGen
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
             inventoryMagGen.GetPmcInventory(),
-            [EquipmentSlots.TacticalVest.ToString()]
+            [EquipmentSlots.TacticalVest]
         );
     }
 }

@@ -129,11 +129,11 @@ public class BotWeaponGeneratorHelper
         string ammoTpl,
         int cartridgeCount,
         BotBaseInventory inventory,
-        List<string> equipmentSlotsToAddTo
+        List<EquipmentSlots> equipmentSlotsToAddTo
     )
     {
         if (equipmentSlotsToAddTo is null)
-            equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest.ToString(), EquipmentSlots.Pockets.ToString()];
+            equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets];
         
         var ammoItems = _itemHelper.SplitStack(new () {
             Id = _hashUtil.Generate(),
