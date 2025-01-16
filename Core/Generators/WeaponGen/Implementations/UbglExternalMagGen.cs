@@ -1,12 +1,20 @@
 ﻿using Core.Annotations;
+using Core.Helpers;
+using Core.Models.Enums;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
 public class UbglExternalMagGen : InventoryMagGen, IInventoryMagGen
 {
-    public UbglExternalMagGen()
+    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
+
+    public UbglExternalMagGen
+    (
+        BotWeaponGeneratorHelper botWeaponGeneratorHelper
+    )
     {
+        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
     }
 
     public int GetPriority()
@@ -16,11 +24,20 @@ public class UbglExternalMagGen : InventoryMagGen, IInventoryMagGen
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        throw new NotImplementedException();
+        return inventoryMagGen.GetWeaponTemplate().Parent == BaseClasses.UBGL;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)
     {
-        throw new NotImplementedException();
+        var bulletCount = _botWeaponGeneratorHelper.GetRandomizedBulletCount(
+            inventoryMagGen.GetMagCount(),
+            inventoryMagGen.GetMagazineTemplate()
+        );
+        _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+            inventoryMagGen.GetAmmoTemplate().Id,
+            (int)bulletCount,
+            inventoryMagGen.GetPmcInventory(),
+            [EquipmentSlots.TacticalVest.ToString()]
+        );
     }
 }

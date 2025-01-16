@@ -67,10 +67,9 @@ public class GameCallbacks : OnLoad
     /// <returns></returns>
     public string GameStart(string url, EmptyRequestData info, string sessionID)
     {
-        var today = _timeUtil.GetDate();
-        var startTimestampMS = _timeUtil.GetTimeStamp();
-        _gameController.GameStart(url, info, sessionID, startTimestampMS);
-        return _httpResponseUtil.GetBody(new GameStartResponse() { UtcTime = startTimestampMS / 1000 });
+        var startTimestampSec = _timeUtil.GetTimeStamp();
+        _gameController.GameStart(url, info, sessionID, startTimestampSec);
+        return _httpResponseUtil.GetBody(new GameStartResponse() { UtcTime = startTimestampSec });
     }
 
     /// <summary>

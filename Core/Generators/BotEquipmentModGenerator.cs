@@ -775,11 +775,11 @@ public class BotEquipmentModGenerator
             case "patron_in_weapon":
             case "patron_in_weapon_000":
             case "patron_in_weapon_001":
-                return parentTemplate.Properties.Chambers.FirstOrDefault((chamber) => chamber.Name.Contains(modSlotLower));
+                return parentTemplate?.Properties?.Chambers?.FirstOrDefault((chamber) => chamber.Name.Contains(modSlotLower));
             case "cartridges":
-                return parentTemplate.Properties.Cartridges.FirstOrDefault((c) => c.Name.ToLower() == modSlotLower);
+                return parentTemplate?.Properties?.Cartridges?.FirstOrDefault((c) => c.Name?.ToLower() == modSlotLower);
             default:
-                return parentTemplate.Properties.Slots.FirstOrDefault((s) => s.Name.ToLower() == modSlotLower);
+                return parentTemplate?.Properties?.Slots?.FirstOrDefault((s) => s.Name?.ToLower() == modSlotLower);
         }
     }
 

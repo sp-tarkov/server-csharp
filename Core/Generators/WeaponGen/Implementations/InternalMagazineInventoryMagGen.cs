@@ -1,12 +1,19 @@
 ﻿using Core.Annotations;
+using Core.Helpers;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
 public class InternalMagazineInventoryMagGen : InventoryMagGen, IInventoryMagGen
 {
-    public InternalMagazineInventoryMagGen()
+    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
+
+    public InternalMagazineInventoryMagGen
+    (
+        BotWeaponGeneratorHelper botWeaponGeneratorHelper
+    )
     {
+        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
     }
 
     public int GetPriority()
@@ -16,11 +23,20 @@ public class InternalMagazineInventoryMagGen : InventoryMagGen, IInventoryMagGen
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        throw new NotImplementedException();
+        return inventoryMagGen.GetMagazineTemplate().Properties.ReloadMagType == "InternalMagazine";
     }
 
     public void Process(InventoryMagGen inventoryMagGen)
     {
-        throw new NotImplementedException();
+        var bulletCount = _botWeaponGeneratorHelper.GetRandomizedBulletCount(
+            inventoryMagGen.GetMagCount(),
+            inventoryMagGen.GetMagazineTemplate()
+        );
+        _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
+            inventoryMagGen.GetAmmoTemplate().Id,
+            (int)bulletCount,
+            inventoryMagGen.GetPmcInventory(), 
+            null
+        );
     }
 }
