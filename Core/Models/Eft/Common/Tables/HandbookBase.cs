@@ -35,6 +35,7 @@ public class HandbookItem
     public string? Id { get; set; }
 
     [JsonPropertyName("ParentId")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? ParentId { get; set; }
 
     [JsonPropertyName("Price")]
