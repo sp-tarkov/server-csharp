@@ -39,8 +39,11 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
             if (value == null)
-                value = default;
-            JsonSerializer.Serialize(writer, value, options);
+                JsonSerializer.Serialize(writer, null, options);
+            else
+            {
+                JsonSerializer.Serialize(writer, value, options);
+            }
         }
     }
 }
