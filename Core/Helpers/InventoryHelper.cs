@@ -215,7 +215,7 @@ public class InventoryHelper
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public List<List<int>> GetContainerMap(int containerH, int containerV, List<Item> itemList, string containerId)
+    public List<List<int>> GetContainerMap(double containerH, double containerV, List<Item> itemList, string containerId)
     {
         throw new NotImplementedException();
     }
