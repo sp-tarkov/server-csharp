@@ -24,33 +24,38 @@ public class FileUtil
     {
         return Path.GetExtension(path).Replace(".", "");
     }
-    
+
     public string GetFileName(string path)
     {
         return Path.GetFileName(path);
     }
-    
+
     public string StripExtension(string path, bool keepPath = false)
     {
-        return keepPath ? path.Split('.').First() : Path.GetFileNameWithoutExtension(path);
+        if (keepPath)
+        {
+            return path.StartsWith(".") ? path.Split('.')[1] : path.Split('.').First();
+        }
+
+        return Path.GetFileNameWithoutExtension(path);
     }
 
     public bool DirectoryExists(string path)
     {
         return Directory.Exists(path);
     }
-    
+
     public void CreateDirectory(string path)
     {
         Directory.CreateDirectory(path);
     }
 
-    
+
     public bool FileExists(string path)
     {
         return File.Exists(path);
     }
-    
+
     public string ReadFile(string path)
     {
         return File.ReadAllText(path);
