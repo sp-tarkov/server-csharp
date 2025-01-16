@@ -38,7 +38,7 @@ public class BotConfig : BaseConfig
     /** Control how many items are allowed to spawn on a bot
      * key: bottype, value: <key: itemTpl: value: max item count> */
     [JsonPropertyName("itemSpawnLimits")]
-    public Dictionary<string, Dictionary<string, int>> ItemSpawnLimits { get; set; }
+    public Dictionary<string, Dictionary<string, double>> ItemSpawnLimits { get; set; }
 
     /** Blacklist/whitelist items on a bot */
     [JsonPropertyName("equipment")]
@@ -78,7 +78,7 @@ public class BotConfig : BaseConfig
 
     /** Currency weights, Keyed by botrole / currency */
     [JsonPropertyName("currencyStackSize")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, int>>> CurrencyStackSize { get; set; }
+    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize { get; set; }
 
     /** Tpls for low profile gas blocks */
     [JsonPropertyName("lowProfileGasBlockTpls")]
@@ -266,10 +266,10 @@ public class WalletLootSettings
     public MinMax ItemCount { get; set; }
 
     [JsonPropertyName("stackSizeWeight")]
-    public Dictionary<string, float> StackSizeWeight { get; set; }
+    public Dictionary<string, double> StackSizeWeight { get; set; }
 
     [JsonPropertyName("currencyWeight")]
-    public Dictionary<string, float> CurrencyWeight { get; set; }
+    public Dictionary<string, double> CurrencyWeight { get; set; }
 
     /// <summary>
     /// What wallets will have money in them
