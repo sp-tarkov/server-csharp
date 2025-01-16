@@ -210,7 +210,8 @@ public class QuestHelper
      */
     public bool ShowEventQuestToPlayer(string questId)
     {
-        throw new NotImplementedException();
+        _logger.Error($"NOT IMPLEMENTED");
+        return false;
     }
 
     /**

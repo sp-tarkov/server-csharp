@@ -94,6 +94,7 @@ public class DialogueController
         var activeBots = new List<UserDialogInfo>();
 
         var chatBotConfig = _coreConfig.Features.ChatbotFeatures;
+        /*
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
@@ -101,6 +102,8 @@ public class DialogueController
                 activeBots.Add(botData);
             }
         }
+        TODO: FUCK THESE BOTS STOPPING US GETTING TO THE FUCKING MENU
+        */
 
         return activeBots;
     }
