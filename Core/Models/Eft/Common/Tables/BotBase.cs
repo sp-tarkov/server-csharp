@@ -153,10 +153,11 @@ public class Info
     public bool? HasCoopExtension { get; set; }
     public bool? HasPveGame { get; set; }
     public string? Voice { get; set; }
-    public double? Level { get; set; }
-    public double? Experience { get; set; }
+    public int? Level { get; set; }
+    public int? Experience { get; set; }
+
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public long? RegistrationDate { get; set; }
+    public int? RegistrationDate { get; set; }
     public string? GameVersion { get; set; }
     public double? AccountType { get; set; }
     public MemberCategory? MemberCategory { get; set; }
@@ -184,7 +185,7 @@ public class Info
 
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
-    public double? PrestigeLevel { get; set; }
+    public int? PrestigeLevel { get; set; }
 }
 
 public class BotInfoSettings
