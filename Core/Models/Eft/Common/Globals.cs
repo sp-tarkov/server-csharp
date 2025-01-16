@@ -3662,7 +3662,7 @@ public class EliteBonusSettings
     public double? FenceStandingLossDiscount { get; set; }
 
     [JsonPropertyName("RepeatableQuestExtraCount")]
-    public double? RepeatableQuestExtraCount { get; set; }
+    public int? RepeatableQuestExtraCount { get; set; }
 
     [JsonPropertyName("ScavCaseDiscount")]
     public double? ScavCaseDiscount { get; set; }
