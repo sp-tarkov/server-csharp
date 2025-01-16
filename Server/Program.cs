@@ -60,6 +60,7 @@ public static class Program
         }
         catch (Exception ex)
         {
+            Console.WriteLine(ex);
             logger.LogCritical(ex, "Critical exception, stopping server...");
             // throw ex;
         }

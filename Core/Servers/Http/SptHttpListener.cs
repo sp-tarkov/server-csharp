@@ -18,6 +18,7 @@ public class SptHttpListener : IHttpListener
     protected readonly HttpRouter _router;
     protected readonly IEnumerable<ISerializer> _serializers;
     protected readonly ISptLogger<SptHttpListener> _logger;
+    protected readonly ISptLogger<RequestLogger> _requestLogger;
     protected readonly HttpResponseUtil _httpResponseUtil;
     protected readonly LocalisationService _localisationService;
     protected readonly JsonUtil _jsonUtil;
@@ -25,7 +26,7 @@ public class SptHttpListener : IHttpListener
         HttpRouter httpRouter, // TODO: delay required
         IEnumerable<ISerializer> serializers,
         ISptLogger<SptHttpListener> logger,
-        // TODO: requestsLogger: ISptLogger,
+        ISptLogger<RequestLogger> requestsLogger,
         JsonUtil jsonUtil,
         HttpResponseUtil httpHttpResponseUtil,
         LocalisationService localisationService
@@ -34,6 +35,7 @@ public class SptHttpListener : IHttpListener
         _router = httpRouter;
         _serializers = serializers;
         _logger = logger;
+        _requestLogger = requestsLogger;
         _httpResponseUtil = httpHttpResponseUtil;
         _localisationService = localisationService;
         _jsonUtil = jsonUtil;
@@ -135,7 +137,8 @@ public class SptHttpListener : IHttpListener
             SendZlibJson(resp, output, sessionID);
         }
         // Console.WriteLine($"Response: {output}");
-        // TODO: this.LogRequest(req, output);
+        
+        LogRequest(req, output);
     }
 
     /**
@@ -152,28 +155,17 @@ public class SptHttpListener : IHttpListener
      * @param req Incoming message request
      * @param output Output string
      */
-    /* TODO: log requests
-    protected logRequest(req: IncomingMessage, output: string): void {
-        //
-        if (ProgramStatics.ENTRY_TYPE !== EntryType.RELEASE) {
-            const log = new Response(req.method, output);
-            this.requestsLogger.info(`RESPONSE=${this.jsonUtil.serialize(log)}`);
-        }
+    protected void LogRequest(HttpRequest req, string output)
+    {
+        // TODO: when do we want to log these?
+        //if (ProgramStatics.ENTRY_TYPE !== EntryType.RELEASE) {
+            var log = new Response(req.Method, output);
+            _requestLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
+        //}
     }
-    */
 
     public string GetResponse(string sessionID, HttpRequest req, string? body)
     {
-        /* TODO: REQUEST LOGGER
-        if (ProgramStatics.ENTRY_TYPE !== EntryType.RELEASE) {
-            // Parse quest info into object
-            const data = typeof info === "object" ? info : this.jsonUtil.deserialize(info);
-
-            const log = new Request(req.method, new RequestData(req.url, req.headers, data));
-            this.requestsLogger.info(`REQUEST=${this.jsonUtil.serialize(log)}`);
-        }
-        */
-
         var output = _router.GetResponse(req, sessionID, body, out var deserializedObject);
         /* route doesn't exist or response is not properly set up */
         if (string.IsNullOrEmpty(output)) {
@@ -181,6 +173,14 @@ public class SptHttpListener : IHttpListener
             _logger.Info(_jsonUtil.Serialize(deserializedObject));
             output = _httpResponseUtil.GetBody<object?>(null, 404, $"UNHANDLED RESPONSE: {req.Path}");
         }
+        /* TODO: REQUEST LOGGER
+        if (ProgramStatics.ENTRY_TYPE !== EntryType.RELEASE) {
+        */
+        // Parse quest info into object
+        
+        var log = new Request(req.Method, new RequestData(req.Path, req.Headers, deserializedObject));
+        _requestLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
+        //}
         return output;
     }
 
@@ -209,5 +209,10 @@ public class SptHttpListener : IHttpListener
         resp.StartAsync().Wait();
         resp.CompleteAsync().Wait();
     }
-    
+
+    record Response(string Method, string jsonData);
+    record Request(string Method, object output);
+    record RequestData(string Url, object Headers, object Data);
 }
+
+

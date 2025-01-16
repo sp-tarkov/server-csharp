@@ -128,9 +128,8 @@ public class DatabaseImporter : OnLoad
     {
         _logger.Info(_localisationService.GetText("importing_database"));
 
-        var dataToImport = (DatabaseTables) await _importerUtil.LoadRecursiveAsync(
+        var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>(
             $"{filePath}database/",
-            typeof(DatabaseTables),
             OnReadValidate
         );
         
