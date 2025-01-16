@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 
 namespace Core.Models.Eft.Hideout;
@@ -9,7 +10,7 @@ public class HideoutArea
     public string? Id { get; set; }
 
     [JsonPropertyName("type")]
-    public int? Type { get; set; }
+    public HideoutAreas? Type { get; set; }
 
     [JsonPropertyName("enabled")]
     public bool? IsEnabled { get; set; }
@@ -57,7 +58,7 @@ public class Stage
     public bool? AutoUpgrade { get; set; }
 
     [JsonPropertyName("bonuses")]
-    public List<StageBonus>? Bonuses { get; set; }
+    public List<Bonus>? Bonuses { get; set; }
 
     [JsonPropertyName("constructionTime")]
     public double? ConstructionTime { get; set; }
@@ -180,40 +181,4 @@ public class StageRequirement : RequirementBase
 
     [JsonPropertyName("skillLevel")]
     public int? SkillLevel { get; set; }
-}
-
-public class StageBonus
-{
-    [JsonPropertyName("value")]
-    public int? Value { get; set; }
-
-    [JsonPropertyName("passive")]
-    public bool? Passive { get; set; }
-
-    [JsonPropertyName("production")]
-    public bool? Production { get; set; }
-
-    [JsonPropertyName("visible")]
-    public bool? Visible { get; set; }
-
-    [JsonPropertyName("skillType")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BonusSkillType? SkillType { get; set; }
-
-    [JsonPropertyName("type")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
-    public BonusType? Type { get; set; }
-
-    [JsonPropertyName("filter")]
-    public List<string>? Filter { get; set; }
-
-    [JsonPropertyName("icon")]
-    public string? Icon { get; set; }
-
-    /** CHANGES PER DUMP */
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
 }
