@@ -449,7 +449,7 @@ public class RandomisationDetails
     /// Key = weapon tpl, value = min size of magazine allowed
     /// </summary>
     [JsonPropertyName("minimumMagazineSize")]
-    public Dictionary<string, float>? MinimumMagazineSize { get; set; }
+    public Dictionary<string, double>? MinimumMagazineSize { get; set; }
 }
 
 public class NighttimeChanges
