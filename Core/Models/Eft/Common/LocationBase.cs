@@ -671,7 +671,7 @@ public class SpawnPointParam
     public XYZ? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public float? Rotation { get; set; }
+    public double? Rotation { get; set; }
 
     [JsonPropertyName("Sides")]
     public List<string>? Sides { get; set; }
@@ -695,7 +695,7 @@ public class Props
     public XYZ? Size { get; set; }
 
     [JsonPropertyName("Radius")]
-    public float? Radius { get; set; }
+    public double? Radius { get; set; }
 }
 
 public class Exit
@@ -737,7 +737,7 @@ public class Exit
     public double? ExfiltrationTime { get; set; }
 
     [JsonPropertyName("ExfiltrationTimePVE")]
-    public float? ExfiltrationTimePVE { get; set; }
+    public double? ExfiltrationTimePVE { get; set; }
 
     [JsonPropertyName("ExfiltrationType")]
     public string? ExfiltrationType { get; set; }

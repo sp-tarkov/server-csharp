@@ -84,7 +84,7 @@ public class InRaidController
     /// <param name="url"></param>
     /// <param name="sessionId"></param>
     /// <returns></returns>
-    public float GetTraitorScavHostileChance(
+    public double GetTraitorScavHostileChance(
         string url,
         string sessionId)
     {
