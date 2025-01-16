@@ -154,7 +154,6 @@
       "BossPlayer": false,
       "BossZone": "",
       "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -173,8 +172,64 @@
       "BossPlayer": false,
       "BossZone": "",
       "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
       "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "2",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "arenaFighterEvent",
+      "BossName": "arenaFighterEvent",
+      "BossPlayer": false,
+      "BossZone": "BotZone",
+      "IgnoreMaxBots": true,
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "2",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "arenaFighterEvent",
+      "BossName": "arenaFighterEvent",
+      "BossPlayer": false,
+      "BossZone": "BotZone",
+      "IgnoreMaxBots": true,
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "2",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "arenaFighterEvent",
+      "BossName": "arenaFighterEvent",
+      "BossPlayer": false,
+      "BossZone": "BotZone",
+      "IgnoreMaxBots": true,
+      "SpawnMode": [
+        "regular",
         "pve"
       ],
       "Supports": null,
@@ -310,7 +365,7 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 16,
+  "BotMax": 22,
   "BotMaxPlayer": 0,
   "BotMaxPvE": 22,
   "BotMaxTimePlayer": 0,
@@ -4886,6 +4941,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4903,6 +4959,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4920,6 +4977,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4937,6 +4995,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4954,6 +5013,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4996,25 +5056,25 @@
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "FAC_TRANSIT_12_COND",
       "description": "FAC_TRANSIT_12_DESC",
       "id": 12,
       "location": "Woods",
       "name": "FAC_TRANSIT_12",
       "target": "5704e3c2d2720bac5b8b4567",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "FAC_TRANSIT_13_COND",
       "description": "FAC_TRANSIT_13_DESC",
       "id": 13,
       "location": "bigmap",
       "name": "FAC_TRANSIT_13",
       "target": "56f40101d2720b2a4d8b45d6",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
@@ -5025,7 +5085,7 @@
       "location": "laboratory",
       "name": "FAC_TRANSIT_14",
       "target": "5b0fc42d86f7744a585f9105",
-      "time": 30
+      "time": 20
     }
   ],
   "users_gather_seconds": 0,
@@ -5042,7 +5102,7 @@
       ],
       "SpawnPoints": "BotZone",
       "WildSpawnType": "assault",
-      "isPlayers": true,
+      "isPlayers": false,
       "number": 0,
       "slots_max": 4,
       "slots_min": 2,
@@ -5074,7 +5134,7 @@
       ],
       "SpawnPoints": "BotZone",
       "WildSpawnType": "assault",
-      "isPlayers": true,
+      "isPlayers": false,
       "number": 2,
       "slots_max": 4,
       "slots_min": 2,
@@ -5090,7 +5150,7 @@
       ],
       "SpawnPoints": "BotZone",
       "WildSpawnType": "assault",
-      "isPlayers": true,
+      "isPlayers": false,
       "number": 3,
       "slots_max": 4,
       "slots_min": 2,
@@ -5106,7 +5166,7 @@
       ],
       "SpawnPoints": "BotZone",
       "WildSpawnType": "assault",
-      "isPlayers": true,
+      "isPlayers": false,
       "number": 4,
       "slots_max": 4,
       "slots_min": 2,
@@ -5122,7 +5182,7 @@
       ],
       "SpawnPoints": "BotZone",
       "WildSpawnType": "assault",
-      "isPlayers": true,
+      "isPlayers": false,
       "number": 5,
       "slots_max": 4,
       "slots_min": 3,

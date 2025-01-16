@@ -27,7 +27,7 @@ public class HideoutProduction
     public List<Requirement>? Requirements { get; set; }
 
     [JsonPropertyName("productionTime")]
-    public int? ProductionTime { get; set; }
+    public double? ProductionTime { get; set; }
 
     /** Tpl of item being crafted */
     [JsonPropertyName("endProduct")]
@@ -103,7 +103,7 @@ public class ScavRecipe
     public List<Requirement>? Requirements { get; set; }
 
     [JsonPropertyName("productionTime")]
-    public int? ProductionTime { get; set; }
+    public double? ProductionTime { get; set; }
 
     [JsonPropertyName("endProducts")]
     public EndProducts? EndProducts { get; set; }

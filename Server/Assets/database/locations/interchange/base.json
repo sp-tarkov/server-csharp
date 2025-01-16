@@ -56,133 +56,155 @@
       "IgnoreMaxBots": true,
       "RandomTimeSpawn": false,
       "SpawnMode": [
+        "pve",
+        "regular"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcBEAR",
+      "BossName": "pmcBEAR",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcBEAR",
+      "BossName": "pmcBEAR",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcBEAR",
+      "BossName": "pmcBEAR",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcUSEC",
+      "BossName": "pmcUSEC",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcUSEC",
+      "BossName": "pmcUSEC",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 50,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "pmcUSEC",
+      "BossName": "pmcUSEC",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "gifter",
+      "BossName": "gifter",
+      "BossPlayer": false,
+      "BossZone": "",
+      "Delay": 0,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
         "regular",
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcBEAR",
-      "BossName": "pmcBEAR",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcBEAR",
-      "BossName": "pmcBEAR",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcBEAR",
-      "BossName": "pmcBEAR",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcUSEC",
-      "BossName": "pmcUSEC",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcUSEC",
-      "BossName": "pmcUSEC",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
-        "pve"
-      ],
-      "Supports": null,
-      "Time": -1,
-      "TriggerId": "",
-      "TriggerName": ""
-    },
-    {
-      "BossChance": 50,
-      "BossDifficult": "normal",
-      "BossEscortAmount": "0,0,0,0,2,2,2,1,1,1,1,1,0,2,3",
-      "BossEscortDifficult": "normal",
-      "BossEscortType": "pmcUSEC",
-      "BossName": "pmcUSEC",
-      "BossPlayer": false,
-      "BossZone": "",
-      "Delay": 0,
-      "ForceSpawn": false,
-      "IgnoreMaxBots": true,
-      "RandomTimeSpawn": false,
-      "SpawnMode": [
         "pve"
       ],
       "Supports": null,
@@ -370,10 +392,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 19,
-  "BotMaxPlayer": 10,
+  "BotMax": 30,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 1200,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -382,7 +404,7 @@
   "BotSpawnTimeOnMax": 350,
   "BotSpawnTimeOnMin": 340,
   "BotStart": 20,
-  "BotStartPlayer": 550,
+  "BotStartPlayer": 0,
   "BotStop": 2400,
   "Description": "The South-Eastern highway interchange is a critical point in the transportation system of the city. Essentially, it is a strategical node connecting the port and harbour infrastructure with the industrial outskirts of Tarkov. ",
   "DisabledForScav": false,
@@ -7607,7 +7629,7 @@
   "transits": [
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "INT_TRANSIT_6_COND",
       "description": "INT_TRANSIT_6_DESC",
       "events": false,
@@ -7615,11 +7637,11 @@
       "location": "bigmap",
       "name": "INT_TRANSIT_6",
       "target": "56f40101d2720b2a4d8b45d6",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
-      "active": false,
+      "active": true,
       "conditions": "INT_TRANSIT_7_COND",
       "description": "INT_TRANSIT_7_DESC",
       "events": false,
@@ -7627,14 +7649,14 @@
       "location": "TarkovStreets",
       "name": "INT_TRANSIT_7",
       "target": "5714dc692459777137212e12",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 300,
-      "active": true,
+      "active": false,
       "conditions": "NY_FINAL_COND",
       "description": "NY_FINAL_DESC",
-      "events": true,
+      "events": false,
       "id": 42,
       "location": "Interchange",
       "name": "NY_FINAL",
@@ -7646,5 +7668,141 @@
   "users_spawn_seconds_n": 120,
   "users_spawn_seconds_n2": 200,
   "users_summon_seconds": 0,
-  "waves": []
+  "waves": [
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneCenter",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneCenterBot",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 1,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneOLI",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 2,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneIDEA",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 3,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "easy",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneRoad",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 4,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneIDEAPark",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 5,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneGoshan",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 6,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZonePowerStation",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 7,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "ZoneTrucks",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 8,
+      "slots_max": 2,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    }
+  ]
 }

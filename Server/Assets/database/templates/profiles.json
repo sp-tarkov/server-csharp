@@ -3,8 +3,8 @@
         "descriptionLocaleKey": "launcher-profile_standard",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -2701,8 +2701,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -5595,8 +5595,8 @@
         "descriptionLocaleKey": "launcher-profile_leftbehind",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -8852,8 +8852,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -12213,8 +12213,8 @@
         "descriptionLocaleKey": "launcher-profile_preparetoescape",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -15928,8 +15928,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -19846,8 +19846,8 @@
         "descriptionLocaleKey": "launcher-profile-edgeofdarkness",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -23612,8 +23612,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -27509,8 +27509,8 @@
         "descriptionLocaleKey": "launcher-profile-unheard",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -32014,8 +32014,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -36740,8 +36740,8 @@
 		"descriptionLocaleKey": "launcher-profile-tournament",
 		"bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -37729,8 +37729,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -38719,8 +38719,8 @@
         "descriptionLocaleKey": "launcher-profile_sptdeveloper",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -41870,8 +41870,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -45008,8 +45008,8 @@
         "descriptionLocaleKey": "launcher-profile_spteasystart",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -48427,8 +48427,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -51849,8 +51849,8 @@
         "descriptionLocaleKey": "launcher-profile_sptzerotohero",
         "bear": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",
@@ -52828,8 +52828,8 @@
         },
         "usec": {
             "character": {
-				"Achievements": [],
-				"Prestige": [],
+				"Achievements": {},
+				"Prestige": {},
                 "TaskConditionCounters": {},
                 "Bonuses": [{
                         "id": "64f5b9e5fa34f11b380756c0",

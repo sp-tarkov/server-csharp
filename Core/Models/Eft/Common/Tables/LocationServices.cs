@@ -92,7 +92,7 @@ public class ServiceItemCostDetails
 public class BtrServerSettings
 {
     [JsonPropertyName("ChanceSpawn")]
-    public int? ChanceSpawn { get; set; }
+    public double? ChanceSpawn { get; set; }
 
     [JsonPropertyName("SpawnPeriod")]
     public XYZ? SpawnPeriod { get; set; }
@@ -110,16 +110,16 @@ public class BtrServerSettings
     public float? TurnCheckSensitivity { get; set; }
 
     [JsonPropertyName("DecreaseSpeedOnTurnLimit")]
-    public float? DecreaseSpeedOnTurnLimit { get; set; }
+    public double? DecreaseSpeedOnTurnLimit { get; set; }
 
     [JsonPropertyName("EndSplineDecelerationDistance")]
-    public float? EndSplineDecelerationDistance { get; set; }
+    public double? EndSplineDecelerationDistance { get; set; }
 
     [JsonPropertyName("AccelerationSpeed")]
-    public float? AccelerationSpeed { get; set; }
+    public double? AccelerationSpeed { get; set; }
 
     [JsonPropertyName("DecelerationSpeed")]
-    public float? DecelerationSpeed { get; set; }
+    public double? DecelerationSpeed { get; set; }
 
     [JsonPropertyName("PauseDurationRange")]
     public XYZ? PauseDurationRange { get; set; }
@@ -143,7 +143,7 @@ public class ServerMapBtrsettings
     public string? MapID { get; set; }
 
     [JsonPropertyName("ChanceSpawn")]
-    public int? ChanceSpawn { get; set; }
+    public double? ChanceSpawn { get; set; }
 
     [JsonPropertyName("SpawnPeriod")]
     public XYZ? SpawnPeriod { get; set; }

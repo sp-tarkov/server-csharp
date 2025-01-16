@@ -380,7 +380,7 @@ public class Victim
     public string? Side { get; set; }
     public string? BodyPart { get; set; }
     public string? Time { get; set; }
-    public float? Distance { get; set; }
+    public double? Distance { get; set; }
     public double? Level { get; set; }
     public string? Weapon { get; set; }
     public string? Role { get; set; }

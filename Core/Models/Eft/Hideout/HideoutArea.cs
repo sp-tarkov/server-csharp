@@ -95,7 +95,7 @@ public class StageImprovement
     public List<StageImprovementBonus>? Bonuses { get; set; }
 
     [JsonPropertyName("improvementTime")]
-    public int? ImprovementTime { get; set; }
+    public double? ImprovementTime { get; set; }
 
     [JsonPropertyName("requirements")]
     public List<StageImprovementRequirement>? Requirements { get; set; }
@@ -120,7 +120,7 @@ public class StageImprovementBonus
     public string? Type { get; set; }
 
     [JsonPropertyName("value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 
     [JsonPropertyName("visible")]
     public bool? IsVisible { get; set; }

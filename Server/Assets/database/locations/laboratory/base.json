@@ -583,10 +583,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 14,
-  "BotMaxPlayer": 14,
+  "BotMax": 25,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 25,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 30,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 15,
@@ -595,7 +595,7 @@
   "BotSpawnTimeOnMax": 330,
   "BotSpawnTimeOnMin": 300,
   "BotStart": 10,
-  "BotStartPlayer": 15,
+  "BotStartPlayer": 0,
   "BotStop": 1400,
   "Description": "Laboratory description",
   "DisabledForScav": true,
@@ -5706,7 +5706,7 @@
       "location": "TarkovStreets",
       "name": "LAB_TRANSIT_8",
       "target": "5714dc692459777137212e12",
-      "time": 30
+      "time": 20
     }
   ],
   "users_gather_seconds": 0,

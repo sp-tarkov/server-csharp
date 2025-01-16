@@ -671,7 +671,7 @@ public class SpawnPointParam
     public XYZ? Position { get; set; }
 
     [JsonPropertyName("Rotation")]
-    public float? Rotation { get; set; }
+    public double? Rotation { get; set; }
 
     [JsonPropertyName("Sides")]
     public List<string>? Sides { get; set; }
@@ -695,7 +695,7 @@ public class Props
     public XYZ? Size { get; set; }
 
     [JsonPropertyName("Radius")]
-    public float? Radius { get; set; }
+    public double? Radius { get; set; }
 }
 
 public class Exit
@@ -710,15 +710,15 @@ public class Exit
     [JsonPropertyName("Count")]
     public int? Count { get; set; }
 
-    [JsonPropertyName("CountPve")]
-    public int? CountPve { get; set; }
+    [JsonPropertyName("CountPVE")]
+    public int? CountPVE { get; set; }
 
     // Had to add this property as BSG sometimes names the properties with full PVE capitals
     // This property will just point the value to CountPve
-    [JsonPropertyName("CountPVE")]
-    public int CountPVE
+    [JsonPropertyName("CountPve")]
+    public int CountPve
     {
-        set => CountPve = value;
+        set => CountPVE = value;
     }
 
     [JsonPropertyName("EntryPoints")]
@@ -737,7 +737,7 @@ public class Exit
     public double? ExfiltrationTime { get; set; }
 
     [JsonPropertyName("ExfiltrationTimePVE")]
-    public float? ExfiltrationTimePVE { get; set; }
+    public double? ExfiltrationTimePVE { get; set; }
 
     [JsonPropertyName("ExfiltrationType")]
     public string? ExfiltrationType { get; set; }
@@ -837,6 +837,9 @@ public class Wave
     /** 'pve' and/or 'regular' */
     [JsonPropertyName("SpawnMode")]
     public List<string>? SpawnMode { get; set; }
+
+    [JsonPropertyName("OpenZones")]
+    public string? OpenZones { get; set; }
 }
 
 public class LocationEvents

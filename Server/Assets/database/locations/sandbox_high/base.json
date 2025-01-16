@@ -173,6 +173,26 @@
       "Time": -1,
       "TriggerId": "",
       "TriggerName": ""
+    },
+    {
+      "BossChance": 0,
+      "BossDifficult": "normal",
+      "BossEscortAmount": "0",
+      "BossEscortDifficult": "normal",
+      "BossEscortType": "gifter",
+      "BossName": "gifter",
+      "BossPlayer": false,
+      "BossZone": "",
+      "IgnoreMaxBots": true,
+      "RandomTimeSpawn": false,
+      "SpawnMode": [
+        "pve",
+        "regular"
+      ],
+      "Supports": null,
+      "Time": -1,
+      "TriggerId": "",
+      "TriggerName": ""
     }
   ],
   "BotAssault": 100,
@@ -299,10 +319,10 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 10,
-  "BotMaxPlayer": 10,
+  "BotMax": 24,
+  "BotMaxPlayer": 0,
   "BotMaxPvE": 24,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 50,
   "BotSpawnCountStep": 3,
   "BotSpawnPeriodCheck": 14,
@@ -311,7 +331,7 @@
   "BotSpawnTimeOnMax": 380,
   "BotSpawnTimeOnMin": 290,
   "BotStart": 120,
-  "BotStartPlayer": 420,
+  "BotStartPlayer": 0,
   "BotStop": 1800,
   "Description": "The downtown Tarkov with banks, malls, hotels and all the other things a striving modern city could have needed.",
   "DisabledForScav": false,
@@ -6434,7 +6454,7 @@
       "location": "TarkovStreets",
       "name": "SAN_TRANSIT_1",
       "target": "5714dc692459777137212e12",
-      "time": 30
+      "time": 20
     },
     {
       "activateAfterSec": 60,
@@ -6445,12 +6465,88 @@
       "location": "laboratory",
       "name": "SAN_TRANSIT_2",
       "target": "5b0fc42d86f7744a585f9105",
-      "time": 30
+      "time": 20
     }
   ],
   "users_gather_seconds": 0,
   "users_spawn_seconds_n": 120,
   "users_spawn_seconds_n2": 200,
   "users_summon_seconds": 0,
-  "waves": []
+  "waves": [
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 3,
+      "slots_min": 1,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 1,
+      "slots_max": 3,
+      "slots_min": 1,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 2,
+      "slots_max": 3,
+      "slots_min": 1,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 4,
+      "slots_max": 3,
+      "slots_min": 1,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 6,
+      "slots_max": 3,
+      "slots_min": 1,
+      "time_max": -1,
+      "time_min": -1
+    }
+  ]
 }

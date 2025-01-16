@@ -23985,7 +23985,7 @@
       }
     },
     "Airdrop": {
-      "AirdropViewType": "NewYear",
+      "AirdropViewType": "Default",
       "ParachuteEndOpenHeight": 180,
       "ParachuteStartOpenHeight": 200,
       "PlaneAdditionalDistance": 2000,
@@ -27233,18 +27233,18 @@
         "OutdoorRolloffMult": 0.98
       },
       "RadioBroadcastSettings": {
-        "EnabledBroadcast": true,
+        "EnabledBroadcast": false,
         "RadioStations": [
           {
             "Enabled": false,
             "Station": "None"
           },
           {
-            "Enabled": true,
+            "Enabled": false,
             "Station": "Christmas"
           },
           {
-            "Enabled": true,
+            "Enabled": false,
             "Station": "RunddansEvent"
           },
           {
@@ -27305,7 +27305,7 @@
       ],
       "MapsConfigs": {
         "Develop": {
-          "BtrSkin": "Tarcola",
+          "BtrSkin": "HeavyDirt",
           "CheckSurfaceForWheelsTimer": 0.3,
           "DiameterWheel": 57.5,
           "HeightWheel": 0.65,
@@ -27356,7 +27356,7 @@
           ]
         },
         "TarkovStreets": {
-          "BtrSkin": "Tarcola",
+          "BtrSkin": "Cleare",
           "CheckSurfaceForWheelsTimer": 0.3,
           "DiameterWheel": 57.5,
           "HeightWheel": 0.65,
@@ -27441,7 +27441,7 @@
           ]
         },
         "Woods": {
-          "BtrSkin": "Tarcola",
+          "BtrSkin": "Dirt",
           "CheckSurfaceForWheelsTimer": 0.05,
           "DiameterWheel": 57.5,
           "HeightWheel": 0.65,
@@ -33655,7 +33655,7 @@
           "value": 999999
         }
       },
-      "minUserLevel": 1,
+      "minUserLevel": 15,
       "offerDurationTimeInHour": 12,
       "offerDurationTimeInHourAfterRemove": 0.02,
       "offerPriorityCost": 6,
@@ -34711,8 +34711,8 @@
       "accessKeys": [
         "67614b3ab8c060ebb204b106"
       ],
-      "active": true,
-      "activePVE": true,
+      "active": false,
+      "activePVE": false,
       "applyFrozenEverySec": 1,
       "consumables": [
         "67586bee39b1b82b0d0f9d06"
