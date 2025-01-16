@@ -837,6 +837,9 @@ public class Wave
     /** 'pve' and/or 'regular' */
     [JsonPropertyName("SpawnMode")]
     public List<string>? SpawnMode { get; set; }
+
+    [JsonPropertyName("OpenZones")]
+    public List<string>? OpenZones { get; set; }
 }
 
 public class LocationEvents

@@ -92,7 +92,7 @@ public class ServiceItemCostDetails
 public class BtrServerSettings
 {
     [JsonPropertyName("ChanceSpawn")]
-    public int? ChanceSpawn { get; set; }
+    public double? ChanceSpawn { get; set; }
 
     [JsonPropertyName("SpawnPeriod")]
     public XYZ? SpawnPeriod { get; set; }
@@ -143,7 +143,7 @@ public class ServerMapBtrsettings
     public string? MapID { get; set; }
 
     [JsonPropertyName("ChanceSpawn")]
-    public int? ChanceSpawn { get; set; }
+    public double? ChanceSpawn { get; set; }
 
     [JsonPropertyName("SpawnPeriod")]
     public XYZ? SpawnPeriod { get; set; }
