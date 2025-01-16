@@ -1,10 +1,26 @@
 ﻿using Core.Annotations;
+using Core.Models.Utils;
+using Core.Utils;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class ProbabilityHelper
 {
+    private readonly ISptLogger<ProbabilityHelper> _logger;
+    private readonly RandomUtil _randomUtil;
+
+    public ProbabilityHelper
+    (
+        ISptLogger<ProbabilityHelper> logger,
+        RandomUtil randomUtil
+    )
+    {
+        _logger = logger;
+        _randomUtil = randomUtil;
+    }
+
+
     /// <summary>
     /// Chance to roll a number out of 100
     /// </summary>
@@ -13,6 +29,6 @@ public class ProbabilityHelper
     /// <returns>true if success</returns>
     public bool RollChance(double chance, double scale = 1)
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetInt(1, (int)(100 * scale)) / (1 * scale) <= chance;
     }
 }
