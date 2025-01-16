@@ -19,7 +19,7 @@ public class QuestStaticRouter : StaticRouter
         jsonUtil,
         [
             new RouteAction(
-                "",
+                "/client/quest/list",
                 (
                     url, 
                     info, 
@@ -28,7 +28,7 @@ public class QuestStaticRouter : StaticRouter
                 ) => _questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
                 typeof(ListQuestsRequestData)),
             new RouteAction(
-                "",
+                "/client/repeatalbeQuests/activityPeriods",
                 (
                     url, 
                     info, 
