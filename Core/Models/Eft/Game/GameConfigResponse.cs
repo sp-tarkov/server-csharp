@@ -29,7 +29,7 @@ public class GameConfigResponse
     public bool? UseProtobuf { get; set; }
 
     [JsonPropertyName("utc_time")]
-    public long? UtcTime { get; set; }
+    public double? UtcTime { get; set; }
 
     /** Total in game time */
     [JsonPropertyName("totalInGame")]
