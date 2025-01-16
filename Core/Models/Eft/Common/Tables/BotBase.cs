@@ -153,7 +153,7 @@ public class Info
     public bool? HasCoopExtension { get; set; }
     public bool? HasPveGame { get; set; }
     public string? Voice { get; set; }
-    public int? Level { get; set; }
+    public double? Level { get; set; }
     public double? Experience { get; set; }
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public long? RegistrationDate { get; set; }
