@@ -79,7 +79,11 @@ public class BotLootGenerator
     /// <exception cref="NotImplementedException"></exception>
     public ItemSpawnLimitSettings GetItemSpawnLimitsForBot(string botRole)
     {
-        throw new NotImplementedException();
+        // Init item limits
+        Dictionary<string, double> limitsForBotDict = new();
+        InitItemLimitArray(botRole, limitsForBotDict);
+
+        return new() { CurrentLimits = limitsForBotDict, GlobalLimits = GetItemSpawnLimitsForBotType(botRole) };
     }
 
     /// <summary>
@@ -157,7 +161,7 @@ public class BotLootGenerator
             botInventory,
             botRole,
             botItemLimits,
-            containersIdFull
+            containersIdFull: containersIdFull
         );
 
         // Healing items / Meds
@@ -168,9 +172,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Drugs
@@ -181,9 +185,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Food
@@ -194,9 +198,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Drink
@@ -207,9 +211,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Currency
@@ -220,9 +224,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Stims
@@ -233,9 +237,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             botItemLimits,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Grenades
@@ -246,9 +250,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             null,
-            containersIdFull,
             0,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         var itemPriceLimits = GetSingleItemLootPriceLimits(botLevel, isPmc);
@@ -286,9 +290,9 @@ public class BotLootGenerator
                 botInventory,
                 botRole,
                 botItemLimits,
-                containersIdFull,
-                backpackLootRoubleTotal,
-                isPmc
+                backpackLootRoubleTotal ?? 0,
+                isPmc,
+                containersIdFull
             );
         }
 
@@ -309,9 +313,9 @@ public class BotLootGenerator
                 botInventory,
                 botRole,
                 botItemLimits,
-                containersIdFull,
                 _pmcConfig.MaxVestLootTotalRub,
-                isPmc
+                isPmc,
+                containersIdFull
             );
         }
 
@@ -329,9 +333,9 @@ public class BotLootGenerator
             botInventory,
             botRole,
             botItemLimits,
-            containersIdFull,
             _pmcConfig.MaxPocketLootTotalRub,
-            isPmc
+            isPmc,
+            containersIdFull
         );
 
         // Secure
@@ -346,9 +350,9 @@ public class BotLootGenerator
                 botInventory,
                 botRole,
                 null,
-                containersIdFull,
                 -1,
-                isPmc
+                isPmc,
+                containersIdFull
             );
         }
     }
@@ -375,9 +379,17 @@ public class BotLootGenerator
     /// <param name="botLevel">Bots level</param>
     /// <param name="isPmc">Is the bot a PMC</param>
     /// <returns>int</returns>
-    public int GetBackpackRoubleTotalByLevel(int botLevel, bool isPmc)
+    public double? GetBackpackRoubleTotalByLevel(int botLevel, bool isPmc)
     {
-        throw new NotImplementedException();
+        if (isPmc)
+        {
+            var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(
+                (minMaxValue) => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
+            );
+            return matchingValue?.Value;
+        }
+
+        return 0;
     }
 
     /// <summary>
@@ -388,7 +400,19 @@ public class BotLootGenerator
     /// <exception cref="NotImplementedException"></exception>
     public List<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
-        throw new NotImplementedException();
+        List<EquipmentSlots> result = [EquipmentSlots.Pockets];
+
+        if (botInventory.Items.Any((item) => item.SlotId == EquipmentSlots.TacticalVest.ToString()))
+        {
+            result.Add(EquipmentSlots.TacticalVest);
+        }
+
+        if (botInventory.Items.Any((item) => item.SlotId == EquipmentSlots.Backpack.ToString()))
+        {
+            result.Add(EquipmentSlots.Backpack);
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -398,7 +422,29 @@ public class BotLootGenerator
     /// <param name="botRole">Role of bot (pmcBEAR/pmcUSEC)</param>
     public void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole)
     {
-        throw new NotImplementedException();
+        // surv12
+        AddLootFromPool(
+            new() { { "5d02797c86f774203f38e30a", 1 } },
+            [EquipmentSlots.SecuredContainer],
+            1,
+            botInventory,
+            botRole,
+            null,
+            0,
+            true
+        );
+
+        // AFAK
+        AddLootFromPool(
+            new() { { "60098ad7c2240c0fe85c570a", 1 } },
+            [EquipmentSlots.SecuredContainer],
+            10,
+            botInventory,
+            botRole,
+            null,
+            0,
+            true
+        );
     }
 
     /// <summary>
@@ -414,16 +460,18 @@ public class BotLootGenerator
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
     /// <exception cref="NotImplementedException"></exception>
-    public void AddLootFromPool(
+    public void AddLootFromPool
+    (
         Dictionary<string, int> pool,
         List<EquipmentSlots> equipmentSlots,
         double totalItemCount,
         BotBaseInventory inventoryToAddItemsTo, // TODO: type for containersIdFull was Set<string>
         string botRole,
         ItemSpawnLimitSettings itemSpawnLimits,
-        List<string> containersIdFull,
         double totalValueLimitRub = 0,
-        bool isPmc = false)
+        bool isPmc = false,
+        List<string> containersIdFull = null
+    )
     {
         throw new NotImplementedException();
     }
@@ -482,7 +530,7 @@ public class BotLootGenerator
     /// </summary>
     /// <param name="botRole">Role the bot has</param>
     /// <param name="limitCount"></param>
-    public void InitItemLimitArray(string botRole, Dictionary<string, int> limitCount)
+    public void InitItemLimitArray(string botRole, Dictionary<string, double> limitCount)
     {
         throw new NotImplementedException();
     }
@@ -527,7 +575,7 @@ public class BotLootGenerator
     /// </summary>
     /// <param name="botRole">what role does the bot have</param>
     /// <returns>Dictionary of tplIds and limit</returns>
-    public Dictionary<string, int> GetItemSpawnLimitsForBotType(string botRole)
+    public Dictionary<string, double> GetItemSpawnLimitsForBotType(string botRole)
     {
         throw new NotImplementedException();
     }
