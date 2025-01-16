@@ -15,8 +15,9 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         return (JsonConverter)Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
     }
 
-    private class ArrayToObjectConverter<T> : JsonConverter<T>
+    private class ArrayToObjectConverter<T> : JsonConverter<T?>
     {
+        public override bool HandleNull => true;
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)
