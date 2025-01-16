@@ -55,18 +55,19 @@ public class ClientLogCallbacks
     public string ReleaseNotes()
     {
         var data = _configServer.GetConfig<CoreConfig>().Release;
-        data.BetaDisclaimerText = "BetaDisclaimerText";
-        data.BetaDisclaimerAcceptText = "BetaDisclaimerAcceptText";
-        data.ServerModsLoadedText = "ServerModsLoadedText";
-        data.ServerModsLoadedDebugText = "ServerModsLoadedDebugText";
-        data.ClientModsLoadedText = "clientModsLoadedText";
-        data.ClientModsLoadedDebugText = "clientModsLoadedDebugText";
-        data.IllegalPluginsLoadedText = "IllegalPluginsLoadedText";
-        data.IllegalPluginsExceptionText = "IllegalPluginsExceptionText";
-        data.ReleaseSummaryText = "ReleaseSummaryText";
-        data.IsBeta = false;
-        data.IsModdable = true;
-        data.IsModded = false;
+        data.BetaDisclaimerText = "BetaDisclaimerText"; // TODO
+        data.BetaDisclaimerAcceptText = _localisationService.GetText("release-beta-disclaimer-accept");
+        data.ServerModsLoadedText = _localisationService.GetText("release-server-mods-loaded");
+        data.ServerModsLoadedDebugText = _localisationService.GetText("release-server-mods-debug-message");
+        data.ClientModsLoadedText = _localisationService.GetText("release-plugins-loaded");
+        data.ClientModsLoadedDebugText = _localisationService.GetText("release-plugins-loaded-debug-message");
+        data.IllegalPluginsLoadedText = _localisationService.GetText("release-illegal-plugins-loaded");
+        data.IllegalPluginsExceptionText = _localisationService.GetText("release-illegal-plugins-exception");
+        data.ReleaseSummaryText = _localisationService.GetText("release-summary");
+        data.IsBeta = false; // TODO
+        data.IsModdable = true; // TODO
+        data.IsModded = false; // TODO
+
         
         
         // data.betaDisclaimerText = ProgramStatics.MODS
