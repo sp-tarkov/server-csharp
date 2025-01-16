@@ -40,7 +40,7 @@ public class Templates
 
     /** Default equipment loadouts that show on main inventory screen */
     [JsonPropertyName("defaultEquipmentPresets")]
-    public List<DefaultEquipmentPreset>? DefaultEquipmentPresets { get; set; }
+    public List<EquipmentBuild>? DefaultEquipmentPresets { get; set; }
 
     /** Achievements */
     [JsonPropertyName("achievements")]

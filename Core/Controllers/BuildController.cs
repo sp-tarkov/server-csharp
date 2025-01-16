@@ -62,14 +62,7 @@ public class BuildController
 
         // Clone player build data from profile and append the above defaults onto end
         var userBuildsClone = _cloner.Clone(profile.UserBuildData);
-        userBuildsClone.EquipmentBuilds.AddRange(defaultEquipmentPresetsClone.Select(x => new EquipmentBuild
-        {
-            Id = x.Id,
-            BuildType = x.BuildType,
-            Items = x.Items,
-            Name = x.Name,
-            Root = x.Root
-        }));
+        userBuildsClone.EquipmentBuilds.AddRange(defaultEquipmentPresetsClone);
 
         return userBuildsClone;
     }
