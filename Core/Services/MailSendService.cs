@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
@@ -418,6 +418,7 @@ public class MailSendService
             if (parentItem?.ParentId is null)
                 parentItem.ParentId = _hashUtil.Generate();
 
+            // Prep return object
             itemsToSendToPlayer = new()
             {
                 Stash = parentItem.ParentId, Data = new()
@@ -426,9 +427,9 @@ public class MailSendService
             // Ensure Ids are unique and cont collide with items in player inventory later
             messageDetails.Items = _itemHelper.ReplaceIDs(messageDetails.Items);
 
+            // Ensure item exits in items db
             foreach (var reward in messageDetails.Items)
             {
-                // Ensure item exists in items db
                 var itemTemplate = items[reward.Template];
                 if (itemTemplate is null)
                 {
@@ -441,10 +442,10 @@ public class MailSendService
                     continue;
                 }
 
-                // Ensure every 'base/root' item has the same parentId + has a slotid of 'main'
-                if (!(reward.SlotId is not null) || reward.SlotId == "hideout" || reward.ParentId == parentItem.ParentId)
+                // Ensure every 'base/root' item has the same parentId + has a slotId of 'main'
+                if (reward.SlotId is null || reward.SlotId == "hideout" || reward.ParentId == parentItem.ParentId)
                 {
-                    // Reward items NEED a parent id + slotid
+                    // Reward items NEED a parent id + slotId
                     reward.ParentId = parentItem.ParentId;
                     reward.SlotId = "main";
                 }
@@ -452,12 +453,22 @@ public class MailSendService
                 // Boxes can contain sub-items
                 if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
-                    var boxAndCartridges = new List<Item>();
-                    boxAndCartridges.Add(reward);
-                    _itemHelper.AddCartridgesToAmmoBox(boxAndCartridges, itemTemplate);
+                    // look for child cartridge objects
+                    var childItems = itemsToSendToPlayer.Data?.Where((x) => x.ParentId == reward.Id);
+                    if (childItems is null || !childItems.Any())
+                    {
+                        // No cartridges found, generate and add to rewards
+                        var boxAndCartridges = new List<Item> { reward };
+                        _itemHelper.AddCartridgesToAmmoBox(boxAndCartridges, itemTemplate);
 
-                    // Push box + cartridge children into array
-                    itemsToSendToPlayer.Data.AddRange(boxAndCartridges);
+                        // Push box + cartridge children into array
+                        itemsToSendToPlayer.Data.AddRange(boxAndCartridges);
+
+                        continue;
+                    }
+
+                    // Ammo box reward already has ammo, don't do anything extra
+                    itemsToSendToPlayer.Data.Add(reward);
                 }
                 else
                 {
