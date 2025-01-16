@@ -658,7 +658,90 @@ public class BotEquipmentModGenerator
     /// <returns>Sorted array</returns>
     public List<string> SortModKeys(List<string> unsortedSlotKeys, string itemTplWithKeysToSort)
     {
-        throw new NotImplementedException();
+        // No need to sort with only 1 item in array
+        if (unsortedSlotKeys.Count <= 1) {
+            return unsortedSlotKeys;
+        }
+        var isMount = _itemHelper.IsOfBaseclass(itemTplWithKeysToSort, BaseClasses.MOUNT);
+
+        List<string> sortedKeys = [];
+        var modRecieverKey = "mod_reciever";
+        var modMount001Key = "mod_mount_001";
+        var modGasBlockKey = "mod_gas_block";
+        var modPistolGrip = "mod_pistol_grip";
+        var modStockKey = "mod_stock";
+        var modBarrelKey = "mod_barrel";
+        var modHandguardKey = "mod_handguard";
+        var modMountKey = "mod_mount";
+        var modScopeKey = "mod_scope";
+        var modScope000Key = "mod_scope_000";
+
+        // Mounts are a special case, they need scopes first before more mounts
+        if (isMount) {
+            if (unsortedSlotKeys.Contains(modScope000Key)) {
+                sortedKeys.Add(modScope000Key);
+                unsortedSlotKeys.Remove(modScope000Key);
+            }
+
+            if (unsortedSlotKeys.Contains(modScopeKey)) {
+                sortedKeys.Add(modScopeKey);
+                unsortedSlotKeys.Remove(modScopeKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modMountKey)) {
+                sortedKeys.Add(modMountKey);
+                unsortedSlotKeys.Remove(modMountKey);
+            }
+        } else {
+            if (unsortedSlotKeys.Contains(modHandguardKey)) {
+                sortedKeys.Add(modHandguardKey);
+                unsortedSlotKeys.Remove(modHandguardKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modBarrelKey)) {
+                sortedKeys.Add(modBarrelKey);
+                unsortedSlotKeys.Remove(modBarrelKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modMount001Key)) {
+                sortedKeys.Add(modMount001Key);
+                unsortedSlotKeys.Remove(modMount001Key);
+            }
+
+            if (unsortedSlotKeys.Contains(modRecieverKey)) {
+                sortedKeys.Add(modRecieverKey);
+                unsortedSlotKeys.Remove(modRecieverKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modPistolGrip)) {
+                sortedKeys.Add(modPistolGrip);
+                unsortedSlotKeys.Remove(modPistolGrip);
+            }
+
+            if (unsortedSlotKeys.Contains(modGasBlockKey)) {
+                sortedKeys.Add(modGasBlockKey);
+                unsortedSlotKeys.Remove(modGasBlockKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modStockKey)) {
+                sortedKeys.Add(modStockKey);
+                unsortedSlotKeys.Remove(modStockKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modMountKey)) {
+                sortedKeys.Add(modMountKey);
+                unsortedSlotKeys.Remove(modMountKey);
+            }
+
+            if (unsortedSlotKeys.Contains(modScopeKey)) {
+                sortedKeys.Add(modScopeKey);
+                unsortedSlotKeys.Remove(modScopeKey);
+            }
+        }
+
+        sortedKeys.AddRange(unsortedSlotKeys);
+
+        return sortedKeys;
     }
 
     /// <summary>
