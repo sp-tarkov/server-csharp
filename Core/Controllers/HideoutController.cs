@@ -4,7 +4,6 @@ using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Routers;
@@ -189,5 +188,10 @@ public class HideoutController
         }
 
         return _eventOutputHolder.GetOutput(sessionId);
+    }
+
+    public List<QteData> GetQteList(string sessionId)
+    {
+        return _databaseService.GetHideout().Qte;
     }
 }

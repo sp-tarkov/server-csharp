@@ -215,8 +215,7 @@ public class DataCallbacks
     /// <returns></returns>
     public string GetQteList(string url, EmptyRequestData info, string sessionID)
     {
-        // return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID)); TODO: HideoutController is not implemented rn
-        throw new NotImplementedException();
+         return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID));
     }
 
     /// <summary>
