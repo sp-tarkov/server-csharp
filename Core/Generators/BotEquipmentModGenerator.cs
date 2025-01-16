@@ -802,7 +802,7 @@ public class BotEquipmentModGenerator
 
 
         var spawnMod = _probabilityHelper.RollChance(modSpawnChances.GetValueOrDefault(modSlotName));
-        if (!spawnMod && (slotRequired.GetValueOrDefault(false) || botEquipConfig.WeaponSlotIdsToMakeRequired.Contains(modSlotName)))
+        if (!spawnMod && (slotRequired.GetValueOrDefault(false) || (botEquipConfig.WeaponSlotIdsToMakeRequired?.Contains(modSlotName) ?? false)))
         {
             // Edge case: Mod is required but spawn chance roll failed, choose default mod spawn for slot
             return ModSpawn.DEFAULT_MOD;
@@ -816,7 +816,7 @@ public class BotEquipmentModGenerator
     /// </summary>
     /// <param name="request">Data used to choose an appropriate mod with</param>
     /// <returns>itemHelper.getItem() result</returns>
-    public KeyValuePair<bool, TemplateItem>? ChooseModToPutIntoSlot(ModToSpawnRequest request) // TODO: type fuckery: [boolean, ITemplateItem] | undefined
+    public KeyValuePair<bool, TemplateItem>? ChooseModToPutIntoSlot(ModToSpawnRequest request)
     {
         /** Slot mod will fill */
         var parentSlot = request.ParentTemplate.Properties.Slots?.FirstOrDefault((i) => i.Name == request.ModSlot);
