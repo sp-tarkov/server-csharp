@@ -51,6 +51,7 @@ public class MailSendService
         _databaseService = databaseService;
         _notifierHelper = notifierHelper;
         _dialogueHelper = dialogueHelper;
+        _notificationSendHelper = notificationSendHelper;
         _localisationService = localisationService;
         _itemHelper = itemHelper;
         _traderHelper = traderHelper;

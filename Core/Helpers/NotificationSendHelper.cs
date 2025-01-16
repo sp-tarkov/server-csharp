@@ -1,13 +1,35 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ws;
 using Core.Models.Enums;
+using Core.Servers;
+using Core.Servers.Ws;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class NotificationSendHelper
 {
+    private readonly SptWebSocketConnectionHandler _sptWebSocketConnectionHandler;
+    private readonly HashUtil _hashUtil;
+    private readonly SaveServer _saveServer;
+    private readonly NotificationService _notificationService;
+
+    public NotificationSendHelper(
+        SptWebSocketConnectionHandler sptWebSocketConnectionHandler,
+        HashUtil hashUtil,
+        SaveServer saveServer,
+        NotificationService notificationService
+        )
+    {
+        _sptWebSocketConnectionHandler = sptWebSocketConnectionHandler;
+        _hashUtil = hashUtil;
+        _saveServer = saveServer;
+        _notificationService = notificationService;
+    }
+
     /// <summary>
     /// Send notification message to the appropriate channel
     /// </summary>
@@ -15,7 +37,14 @@ public class NotificationSendHelper
     /// <param name="notificationMessage"></param>
     public void SendMessage(string sessionID, WsNotificationEvent notificationMessage)
     {
-        throw new NotImplementedException();
+        if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
+        {
+            _sptWebSocketConnectionHandler.SendMessageAsync(sessionID, notificationMessage);
+        }
+        else
+        {
+            _notificationService.Add(sessionID, notificationMessage);
+        }
     }
 
     /// <summary>
