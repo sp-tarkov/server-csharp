@@ -175,7 +175,7 @@ public class ProfileHelper
     {
         var playerLevel = level;
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
-        int? exp = null;
+        int? exp = 0;
 
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
             playerLevel = expTable.Length - 1;

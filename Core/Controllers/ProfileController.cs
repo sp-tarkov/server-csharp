@@ -103,12 +103,14 @@ public class ProfileController
         }
 
         var pmc = profile.CharacterData.PmcData;
-        var maxlvl = _profileHelper.GetMaxLevel();
+        var maxLvl = _profileHelper.GetMaxLevel();
 
         // Player hasn't completed profile creation process, send defaults
+        var currlvl = pmc.Info.Level.GetValueOrDefault(1);
+        var xpToNextLevel = _profileHelper.GetExperience((int)(currlvl + 1));
         if (pmc?.Info?.Level == null)
         {
-            return new MiniProfile()
+            return new MiniProfile
             {
                 Username = profile.ProfileInfo?.Username ?? "",
                 Nickname = "unknown",
@@ -116,17 +118,15 @@ public class ProfileController
                 CurrentLevel = 0,
                 CurrentExperience = 0,
                 PreviousExperience = 0,
-                NextLevel = 0,
-                MaxLevel = maxlvl,
+                NextLevel = xpToNextLevel,
+                MaxLevel = maxLvl,
                 Edition = profile.ProfileInfo?.Edition ?? "",
                 ProfileId = profile.ProfileInfo?.ProfileId ?? "",
                 SptData = _profileHelper.GetDefaultSptDataObject(),
             };
         }
 
-        var currlvl = pmc.Info.Level;
-        var nextlvl = _profileHelper.GetExperience((int)(currlvl + 1));
-        return new MiniProfile()
+        return new MiniProfile
         {
             Username = profile.ProfileInfo.Username,
             Nickname = pmc.Info.Nickname,
@@ -134,8 +134,8 @@ public class ProfileController
             CurrentLevel = (int)(pmc.Info.Level),
             CurrentExperience = (int)(pmc.Info.Experience ?? 0),
             PreviousExperience = currlvl == 0 ? 0 : _profileHelper.GetExperience((int)currlvl),
-            NextLevel = nextlvl,
-            MaxLevel = maxlvl,
+            NextLevel = xpToNextLevel,
+            MaxLevel = maxLvl,
             Edition = profile.ProfileInfo?.Edition ?? "",
             ProfileId = profile.ProfileInfo?.ProfileId ?? "",
             SptData = profile.SptData,
