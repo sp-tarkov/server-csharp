@@ -20,12 +20,21 @@ public class ImporterUtil
         _jsonUtil = jsonUtil;
     }
 
+    public Task<T> LoadRecursiveAsync<T>(
+        string filepath,
+        Action<string, string>? onReadCallback = null,
+        Action<string, object>? onObjectDeserialized = null
+    )
+    {
+        return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized).ContinueWith(res => (T) res.Result);
+    }
+
     /**
      * Load files into js objects recursively (asynchronous)
      * @param filepath Path to folder with files
      * @returns Promise<T> return T type associated with this class
      */
-    public Task<object> LoadRecursiveAsync(
+    protected Task<object> LoadRecursiveAsync(
         string filepath,
         Type loadedType,
         Action<string, string>? onReadCallback = null,
