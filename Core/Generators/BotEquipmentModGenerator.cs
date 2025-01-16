@@ -921,7 +921,23 @@ public class BotEquipmentModGenerator
     public ChooseRandomCompatibleModResult GetCompatibleWeaponModTplForSlotFromPool(ModToSpawnRequest request, List<string> modPool, Slot parentSlot,
         ModSpawn? choiceTypeEnum, List<Item> weapon, string modSlotName)
     {
-        throw new NotImplementedException();
+        // Filter out incompatible mods from pool
+        var preFilteredModPool = GetFilteredModPool(modPool, request.ConflictingItemTpls);
+        if (preFilteredModPool.Count == 0) {
+            return new () {
+                Incompatible = true,
+                Found = false,
+                Reason = $"Unable to add mod to {choiceTypeEnum.ToString()} slot: {modSlotName}. All: {modPool.Count()} had conflicts"
+            };
+        }
+
+        // Filter mod pool to only items that appear in parents allowed list
+        preFilteredModPool = preFilteredModPool.Where((tpl) => parentSlot.Props.Filters[0].Filter.Contains(tpl)).ToList();
+        if (preFilteredModPool.Count() == 0) {
+            return new () { Incompatible = true, Found = false, Reason = "No mods found in parents allowed list" };
+        }
+
+        return GetCompatibleModFromPool(preFilteredModPool, choiceTypeEnum, weapon);
     }
 
     /// <summary>
@@ -931,7 +947,7 @@ public class BotEquipmentModGenerator
     /// <param name="modSpawnType">How should the slot choice be handled - forced/normal etc</param>
     /// <param name="weapon">Weapon mods at current time</param>
     /// <returns>IChooseRandomCompatibleModResult</returns>
-    public ChooseRandomCompatibleModResult GetCompatibleModFromPool(List<string> modPool, ModSpawn modSpawnType, List<Item> weapon)
+    public ChooseRandomCompatibleModResult GetCompatibleModFromPool(List<string> modPool, ModSpawn? modSpawnType, List<Item> weapon)
     {
         throw new NotImplementedException();
     }
@@ -980,7 +996,62 @@ public class BotEquipmentModGenerator
 
     public List<string> GetModPoolForDefaultSlot(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
-        throw new NotImplementedException();
+        var matchingModFromPreset = GetMatchingModFromPreset(request, weaponTemplate);
+        if (matchingModFromPreset is null) {
+            if (request.ItemModPool[request.ModSlot]?.Count > 1) {
+                _logger.Debug($"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool");
+            }
+
+            // Couldnt find default in globals, use existing mod pool data
+            return request.ItemModPool[request.ModSlot];
+        }
+
+        // Only filter mods down to single default item if it already exists in existing itemModPool, OR the default item has no children
+        // Filtering mod pool to item that wasnt already there can have problems;
+        // You'd have a mod being picked without any sub-mods in its chain, possibly resulting in missing required mods not being added
+        // Mod is in existing mod pool
+        if (request.ItemModPool[request.ModSlot].Contains(matchingModFromPreset.Template)) {
+            // Found mod on preset + it already exists in mod pool
+            return [matchingModFromPreset.Template];
+        }
+
+        // Get an array of items that are allowed in slot from parent item
+        // Check the filter of the slot to ensure a chosen mod fits
+        var parentSlotCompatibleItems = request.ParentTemplate.Properties.Slots?.FirstOrDefault(
+            (slot) => slot.Name.ToLower() == request.ModSlot.ToLower()
+        )?.Props.Filters[0].Filter;
+
+        // Mod isnt in existing pool, only add if it has no children and exists inside parent filter
+        if (
+            parentSlotCompatibleItems?.Contains(matchingModFromPreset.Template) ?? false &&
+            _itemHelper.GetItem(matchingModFromPreset.Template).Value.Properties.Slots?.Count == 0
+        ) {
+            // Chosen mod has no conflicts + no children + is in parent compat list
+            if (!request.ConflictingItemTpls.Contains(matchingModFromPreset.Template)) {
+                return [matchingModFromPreset.Template];
+            }
+
+            // Above chosen mod had conflicts with existing weapon mods
+            _logger.Debug($"{request.BotData.Role} Chosen default: {request.ModSlot} mod found for: {weaponTemplate.Name} weapon conflicts with item on weapon, cannot use default");
+
+            var existingModPool = request.ItemModPool[request.ModSlot];
+            if (existingModPool.Count == 1) {
+                // The only item in pool isn't compatible
+                _logger.Debug($"{request.BotData.Role} {request.ModSlot} Mod pool for: {weaponTemplate.Name} weapon has only incompatible items, using parent list instead");
+
+                // Last ditch, use full pool of items minus conflicts
+                var newListOfModsForSlot = parentSlotCompatibleItems.Where((tpl) => !request.ConflictingItemTpls.Contains(tpl));
+                if (newListOfModsForSlot.Count() > 0) {
+                    return newListOfModsForSlot.ToList();
+                }
+            }
+
+            // Return full mod pool
+            return request.ItemModPool[request.ModSlot];
+        }
+
+        // Tried everything, return mod pool
+        return request.ItemModPool[request.ModSlot];
     }
 
     public Item GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
