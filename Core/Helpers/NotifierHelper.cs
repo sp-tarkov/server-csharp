@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ws;
 
@@ -7,6 +7,13 @@ namespace Core.Helpers;
 [Injectable]
 public class NotifierHelper
 {
+    private readonly HttpServerHelper _httpServerHelper;
+
+    public NotifierHelper(
+        HttpServerHelper httpServerHelper)
+    {
+        _httpServerHelper = httpServerHelper;
+    }
     public WsNotificationEvent GetDefaultNotification()
     {
         throw new NotImplementedException();
@@ -22,7 +29,13 @@ public class NotifierHelper
         Message dialogueMessage,
         MessageContentRagfair ragfairData)
     {
-        throw new NotImplementedException();
+        return new WsRagfairOfferSold{
+            EventType = NotificationEventType.RagfairOfferSold,
+            EventIdentifier = dialogueMessage.Id,
+            OfferId = ragfairData.OfferId,
+            HandbookId = ragfairData.HandbookId,
+            Count = ragfairData.Count
+        };
     }
 
     /**
@@ -32,11 +45,16 @@ public class NotifierHelper
      */
     public WsChatMessageReceived CreateNewMessageNotification(Message dialogueMessage)
     {
-        throw new NotImplementedException();
+        return new WsChatMessageReceived {
+            EventType = NotificationEventType.new_message,
+            EventIdentifier = dialogueMessage.Id,
+            DialogId = dialogueMessage.UserId,
+            Message = dialogueMessage,
+        };
     }
 
     public string GetWebSocketServer(string sessionID)
     {
-        throw new NotImplementedException();
+        return $"{ _httpServerHelper.GetWebsocketUrl()}/ notifierServer / getwebsocket /{sessionID}";
     }
 }
