@@ -11,7 +11,7 @@ public class PresetHelper
 {
     protected DatabaseService _databaseService;
     protected ItemHelper _itemHelper;
-    protected ICloner _primaryCloner;
+    protected ICloner _cloner;
 
     protected Dictionary<string, List<string>> _lookup = new();
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
@@ -21,12 +21,12 @@ public class PresetHelper
     (
         DatabaseService databaseService,
         ItemHelper itemHelper,
-        ICloner primaryCloner
+        ICloner cloner
     )
     {
         _databaseService = databaseService;
         _itemHelper = itemHelper;
-        _primaryCloner = primaryCloner;
+        _cloner = cloner;
     }
 
     public void HydratePresetStore(Dictionary<string, List<string>> input)
@@ -91,29 +91,40 @@ public class PresetHelper
      * @param baseClass The BaseClasses enum to check against
      * @returns True if the preset is of the given base class, false otherwise
      */
-    public bool IsPresetBaseClass(string id, BaseClasses baseClass)
+    public bool IsPresetBaseClass(string id, string baseClass)
     {
-        throw new NotImplementedException();
+        return IsPreset(id) && _itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia, baseClass);
     }
 
     public bool HasPreset(string templateId)
     {
-        throw new NotImplementedException();
+        return _lookup.ContainsKey(templateId) ;
     }
 
     public Preset GetPreset(string id)
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_databaseService.GetGlobals().ItemPresets[id]);
     }
 
     public List<Preset> GetAllPresets()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_databaseService.GetGlobals().ItemPresets.Values.ToList());
     }
 
     public List<Preset> GetPresets(string templateId)
     {
-        throw new NotImplementedException();
+        if (!HasPreset(templateId)) {
+            return [];
+        }
+
+        List<Preset> presets = [];
+        var ids = _lookup[templateId];
+
+        foreach (var id in ids) {
+            presets.Add(GetPreset(id));
+        }
+
+        return presets;
     }
 
     /**
@@ -121,14 +132,36 @@ public class PresetHelper
      * @param templateId Item tpl to get preset for
      * @returns null if no default preset, otherwise Preset
      */
-    public Preset GetDefaultPreset(string templateId)
+    public Preset? GetDefaultPreset(string templateId)
     {
-        throw new NotImplementedException();
+        if (!HasPreset(templateId)) {
+            return null;
+        }
+
+        var allPresets = GetPresets(templateId);
+
+        foreach (var preset in allPresets) {
+            if (preset.Encyclopedia is not null) {
+                return preset;
+            }
+        }
+
+        return allPresets[0];
     }
 
     public string GetBaseItemTpl(string presetId)
     {
-        throw new NotImplementedException();
+        if (IsPreset(presetId)) {
+            var preset = GetPreset(presetId);
+
+            foreach (var item in preset.Items) {
+                if (preset.Parent == item.Id) {
+                    return item.Template;
+                }
+            }
+        }
+
+        return "";
     }
 
     /**
@@ -138,6 +171,13 @@ public class PresetHelper
      */
     public decimal GetDefaultPresetOrItemPrice(string tpl)
     {
-        throw new NotImplementedException();
+        // Get default preset if it exists
+        var defaultPreset = GetDefaultPreset(tpl);
+
+        // Bundle up tpls we want price for
+        var tpls = defaultPreset is not null ? defaultPreset.Items.Select((item) => item.Template) : [tpl];
+
+        // Get price of tpls
+        return _itemHelper.GetItemAndChildrenPrice(tpls.ToList());
     }
 }
