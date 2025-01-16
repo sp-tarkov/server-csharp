@@ -710,15 +710,15 @@ public class Exit
     [JsonPropertyName("Count")]
     public int? Count { get; set; }
 
-    [JsonPropertyName("CountPve")]
-    public int? CountPve { get; set; }
+    [JsonPropertyName("CountPVE")]
+    public int? CountPVE { get; set; }
 
     // Had to add this property as BSG sometimes names the properties with full PVE capitals
     // This property will just point the value to CountPve
-    [JsonPropertyName("CountPVE")]
-    public int CountPVE
+    [JsonPropertyName("CountPve")]
+    public int CountPve
     {
-        set => CountPve = value;
+        set => CountPVE = value;
     }
 
     [JsonPropertyName("EntryPoints")]
