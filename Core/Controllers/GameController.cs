@@ -272,7 +272,7 @@ public class GameController
         return new()
         {
             GameMode = "pve",
-            BackendUrl = "http://127.0.0.1:6969"
+            BackendUrl = _httpServerHelper.GetBackendUrl()
         };
     }
 
