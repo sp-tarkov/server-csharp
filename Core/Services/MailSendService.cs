@@ -130,8 +130,8 @@ public class MailSendService
         string messageLocaleId,
         List<Item>? items,
         long? maxStorageTimeSeconds,
-        SystemData? systemData,
-        MessageContentRagfair? ragfair
+        SystemData? systemData = null,
+        MessageContentRagfair? ragfair = null
     )
     {
         if (trader is null)

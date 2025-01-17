@@ -236,8 +236,8 @@ public class BotLootCacheService
 
         // Assign whitelisted special items to bot if any exist
         var specialLootItems =
-            botJsonTemplate.BotGeneration.Items.SpecialItems.Whitelist.Count > 0
-                ? botJsonTemplate.BotGeneration.Items.SpecialItems.Whitelist
+            botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist?.Count > 0
+                ? botJsonTemplate.BotGeneration?.Items?.SpecialItems?.Whitelist
                 : new Dictionary<string, double>();
 
         // no whitelist, find and assign from combined item pool
@@ -256,8 +256,8 @@ public class BotLootCacheService
 
         // Assign whitelisted healing items to bot if any exist
         var healingItems =
-            botJsonTemplate.BotGeneration.Items.Healing.Whitelist.Count > 0
-                ? botJsonTemplate.BotGeneration.Items.Healing.Whitelist
+            botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist?.Count > 0
+                ? botJsonTemplate.BotGeneration?.Items?.Healing?.Whitelist
                 : new Dictionary<string, double>();
 
         // No whitelist, find and assign from combined item pool
@@ -279,7 +279,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted drugs to bot if any exist
-        var drugItems = botJsonTemplate.BotGeneration.Items.Drugs.Whitelist ?? new Dictionary<string, double>();
+        var drugItems = botJsonTemplate.BotGeneration?.Items?.Drugs?.Whitelist ?? new Dictionary<string, double>();
         // no drugs whitelist, find and assign from combined item pool
         if (!drugItems.Any())
         {
@@ -294,7 +294,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted food to bot if any exist
-        var foodItems = botJsonTemplate.BotGeneration.Items.Food.Whitelist ?? new Dictionary<string, double>();
+        var foodItems = botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist ?? new Dictionary<string, double>();
         // No food whitelist, find and assign from combined item pool
         if (!foodItems.Any())
         {
@@ -309,7 +309,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted drink to bot if any exist
-        var drinkItems = botJsonTemplate.BotGeneration.Items.Food.Whitelist ?? new Dictionary<string, double>();
+        var drinkItems = botJsonTemplate.BotGeneration?.Items?.Food?.Whitelist ?? new Dictionary<string, double>();
         // No drink whitelist, find and assign from combined item pool
         if (!drinkItems.Any())
         {
@@ -324,7 +324,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted currency to bot if any exist
-        var currencyItems = botJsonTemplate.BotGeneration.Items.Currency.Whitelist ?? new Dictionary<string, double>();
+        var currencyItems = botJsonTemplate.BotGeneration?.Items?.Currency?.Whitelist ?? new Dictionary<string, double>();
         // No currency whitelist, find and assign from combined item pool
         if (!currencyItems.Any())
         {
@@ -339,7 +339,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted stims to bot if any exist
-        var stimItems = botJsonTemplate.BotGeneration.Items.Stims.Whitelist ?? new Dictionary<string, double>();
+        var stimItems = botJsonTemplate.BotGeneration?.Items?.Stims?.Whitelist ?? new Dictionary<string, double>();
         // No whitelist, find and assign from combined item pool
         if (!stimItems.Any())
         {
@@ -354,7 +354,7 @@ public class BotLootCacheService
         }
 
         // Assign whitelisted grenades to bot if any exist
-        var grenadeItems = botJsonTemplate.BotGeneration.Items.Grenades.Whitelist ?? new Dictionary<string, double>();
+        var grenadeItems = botJsonTemplate.BotGeneration?.Items?.Grenades?.Whitelist ?? new Dictionary<string, double>();
         // no whitelist, find and assign from combined item pool
         if (!grenadeItems.Any())
         {
