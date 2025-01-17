@@ -7,6 +7,7 @@ using Core.Models.Eft.Prestige;
 using Core.Models.Eft.Profile;
 using Core.Models.Utils;
 using Core.Routers;
+using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
@@ -24,6 +25,7 @@ public class PrestigeController
     protected EventOutputHolder _eventOutputHolder;
     protected CreateProfileService _createProfileService;
     private DatabaseService _databaseService;
+    private readonly SaveServer _saveServer;
     protected ICloner _cloner;
 
     public PrestigeController
@@ -35,6 +37,7 @@ public class PrestigeController
         EventOutputHolder eventOutputHolder,
         CreateProfileService createProfileService,
         DatabaseService databaseService,
+        SaveServer saveServer,
         ICloner cloner
     )
     {
@@ -45,6 +48,7 @@ public class PrestigeController
         _eventOutputHolder = eventOutputHolder;
         _createProfileService = createProfileService;
         _databaseService = databaseService;
+        _saveServer = saveServer;
         _cloner = cloner;
     }
 
@@ -89,6 +93,7 @@ public class PrestigeController
         var newProfile = _profileHelper.GetFullProfile(sessionId);
 
         // Skill copy
+        // TODO - Find what skills should be prestiged over
         var commonSkillsToCopy = prePrestigePmc.Skills.Common;
         foreach (var skillToCopy in commonSkillsToCopy) {
             // Set progress to max level 20
@@ -120,9 +125,17 @@ public class PrestigeController
             }
         }
 
-        var indexToGet = Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
-        var rewards = _databaseService.GetTemplates().Prestige.Elements[(int)indexToGet].Rewards;
-        AddPrestigeRewardsToProfile(sessionId, newProfile, rewards);
+        // Assumes Prestige data is in descending order
+        var indexOfPrestigeObtained = (int)Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
+        var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
+        var prestigeRewards = _databaseService.GetTemplates().Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
+            .SelectMany((prestige) => prestige.Rewards);
+
+
+        AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
+
+        // Flag profile as having achieved this prestige level
+        newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
 
         // Copy transferred items
         foreach (var transferRequest in request) {
@@ -145,6 +158,9 @@ public class PrestigeController
         {
             newProfile.PlayerAchievements.Add("676091c0f457869a94017a23", _timeUtil.GetTimeStamp());
         }
+
+        // Force save of above changes to disk
+        _saveServer.SaveProfile(sessionId);
     }
 
     private void AddPrestigeRewardsToProfile(string sessionId, SptProfile newProfile, IEnumerable<QuestReward> rewards)
