@@ -39,7 +39,7 @@ public class NotificationSendHelper
     {
         if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
         {
-            _sptWebSocketConnectionHandler.SendMessageAsync(sessionID, notificationMessage).Wait();
+            _sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
         }
         else
         {

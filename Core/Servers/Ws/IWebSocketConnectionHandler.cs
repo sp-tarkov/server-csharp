@@ -10,5 +10,5 @@ public interface IWebSocketConnectionHandler
     Task OnConnection(WebSocket ws, HttpContext context);
     bool IsWebSocketConnected(string sessionId);
 
-    Task SendMessageAsync(string sessionID, WsNotificationEvent output);
+    void SendMessage(string sessionID, WsNotificationEvent output);
 }

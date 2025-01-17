@@ -71,6 +71,9 @@ public static class Program
         builder.Logging.ClearProviders();
         logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
+        # if DEBUG
+            .MinimumLevel.Debug()
+        # endif
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .Enrich.WithThreadId()

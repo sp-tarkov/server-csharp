@@ -25,30 +25,22 @@ public class WebSocketServer
         _jsonUtil = jsonUtil;
     }
 
-    public Task OnConnection(HttpContext httpContext)
+    public async Task OnConnection(HttpContext httpContext)
     {
-        return httpContext.WebSockets.AcceptWebSocketAsync()
-            .ContinueWith(task => HandleCommunication(httpContext, task.Result));
+        var socket = await httpContext.WebSockets.AcceptWebSocketAsync();
+        await HandleCommunication(httpContext, socket);
     }
 
-    private void HandleCommunication(HttpContext context, WebSocket webSocket)
+    private Task HandleCommunication(HttpContext context, WebSocket webSocket)
     {
         var socketHandlers = _webSocketConnectionHandler
             .Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()))
             .ToList();
         if (socketHandlers.Count == 0)
         {
-            var message =
-                $"Socket connection received for url {context.Request.Path.Value}, but there is not websocket handler configured for it";
+            var message = $"Socket connection received for url {context.Request.Path.Value}, but there is not websocket handler configured for it";
             _logger.Warning(message);
-            webSocket.SendAsync(
-                    Encoding.UTF8.GetBytes(_jsonUtil.Serialize(new { error = message })),
-                    WebSocketMessageType.Text,
-                    true,
-                    CancellationToken.None
-                )
-                .Wait();
-            webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None).Wait();
+            return webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None);
         }
 
         foreach (var wsh in socketHandlers)
@@ -56,5 +48,6 @@ public class WebSocketServer
             wsh.OnConnection(webSocket, context).Wait();
             _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
         }
+        return Task.CompletedTask;
     }
 }
