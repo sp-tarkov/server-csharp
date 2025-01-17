@@ -1,6 +1,9 @@
 using Core.Annotations;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using Core.Utils;
+using Core.Utils.Cloners;
+using Core.Utils.Collections;
 
 namespace Core.Helpers;
 
@@ -8,11 +11,18 @@ namespace Core.Helpers;
 public class RepeatableQuestHelper
 {
     protected ISptLogger<RepeatableQuestHelper> _logger;
+    protected ICloner _cloner;
+    protected MathUtil _mathUtil;
 
     public RepeatableQuestHelper(
-        ISptLogger<RepeatableQuestHelper> logger)
+        ISptLogger<RepeatableQuestHelper> logger,
+        ICloner cloner,
+        MathUtil mathUtil
+    )
     {
         _logger = logger;
+        _cloner = cloner;
+        _mathUtil = mathUtil;
     }
 
     /// <summary>
@@ -24,25 +34,17 @@ public class RepeatableQuestHelper
     public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
         return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(
-            (x) => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max);
+            (x) => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
+        );
     }
 
-    public Dictionary<K, ProbabilityData<V>> ProbabilityObjectArray<K, V>(object configArrayInput) // TODO: ProbabilityObjectArray<K, V> for return type , param type was List<ProbabilityObject<K, V>>
+    public ProbabilityObjectArray<K, V>
+        ProbabilityObjectArray<K, V>(
+            List<ProbabilityObject<K, V>> configArrayInput
+        ) // TODO: ProbabilityObjectArray<K, V> for return type , param type was List<ProbabilityObject<K, V>>
     {
-        _logger.Error("Fuck this in particular, go look up ProbabilityObjectArray in node server, candidate for rewrite");
-        throw new NotImplementedException();
-        var x = new Dictionary<K, ProbabilityData<V>>();
-    }
-
-    public int MaxProbability(int key)
-    {
-        _logger.Error("NOT IMPLEMENTED - MaxProbability");
-        return key;
-    }
-
-    public class ProbabilityData<T>
-    {
-        public int RelativeProbability { get; set; }
-        public T Data { get; set; }
+        var configArray = _cloner.Clone(configArrayInput);
+        var probabilityArray = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, configArray);
+        return probabilityArray;
     }
 }

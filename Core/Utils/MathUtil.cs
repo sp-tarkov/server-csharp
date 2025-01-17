@@ -11,10 +11,10 @@ public class MathUtil
     /// </summary>
     /// <param name="values">List of floats to sum</param>
     /// <returns>sum of all values</returns>
-    public float ListSum(List<float> values)
+    public double ListSum(List<double> values)
     {
         // Sum the list starting with an initial value of 0
-        return values.Aggregate(0f, (sum, x) => sum + x);
+        return values.Sum();
     }
 
     /// <summary>
@@ -23,10 +23,10 @@ public class MathUtil
     /// </summary>
     /// <param name="values">The list with numbers of which to calculate the cumulative sum</param>
     /// <returns>cumulative sum of values</returns>
-    public List<float> ListCumSum(List<float> values)
+    public List<double> ListCumSum(List<double> values)
     {
-        var cumSumList = new List<float>(values.Count);
-        float sum = 0;
+        var cumSumList = new List<double>(values.Count);
+        var sum = 0D;
 
         foreach (var value in values)
         {
@@ -43,7 +43,7 @@ public class MathUtil
     /// <param name="values">The list of numbers which shall be multiplied by the factor</param>
     /// <param name="factor">Number to multiply each element by</param>
     /// <returns>A list of elements all multiplied by the factor</returns>
-    public List<float> ListProduct(List<float> values, float factor)
+    public List<double> ListProduct(List<double> values, double factor)
     {
         return values.Select(v => v * factor).ToList();
     }
@@ -54,7 +54,7 @@ public class MathUtil
     /// <param name="values">The list of numbers to which the summand should be added</param>
     /// <param name="additive"></param>
     /// <returns>A list of elements with the additive added to all elements</returns>
-    public List<float> ListAdd(List<float> values, float additive)
+    public List<double> ListAdd(List<double> values, double additive)
     {
         return values.Select(v => v + additive).ToList();
     }
