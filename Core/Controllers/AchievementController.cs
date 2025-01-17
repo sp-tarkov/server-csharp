@@ -25,7 +25,7 @@ public class AchievementController
     {
         return new GetAchievementsResponse
         {
-            Achievements = _databaseService.GetAchievements()
+            Elements = _databaseService.GetAchievements()
         };
     }
 

@@ -83,6 +83,8 @@ public class RepeatableQuestController
 
     public List<PmcDataRepeatableQuest> GetClientRepeatableQuests(string sessionID)
     {
+        _logger.Error("BYPASSED GetClientRepeatableQuests");
+        return new();
         var returnData = new List<PmcDataRepeatableQuest>();
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = fullProfile.CharacterData.PmcData;
@@ -136,7 +138,7 @@ public class RepeatableQuestController
                 {
                     quest = _repeatableQuestGenerator.GenerateRepeatableQuest(
                     sessionID,
-                        pmcData.Info.Level,
+                        pmcData.Info.Level ?? 0,
                         pmcData.TradersInfo,
                         questTypePool,
                         repeatableConfig);
@@ -295,6 +297,8 @@ public class RepeatableQuestController
 
     private QuestTypePool GenerateQuestPool(RepeatableQuestConfig repeatableConfig, int? pmcLevel)
     {
+        _logger.Error("BYPASSED GenerateQuestPool");
+        return new();
         var questPool = CreateBaseQuestPool(repeatableConfig);
 
         // Get the allowed locations based on the PMC's level

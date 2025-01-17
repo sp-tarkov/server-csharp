@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Ragfair;
 
-public record SearchRequestData
+public record SearchRequestData : IRequestData
 {
     [JsonPropertyName("page")]
     public int? Page { get; set; }

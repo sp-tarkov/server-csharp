@@ -1,8 +1,10 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Profile;
 
 public record GetAchievementsResponse
 {
-    public List<Achievement>? Achievements { get; set; }
+    [JsonPropertyName("elements")]
+    public List<Achievement>? Elements { get; set; }
 }
