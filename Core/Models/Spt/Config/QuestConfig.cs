@@ -1,6 +1,7 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
+using Core.Utils.Collections;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
@@ -344,10 +345,8 @@ public record BaseQuestConfig
     public List<string>? PossibleSkillRewards { get; set; }
 }
 
-public record Target : ProbabilityObject
+public class Target : ProbabilityObject<string, BossInfo>
 {
-    [JsonPropertyName("data")]
-    public BossInfo? Data { get; set; }
 }
 
 public record BossInfo
@@ -359,26 +358,10 @@ public record BossInfo
     public bool? IsPmc { get; set; }
 }
 
-public record BodyPart : ProbabilityObject
+public class BodyPart : ProbabilityObject<string, List<string>>
 {
-    [JsonPropertyName("data")]
-    public List<string>? Data { get; set; }
 }
 
-public record WeaponRequirement : ProbabilityObject
+public class WeaponRequirement : ProbabilityObject<string, List<string>>
 {
-    [JsonPropertyName("data")]
-    public List<string>? Data { get; set; }
-}
-
-public record ProbabilityObject
-{
-    [JsonPropertyName("key")]
-    public string? Key { get; set; }
-
-    [JsonPropertyName("relativeProbability")]
-    public double? RelativeProbability { get; set; }
-
-    [JsonPropertyName("data")]
-    public object? Data { get; set; }
 }

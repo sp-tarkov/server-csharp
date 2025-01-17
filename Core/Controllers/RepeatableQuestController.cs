@@ -297,8 +297,6 @@ public class RepeatableQuestController
 
     private QuestTypePool GenerateQuestPool(RepeatableQuestConfig repeatableConfig, int? pmcLevel)
     {
-        _logger.Error("BYPASSED GenerateQuestPool");
-        return new();
         var questPool = CreateBaseQuestPool(repeatableConfig);
 
         // Get the allowed locations based on the PMC's level

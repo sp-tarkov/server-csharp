@@ -40,8 +40,8 @@ public class RepeatableQuestHelper
 
     public ProbabilityObjectArray<K, V>
         ProbabilityObjectArray<K, V>(
-            List<ProbabilityObject<K, V>> configArrayInput
-        ) // TODO: ProbabilityObjectArray<K, V> for return type , param type was List<ProbabilityObject<K, V>>
+            List<ProbabilityObject<K, V>>? configArrayInput
+        )
     {
         var configArray = _cloner.Clone(configArrayInput);
         var probabilityArray = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, configArray);

@@ -1,4 +1,5 @@
 using Core.Utils.Cloners;
+using System.Text.Json.Serialization;
 
 namespace Core.Utils.Collections;
 
@@ -214,8 +215,15 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
  */
 public class ProbabilityObject<K, V>
 {
+    public ProbabilityObject()
+    { }
+    [JsonPropertyName("key")]
     public K Key { get; }
+
+    [JsonPropertyName("relativeProbability")]
     public double RelativeProbability { get; }
+
+    [JsonPropertyName("data")]
     public V? Data { get; }
 
     /**
