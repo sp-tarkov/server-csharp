@@ -1485,7 +1485,7 @@ public class ItemHelper
             _logger.Error(_localisationService.GetText("item-invalid_tpl_item", cartridgeTpl));
         }
 
-        var cartridgeMaxStackSize = cartridgeDetails.Value.Properties?.StackMaxSize;
+        var cartridgeMaxStackSize = cartridgeDetails.Value?.Properties?.StackMaxSize;
         if (cartridgeMaxStackSize is null)
         {
             _logger.Error($"Item with tpl: {cartridgeTpl} lacks a _props or StackMaxSize property");
@@ -1493,8 +1493,8 @@ public class ItemHelper
 
         // Get max number of cartridges in magazine, choose random value between min/max
         var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
-            ? magTemplate.Properties.Slots.Count() // Edge case for rotating grenade launcher magazine
-            : magTemplate.Properties.Cartridges[0]?.MaxCount;
+            ? magTemplate.Properties?.Slots?.Count() // Edge case for rotating grenade launcher magazine
+            : magTemplate.Properties?.Cartridges[0]?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {

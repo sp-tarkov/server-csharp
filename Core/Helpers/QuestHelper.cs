@@ -6,11 +6,11 @@ using Core.Models.Eft.Quests;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Helpers;
@@ -20,32 +20,61 @@ public class QuestHelper
 {
     protected ISptLogger<QuestHelper> _logger;
     protected TimeUtil _timeUtil;
+    protected HashUtil _hashUtil;
+    protected ItemHelper _itemHelper;
     protected DatabaseService _databaseService;
     protected QuestConditionHelper _questConditionHelper;
-    protected ProfileHelper _profileHelper;
-    protected LocalisationService _localisationService;
+    protected EventOutputHolder _eventOutputHolder;
     protected LocaleService _localeService;
+    protected ProfileHelper _profileHelper;
+    protected QuestRewardHelper _questRewardHelper;
+    protected LocalisationService _localisationService;
+    protected SeasonalEventService _seasonalEventService;
+    protected TraderHelper _traderHelper;
+    protected MailSendService _mailSendService;
+    protected PlayerService _playerService;
+    protected ConfigServer _configServer;
     protected ICloner _cloner;
+
     protected QuestConfig _questConfig;
 
-    public QuestHelper(
+    public QuestHelper
+    (
         ISptLogger<QuestHelper> logger,
         TimeUtil timeUtil,
+        HashUtil hashUtil,
+        ItemHelper itemHelper,
         DatabaseService databaseService,
         QuestConditionHelper questConditionHelper,
-        ProfileHelper profileHelper,
-        LocalisationService localisationService,
+        EventOutputHolder eventOutputHolder,
         LocaleService localeService,
+        ProfileHelper profileHelper,
+        QuestRewardHelper questRewardHelper,
+        LocalisationService localisationService,
+        SeasonalEventService seasonalEventService,
+        TraderHelper traderHelper,
+        MailSendService mailSendService,
+        PlayerService playerService,
         ConfigServer configServer,
-        ICloner Cloner)
+        ICloner Cloner
+    )
     {
         _logger = logger;
         _timeUtil = timeUtil;
+        _hashUtil = hashUtil;
+        _itemHelper = itemHelper;
         _databaseService = databaseService;
         _questConditionHelper = questConditionHelper;
-        _profileHelper = profileHelper;
-        _localisationService = localisationService;
+        _eventOutputHolder = eventOutputHolder;
         _localeService = localeService;
+        _profileHelper = profileHelper;
+        _questRewardHelper = questRewardHelper;
+        _localisationService = localisationService;
+        _seasonalEventService = seasonalEventService;
+        _traderHelper = traderHelper;
+        _mailSendService = mailSendService;
+        _playerService = playerService;
+        _configServer = configServer;
         _cloner = Cloner;
 
         _questConfig = configServer.GetConfig<QuestConfig>();
@@ -89,7 +118,8 @@ public class QuestHelper
                     return playerLevel == conditionValue;
                 default:
                     _logger.Error(
-                        _localisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod));
+                        _localisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod)
+                    );
 
                     return false;
             }
@@ -127,7 +157,7 @@ public class QuestHelper
     /// <returns></returns>
     public string GetQuestNameFromLocale(string questId)
     {
-        var questNameKey = $"{ questId} name";
+        var questNameKey = $"{questId} name";
         return _localeService.GetLocaleDb().GetValueOrDefault(questNameKey, "UNKNOWN");
     }
 
@@ -143,7 +173,8 @@ public class QuestHelper
         if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
         {
             _logger.Error(
-                _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target));
+                _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target)
+            );
         }
 
         return CompareAvailableForValues(trader.LoyaltyLevel.Value, requiredLoyaltyLevel.Value, questProperties.CompareMethod);
@@ -161,7 +192,8 @@ public class QuestHelper
         if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
         {
             _logger.Error(
-                _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target));
+                _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target)
+            );
         }
 
         return CompareAvailableForValues(trader.Standing.Value, requiredLoyaltyLevel.Value, questProperties.CompareMethod);
@@ -224,8 +256,28 @@ public class QuestHelper
      */
     public bool ShowEventQuestToPlayer(string questId)
     {
-        _logger.Error($"NOT IMPLEMENTED");
-        return false;
+        var isChristmasEventActive = _seasonalEventService.ChristmasEventEnabled();
+        var isHalloweenEventActive = _seasonalEventService.HalloweenEventEnabled();
+
+        // Not christmas + quest is for christmas
+        if (!isChristmasEventActive && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Christmas))
+        {
+            return false;
+        }
+
+        // Not halloween + quest is for halloween
+        if (!isHalloweenEventActive && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Halloween))
+        {
+            return false;
+        }
+
+        // Should non-season event quests be shown to player
+        if (!_questConfig.ShowNonSeasonalEventQuests ?? false && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
+        {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -260,7 +312,14 @@ public class QuestHelper
      */
     protected bool QuestIsProfileBlacklisted(string gameVersion, string questId)
     {
-        throw new NotImplementedException();
+        var questBlacklist = _questConfig.ProfileBlacklist[gameVersion];
+        if (questBlacklist is null)
+        {
+            // Not blacklisted
+            return false;
+        }
+
+        return questBlacklist.Contains(questId);
     }
 
     /**
@@ -290,7 +349,38 @@ public class QuestHelper
      */
     public List<Quest> FailedUnlocked(string failedQuestId, string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetPmcProfile(sessionId);
+        var profileQuest = profile.Quests.FirstOrDefault((x) => x.QId == failedQuestId);
+
+        var quests = GetQuestsFromDb()
+            .Where(
+                (q) =>
+                {
+                    var acceptedQuestCondition = q.Conditions.AvailableForStart.FirstOrDefault(
+                        (c) =>
+                        {
+                            return (c.ConditionType == "Quest" 
+                                    && ((List<string>)c.Target).Contains(failedQuestId) && c.Status[0] == QuestStatusEnum.Fail
+                            );
+                        }
+                    );
+
+                    if (acceptedQuestCondition is null)
+                    {
+                        return false;
+                    }
+
+                    return profileQuest is not null && profileQuest.Status == QuestStatusEnum.Fail;
+                }
+            )
+            .ToList();
+
+        if (quests.Any())
+        {
+            return quests;
+        }
+
+        return GetQuestsWithOnlyLevelRequirementStartCondition(quests);
     }
 
     /**
@@ -309,7 +399,30 @@ public class QuestHelper
         string sessionID,
         ItemEventRouterResponse output)
     {
-        throw new NotImplementedException();
+        var inventoryItemIndex = pmcData.Inventory.Items.FindIndex((item) => item.Id == itemId);
+        if (inventoryItemIndex < 0)
+        {
+            _logger.Error(_localisationService.GetText("quest-item_not_found_in_inventory", itemId));
+
+            return;
+        }
+
+        if (newStackSize > 0)
+        {
+            var item = pmcData.Inventory.Items[inventoryItemIndex];
+            _itemHelper.AddUpdObjectToItem(item);
+
+            item.Upd.StackObjectsCount = newStackSize;
+
+            AddItemStackSizeChangeIntoEventResponse(output, sessionID, item);
+        }
+        else
+        {
+            // this case is probably dead Code right now, since the only calling function
+            // checks explicitly for Value > 0.
+            output.ProfileChanges[sessionID].Items.DeletedItems.Add(new() { Id = itemId });
+            pmcData.Inventory.Items.RemoveAt(inventoryItemIndex);
+        }
     }
 
     /**
@@ -323,14 +436,18 @@ public class QuestHelper
         string sessionId,
         Item item)
     {
-        output.ProfileChanges[sessionId].Items.ChangedItems.Add( new Product{
-            Id = item.Id,
-            Template = item.Template,
-            ParentId = item.ParentId,
-            SlotId = item.SlotId,
-            Location = (ItemLocation)item.Location,
-            Upd = new Upd { StackObjectsCount = item.Upd.StackObjectsCount },
-        });
+        output.ProfileChanges[sessionId]
+            .Items.ChangedItems.Add(
+                new Product
+                {
+                    Id = item.Id,
+                    Template = item.Template,
+                    ParentId = item.ParentId,
+                    SlotId = item.SlotId,
+                    Location = (ItemLocation)item.Location,
+                    Upd = new Upd { StackObjectsCount = item.Upd.StackObjectsCount },
+                }
+            );
     }
 
     /**
@@ -352,7 +469,9 @@ public class QuestHelper
     {
         var updatedQuest = _cloner.Clone(quest);
         updatedQuest.Conditions.AvailableForStart = updatedQuest.Conditions.AvailableForStart.Where(
-            (q) => q.ConditionType == "Level").ToList();
+                (q) => q.ConditionType == "Level"
+            )
+            .ToList();
 
         return updatedQuest;
     }
@@ -370,7 +489,50 @@ public class QuestHelper
         string sessionID,
         ItemEventRouterResponse output = null)
     {
-        throw new NotImplementedException();
+        var updatedOutput = output;
+
+        // Prepare response to send back to client
+        if (updatedOutput is null)
+        {
+            updatedOutput = _eventOutputHolder.GetOutput(sessionID);
+        }
+
+        UpdateQuestState(pmcData, QuestStatusEnum.Fail, failRequest.QuestId);
+        var questRewards = _questRewardHelper.ApplyQuestReward(
+            pmcData,
+            failRequest.QuestId,
+            QuestStatusEnum.Fail,
+            sessionID,
+            updatedOutput
+        );
+
+        // Create a dialog message for completing the quest.
+        var quest = GetQuestFromDb(failRequest.QuestId, pmcData);
+
+        // Merge all daily/weekly/scav daily quests into one array and look for the matching quest by id
+        var matchingRepeatableQuest = pmcData.RepeatableQuests.SelectMany(
+                (repeatableType) => repeatableType.ActiveQuests
+            )
+            .FirstOrDefault((activeQuest) => activeQuest.Id == failRequest.QuestId);
+
+        // Quest found and no repeatable found
+        if (quest is not null && matchingRepeatableQuest is null)
+        {
+            if (quest.FailMessageText.Trim().Count() > 0)
+            {
+                _mailSendService.SendLocalisedNpcMessageToPlayer(
+                    sessionID,
+                    _traderHelper.GetTraderById(quest?.TraderId ?? matchingRepeatableQuest?.TraderId)
+                        .ToString(), // Can be undefined when repeatable quest has been moved to inactiveQuests
+                    MessageType.QUEST_FAIL,
+                    quest.FailMessageText,
+                    questRewards.ToList(),
+                    _timeUtil.GetHoursAsSeconds((int)GetMailItemRedeemTimeHoursForProfile(pmcData))
+                );
+            }
+        }
+
+        updatedOutput.ProfileChanges[sessionID].Quests.AddRange(FailedUnlocked(failRequest.QuestId, sessionID));
     }
 
     /**
@@ -403,7 +565,7 @@ public class QuestHelper
                     break;
             }
         }
-        
+
         return quest;
     }
 
@@ -420,8 +582,8 @@ public class QuestHelper
         if (
             startedMessageText is null ||
             startedMessageText.Trim() == "" ||
-                startedMessageText.ToLower() == "test" ||
-                startedMessageText.Length == 24
+            startedMessageText.ToLower() == "test" ||
+            startedMessageText.Length == 24
         )
         {
             return questDescriptionId;
@@ -464,9 +626,35 @@ public class QuestHelper
     /// <param name="pmcData">Profile to update</param>
     /// <param name="newQuestState">New state the quest should be in</param>
     /// <param name="questId">Id of the quest to alter the status of</param>
-    public void ResetQuestState(PmcData pmcData, QuestStatus newQuestState, string questId)
+    public void ResetQuestState(PmcData pmcData, QuestStatusEnum newQuestState, string questId)
     {
-        throw new NotImplementedException();
+        var questToUpdate = pmcData.Quests.FirstOrDefault((quest) => quest.QId == questId);
+        if (questToUpdate is not null)
+        {
+            var currentTimestamp = _timeUtil.GetTimeStamp();
+
+            questToUpdate.Status = newQuestState;
+
+            // Only set start time when quest is being started
+            if (newQuestState == QuestStatusEnum.Started)
+            {
+                questToUpdate.StartTime = currentTimestamp;
+            }
+
+            questToUpdate.StatusTimers[newQuestState] = currentTimestamp;
+
+            // Delete all status timers after applying new status
+            foreach (var statusKey in questToUpdate.StatusTimers)
+            {
+                if (statusKey.Key > newQuestState)
+                {
+                    questToUpdate.StatusTimers.Remove(statusKey.Key);
+                }
+            }
+
+            // Remove all completed conditions
+            questToUpdate.CompletedConditions = [];
+        }
     }
 
     /**
@@ -481,7 +669,28 @@ public class QuestHelper
         List<Quest> allQuests
     )
     {
-        throw new NotImplementedException();
+        Dictionary<string, string> result = new();
+        foreach (var questId in questIds)
+        {
+            var questInDb = allQuests.FirstOrDefault((x) => x.Id == questId);
+            if (questInDb is null)
+            {
+                _logger.Debug($"Unable to find quest: {questId} in db, cannot get 'FindItem' condition, skipping");
+                continue;
+            }
+
+            var condition = questInDb.Conditions.AvailableForFinish.FirstOrDefault(
+                (c) => c.ConditionType == "FindItem" && (((List<string>)c?.Target)?.Contains(itemTpl) ?? false)
+            );
+            if (condition is not null)
+            {
+                result[questId] = condition.Id;
+
+                break;
+            }
+        }
+
+        return result;
     }
 
     /**
@@ -493,7 +702,8 @@ public class QuestHelper
     {
         // Iterate over all quests in db
         var quests = _databaseService.GetQuests();
-        foreach (var (key, questData) in quests) {
+        foreach (var (key, questData) in quests)
+        {
             // Quest from db matches quests in profile, skip
             if (pmcProfile.Quests.Any((x) => x.QId == questData.Id))
             {
@@ -507,7 +717,8 @@ public class QuestHelper
                 statusesDict.Add(status, _timeUtil.GetTimeStamp());
             }
 
-            var questRecordToAdd = new QuestStatus {
+            var questRecordToAdd = new QuestStatus
+            {
                 QId = key,
                 StartTime = _timeUtil.GetTimeStamp(),
                 Status = statuses[^1], // Get last status in list as currently active status
@@ -549,7 +760,15 @@ public class QuestHelper
      */
     public List<Quest> GetQuestsFailedByCompletingQuest(string completedQuestId)
     {
-        throw new NotImplementedException();
+        var questsInDb = GetQuestsFromDb();
+        return questsInDb.Where((quest) => {
+            // No fail conditions, exit early
+            if (quest.Conditions.Fail is null || quest.Conditions.Fail.Count == 0) {
+                return false;
+            }
+
+            return quest.Conditions.Fail.Any((condition) => (((List<string>)condition.Target)?.Contains(completedQuestId)) ?? false);
+        }).ToList();
     }
 
     /**
@@ -557,18 +776,77 @@ public class QuestHelper
      * @param pmcData Profile to get hours for
      * @returns Hours item will be available for
      */
-    public int GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
+    public double? GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var value = _questConfig.MailRedeemTimeHours.GetValueOrDefault(pmcData.Info.GameVersion);
+        if (value is null) {
+            return 0;
+        }
+
+        return value;
     }
 
-    public ItemEventRouterResponse CompleteQuest(
-        PmcData pmcData,
-        CompleteQuestRequestData body,
-        string sessionID
-    )
+    public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData body, string sessionID)
     {
-        throw new NotImplementedException();
+        var completeQuestResponse = _eventOutputHolder.GetOutput(sessionID);
+
+        var completedQuest = GetQuestFromDb(body.QuestId, pmcData);
+        var preCompleteProfileQuests = _cloner.Clone(pmcData.Quests);
+
+        var completedQuestId = body.QuestId;
+        var clientQuestsClone = _cloner.Clone(GetClientQuests(sessionID)); // Must be gathered prior to applyQuestReward() & failQuests()
+
+        var newQuestState = QuestStatusEnum.Success;
+        UpdateQuestState(pmcData, newQuestState, completedQuestId);
+        var questRewards = _questRewardHelper.ApplyQuestReward(
+            pmcData,
+            body.QuestId,
+            newQuestState,
+            sessionID,
+            completeQuestResponse
+        );
+
+        // Check for linked failed + unrestartable quests (only get quests not already failed
+        var questsToFail = GetQuestsFromProfileFailedByCompletingQuest(completedQuestId, pmcData);
+        if (questsToFail?.Count > 0) {
+            FailQuests(sessionID, pmcData, questsToFail, completeQuestResponse);
+        }
+
+        // Show modal on player screen
+        SendSuccessDialogMessageOnQuestComplete(sessionID, pmcData, completedQuestId, questRewards.ToList());
+
+        // Add diff of quests before completion vs after for client response
+        var questDelta = GetDeltaQuests(clientQuestsClone, GetClientQuests(sessionID));
+
+        // Check newly available + failed quests for timegates and add them to profile
+        AddTimeLockedQuestsToProfile(pmcData, questDelta, body.QuestId);
+
+        // Inform client of quest changes
+        completeQuestResponse.ProfileChanges[sessionID].Quests.AddRange(questDelta);
+
+        // Check if it's a repeatable quest. If so, remove from Quests
+        foreach (var currentRepeatable in pmcData.RepeatableQuests) {
+            var repeatableQuest = currentRepeatable.ActiveQuests.FirstOrDefault(
+                (activeRepeatable) => activeRepeatable.Id == completedQuestId
+            );
+            if (repeatableQuest is not null) {
+                // Need to remove redundant scav quest object as its no longer necessary, is tracked in pmc profile
+                if (repeatableQuest.Side == "Scav") {
+                    RemoveQuestFromScavProfile(sessionID, repeatableQuest.Id);
+                }
+            }
+        }
+
+        // Hydrate client response questsStatus array with data
+        var questStatusChanges = GetQuestsWithDifferentStatuses(preCompleteProfileQuests, pmcData.Quests);
+        if (questStatusChanges is not null) {
+            completeQuestResponse.ProfileChanges[sessionID].QuestsStatus.AddRange(questStatusChanges);
+        }
+
+        // Recalculate level in event player leveled up
+        pmcData.Info.Level = _playerService.CalculateLevel(pmcData);
+
+        return completeQuestResponse;
     }
 
     /**
@@ -662,7 +940,8 @@ public class QuestHelper
                     if (unlockTime > _timeUtil.GetTimeStamp())
                     {
                         _logger.Debug(
-                            $"Quest { quest.QuestName} is locked for another: {unlockTime - _timeUtil.GetTimeStamp()} seconds");
+                            $"Quest {quest.QuestName} is locked for another: {unlockTime - _timeUtil.GetTimeStamp()} seconds"
+                        );
                     }
                 }
             }
@@ -674,7 +953,8 @@ public class QuestHelper
             }
 
             var passesLoyaltyRequirements = true;
-            foreach (var condition in loyaltyRequirements) {
+            foreach (var condition in loyaltyRequirements)
+            {
                 if (!TraderLoyaltyLevelRequirementCheck(condition, profile))
                 {
                     passesLoyaltyRequirements = false;
@@ -683,7 +963,8 @@ public class QuestHelper
             }
 
             var passesStandingRequirements = true;
-            foreach (var condition in standingRequirements) {
+            foreach (var condition in standingRequirements)
+            {
                 if (!TraderStandingRequirementCheck(condition, profile))
                 {
                     passesStandingRequirements = false;
