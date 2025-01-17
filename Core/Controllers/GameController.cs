@@ -359,11 +359,14 @@ public class GameController
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public GetRaidTimeResponse GetRaidTime(
-        string sessionId,
-        GetRaidTimeRequest request)
+    public GetRaidTimeResponse GetRaidTime(string sessionId, GetRaidTimeRequest request)
     {
-        throw new NotImplementedException();
+        // Set interval times to in-raid value
+        _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.InRaid;
+
+        _hideoutConfig.RunIntervalSeconds = _hideoutConfig.RunIntervalValues.InRaid;
+
+        return _raidTimeAdjustmentService.GetRaidAdjustments(sessionId, request);
     }
 
     /// <summary>
