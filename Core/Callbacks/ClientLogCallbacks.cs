@@ -7,6 +7,7 @@ using Core.Models.Spt.Logging;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Server;
 
 namespace Core.Callbacks;
 
@@ -55,7 +56,11 @@ public class ClientLogCallbacks
     public string ReleaseNotes()
     {
         var data = _configServer.GetConfig<CoreConfig>().Release;
-        data.BetaDisclaimerText = "BetaDisclaimerText"; // TODO
+        
+        data.BetaDisclaimerText = ProgramStatics.MODS()
+            ? _localisationService.GetText("release-beta-disclaimer-mods-enabled") 
+            : _localisationService.GetText("release-beta-disclaimer");
+        
         data.BetaDisclaimerAcceptText = _localisationService.GetText("release-beta-disclaimer-accept");
         data.ServerModsLoadedText = _localisationService.GetText("release-server-mods-loaded");
         data.ServerModsLoadedDebugText = _localisationService.GetText("release-server-mods-debug-message");
@@ -64,30 +69,9 @@ public class ClientLogCallbacks
         data.IllegalPluginsLoadedText = _localisationService.GetText("release-illegal-plugins-loaded");
         data.IllegalPluginsExceptionText = _localisationService.GetText("release-illegal-plugins-exception");
         data.ReleaseSummaryText = _localisationService.GetText("release-summary");
-        data.IsBeta = false; // TODO
-        data.IsModdable = true; // TODO
+        data.IsBeta = ProgramStatics.ENTRY_TYPE() == EntryType.BLEEDING_EDGE || ProgramStatics.ENTRY_TYPE() == EntryType.BLEEDING_EDGE_MODS;
+        data.IsModdable = ProgramStatics.MODS();
         data.IsModded = false; // TODO
-
-        
-        
-        // data.betaDisclaimerText = ProgramStatics.MODS
-        //     ? this.localisationService.getText("release-beta-disclaimer-mods-enabled")
-        //     : this.localisationService.getText("release-beta-disclaimer");
-        //
-        // data.betaDisclaimerAcceptText = this.localisationService.getText("release-beta-disclaimer-accept");
-        // data.serverModsLoadedText = this.localisationService.getText("release-server-mods-loaded");
-        // data.serverModsLoadedDebugText = this.localisationService.getText("release-server-mods-debug-message");
-        // data.clientModsLoadedText = this.localisationService.getText("release-plugins-loaded");
-        // data.clientModsLoadedDebugText = this.localisationService.getText("release-plugins-loaded-debug-message");
-        // data.illegalPluginsLoadedText = this.localisationService.getText("release-illegal-plugins-loaded");
-        // data.illegalPluginsExceptionText = this.localisationService.getText("release-illegal-plugins-exception");
-        // data.releaseSummaryText = this.localisationService.getText("release-summary");
-        //
-        // data.isBeta =
-        //     ProgramStatics.ENTRY_TYPE === EntryType.BLEEDING_EDGE ||
-        //         ProgramStatics.ENTRY_TYPE === EntryType.BLEEDING_EDGE_MODS;
-        // data.isModdable = ProgramStatics.MODS;
-        // data.isModded = this.modLoadOrder.getLoadOrder().length > 0;
         
         return _httpResponseUtil.NoBody(data);
     }

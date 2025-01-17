@@ -13,8 +13,8 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Diagnostics;
+using Server;
 
 
 namespace Core.Controllers;
@@ -606,12 +606,10 @@ public class GameController
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)
     {
-        _logger.Error("NOT IMPLEMENTED LogProfileDetails");
-        _logger.Debug($"Profile made with: ${ fullProfile.SptData.Version}");
-        _logger.Debug($"{fullProfile.SptData.Mods.Count} Mods used");
-        //_logger.Debug($"Server version: ${ ProgramStatics.SPT_VERSION || _coreConfig.SptVersion} ${ ProgramStatics.COMMIT}");
-        //_logger.Debug($"Debug enabled: ${ ProgramStatics.DEBUG}");
-        //_logger.Debug($"Mods enabled: ${ ProgramStatics.MODS}");
+        _logger.Debug($"Profile made with: {fullProfile.SptData.Version}");
+        _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT}");
+        _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG}");
+        _logger.Debug($"Mods enabled: {ProgramStatics.MODS}");
     }
 
     public void Load()
