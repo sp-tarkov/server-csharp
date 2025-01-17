@@ -44,6 +44,8 @@ public class GameController
     protected GiftService _giftService;
     protected RaidTimeAdjustmentService _raidTimeAdjustmentService;
     protected ProfileActivityService _profileActivityService;
+    protected CreateProfileService _createProfileService;
+
     protected ApplicationContext _applicationContext;
     //protected PreSptModLoader preSptModLoader
     protected ICloner _cloner;
@@ -74,6 +76,7 @@ public class GameController
         GiftService giftService,
         RaidTimeAdjustmentService raidTimeAdjustmentService,
         ProfileActivityService profileActivityService,
+        CreateProfileService createProfileService,
         ApplicationContext applicationContext,
         ICloner cloner
     )
@@ -97,6 +100,7 @@ public class GameController
         _giftService = giftService;
         _raidTimeAdjustmentService = raidTimeAdjustmentService;
         _profileActivityService = profileActivityService;
+        _createProfileService = createProfileService;
         _applicationContext = applicationContext;
         _cloner = cloner;
 
@@ -136,7 +140,7 @@ public class GameController
             if (fullProfile.FriendProfileIds == null)
                 fullProfile.FriendProfileIds = new();
 
-            if (fullProfile.SptData.Version.Contains("3.9.") && !fullProfile.SptData.Migrations.Any(m => m.Key == "39x"))
+            if (fullProfile.SptData.Version.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
             {
                 _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData.PmcData.Inventory.Items);
                 Migrate39xProfile(fullProfile);
@@ -144,6 +148,17 @@ public class GameController
                 // flag as migrated
                 fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
                 _logger.Info($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
+            }
+
+            //3.10 migrations
+            if (fullProfile.SptData.Version.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
+            {
+                Migrate310xProfile(fullProfile);
+
+                // Flag as migrated
+                fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
+
+                _logger.Success($"Migration of 3.10.x profile: ${ fullProfile.ProfileInfo.Username} completed successfully");
             }
 
             // with our method of converting type from array for this prop, we *might* not need this?
@@ -201,6 +216,11 @@ public class GameController
     }
 
     private void Migrate39xProfile(SptProfile fullProfile)
+    {
+        throw new NotImplementedException();
+    }
+
+    private void Migrate310xProfile(SptProfile fullProfile)
     {
         throw new NotImplementedException();
     }

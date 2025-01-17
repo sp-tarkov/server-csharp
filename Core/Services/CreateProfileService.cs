@@ -272,7 +272,7 @@ public class CreateProfileService
         }
     }
 
-    private void AddCustomisationUnlocksToProfile(SptProfile fullProfile)
+    public void AddCustomisationUnlocksToProfile(SptProfile fullProfile)
     {
         // Some game versions have additional dogtag variants, add them
         switch (GetGameEdition(fullProfile))
