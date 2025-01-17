@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Core.Helpers;
 using Core.Services;
 using Core.Utils.Collections;
+using Core.Utils.Extensions;
 using BodyPart = Core.Models.Spt.Config.BodyPart;
 
 namespace Core.Generators;
@@ -145,8 +146,8 @@ public class RepeatableQuestGenerator
 
         var maxKillDifficulty = eliminationConfig.MaxKills;
 
-        targetsConfig = targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.Contains(x.Key));
-        if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.IsBoss))
+        targetsConfig = (ProbabilityObjectArray<Target, string, BossInfo>)targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.Contains(x.Key));
+        if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.IsBoss.GetValueOrDefault(false)))
         {
             // There are no more targets left for elimination; delete it as a possible quest type
             // also if only bosses are left we need to leave otherwise it's a guaranteed boss elimination

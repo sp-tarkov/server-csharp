@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
+using Core.Utils.Extensions;
 
 namespace Core.Models.Spt.Repeatable;
 
@@ -71,6 +73,14 @@ public record EliminationTargetPool
 
     [JsonPropertyName("bossBoarSniper")]
     public TargetLocation? BossBoarSniper { get; set; }
+
+    public EliminationTargetPool this[string toLower]
+    {
+        get
+        {
+            return (EliminationTargetPool?)GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == toLower)?.GetValue(this);
+        }
+    }
 }
 
 public record TargetLocation
