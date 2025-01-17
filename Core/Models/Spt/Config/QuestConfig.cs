@@ -1,4 +1,4 @@
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Collections;
@@ -65,7 +65,7 @@ public record QuestTypeIds
 
     [JsonPropertyName("exploration")]
     public string? Exploration { get; set; }
-    
+
     [JsonPropertyName("pickup")]
     public string? Pickup { get; set; }
 }
@@ -179,7 +179,7 @@ public record TraderWhitelist
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
-    
+
     [JsonPropertyName("traderId")]
     public string? TraderId { get; set; }
 
@@ -260,9 +260,9 @@ public record Pickup : BaseQuestConfig
 {
     [JsonPropertyName("ItemTypeToFetchWithMaxCount")]
     public List<PickupTypeWithMaxCount>? ItemTypeToFetchWithMaxCount { get; set; }
-    
+
     public List<string>? ItemTypesToFetch { get; set; }
-    
+
     [JsonPropertyName("maxItemFetchCount")]
     public int? MaxItemFetchCount { get; set; }
 }

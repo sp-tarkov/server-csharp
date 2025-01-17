@@ -18,7 +18,7 @@ namespace Core.Utils.Collections;
  *   // count the elements which should be distributed according to the relative probabilities
  *   res.filter(x => x==="b").reduce((sum, x) => sum + 1 , 0)
  */
-public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
+public class ProbabilityObjectArray<T, K, V> : List<ProbabilityObject<K, V?>> where T : ProbabilityObject<K,V>
 {
     private MathUtil _mathUtil;
     private ICloner _cloner;
@@ -26,27 +26,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
     public ProbabilityObjectArray(
         MathUtil mathUtil,
         ICloner cloner,
-        ProbabilityObject<K, V>[] items
-    ) : base(items)
-    {
-        _mathUtil = mathUtil;
-        _cloner = cloner;
-    }
-
-    public ProbabilityObjectArray(
-        MathUtil mathUtil,
-        ICloner cloner,
-        List<ProbabilityObject<K, V>> items
-    ) : base(items)
-    {
-        _mathUtil = mathUtil;
-        _cloner = cloner;
-    }
-
-    public ProbabilityObjectArray(
-        MathUtil mathUtil,
-        ICloner cloner,
-        ICollection<ProbabilityObject<K, V>> items
+        ICollection<T> items
     ) : base(items)
     {
         _mathUtil = mathUtil;
@@ -70,13 +50,13 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
      * Clone this ProbabilitObjectArray
      * @returns     {ProbabilityObjectArray}                                Deep Copy of this ProbabilityObjectArray
      */
-    public ProbabilityObjectArray<K, V> Clone()
+    public ProbabilityObjectArray<T, K, V> Clone()
     {
         var clone = _cloner.Clone(this);
-        var probabliltyObjects = new ProbabilityObjectArray<K, V>(
+        var probabliltyObjects = new ProbabilityObjectArray<T, K, V>(
             _mathUtil,
             _cloner,
-            new List<ProbabilityObject<K, V>>()
+            new List<T>()
         );
         probabliltyObjects.AddRange(clone);
         return probabliltyObjects;
@@ -88,9 +68,9 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
      * @param       {string}                        key                     The key of the element to drop
      * @returns     {ProbabilityObjectArray}                                ProbabilityObjectArray without the dropped element
      */
-    public ProbabilityObjectArray<K, V> Drop(K key)
+    public ProbabilityObjectArray<T, K, V> Drop(K key)
     {
-        return (ProbabilityObjectArray<K, V>)this.Where((r) => !r.Key?.Equals(key) ?? false);
+        return (ProbabilityObjectArray<T, K, V>)this.Where((r) => !r.Key?.Equals(key) ?? false);
     }
 
     /**

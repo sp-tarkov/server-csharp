@@ -1,4 +1,4 @@
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
@@ -12,6 +12,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Collections.Generic;
 using Core.Helpers;
 using Core.Services;
+using Core.Utils.Collections;
+using BodyPart = Core.Models.Spt.Config.BodyPart;
 
 namespace Core.Generators;
 
@@ -104,11 +106,10 @@ public class RepeatableQuestGenerator
     {
         var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel, repeatableConfig);
         var locationsConfig = repeatableConfig.Locations;
-        var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<string, BossInfo>(eliminationConfig.Targets);
-        var bodypartsConfig = _repeatableQuestHelper.ProbabilityObjectArray<string, List<string>>(eliminationConfig.BodyParts);
-        var weaponCategoryRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<string, List<string>>(
-            eliminationConfig.WeaponCategoryRequirements);
-        var weaponRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<string, List<string>>(eliminationConfig.WeaponRequirements);
+        var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
+        var bodypartsConfig = _repeatableQuestHelper.ProbabilityObjectArray<BodyPart, string, List<string>>(eliminationConfig.BodyParts);
+        var weaponCategoryRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponCategoryRequirements);
+        var weaponRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponRequirements);
 
         // the difficulty of the quest varies in difficulty depending on the condition
         // possible conditions are

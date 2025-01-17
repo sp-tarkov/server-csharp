@@ -38,13 +38,13 @@ public class RepeatableQuestHelper
         );
     }
 
-    public ProbabilityObjectArray<K, V>
-        ProbabilityObjectArray<K, V>(
-            List<ProbabilityObject<K, V>>? configArrayInput
-        )
+    public ProbabilityObjectArray<T, K, V>
+        ProbabilityObjectArray<T, K, V>(
+            List<T>? configArrayInput
+        ) where T : ProbabilityObject<K, V>
     {
         var configArray = _cloner.Clone(configArrayInput);
-        var probabilityArray = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, configArray);
+        var probabilityArray = new ProbabilityObjectArray<T, K, V>(_mathUtil, _cloner, configArray);
         return probabilityArray;
     }
 }
