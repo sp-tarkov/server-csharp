@@ -1557,7 +1557,7 @@ public class ItemHelper
     /// </summary>
     /// <param name="magTemplate">Magazine template from Db</param>
     /// <returns>Tpl of cartridge</returns>
-    protected string GetRandomValidCaliber(TemplateItem magTemplate)
+    protected string? GetRandomValidCaliber(TemplateItem magTemplate)
     {
         var ammoTpls = magTemplate.Properties.Cartridges[0].Props.Filters[0].Filter;
         List<string> calibers = ammoTpls
@@ -1565,7 +1565,7 @@ public class ItemHelper
             .Select((x) => GetItem(x).Value.Properties.Caliber)
             .ToList();
 
-        return _randomUtil.DrawRandomFromList(calibers).First();
+        return _randomUtil.DrawRandomFromList(calibers).FirstOrDefault();
     }
 
     /// <summary>
