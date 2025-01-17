@@ -104,6 +104,8 @@ public class RepeatableQuestGenerator
         RepeatableQuestConfig repeatableConfig
     )
     {
+        var rand = new Random();
+
         var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel, repeatableConfig);
         var locationsConfig = repeatableConfig.Locations;
         var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
@@ -143,27 +145,26 @@ public class RepeatableQuestGenerator
 
         var maxKillDifficulty = eliminationConfig.MaxKills;
 
-        targetsConfig = targetsConfig.Where((x) =>
-            (questTypePool.Pool.Elimination.Targets).Contains(x.key));
-        if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.isBoss))
+        targetsConfig = targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.Contains(x.Key));
+        if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.IsBoss))
         {
             // There are no more targets left for elimination; delete it as a possible quest type
             // also if only bosses are left we need to leave otherwise it's a guaranteed boss elimination
             // -> then it would not be a quest with low probability anymore
-            questTypePool.Types = questTypePool.Types.Where((t) => t != "Elimination");
+            questTypePool.Types = questTypePool.Types.Where((t) => t != "Elimination").ToList();
             return null;
         }
 
         var targetKey = targetsConfig.Draw()[0];
         var targetDifficulty = 1 / targetsConfig.Probability(targetKey);
 
-        var locations: string[] = questTypePool.Pool.Elimination.Targets[targetKey].locations;
+        var locations = questTypePool.Pool.Elimination.Targets[targetKey].locations;
 
         // we use any as location if "any" is in the pool and we do not hit the specific location random
         // we use any also if the random condition is not met in case only "any" was in the pool
         var locationKey = "any";
         if (locations.includes("any") &&
-            (eliminationConfig.specificLocationProb < Math.random() || locations.length <= 1)
+            (eliminationConfig.SpecificLocationProbability < rand.Next() || locations.length <= 1)
         )
         {
             locationKey = "any";
@@ -190,69 +191,78 @@ public class RepeatableQuestGenerator
         }
 
         // draw the target body part and calculate the difficulty factor
-        var bodyPartsToClient = null;
+        var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0;
-        if (eliminationConfig.BodyPartProb > Math.Random())
+        if (eliminationConfig.BodyPartProbability > rand.Next())
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data
             // e.g. we draw "Arms" from the probability array but must present ["LeftArm", "RightArm"] to the client
             bodyPartsToClient = [];
             var bodyParts = bodypartsConfig.Draw(_randomUtil.RandInt(1, 3), false);
-            var probability = 0;
-            foreach (var bi in bodyParts) {
+            double probability = 0;
+            foreach (var bi in bodyParts)
+            {
                 // more than one part lead to an "OR" condition hence more parts reduce the difficulty
                 probability += bodypartsConfig.Probability(bi);
-                foreach (var biClient in bodypartsConfig.Data(bi)) {
-                    bodyPartsToClient.push(biClient);
+                foreach (var biClient in bodypartsConfig.Data(bi))
+                {
+                    bodyPartsToClient.Add(biClient);
                 }
             }
             bodyPartDifficulty = 1 / probability;
         }
 
         // Draw a distance condition
-        var distance = null;
+        int distance;
         var distanceDifficulty = 0;
         var isDistanceRequirementAllowed = !eliminationConfig.DistLocationBlacklist.Contains(locationKey);
 
-        if (targetsConfig.Data(targetKey).isBoss)
+        if (targetsConfig.Data(targetKey).IsBoss)
         {
             // Get all boss spawn information
             var bossSpawns = _databaseService.GetLocations().GetDictionary()
-                .Where((x) => "base" in x && "Id" in x.base)
-                .Select((x) => ({ Id: x.base.Id, BossSpawn: x.base.BossLocationSpawn }));
+                .Select(x => x.Value)
+                .Where(x => x.Base?.Id != null)
+                .Select(x => (new { x.Base.Id, BossSpawn = x.Base.BossLocationSpawn }));
             // filter for the current boss to spawn on map
-            var thisBossSpawns = bossSpawns.Select((x) => ({ Id: x.Id,BossSpawn: x.BossSpawn.Where((e) => e.BossName == targetKey)})).Where((x) => x.BossSpawn.length > 0);
+            var thisBossSpawns = bossSpawns
+                .Select(x => new {
+                    x.Id,
+                    BossSpawn = x.BossSpawn
+                .Where(e => e.BossName == targetKey)
+                })
+                .Where((x) => x.BossSpawn.Count() > 0);
             // remove blacklisted locations
-            var allowedSpawns = thisBossSpawns.filter((x) => !eliminationConfig.distLocationBlacklist.includes(x.Id));
+            var allowedSpawns = thisBossSpawns.Where((x) => !eliminationConfig.DistLocationBlacklist.Contains(x.Id));
             // if the boss spawns on nom-blacklisted locations and the current location is allowed we can generate a distance kill requirement
-            isDistanceRequirementAllowed = isDistanceRequirementAllowed && allowedSpawns.length > 0;
+            isDistanceRequirementAllowed = isDistanceRequirementAllowed && allowedSpawns.Count() > 0;
         }
 
-        if (eliminationConfig.DistProb > Math.Random() && isDistanceRequirementAllowed)
+        if (eliminationConfig.DistanceProbability > rand.Next() && isDistanceRequirementAllowed)
         {
             // Random distance with lower values more likely; simple distribution for starters...
             distance = Math.Floor(
-                Math.Abs(Math.random() - Math.Random()) * (1 + eliminationConfig.MaxDist - eliminationConfig.MinDist) +
-                    eliminationConfig.MinDist);
+                Math.Abs(Math.Random() - rand.Next()) * (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
+                    eliminationConfig.MinDistance);
             distance = Math.Ceiling(distance / 5) * 5;
-            distanceDifficulty = (maxDistDifficulty * distance) / eliminationConfig.MaxDist;
+            distanceDifficulty = (maxDistDifficulty * distance) / eliminationConfig.MaxDistance;
         }
 
         string allowedWeaponsCategory;
-        if (eliminationConfig.WeaponCategoryRequirementProb > Math.Random())
+        if (eliminationConfig.WeaponCategoryRequirementProbability > rand.Next())
         {
             // Filter out close range weapons from far distance requirement
             if (distance > 50)
             {
                 weaponCategoryRequirementConfig = weaponCategoryRequirementConfig.Where((category) =>
-                    ["Shotgun", "Pistol"].Contains(category.key));
+                    ["Shotgun", "Pistol"].Contains(category.Key));
             }
             else if (distance < 20)
             {
                 // Filter out far range weapons from close distance requirement
                 weaponCategoryRequirementConfig = weaponCategoryRequirementConfig.Where((category) =>
-                    ["MarksmanRifle", "DMR"].Contains(category.key));
+                    ["MarksmanRifle", "DMR"].Contains(category.Key));
             }
 
             // Pick a weighted weapon category
@@ -264,7 +274,7 @@ public class RepeatableQuestGenerator
 
         // Only allow a specific weapon requirement if a weapon category was not chosen
         string allowedWeapon;
-        if (!allowedWeaponsCategory && eliminationConfig.WeaponRequirementProb > Math.Random())
+        if (!allowedWeaponsCategory && eliminationConfig.WeaponRequirementProb > rand.Next())
         {
             var weaponRequirement = weaponRequirementConfig.Draw(1, false);
             var allowedWeaponsCategory = weaponRequirementConfig.Data(weaponRequirement[0])[0];
@@ -339,25 +349,28 @@ public class RepeatableQuestGenerator
      */
     protected int GetEliminationKillCount(
         string targetKey,
-        object targetsConfig , //ProbabilityObjectArray<string, IBossInfo>
-        EliminationConfig eliminationConfig) {
-        if (targetsConfig.Data(targetKey).isBoss) {
+        object targetsConfig, //ProbabilityObjectArray<string, IBossInfo>
+        EliminationConfig eliminationConfig)
+    {
+        if (targetsConfig.Data(targetKey).isBoss)
+        {
             return _randomUtil.RandInt(eliminationConfig.MinBossKills, eliminationConfig.MaxBossKills + 1);
         }
 
-        if (targetsConfig.Data(targetKey).isPmc) {
+        if (targetsConfig.Data(targetKey).isPmc)
+        {
             return _randomUtil.RandInt(eliminationConfig.MinPmcKills, eliminationConfig.MaxPmcKills + 1);
         }
 
         return _randomUtil.RandInt(eliminationConfig.MinKills, eliminationConfig.MaxKills + 1);
     }
 
-protected double DifficultyWeighing(
-        int target,
-        int bodyPart,
-        int dist,
-        int kill,
-        int weaponRequirement)
+    protected double DifficultyWeighing(
+            int target,
+            int bodyPart,
+            int dist,
+            int kill,
+            int weaponRequirement)
     {
         return Math.Sqrt(Math.Sqrt(target) + bodyPart + dist + weaponRequirement) * kill;
     }
