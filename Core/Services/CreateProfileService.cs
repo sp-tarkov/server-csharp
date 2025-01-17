@@ -272,10 +272,21 @@ public class CreateProfileService
         }
     }
 
+    /// <summary>
+    /// Add customisations to game profiles based on game edition
+    /// </summary>
+    /// <param name="fullProfile">Profile to add customisations to</param>
     public void AddCustomisationUnlocksToProfile(SptProfile fullProfile)
     {
-        // Some game versions have additional dogtag variants, add them
-        switch (GetGameEdition(fullProfile))
+        // Some game versions have additional customisation unlocks
+        var gameEdition = GetGameEdition(fullProfile);
+        if (gameEdition is null)
+        {
+            _logger.Error($"Unable to get Game edition of profile: {fullProfile.ProfileInfo.ProfileId}, skipping customisation unlocks");
+            return;
+        }
+
+        switch (gameEdition)
         {
             case GameEditions.EDGE_OF_DARKNESS:
                 // Gets EoD tags
@@ -369,9 +380,28 @@ public class CreateProfileService
         }
     }
 
-    private string GetGameEdition(SptProfile profile)
+    /**
+     * Get the game edition of a profile chosen on creation in Launcher
+     */
+    private string? GetGameEdition(SptProfile profile)
     {
-        return "TODO";
+        var edition = profile.CharacterData?.PmcData?.Info?.GameVersion;
+        if (edition is null)
+        {
+            return null;
+        }
+
+        // Edge case - profile not created yet, fall back to what launcher has set
+        var launcherEdition = profile.ProfileInfo.Edition;
+        switch (launcherEdition.ToLower())
+        {
+            case "edge of darkness":
+                return GameEditions.EDGE_OF_DARKNESS;
+            case "unheard":
+                return GameEditions.UNHEARD;
+            default:
+                return GameEditions.STANDARD;
+        }
     }
 
     /**
