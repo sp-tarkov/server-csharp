@@ -70,15 +70,18 @@ public record Locations
         get
         {
             return (Eft.Common.Location?)GetType()
-                .GetProperties()
-                .First(p => p.Name.ToLower() == key.ToLower()).GetGetMethod()?
-                .Invoke(this, null) ?? null;
+                       .GetProperties()
+                       .First(p => p.Name.ToLower() == _locationMappings[key].ToLower())
+                       .GetGetMethod()?
+                       .Invoke(this, null) ?? null;
         }
         set
         {
             GetType()
                 .GetProperties()
-                .First(p => p.Name.ToLower() == key.ToLower()).GetSetMethod()?
+                .First(p => p.Name.ToLower() == key.ToLower())
+                .GetSetMethod()
+                ?
                 .Invoke(this, [value]);
         }
     }
@@ -100,4 +103,26 @@ public record Locations
 
         return _locationDictionaryCache;
     }
+
+    private Dictionary<string, string> _locationMappings = new()
+    {
+        { "factory4_day", "Factory4Day" },
+        { "bigmap", "bigmap" },
+        { "develop", "Develop" },
+        { "factory4_night", "Factory4Night" },
+        { "hideout", "Hideout" },
+        { "interchange", "Interchange" },
+        { "laboratory", "Laboratory" },
+        { "lighthouse", "Lighthouse" },
+        { "privatearea", "PrivateArea" },
+        { "rezervbase", "RezervBase" },
+        { "shoreline", "Shoreline" },
+        { "suburbs", "Suburbs" },
+        { "tarkovstreets", "TarkovStreets" },
+        { "terminal", "Terminal" },
+        { "town", "Town" },
+        { "woods", "Woods" },
+        { "sandbox", "Sandbox" },
+        { "sandbox_high", "SandboxHigh" }
+    };
 }
