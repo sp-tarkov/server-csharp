@@ -352,7 +352,7 @@ public class EftStats
     public DamageHistory? DamageHistory { get; set; }
     public DeathCause? DeathCause { get; set; }
     public LastPlayerState? LastPlayerState { get; set; }
-    public double? TotalInGameTime { get; set; }
+    public long? TotalInGameTime { get; set; }
     public string? SurvivorClass { get; set; }
 
     [JsonPropertyName("sptLastRaidFenceRepChange")]

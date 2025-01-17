@@ -2,7 +2,9 @@ using Core.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Launcher;
+using Core.Models.Eft.Player;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Utils;
@@ -11,6 +13,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using System.Collections.Generic;
 
 namespace Core.Controllers;
 
@@ -269,61 +272,80 @@ public class ProfileController
     public GetOtherProfileResponse GetOtherProfile(string sessionId, GetOtherProfileRequest request)
     {
         // Find the profile by the account ID, fall back to the current player if we can't find the account
-        var profile = _profileHelper.GetFullProfileByAccountId(request.AccountId);
-        if (profile?.CharacterData?.PmcData == null || profile?.CharacterData?.ScavData == null)
+        var profileToView = _profileHelper.GetFullProfileByAccountId(request.AccountId);
+        if (profileToView?.CharacterData?.PmcData is null || profileToView.CharacterData.ScavData is null)
         {
-            profile = _profileHelper.GetFullProfile(sessionId);
+            _logger.Warning($"Unable to get profile: ${request.AccountId} to show, falling back to own profile");
+            profileToView = _profileHelper.GetFullProfile(sessionId);
         }
 
-        var playerPmc = profile.CharacterData.PmcData;
-        var playerScav = profile.CharacterData.ScavData;
+        var profileToViewPmc = profileToView.CharacterData.PmcData;
+        var profileToViewScav = profileToView.CharacterData.ScavData;
 
-        return new GetOtherProfileResponse()
+        // Get the keys needed to find profiles hideout-related items
+        var hideoutKeys = new List<string>();
+        hideoutKeys.AddRange(profileToViewPmc.Inventory.HideoutAreaStashes.Keys);
+        hideoutKeys.Add(profileToViewPmc.Inventory.HideoutCustomizationStashId);
+
+        // Find hideout items e.g. posters
+        var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x => hideoutKeys.Contains(x.Id));
+        var itemsToReturn = new List<Item>();
+        foreach (var rootItems in hideoutRootItems) {
+            // Check each root items for children and add
+            var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(profileToViewPmc.Inventory.Items, rootItems.Id);
+            itemsToReturn.AddRange(itemWithChildren);
+        }
+
+        return new GetOtherProfileResponse
         {
-            Id = playerPmc.Id,
-            Aid = playerPmc.Aid as int?,
+            Id = profileToViewPmc.Id,
+            Aid = profileToViewPmc.Aid,
             Info =
             {
-                Nickname = playerPmc.Info.Nickname,
-                Side = playerPmc.Info.Side,
-                Experience = playerPmc.Info.Experience as int?,
-                MemberCategory = playerPmc.Info.MemberCategory as int?,
-                BannedState = playerPmc.Info.BannedState,
-                BannedUntil = playerPmc.Info.BannedUntil,
-                RegistrationDate = playerPmc.Info.RegistrationDate,
+                Nickname = profileToViewPmc.Info.Nickname,
+                Side = profileToViewPmc.Info.Side,
+                Experience = profileToViewPmc.Info.Experience as int?,
+                MemberCategory = profileToViewPmc.Info.MemberCategory as int?,
+                BannedState = profileToViewPmc.Info.BannedState,
+                BannedUntil = profileToViewPmc.Info.BannedUntil,
+                RegistrationDate = profileToViewPmc.Info.RegistrationDate,
             },
             Customization =
             {
-                Head = playerPmc.Customization.Head,
-                Body = playerPmc.Customization.Body,
-                Feet = playerPmc.Customization.Feet,
-                Hands = playerPmc.Customization.Hands,
-                Dogtag = playerPmc.Customization.DogTag,
+                Head = profileToViewPmc.Customization.Head,
+                Body = profileToViewPmc.Customization.Body,
+                Feet = profileToViewPmc.Customization.Feet,
+                Hands = profileToViewPmc.Customization.Hands,
+                Dogtag = profileToViewPmc.Customization.DogTag,
             },
-            Skills = playerPmc.Skills,
+            Skills = profileToViewPmc.Skills,
             Equipment =
             {
-                Id = playerPmc.Inventory.Equipment,
-                Items = playerPmc.Inventory.Items,
+                Id = profileToViewPmc.Inventory.Equipment,
+                Items = profileToViewPmc.Inventory.Items,
             },
-            Achievements = playerPmc.Achievements,
-            FavoriteItems = _profileHelper.GetOtherProfileFavorites(playerPmc),
+            Achievements = profileToViewPmc.Achievements,
+            FavoriteItems = _profileHelper.GetOtherProfileFavorites(profileToViewPmc),
             PmcStats =
             {
                 Eft =
                 {
-                    TotalInGameTime = playerPmc.Stats.Eft.TotalInGameTime as int?,
-                    OverAllCounters = playerPmc.Stats.Eft.OverallCounters,
+                    TotalInGameTime = profileToViewPmc.Stats.Eft.TotalInGameTime,
+                    OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters,
                 },
             },
             ScavStats =
             {
                 Eft =
                 {
-                    TotalInGameTime = playerScav.Stats.Eft.TotalInGameTime as int?,
-                    OverAllCounters = playerScav.Stats.Eft.OverallCounters,
+                    TotalInGameTime = profileToViewScav.Stats.Eft.TotalInGameTime,
+                    OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters,
                 }
-            }
+            },
+            Hideout = profileToViewPmc.Hideout,
+            CustomizationStash = profileToViewPmc.Inventory.HideoutCustomizationStashId,
+            HideoutAreaStashes = profileToViewPmc.Inventory.HideoutAreaStashes,
+                    Items = itemsToReturn
         };
     }
 

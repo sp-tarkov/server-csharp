@@ -34,6 +34,18 @@ public class GetOtherProfileResponse
 
     [JsonPropertyName("scavStats")]
     public OtherProfileStats? ScavStats { get; set; }
+
+    [JsonPropertyName("hideout")]
+    public Common.Tables.Hideout Hideout { get; set; }
+
+    [JsonPropertyName("customizationStash")]
+    public string CustomizationStash { get; set; }
+
+    [JsonPropertyName("hideoutAreaStashes")]
+    public Dictionary<string, string> HideoutAreaStashes { get; set; }
+
+    [JsonPropertyName("items")]
+    public List<Item> Items { get; set; }
 }
 
 public class OtherProfileInfo
@@ -96,7 +108,7 @@ public class OtherProfileStats
 public class OtherProfileSubStats
 {
     [JsonPropertyName("totalInGameTime")]
-    public int? TotalInGameTime { get; set; }
+    public long? TotalInGameTime { get; set; }
 
     [JsonPropertyName("overAllCounters")]
     public OverallCounters? OverAllCounters { get; set; }
