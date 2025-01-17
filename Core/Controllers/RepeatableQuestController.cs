@@ -319,11 +319,11 @@ public class RepeatableQuestController
         var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
 
         // Populate Elimination quest targets and their locations
-        foreach (var target in targetsConfig) {
+        foreach (var targetKvP in targetsConfig) {
             // Target is boss
-            if (target.Data.IsBoss)
+            if (targetKvP.Data.IsBoss.GetValueOrDefault(false))
             {
-                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(target.Key);
+                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(targetKvP.Key);
                     targets.Locations.Clear();
                     targets.Locations.Add("any");
             }
@@ -332,11 +332,11 @@ public class RepeatableQuestController
                 // Non-boss targets
                 var possibleLocations = locations;
 
-                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(target.Key);
-                var allowedLocations =
-                target.Key == "Savage"
-                    ? targets.Locations.Where((location) => location != "laboratory") // Exclude labs for Savage targets.
-                    : possibleLocations;
+                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(targetKvP.Key);
+                var targetsClone = _cloner.Clone(targets);
+                var allowedLocations = targetKvP.Key == "Savage"
+                        ? targetsClone.Locations.Where((location) => location != "laboratory") // Exclude labs for Savage targets.
+                        : targetsClone.Locations;
 
                 
                 targets.Locations.Clear();
