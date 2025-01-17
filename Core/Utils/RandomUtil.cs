@@ -282,7 +282,7 @@ public class RandomUtil
     /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>A List containing the drawn elements.</returns>
-    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
+    public IEnumerable<T> DrawRandomFromList<T>(IEnumerable<T> originalList, int count = 1, bool replacement = true)
     {
         throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
     }

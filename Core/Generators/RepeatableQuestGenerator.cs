@@ -1,16 +1,25 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Repeatable;
+using Core.Models.Utils;
+using Core.Utils;
 
 namespace Core.Generators;
 
 [Injectable]
 public class RepeatableQuestGenerator
 {
-    public RepeatableQuestGenerator()
+    protected ISptLogger<RepeatableQuestGenerator> _logger;
+    protected RandomUtil _randomUtil;
+
+    public RepeatableQuestGenerator(
+        ISptLogger<RepeatableQuestGenerator> logger,
+        RandomUtil randomUtil)
     {
+        _logger = logger;
+        _randomUtil = randomUtil;
     }
 
     /// <summary>
@@ -23,15 +32,32 @@ public class RepeatableQuestGenerator
     /// <param name="questTypePool">Possible quest types pool</param>
     /// <param name="repeatableConfig">Repeatable quest config</param>
     /// <returns>RepeatableQuest</returns>
-    public RepeatableQuest GenerateRepeatableQuest(
+    public RepeatableQuest? GenerateRepeatableQuest(
         string sessionId,
-        int? pmcLevel,
+        int pmcLevel,
         Dictionary<string, TraderInfo> pmcTraderInfo,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )
     {
-        throw new NotImplementedException();
+        var questType = _randomUtil.DrawRandomFromList(questTypePool.Types).First();
+
+        // Get traders from whitelist and filter by quest type availability
+        var traders = repeatableConfig.TraderWhitelist
+            .Where((x) => x.QuestTypes.Contains(questType))
+            .Select((x) => x.TraderId).ToList();
+        // filter out locked traders
+        traders = traders.Where((x) => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false)).ToList();
+        var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
+
+        return questType switch
+        {
+            "Elimination" => GenerateEliminationQuest(sessionId, pmcLevel, traderId, questTypePool, repeatableConfig),
+            "Completion" => GenerateCompletionQuest(sessionId, pmcLevel, traderId, repeatableConfig),
+            "Exploration" => GenerateExplorationQuest(sessionId, pmcLevel, traderId, questTypePool, repeatableConfig),
+            "Pickup" => GeneratePickupQuest(sessionId, pmcLevel, traderId, questTypePool, repeatableConfig),
+            _ => null
+        };
     }
 
     /// <summary>
@@ -159,7 +185,7 @@ public class RepeatableQuestGenerator
         throw new NotImplementedException();
     }
 
-    protected object GeneratePickupQuest(
+    protected RepeatableQuest GeneratePickupQuest(
         string sessionId,
         int pmcLevel,
         string traderId,
