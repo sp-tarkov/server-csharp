@@ -163,7 +163,7 @@ public class PrestigeController
         _saveServer.SaveProfile(sessionId);
     }
 
-    private void AddPrestigeRewardsToProfile(string sessionId, SptProfile newProfile, IEnumerable<QuestReward> rewards)
+    private void AddPrestigeRewardsToProfile(string sessionId, SptProfile newProfile, IEnumerable<Reward> rewards)
     {
         _logger.Error("NOT IMPLEMENTED AddPrestigeRewardsToProfile()");
     }

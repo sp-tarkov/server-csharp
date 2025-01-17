@@ -1,6 +1,6 @@
 namespace Core.Models.Enums;
 
-public enum QuestRewardType
+public enum RewardType
 {
     Skill,
     Experience,

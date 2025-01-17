@@ -28,7 +28,7 @@ public class JsonUtil
             new EftEnumConverter<SeasonalEventType>(),
             new EftEnumConverter<ProfileChangeEventType>(),
             new EftEnumConverter<QuestStatusEnum>(),
-            new EftEnumConverter<QuestRewardType>(),
+            new EftEnumConverter<RewardType>(),
             new EftEnumConverter<SideType>(),
             new EftEnumConverter<BonusSkillType>(),
             new EftEnumConverter<NotificationEventType>()

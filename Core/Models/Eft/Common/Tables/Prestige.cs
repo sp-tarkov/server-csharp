@@ -17,7 +17,7 @@ public class PrestigeElement
     public List<QuestCondition>? Conditions { get; set; }
 
     [JsonPropertyName("rewards")]
-    public List<QuestReward>? Rewards { get; set; }
+    public List<Reward>? Rewards { get; set; }
 
     [JsonPropertyName("transferConfigs")]
     public TransferConfigs? TransferConfigs { get; set; }

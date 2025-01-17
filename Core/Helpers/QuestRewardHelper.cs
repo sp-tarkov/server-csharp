@@ -99,7 +99,7 @@ public class QuestRewardHelper
         // e.g. 'Success' or 'AvailableForFinish'
         var questStateAsString = state.ToString();
         var gameVersion = pmcProfile.Info.GameVersion;
-        var questRewards = (List<QuestReward>?)questDetails.Rewards.GetType().GetProperties().FirstOrDefault(p =>
+        var questRewards = (List<Reward>?)questDetails.Rewards.GetType().GetProperties().FirstOrDefault(p =>
             p.Name == questStateAsString).GetValue(questDetails.Rewards);
         foreach (var reward in questRewards)
         {
@@ -116,37 +116,37 @@ public class QuestRewardHelper
 
             switch (reward.Type)
             {
-                case QuestRewardType.Skill:
+                case RewardType.Skill:
                     _profileHelper.AddSkillPointsToPlayer(profileData, skillType, double.Parse((string)reward.Value));
                     break;
-                case QuestRewardType.Experience: // this must occur first as the output object needs to take the modified profile exp value
+                case RewardType.Experience: // this must occur first as the output object needs to take the modified profile exp value
                     _profileHelper.AddExperienceToPmc(sessionId, int.Parse(reward.Target));
                     break;
-                case QuestRewardType.TraderStanding:
+                case RewardType.TraderStanding:
                     _traderHelper.AddStandingToTrader(sessionId, reward.Target, double.Parse((string)reward.Value));
                     break;
-                case QuestRewardType.TraderUnlock:
+                case RewardType.TraderUnlock:
                     _traderHelper.SetTraderUnlockedState(reward.Target, true, sessionId);
                     break;
-                case QuestRewardType.Item:
+                case RewardType.Item:
                     // Handled by getQuestRewardItems() below
                     break;
-                case QuestRewardType.AssortmentUnlock:
+                case RewardType.AssortmentUnlock:
                     // Handled by getAssort(), locked assorts are stripped out by `assortHelper.stripLockedLoyaltyAssort()` before being sent to player
                     break;
-                case QuestRewardType.Achievement:
+                case RewardType.Achievement:
                     _profileHelper.AddAchievementToProfile(fullProfile, reward.Target);
                     break;
-                case QuestRewardType.StashRows: // Add specified stash rows from quest reward - requires client restart
+                case RewardType.StashRows: // Add specified stash rows from quest reward - requires client restart
                     _profileHelper.AddStashRowsBonusToProfile(sessionId, int.Parse((string)reward.Value));
                     break;
-                case QuestRewardType.ProductionScheme:
+                case RewardType.ProductionScheme:
                     FindAndAddHideoutProductionIdToProfile(pmcProfile, reward, questDetails, sessionId, questResponse);
                     break;
-                case QuestRewardType.Pockets:
+                case RewardType.Pockets:
                     _profileHelper.ReplaceProfilePocketTpl(pmcProfile, reward.Target);
                     break;
-                case QuestRewardType.CustomizationDirect:
+                case RewardType.CustomizationDirect:
                     _profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, CustomisationSource.UNLOCKED_IN_GAME);
                     break;
                 default:
@@ -169,7 +169,7 @@ public class QuestRewardHelper
      * @param gameVersion Version of game to check reward against
      * @returns True if it has requirement, false if it doesnt pass check
      */
-    public bool QuestRewardIsForGameEdition(QuestReward reward, string gameVersion)
+    public bool QuestRewardIsForGameEdition(Reward reward, string gameVersion)
     {
         if (reward?.AvailableInGameEditions?.Count > 0 && !reward.AvailableInGameEditions.Any(ge => ge == gameVersion))
         {
@@ -246,7 +246,7 @@ public class QuestRewardHelper
      */
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
-        var rewards = (List<QuestReward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == questStatus.ToString())
+        var rewards = (List<Reward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == questStatus.ToString())
             .GetValue(quest.Rewards) ?? new();
         var currencyRewards = rewards.Where(r =>
             r.Type.ToString() == "Item" &&
@@ -272,7 +272,7 @@ public class QuestRewardHelper
     /// <param name="questDetails">Quest with craft unlock reward</param>
     /// <param name="sessionID">Session id</param>
     /// <param name="response">Response to send back to client</param>
-    protected void FindAndAddHideoutProductionIdToProfile(PmcData pmcData, QuestReward craftUnlockReward, Quest questDetails, string sessionID,
+    protected void FindAndAddHideoutProductionIdToProfile(PmcData pmcData, Reward craftUnlockReward, Quest questDetails, string sessionID,
         ItemEventRouterResponse response)
     {
         var matchingProductions = GetRewardProductionMatch(craftUnlockReward, questDetails);
@@ -299,7 +299,7 @@ public class QuestRewardHelper
     /// <param name="craftUnlockReward">Reward item from quest with craft unlock details</param>
     /// <param name="questDetails">Quest with craft unlock reward</param>
     /// <returns>Hideout craft</returns>
-    public List<HideoutProduction> GetRewardProductionMatch(QuestReward craftUnlockReward, Quest questDetails)
+    public List<HideoutProduction> GetRewardProductionMatch(Reward craftUnlockReward, Quest questDetails)
     {
         // Get hideout crafts and find those that match by areatype/required level/end product tpl - hope for just one match
         var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
@@ -330,7 +330,7 @@ public class QuestRewardHelper
      */
     protected List<Item> GetQuestRewardItems(Quest quest, QuestStatusEnum status, string gameVersion)
     {
-        var rewards = (List<QuestReward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == status.ToString())
+        var rewards = (List<Reward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == status.ToString())
             .GetValue(quest.Rewards);
 
         if (rewards == null)
@@ -351,7 +351,7 @@ public class QuestRewardHelper
      * @param questReward Reward item to fix
      * @returns Fixed rewards
      */
-    protected List<Item> ProcessReward(QuestReward questReward)
+    protected List<Item> ProcessReward(Reward reward)
     {
         // item with mods to return
         var rewardItems = new List<Item>();
@@ -359,13 +359,13 @@ public class QuestRewardHelper
         var mods = new List<Item>();
 
         // Is armor item that may need inserts / plates
-        if (questReward.Items.Count == 1 && _itemHelper.ArmorItemCanHoldMods(questReward.Items[0].Template))
+        if (reward.Items.Count == 1 && _itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
         {
             // Attempt to pull default preset from globals and add child items to reward (clones questReward.items)
-            GenerateArmorRewardChildSlots(questReward.Items[0], questReward);
+            GenerateArmorRewardChildSlots(reward.Items[0], reward);
         }
 
-        foreach (var rewardItem in questReward.Items)
+        foreach (var rewardItem in reward.Items)
         {
             _itemHelper.AddUpdObjectToItem(rewardItem);
 
@@ -373,7 +373,7 @@ public class QuestRewardHelper
             rewardItem.Upd.SpawnedInSession = true;
 
             // Is root item, fix stacks
-            if (rewardItem.Id == questReward.Type.ToString())
+            if (rewardItem.Id == reward.Type.ToString())
             {
                 // Is base reward item
                 if (rewardItem.ParentId != null &&
@@ -397,8 +397,8 @@ public class QuestRewardHelper
             else
             {
                 // Is child mod
-                if (questReward.Items[0].Upd.SpawnedInSession ?? false) // Propigate FiR status into child items
-                    rewardItem.Upd.SpawnedInSession = questReward.Items[0].Upd.SpawnedInSession;
+                if (reward.Items[0].Upd.SpawnedInSession ?? false) // Propigate FiR status into child items
+                    rewardItem.Upd.SpawnedInSession = reward.Items[0].Upd.SpawnedInSession;
 
                 mods.Add(rewardItem);
             }
@@ -429,7 +429,7 @@ public class QuestRewardHelper
  * @param originalRewardRootItem Original armor reward item from QuestReward.items object
  * @param questReward Armor reward from quest
  */
-    protected void GenerateArmorRewardChildSlots(Item originalRewardRootItem, QuestReward questReward)
+    protected void GenerateArmorRewardChildSlots(Item originalRewardRootItem, Reward reward)
     {
         // Look for a default preset from globals for armor
         var defaultPreset = _presetHelper.GetDefaultPreset(originalRewardRootItem.Template);
@@ -439,13 +439,13 @@ public class QuestRewardHelper
             var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
             var newRootId = _itemHelper.RemapRootItemId(presetAndMods, _hashUtil.Generate());
 
-            questReward.Items = presetAndMods;
+            reward.Items = presetAndMods;
             
             // Find root item and set its stack count
-            var rootItem = questReward.Items.FirstOrDefault(i => i.Id == newRootId);
+            var rootItem = reward.Items.FirstOrDefault(i => i.Id == newRootId);
             
             // Remap target id to the new presets root id
-            questReward.Target = rootItem.Id;
+            reward.Target = rootItem.Id;
             
             // Copy over stack count otherwise reward shows as missing in client
             _itemHelper.AddUpdObjectToItem(rootItem);
@@ -459,6 +459,6 @@ public class QuestRewardHelper
         var itemDbData = _itemHelper.GetItem(originalRewardRootItem.Template).Value;
         
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc
-        questReward.Items = _itemHelper.AddChildSlotItems(questReward.Items, itemDbData, null, true);
+        reward.Items = _itemHelper.AddChildSlotItems(reward.Items, itemDbData, null, true);
     }
 }

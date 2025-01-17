@@ -46,7 +46,7 @@ public class Quest
     public string? Image { get; set; }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? RewardType { get; set; }
 
     [JsonPropertyName("isKey")]
     public bool? IsKey { get; set; }
@@ -474,78 +474,23 @@ public class VisibilityCondition
 public class QuestRewards
 {
     [JsonPropertyName("AvailableForStart")]
-    public List<QuestReward>? AvailableForStart { get; set; }
+    public List<Reward>? AvailableForStart { get; set; }
 
     [JsonPropertyName("AvailableForFinish")]
-    public List<QuestReward>? AvailableForFinish { get; set; }
+    public List<Reward>? AvailableForFinish { get; set; }
 
     [JsonPropertyName("Started")]
-    public List<QuestReward>? Started { get; set; }
+    public List<Reward>? Started { get; set; }
 
     [JsonPropertyName("Success")]
-    public List<QuestReward>? Success { get; set; }
+    public List<Reward>? Success { get; set; }
 
     [JsonPropertyName("Fail")]
-    public List<QuestReward>? Fail { get; set; }
+    public List<Reward>? Fail { get; set; }
 
     [JsonPropertyName("FailRestartable")]
-    public List<QuestReward>? FailRestartable { get; set; }
+    public List<Reward>? FailRestartable { get; set; }
 
     [JsonPropertyName("Expired")]
-    public List<QuestReward>? Expired { get; set; }
-}
-
-public class QuestReward
-{
-    [JsonPropertyName("value")]
-    public object? Value { get; set; } // TODO: Can be either string or number
-
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("type")]
-    public QuestRewardType? Type { get; set; } // QuestRewardType
-
-    [JsonPropertyName("index")]
-    public int? Index { get; set; }
-
-    [JsonPropertyName("target")]
-    public string? Target { get; set; }
-
-    [JsonPropertyName("items")]
-    public List<Item>? Items { get; set; }
-
-    [JsonPropertyName("loyaltyLevel")]
-    public int? LoyaltyLevel { get; set; }
-
-    /** Hideout area id */
-    [JsonPropertyName("traderId")]
-    public object? TraderId { get; set; } // TODO: string | int
-
-    [JsonPropertyName("isEncoded")]
-    public bool? IsEncoded { get; set; }
-
-    [JsonPropertyName("unknown")]
-    public bool? Unknown { get; set; }
-
-    [JsonPropertyName("findInRaid")]
-    public bool? FindInRaid { get; set; }
-
-    [JsonPropertyName("gameMode")]
-    public List<string>? GameMode { get; set; }
-
-    /** Game editions whitelisted to get reward */
-    [JsonPropertyName("availableInGameEditions")]
-    public List<string>? AvailableInGameEditions { get; set; }
-
-    /** Game editions blacklisted from getting reward */
-    [JsonPropertyName("notAvailableInGameEditions")]
-    public List<string>? NotAvailableInGameEditions { get; set; }
-    
-    // This is always Null atm in the achievements.json
-    [JsonPropertyName("illustrationConfig")]
-    public object? IllustrationConfig { get; set; }
-    
-    [JsonPropertyName("isHidden")]
-    public bool? IsHidden { get; set; }
+    public List<Reward>? Expired { get; set; }
 }

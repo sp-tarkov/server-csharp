@@ -362,7 +362,7 @@ public class ProfileFixerService
             if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
             {
                 var productionRewards = quest.Rewards.Started?.Where(
-                    (reward) => reward.Type == QuestRewardType.ProductionScheme);
+                    (reward) => reward.Type == RewardType.ProductionScheme);
 
                 if (productionRewards is not null)
                 {
@@ -377,7 +377,7 @@ public class ProfileFixerService
             if (profileQuest.Status is QuestStatusEnum.Success)
             {
                 var productionRewards = quest.Rewards.Success?.Where(
-                    (reward) => reward.Type == QuestRewardType.ProductionScheme);
+                    (reward) => reward.Type == RewardType.ProductionScheme);
 
                 if (productionRewards is not null)
                 {
@@ -396,7 +396,7 @@ public class ProfileFixerService
     /// <param name="pmcProfile">Profile to check</param>
     /// <param name="productionUnlockReward">The quest reward to validate</param>
     /// <param name="questDetails">The quest the reward belongs to</param>
-    protected void VerifyQuestProductionUnlock(PmcData pmcProfile, QuestReward productionUnlockReward, Quest questDetails)
+    protected void VerifyQuestProductionUnlock(PmcData pmcProfile, Reward productionUnlockReward, Quest questDetails)
     {
         var matchingProductions = _questRewardHelper.GetRewardProductionMatch(
             productionUnlockReward,
