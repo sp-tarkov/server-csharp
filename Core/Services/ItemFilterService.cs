@@ -129,4 +129,9 @@ public class ItemFilterService
 
         return _lootableItemBlacklistCache.Contains(itemKey);
     }
+
+    public bool IsItemBlacklisted(string tpl)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -21,9 +21,7 @@ public class RepeatableQuestHelper
     /// <param name="pmcLevel">Level of PMC character</param>
     /// <param name="repeatableConfig">Main repeatable config</param>
     /// <returns>EliminationConfig</returns>
-    public EliminationConfig GetEliminationConfigByPmcLevel(
-        int pmcLevel,
-        RepeatableQuestConfig repeatableConfig)
+    public EliminationConfig GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
         throw new NotImplementedException();
     }
