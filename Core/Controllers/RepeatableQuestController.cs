@@ -405,19 +405,37 @@ public class RepeatableQuestController
         return pmcLevel <= locationBase.RequiredPlayerLevelMax && pmcLevel >= locationBase.RequiredPlayerLevelMin;
     }
 
+    /// <summary>
+    /// Get count of repeatable quests profile should have access to
+    /// </summary>
+    /// <param name="repeatableConfig"></param>
+    /// <param name="pmcData">Player profile</param>
+    /// <returns>Quest count</returns>
     private int GetQuestCount(RepeatableQuestConfig repeatableConfig, PmcData pmcData)
     {
+        var questCount = repeatableConfig.NumQuests.GetValueOrDefault(0);
+        if (questCount == 0)
+        {
+            _logger.Warning($"Repeatable {repeatableConfig.Name} quests have a count of 0");
+        }
+
+        // Add elite bonus to daily quests
         if (repeatableConfig.Name.ToLower() == "daily"
             && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData)
         )
         {
             // Elite charisma skill gives extra daily quest(s)
-            return (repeatableConfig.NumQuests +
-                    _databaseService.GetGlobals().Configuration.SkillsSettings.Charisma.BonusSettings.EliteBonusSettings
-                        .RepeatableQuestExtraCount.GetValueOrDefault(0)
-            );
+            questCount += _databaseService
+                .GetGlobals()
+                .Configuration
+                .SkillsSettings
+                .Charisma
+                .BonusSettings
+                .EliteBonusSettings
+                .RepeatableQuestExtraCount
+                .GetValueOrDefault(0);
         }
 
-        return repeatableConfig.NumQuests;
+        return questCount;
     }
 }
