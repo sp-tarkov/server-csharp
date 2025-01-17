@@ -524,7 +524,7 @@ public class BotLootCacheService
     /// <returns></returns>
     protected bool IsMedicalItem(Props props)
     {
-        throw new NotImplementedException();
+        return props.MedUseTime is not null;
     }
 
     /// <summary>
@@ -534,22 +534,22 @@ public class BotLootCacheService
     /// <returns></returns>
     protected bool IsGrenade(Props props)
     {
-        throw new NotImplementedException();
+        return props.ThrowType is not null;
     }
 
     protected bool IsFood(string tpl)
     {
-        throw new NotImplementedException();
+        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.FOOD);
     }
 
     protected bool IsDrink(string tpl)
     {
-        throw new NotImplementedException();
+        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.DRINK);
     }
 
     protected bool IsCurrency(string tpl)
     {
-        throw new NotImplementedException();
+        return _itemHelper.IsOfBaseclass(tpl, BaseClasses.MONEY);
     }
 
     /// <summary>
@@ -559,7 +559,7 @@ public class BotLootCacheService
     /// <returns>true if they exist</returns>
     protected bool BotRoleExistsInCache(string botRole)
     {
-        throw new NotImplementedException();
+        return _lootCache.ContainsKey(botRole);
     }
 
     /// <summary>
@@ -568,7 +568,22 @@ public class BotLootCacheService
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        throw new NotImplementedException();
+        _lootCache[botRole] = new () {
+            BackpackLoot = new (),
+            PocketLoot = new (),
+            VestLoot = new (),
+            SecureLoot = new (),
+            CombinedPoolLoot = new (),
+
+            SpecialItems = new (),
+            GrenadeItems = new (),
+            DrugItems = new (),
+            FoodItems = new (),
+            DrinkItems = new (),
+            CurrencyItems = new (),
+            HealingItems = new (),
+            StimItems = new (),
+        };
     }
 
     /// <summary>
@@ -579,6 +594,23 @@ public class BotLootCacheService
     /// <returns></returns>
     protected int CompareByValue(int itemAPrice, int itemBPrice)
     {
-        throw new NotImplementedException();
+        // If item A has no price, it should be moved to the back when sorting
+        if (itemAPrice is 0) {
+            return 1;
+        }
+
+        if (itemBPrice is 0) {
+            return -1;
+        }
+
+        if (itemAPrice < itemBPrice) {
+            return -1;
+        }
+
+        if (itemAPrice > itemBPrice) {
+            return 1;
+        }
+
+        return 0;
     }
 }
