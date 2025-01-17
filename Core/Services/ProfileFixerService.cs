@@ -287,11 +287,14 @@ public class ProfileFixerService
             if (pmcProfile.RepeatableQuests is not null && activeRepeatableQuests.Count > 0)
             {
                 var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(
-                    (quest) => quest.Id == TaskConditionCounterKvP.Value.SourceId);
+                    (quest) => quest.Id == TaskConditionCounterKvP.Value.SourceId
+                );
                 var existsInQuests = pmcProfile.Quests.Any(
-                    (quest) => quest.QId == TaskConditionCounterKvP.Value.SourceId);
+                    (quest) => quest.QId == TaskConditionCounterKvP.Value.SourceId
+                );
                 var isAchievementTracker = achievements.Any(
-                    (quest) => quest.Id == TaskConditionCounterKvP.Value.SourceId);
+                    (quest) => quest.Id == TaskConditionCounterKvP.Value.SourceId
+                );
 
                 // If task conditions id is neither in activeQuests, quests or achievements - it's stale and should be cleaned up
                 if (!(existsInActiveRepeatableQuests || existsInQuests || isAchievementTracker))
@@ -400,7 +403,8 @@ public class ProfileFixerService
     {
         var matchingProductions = _questRewardHelper.GetRewardProductionMatch(
             productionUnlockReward,
-            questDetails);
+            questDetails
+        );
 
         if (matchingProductions.Count != 1)
         {
@@ -429,7 +433,59 @@ public class ProfileFixerService
     /// <param name="pmcProfile">profile to add slots to</param>
     protected void AddHideoutEliteSlots(PmcData pmcProfile)
     {
-        _logger.Error("AddHideoutEliteSlots NOT IMPLEMENTED");
+        var globals = _databaseService.GetGlobals();
+
+        var generator = pmcProfile.Hideout.Areas.FirstOrDefault((area) => area.Type == HideoutAreas.GENERATOR);
+        if (generator is not null)
+        {
+            var genSlots = generator.Slots.Count;
+            var extraGenSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.Generator.Slots;
+
+            if (genSlots < 6 + extraGenSlots)
+            {
+                _logger.Debug("Updating generator area slots to a size of 6 + hideout management skill");
+                AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.GENERATOR, (int)(6 + extraGenSlots ?? 0), pmcProfile);
+            }
+        }
+
+        var waterCollSlots = pmcProfile.Hideout.Areas.FirstOrDefault((x) => x.Type == HideoutAreas.WATER_COLLECTOR)
+            .Slots
+            .Count;
+        var extraWaterCollSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.WaterCollector.Slots;
+
+        if (waterCollSlots < 1 + extraWaterCollSlots)
+        {
+            _logger.Debug("Updating water collector area slots to a size of 1 + hideout management skill");
+            AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.WATER_COLLECTOR, (int)(1 + extraWaterCollSlots ?? 0), pmcProfile);
+        }
+
+        var filterSlots = pmcProfile.Hideout.Areas.FirstOrDefault((x) => x.Type == HideoutAreas.AIR_FILTERING).Slots.Count;
+        var extraFilterSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.AirFilteringUnit.Slots;
+
+        if (filterSlots < 3 + extraFilterSlots)
+        {
+            _logger.Debug("Updating air filter area slots to a size of 3 + hideout management skill");
+            AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.AIR_FILTERING, (int)(3 + extraFilterSlots ?? 0), pmcProfile);
+        }
+
+        var btcFarmSlots = pmcProfile.Hideout.Areas.FirstOrDefault((x) => x.Type == HideoutAreas.BITCOIN_FARM).Slots.Count;
+        var extraBtcSlots = globals.Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm.Slots;
+
+        // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
+        if (btcFarmSlots < 50 + extraBtcSlots)
+        {
+            _logger.Debug("Updating bitcoin farm area slots to a size of 50 + hideout management skill");
+            AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.BITCOIN_FARM, (int)(50 + extraBtcSlots ?? 0), pmcProfile);
+        }
+
+        var cultistAreaSlots = pmcProfile.Hideout.Areas.FirstOrDefault((x) => x.Type == HideoutAreas.CIRCLE_OF_CULTISTS)
+            .Slots
+            .Count;
+        if (cultistAreaSlots < 1)
+        {
+            _logger.Debug("Updating cultist area slots to a size of 1");
+            AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.CIRCLE_OF_CULTISTS, 1, pmcProfile);
+        }
     }
 
     /// <summary>
@@ -440,10 +496,11 @@ public class ProfileFixerService
     /// <param name="pmcProfile">profile to update</param>
     protected void AddEmptyObjectsToHideoutAreaSlots(HideoutAreas areaType, int emptyItemCount, PmcData pmcProfile)
     {
-        throw new NotImplementedException();
+        var area = pmcProfile.Hideout.Areas.FirstOrDefault((x) => x.Type == areaType);
+        area.Slots = AddObjectsToList(emptyItemCount, area.Slots);
     }
 
-    protected IList<HideoutSlot> AddObjectsToList(int count, List<HideoutSlot> slots)
+    protected List<HideoutSlot> AddObjectsToList(int count, List<HideoutSlot> slots)
     {
         for (var i = 0; i < count; i++)
         {
@@ -510,24 +567,17 @@ public class ProfileFixerService
         {
             // Remove invalid builds from weapon, equipment and magazine build lists
             var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? new List<WeaponBuild>();
-            fullProfile.UserBuildData.WeaponBuilds = weaponBuilds.Where(build =>
-            {
-                return !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb);
-            }).ToList();
-            
+            fullProfile.UserBuildData.WeaponBuilds =
+                weaponBuilds.Where(build => { return !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb); }).ToList();
+
             var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? new List<EquipmentBuild>();
-            fullProfile.UserBuildData.EquipmentBuilds = equipmentBuilds.Where(build =>
-            {
-                return !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb);
-            }).ToList();
-            
+            fullProfile.UserBuildData.EquipmentBuilds =
+                equipmentBuilds.Where(build => { return !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb); }).ToList();
+
             var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? new List<MagazineBuild>();
-            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build =>
-            {
-                return !ShouldRemoveMagazineBuild(build, itemsDb);
-            }).ToList();
+            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build => { return !ShouldRemoveMagazineBuild(build, itemsDb); }).ToList();
         }
-        
+
         // Iterate over dialogs, looking for messages with items not found in item db, remove message if item found
         foreach (var dialog in fullProfile.DialogueRecords)
         {
@@ -538,7 +588,7 @@ public class ProfileFixerService
             {
                 if (message.Items.Data is null)
                     continue; // skip messages with no items
-                
+
                 // Fix message with no items but have the flags to indicate items to collect
                 if (message.Items.Data.Count == 0 && (message.HasRewards ?? false))
                 {
@@ -591,7 +641,7 @@ public class ProfileFixerService
                         _logger.Warning($"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile");
                         repeatable.ActiveQuests.Remove(activeQuest);
                     }
-                    
+
                     continue;
                 }
 
@@ -654,7 +704,7 @@ public class ProfileFixerService
                 break;
             }
         }
-        
+
         // TODO: refactor to be generic
 
         if (buildType == "equipment")
@@ -687,7 +737,31 @@ public class ProfileFixerService
         MagazineBuild magazineBuild,
         Dictionary<string, TemplateItem> itemsDb)
     {
-        throw new NotImplementedException();
+        foreach (var item in magazineBuild.Items)
+        {
+            // Magazine builds can have undefined items in them, skip those
+            if (item is null)
+            {
+                continue;
+            }
+
+            // Check item exists in itemsDb
+            if (itemsDb[item.TemplateId] is null)
+            {
+                _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.TemplateId));
+
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    _logger.Warning($"Item: {item.TemplateId} has resulted in the deletion of magazine build: {magazineBuild.Name}");
+
+                    return true;
+                }
+
+                break;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -699,7 +773,8 @@ public class ProfileFixerService
     {
         var dbHideoutAreas = _databaseService.GetHideout().Areas;
 
-        foreach (var profileArea in pmcProfile.Hideout.Areas) {
+        foreach (var profileArea in pmcProfile.Hideout.Areas)
+        {
             var areaType = profileArea.Type;
             var level = profileArea.Level;
 
@@ -724,7 +799,8 @@ public class ProfileFixerService
                 continue;
             }
 
-            foreach (var areaLevel in areaLevelsToCheck) {
+            foreach (var areaLevel in areaLevelsToCheck)
+            {
                 // Get areas level bonuses from db
                 var levelBonuses = dbArea.Stages[areaLevel]?.Bonuses;
                 if (levelBonuses is null || levelBonuses.Count == 0)
@@ -733,13 +809,14 @@ public class ProfileFixerService
                 }
 
                 // Iterate over each bonus for the areas level
-                foreach (var bonus in levelBonuses) {
+                foreach (var bonus in levelBonuses)
+                {
                     // Check if profile has bonus
                     var profileBonus = GetBonusFromProfile(pmcProfile.Bonuses, bonus);
                     if (profileBonus is null)
                     {
                         // no bonus, add to profile
-                        _logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding { bonus.Type}");
+                        _logger.Debug($"Profile has level {level} area {profileArea.Type} but no bonus found, adding {bonus.Type}");
                         _hideoutHelper.ApplyPlayerUpgradesBonuses(pmcProfile, bonus);
                     }
                 }
