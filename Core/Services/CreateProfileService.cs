@@ -356,6 +356,17 @@ public class CreateProfileService
                 });
             }
         }
+
+        // Dev profile additions
+        if (fullProfile.ProfileInfo.Edition.ToLower().Contains("developer"))
+        {
+            // CyberTark background
+            fullProfile.CustomisationUnlocks.Add( new CustomisationStorage{
+                Id = "67585108def253bd97084552",
+                Source = CustomisationSource.DEFAULT,
+                Type = CustomisationType.ENVIRONMENT,
+            });
+        }
     }
 
     private string GetGameEdition(SptProfile profile)
