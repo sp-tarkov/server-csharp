@@ -11,7 +11,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using System.Collections.Generic;
 
 namespace Core.Generators;
 
@@ -273,13 +272,38 @@ public class BotEquipmentModGenerator
         throw new NotImplementedException();
     }
 
-    /// <summary>
-    /// Add mods to a weapon using the provided mod pool
-    /// </summary>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="request">Data used to generate the weapon</param>
-    /// <returns>Weapon + mods array</returns>
-    public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
+    /**
+     * Get the default plate an armor has in its db item
+     * @param armorItem Item to look up default plate
+     * @param modSlot front/back
+     * @returns Tpl of plate
+     */
+    protected string GetDefaultPlateTpl(TemplateItem armorItem, string modSlot ) {
+        var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => slot.Name.ToLower() == modSlot);
+
+        return relatedItemDbModSlot?.Props.Filters[0].Plate;
+    }
+
+    /**
+     * Get the matching armor slot from the default preset matching passed in armor tpl
+     * @param presetItemId Id of preset
+     * @param modSlot front/back
+     * @returns Armor IItem
+     */
+    protected Item GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot) {
+        var defaultPreset = _presetHelper.GetDefaultPreset(armorItemTpl);
+
+        return defaultPreset?.Items.FirstOrDefault((item) => item.SlotId?.ToLower() == modSlot);
+    }
+
+
+/// <summary>
+/// Add mods to a weapon using the provided mod pool
+/// </summary>
+/// <param name="sessionId">Session id</param>
+/// <param name="request">Data used to generate the weapon</param>
+/// <returns>Weapon + mods array</returns>
+public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
