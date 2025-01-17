@@ -53,12 +53,10 @@ public class HttpServer
         // enable web socket
         app.UseWebSockets();
 
-        app.UseRouting();
         app.Use((HttpContext req, RequestDelegate _) =>
         {
             return Task.Factory.StartNew(() => HandleFallback(req));
         });
-        // app.UseEndpoints(endpointBuilder => { endpointBuilder.MapFallback(HandleFallback); });
         started = true;
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
