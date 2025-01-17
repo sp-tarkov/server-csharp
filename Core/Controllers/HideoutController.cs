@@ -184,6 +184,7 @@ public class HideoutController
     {
         foreach (var poseKvP in request.Poses)
         {
+            pmcData.Hideout.MannequinPoses ??= new Dictionary<string, string>();
             pmcData.Hideout.MannequinPoses[poseKvP.Key] = poseKvP.Value;
         }
 
