@@ -148,19 +148,19 @@ public record RepeatableQuestConfig
 public record RewardScaling
 {
     [JsonPropertyName("levels")]
-    public List<int>? Levels { get; set; }
+    public List<double>? Levels { get; set; }
 
     [JsonPropertyName("experience")]
-    public List<int>? Experience { get; set; }
+    public List<double>? Experience { get; set; }
 
     [JsonPropertyName("roubles")]
-    public List<int>? Roubles { get; set; }
+    public List<double>? Roubles { get; set; }
 
     [JsonPropertyName("gpCoins")]
-    public List<int>? GpCoins { get; set; }
+    public List<double>? GpCoins { get; set; }
 
     [JsonPropertyName("items")]
-    public List<int>? Items { get; set; }
+    public List<double>? Items { get; set; }
 
     [JsonPropertyName("reputation")]
     public List<double>? Reputation { get; set; }
@@ -172,7 +172,7 @@ public record RewardScaling
     public List<double>? SkillRewardChance { get; set; }
 
     [JsonPropertyName("skillPointReward")]
-    public List<int>? SkillPointReward { get; set; }
+    public List<double>? SkillPointReward { get; set; }
 }
 
 public record TraderWhitelist

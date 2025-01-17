@@ -5,23 +5,23 @@ namespace Core.Models.Spt.Repeatable;
 public record QuestRewardValues
 {
     [JsonPropertyName("skillPointReward")]
-    public int? SkillPointReward { get; set; }
+    public double? SkillPointReward { get; set; }
 
     [JsonPropertyName("skillRewardChance")]
-    public int? SkillRewardChance { get; set; }
+    public double? SkillRewardChance { get; set; }
 
     [JsonPropertyName("rewardReputation")]
-    public int? RewardReputation { get; set; }
+    public double? RewardReputation { get; set; }
 
     [JsonPropertyName("rewardNumItems")]
-    public int? RewardNumItems { get; set; }
+    public double? RewardNumItems { get; set; }
 
     [JsonPropertyName("rewardRoubles")]
-    public int? RewardRoubles { get; set; }
+    public double? RewardRoubles { get; set; }
 
     [JsonPropertyName("gpCoinRewardCount")]
-    public int? GpCoinRewardCount { get; set; }
+    public double? GpCoinRewardCount { get; set; }
 
     [JsonPropertyName("rewardXP")]
-    public int? RewardXP { get; set; }
+    public double? RewardXP { get; set; }
 }
