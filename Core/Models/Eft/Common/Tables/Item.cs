@@ -5,10 +5,10 @@ namespace Core.Models.Eft.Common.Tables;
 public record Item
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public required string Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    public required string Template { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
