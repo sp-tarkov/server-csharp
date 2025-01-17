@@ -48,8 +48,8 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
 
     public Task OnConnection(WebSocket ws, HttpContext context)
     {
-        var splitUrl = context.Request.Path.Value.Substring(0, context.Request.Path.Value.IndexOf("?")).Split("/");
-        var sessionID = splitUrl.First();
+        var splitUrl = context.Request.Path.Value.Split("/");
+        var sessionID = splitUrl.Last();
         var playerProfile = _profileHelper.GetFullProfile(sessionID);
         var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
 
