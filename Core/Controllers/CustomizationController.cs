@@ -85,7 +85,7 @@ public class CustomizationController
         var output = _eventOutputHolder.GetOutput(sessionId);
 
         var traderOffer = GetTraderClothingOffer(sessionId, buyClothingRequest?.Offer);
-        if (traderOffer == null)
+        if (traderOffer is null)
         {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer));
             return output;
@@ -105,15 +105,16 @@ public class CustomizationController
         
         }
 
-        
+        // Charge player for buying item
         PayForClothingItems(sessionId, pmcData, buyClothingRequest.Items, output);
 
         var profile = _saveServer.GetProfile(sessionId);
-        
+
+        // TODO - remove now they're stored in profile.CustomisationUnlocks?
         profile.Suits.Add(suitId);
         
         //TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
-        var rewardToStore = new CustomisationStorage()
+        var rewardToStore = new CustomisationStorage
         {
             Id = suitId,
             Source = CustomisationSource.UNLOCKED_IN_GAME,
@@ -129,11 +130,11 @@ public class CustomizationController
         return _saveServer.GetProfile(sessionId).Suits.Contains(suitId);
     }
 
-    private Suit GetTraderClothingOffer(string sessionId, string? offerId)
+    private Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s?.Id == offerId);
         if (foundSuit == null)
-            throw new Exception(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
+            _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
 
         return foundSuit;
     }
