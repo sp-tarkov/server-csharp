@@ -435,7 +435,7 @@ public record ValueCompare
 public record CounterConditionDistance
 {
     [JsonPropertyName("value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }

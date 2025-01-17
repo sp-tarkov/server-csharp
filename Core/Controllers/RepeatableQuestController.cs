@@ -14,6 +14,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using Core.Utils.Extensions;
 
 namespace Core.Controllers;
 
@@ -315,28 +316,32 @@ public class RepeatableQuestController
         questPool.Pool.Pickup.Locations[ELocationName.any] = ["any"];
 
         var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel.Value, repeatableConfig);
-        var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<string, BossInfo>(eliminationConfig.Targets);
+        var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
 
         // Populate Elimination quest targets and their locations
         foreach (var target in targetsConfig) {
             // Target is boss
-            //if (target.isBoss)
-            //{
-            //    questPool.Pool.Elimination.Targets[targetKey] = new { locations: ["any"] };
-            //}
-            //else
-            //{
-            //    // Non-boss targets
-            //    var possibleLocations = locations;
+            if (target.Data.IsBoss)
+            {
+                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(target.Key);
+                    targets.Locations.Clear();
+                    targets.Locations.Add("any");
+            }
+            else
+            {
+                // Non-boss targets
+                var possibleLocations = locations;
 
-            //    var allowedLocations =
-            //    targetKey == "Savage"
-            //        ? possibleLocations.filter((location) => location != "laboratory") // Exclude labs for Savage targets.
-            //        : possibleLocations;
+                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(target.Key);
+                var allowedLocations =
+                target.Key == "Savage"
+                    ? targets.Locations.Where((location) => location != "laboratory") // Exclude labs for Savage targets.
+                    : possibleLocations;
 
-            //    questPool.Pool.Elimination.Targets[targetKey] = new { Locations = allowedLocations };
-            //}
-            _logger.Error("NOT IMPLEMENTED - GenerateQuestPool");
+                
+                targets.Locations.Clear();
+                targets.Locations.AddRange(allowedLocations);
+            }
         }
 
         return questPool;
