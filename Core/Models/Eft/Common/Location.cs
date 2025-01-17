@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Common;
 
-public class Location
+public record Location
 {
     /** Map meta-data */
     [JsonPropertyName("base")]
@@ -37,7 +37,7 @@ public class Location
     public Dictionary<string, object>? Statics { get; set; }
 }
 
-public class StaticContainer
+public record StaticContainer
 {
     [JsonPropertyName("containersGroups")]
     public Dictionary<string, ContainerMinMax>? ContainersGroups { get; set; }
@@ -46,7 +46,7 @@ public class StaticContainer
     public Dictionary<string, ContainerData>? Containers { get; set; }
 }
 
-public class ContainerMinMax
+public record ContainerMinMax
 {
     [JsonPropertyName("minContainers")]
     public int? MinContainers { get; set; }
@@ -61,13 +61,13 @@ public class ContainerMinMax
     public int? ChosenCount { get; set; }
 }
 
-public class ContainerData
+public record ContainerData
 {
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }
 }
 
-public class StaticLootDetails
+public record StaticLootDetails
 {
     [JsonPropertyName("itemcountDistribution")]
     public ItemCountDistribution[] ItemCountDistribution { get; set; }
@@ -76,7 +76,7 @@ public class StaticLootDetails
     public ItemDistribution[] ItemDistribution { get; set; }
 }
 
-public class ItemCountDistribution
+public record ItemCountDistribution
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -85,7 +85,7 @@ public class ItemCountDistribution
     public float? RelativeProbability { get; set; }
 }
 
-public class ItemDistribution
+public record ItemDistribution
 {
     [JsonPropertyName("tpl")]
     public string? Tpl { get; set; }
@@ -94,7 +94,7 @@ public class ItemDistribution
     public float? RelativeProbability { get; set; }
 }
 
-public class StaticPropsBase
+public record StaticPropsBase
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -130,13 +130,13 @@ public class StaticPropsBase
     public Item[] Items { get; set; }
 }
 
-public class StaticWeaponProps : StaticPropsBase
+public record StaticWeaponProps : StaticPropsBase
 {
     [JsonPropertyName("Items")]
     public Item[] Items { get; set; }
 }
 
-public class StaticContainerDetails
+public record StaticContainerDetails
 {
     [JsonPropertyName("staticWeapons")]
     public StaticWeaponProps[] StaticWeapons { get; set; }
@@ -148,7 +148,7 @@ public class StaticContainerDetails
     public StaticForcedProps[] StaticForced { get; set; }
 }
 
-public class StaticContainerData
+public record StaticContainerData
 {
     [JsonPropertyName("probability")]
     public float? Probability { get; set; }
@@ -157,7 +157,7 @@ public class StaticContainerData
     public StaticContainerProps? Template { get; set; }
 }
 
-public class StaticAmmoDetails
+public record StaticAmmoDetails
 {
     [JsonPropertyName("tpl")]
     public string? Tpl { get; set; }
@@ -166,7 +166,7 @@ public class StaticAmmoDetails
     public float? RelativeProbability { get; set; }
 }
 
-public class StaticForcedProps
+public record StaticForcedProps
 {
     [JsonPropertyName("containerId")]
     public string? ContainerId { get; set; }
@@ -175,13 +175,13 @@ public class StaticForcedProps
     public string? ItemTpl { get; set; }
 }
 
-public class StaticContainerProps : StaticPropsBase
+public record StaticContainerProps : StaticPropsBase
 {
     [JsonPropertyName("Items")]
     public StaticItem[] Items { get; set; }
 }
 
-public class StaticItem
+public record StaticItem
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

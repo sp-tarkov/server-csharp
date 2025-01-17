@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetAllAttachmentsRequestData : IRequestData
+public record GetAllAttachmentsRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string DialogId { get; set; }

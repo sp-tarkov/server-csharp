@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Location;
 
-public class RaidChanges
+public record RaidChanges
 {
     [JsonPropertyName("dynamicLootPercent")]
     public float? DynamicLootPercent { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common;
 
-public class MetricsTableData
+public record MetricsTableData
 {
     [JsonPropertyName("Keys")]
     public List<int>? Keys { get; set; }

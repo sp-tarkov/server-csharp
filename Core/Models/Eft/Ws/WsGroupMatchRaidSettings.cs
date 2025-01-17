@@ -3,7 +3,7 @@ using Core.Models.Eft.Match;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsGroupMatchRaidSettings : WsNotificationEvent
+public record WsGroupMatchRaidSettings : WsNotificationEvent
 {
     [JsonPropertyName("raidSettings")]
     public RaidSettings? RaidSettings { get; set; }

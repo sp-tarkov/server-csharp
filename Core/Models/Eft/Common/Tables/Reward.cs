@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Reward
+public record Reward
 {
     [JsonPropertyName("value")]
     public object? Value { get; set; } // TODO: Can be either string or number

@@ -3,7 +3,7 @@ using Core.Utils.Cloners;
 
 namespace Core.Models.Spt.Server;
 
-public class ExhaustableArray<T>
+public record ExhaustableArray<T>
 {
     private readonly RandomUtil _randomUtil;
     private readonly ICloner _cloner;

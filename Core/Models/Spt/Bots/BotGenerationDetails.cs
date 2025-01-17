@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Bots;
 
-public class BotGenerationDetails
+public record BotGenerationDetails
 {
     /// <summary>
     /// Should the bot be generated as a PMC

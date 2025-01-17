@@ -5,7 +5,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Trader
+public record Trader
 {
     [JsonPropertyName("assort")]
     public TraderAssort? Assort { get; set; }
@@ -26,7 +26,7 @@ public class Trader
     public List<TraderServiceModel>? Services { get; set; }
 }
 
-public class TraderBase
+public record TraderBase
 {
     [JsonPropertyName("refreshTraderRagfairOffers")]
     public bool? RefreshTraderRagfairOffers { get; set; }
@@ -119,7 +119,7 @@ public class TraderBase
     public bool? UnlockedByDefault { get; set; }
 }
 
-public class ItemBuyData
+public record ItemBuyData
 {
     [JsonPropertyName("category")]
     public List<string>? Category { get; set; }
@@ -128,7 +128,7 @@ public class ItemBuyData
     public List<string>? IdList { get; set; }
 }
 
-public class TraderInsurance
+public record TraderInsurance
 {
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
@@ -149,7 +149,7 @@ public class TraderInsurance
     public double? MinReturnHour { get; set; }
 }
 
-public class TraderLoyaltyLevel
+public record TraderLoyaltyLevel
 {
     [JsonPropertyName("buy_price_coef")]
     public double? BuyPriceCoefficient { get; set; }
@@ -177,7 +177,7 @@ public class TraderLoyaltyLevel
     public double? RepairPriceCoefficient { get; set; }
 }
 
-public class TraderRepair
+public record TraderRepair
 {
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
@@ -203,7 +203,7 @@ public class TraderRepair
 
 }
 
-public class TraderAssort
+public record TraderAssort
 {
     [JsonPropertyName("nextResupply")]
     public double? NextResupply { get; set; }
@@ -218,7 +218,7 @@ public class TraderAssort
     public Dictionary<string, int>? LoyalLevelItems { get; set; }
 }
 
-public class BarterScheme
+public record BarterScheme
 {
     [JsonPropertyName("count")]
     public double? Count { get; set; }
@@ -240,7 +240,7 @@ public class BarterScheme
     public DogtagExchangeSide? Side { get; set; }
 }
 
-public class Suit
+public record Suit
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -267,7 +267,7 @@ public class Suit
     public SuitRequirements? Requirements { get; set; }
 }
 
-public class SuitRequirements
+public record SuitRequirements
 {
     [JsonPropertyName("achievementRequirements")]
     public List<string>? AchievementRequirements { get; set; }
@@ -294,7 +294,7 @@ public class SuitRequirements
     public string? RequiredTid { get; set; }
 }
 
-public class ItemRequirement
+public record ItemRequirement
 {
     [JsonPropertyName("count")]
     public double? Count { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class LostOnDeathConfig : BaseConfig
+public record LostOnDeathConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-lostondeath";
@@ -20,7 +20,7 @@ public class LostOnDeathConfig : BaseConfig
     public bool QuestItems { get; set; }
 }
 
-public class LostEquipment
+public record LostEquipment
 {
     [JsonPropertyName("ArmBand")]
     public bool ArmBand { get; set; }

@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Services;
 
-public class LootRequest
+public record LootRequest
 {
     /// <summary>
     /// Count of weapons to generate
@@ -82,7 +82,7 @@ public class LootRequest
     public Dictionary<string, MinMax>? ForcedLoot { get; set; }
 }
 
-public class AirdropLootRequest : LootRequest
+public record AirdropLootRequest : LootRequest
 {
     /// <summary>
     /// Airdrop icon used by client to show crate type

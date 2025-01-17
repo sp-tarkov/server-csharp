@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class ChangeGroupMailOwnerRequest : IRequestData
+public record ChangeGroupMailOwnerRequest : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

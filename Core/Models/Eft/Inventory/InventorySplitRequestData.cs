@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventorySplitRequestData : InventoryBaseActionRequestData
+public record InventorySplitRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; } = "Split";

@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutCustomisation
+public record HideoutCustomisation
 {
     [JsonPropertyName("globals")]
     public List<HideoutCustomisationGlobal>? Globals { get; set; }
@@ -12,7 +12,7 @@ public class HideoutCustomisation
     public List<HideoutCustomisationSlot>? Slots { get; set; }
 }
 
-public class HideoutCustomisationGlobal
+public record HideoutCustomisationGlobal
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -36,7 +36,7 @@ public class HideoutCustomisationGlobal
     public string? ItemId { get; set; }
 }
 
-public class HideoutCustomisationSlot
+public record HideoutCustomisationSlot
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

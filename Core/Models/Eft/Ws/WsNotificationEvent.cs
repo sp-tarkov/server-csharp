@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsNotificationEvent
+public record WsNotificationEvent
 {
     [JsonPropertyName("type")]
     public NotificationEventType? EventType { get; set; }

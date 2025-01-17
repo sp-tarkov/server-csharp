@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupPlayerRemoveRequest : IRequestData
+public record MatchGroupPlayerRemoveRequest : IRequestData
 {
     [JsonPropertyName("aidToKick")]
     public string? AidToKick { get; set; }

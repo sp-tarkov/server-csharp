@@ -4,7 +4,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsChatMessageReceived : WsNotificationEvent
+public record WsChatMessageReceived : WsNotificationEvent
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

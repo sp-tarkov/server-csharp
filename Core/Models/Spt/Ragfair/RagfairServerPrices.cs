@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Ragfair;
 
-public class RagfairServerPrices
+public record RagfairServerPrices
 {
     [JsonPropertyName("static")]
     public Dictionary<string, int>? Static { get; set; }

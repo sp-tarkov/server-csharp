@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Notes;
 
-public class NoteActionData : BaseInteractionRequestData
+public record NoteActionData : BaseInteractionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -15,7 +15,7 @@ public class NoteActionData : BaseInteractionRequestData
     public Note? Note { get; set; }
 }
 
-public class Note
+public record Note
 {
     [JsonPropertyName("Time")]
     public int? Time { get; set; }

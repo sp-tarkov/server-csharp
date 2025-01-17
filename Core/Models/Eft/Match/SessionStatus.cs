@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class SessionStatus
+public record SessionStatus
 {
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }

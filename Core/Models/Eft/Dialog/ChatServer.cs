@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Dialog;
 
-public class ChatServer
+public record ChatServer
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -33,7 +33,7 @@ public class ChatServer
     public bool? IsDeveloper { get; set; }
 }
 
-public class Chat
+public record Chat
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

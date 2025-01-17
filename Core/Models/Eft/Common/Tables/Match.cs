@@ -2,13 +2,13 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Match
+public record Match
 {
     [JsonPropertyName("metrics")]
     public Metrics? Metrics { get; set; }
 }
 
-public class Metrics
+public record Metrics
 {
     [JsonPropertyName("Keys")]
     public List<int>? Keys { get; set; }

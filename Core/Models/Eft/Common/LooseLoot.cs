@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Common;
 
-public class LooseLoot
+public record LooseLoot
 {
     [JsonPropertyName("spawnpointCount")]
     public SpawnpointCount? SpawnpointCount { get; set; }
@@ -15,7 +15,7 @@ public class LooseLoot
     public List<Spawnpoint>? Spawnpoints { get; set; }
 }
 
-public class SpawnpointCount
+public record SpawnpointCount
 {
     [JsonPropertyName("mean")]
     public double? Mean { get; set; }
@@ -24,7 +24,7 @@ public class SpawnpointCount
     public double? Std { get; set; }
 }
 
-public class SpawnpointsForced
+public record SpawnpointsForced
 {
     [JsonPropertyName("locationId")]
     public string? LocationId { get; set; }
@@ -36,7 +36,7 @@ public class SpawnpointsForced
     public SpawnpointTemplate? Template { get; set; }
 }
 
-public class SpawnpointTemplate
+public record SpawnpointTemplate
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -72,7 +72,7 @@ public class SpawnpointTemplate
     public List<Item>? Items { get; set; }
 }
 
-public class GroupPosition
+public record GroupPosition
 {
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
@@ -87,7 +87,7 @@ public class GroupPosition
     public XYZ? Rotation { get; set; }
 }
 
-public class Spawnpoint
+public record Spawnpoint
 {
     [JsonPropertyName("locationId")]
     public string? LocationId { get; set; }
@@ -102,7 +102,7 @@ public class Spawnpoint
     public List<LooseLootItemDistribution>? ItemDistribution { get; set; }
 }
 
-public class LooseLootItemDistribution
+public record LooseLootItemDistribution
 {
     [JsonPropertyName("composedKey")]
     public ComposedKey? ComposedKey { get; set; }
@@ -111,7 +111,7 @@ public class LooseLootItemDistribution
     public double? RelativeProbability { get; set; }
 }
 
-public class ComposedKey
+public record ComposedKey
 {
     [JsonPropertyName("key")]
     public string? Key { get; set; }

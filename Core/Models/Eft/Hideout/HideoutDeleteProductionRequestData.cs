@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutDeleteProductionRequestData
+public record HideoutDeleteProductionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutDeleteProductionCommand";

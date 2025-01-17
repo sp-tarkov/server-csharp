@@ -5,7 +5,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
-public class QuestConfig : BaseConfig
+public record QuestConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-quest";
@@ -45,7 +45,7 @@ public class QuestConfig : BaseConfig
     public Dictionary<string, List<string>>? ProfileWhitelist { get; set; }
 }
 
-public class PlayerTypeQuestIds
+public record PlayerTypeQuestIds
 {
     [JsonPropertyName("pmc")]
     public QuestTypeIds? Pmc { get; set; }
@@ -54,7 +54,7 @@ public class PlayerTypeQuestIds
     public QuestTypeIds? Scav { get; set; }
 }
 
-public class QuestTypeIds
+public record QuestTypeIds
 {
     [JsonPropertyName("elimination")]
     public string? Elimination { get; set; }
@@ -69,7 +69,7 @@ public class QuestTypeIds
     public string? Pickup { get; set; }
 }
 
-public class EventQuestData
+public record EventQuestData
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -88,7 +88,7 @@ public class EventQuestData
     public bool? Yearly { get; set; }
 }
 
-public class RepeatableQuestConfig
+public record RepeatableQuestConfig
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -144,7 +144,7 @@ public class RepeatableQuestConfig
     public bool? KeepDailyQuestTypeOnReplacement { get; set; }
 }
 
-public class RewardScaling
+public record RewardScaling
 {
     [JsonPropertyName("levels")]
     public List<int>? Levels { get; set; }
@@ -174,7 +174,7 @@ public class RewardScaling
     public List<int>? SkillPointReward { get; set; }
 }
 
-public class TraderWhitelist
+public record TraderWhitelist
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -195,7 +195,7 @@ public class TraderWhitelist
     public double? WeaponRewardChancePercent { get; set; }
 }
 
-public class RepeatableQuestTypesConfig
+public record RepeatableQuestTypesConfig
 {
     [JsonPropertyName("Exploration")]
     public Exploration? Exploration { get; set; }
@@ -210,7 +210,7 @@ public class RepeatableQuestTypesConfig
     public List<EliminationConfig>? Elimination { get; set; }
 }
 
-public class Exploration : BaseQuestConfig
+public record Exploration : BaseQuestConfig
 {
     [JsonPropertyName("maxExtracts")]
     public int? MaximumExtracts { get; set; }
@@ -222,7 +222,7 @@ public class Exploration : BaseQuestConfig
     public SpecificExits? SpecificExits { get; set; }
 }
 
-public class SpecificExits
+public record SpecificExits
 {
     [JsonPropertyName("probability")]
     public double? Probability { get; set; }
@@ -231,7 +231,7 @@ public class SpecificExits
     public List<string>? PassageRequirementWhitelist { get; set; }
 }
 
-public class Completion : BaseQuestConfig
+public record Completion : BaseQuestConfig
 {
     [JsonPropertyName("minRequestedAmount")]
     public int? MinimumRequestedAmount { get; set; }
@@ -255,7 +255,7 @@ public class Completion : BaseQuestConfig
     public bool? UseBlacklist { get; set; }
 }
 
-public class Pickup : BaseQuestConfig
+public record Pickup : BaseQuestConfig
 {
     [JsonPropertyName("ItemTypeToFetchWithMaxCount")]
     public List<PickupTypeWithMaxCount>? ItemTypeToFetchWithMaxCount { get; set; }
@@ -266,7 +266,7 @@ public class Pickup : BaseQuestConfig
     public int? MaxItemFetchCount { get; set; }
 }
 
-public class PickupTypeWithMaxCount
+public record PickupTypeWithMaxCount
 {
     [JsonPropertyName("itemType")]
     public string? ItemType { get; set; }
@@ -278,7 +278,7 @@ public class PickupTypeWithMaxCount
     public int? MinimumPickupCount { get; set; }
 }
 
-public class EliminationConfig : BaseQuestConfig
+public record EliminationConfig : BaseQuestConfig
 {
     [JsonPropertyName("levelRange")]
     public MinMax? LevelRange { get; set; }
@@ -338,19 +338,19 @@ public class EliminationConfig : BaseQuestConfig
     public List<WeaponRequirement>? WeaponRequirements { get; set; }
 }
 
-public class BaseQuestConfig
+public record BaseQuestConfig
 {
     [JsonPropertyName("possibleSkillRewards")]
     public List<string>? PossibleSkillRewards { get; set; }
 }
 
-public class Target : ProbabilityObject
+public record Target : ProbabilityObject
 {
     [JsonPropertyName("data")]
     public BossInfo? Data { get; set; }
 }
 
-public class BossInfo
+public record BossInfo
 {
     [JsonPropertyName("isBoss")]
     public bool? IsBoss { get; set; }
@@ -359,19 +359,19 @@ public class BossInfo
     public bool? IsPmc { get; set; }
 }
 
-public class BodyPart : ProbabilityObject
+public record BodyPart : ProbabilityObject
 {
     [JsonPropertyName("data")]
     public List<string>? Data { get; set; }
 }
 
-public class WeaponRequirement : ProbabilityObject
+public record WeaponRequirement : ProbabilityObject
 {
     [JsonPropertyName("data")]
     public List<string>? Data { get; set; }
 }
 
-public class ProbabilityObject
+public record ProbabilityObject
 {
     [JsonPropertyName("key")]
     public string? Key { get; set; }

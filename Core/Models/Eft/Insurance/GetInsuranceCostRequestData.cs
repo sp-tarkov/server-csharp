@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Insurance;
 
-public class GetInsuranceCostRequestData
+public record GetInsuranceCostRequestData
 {
     [JsonPropertyName("traders")]
     public List<string>? Traders { get; set; }

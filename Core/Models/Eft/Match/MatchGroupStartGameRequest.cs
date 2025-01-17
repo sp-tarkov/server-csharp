@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupStartGameRequest : IRequestData
+public record MatchGroupStartGameRequest : IRequestData
 {
     [JsonPropertyName("groupId")]
     public string? GroupId { get; set; }

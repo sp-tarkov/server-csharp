@@ -4,20 +4,20 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common;
 
-public class PmcData : BotBase
+public record PmcData : BotBase
 {
     [JsonPropertyName("Prestige")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, long>? Prestige { get; set; }
 }
 
-public class PostRaidPmcData : BotBase
+public record PostRaidPmcData : BotBase
 {
     [JsonPropertyName("Stats")]
     public PostRaidStats? Stats { get; set; }
 }
 
-public class PostRaidStats
+public record PostRaidStats
 {
     [JsonPropertyName("Eft")]
     public EftStats? Eft { get; set; }

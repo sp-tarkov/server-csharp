@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Profile;
 
-public class MessageContentRagfair
+public record MessageContentRagfair
 {
     [JsonPropertyName("offerId")]
     public string? OfferId { get; set; }

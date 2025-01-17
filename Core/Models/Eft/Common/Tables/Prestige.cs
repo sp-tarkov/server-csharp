@@ -2,13 +2,13 @@
 
 using System.Text.Json.Serialization;
 
-public class Prestige
+public record Prestige
 {
     [JsonPropertyName("elements")]
     public List<PrestigeElement>? Elements { get; set; }
 }
 
-public class PrestigeElement
+public record PrestigeElement
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -29,7 +29,7 @@ public class PrestigeElement
     public string? BigImage { get; set; }
 }
 
-public class TransferConfigs
+public record TransferConfigs
 {
     [JsonPropertyName("stashConfig")]
     public StashPrestigeConfig? StashConfig { get; set; }
@@ -41,7 +41,7 @@ public class TransferConfigs
     public PrestigeMasteringConfig? MasteringConfig { get; set; }
 }
 
-public class StashPrestigeConfig
+public record StashPrestigeConfig
 {
     [JsonPropertyName("xCellCount")]
     public int? XCellCount { get; set; }
@@ -53,7 +53,7 @@ public class StashPrestigeConfig
     public StashPrestigeFilters? Filters { get; set; }
 }
 
-public class StashPrestigeFilters
+public record StashPrestigeFilters
 {
     [JsonPropertyName("includedItems")]
     public List<string>? IncludedItems { get; set; }
@@ -62,13 +62,13 @@ public class StashPrestigeFilters
     public List<string>? ExcludedItems { get; set; }
 }
 
-public class PrestigeSkillConfig
+public record PrestigeSkillConfig
 {
     [JsonPropertyName("transferMultiplier")]
     public double? TransferMultiplier { get; set; }
 }
 
-public class PrestigeMasteringConfig
+public record PrestigeMasteringConfig
 {
     [JsonPropertyName("transferMultiplier")]
     public double? TransferMultiplier { get; set; }

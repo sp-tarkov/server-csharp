@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Trade;
 
-public class ProcessBaseTradeRequestData
+public record ProcessBaseTradeRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

@@ -5,7 +5,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
-public class AirdropConfig : BaseConfig
+public record AirdropConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-airdrop";
@@ -26,7 +26,7 @@ public class AirdropConfig : BaseConfig
 /// <summary>
 /// Chance map will have an airdrop occur out of 100 - locations not included count as 0%
 /// </summary>
-public class AirdropChancePercent
+public record AirdropChancePercent
 {
     [JsonPropertyName("bigmap")]
     public double Bigmap { get; set; }
@@ -56,7 +56,7 @@ public class AirdropChancePercent
 /// <summary>
 /// Loot inside crate
 /// </summary>
-public class AirdropLoot
+public record AirdropLoot
 {
     [JsonPropertyName("icon")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

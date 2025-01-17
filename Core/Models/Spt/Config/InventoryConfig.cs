@@ -3,7 +3,7 @@ using Core.Models.Common;
 
 namespace Core.Models.Spt.Config;
 
-public class InventoryConfig : BaseConfig
+public record InventoryConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-inventory";
@@ -31,7 +31,7 @@ public class InventoryConfig : BaseConfig
     public List<string> DeprioritisedMoneyContainers { get; set; }
 }
 
-public class RewardDetails
+public record RewardDetails
 {
     [JsonPropertyName("_type")]
     public string? Type { get; set; }
@@ -49,7 +49,7 @@ public class RewardDetails
     public List<string>? RewardTypePool { get; set; }
 }
 
-public class SealedAirdropContainerSettings
+public record SealedAirdropContainerSettings
 {
     [JsonPropertyName("weaponRewardWeight")]
     public Dictionary<string, double> WeaponRewardWeight { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class SurveyResponseData
+public record SurveyResponseData
 {
     [JsonPropertyName("locale")]
     public Dictionary<string, Dictionary<string, string>>? Locale { get; set; }
@@ -11,7 +11,7 @@ public class SurveyResponseData
     public Survey? Survey { get; set; }
 }
 
-public class Survey
+public record Survey
 {
     [JsonPropertyName("id")]
     public int? Id { get; set; }
@@ -32,7 +32,7 @@ public class Survey
     public bool? IsNew { get; set; }
 }
 
-public class WelcomePageData
+public record WelcomePageData
 {
     [JsonPropertyName("titleLocaleKey")]
     public string? TitleLocaleKey { get; set; }
@@ -44,13 +44,13 @@ public class WelcomePageData
     public string? DescriptionLocaleKey { get; set; }
 }
 
-public class FarewellPageData
+public record FarewellPageData
 {
     [JsonPropertyName("textLocaleKey")]
     public string? TextLocaleKey { get; set; }
 }
 
-public class SurveyQuestion
+public record SurveyQuestion
 {
     [JsonPropertyName("id")]
     public int? Id { get; set; }
@@ -74,7 +74,7 @@ public class SurveyQuestion
     public List<SurveyAnswer>? Answers { get; set; }
 }
 
-public class SurveyAnswer
+public record SurveyAnswer
 {
     [JsonPropertyName("id")]
     public int? Id { get; set; }

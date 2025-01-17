@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Profile;
 
-public class ProfileCreateRequestData : IRequestData
+public record ProfileCreateRequestData : IRequestData
 {
     [JsonPropertyName("side")]
     public string? Side { get; set; }

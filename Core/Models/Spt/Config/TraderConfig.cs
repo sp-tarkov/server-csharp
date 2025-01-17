@@ -4,7 +4,7 @@ using Core.Models.Spt.Services;
 
 namespace Core.Models.Spt.Config;
 
-public class TraderConfig : BaseConfig
+public record TraderConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-trader";
@@ -32,7 +32,7 @@ public class TraderConfig : BaseConfig
     public ModdedTraders ModdedTraders { get; set; }
 }
 
-public class UpdateTime
+public record UpdateTime
 {
     [JsonPropertyName("_name")]
     public string Name { get; set; }
@@ -45,7 +45,7 @@ public class UpdateTime
     public MinMax Seconds { get; set; }
 }
 
-public class FenceConfig
+public record FenceConfig
 {
     [JsonPropertyName("discountOptions")]
     public DiscountOptions DiscountOptions { get; set; }
@@ -129,7 +129,7 @@ public class FenceConfig
     public double PlayerRepMax { get; set; }
 }
 
-public class ItemDurabilityCurrentMax
+public record ItemDurabilityCurrentMax
 {
     [JsonPropertyName("current")]
     public MinMax Current { get; set; }
@@ -138,7 +138,7 @@ public class ItemDurabilityCurrentMax
     public MinMax Max { get; set; }
 }
 
-public class CoopExtractReward : LootRequest
+public record CoopExtractReward : LootRequest
 {
     [JsonPropertyName("sendGift")]
     public bool SendGift { get; set; }
@@ -153,7 +153,7 @@ public class CoopExtractReward : LootRequest
     public int GiftExpiryHours { get; set; }
 }
 
-public class DiscountOptions
+public record DiscountOptions
 {
     [JsonPropertyName("assortSize")]
     public int AssortSize { get; set; }
@@ -172,7 +172,7 @@ public class DiscountOptions
 }
 
 /** Custom trader data needed client side for things such as the clothing service */
-public class ModdedTraders
+public record ModdedTraders
 {
     /** Trader Ids to enable the clothing service for */
     [JsonPropertyName("clothingService")]

@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Profile;
 
-public class ProfileChangeVoiceRequestData : IRequestData
+public record ProfileChangeVoiceRequestData : IRequestData
 {
     [JsonPropertyName("voice")]
     public string? Voice { get; set; }

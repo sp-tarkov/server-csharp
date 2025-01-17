@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class SetFavoriteItems : InventoryBaseActionRequestData
+public record SetFavoriteItems : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "SetFavoriteItems";

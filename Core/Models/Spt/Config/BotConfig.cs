@@ -6,7 +6,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
-public class BotConfig : BaseConfig
+public record BotConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-bot";
@@ -100,7 +100,7 @@ public class BotConfig : BaseConfig
     public List<string> BotRolesThatMustHaveUniqueName { get; set; }
 }
 
-public class AssaultToBossConversion
+public record AssaultToBossConversion
 {
     [JsonPropertyName("bossConvertEnabled")]
     public bool BossConvertEnabled { get; set; }
@@ -113,7 +113,7 @@ public class AssaultToBossConversion
 }
 
 /** Number of bots to generate and store in cache on raid start per bot type */
-public class PresetBatch
+public record PresetBatch
 {
     [JsonPropertyName("assault")]
     public int Assault { get; set; }
@@ -254,7 +254,7 @@ public class PresetBatch
     public IDictionary<string, object> AdditionalData { get; set; }
 }
 
-public class WalletLootSettings
+public record WalletLootSettings
 {
     /// <summary>
     /// Chance wallets have loot in them
@@ -278,7 +278,7 @@ public class WalletLootSettings
     public List<string> WalletTplPool { get; set; }
 }
 
-public class EquipmentFilters
+public record EquipmentFilters
 {
     /// <summary>
     /// Limits for mod types per weapon .e.g. scopes
@@ -386,7 +386,7 @@ public class EquipmentFilters
     public bool? ForceRigWhenNoVest { get; set; }
 }
 
-public class ModLimits
+public record ModLimits
 {
     /// <summary>
     /// How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
@@ -401,7 +401,7 @@ public class ModLimits
     public int? LightLaserLimit { get; set; }
 }
 
-public class RandomisationDetails
+public record RandomisationDetails
 {
     /// <summary>
     /// Between what levels do these randomisation setting apply to
@@ -452,7 +452,7 @@ public class RandomisationDetails
     public Dictionary<string, double>? MinimumMagazineSize { get; set; }
 }
 
-public class NighttimeChanges
+public record NighttimeChanges
 {
     /// <summary>
     /// Applies changes to values stored in equipmentMods
@@ -462,7 +462,7 @@ public class NighttimeChanges
     //public Dictionary<string, float> WeaponModsModifiers { get; set; } //TODO
 }
 
-public class EquipmentFilterDetails
+public record EquipmentFilterDetails
 {
     /// <summary>
     /// Between what levels do these equipment filter setting apply to
@@ -489,7 +489,7 @@ public class EquipmentFilterDetails
     public Dictionary<string, List<string>>? Cartridge { get; set; }
 }
 
-public class WeightingAdjustmentDetails
+public record WeightingAdjustmentDetails
 {
     /// <summary>
     /// Between what levels do these weight settings apply to
@@ -516,7 +516,7 @@ public class WeightingAdjustmentDetails
     public AdjustmentDetails? Clothing { get; set; }
 }
 
-public class AdjustmentDetails
+public record AdjustmentDetails
 {
     [JsonPropertyName("add")]
     public Dictionary<string, Dictionary<string, float>> Add { get; set; }
@@ -531,7 +531,7 @@ public class ArmorPlateWeights : Dictionary<string, object>
     public MinMax LevelRange { get; set; }
 }
 
-public class RandomisedResourceDetails
+public record RandomisedResourceDetails
 {
     [JsonPropertyName("food")]
     public RandomisedResourceValues Food { get; set; }
@@ -540,7 +540,7 @@ public class RandomisedResourceDetails
     public RandomisedResourceValues Meds { get; set; }
 }
 
-public class RandomisedResourceValues
+public record RandomisedResourceValues
 {
     /// <summary>
     /// Minimum percent of item to randomized between min and max resource

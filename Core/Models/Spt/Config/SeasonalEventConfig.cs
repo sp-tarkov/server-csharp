@@ -5,7 +5,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
-public class SeasonalEventConfig : BaseConfig
+public record SeasonalEventConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-seasonalevents";
@@ -49,7 +49,7 @@ public class SeasonalEventConfig : BaseConfig
     public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BotAppearanceChanges { get; set; }
 }
 
-public class SeasonalEvent
+public record SeasonalEvent
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -83,7 +83,7 @@ public class SeasonalEvent
     public SeasonalEventSettings? SettingsDoNOTUse { set => Settings = value; }
 }
 
-public class SeasonalEventSettings
+public record SeasonalEventSettings
 {
     [JsonPropertyName("enableSummoning")]
     public bool? EnableSummoning { get; set; }
@@ -126,7 +126,7 @@ public class SeasonalEventSettings
     
 }
 
-public class ZombieSettings
+public record ZombieSettings
 {
     [JsonPropertyName("enabled")]
     public bool? Enabled { get; set; }
@@ -141,7 +141,7 @@ public class ZombieSettings
     public List<string>? DisableWaves { get; set; }
 }
 
-public class GifterSetting
+public record GifterSetting
 {
     [JsonPropertyName("map")]
     public string? Map { get; set; }

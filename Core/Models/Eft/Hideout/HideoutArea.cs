@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutArea
+public record HideoutArea
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -40,7 +40,7 @@ public class HideoutArea
     public Dictionary<string, Stage>? Stages { get; set; }
 }
 
-public class HideoutAreaRequirement
+public record HideoutAreaRequirement
 {
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
@@ -52,7 +52,7 @@ public class HideoutAreaRequirement
     public string? Type { get; set; }
 }
 
-public class Stage
+public record Stage
 {
     [JsonPropertyName("autoUpgrade")]
     public bool? AutoUpgrade { get; set; }
@@ -86,7 +86,7 @@ public class Stage
     public int? Slots { get; set; }
 }
 
-public class StageImprovement
+public record StageImprovement
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -101,7 +101,7 @@ public class StageImprovement
     public List<StageImprovementRequirement>? Requirements { get; set; }
 }
 
-public class StageImprovementBonus
+public record StageImprovementBonus
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -126,7 +126,7 @@ public class StageImprovementBonus
     public bool? IsVisible { get; set; }
 }
 
-public class StageImprovementRequirement
+public record StageImprovementRequirement
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }
@@ -147,7 +147,7 @@ public class StageImprovementRequirement
     public string? Type { get; set; }
 }
 
-public class StageRequirement : RequirementBase
+public record StageRequirement : RequirementBase
 {
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }

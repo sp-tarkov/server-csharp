@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public class Money
+public record Money
 {
     public const string ROUBLES = "5449016a4bdc2d6f028b456f";
     public const string EUROS = "569668774bdc2da2298b4568";

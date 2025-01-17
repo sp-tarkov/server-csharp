@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Server;
 
-public class LocaleBase
+public record LocaleBase
 {
     [JsonPropertyName("global")]
     public Dictionary<string, Dictionary<string, string>>? Global { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class GetRaidTimeResponse
+public record GetRaidTimeResponse
 {
     [JsonPropertyName("RaidTimeMinutes")]
     public int? RaidTimeMinutes { get; set; }
@@ -17,7 +17,7 @@ public class GetRaidTimeResponse
     public List<ExtractChange>? ExitChanges { get; set; }
 }
 
-public class ExtractChange
+public record ExtractChange
 {
     [JsonPropertyName("Name")]
     public string? Name { get; set; }

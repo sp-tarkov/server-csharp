@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class ServerDetails
+public record ServerDetails
 {
     [JsonPropertyName("ip")]
     public string? Ip { get; set; }

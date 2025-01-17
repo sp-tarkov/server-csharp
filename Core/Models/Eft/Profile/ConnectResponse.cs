@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Profile;
 
-public class ConnectResponse
+public record ConnectResponse
 {
     [JsonPropertyName("backendUrl")]
     public string? BackendUrl { get; set; }

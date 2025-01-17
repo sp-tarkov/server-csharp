@@ -4,7 +4,7 @@ using Core.Utils.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class ProfileTemplates
+public record ProfileTemplates
 {
     [JsonPropertyName("Standard")]
     public ProfileSides? Standard { get; set; }
@@ -42,7 +42,7 @@ public class ProfileTemplates
     }
 }
 
-public class ProfileSides
+public record ProfileSides
 {
     [JsonPropertyName("descriptionLocaleKey")]
     public string? DescriptionLocaleKey { get; set; }
@@ -62,7 +62,7 @@ public class ProfileSides
     }
 }
 
-public class TemplateSide
+public record TemplateSide
 {
     [JsonPropertyName("character")]
     public PmcData? Character { get; set; }
@@ -86,7 +86,7 @@ public class TemplateSide
     public object? WeaponBuilds { get; set; }
 }
 
-public class ProfileTraderTemplate
+public record ProfileTraderTemplate
 {
     [JsonPropertyName("initialLoyaltyLevel")]
     public Dictionary<string, int>? InitialLoyaltyLevel { get; set; }

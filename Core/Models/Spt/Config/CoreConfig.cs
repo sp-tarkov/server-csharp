@@ -3,7 +3,7 @@ using Core.Models.Eft.Game;
 
 namespace Core.Models.Spt.Config;
 
-public class CoreConfig : BaseConfig
+public record CoreConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-core";
@@ -57,7 +57,7 @@ public class CoreConfig : BaseConfig
     public List<string>? CustomWatermarkLocaleKeys { get; set; }
 }
 
-public class BsgLogging
+public record BsgLogging
 {
     /**
      * verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals.
@@ -79,7 +79,7 @@ public class BsgLogging
     public bool SendToServer { get; set; }
 }
 
-public class Release
+public record Release
 {
     // Disclaimer outlining the intended usage of bleeding edge
     [JsonPropertyName("betaDisclaimerText")]
@@ -134,7 +134,7 @@ public class Release
     public int BetaDisclaimerTimeoutDelay { get; set; }
 }
 
-public class GameFixes
+public record GameFixes
 {
     /** Shotguns use a different value than normal guns causing huge pellet dispersion  */
     [JsonPropertyName("fixShotgunDispersion")]
@@ -153,7 +153,7 @@ public class GameFixes
     public bool FixProfileBreakingInventoryItemIssues { get; set; }
 }
 
-public class ServerFeatures
+public record ServerFeatures
 {
     /* Controls whether or not the server attempts to download mod dependencies not included in the server's executable */
     [JsonPropertyName("autoInstallModDependencies")]
@@ -170,7 +170,7 @@ public class ServerFeatures
     public List<string> CreateNewProfileTypesBlacklist { get; set; }
 }
 
-public class ChatbotFeatures
+public record ChatbotFeatures
 {
     [JsonPropertyName("sptFriendGiftsEnabled")]
     public bool SptFriendGiftsEnabled { get; set; }
@@ -188,7 +188,7 @@ public class ChatbotFeatures
     public Dictionary<string, bool> EnabledBots { get; set; }
 }
 
-public class CommandoFeatures
+public record CommandoFeatures
 {
     [JsonPropertyName("giveCommandEnabled")]
     public bool GiveCommandEnabled { get; set; }

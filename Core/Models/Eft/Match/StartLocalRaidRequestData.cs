@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class StartLocalRaidRequestData : IRequestData
+public record StartLocalRaidRequestData : IRequestData
 {
     [JsonPropertyName("serverId")]
     public string? ServerId { get; set; }

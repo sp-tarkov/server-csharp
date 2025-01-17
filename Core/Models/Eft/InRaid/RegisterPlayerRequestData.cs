@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.InRaid;
 
-public class RegisterPlayerRequestData : IRequestData
+public record RegisterPlayerRequestData : IRequestData
 {
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

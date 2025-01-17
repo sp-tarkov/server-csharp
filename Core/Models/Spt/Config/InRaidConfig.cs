@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class InRaidConfig : BaseConfig
+public record InRaidConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-inraid";
@@ -52,7 +52,7 @@ public class InRaidConfig : BaseConfig
     public double PlayerScavHostileChancePercent { get; set; }
 }
 
-public class RaidMenuSettings
+public record RaidMenuSettings
 {
     [JsonPropertyName("aiAmount")]
     public string AiAmount { get; set; }
@@ -79,7 +79,7 @@ public class RaidMenuSettings
     public bool RandomTime { get; set; }
 }
 
-public class RaidSave
+public record RaidSave
 {
     /** Should loot gained from raid be saved */
     [JsonPropertyName("loot")]

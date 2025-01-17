@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Spt.Logging;
 
-public class ClientLogRequest : IRequestData
+public record ClientLogRequest : IRequestData
 {
     [JsonPropertyName("Source")]
     public string? Source { get; set; }

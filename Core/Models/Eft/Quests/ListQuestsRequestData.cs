@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Quests;
 
-public class ListQuestsRequestData : IRequestData
+public record ListQuestsRequestData : IRequestData
 {
     [JsonPropertyName("completed")]
     public bool? Completed { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Ragfair;
 
-public class TplWithFleaPrice
+public record TplWithFleaPrice
 {
     [JsonPropertyName("tpl")]
     public string? Tpl { get; set; }

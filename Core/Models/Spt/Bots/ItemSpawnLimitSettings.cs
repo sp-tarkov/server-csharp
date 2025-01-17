@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Bots;
 
-public class ItemSpawnLimitSettings
+public record ItemSpawnLimitSettings
 {
     [JsonPropertyName("currentLimits")]
     public Dictionary<string, double>? CurrentLimits { get; set; }

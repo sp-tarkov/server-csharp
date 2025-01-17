@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Mod;
 
-public class PackageJsonData
+public record PackageJsonData
 {
     [JsonPropertyName("incompatibilities")]
     public List<string>? Incompatibilities { get; set; }

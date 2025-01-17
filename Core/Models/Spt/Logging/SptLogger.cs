@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Spt.Logging;
 
-public class SptLogger
+public record SptLogger
 {
     public object Error { get; set; } // error: (msg: string | Record<string, unknown>) => void;
     public object Warn { get; set; } // warn: (msg: string | Record<string, unknown>) => void;

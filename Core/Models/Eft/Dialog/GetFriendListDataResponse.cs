@@ -3,7 +3,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetFriendListDataResponse
+public record GetFriendListDataResponse
 {
     [JsonPropertyName("Friends")]
     public List<UserDialogInfo>? Friends { get; set; }

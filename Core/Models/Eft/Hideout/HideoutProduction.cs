@@ -3,7 +3,7 @@ using Core.Models.Common;
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutProductionData
+public record HideoutProductionData
 {
     [JsonPropertyName("recipes")]
     public List<HideoutProduction>? Recipes { get; set; }
@@ -15,7 +15,7 @@ public class HideoutProductionData
     public List<CultistRecipe>? CultistRecipes { get; set; }
 }
 
-public class HideoutProduction
+public record HideoutProduction
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -55,7 +55,7 @@ public class HideoutProduction
     public bool? IsCodeProduction { get; set; }
 }
 
-public class Requirement : RequirementBase
+public record Requirement : RequirementBase
 {
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -88,13 +88,13 @@ public class Requirement : RequirementBase
     public List<string>? GameVersions { get; set; }
 }
 
-public class RequirementBase
+public record RequirementBase
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }
 
-public class ScavRecipe
+public record ScavRecipe
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -109,7 +109,7 @@ public class ScavRecipe
     public EndProducts? EndProducts { get; set; }
 }
 
-public class EndProducts
+public record EndProducts
 {
     [JsonPropertyName("Common")]
     public MinMax? Common { get; set; }
@@ -121,7 +121,7 @@ public class EndProducts
     public MinMax? Superrare { get; set; }
 }
 
-public class CultistRecipe
+public record CultistRecipe
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

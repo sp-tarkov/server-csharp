@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutImproveAreaRequestData
+public record HideoutImproveAreaRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutImproveArea";

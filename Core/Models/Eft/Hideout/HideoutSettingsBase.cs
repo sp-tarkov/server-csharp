@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutSettingsBase
+public record HideoutSettingsBase
 {
     [JsonPropertyName("generatorSpeedWithoutFuel")]
     public double? GeneratorSpeedWithoutFuel { get; set; }

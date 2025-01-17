@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public class BaseClasses
+public record BaseClasses
 {
     public static string WEAPON = "5422acb9af1c889c16000029";
     public static string UBGL = "55818b014bdc2ddc698b456b";

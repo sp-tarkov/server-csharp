@@ -3,7 +3,7 @@ using Core.Models.Eft.Hideout;
 
 namespace Core.Models.Spt.Hideout;
 
-public class Hideout
+public record Hideout
 {
     [JsonPropertyName("areas")]
     public List<HideoutArea>? Areas { get; set; }

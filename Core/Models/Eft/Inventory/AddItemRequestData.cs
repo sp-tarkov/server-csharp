@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class AddItemRequestData
+public record AddItemRequestData
 {
     // Trader id
     [JsonPropertyName("tid")]
@@ -12,7 +12,7 @@ public class AddItemRequestData
     public List<ItemToAdd>? Items { get; set; }
 }
 
-public class ItemToAdd
+public record ItemToAdd
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }

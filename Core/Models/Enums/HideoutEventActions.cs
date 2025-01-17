@@ -1,6 +1,6 @@
 namespace Core.Models.Enums;
 
-public class HideoutEventActions
+public record HideoutEventActions
 {
     public const string HIDEOUT_UPGRADE = "HideoutUpgrade";
     public const string HIDEOUT_UPGRADE_COMPLETE = "HideoutUpgradeComplete";

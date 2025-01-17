@@ -2,13 +2,13 @@
 
 namespace Core.Models.Spt.Config;
 
-public class BaseConfig
+public record BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; }
 }
 
-public class RunIntervalValues
+public record RunIntervalValues
 {
     [JsonPropertyName("inRaid")]
     public int InRaid { get; set; }

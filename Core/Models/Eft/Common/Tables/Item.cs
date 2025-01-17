@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Item
+public record Item
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -26,7 +26,7 @@ public class Item
     public Upd? Upd { get; set; }
 }
 
-public class ItemLocation
+public record ItemLocation
 {
     public double? X { get; set; }
     public double? Y { get; set; }
@@ -37,7 +37,7 @@ public class ItemLocation
     public object? Rotation { get; set; } // TODO: Can be string or boolean
 }
 
-public class Upd
+public record Upd
 {
     public UpdBuff? Buff { get; set; }
     public int? OriginalStackObjectsCount { get; set; }
@@ -79,7 +79,7 @@ public enum PinLockState
     Pinned
 }
 
-public class UpdBuff
+public record UpdBuff
 {
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }
@@ -94,19 +94,19 @@ public class UpdBuff
     public int? ThresholdDurability { get; set; }
 }
 
-public class UpdTogglable
+public record UpdTogglable
 {
     [JsonPropertyName("On")]
     public bool? On { get; set; }
 }
 
-public class UpdMap
+public record UpdMap
 {
     [JsonPropertyName("Markers")]
     public List<MapMarker>? Markers { get; set; }
 }
 
-public class MapMarker
+public record MapMarker
 {
     [JsonPropertyName("Type")]
     public string? Type { get; set; }
@@ -121,7 +121,7 @@ public class MapMarker
     public string? Note { get; set; }
 }
 
-public class UpdTag
+public record UpdTag
 {
     [JsonPropertyName("Color")]
     public int? Color { get; set; }
@@ -130,13 +130,13 @@ public class UpdTag
     public string? Name { get; set; }
 }
 
-public class UpdFaceShield
+public record UpdFaceShield
 {
     [JsonPropertyName("Hits")]
     public int? Hits { get; set; }
 }
 
-public class UpdRepairable
+public record UpdRepairable
 {
     [JsonPropertyName("Durability")]
     public double? Durability { get; set; }
@@ -145,19 +145,19 @@ public class UpdRepairable
     public double? MaxDurability { get; set; }
 }
 
-public class UpdRecodableComponent
+public record UpdRecodableComponent
 {
     [JsonPropertyName("IsEncoded")]
     public bool? IsEncoded { get; set; }
 }
 
-public class UpdMedKit
+public record UpdMedKit
 {
     [JsonPropertyName("HpResource")]
     public double? HpResource { get; set; }
 }
 
-public class UpdSight
+public record UpdSight
 {
     [JsonPropertyName("ScopesCurrentCalibPointIndexes")]
     public List<int>? ScopesCurrentCalibPointIndexes { get; set; }
@@ -169,31 +169,31 @@ public class UpdSight
     public int? SelectedScope { get; set; }
 }
 
-public class UpdFoldable
+public record UpdFoldable
 {
     [JsonPropertyName("Folded")]
     public bool? Folded { get; set; }
 }
 
-public class UpdFireMode
+public record UpdFireMode
 {
     [JsonPropertyName("FireMode")]
     public string? FireMode { get; set; }
 }
 
-public class UpdFoodDrink
+public record UpdFoodDrink
 {
     [JsonPropertyName("HpPercent")]
     public double? HpPercent { get; set; }
 }
 
-public class UpdKey
+public record UpdKey
 {
     [JsonPropertyName("NumberOfUsages")]
     public double? NumberOfUsages { get; set; }
 }
 
-public class UpdResource
+public record UpdResource
 {
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
@@ -202,7 +202,7 @@ public class UpdResource
     public double? UnitsConsumed { get; set; }
 }
 
-public class UpdLight
+public record UpdLight
 {
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
@@ -211,7 +211,7 @@ public class UpdLight
     public int? SelectedMode { get; set; }
 }
 
-public class UpdDogtag
+public record UpdDogtag
 {
     [JsonPropertyName("AccountId")]
     public string? AccountId { get; set; }
@@ -247,19 +247,19 @@ public class UpdDogtag
     public string? WeaponName { get; set; }
 }
 
-public class UpdSideEffect
+public record UpdSideEffect
 {
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 }
 
-public class UpdRepairKit
+public record UpdRepairKit
 {
     [JsonPropertyName("Resource")]
     public double? Resource { get; set; }
 }
 
-public class UpdCultistAmulet
+public record UpdCultistAmulet
 {
     [JsonPropertyName("NumberOfUsages")]
     public double? NumberOfUsages { get; set; }

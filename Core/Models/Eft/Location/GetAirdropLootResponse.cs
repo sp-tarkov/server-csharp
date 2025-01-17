@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Location;
 
-public class GetAirdropLootResponse
+public record GetAirdropLootResponse
 {
     // The type of airdrop
     [JsonPropertyName("icon")]

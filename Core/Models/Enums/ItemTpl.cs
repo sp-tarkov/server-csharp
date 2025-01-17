@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public class ItemTpl
+public record ItemTpl
 {
     public static string AMMOBOX_127X33_COPPER_20RND = "676009ddb623f3b8ba079419";
     public static string AMMOBOX_127X33_FMJ_20RND = "676009ed8f1fee08740f9479";

@@ -1,6 +1,6 @@
 namespace Core.Models.Eft.Ws;
 
-public class WsPing : WsNotificationEvent
+public record WsPing : WsNotificationEvent
 {
     public WsPing()
     {

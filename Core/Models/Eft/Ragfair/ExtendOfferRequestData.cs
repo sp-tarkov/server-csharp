@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class ExtendOfferRequestData
+public record ExtendOfferRequestData
 {
     [JsonPropertyName("offerId")]
     public string? OfferId { get; set; }

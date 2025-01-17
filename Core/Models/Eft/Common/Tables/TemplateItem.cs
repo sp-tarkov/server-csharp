@@ -3,7 +3,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class TemplateItem
+public record TemplateItem
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -24,7 +24,7 @@ public class TemplateItem
     public string? Prototype { get; set; }
 }
 
-public class Props
+public record Props
 {
     [JsonPropertyName("AllowSpawnOnLocations")]
     public List<string>? AllowSpawnOnLocations { get; set; }
@@ -1359,7 +1359,7 @@ public class Props
     public Dictionary<string, object> OtherProperties { get; set; } 
 }
 
-public class WeaponRecoilSettings
+public record WeaponRecoilSettings
 {
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
@@ -1368,7 +1368,7 @@ public class WeaponRecoilSettings
     public List<WeaponRecoilSettingValues>? Values { get; set; }
 }
 
-public class WeaponRecoilSettingValues
+public record WeaponRecoilSettingValues
 {
     [JsonPropertyName("Enable")]
     public bool? Enable { get; set; }
@@ -1380,7 +1380,7 @@ public class WeaponRecoilSettingValues
     public string? Target { get; set; }
 }
 
-public class WeaponRecoilProcess
+public record WeaponRecoilProcess
 {
     [JsonPropertyName("ComponentType")]
     public string? ComponentType { get; set; }
@@ -1398,13 +1398,13 @@ public class WeaponRecoilProcess
     public WeaponRecoilTransformationCurve? TransformationCurve { get; set; }
 }
 
-public class WeaponRecoilTransformationCurve
+public record WeaponRecoilTransformationCurve
 {
     [JsonPropertyName("Keys")]
     public List<WeaponRecoilTransformationCurveKey>? Keys { get; set; }
 }
 
-public class WeaponRecoilTransformationCurveKey
+public record WeaponRecoilTransformationCurveKey
 {
     [JsonPropertyName("inTangent")]
     public double? InTangent { get; set; }
@@ -1419,7 +1419,7 @@ public class WeaponRecoilTransformationCurveKey
     public double? Value { get; set; }
 }
 
-public class HealthEffect
+public record HealthEffect
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
@@ -1428,7 +1428,7 @@ public class HealthEffect
     public double? Value { get; set; }
 }
 
-public class Prefab
+public record Prefab
 {
     [JsonPropertyName("path")]
     public string? Path { get; set; }
@@ -1437,7 +1437,7 @@ public class Prefab
     public string? Rcid { get; set; }
 }
 
-public class Grid
+public record Grid
 {
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
@@ -1455,7 +1455,7 @@ public class Grid
     public string? Proto { get; set; }
 }
 
-public class GridProps
+public record GridProps
 {
     [JsonPropertyName("filters")]
     public List<GridFilter>? Filters { get; set; }
@@ -1479,7 +1479,7 @@ public class GridProps
     public bool? IsSortingTable { get; set; }
 }
 
-public class GridFilter
+public record GridFilter
 {
     [JsonPropertyName("Filter")]
     public List<string>? Filter { get; set; }
@@ -1491,7 +1491,7 @@ public class GridFilter
     public bool? Locked { get; set; }
 }
 
-public class Slot
+public record Slot
 {
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
@@ -1518,7 +1518,7 @@ public class Slot
     public string? Proto { get; set; }
 }
 
-public class SlotProps
+public record SlotProps
 {
     [JsonPropertyName("filters")]
     public List<SlotFilter>? Filters { get; set; }
@@ -1527,7 +1527,7 @@ public class SlotProps
     public double? MaxStackCount { get; set; }
 }
 
-public class SlotFilter
+public record SlotFilter
 {
     [JsonPropertyName("Shift")]
     public double? Shift { get; set; }
@@ -1557,7 +1557,7 @@ public class SlotFilter
     public bool? BluntDamageReduceFromSoftArmor { get; set; }
 }
 
-public class StackSlot
+public record StackSlot
 {
     [JsonPropertyName("_name")]
     public string? Name { get; set; }
@@ -1581,13 +1581,13 @@ public class StackSlot
     public object? Upd { get; set; } // TODO: object here
 }
 
-public class StackSlotProps
+public record StackSlotProps
 {
     [JsonPropertyName("filters")]
     public List<SlotFilter>? Filters { get; set; }
 }
 
-public class RandomLootSettings
+public record RandomLootSettings
 {
     [JsonPropertyName("allowToSpawnIdenticalItems")]
     public bool? AllowToSpawnIdenticalItems { get; set; }
@@ -1614,7 +1614,7 @@ public class RandomLootSettings
     public double? MinCount { get; set; }
 }
 
-public class RandomLootExcluded
+public record RandomLootExcluded
 {
     [JsonPropertyName("categoryTemplates")]
     public List<object>? CategoryTemplates { get; set; } // TODO: object here
@@ -1626,7 +1626,7 @@ public class RandomLootExcluded
     public List<object>? Templates { get; set; } // TODO: object here
 }
 
-public class EffectsHealth
+public record EffectsHealth
 {
     [JsonPropertyName("Energy")]
     public EffectsHealthProps? Energy { get; set; }
@@ -1635,13 +1635,13 @@ public class EffectsHealth
     public EffectsHealthProps? Hydration { get; set; }
 }
 
-public class EffectsHealthProps
+public record EffectsHealthProps
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 }
 
-public class EffectsDamage
+public record EffectsDamage
 {
     [JsonPropertyName("Pain")]
     public EffectDamageProps? Pain { get; set; }
@@ -1665,7 +1665,7 @@ public class EffectsDamage
     public EffectDamageProps? DestroyedPart { get; set; }
 }
 
-public class EffectDamageProps
+public record EffectDamageProps
 {
     [JsonPropertyName("delay")]
     public double? Delay { get; set; }
@@ -1686,7 +1686,7 @@ public class EffectDamageProps
     public double? HealthPenaltyMax { get; set; }
 }
 
-public class Color
+public record Color
 {
     [JsonPropertyName("r")]
     public double? R { get; set; }
@@ -1701,7 +1701,7 @@ public class Color
     public double? A { get; set; }
 }
 
-public class ShotsGroupSettings
+public record ShotsGroupSettings
 {
     [JsonPropertyName("EndShotIndex")]
     public double? EndShotIndex { get; set; }

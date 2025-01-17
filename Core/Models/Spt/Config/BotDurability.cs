@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class BotDurability
+public record BotDurability
 {
     [JsonPropertyName("default")]
     public DefaultDurability Default { get; set; }
@@ -51,7 +51,7 @@ public class BotDurability
 }
 
 /** Durability values to be used when a more specific bot type can't be found */
-public class DefaultDurability
+public record DefaultDurability
 {
     [JsonPropertyName("armor")]
     public ArmorDurability Armor { get; set; }
@@ -60,7 +60,7 @@ public class DefaultDurability
     public WeaponDurability Weapon { get; set; }
 }
 
-public class PmcDurability
+public record PmcDurability
 {
     [JsonPropertyName("armor")]
     public PmcDurabilityArmor Armor { get; set; }
@@ -69,7 +69,7 @@ public class PmcDurability
     public WeaponDurability Weapon { get; set; }
 }
 
-public class PmcDurabilityArmor
+public record PmcDurabilityArmor
 {
     [JsonPropertyName("lowestMaxPercent")]
     public double LowestMaxPercent { get; set; }
@@ -87,7 +87,7 @@ public class PmcDurabilityArmor
     public double MinLimitPercent { get; set; }
 }
 
-public class ArmorDurability
+public record ArmorDurability
 {
     [JsonPropertyName("maxDelta")]
     public double MaxDelta { get; set; }
@@ -99,7 +99,7 @@ public class ArmorDurability
     public double MinLimitPercent { get; set; }
 }
 
-public class WeaponDurability
+public record WeaponDurability
 {
     [JsonPropertyName("lowestMax")]
     public double LowestMax { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Achievement
+public record Achievement
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -50,7 +50,7 @@ public class Achievement
     public int? Index { get; set; }
 }
 
-public class AchievementQuestConditionTypes
+public record AchievementQuestConditionTypes
 {
     [JsonPropertyName("started")]
     public List<QuestCondition>? Started { get; set; }

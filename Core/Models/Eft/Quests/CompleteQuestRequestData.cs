@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Quests;
 
-public class CompleteQuestRequestData
+public record CompleteQuestRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

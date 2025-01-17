@@ -3,7 +3,7 @@ using Core.Models.Eft.Match;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsGroupMatchInviteSend : WsNotificationEvent
+public record WsGroupMatchInviteSend : WsNotificationEvent
 {
     [JsonPropertyName("requestId")]
     public string? RequestId { get; set; }

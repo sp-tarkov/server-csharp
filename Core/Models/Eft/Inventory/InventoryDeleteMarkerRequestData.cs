@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryDeleteMarkerRequestData : InventoryBaseActionRequestData
+public record InventoryDeleteMarkerRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "DeleteMapMarker";

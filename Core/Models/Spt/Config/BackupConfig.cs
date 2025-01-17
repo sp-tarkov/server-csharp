@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-public class BackupConfig : BaseConfig
+public record BackupConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-backup";
@@ -20,7 +20,7 @@ public class BackupConfig : BaseConfig
     public BackupConfigInterval BackupInterval { get; set; }
 }
 
-public class BackupConfigInterval
+public record BackupConfigInterval
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }

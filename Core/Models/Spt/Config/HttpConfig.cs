@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class HttpConfig : BaseConfig
+public record HttpConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-http";

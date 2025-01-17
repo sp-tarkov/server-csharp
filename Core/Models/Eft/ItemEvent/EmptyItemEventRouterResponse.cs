@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.ItemEvent;
 
-public class EmptyItemEventRouterResponse : ItemEventRouterBase
+public record EmptyItemEventRouterResponse : ItemEventRouterBase
 {
     [JsonPropertyName("profileChanges")]
     public string? ProfileChanges { get; set; } = "";

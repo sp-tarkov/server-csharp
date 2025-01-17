@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Profile;
 
-public class SearchFriendRequestData : IRequestData
+public record SearchFriendRequestData : IRequestData
 {
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class CheckVersionResponse
+public record CheckVersionResponse
 {
     [JsonPropertyName("isvalid")]
     public bool? IsValid { get; set; }

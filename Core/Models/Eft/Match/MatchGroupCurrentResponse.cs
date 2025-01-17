@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupCurrentResponse
+public record MatchGroupCurrentResponse
 {
     [JsonPropertyName("squad")]
     public List<GroupCharacter>? Squad { get; set; }

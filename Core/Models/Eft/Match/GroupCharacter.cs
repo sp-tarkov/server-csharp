@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Match;
 
-public class GroupCharacter
+public record GroupCharacter
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -31,7 +31,7 @@ public class GroupCharacter
     public bool? LookingGroup { get; set; }
 }
 
-public class CharacterInfo
+public record CharacterInfo
 {
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
@@ -58,7 +58,7 @@ public class CharacterInfo
     public bool? HasCoopExtension { get; set; }
 }
 
-public class PlayerVisualRepresentation
+public record PlayerVisualRepresentation
 {
     [JsonPropertyName("Info")]
     public VisualInfo? Info { get; set; }
@@ -70,7 +70,7 @@ public class PlayerVisualRepresentation
     public Equipment? Equipment { get; set; }
 }
 
-public class VisualInfo
+public record VisualInfo
 {
     [JsonPropertyName("Side")]
     public string? Side { get; set; }
@@ -88,7 +88,7 @@ public class VisualInfo
     public string? GameVersion { get; set; }
 }
 
-public class Customization
+public record Customization
 {
     [JsonPropertyName("Head")]
     public string? Head { get; set; }
@@ -103,7 +103,7 @@ public class Customization
     public string? Hands { get; set; }
 }
 
-public class Equipment
+public record Equipment
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

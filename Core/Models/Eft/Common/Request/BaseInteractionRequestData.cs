@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Request;
 
-public class BaseInteractionRequestData
+public record BaseInteractionRequestData
 {
     [JsonPropertyName("Action")]
     public virtual string? Action { get; set; }
@@ -14,7 +14,7 @@ public class BaseInteractionRequestData
     public OwnerInfo? ToOwner { get; set; }
 }
 
-public class OwnerInfo
+public record OwnerInfo
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

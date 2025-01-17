@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsUserConfirmed : WsNotificationEvent
+public record WsUserConfirmed : WsNotificationEvent
 {
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }

@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Fence;
 
-public class CreateFenceAssortsResult
+public record CreateFenceAssortsResult
 {
     [JsonPropertyName("sptItems")]
     public List<List<Item>>? SptItems { get; set; }

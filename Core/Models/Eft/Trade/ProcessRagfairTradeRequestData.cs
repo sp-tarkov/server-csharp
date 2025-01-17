@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Trade;
 
-public class ProcessRagfairTradeRequestData
+public record ProcessRagfairTradeRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -11,7 +11,7 @@ public class ProcessRagfairTradeRequestData
     public List<OfferRequest>? Offers { get; set; }
 }
 
-public class OfferRequest
+public record OfferRequest
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -23,7 +23,7 @@ public class OfferRequest
     public List<ItemRequest>? Items { get; set; }
 }
 
-public class ItemRequest
+public record ItemRequest
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

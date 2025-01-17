@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupTransferRequest : IRequestData
+public record MatchGroupTransferRequest : IRequestData
 {
     [JsonPropertyName("aidToChange")]
     public string? AidToChange { get; set; }

@@ -6,7 +6,7 @@ using Core.Models.Spt.Dialog;
 
 namespace Core.Models.Spt.Config;
 
-public class GiftsConfig : BaseConfig
+public record GiftsConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-gifts";
@@ -15,7 +15,7 @@ public class GiftsConfig : BaseConfig
     public Dictionary<string, Gift> Gifts { get; set; }
 }
 
-public class Gift
+public record Gift
 {
     /// <summary>
     /// Items to send to player

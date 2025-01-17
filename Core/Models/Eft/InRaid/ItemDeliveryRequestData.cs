@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.InRaid;
 
-public class ItemDeliveryRequestData
+public record ItemDeliveryRequestData
 {
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }

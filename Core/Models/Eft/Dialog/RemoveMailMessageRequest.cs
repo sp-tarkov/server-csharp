@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class RemoveMailMessageRequest : IRequestData
+public record RemoveMailMessageRequest : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

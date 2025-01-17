@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Trade;
 
-public class SellScavItemsToFenceRequestData
+public record SellScavItemsToFenceRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "SellAllFromSavage";

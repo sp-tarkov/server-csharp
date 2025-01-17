@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HandleQTEEventRequestData
+public record HandleQTEEventRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

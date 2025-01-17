@@ -3,13 +3,13 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Game;
 
-public class CurrentGroupResponse
+public record CurrentGroupResponse
 {
     [JsonPropertyName("squad")]
     public List<CurrentGroupSquadMember>? Squad { get; set; }
 }
 
-public class CurrentGroupSquadMember
+public record CurrentGroupSquadMember
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -27,7 +27,7 @@ public class CurrentGroupSquadMember
     public bool? IsReady { get; set; }
 }
 
-public class CurrentGroupMemberInfo
+public record CurrentGroupMemberInfo
 {
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }

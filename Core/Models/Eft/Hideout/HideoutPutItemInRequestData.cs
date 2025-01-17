@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutPutItemInRequestData
+public record HideoutPutItemInRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutPutItemsInAreaSlots";
@@ -17,7 +17,7 @@ public class HideoutPutItemInRequestData
     public long? Timestamp { get; set; }
 }
 
-public class ItemDetails
+public record ItemDetails
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }

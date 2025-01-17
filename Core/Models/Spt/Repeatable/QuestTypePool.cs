@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Repeatable;
 
-public class QuestTypePool
+public record QuestTypePool
 {
     [JsonPropertyName("types")]
     public List<string>? Types { get; set; }
@@ -13,7 +13,7 @@ public class QuestTypePool
     public QuestPool? Pool { get; set; }
 }
 
-public class QuestPool
+public record QuestPool
 {
     [JsonPropertyName("Exploration")]
     public ExplorationPool? Exploration { get; set; }
@@ -25,19 +25,19 @@ public class QuestPool
     public ExplorationPool? Pickup { get; set; }
 }
 
-public class ExplorationPool
+public record ExplorationPool
 {
     [JsonPropertyName("locations")]
     public Dictionary<ELocationName, List<string>>? Locations { get; set; } // TODO: check the type, originally - Partial<Record<ELocationName, string[]>>
 }
 
-public class EliminationPool
+public record EliminationPool
 {
     [JsonPropertyName("targets")]
     public EliminationTargetPool? Targets { get; set; }
 }
 
-public class EliminationTargetPool
+public record EliminationTargetPool
 {
     [JsonPropertyName("Savage")]
     public TargetLocation? Savage { get; set; }
@@ -73,7 +73,7 @@ public class EliminationTargetPool
     public TargetLocation? BossBoarSniper { get; set; }
 }
 
-public class TargetLocation
+public record TargetLocation
 {
     [JsonPropertyName("locations")]
     public List<string>? Locations { get; set; }

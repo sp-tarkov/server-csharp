@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryTransferRequestData : InventoryBaseActionRequestData
+public record InventoryTransferRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Transfer";

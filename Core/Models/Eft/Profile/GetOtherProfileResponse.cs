@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Profile;
 
-public class GetOtherProfileResponse
+public record GetOtherProfileResponse
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -48,7 +48,7 @@ public class GetOtherProfileResponse
     public List<Item> Items { get; set; }
 }
 
-public class OtherProfileInfo
+public record OtherProfileInfo
 {
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }
@@ -72,7 +72,7 @@ public class OtherProfileInfo
     public long? RegistrationDate { get; set; }
 }
 
-public class OtherProfileCustomization
+public record OtherProfileCustomization
 {
     [JsonPropertyName("head")]
     public string? Head { get; set; }
@@ -90,7 +90,7 @@ public class OtherProfileCustomization
     public string? Dogtag { get; set; }
 }
 
-public class OtherProfileEquipment
+public record OtherProfileEquipment
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -99,13 +99,13 @@ public class OtherProfileEquipment
     public List<Item>? Items { get; set; }
 }
 
-public class OtherProfileStats
+public record OtherProfileStats
 {
     [JsonPropertyName("eft")]
     public OtherProfileSubStats? Eft { get; set; }
 }
 
-public class OtherProfileSubStats
+public record OtherProfileSubStats
 {
     [JsonPropertyName("totalInGameTime")]
     public long? TotalInGameTime { get; set; }

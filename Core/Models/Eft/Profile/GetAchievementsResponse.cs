@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Profile;
 
-public class GetAchievementsResponse
+public record GetAchievementsResponse
 {
     public List<Achievement>? Achievements { get; set; }
 }

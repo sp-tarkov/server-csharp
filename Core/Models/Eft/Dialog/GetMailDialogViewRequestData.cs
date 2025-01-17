@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetMailDialogViewRequestData : IRequestData
+public record GetMailDialogViewRequestData : IRequestData
 {
     [JsonPropertyName("type")]
     public MessageType? Type { get; set; }

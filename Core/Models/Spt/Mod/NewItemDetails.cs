@@ -4,13 +4,13 @@ using Props = Core.Models.Eft.Common.Props;
 
 namespace Core.Models.Spt.Mod;
 
-public class NewItemDetails : NewItemDetailsBase
+public record NewItemDetails : NewItemDetailsBase
 {
     [JsonPropertyName("newItem")]
     public TemplateItem? NewItem { get; set; }
 }
 
-public class NewItemFromCloneDetails : NewItemDetailsBase
+public record NewItemFromCloneDetails : NewItemDetailsBase
 {
     [JsonPropertyName("itemTplToClone")]
     public string? ItemTplToClone { get; set; }
@@ -25,7 +25,7 @@ public class NewItemFromCloneDetails : NewItemDetailsBase
     public string? NewId { get; set; } = "";
 }
 
-public class NewItemDetailsBase
+public record NewItemDetailsBase
 {
     [JsonPropertyName("fleaPriceRoubles")]
     public float? FleaPriceRoubles { get; set; }
@@ -40,7 +40,7 @@ public class NewItemDetailsBase
     public Dictionary<string, LocaleDetails>? Locales { get; set; }
 }
 
-public class LocaleDetails
+public record LocaleDetails
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -52,7 +52,7 @@ public class LocaleDetails
     public string? Description { get; set; }
 }
 
-public class CreateItemResult
+public record CreateItemResult
 {
     [JsonPropertyName("success")]
     public bool? Success { get; set; }

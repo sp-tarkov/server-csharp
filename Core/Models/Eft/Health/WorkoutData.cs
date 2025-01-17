@@ -11,7 +11,7 @@ public class WorkoutData : Dictionary<string, object>
     public WorkoutSkills? Skills { get; set; }
 }
 
-public class WorkoutSkills
+public record WorkoutSkills
 {
     [JsonPropertyName("Common")]
     public List<WorkoutSkillCommon>? Common { get; set; }
@@ -26,7 +26,7 @@ public class WorkoutSkills
     public int? Points { get; set; }
 }
 
-public class WorkoutSkillCommon
+public record WorkoutSkillCommon
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -41,7 +41,7 @@ public class WorkoutSkillCommon
     public long? LastAccess { get; set; }
 }
 
-public class WorkoutEffects
+public record WorkoutEffects
 {
     [JsonPropertyName("Effects")]
     public WorkoutEffectsParts? Effects { get; set; }
@@ -53,7 +53,7 @@ public class WorkoutEffects
     public int? Energy { get; set; }
 }
 
-public class WorkoutEffectsParts
+public record WorkoutEffectsParts
 {
     [JsonPropertyName("Head")]
     public WorkoutBodyPart? Head { get; set; }
@@ -80,7 +80,7 @@ public class WorkoutEffectsParts
     public WorkoutBodyPart? Common { get; set; }
 }
 
-public class WorkoutBodyPart
+public record WorkoutBodyPart
 {
     [JsonPropertyName("Regeneration")]
     public int? Regeneration { get; set; }

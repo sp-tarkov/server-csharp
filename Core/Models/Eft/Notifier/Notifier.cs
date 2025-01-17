@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Notifier;
 
-public class NotifierChannel
+public record NotifierChannel
 {
     [JsonPropertyName("server")]
     public string? Server { get; set; }

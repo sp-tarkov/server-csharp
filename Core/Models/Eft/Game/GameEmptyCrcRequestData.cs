@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class GameEmptyCrcRequestData : IRequestData
+public record GameEmptyCrcRequestData : IRequestData
 {
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

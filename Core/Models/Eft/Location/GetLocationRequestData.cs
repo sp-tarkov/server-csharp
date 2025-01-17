@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Location;
 
-public class GetLocationRequestData
+public record GetLocationRequestData
 {
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

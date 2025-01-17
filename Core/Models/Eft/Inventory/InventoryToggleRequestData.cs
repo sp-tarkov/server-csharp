@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryToggleRequestData : InventoryBaseActionRequestData
+public record InventoryToggleRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Toggle";

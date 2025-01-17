@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
-public class PlayerScavConfig : BaseConfig
+public record PlayerScavConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-playerscav";
@@ -13,7 +13,7 @@ public class PlayerScavConfig : BaseConfig
     public Dictionary<string, KarmaLevel> KarmaLevel { get; set; }
 }
 
-public class KarmaLevel
+public record KarmaLevel
 {
     [JsonPropertyName("botTypeForLoot")]
     public string BotTypeForLoot { get; set; }
@@ -34,7 +34,7 @@ public class KarmaLevel
     public Dictionary<string, double> LootItemsToAddChancePercent { get; set; }
 }
 
-public class Modifiers
+public record Modifiers
 {
     [JsonPropertyName("equipment")]
     public Dictionary<string, double> Equipment { get; set; }
@@ -43,7 +43,7 @@ public class Modifiers
     public Dictionary<string, double> Mod { get; set; }
 }
 
-public class ItemLimits
+public record ItemLimits
 {
     [JsonPropertyName("healing")]
     public GenerationData Healing { get; set; }

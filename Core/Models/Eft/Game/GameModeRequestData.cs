@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class GameModeRequestData : IRequestData
+public record GameModeRequestData : IRequestData
 {
     [JsonPropertyName("sessionMode")]
     public string? SessionMode { get; set; }

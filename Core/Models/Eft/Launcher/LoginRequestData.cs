@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Launcher;
 
-public class LoginRequestData : IRequestData
+public record LoginRequestData : IRequestData
 {
     [JsonPropertyName("username")]
     public string? Username { get; set; }

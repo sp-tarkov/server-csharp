@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.HttpResponse;
 
-public class GetBodyResponseData<T>
+public record GetBodyResponseData<T>
 {
     [JsonPropertyName("err")]
     public int? Err { get; set; }

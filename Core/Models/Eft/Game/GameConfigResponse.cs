@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class GameConfigResponse
+public record GameConfigResponse
 {
     [JsonPropertyName("aid")]
     public double? Aid { get; set; }
@@ -48,7 +48,7 @@ public class GameConfigResponse
     public PurchasedGames? PurchasedGames { get; set; }
 }
 
-public class PurchasedGames
+public record PurchasedGames
 {
     [JsonPropertyName("eft")]
     public bool? IsEftPurchased { get; set; }
@@ -57,7 +57,7 @@ public class PurchasedGames
     public bool? IsArenaPurchased { get; set; }
 }
 
-public class Backend
+public record Backend
 {
     [JsonPropertyName("Lobby")]
     public string? Lobby { get; set; }

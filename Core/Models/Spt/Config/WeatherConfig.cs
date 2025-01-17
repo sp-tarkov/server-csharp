@@ -5,7 +5,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Spt.Config;
 
-public class WeatherConfig : BaseConfig
+public record WeatherConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string? Kind { get; set; } = "spt-weather";
@@ -23,7 +23,7 @@ public class WeatherConfig : BaseConfig
     public Season? OverrideSeason { get; set; }
 }
 
-public class SeasonDateTimes
+public record SeasonDateTimes
 {
     [JsonPropertyName("seasonType")]
     public Season? SeasonType { get; set; }
@@ -48,7 +48,7 @@ public class SeasonDateTimes
     public int? EndMonth { get; set; }
 }
 
-public class WeatherValues
+public record WeatherValues
 {
     [JsonPropertyName("seasonValues")]
     public Dictionary<string, SeasonalValues>? SeasonValues { get; set; }
@@ -62,7 +62,7 @@ public class WeatherValues
     public WeatherSettings<int>? TimePeriod { get; set; }
 }
 
-public class SeasonalValues
+public record SeasonalValues
 {
     [JsonPropertyName("clouds")]
     public WeatherSettings<double>? Clouds { get; set; }
@@ -92,7 +92,7 @@ public class SeasonalValues
     public MinMax? Pressure { get; set; }
 }
 
-public class TempDayNight
+public record TempDayNight
 {
     [JsonPropertyName("day")]
     public MinMax? Day { get; set; }
@@ -101,7 +101,7 @@ public class TempDayNight
     public MinMax? Night { get; set; }
 }
 
-public class WeatherSettings<T>
+public record WeatherSettings<T>
 {
     [JsonPropertyName("values")]
     public List<T>? Values { get; set; }

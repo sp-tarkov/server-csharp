@@ -1,6 +1,6 @@
 ﻿// namespace Core.Models.Spt.Logging;
 //
-// public struct LogTextColor
+// public record LogTextColor
 // {
 //     public const string BLACK = "black";
 //     public const string RED = "red";

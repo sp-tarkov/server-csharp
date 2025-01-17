@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Dialog;
 
-public class FriendRequestSendResponse
+public record FriendRequestSendResponse
 {
     [JsonPropertyName("status")]
     public int? Status { get; set; }

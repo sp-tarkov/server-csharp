@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Common;
 
 using System.Text.Json.Serialization;
 
-public class Globals
+public record Globals
 {
 
     [JsonPropertyName("config")]
@@ -24,7 +24,7 @@ public class Globals
     public Dictionary<string, Preset>? ItemPresets { get; set; }
 }
 
-public class PlayerSettings
+public record PlayerSettings
 {
     [JsonPropertyName("BaseMaxMovementRolloff")]
     public double? BaseMaxMovementRolloff { get; set; }
@@ -48,7 +48,7 @@ public class PlayerSettings
     public double? OutdoorRolloffMultiplier { get; set; }
 }
 
-public class MovementRolloffMultiplier
+public record MovementRolloffMultiplier
 {
     [JsonPropertyName("MovementState")]
     public string? MovementState { get; set; }
@@ -57,7 +57,7 @@ public class MovementRolloffMultiplier
     public double? RolloffMultiplier { get; set; }
 }
 
-public class RadioBroadcastSettings
+public record RadioBroadcastSettings
 {
     [JsonPropertyName("EnabledBroadcast")]
     public bool? EnabledBroadcast { get; set; }
@@ -66,7 +66,7 @@ public class RadioBroadcastSettings
     public List<RadioStation>? RadioStations { get; set; }
 }
 
-public class RadioStation
+public record RadioStation
 {
     [JsonPropertyName("Enabled")]
     public bool? Enabled { get; set; }
@@ -75,7 +75,7 @@ public class RadioStation
     public string? Station { get; set; }
 }
 
-public class LocationInfection
+public record LocationInfection
 {
     [JsonPropertyName("Interchange")]
     public double? Interchange { get; set; }
@@ -108,7 +108,7 @@ public class LocationInfection
     public double? Laboratory { get; set; }
 }
 
-public class ArtilleryShelling
+public record ArtilleryShelling
 {
     [JsonPropertyName("ArtilleryMapsConfigs")]
     public Dictionary<string, ArtilleryMapSettings>? ArtilleryMapsConfigs { get; set; }
@@ -120,7 +120,7 @@ public class ArtilleryShelling
     public double? MaxCalledShellingCount { get; set; }
 }
 
-public class ArtilleryMapSettings
+public record ArtilleryMapSettings
 {
     [JsonPropertyName("PlanedShellingOn")]
     public bool? PlanedShellingOn { get; set; }
@@ -156,7 +156,7 @@ public class ArtilleryMapSettings
     public XYZ? PauseBetweenShellings { get; set; }
 }
 
-public class ShellingZone
+public record ShellingZone
 {
     [JsonPropertyName("ID")]
     public double? ID { get; set; }
@@ -210,13 +210,13 @@ public class ShellingZone
     public bool? IsActive { get; set; }
 }
 
-public class AlarmStage
+public record AlarmStage
 {
     [JsonPropertyName("Value")]
     public Position? Value { get; set; }
 }
 
-public class Brigade
+public record Brigade
 {
     [JsonPropertyName("ID")]
     public double? Id { get; set; }
@@ -225,13 +225,13 @@ public class Brigade
     public List<ArtilleryGun>? ArtilleryGuns { get; set; }
 }
 
-public class ArtilleryGun
+public record ArtilleryGun
 {
     [JsonPropertyName("Position")]
     public XYZ? Position { get; set; }
 }
 
-public class ArtilleryShellingAirDropSettings
+public record ArtilleryShellingAirDropSettings
 {
     [JsonPropertyName("UseAirDrop")]
     public bool? UseAirDrop { get; set; }
@@ -246,7 +246,7 @@ public class ArtilleryShellingAirDropSettings
     public string? LootTemplateId { get; set; }
 }
 
-public class ProjectileExplosionParams
+public record ProjectileExplosionParams
 {
     [JsonPropertyName("Blindness")]
     public XYZ? Blindness { get; set; }
@@ -291,7 +291,7 @@ public class ProjectileExplosionParams
     public float? DeadlyDistance { get; set; }
 }
 
-public class Config
+public record Config
 {
     [JsonPropertyName("ArtilleryShelling")]
     public ArtilleryShelling? ArtilleryShelling { get; set; }
@@ -608,18 +608,18 @@ public class Config
     public PveSettings? PveSettings { get; set; }
 }
 
-public class PveSettings
+public record PveSettings
 {
     public List<string>? AvailableVersions { get; set; }
     public bool? ModeEnabled { get; set; }
 }
 
-public class CoopSettings
+public record CoopSettings
 {
     public List<string>? AvailableVersions { get; set; }
 }
 
-public class RunddansSettings
+public record RunddansSettings
 {
     [JsonPropertyName("accessKeys")]
     public List<string>? AccessKeys { get; set; }
@@ -676,13 +676,13 @@ public class RunddansSettings
     public List<string>? SleighLocations { get; set; }
 }
 
-public class SeasonActivity
+public record SeasonActivity
 {
     [JsonPropertyName("InfectionHalloween")]
     public SeasonActivityHalloween? InfectionHalloween { get; set; }
 }
 
-public class SeasonActivityHalloween
+public record SeasonActivityHalloween
 {
     [JsonPropertyName("DisplayUIEnabled")]
     public bool? DisplayUIEnabled { get; set; }
@@ -694,17 +694,17 @@ public class SeasonActivityHalloween
     public double? ZombieBleedMul { get; set; }
 }
 
-public class EnvironmentSetting2
+public record EnvironmentSetting2
 {
     public EnvironmentUIData? EnvironmentUIData { get; set; }
 }
 
-public class EnvironmentUIData
+public record EnvironmentUIData
 {
     public string[] TheUnheardEditionEnvironmentUiType { get; set; }
 }
 
-public class BodyPartColliderSettings
+public record BodyPartColliderSettings
 {
     public BodyPartColliderPart? BackHead { get; set; }
     public BodyPartColliderPart? Ears { get; set; }
@@ -734,7 +734,7 @@ public class BodyPartColliderSettings
     public BodyPartColliderPart? SpineTop { get; set; }
 }
 
-public class BodyPartColliderPart
+public record BodyPartColliderPart
 {
     [JsonPropertyName("PenetrationChance")]
     public double? PenetrationChance { get; set; }
@@ -746,7 +746,7 @@ public class BodyPartColliderPart
     public double? PenetrationLevel { get; set; }
 }
 
-public class WeaponFastDrawSettings
+public record WeaponFastDrawSettings
 {
     [JsonPropertyName("HandShakeCurveFrequency")]
     public double? HandShakeCurveFrequency { get; set; }
@@ -773,7 +773,7 @@ public class WeaponFastDrawSettings
     public double? WeaponPistolFastSwitchMinSpeedMult { get; set; }
 }
 
-public class EventSettings
+public record EventSettings
 {
     [JsonPropertyName("EventActive")]
     public bool? EventActive { get; set; }
@@ -800,7 +800,7 @@ public class EventSettings
     public double? WeatherChangeTime { get; set; }
 }
 
-public class EventWeather
+public record EventWeather
 {
     [JsonPropertyName("Cloudness")]
     public double? Cloudness { get; set; }
@@ -830,7 +830,7 @@ public class EventWeather
     public double? WindDirection { get; set; }
 }
 
-public class TransitSettings
+public record TransitSettings
 {
     [JsonPropertyName("BearPriceMod")]
     public double? BearPriceMod { get; set; }
@@ -872,7 +872,7 @@ public class TransitSettings
     public bool? Active { get; set; }
 }
 
-public class TripwiresSettings
+public record TripwiresSettings
 {
     [JsonPropertyName("CollisionCapsuleCheckCoef")]
     public double? CollisionCapsuleCheckCoef { get; set; }
@@ -917,7 +917,7 @@ public class TripwiresSettings
     public double? ShotSqrDistance { get; set; }
 }
 
-public class MountingSettings
+public record MountingSettings
 {
     [JsonPropertyName("MovementSettings")]
     public MountingMovementSettings? MovementSettings { get; set; }
@@ -926,7 +926,7 @@ public class MountingSettings
     public MountingPointDetectionSettings? PointDetectionSettings { get; set; }
 }
 
-public class MountingMovementSettings
+public record MountingMovementSettings
 {
     [JsonPropertyName("ApproachTime")]
     public double? ApproachTime { get; set; }
@@ -974,7 +974,7 @@ public class MountingMovementSettings
     public double? SensitivityMultiplier { get; set; }
 }
 
-public class MountingPointDetectionSettings
+public record MountingPointDetectionSettings
 {
     [JsonPropertyName("CheckHorizontalSecondaryOffset")]
     public double? CheckHorizontalSecondaryOffset { get; set; }
@@ -1040,13 +1040,13 @@ public class MountingPointDetectionSettings
     public double? VerticalGridStepsAmount { get; set; }
 }
 
-public class GraphicSettings
+public record GraphicSettings
 {
     [JsonPropertyName("ExperimentalFogInCity")]
     public bool? ExperimentalFogInCity { get; set; }
 }
 
-public class BufferZone
+public record BufferZone
 {
     [JsonPropertyName("CustomerAccessTime")]
     public double? CustomerAccessTime { get; set; }
@@ -1058,13 +1058,13 @@ public class BufferZone
     public double? CustomerKickNotifTime { get; set; }
 }
 
-public class ItemsCommonSettings
+public record ItemsCommonSettings
 {
     [JsonPropertyName("ItemRemoveAfterInterruptionTime")]
     public double? ItemRemoveAfterInterruptionTime { get; set; }
 }
 
-public class TradingSettings
+public record TradingSettings
 {
     [JsonPropertyName("BuyRestrictionMaxBonus")]
     public Dictionary<string, BuyRestrictionMaxBonus>? BuyRestrictionMaxBonus { get; set; }
@@ -1073,13 +1073,13 @@ public class TradingSettings
     public BuyoutRestrictions? BuyoutRestrictions { get; set; }
 }
 
-public class BuyRestrictionMaxBonus
+public record BuyRestrictionMaxBonus
 {
     [JsonPropertyName("multiplier")]
     public double? Multiplier { get; set; }
 }
 
-public class BuyoutRestrictions
+public record BuyoutRestrictions
 {
     [JsonPropertyName("MinDurability")]
     public double? MinDurability { get; set; }
@@ -1091,7 +1091,7 @@ public class BuyoutRestrictions
     public double? MinMedsResource { get; set; }
 }
 
-public class Content
+public record Content
 {
     [JsonPropertyName("ip")]
     public string? Ip { get; set; }
@@ -1103,7 +1103,7 @@ public class Content
     public string? Root { get; set; }
 }
 
-public class Exp
+public record Exp
 {
     [JsonPropertyName("heal")]
     public Heal? Heal { get; set; }
@@ -1133,7 +1133,7 @@ public class Exp
     public double? TriggerMult { get; set; }
 }
 
-public class Heal
+public record Heal
 {
     [JsonPropertyName("expForHeal")]
     public double? ExpForHeal { get; set; }
@@ -1145,7 +1145,7 @@ public class Heal
     public double? ExpForEnergy { get; set; }
 }
 
-public class MatchEnd
+public record MatchEnd
 {
     [JsonPropertyName("README")]
     public string? ReadMe { get; set; }
@@ -1187,7 +1187,7 @@ public class MatchEnd
     public List<Dictionary<string, double>>? TransitMultiplier { get; set; }
 }
 
-public class Kill
+public record Kill
 {
     [JsonPropertyName("combo")]
     public Combo[] Combos { get; set; }
@@ -1223,13 +1223,13 @@ public class Kill
     public double? PmcHeadShotMultiplier { get; set; }
 }
 
-public class Combo
+public record Combo
 {
     [JsonPropertyName("percent")]
     public double? Percentage { get; set; }
 }
 
-public class Level
+public record Level
 {
     [JsonPropertyName("exp_table")]
     public ExpTable[] ExperienceTable { get; set; }
@@ -1250,31 +1250,31 @@ public class Level
     public double? Mastering2 { get; set; }
 }
 
-public class ExpTable
+public record ExpTable
 {
     [JsonPropertyName("exp")]
     public int? Experience { get; set; }
 }
 
-public class LootAttempt
+public record LootAttempt
 {
     [JsonPropertyName("k_exp")]
     public double? ExperiencePoints { get; set; }
 }
 
-public class Armor
+public record Armor
 {
     [JsonPropertyName("class")]
     public List<Class>? Classes { get; set; }
 }
 
-public class Class
+public record Class
 {
     [JsonPropertyName("resistance")]
     public double? Resistance { get; set; }
 }
 
-public class Mastering
+public record Mastering
 {
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
@@ -1289,7 +1289,7 @@ public class Mastering
     public double? Level3 { get; set; }
 }
 
-public class Customization
+public record Customization
 {
     [JsonPropertyName("SavageHead")]
     public Dictionary<string, WildHead>? Head { get; set; }
@@ -1307,7 +1307,7 @@ public class Customization
     public BodyParts? BodyParts { get; set; }
 }
 
-public class WildHead
+public record WildHead
 {
     [JsonPropertyName("head")]
     public string? Head { get; set; }
@@ -1319,7 +1319,7 @@ public class WildHead
     public bool? NotRandom { get; set; }
 }
 
-public class WildBody
+public record WildBody
 {
     [JsonPropertyName("body")]
     public string? Body { get; set; }
@@ -1330,7 +1330,7 @@ public class WildBody
     [JsonPropertyName("isNotRandom")]
     public bool? IsNotRandom { get; set; }
 }
-public class WildFeet
+public record WildFeet
 {
     [JsonPropertyName("feet")]
     public string? Feet { get; set; }
@@ -1342,7 +1342,7 @@ public class WildFeet
     public bool? NotRandom { get; set; }
 }
 
-public class CustomizationVoice
+public record CustomizationVoice
 {
     [JsonPropertyName("voice")]
     public string? Voice { get; set; }
@@ -1354,7 +1354,7 @@ public class CustomizationVoice
     public bool? IsNotRandom { get; set; }
 }
 
-public class BodyParts
+public record BodyParts
 {
     public string? Head { get; set; }
     public string? Body { get; set; }
@@ -1362,7 +1362,7 @@ public class BodyParts
     public string? Hands { get; set; }
 }
 
-public class AirdropGlobalSettings
+public record AirdropGlobalSettings
 {
     public string? AirdropViewType { get; set; }
     public double? ParachuteEndOpenHeight { get; set; }
@@ -1377,7 +1377,7 @@ public class AirdropGlobalSettings
     public double? SmokeActivateHeight { get; set; }
 }
 
-public class KarmaCalculationSettings
+public record KarmaCalculationSettings
 {
     [JsonPropertyName("defaultPveKarmaValue")]
     public double? DefaultPveKarmaValue { get; set; }
@@ -1398,7 +1398,7 @@ public class KarmaCalculationSettings
     public double? MinSurvivedRaidCount { get; set; }
 }
 
-public class ArenaEftTransferSettings
+public record ArenaEftTransferSettings
 {
     public double? ArenaManagerReputationTaxMultiplier { get; set; }
     public double? CharismaTaxMultiplier { get; set; }
@@ -1408,7 +1408,7 @@ public class ArenaEftTransferSettings
     public Dictionary<string, double>? TransferLimitsSettings { get; set; }
 }
 
-public class ArmorMaterials
+public record ArmorMaterials
 {
     [JsonPropertyName("UHMWPE")]
     public ArmorType? UHMWPE { get; set; }
@@ -1435,7 +1435,7 @@ public class ArmorMaterials
     public ArmorType? Glass { get; set; }
 }
 
-public class ArmorType
+public record ArmorType
 {
     [JsonPropertyName("Destructibility")]
     public double? Destructibility { get; set; }
@@ -1456,7 +1456,7 @@ public class ArmorType
     public double? MaxRepairKitDegradation { get; set; }
 }
 
-public class Health
+public record Health
 {
     [JsonPropertyName("Falling")]
     public Falling? Falling { get; set; }
@@ -1471,7 +1471,7 @@ public class Health
     public ProfileHealthSettings? ProfileHealthSettings { get; set; }
 }
 
-public class Falling
+public record Falling
 {
     [JsonPropertyName("DamagePerMeter")]
     public double? DamagePerMeter { get; set; }
@@ -1480,7 +1480,7 @@ public class Falling
     public double? SafeHeight { get; set; }
 }
 
-public class Effects
+public record Effects
 {
     [JsonPropertyName("Existence")]
     public Existence? Existence { get; set; }
@@ -1567,7 +1567,7 @@ public class Effects
     public ZombieInfection? ZombieInfection { get; set; }
 }
 
-public class ZombieInfection
+public record ZombieInfection
 {
     [JsonPropertyName("Dehydration")]
     public double? Dehydration { get; set; }
@@ -1581,7 +1581,7 @@ public class ZombieInfection
     public double? CumulativeTime { get; set; }
 }
 
-public class Existence
+public record Existence
 {
     [JsonPropertyName("EnergyLoopTime")]
     public double? EnergyLoopTime { get; set; }
@@ -1602,7 +1602,7 @@ public class Existence
     public double? DestroyedStomachHydrationTimeFactor { get; set; }
 }
 
-public class Dehydration
+public record Dehydration
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1626,7 +1626,7 @@ public class Dehydration
     public double? StrongDehydrationLoopTime { get; set; }
 }
 
-public class BreakPart
+public record BreakPart
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1656,19 +1656,19 @@ public class BreakPart
     public Probability? FallingProbability { get; set; }
 }
 
-public class Contusion
+public record Contusion
 {
     [JsonPropertyName("Dummy")]
     public double? Dummy { get; set; }
 }
 
-public class Disorientation
+public record Disorientation
 {
     [JsonPropertyName("Dummy")]
     public double? Dummy { get; set; }
 }
 
-public class Exhaustion
+public record Exhaustion
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1683,7 +1683,7 @@ public class Exhaustion
     public double? DamageLoopTime { get; set; }
 }
 
-public class LowEdgeHealth
+public record LowEdgeHealth
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1695,7 +1695,7 @@ public class LowEdgeHealth
     public double? StartCommonHealth { get; set; }
 }
 
-public class RadExposure
+public record RadExposure
 {
     [JsonPropertyName("Damage")]
     public double? Damage { get; set; }
@@ -1704,13 +1704,13 @@ public class RadExposure
     public double? DamageLoopTime { get; set; }
 }
 
-public class Stun
+public record Stun
 {
     [JsonPropertyName("Dummy")]
     public double? Dummy { get; set; }
 }
 
-public class Intoxication
+public record Intoxication
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1740,7 +1740,7 @@ public class Intoxication
     public double? RemovePrice { get; set; }
 }
 
-public class Regeneration
+public record Regeneration
 {
     [JsonPropertyName("LoopTime")]
     public double? LoopTime { get; set; }
@@ -1761,7 +1761,7 @@ public class Regeneration
     public Influences? Influences { get; set; }
 }
 
-public class BodyHealth
+public record BodyHealth
 {
     [JsonPropertyName("Head")]
     public BodyHealthValue? Head { get; set; }
@@ -1785,13 +1785,13 @@ public class BodyHealth
     public BodyHealthValue? RightLeg { get; set; }
 }
 
-public class BodyHealthValue
+public record BodyHealthValue
 {
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 }
 
-public class Influences
+public record Influences
 {
     [JsonPropertyName("LightBleeding")]
     public Influence? LightBleeding { get; set; }
@@ -1809,7 +1809,7 @@ public class Influences
     public Influence? Intoxication { get; set; }
 }
 
-public class Influence
+public record Influence
 {
     [JsonPropertyName("HealthSlowDownPercentage")]
     public double? HealthSlowDownPercentage { get; set; }
@@ -1821,7 +1821,7 @@ public class Influence
     public double? HydrationSlowDownPercentage { get; set; }
 }
 
-public class Wound
+public record Wound
 {
     [JsonPropertyName("WorkingTime")]
     public double? WorkingTime { get; set; }
@@ -1833,7 +1833,7 @@ public class Wound
     public double? ThresholdMax { get; set; }
 }
 
-public class Berserk
+public record Berserk
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1845,13 +1845,13 @@ public class Berserk
     public double? DefaultResidueTime { get; set; }
 }
 
-public class Flash
+public record Flash
 {
     [JsonPropertyName("Dummy")]
     public double? Dummy { get; set; }
 }
 
-public class MedEffect
+public record MedEffect
 {
     [JsonPropertyName("LoopTime")]
     public double? LoopTime { get; set; }
@@ -1878,7 +1878,7 @@ public class MedEffect
     public double? StimulatorStartDelay { get; set; }
 }
 
-public class Pain
+public record Pain
 {
     [JsonPropertyName("TremorDelay")]
     public double? TremorDelay { get; set; }
@@ -1887,17 +1887,17 @@ public class Pain
     public double? HealExperience { get; set; }
 }
 
-public class PainKiller
+public record PainKiller
 {
     public double? Dummy { get; set; }
 }
 
-public class SandingScreen
+public record SandingScreen
 {
     public double? Dummy { get; set; }
 }
 
-public class MusclePainEffect
+public record MusclePainEffect
 {
     public double? GymEffectivity { get; set; }
     public double? OfflineDurationMax { get; set; }
@@ -1905,13 +1905,13 @@ public class MusclePainEffect
     public double? TraumaChance { get; set; }
 }
 
-public class Stimulator
+public record Stimulator
 {
     public double? BuffLoopTime { get; set; }
     public Dictionary<string, List<Buff>>? Buffs { get; set; }
 }
 
-public class Buff
+public record Buff
 {
     [JsonPropertyName("BuffType")]
     public string? BuffType { get; set; }
@@ -1937,7 +1937,7 @@ public class Buff
     public List<string>? AppliesTo { get; set; }
 }
 
-public class Tremor
+public record Tremor
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1946,7 +1946,7 @@ public class Tremor
     public double? DefaultResidueTime { get; set; }
 }
 
-public class ChronicStaminaFatigue
+public record ChronicStaminaFatigue
 {
     [JsonPropertyName("EnergyRate")]
     public double? EnergyRate { get; set; }
@@ -1961,7 +1961,7 @@ public class ChronicStaminaFatigue
     public double? EnergyRatePerStack { get; set; }
 }
 
-public class Fracture
+public record Fracture
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -1991,7 +1991,7 @@ public class Fracture
     public Probability? FallingProbability { get; set; }
 }
 
-public class HeavyBleeding
+public record HeavyBleeding
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -2042,7 +2042,7 @@ public class HeavyBleeding
     public Probability? Probability { get; set; }
 }
 
-public class Probability
+public record Probability
 {
     [JsonPropertyName("FunctionType")]
     public string? FunctionType { get; set; }
@@ -2057,7 +2057,7 @@ public class Probability
     public double? Threshold { get; set; }
 }
 
-public class LightBleeding
+public record LightBleeding
 {
     [JsonPropertyName("DefaultDelay")]
     public double? DefaultDelay { get; set; }
@@ -2108,7 +2108,7 @@ public class LightBleeding
     public Probability? Probability { get; set; }
 }
 
-public class BodyTemperature
+public record BodyTemperature
 {
     [JsonPropertyName("DefaultBuildUpTime")]
     public double? DefaultBuildUpTime { get; set; }
@@ -2120,7 +2120,7 @@ public class BodyTemperature
     public double? LoopTime { get; set; }
 }
 
-public class HealPrice
+public record HealPrice
 {
     [JsonPropertyName("HealthPointPrice")]
     public double? HealthPointPrice { get; set; }
@@ -2138,7 +2138,7 @@ public class HealPrice
     public double? TrialRaids { get; set; }
 }
 
-public class ProfileHealthSettings
+public record ProfileHealthSettings
 {
     [JsonPropertyName("BodyPartsSettings")]
     public BodyPartsSettings? BodyPartsSettings { get; set; }
@@ -2150,7 +2150,7 @@ public class ProfileHealthSettings
     public string? DefaultStimulatorBuff { get; set; }
 }
 
-public class BodyPartsSettings
+public record BodyPartsSettings
 {
     [JsonPropertyName("Head")]
     public BodyPartsSetting? Head { get; set; }
@@ -2174,7 +2174,7 @@ public class BodyPartsSettings
     public BodyPartsSetting? RightLeg { get; set; }
 }
 
-public class BodyPartsSetting
+public record BodyPartsSetting
 {
     [JsonPropertyName("Minimum")]
     public double? Minimum { get; set; }
@@ -2192,7 +2192,7 @@ public class BodyPartsSetting
     public float? OverDamageReceivedMultiplier { get; set; }
 }
 
-public class HealthFactorsSettings
+public record HealthFactorsSettings
 {
     [JsonPropertyName("Energy")]
     public HealthFactorSetting? Energy { get; set; }
@@ -2210,7 +2210,7 @@ public class HealthFactorsSettings
     public HealthFactorSetting? Radiation { get; set; }
 }
 
-public class HealthFactorSetting
+public record HealthFactorSetting
 {
     [JsonPropertyName("Minimum")]
     public double? Minimum { get; set; }
@@ -2222,7 +2222,7 @@ public class HealthFactorSetting
     public double? Default { get; set; }
 }
 
-public class Rating
+public record Rating
 {
     [JsonPropertyName("levelRequired")]
     public double? LevelRequired { get; set; }
@@ -2234,7 +2234,7 @@ public class Rating
     public Categories? Categories { get; set; }
 }
 
-public class Categories
+public record Categories
 {
     [JsonPropertyName("experience")]
     public bool? Experience { get; set; }
@@ -2267,7 +2267,7 @@ public class Categories
     public bool? RagFairStanding { get; set; }
 }
 
-public class Tournament
+public record Tournament
 {
     [JsonPropertyName("categories")]
     public TournamentCategories? Categories { get; set; }
@@ -2279,13 +2279,13 @@ public class Tournament
     public double? LevelRequired { get; set; }
 }
 
-public class TournamentCategories
+public record TournamentCategories
 {
     [JsonPropertyName("dogtags")]
     public bool? Dogtags { get; set; }
 }
 
-public class RagFair
+public record RagFair
 {
     [JsonPropertyName("enabled")]
     public bool? Enabled { get; set; }
@@ -2399,7 +2399,7 @@ public class RagFair
     public double? SellInOnePiece { get; set; }
 }
 
-public class ItemGlobalRestrictions
+public record ItemGlobalRestrictions
 {
     [JsonPropertyName("MaxFlea")]
     public double? MaxFlea { get; set; }
@@ -2411,7 +2411,7 @@ public class ItemGlobalRestrictions
     public string? TemplateId { get; set; }
 }
 
-public class MaxActiveOfferCount
+public record MaxActiveOfferCount
 {
     [JsonPropertyName("from")]
     public double? From { get; set; }
@@ -2426,7 +2426,7 @@ public class MaxActiveOfferCount
     public double? CountForSpecialEditions { get; set; }
 }
 
-public class MaxSumForRarity
+public record MaxSumForRarity
 {
     [JsonPropertyName("Common")]
     public RarityMaxSum? Common { get; set; }
@@ -2441,19 +2441,19 @@ public class MaxSumForRarity
     public RarityMaxSum? NotExist { get; set; }
 }
 
-public class RarityMaxSum
+public record RarityMaxSum
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
 }
 
-public class Handbook
+public record Handbook
 {
     [JsonPropertyName("defaultCategory")]
     public string? DefaultCategory { get; set; }
 }
 
-public class Stamina
+public record Stamina
 {
     [JsonPropertyName("Capacity")]
     public double? Capacity { get; set; }
@@ -2609,7 +2609,7 @@ public class Stamina
     public XYZ? VaultOneHandConsumption { get; set; }
 }
 
-public class StaminaRestoration
+public record StaminaRestoration
 {
     [JsonPropertyName("LowerLeftPoint")]
     public double? LowerLeftPoint { get; set; }
@@ -2630,7 +2630,7 @@ public class StaminaRestoration
     public double? ZeroValue { get; set; }
 }
 
-public class StaminaDrain
+public record StaminaDrain
 {
     [JsonPropertyName("LowerLeftPoint")]
     public double? LowerLeftPoint { get; set; }
@@ -2651,13 +2651,13 @@ public class StaminaDrain
     public double? ZeroValue { get; set; }
 }
 
-public class RequirementReferences
+public record RequirementReferences
 {
     [JsonPropertyName("Alpinist")]
     public List<Alpinist>? Alpinists { get; set; }
 }
 
-public class Alpinist
+public record Alpinist
 {
     [JsonPropertyName("Requirement")]
     public string? Requirement { get; set; }
@@ -2675,7 +2675,7 @@ public class Alpinist
     public string? RequirementTip { get; set; }
 }
 
-public class RestrictionsInRaid
+public record RestrictionsInRaid
 {
     [JsonPropertyName("MaxInLobby")]
     public double? MaxInLobby { get; set; }
@@ -2687,7 +2687,7 @@ public class RestrictionsInRaid
     public string? TemplateId { get; set; }
 }
 
-public class FavoriteItemsSettings
+public record FavoriteItemsSettings
 {
     [JsonPropertyName("WeaponStandMaxItemsCount")]
     public double? WeaponStandMaxItemsCount { get; set; }
@@ -2696,7 +2696,7 @@ public class FavoriteItemsSettings
     public double? PlaceOfFameMaxItemsCount { get; set; }
 }
 
-public class VaultingSettings
+public record VaultingSettings
 {
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
@@ -2711,7 +2711,7 @@ public class VaultingSettings
     public VaultingMovesSettings? MovesSettings { get; set; }
 }
 
-public class VaultingGridSettings
+public record VaultingGridSettings
 {
     [JsonPropertyName("GridSizeX")]
     public double? GridSizeX { get; set; }
@@ -2744,7 +2744,7 @@ public class VaultingGridSettings
     public double? OffsetFactor { get; set; }
 }
 
-public class VaultingMovesSettings
+public record VaultingMovesSettings
 {
     [JsonPropertyName("VaultSettings")]
     public VaultingSubMoveSettings? VaultSettings { get; set; }
@@ -2753,7 +2753,7 @@ public class VaultingMovesSettings
     public VaultingSubMoveSettings? ClimbSettings { get; set; }
 }
 
-public class VaultingSubMoveSettings
+public record VaultingSubMoveSettings
 {
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
@@ -2773,7 +2773,7 @@ public class VaultingSubMoveSettings
     public MoveRestrictions? AutoMoveRestrictions { get; set; }
 }
 
-public class MoveRestrictions
+public record MoveRestrictions
 {
     [JsonPropertyName("IsActive")]
     public bool? IsActive { get; set; }
@@ -2794,7 +2794,7 @@ public class MoveRestrictions
     public double? MaxLength { get; set; }
 }
 
-public class BTRSettings
+public record BTRSettings
 {
     [JsonPropertyName("LocationsWithBTR")]
     public List<string>? LocationsWithBTR { get; set; }
@@ -2860,7 +2860,7 @@ public class BTRSettings
     public double? HeightWheelOffset { get; set; }
 }
 
-public class BtrMapConfig
+public record BtrMapConfig
 {
     [JsonPropertyName("BtrSkin")]
     public string? BtrSkin { get; set; }
@@ -2908,7 +2908,7 @@ public class BtrMapConfig
     public List<PathConfig>? PathsConfigurations { get; set; }
 }
 
-public class PathConfig
+public record PathConfig
 {
     [JsonPropertyName("active")]
     public bool? Active { get; set; }
@@ -2938,7 +2938,7 @@ public class PathConfig
     public List<string>? SkinType { get; set; }
 }
 
-public class SquadSettings
+public record SquadSettings
 {
     [JsonPropertyName("CountOfRequestsToOnePlayer")]
     public double? CountOfRequestsToOnePlayer { get; set; }
@@ -2950,7 +2950,7 @@ public class SquadSettings
     public double? SendRequestDelaySeconds { get; set; }
 }
 
-public class Insurance
+public record Insurance
 {
     [JsonPropertyName("ChangeForReturnItemsInOfflineRaid")]
     public double? ChangeForReturnItemsInOfflineRaid { get; set; }
@@ -2971,13 +2971,13 @@ public class Insurance
     public bool? OnlyInDeathCase { get; set; }
 }
 
-public class MessageSendTimeMultiplier
+public record MessageSendTimeMultiplier
 {
     [JsonPropertyName("multiplier")]
     public double? Multiplier { get; set; }
 }
 
-public class SkillsSettings
+public record SkillsSettings
 {
     [JsonPropertyName("SkillProgressRate")]
     public double? SkillProgressRate { get; set; }
@@ -3187,12 +3187,12 @@ public class SkillsSettings
     public TroubleShooting? TroubleShooting { get; set; }
 }
 
-public class MeleeSkill
+public record MeleeSkill
 {
     public BuffSettings? BuffSettings { get; set; }
 }
 
-public class ArmorSkills
+public record ArmorSkills
 {
     public double? BluntThroughputDamageHVestsReducePerLevel { get; set; }
     public double? WearAmountRepairHVestsReducePerLevel { get; set; }
@@ -3210,13 +3210,13 @@ public class ArmorSkills
     public double? WearChanceRepairLVestsReduceEliteLevel { get; set; }
 }
 
-public class ArmorCounters
+public record ArmorCounters
 {
     [JsonPropertyName("armorDurability")]
     public SkillCounter? ArmorDurability { get; set; }
 }
 
-public class HideoutManagement
+public record HideoutManagement
 {
     public double? SkillPointsPerAreaUpgrade { get; set; }
     public double? SkillPointsPerCraft { get; set; }
@@ -3227,7 +3227,7 @@ public class HideoutManagement
     public EliteSlots? EliteSlots { get; set; }
 }
 
-public class SkillPointsRate
+public record SkillPointsRate
 {
     public SkillPointRate? Generator { get; set; }
     public SkillPointRate? AirFilteringUnit { get; set; }
@@ -3235,13 +3235,13 @@ public class SkillPointsRate
     public SkillPointRate? SolarPower { get; set; }
 }
 
-public class SkillPointRate
+public record SkillPointRate
 {
     public double? ResourceSpent { get; set; }
     public double? PointsGained { get; set; }
 }
 
-public class EliteSlots
+public record EliteSlots
 {
     public EliteSlot? Generator { get; set; }
     public EliteSlot? AirFilteringUnit { get; set; }
@@ -3249,13 +3249,13 @@ public class EliteSlots
     public EliteSlot? BitcoinFarm { get; set; }
 }
 
-public class EliteSlot
+public record EliteSlot
 {
     public double? Slots { get; set; }
     public double? Container { get; set; }
 }
 
-public class Crafting
+public record Crafting
 {
     [JsonPropertyName("DependentSkillRatios")]
     public List<DependentSkillRatio>? DependentSkillRatios { get; set; }
@@ -3286,7 +3286,7 @@ public class Crafting
     public double? CraftingPointsToIntelligence { get; set; }
 }
 
-public class Metabolism
+public record Metabolism
 {
     [JsonPropertyName("HydrationRecoveryRate")]
     public double? HydrationRecoveryRate { get; set; }
@@ -3304,7 +3304,7 @@ public class Metabolism
     public double? DecreasePoisonDurationRate { get; set; }
 }
 
-public class Immunity
+public record Immunity
 {
     [JsonPropertyName("ImmunityMiscEffects")]
     public double? ImmunityMiscEffects { get; set; }
@@ -3322,7 +3322,7 @@ public class Immunity
     public double? StimulatorNegativeBuff { get; set; }
 }
 
-public class Endurance
+public record Endurance
 {
     [JsonPropertyName("MovementAction")]
     public double? MovementAction { get; set; }
@@ -3340,7 +3340,7 @@ public class Endurance
     public Dictionary<string, Dictionary<string, double>>? QTELevelMultipliers { get; set; }
 }
 
-public class Strength
+public record Strength
 {
     [JsonPropertyName("DependentSkillRatios")]
     public List<DependentSkillRatio>? DependentSkillRatios { get; set; }
@@ -3373,7 +3373,7 @@ public class Strength
     public double? ThrowAction { get; set; }
 }
 
-public class DependentSkillRatio
+public record DependentSkillRatio
 {
     [JsonPropertyName("Ratio")]
     public double? Ratio { get; set; }
@@ -3382,7 +3382,7 @@ public class DependentSkillRatio
     public string? SkillId { get; set; }
 }
 
-public class QTELevelMultiplier
+public record QTELevelMultiplier
 {
     [JsonPropertyName("Level")]
     public double? Level { get; set; }
@@ -3391,7 +3391,7 @@ public class QTELevelMultiplier
     public double? Multiplier { get; set; }
 }
 
-public class Vitality
+public record Vitality
 {
     [JsonPropertyName("DamageTakenAction")]
     public double? DamageTakenAction { get; set; }
@@ -3400,13 +3400,13 @@ public class Vitality
     public double? HealthNegativeEffect { get; set; }
 }
 
-public class HealthSkillProgress
+public record HealthSkillProgress
 {
     [JsonPropertyName("SkillProgress")]
     public double? SkillProgress { get; set; }
 }
 
-public class StressResistance
+public record StressResistance
 {
     [JsonPropertyName("HealthNegativeEffect")]
     public double? HealthNegativeEffect { get; set; }
@@ -3415,13 +3415,13 @@ public class StressResistance
     public double? LowHPDuration { get; set; }
 }
 
-public class Throwing
+public record Throwing
 {
     [JsonPropertyName("ThrowAction")]
     public double? ThrowAction { get; set; }
 }
 
-public class RecoilControl
+public record RecoilControl
 {
     [JsonPropertyName("RecoilAction")]
     public double? RecoilAction { get; set; }
@@ -3430,7 +3430,7 @@ public class RecoilControl
     public double? RecoilBonusPerLevel { get; set; }
 }
 
-public class WeaponSkills
+public record WeaponSkills
 {
     [JsonPropertyName("WeaponReloadAction")]
     public double? WeaponReloadAction { get; set; }
@@ -3445,13 +3445,13 @@ public class WeaponSkills
     public double? WeaponChamberAction { get; set; }
 }
 
-public class CovertMovement
+public record CovertMovement
 {
     [JsonPropertyName("MovementAction")]
     public double? MovementAction { get; set; }
 }
 
-public class Search
+public record Search
 {
     [JsonPropertyName("SearchAction")]
     public double? SearchAction { get; set; }
@@ -3460,7 +3460,7 @@ public class Search
     public double? FindAction { get; set; }
 }
 
-public class WeaponTreatment
+public record WeaponTreatment
 {
     [JsonPropertyName("BuffMaxCount")]
     public double? BuffMaxCount { get; set; }
@@ -3487,13 +3487,13 @@ public class WeaponTreatment
     public double? WearChanceRepairGunsReduceEliteLevel { get; set; }
 }
 
-public class WeaponTreatmentCounters
+public record WeaponTreatmentCounters
 {
     [JsonPropertyName("firearmsDurability")]
     public SkillCounter? FirearmsDurability { get; set; }
 }
 
-public class BuffSettings
+public record BuffSettings
 {
     [JsonPropertyName("CommonBuffChanceLevelBonus")]
     public double? CommonBuffChanceLevelBonus { get; set; }
@@ -3514,7 +3514,7 @@ public class BuffSettings
     public double? ReceivedDurabilityMaxPercent { get; set; }
 }
 
-public class MagDrills
+public record MagDrills
 {
     [JsonPropertyName("RaidLoadedAmmoAction")]
     public double? RaidLoadedAmmoAction { get; set; }
@@ -3526,7 +3526,7 @@ public class MagDrills
     public double? MagazineCheckAction { get; set; }
 }
 
-public class Perception
+public record Perception
 {
     [JsonPropertyName("DependentSkillRatios")]
     public List<SkillRatio>? DependentSkillRatios { get; set; }
@@ -3538,7 +3538,7 @@ public class Perception
     public double? UniqueLoot { get; set; }
 }
 
-public class SkillRatio
+public record SkillRatio
 {
     [JsonPropertyName("Ratio")]
     public double? Ratio { get; set; }
@@ -3547,7 +3547,7 @@ public class SkillRatio
     public string? SkillId { get; set; }
 }
 
-public class Intellect
+public record Intellect
 {
     public SkillRatio[] DependentSkillRatios { get; set; }
 
@@ -3573,7 +3573,7 @@ public class Intellect
     public double? RepairPointsCostReduction { get; set; }
 }
 
-public class IntellectCounters
+public record IntellectCounters
 {
     [JsonPropertyName("armorDurability")]
     public SkillCounter? ArmorDurability { get; set; }
@@ -3585,7 +3585,7 @@ public class IntellectCounters
     public SkillCounter? MeleeWeaponDurability { get; set; }
 }
 
-public class SkillCounter
+public record SkillCounter
 {
     [JsonPropertyName("divisor")]
     public double? Divisor { get; set; }
@@ -3594,7 +3594,7 @@ public class SkillCounter
     public double? Points { get; set; }
 }
 
-public class Attention
+public record Attention
 {
     [JsonPropertyName("DependentSkillRatios")]
     public SkillRatio[] DependentSkillRatios { get; set; }
@@ -3609,7 +3609,7 @@ public class Attention
     public double? FindActionTrue { get; set; }
 }
 
-public class Charisma
+public record Charisma
 {
     [JsonPropertyName("BonusSettings")]
     public BonusSettings? BonusSettings { get; set; }
@@ -3627,7 +3627,7 @@ public class Charisma
     public double? SkillProgressPer { get; set; }
 }
 
-public class CharismaSkillCounters
+public record CharismaSkillCounters
 {
     [JsonPropertyName("insuranceCost")]
     public SkillCounter? InsuranceCost { get; set; }
@@ -3645,7 +3645,7 @@ public class CharismaSkillCounters
     public SkillCounter? ScavCaseCost { get; set; }
 }
 
-public class BonusSettings
+public record BonusSettings
 {
     [JsonPropertyName("EliteBonusSettings")]
     public EliteBonusSettings? EliteBonusSettings { get; set; }
@@ -3654,7 +3654,7 @@ public class BonusSettings
     public LevelBonusSettings? LevelBonusSettings { get; set; }
 }
 
-public class EliteBonusSettings
+public record EliteBonusSettings
 {
     [JsonPropertyName("FenceStandingLossDiscount")]
     public double? FenceStandingLossDiscount { get; set; }
@@ -3666,7 +3666,7 @@ public class EliteBonusSettings
     public double? ScavCaseDiscount { get; set; }
 }
 
-public class LevelBonusSettings
+public record LevelBonusSettings
 {
     [JsonPropertyName("HealthRestoreDiscount")]
     public double? HealthRestoreDiscount { get; set; }
@@ -3687,7 +3687,7 @@ public class LevelBonusSettings
     public double? RepeatableQuestChangeDiscount { get; set; }
 }
 
-public class Memory
+public record Memory
 {
     [JsonPropertyName("AnySkillUp")]
     public double? AnySkillUp { get; set; }
@@ -3696,7 +3696,7 @@ public class Memory
     public double? SkillProgress { get; set; }
 }
 
-public class Surgery
+public record Surgery
 {
     [JsonPropertyName("SurgeryAction")]
     public double? SurgeryAction { get; set; }
@@ -3705,13 +3705,13 @@ public class Surgery
     public double? SkillProgress { get; set; }
 }
 
-public class AimDrills
+public record AimDrills
 {
     [JsonPropertyName("WeaponShotAction")]
     public double? WeaponShotAction { get; set; }
 }
 
-public class TroubleShooting
+public record TroubleShooting
 {
     [JsonPropertyName("MalfRepairSpeedBonusPerLevel")]
     public double? MalfRepairSpeedBonusPerLevel { get; set; }
@@ -3729,7 +3729,7 @@ public class TroubleShooting
     public double? EliteMagChanceReduceMult { get; set; }
 }
 
-public class Aiming
+public record Aiming
 {
     [JsonPropertyName("ProceduralIntensityByPose")]
     public XYZ? ProceduralIntensityByPose { get; set; }
@@ -3789,7 +3789,7 @@ public class Aiming
     public double? RecoilBackBonus { get; set; }
 }
 
-public class Malfunction
+public record Malfunction
 {
     [JsonPropertyName("AmmoMalfChanceMult")]
     public double? AmmoMalfChanceMult { get; set; }
@@ -3867,7 +3867,7 @@ public class Malfunction
     public double? OverheatHardSlideMaxWt { get; set; }
 }
 
-public class Overheat
+public record Overheat
 {
     [JsonPropertyName("MinOverheat")]
     public double? MinimumOverheat { get; set; }
@@ -3954,7 +3954,7 @@ public class Overheat
     public double? MaximumOverheatCoolCoefficient { get; set; }
 }
 
-public class FenceSettings
+public record FenceSettings
 {
     [JsonPropertyName("FenceId")]
     public string? FenceIdentifier { get; set; }
@@ -3968,7 +3968,7 @@ public class FenceSettings
     public double? PmcBotKillStandingMultiplier { get; set; }
 }
 
-public class FenceLevel
+public record FenceLevel
 {
     [JsonPropertyName("ReachOnMarkOnUnknowns")]
     public bool? CanReachOnMarkOnUnknowns { get; set; }
@@ -4049,7 +4049,7 @@ public class FenceLevel
     public double? CircleOfCultistsBonusPercentage { get; set; }
 }
 
-public class Inertia
+public record Inertia
 {
     [JsonPropertyName("InertiaLimits")]
     public XYZ? InertiaLimits { get; set; }
@@ -4168,13 +4168,13 @@ public class Inertia
     public XYZ? CrouchSpeedAccelerationRange { get; set; }
 }
 
-public class Ballistic
+public record Ballistic
 {
     [JsonPropertyName("GlobalDamageDegradationCoefficient")]
     public double? GlobalDamageDegradationCoefficient { get; set; }
 }
 
-public class RepairSettings
+public record RepairSettings
 {
     [JsonPropertyName("ItemEnhancementSettings")]
     public ItemEnhancementSettings? ItemEnhancementSettings { get; set; }
@@ -4195,7 +4195,7 @@ public class RepairSettings
     public double? DurabilityPointCostGuns { get; set; }
 }
 
-public class ItemEnhancementSettings
+public record ItemEnhancementSettings
 {
     [JsonPropertyName("DamageReduction")]
     public PriceModifier? DamageReduction { get; set; }
@@ -4207,13 +4207,13 @@ public class ItemEnhancementSettings
     public PriceModifier? WeaponSpread { get; set; }
 }
 
-public class PriceModifier
+public record PriceModifier
 {
     [JsonPropertyName("PriceModifier")]
     public double? PriceModifierValue { get; set; }
 }
 
-public class RepairStrategies
+public record RepairStrategies
 {
     [JsonPropertyName("Armor")]
     public RepairStrategy? Armor { get; set; }
@@ -4222,7 +4222,7 @@ public class RepairStrategies
     public RepairStrategy? Firearms { get; set; }
 }
 
-public class RepairStrategy
+public record RepairStrategy
 {
     [JsonPropertyName("BuffTypes")]
     public List<string>? BuffTypes { get; set; }
@@ -4231,7 +4231,7 @@ public class RepairStrategy
     public List<string>? Filter { get; set; }
 }
 
-public class BotPreset
+public record BotPreset
 {
     [JsonPropertyName("UseThis")]
     public bool? UseThis { get; set; }
@@ -4267,7 +4267,7 @@ public class BotPreset
     public double? CoefIfMove { get; set; }
 }
 
-public class AudioSettings
+public record AudioSettings
 {
     [JsonPropertyName("AudioGroupPresets")]
     public List<AudioGroupPreset>? AudioGroupPresets { get; set; }
@@ -4282,7 +4282,7 @@ public class AudioSettings
     public RadioBroadcastSettings? RadioBroadcastSettings { get; set; }
 }
 
-public class AudioGroupPreset
+public record AudioGroupPreset
 {
     [JsonPropertyName("AngleToAllowBinaural")]
     public double? AngleToAllowBinaural { get; set; }
@@ -4315,7 +4315,7 @@ public class AudioGroupPreset
     public double? OverallVolume { get; set; }
 }
 
-public class EnvironmentSettings
+public record EnvironmentSettings
 {
     [JsonPropertyName("SnowStepsVolumeMultiplier")]
     public double? SnowStepsVolumeMultiplier { get; set; }
@@ -4324,7 +4324,7 @@ public class EnvironmentSettings
     public List<SurfaceMultiplier>? SurfaceMultipliers { get; set; }
 }
 
-public class SurfaceMultiplier
+public record SurfaceMultiplier
 {
     [JsonPropertyName("SurfaceType")]
     public string? SurfaceType { get; set; }
@@ -4333,7 +4333,7 @@ public class SurfaceMultiplier
     public double? VolumeMultiplier { get; set; }
 }
 
-public class BotWeaponScattering
+public record BotWeaponScattering
 {
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
@@ -4348,7 +4348,7 @@ public class BotWeaponScattering
     public double? PriorityScatter100Meter { get; set; }
 }
 
-public class Preset
+public record Preset
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -4373,7 +4373,7 @@ public class Preset
     public string? Encyclopedia { get; set; }
 }
 
-public class QuestSettings
+public record QuestSettings
 {
     [JsonPropertyName("GlobalRewardRepModifierDailyQuestPvE")]
     public double? GlobalRewardRepModifierDailyQuestPvE { get; set; }

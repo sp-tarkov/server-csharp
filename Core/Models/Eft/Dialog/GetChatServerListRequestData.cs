@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetChatServerListRequestData : IRequestData
+public record GetChatServerListRequestData : IRequestData
 {
     [JsonPropertyName("VersionId")]
     public string? VersionId { get; set; }

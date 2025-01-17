@@ -5,7 +5,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Dialog;
 
-public class SendMessageDetails
+public record SendMessageDetails
 {
     /// <summary>
     /// Player id
@@ -84,7 +84,7 @@ public class SendMessageDetails
     public string? ReplyTo { get; set; }
 }
 
-public class ProfileChangeEvent
+public record ProfileChangeEvent
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

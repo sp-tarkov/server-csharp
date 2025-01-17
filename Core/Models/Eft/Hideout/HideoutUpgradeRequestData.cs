@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutUpgradeRequestData
+public record HideoutUpgradeRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutUpgrade";

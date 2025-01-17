@@ -6,7 +6,7 @@ using Core.Models.Spt.Dialog;
 
 namespace Core.Models.Eft.Profile;
 
-public class SptProfile
+public record SptProfile
 {
     [JsonPropertyName("info")]
     public Info? ProfileInfo { get; set; }
@@ -52,7 +52,7 @@ public class SptProfile
     public List<CustomisationStorage> CustomisationUnlocks { get; set; }
 }
 
-public class TraderPurchaseData
+public record TraderPurchaseData
 {
     [JsonPropertyName("count")]
     public int? PurchaseCount { get; set; }
@@ -61,7 +61,7 @@ public class TraderPurchaseData
     public long? PurchaseTimestamp { get; set; }
 }
 
-public class Info
+public record Info
 {
     /** main profile id */
     [JsonPropertyName("id")]
@@ -86,7 +86,7 @@ public class Info
     public string? Edition { get; set; }
 }
 
-public class Characters
+public record Characters
 {
     [JsonPropertyName("pmc")]
     public PmcData? PmcData { get; set; }
@@ -96,7 +96,7 @@ public class Characters
 }
 
 /** used by profile.userbuilds */
-public class UserBuilds
+public record UserBuilds
 {
     [JsonPropertyName("weaponBuilds")]
     public List<WeaponBuild>? WeaponBuilds { get; set; }
@@ -108,7 +108,7 @@ public class UserBuilds
     public List<MagazineBuild>? MagazineBuilds { get; set; }
 }
 
-public class UserBuild
+public record UserBuild
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -117,7 +117,7 @@ public class UserBuild
     public string? Name { get; set; }
 }
 
-public class WeaponBuild : UserBuild
+public record WeaponBuild : UserBuild
 {
     [JsonPropertyName("Root")]
     public string? Root { get; set; }
@@ -126,7 +126,7 @@ public class WeaponBuild : UserBuild
     public List<Item>? Items { get; set; } // Same as PMC inventory items
 }
 
-public class EquipmentBuild : UserBuild
+public record EquipmentBuild : UserBuild
 {
     [JsonPropertyName("Root")]
     public string? Root { get; set; }
@@ -139,7 +139,7 @@ public class EquipmentBuild : UserBuild
     public EquipmentBuildType? BuildType { get; set; }
 }
 
-public class MagazineBuild : UserBuild
+public record MagazineBuild : UserBuild
 {
     [JsonPropertyName("Caliber")]
     public string? Caliber { get; set; }
@@ -154,7 +154,7 @@ public class MagazineBuild : UserBuild
     public List<MagazineTemplateAmmoItem>? Items { get; set; }
 }
 
-public class MagazineTemplateAmmoItem
+public record MagazineTemplateAmmoItem
 {
     [JsonPropertyName("TemplateId")]
     public string? TemplateId { get; set; }
@@ -164,13 +164,13 @@ public class MagazineTemplateAmmoItem
 }
 
 /** Used by defaultEquipmentPresets.json */
-public class DefaultEquipmentPreset : EquipmentBuild
+public record DefaultEquipmentPreset : EquipmentBuild
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }
 
-public class Dialogue
+public record Dialogue
 {
     [JsonPropertyName("attachmentsNew")]
     public int? AttachmentsNew { get; set; }
@@ -195,7 +195,7 @@ public class Dialogue
 }
 
 // @Cleanup: Maybe the same as Dialogue?
-public class DialogueInfo
+public record DialogueInfo
 {
     [JsonPropertyName("attachmentsNew")]
     public int? AttachmentsNew { get; set; }
@@ -219,7 +219,7 @@ public class DialogueInfo
     public MessagePreview? Message { get; set; }
 }
 
-public class Message
+public record Message
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -267,7 +267,7 @@ public class Message
     public List<ProfileChangeEvent>? ProfileChangeEvents { get; set; }
 }
 
-public class ReplyTo
+public record ReplyTo
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -285,7 +285,7 @@ public class ReplyTo
     public string? Text { get; set; }
 }
 
-public class MessagePreview
+public record MessagePreview
 {
     [JsonPropertyName("uid")]
     public string? UserId { get; set; }
@@ -306,7 +306,7 @@ public class MessagePreview
     public SystemData? SystemData { get; set; }
 }
 
-public class MessageItems
+public record MessageItems
 {
     [JsonPropertyName("stash")]
     public string? Stash { get; set; }
@@ -315,7 +315,7 @@ public class MessageItems
     public List<Item>? Data { get; set; }
 }
 
-public class UpdatableChatMember
+public record UpdatableChatMember
 {
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }
@@ -336,7 +336,7 @@ public class UpdatableChatMember
     public bool? IsBanned { get; set; }
 }
 
-public class Spt
+public record Spt
 {
     /** What version of SPT was this profile made with */
     [JsonPropertyName("version")]
@@ -367,7 +367,7 @@ public class Spt
     public Dictionary<string, AcceptedCultistReward>? CultistRewards { get; set; }
 }
 
-public class AcceptedCultistReward
+public record AcceptedCultistReward
 {
     [JsonPropertyName("timestamp")]
     public long? Timestamp { get; set; }
@@ -379,7 +379,7 @@ public class AcceptedCultistReward
     public List<string>? RewardItems { get; set; }
 }
 
-public class ModDetails
+public record ModDetails
 {
     [JsonPropertyName("name")]
     public string? Name { get; set; }
@@ -397,7 +397,7 @@ public class ModDetails
     public string? Url { get; set; }
 }
 
-public class ReceivedGift
+public record ReceivedGift
 {
     [JsonPropertyName("giftId")]
     public string? GiftId { get; set; }
@@ -409,7 +409,7 @@ public class ReceivedGift
     public int? Current { get; set; }
 }
 
-public class Vitality
+public record Vitality
 {
     [JsonPropertyName("health")]
     public Health? Health { get; set; }
@@ -418,7 +418,7 @@ public class Vitality
     public Effects? Effects { get; set; }
 }
 
-public class Health
+public record Health
 {
     [JsonPropertyName("Hydration")]
     public double? Hydration { get; set; }
@@ -451,7 +451,7 @@ public class Health
     public double? RightLeg { get; set; }
 }
 
-public class Effects
+public record Effects
 {
     [JsonPropertyName("Head")]
     public Head? Head { get; set; }
@@ -475,43 +475,43 @@ public class Effects
     public RightLeg? RightLeg { get; set; }
 }
 
-public class Head
+public record Head
 {
 }
 
-public class Chest
+public record Chest
 {
 }
 
-public class Stomach
+public record Stomach
 {
 }
 
-public class LeftArm
-{
-    [JsonPropertyName("Fracture")]
-    public double? Fracture { get; set; }
-}
-
-public class RightArm
+public record LeftArm
 {
     [JsonPropertyName("Fracture")]
     public double? Fracture { get; set; }
 }
 
-public class LeftLeg
+public record RightArm
 {
     [JsonPropertyName("Fracture")]
     public double? Fracture { get; set; }
 }
 
-public class RightLeg
+public record LeftLeg
 {
     [JsonPropertyName("Fracture")]
     public double? Fracture { get; set; }
 }
 
-public class Inraid
+public record RightLeg
+{
+    [JsonPropertyName("Fracture")]
+    public double? Fracture { get; set; }
+}
+
+public record Inraid
 {
     [JsonPropertyName("location")]
     public string? Location { get; set; }
@@ -520,7 +520,7 @@ public class Inraid
     public string? Character { get; set; }
 }
 
-public class Insurance
+public record Insurance
 {
     [JsonPropertyName("scheduledTime")]
     public int? ScheduledTime { get; set; }

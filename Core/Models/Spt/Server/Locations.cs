@@ -5,7 +5,7 @@ using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Server;
 
-public class Locations
+public record Locations
 {
     [JsonPropertyName("bigmap")]
     public Eft.Common.Location? Bigmap { get; set; }

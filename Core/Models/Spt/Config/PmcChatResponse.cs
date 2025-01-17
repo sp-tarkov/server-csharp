@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class PmcChatResponse : BaseConfig
+public record PmcChatResponse : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-pmcchatresponse";
@@ -14,7 +14,7 @@ public class PmcChatResponse : BaseConfig
     public ResponseSettings Killer { get; set; }
 }
 
-public class ResponseSettings
+public record ResponseSettings
 {
     [JsonPropertyName("responseChancePercent")]
     public double ResponseChancePercent { get; set; }

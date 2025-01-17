@@ -3,7 +3,7 @@ using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Config;
 
-public class LootConfig : BaseConfig
+public record LootConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-loot";

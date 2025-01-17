@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class RemoveDialogRequestData : IRequestData
+public record RemoveDialogRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

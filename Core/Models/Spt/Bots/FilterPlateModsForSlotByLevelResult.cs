@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Bots;
 
-public class FilterPlateModsForSlotByLevelResult
+public record FilterPlateModsForSlotByLevelResult
 {
     [JsonPropertyName("result")]
     public Result? Result { get; set; }

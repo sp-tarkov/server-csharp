@@ -3,7 +3,7 @@ using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Config;
 
-public class ItemConfig : BaseConfig
+public record ItemConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-item";
@@ -36,7 +36,7 @@ public class ItemConfig : BaseConfig
     public List<Preset> CustomItemGlobalPresets { get; set; }
 }
 
-public class HandbookPriceOverride
+public record HandbookPriceOverride
 {
     /** Price in roubles */
     [JsonPropertyName("price")]

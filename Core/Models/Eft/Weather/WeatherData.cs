@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Weather;
 
-public class WeatherData
+public record WeatherData
 {
     [JsonPropertyName("acceleration")]
     public double? Acceleration { get; set; }
@@ -21,7 +21,7 @@ public class WeatherData
     public Season? Season { get; set; }
 }
 
-public class Weather
+public record Weather
 {
     [JsonPropertyName("pressure")]
     public double? Pressure { get; set; }

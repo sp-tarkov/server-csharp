@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutUpgradeCompleteRequestData
+public record HideoutUpgradeCompleteRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutUpgradeComplete";

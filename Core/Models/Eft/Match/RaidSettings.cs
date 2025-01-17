@@ -5,7 +5,7 @@ using Core.Models.Enums.RaidSettings.TimeAndWeather;
 
 namespace Core.Models.Eft.Match;
 
-public class RaidSettings
+public record RaidSettings
 {
     [JsonPropertyName("keyId")]
     public string? KeyId { get; set; }
@@ -44,7 +44,7 @@ public class RaidSettings
     public bool? CanShowGroupPreview { get; set; }
 }
 
-public class TimeAndWeatherSettings
+public record TimeAndWeatherSettings
 {
     [JsonPropertyName("isRandomTime")]
     public bool? IsRandomTime { get; set; }
@@ -71,7 +71,7 @@ public class TimeAndWeatherSettings
     public int? HourOfDay { get; set; }
 }
 
-public class BotSettings
+public record BotSettings
 {
     [JsonPropertyName("isScavWars")]
     public bool? IsScavWars { get; set; }
@@ -80,7 +80,7 @@ public class BotSettings
     public BotAmount? BotAmount { get; set; }
 }
 
-public class WavesSettings
+public record WavesSettings
 {
     [JsonPropertyName("botAmount")]
     public BotAmount? BotAmount { get; set; }

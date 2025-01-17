@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Bot;
 
-public class RandomisedBotLevelResult
+public record RandomisedBotLevelResult
 {
     [JsonPropertyName("level")]
     public int? Level { get; set; }

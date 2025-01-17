@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutCircleOfCultistProductionStartRequestData
+public record HideoutCircleOfCultistProductionStartRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutCircleOfCultistProductionStart";

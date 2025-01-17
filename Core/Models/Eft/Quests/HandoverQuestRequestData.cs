@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Quests;
 
-public class HandoverQuestRequestData
+public record HandoverQuestRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "QuestHandover";
@@ -17,7 +17,7 @@ public class HandoverQuestRequestData
     public List<HandoverItem>? Items { get; set; }
 }
 
-public class HandoverItem
+public record HandoverItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

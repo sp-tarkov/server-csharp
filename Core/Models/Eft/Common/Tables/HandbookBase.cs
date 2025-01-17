@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class HandbookBase
+public record HandbookBase
 {
     [JsonPropertyName("Categories")]
     public List<HandbookCategory>? Categories { get; set; }
@@ -11,7 +11,7 @@ public class HandbookBase
     public List<HandbookItem>? Items { get; set; }
 }
 
-public class HandbookCategory
+public record HandbookCategory
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -31,7 +31,7 @@ public class HandbookCategory
     public string? Order { get; set; }
 }
 
-public class HandbookItem
+public record HandbookItem
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

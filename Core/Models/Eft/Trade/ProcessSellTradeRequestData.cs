@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Trade;
 
-public class ProcessSellTradeRequestData : ProcessBaseTradeRequestData
+public record ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "sell_to_trader";
@@ -20,7 +20,7 @@ public class ProcessSellTradeRequestData : ProcessBaseTradeRequestData
     public List<SoldItem>? Items { get; set; }
 }
 
-public class SoldItem
+public record SoldItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

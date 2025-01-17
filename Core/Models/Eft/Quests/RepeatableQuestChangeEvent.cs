@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Quests;
 
-public class RepeatableQuestChangeRequest
+public record RepeatableQuestChangeRequest
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "RepeatableQuestChange";

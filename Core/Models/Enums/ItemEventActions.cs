@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public class ItemEventActions
+public record ItemEventActions
 {
     public const string MOVE = "Move";
     public const string REMOVE = "Remove";

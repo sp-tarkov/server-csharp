@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Bots;
 
-public class Bots
+public record Bots
 {
     [JsonPropertyName("types")]
     public Dictionary<string, BotType>? Types { get; set; }

@@ -6,7 +6,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class EndLocalRaidRequestData : IRequestData
+public record EndLocalRaidRequestData : IRequestData
 {
     /// <summary>
     /// ID of server player just left
@@ -33,7 +33,7 @@ public class EndLocalRaidRequestData : IRequestData
     public LocationTransit? LocationTransit { get; set; }
 }
 
-public class EndRaidResult
+public record EndRaidResult
 {
     public PmcData? Profile { get; set; }
 
@@ -68,7 +68,7 @@ public class EndRaidResult
     public int? PlayTime { get; set; }
 }
 
-public class LocationTransit
+public record LocationTransit
 {
     [JsonPropertyName("hash")]
     public string? Hash { get; set; }
@@ -110,7 +110,7 @@ public class LocationTransit
     public string? SptExitName { get; set; }
 }
 
-public class TransitProfile
+public record TransitProfile
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

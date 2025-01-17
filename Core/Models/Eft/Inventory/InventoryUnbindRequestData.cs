@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryUnbindRequestData : InventoryBaseActionRequestData
+public record InventoryUnbindRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Unbind";

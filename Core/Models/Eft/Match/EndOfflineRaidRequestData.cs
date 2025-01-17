@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class EndOfflineRaidRequestData
+public record EndOfflineRaidRequestData
 {
     [JsonPropertyName("crc")]
     public int? Crc { get; set; }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsGroupMatchInviteDecline : WsNotificationEvent
+public record WsGroupMatchInviteDecline : WsNotificationEvent
 {
     [JsonPropertyName("aid")]
     public int? Aid { get; set; }

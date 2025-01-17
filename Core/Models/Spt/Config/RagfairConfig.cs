@@ -4,7 +4,7 @@ namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 
-public class RagfairConfig : BaseConfig
+public record RagfairConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-ragfair";
@@ -32,7 +32,7 @@ public class RagfairConfig : BaseConfig
     public TieredFlea TieredFlea { get; set; }
 }
 
-public class Sell
+public record Sell
 {
     /** Should a fee be deducted from player when listing an item for sale */
     [JsonPropertyName("fees")]
@@ -51,7 +51,7 @@ public class Sell
     public int ExpireSeconds { get; set; }
 }
 
-public class Chance
+public record Chance
 {
     /** Base chance percent to sell an item */
     [JsonPropertyName("base")]
@@ -70,7 +70,7 @@ public class Chance
     public int MinSellChancePercent { get; set; }
 }
 
-public class Dynamic
+public record Dynamic
 {
     [JsonPropertyName("purchasesAreFoundInRaid")]
     // Should a purchased dynamic offers items be flagged as found in raid
@@ -166,7 +166,7 @@ public class Dynamic
     public Dictionary<string, double> ItemPriceOverrideRouble { get; set; }
 }
 
-public class PriceRanges
+public record PriceRanges
 {
     [JsonPropertyName("default")]
     public MinMax Default { get; set; }
@@ -178,7 +178,7 @@ public class PriceRanges
     public MinMax Pack { get; set; }
 }
 
-public class BarterDetails
+public record BarterDetails
 {
     /** Percentage change an offer is listed as a barter */
     [JsonPropertyName("chancePercent")]
@@ -209,7 +209,7 @@ public class BarterDetails
     public List<string> ItemTypeBlacklist { get; set; }
 }
 
-public class PackDetails
+public record PackDetails
 {
     /** Percentage change an offer is listed as a pack */
     [JsonPropertyName("chancePercent")]
@@ -228,7 +228,7 @@ public class PackDetails
     public List<string> ItemTypeWhitelist { get; set; }
 }
 
-public class OfferAdjustment
+public record OfferAdjustment
 {
     /// <summary>
     /// Shuld offer price be adjusted when below handbook price
@@ -255,7 +255,7 @@ public class OfferAdjustment
     public double PriceThresholdRub { get; set; }
 }
 
-public class Condition
+public record Condition
 {
     /// <summary>
     /// Percentage change durability is altered
@@ -273,7 +273,7 @@ public class Condition
     public string Name { get; set; }
 }
 
-public class RagfairBlacklist
+public record RagfairBlacklist
 {
     /// <summary>
     /// Damaged ammo packs
@@ -324,7 +324,7 @@ public class RagfairBlacklist
     public List<string> CustomItemCategoryList { get; set; }
 }
 
-public class ArmorPlateBlacklistSettings
+public record ArmorPlateBlacklistSettings
 {
     /// <summary>
     /// Max level of plates an armor can have without being removed
@@ -339,7 +339,7 @@ public class ArmorPlateBlacklistSettings
     public List<string> IgnoreSlots { get; set; }
 }
 
-public class UnreasonableModPrices
+public record UnreasonableModPrices
 {
     /// <summary>
     /// Enable a system that adjusts very high ragfair prices to be below a max multiple of items the handbook values
@@ -363,7 +363,7 @@ public class UnreasonableModPrices
     public string ItemType { get; set; }
 }
 
-public class ArmorSettings
+public record ArmorSettings
 {
     /// <summary>
     /// % chance / 100 that armor plates will be removed from an offer before listing
@@ -378,7 +378,7 @@ public class ArmorSettings
     public List<string> PlateSlotIdToRemovePool { get; set; }
 }
 
-public class TieredFlea
+public record TieredFlea
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }

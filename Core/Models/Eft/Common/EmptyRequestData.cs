@@ -2,6 +2,6 @@
 
 namespace Core.Models.Eft.Common;
 
-public class EmptyRequestData : IRequestData
+public record EmptyRequestData : IRequestData
 {
 }

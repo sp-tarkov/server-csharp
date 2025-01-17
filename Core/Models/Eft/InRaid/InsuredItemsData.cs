@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.InRaid;
 
-public class InsuredItemsData
+public record InsuredItemsData
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

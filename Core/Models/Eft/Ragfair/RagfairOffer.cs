@@ -4,7 +4,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class RagfairOffer
+public record RagfairOffer
 {
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults { get; set; }
@@ -66,7 +66,7 @@ public class RagfairOffer
     public bool? Locked { get; set; }
 }
 
-public class OfferRequirement
+public record OfferRequirement
 {
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
@@ -84,7 +84,7 @@ public class OfferRequirement
     public DogtagExchangeSide? Side { get; set; }
 }
 
-public class RagfairOfferUser
+public record RagfairOfferUser
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -111,7 +111,7 @@ public class RagfairOfferUser
     public int? Aid { get; set; }
 }
 
-public class SellResult
+public record SellResult
 {
     [JsonPropertyName("sellTime")]
     public long? SellTime { get; set; }

@@ -3,7 +3,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsFriendsListAccept : WsNotificationEvent
+public record WsFriendsListAccept : WsNotificationEvent
 {
     [JsonPropertyName("profile")]
     public SearchFriendResponse? Profile { get; set; }

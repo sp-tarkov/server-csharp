@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Quests;
 
-public class GetRepeatableByIdResult
+public record GetRepeatableByIdResult
 {
     [JsonPropertyName("quest")]
     public RepeatableQuest? Quest { get; set; }

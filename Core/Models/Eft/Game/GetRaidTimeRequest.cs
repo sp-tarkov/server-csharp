@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class GetRaidTimeRequest : IRequestData
+public record GetRaidTimeRequest : IRequestData
 {
     [JsonPropertyName("Side")]
     public string? Side { get; set; }

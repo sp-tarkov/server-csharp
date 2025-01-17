@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Quests;
 
-public class FailQuestRequestData
+public record FailQuestRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "QuestFail";

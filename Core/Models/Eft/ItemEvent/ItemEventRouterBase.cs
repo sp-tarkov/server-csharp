@@ -6,7 +6,7 @@ namespace Core.Models.Eft.ItemEvent;
 
 using System.Text.Json.Serialization;
 
-public class ItemEventRouterBase
+public record ItemEventRouterBase
 {
     [JsonPropertyName("warnings")]
     public List<Warning>? Warnings { get; set; }
@@ -15,7 +15,7 @@ public class ItemEventRouterBase
     public Dictionary<string, ProfileChange> ProfileChanges { get; set; }
 }
 
-public class Warning
+public record Warning
 {
     [JsonPropertyName("index")]
     public int? Index { get; set; }
@@ -30,7 +30,7 @@ public class Warning
     public object? Data { get; set; }
 }
 
-public class ProfileChange
+public record ProfileChange
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -85,7 +85,7 @@ public class ProfileChange
     public List<QuestStatus>? QuestsStatus { get; set; }
 }
 
-public class HideoutStashItem
+public record HideoutStashItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -94,7 +94,7 @@ public class HideoutStashItem
     public string? Template { get; set; }
 }
 
-public class WeaponBuildChange
+public record WeaponBuildChange
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -109,7 +109,7 @@ public class WeaponBuildChange
     public List<Item>? Items { get; set; }
 }
 
-public class EquipmentBuildChange
+public record EquipmentBuildChange
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -133,7 +133,7 @@ public class EquipmentBuildChange
     public EquipmentBuildType? BuildType { get; set; }
 }
 
-public class ItemChanges
+public record ItemChanges
 {
     [JsonPropertyName("new")]
     public List<Product>? NewItems { get; set; }
@@ -146,7 +146,7 @@ public class ItemChanges
 }
 
 /** Related to TraderInfo */
-public class TraderData
+public record TraderData
 {
     [JsonPropertyName("salesSum")]
     public double? SalesSum { get; set; }
@@ -164,7 +164,7 @@ public class TraderData
     public bool? Disabled { get; set; }
 }
 
-public class Product
+public record Product
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

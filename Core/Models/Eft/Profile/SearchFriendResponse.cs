@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Profile;
 /// <summary>
 /// Identical to `UserDialogInfo`
 /// </summary>
-public class SearchFriendResponse
+public record SearchFriendResponse
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

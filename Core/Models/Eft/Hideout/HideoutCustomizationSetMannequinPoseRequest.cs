@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Hideout
 {
-    public class HideoutCustomizationSetMannequinPoseRequest
+    public record HideoutCustomizationSetMannequinPoseRequest
     {
         [JsonPropertyName("Action")]
         public string? Action { get; set; } = "HideoutCustomizationSetMannequinPose";

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class RepeatableQuest : Quest
+public record RepeatableQuest : Quest
 {
     [JsonPropertyName("changeCost")]
     public List<ChangeCost?>? ChangeCost { get; set; }
@@ -32,7 +32,7 @@ public class RepeatableQuest : Quest
     public RepeatableQuestStatus? QuestStatus { get; set; }
 }
 
-public class RepeatableQuestDatabase
+public record RepeatableQuestDatabase
 {
     [JsonPropertyName("templates")]
     public RepeatableTemplates? Templates { get; set; }
@@ -47,7 +47,7 @@ public class RepeatableQuestDatabase
     public List<SampleQuests?>? Samples { get; set; }
 }
 
-public class RepeatableQuestStatus
+public record RepeatableQuestStatus
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -68,7 +68,7 @@ public class RepeatableQuestStatus
     public object? StatusTimers { get; set; } // Use object for any type
 }
 
-public class RepeatableTemplates
+public record RepeatableTemplates
 {
     [JsonPropertyName("Elimination")]
     public Quest? Elimination { get; set; }
@@ -83,7 +83,7 @@ public class RepeatableTemplates
     public Quest? Pickup { get; set; }
 }
 
-public class PmcDataRepeatableQuest
+public record PmcDataRepeatableQuest
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -113,7 +113,7 @@ public class PmcDataRepeatableQuest
     public int? FreeChangesAvailable { get; set; }
 }
 
-public class ChangeRequirement
+public record ChangeRequirement
 {
     [JsonPropertyName("changeCost")]
     public List<ChangeCost?>? ChangeCost { get; set; }
@@ -122,7 +122,7 @@ public class ChangeRequirement
     public double? ChangeStandingCost { get; set; }
 }
 
-public class ChangeCost
+public record ChangeCost
 {
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -133,19 +133,19 @@ public class ChangeCost
 
 // Config Options
 
-public class RewardOptions
+public record RewardOptions
 {
     [JsonPropertyName("itemsBlacklist")]
     public List<string>? ItemsBlacklist { get; set; }
 }
 
-public class Options
+public record Options
 {
     [JsonPropertyName("Completion")]
     public CompletionFilter? Completion { get; set; }
 }
 
-public class CompletionFilter
+public record CompletionFilter
 {
     [JsonPropertyName("itemsBlacklist")]
     public List<ItemsBlacklist>? ItemsBlacklist { get; set; }
@@ -154,7 +154,7 @@ public class CompletionFilter
     public List<ItemsWhitelist>? ItemsWhitelist { get; set; }
 }
 
-public class ItemsBlacklist
+public record ItemsBlacklist
 {
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
@@ -163,7 +163,7 @@ public class ItemsBlacklist
     public List<string>? ItemIds { get; set; }
 }
 
-public class ItemsWhitelist
+public record ItemsWhitelist
 {
     [JsonPropertyName("minPlayerLevel")]
     public int? MinPlayerLevel { get; set; }
@@ -172,7 +172,7 @@ public class ItemsWhitelist
     public List<string>? ItemIds { get; set; }
 }
 
-public class SampleQuests
+public record SampleQuests
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

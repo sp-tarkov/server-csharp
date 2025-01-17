@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Services;
 
-public class TraderServiceModel
+public record TraderServiceModel
 {
     [JsonPropertyName("serviceType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
@@ -22,7 +22,7 @@ public class TraderServiceModel
     public TraderServiceRequirementsModel? Requirements { get; set; }
 }
 
-public class TraderServiceRequirementsModel
+public record TraderServiceRequirementsModel
 {
     [JsonPropertyName("completedQuests")]
     public List<string>? CompletedQuests { get; set; }

@@ -2,7 +2,7 @@
 
 using System.Text.Json.Serialization;
 
-public class CustomizationItem
+public record CustomizationItem
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }

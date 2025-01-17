@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class SendSurveyOpinionRequest : IRequestData
+public record SendSurveyOpinionRequest : IRequestData
 {
     [JsonPropertyName("surveyId")]
     public int? SurveyId { get; set; }
@@ -12,7 +12,7 @@ public class SendSurveyOpinionRequest : IRequestData
     public List<SurveyOpinionAnswer>? Answers { get; set; }
 }
 
-public class SurveyOpinionAnswer
+public record SurveyOpinionAnswer
 {
     [JsonPropertyName("questionId")]
     public int? QuestionId { get; set; }

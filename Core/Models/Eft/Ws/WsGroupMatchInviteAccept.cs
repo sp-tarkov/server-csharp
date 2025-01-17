@@ -3,7 +3,7 @@ using Core.Models.Eft.Match;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsGroupMatchInviteAccept : WsNotificationEvent // TODO: trying to inherit multiTypes
+public record WsGroupMatchInviteAccept : WsNotificationEvent // TODO: trying to inherit multiTypes
 {
     // Copy pasted properties from GroupCharacter to resolve multitype
     [JsonPropertyName("_id")]

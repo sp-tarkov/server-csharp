@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Bots;
 
-public class GenerateWeaponResult
+public record GenerateWeaponResult
 {
     [JsonPropertyName("weapon")]
     public List<Item>? Weapon { get; set; }

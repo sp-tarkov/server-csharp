@@ -5,7 +5,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Bots;
 
-public class ModToSpawnRequest
+public record ModToSpawnRequest
 {
     /// <summary>
     /// Slot mod will fit into

@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Bots;
 
-public class GenerateWeaponRequest
+public record GenerateWeaponRequest
 {
     /** Weapon to add mods to / result that is returned */
     [JsonPropertyName("weapon")]
@@ -46,7 +46,7 @@ public class GenerateWeaponRequest
     public List<string>? ConflictingItemTpls { get; set; }
 }
 
-public class BotData
+public record BotData
 {
     /** Role of bot weapon is generated for */
     [JsonPropertyName("role")]
@@ -61,7 +61,7 @@ public class BotData
     public string? EquipmentRole { get; set; }
 }
 
-public class WeaponStats
+public record WeaponStats
 {
     [JsonPropertyName("hasOptic")]
     public bool? HasOptic { get; set; }
@@ -73,7 +73,7 @@ public class WeaponStats
     public bool? HasRearIronSight { get; set; }
 }
 
-public class BotModLimits
+public record BotModLimits
 {
     [JsonPropertyName("scope")]
     public ItemCount? Scope { get; set; }
@@ -94,7 +94,7 @@ public class BotModLimits
     public List<string>? FlashlightLaserBaseTypes { get; set; }
 }
 
-public class ItemCount
+public record ItemCount
 {
     [JsonPropertyName("count")]
     public int? Count { get; set; }

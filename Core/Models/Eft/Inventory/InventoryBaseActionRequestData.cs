@@ -3,11 +3,11 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryBaseActionRequestData : BaseInteractionRequestData
+public record InventoryBaseActionRequestData : BaseInteractionRequestData
 {
 }
 
-public class To
+public record To
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -22,7 +22,7 @@ public class To
     public bool? IsSearched { get; set; }
 }
 
-public class Container
+public record Container
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -34,7 +34,7 @@ public class Container
     public object? Location { get; set; } // TODO: types given: ILocation or number
 }
 
-public class Location
+public record Location
 {
     [JsonPropertyName("x")]
     public double? X { get; set; }

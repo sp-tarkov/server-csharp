@@ -5,7 +5,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Bots;
 
-public class GenerateEquipmentProperties
+public record GenerateEquipmentProperties
 {
     /// <summary>
     /// Root Slot being generated

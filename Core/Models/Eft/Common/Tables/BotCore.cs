@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class BotCore
+public record BotCore
 {
     [JsonPropertyName("SAVAGE_KILL_DIST")]
     public double? SavageKillDistance { get; set; }

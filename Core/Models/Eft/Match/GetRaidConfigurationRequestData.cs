@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class GetRaidConfigurationRequestData : RaidSettings, IRequestData
+public record GetRaidConfigurationRequestData : RaidSettings, IRequestData
 {
     [JsonPropertyName("keyId")]
     public string? KeyId { get; set; }

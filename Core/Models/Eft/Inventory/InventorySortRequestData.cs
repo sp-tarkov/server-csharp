@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventorySortRequestData : InventoryBaseActionRequestData
+public record InventorySortRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "ApplyInventoryChanges";

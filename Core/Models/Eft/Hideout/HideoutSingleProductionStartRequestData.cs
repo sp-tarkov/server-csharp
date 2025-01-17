@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutSingleProductionStartRequestData
+public record HideoutSingleProductionStartRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutSingleProductionStart";
@@ -20,7 +20,7 @@ public class HideoutSingleProductionStartRequestData
     public long? Timestamp { get; set; }
 }
 
-public class HandoverItem
+public record HandoverItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class PinDialogRequestData : IRequestData
+public record PinDialogRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
     public string? DialogId { get; set; }

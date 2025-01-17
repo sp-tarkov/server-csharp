@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Profile;
 
-public class GetProfileStatusResponseData
+public record GetProfileStatusResponseData
 {
     [JsonPropertyName("maxPveCountExceeded")]
     public bool? MaxPveCountExceeded { get; set; } = false;
@@ -11,7 +11,7 @@ public class GetProfileStatusResponseData
     public List<ProfileStatusData>? Profiles { get; set; }
 }
 
-public class ProfileStatusData
+public record ProfileStatusData
 {
     [JsonPropertyName("profileid")]
     public string? ProfileId { get; set; }

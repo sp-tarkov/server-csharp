@@ -3,13 +3,13 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Bot;
 
-public class GenerateBotsRequestData : IRequestData
+public record GenerateBotsRequestData : IRequestData
 {
     [JsonPropertyName("conditions")]
     public List<GenerateCondition>? Conditions { get; set; }
 }
 
-public class GenerateCondition
+public record GenerateCondition
 {
     /// <summary>
     /// e.g. assault/pmcBot/bossKilla

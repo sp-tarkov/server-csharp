@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class GameKeepAliveResponse
+public record GameKeepAliveResponse
 {
     [JsonPropertyName("msg")]
     public string? Message { get; set; }

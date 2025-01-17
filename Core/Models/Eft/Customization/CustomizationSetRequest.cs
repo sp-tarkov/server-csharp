@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Customization;
 
-public class CustomizationSetRequest
+public record CustomizationSetRequest
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "CustomizationSet";
@@ -11,7 +11,7 @@ public class CustomizationSetRequest
     public List<CustomizationSetOption>? Customizations { get; set; }
 }
 
-public class CustomizationSetOption
+public record CustomizationSetOption
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

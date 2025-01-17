@@ -1,6 +1,6 @@
 ﻿// namespace Core.Models.Spt.Logging;
 //
-// public struct LogBackgroundColor
+// public record LogBackgroundColor
 // {
 //     public const string DEFAULT = "";
 //     public const string BLACK = "blackBG";

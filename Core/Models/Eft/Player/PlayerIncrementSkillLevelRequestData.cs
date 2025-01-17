@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Player;
 
-public class PlayerIncrementSkillLevelRequestData
+public record PlayerIncrementSkillLevelRequestData
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -34,7 +34,7 @@ public class PlayerIncrementSkillLevelRequestData
 }
 
 // TODO: These are all lists of objects.
-public class Items
+public record Items
 {
     [JsonPropertyName("new")]
     public List<object>? NewItems { get; set; }
@@ -46,10 +46,10 @@ public class Items
     public List<object>? DeletedItems { get; set; }
 }
 
-public class Production
+public record Production
 {
 }
 
-public class TraderRelations
+public record TraderRelations
 {
 }

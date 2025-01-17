@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
 
-public class AddItemDirectRequest
+public record AddItemDirectRequest
 {
     /// <summary>
     /// Item and child mods to add to player inventory

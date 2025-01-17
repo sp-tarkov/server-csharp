@@ -4,7 +4,7 @@ using Core.Models.Spt.Config;
 
 namespace Core.Models.Spt.Hideout;
 
-public class CircleCraftDetails
+public record CircleCraftDetails
 {
     [JsonPropertyName("time")]
     public long Time { get; set; }

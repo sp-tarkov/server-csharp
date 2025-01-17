@@ -3,7 +3,7 @@ using Core.Models.Eft.ItemEvent;
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryMoveRequestData : InventoryBaseActionRequestData
+public record InventoryMoveRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Move";

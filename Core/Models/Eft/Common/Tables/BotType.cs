@@ -5,7 +5,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class BotType
+public record BotType
 {
     [JsonPropertyName("appearance")]
     public Appearance? BotAppearance { get; set; }
@@ -38,7 +38,7 @@ public class BotType
     public BotDbSkills? BotSkills { get; set; }
 }
 
-public class Appearance
+public record Appearance
 {
     [JsonPropertyName("body")]
     public Dictionary<string, double>? Body { get; set; }
@@ -59,7 +59,7 @@ public class Appearance
     public Dictionary<string, double>? Voice { get; set; }
 }
 
-public class Chances
+public record Chances
 {
     [JsonPropertyName("equipment")]
     public Dictionary<string, double>? EquipmentChances { get; set; }
@@ -74,12 +74,12 @@ public class Chances
     public Dictionary<string, double>? Mods { get; set; }
 }
 
-/* class removed in favor of Dictionary<string, double>
+/* record removed in favor of Dictionary<string, double>
  used to be used in:
  Chances.WeaponModsChances
  Chances.EquipmentModsChances
  GenerateWeaponRequest.ModSpawnChances
-public class ModsChances
+public record ModsChances
 {
     [JsonPropertyName("mod_charge")]
 public double? ModCharge { get; set; }
@@ -239,7 +239,7 @@ public double? ModPistol_Grip { get; set; }
 }
 */
 
-public class Difficulties
+public record Difficulties
 {
     [JsonPropertyName("easy")]
     public DifficultyCategories? Easy { get; set; }
@@ -254,7 +254,7 @@ public class Difficulties
     public DifficultyCategories? Impossible { get; set; }
 }
 
-public class DifficultyCategories
+public record DifficultyCategories
 {
     public Dictionary<string, object>? Aiming { get; set; } // TODO: string | number | boolean
     public Dictionary<string, object>? Boss { get; set; } // TODO: string | number | boolean
@@ -272,7 +272,7 @@ public class DifficultyCategories
     public Dictionary<string, object>? Shoot { get; set; } // TODO: string | number | boolean
 }
 
-public class Experience
+public record Experience
 {
     /** key = bot difficulty */
     [JsonPropertyName("aggressorBonus")]
@@ -293,13 +293,13 @@ public class Experience
     public bool? UseSimpleAnimator { get; set; }
 }
 
-public class Generation
+public record Generation
 {
     [JsonPropertyName("items")]
     public GenerationWeightingItems? Items { get; set; }
 }
 
-public class GenerationData
+public record GenerationData
 {
     /** key: number of items, value: weighting */
     [JsonPropertyName("weights")]
@@ -311,7 +311,7 @@ public class GenerationData
     public Dictionary<string, double>? Whitelist { get; set; }
 }
 
-public class GenerationWeightingItems
+public record GenerationWeightingItems
 {
     [JsonPropertyName("grenades")]
     public GenerationData Grenades { get; set; }
@@ -353,7 +353,7 @@ public class GenerationWeightingItems
     public GenerationData LooseLoot { get; set; }
 }
 
-public class BotTypeHealth
+public record BotTypeHealth
 {
     public List<BodyPart>? BodyParts { get; set; }
     public MinMax? Energy { get; set; }
@@ -361,7 +361,7 @@ public class BotTypeHealth
     public MinMax? Temperature { get; set; }
 }
 
-public class BodyPart
+public record BodyPart
 {
     public MinMax? Chest { get; set; }
     public MinMax? Head { get; set; }
@@ -372,7 +372,7 @@ public class BodyPart
     public MinMax? Stomach { get; set; }
 }
 
-public class BotTypeInventory
+public record BotTypeInventory
 {
     [JsonPropertyName("equipment")]
     public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment { get; set; }
@@ -386,7 +386,7 @@ public class BotTypeInventory
     public GlobalMods? Mods { get; set; }
 }
 
-public class Equipment
+public record Equipment
 {
     public Dictionary<string, double>? ArmBand { get; set; }
     public Dictionary<string, double>? ArmorVest { get; set; }
@@ -404,7 +404,7 @@ public class Equipment
     public Dictionary<string, double>? TacticalVest { get; set; }
 }
 
-public class ItemPools
+public record ItemPools
 {
     public Dictionary<string, double>? Backpack { get; set; }
     public Dictionary<string, double>? Pockets { get; set; }
@@ -413,7 +413,7 @@ public class ItemPools
     public Dictionary<string, double>? TacticalVest { get; set; }
 }
 
-public class BotDbSkills
+public record BotDbSkills
 {
     public Dictionary<string, MinMax>? Common { get; set; }
 

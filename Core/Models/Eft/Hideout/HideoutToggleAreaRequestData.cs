@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutToggleAreaRequestData
+public record HideoutToggleAreaRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutToggleArea";

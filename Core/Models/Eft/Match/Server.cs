@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class Server
+public record Server
 {
     [JsonPropertyName("ping")]
     public int? Ping { get; set; }

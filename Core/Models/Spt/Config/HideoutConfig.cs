@@ -3,7 +3,7 @@ using Core.Models.Common;
 
 namespace Core.Models.Spt.Config;
 
-public class HideoutConfig : BaseConfig
+public record HideoutConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-hideout";
@@ -42,7 +42,7 @@ public class HideoutConfig : BaseConfig
     public CultistCircleSettings CultistCircle { get; set; }
 }
 
-public class CultistCircleSettings
+public record CultistCircleSettings
 {
     [JsonPropertyName("maxRewardItemCount")]
     public int MaxRewardItemCount { get; set; }
@@ -117,13 +117,13 @@ public class CultistCircleSettings
     public Dictionary<string, MinMax> CurrencyRewards { get; set; }
 }
 
-public class CraftTimeThreshold : MinMax
+public record CraftTimeThreshold : MinMax
 {
     [JsonPropertyName("craftTimeSeconds")]
     public int CraftTimeSeconds { get; set; }
 }
 
-public class DirectRewardSettings
+public record DirectRewardSettings
 {
     [JsonPropertyName("reward")]
     public List<string> Reward { get; set; }

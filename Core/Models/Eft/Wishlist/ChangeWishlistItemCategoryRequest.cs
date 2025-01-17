@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Wishlist;
 
-public class ChangeWishlistItemCategoryRequest
+public record ChangeWishlistItemCategoryRequest
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

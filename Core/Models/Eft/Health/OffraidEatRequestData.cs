@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Health;
 
-public class OffraidEatRequestData : BaseInteractionRequestData
+public record OffraidEatRequestData : BaseInteractionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Eat";

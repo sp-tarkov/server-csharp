@@ -4,7 +4,7 @@ using Core.Models.Eft.Profile;
 
 namespace Core.Models.Spt.Templates;
 
-public class Templates
+public record Templates
 {
     [JsonPropertyName("character")]
     public List<string>? Character { get; set; }

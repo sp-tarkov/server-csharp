@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Game;
 
-public class VersionValidateRequestData : IRequestData
+public record VersionValidateRequestData : IRequestData
 {
     [JsonPropertyName("version")]
     public Version? Version { get; set; }
@@ -12,7 +12,7 @@ public class VersionValidateRequestData : IRequestData
     public bool? Develop { get; set; }
 }
 
-public class Version
+public record Version
 {
     [JsonPropertyName("major")]
     public string? Major { get; set; }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class LocationsGenerateAllResponse
+public record LocationsGenerateAllResponse
 {
     [JsonPropertyName("locations")]
     public Dictionary<string, LocationBase> Locations { get; set; }

@@ -3,7 +3,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class LocationServices
+public record LocationServices
 {
     [JsonPropertyName("TraderServerSettings")]
     public TraderServerSettings? TraderServerSettings { get; set; }
@@ -12,13 +12,13 @@ public class LocationServices
     public BtrServerSettings? BtrServerSettings { get; set; }
 }
 
-public class TraderServerSettings
+public record TraderServerSettings
 {
     [JsonPropertyName("TraderServices")]
     public TraderServices? TraderServices { get; set; }
 }
 
-public class TraderServices
+public record TraderServices
 {
     [JsonPropertyName("ExUsecLoyalty")]
     public TraderService? ExUsecLoyalty { get; set; }
@@ -42,7 +42,7 @@ public class TraderServices
     public TraderService? TransitItemsDelivery { get; set; }
 }
 
-public class TraderService
+public record TraderService
 {
     [JsonPropertyName("TraderId")]
     public string? TraderId { get; set; }
@@ -61,7 +61,7 @@ public class TraderService
     public List<string>? UniqueItems { get; set; }
 }
 
-public class ServiceRequirements
+public record ServiceRequirements
 {
     [JsonPropertyName("CompletedQuests")]
     public List<CompletedQuest>? CompletedQuests { get; set; }
@@ -71,25 +71,25 @@ public class ServiceRequirements
     public Dictionary<string, StandingRequirement>? Standings { get; set; }
 }
 
-public class CompletedQuest
+public record CompletedQuest
 {
     [JsonPropertyName("QuestId")]
     public string? QuestId { get; set; }
 }
 
-public class StandingRequirement
+public record StandingRequirement
 {
     [JsonPropertyName("Value")]
     public double? Value { get; set; }
 }
 
-public class ServiceItemCostDetails
+public record ServiceItemCostDetails
 {
     [JsonPropertyName("Count")]
     public int? Count { get; set; }
 }
 
-public class BtrServerSettings
+public record BtrServerSettings
 {
     [JsonPropertyName("ChanceSpawn")]
     public double? ChanceSpawn { get; set; }
@@ -137,7 +137,7 @@ public class BtrServerSettings
     public Dictionary<string, ServerMapBtrsettings>? ServerMapBTRSettings { get; set; }
 }
 
-public class ServerMapBtrsettings
+public record ServerMapBtrsettings
 {
     [JsonPropertyName("MapID")]
     public string? MapID { get; set; }

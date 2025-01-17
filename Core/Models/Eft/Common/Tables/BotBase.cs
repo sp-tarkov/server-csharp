@@ -7,7 +7,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class BotBase
+public record BotBase
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -103,7 +103,7 @@ public class BotBase
     public bool? IsPmc { get; set; }
 }
 
-public class MoneyTransferLimits
+public record MoneyTransferLimits
 {
     // Resets every 24 hours in live
     /** TODO: Implement */
@@ -120,7 +120,7 @@ public class MoneyTransferLimits
     public double? ResetInterval { get; set; }
 }
 
-public class TaskConditionCounter
+public record TaskConditionCounter
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -136,13 +136,13 @@ public class TaskConditionCounter
     public string? SourceId { get; set; }
 }
 
-public class UnlockedInfo
+public record UnlockedInfo
 {
     [JsonPropertyName("unlockedProductionRecipe")]
     public List<string>? UnlockedProductionRecipe { get; set; }
 }
 
-public class Info
+public record Info
 {
     public string? EntryPoint { get; set; }
     public string? Nickname { get; set; }
@@ -188,7 +188,7 @@ public class Info
     public int? PrestigeLevel { get; set; }
 }
 
-public class BotInfoSettings
+public record BotInfoSettings
 {
     public string? Role { get; set; }
     public string? BotDifficulty { get; set; }
@@ -198,7 +198,7 @@ public class BotInfoSettings
     public bool? UseSimpleAnimator { get; set; }
 }
 
-public class Ban
+public record Ban
 {
     [JsonPropertyName("banType")]
     public BanType? BanType { get; set; }
@@ -218,7 +218,7 @@ public enum BanType
     CHANGE_NICKNAME = 6
 }
 
-public class Customization
+public record Customization
 {
     public string? Head { get; set; }
     public string? Body { get; set; }
@@ -227,7 +227,7 @@ public class Customization
     public string? DogTag { get; set; }
 }
 
-public class BotBaseHealth
+public record BotBaseHealth
 {
     public CurrentMax? Hydration { get; set; }
     public CurrentMax? Energy { get; set; }
@@ -237,26 +237,26 @@ public class BotBaseHealth
     public bool? Immortal { get; set; }
 }
 
-public class BodyPartHealth
+public record BodyPartHealth
 {
     public CurrentMax? Health { get; set; }
     public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; }
 }
 
-public class BodyPartEffectProperties
+public record BodyPartEffectProperties
 {
     // TODO: this was any, what actual type is it?
     public object? ExtraData { get; set; }
     public double? Time { get; set; }
 }
 
-public class CurrentMax
+public record CurrentMax
 {
     public double? Current { get; set; }
     public double? Maximum { get; set; }
 }
 
-public class BotBaseInventory
+public record BotBaseInventory
 {
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
@@ -290,7 +290,7 @@ public class BotBaseInventory
     public string? HideoutCustomizationStashId { get; set; }
 }
 
-public class BaseJsonSkills
+public record BaseJsonSkills
 {
     public List<Common>? Common { get; set; }
 
@@ -299,7 +299,7 @@ public class BaseJsonSkills
     public double? Points { get; set; }
 }
 
-public class Skills
+public record Skills
 {
     public List<BaseSkill>? Common { get; set; }
 
@@ -308,7 +308,7 @@ public class Skills
     public double? Points { get; set; }
 }
 
-public class BaseSkill
+public record BaseSkill
 {
     public int? PointsEarnedDuringSession { get; set; }
     public long? LastAccess { get; set; }
@@ -322,21 +322,21 @@ public class BaseSkill
     public int? Min { get; set; }
 }
 
-public class Common : BaseSkill
+public record Common : BaseSkill
 {
 
 }
 
-public class Mastering : BaseSkill
+public record Mastering : BaseSkill
 {
 }
 
-public class Stats
+public record Stats
 {
     public EftStats? Eft { get; set; }
 }
 
-public class EftStats
+public record EftStats
 {
     public List<string>? CarriedQuestItems { get; set; }
     public List<Victim>? Victims { get; set; }
@@ -359,21 +359,21 @@ public class EftStats
     public float? SptLastRaidFenceRepChange { get; set; }
 }
 
-public class DroppedItem
+public record DroppedItem
 {
     public string? QuestId { get; set; }
     public string? ItemId { get; set; }
     public string? ZoneId { get; set; }
 }
 
-public class FoundInRaidItem
+public record FoundInRaidItem
 {
     public string? QuestId { get; set; }
     public string? ItemId { get; set; }
 }
 
 // TODO: Same as Aggressor?
-public class Victim
+public record Victim
 {
     public string? AccountId { get; set; }
     public string? ProfileId { get; set; }
@@ -388,23 +388,23 @@ public class Victim
     public string? Location { get; set; }
 }
 
-public class SessionCounters
+public record SessionCounters
 {
     public List<CounterKeyValue>? Items { get; set; }
 }
 
-public class OverallCounters
+public record OverallCounters
 {
     public List<CounterKeyValue>? Items { get; set; }
 }
 
-public class CounterKeyValue
+public record CounterKeyValue
 {
     public List<string>? Key { get; set; }
     public double? Value { get; set; }
 }
 
-public class Aggressor
+public record Aggressor
 {
     public string? AccountId { get; set; }
     public string? ProfileId { get; set; }
@@ -417,7 +417,7 @@ public class Aggressor
     public string? Category { get; set; }
 }
 
-public class DamageHistory
+public record DamageHistory
 {
     public string? LethalDamagePart { get; set; }
     public LethalDamage? LethalDamage { get; set; }
@@ -426,8 +426,8 @@ public class DamageHistory
     public BodyPartsDamageHistory? BodyParts { get; set; }
 }
 
-// TODO: this class seems exactly the same as DamageStats, why have it?
-public class LethalDamage
+// TODO: this record seems exactly the same as DamageStats, why have it?
+public record LethalDamage
 {
     public double? Amount { get; set; }
     public string? Type { get; set; }
@@ -437,7 +437,7 @@ public class LethalDamage
     public double? ImpactsCount { get; set; }
 }
 
-public class BodyPartsDamageHistory
+public record BodyPartsDamageHistory
 {
     public List<DamageStats>? Head { get; set; }
     public List<DamageStats>? Chest { get; set; }
@@ -449,7 +449,7 @@ public class BodyPartsDamageHistory
     public List<DamageStats>? Common { get; set; }
 }
 
-public class DamageStats
+public record DamageStats
 {
     public double? Amount { get; set; }
     public string? Type { get; set; }
@@ -459,7 +459,7 @@ public class DamageStats
     public double? ImpactsCount { get; set; }
 }
 
-public class DeathCause
+public record DeathCause
 {
     public string? DamageType { get; set; }
     public string? Side { get; set; }
@@ -467,7 +467,7 @@ public class DeathCause
     public string? WeaponId { get; set; }
 }
 
-public class LastPlayerState
+public record LastPlayerState
 {
     public LastPlayerStateInfo? Info { get; set; }
     public Dictionary<string, string>? Customization { get; set; }
@@ -476,7 +476,7 @@ public class LastPlayerState
     public object? Equipment { get; set; }
 }
 
-public class LastPlayerStateInfo
+public record LastPlayerStateInfo
 {
     public string? Nickname { get; set; }
     public string? Side { get; set; }
@@ -484,7 +484,7 @@ public class LastPlayerStateInfo
     public MemberCategory? MemberCategory { get; set; }
 }
 
-public class BackendCounter
+public record BackendCounter
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -496,7 +496,7 @@ public class BackendCounter
     public double? Value { get; set; }
 }
 
-public class InsuredItem
+public record InsuredItem
 {
     /** Trader Id item was insured by */
     [JsonPropertyName("tid")]
@@ -506,7 +506,7 @@ public class InsuredItem
     public string? ItemId { get; set; }
 }
 
-public class Hideout
+public record Hideout
 {
     public Dictionary<string, Production>? Production { get; set; }
     public List<BotHideoutArea>? Areas { get; set; }
@@ -522,7 +522,7 @@ public class Hideout
     public Dictionary<string, string>? Customization { get; set; }
 }
 
-public class HideoutCounters
+public record HideoutCounters
 {
     [JsonPropertyName("fuelCounter")]
     public double? FuelCounter { get; set; }
@@ -537,7 +537,7 @@ public class HideoutCounters
     public double? CraftingTimeCounter { get; set; }
 }
 
-public class HideoutImprovement
+public record HideoutImprovement
 {
     [JsonPropertyName("completed")]
     public bool? Completed { get; set; }
@@ -546,7 +546,7 @@ public class HideoutImprovement
     public long? ImproveCompleteTimestamp { get; set; }
 }
 
-public class Productive
+public record Productive
 {
     public List<Product>? Products { get; set; }
 
@@ -595,19 +595,19 @@ public class Productive
     public bool? SptIsCultistCircle { get; set; }
 }
 
-public class Production : Productive
+public record Production : Productive
 {
     public string? RecipeId { get; set; }
     public int? SkipTime { get; set; }
     public int? ProductionTime { get; set; }
 }
 
-public class ScavCase : Productive
+public record ScavCase : Productive
 {
     public string? RecipeId { get; set; }
 }
 
-public class Product
+public record Product
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -619,7 +619,7 @@ public class Product
     public Upd? Upd { get; set; }
 }
 
-public class BotHideoutArea
+public record BotHideoutArea
 {
     [JsonPropertyName("type")]
     public HideoutAreas? Type { get; set; }
@@ -647,7 +647,7 @@ public class BotHideoutArea
     public string? LastRecipe { get; set; }
 }
 
-public class HideoutSlot
+public record HideoutSlot
 {
     /// <summary>
     /// SPT specific value to keep track of what index this slot is (0,1,2,3 etc)
@@ -659,7 +659,7 @@ public class HideoutSlot
     public List<HideoutItem>? Items { get; set; }
 }
 
-public class HideoutItem
+public record HideoutItem
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -671,13 +671,13 @@ public class HideoutItem
     public Upd? Upd { get; set; }
 }
 
-public class LastCompleted
+public record LastCompleted
 {
     [JsonPropertyName("$oid")]
     public string? OId { get; set; }
 }
 
-public class Notes
+public record Notes
 {
     [JsonPropertyName("Notes")]
     public List<Note>? DataNotes { get; set; }
@@ -692,7 +692,7 @@ public enum SurvivorClass
     SURVIVOR = 4
 }
 
-public class Quests
+public record Quests
 {
     [JsonPropertyName("qid")]
     public string? QId { get; set; }
@@ -714,7 +714,7 @@ public class Quests
     public long? AvailableAfter { get; set; }
 }
 
-public class TraderInfo
+public record TraderInfo
 {
     [JsonPropertyName("loyaltyLevel")]
     public int? LoyaltyLevel { get; set; }
@@ -735,7 +735,7 @@ public class TraderInfo
     public bool? Disabled { get; set; }
 }
 
-public class RagfairInfo
+public record RagfairInfo
 {
     [JsonPropertyName("rating")]
     public double? Rating { get; set; }
@@ -747,7 +747,7 @@ public class RagfairInfo
     public List<RagfairOffer>? Offers { get; set; }
 }
 
-public class Bonus
+public record Bonus
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -781,7 +781,7 @@ public class Bonus
     public BonusSkillType? SkillType { get; set; }
 }
 
-public class Note
+public record Note
 {
     public double? Time { get; set; }
     public string? Text { get; set; }

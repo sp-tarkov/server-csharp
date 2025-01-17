@@ -1,5 +1,5 @@
 ﻿namespace Core.Models.Eft.ItemEvent;
 
-public class ItemEventRouterResponse : ItemEventRouterBase
+public record ItemEventRouterResponse : ItemEventRouterBase
 {
 }

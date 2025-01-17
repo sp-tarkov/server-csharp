@@ -1,5 +1,5 @@
 ﻿namespace Core.Models.Eft.Launcher;
 
-public class RemoveProfileData : LoginRequestData
+public record RemoveProfileData : LoginRequestData
 {
 }

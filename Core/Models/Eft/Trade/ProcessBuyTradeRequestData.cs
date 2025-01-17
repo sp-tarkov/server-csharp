@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Trade;
 
-public class ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
+public record ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } // TODO: formerly - "buy_from_trader" | "TradingConfirm" | "RestoreHealth" | "SptInsure" | "SptRepair" | ""
@@ -26,7 +26,7 @@ public class ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
     public List<SchemeItem>? SchemeItems { get; set; }
 }
 
-public class SchemeItem
+public record SchemeItem
 {
     /** Id of stack to take money from, is money tpl when Action is `SptInsure` */
     [JsonPropertyName("id")]

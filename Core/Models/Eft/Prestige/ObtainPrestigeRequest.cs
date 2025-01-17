@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Prestige
 {
-    public class ObtainPrestigeRequest
+    public record ObtainPrestigeRequest
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
@@ -11,7 +11,7 @@ namespace Core.Models.Eft.Prestige
         public Location Location { get; set; }
     }
 
-    public class Location
+    public record Location
     {
         [JsonPropertyName("x")]
         public int X { get; set; }

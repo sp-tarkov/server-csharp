@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class SearchRequestData
+public record SearchRequestData
 {
     [JsonPropertyName("page")]
     public int? Page { get; set; }
@@ -82,7 +82,7 @@ public enum OfferOwnerType
     PLAYEROWNERTYPE = 2
 }
 
-public class BuildItems
+public record BuildItems
 {
     // Define properties for BuildItems here if needed
 }

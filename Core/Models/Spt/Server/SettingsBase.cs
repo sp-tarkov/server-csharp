@@ -2,13 +2,13 @@
 
 namespace Core.Models.Spt.Server;
 
-public class SettingsBase
+public record SettingsBase
 {
     [JsonPropertyName("config")]
     public Config? Configuration { get; set; }
 }
 
-public class Config
+public record Config
 {
     [JsonPropertyName("AFKTimeoutSeconds")]
     public int? AFKTimeoutSeconds { get; set; }
@@ -92,7 +92,7 @@ public class Config
     public List<int>? WsReconnectionDelays { get; set; }
 }
 
-public class FramerateLimit
+public record FramerateLimit
 {
     [JsonPropertyName("MaxFramerateGameLimit")]
     public int? MaxFramerateGameLimit { get; set; }
@@ -104,7 +104,7 @@ public class FramerateLimit
     public int? MinFramerateLimit { get; set; }
 }
 
-public class MemoryManagementSettings
+public record MemoryManagementSettings
 {
     [JsonPropertyName("AggressiveGC")]
     public bool? AggressiveGC { get; set; }
@@ -125,7 +125,7 @@ public class MemoryManagementSettings
     public bool? RamCleanerEnabled { get; set; }
 }
 
-public class ReleaseProfiler
+public record ReleaseProfiler
 {
     [JsonPropertyName("Enabled")]
     public bool? Enabled { get; set; }
@@ -137,7 +137,7 @@ public class ReleaseProfiler
     public int? RecordTriggerValue { get; set; }
 }
 
-public class NetworkStateView
+public record NetworkStateView
 {
     [JsonPropertyName("LossThreshold")]
     public int? LossThreshold { get; set; }

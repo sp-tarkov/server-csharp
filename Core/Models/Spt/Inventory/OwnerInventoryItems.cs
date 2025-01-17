@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Inventory;
 
-public class OwnerInventoryItems
+public record OwnerInventoryItems
 {
     [JsonPropertyName("from")]
     public List<Item>? From { get; set; }

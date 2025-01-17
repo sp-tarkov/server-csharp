@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class DeleteFriendRequest : IRequestData
+public record DeleteFriendRequest : IRequestData
 {
     [JsonPropertyName("friend_id")]
     public string? FriendId { get; set; }

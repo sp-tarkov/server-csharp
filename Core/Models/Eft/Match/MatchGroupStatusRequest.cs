@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class MatchGroupStatusRequest : IRequestData
+public record MatchGroupStatusRequest : IRequestData
 {
     [JsonPropertyName("location")]
     public string? Location { get; set; }

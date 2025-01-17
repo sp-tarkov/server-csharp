@@ -4,7 +4,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Services;
 
-public class InsuranceEquipmentPkg
+public record InsuranceEquipmentPkg
 {
     [JsonPropertyName("sessionID")]
     public string? SessionId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Fence;
 
-public class FenceAssortGenerationValues
+public record FenceAssortGenerationValues
 {
     [JsonPropertyName("normal")]
     public GenerationAssortValues? Normal { get; set; }
@@ -11,7 +11,7 @@ public class FenceAssortGenerationValues
     public GenerationAssortValues? Discount { get; set; }
 }
 
-public class GenerationAssortValues
+public record GenerationAssortValues
 {
     [JsonPropertyName("item")]
     public int? Item { get; set; }

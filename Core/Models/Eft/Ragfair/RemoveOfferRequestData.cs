@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class RemoveOfferRequestData
+public record RemoveOfferRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

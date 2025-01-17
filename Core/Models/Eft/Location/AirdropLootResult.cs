@@ -3,7 +3,7 @@ using Core.Models.Spt.Services;
 
 namespace Core.Models.Eft.Location;
 
-public class AirdropLootResult
+public record AirdropLootResult
 {
     [JsonPropertyName("dropType")]
     public string? DropType { get; set; }

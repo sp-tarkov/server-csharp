@@ -1,6 +1,6 @@
 ﻿namespace Core.Models.Enums;
 
-public class GameEditions
+public record GameEditions
 {
     public const string STANDARD = "standard";
     public const string LEFT_BEHIND = "left_behind";

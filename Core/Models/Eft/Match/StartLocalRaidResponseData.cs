@@ -5,7 +5,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Match;
 
-public class StartLocalRaidResponseData
+public record StartLocalRaidResponseData
 {
     [JsonPropertyName("serverId")]
     public string? ServerId { get; set; }
@@ -26,13 +26,13 @@ public class StartLocalRaidResponseData
     public Transition? Transition { get; set; }
 }
 
-public class ProfileInsuredItems
+public record ProfileInsuredItems
 {
     [JsonPropertyName("insuredItems")]
     public List<InsuredItem>? InsuredItems { get; set; }
 }
 
-public class Transition
+public record Transition
 {
     [JsonPropertyName("transitionType")]
     public TransitionType? TransitionType { get; set; }

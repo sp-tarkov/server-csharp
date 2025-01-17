@@ -2,7 +2,7 @@
 
 namespace Core.Models.Common;
 
-public class MinMax
+public record MinMax
 {
     [JsonPropertyName("type")]
     public string? Type { get; set; }

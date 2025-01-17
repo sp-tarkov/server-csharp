@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Weather;
 
-public class GetLocalWeatherResponseData
+public record GetLocalWeatherResponseData
 {
     [JsonPropertyName("season")]
     public int? Season { get; set; }

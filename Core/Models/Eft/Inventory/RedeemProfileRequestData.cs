@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class RedeemProfileRequestData : InventoryBaseActionRequestData
+public record RedeemProfileRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "RedeemProfileReward";
@@ -11,7 +11,7 @@ public class RedeemProfileRequestData : InventoryBaseActionRequestData
     public List<RedeemProfileRequestEvent>? Events { get; set; }
 }
 
-public class RedeemProfileRequestEvent
+public record RedeemProfileRequestEvent
 {
     [JsonPropertyName("MessageId")]
     public string? MessageId { get; set; }

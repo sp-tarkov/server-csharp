@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryReadEncyclopediaRequestData : InventoryBaseActionRequestData
+public record InventoryReadEncyclopediaRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "ReadEncyclopedia";

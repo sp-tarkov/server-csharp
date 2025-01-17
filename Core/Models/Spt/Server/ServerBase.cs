@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Server;
 
-public class ServerBase
+public record ServerBase
 {
     [JsonPropertyName("ip")]
     public string? Ip { get; set; }

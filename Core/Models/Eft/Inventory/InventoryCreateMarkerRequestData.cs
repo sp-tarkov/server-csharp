@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventoryCreateMarkerRequestData : InventoryBaseActionRequestData
+public record InventoryCreateMarkerRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "CreateMapMarker";

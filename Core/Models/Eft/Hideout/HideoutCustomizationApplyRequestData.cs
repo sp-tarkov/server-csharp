@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutCustomizationApplyRequestData
+public record HideoutCustomizationApplyRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutCustomizationApply";

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public class OpenRandomLootContainerRequestData
+public record OpenRandomLootContainerRequestData
 {
     public string? Action { get; set; } = "OpenRandomLootContainer";
 

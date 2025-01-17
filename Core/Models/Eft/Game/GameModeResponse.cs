@@ -8,7 +8,7 @@ public enum SessionMode
     PVE
 }
 
-public class GameModeResponse
+public record GameModeResponse
 {
     [JsonPropertyName("gameMode")]
     public string? GameMode { get; set; }

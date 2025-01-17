@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class LocationsBase
+public record LocationsBase
 {
     [JsonPropertyName("locations")]
     public Locations? Locations { get; set; }
@@ -11,12 +11,12 @@ public class LocationsBase
     public List<Path>? Paths { get; set; }
 }
 
-public class Locations
+public record Locations
 {
     // Add properties as necessary
 }
 
-public class Path
+public record Path
 {
     [JsonPropertyName("Source")]
     public string? Source { get; set; }

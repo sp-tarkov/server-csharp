@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Inventory;
 
-public class InventorySwapRequestData : InventoryBaseActionRequestData
+public record InventorySwapRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Swap";

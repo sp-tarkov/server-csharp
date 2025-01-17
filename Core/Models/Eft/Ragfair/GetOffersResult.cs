@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class GetOffersResult
+public record GetOffersResult
 {
     [JsonPropertyName("categories")]
     public Dictionary<string, int>? Categories { get; set; }

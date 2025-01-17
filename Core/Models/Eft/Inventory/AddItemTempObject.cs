@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
 
-public class AddItemTempObject
+public record AddItemTempObject
 {
     [JsonPropertyName("itemRef")]
     public Item? ItemReference { get; set; }

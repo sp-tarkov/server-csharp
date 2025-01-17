@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Builds;
 
-public class SetMagazineRequest : IRequestData
+public record SetMagazineRequest : IRequestData
 {
     [JsonPropertyName("Id")]
     public string? Id { get; set; }

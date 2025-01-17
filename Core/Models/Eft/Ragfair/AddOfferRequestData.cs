@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ragfair;
 
-public class AddOfferRequestData
+public record AddOfferRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -17,7 +17,7 @@ public class AddOfferRequestData
     public List<Requirement>? Requirements { get; set; }
 }
 
-public class Requirement
+public record Requirement
 {
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Notifier;
 
-public class SelectProfileResponse
+public record SelectProfileResponse
 {
     [JsonPropertyName("status")]
     public string? Status { get; set; }

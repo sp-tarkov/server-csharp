@@ -4,7 +4,7 @@ using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class Quest
+public record Quest
 {
     /// <summary>
     /// SPT addition - human readable quest name
@@ -133,7 +133,7 @@ public class Quest
 /// <summary>
 /// Same as BotBase.Quests
 /// </summary>
-public class QuestStatus
+public record QuestStatus
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -160,7 +160,7 @@ public class QuestStatus
     public double? AvailableAfter { get; set; }
 }
 
-public class QuestConditionTypes
+public record QuestConditionTypes
 {
     [JsonPropertyName("Started")]
     public List<QuestCondition>? Started { get; set; }
@@ -178,7 +178,7 @@ public class QuestConditionTypes
     public List<QuestCondition>? Fail { get; set; }
 }
 
-public class QuestCondition
+public record QuestCondition
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -314,7 +314,7 @@ public class QuestCondition
     
 }
 
-public class QuestConditionCounter
+public record QuestConditionCounter
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -323,7 +323,7 @@ public class QuestConditionCounter
     public List<QuestConditionCounterCondition>? Conditions { get; set; }
 }
 
-public class QuestConditionCounterCondition
+public record QuestConditionCounterCondition
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -414,7 +414,7 @@ public class QuestConditionCounterCondition
     
 }
 
-public class EnemyHealthEffect
+public record EnemyHealthEffect
 {
     [JsonPropertyName("bodyParts")]
     public List<string>? BodyParts { get; set; }
@@ -423,7 +423,7 @@ public class EnemyHealthEffect
     public List<string>? Effects { get; set; }
 }
 
-public class ValueCompare
+public record ValueCompare
 {
     [JsonPropertyName("compareMethod")]
     public string? CompareMethod { get; set; }
@@ -432,7 +432,7 @@ public class ValueCompare
     public double? Value { get; set; }
 }
 
-public class CounterConditionDistance
+public record CounterConditionDistance
 {
     [JsonPropertyName("value")]
     public int? Value { get; set; }
@@ -441,7 +441,7 @@ public class CounterConditionDistance
     public string? CompareMethod { get; set; }
 }
 
-public class DaytimeCounter
+public record DaytimeCounter
 {
     [JsonPropertyName("from")]
     public int? From { get; set; }
@@ -450,7 +450,7 @@ public class DaytimeCounter
     public int? To { get; set; }
 }
 
-public class VisibilityCondition
+public record VisibilityCondition
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -471,7 +471,7 @@ public class VisibilityCondition
     public string? ConditionType { get; set; }
 }
 
-public class QuestRewards
+public record QuestRewards
 {
     [JsonPropertyName("AvailableForStart")]
     public List<Reward>? AvailableForStart { get; set; }

@@ -4,7 +4,7 @@ using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Config;
 
-public class LocationConfig : BaseConfig
+public record LocationConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-location";
@@ -145,7 +145,7 @@ public class LocationConfig : BaseConfig
     public List<string> NonMaps { get; set; }
 }
 
-public class ReserveRaiderSpawnChanceOverrides
+public record ReserveRaiderSpawnChanceOverrides
 {
     [JsonPropertyName("nonTriggered")]
     public int NonTriggered { get; set; }
@@ -154,14 +154,14 @@ public class ReserveRaiderSpawnChanceOverrides
     public int Triggered { get; set; }
 }
 
-public class EquipmentLootSettings
+public record EquipmentLootSettings
 {
     // Percentage chance item will be added to equipment
     [JsonPropertyName("modSpawnChancePercent")]
     public Dictionary<string, int> ModSpawnChancePercent { get; set; }
 }
 
-public class FixEmptyBotWavesSettings
+public record FixEmptyBotWavesSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -170,7 +170,7 @@ public class FixEmptyBotWavesSettings
     public List<string> IgnoreMaps { get; set; }
 }
 
-public class RogueLighthouseSpawnTimeSettings
+public record RogueLighthouseSpawnTimeSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -179,7 +179,7 @@ public class RogueLighthouseSpawnTimeSettings
     public int WaitTimeSeconds { get; set; }
 }
 
-public class SplitWaveSettings
+public record SplitWaveSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -191,7 +191,7 @@ public class SplitWaveSettings
     public int WaveSizeThreshold { get; set; }
 }
 
-public class CustomWaves
+public record CustomWaves
 {
     /** Bosses spawn on raid start */
     [JsonPropertyName("boss")]
@@ -201,14 +201,14 @@ public class CustomWaves
     public Dictionary<string, List<Wave>> Normal { get; set; }
 }
 
-public class BotTypeLimit : MinMax
+public record BotTypeLimit : MinMax
 {
     [JsonPropertyName("type")]
     public string Type { get; set; }
 }
 
 /** Multiplier to apply to the loot count for a given map */
-public class LootMultiplier
+public record LootMultiplier
 {
     [JsonPropertyName("bigmap")]
     public double BigMap { get; set; }
@@ -265,7 +265,7 @@ public class LootMultiplier
     public double SandboxHigh { get; set; }
 }
 
-public class ContainerRandomisationSettings
+public record ContainerRandomisationSettings
 {
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
@@ -285,7 +285,7 @@ public class ContainerRandomisationSettings
     public double ContainerGroupMaxSizeMultiplier { get; set; }
 }
 
-public class ScavRaidTimeSettings
+public record ScavRaidTimeSettings
 {
     [JsonPropertyName("settings")]
     public ScavRaidTimeConfigSettings Settings { get; set; }
@@ -294,13 +294,13 @@ public class ScavRaidTimeSettings
     public Dictionary<string, ScavRaidTimeLocationSettings> Maps { get; set; }
 }
 
-public class ScavRaidTimeConfigSettings
+public record ScavRaidTimeConfigSettings
 {
     [JsonPropertyName("trainArrivalDelayObservedSeconds")]
     public int TrainArrivalDelayObservedSeconds { get; set; }
 }
 
-public class ScavRaidTimeLocationSettings
+public record ScavRaidTimeLocationSettings
 {
     /** Should loot be reduced by same percent length of raid is reduced by */
     [JsonPropertyName("reduceLootByPercent")]

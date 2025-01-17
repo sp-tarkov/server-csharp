@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutTakeItemOutRequestData
+public record HideoutTakeItemOutRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutTakeItemsFromAreaSlots";

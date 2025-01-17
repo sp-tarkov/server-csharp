@@ -4,7 +4,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Server;
 
-public class DatabaseTables
+public record DatabaseTables
 {
     public Bots.Bots? Bots { get; set; }
     

@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Customization;
 
-public class BuyClothingRequestData
+public record BuyClothingRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "CustomizationBuy";
@@ -14,7 +14,7 @@ public class BuyClothingRequestData
     public List<PaymentItemForClothing>? Items { get; set; }
 }
 
-public class PaymentItemForClothing
+public record PaymentItemForClothing
 {
     [JsonPropertyName("del")]
     public bool? Del { get; set; }

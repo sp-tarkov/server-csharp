@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Repeatable;
 
-public class QuestRewardValues
+public record QuestRewardValues
 {
     [JsonPropertyName("skillPointReward")]
     public int? SkillPointReward { get; set; }

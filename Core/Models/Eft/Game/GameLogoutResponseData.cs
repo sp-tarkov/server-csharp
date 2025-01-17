@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class GameLogoutResponseData
+public record GameLogoutResponseData
 {
     [JsonPropertyName("status")]
     public string? Status { get; set; }

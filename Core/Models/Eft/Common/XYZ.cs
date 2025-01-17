@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Common;
 
-public class XYZ
+public record XYZ
 {
     [JsonPropertyName("x")]
     public double? X { get; set; }

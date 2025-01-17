@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Repair;
 
-public class RepairActionDataRequest : BaseRepairActionDataRequest
+public record RepairActionDataRequest : BaseRepairActionDataRequest
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "Repair";
@@ -14,7 +14,7 @@ public class RepairActionDataRequest : BaseRepairActionDataRequest
     public string? Target { get; set; } // item to repair
 }
 
-public class RepairKitsInfo
+public record RepairKitsInfo
 {
     [JsonPropertyName("_id")]
     public string? Id { get; set; } // id of repair kit to use

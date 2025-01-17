@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Match;
 
-public class ProfileStatusRequest
+public record ProfileStatusRequest
 {
     [JsonPropertyName("groupId")]
     public int? GroupId { get; set; }

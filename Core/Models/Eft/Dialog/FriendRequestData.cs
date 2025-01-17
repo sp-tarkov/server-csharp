@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class FriendRequestData : IRequestData
+public record FriendRequestData : IRequestData
 {
     [JsonPropertyName("status")]
     public int? Status { get; set; }

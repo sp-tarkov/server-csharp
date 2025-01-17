@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Common.Tables;
 
-public class CustomisationStorage
+public record CustomisationStorage
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -14,7 +14,7 @@ public class CustomisationStorage
     public string? Type { get; set; }
 }
 
-public class CustomisationType
+public record CustomisationType
 {
     public const string SUITE = "suite";
     public const string DOG_TAG = "dogTag";
@@ -31,7 +31,7 @@ public class CustomisationType
     public const string MANNEQUIN_POSE = "mannequinPose";
 }
 
-public class CustomisationSource
+public record CustomisationSource
 {
     public const string QUEST = "quest";
     public const string PRESTIGE = "prestige";

@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Ws;
 
-public class WsRagfairOfferSold : WsNotificationEvent
+public record WsRagfairOfferSold : WsNotificationEvent
 {
     [JsonPropertyName("offerId")]
     public string? OfferId { get; set; }

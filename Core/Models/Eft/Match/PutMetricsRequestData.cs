@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Match;
 
-public class PutMetricsRequestData : IRequestData
+public record PutMetricsRequestData : IRequestData
 {
     [JsonPropertyName("sid")]
     public string? SessionId { get; set; }
@@ -33,13 +33,13 @@ public class PutMetricsRequestData : IRequestData
     public string? Mode { get; set; }
 }
 
-public class SharedSettings
+public record SharedSettings
 {
     [JsonPropertyName("StatedFieldOfView")]
     public double? StatedFieldOfView { get; set; }
 }
 
-public class HardwareDescription
+public record HardwareDescription
 {
     [JsonPropertyName("deviceUniqueIdentifier")]
     public string? DeviceUniqueIdentifier { get; set; }
@@ -93,7 +93,7 @@ public class HardwareDescription
     public string? SwapDriveType { get; set; }
 }
 
-public class ClientEvents
+public record ClientEvents
 {
     [JsonPropertyName("MatchingCompleted")]
     public double? MatchingCompleted { get; set; }

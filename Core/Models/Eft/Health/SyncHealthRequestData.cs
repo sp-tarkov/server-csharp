@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Health;
 
-public class SyncHealthRequestData
+public record SyncHealthRequestData
 {
     [JsonPropertyName("Health")]
     public List<BodyPartHealth>? Health { get; set; }
@@ -20,7 +20,7 @@ public class SyncHealthRequestData
     public double? Temperature { get; set; }
 }
 
-public class BodyPartCollection
+public record BodyPartCollection
 {
     [JsonPropertyName("Head")]
     public BodyPartHealth? Head { get; set; }
@@ -44,7 +44,7 @@ public class BodyPartCollection
     public BodyPartHealth? RightLeg { get; set; }
 }
 
-public class BodyPartHealth
+public record BodyPartHealth
 {
     [JsonPropertyName("Maximum")]
     public int? Maximum { get; set; }

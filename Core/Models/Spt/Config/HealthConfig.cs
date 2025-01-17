@@ -2,7 +2,7 @@
 
 namespace Core.Models.Spt.Config;
 
-public class HealthConfig : BaseConfig
+public record HealthConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-health";
@@ -14,7 +14,7 @@ public class HealthConfig : BaseConfig
     public HealthSave Save { get; set; }
 }
 
-public class HealthMultipliers
+public record HealthMultipliers
 {
     [JsonPropertyName("death")]
     public double Death { get; set; }
@@ -23,7 +23,7 @@ public class HealthMultipliers
     public double Blacked { get; set; }
 }
 
-public class HealthSave
+public record HealthSave
 {
     [JsonPropertyName("health")]
     public bool Health { get; set; }

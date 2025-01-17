@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Health;
 
-public class HealthTreatmentRequestData
+public record HealthTreatmentRequestData
 {
     [JsonPropertyName("Action")]
     public string Action { get; set; } = "RestoreHealth";
@@ -20,7 +20,7 @@ public class HealthTreatmentRequestData
     public long? Timestamp { get; set; }
 }
 
-public class ItemCost
+public record ItemCost
 {
     /** Id of stack to take money from */
     [JsonPropertyName("id")]
@@ -31,7 +31,7 @@ public class ItemCost
     public int? Count { get; set; }
 }
 
-public class Difference
+public record Difference
 {
     [JsonPropertyName("BodyParts")]
     public BodyParts? BodyParts { get; set; }
@@ -43,7 +43,7 @@ public class Difference
     public int? Hydration { get; set; }
 }
 
-public class BodyParts
+public record BodyParts
 {
     [JsonPropertyName("Head")]
     public BodyPart? Head { get; set; }

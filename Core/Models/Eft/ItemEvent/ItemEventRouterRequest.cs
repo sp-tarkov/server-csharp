@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.ItemEvent;
 
-public class ItemEventRouterRequest : IRequestData
+public record ItemEventRouterRequest : IRequestData
 {
     [JsonPropertyName("data")]
     public List<Daum>? Data { get; set; }
@@ -15,7 +15,7 @@ public class ItemEventRouterRequest : IRequestData
     public int? Reload { get; set; }
 }
 
-public class Daum
+public record Daum
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }
@@ -27,7 +27,7 @@ public class Daum
     public To? To { get; set; }
 }
 
-public class To
+public record To
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -39,7 +39,7 @@ public class To
     public Location? Location { get; set; }
 }
 
-public class Location
+public record Location
 {
     [JsonPropertyName("x")]
     public int? X { get; set; }

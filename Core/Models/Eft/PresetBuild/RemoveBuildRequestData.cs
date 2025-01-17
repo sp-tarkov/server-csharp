@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.PresetBuild;
 
-public class RemoveBuildRequestData : IRequestData
+public record RemoveBuildRequestData : IRequestData
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

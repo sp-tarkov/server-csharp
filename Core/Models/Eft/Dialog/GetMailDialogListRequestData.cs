@@ -3,7 +3,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.Dialog;
 
-public class GetMailDialogListRequestData : IRequestData
+public record GetMailDialogListRequestData : IRequestData
 {
     [JsonPropertyName("limit")]
     public int? Limit { get; set; }

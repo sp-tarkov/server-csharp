@@ -5,7 +5,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Spt.Config;
 
-public class PmcConfig : BaseConfig
+public record PmcConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-pmc";
@@ -120,7 +120,7 @@ public class PmcConfig : BaseConfig
     public List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
 }
 
-public class HostilitySettings
+public record HostilitySettings
 {
     /** Bot roles that are 100% an enemy */
     [JsonPropertyName("additionalEnemyTypes")]
@@ -147,7 +147,7 @@ public class HostilitySettings
     public string? SavagePlayerBehaviour { get; set; }
 }
 
-public class PmcTypes
+public record PmcTypes
 {
     [JsonPropertyName("usec")]
     public string Usec { get; set; }
@@ -156,7 +156,7 @@ public class PmcTypes
     public string Bear { get; set; }
 }
 
-public class SlotLootSettings
+public record SlotLootSettings
 {
     /** Item Type whitelist */
     [JsonPropertyName("whitelist")]
@@ -167,13 +167,13 @@ public class SlotLootSettings
     public List<string> Blacklist { get; set; }
 }
 
-public class MinMaxLootValue : MinMax
+public record MinMaxLootValue : MinMax
 {
     [JsonPropertyName("value")]
     public double Value { get; set; }
 }
 
-public class MinMaxLootItemValue : MinMax
+public record MinMaxLootItemValue : MinMax
 {
     [JsonPropertyName("backpack")]
     public MinMax Backpack { get; set; }

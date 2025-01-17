@@ -4,7 +4,7 @@ namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 
-public class ScavCaseConfig : BaseConfig
+public record ScavCaseConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-scavcase";
@@ -34,7 +34,7 @@ public class ScavCaseConfig : BaseConfig
     public bool AllowBossItemsAsRewards { get; set; }
 }
 
-public class MoneyRewards
+public record MoneyRewards
 {
     [JsonPropertyName("moneyRewardChancePercent")]
     public int MoneyRewardChancePercent { get; set; }
@@ -52,7 +52,7 @@ public class MoneyRewards
     public MoneyLevels GpCount { get; set; }
 }
 
-public class MoneyLevels
+public record MoneyLevels
 {
     [JsonPropertyName("common")]
     public MinMax Common { get; set; }
@@ -64,7 +64,7 @@ public class MoneyLevels
     public MinMax SuperRare { get; set; }
 }
 
-public class AmmoRewards
+public record AmmoRewards
 {
     [JsonPropertyName("ammoRewardChancePercent")]
     public int AmmoRewardChancePercent { get; set; }

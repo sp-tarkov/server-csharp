@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Game;
 
-public class GetItemPricesResponse
+public record GetItemPricesResponse
 {
     [JsonPropertyName("supplyNextTime")]
     public double? SupplyNextTime { get; set; }

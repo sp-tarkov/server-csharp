@@ -3,7 +3,7 @@ using Core.Models.Enums;
 
 namespace Core.Models.Eft.Profile;
 
-public class UserDialogInfo
+public record UserDialogInfo
 {
     /// <summary>
     /// _id
@@ -18,7 +18,7 @@ public class UserDialogInfo
     public UserDialogDetails? Info { get; set; }
 }
 
-public class UserDialogDetails
+public record UserDialogDetails
 {
     [JsonPropertyName("Nickname")]
     public string? Nickname { get; set; }

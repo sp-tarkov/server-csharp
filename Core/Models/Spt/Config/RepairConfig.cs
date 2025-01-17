@@ -4,7 +4,7 @@ namespace Core.Models.Spt.Config;
 
 using System.Text.Json.Serialization;
 
-public class RepairConfig : BaseConfig
+public record RepairConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
     public string Kind { get; set; } = "spt-repair";
@@ -36,7 +36,7 @@ public class RepairConfig : BaseConfig
     public RepairKit RepairKit { get; set; }
 }
 
-public class IntellectGainValues
+public record IntellectGainValues
 {
     [JsonPropertyName("weapon")]
     public double Weapon { get; set; }
@@ -45,7 +45,7 @@ public class IntellectGainValues
     public double Armor { get; set; }
 }
 
-public class MaxIntellectGainValues
+public record MaxIntellectGainValues
 {
     [JsonPropertyName("kit")]
     public double Kit { get; set; }
@@ -54,7 +54,7 @@ public class MaxIntellectGainValues
     public double Trader { get; set; }
 }
 
-public class WeaponTreatmentRepairValues
+public record WeaponTreatmentRepairValues
 {
     /** The chance to gain more weapon maintenance skill */
     [JsonPropertyName("critSuccessChance")]
@@ -75,7 +75,7 @@ public class WeaponTreatmentRepairValues
     public double PointGainMultiplier { get; set; }
 }
 
-public class RepairKit
+public record RepairKit
 {
     [JsonPropertyName("armor")]
     public BonusSettings Armor { get; set; }
@@ -90,7 +90,7 @@ public class RepairKit
     public BonusSettings Headwear { get; set; }
 }
 
-public class BonusSettings
+public record BonusSettings
 {
     [JsonPropertyName("rarityWeight")]
     public Dictionary<string, double> RarityWeight { get; set; }
@@ -105,7 +105,7 @@ public class BonusSettings
     public Dictionary<string, BonusValues> Rare { get; set; }
 }
 
-public class BonusValues
+public record BonusValues
 {
     [JsonPropertyName("valuesMinMax")]
     public MinMax ValuesMinMax { get; set; }

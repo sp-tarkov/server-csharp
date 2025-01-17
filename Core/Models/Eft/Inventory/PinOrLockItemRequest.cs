@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
 
-public class PinOrLockItemRequest
+public record PinOrLockItemRequest
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "PinLock";

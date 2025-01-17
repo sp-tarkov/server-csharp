@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutScavCaseStartRequestData
+public record HideoutScavCaseStartRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; } = "HideoutScavCaseProductionStart";
@@ -20,7 +20,7 @@ public class HideoutScavCaseStartRequestData
     public long? Timestamp { get; set; }
 }
 
-public class HideoutItem
+public record HideoutItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -29,7 +29,7 @@ public class HideoutItem
     public int? Count { get; set; }
 }
 
-public class Tool
+public record Tool
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

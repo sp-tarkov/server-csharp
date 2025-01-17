@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Hideout;
 
-public class HideoutContinuousProductionStartRequestData
+public record HideoutContinuousProductionStartRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; } = "HideoutContinuousProductionStart";

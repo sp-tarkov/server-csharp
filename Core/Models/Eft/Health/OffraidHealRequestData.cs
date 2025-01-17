@@ -2,7 +2,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Health;
 
-public class OffraidHealRequestData : BaseInteractionRequestData
+public record OffraidHealRequestData : BaseInteractionRequestData
 {
     public override string? Action { get; set; } = "Heal";
     public string? Item { get; set; }

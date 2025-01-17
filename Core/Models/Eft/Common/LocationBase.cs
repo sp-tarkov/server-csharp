@@ -3,7 +3,7 @@ using Core.Models.Common;
 
 namespace Core.Models.Eft.Common;
 
-public class LocationBase
+public record LocationBase
 {
     [JsonPropertyName("AccessKeys")]
     public List<string>? AccessKeys { get; set; }
@@ -329,7 +329,7 @@ public class LocationBase
     public List<Wave>? Waves { get; set; }
 }
 
-public class Transit
+public record Transit
 {
     [JsonPropertyName("activateAfterSec")]
     public int? ActivateAfterSeconds { get; set; } // TODO: Int in client
@@ -362,7 +362,7 @@ public class Transit
     public int? Time { get; set; }
 }
 
-public class NonWaveGroupScenario
+public record NonWaveGroupScenario
 {
     [JsonPropertyName("Chance")]
     public double? Chance { get; set; }
@@ -377,7 +377,7 @@ public class NonWaveGroupScenario
     public int? MinimumToBeGrouped { get; set; }
 }
 
-public class Limit : MinMax
+public record Limit : MinMax
 {
     [JsonPropertyName("items")]
     public object[] Items { get; set; } // TODO: was on TS any[] hmmm..
@@ -389,7 +389,7 @@ public class Limit : MinMax
     public int? Max { get; set; }
 }
 
-public class AirdropParameter
+public record AirdropParameter
 {
     [JsonPropertyName("AirdropPointDeactivateDistance")]
     public int? AirdropPointDeactivateDistance { get; set; }
@@ -422,7 +422,7 @@ public class AirdropParameter
     public int? UnsuccessfulTryPenalty { get; set; }
 }
 
-public class Banner
+public record Banner
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
@@ -431,7 +431,7 @@ public class Banner
     public Pic? Picture { get; set; }
 }
 
-public class Pic
+public record Pic
 {
     [JsonPropertyName("path")]
     public string? Path { get; set; }
@@ -440,7 +440,7 @@ public class Pic
     public string? Rcid { get; set; }
 }
 
-public class BossLocationSpawn
+public record BossLocationSpawn
 {
     [JsonPropertyName("BossChance")]
     public double? BossChance { get; set; }
@@ -503,7 +503,7 @@ public class BossLocationSpawn
     public string[] SpawnMode { get; set; }
 }
 
-public class BossSupport
+public record BossSupport
 {
     [JsonPropertyName("BossEscortAmount")]
     public string? BossEscortAmount { get; set; }
@@ -515,7 +515,7 @@ public class BossSupport
     public string? BossEscortType { get; set; }
 }
 
-public class BotLocationModifier
+public record BotLocationModifier
 {
     [JsonPropertyName("AccuracySpeed")]
     public double? AccuracySpeed { get; set; }
@@ -563,7 +563,7 @@ public class BotLocationModifier
     public double? MinExfiltrationTime { get; set; }
 }
 
-public class AdditionalHostilitySettings
+public record AdditionalHostilitySettings
 {
     [JsonPropertyName("AlwaysEnemies")]
     public List<string>? AlwaysEnemies { get; set; }
@@ -602,7 +602,7 @@ public class AdditionalHostilitySettings
     public List<string>? Warn { get; set; }
 }
 
-public class ChancedEnemy
+public record ChancedEnemy
 {
     [JsonPropertyName("EnemyChance")]
     public int? EnemyChance { get; set; }
@@ -611,13 +611,13 @@ public class ChancedEnemy
     public string? Role { get; set; }
 }
 
-public class MinMaxBot : MinMax
+public record MinMaxBot : MinMax
 {
     [JsonPropertyName("WildSpawnType")]
     public object? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
 }
 
-public class MinPlayerWaitTime
+public record MinPlayerWaitTime
 {
     [JsonPropertyName("minPlayers")]
     public int? MinPlayers { get; set; }
@@ -626,7 +626,7 @@ public class MinPlayerWaitTime
     public int? Time { get; set; }
 }
 
-public class Preview
+public record Preview
 {
     [JsonPropertyName("path")]
     public string? Path { get; set; }
@@ -635,7 +635,7 @@ public class Preview
     public string? Rcid { get; set; }
 }
 
-public class Scene
+public record Scene
 {
     [JsonPropertyName("path")]
     public string? Path { get; set; }
@@ -644,7 +644,7 @@ public class Scene
     public string? Rcid { get; set; }
 }
 
-public class SpawnPointParam
+public record SpawnPointParam
 {
     [JsonPropertyName("BotZoneName")]
     public string? BotZoneName { get; set; }
@@ -677,7 +677,7 @@ public class SpawnPointParam
     public List<string>? Sides { get; set; }
 }
 
-public class ColliderParams
+public record ColliderParams
 {
     [JsonPropertyName("_parent")]
     public string? Parent { get; set; }
@@ -686,7 +686,7 @@ public class ColliderParams
     public Props? Props { get; set; }
 }
 
-public class Props
+public record Props
 {
     [JsonPropertyName("Center")]
     public XYZ? Center { get; set; }
@@ -698,7 +698,7 @@ public class Props
     public double? Radius { get; set; }
 }
 
-public class Exit
+public record Exit
 {
     /** % Chance out of 100 exit will appear in raid */
     [JsonPropertyName("Chance")]
@@ -785,7 +785,7 @@ public class Exit
     public string? Side { get; set; }
 }
 
-public class MaxItemCountInLocation
+public record MaxItemCountInLocation
 {
     [JsonPropertyName("TemplateId")]
     public string? TemplateId { get; set; }
@@ -794,7 +794,7 @@ public class MaxItemCountInLocation
     public int? Value { get; set; }
 }
 
-public class Wave
+public record Wave
 {
     [JsonPropertyName("BotPreset")]
     public string? BotPreset { get; set; }
@@ -842,7 +842,7 @@ public class Wave
     public string? OpenZones { get; set; }
 }
 
-public class LocationEvents
+public record LocationEvents
 {
     [JsonPropertyName("Halloween2024")]
     public Halloween2024? Halloween2024 { get; set; }
@@ -850,12 +850,12 @@ public class LocationEvents
     public Khorovod? Khorovod { get; set; }
 }
 
-public class Khorovod
+public record Khorovod
 {
     public double? Chance { get; set; }
 }
 
-public class Halloween2024
+public record Halloween2024
 {
     [JsonPropertyName("CrowdAttackBlockRadius")]
     public int? CrowdAttackBlockRadius { get; set; }
@@ -902,7 +902,7 @@ public class Halloween2024
     public Khorovod? Khorovod { get; set; }
 }
 
-public class CrowdAttackSpawnParam
+public record CrowdAttackSpawnParam
 {
     [JsonPropertyName("Difficulty")]
     public string? Difficulty { get; set; }
@@ -914,7 +914,7 @@ public class CrowdAttackSpawnParam
     public int? Weight { get; set; }
 }
 
-public class Area
+public record Area
 {
     [JsonPropertyName("center")]
     public XYZ? Center { get; set; }

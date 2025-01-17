@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Bots;
 
-public class ChooseRandomCompatibleModResult
+public record ChooseRandomCompatibleModResult
 {
     [JsonPropertyName("incompatible")]
     public bool? Incompatible { get; set; }

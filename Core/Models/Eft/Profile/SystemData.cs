@@ -2,7 +2,7 @@
 
 namespace Core.Models.Eft.Profile;
 
-public class SystemData
+public record SystemData
 {
     [JsonPropertyName("date")]
     public string? Date { get; set; }

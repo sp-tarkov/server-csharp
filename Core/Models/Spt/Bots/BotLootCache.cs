@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Bots;
 
-public class BotLootCache
+public record BotLootCache
 {
     [JsonPropertyName("backpackLoot")]
     public Dictionary<string, double>? BackpackLoot { get; set; }
@@ -44,7 +44,7 @@ public class BotLootCache
     public Dictionary<string, double>? GrenadeItems { get; set; }
 }
 
-public class LootCacheType
+public record LootCacheType
 {
     public const string Special = "Special";
     public const string Backpack = "Backpack";
