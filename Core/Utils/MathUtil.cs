@@ -91,14 +91,14 @@ public class MathUtil
     /// <param name="x">Support points in x (of same length as y)</param>
     /// <param name="y">Support points in y (of same length as x)</param>
     /// <returns>Interpolated value at xp, or null if xp is out of bounds</returns>
-    public static double? Interp1(double xp, double[] x, double[] y)
+    public double? Interp1(double xp, List<double> x, List<double> y)
     {
         if (xp > x[^1]) // ^1 is the last index in C#
             return y[^1];
 
         if (xp < x[0]) return y[0];
 
-        for (var i = 0; i < x.Length - 1; i++)
+        for (var i = 0; i < x.Count - 1; i++)
             if (xp >= x[i] && xp <= x[i + 1])
                 return y[i] + (xp - x[i]) * (y[i + 1] - y[i]) / (x[i + 1] - x[i]);
 
