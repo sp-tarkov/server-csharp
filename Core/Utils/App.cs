@@ -53,9 +53,10 @@ public class App
     {
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
-
+        
         _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
-        //_logger.Debug($"CPU: {ApplicationId.ProcessorArchitecture} cores: {os.cpus().length}");
+        _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
+        _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
         //_logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
         //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.argv[0])}");
         //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.execPath)}");
@@ -64,11 +65,11 @@ public class App
         //if (ProgramStatics.BUILD_TIME) {
         //    _logger.Debug($"Date: {ProgramStatics.BUILD_TIME}");
         //}
-        
+
         //if (ProgramStatics.COMMIT) {
         //    _logger.Debug($"Commit: {ProgramStatics.COMMIT}");
         //}
-        
+
         foreach (var onLoad in _onLoad) 
             await onLoad.OnLoad();
 
