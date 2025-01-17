@@ -317,6 +317,21 @@ public class CreateProfileService
                     Source = CustomisationSource.DEFAULT,
                     Type = CustomisationType.DOG_TAG,
                 });
+
+                // Unheard Clothing (Cultist Hood)
+                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
+                    Id = "666841a02537107dc508b704",
+                    Source = CustomisationSource.DEFAULT,
+                    Type = CustomisationType.SUITE,
+            });
+
+                // Unheard background
+                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
+                    Id = "675850ba33627edb710b0592",
+                    Source = CustomisationSource.DEFAULT,
+                    Type = CustomisationType.ENVIRONMENT,
+            });
+
                 break;
         }
 
