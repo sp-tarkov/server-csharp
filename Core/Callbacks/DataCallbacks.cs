@@ -63,7 +63,6 @@ public class DataCallbacks
     public string GetGlobals(string url, EmptyRequestData info, string sessionID)
     {
         var globals = _databaseService.GetGlobals();
-        globals.Time = _timeUtil.GetTimeStamp() / 1000;
         var returns = _httpResponseUtil.GetBody(globals);
 
         return returns;

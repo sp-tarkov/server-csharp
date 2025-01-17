@@ -7,8 +7,6 @@ using System.Text.Json.Serialization;
 
 public class Globals
 {
-    [JsonPropertyName("time")]
-    public double? Time { get; set; }
 
     [JsonPropertyName("config")]
     public Config? Configuration { get; set; }
