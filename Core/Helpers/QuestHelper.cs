@@ -139,8 +139,8 @@ public class QuestHelper
     /// <returns>true if loyalty is high enough to fulfill quest requirement</returns>
     public bool TraderLoyaltyLevelRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var requiredLoyaltyLevel = questProperties.Value as int?;
-        if (!profile.TradersInfo.TryGetValue(questProperties.Target, out var trader))
+        var requiredLoyaltyLevel = questProperties.Value as float?;
+        if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
         {
             _logger.Error(
                 _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target));
@@ -157,10 +157,17 @@ public class QuestHelper
     /// <returns>true if standing is high enough to fulfill quest requirement</returns>
     public bool TraderStandingRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        throw new System.NotImplementedException();
+        var requiredLoyaltyLevel = questProperties.Value as float?;
+        if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
+        {
+            _logger.Error(
+                _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target));
+        }
+
+        return CompareAvailableForValues(trader.Standing.Value, requiredLoyaltyLevel.Value, questProperties.CompareMethod);
     }
 
-    protected bool CompareAvailableForValues(int current, int required, string compareMethod)
+    protected bool CompareAvailableForValues(double current, float required, string compareMethod)
     {
         switch (compareMethod)
         {
