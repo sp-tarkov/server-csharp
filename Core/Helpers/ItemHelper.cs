@@ -1565,7 +1565,7 @@ public class ItemHelper
             .Select((x) => GetItem(x).Value.Properties.Caliber)
             .ToList();
 
-        return _randomUtil.DrawRandomFromList(calibers)[0];
+        return _randomUtil.DrawRandomFromList(calibers).First();
     }
 
     /// <summary>
