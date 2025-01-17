@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
@@ -78,6 +78,10 @@ public class SendMessageDetails
     /// </summary>
     [JsonPropertyName("profileChangeEvents")]
     public List<ProfileChangeEvent>? ProfileChangeEvents { get; set; }
+
+    /** Optional - the MongoID of the dialogue message to reply to */
+    [JsonPropertyName("replyTo")]
+    public string? ReplyTo { get; set; }
 }
 
 public class ProfileChangeEvent

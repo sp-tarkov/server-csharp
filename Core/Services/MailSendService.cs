@@ -366,16 +366,47 @@ public class MailSendService
             ProfileChangeEvents = (messageDetails.ProfileChangeEvents?.Count == 0) ? messageDetails.ProfileChangeEvents : null
         };
 
-        // Clean up empty system data
-        // if (message.SystemData is null) {
-        //     delete message.SystemData;
-        // }
-
-        // Clean up empty template id
-        // if (message.TemplateId is null)
-        //     delete message.templateId;
+        // handle replyTo
+        if (messageDetails.ReplyTo is not null)
+        {
+            var replyMessage = GetMessageToReplyTo(messageDetails.RecipientId, messageDetails.ReplyTo, dialogId);
+            if (replyMessage is not null)
+            {
+                message.ReplyTo = replyMessage;
+            }
+        }
 
         return message;
+    }
+
+    /**
+ * @param recipientId The id of the recipient
+ * @param replyToId The id of the message to reply to
+ * @param dialogueId The id of the dialogue (traderId or profileId)
+ * @returns A new instance with data from the found message, otherwise undefined
+ */
+    protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId) {
+        var currentDialogue = _dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
+
+        if (currentDialogue is null) {
+            _logger.Warning($"Unable to find dialogue: {dialogueId} from sender");
+            return null;
+        }
+
+        var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message => message.Id == replyToId);
+        if (messageToReplyTo is null)
+        {
+            return null;
+        }
+
+        return new ReplyTo
+        {
+            Id = messageToReplyTo.Id,
+            DateTime = messageToReplyTo.DateTime,
+            MessageType = messageToReplyTo.MessageType,
+            UserId = messageToReplyTo.UserId,
+            Text = messageToReplyTo.Text
+        };
     }
 
     /**
