@@ -21,9 +21,10 @@ public class RepeatableQuestHelper
     /// <param name="pmcLevel">Level of PMC character</param>
     /// <param name="repeatableConfig">Main repeatable config</param>
     /// <returns>EliminationConfig</returns>
-    public EliminationConfig GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
+    public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
-        throw new NotImplementedException();
+        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(
+            (x) => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max);
     }
 
     public Dictionary<K, ProbabilityData<V>> ProbabilityObjectArray<K, V>(object configArrayInput) // TODO: ProbabilityObjectArray<K, V> for return type , param type was List<ProbabilityObject<K, V>>
@@ -31,6 +32,12 @@ public class RepeatableQuestHelper
         _logger.Error("Fuck this in particular, go look up ProbabilityObjectArray in node server, candidate for rewrite");
         throw new NotImplementedException();
         var x = new Dictionary<K, ProbabilityData<V>>();
+    }
+
+    public int MaxProbability(int key)
+    {
+        _logger.Error("NOT IMPLEMENTED - MaxProbability");
+        return key;
     }
 
     public class ProbabilityData<T>

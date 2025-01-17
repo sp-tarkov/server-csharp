@@ -23,7 +23,7 @@ public class SptHttpListener : IHttpListener
     protected readonly LocalisationService _localisationService;
     protected readonly JsonUtil _jsonUtil;
     public SptHttpListener(
-        HttpRouter httpRouter, // TODO: delay required
+        HttpRouter httpRouter,
         IEnumerable<ISerializer> serializers,
         ISptLogger<SptHttpListener> logger,
         ISptLogger<RequestLogger> requestsLogger,
