@@ -155,7 +155,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V?>>
      * @param locklist list keys which shall be replaced even if drawing without replacement
      * @returns Array consisting of N random keys for this ProbabilityObjectArray
      */
-    public List<K> Draw(int count = 1, bool replacement = true, List<K> locklist = null)
+    public List<K> Draw(int count = 1, bool replacement = true, List<K>? locklist = null)
     {
         if (locklist == null)
             locklist = new List<K>();
