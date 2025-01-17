@@ -18,7 +18,7 @@ namespace Core.Utils.Collections;
  *   // count the elements which should be distributed according to the relative probabilities
  *   res.filter(x => x==="b").reduce((sum, x) => sum + 1 , 0)
  */
-public class ProbabilityObjectArray<T, K, V> : List<ProbabilityObject<K, V?>> where T : ProbabilityObject<K,V>
+public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObject<K,V>
 {
     private MathUtil _mathUtil;
     private ICloner _cloner;
