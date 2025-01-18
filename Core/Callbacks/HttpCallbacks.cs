@@ -6,20 +6,14 @@ using Core.Servers;
 namespace Core.Callbacks;
 
 [Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
-public class HttpCallbacks : OnLoad
+public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicationContext) : OnLoad
 {
-    protected HttpServer _httpServer;
-    protected ApplicationContext _applicationContext;
-    public HttpCallbacks(HttpServer httpServer, ApplicationContext applicationContext)
+    public Task OnLoad()
     {
-        _httpServer = httpServer;
-        _applicationContext = applicationContext;
-    }
-    
-    public async Task OnLoad()
-    {
-        _httpServer.Load( _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER).GetValue<WebApplicationBuilder>());
+        _httpServer.Load( _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER)?.GetValue<WebApplicationBuilder>());
         _applicationContext.ClearValues(ContextVariableType.APP_BUILDER);
+        
+        return Task.CompletedTask;
     }
 
     public string GetRoute()

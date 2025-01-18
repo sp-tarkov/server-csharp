@@ -1,10 +1,8 @@
-﻿using System.Net.WebSockets;
-using Core.Context;
+﻿using Core.Context;
 using Core.Servers.Http;
 using Core.Services;
 using Microsoft.Extensions.Primitives;
 using Core.Annotations;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 
@@ -12,52 +10,35 @@ using Core.Models.Utils;
 namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-public class HttpServer
+public class HttpServer(
+    ISptLogger<HttpServer> _logger,
+    LocalisationService _localisationService,
+    ConfigServer _configServer,
+    ApplicationContext _applicationContext,
+    WebSocketServer _webSocketServer,
+    IEnumerable<IHttpListener> _httpListeners
+)
 {
-    protected HttpConfig httpConfig;
-    protected bool started;
+    private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    private bool started;
 
-    protected ISptLogger<HttpServer> _logger;
-    protected LocalisationService _localisationService;
-    protected ConfigServer _configServer;
-    protected ApplicationContext _applicationContext;
-    protected WebSocketServer _webSocketServer;
-    protected IEnumerable<IHttpListener> _httpListeners;
-
-    public HttpServer(
-        ISptLogger<HttpServer> logger,
-        LocalisationService localisationService,
-        ConfigServer configServer,
-        ApplicationContext applicationContext,
-        WebSocketServer webSocketServer,
-        IEnumerable<IHttpListener> httpListeners
-    )
+    public void Load(WebApplicationBuilder? builder)
     {
-        _logger = logger;
-        _localisationService = localisationService;
-        _configServer = configServer;
-        _applicationContext = applicationContext;
-        _webSocketServer = webSocketServer;
-        _httpListeners = httpListeners;
-
-        httpConfig = _configServer.GetConfig<HttpConfig>();
-    }
-
-    public void Load(WebApplicationBuilder builder)
-    {
-        builder.WebHost.UseKestrel();
+        builder?.WebHost.UseKestrel();
         //builder.Services.AddControllers();
         // At the end
-        var app = builder.Build();
+        var app = builder?.Build();
 
         // enable web socket
-        app.UseWebSockets();
+        app?.UseWebSockets();
 
-        app.Use((HttpContext req, RequestDelegate _) =>
-        {
-            return Task.Factory.StartNew(() => HandleFallback(req));
-        });
+        app?.Use((HttpContext req, RequestDelegate _) => { return Task.Factory.StartNew(() => HandleFallback(req)); });
         started = true;
+        if (app is null)
+        {
+            throw new Exception($"Application context is null in HttpServer.Load()");
+        }
+
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
 
@@ -86,7 +67,7 @@ public class HttpServer
                     ? forwardedFor.Value.First()!.Split(",")[0].Trim()
                     : context.Connection.RemoteIpAddress!.ToString();
 
-            if (httpConfig.LogRequests)
+            if (_httpConfig.LogRequests)
             {
                 var isLocalRequest = IsLocalRequest(clientIp);
                 if (isLocalRequest.HasValue)
@@ -95,9 +76,11 @@ public class HttpServer
                         _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
                     else
                         _logger.Info(
-                            _localisationService.GetText("client_request_ip",
+                            _localisationService.GetText(
+                                "client_request_ip",
                                 new Dictionary<string, string>
-                                    { { "ip", clientIp }, { "url", context.Request.Path.Value } })
+                                    { { "ip", clientIp }, { "url", context.Request.Path.Value } }
+                            )
                         );
                 }
             }
