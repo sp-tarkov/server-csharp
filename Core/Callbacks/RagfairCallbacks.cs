@@ -4,7 +4,6 @@ using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
@@ -15,32 +14,15 @@ namespace Core.Callbacks;
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.RagfairCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(RagfairCallbacks))]
-public class RagfairCallbacks : OnLoad, OnUpdate
+public class RagfairCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    // RagfairServer _ragfairServer
+    RagfairController _ragfairController,
+    RagfairTaxService _ragfairTaxService,
+    ConfigServer _configServer
+    ) : OnLoad, OnUpdate
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    // protected RagfairServer _ragfairServer;
-    protected RagfairController _ragfairController;
-    protected RagfairTaxService _ragfairTaxService;
-    protected ConfigServer _configServer;
-
-    private RagfairConfig _ragfairConfig;
-
-    public RagfairCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        // RagfairServer ragfairServer,
-        RagfairController ragfairController,
-        RagfairTaxService ragfairTaxService,
-        ConfigServer configServer
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        // _ragfairServer = ragfairServer;
-        _ragfairController = ragfairController;
-        _ragfairTaxService = ragfairTaxService;
-        _configServer = configServer;
-        _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    }
+    private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     public async Task OnLoad()
     {

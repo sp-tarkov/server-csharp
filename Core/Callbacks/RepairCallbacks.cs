@@ -7,18 +7,8 @@ using Core.Models.Eft.Repair;
 namespace Core.Callbacks;
 
 [Injectable]
-public class RepairCallbacks
+public class RepairCallbacks(RepairController _repairController)
 {
-    protected RepairController _repairController;
-
-    public RepairCallbacks
-    (
-        RepairController repairController
-    )
-    {
-        _repairController = repairController;
-    }
-
     /// <summary>
     /// Handle TraderRepair event
     /// use trader to repair item

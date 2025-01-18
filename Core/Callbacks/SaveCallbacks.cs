@@ -1,6 +1,5 @@
 ﻿using Core.Annotations;
 using Core.DI;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
@@ -9,38 +8,30 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.SaveCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.SaveCallbacks)]
-public class SaveCallbacks : OnLoad, OnUpdate
-{
-    protected SaveServer _saveServer;
-    protected CoreConfig _coreConfig;
-    protected BackupService _backupService;
-
-    public SaveCallbacks(
-        SaveServer saveServer,
-        ConfigServer configServer,
-        BackupService backupService
+public class SaveCallbacks(
+    SaveServer _saveServer,
+    ConfigServer _configServer,
+    BackupService _backupService
     )
-    {
-        _saveServer = saveServer;
-        _coreConfig = configServer.GetConfig<CoreConfig>();
-        _backupService = backupService;
-    }
+    : OnLoad, OnUpdate
+{
+    private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public async Task OnLoad()
     {
-        _backupService.InitAsync();
+        await _backupService.InitAsync();
         _saveServer.Load();
     }
 
-    public async Task<bool> OnUpdate(long SecondsSinceLastRun)
+    public Task<bool> OnUpdate(long SecondsSinceLastRun)
     {
         if (SecondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
         {
             _saveServer.Save();
-            return true;
+            return Task.FromResult(true);
         }
 
-        return false;
+        return Task.FromResult(false);
     }
 
     public string GetRoute()

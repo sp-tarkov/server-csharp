@@ -1,8 +1,6 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Utils;
@@ -10,24 +8,12 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class QuestCallbacks
+public class QuestCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    QuestController _questController,
+    RepeatableQuestController _repeatableQuestController
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected QuestController _questController;
-    protected RepeatableQuestController _repeatableQuestController;
-
-    public QuestCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        QuestController questController,
-        RepeatableQuestController repeatableQuestController
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _questController = questController;
-        _repeatableQuestController = repeatableQuestController;
-    }
-
     /// <summary>
     /// Handle RepeatableQuestChange event
     /// </summary>
@@ -53,7 +39,7 @@ public class QuestCallbacks
     {
         if (info.Type == "repeatable")
             return _questController.AcceptRepeatableQuest(pmcData, info, sessionID);
-        
+
         return _questController.AcceptQuest(pmcData, info, sessionID);
     }
 
