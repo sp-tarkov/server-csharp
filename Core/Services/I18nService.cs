@@ -1,4 +1,4 @@
-﻿using Core.Utils;
+using Core.Utils;
 using Core.Utils.Extensions;
 
 namespace Core.Services;
@@ -84,26 +84,33 @@ public class I18nService
         return value;
     }
 
+    public string GetLocalised<T>(string key)
+    {
+        return GetLocalised(key);
+    }
+
     public string GetLocalised(string key, object? args)
     {
         var rawLocalizedString = GetLocalised(key);
         if (args == null)
+        {
             return rawLocalizedString;
-        if (args is string value)
-        {
-            return rawLocalizedString.Replace("%s", value);
         }
-        else
+
+        foreach (var propertyInfo in args.GetType().GetProperties())
         {
-            foreach (var propertyInfo in args.GetType().GetProperties())
+            var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
+            if (rawLocalizedString.Contains(localizedName))
             {
-                var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
-                if (rawLocalizedString.Contains(localizedName))
-                {
-                    rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args, null)?.ToString() ?? string.Empty);
-                }
+                rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args, null)?.ToString() ?? string.Empty);
             }
-            return rawLocalizedString;
         }
+        return rawLocalizedString;
+    }
+
+    public string GetLocalised<T>(string key, T value) where T : IConvertible
+    {
+        var rawLocalizedString = GetLocalised(key);
+        return rawLocalizedString.Replace("%s", value.ToString());
     }
 }

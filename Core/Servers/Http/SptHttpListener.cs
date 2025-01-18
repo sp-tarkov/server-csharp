@@ -169,9 +169,9 @@ public class SptHttpListener : IHttpListener
         var output = _router.GetResponse(req, sessionID, body, out var deserializedObject);
         /* route doesn't exist or response is not properly set up */
         if (string.IsNullOrEmpty(output)) {
-            _logger.Error(_localisationService.GetText("unhandled_response", req.Path));
+            _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
             _logger.Info(_jsonUtil.Serialize(deserializedObject));
-            output = _httpResponseUtil.GetBody<object?>(null, 404, $"UNHANDLED RESPONSE: {req.Path}");
+            output = _httpResponseUtil.GetBody<object?>(null, 404, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
         }
         /* TODO: REQUEST LOGGER
         if (ProgramStatics.ENTRY_TYPE !== EntryType.RELEASE) {

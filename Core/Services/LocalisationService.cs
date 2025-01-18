@@ -1,4 +1,4 @@
-﻿using Core.Utils;
+using Core.Utils;
 using Core.Annotations;
 using Core.Models.Utils;
 using Core.Servers;
@@ -40,7 +40,14 @@ public class LocalisationService
 
     public string GetText(string key, object? args = null)
     {
-        return _i18nService.GetLocalised(key, args);
+        return args is null
+            ? _i18nService.GetLocalised(key)
+            : _i18nService.GetLocalised(key, args);
+    }
+
+    public string GetText<T>(string key, T value) where T :IConvertible
+    {
+        return _i18nService.GetLocalised(key, value);
     }
 
     public ICollection<string> GetKeys()

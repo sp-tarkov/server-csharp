@@ -50,16 +50,18 @@ namespace Core.Routers
                 var pmcData = _profileHelper.GetPmcProfile(sessionID);
 
                 var eventRouter = _itemEventRouters.FirstOrDefault((r) => r.CanHandle(body.Action));
-                if (eventRouter is not null)
+                if (eventRouter is null)
                 {
-                    _logger.Debug("event: ${ body.Action}");
-                    await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
-                    if (output.Warnings.Count > 0) {
-                        break;
-                    }
-                } else {
                     _logger.Error(_localisationService.GetText("event-unhandled_event", body.Action));
                     _logger.WriteToLogFile(body);
+
+                    continue;
+                }
+
+                _logger.Debug("event: ${ body.Action}");
+                await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
+                if (output.Warnings.Count > 0) {
+                    break;
                 }
             }
 
