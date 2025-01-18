@@ -84,8 +84,6 @@ public class RepeatableQuestController
 
     public List<PmcDataRepeatableQuest> GetClientRepeatableQuests(string sessionID)
     {
-        _logger.Error("BYPASSED GetClientRepeatableQuests");
-        return new();
         var returnData = new List<PmcDataRepeatableQuest>();
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = fullProfile.CharacterData.PmcData;

@@ -90,7 +90,7 @@ public class BotEquipmentModGenerator
     /// </summary>
     /// <param name="equipment">Equipment item to add mods to</param>
     /// <param name="parentId">Mod list to choose from</param>
-    /// <param name="parentTemplate">parentid of item to add mod to</param>
+    /// <param name="parentTemplate">parentId of item to add mod to</param>
     /// <param name="settings">Template object of item to add mods to</param>
     /// <param name="specificBlacklist">The relevant blacklist from bot.json equipment dictionary</param>
     /// <param name="shouldForceSpawn">should this mod be forced to spawn</param>
