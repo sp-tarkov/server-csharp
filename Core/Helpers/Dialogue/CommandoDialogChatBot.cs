@@ -36,7 +36,7 @@ public class CommandoDialogChatBot : AbstractDialogChatBot
                 Level = 1,
                 MemberCategory = MemberCategory.DEVELOPER,
                 SelectedMemberCategory = MemberCategory.DEVELOPER,
-                Nickname = _coreConfig.SptFriendNickname,
+                Nickname = "Commando",
                 Side = "Usec"
             }
         };

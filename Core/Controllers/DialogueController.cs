@@ -22,6 +22,7 @@ public class DialogueController
     protected ConfigServer _configServer;
     protected SaveServer _saveServer;
     protected LocalisationService _localisationService;
+    protected MailSendService _mailSendService;
     protected List<IDialogueChatBot> _dialogueChatBots;
     protected CoreConfig _coreConfig;
 
@@ -33,6 +34,7 @@ public class DialogueController
         ConfigServer configServer,
         SaveServer saveServer,
         LocalisationService localisationService,
+        MailSendService mailSendService,
         IEnumerable<IDialogueChatBot> dialogueChatBots)
     {
         _logger = logger;
@@ -42,6 +44,7 @@ public class DialogueController
         _configServer = configServer;
         _saveServer = saveServer;
         _localisationService = localisationService;
+        _mailSendService = mailSendService;
         _dialogueChatBots = dialogueChatBots.ToList();
 
         _coreConfig = _configServer.GetConfig<CoreConfig>();
@@ -221,7 +224,21 @@ public class DialogueController
         GetMailDialogViewRequestData request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var dialogueId = request.DialogId;
+        var fullProfile = _saveServer.GetProfile(sessionId);
+        var dialogue = GetDialogByIdFromProfile(fullProfile, request);
+
+        // Dialog was opened, remove the little [1] on screen
+        dialogue.New = 0;
+
+        // Set number of new attachments, but ignore those that have expired.
+        dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId);
+
+        return new GetMailDialogViewResponseData{
+            Messages = dialogue.Messages,
+            Profiles = GetProfilesForMail(fullProfile, dialogue.Users),
+            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages),
+        };
     }
 
     /// <summary>
@@ -234,7 +251,31 @@ public class DialogueController
         SptProfile profile,
         GetMailDialogViewRequestData request)
     {
-        throw new NotImplementedException();
+        if (!profile.DialogueRecords.ContainsKey(request.DialogId))
+        {
+            profile.DialogueRecords[request.DialogId] = new Dialogue{
+                Id = request.DialogId,
+                AttachmentsNew = 0,
+                Pinned = false,
+                Messages = [],
+                New = 0,
+                Type = request.Type,
+            };
+
+            if (request.Type == MessageType.USER_MESSAGE)
+            {
+                var dialogue = profile.DialogueRecords[request.DialogId];
+                dialogue.Users = [];
+                var chatBot = _dialogueChatBots.FirstOrDefault((cb) => cb.GetChatBot().Id == request.DialogId);
+                if (chatBot is not null)
+                {
+                    dialogue.Users ??= [];
+                    dialogue.Users.Add(chatBot.GetChatBot());
+                }
+            }
+        }
+
+        return profile.DialogueRecords[request.DialogId];
     }
 
     /// <summary>
@@ -243,11 +284,36 @@ public class DialogueController
     /// <param name="fullProfile">Player profile</param>
     /// <param name="userDialogs">The participants of the mail</param>
     /// <returns>UserDialogInfo list</returns>
-    private List<UserDialogInfo> GetProfilesForMail(
-        SptProfile fullProfile,
-        List<UserDialogInfo>? userDialogs)
+    private List<UserDialogInfo> GetProfilesForMail(SptProfile fullProfile, List<UserDialogInfo>? userDialogs)
     {
-        throw new NotImplementedException();
+        List<UserDialogInfo> result = [];
+        if (userDialogs is null)
+        {
+            // Nothing to add
+            return result;
+        }
+
+        result.AddRange(userDialogs);
+
+        if (result.All(userDialog => userDialog.Id != fullProfile.ProfileInfo.ProfileId))
+        {
+            // Player doesn't exist, add them in before returning
+            var pmcProfile = fullProfile.CharacterData.PmcData;
+            result.Add( new UserDialogInfo{
+                Id = fullProfile.ProfileInfo.ProfileId,
+                Aid = fullProfile.ProfileInfo.Aid,
+                Info = new UserDialogDetails
+                {
+                    Nickname = pmcProfile.Info.Nickname,
+                    Side = pmcProfile.Info.Side,
+                    Level = pmcProfile.Info.Level,
+                    MemberCategory = pmcProfile.Info.MemberCategory,
+                    SelectedMemberCategory = pmcProfile.Info.SelectedMemberCategory,
+                }
+            });
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -260,7 +326,29 @@ public class DialogueController
         string sessionId,
         string dialogueId)
     {
-        throw new NotImplementedException();
+        var newAttachmentCount = 0;
+        var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
+        foreach (var message in activeMessages) {
+            if (message.HasRewards.GetValueOrDefault(false) && !message.RewardCollected.GetValueOrDefault(false))
+            {
+                newAttachmentCount++;
+            }
+        }
+
+        return newAttachmentCount;
+    }
+
+    /**
+     * Get messages from a specific dialog that have items not expired
+     * @param sessionId Session id
+     * @param dialogueId Dialog to get mail attachments from
+     * @returns Message array
+     */
+    protected List<Message> GetActiveMessagesFromDialog(string sessionId, string dialogueId) {
+        var timeNow = _timeUtil.GetTimeStamp();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+
+        return dialogs[dialogueId].Messages.Where((message) => timeNow<message.DateTime + (message.MaxStorageTime ?? 0)).ToList();
     }
 
     /// <summary>
@@ -270,7 +358,7 @@ public class DialogueController
     /// <returns>true if uncollected rewards found</returns>
     private bool MessagesHaveUncollectedRewards(List<Message> messages)
     {
-        throw new NotImplementedException();
+        return messages.Any((message) => (message.Items?.Data?.Count ?? 0) > 0);
     }
 
     /// <summary>
@@ -337,7 +425,13 @@ public class DialogueController
         string sessionId,
         SendMessageRequest request)
     {
-        throw new NotImplementedException();
+        _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
+
+        return (
+            _dialogueChatBots
+                .FirstOrDefault((cb) => cb.GetChatBot().Id == request.DialogId)
+                ?.HandleMessage(sessionId, request) ?? request.DialogId
+        );
     }
 
     /// <summary>
