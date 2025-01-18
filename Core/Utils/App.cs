@@ -5,6 +5,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
+using Server;
 
 namespace Core.Utils;
 
@@ -14,19 +15,21 @@ public class App
     protected Dictionary<string, long> _onUpdateLastRun;
     protected CoreConfig _coreConfig;
 
-    private ISptLogger<App> _logger;
-    private TimeUtil _timeUtil;
-    private LocalisationService _localisationService;
-    private ConfigServer _configServer;
-    private EncodingUtil _encodingUtil;
-    private HttpServer _httpServer;
-    private DatabaseService _databaseService;
-    private IEnumerable<OnLoad> _onLoad;
-    private IEnumerable<OnUpdate> _onUpdate;
+    protected ISptLogger<App> _logger;
+    protected TimeUtil _timeUtil;
+    protected readonly RandomUtil _randomUtil;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+    protected EncodingUtil _encodingUtil;
+    protected HttpServer _httpServer;
+    protected DatabaseService _databaseService;
+    protected IEnumerable<OnLoad> _onLoad;
+    protected IEnumerable<OnUpdate> _onUpdate;
 
     public App(
         ISptLogger<App> logger,
         TimeUtil timeUtil,
+        RandomUtil randomUtil,
         LocalisationService localisationService,
         ConfigServer configServer,
         EncodingUtil encodingUtil,
@@ -38,6 +41,7 @@ public class App
     {
         _logger = logger;
         _timeUtil = timeUtil;
+        _randomUtil = randomUtil;
         _localisationService = localisationService;
         _configServer = configServer;
         _encodingUtil = encodingUtil;
@@ -74,6 +78,17 @@ public class App
             await onLoad.OnLoad();
 
         new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+
+
+        _logger.Success(GetRandomisedStartMessage());
+    }
+
+    protected string GetRandomisedStartMessage() {
+        if (_randomUtil.GetInt(1, 1000) > 999) {
+            return _localisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
+        }
+
+        return _localisationService.GetText("server_start_success");
     }
 
     protected async Task Update(IEnumerable<OnUpdate> onUpdateComponents)
