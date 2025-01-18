@@ -5,21 +5,12 @@ using Core.DI;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HandbookCallbacks)]
-public class HandbookCallbacks : OnLoad
+public class HandbookCallbacks(HandBookController _handBookController) : OnLoad
 {
-    protected HandBookController _handBookController;
-
-    public HandbookCallbacks
-    (
-        HandBookController handBookController
-    )
-    {
-        _handBookController = handBookController;
-    }
-
-    public async Task OnLoad()
+    public Task OnLoad()
     {
         _handBookController.Load();
+        return Task.CompletedTask;
     }
 
     public string GetRoute()
