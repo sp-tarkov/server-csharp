@@ -133,13 +133,12 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
      * Drawing can be with or without replacement
      * @param count The number of times we want to draw
      * @param replacement Draw with or without replacement from the input dict (true = dont remove after drawing)
-     * @param locklist list keys which shall be replaced even if drawing without replacement
+     * @param lockList list keys which shall be replaced even if drawing without replacement
      * @returns Array consisting of N random keys for this ProbabilityObjectArray
      */
-    public List<K> Draw(int count = 1, bool replacement = true, List<K>? locklist = null)
+    public List<K> Draw(int count = 1, bool replacement = true, List<K>? lockList = null)
     {
-        if (locklist == null)
-            locklist = new List<K>();
+        lockList ??= [];
         if (Count == 0)
         {
             return [];
@@ -163,7 +162,7 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
             var rand = Random.Shared.NextDouble();
             var randomIndex = (int)probCumsum.First((x) => x > rand);
             // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
-            if (replacement || locklist.Contains(totals.keyArray[randomIndex]))
+            if (replacement || lockList.Contains(totals.keyArray[randomIndex]))
             {
                 // Add random item from possible value into return array
                 drawnKeys.Add(totals.keyArray[randomIndex]);

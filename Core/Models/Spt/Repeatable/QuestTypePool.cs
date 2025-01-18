@@ -36,51 +36,7 @@ public record ExplorationPool
 public record EliminationPool
 {
     [JsonPropertyName("targets")]
-    public EliminationTargetPool? Targets { get; set; }
-}
-
-public record EliminationTargetPool
-{
-    [JsonPropertyName("Savage")]
-    public TargetLocation? Savage { get; set; }
-
-    [JsonPropertyName("AnyPmc")]
-    public TargetLocation? AnyPmc { get; set; }
-
-    [JsonPropertyName("bossBully")]
-    public TargetLocation? BossBully { get; set; }
-
-    [JsonPropertyName("bossGluhar")]
-    public TargetLocation? BossGluhar { get; set; }
-
-    [JsonPropertyName("bossKilla")]
-    public TargetLocation? BossKilla { get; set; }
-
-    [JsonPropertyName("bossSanitar")]
-    public TargetLocation? BossSanitar { get; set; }
-
-    [JsonPropertyName("bossTagilla")]
-    public TargetLocation? BossTagilla { get; set; }
-
-    [JsonPropertyName("bossKnight")]
-    public TargetLocation? BossKnight { get; set; }
-
-    [JsonPropertyName("bossZryachiy")]
-    public TargetLocation? BossZryachiy { get; set; }
-
-    [JsonPropertyName("bossBoar")]
-    public TargetLocation? BossBoar { get; set; }
-
-    [JsonPropertyName("bossBoarSniper")]
-    public TargetLocation? BossBoarSniper { get; set; }
-
-    public EliminationTargetPool this[string toLower]
-    {
-        get
-        {
-            return (EliminationTargetPool?)GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == toLower)?.GetValue(this);
-        }
-    }
+    public Dictionary<string, TargetLocation>? Targets { get; set; }
 }
 
 public record TargetLocation
