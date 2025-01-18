@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 
 namespace Core.Services;
 
@@ -15,8 +15,7 @@ public class BackupService
  */
     public async Task InitAsync()
     {
-        Console.WriteLine("NEEDS IMPLEMENTING: BackupService");
-        return;
+        // TODO implement
     }
 
     /**
