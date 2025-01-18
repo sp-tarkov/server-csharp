@@ -9,7 +9,7 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class AchievementStaticRouter : StaticRouter
 {
-    protected static AchievementCallbacks _achievementCallbacks;
+    private static AchievementCallbacks? _achievementCallbacks;
 
     public AchievementStaticRouter(
         JsonUtil jsonUtil,
@@ -24,7 +24,7 @@ public class AchievementStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _achievementCallbacks.GetAchievements(url, info as EmptyRequestData, sessionID)),
+                ) => _achievementCallbacks?.GetAchievements(url, info as EmptyRequestData, sessionID)),
             new RouteAction(
                 "/client/achievement/statistic",
                 (
@@ -32,7 +32,7 @@ public class AchievementStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _achievementCallbacks.Statistic(url, info as EmptyRequestData, sessionID)),
+                ) => _achievementCallbacks?.Statistic(url, info as EmptyRequestData, sessionID)),
         ]
     )
     {

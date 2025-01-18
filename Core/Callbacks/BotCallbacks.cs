@@ -3,8 +3,6 @@ using Core.Context;
 using Core.Controllers;
 using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Match;
 using Core.Utils;
 
@@ -12,23 +10,12 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(BotCallbacks))]
 public class BotCallbacks
+(
+    BotController _botController,
+    HttpResponseUtil _httpResponseUtil,
+    ApplicationContext _applicationContext
+)
 {
-    protected BotController _botController;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected ApplicationContext _applicationContext;
-
-    public BotCallbacks
-    (
-        BotController botController,
-        HttpResponseUtil httpResponseUtil,
-        ApplicationContext applicationContext
-    )
-    {
-        _botController = botController;
-        _httpResponseUtil = httpResponseUtil;
-        _applicationContext = applicationContext;
-    }
-
     /// <summary>
     /// Handle singleplayer/settings/bot/limit
     /// Is called by client to define each bot roles wave limit
@@ -41,7 +28,7 @@ public class BotCallbacks
     public string GetBotLimit(string url, EmptyRequestData info, string sessionID)
     {
         var splitUrl = url.Split('/');
-        var type = splitUrl[splitUrl.Length - 1];
+        var type = splitUrl[^1];
         return _httpResponseUtil.NoBody(_botController.GetBotPresetGenerationLimit(type));
     }
 
@@ -55,8 +42,8 @@ public class BotCallbacks
     public string GetBotDifficulty(string url, EmptyRequestData info, string sessionID)
     {
         var splitUrl = url.Split('/');
-        var type = splitUrl[splitUrl.Length - 2].ToLower();
-        var difficulty = splitUrl[splitUrl.Length - 1];
+        var type = splitUrl[^2].ToLower();
+        var difficulty = splitUrl[^1];
         if (difficulty == "core")
             return _httpResponseUtil.NoBody(_botController.GetBotCoreDifficulty());
 
@@ -96,7 +83,7 @@ public class BotCallbacks
     public string GetBotCap(string url, EmptyRequestData info, string sessionID)
     {
         var splitUrl = url.Split('/');
-        var location = splitUrl[splitUrl.Length - 1];
+        var location = splitUrl[^1];
         return _httpResponseUtil.NoBody(_botController.GetBotCap(location));
     }
 

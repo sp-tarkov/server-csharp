@@ -101,7 +101,7 @@ public class BotController
         return _databaseService.GetBots().Core;
     }
 
-    public DifficultyCategories GetBotDifficulty(string type, string diffLevel, GetRaidConfigurationRequestData raidConfig, bool ignoreRaidSettings = false)
+    public DifficultyCategories GetBotDifficulty(string type, string diffLevel, GetRaidConfigurationRequestData? raidConfig, bool ignoreRaidSettings = false)
     {
         var difficulty = diffLevel.ToLower();
         
