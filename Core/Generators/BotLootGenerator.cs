@@ -596,7 +596,7 @@ public class BotLootGenerator(
                     ParentId = walletId,
                     Upd = new()
                     {
-                        StackObjectsCount = double.Parse(chosenStackCount)
+                        StackObjectsCount = int.Parse(chosenStackCount)
                     }
                 }
             ];
@@ -799,7 +799,7 @@ public class BotLootGenerator(
 
         _itemHelper.AddUpdObjectToItem(moneyItem);
 
-        moneyItem.Upd.StackObjectsCount = double.Parse(_weightedRandomHelper.GetWeightedValue(currencyWeight));
+        moneyItem.Upd.StackObjectsCount = int.Parse(_weightedRandomHelper.GetWeightedValue(currencyWeight));
     }
 
     /// <summary>

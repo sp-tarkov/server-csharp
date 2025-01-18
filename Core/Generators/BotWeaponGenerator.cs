@@ -483,7 +483,7 @@ public class BotWeaponGenerator(
     /// <param name="ammoTpl">Ammo type to add.</param>
     /// <param name="stackSize">Size of the ammo stack to add.</param>
     /// <param name="inventory">Player inventory.</param>
-    protected void AddAmmoToSecureContainer(int stackCount, string ammoTemplate, double stackSize, BotBaseInventory inventory)
+    protected void AddAmmoToSecureContainer(int stackCount, string ammoTemplate, int stackSize, BotBaseInventory inventory)
     {
         for (var i = 0; i < stackCount; i++)
         {

@@ -63,7 +63,7 @@ public record Props
     public double? Height { get; set; }
 
     [JsonPropertyName("StackMaxSize")]
-    public double? StackMaxSize { get; set; }
+    public int? StackMaxSize { get; set; }
 
     [JsonPropertyName("Rarity")]
     public string? Rarity { get; set; }

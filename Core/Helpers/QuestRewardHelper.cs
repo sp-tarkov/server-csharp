@@ -226,7 +226,7 @@ public class QuestRewardHelper(
      */
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
-        var rewards = (List<Reward>)quest?.Rewards.GetType()
+        var rewards = (List<Reward>)quest.Rewards.GetType()
                           .GetProperties()
                           .FirstOrDefault(p => p.Name == questStatus.ToString())
                           .GetValue(quest.Rewards) ??
@@ -241,7 +241,7 @@ public class QuestRewardHelper(
             // Add % bonus to existing StackObjectsCount
             var rewardItem = reward.Items[0];
             var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + bonusPercent / 100));
-            rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
+            rewardItem.Upd.StackObjectsCount = (int)newCurrencyAmount;
             reward.Value = newCurrencyAmount;
         }
 

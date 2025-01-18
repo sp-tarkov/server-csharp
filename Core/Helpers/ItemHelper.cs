@@ -1325,7 +1325,7 @@ public class ItemHelper(
             var cartridgeItemToAdd = CreateCartridges(
                 ammoBox[0].Id,
                 cartridgeTpl,
-                cartridgeCountToAdd ?? 0,
+                (int)cartridgeCountToAdd,
                 location,
                 ammoBox[0].Upd?.SpawnedInSession ?? false
             );
@@ -1350,13 +1350,13 @@ public class ItemHelper(
      */
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
-        var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots[0].MaxCount;
-        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots[0].Props.Filters[0].Filter[0];
+        var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?[0].MaxCount ?? 0;
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?[0].Props?.Filters?[0].Filter?[0];
         ammoBox.Add(
             CreateCartridges(
                 ammoBox[0].Id,
                 cartridgeTpl,
-                ammoBoxMaxCartridgeCount ?? 0,
+                (int)ammoBoxMaxCartridgeCount,
                 0,
                 ammoBox[0].Upd?.SpawnedInSession ?? false
             )
@@ -1495,7 +1495,7 @@ public class ItemHelper(
             var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
             if (cartridgeCountToAdd > remainingSpace)
             {
-                cartridgeCountToAdd = remainingSpace;
+                cartridgeCountToAdd = (int)remainingSpace;
             }
 
             // Add cartridge item object into items array
@@ -1603,8 +1603,8 @@ public class ItemHelper(
     /// <returns>Item</returns>
     public Item CreateCartridges(
         string parentId,
-        string ammoTpl,
-        double stackCount,
+        string? ammoTpl,
+        int? stackCount,
         double location,
         bool foundInRaid = false
     )
@@ -1612,7 +1612,7 @@ public class ItemHelper(
         return new()
         {
             Id = _hashUtil.Generate(),
-            Template = ammoTpl,
+            Template = ammoTpl!,
             ParentId = parentId,
             SlotId = "cartridges",
             Location = location,

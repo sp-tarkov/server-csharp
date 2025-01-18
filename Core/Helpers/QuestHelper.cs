@@ -352,7 +352,7 @@ public class QuestHelper(
     public void ChangeItemStack(
         PmcData pmcData,
         string itemId,
-        double newStackSize,
+        int newStackSize,
         string sessionID,
         ItemEventRouterResponse output)
     {
