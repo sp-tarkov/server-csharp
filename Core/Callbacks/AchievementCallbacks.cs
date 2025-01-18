@@ -1,31 +1,17 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
-using Core.Models.Eft.Profile;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(AchievementCallbacks))]
 public class AchievementCallbacks
+(
+    AchievementController _achievementController,
+    HttpResponseUtil _httpResponseUtil
+)
 {
-    protected AchievementController _achievementController;
-    protected ProfileController _profileController;
-    protected HttpResponseUtil _httpResponseUtil;
-    
-    public AchievementCallbacks
-    (
-        AchievementController achievementController,
-        ProfileController profileController,
-        HttpResponseUtil httpResponseUtil
-    )
-    {
-        _achievementController = achievementController;
-        _profileController = profileController;
-        _httpResponseUtil = httpResponseUtil;
-    }
-
     /// <summary>
     /// Handle client/achievement/list
     /// </summary>
