@@ -16,7 +16,7 @@ public class WatermarkOverride(
 {
     public override void Initialize()
     {
-        Console.WriteLine("This is a watermark mod override!");
+        _logger.Success("This is a watermark mod override!");
         base.Initialize();
     }
 
