@@ -11,24 +11,14 @@ using Core.Services;
 namespace Core.Helpers.Dialogue;
 
 [Injectable]
-public class SptDialogueChatBot : AbstractDialogChatBot
+public class SptDialogueChatBot(
+    ISptLogger<AbstractDialogChatBot> _logger,
+    MailSendService mailSendService,
+    IEnumerable<IChatCommand> chatCommands,
+    ConfigServer configServer
+) : AbstractDialogChatBot(_logger, mailSendService, chatCommands)
 {
-    protected ISptLogger<AbstractDialogChatBot> _logger;
-    protected ConfigServer _configServer;
-    protected CoreConfig _coreConfig;
-
-    public SptDialogueChatBot(
-        ISptLogger<AbstractDialogChatBot> logger,
-        MailSendService mailSendService,
-        IEnumerable<IChatCommand> chatCommands,
-        ConfigServer configServer
-        ) : base(logger, mailSendService, chatCommands)
-    {
-        _logger = logger;
-        _configServer = configServer;
-
-        _coreConfig = configServer.GetConfig<CoreConfig>();
-    }
+    protected CoreConfig _coreConfig = configServer.GetConfig<CoreConfig>();
 
     public override UserDialogInfo GetChatBot()
     {

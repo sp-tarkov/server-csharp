@@ -10,26 +10,13 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class NotificationSendHelper
+public class NotificationSendHelper(
+    IWebSocketConnectionHandler _sptWebSocketConnectionHandler,
+    HashUtil _hashUtil,
+    SaveServer _saveServer,
+    NotificationService _notificationService
+)
 {
-    private readonly IWebSocketConnectionHandler _sptWebSocketConnectionHandler;
-    private readonly HashUtil _hashUtil;
-    private readonly SaveServer _saveServer;
-    private readonly NotificationService _notificationService;
-
-    public NotificationSendHelper(
-        IWebSocketConnectionHandler sptWebSocketConnectionHandler,
-        HashUtil hashUtil,
-        SaveServer saveServer,
-        NotificationService notificationService
-        )
-    {
-        _sptWebSocketConnectionHandler = sptWebSocketConnectionHandler;
-        _hashUtil = hashUtil;
-        _saveServer = saveServer;
-        _notificationService = notificationService;
-    }
-
     /// <summary>
     /// Send notification message to the appropriate channel
     /// </summary>

@@ -10,38 +10,17 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class DialogueHelper
+public class DialogueHelper(
+    ISptLogger<DialogueHelper> _logger,
+    HashUtil _hashUtil,
+    SaveServer _saveServer,
+    DatabaseServer _databaseServer,
+    NotifierHelper _notifierHelper,
+    NotificationSendHelper _notificationSendHelper,
+    LocalisationService _localisationService,
+    ItemHelper _itemHelper
+)
 {
-    protected ISptLogger<DialogueHelper> _logger;
-    protected HashUtil _hashUtil;
-    protected SaveServer _saveServer;
-    protected DatabaseServer _databaseServer;
-    protected NotifierHelper _notifierHelper;
-    protected NotificationSendHelper _notificationSendHelper;
-    protected LocalisationService _localisationService;
-    protected ItemHelper _itemHelper;
-
-    public DialogueHelper
-    (
-        ISptLogger<DialogueHelper> logger,
-        HashUtil hashUtil,
-        SaveServer saveServer,
-        DatabaseServer databaseServer,
-        NotifierHelper notifierHelper,
-        NotificationSendHelper notificationSendHelper,
-        LocalisationService localisationService,
-        ItemHelper itemHelper
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _saveServer = saveServer;
-        _databaseServer = databaseServer;
-        _notifierHelper = notifierHelper;
-        _localisationService = localisationService;
-        _itemHelper = itemHelper;
-    }
-
     /// <summary>
     /// Get the preview contents of the last message in a dialogue.
     /// </summary>
@@ -58,13 +37,13 @@ public class DialogueHelper
             TemplateId = message?.TemplateId,
             UserId = dialogue?.Id
         };
-        
+
         if (message?.Text is not null)
             result.Text = message.Text;
-        
+
         if (message?.SystemData is not null)
             result.SystemData = message?.SystemData;
-        
+
         return result;
     }
 
@@ -89,7 +68,7 @@ public class DialogueHelper
                 var attachmentsNew = _saveServer.GetProfile(sessionID).DialogueRecords[dialogue.Key].AttachmentsNew;
                 if (attachmentsNew > 0)
                     _saveServer.GetProfile(sessionID).DialogueRecords[dialogue.Key].AttachmentsNew = attachmentsNew - 1;
-                
+
                 // Check reward count when item being moved isn't in reward list
                 // If count is 0, it means after this move occurs the reward array will be empty and all rewards collected
                 if (message.Items.Data is null)
@@ -101,11 +80,11 @@ public class DialogueHelper
                     message.RewardCollected = true;
                     message.HasRewards = false;
                 }
-                
+
                 return message.Items.Data;
             }
         }
-        
+
         return new List<Item>();
     }
 
@@ -119,7 +98,7 @@ public class DialogueHelper
         var profile = _saveServer.GetProfile(sessionId);
         if (profile.DialogueRecords is null)
             profile.DialogueRecords = new();
-        
+
         return profile.DialogueRecords;
     }
 
@@ -132,10 +111,10 @@ public class DialogueHelper
         {
             if (dialogue.Id == dialogueId)
                 returnDialogue = dialogue;
-            
+
             break;
         }
-        
+
         return returnDialogue;
     }
 }

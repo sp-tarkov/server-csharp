@@ -7,9 +7,9 @@ using Core.Servers;
 namespace Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class HttpServerHelper
+public class HttpServerHelper(ConfigServer configServer)
 {
-    protected HttpConfig _httpConfig;
+    protected HttpConfig _httpConfig = configServer.GetConfig<HttpConfig>();
 
     protected Dictionary<string, string> mime = new()
     {
@@ -23,11 +23,6 @@ public class HttpServerHelper
         { "svg", "image/svg+xml" },
         { "txt", "text/plain" }
     };
-
-    public HttpServerHelper(ConfigServer configServer) 
-    {
-        _httpConfig = configServer.GetConfig<HttpConfig>();
-    }
 
     public string GetMimeText(string key)
     {

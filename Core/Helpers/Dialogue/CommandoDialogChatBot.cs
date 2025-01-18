@@ -10,20 +10,14 @@ using Core.Services;
 namespace Core.Helpers.Dialogue;
 
 [Injectable]
-public class CommandoDialogChatBot : AbstractDialogChatBot
+public class CommandoDialogChatBot(
+    ISptLogger<AbstractDialogChatBot> logger,
+    MailSendService mailSendService,
+    ConfigServer _configServer,
+    IEnumerable<IChatCommand> chatCommands
+) : AbstractDialogChatBot(logger, mailSendService, chatCommands)
 {
-    protected ConfigServer _configServer;
-    protected CoreConfig _coreConfig;
-
-    public CommandoDialogChatBot(
-        ISptLogger<AbstractDialogChatBot> logger,
-        MailSendService mailSendService,
-        ConfigServer configServer,
-        IEnumerable<IChatCommand> chatCommands): base(logger, mailSendService, chatCommands)
-    {
-        _configServer = configServer;
-        _coreConfig = _configServer.GetConfig<CoreConfig>();
-    }
+    protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public override UserDialogInfo GetChatBot()
     {

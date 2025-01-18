@@ -5,17 +5,9 @@ using Core.Models.Eft.Ws;
 namespace Core.Helpers;
 
 [Injectable(InjectionType.Singleton)]
-public class NotifierHelper
+public class NotifierHelper(HttpServerHelper _httpServerHelper)
 {
-    private readonly HttpServerHelper _httpServerHelper;
     protected WsPing ping = new WsPing();
-
-    public NotifierHelper(
-        HttpServerHelper httpServerHelper)
-    {
-        _httpServerHelper = httpServerHelper;
-    }
-
     public WsNotificationEvent GetDefaultNotification() => ping;
 
     /**

@@ -13,47 +13,20 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class BotGeneratorHelper
+public class BotGeneratorHelper(
+    ISptLogger<BotGeneratorHelper> _logger,
+    RandomUtil _randomUtil,
+    DurabilityLimitsHelper _durabilityLimitsHelper,
+    ItemHelper _itemHelper,
+    InventoryHelper _inventoryHelper,
+    ContainerHelper _containerHelper,
+    ApplicationContext _applicationContext,
+    LocalisationService _localisationService,
+    ConfigServer _configServer
+)
 {
-    private readonly ISptLogger<BotGeneratorHelper> _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly DurabilityLimitsHelper _durabilityLimitsHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ContainerHelper _containerHelper;
-    private readonly ApplicationContext _applicationContext;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
-
-    private readonly BotConfig _botConfig;
-    private readonly PmcConfig _pmcConfig;
-
-    public BotGeneratorHelper
-    (
-        ISptLogger<BotGeneratorHelper> logger,
-        RandomUtil randomUtil,
-        DurabilityLimitsHelper durabilityLimitsHelper,
-        ItemHelper itemHelper,
-        InventoryHelper inventoryHelper,
-        ContainerHelper containerHelper,
-        ApplicationContext applicationContext,
-        LocalisationService localisationService,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _durabilityLimitsHelper = durabilityLimitsHelper;
-        _itemHelper = itemHelper;
-        _inventoryHelper = inventoryHelper;
-        _containerHelper = containerHelper;
-        _applicationContext = applicationContext;
-        _localisationService = localisationService;
-        _configServer = configServer;
-
-        _botConfig = _configServer.GetConfig<BotConfig>();
-        _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    }
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     /// Adds properties to an item
@@ -98,8 +71,8 @@ public class BotGeneratorHelper
 
         if (itemTemplate?.Properties?.WeapFireType?.Count == 0)
         {
-            itemProperties.FireMode = itemTemplate.Properties.WeapFireType.Contains("fullauto") 
-                ? new UpdFireMode { FireMode = "fullauto" } 
+            itemProperties.FireMode = itemTemplate.Properties.WeapFireType.Contains("fullauto")
+                ? new UpdFireMode { FireMode = "fullauto" }
                 : new UpdFireMode { FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType) };
         }
 
@@ -159,7 +132,7 @@ public class BotGeneratorHelper
 
         // Togglable face shield
         if (!(itemTemplate?.Properties?.HasHinge ?? false) || !(itemTemplate.Properties.FaceShieldComponent ?? false)) return itemProperties;
-        
+
         // Get chance from botconfig for bot type, use 75% if no value found
         var faceShieldActiveChance = GetBotEquipmentSettingFromConfig(
             botRole,

@@ -6,17 +6,10 @@ using Core.Models.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class WeightedRandomHelper
+public class WeightedRandomHelper(
+    ISptLogger<WeightedRandomHelper> _logger
+)
 {
-    protected ISptLogger<WeightedRandomHelper> _logger;
-
-    public WeightedRandomHelper(
-        ISptLogger<WeightedRandomHelper> logger
-    )
-    {
-        _logger = logger;
-    }
-
     /// <summary>
     /// Choose an item from the passed in array based on the weightings of each
     /// </summary>

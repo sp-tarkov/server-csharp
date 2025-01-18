@@ -9,27 +9,13 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class WeatherHelper
+public class WeatherHelper(
+    ISptLogger<WeatherHelper> _logger,
+    TimeUtil _timeUtil,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<WeatherHelper> _logger;
-    protected TimeUtil _timeUtil;
-    protected ConfigServer _configServer;
-
-    protected WeatherConfig _weatherConfig;
-
-    public WeatherHelper
-    (
-        ISptLogger<WeatherHelper> logger,
-        TimeUtil timeUtil,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _configServer = configServer;
-
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-    }
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
     /// Get the current in-raid time - does not include an accurate date, only time
@@ -45,9 +31,11 @@ public class WeatherHelper
             ? timestamp ?? 0
             : _timeUtil.GetTimeStampFromEpoch();
 
-        return _timeUtil.GetDateTimeFromTimeStamp((long)
+        return _timeUtil.GetDateTimeFromTimeStamp(
+            (long)
             (russiaOffsetMilliseconds + currentTimestampMilliSeconds * _weatherConfig.Acceleration) %
-            twentyFourHoursMilliseconds);
+            twentyFourHoursMilliseconds
+        );
     }
 
     /// <summary>
@@ -58,11 +46,11 @@ public class WeatherHelper
     public bool IsNightTime(DateTimeEnum timeVariant)
     {
         var time = GetInRaidTime();
-        
+
         // getInRaidTime() provides left side value, if player chose right side, set ahead 12 hrs
         if (timeVariant == DateTimeEnum.PAST)
             time.AddHours(12);
-        
+
         // Night if after 9pm or before 5am
         return time.Hour > 21 || time.Hour < 5;
     }

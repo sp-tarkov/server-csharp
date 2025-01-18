@@ -10,40 +10,18 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class BotWeaponGeneratorHelper
+public class BotWeaponGeneratorHelper(
+    ISptLogger<BotWeaponGeneratorHelper> _logger,
+    DatabaseServer _databaseServer,
+    ItemHelper _itemHelper,
+    RandomUtil _randomUtil,
+    HashUtil _hashUtil,
+    WeightedRandomHelper _weightedRandomHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    LocalisationService _localisationService
+)
 {
-    private readonly ISptLogger<BotWeaponGeneratorHelper> _logger;
-    private readonly DatabaseServer _databaseServer;
-    private readonly ItemHelper _itemHelper;
-    private readonly RandomUtil _randomUtil;
-    private readonly HashUtil _hashUtil;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly LocalisationService _localisationService;
-
     private readonly List<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
-
-    public BotWeaponGeneratorHelper
-    (
-        ISptLogger<BotWeaponGeneratorHelper> logger,
-        DatabaseServer databaseServer,
-        ItemHelper itemHelper,
-        RandomUtil randomUtil,
-        HashUtil hashUtil,
-        WeightedRandomHelper weightedRandomHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        LocalisationService localisationService
-    )
-    {
-        _logger = logger;
-        _databaseServer = databaseServer;
-        _itemHelper = itemHelper;
-        _randomUtil = randomUtil;
-        _hashUtil = hashUtil;
-        _weightedRandomHelper = weightedRandomHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _localisationService = localisationService;
-    }
 
     /// <summary>
     /// Get a randomized number of bullets for a specific magazine
@@ -134,14 +112,18 @@ public class BotWeaponGeneratorHelper
     {
         if (equipmentSlotsToAddTo is null)
             equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets];
-        
-        var ammoItems = _itemHelper.SplitStack(new () {
-            Id = _hashUtil.Generate(),
-            Template = ammoTpl,
-            Upd = new () { StackObjectsCount = cartridgeCount },
-        });
 
-        foreach (var ammoItem in ammoItems) {
+        var ammoItems = _itemHelper.SplitStack(
+            new()
+            {
+                Id = _hashUtil.Generate(),
+                Template = ammoTpl,
+                Upd = new() { StackObjectsCount = cartridgeCount },
+            }
+        );
+
+        foreach (var ammoItem in ammoItems)
+        {
             var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 equipmentSlotsToAddTo,
                 ammoItem.Id,
@@ -150,10 +132,12 @@ public class BotWeaponGeneratorHelper
                 inventory
             );
 
-            if (result != ItemAddedResult.SUCCESS) {
+            if (result != ItemAddedResult.SUCCESS)
+            {
                 _logger.Debug($"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}");
 
-                if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS) {
+                if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
+                {
                     // If there's no space for 1 stack or no containers to hold item, there's no space for the others
                     break;
                 }

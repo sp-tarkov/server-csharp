@@ -13,44 +13,20 @@ using Core.Utils.Cloners;
 namespace Core.Helpers;
 
 [Injectable]
-public class ProfileHelper
+public class ProfileHelper(
+    ISptLogger<ProfileHelper> _logger,
+    ICloner _cloner,
+    SaveServer _saveServer,
+    DatabaseService _databaseService,
+    Watermark _watermark,
+    ItemHelper _itemHelper,
+    TimeUtil _timeUtil,
+    LocalisationService _localisationService,
+    HashUtil _hashUtil,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<ProfileHelper> _logger;
-
-    protected ICloner _cloner;
-    protected SaveServer _saveServer;
-    protected DatabaseService _databaseService;
-    protected Watermark _watermark;
-    protected ItemHelper _itemHelper;
-    protected TimeUtil _timeUtil;
-    protected LocalisationService _localisationService;
-    protected InventoryConfig _inventoryConfig;
-    protected HashUtil _hashUtil;
-
-    public ProfileHelper(
-        ISptLogger<ProfileHelper> logger,
-        ICloner cloner,
-        SaveServer saveServer,
-        DatabaseService databaseService,
-        Watermark watermark,
-        ItemHelper itemHelper,
-        TimeUtil timeUtil,
-        LocalisationService localisationService,
-        HashUtil hashUtil,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _cloner = cloner;
-        _saveServer = saveServer;
-        _databaseService = databaseService;
-        _watermark = watermark;
-        _itemHelper = itemHelper;
-        _timeUtil = timeUtil;
-        _localisationService = localisationService;
-        _hashUtil = hashUtil;
-        _inventoryConfig = configServer.GetConfig<InventoryConfig>();
-    }
+    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     /// Remove/reset a completed quest condtion from players profile quest data
@@ -127,9 +103,12 @@ public class ProfileHelper
         var allProfiles = _saveServer.GetProfiles().Values;
 
         // Find a profile that doesn't have same session id but has same name
-        return allProfiles.Any(p =>
-            ProfileHasInfoProperty(p) && !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
-            StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower())); // Nicknames do
+        return allProfiles.Any(
+            p =>
+                ProfileHasInfoProperty(p) &&
+                !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
+                StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower())
+        ); // Nicknames do
     }
 
     protected bool ProfileHasInfoProperty(SptProfile profile)
@@ -389,12 +368,14 @@ public class ProfileHelper
         }
 
         // Player has never received gift, make a new object
-        profileToUpdate.SptData.ReceivedGifts.Add(new()
-        {
-            GiftId = giftId,
-            TimestampLastAccepted = _timeUtil.GetTimeStamp(),
-            Current = 1
-        });
+        profileToUpdate.SptData.ReceivedGifts.Add(
+            new()
+            {
+                GiftId = giftId,
+                TimestampLastAccepted = _timeUtil.GetTimeStamp(),
+                Current = 1
+            }
+        );
     }
 
     /// <summary>
@@ -539,15 +520,17 @@ public class ProfileHelper
         var existingBonus = profile?.Bonuses?.FirstOrDefault(b => b.Type == BonusType.StashRows);
         if (existingBonus != null)
         {
-            profile?.Bonuses?.Add(new()
-            {
-                Id = _hashUtil.Generate(),
-                Value = rowsToAdd,
-                Type = BonusType.StashRows,
-                IsPassive = true,
-                IsVisible = true,
-                IsProduction = false
-            });
+            profile?.Bonuses?.Add(
+                new()
+                {
+                    Id = _hashUtil.Generate(),
+                    Value = rowsToAdd,
+                    Type = BonusType.StashRows,
+                    IsPassive = true,
+                    IsVisible = true,
+                    IsProduction = false
+                }
+            );
         }
         else
         {
@@ -706,7 +689,7 @@ public class ProfileHelper
                     _logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
                     return;
             }
-            
+
             fullProfile.CustomisationUnlocks.Add(rewardToStore);
         }
     }

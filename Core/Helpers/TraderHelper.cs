@@ -14,39 +14,18 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class TraderHelper
+public class TraderHelper(
+    ISptLogger<TraderHelper> _logger,
+    TimeUtil _timeUtil,
+    RandomUtil _randomUtil,
+    LocalisationService _localisationService,
+    ConfigServer _configServer,
+    ProfileHelper _profileHelper,
+    DatabaseService _databaseService
+)
 {
-    protected ISptLogger<TraderHelper> _logger;
-    protected TimeUtil _timeUtil;
-    protected RandomUtil _randomUtil;
-    protected LocalisationService _localisationService;
-    protected ConfigServer _configServer;
-    protected TraderConfig _traderConfig;
-    protected ProfileHelper _profileHelper;
-    protected DatabaseService _databaseService;
-
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
     private Dictionary<string, int> _highestTraderPriceItems = new();
-
-    public TraderHelper(
-        ISptLogger<TraderHelper> logger,
-        TimeUtil timeUtil,
-        RandomUtil randomUtil,
-        LocalisationService localisationService,
-        ConfigServer configServer,
-        ProfileHelper profileHelper,
-        DatabaseService databaseService
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _randomUtil = randomUtil;
-        _localisationService = localisationService;
-        _configServer = configServer;
-        _profileHelper = profileHelper;
-        _databaseService = databaseService;
-
-        _traderConfig = _configServer.GetConfig<TraderConfig>();
-    }
 
     /// <summary>
     /// Get a trader base object, update profile to reflect players current standing in profile
@@ -68,7 +47,7 @@ public class TraderHelper
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         if (pmcData == null)
             throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID));
-        
+
         // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
         if (pmcData?.TradersInfo != null && (pmcData?.TradersInfo?.ContainsKey(traderID) ?? false))
         {
@@ -80,7 +59,7 @@ public class TraderHelper
         var traderBase = _databaseService.GetTrader(traderID).Base;
         if (traderBase == null)
             _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_by_id", traderID));
-        
+
         return traderBase;
     }
 
@@ -214,18 +193,25 @@ public class TraderHelper
         var traderDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
         if (traderDetails is null || traderDetails.Seconds?.Min is null || traderDetails.Seconds.Max is null)
         {
-            _logger.Warning(_localisationService.GetText("trader-missing_trader_details_using_default_refresh_time", new
-            {
-                traderId = traderId,
-                updateTime = _traderConfig.UpdateTimeDefault,
-            }));
+            _logger.Warning(
+                _localisationService.GetText(
+                    "trader-missing_trader_details_using_default_refresh_time",
+                    new
+                    {
+                        traderId = traderId,
+                        updateTime = _traderConfig.UpdateTimeDefault,
+                    }
+                )
+            );
 
-            _traderConfig.UpdateTime.Add(new UpdateTime
-                // create temporary entry to prevent logger spam
-                {
-                    TraderId = traderId,
-                    Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
-                });
+            _traderConfig.UpdateTime.Add(
+                new UpdateTime
+                    // create temporary entry to prevent logger spam
+                    {
+                        TraderId = traderId,
+                        Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
+                    }
+            );
 
             return null;
         }

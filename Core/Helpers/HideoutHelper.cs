@@ -11,22 +11,12 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class HideoutHelper
+public class HideoutHelper(
+    ISptLogger<HideoutHelper> _logger,
+    TimeUtil _timeUtil,
+    LocalisationService _localisationService
+)
 {
-    private readonly ISptLogger<HideoutHelper> _logger;
-    protected TimeUtil _timeUtil;
-    private readonly LocalisationService _localisationService;
-
-    public HideoutHelper(
-        ISptLogger<HideoutHelper> logger,
-        TimeUtil timeUtil,
-        LocalisationService localisationService)
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _localisationService = localisationService;
-    }
-
     /// <summary>
     /// Add production to profiles' Hideout.Production array
     /// </summary>
@@ -510,9 +500,8 @@ public class HideoutHelper
                 continue;
             }
 
-            if (improvementDetails.Completed == false
-                && improvementDetails.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()
-            )
+            if (improvementDetails.Completed == false && improvementDetails.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()
+               )
             {
                 improvementDetails.Completed = true;
             }

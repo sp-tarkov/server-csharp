@@ -12,26 +12,13 @@ using Core.Services;
 namespace Core.Helpers;
 
 [Injectable]
-public class InventoryHelper
+public class InventoryHelper(
+    ISptLogger<InventoryHelper> _logger,
+    ProfileHelper _profileHelper,
+    DialogueHelper _dialogueHelper,
+    LocalisationService _localisationService
+)
 {
-    protected ISptLogger<InventoryHelper> _logger;
-    protected ProfileHelper _profileHelper;
-    protected DialogueHelper _dialogueHelper;
-    protected LocalisationService _localisationService;
-
-    public InventoryHelper(
-        ISptLogger<InventoryHelper> logger,
-        ProfileHelper profileHelper,
-        DialogueHelper dialogueHelper,
-        LocalisationService localisationService
-        )
-    {
-        _logger = logger;
-        _profileHelper = profileHelper;
-        _dialogueHelper = dialogueHelper;
-        _localisationService = localisationService;
-    }
-
     /// <summary>
     /// Add multiple items to player stash (assuming they all fit)
     /// </summary>
@@ -299,7 +286,8 @@ public class InventoryHelper
         // From and To types match, same inventory
         var movingToSameInventory = fromType == toType;
 
-        return new OwnerInventoryItems{
+        return new OwnerInventoryItems
+        {
             From = fromInventoryItems,
             To = toInventoryItems,
             SameInventory = movingToSameInventory,
@@ -391,24 +379,30 @@ public class InventoryHelper
         var matchingInventoryItem = inventoryItems.FirstOrDefault((item) => item.Id == moveRequest.Item);
         if (matchingInventoryItem is null)
         {
-            var noMatchingItemMesage = $"Unable to move item: { moveRequest.Item}, cannot find in inventory";
+            var noMatchingItemMesage = $"Unable to move item: {moveRequest.Item}, cannot find in inventory";
             _logger.Error(noMatchingItemMesage);
 
             errorMessage = noMatchingItemMesage;
             return false;
         }
 
-        _logger.Debug("${ moveRequest.Action} item: ${ moveRequest.item} from slotid: ${ matchingInventoryItem.slotId} to container: ${ moveRequest.to.container}");
+        _logger.Debug(
+            "${ moveRequest.Action} item: ${ moveRequest.item} from slotid: ${ matchingInventoryItem.slotId} to container: ${ moveRequest.to.container}"
+        );
 
         // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
         if (matchingInventoryItem.SlotId?.Contains("camora_") is null && moveRequest.To.Container == "cartridges")
         {
             _logger.Warning(
-                _localisationService.GetText("inventory-invalid_move_to_container",
-                    new {
+                _localisationService.GetText(
+                    "inventory-invalid_move_to_container",
+                    new
+                    {
                         slotId = matchingInventoryItem.SlotId,
                         container = moveRequest.To.Container,
-                    }));
+                    }
+                )
+            );
 
             return true;
         }
@@ -421,9 +415,11 @@ public class InventoryHelper
         UpdateFastPanelBinding(pmcData, matchingInventoryItem);
 
         // Item has location property, ensure its value is handled
-        if (moveRequest.To.Location is not null) {
+        if (moveRequest.To.Location is not null)
+        {
             matchingInventoryItem.Location = moveRequest.To.Location;
-        } else
+        }
+        else
         {
             // Moved from slot with location to one without, clean up
             if (matchingInventoryItem.Location is not null)
@@ -443,7 +439,7 @@ public class InventoryHelper
     protected void UpdateFastPanelBinding(PmcData pmcData, Item itemBeingMoved)
     {
         // Find matching _id in fast panel
-        
+
         if (!pmcData.Inventory.FastPanel.TryGetValue(itemBeingMoved.Id, out var fastPanelSlot))
         {
             return;
@@ -459,7 +455,8 @@ public class InventoryHelper
         // Reset fast panel value if item was moved to a container other than pocket/rig (cant be used from fastpanel)
         List<string> slots = ["pockets", "tacticalvest"];
         var wasMovedToFastPanelAccessibleContainer = slots.Contains(
-            itemParent?.SlotId?.ToLower() ?? "");
+            itemParent?.SlotId?.ToLower() ?? ""
+        );
         if (!wasMovedToFastPanelAccessibleContainer)
         {
             pmcData.Inventory.FastPanel[fastPanelSlot[0].ToString()] = "";

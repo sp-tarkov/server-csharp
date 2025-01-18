@@ -7,12 +7,8 @@ using Core.Models.Eft.Trade;
 namespace Core.Helpers;
 
 [Injectable]
-public class TradeHelper
+public class TradeHelper()
 {
-    public TradeHelper()
-    {
-        
-    }
     
     /// <summary>
     /// Buy item from flea or trader

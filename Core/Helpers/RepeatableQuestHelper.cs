@@ -8,23 +8,12 @@ using Core.Utils.Collections;
 namespace Core.Helpers;
 
 [Injectable]
-public class RepeatableQuestHelper
+public class RepeatableQuestHelper(
+    ISptLogger<RepeatableQuestHelper> _logger,
+    ICloner _cloner,
+    MathUtil _mathUtil
+)
 {
-    protected ISptLogger<RepeatableQuestHelper> _logger;
-    protected ICloner _cloner;
-    protected MathUtil _mathUtil;
-
-    public RepeatableQuestHelper(
-        ISptLogger<RepeatableQuestHelper> logger,
-        ICloner cloner,
-        MathUtil mathUtil
-    )
-    {
-        _logger = logger;
-        _cloner = cloner;
-        _mathUtil = mathUtil;
-    }
-
     /// <summary>
     /// Get the relevant elimination config based on the current players PMC level
     /// </summary>

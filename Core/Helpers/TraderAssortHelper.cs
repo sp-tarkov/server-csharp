@@ -4,12 +4,8 @@ using Core.Models.Eft.Common.Tables;
 namespace Core.Helpers;
 
 [Injectable]
-public class TraderAssortHelper
+public class TraderAssortHelper()
 {
-    public TraderAssortHelper()
-    {
-        
-    }
     
     /// <summary>
     /// Get a traders assorts

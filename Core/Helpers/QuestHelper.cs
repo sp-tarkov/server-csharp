@@ -16,69 +16,27 @@ using Product = Core.Models.Eft.ItemEvent.Product;
 namespace Core.Helpers;
 
 [Injectable]
-public class QuestHelper
+public class QuestHelper(
+    ISptLogger<QuestHelper> _logger,
+    TimeUtil _timeUtil,
+    HashUtil _hashUtil,
+    ItemHelper _itemHelper,
+    DatabaseService _databaseService,
+    QuestConditionHelper _questConditionHelper,
+    EventOutputHolder _eventOutputHolder,
+    LocaleService _localeService,
+    ProfileHelper _profileHelper,
+    QuestRewardHelper _questRewardHelper,
+    LocalisationService _localisationService,
+    SeasonalEventService _seasonalEventService,
+    TraderHelper _traderHelper,
+    MailSendService _mailSendService,
+    PlayerService _playerService,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<QuestHelper> _logger;
-    protected TimeUtil _timeUtil;
-    protected HashUtil _hashUtil;
-    protected ItemHelper _itemHelper;
-    protected DatabaseService _databaseService;
-    protected QuestConditionHelper _questConditionHelper;
-    protected EventOutputHolder _eventOutputHolder;
-    protected LocaleService _localeService;
-    protected ProfileHelper _profileHelper;
-    protected QuestRewardHelper _questRewardHelper;
-    protected LocalisationService _localisationService;
-    protected SeasonalEventService _seasonalEventService;
-    protected TraderHelper _traderHelper;
-    protected MailSendService _mailSendService;
-    protected PlayerService _playerService;
-    protected ConfigServer _configServer;
-    protected ICloner _cloner;
-
-    protected QuestConfig _questConfig;
-
-    public QuestHelper
-    (
-        ISptLogger<QuestHelper> logger,
-        TimeUtil timeUtil,
-        HashUtil hashUtil,
-        ItemHelper itemHelper,
-        DatabaseService databaseService,
-        QuestConditionHelper questConditionHelper,
-        EventOutputHolder eventOutputHolder,
-        LocaleService localeService,
-        ProfileHelper profileHelper,
-        QuestRewardHelper questRewardHelper,
-        LocalisationService localisationService,
-        SeasonalEventService seasonalEventService,
-        TraderHelper traderHelper,
-        MailSendService mailSendService,
-        PlayerService playerService,
-        ConfigServer configServer,
-        ICloner Cloner
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _hashUtil = hashUtil;
-        _itemHelper = itemHelper;
-        _databaseService = databaseService;
-        _questConditionHelper = questConditionHelper;
-        _eventOutputHolder = eventOutputHolder;
-        _localeService = localeService;
-        _profileHelper = profileHelper;
-        _questRewardHelper = questRewardHelper;
-        _localisationService = localisationService;
-        _seasonalEventService = seasonalEventService;
-        _traderHelper = traderHelper;
-        _mailSendService = mailSendService;
-        _playerService = playerService;
-        _configServer = configServer;
-        _cloner = Cloner;
-
-        _questConfig = configServer.GetConfig<QuestConfig>();
-    }
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     /// Get status of a quest in player profile by its id
@@ -359,9 +317,8 @@ public class QuestHelper
                     var acceptedQuestCondition = q.Conditions.AvailableForStart.FirstOrDefault(
                         (c) =>
                         {
-                            return (c.ConditionType == "Quest" 
-                                    && ((List<string>)c.Target).Contains(failedQuestId) && c.Status[0] == QuestStatusEnum.Fail
-                            );
+                            return (c.ConditionType == "Quest" && ((List<string>)c.Target).Contains(failedQuestId) && c.Status[0] == QuestStatusEnum.Fail
+                                );
                         }
                     );
 
@@ -761,14 +718,19 @@ public class QuestHelper
     public List<Quest> GetQuestsFailedByCompletingQuest(string completedQuestId)
     {
         var questsInDb = GetQuestsFromDb();
-        return questsInDb.Where((quest) => {
-            // No fail conditions, exit early
-            if (quest.Conditions.Fail is null || quest.Conditions.Fail.Count == 0) {
-                return false;
-            }
+        return questsInDb.Where(
+                (quest) =>
+                {
+                    // No fail conditions, exit early
+                    if (quest.Conditions.Fail is null || quest.Conditions.Fail.Count == 0)
+                    {
+                        return false;
+                    }
 
-            return quest.Conditions.Fail.Any((condition) => (((List<string>)condition.Target)?.Contains(completedQuestId)) ?? false);
-        }).ToList();
+                    return quest.Conditions.Fail.Any((condition) => (((List<string>)condition.Target)?.Contains(completedQuestId)) ?? false);
+                }
+            )
+            .ToList();
     }
 
     /**
@@ -779,7 +741,8 @@ public class QuestHelper
     public double? GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
     {
         var value = _questConfig.MailRedeemTimeHours.GetValueOrDefault(pmcData.Info.GameVersion);
-        if (value is null) {
+        if (value is null)
+        {
             return 0;
         }
 
@@ -808,7 +771,8 @@ public class QuestHelper
 
         // Check for linked failed + unrestartable quests (only get quests not already failed
         var questsToFail = GetQuestsFromProfileFailedByCompletingQuest(completedQuestId, pmcData);
-        if (questsToFail?.Count > 0) {
+        if (questsToFail?.Count > 0)
+        {
             FailQuests(sessionID, pmcData, questsToFail, completeQuestResponse);
         }
 
@@ -825,13 +789,16 @@ public class QuestHelper
         completeQuestResponse.ProfileChanges[sessionID].Quests.AddRange(questDelta);
 
         // Check if it's a repeatable quest. If so, remove from Quests
-        foreach (var currentRepeatable in pmcData.RepeatableQuests) {
+        foreach (var currentRepeatable in pmcData.RepeatableQuests)
+        {
             var repeatableQuest = currentRepeatable.ActiveQuests.FirstOrDefault(
                 (activeRepeatable) => activeRepeatable.Id == completedQuestId
             );
-            if (repeatableQuest is not null) {
+            if (repeatableQuest is not null)
+            {
                 // Need to remove redundant scav quest object as its no longer necessary, is tracked in pmc profile
-                if (repeatableQuest.Side == "Scav") {
+                if (repeatableQuest.Side == "Scav")
+                {
                     RemoveQuestFromScavProfile(sessionID, repeatableQuest.Id);
                 }
             }
@@ -839,7 +806,8 @@ public class QuestHelper
 
         // Hydrate client response questsStatus array with data
         var questStatusChanges = GetQuestsWithDifferentStatuses(preCompleteProfileQuests, pmcData.Quests);
-        if (questStatusChanges is not null) {
+        if (questStatusChanges is not null)
+        {
             completeQuestResponse.ProfileChanges[sessionID].QuestsStatus.AddRange(questStatusChanges);
         }
 

@@ -15,53 +15,23 @@ using Core.Utils.Cloners;
 namespace Core.Helpers;
 
 [Injectable]
-public class QuestRewardHelper
+public class QuestRewardHelper(
+    ISptLogger<QuestRewardHelper> _logger,
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    ItemHelper _itemHelper,
+    PaymentHelper _paymentHelper,
+    TraderHelper _traderHelper,
+    DatabaseService _databaseService,
+    QuestConditionHelper _questConditionHelper,
+    ProfileHelper _profileHelper,
+    PresetHelper _presetHelper,
+    LocalisationService _localisationService,
+    ICloner _cloner,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<QuestRewardHelper> _logger;
-    protected HashUtil _hashUtil;
-    protected TimeUtil _timeUtil;
-    protected ItemHelper _itemHelper;
-    protected PaymentHelper _paymentHelper;
-    protected TraderHelper _traderHelper;
-    protected DatabaseService _databaseService;
-    protected QuestConditionHelper _questConditionHelper;
-    protected ProfileHelper _profileHelper;
-    protected PresetHelper _presetHelper;
-    protected LocalisationService _localisationService;
-    protected QuestConfig _questConfig;
-    protected ICloner _cloner;
-
-    public QuestRewardHelper(
-        ISptLogger<QuestRewardHelper> logger,
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        ItemHelper itemHelper,
-        PaymentHelper paymentHelper,
-        TraderHelper traderHelper,
-        DatabaseService databaseService,
-        QuestConditionHelper questConditionHelper,
-        ProfileHelper profileHelper,
-        PresetHelper presetHelper,
-        LocalisationService localisationService,
-        ConfigServer configServer,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _itemHelper = itemHelper;
-        _paymentHelper = paymentHelper;
-        _traderHelper = traderHelper;
-        _databaseService = databaseService;
-        _questConditionHelper = questConditionHelper;
-        _profileHelper = profileHelper;
-        _presetHelper = presetHelper;
-        _localisationService = localisationService;
-        _cloner = cloner;
-
-        _questConfig = configServer.GetConfig<QuestConfig>();
-    }
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /**
      * Give player quest rewards - Skills/exp/trader standing/items/assort unlocks - Returns reward items player earned
@@ -99,8 +69,13 @@ public class QuestRewardHelper
         // e.g. 'Success' or 'AvailableForFinish'
         var questStateAsString = state.ToString();
         var gameVersion = pmcProfile.Info.GameVersion;
-        var questRewards = (List<Reward>?)questDetails.Rewards.GetType().GetProperties().FirstOrDefault(p =>
-            p.Name == questStateAsString).GetValue(questDetails.Rewards);
+        var questRewards = (List<Reward>?)questDetails.Rewards.GetType()
+            .GetProperties()
+            .FirstOrDefault(
+                p =>
+                    p.Name == questStateAsString
+            )
+            .GetValue(questDetails.Rewards);
         foreach (var reward in questRewards)
         {
             if (!QuestRewardIsForGameEdition(reward, gameVersion))
@@ -150,12 +125,17 @@ public class QuestRewardHelper
                     _profileHelper.AddHideoutCustomisationUnlock(fullProfile, reward, CustomisationSource.UNLOCKED_IN_GAME);
                     break;
                 default:
-                    _logger.Error(_localisationService.GetText("quest-reward_type_not_handled", new
-                    {
-                        rewardType = reward.Type,
-                        questId = questId,
-                        questName = questDetails.QuestName
-                    }));
+                    _logger.Error(
+                        _localisationService.GetText(
+                            "quest-reward_type_not_handled",
+                            new
+                            {
+                                rewardType = reward.Type,
+                                questId = questId,
+                                questName = questDetails.QuestName
+                            }
+                        )
+                    );
                     break;
             }
         }
@@ -246,11 +226,16 @@ public class QuestRewardHelper
      */
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
-        var rewards = (List<Reward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == questStatus.ToString())
-            .GetValue(quest.Rewards) ?? new();
-        var currencyRewards = rewards.Where(r =>
-            r.Type.ToString() == "Item" &&
-            _paymentHelper.IsMoneyTpl(r.Items[0].Template));
+        var rewards = (List<Reward>)quest?.Rewards.GetType()
+                          .GetProperties()
+                          .FirstOrDefault(p => p.Name == questStatus.ToString())
+                          .GetValue(quest.Rewards) ??
+                      new();
+        var currencyRewards = rewards.Where(
+            r =>
+                r.Type.ToString() == "Item" &&
+                _paymentHelper.IsMoneyTpl(r.Items[0].Template)
+        );
         foreach (var reward in currencyRewards)
         {
             // Add % bonus to existing StackObjectsCount
@@ -278,11 +263,16 @@ public class QuestRewardHelper
         var matchingProductions = GetRewardProductionMatch(craftUnlockReward, questDetails);
         if (matchingProductions.Count != 1)
         {
-            _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new
-            {
-                questName = questDetails.QuestName,
-                matchCount = matchingProductions.Count
-            }));
+            _logger.Error(
+                _localisationService.GetText(
+                    "quest-unable_to_find_matching_hideout_production",
+                    new
+                    {
+                        questName = questDetails.QuestName,
+                        matchCount = matchingProductions.Count
+                    }
+                )
+            );
 
             return;
         }
@@ -307,17 +297,23 @@ public class QuestRewardHelper
         // Area that will be used to craft unlocked item
         var desiredHideoutAreaType = int.Parse((string)craftUnlockReward.TraderId);
 
-        var matchingProductions = craftingRecipes.Where(p =>
-            p.AreaType == desiredHideoutAreaType &&
-            p.Requirements.Any(r => r.Type == "QuestComplete") &&
-            p.Requirements.Any(r => r.RequiredLevel == craftUnlockReward.LoyaltyLevel) &&
-            p.EndProduct == craftUnlockReward.Items[0].Template);
+        var matchingProductions = craftingRecipes.Where(
+            p =>
+                p.AreaType == desiredHideoutAreaType &&
+                p.Requirements.Any(r => r.Type == "QuestComplete") &&
+                p.Requirements.Any(r => r.RequiredLevel == craftUnlockReward.LoyaltyLevel) &&
+                p.EndProduct == craftUnlockReward.Items[0].Template
+        );
 
         // More/less than single match, above filtering wasn't strict enough
         if (matchingProductions.Count() != 1)
-            matchingProductions = matchingProductions.Where(p =>
-                p.Requirements.Any(r =>
-                    r.QuestId == questDetails.Id));
+            matchingProductions = matchingProductions.Where(
+                p =>
+                    p.Requirements.Any(
+                        r =>
+                            r.QuestId == questDetails.Id
+                    )
+            );
 
         return matchingProductions.ToList();
     }
@@ -330,18 +326,22 @@ public class QuestRewardHelper
      */
     protected List<Item> GetQuestRewardItems(Quest quest, QuestStatusEnum status, string gameVersion)
     {
-        var rewards = (List<Reward>)quest?.Rewards.GetType().GetProperties().FirstOrDefault(p => p.Name == status.ToString())
+        var rewards = (List<Reward>)quest?.Rewards.GetType()
+            .GetProperties()
+            .FirstOrDefault(p => p.Name == status.ToString())
             .GetValue(quest.Rewards);
 
         if (rewards == null)
             return new();
 
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
-        var questRewards = rewards.SelectMany(r =>
-            r.Type.ToString() == "Item" &&
-            QuestRewardIsForGameEdition(r, gameVersion)
-                ? ProcessReward(r)
-                : new());
+        var questRewards = rewards.SelectMany(
+            r =>
+                r.Type.ToString() == "Item" &&
+                QuestRewardIsForGameEdition(r, gameVersion)
+                    ? ProcessReward(r)
+                    : new()
+        );
 
         return questRewards.ToList();
     }
@@ -416,10 +416,10 @@ public class QuestRewardHelper
             {
                 itemsClone.Add(_cloner.Clone(mod));
             }
-            
+
             rewardItems.AddRange(_itemHelper.ReparentItemAndChildren(target, itemsClone));
         }
-        
+
         return rewardItems;
     }
 
@@ -439,24 +439,24 @@ public class QuestRewardHelper
             var newRootId = _itemHelper.RemapRootItemId(presetAndMods, _hashUtil.Generate());
 
             reward.Items = presetAndMods;
-            
+
             // Find root item and set its stack count
             var rootItem = reward.Items.FirstOrDefault(i => i.Id == newRootId);
-            
+
             // Remap target id to the new presets root id
             reward.Target = rootItem.Id;
-            
+
             // Copy over stack count otherwise reward shows as missing in client
             _itemHelper.AddUpdObjectToItem(rootItem);
-            
+
             rootItem.Upd.StackObjectsCount = originalRewardRootItem.Upd.StackObjectsCount;
 
             return;
         }
-        
+
         _logger.Warning($"Unable to find default preset for armor {originalRewardRootItem.Template}, adding mods manually");
         var itemDbData = _itemHelper.GetItem(originalRewardRootItem.Template).Value;
-        
+
         // Hydrate reward with only 'required' mods - necessary for things like helmets otherwise you end up with nvgs/visors etc
         reward.Items = _itemHelper.AddChildSlotItems(reward.Items, itemDbData, null, true);
     }

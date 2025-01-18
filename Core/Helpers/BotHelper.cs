@@ -13,33 +13,16 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class BotHelper
+public class BotHelper(
+    ISptLogger<BotHelper> _logger,
+    DatabaseService _databaseService,
+    RandomUtil _randomUtil,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<BotHelper> _logger;
-    protected DatabaseService _databaseService;
-    protected RandomUtil _randomUtil;
-    protected ConfigServer _configServer;
-
-    protected BotConfig _botConfig;
-    protected PmcConfig _pmcConfig;
-
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected List<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
-
-    public BotHelper
-    (
-        ISptLogger<BotHelper> logger,
-        DatabaseService databaseService,
-        RandomUtil randomUtil,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        _randomUtil = randomUtil;
-        _configServer = configServer;
-        _botConfig = configServer.GetConfig<BotConfig>();
-        _pmcConfig = configServer.GetConfig<PmcConfig>();
-    }
 
     /// <summary>
     /// Get a template object for the specified botRole from bots.types db
@@ -193,7 +176,7 @@ public class BotHelper
     {
         if (_pmcConfig.BearType.ToLower() == botRole.ToLower())
             return "Bear";
-        
+
         if (_pmcConfig.UsecType.ToLower() == botRole.ToLower())
             return "Usec";
 
@@ -220,8 +203,11 @@ public class BotHelper
         var randomType = (side is not null) ? side : (_randomUtil.GetInt(0, 1) == 0) ? "usec" : "bear";
         var allNames = _databaseService.GetBots().Types[randomType.ToLower()].FirstNames;
         var filteredNames = allNames.Where((name) => name.Length <= maxLength);
-        if (filteredNames.Count() == 0) {
-            _logger.Warning($"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n");
+        if (filteredNames.Count() == 0)
+        {
+            _logger.Warning(
+                $"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
+            );
 
             return _randomUtil.GetStringCollectionValue(allNames);
         }

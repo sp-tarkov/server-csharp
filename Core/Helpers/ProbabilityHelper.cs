@@ -5,22 +5,11 @@ using Core.Utils;
 namespace Core.Helpers;
 
 [Injectable]
-public class ProbabilityHelper
+public class ProbabilityHelper(
+    ISptLogger<ProbabilityHelper> _logger,
+    RandomUtil _randomUtil
+)
 {
-    private readonly ISptLogger<ProbabilityHelper> _logger;
-    private readonly RandomUtil _randomUtil;
-
-    public ProbabilityHelper
-    (
-        ISptLogger<ProbabilityHelper> logger,
-        RandomUtil randomUtil
-    )
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-    }
-
-
     /// <summary>
     /// Chance to roll a number out of 100
     /// </summary>

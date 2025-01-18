@@ -6,18 +6,9 @@ using Core.Servers;
 namespace Core.Helpers;
 
 [Injectable]
-public class PaymentHelper
+public class PaymentHelper(ConfigServer _configServer)
 {
-    protected ConfigServer _configServer;
-    protected InventoryConfig _inventoryConfig;
-
-    public PaymentHelper(
-        ConfigServer configServer)
-    {
-        _configServer = configServer;
-
-        _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
-    }
+    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     /// Is the passed in tpl money (also checks custom currencies in inventoryConfig.customMoneyTpls)

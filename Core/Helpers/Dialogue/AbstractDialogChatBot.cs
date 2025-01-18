@@ -7,21 +7,13 @@ using Core.Services;
 
 namespace Core.Helpers.Dialogue;
 
-public abstract class AbstractDialogChatBot : IDialogueChatBot
+public abstract class AbstractDialogChatBot(
+    ISptLogger<AbstractDialogChatBot> _logger,
+    MailSendService _mailSendService,
+    IEnumerable<IChatCommand> chatCommands
+) : IDialogueChatBot
 {
-    protected ISptLogger<AbstractDialogChatBot> _logger;
-    protected MailSendService _mailSendService;
-    private readonly List<IChatCommand> _chatCommands;
-
-    public AbstractDialogChatBot(
-        ISptLogger<AbstractDialogChatBot> logger,
-        MailSendService mailSendService,
-        IEnumerable<IChatCommand> chatCommands)
-    {
-        _logger = logger;
-        _mailSendService = mailSendService;
-        _chatCommands = chatCommands.ToList();
-    }
+    protected List<IChatCommand> _chatCommands = chatCommands.ToList();
 
     public abstract UserDialogInfo GetChatBot();
 

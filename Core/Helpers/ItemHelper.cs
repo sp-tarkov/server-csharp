@@ -13,22 +13,22 @@ using Core.Utils.Cloners;
 namespace Core.Helpers;
 
 [Injectable]
-public class ItemHelper
+public class ItemHelper(
+    ISptLogger<ItemHelper> _logger,
+    HashUtil _hashUtil,
+    JsonUtil _jsonUtil,
+    RandomUtil _randomUtil,
+    MathUtil _mathUtil,
+    DatabaseService _databaseService,
+    HandbookHelper _handbookHelper,
+    ItemBaseClassService _itemBaseClassService,
+    ItemFilterService _itemFilterService,
+    LocalisationService _localisationService,
+    LocaleService _localeService,
+    CompareUtil _compareUtil,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<ItemHelper> _logger;
-    protected HashUtil _hashUtil;
-    protected JsonUtil _jsonUtil;
-    protected RandomUtil _randomUtil;
-    protected MathUtil _mathUtil;
-    protected DatabaseService _databaseService;
-    protected HandbookHelper _handbookHelper;
-    protected ItemBaseClassService _itemBaseClassService;
-    protected ItemFilterService _itemFilterService;
-    protected LocalisationService _localisationService;
-    protected LocaleService _localeService;
-    protected CompareUtil _compareUtil;
-    protected ICloner _cloner;
-
     protected List<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
@@ -57,38 +57,6 @@ public class ItemHelper
         EquipmentSlots.Holster.ToString(),
         EquipmentSlots.Scabbard.ToString()
     ];
-
-    public ItemHelper
-    (
-        ISptLogger<ItemHelper> logger,
-        HashUtil hashUtil,
-        JsonUtil jsonUtil,
-        RandomUtil randomUtil,
-        MathUtil mathUtil,
-        DatabaseService databaseService,
-        HandbookHelper handbookHelper,
-        ItemBaseClassService itemBaseClassService,
-        ItemFilterService itemFilterService,
-        LocalisationService localisationService,
-        LocaleService localeService,
-        CompareUtil compareUtil,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _jsonUtil = jsonUtil;
-        _randomUtil = randomUtil;
-        _mathUtil = mathUtil;
-        _databaseService = databaseService;
-        _handbookHelper = handbookHelper;
-        _itemBaseClassService = itemBaseClassService;
-        _itemFilterService = itemFilterService;
-        _localisationService = localisationService;
-        _localeService = localeService;
-        _compareUtil = compareUtil;
-        _cloner = cloner;
-    }
 
     /**
  * Does the provided pool of items contain the desired item
@@ -1836,29 +1804,34 @@ public class ItemHelper
     public List<Item> ReparentItemAndChildren(Item rootItem, List<Item> itemWithChildren)
     {
         var oldRootId = itemWithChildren[0].Id;
-        Dictionary<string, string> idMappings = new ();
+        Dictionary<string, string> idMappings = new();
 
         idMappings[oldRootId] = rootItem.Id;
 
-        foreach (var mod in itemWithChildren) {
-            if (idMappings[mod.Id] is null) {
+        foreach (var mod in itemWithChildren)
+        {
+            if (idMappings[mod.Id] is null)
+            {
                 idMappings[mod.Id] = _hashUtil.Generate();
             }
 
             // Has parentId + no remapping exists for its parent
-            if (mod.ParentId is not null && idMappings[mod.ParentId] is null) {
+            if (mod.ParentId is not null && idMappings[mod.ParentId] is null)
+            {
                 // Make remapping for items parentId
                 idMappings[mod.ParentId] = _hashUtil.Generate();
             }
 
             mod.Id = idMappings[mod.Id];
-            if (mod.ParentId is not null) {
+            if (mod.ParentId is not null)
+            {
                 mod.ParentId = idMappings[mod.ParentId];
             }
         }
 
         // Force item's details into first location of presetItems
-        if (itemWithChildren[0].Template != rootItem.Template) {
+        if (itemWithChildren[0].Template != rootItem.Template)
+        {
             _logger.Warning($"Reassigning root item from {itemWithChildren[0].Template} to {rootItem.Template}");
         }
 
@@ -1878,19 +1851,22 @@ public class ItemHelper
         {
             newId = _hashUtil.Generate();
         }
-        
+
         var rootItemExistingId = itemWithChildren[0].Id;
 
-        foreach (var item in itemWithChildren) {
+        foreach (var item in itemWithChildren)
+        {
             // Root, update id
-            if (item.Id == rootItemExistingId) {
+            if (item.Id == rootItemExistingId)
+            {
                 item.Id = newId;
 
                 continue;
             }
 
             // Child with parent of root, update
-            if (item.ParentId == rootItemExistingId) {
+            if (item.ParentId == rootItemExistingId)
+            {
                 item.ParentId = newId;
             }
         }
@@ -1907,13 +1883,15 @@ public class ItemHelper
     // Returns Array of Items that have been adopted.
     public List<Item> AdoptOrphanedItems(string rootId, List<Item> items)
     {
-        foreach (var item in items) {
+        foreach (var item in items)
+        {
             // Check if the item's parent exists.
             var parentExists = items.Any((parentItem) => parentItem.Id == item.ParentId);
 
             // If the parent does not exist and the item is not already a 'hideout' item, adopt the orphaned item by
             // setting the parent ID to the PMCs inventory equipment ID, the slot ID to 'hideout', and remove the location.
-            if (!parentExists && item.ParentId != rootId && item.SlotId != "hideout") {
+            if (!parentExists && item.ParentId != rootId && item.SlotId != "hideout")
+            {
                 item.ParentId = rootId;
                 item.SlotId = "hideout";
                 item.Location = null;
@@ -1929,10 +1907,12 @@ public class ItemHelper
     // Returns A Map where the keys are the item IDs and the values are the corresponding Item objects.
     public Dictionary<string, Item> GenerateItemsMap(List<Item> items)
     {
-        Dictionary<string, Item> itemsMap = new ();
-        foreach (var item in items) {
+        Dictionary<string, Item> itemsMap = new();
+        foreach (var item in items)
+        {
             itemsMap.Add(item.Id, item);
         }
+
         return itemsMap;
     }
 
@@ -1942,10 +1922,12 @@ public class ItemHelper
     // Returns True when upd object was added
     public bool AddUpdObjectToItem(Item item, string warningMessageWhenMissing = null)
     {
-        if (item.Upd is null) {
-            item.Upd = new ();
+        if (item.Upd is null)
+        {
+            item.Upd = new();
 
-            if (warningMessageWhenMissing is not null) {
+            if (warningMessageWhenMissing is not null)
+            {
                 _logger.Debug(warningMessageWhenMissing);
             }
 
@@ -1979,19 +1961,23 @@ public class ItemHelper
     public string? GetItemBaseType(string tpl, bool rootOnly = true)
     {
         var result = GetItem(tpl);
-        if (!result.Key) {
+        if (!result.Key)
+        {
             // Not an item
             return null;
         }
 
         var currentItem = result.Value;
-        while (currentItem is not null) {
-            if (currentItem.Type == "Node" && !rootOnly) {
+        while (currentItem is not null)
+        {
+            if (currentItem.Type == "Node" && !rootOnly)
+            {
                 // Hit first base type
                 return currentItem.Id;
             }
 
-            if (currentItem.Parent is null) {
+            if (currentItem.Parent is null)
+            {
                 // No parent, reached root
                 return currentItem.Id;
             }
@@ -2007,8 +1993,10 @@ public class ItemHelper
     // Items to update FiR status of
     public void RemoveSpawnedInSessionPropertyFromItems(List<Item> items)
     {
-        foreach (var item in items) {
-            if (item.Upd is not null) {
+        foreach (var item in items)
+        {
+            if (item.Upd is not null)
+            {
                 item.Upd.SpawnedInSession = null;
             }
         }
