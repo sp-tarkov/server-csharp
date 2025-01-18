@@ -15,7 +15,8 @@ public class BackupService
  */
     public async Task InitAsync()
     {
-        throw new NotImplementedException();
+        Console.WriteLine("NEEDS IMPLEMENTING: BackupService");
+        return;
     }
 
     /**

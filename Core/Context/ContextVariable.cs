@@ -1,20 +1,11 @@
 namespace Core.Context;
 
-public class ContextVariable
+public class ContextVariable(object value, ContextVariableType contextVariableInternalType)
 {
-    protected object _value;
-    protected ContextVariableType _internalType;
-    protected DateTime _timestamp;
-
-    public ContextVariable(object value, ContextVariableType contextVariableInternalType)
-    {
-        _value = value;
-        _timestamp = DateTime.Now;
-        _internalType = contextVariableInternalType;
-    }
+    private readonly DateTime _timestamp = DateTime.Now;
 
     public T GetValue<T>() {
-        return (T)_value;
+        return (T)value;
     }
 
     public DateTime GetTimestamp()
@@ -24,6 +15,6 @@ public class ContextVariable
 
     public ContextVariableType GetContextType()
     {
-        return _internalType;
+        return contextVariableInternalType;
     }
 }

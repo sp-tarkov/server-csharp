@@ -1,26 +1,14 @@
 using Core.Annotations;
 using Core.Models.Eft.Profile;
-using Core.Models.Utils;
 using Core.Services;
 
 namespace Core.Controllers;
 
 [Injectable]
-public class AchievementController
-{
-    protected ISptLogger<AchievementController> _logger;
-    protected DatabaseService _databaseService;
-    
-    public AchievementController
-    (
-        ISptLogger<AchievementController> logger,
-        DatabaseService databaseService
+public class AchievementController(
+    DatabaseService _databaseService
     )
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-    }
-
+{
     public GetAchievementsResponse GetAchievements(string sessionID)
     {
         return new GetAchievementsResponse
@@ -36,7 +24,7 @@ public class AchievementController
 
         foreach (var achievement in achievements)
         {
-            stats.Add(achievement.Id, 0);
+            if (achievement.Id != null) stats.Add(achievement.Id, 0);
         }
 
         return new()
