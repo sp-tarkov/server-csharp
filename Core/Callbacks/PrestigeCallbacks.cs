@@ -1,33 +1,17 @@
 using Core.Annotations;
 using Core.Controllers;
-using Core.Helpers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Prestige;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class PrestigeCallbacks
+public class PrestigeCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    PrestigeController _prestigeController
+)
 {
-    protected HttpServerHelper _httpServerHelper;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected PrestigeController _prestigeController;
-
-    public PrestigeCallbacks
-    (
-        HttpServerHelper httpServerHelper,
-        HttpResponseUtil httpResponseUtil,
-        PrestigeController prestigeController
-    )
-    {
-        _httpServerHelper = httpServerHelper;
-        _httpResponseUtil = httpResponseUtil;
-        _prestigeController = prestigeController;
-    }
-
     /// <summary>
     /// Handle client/prestige/list
     /// </summary>
