@@ -323,7 +323,7 @@ public class RepeatableQuestController
             // Target is boss
             if (targetKvP.Data.IsBoss.GetValueOrDefault(false))
             {
-                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(targetKvP.Key);
+                questPool.Pool.Elimination.Targets.TryGetValue(targetKvP.Key, out var targets);
                     targets.Locations.Clear();
                     targets.Locations.Add("any");
             }
@@ -332,7 +332,7 @@ public class RepeatableQuestController
                 // Non-boss targets
                 var possibleLocations = locations;
 
-                var targets = questPool.Pool.Elimination.Targets.Get<TargetLocation>(targetKvP.Key);
+                questPool.Pool.Elimination.Targets.TryGetValue(targetKvP.Key, out var targets);
                 var targetsClone = _cloner.Clone(targets);
                 var allowedLocations = targetKvP.Key == "Savage"
                         ? targetsClone.Locations.Where((location) => location != "laboratory") // Exclude labs for Savage targets.
@@ -360,7 +360,7 @@ public class RepeatableQuestController
                 },
                 Elimination = new EliminationPool
                 {
-                    Targets = new EliminationTargetPool()
+                    Targets = new Dictionary<string, TargetLocation>()
                 },
                 Pickup = new ExplorationPool
                 {
