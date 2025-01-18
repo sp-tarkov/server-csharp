@@ -103,7 +103,7 @@ public class DialogueController(
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
-            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id))
+            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id!))
             {
                 activeBots.Add(botData);
             }
@@ -141,17 +141,17 @@ public class DialogueController(
         string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
-        var dialogue = dialogs.GetValueOrDefault(dialogueId);
+        var dialogue = dialogs!.GetValueOrDefault(dialogueId);
 
         var result = new DialogueInfo
         {
             Id = dialogueId,
-            Type = dialogue.Type ?? MessageType.NPC_TRADER,
+            Type = dialogue?.Type ?? MessageType.NPC_TRADER,
             Message = _dialogueHelper.GetMessagePreview(dialogue),
-            New = dialogue.New,
-            AttachmentsNew = dialogue.AttachmentsNew,
-            Pinned = dialogue.Pinned,
-            Users = GetDialogueUsers(dialogue, dialogue.Type.Value, sessionId),
+            New = dialogue?.New,
+            AttachmentsNew = dialogue?.AttachmentsNew,
+            Pinned = dialogue?.Pinned,
+            Users = GetDialogueUsers(dialogue, dialogue?.Type, sessionId),
         };
 
         return result;
@@ -165,37 +165,35 @@ public class DialogueController(
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
     public List<UserDialogInfo> GetDialogueUsers(
-        Dialogue dialog,
-        MessageType messageType,
+        Dialogue? dialog,
+        MessageType? messageType,
         string sessionId)
     {
         var profile = _saveServer.GetProfile(sessionId);
 
         // User to user messages are special in that they need the player to exist in them, add if they don't
         if (messageType == MessageType.USER_MESSAGE &&
-            dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData.PmcData.SessionId))
+            dialog?.Users is not null &&
+            dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData?.PmcData?.SessionId))
         {
-            // Nullguard
-            dialog.Users ??= [];
-
             dialog.Users.Add(
                 new UserDialogInfo
                 {
-                    Id = profile.CharacterData.PmcData.SessionId,
-                    Aid = profile.CharacterData.PmcData.Aid,
+                    Id = profile.CharacterData?.PmcData?.SessionId,
+                    Aid = profile.CharacterData?.PmcData?.Aid,
                     Info = new UserDialogDetails
                     {
-                        Level = profile.CharacterData.PmcData.Info.Level,
-                        Nickname = profile.CharacterData.PmcData.Info.Nickname,
-                        Side = profile.CharacterData.PmcData.Info.Side,
-                        MemberCategory = profile.CharacterData.PmcData.Info.MemberCategory,
-                        SelectedMemberCategory = profile.CharacterData.PmcData.Info.SelectedMemberCategory,
+                        Level = profile.CharacterData?.PmcData?.Info?.Level,
+                        Nickname = profile.CharacterData?.PmcData?.Info?.Nickname,
+                        Side = profile.CharacterData?.PmcData?.Info?.Side,
+                        MemberCategory = profile.CharacterData?.PmcData?.Info?.MemberCategory,
+                        SelectedMemberCategory = profile.CharacterData?.PmcData?.Info?.SelectedMemberCategory,
                     },
                 }
             );
         }
 
-        return dialog.Users;
+        return dialog?.Users!;
     }
 
     /// <summary>
@@ -219,13 +217,13 @@ public class DialogueController(
         dialogue.New = 0;
 
         // Set number of new attachments, but ignore those that have expired.
-        dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId);
+        dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId!);
 
         return new GetMailDialogViewResponseData
         {
             Messages = dialogue.Messages,
             Profiles = GetProfilesForMail(fullProfile, dialogue.Users),
-            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages),
+            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages!),
         };
     }
 
@@ -239,32 +237,33 @@ public class DialogueController(
         SptProfile profile,
         GetMailDialogViewRequestData request)
     {
-        if (!profile.DialogueRecords.ContainsKey(request.DialogId))
+        if (profile.DialogueRecords is null || profile.DialogueRecords.ContainsKey(request.DialogId!))
+            return profile.DialogueRecords?[request.DialogId!] ?? throw new NullReferenceException();
+
+        profile.DialogueRecords[request.DialogId!] = new Dialogue
         {
-            profile.DialogueRecords[request.DialogId] = new Dialogue
-            {
-                Id = request.DialogId,
-                AttachmentsNew = 0,
-                Pinned = false,
-                Messages = [],
-                New = 0,
-                Type = request.Type,
-            };
+            Id = request.DialogId,
+            AttachmentsNew = 0,
+            Pinned = false,
+            Messages = [],
+            New = 0,
+            Type = request.Type,
+        };
 
-            if (request.Type == MessageType.USER_MESSAGE)
-            {
-                var dialogue = profile.DialogueRecords[request.DialogId];
-                dialogue.Users = [];
-                var chatBot = _dialogueChatBots.FirstOrDefault((cb) => cb.GetChatBot().Id == request.DialogId);
-                if (chatBot is not null)
-                {
-                    dialogue.Users ??= [];
-                    dialogue.Users.Add(chatBot.GetChatBot());
-                }
-            }
-        }
+        if (request.Type != MessageType.USER_MESSAGE)
+            return profile.DialogueRecords[request.DialogId!];
 
-        return profile.DialogueRecords[request.DialogId];
+        var dialogue = profile.DialogueRecords[request.DialogId!];
+        dialogue.Users = [];
+        var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
+
+        if (chatBot is null)
+            return profile.DialogueRecords[request.DialogId!];
+
+        dialogue.Users ??= [];
+        dialogue.Users.Add(chatBot.GetChatBot());
+
+        return profile.DialogueRecords[request.DialogId!];
     }
 
     /// <summary>
@@ -284,26 +283,26 @@ public class DialogueController(
 
         result.AddRange(userDialogs);
 
-        if (result.All(userDialog => userDialog.Id != fullProfile.ProfileInfo.ProfileId))
-        {
-            // Player doesn't exist, add them in before returning
-            var pmcProfile = fullProfile.CharacterData.PmcData;
-            result.Add(
-                new UserDialogInfo
+        if (result.Any(userDialog => userDialog.Id == fullProfile.ProfileInfo?.ProfileId))
+            return result;
+
+        // Player doesn't exist, add them in before returning
+        var pmcProfile = fullProfile.CharacterData?.PmcData;
+        result.Add(
+            new UserDialogInfo
+            {
+                Id = fullProfile.ProfileInfo?.ProfileId,
+                Aid = fullProfile.ProfileInfo?.Aid,
+                Info = new UserDialogDetails
                 {
-                    Id = fullProfile.ProfileInfo.ProfileId,
-                    Aid = fullProfile.ProfileInfo.Aid,
-                    Info = new UserDialogDetails
-                    {
-                        Nickname = pmcProfile.Info.Nickname,
-                        Side = pmcProfile.Info.Side,
-                        Level = pmcProfile.Info.Level,
-                        MemberCategory = pmcProfile.Info.MemberCategory,
-                        SelectedMemberCategory = pmcProfile.Info.SelectedMemberCategory,
-                    }
+                    Nickname = pmcProfile?.Info?.Nickname,
+                    Side = pmcProfile?.Info?.Side,
+                    Level = pmcProfile?.Info?.Level,
+                    MemberCategory = pmcProfile?.Info?.MemberCategory,
+                    SelectedMemberCategory = pmcProfile?.Info?.SelectedMemberCategory,
                 }
-            );
-        }
+            }
+        );
 
         return result;
     }
@@ -342,7 +341,7 @@ public class DialogueController(
         var timeNow = _timeUtil.GetTimeStamp();
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
 
-        return dialogs[dialogueId].Messages.Where((message) => timeNow < message.DateTime + (message.MaxStorageTime ?? 0)).ToList();
+        return dialogs[dialogueId].Messages?.Where(message => timeNow < message.DateTime + (message.MaxStorageTime ?? 0)).ToList() ?? [];
     }
 
     /// <summary>
@@ -374,10 +373,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId"></param>
-    public void SetDialoguePin(
-        string? dialogueId,
-        bool shouldPin,
-        string sessionId)
+    public void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
     {
         throw new NotImplementedException();
     }
@@ -388,9 +384,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public void SetRead(
-        List<string>? dialogueIds,
-        string sessionId)
+    public void SetRead(List<string>? dialogueIds, string sessionId)
     {
         throw new NotImplementedException();
     }
@@ -402,9 +396,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetAllAttachmentsResponse or null if dialogue doesnt exist</returns>
-    public GetAllAttachmentsResponse? GetAllAttachments(
-        string dialogueId,
-        string sessionId)
+    public GetAllAttachmentsResponse GetAllAttachments(string dialogueId, string sessionId)
     {
         throw new NotImplementedException();
     }
@@ -419,14 +411,10 @@ public class DialogueController(
         string sessionId,
         SendMessageRequest request)
     {
-        _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId, request.Text);
+        _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
-        return (
-            _dialogueChatBots
-                .FirstOrDefault((cb) => cb.GetChatBot().Id == request.DialogId)
-                ?.HandleMessage(sessionId, request) ??
-            request.DialogId
-        );
+        return (_dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId)
+            ?.HandleMessage(sessionId, request) ?? request.DialogId) ?? string.Empty;
     }
 
     /// <summary>
@@ -435,9 +423,7 @@ public class DialogueController(
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <returns>message list</returns>
-    private List<Message> GetActiveMessagesFromDialogue(
-        string sessionId,
-        string dialogueId)
+    private List<Message> GetActiveMessagesFromDialogue(string sessionId, string dialogueId)
     {
         throw new NotImplementedException();
     }
@@ -469,9 +455,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
-    private void RemoveExpiredItemsFromMessage(
-        string sessionId,
-        string dialogueId)
+    private void RemoveExpiredItemsFromMessage(string sessionId, string dialogueId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         if (!dialogs.TryGetValue(dialogueId, out var dialog))
@@ -479,7 +463,7 @@ public class DialogueController(
             return;
         }
 
-        foreach (var message in dialog.Messages)
+        foreach (var message in dialog.Messages ?? [])
         {
             if (MessageHasExpired(message))
             {
