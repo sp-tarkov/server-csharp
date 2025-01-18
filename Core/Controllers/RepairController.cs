@@ -6,7 +6,9 @@ using Core.Models.Eft.Repair;
 namespace Core.Controllers;
 
 [Injectable]
-public class RepairController
+public class RepairController(
+    
+    )
 {
     /// <summary>
     /// Handle TraderRepair event

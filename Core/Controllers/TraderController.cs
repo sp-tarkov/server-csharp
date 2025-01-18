@@ -16,60 +16,24 @@ using Core.Utils.Cloners;
 namespace Core.Controllers;
 
 [Injectable]
-public class TraderController
+public class TraderController(
+    ISptLogger<TraderController> _logger,
+    TimeUtil _timeUtil,
+    DatabaseService _databaseService,
+    TraderAssortHelper _traderAssortHelper,
+    TraderAssortService _traderAssortService,
+    ProfileHelper _profileHelper,
+    TraderHelper _traderHelper,
+    PaymentHelper _paymentHelper,
+    RagfairPriceService _ragfairPriceService,
+    TraderPurchasePersisterService _traderPurchasePersisterService,
+    FenceService _fenceService,
+    FenceBaseAssortGenerator _fenceBaseAssortGenerator,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
-    private ISptLogger<TraderController> _logger;
-    private TimeUtil _timeUtil;
-    private DatabaseService _databaseService;
-    private TraderAssortHelper _traderAssortHelper;
-    private TraderAssortService _traderAssortService;
-    private ProfileHelper _profileHelper;
-    private TraderHelper _traderHelper;
-    private PaymentHelper _paymentHelper;
-    private RagfairPriceService _ragfairPriceService;
-    private TraderPurchasePersisterService _traderPurchasePersisterService;
-    private FenceService _fenceService;
-    private FenceBaseAssortGenerator _fenceBaseAssortGenerator;
-    private ConfigServer _configServer;
-    private ICloner _cloner;
-
-    private TraderConfig _traderConfig;
-
-    public TraderController
-    (
-        ISptLogger<TraderController> logger,
-        TimeUtil timeUtil,
-        DatabaseService databaseService,
-        TraderAssortHelper traderAssortHelper,
-        TraderAssortService traderAssortService,
-        ProfileHelper profileHelper,
-        TraderHelper traderHelper,
-        PaymentHelper paymentHelper,
-        RagfairPriceService ragfairPriceService,
-        TraderPurchasePersisterService traderPurchasePersisterService,
-        FenceService fenceService,
-        FenceBaseAssortGenerator fenceBaseAssortGenerator,
-        ConfigServer configServer,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _databaseService = databaseService;
-        _traderAssortHelper = traderAssortHelper;
-        _traderAssortService = traderAssortService;
-        _profileHelper = profileHelper;
-        _traderHelper = traderHelper;
-        _paymentHelper = paymentHelper;
-        _ragfairPriceService = ragfairPriceService;
-        _traderPurchasePersisterService = traderPurchasePersisterService;
-        _fenceService = fenceService;
-        _fenceBaseAssortGenerator = fenceBaseAssortGenerator;
-        _configServer = configServer;
-        _cloner = cloner;
-
-        _traderConfig = configServer.GetConfig<TraderConfig>();
-    }
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     /// Runs when onLoad event is fired
@@ -114,9 +78,9 @@ public class TraderController
                 var assortsClone = _cloner.Clone(trader.Value.Assort);
                 _traderAssortService.SetPristineTraderAssort(trader.Key, assortsClone);
             }
-            
+
             _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(trader.Key);
-            
+
             // Set to next hour on clock or current time + 60 mins
             trader.Value.Base.NextResupply = traderResetStartsWithServer ? _traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : nextHourTimestamp;
         }
@@ -140,7 +104,7 @@ public class TraderController
                 {
                     if (_fenceService.NeedsPartialRefresh())
                         _fenceService.GenerateFenceAssorts();
-                
+
                     continue;
                 }
             }
@@ -149,7 +113,7 @@ public class TraderController
             if (_traderAssortHelper.TraderAssortsHaveExpired(traderId))
             {
                 _traderAssortHelper.ResetExpiredTrader(data);
-                
+
                 // Reset purchase data per trader as they have independent reset times
                 _traderPurchasePersisterService.ResetTraderPurchasesStoredInProfile(traderId);
             }

@@ -20,96 +20,36 @@ using Server;
 namespace Core.Controllers;
 
 [Injectable]
-public class GameController
+public class GameController(
+    ISptLogger<GameController> _logger,
+    ConfigServer _configServer,
+    DatabaseService _databaseService,
+    TimeUtil _timeUtil,
+    HttpServerHelper _httpServerHelper,
+    InventoryHelper _inventoryHelper,
+    RandomUtil _randomUtil,
+    HideoutHelper _hideoutHelper,
+    ProfileHelper _profileHelper,
+    ProfileFixerService _profileFixerService,
+    LocalisationService _localisationService,
+    PostDbLoadService _postDbLoadService,
+    CustomLocationWaveService _customLocationWaveService,
+    OpenZoneService _openZoneService,
+    SeasonalEventService _seasonalEventService,
+    ItemBaseClassService _itemBaseClassService,
+    GiftService _giftService,
+    RaidTimeAdjustmentService _raidTimeAdjustmentService,
+    ProfileActivityService _profileActivityService,
+    CreateProfileService _createProfileService,
+    ApplicationContext _applicationContext,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<GameController> _logger;
-    protected ConfigServer _configServer;
-    protected DatabaseService _databaseService;
-
-    protected TimeUtil _timeUtil;
-
-    // protected PreSptModLoader _preSptModLoader;
-    protected HttpServerHelper _httpServerHelper;
-    protected InventoryHelper _inventoryHelper;
-    protected RandomUtil _randomUtil;
-    protected HideoutHelper _hideoutHelper;
-    protected ProfileHelper _profileHelper;
-    protected ProfileFixerService _profileFixerService;
-    protected LocalisationService _localisationService;
-    protected PostDbLoadService _postDbLoadService;
-    protected CustomLocationWaveService _customLocationWaveService;
-    protected OpenZoneService _openZoneService;
-    protected SeasonalEventService _seasonalEventService;
-    protected ItemBaseClassService _itemBaseClassService;
-    protected GiftService _giftService;
-    protected RaidTimeAdjustmentService _raidTimeAdjustmentService;
-    protected ProfileActivityService _profileActivityService;
-    protected CreateProfileService _createProfileService;
-
-    protected ApplicationContext _applicationContext;
-    //protected PreSptModLoader preSptModLoader
-    protected ICloner _cloner;
-
-    protected CoreConfig _coreConfig;
-    protected HttpConfig _httpConfig;
-    protected RagfairConfig _ragfairConfig;
-    protected HideoutConfig _hideoutConfig;
-    protected BotConfig _botConfig;
-
-    public GameController(
-        ISptLogger<GameController> logger,
-        ConfigServer configServer,
-        DatabaseService databaseService,
-        TimeUtil timeUtil,
-        HttpServerHelper httpServerHelper,
-        InventoryHelper inventoryHelper,
-        RandomUtil randomUtil,
-        HideoutHelper hideoutHelper,
-        ProfileHelper profileHelper,
-        ProfileFixerService profileFixerService,
-        LocalisationService localisationService,
-        PostDbLoadService postDbLoadService,
-        CustomLocationWaveService customLocationWaveService,
-        OpenZoneService openZoneService,
-        SeasonalEventService seasonalEventService,
-        ItemBaseClassService itemBaseClassService,
-        GiftService giftService,
-        RaidTimeAdjustmentService raidTimeAdjustmentService,
-        ProfileActivityService profileActivityService,
-        CreateProfileService createProfileService,
-        ApplicationContext applicationContext,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _configServer = configServer;
-        _databaseService = databaseService;
-        _timeUtil = timeUtil;
-        _httpServerHelper = httpServerHelper;
-        _inventoryHelper = inventoryHelper;
-        _randomUtil = randomUtil;
-        _hideoutHelper = hideoutHelper;
-        _profileHelper = profileHelper;
-        _profileFixerService = profileFixerService;
-        _localisationService = localisationService;
-        _postDbLoadService = postDbLoadService;
-        _customLocationWaveService = customLocationWaveService;
-        _openZoneService = openZoneService;
-        _seasonalEventService = seasonalEventService;
-        _itemBaseClassService = itemBaseClassService;
-        _giftService = giftService;
-        _raidTimeAdjustmentService = raidTimeAdjustmentService;
-        _profileActivityService = profileActivityService;
-        _createProfileService = createProfileService;
-        _applicationContext = applicationContext;
-        _cloner = cloner;
-
-        _coreConfig = configServer.GetConfig<CoreConfig>();
-        _httpConfig = configServer.GetConfig<HttpConfig>();
-        _ragfairConfig = configServer.GetConfig<RagfairConfig>();
-        _hideoutConfig = configServer.GetConfig<HideoutConfig>();
-        _botConfig = configServer.GetConfig<BotConfig>();
-    }
+    protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Handle client/game/start
@@ -158,7 +98,7 @@ public class GameController
                 // Flag as migrated
                 fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
 
-                _logger.Success($"Migration of 3.10.x profile: ${ fullProfile.ProfileInfo.Username} completed successfully");
+                _logger.Success($"Migration of 3.10.x profile: ${fullProfile.ProfileInfo.Username} completed successfully");
             }
 
             // with our method of converting type from array for this prop, we *might* not need this?
@@ -243,9 +183,13 @@ public class GameController
     public GameConfigResponse GetGameConfig(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
-        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(c => 
-            c.Key.Contains("LifeTime") && 
-            c.Key.Contains("Pmc"))?.Value ?? 0D;
+        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(
+                               c =>
+                                   c.Key.Contains("LifeTime") &&
+                                   c.Key.Contains("Pmc")
+                           )
+                           ?.Value ??
+                       0D;
 
         var config = new GameConfigResponse
         {
@@ -275,7 +219,7 @@ public class GameController
                 IsArenaPurchased = false
             }
         };
-        
+
         return config;
     }
 
@@ -310,7 +254,6 @@ public class GameController
                 Ip = _httpConfig.BackendIp,
                 Port = _httpConfig.BackendPort
             }
-
         ];
     }
 
@@ -350,7 +293,7 @@ public class GameController
     public GameKeepAliveResponse GetKeepAlive(string sessionId)
     {
         _profileActivityService.SetActivityTimestamp(sessionId);
-        return new GameKeepAliveResponse(){ Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
+        return new GameKeepAliveResponse() { Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
     }
 
     /// <summary>
@@ -451,19 +394,21 @@ public class GameController
                 {
                     bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds.Value / 3600));
                 }
+
                 if (bodyPart.Health.Current > bodyPart.Health.Maximum)
                 {
                     bodyPart.Health.Current = bodyPart.Health.Maximum;
                 }
 
-                
+
                 if (bodyPart.Effects is null || bodyPart.Effects.Count == 0)
                 {
                     continue;
                 }
 
                 // Look for effects
-                foreach (var effectKvP in bodyPart.Effects) {
+                foreach (var effectKvP in bodyPart.Effects)
+                {
                     // remove effects below 1, .e.g. bleeds at -1
                     if (effectKvP.Value.Time < 1)
                     {
@@ -489,7 +434,6 @@ public class GameController
             // Update both values as they've both been updated
             pmcProfile.Health.UpdateTime = currentTimeStamp;
         }
-
     }
 
     /// <summary>
@@ -531,26 +475,31 @@ public class GameController
         _logger.Error("NOT IMPLEMENTED - _preSptModLoader SaveActiveModsToProfile()");
         //var activeMods = _preSptModLoader.GetImportedModDetails(); //TODO IMPLEMENT _preSptModLoader
         var activeMods = new Dictionary<string, ModDetails>();
-        foreach (var modKvP in activeMods) {
+        foreach (var modKvP in activeMods)
+        {
             var modDetails = modKvP.Value;
             if (
                 fullProfile.SptData.Mods.Any(
                     (mod) =>
                         mod.Author == modDetails.Author &&
-                            mod.Name == modDetails.Name &&
-                            mod.Version == modDetails.Version))
+                        mod.Name == modDetails.Name &&
+                        mod.Version == modDetails.Version
+                ))
             {
                 // Exists already, skip
                 continue;
             }
 
-            fullProfile.SptData.Mods.Add( new ModDetails{
-                Author = modDetails.Author,
-                DateAdded = _timeUtil.GetTimeStamp(),
-                Name = modDetails.Name,
-                Version = modDetails.Version,
-                Url = modDetails.Url,
-            });
+            fullProfile.SptData.Mods.Add(
+                new ModDetails
+                {
+                    Author = modDetails.Author,
+                    DateAdded = _timeUtil.GetTimeStamp(),
+                    Name = modDetails.Name,
+                    Version = modDetails.Version,
+                    Url = modDetails.Url,
+                }
+            );
         }
     }
 
@@ -596,7 +545,6 @@ public class GameController
     /// <param name="fullProfile">Profile to check for dialog in</param>
     private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
-        
         if (fullProfile.DialogueRecords.TryGetValue("undefined", out var undefinedDialog))
         {
             fullProfile.DialogueRecords.Remove("undefined");

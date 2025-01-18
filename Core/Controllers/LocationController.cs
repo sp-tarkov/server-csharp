@@ -10,24 +10,13 @@ using Core.Utils.Cloners;
 namespace Core.Controllers;
 
 [Injectable]
-public class LocationController
+public class LocationController(
+    ISptLogger<LocationController> _logger,
+    DatabaseService _databaseService,
+    AirdropService _airdropService,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<LocationController> _logger;
-    protected DatabaseService _databaseService;
-    protected AirdropService _airdropService;
-    protected ICloner _cloner;
-
-    public LocationController(
-        ISptLogger<LocationController> logger,
-        DatabaseService databaseService,
-        AirdropService airdropService,
-        ICloner cloner)
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        _airdropService = airdropService;
-        _cloner = cloner;
-    }
 
     /// <summary>
     /// Handle client/locations
@@ -74,9 +63,9 @@ public class LocationController
     {
         if (request.ContainerId is not null)
         {
-            return this._airdropService.GenerateCustomAirdropLoot(request);
+            return _airdropService.GenerateCustomAirdropLoot(request);
         }
 
-        return this._airdropService.GenerateAirdropLoot();
+        return _airdropService.GenerateAirdropLoot();
     }
 }

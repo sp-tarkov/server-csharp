@@ -6,7 +6,9 @@ using Core.Models.Eft.Ragfair;
 namespace Core.Controllers;
 
 [Injectable]
-public class RagfairController
+public class RagfairController(
+    
+    )
 {
     // TODO
     public GetOffersResult GetOffers(string sessionId, SearchRequestData info)

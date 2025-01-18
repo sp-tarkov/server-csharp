@@ -11,28 +11,14 @@ using Core.Utils;
 namespace Core.Controllers;
 
 [Injectable]
-public class QuestController
+public class QuestController(
+    ISptLogger<QuestController> _logger,
+    TimeUtil _timeUtil,
+    HttpResponseUtil _httpResponseUtil,
+    QuestHelper _questHelper,
+    QuestRewardHelper _questRewardHelper
+)
 {
-    protected ISptLogger<QuestController> _logger;
-    protected TimeUtil _timeUtil;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected QuestHelper _questHelper;
-    protected QuestRewardHelper _questRewardHelper;
-
-    public QuestController(
-        ISptLogger<QuestController> logger,
-        TimeUtil timeUtil,
-        HttpResponseUtil httpResponseUtil,
-        QuestHelper questHelper,
-        QuestRewardHelper questRewardHelper)
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _httpResponseUtil = httpResponseUtil;
-        _questHelper = questHelper;
-        _questRewardHelper = questRewardHelper;
-    }
-    // TODO
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionId)
     {
         throw new NotImplementedException();

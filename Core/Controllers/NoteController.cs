@@ -7,16 +7,10 @@ using Core.Routers;
 namespace Core.Controllers;
 
 [Injectable]
-public class NoteController
+public class NoteController(
+    EventOutputHolder _eventOutputHolder
+)
 {
-    protected EventOutputHolder _eventOutputHolder;
-
-    public NoteController(
-        EventOutputHolder eventOutputHolder)
-    {
-        _eventOutputHolder = eventOutputHolder;
-    }
-
     /// <summary>
     /// 
     /// </summary>

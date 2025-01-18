@@ -18,74 +18,27 @@ using System.Collections.Generic;
 namespace Core.Controllers;
 
 [Injectable]
-public class ProfileController
+public class ProfileController(
+    ISptLogger<ProfileController> _logger,
+    HashUtil _hashUtil,
+    ICloner _cloner,
+    TimeUtil _timeUtil,
+    SaveServer _saveServer,
+    DatabaseService _databaseService,
+    ItemHelper _itemHelper,
+    ProfileFixerService _profileFixerService,
+    LocalisationService _localisationService,
+    CreateProfileService _createProfileService,
+    SeasonalEventService _seasonalEventService,
+    PlayerScavGenerator _playerScavGenerator,
+    EventOutputHolder _eventOutputHolder,
+    TraderHelper _traderHelper,
+    DialogueHelper _dialogueHelper,
+    QuestHelper _questHelper,
+    QuestRewardHelper _questRewardHelper,
+    ProfileHelper _profileHelper
+)
 {
-    protected ISptLogger<ProfileController> _logger;
-
-    protected HashUtil _hashUtil;
-    protected ICloner _cloner;
-    protected TimeUtil _timeUtil;
-    protected SaveServer _saveServer;
-    protected DatabaseService _databaseService;
-    protected ItemHelper _itemHelper;
-    protected ProfileFixerService _profileFixerService;
-    protected LocalisationService _localisationService;
-    protected CreateProfileService _createProfileService;
-
-    protected SeasonalEventService _seasonalEventService;
-
-    // TODO: MailSendService mailSendService: MailSendService
-    protected PlayerScavGenerator _playerScavGenerator;
-    protected EventOutputHolder _eventOutputHolder;
-
-    protected TraderHelper _traderHelper;
-    protected DialogueHelper _dialogueHelper;
-    protected QuestHelper _questHelper;
-    protected QuestRewardHelper _questRewardHelper;
-    protected ProfileHelper _profileHelper;
-
-    public ProfileController(
-        ISptLogger<ProfileController> logger,
-        HashUtil hashUtil,
-        ICloner cloner,
-        TimeUtil timeUtil,
-        SaveServer saveServer,
-        DatabaseService databaseService,
-        ItemHelper itemHelper,
-        ProfileFixerService profileFixerService,
-        LocalisationService localisationService,
-        CreateProfileService createProfileService,
-        SeasonalEventService seasonalEventService,
-        // TODO: MailSendService mailSendService,
-        PlayerScavGenerator playerScavGenerator,
-        EventOutputHolder eventOutputHolder,
-        TraderHelper traderHelper,
-        DialogueHelper dialogueHelper,
-        QuestHelper questHelper,
-        QuestRewardHelper questRewardHelper,
-        ProfileHelper profileHelper
-    )
-    {
-        _logger = logger;
-        _cloner = cloner;
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _saveServer = saveServer;
-        _databaseService = databaseService;
-        _itemHelper = itemHelper;
-        _profileFixerService = profileFixerService;
-        _localisationService = localisationService;
-        _createProfileService = createProfileService;
-        _seasonalEventService = seasonalEventService;
-        _playerScavGenerator = playerScavGenerator;
-        _eventOutputHolder = eventOutputHolder;
-        _traderHelper = traderHelper;
-        _dialogueHelper = dialogueHelper;
-        _questHelper = questHelper;
-        _questRewardHelper = questRewardHelper;
-        _profileHelper = profileHelper;
-    }
-
     /**
      * Handle /launcher/profiles
      */
@@ -290,7 +243,8 @@ public class ProfileController
         // Find hideout items e.g. posters
         var hideoutRootItems = profileToViewPmc.Inventory.Items.Where(x => hideoutKeys.Contains(x.Id));
         var itemsToReturn = new List<Item>();
-        foreach (var rootItems in hideoutRootItems) {
+        foreach (var rootItems in hideoutRootItems)
+        {
             // Check each root items for children and add
             var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(profileToViewPmc.Inventory.Items, rootItems.Id);
             itemsToReturn.AddRange(itemWithChildren);
@@ -345,7 +299,7 @@ public class ProfileController
             Hideout = profileToViewPmc.Hideout,
             CustomizationStash = profileToViewPmc.Inventory.HideoutCustomizationStashId,
             HideoutAreaStashes = profileToViewPmc.Inventory.HideoutAreaStashes,
-                    Items = itemsToReturn
+            Items = itemsToReturn
         };
     }
 

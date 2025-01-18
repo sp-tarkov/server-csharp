@@ -14,73 +14,29 @@ using Core.Utils.Cloners;
 namespace Core.Controllers;
 
 [Injectable]
-public class InventoryController
+public class InventoryController(
+    ISptLogger<InventoryController> _logger,
+    HashUtil _hashUtil,
+    RandomUtil _randomUtil,
+    HttpResponseUtil _httpResponseUtil,
+    PresetHelper _presetHelper,
+    InventoryHelper _inventoryHelper,
+    QuestHelper _questHelper,
+    HideoutHelper _hideoutHelper,
+    ProfileHelper _profileHelper,
+    PaymentHelper _paymentHelper,
+    TraderHelper _traderHelper,
+    DatabaseService _databaseService,
+    FenceService _fenceService,
+    RagfairOfferService _ragfairOfferService,
+    MapMarkerService _mapMarkerService,
+    LocalisationService _localisationService,
+    PlayerService _playerService,
+    LootGenerator _lootGenerator,
+    EventOutputHolder _eventOutputHolder,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<InventoryController> _logger;
-    protected HashUtil _hashUtil;
-    protected RandomUtil _randomUtil;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected PresetHelper _presetHelper;
-    protected InventoryHelper _inventoryHelper;
-    protected QuestHelper _questHelper;
-    protected HideoutHelper _hideoutHelper;
-    protected ProfileHelper _profileHelper;
-    protected PaymentHelper _paymentHelper;
-    protected TraderHelper _traderHelper;
-    protected DatabaseService _databaseService;
-    protected FenceService _fenceService;
-    protected RagfairOfferService _ragfairOfferService;
-    protected MapMarkerService _mapMarkerService;
-    protected LocalisationService _localisationService;
-    protected PlayerService _playerService;
-    protected LootGenerator _lootGenerator;
-    protected EventOutputHolder _eventOutputHolder;
-
-    public InventoryController(
-        ISptLogger<InventoryController> logger,
-        HashUtil hashUtil,
-        RandomUtil randomUtil,
-        HttpResponseUtil httpResponseUtil,
-        PresetHelper presetHelper,
-        InventoryHelper inventoryHelper,
-        QuestHelper questHelper,
-        HideoutHelper hideoutHelper,
-        ProfileHelper profileHelper,
-        PaymentHelper paymentHelper,
-        TraderHelper traderHelper,
-        DatabaseService databaseService,
-        FenceService fenceService,
-        RagfairOfferService ragfairOfferService,
-        MapMarkerService mapMarkerService,
-        LocalisationService localisationService,
-        PlayerService playerService,
-        LootGenerator lootGenerator,
-        EventOutputHolder eventOutputHolder,
-
-        ICloner cloner
-        )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _randomUtil = randomUtil;
-        _httpResponseUtil = httpResponseUtil;
-        _presetHelper = presetHelper;
-        _inventoryHelper = inventoryHelper;
-        _questHelper = questHelper;
-        _hideoutHelper = hideoutHelper;
-        _profileHelper = profileHelper;
-        _paymentHelper = paymentHelper;
-        _traderHelper = traderHelper;
-        _databaseService = databaseService;
-        _fenceService = fenceService;
-        _ragfairOfferService = ragfairOfferService;
-        _mapMarkerService = mapMarkerService;
-        _localisationService = localisationService;
-        _playerService = playerService;
-        _lootGenerator = lootGenerator;
-        _eventOutputHolder = eventOutputHolder;
-    }
-
     public void MoveItem(PmcData pmcData, InventoryMoveRequestData moveRequest, string sessionID, ItemEventRouterResponse output)
     {
         if (output.Warnings.Count > 0)
@@ -118,7 +74,7 @@ public class InventoryController
             }
 
             // Item is moving into or out of place of fame dogtag slot
-            if (moveRequest.To.Container.StartsWith("dogtag")  || originalLocationSlotId.StartsWith("dogtag"))
+            if (moveRequest.To.Container.StartsWith("dogtag") || originalLocationSlotId.StartsWith("dogtag"))
             {
                 _hideoutHelper.ApplyPlaceOfFameDogtagBonus(pmcData);
             }

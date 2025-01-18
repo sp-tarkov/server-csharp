@@ -7,7 +7,7 @@ namespace Core.Controllers;
 [Injectable]
 public class AchievementController(
     DatabaseService _databaseService
-    )
+)
 {
     public GetAchievementsResponse GetAchievements(string sessionID)
     {

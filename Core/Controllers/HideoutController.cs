@@ -16,81 +16,32 @@ using Core.Utils.Cloners;
 namespace Core.Controllers;
 
 [Injectable]
-public class HideoutController
+public class HideoutController(
+    ISptLogger<HideoutController> _logger,
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    DatabaseService _databaseService,
+    RandomUtil _randomUtil,
+    InventoryHelper _inventoryHelper,
+    ItemHelper _itemHelper,
+    SaveServer _saveServer,
+    PlayerService _playerService,
+    PresetHelper _presetHelper,
+    PaymentHelper _paymentHelper,
+    EventOutputHolder _eventOutputHolder,
+    HttpResponseUtil _httpResponseUtil,
+    ProfileHelper _profileHelper,
+    HideoutHelper _hideoutHelper,
+    ScavCaseRewardGenerator _scavCaseRewardGenerator,
+    LocalisationService _localisationService,
+    ProfileActivityService _profileActivityService,
+    FenceService _fenceService,
+    CircleOfCultistService _circleOfCultistService,
+    ICloner _cloner,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<HideoutController> _logger;
-    protected HashUtil _hashUtil;
-    protected TimeUtil _timeUtil;
-    protected DatabaseService _databaseService;
-    protected RandomUtil _randomUtil;
-    protected InventoryHelper _inventoryHelper;
-    protected ItemHelper _itemHelper;
-    protected SaveServer _saveServer;
-    protected PlayerService _playerService;
-    protected PresetHelper _presetHelper;
-    protected PaymentHelper _paymentHelper;
-    protected EventOutputHolder _eventOutputHolder;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected ProfileHelper _profileHelper;
-    protected HideoutHelper _hideoutHelper;
-    protected ScavCaseRewardGenerator _scavCaseRewardGenerator;
-    protected LocalisationService _localisationService;
-    protected ProfileActivityService _profileActivityService;
-    protected FenceService _fenceService;
-    protected CircleOfCultistService _circleOfCultistService;
-    protected ICloner _cloner;
-    protected ConfigServer _configServer;
-    protected HideoutConfig _hideoutConfig;
-
-    public HideoutController(
-        ISptLogger<HideoutController> logger,
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        DatabaseService databaseService,
-        RandomUtil randomUtil,
-        InventoryHelper inventoryHelper,
-        ItemHelper itemHelper,
-        SaveServer saveServer,
-        PlayerService playerService,
-        PresetHelper presetHelper,
-        PaymentHelper paymentHelper,
-        EventOutputHolder eventOutputHolder,
-        HttpResponseUtil httpResponseUtil,
-        ProfileHelper profileHelper,
-        HideoutHelper hideoutHelper,
-        ScavCaseRewardGenerator scavCaseRewardGenerator,
-        LocalisationService localisationService,
-        ProfileActivityService profileActivityService,
-        FenceService fenceService,
-        CircleOfCultistService circleOfCultistService,
-        ICloner cloner,
-        ConfigServer configServer)
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _databaseService = databaseService;
-        _randomUtil = randomUtil;
-        _inventoryHelper = inventoryHelper;
-        _itemHelper = itemHelper;
-        _saveServer = saveServer;
-        _playerService = playerService;
-        _presetHelper = presetHelper;
-        _paymentHelper = paymentHelper;
-        _eventOutputHolder = eventOutputHolder;
-        _httpResponseUtil = httpResponseUtil;
-        _profileHelper = profileHelper;
-        _hideoutHelper = hideoutHelper;
-        _scavCaseRewardGenerator = scavCaseRewardGenerator;
-        _localisationService = localisationService;
-        _profileActivityService = profileActivityService;
-        _fenceService = fenceService;
-        _circleOfCultistService = circleOfCultistService;
-        _cloner = cloner;
-        _configServer = configServer;
-
-        _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    }
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData info, string sessionId, ItemEventRouterResponse output)
     {

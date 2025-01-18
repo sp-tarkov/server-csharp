@@ -2,7 +2,6 @@ using Core.Annotations;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.InRaid;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
@@ -12,46 +11,24 @@ using Core.Services;
 namespace Core.Controllers;
 
 [Injectable]
-public class InRaidController
+public class InRaidController(
+    ISptLogger<InRaidController> _logger,
+    SaveServer _saveServer,
+    ProfileHelper _profileHelper,
+    LocalisationService _localisationService,
+    ApplicationContext _applicationContext,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<InRaidController> _logger;
-    protected SaveServer _saveServer;
-    protected ProfileHelper _profileHelper;
-    protected LocalisationService _localisationService;
-    protected ApplicationContext _applicationContext;
-    protected ConfigServer _configServer;
-
-    protected InRaidConfig _inRaidConfig;
-    protected BotConfig _botConfig;
-
-    public InRaidController
-    (
-        ISptLogger<InRaidController> logger,
-        SaveServer saveServer,
-        ProfileHelper profileHelper,
-        LocalisationService localisationService,
-        ApplicationContext applicationContext,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _saveServer = saveServer;
-        _profileHelper = profileHelper;
-        _localisationService = localisationService;
-        _applicationContext = applicationContext;
-        _configServer = configServer;
-        _inRaidConfig = configServer.GetConfig<InRaidConfig>();
-        _botConfig = configServer.GetConfig<BotConfig>();
-    }
+    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Save locationId to active profiles in-raid object AND app context
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="info">Register player request</param>
-    public void AddPlayer(
-        string sessionId,
-        RegisterPlayerRequestData info)
+    public void AddPlayer(string sessionId, RegisterPlayerRequestData info)
     {
         throw new NotImplementedException();
     }
@@ -63,9 +40,7 @@ public class InRaidController
     /// </summary>
     /// <param name="offRaidProfileData"></param>
     /// <param name="sessionId"></param>
-    public void SavePostRaidProfileForScav(
-        ScavSaveRequestData offRaidProfileData,
-        string sessionId)
+    public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, string sessionId)
     {
         throw new NotImplementedException();
     }
@@ -84,9 +59,7 @@ public class InRaidController
     /// <param name="url"></param>
     /// <param name="sessionId"></param>
     /// <returns></returns>
-    public double GetTraitorScavHostileChance(
-        string url,
-        string sessionId)
+    public double GetTraitorScavHostileChance(string url, string sessionId)
     {
         throw new NotImplementedException();
     }
@@ -97,9 +70,7 @@ public class InRaidController
     /// <param name="url"></param>
     /// <param name="sessionId"></param>
     /// <returns></returns>
-    public List<string> GetBossConvertSettings(
-        string url,
-        string sessionId)
+    public List<string> GetBossConvertSettings(string url, string sessionId)
     {
         return _botConfig.AssaultToBossConversion.BossesToConvertToWeights.Keys.ToList();
     }

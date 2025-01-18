@@ -17,64 +17,25 @@ using Core.Utils;
 namespace Core.Controllers;
 
 [Injectable]
-public class TradeController
+public class TradeController(
+    ISptLogger<TradeController> _logger,
+    DatabaseService _databaseService,
+    EventOutputHolder _eventOutputHolder,
+    TradeHelper _tradeHelper,
+    TimeUtil _timeUtil,
+    HashUtil _hashUtil,
+    ItemHelper _itemHelper,
+    ProfileHelper _profileHelper,
+    RagfairOfferHelper _ragfairOfferHelper,
+    TraderHelper _traderHelper,
+    HttpResponseUtil _httpResponseUtil,
+    LocalisationService _localisationService,
+    RagfairPriceService _ragfairPriceService,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<TradeController> _logger;
-    protected DatabaseService _databaseService;
-    protected EventOutputHolder _eventOutputHolder;
-    protected TradeHelper _tradeHelper;
-    protected TimeUtil _timeUtil;
-    protected HashUtil _hashUtil;
-    protected ItemHelper _itemHelper;
-    protected ProfileHelper _profileHelper;
-    protected RagfairOfferHelper _ragfairOfferHelper;
-    protected TraderHelper _traderHelper;
-    // protected RagfairServer _ragfairServer;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected LocalisationService _localisationService;
-    protected RagfairPriceService _ragfairPriceService;
-    // protected MailSendService _mailSendService;
-    protected ConfigServer _configServer;
-    
-    protected RagfairConfig _ragfairConfig;
-    protected TraderConfig _traderConfig;
-
-    public TradeController
-    (
-        ISptLogger<TradeController> logger,
-        DatabaseService databaseService,
-        EventOutputHolder eventOutputHolder,
-        TradeHelper tradeHelper,
-        TimeUtil timeUtil,
-        HashUtil hashUtil,
-        ItemHelper itemHelper,
-        ProfileHelper profileHelper,
-        RagfairOfferHelper ragfairOfferHelper,
-        TraderHelper traderHelper,
-        HttpResponseUtil httpResponseUtil,
-        LocalisationService localisationService,
-        RagfairPriceService ragfairPriceService,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        _eventOutputHolder = eventOutputHolder;
-        _tradeHelper = tradeHelper;
-        _timeUtil = timeUtil;
-        _hashUtil = hashUtil;
-        _itemHelper = itemHelper;
-        _profileHelper = profileHelper;
-        _ragfairOfferHelper = ragfairOfferHelper;
-        _traderHelper = traderHelper;
-        _httpResponseUtil = httpResponseUtil;
-        _localisationService = localisationService;
-        _ragfairPriceService = ragfairPriceService;
-        _configServer = configServer;
-
-        _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-        _traderConfig = _configServer.GetConfig<TraderConfig>();
-    }
+    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     /// Handle TradingConfirm event

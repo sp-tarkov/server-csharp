@@ -7,16 +7,10 @@ using Core.Routers;
 namespace Core.Controllers;
 
 [Injectable]
-public class WishlistController
+public class WishlistController(
+    EventOutputHolder _eventOutputHolder
+)
 {
-    protected EventOutputHolder _eventOutputHolder;
-
-    public WishlistController(
-        EventOutputHolder eventOutputHolder)
-    {
-        _eventOutputHolder = eventOutputHolder;
-    }
-
     /// <summary>
     /// Handle AddToWishList
     /// </summary>

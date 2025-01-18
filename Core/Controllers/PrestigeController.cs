@@ -16,42 +16,18 @@ using Core.Utils.Cloners;
 namespace Core.Controllers;
 
 [Injectable]
-public class PrestigeController
+public class PrestigeController(
+    ISptLogger<PrestigeController> _logger,
+    TimeUtil _timeUtil,
+    InventoryHelper _inventoryHelper,
+    ProfileHelper _profileHelper,
+    EventOutputHolder _eventOutputHolder,
+    CreateProfileService _createProfileService,
+    DatabaseService _databaseService,
+    SaveServer _saveServer,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<PrestigeController> _logger;
-    protected TimeUtil _timeUtil;
-    protected InventoryHelper _inventoryHelper;
-    protected ProfileHelper _profileHelper;
-    protected EventOutputHolder _eventOutputHolder;
-    protected CreateProfileService _createProfileService;
-    private DatabaseService _databaseService;
-    private readonly SaveServer _saveServer;
-    protected ICloner _cloner;
-
-    public PrestigeController
-    (
-        ISptLogger<PrestigeController> logger,
-        TimeUtil timeUtil,
-        InventoryHelper inventoryHelper,
-        ProfileHelper profileHelper,
-        EventOutputHolder eventOutputHolder,
-        CreateProfileService createProfileService,
-        DatabaseService databaseService,
-        SaveServer saveServer,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _inventoryHelper = inventoryHelper;
-        _profileHelper = profileHelper;
-        _eventOutputHolder = eventOutputHolder;
-        _createProfileService = createProfileService;
-        _databaseService = databaseService;
-        _saveServer = saveServer;
-        _cloner = cloner;
-    }
-
     /// <summary>
     /// Handle /client/prestige/list
     /// </summary>
@@ -77,12 +53,16 @@ public class PrestigeController
     {
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;
-        var createRequest = new ProfileCreateRequestData {
+        var createRequest = new ProfileCreateRequestData
+        {
             Side = prePrestigePmc.Info.Side,
             Nickname = prePrestigePmc.Info.Nickname,
             HeadId = prePrestigePmc.Customization.Head,
-            VoiceId =  _databaseService.GetTemplates().Customization.FirstOrDefault(
-                (customisation) => customisation.Value.Name == prePrestigePmc.Info.Voice).Value.Id,
+            VoiceId = _databaseService.GetTemplates()
+                .Customization.FirstOrDefault(
+                    (customisation) => customisation.Value.Name == prePrestigePmc.Info.Voice
+                )
+                .Value.Id,
             SptForcePrestigeLevel = prePrestigeProfileClone.CharacterData.PmcData.Info.PrestigeLevel.GetValueOrDefault(0) + 1, // Current + 1
         };
 
@@ -95,7 +75,8 @@ public class PrestigeController
         // Skill copy
         // TODO - Find what skills should be prestiged over
         var commonSkillsToCopy = prePrestigePmc.Skills.Common;
-        foreach (var skillToCopy in commonSkillsToCopy) {
+        foreach (var skillToCopy in commonSkillsToCopy)
+        {
             // Set progress to max level 20
             skillToCopy.Progress = Math.Min(skillToCopy.Progress.Value, 2000);
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault((skill) => skill.Id == skillToCopy.Id);
@@ -110,11 +91,13 @@ public class PrestigeController
         }
 
         var masteringSkillsToCopy = prePrestigePmc.Skills.Mastering;
-        foreach (var skillToCopy in masteringSkillsToCopy) {
+        foreach (var skillToCopy in masteringSkillsToCopy)
+        {
             // Set progress to max level 20
             skillToCopy.Progress = Math.Min(skillToCopy.Progress.Value, 2000);
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(
-                (skill) => skill.Id == skillToCopy.Id);
+                (skill) => skill.Id == skillToCopy.Id
+            );
             if (existingSkill is not null)
             {
                 existingSkill.Progress = skillToCopy.Progress;
@@ -128,7 +111,8 @@ public class PrestigeController
         // Assumes Prestige data is in descending order
         var indexOfPrestigeObtained = (int)Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
         var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
-        var prestigeRewards = _databaseService.GetTemplates().Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
+        var prestigeRewards = _databaseService.GetTemplates()
+            .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
             .SelectMany((prestige) => prestige.Rewards);
 
 
@@ -138,9 +122,11 @@ public class PrestigeController
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
 
         // Copy transferred items
-        foreach (var transferRequest in request) {
+        foreach (var transferRequest in request)
+        {
             var item = prePrestigePmc.Inventory.Items.FirstOrDefault((item) => item.Id == transferRequest.Id);
-            var addItemRequest = new AddItemDirectRequest {
+            var addItemRequest = new AddItemDirectRequest
+            {
                 ItemWithModsToAdd = [item],
                 FoundInRaid = item.Upd?.SpawnedInSession,
                 UseSortingTable = false,
@@ -150,7 +136,8 @@ public class PrestigeController
                 sessionId,
                 addItemRequest,
                 newProfile.CharacterData.PmcData,
-                _eventOutputHolder.GetOutput(sessionId));
+                _eventOutputHolder.GetOutput(sessionId)
+            );
         }
 
         // Add "Prestigious" achievement
@@ -167,5 +154,4 @@ public class PrestigeController
     {
         _logger.Error("NOT IMPLEMENTED AddPrestigeRewardsToProfile()");
     }
-
 }

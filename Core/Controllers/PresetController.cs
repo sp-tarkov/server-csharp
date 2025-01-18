@@ -8,23 +8,12 @@ using Core.Services;
 namespace Core.Controllers;
 
 [Injectable]
-public class PresetController
+public class PresetController(
+    ISptLogger<PresetController> _logger,
+    PresetHelper _presetHelper,
+    DatabaseService _databaseService
+)
 {
-    protected ISptLogger<PresetController> _logger;
-    protected PresetHelper _presetHelper;
-    protected DatabaseService _databaseService;
-
-    public PresetController(
-        ISptLogger<PresetController> logger,
-        PresetHelper presetHelper,
-        DatabaseService databaseService
-        )
-    {
-        _logger = logger;
-        _presetHelper = presetHelper;
-        _databaseService = databaseService;
-    }
-
     /// <summary>
     /// 
     /// </summary>
@@ -36,7 +25,7 @@ public class PresetController
         {
             if (key != preset.Id)
             {
-                this._logger.Error(
+                _logger.Error(
                     $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({key} != {preset.Id}). Skipping"
                 );
 
@@ -48,10 +37,11 @@ public class PresetController
             {
                 reverse[tpl] = [];
             }
+
             reverse.TryGetValue(tpl, out var listToAddTo);
             listToAddTo?.Add(preset.Id);
         }
 
-        this._presetHelper.HydratePresetStore(reverse);
+        _presetHelper.HydratePresetStore(reverse);
     }
 }

@@ -4,7 +4,6 @@ using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Mod;
 using Core.Models.Utils;
@@ -12,51 +11,25 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Extensions;
-
 using Info = Core.Models.Eft.Profile.Info;
 
 namespace Core.Controllers;
 
 [Injectable]
-public class LauncherController
+public class LauncherController(
+    ISptLogger<LauncherController> _logger,
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    RandomUtil _randomUtil,
+    SaveServer _saveServer,
+    HttpServerHelper _httpServerHelper,
+    ProfileHelper _profileHelper,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService,
+    ConfigServer _configServer
+)
 {
- protected CoreConfig _coreConfig;
-
- protected ISptLogger<LauncherController> _logger;
- protected HashUtil _hashUtil;
- protected TimeUtil _timeUtil;
- protected RandomUtil _randomUtil;
- protected SaveServer _saveServer;
- protected HttpServerHelper _httpServerHelper;
- protected ProfileHelper _profileHelper;
- protected DatabaseService _databaseService;
- protected LocalisationService _localisationService;
- 
-
- public LauncherController(
-        ISptLogger<LauncherController> logger,
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        RandomUtil randomUtil,
-        SaveServer saveServer,
-        HttpServerHelper httpServerHelper,
-        ProfileHelper profileHelper,
-        DatabaseService databaseService,
-        LocalisationService localisationService,
-        // TODO => PreSptModLoader preSptModLoader,
-        ConfigServer configServer
-    ) {
-     _logger = logger;
-     _hashUtil = hashUtil;
-     _timeUtil = timeUtil;
-     _randomUtil = randomUtil;
-     _saveServer = saveServer;
-     _httpServerHelper = httpServerHelper;
-     _profileHelper = profileHelper;
-     _databaseService = databaseService;
-     _localisationService = localisationService;
-        _coreConfig = configServer.GetConfig<CoreConfig>();
-    }
+    protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public ConnectResponse Connect()
     {
@@ -68,7 +41,8 @@ public class LauncherController
             .Where(profileName => !_coreConfig.Features.CreateNewProfileTypesBlacklist.Contains(profileName))
             .ToList();
 
-        return new ConnectResponse(){
+        return new ConnectResponse()
+        {
             BackendUrl = _httpServerHelper.GetBackendUrl(),
             Name = _coreConfig.ServerName,
             Editions = profiles,
@@ -87,7 +61,8 @@ public class LauncherController
         foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
-            if (propertyValue == null) {
+            if (propertyValue == null)
+            {
                 _logger.Warning(_localisationService.GetText("launcher-missing_property", templatesProperty));
                 continue;
             }
@@ -106,9 +81,11 @@ public class LauncherController
 
     public string? Login(LoginRequestData? info)
     {
-        foreach (var kvp in _saveServer.GetProfiles()) {
+        foreach (var kvp in _saveServer.GetProfiles())
+        {
             var account = _saveServer.GetProfile(kvp.Key).ProfileInfo;
-            if (info?.Username == account?.Username) {
+            if (info?.Username == account?.Username)
+            {
                 return kvp.Key;
             }
         }
@@ -118,8 +95,10 @@ public class LauncherController
 
     public string Register(RegisterData info)
     {
-        foreach (var kvp in _saveServer.GetProfiles()) {
-            if (info.Username == _saveServer.GetProfile(kvp.Key).ProfileInfo.Username) {
+        foreach (var kvp in _saveServer.GetProfiles())
+        {
+            if (info.Username == _saveServer.GetProfile(kvp.Key).ProfileInfo.Username)
+            {
                 return "";
             }
         }
@@ -131,7 +110,8 @@ public class LauncherController
     {
         var profileId = GenerateProfileId();
         var scavId = GenerateProfileId();
-        var newProfileDetails = new Info{
+        var newProfileDetails = new Info
+        {
             ProfileId = profileId,
             ScavengerId = scavId,
             Aid = _hashUtil.GenerateAccountId(),
@@ -157,7 +137,6 @@ public class LauncherController
 
     protected string FormatID(long timeStamp, long counter)
     {
-        
         var timeStampStr = Convert.ToString(timeStamp, 16).PadLeft(8, '0');
         var counterStr = Convert.ToString(counter, 16).PadLeft(16, '0');
 
@@ -168,7 +147,8 @@ public class LauncherController
     {
         var sessionID = Login(info);
 
-        if (!string.IsNullOrEmpty(sessionID)) {
+        if (!string.IsNullOrEmpty(sessionID))
+        {
             _saveServer.GetProfile(sessionID).ProfileInfo.Username = info.Change;
         }
 
@@ -179,7 +159,8 @@ public class LauncherController
     {
         var sessionID = Login(info);
 
-        if (!string.IsNullOrEmpty(sessionID)) {
+        if (!string.IsNullOrEmpty(sessionID))
+        {
             _saveServer.GetProfile(sessionID).ProfileInfo.Password = info.Change;
         }
 
@@ -193,13 +174,15 @@ public class LauncherController
      */
     public string? Wipe(RegisterData info)
     {
-        if (!_coreConfig.AllowProfileWipe) {
+        if (!_coreConfig.AllowProfileWipe)
+        {
             return null;
         }
 
         var sessionID = Login(info);
 
-        if (!string.IsNullOrEmpty(sessionID)) {
+        if (!string.IsNullOrEmpty(sessionID))
+        {
             var profileInfo = _saveServer.GetProfile(sessionID).ProfileInfo;
             profileInfo.Edition = info.Edition;
             profileInfo.IsWiped = true;

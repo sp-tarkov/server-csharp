@@ -15,6 +15,11 @@ public class MockLogger<T> : ISptLogger<T>
         Console.WriteLine(data);
     }
 
+    public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
+    {
+        throw new NotImplementedException();
+    }
+
     public void Success(string data, Exception? ex = null)
     {
         Console.WriteLine(data);
@@ -43,6 +48,11 @@ public class MockLogger<T> : ISptLogger<T>
     public void Critical(string data, Exception? ex = null)
     {
         Console.WriteLine(data);
+    }
+
+    public void WriteToLogFile(string body)
+    {
+        throw new NotImplementedException();
     }
 
     public void WriteToLogFile(object body)

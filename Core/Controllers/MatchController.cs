@@ -4,7 +4,9 @@ using Core.Models.Eft.Match;
 namespace Core.Controllers;
 
 [Injectable]
-public class MatchController
+public class MatchController(
+    
+)
 {
     /// <summary>
     /// 

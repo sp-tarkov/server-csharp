@@ -13,42 +13,20 @@ using Core.Utils;
 namespace Core.Controllers;
 
 [Injectable]
-public class DialogueController
+public class DialogueController(
+    ISptLogger<DialogueController> _logger,
+    TimeUtil _timeUtil,
+    DialogueHelper _dialogueHelper,
+    ProfileHelper _profileHelper,
+    ConfigServer _configServer,
+    SaveServer _saveServer,
+    LocalisationService _localisationService,
+    MailSendService _mailSendService,
+    IEnumerable<IDialogueChatBot> dialogueChatBots
+)
 {
-    protected ISptLogger<DialogueController> _logger;
-    protected TimeUtil _timeUtil;
-    protected DialogueHelper _dialogueHelper;
-    protected ProfileHelper _profileHelper;
-    protected ConfigServer _configServer;
-    protected SaveServer _saveServer;
-    protected LocalisationService _localisationService;
-    protected MailSendService _mailSendService;
-    protected List<IDialogueChatBot> _dialogueChatBots;
-    protected CoreConfig _coreConfig;
-
-    public DialogueController(
-        ISptLogger<DialogueController> logger,
-        TimeUtil timeUtil,
-        DialogueHelper dialogueHelper,
-        ProfileHelper profileHelper,
-        ConfigServer configServer,
-        SaveServer saveServer,
-        LocalisationService localisationService,
-        MailSendService mailSendService,
-        IEnumerable<IDialogueChatBot> dialogueChatBots)
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _dialogueHelper = dialogueHelper;
-        _profileHelper = profileHelper;
-        _configServer = configServer;
-        _saveServer = saveServer;
-        _localisationService = localisationService;
-        _mailSendService = mailSendService;
-        _dialogueChatBots = dialogueChatBots.ToList();
-
-        _coreConfig = _configServer.GetConfig<CoreConfig>();
-    }
+    protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected List<IDialogueChatBot> _dialogueChatBots = dialogueChatBots.ToList();
 
     /// <summary>
     /// 
@@ -56,13 +34,14 @@ public class DialogueController
     /// <param name="chatBot"></param>
     public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
-        if (_dialogueChatBots.Any((cb) => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
+        if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
             _logger.Error(_localisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
         }
+
         _dialogueChatBots.Add(chatBot);
     }
-    
+
 
     /// <summary>
     /// Handle onUpdate spt event
@@ -70,7 +49,8 @@ public class DialogueController
     public void Update()
     {
         var profiles = _saveServer.GetProfiles();
-        foreach (var kvp in profiles) {
+        foreach (var kvp in profiles)
+        {
             RemoveExpiredItemsFromMessages(kvp.Key);
         }
     }
@@ -89,16 +69,19 @@ public class DialogueController
         var profile = _profileHelper.GetFullProfile(sessionId);
         if (profile?.FriendProfileIds is not null)
         {
-            foreach (var friendId in profile.FriendProfileIds) {
+            foreach (var friendId in profile.FriendProfileIds)
+            {
                 var friendProfile = _profileHelper.GetChatRoomMemberFromSessionId(friendId);
                 if (friendProfile is not null)
                 {
-                    friends.Add(new UserDialogInfo
-                    {
-                        Id = friendProfile.Id,
-                        Aid = friendProfile.Aid,
-                        Info = friendProfile.Info,
-                    } );
+                    friends.Add(
+                        new UserDialogInfo
+                        {
+                            Id = friendProfile.Id,
+                            Aid = friendProfile.Aid,
+                            Info = friendProfile.Info,
+                        }
+                    );
                 }
             }
         }
@@ -116,11 +99,12 @@ public class DialogueController
         var activeBots = new List<UserDialogInfo>();
 
         var chatBotConfig = _coreConfig.Features.ChatbotFeatures;
-        
+
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
-            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id)) {
+            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id))
+            {
                 activeBots.Add(botData);
             }
         }
@@ -159,7 +143,8 @@ public class DialogueController
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         var dialogue = dialogs.GetValueOrDefault(dialogueId);
 
-        var result = new DialogueInfo {
+        var result = new DialogueInfo
+        {
             Id = dialogueId,
             Type = dialogue.Type ?? MessageType.NPC_TRADER,
             Message = _dialogueHelper.GetMessagePreview(dialogue),
@@ -193,19 +178,21 @@ public class DialogueController
             // Nullguard
             dialog.Users ??= [];
 
-            dialog.Users.Add( new UserDialogInfo
-            {
-                Id = profile.CharacterData.PmcData.SessionId,
-                Aid = profile.CharacterData.PmcData.Aid,
-                Info = new UserDialogDetails
+            dialog.Users.Add(
+                new UserDialogInfo
                 {
-                    Level = profile.CharacterData.PmcData.Info.Level,
-                    Nickname = profile.CharacterData.PmcData.Info.Nickname,
-                    Side = profile.CharacterData.PmcData.Info.Side,
-                    MemberCategory = profile.CharacterData.PmcData.Info.MemberCategory,
-                    SelectedMemberCategory = profile.CharacterData.PmcData.Info.SelectedMemberCategory,
-                },
-            });
+                    Id = profile.CharacterData.PmcData.SessionId,
+                    Aid = profile.CharacterData.PmcData.Aid,
+                    Info = new UserDialogDetails
+                    {
+                        Level = profile.CharacterData.PmcData.Info.Level,
+                        Nickname = profile.CharacterData.PmcData.Info.Nickname,
+                        Side = profile.CharacterData.PmcData.Info.Side,
+                        MemberCategory = profile.CharacterData.PmcData.Info.MemberCategory,
+                        SelectedMemberCategory = profile.CharacterData.PmcData.Info.SelectedMemberCategory,
+                    },
+                }
+            );
         }
 
         return dialog.Users;
@@ -234,7 +221,8 @@ public class DialogueController
         // Set number of new attachments, but ignore those that have expired.
         dialogue.AttachmentsNew = GetUnreadMessagesWithAttachmentsCount(sessionId, dialogueId);
 
-        return new GetMailDialogViewResponseData{
+        return new GetMailDialogViewResponseData
+        {
             Messages = dialogue.Messages,
             Profiles = GetProfilesForMail(fullProfile, dialogue.Users),
             HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages),
@@ -253,7 +241,8 @@ public class DialogueController
     {
         if (!profile.DialogueRecords.ContainsKey(request.DialogId))
         {
-            profile.DialogueRecords[request.DialogId] = new Dialogue{
+            profile.DialogueRecords[request.DialogId] = new Dialogue
+            {
                 Id = request.DialogId,
                 AttachmentsNew = 0,
                 Pinned = false,
@@ -299,18 +288,21 @@ public class DialogueController
         {
             // Player doesn't exist, add them in before returning
             var pmcProfile = fullProfile.CharacterData.PmcData;
-            result.Add( new UserDialogInfo{
-                Id = fullProfile.ProfileInfo.ProfileId,
-                Aid = fullProfile.ProfileInfo.Aid,
-                Info = new UserDialogDetails
+            result.Add(
+                new UserDialogInfo
                 {
-                    Nickname = pmcProfile.Info.Nickname,
-                    Side = pmcProfile.Info.Side,
-                    Level = pmcProfile.Info.Level,
-                    MemberCategory = pmcProfile.Info.MemberCategory,
-                    SelectedMemberCategory = pmcProfile.Info.SelectedMemberCategory,
+                    Id = fullProfile.ProfileInfo.ProfileId,
+                    Aid = fullProfile.ProfileInfo.Aid,
+                    Info = new UserDialogDetails
+                    {
+                        Nickname = pmcProfile.Info.Nickname,
+                        Side = pmcProfile.Info.Side,
+                        Level = pmcProfile.Info.Level,
+                        MemberCategory = pmcProfile.Info.MemberCategory,
+                        SelectedMemberCategory = pmcProfile.Info.SelectedMemberCategory,
+                    }
                 }
-            });
+            );
         }
 
         return result;
@@ -328,7 +320,8 @@ public class DialogueController
     {
         var newAttachmentCount = 0;
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
-        foreach (var message in activeMessages) {
+        foreach (var message in activeMessages)
+        {
             if (message.HasRewards.GetValueOrDefault(false) && !message.RewardCollected.GetValueOrDefault(false))
             {
                 newAttachmentCount++;
@@ -344,11 +337,12 @@ public class DialogueController
      * @param dialogueId Dialog to get mail attachments from
      * @returns Message array
      */
-    protected List<Message> GetActiveMessagesFromDialog(string sessionId, string dialogueId) {
+    protected List<Message> GetActiveMessagesFromDialog(string sessionId, string dialogueId)
+    {
         var timeNow = _timeUtil.GetTimeStamp();
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
 
-        return dialogs[dialogueId].Messages.Where((message) => timeNow<message.DateTime + (message.MaxStorageTime ?? 0)).ToList();
+        return dialogs[dialogueId].Messages.Where((message) => timeNow < message.DateTime + (message.MaxStorageTime ?? 0)).ToList();
     }
 
     /// <summary>
@@ -430,7 +424,8 @@ public class DialogueController
         return (
             _dialogueChatBots
                 .FirstOrDefault((cb) => cb.GetChatBot().Id == request.DialogId)
-                ?.HandleMessage(sessionId, request) ?? request.DialogId
+                ?.HandleMessage(sessionId, request) ??
+            request.DialogId
         );
     }
 
@@ -463,7 +458,8 @@ public class DialogueController
     /// <param name="sessionId">Session id</param>
     private void RemoveExpiredItemsFromMessages(string sessionId)
     {
-        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId)) {
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
+        {
             RemoveExpiredItemsFromMessage(sessionId, dialogueId.Key);
         }
     }
@@ -483,7 +479,8 @@ public class DialogueController
             return;
         }
 
-        foreach (var message in dialog.Messages) {
+        foreach (var message in dialog.Messages)
+        {
             if (MessageHasExpired(message))
             {
                 message.Items = new MessageItems();
@@ -496,7 +493,8 @@ public class DialogueController
      * @param message Message to check expiry of
      * @returns true or false
      */
-    protected bool MessageHasExpired(Message message) {
+    protected bool MessageHasExpired(Message message)
+    {
         return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 

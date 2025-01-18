@@ -12,42 +12,21 @@ using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
-
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Controllers;
 
 [Injectable]
-public class CustomizationController
+public class CustomizationController(
+    ISptLogger<CustomizationController> _logger,
+    EventOutputHolder _eventOutputHolder,
+    DatabaseService _databaseService,
+    SaveServer _saveServer,
+    LocalisationService _localisationService,
+    ProfileHelper _profileHelper,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<CustomizationController> _logger;
-    protected EventOutputHolder _eventOutputHolder;
-    protected DatabaseService _databaseService;
-    protected SaveServer _saveServer;
-    protected LocalisationService _localisationService;
-    protected ProfileHelper _profileHelper;
-    protected ICloner _cloner;
-
-    public CustomizationController
-    (
-        ISptLogger<CustomizationController> logger,
-        EventOutputHolder eventOutputHolder,
-        DatabaseService databaseService,
-        SaveServer saveServer,
-        LocalisationService localisationService,
-        ProfileHelper profileHelper,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _eventOutputHolder = eventOutputHolder;
-        _databaseService = databaseService;
-        _saveServer = saveServer;
-        _localisationService = localisationService;
-        _profileHelper = profileHelper;
-        _cloner = cloner;
-    }
-
     /// <summary>
     /// Get purchasable clothing items from trader that match players side (usec/bear)
     /// </summary>
@@ -95,14 +74,18 @@ public class CustomizationController
         if (OutfitAlreadyPurchased(suitId, sessionId))
         {
             var suitDetails = _databaseService.GetCustomization()[suitId];
-            _logger.Error(_localisationService.GetText("customisation-item_already_purchased", new
-            {
-                itemId = suitDetails?.Id,
-                itemName = suitDetails?.Name,
-            }));
-            
-        return output;
-        
+            _logger.Error(
+                _localisationService.GetText(
+                    "customisation-item_already_purchased",
+                    new
+                    {
+                        itemId = suitDetails?.Id,
+                        itemName = suitDetails?.Name,
+                    }
+                )
+            );
+
+            return output;
         }
 
         // Charge player for buying item
@@ -112,7 +95,7 @@ public class CustomizationController
 
         // TODO - remove now they're stored in profile.CustomisationUnlocks?
         profile.Suits.Add(suitId);
-        
+
         //TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
         var rewardToStore = new CustomisationStorage
         {
@@ -121,7 +104,7 @@ public class CustomizationController
             Type = CustomisationType.SUITE
         };
         profile.CustomisationUnlocks.Add(rewardToStore);
-        
+
         return output;
     }
 
@@ -173,37 +156,43 @@ public class CustomizationController
 
         if (paymentItemDetails?.Del != null)
         {
-            output?.ProfileChanges[sessionId]?.Items?.DeletedItems?.Add(new Product
-            {
-                Id = inventoryItem?.Id,
-                Template = inventoryItem?.Template,
-                ParentId = inventoryItem?.ParentId,
-                SlotId = inventoryItem?.SlotId,
-                Location = (ItemLocation)inventoryItem?.Location,
-                Upd = inventoryItem?.Upd
-            });
+            output?.ProfileChanges[sessionId]
+                ?.Items?.DeletedItems?.Add(
+                    new Product
+                    {
+                        Id = inventoryItem?.Id,
+                        Template = inventoryItem?.Template,
+                        ParentId = inventoryItem?.ParentId,
+                        SlotId = inventoryItem?.SlotId,
+                        Location = (ItemLocation)inventoryItem?.Location,
+                        Upd = inventoryItem?.Upd
+                    }
+                );
 
             pmcData?.Inventory?.Items?.Remove(inventoryItem);
         }
 
         if (inventoryItem?.Upd == null)
             inventoryItem.Upd = new() { StackObjectsCount = 1 };
-        
+
         if (inventoryItem?.Upd?.StackObjectsCount == null)
             inventoryItem.Upd.StackObjectsCount = 1;
 
         if (inventoryItem?.Upd?.StackObjectsCount == paymentItemDetails?.Count)
         {
-            output?.ProfileChanges[sessionId]?.Items?.DeletedItems?.Add(new Product
-            {
-                Id = inventoryItem?.Id,
-                Template = inventoryItem?.Template,
-                ParentId = inventoryItem?.ParentId,
-                SlotId = inventoryItem?.SlotId,
-                Location = (ItemLocation)inventoryItem?.Location,
-                Upd = inventoryItem?.Upd
-            });
-            
+            output?.ProfileChanges[sessionId]
+                ?.Items?.DeletedItems?.Add(
+                    new Product
+                    {
+                        Id = inventoryItem?.Id,
+                        Template = inventoryItem?.Template,
+                        ParentId = inventoryItem?.ParentId,
+                        SlotId = inventoryItem?.SlotId,
+                        Location = (ItemLocation)inventoryItem?.Location,
+                        Upd = inventoryItem?.Upd
+                    }
+                );
+
             pmcData?.Inventory?.Items?.Remove(inventoryItem);
             return;
         }
@@ -211,15 +200,18 @@ public class CustomizationController
         if (inventoryItem.Upd.StackObjectsCount > paymentItemDetails?.Count)
         {
             inventoryItem.Upd.StackObjectsCount -= paymentItemDetails?.Count;
-            output?.ProfileChanges[sessionId]?.Items?.ChangedItems.Add(new Product
-            {
-                Id = inventoryItem?.Id,
-                Template = inventoryItem?.Template,
-                ParentId = inventoryItem?.ParentId,
-                SlotId = inventoryItem?.SlotId,
-                Location = (ItemLocation)inventoryItem?.Location,
-                Upd = inventoryItem?.Upd
-            });
+            output?.ProfileChanges[sessionId]
+                ?.Items?.ChangedItems.Add(
+                    new Product
+                    {
+                        Id = inventoryItem?.Id,
+                        Template = inventoryItem?.Template,
+                        ParentId = inventoryItem?.ParentId,
+                        SlotId = inventoryItem?.SlotId,
+                        Location = (ItemLocation)inventoryItem?.Location,
+                        Upd = inventoryItem?.Upd
+                    }
+                );
         }
     }
 
@@ -238,7 +230,7 @@ public class CustomizationController
             if (trader.Value.Base.CustomizationSeller.Value)
                 result.AddRange(GetTraderSuits(trader.Key, sessionId));
         }
-        
+
         return result;
     }
 
@@ -271,7 +263,7 @@ public class CustomizationController
             return customisationResultsClone;
         }
 
-        
+
         customisationResultsClone.AddRange(profile.CustomisationUnlocks ?? new());
 
         return customisationResultsClone;

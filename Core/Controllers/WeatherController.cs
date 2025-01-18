@@ -13,35 +13,17 @@ using Core.Services;
 namespace Core.Controllers;
 
 [Injectable]
-public class WeatherController
+public class WeatherController(
+    ISptLogger<WeatherController> _logger,
+    WeatherGenerator _weatherGenerator,
+    SeasonalEventService _seasonalEventService,
+    RaidWeatherService _raidWeatherService,
+    WeatherHelper _weatherHelper,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<WeatherController> _logger;
-    protected WeatherGenerator _weatherGenerator;
-    protected SeasonalEventService _seasonalEventService;
-    protected RaidWeatherService _raidWeatherService;
-    protected WeatherHelper _weatherHelper;
-    protected ConfigServer _configServer;
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
-    protected WeatherConfig _weatherConfig;
-
-    public WeatherController(
-        ISptLogger<WeatherController> logger,
-        WeatherGenerator weatherGenerator,
-        SeasonalEventService seasonalEventService,
-        RaidWeatherService raidWeatherService,
-        WeatherHelper weatherHelper,
-        ConfigServer configServer
-        )
-    {
-        _logger = logger;
-        _weatherGenerator = weatherGenerator;
-        _seasonalEventService = seasonalEventService;
-        _raidWeatherService = raidWeatherService;
-        _weatherHelper = weatherHelper;
-        _configServer = configServer;
-
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-    }
 
     /// <summary>
     /// Handle client/weather

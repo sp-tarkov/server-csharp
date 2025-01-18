@@ -5,19 +5,11 @@ using Core.Models.Eft.Notifier;
 namespace Core.Controllers;
 
 [Injectable]
-public class NotifierController
+public class NotifierController(
+    HttpServerHelper _httpServerHelper,
+    NotifierHelper _notifierHelper
+)
 {
-    protected HttpServerHelper _httpServerHelper;
-    protected NotifierHelper _notifierHelper;
-
-    public NotifierController(
-        HttpServerHelper httpServerHelper,
-        NotifierHelper notifierHelper)
-    {
-        _httpServerHelper = httpServerHelper;
-        _notifierHelper = notifierHelper;
-    }
-
     /// <summary>
     /// Resolve an array of session notifications.
     ///
