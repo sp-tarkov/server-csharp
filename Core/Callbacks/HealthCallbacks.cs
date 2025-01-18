@@ -3,30 +3,18 @@ using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Health;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class HealthCallbacks
-{
-    protected HttpResponseUtil _httpResponseUtil;
-    protected ProfileHelper _profileHelper;
-    protected HealthController _healthController;
-
-    public HealthCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        ProfileHelper profileHelper,
-        HealthController healthController
+public class HealthCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    ProfileHelper _profileHelper,
+    HealthController _healthController
     )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _profileHelper = profileHelper;
-        _healthController = healthController;
-    }
+{
 
     /// <summary>
     /// Custom spt server request found in modules/QTEPatch.cs

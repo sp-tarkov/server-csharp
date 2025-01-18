@@ -62,7 +62,7 @@ public class HealthController
     /// <param name="info">Request data</param>
     /// <param name="sessionId">session id</param>
     public void ApplyWorkoutChanges(
-        PmcData pmcData,
+        PmcData? pmcData,
         WorkoutData info,
         string sessionId)
     {
