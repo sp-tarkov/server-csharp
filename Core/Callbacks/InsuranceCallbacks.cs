@@ -2,10 +2,8 @@
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Insurance;
 using Core.Models.Eft.ItemEvent;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
@@ -15,29 +13,15 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(InsuranceCallbacks))]
-public class InsuranceCallbacks : OnUpdate
-{
-    protected InsuranceController _insuranceController;
-    protected InsuranceService _insuranceService;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected ConfigServer _configServer;
-
-    private InsuranceConfig _insuranceConfig;
-
-    public InsuranceCallbacks
-    (
-        InsuranceController insuranceController,
-        InsuranceService insuranceService,
-        HttpResponseUtil httpResponseUtil,
-        ConfigServer configServer
+public class InsuranceCallbacks(
+    InsuranceController _insuranceController,
+    InsuranceService _insuranceService,
+    HttpResponseUtil _httpResponseUtil,
+    ConfigServer _configServer
     )
-    {
-        _insuranceController = insuranceController;
-        _insuranceService = insuranceService;
-        _httpResponseUtil = httpResponseUtil;
-        _configServer = configServer;
-        _insuranceConfig = configServer.GetConfig<InsuranceConfig>();
-    }
+    : OnUpdate
+{
+    private InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
 
     /// <summary>
     /// Handle client/insurance/items/list/cost
@@ -65,16 +49,16 @@ public class InsuranceCallbacks : OnUpdate
         throw new NotImplementedException();
     }
 
-    public async Task<bool> OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
         {
             // _insuranceController.ProcessReturn();
             // TODO: InsuranceController is not implemented rn
-            return true;
+            return Task.FromResult(true);
         }
 
-        return false;
+        return Task.FromResult(false);
     }
 
     public string GetRoute()

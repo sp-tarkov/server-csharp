@@ -1,28 +1,17 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.InRaid;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class InraidCallbacks
-{
-    protected InRaidController _inRaidController;
-    protected HttpResponseUtil _httpResponseUtil;
-
-    public InraidCallbacks
-    (
-        InRaidController inRaidController,
-        HttpResponseUtil httpResponseUtil
+public class InraidCallbacks(
+    InRaidController _inRaidController,
+    HttpResponseUtil _httpResponseUtil
     )
-    {
-        _inRaidController = inRaidController;
-        _httpResponseUtil = httpResponseUtil;
-    }
-
+{
     /// <summary>
     /// Handle client/location/getLocalloot
     /// Store active map in profile + applicationContext
