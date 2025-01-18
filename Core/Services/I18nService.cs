@@ -14,7 +14,7 @@ public class I18nService
     private string _setLocale;
 
     private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
-
+    // TODO: try convert to primary ctor
     public I18nService(
         FileUtil fileUtil,
         JsonUtil jsonUtil,

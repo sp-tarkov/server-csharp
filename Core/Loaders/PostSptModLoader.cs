@@ -7,20 +7,11 @@ using Core.Models.Utils;
 namespace Core.Loaders;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PostSptModLoader)]
-public class PostSptModLoader : OnLoad
+public class PostSptModLoader(
+    ISptLogger<PostSptModLoader> _logger,
+    IEnumerable<IPostSptLoadMod> _postSptLoadMods
+) : OnLoad
 {
-    protected ISptLogger<PostSptModLoader> _logger;
-    protected IEnumerable<IPostSptLoadMod> _postSptLoadMods;
-
-    public PostSptModLoader(
-        ISptLogger<PostSptModLoader> logger,
-        IEnumerable<IPostSptLoadMod> postSptLoadMods
-    )
-    {
-        _logger = logger;
-        _postSptLoadMods = postSptLoadMods;
-    }
-
     public async Task OnLoad()
     {
         // if (ProgramStatics.MODS) {
@@ -31,6 +22,7 @@ public class PostSptModLoader : OnLoad
         {
             postSptLoadMod.PostSptLoad();
         }
+
         _logger.Info("Finished loading PostSptMods...");
     }
 

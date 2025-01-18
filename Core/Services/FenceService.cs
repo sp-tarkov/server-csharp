@@ -7,16 +7,10 @@ using Core.Models.Spt.Fence;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class FenceService
+public class FenceService(
+    DatabaseService _databaseService
+)
 {
-    protected DatabaseService _databaseService;
-
-    public FenceService(
-        DatabaseService databaseService)
-    {
-        _databaseService = databaseService;
-    }
-
     /// <summary>
     /// Replace main fence assort with new assort
     /// </summary>
@@ -515,7 +509,7 @@ public class FenceService
         var minLevel = fenceLevels.Min();
         var maxLevel = fenceLevels.Max();
         var pmcFenceLevel = Math.Floor(pmcFenceInfo.Standing.Value);
-        
+
         if (pmcFenceLevel < int.Parse(minLevel))
         {
             return fenceSettings.Levels[minLevel];

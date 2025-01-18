@@ -11,51 +11,23 @@ using Core.Utils;
 namespace Core.Services;
 
 [Injectable]
-public class MailSendService
+public class MailSendService(
+    ISptLogger<MailSendService> _logger,
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    SaveServer _saveServer,
+    DatabaseService _databaseService,
+    NotifierHelper _notifierHelper,
+    DialogueHelper _dialogueHelper,
+    NotificationSendHelper _notificationSendHelper,
+    LocalisationService _localisationService,
+    ItemHelper _itemHelper,
+    TraderHelper _traderHelper
+)
 {
-    protected ISptLogger<MailSendService> _logger;
-    protected HashUtil _hashUtil;
-    protected TimeUtil _timeUtil;
-    protected SaveServer _saveServer;
-    protected DatabaseService _databaseService;
-    protected NotifierHelper _notifierHelper;
-    protected DialogueHelper _dialogueHelper;
-    protected NotificationSendHelper _notificationSendHelper;
-    protected LocalisationService _localisationService;
-    protected ItemHelper _itemHelper;
-    protected TraderHelper _traderHelper;
-
     private const string _systemSenderId = "59e7125688a45068a6249071";
     protected List<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
     protected List<string> _slotNames = ["hideout", "main"];
-
-    public MailSendService
-    (
-        ISptLogger<MailSendService> logger,
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        SaveServer saveServer,
-        DatabaseService databaseService,
-        NotifierHelper notifierHelper,
-        DialogueHelper dialogueHelper,
-        NotificationSendHelper notificationSendHelper,
-        LocalisationService localisationService,
-        ItemHelper itemHelper,
-        TraderHelper traderHelper
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _saveServer = saveServer;
-        _databaseService = databaseService;
-        _notifierHelper = notifierHelper;
-        _dialogueHelper = dialogueHelper;
-        _notificationSendHelper = notificationSendHelper;
-        _localisationService = localisationService;
-        _itemHelper = itemHelper;
-        _traderHelper = traderHelper;
-    }
 
     /**
      * Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale
@@ -79,11 +51,16 @@ public class MailSendService
     {
         if (trader is null)
         {
-            _logger.Error(_localisationService.GetText("mailsend-missing_trader", new
-            {
-                messageType = messageType,
-                sessionId = sessionId,
-            }));
+            _logger.Error(
+                _localisationService.GetText(
+                    "mailsend-missing_trader",
+                    new
+                    {
+                        messageType = messageType,
+                        sessionId = sessionId,
+                    }
+                )
+            );
 
             return;
         }
@@ -95,7 +72,7 @@ public class MailSendService
             DialogType = MessageType.NPC_TRADER,
             Trader = trader,
             MessageText = message,
-            Items = new ()
+            Items = new()
         };
 
         // Add items to message
@@ -136,11 +113,16 @@ public class MailSendService
     {
         if (trader is null)
         {
-            _logger.Error(_localisationService.GetText("mailsend-missing_trader", new
-            {
-                messageType = messageType,
-                sessionId = sessionId,
-            }));
+            _logger.Error(
+                _localisationService.GetText(
+                    "mailsend-missing_trader",
+                    new
+                    {
+                        messageType = messageType,
+                        sessionId = sessionId,
+                    }
+                )
+            );
 
             return;
         }
@@ -260,7 +242,7 @@ public class MailSendService
             Sender = MessageType.USER_MESSAGE,
             SenderDetails = senderDetails,
             MessageText = message,
-            Items = new ()
+            Items = new()
         };
 
         // add items to message
@@ -338,16 +320,18 @@ public class MailSendService
             return;
         }
 
-        dialogWithNpc.Messages.Add(new()
-        {
-            Id = _hashUtil.Generate(),
-            DateTime = _timeUtil.GetTimeStamp(),
-            HasRewards = false,
-            UserId = playerProfile.CharacterData.PmcData.Id,
-            MessageType = MessageType.USER_MESSAGE,
-            RewardCollected = false,
-            Text = message
-        });
+        dialogWithNpc.Messages.Add(
+            new()
+            {
+                Id = _hashUtil.Generate(),
+                DateTime = _timeUtil.GetTimeStamp(),
+                HasRewards = false,
+                UserId = playerProfile.CharacterData.PmcData.Id,
+                MessageType = MessageType.USER_MESSAGE,
+                RewardCollected = false,
+                Text = message
+            }
+        );
     }
 
     private Message CreateDialogMessage(string dialogId, SendMessageDetails messageDetails)
@@ -385,10 +369,12 @@ public class MailSendService
  * @param dialogueId The id of the dialogue (traderId or profileId)
  * @returns A new instance with data from the found message, otherwise undefined
  */
-    protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId) {
+    protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId)
+    {
         var currentDialogue = _dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
 
-        if (currentDialogue is null) {
+        if (currentDialogue is null)
+        {
             _logger.Warning($"Unable to find dialogue: {dialogueId} from sender");
             return null;
         }
@@ -437,11 +423,14 @@ public class MailSendService
             var parentItem = GetBaseItemFromRewards(messageDetails.Items);
             if (parentItem is null)
             {
-                _localisationService.GetText("mailsend-missing_parent", new
-                {
-                    traderId = messageDetails.Trader,
-                    sender = messageDetails.Sender,
-                });
+                _localisationService.GetText(
+                    "mailsend-missing_parent",
+                    new
+                    {
+                        traderId = messageDetails.Trader,
+                        sender = messageDetails.Sender,
+                    }
+                );
 
                 return itemsToSendToPlayer;
             }
@@ -465,11 +454,16 @@ public class MailSendService
                 var itemTemplate = items[reward.Template];
                 if (itemTemplate is null)
                 {
-                    _logger.Error(_localisationService.GetText("dialog-missing_item_template", new
-                    {
-                        tpl = reward.Template,
-                        type = dialogType,
-                    }));
+                    _logger.Error(
+                        _localisationService.GetText(
+                            "dialog-missing_item_template",
+                            new
+                            {
+                                tpl = reward.Template,
+                                type = dialogType,
+                            }
+                        )
+                    );
 
                     continue;
                 }
@@ -558,7 +552,7 @@ public class MailSendService
         var senderId = GetMessageSenderIdByType(messageDetails);
         if (senderId is null)
             throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
-        
+
         // Does dialog exist
         var senderDialog = dialogsInProfile.FirstOrDefault(x => x.Key == senderId).Value;
         if (senderDialog is null)
@@ -573,10 +567,10 @@ public class MailSendService
                 New = 0,
                 AttachmentsNew = 0
             };
-            
+
             senderDialog = dialogsInProfile[senderId];
         }
-        
+
         return senderDialog;
     }
 
@@ -595,13 +589,13 @@ public class MailSendService
 
         if (messageDetails.Sender == MessageType.USER_MESSAGE)
             return messageDetails.SenderDetails?.Id;
-        
+
         if (messageDetails.SenderDetails?.Id is not null)
             return messageDetails.SenderDetails.Id;
-        
+
         if (messageDetails.Trader is not null)
             return _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader);
-        
+
         _logger.Warning($"Unable to handle message of type: {messageDetails.Sender}");
         return null;
     }

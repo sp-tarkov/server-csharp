@@ -8,18 +8,11 @@ using Core.Servers;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotEquipmentFilterService
+public class BotEquipmentFilterService(
+    ConfigServer _configServer
+)
 {
-    protected ConfigServer _configServer;
-    protected BotConfig _botConfig;
-
-    public BotEquipmentFilterService(
-        ConfigServer configServer)
-    {
-        _configServer = configServer;
-
-        _botConfig = _configServer.GetConfig<BotConfig>();
-    }
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Filter a bots data to exclude equipment and cartridges defines in the botConfig
@@ -80,7 +73,8 @@ public class BotEquipmentFilterService
     {
         var botEquipmentSettings = _botConfig.Equipment[botEquipmentRole];
 
-        if (botEquipmentSettings is null) {
+        if (botEquipmentSettings is null)
+        {
             return null;
         }
 
@@ -98,7 +92,8 @@ public class BotEquipmentFilterService
         var blacklistDetailsForBot = _botConfig.Equipment.GetValueOrDefault(botRole, null);
 
         return blacklistDetailsForBot?.Blacklist?.FirstOrDefault(
-            (equipmentFilter) => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max);
+            (equipmentFilter) => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
+        );
     }
 
     /// <summary>

@@ -11,39 +11,18 @@ using Core.Utils;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RaidWeatherService
+public class RaidWeatherService(
+    ISptLogger<RaidWeatherService> _logger,
+    DatabaseService _databaseService,
+    TimeUtil _timeUtil,
+    WeatherGenerator _weatherGenerator,
+    SeasonalEventService _seasonalEventService,
+    WeightedRandomHelper _weightedRandomHelper,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<RaidWeatherService> _logger;
-    protected DatabaseService _databaseService;
-    protected TimeUtil _timeUtil;
-    protected WeatherGenerator _weatherGenerator;
-    protected SeasonalEventService _seasonalEventService;
-    protected WeightedRandomHelper _weightedRandomHelper;
-    protected ConfigServer _configServer;
-
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
     protected List<Weather> _weatherForecast = [];
-
-    protected WeatherConfig _weatherConfig;
-
-    public RaidWeatherService(
-        ISptLogger<RaidWeatherService> logger,
-        DatabaseService databaseService,
-        TimeUtil timeUtil,
-        WeatherGenerator weatherGenerator,
-        SeasonalEventService seasonalEventService,
-        WeightedRandomHelper weightedRandomHelper,
-        ConfigServer configServer)
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        _timeUtil = timeUtil;
-        _weatherGenerator = weatherGenerator;
-        _seasonalEventService = seasonalEventService;
-        _weightedRandomHelper = weightedRandomHelper;
-        _configServer = configServer;
-
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-    }
 
     /// <summary>
     /// Generate 24 hours of weather data starting from midnight today
@@ -54,7 +33,8 @@ public class RaidWeatherService
         var staringTimestampMs = _timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReachMs = staringTimestampMs + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1) * 1000; // Convert to milliseconds
+        var futureTimestampToReachMs =
+            staringTimestampMs + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1) * 1000; // Convert to milliseconds
 
         // Keep adding new weather until we have reached desired future date
         var nextTimestampMs = staringTimestampMs;
@@ -77,8 +57,10 @@ public class RaidWeatherService
     protected long GetWeightedWeatherTimePeriodMs()
     {
         var chosenTimePeriodMinutes = _weightedRandomHelper.WeightedRandom(
-            _weatherConfig.Weather.TimePeriod.Values,
-            _weatherConfig.Weather.TimePeriod.Weights).Item;
+                _weatherConfig.Weather.TimePeriod.Values,
+                _weatherConfig.Weather.TimePeriod.Weights
+            )
+            .Item;
 
         return chosenTimePeriodMinutes * 60 * 1000; // Convert to milliseconds
     }
@@ -119,6 +101,5 @@ public class RaidWeatherService
         {
             GenerateWeather(currentSeason);
         }
-
     }
 }

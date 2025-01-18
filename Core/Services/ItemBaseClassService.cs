@@ -5,24 +5,14 @@ using Core.Models.Utils;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class ItemBaseClassService
+public class ItemBaseClassService(
+    ISptLogger<ItemBaseClassService> _logger,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService
+)
 {
-    private readonly ISptLogger<ItemBaseClassService> _logger;
-    private readonly DatabaseService _databaseService;
-    private readonly LocalisationService _localisationService;
-
     private bool _cacheGenerated;
     private Dictionary<string, List<string>> _itemBaseClassesCache;
-
-    public ItemBaseClassService(
-        ISptLogger<ItemBaseClassService> logger,
-        DatabaseService databaseService,
-        LocalisationService localisationService)
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        _localisationService = localisationService;
-    }
 
     /**
      * Create cache and store inside ItemBaseClassService
@@ -35,7 +25,8 @@ public class ItemBaseClassService
 
         var items = _databaseService.GetItems();
         var filteredDbItems = (items).Where((x) => x.Value.Type == "Item");
-        foreach (var item in filteredDbItems) {
+        foreach (var item in filteredDbItems)
+        {
             var itemIdToUpdate = item.Value.Id;
             if (!_itemBaseClassesCache.ContainsKey(item.Value.Id))
             {

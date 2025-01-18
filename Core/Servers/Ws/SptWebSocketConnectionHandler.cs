@@ -12,38 +12,23 @@ using Core.Utils;
 namespace Core.Servers.Ws;
 
 [Injectable(InjectionType.Singleton)]
-public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
+public class SptWebSocketConnectionHandler(
+    ISptLogger<SptWebSocketConnectionHandler> _logger,
+    LocalisationService _localisationService,
+    JsonUtil _jsonUtil,
+    ProfileHelper _profileHelper,
+    ConfigServer _configServer,
+    IEnumerable<ISptWebSocketMessageHandler> _messageHandlers
+) : IWebSocketConnectionHandler
 {
+    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+
     protected Dictionary<string, WebSocket> _sockets = new();
     protected Dictionary<string, Timer> _socketAliveTimers = new();
     protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
-    protected object _lockObject = new();
-
-    protected ISptLogger<SptWebSocketConnectionHandler> _logger;
-    protected LocalisationService _localisationService;
-    protected JsonUtil _jsonUtil;
-    protected ProfileHelper _profileHelper;
-    protected HttpConfig _httpConfig;
-    protected IEnumerable<ISptWebSocketMessageHandler> _messageHandlers;
+    protected Lock _lockObject = new();
 
     protected WsPing _defaultNotification = new();
-
-    public SptWebSocketConnectionHandler(
-        ISptLogger<SptWebSocketConnectionHandler> logger,
-        LocalisationService localisationService,
-        JsonUtil jsonUtil,
-        ProfileHelper profileHelper,
-        ConfigServer configServer,
-        IEnumerable<ISptWebSocketMessageHandler> messageHandlers
-    )
-    {
-        _logger = logger;
-        _localisationService = localisationService;
-        _jsonUtil = jsonUtil;
-        _profileHelper = profileHelper;
-        _messageHandlers = messageHandlers;
-        _httpConfig = configServer.GetConfig<HttpConfig>();
-    }
 
     public string GetHookUrl() => "/notifierServer/getwebsocket/";
     public string GetSocketId() => "SPT WebSocket Handler";
@@ -73,7 +58,7 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
                 {
                     Thread.Sleep(1000);
                 }
-                
+
                 // Once the websocket dies, we dispose of it
                 _logger.Debug(_localisationService.GetText("websocket-socket_lost_deleting_handle"));
                 lock (_lockObject)
@@ -92,7 +77,7 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
     private void TimedTask(WebSocket ws, string sessionID)
     {
         _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
-        
+
         if (ws.State == WebSocketState.Open)
         {
             var sendTask = ws.SendAsync(

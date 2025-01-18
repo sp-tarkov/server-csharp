@@ -10,29 +10,25 @@ using Core.Servers;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class SeasonalEventService
+public class SeasonalEventService(
+    ISptLogger<SeasonalEventService> _logger,
+    DatabaseService _databaseService,
+    GiftService _giftService,
+    LocalisationService _localisationService,
+    BotHelper _botHelper,
+    ProfileHelper _profileHelper,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<SeasonalEventService> _logger;
-
-    protected DatabaseService _databaseService;
-
-    //protected DatabaseImporter _databaseImporter;
-    protected GiftService _giftService;
-    protected LocalisationService _localisationService;
-    protected BotHelper _botHelper;
-    protected ProfileHelper _profileHelper;
-    protected ConfigServer _configServer;
-
-    private bool _christmasEventActive = false;
-    private bool _halloweenEventActive = false;
-
-    protected SeasonalEventConfig _seasonalEventConfig;
-    protected QuestConfig _questConfig;
-    protected HttpConfig _httpConfig;
-    protected WeatherConfig _weatherConfig;
-    protected LocationConfig _locationConfig;
+    protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
+    private bool _christmasEventActive = false;
+    private bool _halloweenEventActive = false;
 
     protected IReadOnlyList<string> _christmasEventItems =
     [
@@ -62,34 +58,6 @@ public class SeasonalEventService
         ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_BRAWLER,
         ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_QUIET
     ];
-
-    public SeasonalEventService
-    (
-        ISptLogger<SeasonalEventService> logger,
-        DatabaseService databaseService,
-        //DatabaseImporter databaseImporter,
-        GiftService giftService,
-        LocalisationService localisationService,
-        BotHelper botHelper,
-        ProfileHelper profileHelper,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _databaseService = databaseService;
-        //_databaseImporter = databaseImporter;
-        _giftService = giftService;
-        _localisationService = localisationService;
-        _botHelper = botHelper;
-        _profileHelper = profileHelper;
-        _configServer = configServer;
-
-        _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
-        _questConfig = _configServer.GetConfig<QuestConfig>();
-        _httpConfig = _configServer.GetConfig<HttpConfig>();
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-        _locationConfig = _configServer.GetConfig<LocationConfig>();
-    }
 
     /// <summary>
     /// Get an array of christmas items found in bots inventories as loot
@@ -372,11 +340,14 @@ public class SeasonalEventService
             if (botInventory.Equipment[equipmentSlotKey] is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText("seasonal-missing_equipment_slot_on_bot", new
-                    {
-                        equipmentSlot = equipmentSlotKey,
-                        botRole = botRole,
-                    })
+                    _localisationService.GetText(
+                        "seasonal-missing_equipment_slot_on_bot",
+                        new
+                        {
+                            equipmentSlot = equipmentSlotKey,
+                            botRole = botRole,
+                        }
+                    )
                 );
             }
 
@@ -393,11 +364,14 @@ public class SeasonalEventService
             if (prop is null)
             {
                 _logger.Warning(
-                    _localisationService.GetText("seasonal-missing_loot_container_slot_on_bot", new
-                    {
-                        lootContainer = lootContainerKey,
-                        botRole = botRole,
-                    })
+                    _localisationService.GetText(
+                        "seasonal-missing_loot_container_slot_on_bot",
+                        new
+                        {
+                            lootContainer = lootContainerKey,
+                            botRole = botRole,
+                        }
+                    )
                 );
             }
 
@@ -779,9 +753,11 @@ public class SeasonalEventService
     /// </summary>
     protected void AddPumpkinsToScavBackpacks()
     {
-        _databaseService.GetBots().Types["assault"].BotInventory.Items.Backpack[
-            ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER
-        ] = 400;
+        _databaseService.GetBots()
+            .Types["assault"]
+            .BotInventory.Items.Backpack[
+                ItemTpl.RANDOMLOOTCONTAINER_PUMPKIN_RAND_LOOT_CONTAINER
+            ] = 400;
     }
 
     protected void RenameBitcoin()

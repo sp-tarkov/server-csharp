@@ -10,26 +10,13 @@ using Core.Servers;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotWeaponModLimitService
+public class BotWeaponModLimitService(
+    ISptLogger<BotWeaponModLimitService> _logger,
+    ConfigServer _configServer,
+    ItemHelper _itemHelper
+)
 {
-    private readonly ISptLogger<BotWeaponModLimitService> _logger;
-    private readonly ConfigServer _configServer;
-    private readonly ItemHelper _itemHelper;
-
-    private readonly BotConfig _botConfig;
-
-    public BotWeaponModLimitService
-    (
-        ISptLogger<BotWeaponModLimitService> logger,
-        ConfigServer configServer,
-        ItemHelper itemHelper
-    )
-    {
-        _logger = logger;
-        _configServer = configServer;
-        _itemHelper = itemHelper;
-        _botConfig = _configServer.GetConfig<BotConfig>();
-    }
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Initalise mod limits to be used when generating a weapon

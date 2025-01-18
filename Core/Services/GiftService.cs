@@ -10,40 +10,16 @@ using Core.Utils;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class GiftService
+public class GiftService(
+    ISptLogger<GiftService> _logger,
+    MailSendService _mailSendService,
+    LocalisationService _localisationService,
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    ProfileHelper _profileHelper,
+    ConfigServer _configServer)
 {
-    protected ISptLogger<GiftService> _logger;
-
-    protected MailSendService _mailSendService;
-    protected LocalisationService _localisationService;
-    protected HashUtil _hashUtil;
-    protected TimeUtil _timeUtil;
-    protected ProfileHelper _profileHelper;
-    protected ConfigServer _configServer;
-
-    protected GiftsConfig _giftConfig;
-
-    public GiftService
-    (
-        ISptLogger<GiftService> logger,
-        MailSendService mailSendService,
-        LocalisationService localisationService,
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        ProfileHelper profileHelper,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _mailSendService = mailSendService;
-        _localisationService = localisationService;
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _profileHelper = profileHelper;
-        _configServer = configServer;
-
-        _giftConfig = _configServer.GetConfig<GiftsConfig>();
-    }
+    protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
 
     /**
      * Does a gift with a specific ID exist in db
@@ -119,7 +95,8 @@ public class GiftService
                     giftData.LocaleTextId,
                     giftData.Items,
                     giftData.ProfileChangeEvents,
-                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1));
+                    _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
+                );
             }
             else
             {
@@ -128,7 +105,8 @@ public class GiftService
                     giftData.MessageText,
                     giftData.Items,
                     _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
-                    giftData.ProfileChangeEvents);
+                    giftData.ProfileChangeEvents
+                );
             }
         }
         // Handle user messages
@@ -139,7 +117,8 @@ public class GiftService
                 giftData.SenderDetails,
                 giftData.MessageText,
                 giftData.Items,
-                _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1));
+                _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
+            );
         }
         else if (giftData.Sender == GiftSenderType.Trader)
         {
@@ -174,10 +153,11 @@ public class GiftService
         {
             // TODO: further split out into different message systems like above SYSTEM method
             // Trader / ragfair
-            SendMessageDetails details = new () {
+            SendMessageDetails details = new()
+            {
                 RecipientId = playerId,
                 Sender = GetMessageType(giftData),
-                SenderDetails = new ()
+                SenderDetails = new()
                 {
                     Id = GetSenderId(giftData),
                     Aid = 1234567, // TODO - pass proper aid value
@@ -188,13 +168,14 @@ public class GiftService
                 ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0),
             };
 
-            if (giftData.Trader is not null) {
+            if (giftData.Trader is not null)
+            {
                 details.Trader = giftData.Trader;
             }
 
             _mailSendService.SendMessageToPlayer(details);
         }
-        
+
         _profileHelper.FlagGiftReceivedInProfile(playerId, giftId, maxGiftsToSendCount);
 
         return GiftSentResult.SUCCESS;

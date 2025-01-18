@@ -10,24 +10,14 @@ using Core.Models.Utils;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairPriceService
+public class RagfairPriceService(
+    ISptLogger<RagfairPriceService> _logger,
+    HandbookHelper _handbookHelper,
+    DatabaseService _databaseService
+)
 {
-    private readonly ISptLogger<RagfairPriceService> _logger;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly DatabaseService _databaseService;
-
-    protected RagfairServerPrices _prices  = new RagfairServerPrices{ StaticPrices = new Dictionary<string, double>(), DynamicPrices = new Dictionary<string, double>() };
-
-public RagfairPriceService(
-        ISptLogger<RagfairPriceService> logger,
-        HandbookHelper handbookHelper,
-        DatabaseService databaseService)
-    {
-        _logger = logger;
-        _handbookHelper = handbookHelper;
-        _databaseService = databaseService;
-    }
-
+    protected RagfairServerPrices _prices = new RagfairServerPrices
+        { StaticPrices = new Dictionary<string, double>(), DynamicPrices = new Dictionary<string, double>() };
 
     /// <summary>
     /// Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries

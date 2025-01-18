@@ -8,30 +8,15 @@ using Core.Utils.Cloners;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class ItemFilterService
+public class ItemFilterService(
+    ISptLogger<ItemFilterService> _logger,
+    ICloner _cloner,
+    DatabaseServer _databaseServer,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<ItemFilterService> _logger;
-    protected ICloner _cloner;
-    protected DatabaseServer _databaseServer;
-    protected ConfigServer _configServer;
-
     protected HashSet<string> _lootableItemBlacklistCache = [];
-    protected ItemConfig _itemConfig;
-
-    public ItemFilterService(
-        ISptLogger<ItemFilterService> logger,
-        ICloner cloner,
-        DatabaseServer databaseServer,
-        ConfigServer configServer
-        )
-    {
-        _logger = logger;
-        _cloner = cloner;
-        _databaseServer = databaseServer;
-        _configServer = configServer;
-
-        _itemConfig = _configServer.GetConfig<ItemConfig>();
-    }
+    protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
 
     /**
      * Check if the provided template id is blacklisted in config/item.json/blacklist
@@ -122,7 +107,8 @@ public class ItemFilterService
     {
         if (_lootableItemBlacklistCache.Count == 0)
         {
-            foreach (var item in _itemConfig.LootableItemBlacklist) {
+            foreach (var item in _itemConfig.LootableItemBlacklist)
+            {
                 _lootableItemBlacklistCache.Add(item);
             }
         }

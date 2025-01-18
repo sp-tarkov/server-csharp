@@ -10,34 +10,16 @@ using Core.Utils;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class TraderPurchasePersisterService
+public class TraderPurchasePersisterService(
+    ISptLogger<TraderPurchasePersisterService> _logger,
+    RandomUtil _randomUtil,
+    TimeUtil _timeUtil,
+    ProfileHelper _profileHelper,
+    LocalisationService _localisationService,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<TraderPurchasePersisterService> _logger;
-    protected RandomUtil _randomUtil;
-    protected TimeUtil _timeUtil;
-    protected ProfileHelper _profileHelper;
-    protected LocalisationService _localisationService;
-    protected ConfigServer _configServer;
-
-    protected TraderConfig _traderConfig;
-
-    public TraderPurchasePersisterService(
-        ISptLogger<TraderPurchasePersisterService> logger,
-        RandomUtil randomUtil,
-        TimeUtil timeUtil,
-        ProfileHelper profileHelper,
-        LocalisationService localisationService,
-        ConfigServer configServer)
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _timeUtil = timeUtil;
-        _profileHelper = profileHelper;
-        _localisationService = localisationService;
-        _configServer = configServer;
-
-        _traderConfig = _configServer.GetConfig<TraderConfig>();
-    }
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /**
      * Get the purchases made from a trader for this profile before the last trader reset
@@ -83,7 +65,8 @@ public class TraderPurchasePersisterService
     public void RemoveStalePurchasesFromProfiles(string traderId)
     {
         var profiles = _profileHelper.GetProfiles();
-        foreach (var profileKvP in profiles) {
+        foreach (var profileKvP in profiles)
+        {
             var profile = profileKvP.Value;
 
             // Skip if no purchases or no trader-specific purchases
@@ -93,15 +76,20 @@ public class TraderPurchasePersisterService
                 continue;
             }
 
-            foreach (var purchaseKvP in purchasesFromTrader) {
+            foreach (var purchaseKvP in purchasesFromTrader)
+            {
                 var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
                 if (traderUpdateDetails is null)
                 {
                     _logger.Error(
-                        _localisationService.GetText("trader-unable_to_delete_stale_purchases", new {
-                        profileId = profile.ProfileInfo.ProfileId,
-                        traderId = traderId,
-                    })
+                        _localisationService.GetText(
+                            "trader-unable_to_delete_stale_purchases",
+                            new
+                            {
+                                profileId = profile.ProfileInfo.ProfileId,
+                                traderId = traderId,
+                            }
+                        )
                     );
 
                     continue;
@@ -109,12 +97,12 @@ public class TraderPurchasePersisterService
 
                 var purchaseDetails = purchaseKvP.Value;
                 var resetTimeForItem =
-                purchaseDetails.PurchaseTimestamp +
+                    purchaseDetails.PurchaseTimestamp +
                     _randomUtil.GetInt((int)traderUpdateDetails.Seconds.Min, (int)traderUpdateDetails.Seconds.Max);
                 if (resetTimeForItem < _timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile
-                    _logger.Debug($"Removed trader: { traderId} purchase: { purchaseKvP} from profile: { profile.ProfileInfo.ProfileId}");
+                    _logger.Debug($"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
 
                     profile.TraderPurchases.Remove(purchaseKvP.Key);
                 }

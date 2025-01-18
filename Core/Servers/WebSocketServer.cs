@@ -8,23 +8,12 @@ using Core.Utils;
 namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-public class WebSocketServer
+public class WebSocketServer(
+    IEnumerable<IWebSocketConnectionHandler> _webSocketConnectionHandler,
+    ISptLogger<WebSocketServer> _logger,
+    JsonUtil _jsonUtil
+)
 {
-    protected IEnumerable<IWebSocketConnectionHandler> _webSocketConnectionHandler;
-    protected ISptLogger<WebSocketServer> _logger;
-    protected JsonUtil _jsonUtil;
-
-    public WebSocketServer(
-        IEnumerable<IWebSocketConnectionHandler> webSocketConnectionHandlers,
-        ISptLogger<WebSocketServer> logger,
-        JsonUtil jsonUtil
-    )
-    {
-        _webSocketConnectionHandler = webSocketConnectionHandlers;
-        _logger = logger;
-        _jsonUtil = jsonUtil;
-    }
-
     public async Task OnConnection(HttpContext httpContext)
     {
         var socket = await httpContext.WebSockets.AcceptWebSocketAsync();
@@ -48,6 +37,7 @@ public class WebSocketServer
             wsh.OnConnection(webSocket, context).Wait();
             _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
         }
+
         return Task.CompletedTask;
     }
 }

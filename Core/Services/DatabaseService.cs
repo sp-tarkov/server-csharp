@@ -10,35 +10,20 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Hideout = Core.Models.Spt.Hideout.Hideout;
-
 using Locations = Core.Models.Spt.Server.Locations;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class DatabaseService
+public class DatabaseService(
+    ISptLogger<DatabaseService> _logger,
+    DatabaseServer _databaseServer,
+    LocalisationService _localisationService,
+    HashUtil _hashUtil
+)
 {
-    protected LocationConfig locationConfig;
     protected bool isDataValid;
-
-    protected ISptLogger<DatabaseService> _logger;
-    protected DatabaseServer _databaseServer;
-    protected LocalisationService _localisationService;
-    protected HashUtil _hashUtil;
-
-    public DatabaseService(
-        ISptLogger<DatabaseService> logger,
-        DatabaseServer databaseServer,
-        LocalisationService localisationService,
-        HashUtil hashUtil
-    )
-    {
-        _logger = logger;
-        _databaseServer = databaseServer;
-        _localisationService = localisationService;
-        _hashUtil = hashUtil;
-    }
-
+    
     /**
      * @returns assets/database/
      */
@@ -64,8 +49,12 @@ public class DatabaseService
     public Globals GetGlobals()
     {
         if (_databaseServer.GetTables().Globals == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/globals.json"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/globals.json"
+                )
+            );
 
         return _databaseServer.GetTables().Globals!;
     }
@@ -77,7 +66,8 @@ public class DatabaseService
     {
         if (_databaseServer.GetTables().Hideout == null)
             throw new Exception(
-                _localisationService.GetText("database-data_at_path_missing", "assets/database/hideout"));
+                _localisationService.GetText("database-data_at_path_missing", "assets/database/hideout")
+            );
 
         return _databaseServer.GetTables().Hideout!;
     }
@@ -89,7 +79,8 @@ public class DatabaseService
     {
         if (_databaseServer.GetTables().Locales == null)
             throw new Exception(
-                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
+                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
+            );
 
         return _databaseServer.GetTables().Locales!;
     }
@@ -101,7 +92,8 @@ public class DatabaseService
     {
         if (_databaseServer.GetTables().Locations == null)
             throw new Exception(
-                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
+                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
+            );
 
         return _databaseServer.GetTables().Locations!;
     }
@@ -127,7 +119,8 @@ public class DatabaseService
     {
         if (_databaseServer.GetTables().Match == null)
             throw new Exception(
-                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales"));
+                _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
+            );
 
         return _databaseServer.GetTables().Match!;
     }
@@ -138,8 +131,12 @@ public class DatabaseService
     public ServerBase GetServer()
     {
         if (_databaseServer.GetTables().Server == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/server.json"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/server.json"
+                )
+            );
 
         return _databaseServer.GetTables().Server!;
     }
@@ -150,8 +147,12 @@ public class DatabaseService
     public SettingsBase GetSettings()
     {
         if (_databaseServer.GetTables().Settings == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/settings.json"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/settings.json"
+                )
+            );
 
         return _databaseServer.GetTables().Settings!;
     }
@@ -162,8 +163,12 @@ public class DatabaseService
     public Templates GetTemplates()
     {
         if (_databaseServer.GetTables().Templates == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/templates"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/templates"
+                )
+            );
 
         return _databaseServer.GetTables().Templates!;
     }
@@ -174,8 +179,12 @@ public class DatabaseService
     public List<Achievement> GetAchievements()
     {
         if (_databaseServer.GetTables().Templates?.Achievements == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/templates/achievements.json"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/templates/achievements.json"
+                )
+            );
 
         return _databaseServer.GetTables().Templates?.Achievements!;
     }
@@ -186,8 +195,12 @@ public class DatabaseService
     public Dictionary<string, CustomizationItem> GetCustomization()
     {
         if (_databaseServer.GetTables().Templates?.Customization == null)
-            throw new Exception(_localisationService.GetText("database-data_at_path_missing",
-                "assets/database/templates/customization.json"));
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/templates/customization.json"
+                )
+            );
 
         return _databaseServer.GetTables().Templates?.Customization!;
     }

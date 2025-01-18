@@ -19,49 +19,21 @@ using System.Security.AccessControl;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class ProfileFixerService
+public class ProfileFixerService(
+    ISptLogger<ProfileFixerService> _logger,
+    HashUtil _hashUtil,
+    JsonUtil _jsonUtil,
+    ItemHelper _itemHelper,
+    QuestRewardHelper _questRewardHelper,
+    TraderHelper _traderHelper,
+    HideoutHelper _hideoutHelper,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService,
+    ConfigServer _configServer,
+    InventoryHelper _inventoryHelper
+)
 {
-    protected ISptLogger<ProfileFixerService> _logger;
-    protected HashUtil _hashUtil;
-    protected JsonUtil _jsonUtil;
-    protected ItemHelper _itemHelper;
-    protected QuestRewardHelper _questRewardHelper;
-    protected TraderHelper _traderHelper;
-    protected HideoutHelper _hideoutHelper;
-    protected DatabaseService _databaseService;
-    protected LocalisationService _localisationService;
-    protected ConfigServer _configServer;
-    protected CoreConfig _coreConfig;
-    protected InventoryHelper _inventoryHelper;
-
-    public ProfileFixerService(
-        ISptLogger<ProfileFixerService> logger,
-        HashUtil hashUtil,
-        JsonUtil jsonUtil,
-        ItemHelper itemHelper,
-        QuestRewardHelper questRewardHelper,
-        TraderHelper traderHelper,
-        HideoutHelper hideoutHelper,
-        DatabaseService databaseService,
-        LocalisationService localisationService,
-        ConfigServer configServer,
-        InventoryHelper inventoryHelper
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _jsonUtil = jsonUtil;
-        _itemHelper = itemHelper;
-        _questRewardHelper = questRewardHelper;
-        _traderHelper = traderHelper;
-        _hideoutHelper = hideoutHelper;
-        _databaseService = databaseService;
-        _localisationService = localisationService;
-        _configServer = configServer;
-        _inventoryHelper = inventoryHelper;
-
-        _coreConfig = _configServer.GetConfig<CoreConfig>();
-    }
+    protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     /// <summary>
     /// Find issues in the pmc profile data that may cause issues and fix them
@@ -365,7 +337,8 @@ public class ProfileFixerService
             if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
             {
                 var productionRewards = quest.Rewards.Started?.Where(
-                    (reward) => reward.Type == RewardType.ProductionScheme);
+                    (reward) => reward.Type == RewardType.ProductionScheme
+                );
 
                 if (productionRewards is not null)
                 {
@@ -380,7 +353,8 @@ public class ProfileFixerService
             if (profileQuest.Status is QuestStatusEnum.Success)
             {
                 var productionRewards = quest.Rewards.Success?.Where(
-                    (reward) => reward.Type == RewardType.ProductionScheme);
+                    (reward) => reward.Type == RewardType.ProductionScheme
+                );
 
                 if (productionRewards is not null)
                 {
@@ -408,11 +382,16 @@ public class ProfileFixerService
 
         if (matchingProductions.Count != 1)
         {
-            _logger.Error(_localisationService.GetText("quest-unable_to_find_matching_hideout_production", new
-            {
-                questName = questDetails.QuestName,
-                matchCount = matchingProductions.Count
-            }));
+            _logger.Error(
+                _localisationService.GetText(
+                    "quest-unable_to_find_matching_hideout_production",
+                    new
+                    {
+                        questName = questDetails.QuestName,
+                        matchCount = matchingProductions.Count
+                    }
+                )
+            );
 
             return;
         }
@@ -638,7 +617,9 @@ public class ProfileFixerService
                     _logger.Error(_localisationService.GetText("fixer-trader_found", activeQuest.TraderId));
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
-                        _logger.Warning($"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile");
+                        _logger.Warning(
+                            $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                        );
                         repeatable.ActiveQuests.Remove(activeQuest);
                     }
 
@@ -653,7 +634,9 @@ public class ProfileFixerService
                         {
                             if (itemsDb[item.Template] is null)
                             {
-                                _logger.Warning($"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile");
+                                _logger.Warning(
+                                    $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                                );
                                 repeatable.ActiveQuests.Remove(activeQuest);
                             }
                         }

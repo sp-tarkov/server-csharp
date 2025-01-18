@@ -16,58 +16,24 @@ using Core.Utils.Cloners;
 namespace Core.Services;
 
 [Injectable]
-public class CreateProfileService
+public class CreateProfileService(
+    ISptLogger<CreateProfileService> _logger,
+    TimeUtil _timeUtil,
+    HashUtil _hashUtil,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService,
+    ProfileHelper _profileHelper,
+    ItemHelper _itemHelper,
+    TraderHelper _traderHelper,
+    QuestHelper _questHelper,
+    QuestRewardHelper _questRewardHelper,
+    ProfileFixerService _profileFixerService,
+    SaveServer _saveServer,
+    EventOutputHolder _eventOutputHolder,
+    PlayerScavGenerator _playerScavGenerator,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<CreateProfileService> _logger;
-    protected TimeUtil _timeUtil;
-    protected HashUtil _hashUtil;
-    protected DatabaseService _databaseService;
-    protected LocalisationService _localisationService;
-    protected ProfileHelper _profileHelper;
-    protected ItemHelper _itemHelper;
-    protected TraderHelper _traderHelper;
-    protected QuestHelper _questHelper;
-    protected QuestRewardHelper _questRewardHelper;
-    protected ProfileFixerService _profileFixerService;
-    protected SaveServer _saveServer;
-    protected EventOutputHolder _eventOutputHolder;
-    protected PlayerScavGenerator _playerScavGenerator;
-    protected ICloner _cloner;
-
-    public CreateProfileService(
-        ISptLogger<CreateProfileService> logger,
-        TimeUtil timeUtil,
-        HashUtil hashUtil,
-        DatabaseService databaseService,
-        LocalisationService localisationService,
-        ProfileHelper profileHelper,
-        ItemHelper itemHelper,
-        TraderHelper traderHelper,
-        QuestHelper questHelper,
-        QuestRewardHelper questRewardHelper,
-        ProfileFixerService profileFixerService,
-        SaveServer saveServer,
-        EventOutputHolder eventOutputHolder,
-        PlayerScavGenerator playerScavGenerator,
-        ICloner cloner)
-    {
-        _logger = logger;
-        _timeUtil = timeUtil;
-        _hashUtil = hashUtil;
-        _databaseService = databaseService;
-        _localisationService = localisationService;
-        _profileHelper = profileHelper;
-        _itemHelper = itemHelper;
-        _traderHelper = traderHelper;
-        _questHelper = questHelper;
-        _questRewardHelper = questRewardHelper;
-        _profileFixerService = profileFixerService;
-        _saveServer = saveServer;
-        _eventOutputHolder = eventOutputHolder;
-        _playerScavGenerator = playerScavGenerator;
-        _cloner = cloner;
-    }
-
     public string CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
         var account = _saveServer.GetProfile(sessionId).ProfileInfo;
@@ -146,11 +112,14 @@ public class CreateProfileService
         // Profile is flagged as wanting quests set to ready to hand in and collect rewards
         if (profileTemplate.Trader.SetQuestsAvailableForFinish ?? false)
         {
-            _questHelper.AddAllQuestsToProfile(profileDetails.CharacterData.PmcData, [
-                QuestStatusEnum.AvailableForStart,
-                QuestStatusEnum.Started,
-                QuestStatusEnum.AvailableForFinish,
-            ]);
+            _questHelper.AddAllQuestsToProfile(
+                profileDetails.CharacterData.PmcData,
+                [
+                    QuestStatusEnum.AvailableForStart,
+                    QuestStatusEnum.Started,
+                    QuestStatusEnum.AvailableForFinish,
+                ]
+            );
 
             // Make unused response so applyQuestReward works
             ItemEventRouterResponse? response = _eventOutputHolder.GetOutput(sessionId);
@@ -237,38 +206,46 @@ public class CreateProfileService
     {
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
         {
-            pmcData.Inventory.Items.Add(new()
-            {
-                Id = pmcData.Inventory.HideoutCustomizationStashId,
-                Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION,
-            });
+            pmcData.Inventory.Items.Add(
+                new()
+                {
+                    Id = pmcData.Inventory.HideoutCustomizationStashId,
+                    Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION,
+                }
+            );
         }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.SortingTable))
         {
-            pmcData.Inventory.Items.Add(new()
-            {
-                Id = pmcData.Inventory.SortingTable,
-                Template = ItemTpl.SORTINGTABLE_SORTING_TABLE,
-            });
+            pmcData.Inventory.Items.Add(
+                new()
+                {
+                    Id = pmcData.Inventory.SortingTable,
+                    Template = ItemTpl.SORTINGTABLE_SORTING_TABLE,
+                }
+            );
         }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestStashItems))
         {
-            pmcData.Inventory.Items.Add(new()
-            {
-                Id = pmcData.Inventory.QuestStashItems,
-                Template = ItemTpl.STASH_QUESTOFFLINE,
-            });
+            pmcData.Inventory.Items.Add(
+                new()
+                {
+                    Id = pmcData.Inventory.QuestStashItems,
+                    Template = ItemTpl.STASH_QUESTOFFLINE,
+                }
+            );
         }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestRaidItems))
         {
-            pmcData.Inventory.Items.Add(new()
-            {
-                Id = pmcData.Inventory.QuestRaidItems,
-                Template = ItemTpl.STASH_QUESTRAID,
-            });
+            pmcData.Inventory.Items.Add(
+                new()
+                {
+                    Id = pmcData.Inventory.QuestRaidItems,
+                    Template = ItemTpl.STASH_QUESTRAID,
+                }
+            );
         }
     }
 
@@ -290,58 +267,82 @@ public class CreateProfileService
         {
             case GameEditions.EDGE_OF_DARKNESS:
                 // Gets EoD tags
-                fullProfile.CustomisationUnlocks.Add( new CustomisationStorage {
-                    Id = "6746fd09bafff85008048838",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "6746fd09bafff85008048838",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "67471938bafff850080488b7",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "67471938bafff850080488b7",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
                 break;
             case GameEditions.UNHEARD:
                 // Gets EoD+Unheard tags
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "6746fd09bafff85008048838",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "6746fd09bafff85008048838",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "67471938bafff850080488b7",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "67471938bafff850080488b7",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "67471928d17d6431550563b5",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "67471928d17d6431550563b5",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "6747193f170146228c0d2226",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "6747193f170146228c0d2226",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
 
                 // Unheard Clothing (Cultist Hood)
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "666841a02537107dc508b704",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.SUITE,
-            });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "666841a02537107dc508b704",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.SUITE,
+                    }
+                );
 
                 // Unheard background
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "675850ba33627edb710b0592",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.ENVIRONMENT,
-            });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "675850ba33627edb710b0592",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.ENVIRONMENT,
+                    }
+                );
 
                 break;
         }
@@ -351,20 +352,26 @@ public class CreateProfileService
         {
             if (pretigeLevel >= 1)
             {
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "674dbf593bee1152d407f005",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "674dbf593bee1152d407f005",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
             }
 
             if (pretigeLevel >= 2)
             {
-                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage {
-                    Id = "675dcfea7ae1a8792107ca99",
-                    Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.DOG_TAG,
-                });
+                fullProfile.CustomisationUnlocks.Add(
+                    new CustomisationStorage
+                    {
+                        Id = "675dcfea7ae1a8792107ca99",
+                        Source = CustomisationSource.DEFAULT,
+                        Type = CustomisationType.DOG_TAG,
+                    }
+                );
             }
         }
 
@@ -372,11 +379,14 @@ public class CreateProfileService
         if (fullProfile.ProfileInfo.Edition.ToLower().Contains("developer"))
         {
             // CyberTark background
-            fullProfile.CustomisationUnlocks.Add( new CustomisationStorage{
-                Id = "67585108def253bd97084552",
-                Source = CustomisationSource.DEFAULT,
-                Type = CustomisationType.ENVIRONMENT,
-            });
+            fullProfile.CustomisationUnlocks.Add(
+                new CustomisationStorage
+                {
+                    Id = "67585108def253bd97084552",
+                    Source = CustomisationSource.DEFAULT,
+                    Type = CustomisationType.ENVIRONMENT,
+                }
+            );
         }
     }
 

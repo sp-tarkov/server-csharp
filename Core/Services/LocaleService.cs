@@ -7,20 +7,16 @@ using Core.Servers;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class LocaleService
+public class LocaleService(
+    ISptLogger<LocaleService> _logger,
+    DatabaseServer _databaseServer,
+    ConfigServer _configServer
+)
 {
-    protected LocaleConfig _localeConfig;
     protected ISptLogger<LocaleService> _logger;
     protected DatabaseServer _databaseServer;
     protected ConfigServer _configServer;
-
-    public LocaleService(ISptLogger<LocaleService> logger, DatabaseServer databaseServer, ConfigServer configServer)
-    {
-        _logger = logger;
-        _databaseServer = databaseServer;
-        _configServer = configServer;
-        _localeConfig = configServer.GetConfig<LocaleConfig>();
-    }
+    protected LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
 
     /**
  * Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
@@ -32,7 +28,8 @@ public class LocaleService
         if (desiredLocale != null) return desiredLocale;
 
         _logger.Warning(
-            $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'");
+            $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'"
+        );
 
         return _databaseServer.GetTables().Locales.Global["en"];
     }

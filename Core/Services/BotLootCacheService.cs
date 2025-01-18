@@ -12,33 +12,16 @@ using Core.Utils.Cloners;
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotLootCacheService
+public class BotLootCacheService(
+    ISptLogger<BotLootCacheService> _logger,
+    ItemHelper _itemHelper,
+    PMCLootGenerator _pmcLootGenerator,
+    LocalisationService _localisationService,
+    RagfairPriceService _ragfairPriceService,
+    ICloner _cloner
+)
 {
-    protected ISptLogger<BotLootCacheService> _logger;
-    protected ItemHelper _itemHelper;
-    protected PMCLootGenerator _pmcLootGenerator;
-    protected LocalisationService _localisationService;
-    protected RagfairPriceService _ragfairPriceService;
-    protected ICloner _cloner;
-
     protected Dictionary<string, BotLootCache> _lootCache = new();
-
-    public BotLootCacheService(
-        ISptLogger<BotLootCacheService> logger,
-        ItemHelper itemHelper,
-        PMCLootGenerator pmcLootGenerator,
-        LocalisationService localisationService,
-        RagfairPriceService ragfairPriceService,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _itemHelper = itemHelper;
-        _pmcLootGenerator = pmcLootGenerator;
-        _localisationService = localisationService;
-        _ragfairPriceService = ragfairPriceService;
-        _cloner = cloner;
-    }
 
     /// <summary>
     /// Remove cached bot loot data
@@ -477,7 +460,8 @@ public class BotLootCacheService
     /// <param name="itemsToAdd">items to add to combined pool if unique</param>
     protected void AddUniqueItemsToPool(List<TemplateItem> poolToAddTo, List<TemplateItem> itemsToAdd)
     {
-        if (poolToAddTo.Count() == 0) {
+        if (poolToAddTo.Count() == 0)
+        {
             poolToAddTo.AddRange(itemsToAdd);
             return;
         }
@@ -488,9 +472,11 @@ public class BotLootCacheService
 
     protected void AddItemsToPool(Dictionary<string, double> poolToAddTo, Dictionary<string, double> poolOfItemsToAdd)
     {
-        foreach (var tpl in poolOfItemsToAdd) {
+        foreach (var tpl in poolOfItemsToAdd)
+        {
             // Skip adding items that already exist
-            if (poolToAddTo.ContainsKey(tpl.Key)) {
+            if (poolToAddTo.ContainsKey(tpl.Key))
+            {
                 continue;
             }
 
@@ -569,21 +555,22 @@ public class BotLootCacheService
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        _lootCache[botRole] = new () {
-            BackpackLoot = new (),
-            PocketLoot = new (),
-            VestLoot = new (),
-            SecureLoot = new (),
-            CombinedPoolLoot = new (),
+        _lootCache[botRole] = new()
+        {
+            BackpackLoot = new(),
+            PocketLoot = new(),
+            VestLoot = new(),
+            SecureLoot = new(),
+            CombinedPoolLoot = new(),
 
-            SpecialItems = new (),
-            GrenadeItems = new (),
-            DrugItems = new (),
-            FoodItems = new (),
-            DrinkItems = new (),
-            CurrencyItems = new (),
-            HealingItems = new (),
-            StimItems = new (),
+            SpecialItems = new(),
+            GrenadeItems = new(),
+            DrugItems = new(),
+            FoodItems = new(),
+            DrinkItems = new(),
+            CurrencyItems = new(),
+            HealingItems = new(),
+            StimItems = new(),
         };
     }
 
@@ -596,19 +583,23 @@ public class BotLootCacheService
     protected int CompareByValue(int itemAPrice, int itemBPrice)
     {
         // If item A has no price, it should be moved to the back when sorting
-        if (itemAPrice is 0) {
+        if (itemAPrice is 0)
+        {
             return 1;
         }
 
-        if (itemBPrice is 0) {
+        if (itemBPrice is 0)
+        {
             return -1;
         }
 
-        if (itemAPrice < itemBPrice) {
+        if (itemAPrice < itemBPrice)
+        {
             return -1;
         }
 
-        if (itemAPrice > itemBPrice) {
+        if (itemAPrice > itemBPrice)
+        {
             return 1;
         }
 

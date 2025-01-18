@@ -14,7 +14,15 @@ using Core.Utils;
 namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
-public class SaveServer
+public class SaveServer(
+    FileUtil _vfs,
+    IEnumerable<SaveLoadRouter> _saveLoadRouters,
+    JsonUtil _jsonUtil,
+    HashUtil _hashUtil,
+    LocalisationService _localisationService,
+    ISptLogger<SaveServer> _logger,
+    ConfigServer _configServer
+)
 {
     protected string profileFilepath = "user/profiles/";
 
@@ -23,33 +31,6 @@ public class SaveServer
     // onLoad = require("../bindings/SaveLoad");
     protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
     protected Dictionary<string, string> saveMd5 = new();
-
-    protected readonly FileUtil _vfs;
-    protected readonly IEnumerable<SaveLoadRouter> _saveLoadRouters;
-    protected readonly JsonUtil _jsonUtil;
-    protected readonly HashUtil _hashUtil;
-    protected readonly LocalisationService _localisationService;
-    protected readonly ISptLogger<SaveServer> _logger;
-    protected readonly ConfigServer _configServer;
-
-    public SaveServer(
-        FileUtil vfs,
-        IEnumerable<SaveLoadRouter> saveLoadRouters,
-        JsonUtil jsonUtil,
-        HashUtil hashUtil,
-        LocalisationService localisationService,
-        ISptLogger<SaveServer> logger,
-        ConfigServer configServer
-    )
-    {
-        _vfs = vfs;
-        _saveLoadRouters = saveLoadRouters;
-        _jsonUtil = jsonUtil;
-        _hashUtil = hashUtil;
-        _localisationService = localisationService;
-        _logger = logger;
-        _configServer = configServer;
-    }
 
     /**
      * Add callback to occur prior to saving profile changes
@@ -171,12 +152,14 @@ public class SaveServer
             throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
         }
 
-        profiles.Add(profileInfo.ProfileId,
+        profiles.Add(
+            profileInfo.ProfileId,
             new SptProfile()
             {
                 ProfileInfo = profileInfo,
                 CharacterData = new Characters() { PmcData = new(), ScavData = new() }
-            });
+            }
+        );
     }
 
     /**
@@ -204,7 +187,8 @@ public class SaveServer
         }
 
         // Run callbacks
-        foreach (var callback in _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
+        foreach (var callback in
+                 _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
         {
             profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
         }

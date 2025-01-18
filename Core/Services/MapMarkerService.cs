@@ -8,18 +8,10 @@ using Core.Models.Utils;
 namespace Core.Services;
 
 [Injectable]
-public class MapMarkerService
+public class MapMarkerService(
+    ISptLogger<MapMarkerService> _logger
+)
 {
-    protected ISptLogger<MapMarkerService> _logger;
-
-    public MapMarkerService
-    (
-        ISptLogger<MapMarkerService> logger
-    )
-    {
-        _logger = logger;
-    }
-
     /// <summary>
     /// Add note to a map item in player inventory
     /// </summary>
@@ -30,10 +22,10 @@ public class MapMarkerService
     {
         // Get map from inventory
         var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault((i) => i?.Id == request?.Item);
-        
+
         // add marker to map item
         mapItem.Upd.Map = mapItem?.Upd?.Map ?? new() { Markers = new() };
-        
+
         // Update request note with text, then add to maps upd
         request.MapMarker.Note = SanitiseMapMarkerText(request.MapMarker.Note);
         mapItem?.Upd?.Map?.Markers?.Add(request.MapMarker);
@@ -53,9 +45,7 @@ public class MapMarkerService
         var mapItem = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == request.Item);
 
         // remove marker
-        var markers = mapItem.Upd.Map.Markers.Where((marker) => {
-            return marker.X != request.X && marker.Y != request.Y;
-        }).ToList();
+        var markers = mapItem.Upd.Map.Markers.Where((marker) => { return marker.X != request.X && marker.Y != request.Y; }).ToList();
         mapItem.Upd.Map.Markers = markers;
 
         return mapItem;
