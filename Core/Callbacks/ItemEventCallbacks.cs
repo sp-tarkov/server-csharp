@@ -7,23 +7,9 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class ItemEventCallbacks
+public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil) // , ItemEventRouter _itemEventRouter  TODO: Implement ItemEventRouter
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    // protected ItemEventRouter _itemEventRouter;
-
-    public ItemEventCallbacks
-    (
-        HttpResponseUtil httpResponseUtil
-        // TODO: Implement ItemEventRouter
-        // ItemEventRouter itemEventRouter
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        // _itemEventRouter = itemEventRouter;
-    }
-
-    public async Task<GetBodyResponseData<ItemEventRouterResponse>> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
+    public Task<GetBodyResponseData<ItemEventRouterResponse>> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
     {
         // var eventResponse = await _itemEventRouter.HandleEvents(info, sessionID);
         // var result = IsCriticalError(ItemEventRouterResponse.Warnings)
@@ -45,9 +31,7 @@ public class ItemEventCallbacks
 
         foreach (var warning in warnings)
         {
-            BackendErrorCodes code;
-            
-            if (!BackendErrorCodes.TryParse(warning.Code, out code))
+            if (!Enum.TryParse(warning.Code, out BackendErrorCodes code))
                 throw new Exception($"Unable to parse [{warning.Code}] to BackendErrorCode.");
             
             if (!nonCriticalErrorCodes.Contains(code))
@@ -59,11 +43,8 @@ public class ItemEventCallbacks
 
     public int? GetErrorCode(List<Warning> warnings)
     {
-        if (warnings[0].Code is null)
-        {
-            return int.Parse(BackendErrorCodes.UNKNOWN_ERROR.ToString());
-        }
-
-        return int.Parse(warnings[0]?.Code);
+        return int.Parse((warnings[0].Code is null 
+            ? BackendErrorCodes.UNKNOWN_ERROR.ToString() 
+            : warnings.FirstOrDefault()?.Code) ?? string.Empty);
     }
 }
