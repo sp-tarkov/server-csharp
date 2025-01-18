@@ -80,7 +80,7 @@ public class InventoryHelper
     /// <param name="containerFS2D">Container grid to fit items into</param>
     /// <param name="itemsWithChildren">Items to try and fit into grid</param>
     /// <returns>True all fit</returns>
-    public bool CanPlaceItemsInContainer(List<List<double>> containerFS2D, List<List<Item>> itemsWithChildren)
+    public bool CanPlaceItemsInContainer(List<List<double>>? containerFS2D, List<List<Item>> itemsWithChildren)
     {
         throw new NotImplementedException();
     }
@@ -91,7 +91,7 @@ public class InventoryHelper
     /// <param name="containerFS2D">Container grid</param>
     /// <param name="itemWithChildren">Item to check fits</param>
     /// <returns>True it fits</returns>
-    public bool CanPlaceItemInContainer(List<List<int>> containerFS2D, List<Item> itemWithChildren)
+    public bool CanPlaceItemInContainer(List<List<int>>? containerFS2D, List<Item> itemWithChildren)
     {
         throw new NotImplementedException();
     }
@@ -178,7 +178,7 @@ public class InventoryHelper
     /// <param name="itemId">Items id to get size of</param>
     /// <param name="inventoryItems"></param>
     /// <returns>[width, height]</returns>
-    public List<int> GetItemSize(string itemTpl, string itemId, List<Item> inventoryItems)
+    public List<int> GetItemSize(string? itemTpl, string itemId, List<Item> inventoryItems)
     {
         throw new NotImplementedException();
     }

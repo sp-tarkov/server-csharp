@@ -42,7 +42,7 @@ public record BotConfig : BaseConfig
 
     /** Blacklist/whitelist items on a bot */
     [JsonPropertyName("equipment")]
-    public Dictionary<string, EquipmentFilters> Equipment { get; set; }
+    public Dictionary<string, EquipmentFilters?> Equipment { get; set; }
 
     /** Show a bots botType value after their name */
     [JsonPropertyName("showTypeInNickname")]

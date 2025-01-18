@@ -502,7 +502,7 @@ public class ItemHelper
      * @param tpl items template id to look up
      * @returns bool - is valid + template item object as array
      */
-    public KeyValuePair<bool, TemplateItem?> GetItem(string tpl)
+    public KeyValuePair<bool, TemplateItem?> GetItem(string? tpl)
     {
         // -> Gets item from <input: _tpl>
         if (_databaseService.GetItems().Keys.Contains(tpl))
@@ -710,7 +710,7 @@ public class ItemHelper
      * @param modsOnly Include only mod items, exclude items stored inside root item
      * @returns A list of Item objects
      */
-    public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
+    public List<Item> FindAndReturnChildrenAsItems(List<Item>? items, string baseItemId, bool modsOnly = false)
     {
         List<Item> list = [];
         foreach (var childItem in items)

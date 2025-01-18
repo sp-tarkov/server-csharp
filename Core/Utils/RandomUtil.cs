@@ -115,9 +115,9 @@ public class RandomUtil
     /// </summary>
     /// <param name="chancePercent">The percentage chance (0-100) that the event will occur.</param>
     /// <returns>`true` if the event occurs, `false` otherwise.</returns>
-    public bool GetChance100(double chancePercent)
+    public bool GetChance100(double? chancePercent)
     {
-        chancePercent = Math.Clamp(chancePercent, 0f, 100f);
+        chancePercent = Math.Clamp(chancePercent ?? 0, 0f, 100f);
 
         return GetIntEx(100) <= chancePercent;
     }

@@ -23,7 +23,7 @@ public class DurabilityLimitsHelper
     /// <param name="itemTemplate">Item to get max durability for</param>
     /// <param name="botRole">Role of bot to get max durability for</param>
     /// <returns>max durability</returns>
-    public double GetRandomizedMaxArmorDurability(TemplateItem itemTemplate, string? botRole = null)
+    public double GetRandomizedMaxArmorDurability(TemplateItem? itemTemplate, string? botRole = null)
     {
         throw new NotImplementedException();
     }
@@ -47,7 +47,7 @@ public class DurabilityLimitsHelper
     /// <param name="botRole">Role of bot to get current durability for</param>
     /// <param name="maxDurability">Max durability of armor</param>
     /// <returns>Current armor durability</returns>
-    public double GetRandomizedArmorDurability(TemplateItem itemTemplate, string? botRole, double maxDurability)
+    public double GetRandomizedArmorDurability(TemplateItem? itemTemplate, string? botRole, double? maxDurability)
     {
         throw new NotImplementedException();
     }
