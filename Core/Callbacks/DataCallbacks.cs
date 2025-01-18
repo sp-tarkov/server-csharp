@@ -1,45 +1,19 @@
 using Core.Annotations;
 using Core.Controllers;
-using Core.Helpers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Game;
-using Core.Models.Eft.Hideout;
-using Core.Models.Eft.HttpResponse;
-using Core.Models.Spt.Server;
 using Core.Services;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(DataCallbacks))]
-public class DataCallbacks
+public class DataCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    DatabaseService _databaseService,
+    TraderController _traderController,
+    HideoutController _hideoutController
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected TimeUtil _timeUtil;
-    protected TraderHelper _traderHelper;
-    protected DatabaseService _databaseService;
-    protected TraderController _traderController;
-    protected HideoutController _hideoutController;
-    
-    public DataCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        TimeUtil timeUtil,
-        TraderHelper traderHelper,
-        DatabaseService databaseService,
-        TraderController traderController,
-        HideoutController hideoutController
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _timeUtil = timeUtil;
-        _traderHelper = traderHelper;
-        _databaseService = databaseService;
-        _traderController = traderController;
-        _hideoutController = hideoutController;
-    }
-
     /// <summary>
     /// Handle client/settings
     /// </summary>
@@ -175,14 +149,14 @@ public class DataCallbacks
     {
         var localeId = url.Replace("/client/menu/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Menu[localeId];
+        var result = locales.Menu?[localeId] 
+                     ?? locales.Menu?.FirstOrDefault(m => m.Key == "en").Value;
 
         if (result == null)
-            result = locales.Menu.FirstOrDefault(m => m.Key == "en").Value;
-
-        if (result == null)
+        {
             throw new Exception($"Unable to determine locale for request with {localeId}");
-        
+        }
+
         return _httpResponseUtil.GetBody(result);
     }
 
@@ -197,10 +171,8 @@ public class DataCallbacks
     {
         var localeId = url.Replace("/client/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Global[localeId];
-        
-        if (result == null)
-            result = locales.Global.FirstOrDefault(m => m.Key == "en").Value;
+        var result = locales.Global?[localeId] 
+                     ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value;
 
         return _httpResponseUtil.GetUnclearedBody(result);
     }
@@ -214,7 +186,7 @@ public class DataCallbacks
     /// <returns></returns>
     public string GetQteList(string url, EmptyRequestData info, string sessionID)
     {
-         return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID));
+        return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID));
     }
 
     /// <summary>
@@ -227,7 +199,7 @@ public class DataCallbacks
     public string GetItemPrices(string url, EmptyRequestData info, string sessionID)
     {
         var traderId = url.Replace("/client/items/prices/", "");
-        
+
         return _httpResponseUtil.GetBody(_traderController.GetItemPrices(sessionID, traderId));
     }
 }
