@@ -17,9 +17,9 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
 
     public void LogWithColor(
         string data,
-        Exception? ex = null,
         LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
+        LogBackgroundColor? backgroundColor = null,
+        Exception? ex = null
     )
     {
         if (textColor != null || backgroundColor != null)
@@ -83,7 +83,7 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
         throw new NotImplementedException();
     }
 
-    public void WriteToLogFile(object data)
+    public void WriteToLogFile(string data)
     {
         //TODO - implement + turn object into json
         _logger.LogError("NOT IMPLEMENTED - WriteToLogFile");

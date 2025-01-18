@@ -1,14 +1,11 @@
 using Core.Annotations;
 using Core.DI;
 using Core.Helpers;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
-using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using Microsoft.AspNetCore.Http;
 
 namespace Core.Routers
 {
@@ -16,7 +13,8 @@ namespace Core.Routers
     public class ItemEventRouter
     {
         protected ISptLogger<ItemEventRouter> _logger;
-        private readonly HttpResponseUtil _httpResponseUtil;
+        protected HttpResponseUtil _httpResponseUtil;
+        protected JsonUtil _jsonUtil;
         protected ProfileHelper _profileHelper;
         protected LocalisationService _localisationService;
         protected EventOutputHolder _eventOutputHolder;
@@ -26,6 +24,7 @@ namespace Core.Routers
         public ItemEventRouter(
             ISptLogger<ItemEventRouter> logger,
             HttpResponseUtil httpResponseUtil,
+            JsonUtil jsonUtil,
             ProfileHelper profileHelper,
             LocalisationService localisationService,
             EventOutputHolder eventOutputHolder,
@@ -35,6 +34,7 @@ namespace Core.Routers
         {
             _logger = logger;
             _httpResponseUtil = httpResponseUtil;
+            _jsonUtil = jsonUtil;
             _profileHelper = profileHelper;
             _localisationService = localisationService;
             _eventOutputHolder = eventOutputHolder;
@@ -53,7 +53,7 @@ namespace Core.Routers
                 if (eventRouter is null)
                 {
                     _logger.Error(_localisationService.GetText("event-unhandled_event", body.Action));
-                    _logger.WriteToLogFile(body);
+                    _logger.WriteToLogFile(_jsonUtil.Serialize(info.Data));
 
                     continue;
                 }
