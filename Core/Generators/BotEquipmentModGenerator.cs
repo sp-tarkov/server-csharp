@@ -1374,7 +1374,7 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
     }
 
     /// <summary>
-    /// Find mod tpls of a provided type and add to modPool
+    /// Find mod tpls of a provided type and add to its modPool
     /// </summary>
     /// <param name="desiredSlotName">Slot to look up and add we are adding tpls for (e.g mod_scope)</param>
     /// <param name="modTemplate">db object for modItem we get compatible mods from</param>
@@ -1384,36 +1384,38 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
         EquipmentFilterDetails botEquipBlacklist)
     {
         var desiredSlotObject = modTemplate.Properties.Slots?.FirstOrDefault((slot) => slot.Name.Contains(desiredSlotName));
-        if (desiredSlotObject is not null)
+        if (desiredSlotObject is null)
         {
-            var supportedSubMods = desiredSlotObject.Props.Filters[0].Filter;
-            if (supportedSubMods is not null)
-            {
-                // Filter mods
-                var filteredMods = FilterModsByBlacklist(supportedSubMods, botEquipBlacklist, desiredSlotName);
-                if (filteredMods.Count() == 0)
-                {
-                    _logger.Warning(
-                        _localisationService.GetText(
-                            "bot-unable_to_filter_mods_all_blacklisted",
-                            new
-                            {
-                                slotName = desiredSlotObject.Name,
-                                itemName = modTemplate.Name,
-                            }
-                        )
-                    );
-                    filteredMods = supportedSubMods;
-                }
-
-                if (modPool[modTemplate.Id] is null)
-                {
-                    modPool[modTemplate.Id] = new();
-                }
-
-                modPool[modTemplate.Id][desiredSlotObject.Name] = supportedSubMods;
-            }
+            return;
         }
+
+        var supportedSubMods = desiredSlotObject.Props.Filters[0].Filter;
+        if (supportedSubMods is null)
+        {
+            return;
+        }
+
+        // Filter mods
+        var filteredMods = FilterModsByBlacklist(supportedSubMods, botEquipBlacklist, desiredSlotName);
+        if (!filteredMods.Any())
+        {
+            _logger.Warning(_localisationService
+                .GetText("bot-unable_to_filter_mods_all_blacklisted",
+                    new
+                    {
+                        slotName = desiredSlotObject.Name,
+                        itemName = modTemplate.Name,
+                    }
+                )
+            );
+        }
+
+        if (modPool[modTemplate.Id] is null)
+        {
+            modPool[modTemplate.Id] = new();
+        }
+
+        modPool[modTemplate.Id][desiredSlotObject.Name] = supportedSubMods;
     }
 
     /// <summary>
