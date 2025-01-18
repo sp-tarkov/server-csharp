@@ -20,9 +20,9 @@ public class WatermarkOverride(
         base.Initialize();
     }
 
-    public override string GetVersionTag(bool withEftVersion = false)
-    {
-        // _logger.Success("asdasdasda");
-        return base.GetVersionTag(withEftVersion);
-    }
+    // public override string GetVersionTag(bool withEftVersion = false)
+    // {
+    //     // _logger.Success("asdasdasda");
+    //     return base.GetVersionTag(withEftVersion);
+    // }
 }
