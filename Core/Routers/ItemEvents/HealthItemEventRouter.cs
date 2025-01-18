@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -30,16 +30,16 @@ public class HealthItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse>? HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "Eat":
-                return _healthCallbacks.OffraidEat(pmcData, body as OffraidEatRequestData, sessionID);
+                return Task.FromResult(_healthCallbacks.OffraidEat(pmcData, body as OffraidEatRequestData, sessionID));
             case "Heal":
-                return _healthCallbacks.OffraidHeal(pmcData, body as OffraidHealRequestData, sessionID);
+                return Task.FromResult(_healthCallbacks.OffraidHeal(pmcData, body as OffraidHealRequestData, sessionID));
             case "RestoreHealth":
-                return _healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID);
+                return Task.FromResult(_healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID));
             default:
                 throw new Exception($"HealthItemEventRouter being used when it cant handle route {url}");
         }

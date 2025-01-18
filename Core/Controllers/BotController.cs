@@ -148,7 +148,7 @@ public class BotController
             var botNameKey = botType.ToLower();
             foreach (var (difficultyName, difficultyValues) in botDetails.BotDifficulty)
             {
-                // Bot doesnt exist in result, add
+                // Bot doesn't exist in result, add
                 if (!result.ContainsKey(botNameKey))
                 {
                     result.TryAdd(botNameKey, new Dictionary<string, DifficultyCategories>());

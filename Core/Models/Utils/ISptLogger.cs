@@ -1,3 +1,4 @@
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 
 namespace Core.Models.Utils;
@@ -14,4 +15,5 @@ public interface ISptLogger<T>
     void Info(string data, Exception? ex = null);
     void Debug(string data, Exception? ex = null);
     void Critical(string data, Exception? ex = null);
+    void WriteToLogFile(object body);
 }

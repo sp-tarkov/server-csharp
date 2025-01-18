@@ -49,9 +49,9 @@ public class CustomizationCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyClothing(PmcData pmcData, BuyClothingRequestData info, string sessionID)
+    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData info, string sessionID)
     {
-        return _customizationController.BuyClothing(pmcData, info, sessionID);
+        return _customizationController.BuyCustomisation(pmcData, info, sessionID);
     }
 
     /// <summary>
