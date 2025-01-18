@@ -36,9 +36,4 @@
         </Content>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="user\logs\" />
-      <Folder Include="user\mods\" />
-    </ItemGroup>
-
 </Project>
