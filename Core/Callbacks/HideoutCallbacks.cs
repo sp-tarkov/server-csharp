@@ -2,32 +2,20 @@ using Core.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
-public class HideoutCallbacks : OnUpdate
+public class HideoutCallbacks(
+    HideoutController _hideoutController,
+    ConfigServer _configServer
+    ) : OnUpdate
 {
-    protected HideoutController _hideoutController;
-    protected ConfigServer _configServer;
-    protected HideoutConfig _hideoutConfig;
-
-    public HideoutCallbacks
-    (
-        HideoutController hideoutController,
-        ConfigServer configServer
-    )
-    {
-        _hideoutController = hideoutController;
-        _configServer = configServer;
-        _hideoutConfig = configServer.GetConfig<HideoutConfig>();
-    }
+    private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     /// Handle HideoutUpgrade event
@@ -172,16 +160,16 @@ public class HideoutCallbacks : OnUpdate
         return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 
-    public async Task<bool> OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
         {
             // TODO
             // _hideoutController.Update();
-            return true;
+            return Task.FromResult(true);
         }
 
-        return false;
+        return Task.FromResult(false);
     }
 
     public string GetRoute()
