@@ -150,7 +150,7 @@ public class DialogueController
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
     public DialogueInfo GetDialogueInfo(
-        string dialogueId,
+        string? dialogueId,
         string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
@@ -280,7 +280,7 @@ public class DialogueController
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
     public void RemoveDialogue(
-        string dialogueId,
+        string? dialogueId,
         string sessionId)
     {
         throw new NotImplementedException();
@@ -293,7 +293,7 @@ public class DialogueController
     /// <param name="shouldPin"></param>
     /// <param name="sessionId"></param>
     public void SetDialoguePin(
-        string dialogueId,
+        string? dialogueId,
         bool shouldPin,
         string sessionId)
     {
@@ -307,7 +307,7 @@ public class DialogueController
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
     public void SetRead(
-        List<string> dialogueIds,
+        List<string>? dialogueIds,
         string sessionId)
     {
         throw new NotImplementedException();

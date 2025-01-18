@@ -10,27 +10,14 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogueCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(DialogueCallbacks))]
-public class DialogueCallbacks : OnUpdate
+public class DialogueCallbacks(
+    HashUtil _hashUtil,
+    TimeUtil _timeUtil,
+    HttpResponseUtil _httpResponseUtil,
+    DialogueController _dialogueController
+)
+    : OnUpdate
 {
-    protected HashUtil _hashUtil;
-    protected TimeUtil _timeUtil;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected DialogueController _dialogueController;
-
-    public DialogueCallbacks
-    (
-        HashUtil hashUtil,
-        TimeUtil timeUtil,
-        HttpResponseUtil httpResponseUtil,
-        DialogueController dialogueController
-    )
-    {
-        _hashUtil = hashUtil;
-        _timeUtil = timeUtil;
-        _httpResponseUtil = httpResponseUtil;
-        _dialogueController = dialogueController;
-    }
-
     /// <summary>
     /// Handle client/friend/list
     /// </summary>
@@ -60,7 +47,7 @@ public class DialogueCallbacks : OnUpdate
                 RegistrationId = 20,
                 DateTime = _timeUtil.GetTimeStamp(),
                 IsDeveloper = true,
-                Regions = new() { "EUR" },
+                Regions = ["EUR"],
                 VersionId = "bgkidft87ddd",
                 Ip = "",
                 Port = 0,
@@ -335,10 +322,10 @@ public class DialogueCallbacks : OnUpdate
         throw new NotImplementedException(); // Not implemented in Node
     }
 
-    public async Task<bool> OnUpdate(long timeSinceLastRun)
+    public Task<bool> OnUpdate(long timeSinceLastRun)
     {
         _dialogueController.Update();
-        return true;
+        return Task.FromResult(true);
     }
 
     public string GetRoute()
