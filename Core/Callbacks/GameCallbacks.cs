@@ -17,8 +17,7 @@ public class GameCallbacks(
     SaveServer _saveServer,
     GameController _gameController,
     TimeUtil _timeUtil
-)
-    : OnLoad
+) : OnLoad
 {
     public Task OnLoad()
     {

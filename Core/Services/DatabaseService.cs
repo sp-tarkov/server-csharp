@@ -192,7 +192,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/templates/customisation.json
      */
-    public Dictionary<string, CustomizationItem> GetCustomization()
+    public Dictionary<string, CustomizationItem?> GetCustomization()
     {
         if (_databaseServer.GetTables().Templates?.Customization == null)
             throw new Exception(

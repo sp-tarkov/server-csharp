@@ -45,7 +45,7 @@ public class LocalisationService
             : _i18nService.GetLocalised(key, args);
     }
 
-    public string GetText<T>(string key, T value) where T :IConvertible
+    public string GetText<T>(string key, T value) where T :IConvertible?
     {
         return _i18nService.GetLocalised(key, value);
     }

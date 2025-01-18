@@ -39,9 +39,9 @@ public class DialogueCallbacks(
     /// <returns></returns>
     public string GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
     {
-        var chatServer = new List<ChatServer>()
+        var chatServer = new List<ChatServer>
         {
-            new ChatServer()
+            new ChatServer
             {
                 Id = _hashUtil.Generate(),
                 RegistrationId = 20,
@@ -51,10 +51,9 @@ public class DialogueCallbacks(
                 VersionId = "bgkidft87ddd",
                 Ip = "",
                 Port = 0,
-                Chats = [new() { Id = "0", Members = 0 }],
+                Chats = [ new Chat { Id = "0", Members = 0 } ],
             }
         };
-
 
         return _httpResponseUtil.GetBody(chatServer);
     }
