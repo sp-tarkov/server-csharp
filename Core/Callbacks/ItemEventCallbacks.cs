@@ -59,9 +59,11 @@ public class ItemEventCallbacks
 
     public int? GetErrorCode(List<Warning> warnings)
     {
-        if (warnings[0].Code != null)
-            return int.Parse(warnings[0]?.Code);
-        
-        return int.Parse(BackendErrorCodes.UNKNOWN_ERROR.ToString());
+        if (warnings[0].Code is null)
+        {
+            return int.Parse(BackendErrorCodes.UNKNOWN_ERROR.ToString());
+        }
+
+        return int.Parse(warnings[0]?.Code);
     }
 }

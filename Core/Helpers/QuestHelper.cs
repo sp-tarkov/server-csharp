@@ -101,31 +101,31 @@ public class QuestHelper
     /// <returns>true if player level is greater than or equal to quest</returns>
     public bool DoesPlayerLevelFulfilCondition(double playerLevel, QuestCondition condition)
     {
-        if (condition.ConditionType == "Level")
+        if (condition.ConditionType != "Level")
         {
-            var conditionValue = double.Parse(condition.Value.ToString());
-            switch (condition.CompareMethod)
-            {
-                case ">=":
-                    return playerLevel >= conditionValue;
-                case ">":
-                    return playerLevel > conditionValue;
-                case "<":
-                    return playerLevel < conditionValue;
-                case "<=":
-                    return playerLevel <= conditionValue;
-                case "=":
-                    return playerLevel == conditionValue;
-                default:
-                    _logger.Error(
-                        _localisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod)
-                    );
-
-                    return false;
-            }
+            return true;
         }
 
-        return true;
+        var conditionValue = double.Parse(condition.Value.ToString());
+        switch (condition.CompareMethod)
+        {
+            case ">=":
+                return playerLevel >= conditionValue;
+            case ">":
+                return playerLevel > conditionValue;
+            case "<":
+                return playerLevel < conditionValue;
+            case "<=":
+                return playerLevel <= conditionValue;
+            case "=":
+                return playerLevel == conditionValue;
+            default:
+                _logger.Error(
+                    _localisationService.GetText("quest-unable_to_find_compare_condition", condition.CompareMethod)
+                );
+
+                return false;
+        }
     }
 
     /// <summary>
@@ -858,8 +858,14 @@ public class QuestHelper
      */
     public List<Quest> GetClientQuests(string sessionID)
     {
-        List<Quest> questsToShowPlayer = new List<Quest>();
+        List<Quest> questsToShowPlayer = [];
         var profile = _profileHelper.GetPmcProfile(sessionID);
+        if (profile is null)
+        {
+            _logger.Error($"Profile {sessionID} not found, unable to return quests");
+
+            return [];
+        }
 
         var allQuests = GetQuestsFromDb();
         foreach (var quest in allQuests)
@@ -873,7 +879,7 @@ public class QuestHelper
                 continue;
             }
 
-            // Filter out bear quests for usec and vice versa
+            // Filter out bear quests for USEC and vice versa
             if (QuestIsForOtherSide(profile.Info.Side, quest.Id))
             {
                 continue;
@@ -911,11 +917,12 @@ public class QuestHelper
 
             // Check the status of each quest condition, if any are not completed
             // then this quest should not be visible
-            bool haveCompletedPreviousQuest = true;
+            var haveCompletedPreviousQuest = true;
             foreach (var conditionToFulfil in questRequirements)
             {
                 // If the previous quest isn't in the user profile, it hasn't been completed or started
-                var prerequisiteQuest = profile.Quests.FirstOrDefault(profileQuest => (conditionToFulfil.Target as string[]).Contains(profileQuest.QId));
+                var questIdsToFulfil = conditionToFulfil.Target as string[] ?? [];
+                var prerequisiteQuest = profile.Quests.FirstOrDefault(profileQuest => questIdsToFulfil.Contains(profileQuest.QId));
 
                 if (prerequisiteQuest is null)
                 {
@@ -1068,7 +1075,7 @@ public class QuestHelper
      * @returns QuestStatusChange array
      */
     protected List<QuestStatus> GetQuestsWithDifferentStatuses(
-        List<QuestStatus> preQuestStatusus,
+        List<QuestStatus> preQuestStatuses,
         List<QuestStatus> postQuestStatuses
     )
     {

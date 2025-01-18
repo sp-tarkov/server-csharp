@@ -333,12 +333,11 @@ public class CustomizationController
     /// <summary>
     /// Applies a purchased suit to the players doll
     /// </summary>
-    /// <param name="customization">Suit to apply to profile</param>
+    /// <param name="customisation">Suit to apply to profile</param>
     /// <param name="pmcData">Profile to update</param>
     private void ApplyClothingItemToProfile(CustomizationSetOption customisation, PmcData pmcData)
     {
-        var dbSuit = _databaseService.GetCustomization()[customisation?.Id];
-        if (dbSuit == null)
+        if (!_databaseService.GetCustomization().TryGetValue(customisation?.Id, out var dbSuit))
         {
             _logger.Error($"Unable to find suit customisation id: {customisation?.Id}, cannot apply clothing to player profile: {pmcData.Id}");
             return;

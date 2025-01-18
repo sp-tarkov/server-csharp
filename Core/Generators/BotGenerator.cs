@@ -416,11 +416,11 @@ public class BotGenerator
             return;
         }
 
-        foreach (var equipmentKvP in blacklist.Gear)
+        foreach (var (equipmentSlot, blacklistedTpls) in blacklist.Gear)
         {
-            var equipmentDict = botJsonTemplate.BotInventory.Equipment[equipmentKvP.Key];
+            var equipmentDict = botJsonTemplate.BotInventory.Equipment[equipmentSlot];
 
-            foreach (var blacklistedTpl in equipmentKvP.Value)
+            foreach (var blacklistedTpl in blacklistedTpls)
             {
                 // Set weighting to 0, will never be picked
                 equipmentDict[blacklistedTpl] = 0;
@@ -452,7 +452,7 @@ public class BotGenerator
         // Remove blacklisted loot from loot containers
         foreach (var lootContainerKey in lootContainersToFilter)
         {
-            var prop = props.FirstOrDefault(x => x.Name.ToLower() == lootContainerKey.ToLower());
+            var prop = props.FirstOrDefault(x => string.Equals(x.Name, lootContainerKey, StringComparison.CurrentCultureIgnoreCase));
             var propValue = (Dictionary<string, double>)prop.GetValue(botInventory.Items);
 
             // No container, skip
@@ -462,11 +462,11 @@ public class BotGenerator
             }
 
             List<string> tplsToRemove = [];
-            foreach (var item in propValue)
+            foreach (var (key, _) in propValue)
             {
-                if (_itemFilterService.IsLootableItemBlacklisted(item.Key))
+                if (_itemFilterService.IsLootableItemBlacklisted(key))
                 {
-                    tplsToRemove.Add(item.Key);
+                    tplsToRemove.Add(key);
                 }
             }
 

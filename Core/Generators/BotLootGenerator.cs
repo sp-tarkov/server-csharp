@@ -684,10 +684,10 @@ public class BotLootGenerator
     /// Add generated weapons to inventory as loot
     /// </summary>
     /// <param name="sessionId"></param>
-    /// <param name="botInventory">inventory to add preset to</param>
-    /// <param name="equipmentSlot">slot to place the preset in (backpack)</param>
-    /// <param name="templateInventory">bots template, assault.json</param>
-    /// <param name="modsChances">chances for mods to spawn on weapon</param>
+    /// <param name="botInventory">Inventory to add preset to</param>
+    /// <param name="equipmentSlot">Slot to place the preset in (backpack)</param>
+    /// <param name="templateInventory">Bots template, assault.json</param>
+    /// <param name="modChances">Chances for mods to spawn on weapon</param>
     /// <param name="botRole">bots role .e.g. pmcBot</param>
     /// <param name="isPmc">are we generating for a pmc</param>
     /// <param name="botLevel"></param>
@@ -714,33 +714,36 @@ public class BotLootGenerator
             (int)_pmcConfig.LooseWeaponInBackpackLootMinMax.Min,
             (int)_pmcConfig.LooseWeaponInBackpackLootMinMax.Max
         );
-        if (randomisedWeaponCount > 0)
-        {
-            for (var i = 0; i < randomisedWeaponCount; i++)
-            {
-                var generatedWeapon = _botWeaponGenerator.GenerateRandomWeapon(
-                    sessionId,
-                    chosenWeaponType,
-                    templateInventory,
-                    botInventory.Equipment,
-                    modChances,
-                    botRole,
-                    isPmc,
-                    botLevel
-                );
-                var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
-                    [equipmentSlot],
-                    generatedWeapon.Weapon[0].Id,
-                    generatedWeapon.Weapon[0].Template,
-                    generatedWeapon.Weapon,
-                    botInventory,
-                    containersIdFull
-                );
 
-                if (result != ItemAddedResult.SUCCESS)
-                {
-                    _logger.Debug($"Failed to add additional weapon {generatedWeapon.Weapon[0].Id} to bot backpack, reason: {result.ToString()}");
-                }
+        if (randomisedWeaponCount <= 0)
+        {
+            return;
+        }
+
+        for (var i = 0; i < randomisedWeaponCount; i++)
+        {
+            var generatedWeapon = _botWeaponGenerator.GenerateRandomWeapon(
+                sessionId,
+                chosenWeaponType,
+                templateInventory,
+                botInventory.Equipment,
+                modChances,
+                botRole,
+                isPmc,
+                botLevel
+            );
+            var result = _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
+                [equipmentSlot],
+                generatedWeapon.Weapon[0].Id,
+                generatedWeapon.Weapon[0].Template,
+                generatedWeapon.Weapon,
+                botInventory,
+                containersIdFull
+            );
+
+            if (result != ItemAddedResult.SUCCESS)
+            {
+                _logger.Debug($"Failed to add additional weapon {generatedWeapon.Weapon[0].Id} to bot backpack, reason: {result.ToString()}");
             }
         }
     }
@@ -768,7 +771,7 @@ public class BotLootGenerator
     /// <param name="botRole">Bot type</param>
     /// <param name="itemSpawnLimits"></param>
     /// <returns>true if item has reached spawn limit</returns>
-    public bool ItemHasReachedSpawnLimit(TemplateItem itemTemplate, string botRole, ItemSpawnLimitSettings itemSpawnLimits)
+    public bool ItemHasReachedSpawnLimit(TemplateItem itemTemplate, string botRole, ItemSpawnLimitSettings? itemSpawnLimits)
     {
         // PMCs and scavs have different sections of bot config for spawn limits
         if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0) {
@@ -884,7 +887,7 @@ public class BotLootGenerator
             return itemTemplate.Parent;
         }
 
-        // parentId and tplid not found
+        // parentId and tplId not found
         return null;
     }
 }

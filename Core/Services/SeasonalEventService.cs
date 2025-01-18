@@ -819,8 +819,8 @@ public class SeasonalEventService
     /// <param name="giftKey">Key of gift to give</param>
     protected void GiveGift(string playerId, string giftKey)
     {
-        var gitftData = _giftService.GetGiftById(giftKey);
-        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(playerId, giftKey, gitftData.MaxToSendPlayer ?? 5))
+        var giftData = _giftService.GetGiftById(giftKey);
+        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(playerId, giftKey, giftData.MaxToSendPlayer ?? 5))
         {
             _giftService.SendGiftToPlayer(playerId, giftKey);
         }

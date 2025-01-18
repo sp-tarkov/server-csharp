@@ -92,8 +92,13 @@ namespace Core.Generators
          * @param rewardTplBlacklist OPTIONAL: list of tpls to NOT use when picking a reward
          * @returns IQuestRewards
          */
-        public QuestRewards GenerateReward(int pmcLevel, double difficulty, string traderId, RepeatableQuestConfig repeatableConfig,
-            EliminationConfig eliminationConfig, BaseQuestConfig baseQuestConfig, List<string>? rewardTplBlacklist = null)
+        public QuestRewards GenerateReward(
+            int pmcLevel,
+            double difficulty,
+            string traderId,
+            RepeatableQuestConfig repeatableConfig,
+            EliminationConfig eliminationConfig,
+            List<string>? rewardTplBlacklist = null)
         {
             // Get vars to configure rewards with
             var rewardParams = GetQuestRewardValues(repeatableConfig.RewardScaling, difficulty, pmcLevel);
@@ -208,7 +213,7 @@ namespace Core.Generators
             // Chance of adding skill reward
             if (_randomUtil.GetChance100((double)rewardParams.SkillRewardChance * 100))
             {
-                var targetSkill = _randomUtil.GetArrayValue(baseQuestConfig.PossibleSkillRewards);
+                var targetSkill = _randomUtil.GetArrayValue(eliminationConfig.PossibleSkillRewards);
                 Reward reward = new()
                 {
                     Id = _hashUtil.Generate(),

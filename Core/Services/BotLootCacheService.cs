@@ -70,46 +70,47 @@ public class BotLootCacheService
         }
 
         Dictionary<string, double> result = null;
+        var botRoleCache = _lootCache[botRole];
         switch (lootType)
         {
             case LootCacheType.Special:
-                result = _lootCache[botRole].SpecialItems;
+                result = botRoleCache.SpecialItems;
                 break;
             case LootCacheType.Backpack:
-                result = _lootCache[botRole].BackpackLoot;
+                result = botRoleCache.BackpackLoot;
                 break;
             case LootCacheType.Pocket:
-                result = _lootCache[botRole].PocketLoot;
+                result = botRoleCache.PocketLoot;
                 break;
             case LootCacheType.Vest:
-                result = _lootCache[botRole].VestLoot;
+                result = botRoleCache.VestLoot;
                 break;
             case LootCacheType.Secure:
-                result = _lootCache[botRole].SecureLoot;
+                result = botRoleCache.SecureLoot;
                 break;
             case LootCacheType.Combined:
-                result = _lootCache[botRole].CombinedPoolLoot;
+                result = botRoleCache.CombinedPoolLoot;
                 break;
             case LootCacheType.HealingItems:
-                result = _lootCache[botRole].HealingItems;
+                result = botRoleCache.HealingItems;
                 break;
             case LootCacheType.GrenadeItems:
-                result = _lootCache[botRole].GrenadeItems;
+                result = botRoleCache.GrenadeItems;
                 break;
             case LootCacheType.DrugItems:
-                result = _lootCache[botRole].DrugItems;
+                result = botRoleCache.DrugItems;
                 break;
             case LootCacheType.FoodItems:
-                result = _lootCache[botRole].FoodItems;
+                result = botRoleCache.FoodItems;
                 break;
             case LootCacheType.DrinkItems:
-                result = _lootCache[botRole].DrinkItems;
+                result = botRoleCache.DrinkItems;
                 break;
             case LootCacheType.CurrencyItems:
-                result = _lootCache[botRole].CurrencyItems;
+                result = botRoleCache.CurrencyItems;
                 break;
             case LootCacheType.StimItems:
-                result = _lootCache[botRole].StimItems;
+                result = botRoleCache.StimItems;
                 break;
             default:
                 _logger.Error(
@@ -161,7 +162,7 @@ public class BotLootCacheService
     /// Generate loot for a bot and store inside a private class property
     /// </summary>
     /// <param name="botRole">bots role (assault / pmcBot etc)</param>
-    /// <param name="isPmc">Is the bot a PMC (alteres what loot is cached)</param>
+    /// <param name="isPmc">Is the bot a PMC (alters what loot is cached)</param>
     /// <param name="botJsonTemplate">db template for bot having its loot generated</param>
     protected void AddLootToCache(string botRole, bool isPmc, BotType botJsonTemplate)
     {

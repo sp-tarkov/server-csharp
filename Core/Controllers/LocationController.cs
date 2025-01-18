@@ -43,12 +43,12 @@ public class LocationController
         // keyed by _id location property
         var locationResult = new Dictionary<string, LocationBase>();
 
-        foreach (var location in maps)
+        foreach (var kvp in maps)
         {
-            var mapBase = location.Value?.Base;
+            var mapBase = kvp.Value?.Base;
             if (mapBase == null)
             {
-                _logger.Debug($"Map: {location} has no base json file, skipping generation");
+                _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
                 continue;
             }
 

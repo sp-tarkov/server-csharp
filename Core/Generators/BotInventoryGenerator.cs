@@ -221,19 +221,19 @@ public class BotInventoryGenerator
         // Iterate over all equipment slots of bot, do it in specifc order to reduce conflicts
         // e.g. ArmorVest should be generated after TactivalVest
         // or FACE_COVER before HEADWEAR
-        foreach (var equipmentSlotKvP in templateInventory.Equipment)
+        foreach (var (equipmentSlot, value) in templateInventory.Equipment)
         {
             // Skip some slots as they need to be done in a specific order + with specific parameter values
             // e.g. Weapons
-            if (excludedSlots.Contains(equipmentSlotKvP.Key))
+            if (excludedSlots.Contains(equipmentSlot))
             {
                 continue;
             }
 
             GenerateEquipment(new GenerateEquipmentProperties
             {
-                RootEquipmentSlot = equipmentSlotKvP.Key,
-                RootEquipmentPool = equipmentSlotKvP.Value,
+                RootEquipmentSlot = equipmentSlot,
+                RootEquipmentPool = value,
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
@@ -372,11 +372,10 @@ public class BotInventoryGenerator
     /// <summary>
     /// Remove armored rigs from parameter data
     /// </summary>
-    /// <param name="templateEquipment">Equpiment to filter TacticalVest of</param>
+    /// <param name="templateEquipment">Equipment to filter TacticalVest by</param>
     /// <param name="botRole">Role of bot vests are being filtered for</param>
-    /// <param name="allowEmptyRequest">Should the function return all rigs when 0 unarmored are found</param>
-    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole,
-        bool allowEmptyResult = true)
+    /// <param name="allowEmptyResult">Should the function return all rigs when 0 unarmored are found</param>
+    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole, bool allowEmptyResult = true)
     {
         var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest].Where(kvp => !_itemHelper.ItemHasSlots(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
@@ -537,7 +536,7 @@ public class BotInventoryGenerator
             var blacklistedMods = equipmentBlacklist[modSlot] ?? [];
             var filteredMods = modPool[modSlot].Where((slotName) => !blacklistedMods.Contains(slotName));
 
-            if (filteredMods.Count() > 0)
+            if (filteredMods.Any())
             {
                 modPool[modSlot] = filteredMods.ToList();
             }
@@ -561,14 +560,14 @@ public class BotInventoryGenerator
         string botRole, bool isPmc, Generation itemGenerationLimitsMinMax, int botLevel)
     {
         var weaponSlotsToFill = GetDesiredWeaponsForBot(equipmentChances);
-        foreach (var weaponSlot in weaponSlotsToFill)
+        foreach (var desiredWeapons in weaponSlotsToFill)
         {
             // Add weapon to bot if true and bot json has something to put into the slot
-            if (weaponSlot.ShouldSpawn && templateInventory.Equipment[weaponSlot.Slot].Any())
+            if (desiredWeapons.ShouldSpawn && templateInventory.Equipment[desiredWeapons.Slot].Any())
             {
                 AddWeaponAndMagazinesToInventory(
                     sessionId,
-                    weaponSlot,
+                    desiredWeapons,
                     templateInventory,
                     botInventory,
                     equipmentChances,
@@ -586,7 +585,7 @@ public class BotInventoryGenerator
     /// </summary>
     /// <param name="equipmentChances">Chances bot has certain equipment</param>
     /// <returns>What slots bot should have weapons generated for</returns>
-    public List<DesiredWeapons> GetDesiredWeaponsForBot(Chances equipmentChances) // TODO: Type fuckery { slot: EquipmentSlots; shouldSpawn: boolean }[]
+    public List<DesiredWeapons> GetDesiredWeaponsForBot(Chances equipmentChances)
     {
         var shouldSpawnPrimary = _randomUtil.GetChance100(equipmentChances.EquipmentChances["FirstPrimaryWeapon"]);
         return
@@ -628,7 +627,7 @@ public class BotInventoryGenerator
         Chances equipmentChances, string botRole,
         bool isPmc, Generation itemGenerationWeights, int botLevel)
     {
-        var generatedweapon = _botWeaponGenerator.GenerateRandomWeapon(
+        var generatedWeapon = _botWeaponGenerator.GenerateRandomWeapon(
             sessionId,
             weaponSlot.Slot.ToString(),
             templateInventory,
@@ -639,10 +638,10 @@ public class BotInventoryGenerator
             botLevel
         );
         
-        botInventory.Items.AddRange(generatedweapon.Weapon);
+        botInventory.Items.AddRange(generatedWeapon.Weapon);
         
         _botWeaponGenerator.AddExtraMagazinesToInventory(
-            generatedweapon,
+            generatedWeapon,
             itemGenerationWeights.Items.Magazines,
             botInventory,
             botRole);

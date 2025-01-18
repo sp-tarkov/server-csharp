@@ -1,7 +1,5 @@
-using System.Reflection;
-using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Common;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Server;
 
@@ -71,7 +69,7 @@ public record Locations
         {
             return (Eft.Common.Location?)GetType()
                        .GetProperties()
-                       .First(p => p.Name.ToLower() == _locationMappings[key].ToLower())
+                       .First(p => string.Equals(p.Name, _locationMappings[key], StringComparison.CurrentCultureIgnoreCase))
                        .GetGetMethod()?
                        .Invoke(this, null) ?? null;
         }
@@ -79,7 +77,7 @@ public record Locations
         {
             GetType()
                 .GetProperties()
-                .First(p => p.Name.ToLower() == key.ToLower())
+                .First(p => string.Equals(p.Name, key, StringComparison.CurrentCultureIgnoreCase))
                 .GetSetMethod()
                 ?
                 .Invoke(this, [value]);

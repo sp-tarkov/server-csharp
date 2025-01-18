@@ -97,9 +97,9 @@ public class TraderController
             // Adjust price by traderPriceMultipler config property
             if (_traderConfig.TraderPriceMultipler != 1)
             {
-                foreach (var scheme in trader.Value?.Assort?.BarterScheme)
+                foreach (var kvp in trader.Value?.Assort?.BarterScheme)
                 {
-                    var barterSchemeItem = scheme.Value[0][0];
+                    var barterSchemeItem = kvp.Value[0][0];
 
                     if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem?.Template))
                     {
@@ -130,26 +130,28 @@ public class TraderController
     /// <returns></returns>
     public bool Update()
     {
-        foreach (var trader in _databaseService.GetTables().Traders)
+        foreach (var (traderId, data) in _databaseService.GetTables().Traders)
         {
-            if (trader.Key == "ragfair" || trader.Key == Traders.LIGHTHOUSEKEEPER)
-                continue;
-            
-            if (trader.Key == Traders.FENCE)
+            switch (traderId)
             {
-                if (_fenceService.NeedsPartialRefresh())
-                    _fenceService.GenerateFenceAssorts();
+                case Traders.LIGHTHOUSEKEEPER:
+                    continue;
+                case Traders.FENCE:
+                {
+                    if (_fenceService.NeedsPartialRefresh())
+                        _fenceService.GenerateFenceAssorts();
                 
-                continue;
+                    continue;
+                }
             }
 
             // Trader needs to be refreshed
-            if (_traderAssortHelper.TraderAssortsHaveExpired(trader.Key))
+            if (_traderAssortHelper.TraderAssortsHaveExpired(traderId))
             {
-                _traderAssortHelper.ResetExpiredTrader(trader.Value);
+                _traderAssortHelper.ResetExpiredTrader(data);
                 
                 // Reset purchase data per trader as they have independent reset times
-                _traderPurchasePersisterService.ResetTraderPurchasesStoredInProfile(trader.Key);
+                _traderPurchasePersisterService.ResetTraderPurchasesStoredInProfile(traderId);
             }
         }
 
@@ -165,18 +167,15 @@ public class TraderController
     {
         var traders = new List<TraderBase>();
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
-        foreach (var trader in _databaseService.GetTables().Traders)
+        foreach (var (traderId, data) in _databaseService.GetTables().Traders)
         {
-            if (trader.Value.Base.Id == "ragfair")
-                continue;
-
-            traders.Add(_traderHelper.GetTrader(trader.Key, sessionId));
+            traders.Add(_traderHelper.GetTrader(traderId, sessionId));
 
             if (pmcData?.Info != null)
-                _traderHelper.LevelUp(trader.Key, pmcData);
+                _traderHelper.LevelUp(traderId, pmcData);
         }
 
-        traders.Sort((a, b) => SortByTraderId(a, b));
+        traders.Sort(SortByTraderId);
         return traders;
     }
 
@@ -188,7 +187,7 @@ public class TraderController
     /// <returns>1,-1 or 0</returns>
     private int SortByTraderId(TraderBase traderA, TraderBase traderB)
     {
-        return string.Compare(traderA.Id, traderB.Id);
+        return string.CompareOrdinal(traderA.Id, traderB.Id);
     }
 
     /// <summary>

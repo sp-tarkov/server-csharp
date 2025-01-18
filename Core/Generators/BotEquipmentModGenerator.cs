@@ -101,16 +101,14 @@ public class BotEquipmentModGenerator
         var forceSpawn = shouldForceSpawn;
 
         // Get mod pool for the desired item
-        var compatibleModsPool = settings.ModPool[parentTemplate.Id];
-        if (compatibleModsPool is null)
+        if (!settings.ModPool.TryGetValue(parentTemplate.Id, out var compatibleModsPool))
         {
             _logger.Warning($"bot: {settings.BotData.Role} lacks a mod slot pool for item: {parentTemplate.Id} {parentTemplate.Name}");
         }
 
         // Iterate over mod pool and choose mods to add to item
-        foreach (var modSlotKvP in compatibleModsPool)
+        foreach (var (modSlotName, modPool) in compatibleModsPool)
         {
-            var modSlotName = modSlotKvP.Key;
             // Get the templates slot object from db
             var itemSlotTemplate = GetModItemSlotFromDb(modSlotName, parentTemplate);
             if (itemSlotTemplate is null)
@@ -138,7 +136,7 @@ public class BotEquipmentModGenerator
                 settings.BotEquipmentConfig
             );
 
-            // Rolled to skip mod and it shouldnt be force-spawned
+            // Rolled to skip mod and it shouldn't be force-spawned
             if (modSpawnResult == ModSpawn.SKIP && !forceSpawn)
             {
                 continue;
@@ -151,7 +149,7 @@ public class BotEquipmentModGenerator
             }
 
             // Get pool of items we can add for this slot
-            var modPoolToChooseFrom = modSlotKvP.Value;
+            var modPoolToChooseFrom = modPool;
 
             // Filter the pool of items in blacklist
             var filteredModPool = FilterModsByBlacklist(modPoolToChooseFrom, specificBlacklist, modSlotName);
@@ -173,18 +171,17 @@ public class BotEquipmentModGenerator
                     compatibleModsPool[modSlotName],
                     parentTemplate
                 );
-                if (plateSlotFilteringOutcome.Result is Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER)
+                switch (plateSlotFilteringOutcome.Result)
                 {
-                    _logger.Debug($"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping");
+                    case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
+                        _logger.Debug($"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping");
 
-                    continue;
-                }
-
-                if (plateSlotFilteringOutcome.Result == Result.LACKS_PLATE_WEIGHTS)
-                {
-                    _logger.Warning(
-                        $"Plate slot: {modSlotName} lacks weights for armor: {parentTemplate.Id}, unable to adjust plate choice, using existing data"
-                    );
+                        continue;
+                    case Result.LACKS_PLATE_WEIGHTS:
+                        _logger.Warning(
+                            $"Plate slot: {modSlotName} lacks weights for armor: {parentTemplate.Id}, unable to adjust plate choice, using existing data"
+                        );
+                        break;
                 }
 
                 // Replace mod pool with pool of chosen plate items
@@ -1145,12 +1142,12 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
                 _logger.Debug($"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool");
             }
 
-            // Couldnt find default in globals, use existing mod pool data
+            // Couldn't find default in globals, use existing mod pool data
             return request.ItemModPool[request.ModSlot];
         }
 
         // Only filter mods down to single default item if it already exists in existing itemModPool, OR the default item has no children
-        // Filtering mod pool to item that wasnt already there can have problems;
+        // Filtering mod pool to item that wasn't already there can have problems;
         // You'd have a mod being picked without any sub-mods in its chain, possibly resulting in missing required mods not being added
         // Mod is in existing mod pool
         if (request.ItemModPool[request.ModSlot].Contains(matchingModFromPreset.Template))
@@ -1162,11 +1159,11 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
         // Get an array of items that are allowed in slot from parent item
         // Check the filter of the slot to ensure a chosen mod fits
         var parentSlotCompatibleItems = request.ParentTemplate.Properties.Slots?.FirstOrDefault(
-                (slot) => slot.Name.ToLower() == request.ModSlot.ToLower()
+                (slot) => string.Equals(slot.Name.ToLower(), request.ModSlot.ToLower(), StringComparison.Ordinal)
             )
             ?.Props.Filters[0].Filter;
 
-        // Mod isnt in existing pool, only add if it has no children and exists inside parent filter
+        // Mod isn't in existing pool, only add if it has no children and exists inside parent filter
         if (
             parentSlotCompatibleItems?.Contains(matchingModFromPreset.Template) ??
             false &&
@@ -1208,10 +1205,10 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
         return request.ItemModPool[request.ModSlot];
     }
 
-    public Item GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
+    public Item? GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
         var matchingPreset = GetMatchingPreset(weaponTemplate, request.ParentTemplate.Id);
-        return matchingPreset?.Items.FirstOrDefault((item) => item?.SlotId?.ToLower() == request.ModSlot.ToLower());
+        return matchingPreset?.Items?.FirstOrDefault((item) => item?.SlotId?.ToLower() == request.ModSlot.ToLower());
     }
 
     /// <summary>

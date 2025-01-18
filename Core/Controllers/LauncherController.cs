@@ -84,7 +84,7 @@ public class LauncherController
     {
         var result = new Dictionary<string, string>();
         var dbProfiles = _databaseService.GetProfiles();
-        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite == true))
+        foreach (var templatesProperty in typeof(ProfileTemplates).GetProperties().Where(p => p.CanWrite))
         {
             var propertyValue = templatesProperty.GetValue(dbProfiles);
             if (propertyValue == null) {
@@ -106,10 +106,10 @@ public class LauncherController
 
     public string? Login(LoginRequestData info)
     {
-        foreach (var sessionID in _saveServer.GetProfiles()) {
-            var account = _saveServer.GetProfile(sessionID.Key).ProfileInfo;
+        foreach (var kvp in _saveServer.GetProfiles()) {
+            var account = _saveServer.GetProfile(kvp.Key).ProfileInfo;
             if (info.Username == account.Username) {
-                return sessionID.Key;
+                return kvp.Key;
             }
         }
 
@@ -118,8 +118,8 @@ public class LauncherController
 
     public string Register(RegisterData info)
     {
-        foreach (var sessionID in _saveServer.GetProfiles()) {
-            if (info.Username == _saveServer.GetProfile(sessionID.Key).ProfileInfo.Username) {
+        foreach (var kvp in _saveServer.GetProfiles()) {
+            if (info.Username == _saveServer.GetProfile(kvp.Key).ProfileInfo.Username) {
                 return "";
             }
         }
@@ -131,7 +131,7 @@ public class LauncherController
     {
         var profileId = GenerateProfileId();
         var scavId = GenerateProfileId();
-        var newProfileDetails = new Info(){
+        var newProfileDetails = new Info{
             ProfileId = profileId,
             ScavengerId = scavId,
             Aid = _hashUtil.GenerateAccountId(),

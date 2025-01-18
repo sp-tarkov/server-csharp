@@ -304,11 +304,11 @@ public class RepeatableQuestController
         var locations = GetAllowedLocationsForPmcLevel(repeatableConfig.Locations, pmcLevel.Value);
 
         // Populate Exploration and Pickup quest locations
-        foreach (var location in locations) {
-            if (location.Key != ELocationName.any)
+        foreach (var (location, value) in locations) {
+            if (location != ELocationName.any)
             {
-                questPool.Pool.Exploration.Locations[location.Key] = location.Value;
-                questPool.Pool.Pickup.Locations[location.Key] = location.Value;
+                questPool.Pool.Exploration.Locations[location] = value;
+                questPool.Pool.Pickup.Locations[location] = value;
             }
         }
 
@@ -374,9 +374,9 @@ public class RepeatableQuestController
     {
         var allowedLocation = new Dictionary<ELocationName, List<string>>();
 
-        foreach (var locationKvP in locations) {
+        foreach (var (location, value) in locations) {
             var locationNames = new List<string>();
-            foreach (var locationName in locationKvP.Value) {
+            foreach (var locationName in value) {
                 if (IsPmcLevelAllowedOnLocation(locationName, pmcLevel))
                 {
                     locationNames.Add(locationName);
@@ -385,7 +385,7 @@ public class RepeatableQuestController
 
             if (locationNames.Count > 0)
             {
-                allowedLocation[locationKvP.Key] = locationNames;
+                allowedLocation[location] = locationNames;
             }
         }
 

@@ -32,12 +32,12 @@ public class PresetController
     {
         var presets = _databaseService.GetGlobals().ItemPresets;
         var reverse = new Dictionary<string, List<string>>();
-        foreach (var (id, preset) in presets)
+        foreach (var (key, preset) in presets)
         {
-            if (id != preset.Id)
+            if (key != preset.Id)
             {
                 this._logger.Error(
-                    $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({id} != {preset.Id}). Skipping"
+                    $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({key} != {preset.Id}). Skipping"
                 );
 
                 continue;

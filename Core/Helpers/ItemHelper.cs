@@ -1434,10 +1434,10 @@ public class ItemHelper
         List<Item> magazine,
         TemplateItem magTemplate,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
-        string caliber = null,
+        string? caliber = null,
         double minSizePercent = 0.25,
-        string defaultCartridgeTpl = null,
-        TemplateItem weapon = null)
+        string? defaultCartridgeTpl = null,
+        TemplateItem? weapon = null)
     {
         var chosenCaliber = caliber ?? GetRandomValidCaliber(magTemplate);
 
@@ -1456,7 +1456,7 @@ public class ItemHelper
         );
         if (cartridgeTpl is null)
         {
-            _logger.Debug($"Unable to fill item: {magazine[0].Id} {magTemplate.Name} with cartrides as none were found.");
+            _logger.Debug($"Unable to fill item: {magazine[0].Id} {magTemplate.Name} with cartridges, none found.");
 
             return;
         }
@@ -1523,7 +1523,7 @@ public class ItemHelper
             var cartridgeCountToAdd =
                 desiredStackCount <= cartridgeMaxStackSize ? desiredStackCount : cartridgeMaxStackSize;
 
-            // Ensure we don't go over the max stackcount size
+            // Ensure we don't go over the max stackCount size
             var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
             if (cartridgeCountToAdd > remainingSpace)
             {
@@ -1545,7 +1545,7 @@ public class ItemHelper
             location++;
         }
 
-        // Only one cartridge stack added, remove location property as its only used for 2 or more stacks
+        // Only one cartridge stack added, remove location property as it's only used for 2 or more stacks
         if (location == 1)
         {
             magazineWithChildCartridges[1].Location = null;

@@ -339,13 +339,14 @@ public class BotWeaponGenerator
         );
         List<Item> weaponMods = [];
 
-        // TODO: Right now, preset weapons trigger a lot of warnings regarding missing ammo in magazines & such
+        // TODO: Preset weapons trigger a lot of warnings regarding missing ammo in magazines & such
         Preset preset = null;
-        foreach (var presetObj in _databaseService.GetGlobals().ItemPresets)
+        foreach (var (_, itemPreset) in _databaseService.GetGlobals().ItemPresets)
         {
-            if (presetObj.Value.Items[0].Template == weaponTemplate)
+            if (itemPreset.Items[0].Template == weaponTemplate)
             {
-                preset = _cloner.Clone(presetObj.Value);
+                preset = _cloner.Clone(itemPreset);
+
                 break;
             }
         }

@@ -167,11 +167,10 @@ public class DialogueController
         var profile = _saveServer.GetProfile(sessionId);
 
         // User to user messages are special in that they need the player to exist in them, add if they don't
-        if (
-            messageType == MessageType.USER_MESSAGE &&
-            !dialog.Users.Any((userDialog) => userDialog.Id == profile.CharacterData.PmcData.SessionId))
+        if (messageType == MessageType.USER_MESSAGE &&
+            dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData.PmcData.SessionId))
         {
-            // nullguard
+            // Nullguard
             dialog.Users ??= [];
 
             dialog.Users.Add( new UserDialogInfo

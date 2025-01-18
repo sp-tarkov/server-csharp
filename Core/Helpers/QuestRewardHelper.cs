@@ -408,8 +408,7 @@ public class QuestRewardHelper
         foreach (var target in targets)
         {
             // This has all the original id relations since we reset the id to the original after the splitStack
-            var itemsClone = new List<Item>();
-            itemsClone.Add(_cloner.Clone(target));
+            var itemsClone = new List<Item> { _cloner.Clone(target) };
             // Here we generate a new id for the root item
             target.Id = _hashUtil.Generate();
 
