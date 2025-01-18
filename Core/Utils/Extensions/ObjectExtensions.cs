@@ -1,23 +1,43 @@
+using System.Reflection;
 using Core.Models.Spt.Repeatable;
 
 namespace Core.Utils.Extensions
 {
     public static class ObjectExtensions
     {
+        private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _indexedProperties = new();
+        private static readonly object _indexedPropertiesLockObject = new();
+
+        private static bool TryGetCachedProperty(Type type, string key, out PropertyInfo cachedProperty)
+        {
+            lock (_indexedPropertiesLockObject)
+            {
+                if (!_indexedProperties.TryGetValue(type, out var properties))
+                {
+                    properties = type.GetProperties().ToDictionary(prop => prop.GetJsonName(), prop => prop);
+                    _indexedProperties.Add(type, properties);
+                }
+
+                return properties.TryGetValue(key, out cachedProperty);
+            }
+        }
+
         public static bool Contains<T>(this object obj, T key)
         {
-            return obj.GetType().GetProperties().Any(x => x.Name == key.ToString());
+            return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
         }
 
         public static T? Get<T>(this object obj, string toLower)
         {
-            return (T?)obj.GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == toLower)?.GetValue(obj);
+            if (!TryGetCachedProperty(obj.GetType(), toLower, out var cachedProperty))
+                return default;
+            return (T?)cachedProperty.GetValue(obj);
         }
 
 
         public static void Remove<T>(this EliminationTargetPool pool, T key)
         {
-
+            // TODO: extension method should be moved to a separate static class and deal with logic
         }
     }
 }
