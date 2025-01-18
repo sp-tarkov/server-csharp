@@ -156,7 +156,7 @@ public class BotGenerator
     /// <param name="sessionId">Session id</param>
     /// <param name="botGenerationDetails">details on how to generate bots</param>
     /// <returns>constructed bot</returns>
-    public BotBase PrepareAndGenerateBot(string sessionId, BotGenerationDetails botGenerationDetails)
+    public BotBase PrepareAndGenerateBot(string sessionId, BotGenerationDetails? botGenerationDetails)
     {
         var preparedBotBase = GetPreparedBotBase(
             botGenerationDetails.EventRole ?? botGenerationDetails.Role, // Use eventRole if provided,

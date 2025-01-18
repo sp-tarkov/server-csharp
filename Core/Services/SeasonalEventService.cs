@@ -831,7 +831,7 @@ public class SeasonalEventService
     /// </summary>
     /// <param name="eventBotRole">Event bot role type</param>
     /// <returns>Bot role as string</returns>
-    public string GetBaseRoleForEventBot(string eventBotRole)
+    public string GetBaseRoleForEventBot(string? eventBotRole)
     {
         return _seasonalEventConfig.EventBotMapping.GetValueOrDefault(eventBotRole, null);
     }

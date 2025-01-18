@@ -13,7 +13,7 @@ public record BotConfig : BaseConfig
 
     /** How many variants of each bot should be generated on raid start */
     [JsonPropertyName("presetBatch")]
-    public Dictionary<string, int> PresetBatch { get; set; }
+    public Dictionary<string, int>? PresetBatch { get; set; }
 
     /** Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to */
     [JsonPropertyName("botsToNotAddPMCsAsEnemiesTo")]

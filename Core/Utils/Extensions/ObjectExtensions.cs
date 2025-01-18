@@ -27,8 +27,11 @@ namespace Core.Utils.Extensions
             return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
         }
 
-        public static T? Get<T>(this object obj, string toLower)
+        public static T? Get<T>(this object? obj, string? toLower)
         {
+            ArgumentNullException.ThrowIfNull(obj);
+            ArgumentNullException.ThrowIfNull(toLower);
+
             if (!TryGetCachedProperty(obj.GetType(), toLower, out var cachedProperty))
                 return default;
             return (T?)cachedProperty.GetValue(obj);

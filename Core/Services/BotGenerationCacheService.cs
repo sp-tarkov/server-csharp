@@ -68,7 +68,7 @@ public class BotGenerationCacheService
         throw new NotImplementedException();
     }
 
-    public string CreateCacheKey(string role, string difficulty)
+    public string CreateCacheKey(string? role, string? difficulty)
     {
         throw new NotImplementedException();
     }

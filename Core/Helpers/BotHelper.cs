@@ -23,7 +23,7 @@ public class BotHelper
     protected BotConfig _botConfig;
     protected PmcConfig _pmcConfig;
 
-    protected List<string> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected List<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
 
     public BotHelper
     (
@@ -63,7 +63,7 @@ public class BotHelper
     /// </summary>
     /// <param name="botRole">bot role to check</param>
     /// <returns>true if is pmc</returns>
-    public bool IsBotPmc(string botRole)
+    public bool IsBotPmc(string? botRole)
     {
         return _pmcNames.Contains(botRole?.ToLower());
     }
