@@ -22,15 +22,15 @@ public class HealthItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
-        {
+        return
+        [
             new HandledRoute("Eat", false),
             new HandledRoute("Heal", false),
             new HandledRoute("RestoreHealth", false)
-        };
+        ];
     }
 
-    public override Task<ItemEventRouterResponse>? HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {

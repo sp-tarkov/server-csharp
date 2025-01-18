@@ -22,8 +22,8 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
-        {
+        return
+        [
             new HandledRoute(HideoutEventActions.HIDEOUT_UPGRADE, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_UPGRADE_COMPLETE, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_PUT_ITEMS_IN_AREA_SLOTS, false),
@@ -40,7 +40,7 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
             new HandledRoute(HideoutEventActions.HIDEOUT_DELETE_PRODUCTION_COMMAND, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_APPLY_COMMAND, false),
             new HandledRoute(HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE, false)
-        };
+        ];
     }
 
     public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)

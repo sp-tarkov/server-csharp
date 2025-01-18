@@ -1,22 +1,22 @@
-﻿using Core.Annotations;
-using Core.Models.Eft.HttpResponse;
+using Core.Annotations;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
+using Core.Routers;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil) // , ItemEventRouter _itemEventRouter  TODO: Implement ItemEventRouter
+public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRouter _itemEventRouter)
 {
-    public Task<GetBodyResponseData<ItemEventRouterResponse>> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
+    public async Task<string> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
     {
-        // var eventResponse = await _itemEventRouter.HandleEvents(info, sessionID);
-        // var result = IsCriticalError(ItemEventRouterResponse.Warnings)
-        //     ? _httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].Errmsg)
-        //     : _httpResponseUtil.GetBody(eventResponse);
-        // TODO: Implement ItemEventRouter
-        throw new NotImplementedException();
+         var eventResponse = await _itemEventRouter.HandleEvents(info, sessionID);
+         var result = IsCriticalError(eventResponse.Warnings)
+             ? _httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].ErrorMessage)
+             : _httpResponseUtil.GetBody(eventResponse);
+
+         return result;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil) // , ItemEve
         return false;
     }
 
-    public int? GetErrorCode(List<Warning> warnings)
+    public int GetErrorCode(List<Warning> warnings)
     {
         return int.Parse((warnings[0].Code is null 
             ? BackendErrorCodes.UNKNOWN_ERROR.ToString() 
