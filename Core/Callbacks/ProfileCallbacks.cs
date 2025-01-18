@@ -1,6 +1,5 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
-using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
@@ -9,33 +8,19 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class ProfileCallbacks
+public class ProfileCallbacks(
+    HttpResponseUtil _httpResponse,
+    TimeUtil _timeUtil,
+    ProfileController _profileController
+)
 {
-    protected HttpResponseUtil _httpResponse;
-    protected TimeUtil _timeUtil;
-    protected ProfileController _profileController;
-    protected ProfileHelper _profileHelper;
-
-    public ProfileCallbacks(
-        HttpResponseUtil httpResponse,
-        TimeUtil timeUtil,
-        ProfileController profileController,
-        ProfileHelper profileHelper
-    )
-    {
-        _httpResponse = httpResponse;
-        _timeUtil = timeUtil;
-        _profileController = profileController;
-        _profileHelper = profileHelper;
-    }
-
     /**
      * Handle client/game/profile/create
      */
     public string CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
         var id = _profileController.CreateProfile(info, sessionID);
-        return _httpResponse.GetBody(new CreateProfileResponse() { UserId = id });
+        return _httpResponse.GetBody(new CreateProfileResponse { UserId = id });
     }
 
     /**
@@ -58,7 +43,7 @@ public class ProfileCallbacks
      */
     public string RegenerateScav(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponse.GetBody(new List<PmcData>() { _profileController.GeneratePlayerScav(sessionID) });
+        return _httpResponse.GetBody(new List<PmcData> { _profileController.GeneratePlayerScav(sessionID) });
     }
 
     /**
@@ -78,17 +63,12 @@ public class ProfileCallbacks
     {
         var output = _profileController.ChangeNickname(info, sessionID);
 
-        if (output == "taken")
+        return output switch
         {
-            return _httpResponse.GetBody<object?>(null, 255, "The nickname is already in use");
-        }
-
-        if (output == "tooshort")
-        {
-            return _httpResponse.GetBody<object?>(null, 1, "The nickname is too short");
-        }
-
-        return _httpResponse.GetBody<object>(new { status = 0, nicknamechangedate = _timeUtil.GetTimeStamp() });
+            "taken" => _httpResponse.GetBody<object?>(null, 255, "The nickname is already in use"),
+            "tooshort" => _httpResponse.GetBody<object?>(null, 1, "The nickname is too short"),
+            _ => _httpResponse.GetBody<object>(new { status = 0, nicknamechangedate = _timeUtil.GetTimeStamp() })
+        };
     }
 
     /**
@@ -98,17 +78,12 @@ public class ProfileCallbacks
     {
         var output = _profileController.ValidateNickname(info, sessionID);
 
-        if (output == "taken")
+        return output switch
         {
-            return _httpResponse.GetBody<object?>(null, 255, "225 - ");
-        }
-
-        if (output == "tooshort")
-        {
-            return _httpResponse.GetBody<object?>(null, 256, "256 - ");
-        }
-
-        return _httpResponse.GetBody(new { status = "ok" });
+            "taken" => _httpResponse.GetBody<object?>(null, 255, "225 - "),
+            "tooshort" => _httpResponse.GetBody<object?>(null, 256, "256 - "),
+            _ => _httpResponse.GetBody(new { status = "ok" })
+        };
     }
 
     /**
