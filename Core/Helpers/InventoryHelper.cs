@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -6,12 +6,32 @@ using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Inventory;
+using Core.Models.Utils;
+using Core.Services;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class InventoryHelper
 {
+    protected ISptLogger<InventoryHelper> _logger;
+    protected ProfileHelper _profileHelper;
+    protected DialogueHelper _dialogueHelper;
+    protected LocalisationService _localisationService;
+
+    public InventoryHelper(
+        ISptLogger<InventoryHelper> logger,
+        ProfileHelper profileHelper,
+        DialogueHelper dialogueHelper,
+        LocalisationService localisationService
+        )
+    {
+        _logger = logger;
+        _profileHelper = profileHelper;
+        _dialogueHelper = dialogueHelper;
+        _localisationService = localisationService;
+    }
+
     /// <summary>
     /// Add multiple items to player stash (assuming they all fit)
     /// </summary>
@@ -49,7 +69,7 @@ public class InventoryHelper
     /// </summary>
     /// <param name="itemWithChildren">An item</param>
     /// <param name="foundInRaid">Item was found in raid</param>
-    protected void SetFindInRaidStatusForItem(Item[] itemWithChildren, bool foundInRaid)
+    protected void SetFindInRaidStatusForItem(List<Item> itemWithChildren, bool foundInRaid)
     {
         throw new NotImplementedException();
     }
@@ -236,17 +256,59 @@ public class InventoryHelper
     /// Based on the item action, determine whose inventories we should be looking at for from and to.
     /// </summary>
     /// <param name="request">Item interaction request</param>
-    /// <param name="sessionId">Session id / playerid</param>
+    /// <param name="item">Item being moved/split/etc to inventory</param>
+    /// <param name="sessionId">Session id / players Id</param>
     /// <returns>OwnerInventoryItems with inventory of player/scav to adjust</returns>
     public OwnerInventoryItems GetOwnerInventoryItems(
-        InventoryMoveRequestData request,
+        InventoryBaseActionRequestData request,
+        string item,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var pmcItems = _profileHelper.GetPmcProfile(sessionId).Inventory.Items;
+        var scavProfile = _profileHelper.GetScavProfile(sessionId);
+        var fromInventoryItems = pmcItems;
+        var fromType = "pmc";
+
+        if (request.FromOwner is not null)
+        {
+            if (request.FromOwner.Id == scavProfile.Id)
+            {
+                fromInventoryItems = scavProfile.Inventory.Items;
+                fromType = "scav";
+            }
+            else if (request.FromOwner.Type.ToLower() == "mail")
+            {
+                // Split requests don't use 'use' but 'splitItem' property
+                fromInventoryItems = _dialogueHelper.GetMessageItemContents(request.FromOwner.Id, sessionId, item);
+                fromType = "mail";
+            }
+        }
+
+        // Don't need to worry about mail for destination because client doesn't allow
+        // users to move items back into the mail stash.
+        var toInventoryItems = pmcItems;
+        var toType = "pmc";
+
+        // Destination is scav inventory, update values
+        if (request.ToOwner?.Id == scavProfile.Id)
+        {
+            toInventoryItems = scavProfile.Inventory.Items;
+            toType = "scav";
+        }
+
+        // From and To types match, same inventory
+        var movingToSameInventory = fromType == toType;
+
+        return new OwnerInventoryItems{
+            From = fromInventoryItems,
+            To = toInventoryItems,
+            SameInventory = movingToSameInventory,
+            IsMail = fromType == "mail",
+        };
     }
 
     /// <summary>
-    /// Get a two dimensional array to represent stash slots
+    /// Get a two-dimensional array to represent stash slots
     /// 0 value = free, 1 = taken
     /// </summary>
     /// <param name="pmcData">Player profile</param>
@@ -303,7 +365,7 @@ public class InventoryHelper
     /// <param name="sourceItems">Inventory of the source (can be non-player)</param>
     /// <param name="toItems">Inventory of the destination</param>
     /// <param name="request">Move request</param>
-    public void MoveItemToProfile(Item[] sourceItems, Item[] toItems, InventoryMoveRequestData request)
+    public void MoveItemToProfile(List<Item> sourceItems, List<Item> toItems, InventoryMoveRequestData request)
     {
         throw new NotImplementedException();
     }
@@ -314,13 +376,63 @@ public class InventoryHelper
     /// <param name="pmcData">profile to edit</param>
     /// <param name="inventoryItems"></param>
     /// <param name="moveRequest">client move request</param>
+    /// <param name="errorMessage"></param>
     /// <returns>True if move was successful</returns>
-    public (bool success, string errorMessage) MoveItemInternal(
+    public bool MoveItemInternal(
         PmcData pmcData,
-        Item[] inventoryItems,
-        InventoryMoveRequestData moveRequest)
+        List<Item> inventoryItems,
+        InventoryMoveRequestData moveRequest,
+        out string errorMessage)
     {
-        throw new NotImplementedException();
+        errorMessage = string.Empty;
+        HandleCartridges(inventoryItems, moveRequest);
+
+        // Find item we want to 'move'
+        var matchingInventoryItem = inventoryItems.FirstOrDefault((item) => item.Id == moveRequest.Item);
+        if (matchingInventoryItem is null)
+        {
+            var noMatchingItemMesage = $"Unable to move item: { moveRequest.Item}, cannot find in inventory";
+            _logger.Error(noMatchingItemMesage);
+
+            errorMessage = noMatchingItemMesage;
+            return false;
+        }
+
+        _logger.Debug("${ moveRequest.Action} item: ${ moveRequest.item} from slotid: ${ matchingInventoryItem.slotId} to container: ${ moveRequest.to.container}");
+
+        // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
+        if (matchingInventoryItem.SlotId?.Contains("camora_") is null && moveRequest.To.Container == "cartridges")
+        {
+            _logger.Warning(
+                _localisationService.GetText("inventory-invalid_move_to_container",
+                    new {
+                        slotId = matchingInventoryItem.SlotId,
+                        container = moveRequest.To.Container,
+                    }));
+
+            return true;
+        }
+
+        // Edit items details to match its new location
+        matchingInventoryItem.ParentId = moveRequest.To.Id;
+        matchingInventoryItem.SlotId = moveRequest.To.Container;
+
+        // Ensure fastpanel dict updates when item was moved out of fast-panel-accessible slot
+        UpdateFastPanelBinding(pmcData, matchingInventoryItem);
+
+        // Item has location property, ensure its value is handled
+        if (moveRequest.To.Location is not null) {
+            matchingInventoryItem.Location = moveRequest.To.Location;
+        } else
+        {
+            // Moved from slot with location to one without, clean up
+            if (matchingInventoryItem.Location is not null)
+            {
+                matchingInventoryItem.Location = null;
+            }
+        }
+
+        return true;
     }
 
     /// <summary>
@@ -330,13 +442,34 @@ public class InventoryHelper
     /// <param name="itemBeingMoved">item being moved</param>
     protected void UpdateFastPanelBinding(PmcData pmcData, Item itemBeingMoved)
     {
-        throw new NotImplementedException();
+        // Find matching _id in fast panel
+        
+        if (!pmcData.Inventory.FastPanel.TryGetValue(itemBeingMoved.Id, out var fastPanelSlot))
+        {
+            return;
+        }
+
+        // Get moved items parent (should be container item was put into)
+        var itemParent = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == itemBeingMoved.ParentId);
+        if (itemParent is null)
+        {
+            return;
+        }
+
+        // Reset fast panel value if item was moved to a container other than pocket/rig (cant be used from fastpanel)
+        List<string> slots = ["pockets", "tacticalvest"];
+        var wasMovedToFastPanelAccessibleContainer = slots.Contains(
+            itemParent?.SlotId?.ToLower() ?? "");
+        if (!wasMovedToFastPanelAccessibleContainer)
+        {
+            pmcData.Inventory.FastPanel[fastPanelSlot[0].ToString()] = "";
+        }
     }
 
     /// <summary>
     /// Internal helper function to handle cartridges in inventory if any of them exist.
     /// </summary>
-    protected void HandleCartridges(Item[] items, InventoryMoveRequestData request)
+    protected void HandleCartridges(List<Item> items, InventoryMoveRequestData request)
     {
         throw new NotImplementedException();
     }

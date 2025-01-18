@@ -1,9 +1,9 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Inventory;
 
-public record InventoryBaseActionRequestData : BaseInteractionRequestData
+public abstract record InventoryBaseActionRequestData : BaseInteractionRequestData
 {
 }
 

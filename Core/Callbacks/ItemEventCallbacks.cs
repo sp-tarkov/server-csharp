@@ -27,7 +27,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     public bool IsCriticalError(List<Warning> warnings)
     {
         // List of non-critical error codes, we return true if any error NOT included is passed in
-        var nonCriticalErrorCodes = new List<BackendErrorCodes>() { BackendErrorCodes.NOTENOUGHSPACE };
+        var nonCriticalErrorCodes = new List<BackendErrorCodes> { BackendErrorCodes.NotEnoughSpace };
 
         foreach (var warning in warnings)
         {
@@ -44,7 +44,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     public int GetErrorCode(List<Warning> warnings)
     {
         return int.Parse((warnings[0].Code is null 
-            ? BackendErrorCodes.UNKNOWN_ERROR.ToString() 
+            ? BackendErrorCodes.UnknownError.ToString() 
             : warnings.FirstOrDefault()?.Code) ?? string.Empty);
     }
 }

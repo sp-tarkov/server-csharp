@@ -23,10 +23,9 @@ public class InventoryCallbacks(
     /// <returns></returns>
     public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID, ItemEventRouterResponse output)
     {
-        // _inventoryController.MoveItem(pmcData, info, sessionID, output);
-        // TODO: InventoryController is not implemented rn
-        // return output;
-        throw new NotImplementedException();
+         _inventoryController.MoveItem(pmcData, info, sessionID, output);
+
+         return output;
     }
 
     /// <summary>

@@ -98,7 +98,7 @@ public class HttpResponseUtil
     public ItemEventRouterResponse AppendErrorToOutput(
         ItemEventRouterResponse output,
         string? message = null,
-        BackendErrorCodes errorCode = BackendErrorCodes.NONE
+        BackendErrorCodes errorCode = BackendErrorCodes.None
     )
     {
         if (string.IsNullOrEmpty(message))
