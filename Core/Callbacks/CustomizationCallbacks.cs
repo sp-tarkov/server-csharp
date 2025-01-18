@@ -1,10 +1,7 @@
 using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Customization;
-using Core.Models.Eft.Hideout;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Servers;
 using Core.Utils;
@@ -12,24 +9,12 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class CustomizationCallbacks
+public class CustomizationCallbacks(
+    CustomizationController _customizationController,
+    SaveServer _saveServer,
+    HttpResponseUtil _httpResponseUtil
+)
 {
-    protected CustomizationController _customizationController;
-    protected SaveServer _saveServer;
-    protected HttpResponseUtil _httpResponseUtil;
-    
-    public CustomizationCallbacks
-    (
-        CustomizationController customizationController,
-        SaveServer saveServer,
-        HttpResponseUtil httpResponseUtil
-    )
-    {
-        _customizationController = customizationController;
-        _saveServer = saveServer;
-        _httpResponseUtil = httpResponseUtil;
-    }
-
     /// <summary>
     /// Handle client/trading/customization/storage
     /// </summary>
@@ -52,7 +37,7 @@ public class CustomizationCallbacks
     public string GetTraderSuits(string url, EmptyRequestData info, string sessionID)
     {
         var splitUrl = url.Split('/');
-        var traderId = splitUrl[splitUrl.Length - 3];
+        var traderId = splitUrl[^3];
 
         return _httpResponseUtil.GetBody(_customizationController.GetTraderSuits(traderId, sessionID));
     }
@@ -61,7 +46,7 @@ public class CustomizationCallbacks
     /// Handle CustomizationBuy event
     /// </summary>
     /// <param name="pmcData"></param>
-    /// <param name="body"></param>
+    /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
     public ItemEventRouterResponse BuyClothing(PmcData pmcData, BuyClothingRequestData info, string sessionID)
@@ -72,8 +57,8 @@ public class CustomizationCallbacks
     /// <summary>
     /// Handle client/hideout/customization/offer/list
     /// </summary>
-    /// <param name="pmcData"></param>
-    /// <param name="body"></param>
+    /// <param name="url"></param>
+    /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
     public string GetHideoutCustomisation(string url, EmptyRequestData info, string sessionID)
