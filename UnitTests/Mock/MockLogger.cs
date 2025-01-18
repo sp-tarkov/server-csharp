@@ -44,4 +44,9 @@ public class MockLogger<T> : ISptLogger<T>
     {
         Console.WriteLine(data);
     }
+
+    public void WriteToLogFile(object body)
+    {
+        Console.WriteLine(body);
+    }
 }

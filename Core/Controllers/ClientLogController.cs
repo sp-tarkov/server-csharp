@@ -6,16 +6,8 @@ using LogLevel = Core.Models.Spt.Logging.LogLevel;
 namespace Core.Controllers;
 
 [Injectable]
-public class ClientLogController
+public class ClientLogController(ISptLogger<ClientLogController> _logger)
 {
-    protected ISptLogger<ClientLogController> _logger;
-
-    public ClientLogController(
-        ISptLogger<ClientLogController> logger
-    )
-    {
-        _logger = logger;
-    }
 
     /// <summary>
     /// Handle /singleplayer/log
@@ -35,23 +27,23 @@ public class ClientLogController
         switch (logRequest.Level)
         {
             case LogLevel.Error:
-                this._logger.Error(message);
+                _logger.Error(message);
                 break;
             case LogLevel.Warn:
-                this._logger.Warning(message);
+                _logger.Warning(message);
                 break;
             case LogLevel.Success:
             case LogLevel.Info:
-                this._logger.Info(message);
+                _logger.Info(message);
                 break;
             case LogLevel.Custom:
-                this._logger.Info(message /* TODO: , color.ToString(), backgroundColor.ToString()*/);
+                _logger.Info(message /* TODO: , color.ToString(), backgroundColor.ToString()*/);
                 break;
             case LogLevel.Debug:
-                this._logger.Debug(message);
+                _logger.Debug(message);
                 break;
             default:
-                this._logger.Info(message);
+                _logger.Info(message);
                 break;
         }
     }
