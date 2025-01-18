@@ -7,17 +7,8 @@ using Core.Models.Eft.Notes;
 namespace Core.Callbacks;
 
 [Injectable]
-public class NoteCallbacks
+public class NoteCallbacks(NoteController _noteController)
 {
-    protected NoteController _noteController;
-
-    public NoteCallbacks
-    (
-        NoteController noteController
-    )
-    {
-        _noteController = noteController;
-    }
 
     /// <summary>
     /// Handle AddNote event
