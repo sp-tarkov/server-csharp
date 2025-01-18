@@ -4,7 +4,6 @@ using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
-using Core.Models.Eft.HttpResponse;
 using Core.Servers;
 using Core.Utils;
 
@@ -12,33 +11,19 @@ namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.GameCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(GameCallbacks))]
-public class GameCallbacks : OnLoad
+public class GameCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    Watermark _watermark,
+    SaveServer _saveServer,
+    GameController _gameController,
+    TimeUtil _timeUtil
+)
+    : OnLoad
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected Watermark _watermark;
-    protected SaveServer _saveServer;
-    protected GameController _gameController;
-    protected TimeUtil _timeUtil;
-
-    public GameCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        Watermark watermark,
-        SaveServer saveServer,
-        GameController gameController,
-        TimeUtil timeUtil
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _watermark = watermark;
-        _saveServer = saveServer;
-        _gameController = gameController;
-        _timeUtil = timeUtil;
-    }
-
-    public async Task OnLoad()
+    public Task OnLoad()
     {
         _gameController.Load();
+        return Task.CompletedTask;
     }
 
     public string GetRoute()
