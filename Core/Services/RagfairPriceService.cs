@@ -1,13 +1,34 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Player;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Ragfair;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService
 {
+    private readonly ISptLogger<RagfairPriceService> _logger;
+    private readonly HandbookHelper _handbookHelper;
+    private readonly DatabaseService _databaseService;
+
+    protected RagfairServerPrices _prices  = new RagfairServerPrices{ StaticPrices = new Dictionary<string, double>(), DynamicPrices = new Dictionary<string, double>() };
+
+public RagfairPriceService(
+        ISptLogger<RagfairPriceService> logger,
+        HandbookHelper handbookHelper,
+        DatabaseService databaseService)
+    {
+        _logger = logger;
+        _handbookHelper = handbookHelper;
+        _databaseService = databaseService;
+    }
+
+
     /// <summary>
     /// Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
     /// </summary>
@@ -26,7 +47,10 @@ public class RagfairPriceService
     /// </summary>
     public void RefreshStaticPrices()
     {
-        throw new NotImplementedException();
+        foreach (var item in _databaseService.GetItems().Where((x) => x.Value.Type == "Item"))
+        {
+            _prices.StaticPrices[item.Key] = Math.Round(_handbookHelper.GetTemplatePrice(item.Key));
+        }
     }
 
     /// <summary>
@@ -90,7 +114,10 @@ public class RagfairPriceService
 
     public Dictionary<string, double> GetAllStaticPrices()
     {
-        throw new NotImplementedException();
+        // Refresh the cache so we include any newly added custom items
+        RefreshStaticPrices();
+
+        return _prices.StaticPrices;
     }
 
     /// <summary>
