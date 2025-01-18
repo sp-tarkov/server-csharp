@@ -1,17 +1,29 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Helpers.Dialog.Commando;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
+using Core.Models.Utils;
+using Core.Services;
 
 namespace Core.Helpers.Dialogue;
 
-[Injectable]
-public class AbstractDialogChatBot : IDialogueChatBot
+public abstract class AbstractDialogChatBot : IDialogueChatBot
 {
-    public UserDialogInfo GetChatBot()
+    protected ISptLogger<AbstractDialogChatBot> _logger;
+    protected MailSendService _mailSendService;
+    private readonly List<IChatCommand> _chatCommands;
+
+    public AbstractDialogChatBot(
+        ISptLogger<AbstractDialogChatBot> logger,
+        MailSendService mailSendService,
+        IEnumerable<IChatCommand> chatCommands)
     {
-        throw new NotImplementedException();
+        _logger = logger;
+        _mailSendService = mailSendService;
+        _chatCommands = chatCommands.ToList();
     }
+
+    public abstract UserDialogInfo GetChatBot();
 
     public string HandleMessage(string sessionId, SendMessageRequest request)
     {

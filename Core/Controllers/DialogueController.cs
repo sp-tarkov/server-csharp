@@ -2,34 +2,47 @@ using Core.Annotations;
 using Core.Helpers;
 using Core.Helpers.Dialogue;
 using Core.Models.Eft.Dialog;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class DialogueController
 {
+    protected ISptLogger<DialogueController> _logger;
+    protected TimeUtil _timeUtil;
     protected DialogueHelper _dialogueHelper;
     protected ProfileHelper _profileHelper;
     protected ConfigServer _configServer;
     protected SaveServer _saveServer;
+    protected LocalisationService _localisationService;
     protected List<IDialogueChatBot> _dialogueChatBots;
     protected CoreConfig _coreConfig;
 
     public DialogueController(
+        ISptLogger<DialogueController> logger,
+        TimeUtil timeUtil,
         DialogueHelper dialogueHelper,
         ProfileHelper profileHelper,
         ConfigServer configServer,
-        SaveServer saveServer)
+        SaveServer saveServer,
+        LocalisationService localisationService,
+        IEnumerable<IDialogueChatBot> dialogueChatBots)
     {
+        _logger = logger;
+        _timeUtil = timeUtil;
         _dialogueHelper = dialogueHelper;
         _profileHelper = profileHelper;
         _configServer = configServer;
         _saveServer = saveServer;
+        _localisationService = localisationService;
+        _dialogueChatBots = dialogueChatBots.ToList();
 
         _coreConfig = _configServer.GetConfig<CoreConfig>();
     }
@@ -38,19 +51,25 @@ public class DialogueController
     /// 
     /// </summary>
     /// <param name="chatBot"></param>
-    /*
-    public void RegisterChatBot(DialogueChatBot chatBot) // TODO: this is in with the helper types
+    public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
-        throw new NotImplementedException();
+        if (_dialogueChatBots.Any((cb) => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
+        {
+            _logger.Error(_localisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
+        }
+        _dialogueChatBots.Add(chatBot);
     }
-    */
+    
 
     /// <summary>
     /// Handle onUpdate spt event
     /// </summary>
     public void Update()
     {
-        throw new NotImplementedException();
+        var profiles = _saveServer.GetProfiles();
+        foreach (var kvp in profiles) {
+            RemoveExpiredItemsFromMessages(kvp.Key);
+        }
     }
 
     /// <summary>
@@ -94,7 +113,7 @@ public class DialogueController
         var activeBots = new List<UserDialogInfo>();
 
         var chatBotConfig = _coreConfig.Features.ChatbotFeatures;
-        /*
+        
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
@@ -102,8 +121,6 @@ public class DialogueController
                 activeBots.Add(botData);
             }
         }
-        TODO: FUCK THESE BOTS STOPPING US GETTING TO THE FUCKING MENU
-        */
 
         return activeBots;
     }
@@ -155,7 +172,7 @@ public class DialogueController
     /// <summary>
     /// Get the users involved in a dialog (player + other party)
     /// </summary>
-    /// <param name="dialogue">The dialog to check for users</param>
+    /// <param name="dialog">The dialog to check for users</param>
     /// <param name="messageType">What type of message is being sent</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
@@ -352,7 +369,9 @@ public class DialogueController
     /// <param name="sessionId">Session id</param>
     private void RemoveExpiredItemsFromMessages(string sessionId)
     {
-        throw new NotImplementedException();
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId)) {
+            RemoveExpiredItemsFromMessage(sessionId, dialogueId.Key);
+        }
     }
 
     /// <summary>
@@ -364,7 +383,27 @@ public class DialogueController
         string sessionId,
         string dialogueId)
     {
-        throw new NotImplementedException();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        if (!dialogs.TryGetValue(dialogueId, out var dialog))
+        {
+            return;
+        }
+
+        foreach (var message in dialog.Messages) {
+            if (MessageHasExpired(message))
+            {
+                message.Items = new MessageItems();
+            }
+        }
+    }
+
+    /**
+     * Has a dialog message expired
+     * @param message Message to check expiry of
+     * @returns true or false
+     */
+    protected bool MessageHasExpired(Message message) {
+        return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 
     public FriendRequestSendResponse SendFriendRequest(string sessionId, FriendRequestData request)
