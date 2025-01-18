@@ -99,16 +99,16 @@ public class LauncherController
         return result;
     }
 
-    public Info? Find(string sessionId)
+    public Info? Find(string? sessionId)
     {
-        return _saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
+        return sessionId is not null && _saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
     }
 
-    public string? Login(LoginRequestData info)
+    public string? Login(LoginRequestData? info)
     {
         foreach (var kvp in _saveServer.GetProfiles()) {
             var account = _saveServer.GetProfile(kvp.Key).ProfileInfo;
-            if (info.Username == account.Username) {
+            if (info?.Username == account?.Username) {
                 return kvp.Key;
             }
         }

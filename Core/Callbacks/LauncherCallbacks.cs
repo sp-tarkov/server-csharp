@@ -8,24 +8,13 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class LauncherCallbacks
+public class LauncherCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    LauncherController _launcherController,
+    SaveServer _saveServer,
+    Watermark _watermark
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected LauncherController _launcherController;
-    protected SaveServer _saveServer;
-    protected Watermark _watermark;
-    public LauncherCallbacks(
-        HttpResponseUtil httpResponse,
-        LauncherController launcherController,
-        SaveServer saveServer,
-        Watermark watermark)
-    {
-        _httpResponseUtil = httpResponse;
-        _launcherController = launcherController;
-        _saveServer = saveServer;
-        _watermark = watermark;
-    }
-
     public string Connect()
     {
         return _httpResponseUtil.NoBody(_launcherController.Connect());
