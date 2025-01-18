@@ -21,7 +21,7 @@ public static class DependencyInjectionRegistrator
         var groupedTypes = types.SelectMany(
                 t =>
                 {
-                    var attributes = (Injectable[])Attribute.GetCustomAttributes(t, typeof(Injectable))!;
+                    var attributes = (Injectable[])Attribute.GetCustomAttributes(t, typeof(Injectable));
                     var registerableType = t;
                     var registerableComponents = new List<RegisterableType>();
                     foreach (var attribute in attributes)
@@ -37,7 +37,7 @@ public static class DependencyInjectionRegistrator
                             registerableType = registerableType.GetInterfaces()[0];
                         }
 
-                        registerableComponents.Add(new(registerableType, t, attribute));
+                        registerableComponents.Add(new RegisterableType(registerableType, t, attribute));
                     }
 
                     return registerableComponents;
@@ -62,19 +62,18 @@ public static class DependencyInjectionRegistrator
         }
     }
 
-    private static List<Type> AllLoadedTypes;
-    private static List<ConstructorInfo> AllConstructors;
+    private static List<Type>? _allLoadedTypes;
+    private static List<ConstructorInfo>? _allConstructors;
 
     private static void RegisterGenericComponents(IServiceCollection builderServices, RegisterableType valueTuple)
     {
-        if (AllLoadedTypes == null)
-            AllLoadedTypes = AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
-        if (AllConstructors == null)
-            AllConstructors = AllLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
+        _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
+        _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
+
         var typeName = $"{valueTuple.RegisterableInterface.Namespace}.{valueTuple.RegisterableInterface.Name}";
         try
         {
-            var matchedConstructors = AllConstructors.Where(
+            var matchedConstructors = _allConstructors.Where(
                 c => c.GetParameters()
                     .Any(
                         p => p.ParameterType.IsGenericType &&
@@ -82,25 +81,25 @@ public static class DependencyInjectionRegistrator
                     )
             );
 
-            if (matchedConstructors.Any())
+            var constructorInfos = matchedConstructors.ToList();
+            if (constructorInfos.Count == 0) return;
+
+            foreach (var matchedConstructor in constructorInfos)
             {
-                foreach (var matchedConstructor in matchedConstructors)
+                foreach (var parameterInfo in matchedConstructor.GetParameters()
+                             .Where(
+                                 p => p.ParameterType.IsGenericType &&
+                                      p.ParameterType.GetGenericTypeDefinition().FullName == typeName
+                             ))
                 {
-                    foreach (var parameterInfo in matchedConstructor.GetParameters()
-                                 .Where(
-                                     p => p.ParameterType.IsGenericType &&
-                                          p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                                 ))
-                    {
-                        var parameters = parameterInfo.ParameterType.GetGenericArguments();
-                        var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
-                        RegisterComponent(
-                            builderServices,
-                            valueTuple.InjectableAttribute.InjectionType,
-                            parameterInfo.ParameterType,
-                            typedGeneric
-                        );
-                    }
+                    var parameters = parameterInfo.ParameterType.GetGenericArguments();
+                    var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
+                    RegisterComponent(
+                        builderServices,
+                        valueTuple.InjectableAttribute.InjectionType,
+                        parameterInfo.ParameterType,
+                        typedGeneric
+                    );
                 }
             }
         }

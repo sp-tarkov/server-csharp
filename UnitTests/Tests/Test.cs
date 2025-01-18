@@ -8,7 +8,7 @@ namespace UnitTests.Tests;
 [TestClass]
 public class Test
 {
-    private Templates _templates;
+    private Templates? _templates;
     
     [TestInitialize]
     public void Setup()

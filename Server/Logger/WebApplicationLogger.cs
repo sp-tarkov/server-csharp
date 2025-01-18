@@ -12,7 +12,7 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
 
     public SptWebApplicationLogger(ILoggerProvider provider)
     {
-        _logger = provider.CreateLogger(typeof(T).FullName);
+        _logger = provider.CreateLogger(typeof(T).FullName ?? "SPT Logger Default Name");
     }
 
     public void LogWithColor(

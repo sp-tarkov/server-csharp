@@ -8,7 +8,7 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil
 {
-    protected ISptLogger<RandomUtil> _logger;
+    protected ISptLogger<RandomUtil>? _logger = null;
 
     public RandomUtil
     (
@@ -17,6 +17,8 @@ public class RandomUtil
     {
         _logger = logger;
     }
+    
+    public RandomUtil() { }
 
     public readonly Random Random = new();
 

@@ -1,5 +1,3 @@
-using System.Reflection;
-using Core.Annotations;
 using Core.Context;
 using Core.Models.External;
 using Core.Models.Spt.Config;
@@ -36,7 +34,7 @@ public static class Program
             var serviceProvider = builder.Services.BuildServiceProvider();
             var watermark = serviceProvider.GetService<Watermark>();
             // Initialize Watermak
-            watermark.Initialize();
+            watermark?.Initialize();
 
             // Initialize PreSptMods
             var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadMod>();
@@ -46,18 +44,19 @@ public static class Program
             }
             var appContext = serviceProvider.GetService<ApplicationContext>();
             // Add the Loaded Mod Assemblies for later
-            appContext.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
+            appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
             // This is the builder that will get use by the HttpServer to start up the web application
-            appContext.AddValue(ContextVariableType.APP_BUILDER, builder);
+            appContext?.AddValue(ContextVariableType.APP_BUILDER, builder);
             
             // Get the Built app and run it
             var app = serviceProvider.GetService<App>();
-            app.Run().Wait();
+            app?.Run().Wait();
 
-            var httpConfig = serviceProvider.GetService<ConfigServer>().GetConfig<HttpConfig>();
+            var httpConfig = serviceProvider.GetService<ConfigServer>()?.GetConfig<HttpConfig>();
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.
-            (appContext.GetLatestValue(ContextVariableType.WEB_APPLICATION).GetValue<WebApplication>()).Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+            if (httpConfig != null)
+                (appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>())?.Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
         }
         catch (Exception ex)
         {
