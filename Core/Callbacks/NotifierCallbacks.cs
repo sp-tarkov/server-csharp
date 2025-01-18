@@ -57,10 +57,10 @@ public class NotifierCallbacks
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionId"></param>
     /// <returns></returns>
     /// <exception cref="NotImplementedException"></exception>
-    public string GetNotifier(string url, object info, string sessionID) // TODO: no types were given
+    public string GetNotifier(string url, object info, string sessionId)
     {
         return _httpResponseUtil.EmptyArrayResponse();
     }

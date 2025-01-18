@@ -105,7 +105,7 @@ public class BotController
     {
         var difficulty = diffLevel.ToLower();
         
-        if (!(raidConfig != null || ignoreRaidSettings)) // TODD: this might be wrong logic
+        if (!(raidConfig != null || ignoreRaidSettings))
             _logger.Error(_localisationService.GetText("bot-missing_application_context", "RAID_CONFIGURATION"));
         
         // Check value chosen in pre-raid difficulty dropdown
@@ -118,12 +118,46 @@ public class BotController
         return _botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
     }
 
-    public Dictionary<string, object> GetAllBotDifficulties()
+    public Dictionary<string, Dictionary<string, DifficultyCategories>> GetAllBotDifficulties()
     {
-        var result = new Dictionary<string, object>();
+        var result = new Dictionary<string, Dictionary<string, DifficultyCategories>>();
         
         var botTypesDb = _databaseService.GetBots().Types;
-        // TODO: Come back to this, brainfuck
+        //Get all bot types as sting array
+        var botTypes = Enum.GetValues<WildSpawnType>().Select(item => item.ToString()).ToList();
+        foreach (var botType in botTypes)
+        {
+            // If bot is usec/bear, swap to different name
+            var botTypeLower = _botHelper.IsBotPmc(botType)
+                ? _botHelper.GetPmcSideByRole(botType).ToLower()
+                : botType.ToLower();
+
+            // Get details from db
+            if (!botTypesDb.TryGetValue(botTypeLower, out var botDetails))
+            {
+                // No bot of this type found, skip
+                continue;
+            };
+
+            if (botDetails.BotDifficulty is null)
+            {
+                // Bot has no difficulty values, skip
+                continue;
+            }
+
+            var botNameKey = botType.ToLower();
+            foreach (var (difficultyName, difficultyValues) in botDetails.BotDifficulty)
+            {
+                // Bot doesnt exist in result, add
+                if (!result.ContainsKey(botNameKey))
+                {
+                    result.TryAdd(botNameKey, new Dictionary<string, DifficultyCategories>());
+                }
+
+                // Store all difficulty values in dict keyed by difficulty type e.g. easy/normal/impossible
+                result[botNameKey].Add(difficultyName, GetBotDifficulty(botNameKey, difficultyName, null, true));
+            }
+        }
 
         return result;
     }

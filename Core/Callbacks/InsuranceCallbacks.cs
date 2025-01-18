@@ -48,9 +48,7 @@ public class InsuranceCallbacks : OnUpdate
     /// <returns></returns>
     public string GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
     {
-        // return _httpResponseUtil.GetBody(_insuranceController.Cost(info, sessionID));
-        // TODO: InsuranceController is not implemented rn
-        throw new NotImplementedException();
+         return _httpResponseUtil.GetBody(_insuranceController.Cost(info, sessionID));
     }
 
     /// <summary>

@@ -14,7 +14,7 @@ public record BotType
     public Chances? BotChances { get; set; }
 
     [JsonPropertyName("difficulty")]
-    public Difficulties? BotDifficulty { get; set; }
+    public Dictionary<string, DifficultyCategories>? BotDifficulty { get; set; }
 
     [JsonPropertyName("experience")]
     public Experience? BotExperience { get; set; }

@@ -750,10 +750,10 @@ public class SeasonalEventService
     {
         var gifterBot = _databaseService.GetBots().Types["gifter"];
         var items = gifterBot.BotInventory.Items.Backpack.Keys.ToList();
-        gifterBot.BotDifficulty.Easy.Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty.Normal.Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty.Hard.Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty.Impossible.Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty["Easy"].Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty["Normal"].Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty["Hard"].Patrol["ITEMS_TO_DROP"] = items;
+        gifterBot.BotDifficulty["Impossible"].Patrol["ITEMS_TO_DROP"] = items;
     }
 
     /// <summary>
