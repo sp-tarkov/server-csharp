@@ -686,7 +686,7 @@
     "server_start_meme_8": "its morbin time",
     "server_start_meme_9": "S-step scav? W-what are you doing?",
     "server_start_player_active_botreload_skill": "Your character has the 'BotReload' skill active, this will cause your guns to reload unnaturally fast, ignore this message if this is intended",
-    "server_start_success": "Happy playing",
+    "server_start_success": "Server has started, happy playing",
     "started_webserver_success": "Started webserver at %s",
     "trader-missing_durability_threshold_value": "Unable to find durability threshold value for trader: {{traderId}}, falling back to default of: {{value}}",
     "trader-missing_repair_property_using_default": "Trader {{traderId}} {{nickname}} is missing a repair object, adding in default values",
