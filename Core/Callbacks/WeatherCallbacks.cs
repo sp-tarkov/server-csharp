@@ -1,29 +1,16 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
-using Core.Models.Eft.Weather;
-using Core.Models.Spt.Weather;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class WeatherCallbacks
+public class WeatherCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    WeatherController _weatherController
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected WeatherController _weatherController;
-
-    public WeatherCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        WeatherController weatherController
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _weatherController = weatherController;
-    }
-
     /// <summary>
     /// Handle client/weather
     /// </summary>

@@ -7,18 +7,8 @@ using Core.Models.Eft.Trade;
 namespace Core.Callbacks;
 
 [Injectable]
-public class TradeCallbacks
+public class TradeCallbacks(TradeController _tradeController)
 {
-    protected TradeController _tradeController;
-
-    public TradeCallbacks
-    (
-        TradeController tradeController
-    )
-    {
-        _tradeController = tradeController;
-    }
-
     /// <summary>
     /// Handle client/game/profile/items/moving TradingConfirm event
     /// </summary>

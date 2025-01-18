@@ -7,18 +7,8 @@ using Core.Models.Eft.Wishlist;
 namespace Core.Callbacks;
 
 [Injectable]
-public class WishlistCallbacks
+public class WishlistCallbacks(WishlistController _wishlistController)
 {
-    protected WishlistController _wishlistController;
-
-    public WishlistCallbacks
-    (
-        WishlistController wishlistController
-    )
-    {
-        _wishlistController = wishlistController;
-    }
-
     /// <summary>
     /// Handle AddToWishList event
     /// </summary>

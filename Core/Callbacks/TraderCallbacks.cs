@@ -2,9 +2,6 @@
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
@@ -14,32 +11,23 @@ namespace Core.Callbacks;
 [Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.TraderCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(TraderCallbacks))]
-public class TraderCallbacks : OnLoad, OnUpdate
+public class TraderCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    TraderController _traderController,
+    ConfigServer _configServer
+) : OnLoad, OnUpdate
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected TraderController _traderController;
-    protected ConfigServer _configServer;
-
-    public TraderCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        TraderController traderController,
-        ConfigServer configServer
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _traderController = traderController;
-        _configServer = configServer;
-    }
-
-    public async Task OnLoad()
+    private readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    
+    public Task OnLoad()
     {
         _traderController.Load();
+        return Task.CompletedTask;
     }
 
-    public async Task<bool> OnUpdate(long _)
+    public Task<bool> OnUpdate(long _)
     {
-        return _traderController.Update();
+        return Task.FromResult(_traderController.Update());
     }
 
     public string GetRoute()
@@ -94,7 +82,6 @@ public class TraderCallbacks : OnLoad, OnUpdate
     /// <returns></returns>
     public string GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
     {
-        var traderConfig = _configServer.GetConfig<TraderConfig>();
-        return _httpResponseUtil.NoBody(traderConfig.ModdedTraders);
+        return _httpResponseUtil.NoBody(_traderConfig.ModdedTraders);
     }
 }
