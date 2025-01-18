@@ -1,7 +1,5 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
-using Core.Models.Eft.HttpResponse;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Logging;
 using Core.Servers;
@@ -12,29 +10,14 @@ using Server;
 namespace Core.Callbacks;
 
 [Injectable]
-public class ClientLogCallbacks
-{
-    protected HttpResponseUtil _httpResponseUtil;
-    protected ClientLogController _clientLogController;
-    protected ConfigServer _configServer;
-    protected LocalisationService _localisationService;
-
-    // protected ModLoadOrder _modLoadOrder; // TODO: needs implementing
-    public ClientLogCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        ClientLogController clientLogController,
-        ConfigServer configServer,
-        LocalisationService localisationService
-        // ModLoadOrder modLoadOrder
+public class ClientLogCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    ClientLogController _clientLogController,
+    ConfigServer _configServer,
+    LocalisationService _localisationService
+    // ModLoadOrder _modLoadOrder // TODO: needs implementing
     )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _clientLogController = clientLogController;
-        _configServer = configServer;
-        _localisationService = localisationService;
-        // _modLoadOrder = modLoadOrder;
-    }
+{
 
     /// <summary>
     /// Handle /singleplayer/log
