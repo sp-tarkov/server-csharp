@@ -8,27 +8,18 @@ using Core.Models.Eft.Quests;
 namespace Core.Callbacks;
 
 [Injectable]
-public class InventoryCallbacks
+public class InventoryCallbacks(
+    InventoryController _inventoryController,
+    QuestController _questController
+)
 {
-    protected InventoryController _inventoryController;
-    protected QuestController _questController;
-
-    public InventoryCallbacks
-    (
-        InventoryController inventoryController,
-        QuestController questController
-    )
-    {
-        _inventoryController = inventoryController;
-        _questController = questController;
-    }
-
     /// <summary>
     /// Handle client/game/profile/items/moving Move event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -44,6 +35,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -59,6 +51,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -74,6 +67,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -89,6 +83,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -164,6 +159,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -179,6 +175,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -194,6 +191,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -224,6 +222,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -239,6 +238,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -254,6 +254,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
@@ -269,6 +270,7 @@ public class InventoryCallbacks
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
+    /// <param name="output"></param>
     /// <returns></returns>
     public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
     {
