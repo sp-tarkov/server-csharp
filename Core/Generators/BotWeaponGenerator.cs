@@ -16,74 +16,40 @@ using Core.Utils.Cloners;
 namespace Core.Generators;
 
 [Injectable(InjectionType.Singleton)]
-public class BotWeaponGenerator
+public class BotWeaponGenerator(
+    ISptLogger<BotWeaponGenerator> _logger,
+    HashUtil _hashUtil,
+    DatabaseService _databaseService,
+    ItemHelper _itemHelper,
+    WeightedRandomHelper _weightedRandomHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    RandomUtil _randomUtil,
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper,
+    BotWeaponModLimitService _botWeaponModLimitService,
+    BotEquipmentModGenerator _botEquipmentModGenerator,
+    LocalisationService _localisationService,
+    RepairService _repairService,
+    ICloner _cloner,
+    ConfigServer _configServer,
+    IEnumerable<IInventoryMagGen> inventoryMagGenComponents
+)
 {
-    private readonly ISptLogger<BotWeaponGenerator> _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly DatabaseService _databaseService;
-    private readonly ItemHelper _itemHelper;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly RandomUtil _randomUtil;
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-    private readonly BotWeaponModLimitService _botWeaponModLimitService;
-    private readonly BotEquipmentModGenerator _botEquipmentModGenerator;
-    private readonly LocalisationService _localisationService;
-    private readonly RepairService _repairService;
-    private readonly ICloner _cloner;
-    private readonly ConfigServer _configServer;
-    private List<IInventoryMagGen> _inventoryMagGenComponents;
+    protected List<IInventoryMagGen> _inventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
+    protected const string _modMagazineSlotId = "mod_magazine";
 
-    private BotConfig _botConfig;
-    private PmcConfig _pmcConfig;
-    private RepairConfig _repairConfig;
-    private const string _modMagazineSlotId = "mod_magazine";
-
-    public BotWeaponGenerator
-    (
-        ISptLogger<BotWeaponGenerator> logger,
-        HashUtil hashUtil,
-        DatabaseService databaseService,
-        ItemHelper itemHelper,
-        WeightedRandomHelper weightedRandomHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        RandomUtil randomUtil,
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper,
-        BotWeaponModLimitService botWeaponModLimitService,
-        BotEquipmentModGenerator botEquipmentModGenerator,
-        LocalisationService localisationService,
-        RepairService repairService,
-        ICloner cloner,
-        ConfigServer configServer,
-        IEnumerable<IInventoryMagGen> inventoryMagGenComponents
-    )
+    private static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _databaseService = databaseService;
-        _itemHelper = itemHelper;
-        _weightedRandomHelper = weightedRandomHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _randomUtil = randomUtil;
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-        _botWeaponModLimitService = botWeaponModLimitService;
-        _botEquipmentModGenerator = botEquipmentModGenerator;
-        _localisationService = localisationService;
-        _repairService = repairService;
-        _cloner = cloner;
-        _configServer = configServer;
-        
-        inventoryMagGenComponents.ToList()
+        var inventoryMagGens = components.ToList();
+        inventoryMagGens.ToList()
             .Sort(
                 (a, b) =>
                     a.GetPriority() -
                     b.GetPriority()
             );
-        _inventoryMagGenComponents = inventoryMagGenComponents.ToList();
-        
-        _botConfig = _configServer.GetConfig<BotConfig>();
-        _pmcConfig = _configServer.GetConfig<PmcConfig>();
-        _repairConfig = _configServer.GetConfig<RepairConfig>();
+        return inventoryMagGens.ToList();
     }
 
     /// <summary>

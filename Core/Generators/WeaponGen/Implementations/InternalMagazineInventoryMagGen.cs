@@ -4,18 +4,10 @@ using Core.Helpers;
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class InternalMagazineInventoryMagGen : InventoryMagGen, IInventoryMagGen
+public class InternalMagazineInventoryMagGen(
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper
+) : InventoryMagGen, IInventoryMagGen
 {
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-
-    public InternalMagazineInventoryMagGen
-    (
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper
-    )
-    {
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-    }
-
     public int GetPriority()
     {
         return 0;
@@ -35,7 +27,7 @@ public class InternalMagazineInventoryMagGen : InventoryMagGen, IInventoryMagGen
         _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
             (int)bulletCount,
-            inventoryMagGen.GetPmcInventory(), 
+            inventoryMagGen.GetPmcInventory(),
             null
         );
     }

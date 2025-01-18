@@ -13,63 +13,26 @@ using Core.Utils.Cloners;
 namespace Core.Generators;
 
 [Injectable]
-public class BotLootGenerator
+public class BotLootGenerator(
+    ISptLogger<BotLootGenerator> _logger,
+    HashUtil _hashUtil,
+    RandomUtil _randomUtil,
+    ItemHelper _itemHelper,
+    InventoryHelper _inventoryHelper,
+    DatabaseService _databaseService,
+    HandbookHelper _handbookHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    BotWeaponGenerator _botWeaponGenerator,
+    WeightedRandomHelper _weightedRandomHelper,
+    BotHelper _botHelper,
+    BotLootCacheService _botLootCacheService,
+    LocalisationService _localisationService,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
-    private readonly ISptLogger<BotLootGenerator> _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly ItemHelper _itemHelper;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly BotWeaponGenerator _botWeaponGenerator;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly BotHelper _botHelper;
-    private readonly BotLootCacheService _botLootCacheService;
-    private readonly LocalisationService _localisationService;
-    private readonly ConfigServer _configServer;
-    private readonly ICloner _cloner;
-
-    private readonly BotConfig _botConfig;
-    private readonly PmcConfig _pmcConfig;
-
-    public BotLootGenerator(
-        ISptLogger<BotLootGenerator> logger,
-        HashUtil hashUtil,
-        RandomUtil randomUtil,
-        ItemHelper itemHelper,
-        InventoryHelper inventoryHelper,
-        DatabaseService databaseService,
-        HandbookHelper handbookHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        BotWeaponGenerator botWeaponGenerator,
-        WeightedRandomHelper weightedRandomHelper,
-        BotHelper botHelper,
-        BotLootCacheService botLootCacheService,
-        LocalisationService localisationService,
-        ConfigServer configServer,
-        ICloner cloner)
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _randomUtil = randomUtil;
-        _itemHelper = itemHelper;
-        _inventoryHelper = inventoryHelper;
-        _databaseService = databaseService;
-        _handbookHelper = handbookHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _botWeaponGenerator = botWeaponGenerator;
-        _weightedRandomHelper = weightedRandomHelper;
-        _botHelper = botHelper;
-        _botLootCacheService = botLootCacheService;
-        _localisationService = localisationService;
-        _configServer = configServer;
-        _cloner = cloner;
-
-        _botConfig = _configServer.GetConfig<BotConfig>();
-        _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    }
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     /// 
@@ -361,13 +324,12 @@ public class BotLootGenerator
     {
         // TODO - extend to other bot types
         if (!isPmc) return null;
-        
+
         var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(
             minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
 
         return matchingValue;
-
     }
 
     /// <summary>
@@ -380,12 +342,11 @@ public class BotLootGenerator
     private double? GetBackpackRoubleTotalByLevel(int botLevel, bool isPmc)
     {
         if (!isPmc) return 0;
-        
+
         var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(
             (minMaxValue) => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
         return matchingValue?.Value;
-
     }
 
     /// <summary>
@@ -471,9 +432,9 @@ public class BotLootGenerator
     {
         // Loot pool has items
         var poolSize = pool.Count;
-        
+
         if (poolSize <= 0) return;
-        
+
         double currentTotalRub = 0;
 
         var fitItemIntoContainerAttempts = 0;
@@ -487,7 +448,7 @@ public class BotLootGenerator
 
             var weightedItemTpl = _weightedRandomHelper.GetWeightedValue<string>(pool);
             var (key, itemToAddTemplate) = _itemHelper.GetItem(weightedItemTpl);
-            
+
             if (!key)
             {
                 _logger.Warning($"Unable to process item tpl: {weightedItemTpl} for slots: {equipmentSlots} on bot: {botRole}");
@@ -628,7 +589,6 @@ public class BotLootGenerator
             var chosenStackCount = _weightedRandomHelper.GetWeightedValue<string>(_botConfig.WalletLoot.StackSizeWeight);
             List<Item> items =
             [
-
                 new Item
                 {
                     Id = _hashUtil.Generate(),
@@ -639,8 +599,6 @@ public class BotLootGenerator
                         StackObjectsCount = double.Parse(chosenStackCount)
                     }
                 }
-
-
             ];
             result.Add(items);
         }
@@ -773,18 +731,21 @@ public class BotLootGenerator
     private bool ItemHasReachedSpawnLimit(TemplateItem? itemTemplate, string botRole, ItemSpawnLimitSettings? itemSpawnLimits)
     {
         // PMCs and scavs have different sections of bot config for spawn limits
-        if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0) {
+        if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0)
+        {
             // No items found in spawn limit, drop out
             return false;
         }
 
         // No spawn limits, skipping
-        if (itemSpawnLimits is null) {
+        if (itemSpawnLimits is null)
+        {
             return false;
         }
 
         var idToCheckFor = GetMatchingIdFromSpawnLimits(itemTemplate, itemSpawnLimits.GlobalLimits);
-        if (idToCheckFor is null) {
+        if (idToCheckFor is null)
+        {
             // ParentId or tplid not found in spawnLimits, not a spawn limited item, skip
             return false;
         }
@@ -793,15 +754,21 @@ public class BotLootGenerator
         itemSpawnLimits.CurrentLimits[idToCheckFor]++;
 
         // Check if over limit
-        if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.GlobalLimits[idToCheckFor]) {
+        if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.GlobalLimits[idToCheckFor])
+        {
             // Prevent edge-case of small loot pools + code trying to add limited item over and over infinitely
-            if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.CurrentLimits[idToCheckFor] * 10) {
+            if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.CurrentLimits[idToCheckFor] * 10)
+            {
                 _logger.Debug(
-                    _localisationService.GetText("bot-item_spawn_limit_reached_skipping_item", new  {
-                    botRole = botRole,
-                    itemName = itemTemplate.Name,
-                    attempts = itemSpawnLimits.CurrentLimits[idToCheckFor]
-                })
+                    _localisationService.GetText(
+                        "bot-item_spawn_limit_reached_skipping_item",
+                        new
+                        {
+                            botRole = botRole,
+                            itemName = itemTemplate.Name,
+                            attempts = itemSpawnLimits.CurrentLimits[idToCheckFor]
+                        }
+                    )
                 );
 
                 return false;
@@ -823,8 +790,9 @@ public class BotLootGenerator
     {
         // Get all currency weights for this bot type
         var currencyWeights = _botConfig.CurrencyStackSize[botRole];
-        if (currencyWeights is null) {
-            currencyWeights = new ();
+        if (currencyWeights is null)
+        {
+            currencyWeights = new();
         }
 
         var currencyWeight = currencyWeights[moneyItem.Template];
@@ -856,17 +824,19 @@ public class BotLootGenerator
     /// <returns>Dictionary of tplIds and limit</returns>
     public Dictionary<string, double> GetItemSpawnLimitsForBotType(string botRole)
     {
-        if (_botHelper.IsBotPmc(botRole)) {
+        if (_botHelper.IsBotPmc(botRole))
+        {
             return _botConfig.ItemSpawnLimits["pmc"];
         }
 
-        if (_botConfig.ItemSpawnLimits[botRole.ToLower()] is not null) {
+        if (_botConfig.ItemSpawnLimits[botRole.ToLower()] is not null)
+        {
             return _botConfig.ItemSpawnLimits[botRole.ToLower()];
         }
 
         _logger.Warning(_localisationService.GetText("bot-unable_to_find_spawn_limits_fallback_to_defaults", botRole));
-        
-        return new ();
+
+        return new();
     }
 
     /// <summary>
@@ -877,12 +847,14 @@ public class BotLootGenerator
     /// <returns>id as string, otherwise undefined</returns>
     public string? GetMatchingIdFromSpawnLimits(TemplateItem itemTemplate, Dictionary<string, double> spawnLimits)
     {
-        if (spawnLimits.ContainsKey(itemTemplate.Id)) {
+        if (spawnLimits.ContainsKey(itemTemplate.Id))
+        {
             return itemTemplate.Id;
         }
 
         // tplId not found in spawnLimits, check if parentId is
-        if (spawnLimits.ContainsKey(itemTemplate.Parent)) {
+        if (spawnLimits.ContainsKey(itemTemplate.Parent))
+        {
             return itemTemplate.Parent;
         }
 

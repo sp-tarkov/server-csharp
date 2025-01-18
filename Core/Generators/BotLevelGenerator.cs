@@ -11,25 +11,13 @@ using Core.Utils;
 namespace Core.Generators;
 
 [Injectable]
-public class BotLevelGenerator
+public class BotLevelGenerator(
+    ISptLogger<BotLevelGenerator> _logger,
+    RandomUtil _randomUtil,
+    MathUtil _mathUtil,
+    DatabaseService _databaseService
+)
 {
-    protected ISptLogger<BotLevelGenerator> _logger;
-    protected RandomUtil _randomUtil;
-    protected MathUtil _mathUtil;
-    protected DatabaseService _databaseService;
-
-    public BotLevelGenerator(
-        ISptLogger<BotLevelGenerator> logger,
-        RandomUtil randomUtil,
-        MathUtil mathUtil,
-        DatabaseService databaseService)
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _mathUtil = mathUtil;
-        _databaseService = databaseService;
-    }
-
     /// <summary>
     /// Return a randomised bot level and exp value
     /// </summary>
@@ -44,8 +32,10 @@ public class BotLevelGenerator
 
         // Get random level based on the exp table.
         int exp = 0;
-        var level = int.Parse(ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
-            .ToString()); // TODO - nasty double to string to int conversion
+        var level = int.Parse(
+            ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
+                .ToString()
+        ); // TODO - nasty double to string to int conversion
         for (var i = 0; i < level; i++)
         {
             exp += expTable[i].Experience.Value;

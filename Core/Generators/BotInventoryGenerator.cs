@@ -16,71 +16,28 @@ using Equipment = Core.Models.Eft.Common.Tables.Equipment;
 namespace Core.Generators;
 
 [Injectable]
-public class BotInventoryGenerator
+public class BotInventoryGenerator(
+    ISptLogger<BotInventoryGenerator> _logger,
+    HashUtil _hashUtil,
+    RandomUtil _randomUtil,
+    DatabaseService _databaseService,
+    ApplicationContext _applicationContext,
+    BotWeaponGenerator _botWeaponGenerator,
+    BotLootGenerator _botLootGenerator,
+    BotGeneratorHelper _botGeneratorHelper,
+    ProfileHelper _profileHelper,
+    BotHelper _botHelper,
+    WeightedRandomHelper _weightedRandomHelper,
+    ItemHelper _itemHelper,
+    WeatherHelper _weatherHelper,
+    LocalisationService _localisationService,
+    BotEquipmentFilterService _botEquipmentFilterService,
+    BotEquipmentModPoolService _botEquipmentModPoolService,
+    BotEquipmentModGenerator _botEquipmentModGenerator,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<BotInventoryGenerator> _logger;
-    protected HashUtil _hashUtil;
-    protected RandomUtil _randomUtil;
-    protected DatabaseService _databaseService;
-    protected ApplicationContext _applicationContext;
-    protected BotWeaponGenerator _botWeaponGenerator;
-    protected BotLootGenerator _botLootGenerator;
-    protected BotGeneratorHelper _botGeneratorHelper;
-    protected ProfileHelper _profileHelper;
-    protected BotHelper _botHelper;
-    protected WeightedRandomHelper _weightedRandomHelper;
-    protected ItemHelper _itemHelper;
-    protected WeatherHelper _weatherHelper;
-    protected LocalisationService _localisationService;
-    protected BotEquipmentFilterService _botEquipmentFilterService;
-    protected BotEquipmentModPoolService _botEquipmentModPoolService;
-    protected BotEquipmentModGenerator _botEquipmentModGenerator;
-    protected ConfigServer _configServer;
-
-    private BotConfig _botConfig;
-
-    public BotInventoryGenerator(
-        ISptLogger<BotInventoryGenerator> logger,
-        HashUtil hashUtil,
-        RandomUtil randomUtil,
-        DatabaseService databaseService,
-        ApplicationContext applicationContext,
-        BotWeaponGenerator botWeaponGenerator,
-        BotLootGenerator botLootGenerator,
-        BotGeneratorHelper botGeneratorHelper,
-        ProfileHelper profileHelper,
-        BotHelper botHelper,
-        WeightedRandomHelper weightedRandomHelper,
-        ItemHelper itemHelper,
-        WeatherHelper weatherHelper,
-        LocalisationService localisationService,
-        BotEquipmentFilterService botEquipmentFilterService,
-        BotEquipmentModPoolService botEquipmentModPoolService,
-        BotEquipmentModGenerator botEquipmentModGenerator,
-        ConfigServer configServer
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _randomUtil = randomUtil;
-        _databaseService = databaseService;
-        _applicationContext = applicationContext;
-        _botWeaponGenerator = botWeaponGenerator;
-        _botLootGenerator = botLootGenerator;
-        _botGeneratorHelper = botGeneratorHelper;
-        _profileHelper = profileHelper;
-        _botHelper = botHelper;
-        _weightedRandomHelper = weightedRandomHelper;
-        _itemHelper = itemHelper;
-        _weatherHelper = weatherHelper;
-        _localisationService = localisationService;
-        _botEquipmentFilterService = botEquipmentFilterService;
-        _botEquipmentModPoolService = botEquipmentModPoolService;
-        _botEquipmentModGenerator = botEquipmentModGenerator;
-        _configServer = configServer;
-
-        _botConfig = _configServer.GetConfig<BotConfig>();
-    }
+    private BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Add equipment/weapons/loot to bot
@@ -114,7 +71,8 @@ public class BotInventoryGenerator
             botInventory,
             botLevel,
             chosenGameVersion,
-            raidConfig);
+            raidConfig
+        );
 
         // Roll weapon spawns (primary/secondary/holster) and generate a weapon for each roll that passed
         GenerateAndAddWeaponsToBot(
@@ -125,7 +83,8 @@ public class BotInventoryGenerator
             botRole,
             isPmc,
             itemGenerationLimitsMinMax,
-            botLevel);
+            botLevel
+        );
 
         // Pick loot and add to bots containers (rig/backpack/pockets/secure)
         _botLootGenerator.GenerateLoot(sessionId, botJsonTemplate, isPmc, botRole, botInventory, botLevel);
@@ -209,7 +168,9 @@ public class BotInventoryGenerator
             {
                 // Never let mod chance go outside of 0 - 100
                 randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] = Math.Min(
-                    Math.Max(randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] + equipmentSlotKvP.Value, 0), 100);
+                    Math.Max(randomistionDetails.EquipmentMods[equipmentSlotKvP.Key] + equipmentSlotKvP.Value, 0),
+                    100
+                );
             }
         }
 
@@ -230,10 +191,48 @@ public class BotInventoryGenerator
                 continue;
             }
 
-            GenerateEquipment(new GenerateEquipmentProperties
+            GenerateEquipment(
+                new GenerateEquipmentProperties
+                {
+                    RootEquipmentSlot = equipmentSlot,
+                    RootEquipmentPool = value,
+                    ModPool = templateInventory.Mods,
+                    SpawnChances = wornItemChances,
+                    BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                    Inventory = botInventory,
+                    BotEquipmentConfig = botEquipConfig,
+                    RandomisationDetails = randomistionDetails,
+                    GeneratingPlayerLevel = pmcProfile.Info.Level,
+                }
+            );
+        }
+
+        // Generate below in specific order
+        GenerateEquipment(
+            new GenerateEquipmentProperties
             {
-                RootEquipmentSlot = equipmentSlot,
-                RootEquipmentPool = value,
+                RootEquipmentSlot = EquipmentSlots.Pockets,
+                // Unheard profiles have unique sized pockets, TODO - handle this somewhere else in a better way
+                RootEquipmentPool =
+                    chosenGameVersion == GameEditions.UNHEARD
+                        ? new Dictionary<string, double> { [ItemTpl.POCKETS_1X4_TUE] = 1 }
+                        : templateInventory.Equipment[EquipmentSlots.Pockets],
+                ModPool = templateInventory.Mods,
+                SpawnChances = wornItemChances,
+                BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                Inventory = botInventory,
+                BotEquipmentConfig = botEquipConfig,
+                RandomisationDetails = randomistionDetails,
+                GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE],
+                GeneratingPlayerLevel = pmcProfile.Info.Level,
+            }
+        );
+
+        GenerateEquipment(
+            new GenerateEquipmentProperties
+            {
+                RootEquipmentSlot = EquipmentSlots.FaceCover,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.FaceCover],
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
@@ -241,79 +240,53 @@ public class BotInventoryGenerator
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
                 GeneratingPlayerLevel = pmcProfile.Info.Level,
-            });
-        }
+            }
+        );
 
-        // Generate below in specific order
-        GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.Pockets,
-            // Unheard profiles have unique sized pockets, TODO - handle this somewhere else in a better way
-            RootEquipmentPool =
-                chosenGameVersion == GameEditions.UNHEARD
-                    ? new Dictionary<string, double> { [ItemTpl.POCKETS_1X4_TUE] = 1 }
-                    : templateInventory.Equipment[EquipmentSlots.Pockets],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE],
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
+        GenerateEquipment(
+            new GenerateEquipmentProperties
+            {
+                RootEquipmentSlot = EquipmentSlots.Headwear,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Headwear],
+                ModPool = templateInventory.Mods,
+                SpawnChances = wornItemChances,
+                BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                Inventory = botInventory,
+                BotEquipmentConfig = botEquipConfig,
+                RandomisationDetails = randomistionDetails,
+                GeneratingPlayerLevel = pmcProfile.Info.Level,
+            }
+        );
 
-        GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.FaceCover,
-            RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.FaceCover],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
+        GenerateEquipment(
+            new GenerateEquipmentProperties
+            {
+                RootEquipmentSlot = EquipmentSlots.Earpiece,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
+                ModPool = templateInventory.Mods,
+                SpawnChances = wornItemChances,
+                BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                Inventory = botInventory,
+                BotEquipmentConfig = botEquipConfig,
+                RandomisationDetails = randomistionDetails,
+                GeneratingPlayerLevel = pmcProfile.Info.Level,
+            }
+        );
 
-        GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.Headwear,
-            RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Headwear],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
-
-        GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.Earpiece,
-            RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
-
-        var hasArmorVest = GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.ArmorVest,
-            RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.ArmorVest],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
+        var hasArmorVest = GenerateEquipment(
+            new GenerateEquipmentProperties
+            {
+                RootEquipmentSlot = EquipmentSlots.ArmorVest,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.ArmorVest],
+                ModPool = templateInventory.Mods,
+                SpawnChances = wornItemChances,
+                BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                Inventory = botInventory,
+                BotEquipmentConfig = botEquipConfig,
+                RandomisationDetails = randomistionDetails,
+                GeneratingPlayerLevel = pmcProfile.Info.Level,
+            }
+        );
 
         // Bot has no armor vest and flagged to be forced to wear armored rig in this event
         if (botEquipConfig.ForceOnlyArmoredRigWhenNoArmor.GetValueOrDefault(false) && !hasArmorVest)
@@ -335,18 +308,20 @@ public class BotInventoryGenerator
             wornItemChances.EquipmentChances["TacticalVest"] = 100;
         }
 
-        GenerateEquipment(new GenerateEquipmentProperties
-        {
-            RootEquipmentSlot = EquipmentSlots.Earpiece,
-            RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
-            ModPool = templateInventory.Mods,
-            SpawnChances = wornItemChances,
-            BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
-            Inventory = botInventory,
-            BotEquipmentConfig = botEquipConfig,
-            RandomisationDetails = randomistionDetails,
-            GeneratingPlayerLevel = pmcProfile.Info.Level,
-        });
+        GenerateEquipment(
+            new GenerateEquipmentProperties
+            {
+                RootEquipmentSlot = EquipmentSlots.Earpiece,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
+                ModPool = templateInventory.Mods,
+                SpawnChances = wornItemChances,
+                BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
+                Inventory = botInventory,
+                BotEquipmentConfig = botEquipConfig,
+                RandomisationDetails = randomistionDetails,
+                GeneratingPlayerLevel = pmcProfile.Info.Level,
+            }
+        );
     }
 
     /// <summary>
@@ -356,7 +331,8 @@ public class BotInventoryGenerator
     /// <param name="botRole">Role of bot vests are being filtered for</param>
     public void FilterRigsToThoseWithProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole)
     {
-        var tacVestsWithArmor = templateEquipment[EquipmentSlots.TacticalVest].Where(kvp => _itemHelper.ItemHasSlots(kvp.Key))
+        var tacVestsWithArmor = templateEquipment[EquipmentSlots.TacticalVest]
+            .Where(kvp => _itemHelper.ItemHasSlots(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         if (!tacVestsWithArmor.Any())
@@ -375,9 +351,11 @@ public class BotInventoryGenerator
     /// <param name="templateEquipment">Equipment to filter TacticalVest by</param>
     /// <param name="botRole">Role of bot vests are being filtered for</param>
     /// <param name="allowEmptyResult">Should the function return all rigs when 0 unarmored are found</param>
-    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole, bool allowEmptyResult = true)
+    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole,
+        bool allowEmptyResult = true)
     {
-        var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest].Where(kvp => !_itemHelper.ItemHasSlots(kvp.Key))
+        var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest]
+            .Where(kvp => !_itemHelper.ItemHasSlots(kvp.Key))
             .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
         if (!allowEmptyResult && !tacVestsWithoutArmor.Any())
@@ -404,8 +382,12 @@ public class BotInventoryGenerator
 
         if (!spawnChance.HasValue)
         {
-            _logger.Warning(_localisationService.GetText("bot-no_spawn_chance_defined_for_equipment_slot",
-                settings.RootEquipmentSlot));
+            _logger.Warning(
+                _localisationService.GetText(
+                    "bot-no_spawn_chance_defined_for_equipment_slot",
+                    settings.RootEquipmentSlot
+                )
+            );
 
             return false;
         }
@@ -637,14 +619,15 @@ public class BotInventoryGenerator
             isPmc,
             botLevel
         );
-        
+
         botInventory.Items.AddRange(generatedWeapon.Weapon);
-        
+
         _botWeaponGenerator.AddExtraMagazinesToInventory(
             generatedWeapon,
             itemGenerationWeights.Items.Magazines,
             botInventory,
-            botRole);
+            botRole
+        );
     }
 }
 

@@ -5,21 +5,11 @@ using Core.Utils;
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class BarrelInvetoryMagGen : InventoryMagGen, IInventoryMagGen
+public class BarrelInvetoryMagGen(
+    RandomUtil _randomUtil,
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper
+) : InventoryMagGen, IInventoryMagGen
 {
-    private readonly RandomUtil _randomUtil;
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-
-    public BarrelInvetoryMagGen
-    (
-        RandomUtil randomUtil,
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper
-    )
-    {
-        _randomUtil = randomUtil;
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-    }
-
     public int GetPriority()
     {
         return 50;

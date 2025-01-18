@@ -4,11 +4,8 @@ using Core.Models.Eft.Common.Tables;
 namespace Core.Generators;
 
 [Injectable]
-public class PMCLootGenerator
+public class PMCLootGenerator()
 {
-    public PMCLootGenerator()
-    {
-    }
 
     /// <summary>
     /// Create a List of loot items a PMC can have in their pockets

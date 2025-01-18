@@ -5,18 +5,11 @@ using Core.Models.Enums;
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class UbglExternalMagGen : InventoryMagGen, IInventoryMagGen
+public class UbglExternalMagGen(
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper
+    
+) : InventoryMagGen, IInventoryMagGen
 {
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-
-    public UbglExternalMagGen
-    (
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper
-    )
-    {
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-    }
-
     public int GetPriority()
     {
         return 1;

@@ -9,32 +9,15 @@ using Core.Utils;
 namespace Core.Generators.WeaponGen.Implementations;
 
 [Injectable]
-public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
+public class ExternalInventoryMagGen(
+    ISptLogger<ExternalInventoryMagGen> _logger,
+    ItemHelper _itemHelper,
+    LocalisationService _localisationService,
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    RandomUtil _randomUtil
+) : InventoryMagGen, IInventoryMagGen
 {
-    private readonly ISptLogger<ExternalInventoryMagGen> _logger;
-    private readonly ItemHelper _itemHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly RandomUtil _randomUtil;
-
-    public ExternalInventoryMagGen
-    (
-        ISptLogger<ExternalInventoryMagGen> logger,
-        ItemHelper itemHelper,
-        LocalisationService localisationService,
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        RandomUtil randomUtil
-    )
-    {
-        _logger = logger;
-        _itemHelper = itemHelper;
-        _localisationService = localisationService;
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _randomUtil = randomUtil;
-    }
 
     public int GetPriority()
     {
@@ -58,7 +41,8 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
         List<string> attemptedMagBlacklist = [];
         var defaultMagazineTpl = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weapon);
         var randomizedMagazineCount = _botWeaponGeneratorHelper.GetRandomizedMagazineCount(inventoryMagGen.GetMagCount());
-        for (var i = 0; i < randomizedMagazineCount; i++) {
+        for (var i = 0; i < randomizedMagazineCount; i++)
+        {
             var magazineWithAmmo = _botWeaponGeneratorHelper.CreateMagazineWithAmmo(
                 magazineTpl,
                 inventoryMagGen.GetAmmoTemplate().Id,
@@ -73,15 +57,18 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
                 inventoryMagGen.GetPmcInventory()
             );
 
-            if (fitsIntoInventory == ItemAddedResult.NO_CONTAINERS) {
+            if (fitsIntoInventory == ItemAddedResult.NO_CONTAINERS)
+            {
                 // No containers to fit magazines, stop trying
                 break;
             }
 
             // No space for magazine and we haven't reached desired magazine count
-            if (fitsIntoInventory == ItemAddedResult.NO_SPACE && i < randomizedMagazineCount) {
+            if (fitsIntoInventory == ItemAddedResult.NO_SPACE && i < randomizedMagazineCount)
+            {
                 // Prevent infinite loop by only allowing 5 attempts at fitting a magazine into inventory
-                if (fitAttempts > 5) {
+                if (fitAttempts > 5)
+                {
                     _logger.Debug($"Failed {fitAttempts} times to add magazine {magazineTpl} to bot inventory, stopping");
 
                     break;
@@ -91,7 +78,8 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
                  * so we fallback to default magazine and try again.
                  * Temporary workaround to Killa spawning with no extra mags if he spawns with a drum mag */
 
-                if (magazineTpl == defaultMagazineTpl) {
+                if (magazineTpl == defaultMagazineTpl)
+                {
                     // We were already on default - stop here to prevent infinite looping
                     break;
                 }
@@ -102,7 +90,8 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
                 // Set chosen magazine tpl to the weapons default magazine tpl and try to fit into inventory next loop
                 magazineTpl = defaultMagazineTpl;
                 magTemplate = _itemHelper.GetItem(magazineTpl).Value;
-                if (magTemplate is null) {
+                if (magTemplate is null)
+                {
                     _logger.Error(
                         _localisationService.GetText("bot-unable_to_find_default_magazine_item", magazineTpl)
                     );
@@ -111,12 +100,14 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
                 }
 
                 // Edge case - some weapons (SKS) have an internal magazine as default, choose random non-internal magazine to add to bot instead
-                if (magTemplate.Properties.ReloadMagType == "InternalMagazine") {
+                if (magTemplate.Properties.ReloadMagType == "InternalMagazine")
+                {
                     var result = GetRandomExternalMagazineForInternalMagazineGun(
                         inventoryMagGen.GetWeaponTemplate().Id,
                         attemptedMagBlacklist
                     );
-                    if (result?.Id is null) {
+                    if (result?.Id is null)
+                    {
                         _logger.Debug($"Unable to add additional magazine into bot inventory for weapon: {weapon.Name}, attempted: {fitAttempts} times");
 
                         break;
@@ -131,7 +122,8 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
                 i--;
             }
 
-            if (fitsIntoInventory == ItemAddedResult.SUCCESS) {
+            if (fitsIntoInventory == ItemAddedResult.SUCCESS)
+            {
                 // Reset fit counter now it succeeded
                 fitAttempts = 0;
             }
@@ -142,21 +134,26 @@ public class ExternalInventoryMagGen : InventoryMagGen, IInventoryMagGen
     {
         // The mag Slot data for the weapon
         var magSlot = _itemHelper.GetItem(weaponTpl).Value.Properties.Slots.FirstOrDefault((x) => x.Name == "mod_magazine");
-        if (magSlot is null) {
+        if (magSlot is null)
+        {
             return null;
         }
 
         // All possible mags that fit into the weapon excluding blacklisted
-        var magazinePool = magSlot.Props.Filters[0].Filter.Where((x) => !magazineBlacklist.Contains(x)).Select(
-            (x) => _itemHelper.GetItem(x).Value
-        );
-        if (magazinePool is null) {
+        var magazinePool = magSlot.Props.Filters[0]
+            .Filter.Where((x) => !magazineBlacklist.Contains(x))
+            .Select(
+                (x) => _itemHelper.GetItem(x).Value
+            );
+        if (magazinePool is null)
+        {
             return null;
         }
 
         // Non-internal magazines that fit into the weapon
         var externalMagazineOnlyPool = magazinePool.Where((x) => x.Properties.ReloadMagType != "InternalMagazine");
-        if (externalMagazineOnlyPool is null || externalMagazineOnlyPool?.Count() == 0) {
+        if (externalMagazineOnlyPool is null || externalMagazineOnlyPool?.Count() == 0)
+        {
             return null;
         }
 

@@ -7,11 +7,8 @@ using Core.Models.Spt.Ragfair;
 namespace Core.Generators;
 
 [Injectable]
-public class RagfairOfferGenerator
+public class RagfairOfferGenerator()
 {
-    public RagfairOfferGenerator()
-    {
-    }
 
     /// <summary>
     /// Create a flea offer and store it in the Ragfair server offers list

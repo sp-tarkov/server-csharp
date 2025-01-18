@@ -10,34 +10,16 @@ using Core.Utils;
 namespace Core.Generators;
 
 [Injectable]
-public class WeatherGenerator
+public class WeatherGenerator(
+    TimeUtil _timeUtil,
+    SeasonalEventService _seasonalEventService,
+    WeatherHelper _weatherHelper,
+    ConfigServer _configServer,
+    WeightedRandomHelper _weightedRandomHelper,
+    RandomUtil _randomUtil
+)
 {
-    protected TimeUtil _timeUtil;
-    protected SeasonalEventService _seasonalEventService;
-    protected WeatherHelper _weatherHelper;
-    protected ConfigServer _configServer;
-    protected WeightedRandomHelper _weightedRandomHelper;
-    protected RandomUtil _randomUtil;
-    protected WeatherConfig _weatherConfig;
-
-    public WeatherGenerator(
-    TimeUtil timeUtil,
-        SeasonalEventService seasonalEventService,
-        WeatherHelper weatherHelper,
-        ConfigServer configServer,
-        WeightedRandomHelper weightedRandomHelper,
-        RandomUtil randomUtil
-    )
-    {
-        _timeUtil = timeUtil;
-        _seasonalEventService = seasonalEventService;
-        _weatherHelper = weatherHelper;
-        _configServer = configServer;
-        _weightedRandomHelper = weightedRandomHelper;
-        _randomUtil = randomUtil;
-
-        _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-    }
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /**
      * Get current + raid datetime and format into correct BSG format and return
@@ -47,13 +29,13 @@ public class WeatherGenerator
     public void CalculateGameTime(WeatherData data)
     {
         var computedDate = DateTime.Now;
-        var formattedDate = this._timeUtil.FormatDate(computedDate);
+        var formattedDate = _timeUtil.FormatDate(computedDate);
 
         data.Date = formattedDate;
         data.Time = GetBsgFormattedInRaidTime();
-        data.Acceleration = this._weatherConfig.Acceleration;
+        data.Acceleration = _weatherConfig.Acceleration;
 
-        data.Season = this._seasonalEventService.GetActiveWeatherSeason();
+        data.Season = _seasonalEventService.GetActiveWeatherSeason();
     }
 
     /**
@@ -64,7 +46,7 @@ public class WeatherGenerator
      */
     protected string GetBsgFormattedInRaidTime()
     {
-        var clientAcceleratedDate = this._weatherHelper.GetInRaidTime();
+        var clientAcceleratedDate = _weatherHelper.GetInRaidTime();
 
         return GetBsgFormattedTime(clientAcceleratedDate);
     }
@@ -121,10 +103,10 @@ public class WeatherGenerator
 
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
-        var result = this._weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
+        var result = _weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
         if (!result)
         {
-            return this._weatherConfig.Weather.SeasonValues["default"];
+            return _weatherConfig.Weather.SeasonValues["default"];
         }
 
         return value!;
@@ -158,7 +140,7 @@ public class WeatherGenerator
         var normalTime = GetBsgFormattedTime(inRaidTime);
         var formattedDate = _timeUtil.FormatDate(timestamp.HasValue ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow);
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
-        
+
         weather.Timestamp = timestamp ?? _timeUtil.GetTimeStampFromEpoch(inRaidTime) / 1000; // matches weather.date
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp

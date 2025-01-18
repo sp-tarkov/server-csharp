@@ -9,11 +9,9 @@ using Core.Models.Spt.Services;
 namespace Core.Generators;
 
 [Injectable]
-public class LootGenerator
+public class LootGenerator(
+    )
 {
-    public LootGenerator()
-    {
-    }
 
     /// <summary>
     /// Generate a list of items based on configuration options parameter

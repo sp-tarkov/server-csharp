@@ -15,75 +15,29 @@ using Core.Utils.Cloners;
 namespace Core.Generators;
 
 [Injectable]
-public class BotEquipmentModGenerator
+public class BotEquipmentModGenerator(
+    ISptLogger<BotEquipmentModGenerator> _logger,
+    HashUtil _hashUtil,
+    RandomUtil _randomUtil,
+    ProbabilityHelper _probabilityHelper,
+    DatabaseService _databaseService,
+    ItemHelper _itemHelper,
+    BotEquipmentFilterService _botEquipmentFilterService,
+    ItemFilterService _itemFilterService,
+    ProfileHelper _profileHelper,
+    BotWeaponModLimitService _botWeaponModLimitService,
+    BotHelper _botHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    BotWeaponGeneratorHelper _botWeaponGeneratorHelper,
+    WeightedRandomHelper _weightedRandomHelper,
+    PresetHelper _presetHelper,
+    LocalisationService _localisationService,
+    BotEquipmentModPoolService _botEquipmentModPoolService,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
-    private readonly ISptLogger<BotEquipmentModGenerator> _logger;
-    private readonly HashUtil _hashUtil;
-    private readonly RandomUtil _randomUtil;
-    private readonly ProbabilityHelper _probabilityHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly ItemHelper _itemHelper;
-    private readonly BotEquipmentFilterService _botEquipmentFilterService;
-    private readonly ItemFilterService _itemFilterService;
-    private readonly ProfileHelper _profileHelper;
-    private readonly BotWeaponModLimitService _botWeaponModLimitService;
-    private readonly BotHelper _botHelper;
-    private readonly BotGeneratorHelper _botGeneratorHelper;
-    private readonly BotWeaponGeneratorHelper _botWeaponGeneratorHelper;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly PresetHelper _presetHelper;
-    private readonly LocalisationService _localisationService;
-    private readonly BotEquipmentModPoolService _botEquipmentModPoolService;
-    private readonly ConfigServer _configServer;
-    private readonly ICloner _cloner;
-
-    private BotConfig _botConfig;
-
-    public BotEquipmentModGenerator
-    (
-        ISptLogger<BotEquipmentModGenerator> logger,
-        HashUtil hashUtil,
-        RandomUtil randomUtil,
-        ProbabilityHelper probabilityHelper,
-        DatabaseService databaseService,
-        ItemHelper itemHelper,
-        BotEquipmentFilterService botEquipmentFilterService,
-        ItemFilterService itemFilterService,
-        ProfileHelper profileHelper,
-        BotWeaponModLimitService botWeaponModLimitService,
-        BotHelper botHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        BotWeaponGeneratorHelper botWeaponGeneratorHelper,
-        WeightedRandomHelper weightedRandomHelper,
-        PresetHelper presetHelper,
-        LocalisationService localisationService,
-        BotEquipmentModPoolService botEquipmentModPoolService,
-        ConfigServer configServer,
-        ICloner cloner
-    )
-    {
-        _logger = logger;
-        _hashUtil = hashUtil;
-        _randomUtil = randomUtil;
-        _probabilityHelper = probabilityHelper;
-        _databaseService = databaseService;
-        _itemHelper = itemHelper;
-        _botEquipmentFilterService = botEquipmentFilterService;
-        _itemFilterService = itemFilterService;
-        _profileHelper = profileHelper;
-        _botWeaponModLimitService = botWeaponModLimitService;
-        _botHelper = botHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _botWeaponGeneratorHelper = botWeaponGeneratorHelper;
-        _weightedRandomHelper = weightedRandomHelper;
-        _presetHelper = presetHelper;
-        _localisationService = localisationService;
-        _botEquipmentModPoolService = botEquipmentModPoolService;
-        _configServer = configServer;
-        _cloner = cloner;
-
-        _botConfig = _configServer.GetConfig<BotConfig>();
-    }
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Check mods are compatible and add to array
@@ -174,7 +128,9 @@ public class BotEquipmentModGenerator
                 switch (plateSlotFilteringOutcome.Result)
                 {
                     case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
-                        _logger.Debug($"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping");
+                        _logger.Debug(
+                            $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
+                        );
 
                         continue;
                     case Result.LACKS_PLATE_WEIGHTS:
@@ -275,7 +231,8 @@ public class BotEquipmentModGenerator
      * @param modSlot front/back
      * @returns Tpl of plate
      */
-    protected string GetDefaultPlateTpl(TemplateItem armorItem, string modSlot ) {
+    protected string GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
+    {
         var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => slot.Name.ToLower() == modSlot);
 
         return relatedItemDbModSlot?.Props.Filters[0].Plate;
@@ -287,20 +244,21 @@ public class BotEquipmentModGenerator
      * @param modSlot front/back
      * @returns Armor IItem
      */
-    protected Item GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot) {
+    protected Item GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot)
+    {
         var defaultPreset = _presetHelper.GetDefaultPreset(armorItemTpl);
 
         return defaultPreset?.Items.FirstOrDefault((item) => item.SlotId?.ToLower() == modSlot);
     }
 
 
-/// <summary>
-/// Add mods to a weapon using the provided mod pool
-/// </summary>
-/// <param name="sessionId">Session id</param>
-/// <param name="request">Data used to generate the weapon</param>
-/// <returns>Weapon + mods array</returns>
-public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
+    /// <summary>
+    /// Add mods to a weapon using the provided mod pool
+    /// </summary>
+    /// <param name="sessionId">Session id</param>
+    /// <param name="request">Data used to generate the weapon</param>
+    /// <returns>Weapon + mods array</returns>
+    public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
@@ -1399,14 +1357,16 @@ public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest 
         var filteredMods = FilterModsByBlacklist(supportedSubMods, botEquipBlacklist, desiredSlotName);
         if (!filteredMods.Any())
         {
-            _logger.Warning(_localisationService
-                .GetText("bot-unable_to_filter_mods_all_blacklisted",
-                    new
-                    {
-                        slotName = desiredSlotObject.Name,
-                        itemName = modTemplate.Name,
-                    }
-                )
+            _logger.Warning(
+                _localisationService
+                    .GetText(
+                        "bot-unable_to_filter_mods_all_blacklisted",
+                        new
+                        {
+                            slotName = desiredSlotObject.Name,
+                            itemName = modTemplate.Name,
+                        }
+                    )
             );
         }
 

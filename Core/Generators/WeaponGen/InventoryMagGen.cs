@@ -4,17 +4,13 @@ using Core.Models.Eft.Common.Tables;
 namespace Core.Generators.WeaponGen;
 
 [Injectable]
-public class InventoryMagGen
+public class InventoryMagGen()
 {
     private GenerationData _magCounts;
     private TemplateItem _magazineTemplate;
     private TemplateItem _weaponTemplate;
     private TemplateItem _ammoTemplate;
     private BotBaseInventory _pmcInventory;
-
-    public InventoryMagGen()
-    {
-    }
 
     public InventoryMagGen
     (
@@ -23,7 +19,7 @@ public class InventoryMagGen
         TemplateItem weaponTemplate,
         TemplateItem ammoTemplate,
         BotBaseInventory pmcInventory
-    )
+    ) : this()
     {
         _magCounts = magCounts;
         _magazineTemplate = magazineTemplate;

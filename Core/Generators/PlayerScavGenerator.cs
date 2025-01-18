@@ -14,66 +14,26 @@ using Core.Utils.Cloners;
 namespace Core.Generators;
 
 [Injectable]
-public class PlayerScavGenerator
+public class PlayerScavGenerator(
+    ISptLogger<PlayerScavGenerator> _logger,
+    RandomUtil _randomUtil,
+    DatabaseService _databaseService,
+    HashUtil _hashUtil,
+    ItemHelper _itemHelper,
+    BotGeneratorHelper _botGeneratorHelper,
+    SaveServer _saveServer,
+    ProfileHelper _profileHelper,
+    BotHelper _botHelper,
+    FenceService _fenceService,
+    BotLootCacheService _botLootCacheService,
+    LocalisationService _localisationService,
+    BotGenerator _botGenerator,
+    ConfigServer _configServer,
+    ICloner _cloner,
+    TimeUtil _timeUtil
+)
 {
-    protected ISptLogger<PlayerScavGenerator> _logger;
-    protected RandomUtil _randomUtil;
-    protected DatabaseService _databaseService;
-    protected HashUtil _hashUtil;
-    protected ItemHelper _itemHelper;
-    protected BotGeneratorHelper _botGeneratorHelper;
-    protected SaveServer _saveServer;
-    protected ProfileHelper _profileHelper;
-    protected BotHelper _botHelper;
-    protected FenceService _fenceService;
-    protected BotLootCacheService _botLootCacheService;
-    protected LocalisationService _localisationService;
-    protected BotGenerator _botGenerator;
-    protected ConfigServer _configServer;
-    protected ICloner _cloner;
-    protected TimeUtil _timeUtil;
-
-    private PlayerScavConfig _playerScavConfig;
-
-    public PlayerScavGenerator
-    (
-        ISptLogger<PlayerScavGenerator> logger,
-        RandomUtil randomUtil,
-        DatabaseService databaseService,
-        HashUtil hashUtil,
-        ItemHelper itemHelper,
-        BotGeneratorHelper botGeneratorHelper,
-        SaveServer saveServer,
-        ProfileHelper profileHelper,
-        BotHelper botHelper,
-        FenceService fenceService,
-        BotLootCacheService botLootCacheService,
-        LocalisationService localisationService,
-        BotGenerator botGenerator,
-        ConfigServer configServer,
-        ICloner cloner,
-        TimeUtil timeUtil
-    )
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _databaseService = databaseService;
-        _hashUtil = hashUtil;
-        _itemHelper = itemHelper;
-        _botGeneratorHelper = botGeneratorHelper;
-        _saveServer = saveServer;
-        _profileHelper = profileHelper;
-        _botHelper = botHelper;
-        _fenceService = fenceService;
-        _botLootCacheService = botLootCacheService;
-        _localisationService = localisationService;
-        _botGenerator = botGenerator;
-        _configServer = configServer;
-        _cloner = cloner;
-        _timeUtil = timeUtil;
-
-        _playerScavConfig = configServer.GetConfig<PlayerScavConfig>();
-    }
+    protected PlayerScavConfig _playerScavConfig = _configServer.GetConfig<PlayerScavConfig>();
 
     /// <summary>
     /// Update a player profile to include a new player scav profile
@@ -106,7 +66,8 @@ public class PlayerScavGenerator
             playerScavKarmaSettings.BotTypeForLoot.ToLower(),
             "easy",
             baseBotNode,
-            pmcDataClone);
+            pmcDataClone
+        );
 
         // Remove cached bot data after scav was generated
         _botLootCacheService.ClearCache();
@@ -138,11 +99,15 @@ public class PlayerScavGenerator
         scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
 
         // Add additional items to player scav as loot
-        AddAdditionalLootToPlayerScavContainers(playerScavKarmaSettings.LootItemsToAddChancePercent, scavData, [
-            EquipmentSlots.TacticalVest,
-            EquipmentSlots.Pockets,
-            EquipmentSlots.Backpack
-        ]);
+        AddAdditionalLootToPlayerScavContainers(
+            playerScavKarmaSettings.LootItemsToAddChancePercent,
+            scavData,
+            [
+                EquipmentSlots.TacticalVest,
+                EquipmentSlots.Pockets,
+                EquipmentSlots.Backpack
+            ]
+        );
 
         // Remove secure container
         scavData = _profileHelper.RemoveSecureContainer(scavData);
@@ -162,7 +127,8 @@ public class PlayerScavGenerator
     /// <param name="possibleItemsToAdd">dict of tpl + % chance to be added</param>
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>
-    protected void AddAdditionalLootToPlayerScavContainers(Dictionary<string, double> possibleItemsToAdd, BotBase scavData, List<EquipmentSlots> containersToAddTo)
+    protected void AddAdditionalLootToPlayerScavContainers(Dictionary<string, double> possibleItemsToAdd, BotBase scavData,
+        List<EquipmentSlots> containersToAddTo)
     {
         foreach (var tpl in possibleItemsToAdd)
         {
@@ -193,7 +159,8 @@ public class PlayerScavGenerator
                 itemsToAdd[0].Id,
                 itemTemplate.Id,
                 itemsToAdd,
-                scavData.Inventory);
+                scavData.Inventory
+            );
 
             if (result != ItemAddedResult.SUCCESS)
                 _logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
@@ -252,8 +219,8 @@ public class PlayerScavGenerator
     protected void AdjustBotTemplateWithKarmaSpecificSettings(KarmaLevel karmaSettings, BotType baseBotNode)
     {
         // Adjust equipment chance values
-        foreach (var equipmentKvP in karmaSettings.Modifiers.Equipment) {
-
+        foreach (var equipmentKvP in karmaSettings.Modifiers.Equipment)
+        {
             // Adjustment value zero, nothing to do
             if (equipmentKvP.Value == 0)
             {
@@ -287,7 +254,8 @@ public class PlayerScavGenerator
         }
 
         // Blacklist equipment, keyed by equipment slot
-        foreach (var equipmentBlacklistKvP in karmaSettings.EquipmentBlacklist) {
+        foreach (var equipmentBlacklistKvP in karmaSettings.EquipmentBlacklist)
+        {
             baseBotNode.BotInventory.Equipment.TryGetValue(equipmentBlacklistKvP.Key, out var equipmentDict);
             foreach (var itemToRemove in equipmentBlacklistKvP.Value)
             {
@@ -309,7 +277,7 @@ public class PlayerScavGenerator
         return new()
         {
             Common = new(),
-            Mastering = new (),
+            Mastering = new(),
             Points = 0
         };
     }

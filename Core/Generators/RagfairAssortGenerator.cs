@@ -5,11 +5,8 @@ using Core.Models.Eft.Common.Tables;
 namespace Core.Generators;
 
 [Injectable]
-public class RagfairAssortGenerator
+public class RagfairAssortGenerator()
 {
-    public RagfairAssortGenerator()
-    {
-    }
 
     /// <summary>
     /// Get an array of arrays that can be sold on the flea

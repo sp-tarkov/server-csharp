@@ -16,43 +16,19 @@ using BodyPart = Core.Models.Spt.Config.BodyPart;
 namespace Core.Generators;
 
 [Injectable]
-public class RepeatableQuestGenerator
+public class RepeatableQuestGenerator(
+    ISptLogger<RepeatableQuestGenerator> _logger,
+    RandomUtil _randomUtil,
+    HashUtil _hashUtil,
+    MathUtil _mathUtil,
+    RepeatableQuestHelper _repeatableQuestHelper,
+    ItemHelper _itemHelper,
+    RepeatableQuestRewardGenerator _repeatableQuestRewardGenerator,
+    DatabaseService _databaseService,
+    ConfigServer _configServer
+)
 {
-    protected ISptLogger<RepeatableQuestGenerator> _logger;
-    protected RandomUtil _randomUtil;
-    protected HashUtil _hashUtil;
-    protected MathUtil _mathUtil;
-    protected RepeatableQuestHelper _repeatableQuestHelper;
-    protected ItemHelper _itemHelper;
-    protected RepeatableQuestRewardGenerator _repeatableQuestRewardGenerator;
-    protected DatabaseService _databaseService;
-    protected ConfigServer _configServer;
-    protected QuestConfig _questConfig;
-
-    public RepeatableQuestGenerator(
-        ISptLogger<RepeatableQuestGenerator> logger,
-        RandomUtil randomUtil,
-        HashUtil hashUtil,
-        MathUtil mathUtil,
-        RepeatableQuestHelper repeatableQuestHelper,
-        ItemHelper itemHelper,
-        RepeatableQuestRewardGenerator repeatableQuestRewardGenerator,
-        DatabaseService databaseService,
-        ConfigServer configServer
-        )
-    {
-        _logger = logger;
-        _randomUtil = randomUtil;
-        _hashUtil = hashUtil;
-        _mathUtil = mathUtil;
-        _repeatableQuestHelper = repeatableQuestHelper;
-        _itemHelper = itemHelper;
-        _repeatableQuestRewardGenerator = repeatableQuestRewardGenerator;
-        _databaseService = databaseService;
-        _configServer = configServer;
-
-        _questConfig = _configServer.GetConfig<QuestConfig>();
-    }
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     /// This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see assets/database/templates/repeatableQuests.json).
@@ -77,7 +53,8 @@ public class RepeatableQuestGenerator
         // Get traders from whitelist and filter by quest type availability
         var traders = repeatableConfig.TraderWhitelist
             .Where(x => x.QuestTypes.Contains(questType))
-            .Select(x => x.TraderId).ToList();
+            .Select(x => x.TraderId)
+            .ToList();
         // filter out locked traders
         traders = traders.Where(x => pmcTraderInfo[x].Unlocked.GetValueOrDefault(false)).ToList();
         var traderId = _randomUtil.DrawRandomFromList(traders).FirstOrDefault();
@@ -115,8 +92,10 @@ public class RepeatableQuestGenerator
         var locationsConfig = repeatableConfig.Locations;
         var targetsConfig = _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
         var bodyPartsConfig = _repeatableQuestHelper.ProbabilityObjectArray<BodyPart, string, List<string>>(eliminationConfig.BodyParts);
-        var weaponCategoryRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponCategoryRequirements);
-        var weaponRequirementConfig = _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponRequirements);
+        var weaponCategoryRequirementConfig =
+            _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponCategoryRequirements);
+        var weaponRequirementConfig =
+            _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(eliminationConfig.WeaponRequirements);
 
         // the difficulty of the quest varies in difficulty depending on the condition
         // possible conditions are
@@ -171,7 +150,7 @@ public class RepeatableQuestGenerator
         var locationKey = "any";
         if (locations.Contains("any") &&
             (eliminationConfig.SpecificLocationProbability < rand.Next() || locations.Count <= 1)
-        )
+           )
         {
             locationKey = "any";
             questTypePool.Pool.Elimination.Targets.Remove(targetKey);
@@ -183,7 +162,9 @@ public class RepeatableQuestGenerator
             {
                 locationKey = _randomUtil.DrawRandomFromList(locations).FirstOrDefault();
                 questTypePool.Pool.Elimination.Targets.Get<TargetLocation>(targetKey).Locations = locations.Where(
-                    (l) => l != locationKey).ToList();
+                        (l) => l != locationKey
+                    )
+                    .ToList();
                 if (questTypePool.Pool.Elimination.Targets.Get<TargetLocation>(targetKey).Locations.Count == 0)
                 {
                     questTypePool.Pool.Elimination.Targets.Remove(targetKey);
@@ -216,6 +197,7 @@ public class RepeatableQuestGenerator
                     bodyPartsToClient.Add(biClient);
                 }
             }
+
             bodyPartDifficulty = 1 / probability;
         }
 
@@ -227,17 +209,21 @@ public class RepeatableQuestGenerator
         if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))
         {
             // Get all boss spawn information
-            var bossSpawns = _databaseService.GetLocations().GetDictionary()
+            var bossSpawns = _databaseService.GetLocations()
+                .GetDictionary()
                 .Select(x => x.Value)
                 .Where(x => x.Base?.Id != null)
                 .Select(x => (new { x.Base.Id, BossSpawn = x.Base.BossLocationSpawn }));
             // filter for the current boss to spawn on map
             var thisBossSpawns = bossSpawns
-                .Select(x => new {
-                    x.Id,
-                    BossSpawn = x.BossSpawn
-                .Where(e => e.BossName == targetKey)
-                })
+                .Select(
+                    x => new
+                    {
+                        x.Id,
+                        BossSpawn = x.BossSpawn
+                            .Where(e => e.BossName == targetKey)
+                    }
+                )
                 .Where((x) => x.BossSpawn.Count() > 0);
             // remove blacklisted locations
             var allowedSpawns = thisBossSpawns.Where((x) => !eliminationConfig.DistLocationBlacklist.Contains(x.Id));
@@ -250,7 +236,8 @@ public class RepeatableQuestGenerator
             // Random distance with lower values more likely; simple distribution for starters...
             distance = (int)Math.Floor(
                 (decimal)(Math.Abs(rand.Next(0, 1) - rand.Next(0, 1)) * (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
-                          eliminationConfig.MinDistance));
+                          eliminationConfig.MinDistance)
+            );
             distance = (int)Math.Ceiling((decimal)(distance / 5)) * 5;
             distanceDifficulty = (int)(maxDistDifficulty * distance / eliminationConfig.MaxDistance);
         }
@@ -263,16 +250,20 @@ public class RepeatableQuestGenerator
             {
                 List<string> weaponTypes = ["Shotgun", "Pistol"];
                 weaponCategoryRequirementConfig = (ProbabilityObjectArray<WeaponRequirement, string, List<string>>)weaponCategoryRequirementConfig
-                    .Where((category) => weaponTypes
-                        .Contains(category.Key));
+                    .Where(
+                        (category) => weaponTypes
+                            .Contains(category.Key)
+                    );
             }
             else if (distance < 20)
             {
                 List<string> weaponTypes = ["MarksmanRifle", "DMR"];
                 // Filter out far range weapons from close distance requirement
                 weaponCategoryRequirementConfig = (ProbabilityObjectArray<WeaponRequirement, string, List<string>>)weaponCategoryRequirementConfig
-                    .Where((category) => weaponTypes
-                        .Contains(category.Key));
+                    .Where(
+                        (category) => weaponTypes
+                            .Contains(category.Key)
+                    );
             }
 
             // Pick a weighted weapon category
@@ -304,7 +295,8 @@ public class RepeatableQuestGenerator
             bodyPartDifficulty / maxBodyPartsDifficulty.Value,
             distanceDifficulty / maxDistDifficulty,
             killDifficulty / maxKillDifficulty.Value,
-            allowedWeaponsCategory is not null || allowedWeapon is not null ? 1 : 0);
+            allowedWeaponsCategory is not null || allowedWeapon is not null ? 1 : 0
+        );
 
         // Aforementioned issue makes it a bit crazy since now all easier quests give significantly lower rewards than Completion / Exploration
         // I therefore moved the mapping a bit up (from 0.2...1 to 0.5...2) so that normal difficulty still gives good reward and having the
@@ -326,16 +318,18 @@ public class RepeatableQuestGenerator
         // Only add specific location condition if specific map selected
         if (locationKey != "any")
         {
-            Enum.TryParse(typeof (ELocationName), locationKey, true, out var locationId);
+            Enum.TryParse(typeof(ELocationName), locationKey, true, out var locationId);
             availableForFinishCondition.Counter.Conditions.Add(GenerateEliminationLocation(locationsConfig[(ELocationName)locationId]));
         }
+
         availableForFinishCondition.Counter.Conditions.Add(
             GenerateEliminationCondition(
                 targetKey,
                 bodyPartsToClient,
                 distance.Value,
                 allowedWeapon,
-                allowedWeaponsCategory)
+                allowedWeaponsCategory
+            )
         );
         availableForFinishCondition.Value = desiredKillCount;
         availableForFinishCondition.Id = _hashUtil.Generate();
@@ -346,7 +340,8 @@ public class RepeatableQuestGenerator
             Math.Min(difficulty, 1),
             traderId,
             repeatableConfig,
-            eliminationConfig);
+            eliminationConfig
+        );
 
         return quest;
     }
@@ -377,11 +372,11 @@ public class RepeatableQuestGenerator
     }
 
     protected double DifficultyWeighing(
-            double target,
-            double bodyPart,
-            int dist,
-            int kill,
-            int weaponRequirement)
+        double target,
+        double bodyPart,
+        int dist,
+        int kill,
+        int weaponRequirement)
     {
         return Math.Sqrt(Math.Sqrt(target) + bodyPart + dist + weaponRequirement) * kill;
     }
@@ -430,15 +425,17 @@ public class RepeatableQuestGenerator
         string? allowedWeaponCategory
     )
     {
-        var killConditionProps  = new QuestConditionCounterCondition{
+        var killConditionProps = new QuestConditionCounterCondition
+        {
             Id = _hashUtil.Generate(),
             DynamicLocale = true,
             Target = target, // e,g, "AnyPmc"
             Value = 1,
             ResetOnSessionEnd = false,
             EnemyHealthEffects = [],
-            Daytime = new DaytimeCounter(){ From = 0, To = 0 },
-            ConditionType = "Kills"};
+            Daytime = new DaytimeCounter() { From = 0, To = 0 },
+            ConditionType = "Kills"
+        };
 
         if (target.StartsWith("boss"))
         {
@@ -455,7 +452,7 @@ public class RepeatableQuestGenerator
         // Don't allow distance + melee requirement
         if (distance is not null && allowedWeaponCategory != "5b5f7a0886f77409407a7f96")
         {
-            killConditionProps.Distance = new CounterConditionDistance{ CompareMethod = ">=", Value = distance.Value };
+            killConditionProps.Distance = new CounterConditionDistance { CompareMethod = ">=", Value = distance.Value };
         }
 
         // Has specific weapon requirement

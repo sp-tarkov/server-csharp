@@ -6,11 +6,8 @@ using Core.Models.Spt.Hideout;
 namespace Core.Generators;
 
 [Injectable]
-public class ScavCaseRewardGenerator
+public class ScavCaseRewardGenerator()
 {
-    public ScavCaseRewardGenerator()
-    {
-    }
 
     /// <summary>
     /// Create an array of rewards that will be given to the player upon completing their scav case build

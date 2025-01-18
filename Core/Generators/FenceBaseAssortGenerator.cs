@@ -1,17 +1,16 @@
 ﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
+using Core.Servers;
 
 namespace Core.Generators;
 
 [Injectable]
-public class FenceBaseAssortGenerator
+public class FenceBaseAssortGenerator(
+    ConfigServer _configServer
+)
 {
-    private TraderConfig _traderConfig;
-
-    public FenceBaseAssortGenerator()
-    {
-    }
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
     /// Create base fence assorts dynamically and store in memory

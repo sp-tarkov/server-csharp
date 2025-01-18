@@ -7,14 +7,12 @@ using Core.Models.Spt.Config;
 namespace Core.Generators;
 
 [Injectable]
-public class LocationLootGenerator
+public class LocationLootGenerator(
+    
+    )
 {
     private LocationConfig _locationConfig;
     private SeasonalEventConfig _seasonalEventConfig;
-
-    public LocationLootGenerator()
-    {
-    }
 
     /// Create a list of container objects with randomised loot
     /// </summary>
