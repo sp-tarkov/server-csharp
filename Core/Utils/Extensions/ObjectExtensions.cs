@@ -33,11 +33,5 @@ namespace Core.Utils.Extensions
                 return default;
             return (T?)cachedProperty.GetValue(obj);
         }
-
-
-        public static void Remove<T>(this EliminationTargetPool pool, T key)
-        {
-            // TODO: extension method should be moved to a separate static class and deal with logic
-        }
     }
 }
