@@ -62,19 +62,6 @@ public class SptWebSocketConnectionHandler : IWebSocketConnectionHandler
 
                 _sockets.Add(sessionID, ws);
 
-                // lock (_lockObject)
-                // {
-                //     _socketAliveTimers.Add(
-                //         sessionID,
-                //         new Timer(
-                //             _ => { TimedTask(ws, sessionID); },
-                //             null,
-                //             TimeSpan.Zero,
-                //             TimeSpan.FromMilliseconds(_httpConfig.WebSocketPingDelayMs)
-                //         )
-                //     );
-                // }
-
                 lock (_lockObject)
                 {
                     _receiveTasks.Add(sessionID, new());

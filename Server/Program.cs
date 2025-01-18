@@ -20,7 +20,8 @@ public static class Program
         var assemblies = ModDllLoader.LoadAllMods();
         HarmonyBootstrapper.LoadAllPatches(assemblies);
         var builder = WebApplication.CreateBuilder(args);
-        
+        builder.Host.UseSerilog();
+
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
         CreateAndRegisterLogger(builder, out var registeredLogger);
@@ -36,7 +37,7 @@ public static class Program
             var watermark = serviceProvider.GetService<Watermark>();
             // Initialize Watermak
             watermark.Initialize();
-            
+
             // Initialize PreSptMods
             var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadMod>();
             foreach (var preSptLoadMod in preSptLoadMods)
