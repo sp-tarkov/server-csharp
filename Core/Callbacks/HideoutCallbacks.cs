@@ -10,6 +10,7 @@ using Core.Servers;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(HideoutCallbacks))]
 public class HideoutCallbacks(
     HideoutController _hideoutController,
     ConfigServer _configServer
