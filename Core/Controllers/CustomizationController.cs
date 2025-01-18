@@ -77,7 +77,7 @@ public class CustomizationController
     /// <param name="buyClothingRequest">Request object</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>ItemEventRouterResponse</returns>
-    public ItemEventRouterResponse BuyClothing(
+    public ItemEventRouterResponse BuyCustomisation(
         PmcData pmcData,
         BuyClothingRequestData buyClothingRequest,
         string sessionId)

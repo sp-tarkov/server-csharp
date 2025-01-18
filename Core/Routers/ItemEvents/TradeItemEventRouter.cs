@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -30,15 +30,15 @@ public class TradeItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "TradingConfirm":
-                return _tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID);
+                return Task.FromResult(_tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID));
             case "RagFairBuyOffer":
-                return _tradeCallbacks.ProcessRagfairTrade(pmcData, body as ProcessRagfairTradeRequestData, sessionID);
+                return Task.FromResult(_tradeCallbacks.ProcessRagfairTrade(pmcData, body as ProcessRagfairTradeRequestData, sessionID));
             case "SellAllFromSavage":
-                return _tradeCallbacks.SellAllFromSavage(pmcData, body as SellScavItemsToFenceRequestData, sessionID);
+                return Task.FromResult(_tradeCallbacks.SellAllFromSavage(pmcData, body as SellScavItemsToFenceRequestData, sessionID));
             default:
                 throw new Exception($"TradeItemEventRouter being used when it cant handle route {url}");
         }

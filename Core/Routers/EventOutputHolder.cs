@@ -75,7 +75,7 @@ public class EventOutputHolder
         });
     }
 
-    public void UpdateOutputProperties()
+    public void UpdateOutputProperties(string sessionId)
     {
         throw new NotImplementedException();
     }

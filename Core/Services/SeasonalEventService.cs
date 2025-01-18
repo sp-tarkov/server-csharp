@@ -744,7 +744,7 @@ public class SeasonalEventService
     }
 
     /// <summary>
-    /// Add lootble items from backpack into patrol.ITEMS_TO_DROP difficulty property
+    /// Add lootable items from backpack into patrol.ITEMS_TO_DROP difficulty property
     /// </summary>
     protected void AddLootItemsToGifterDropItemsList()
     {

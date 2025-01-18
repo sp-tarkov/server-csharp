@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -32,17 +32,17 @@ public class QuestItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "QuestAccept":
-                return _questCallbacks.AcceptQuest(pmcData, body as AcceptQuestRequestData, sessionID);
+                return Task.FromResult(_questCallbacks.AcceptQuest(pmcData, body as AcceptQuestRequestData, sessionID));
             case "QuestComplete":
-                return _questCallbacks.CompleteQuest(pmcData, body as CompleteQuestRequestData, sessionID);
+                return Task.FromResult(_questCallbacks.CompleteQuest(pmcData, body as CompleteQuestRequestData, sessionID));
             case "QuestHandover":
-                return _questCallbacks.HandoverQuest(pmcData, body as HandoverQuestRequestData, sessionID);
+                return Task.FromResult(_questCallbacks.HandoverQuest(pmcData, body as HandoverQuestRequestData, sessionID));
             case "RepeatableQuestChange":
-                return _questCallbacks.ChangeRepeatableQuest(pmcData, body as RepeatableQuestChangeRequest, sessionID);
+                return Task.FromResult(_questCallbacks.ChangeRepeatableQuest(pmcData, body as RepeatableQuestChangeRequest, sessionID));
             default:
                 throw new Exception($"QuestItemEventRouter being used when it cant handle route {url}");
         }

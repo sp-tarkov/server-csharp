@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -30,15 +30,15 @@ public class RagfairItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "RagFairAddOffer":
-                return _ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID);
+                return Task.FromResult(_ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID));
             case "RagFairRemoveOffer":
-                return _ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID);
+                return Task.FromResult(_ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID));
             case "RagFairRenewOffer":
-                return _ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID);
+                return Task.FromResult(_ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID));
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }

@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -30,16 +30,16 @@ public class NoteItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "AddNote":
-                return _noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID);
+                return Task.FromResult(_noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID));
             case "EditNote":
-                return _noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID);
+                return Task.FromResult(_noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID));
             case "DeleteNote":
-                return _noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID);
+                return Task.FromResult(_noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID));
             default:
                 throw new Exception($"NoteItemEventRouter being used when it cant handle route {url}");
         }

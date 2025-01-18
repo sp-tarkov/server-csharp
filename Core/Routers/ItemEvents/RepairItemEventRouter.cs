@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -29,13 +29,13 @@ public class RepairItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "Repair":
-                return _repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID);
+                return Task.FromResult(_repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID));
             case "TraderRepair":
-                return _repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID);
+                return Task.FromResult(_repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID));
             default:
                 throw new Exception($"RepairItemEventRouter being used when it cant handle route {url}");
         }

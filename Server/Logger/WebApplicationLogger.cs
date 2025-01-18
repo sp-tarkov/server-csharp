@@ -1,4 +1,5 @@
 using Core.Annotations;
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 using Core.Models.Utils;
 
@@ -75,5 +76,16 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     public void Critical(string data, Exception? ex = null)
     {
         _logger.LogCritical(ex, GetColorizedText(data, LogTextColor.Black, LogBackgroundColor.Red));
+    }
+
+    public void WriteToLogFile(Daum body)
+    {   
+        throw new NotImplementedException();
+    }
+
+    public void WriteToLogFile(object data)
+    {
+        //TODO - implement + turn object into json
+        _logger.LogError("NOT IMPLEMENTED - WriteToLogFile");
     }
 }

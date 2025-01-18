@@ -1,22 +1,26 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Customization;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Utils;
 
 namespace Core.Routers.ItemEvents;
 
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class CustomizationItemEventRouter : ItemEventRouterDefinition
 {
+    protected ISptLogger<CustomizationItemEventRouter> _logger;
     protected CustomizationCallbacks _customizationCallbacks;
 
     public CustomizationItemEventRouter
     (
+        ISptLogger<CustomizationItemEventRouter> logger,
         CustomizationCallbacks customizationCallbacks
     )
     {
+        _logger = logger;
         _customizationCallbacks = customizationCallbacks;
     }
 
@@ -29,14 +33,14 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override object HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "CustomizationBuy":
-                return _customizationCallbacks.BuyClothing(pmcData, body as BuyClothingRequestData, sessionID);
+                return Task.FromResult(_customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID));
             case "CustomizationSet":
-                return _customizationCallbacks.SetClothing(pmcData, body as CustomizationSetRequest, sessionID);
+                return Task.FromResult(_customizationCallbacks.SetClothing(pmcData, body as CustomizationSetRequest, sessionID));
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }
