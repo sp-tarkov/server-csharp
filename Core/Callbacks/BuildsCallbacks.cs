@@ -2,29 +2,17 @@
 using Core.Controllers;
 using Core.Models.Eft.Builds;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.PresetBuild;
-using Core.Models.Eft.Profile;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class BuildsCallbacks
+public class BuildsCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    BuildController _buildController
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected BuildController _buildController;
-
-    public BuildsCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        BuildController buildController
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _buildController = buildController;
-    }
-
     /// <summary>
     /// Handle client/builds/list
     /// </summary>
