@@ -1,29 +1,17 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Location;
 using Core.Utils;
 
 namespace Core.Callbacks;
 
 [Injectable]
-public class LocationCallbacks
+public class LocationCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    LocationController _locationController
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected LocationController _locationController;
-
-    public LocationCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        LocationController locationController
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _locationController = locationController;
-    }
-
     /// <summary>
     /// Handle client/locations
     /// </summary>

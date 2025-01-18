@@ -1,8 +1,6 @@
 ﻿using Core.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.Match;
 using Core.Services;
 using Core.Utils;
@@ -10,27 +8,12 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable]
-public class MatchCallbacks
+public class MatchCallbacks(
+    HttpResponseUtil _httpResponseUtil,
+    MatchController _matchController,
+    DatabaseService _databaseService
+)
 {
-    protected HttpResponseUtil _httpResponseUtil;
-    protected JsonUtil _jsonUtil;
-    protected MatchController _matchController;
-    protected DatabaseService _databaseService;
-
-    public MatchCallbacks
-    (
-        HttpResponseUtil httpResponseUtil,
-        JsonUtil jsonUtil,
-        MatchController matchController,
-        DatabaseService databaseService
-    )
-    {
-        _httpResponseUtil = httpResponseUtil;
-        _jsonUtil = jsonUtil;
-        _matchController = matchController;
-        _databaseService = databaseService;
-    }
-
     /// <summary>
     /// Handle client/match/updatePing
     /// </summary>
@@ -76,7 +59,7 @@ public class MatchCallbacks
     /// <returns></returns>
     public string GroupCurrent(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(new MatchGroupCurrentResponse() { Squad = new() });
+        return _httpResponseUtil.GetBody(new MatchGroupCurrentResponse { Squad = [] });
     }
 
     /// <summary>
