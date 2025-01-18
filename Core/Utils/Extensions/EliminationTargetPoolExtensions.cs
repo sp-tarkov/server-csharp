@@ -4,9 +4,9 @@ namespace Core.Utils.Extensions
 {
     public static class EliminationTargetPoolExtensions
     {
-        public static void Remove<T>(this EliminationTargetPool pool, T key)
+        public static void Remove(this EliminationTargetPool pool, string key)
         {
-            // TODO: Implement
+            pool[key] = null;
         }
     }
 }

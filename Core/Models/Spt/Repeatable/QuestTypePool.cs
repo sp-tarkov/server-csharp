@@ -74,11 +74,15 @@ public record EliminationTargetPool
     [JsonPropertyName("bossBoarSniper")]
     public TargetLocation? BossBoarSniper { get; set; }
 
-    public EliminationTargetPool this[string toLower]
+    public EliminationTargetPool? this[string toLower]
     {
         get
         {
             return (EliminationTargetPool?)GetType().GetProperties().SingleOrDefault(p => p.GetJsonName() == toLower)?.GetValue(this);
+        }
+        set
+        {
+            // Implement
         }
     }
 }
