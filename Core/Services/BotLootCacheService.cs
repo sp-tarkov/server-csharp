@@ -191,19 +191,19 @@ public class BotLootCacheService(
             // Sort loot pool into separate buckets
             switch (kvp.Key)
             {
-                case "specialloot":
+                case "SpecialLoot":
                     AddItemsToPool(specialLootPool, kvp.Value);
                     break;
-                case "pockets":
+                case "Pockets":
                     AddItemsToPool(pocketLootPool, kvp.Value);
                     break;
-                case "tacticalvest":
+                case "TacticalVest":
                     AddItemsToPool(vestLootPool, kvp.Value);
                     break;
-                case "securedcontainer":
+                case "SecuredContainer":
                     AddItemsToPool(secureLootTPool, kvp.Value);
                     break;
-                case "backpack":
+                case "Backpack":
                     AddItemsToPool(backpackLootPool, kvp.Value);
                     break;
                 default:
