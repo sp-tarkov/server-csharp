@@ -299,9 +299,7 @@ public class BotWeaponGenerator(
     protected List<Item> GetPresetWeaponMods(string weaponTemplate, string equipmentSlot, string weaponParentId, TemplateItem itemTemplate, string botRole)
     {
         // Invalid weapon generated, fallback to preset
-        _logger.Warning(
-            _localisationService.GetText($"bot-weapon_generated_incorrect_using_default {weaponTemplate} {itemTemplate.Name}")
-        );
+        _logger.Warning(_localisationService.GetText("bot-weapon_generated_incorrect_using_default", $"{weaponTemplate} - {itemTemplate.Name}"));
         List<Item> weaponMods = [];
 
         // TODO: Preset weapons trigger a lot of warnings regarding missing ammo in magazines & such
