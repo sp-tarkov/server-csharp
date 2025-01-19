@@ -607,7 +607,7 @@ public class BotWeaponGenerator(
     /// <returns>List of cartridge tpls</returns>
     protected List<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
-        var cartridges = weaponTemplate.Properties.Chambers[0]?.Props?.Filters[0]?.Filter;
+        var cartridges = weaponTemplate.Properties.Chambers?[0].Props?.Filters[0]?.Filter;
         if (cartridges is null)
         {
             // Fallback to the magazine if possible, e.g. for revolvers
