@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -16,7 +16,7 @@ namespace Core.Callbacks;
 [Injectable(InjectableTypeOverride = typeof(RagfairCallbacks))]
 public class RagfairCallbacks(
     HttpResponseUtil _httpResponseUtil,
-    // RagfairServer _ragfairServer
+    RagfairServer _ragfairServer,
     RagfairController _ragfairController,
     RagfairTaxService _ragfairTaxService,
     ConfigServer _configServer
@@ -27,7 +27,6 @@ public class RagfairCallbacks(
     public async Task OnLoad()
     {
         // await _ragfairServer.Load();
-        // TODO: implement RagfairServer
     }
 
     public string GetRoute()
