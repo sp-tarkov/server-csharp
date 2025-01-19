@@ -8,7 +8,7 @@ using Core.Utils.Cloners;
 
 namespace Core.Helpers;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class HandbookHelper(
     DatabaseService _databaseService,
     ConfigServer _configServer,
