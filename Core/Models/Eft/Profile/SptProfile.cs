@@ -49,7 +49,7 @@ public record SptProfile
     public List<string>? FriendProfileIds { get; set; }
 
     [JsonPropertyName("customisationUnlocks")]
-    public List<CustomisationStorage> CustomisationUnlocks { get; set; }
+    public List<CustomisationStorage>? CustomisationUnlocks { get; set; }
 }
 
 public record TraderPurchaseData
