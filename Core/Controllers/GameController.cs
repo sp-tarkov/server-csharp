@@ -81,26 +81,15 @@ public class GameController(
             _logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
             return;
         }
-
-        if (fullProfile.SptData is null)
-        {
-            _logger.Error($"{nameof(fullProfile.SptData)} is null on GameController.GameStart");
-            return;
-        }
-
-        if (fullProfile.SptData.Version is null)
-        {
-            _logger.Error($"{nameof(fullProfile.SptData.Version)} is null on GameController.GameStart");
-            return;
-        }
+        
+        fullProfile.SptData ??= new Spt { Version = "Replace_me" };
+        fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
+        fullProfile.FriendProfileIds ??= [];
         
         if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
             return;
 
-        fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
-        fullProfile.FriendProfileIds ??= [];
-
-        if (fullProfile.SptData.Version.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
+        if (fullProfile.SptData.Version!.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
         {
             _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData?.PmcData?.Inventory?.Items ?? []);
             Migrate39xProfile(fullProfile);
@@ -111,7 +100,7 @@ public class GameController(
         }
 
         //3.10 migrations
-        if (fullProfile.SptData.Version.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
+        if (fullProfile.SptData.Version!.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
         {
             Migrate310xProfile(fullProfile);
 
