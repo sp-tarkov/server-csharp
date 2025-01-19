@@ -2,7 +2,6 @@ using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Player;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Ragfair;
 using Core.Models.Utils;

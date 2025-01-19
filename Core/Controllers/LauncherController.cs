@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;

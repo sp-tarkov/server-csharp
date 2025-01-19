@@ -1,6 +1,5 @@
 using Core.Annotations;
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.Profile;
 using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;

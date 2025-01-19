@@ -2,7 +2,6 @@ using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Helpers;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;

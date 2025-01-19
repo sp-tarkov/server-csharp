@@ -4,7 +4,6 @@ using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Launcher;
-using Core.Models.Eft.Player;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Utils;
@@ -13,7 +12,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using System.Collections.Generic;
 
 namespace Core.Controllers;
 

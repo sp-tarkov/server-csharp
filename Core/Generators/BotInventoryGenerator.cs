@@ -10,7 +10,6 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-using Equipment = Core.Models.Eft.Common.Tables.Equipment;
 
 
 namespace Core.Generators;

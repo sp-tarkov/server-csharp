@@ -1,4 +1,3 @@
-using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 
 namespace Core.Models.Utils;

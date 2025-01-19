@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
-using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
 

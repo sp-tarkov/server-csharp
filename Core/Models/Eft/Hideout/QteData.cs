@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Health;
 using Core.Models.Enums;

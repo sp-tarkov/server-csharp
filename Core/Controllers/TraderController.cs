@@ -3,7 +3,6 @@ using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Game;
-using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;

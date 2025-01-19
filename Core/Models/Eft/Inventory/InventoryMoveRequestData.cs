@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Serialization;
-using Core.Models.Eft.ItemEvent;
 
 namespace Core.Models.Eft.Inventory;
 

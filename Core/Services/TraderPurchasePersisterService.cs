@@ -1,7 +1,6 @@
 using Core.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Profile;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;

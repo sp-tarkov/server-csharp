@@ -1,5 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Match;
 

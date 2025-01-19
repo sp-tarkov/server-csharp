@@ -3,7 +3,6 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
-using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
 using Core.Models.Spt.Templates;
 using Core.Models.Utils;

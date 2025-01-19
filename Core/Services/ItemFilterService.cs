@@ -1,5 +1,4 @@
 using Core.Annotations;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;

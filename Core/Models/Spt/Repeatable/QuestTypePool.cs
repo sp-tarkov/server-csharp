@@ -1,8 +1,5 @@
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
-using Core.Utils.Extensions;
 
 namespace Core.Models.Spt.Repeatable;
 

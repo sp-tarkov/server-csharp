@@ -1,4 +1,3 @@
-using Core.Annotations;
 using Core.Helpers.Dialog.Commando;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;

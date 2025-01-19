@@ -3,7 +3,6 @@ using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
-using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;

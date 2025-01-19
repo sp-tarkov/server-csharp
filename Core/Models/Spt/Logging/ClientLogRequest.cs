@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Core.Models.Logging;
 using Core.Models.Utils;
 
 namespace Core.Models.Spt.Logging;

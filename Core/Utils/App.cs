@@ -1,11 +1,9 @@
 using Core.Annotations;
 using Core.DI;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using Server;
 
 namespace Core.Utils;
 

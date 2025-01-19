@@ -4,7 +4,6 @@ using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.InRaid;
 using Core.Utils;
-using Microsoft.AspNetCore.Components.Web;
 
 namespace Core.Routers.Static;
 

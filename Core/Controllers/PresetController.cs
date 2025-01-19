@@ -1,6 +1,5 @@
 using Core.Annotations;
 using Core.Helpers;
-using Core.Models.Eft.Common;
 using Core.Models.Utils;
 using Core.Services;
 

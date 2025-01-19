@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
-using Core.Annotations;
+﻿using Core.Annotations;
 using Core.Generators.WeaponGen;
 using Core.Helpers;
 using Core.Models.Eft.Common;

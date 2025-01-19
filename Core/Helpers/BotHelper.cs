@@ -1,8 +1,6 @@
 using Core.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Match;
-using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
