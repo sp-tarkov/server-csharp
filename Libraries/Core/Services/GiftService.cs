@@ -238,11 +238,24 @@ public class GiftService(
 
         if (giftId is not null)
         {
-            //var giftData = GetGiftById(giftId);
             if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, 1))
             {
                 SendGiftToPlayer(sessionId, giftId);
             }
+        }
+    }
+
+    /**
+     * Send player a gift with silent received check
+     * @param giftId Id of gift to send
+     * @param sessionId Session id of player to send to
+     * @param giftCount OPTIONAL How many to send
+     */
+    public void SendGiftWithSilentReceivedCheck(string giftId, string? sessionId, int giftCount)
+    {
+        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, giftCount))
+        {
+            SendGiftToPlayer(sessionId, giftId);
         }
     }
 }

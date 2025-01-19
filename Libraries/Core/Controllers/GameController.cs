@@ -129,6 +129,7 @@ public class GameController(
         if (pmcProfile.Inventory is not null)
         {
             SendPraporGiftsToNewProfiles(pmcProfile);
+            SendMechanicGiftsToNewProfile(pmcProfile);
             _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
         }
 
@@ -455,6 +456,15 @@ public class GameController(
         {
             _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
         }
+    }
+
+    /**
+     * Mechanic sends players a measuring tape on profile start for some reason
+     * @param pmcProfile Player profile
+     */
+    protected void SendMechanicGiftsToNewProfile(PmcData pmcProfile)
+    { 
+        _giftService.SendGiftWithSilentReceivedCheck("MechanicGiftDay1", pmcProfile.SessionId, 1);
     }
 
     /// <summary>
