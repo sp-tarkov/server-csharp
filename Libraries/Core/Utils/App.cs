@@ -4,6 +4,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
+using Server;
 
 namespace Core.Utils;
 
@@ -55,24 +56,26 @@ public class App
     {
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
-        
+
         _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
         _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
         _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
-        //_logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
-        //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.argv[0])}");
-        //_logger.Debug($"PATH: {this.encodingUtil.toBase64(process.execPath)}");
-        //_logger.Debug($"Server: {ProgramStatics.SPT_VERSION || _coreConfig.SptVersion}");
+        _logger.Debug($"PATH: {_encodingUtil.ToBase64(Environment.ProcessPath ?? "null returned")}");
+        _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
 
-        //if (ProgramStatics.BUILD_TIME) {
-        //    _logger.Debug($"Date: {ProgramStatics.BUILD_TIME}");
-        //}
+        // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
 
-        //if (ProgramStatics.COMMIT) {
-        //    _logger.Debug($"Commit: {ProgramStatics.COMMIT}");
-        //}
+        if (ProgramStatics.BUILD_TIME() is not null)
+        {
+            _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
+        }
 
-        foreach (var onLoad in _onLoad) 
+        if (ProgramStatics.COMMIT() is not null)
+        {
+            _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
+        }
+
+        foreach (var onLoad in _onLoad)
             await onLoad.OnLoad();
 
         new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
@@ -81,8 +84,10 @@ public class App
         _logger.Success(GetRandomisedStartMessage());
     }
 
-    protected string GetRandomisedStartMessage() {
-        if (_randomUtil.GetInt(1, 1000) > 999) {
+    protected string GetRandomisedStartMessage()
+    {
+        if (_randomUtil.GetInt(1, 1000) > 999)
+        {
             return _localisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
         }
 
