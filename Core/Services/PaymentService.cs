@@ -2,6 +2,7 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Trade;
 
 namespace Core.Services;
 
@@ -62,6 +63,18 @@ public class PaymentService
      * @returns true if its in inventory
      */
     protected bool IsInStash(string itemId, List<Item> inventoryItems, string playerStashId)
+    {
+        throw new NotImplementedException();
+    }
+
+    /**
+     * Take money and insert items into return to server request
+     * @param pmcData Pmc profile
+     * @param request Buy item request
+     * @param sessionID Session id
+     * @param output Client response
+     */
+    public void PayMoney(PmcData pmcData, ProcessBuyTradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {
         throw new NotImplementedException();
     }

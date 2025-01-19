@@ -6,5 +6,5 @@ namespace Core.Models.Eft.Ragfair;
 public record GetItemPriceResult : MinMax
 {
     [JsonPropertyName("avg")]
-    public int? Avg { get; set; }
+    public double? Avg { get; set; }
 }

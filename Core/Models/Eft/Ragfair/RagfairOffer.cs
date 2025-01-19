@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 
@@ -30,7 +30,7 @@ public record RagfairOffer
 
     /** Rouble price per item */
     [JsonPropertyName("requirementsCost")]
-    public decimal? RequirementsCost { get; set; }
+    public double? RequirementsCost { get; set; }
 
     [JsonPropertyName("startTime")]
     public long? StartTime { get; set; }

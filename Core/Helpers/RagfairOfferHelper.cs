@@ -1,9 +1,10 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 
 namespace Core.Helpers;
@@ -21,7 +22,7 @@ public class RagfairOfferHelper
     /// <returns>Offers the player should see</returns>
     public List<RagfairOffer> GetValidOffers(
         SearchRequestData searchRequest,
-        string[] itemsToAdd,
+        List<string> itemsToAdd,
         Dictionary<string, TraderAssort> traderAssorts,
         PmcData pmcData)
     {
@@ -65,7 +66,7 @@ public class RagfairOfferHelper
     /// <returns>RagfairOffer array</returns>
     public List<RagfairOffer> GetOffersForBuild(
         SearchRequestData searchRequest,
-        string[] itemsToAdd,
+        List<string> itemsToAdd,
         Dictionary<string, TraderAssort> traderAssorts,
         PmcData pmcData)
     {
@@ -279,8 +280,8 @@ public class RagfairOfferHelper
     /// </summary>
     /// <param name="offer">Offer to check</param>
     /// <returns>True = from trader</returns>
-    public bool OfferFromTrader(RagfairOffer offer)
+    public bool OfferIsFromTrader(RagfairOffer offer)
     {
-        throw new NotImplementedException();
+        return offer.User.MemberType == MemberCategory.TRADER;
     }
 }

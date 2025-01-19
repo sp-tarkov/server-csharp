@@ -46,7 +46,7 @@ namespace Core.Servers
             await Update();
         }
 
-        private async Task Update()
+        public async Task Update()
         {
             _ragfairOfferService.ExpireStaleOffers();
 

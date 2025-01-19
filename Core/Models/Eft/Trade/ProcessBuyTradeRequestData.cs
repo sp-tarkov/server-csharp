@@ -33,5 +33,5 @@ public record SchemeItem
     public string? Id { get; set; }
 
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 }

@@ -209,7 +209,7 @@ public class TraderHelper(
                     // create temporary entry to prevent logger spam
                     {
                         TraderId = traderId,
-                        Seconds = new MinMax { Min = _traderConfig.UpdateTimeDefault, Max = _traderConfig.UpdateTimeDefault }
+                        Seconds = new MinMax(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
                     }
             );
 

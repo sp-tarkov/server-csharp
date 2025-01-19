@@ -1,4 +1,6 @@
-﻿using Core.Annotations;
+using Core.Annotations;
+using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 
 namespace Core.Services;
@@ -16,7 +18,7 @@ public class RagfairTaxService
         throw new NotImplementedException();
     }
 
-    public Dictionary<string, object> GetStoredClientOfferTaxValueById(string offerIdToGet)
+    public StorePlayerOfferTaxAmountRequestData GetStoredClientOfferTaxValueById(string offerIdToGet)
     {
         throw new NotImplementedException();
     }
@@ -32,8 +34,8 @@ public class RagfairTaxService
      * @returns Tax in roubles
      */
     public double CalculateTax(
-        Dictionary<string, object> item,
-        Dictionary<string, object> pmcData,
+        Item item,
+        PmcData pmcData,
         double requirementsValue,
         int offerItemCount,
         bool sellInOnePiece)

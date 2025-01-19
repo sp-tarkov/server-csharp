@@ -36,20 +36,19 @@ public class RagfairCallbacks(
 
     public async Task<bool> OnUpdate(long timeSinceLastRun)
     {
-        // if (timeSinceLastRun > this.ragfairConfig.runIntervalSeconds) {
-        //     // There is a flag inside this class that only makes it run once.
-        //     this.ragfairServer.addPlayerOffers();
-        //
-        //     // Check player offers and mail payment to player if sold
-        //     this.ragfairController.update();
-        //
-        //     // Process all offers / expire offers
-        //     await this.ragfairServer.update();
-        //
-        //     return true;
-        // }
-        // return false;
-        throw new NotImplementedException();
+         if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds) {
+            // There is a flag inside this class that only makes it run once.
+            _ragfairServer.AddPlayerOffers();
+        
+             // Check player offers and mail payment to player if sold
+             _ragfairController.Update();
+        
+             // Process all offers / expire offers
+             await _ragfairServer.Update();
+        
+             return true;
+         }
+         return false;
     }
 
     /// <summary>

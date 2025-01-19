@@ -677,7 +677,7 @@ public class ItemHelper(
      * @param modsOnly Include only mod items, exclude items stored inside root item
      * @returns A list of Item objects
      */
-    public List<Item> FindAndReturnChildrenAsItems(List<Item>? items, string baseItemId, bool modsOnly = false)
+    public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
     {
         List<Item> list = [];
         foreach (var childItem in items)

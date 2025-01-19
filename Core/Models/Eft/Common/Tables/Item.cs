@@ -50,7 +50,7 @@ public record Upd
     public string? SptPresetId { get; set; }
 
     public UpdFaceShield? FaceShield { get; set; }
-    public double? StackObjectsCount { get; set; } // can be a string, double or int
+    public int? StackObjectsCount { get; set; } // can be a string, double or int
     public bool? UnlimitedCount { get; set; }
     public UpdRepairable? Repairable { get; set; }
     public UpdRecodableComponent? RecodableComponent { get; set; }

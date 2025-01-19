@@ -89,10 +89,6 @@ public class BotLevelGenerator(
         maxLevel = Math.Min(Math.Max(maxLevel, minPossibleLevel), maxPossibleLevel);
         minLevel = Math.Min(Math.Max(minLevel, minPossibleLevel), maxPossibleLevel);
 
-        return new MinMax
-        {
-            Min = minLevel,
-            Max = maxLevel,
-        };
+        return new MinMax(minLevel, maxLevel);
     }
 }
