@@ -34,7 +34,7 @@ public class LocationController(
 
         foreach (var kvp in maps)
         {
-            var mapBase = kvp.Value?.Base;
+            var mapBase = kvp.Value.Base;
             if (mapBase == null)
             {
                 _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
@@ -44,13 +44,13 @@ public class LocationController(
             // Clear out loot array
             mapBase.Loot = [];
             // Add map base data to dictionary
-            locationResult.Add(mapBase.IdField, mapBase);
+            locationResult.Add(mapBase.IdField!, mapBase);
         }
 
         return new LocationsGenerateAllResponse
         {
             Locations = locationResult,
-            Paths = locationsFromDb.Base.Paths
+            Paths = locationsFromDb.Base!.Paths
         };
     }
 
