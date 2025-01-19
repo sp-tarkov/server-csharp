@@ -11,6 +11,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using Core.Utils.Json;
 using Server;
 
 
@@ -55,101 +56,115 @@ public class GameController(
     /// <param name="info"></param>
     /// <param name="sessionId"></param>
     /// <param name="startTimeStampMs"></param>
-    public void GameStart(string url, EmptyRequestData info, string sessionId, long startTimeStampMs)
+    public void GameStart(string url, EmptyRequestData info, string? sessionId, long startTimeStampMs)
     {
         // Store client start time in app context
         _applicationContext.AddValue(ContextVariableType.CLIENT_START_TIMESTAMP, $"{sessionId}_{startTimeStampMs}");
+
+        if (sessionId is null)
+        {
+            _logger.Error($"{nameof(sessionId)} is null on GameController.GameStart");
+            return;
+        }
 
         _profileActivityService.SetActivityTimestamp(sessionId);
 
         // repeatableQuests are stored by in profile.Quests due to the responses of the client (e.g. Quests in
         // offraidData). Since we don't want to clutter the Quests list, we need to remove all completed (failed or
         // successful) repeatable quests. We also have to remove the Counters from the repeatableQuests
-        if (sessionId != null)
+
+        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+
+        if (fullProfile is null)
         {
-            var fullProfile = _profileHelper.GetFullProfile(sessionId);
-            if (fullProfile.ProfileInfo.IsWiped.Value)
-                return;
-
-            if (fullProfile.SptData.Migrations == null)
-                fullProfile.SptData.Migrations = new();
-
-            if (fullProfile.FriendProfileIds == null)
-                fullProfile.FriendProfileIds = new();
-
-            if (fullProfile.SptData.Version.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
-            {
-                _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData.PmcData.Inventory.Items);
-                Migrate39xProfile(fullProfile);
-
-                // flag as migrated
-                fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
-                _logger.Info($"Migration of 3.9.x profile: {fullProfile.ProfileInfo.Username} completed successfully");
-            }
-
-            //3.10 migrations
-            if (fullProfile.SptData.Version.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
-            {
-                Migrate310xProfile(fullProfile);
-
-                // Flag as migrated
-                fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
-
-                _logger.Success($"Migration of 3.10.x profile: ${fullProfile.ProfileInfo.Username} completed successfully");
-            }
-
-            // with our method of converting type from array for this prop, we *might* not need this?
-            // if (Array.isArray(fullProfile.characters.pmc.WishList)) {
-            //     fullProfile.characters.pmc.WishList = {};
-            // }
-            //
-            // if (Array.isArray(fullProfile.characters.scav.WishList)) {
-            //     fullProfile.characters.scav.WishList = {};
-            // }
-
-            if (fullProfile.DialogueRecords != null)
-                _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
-
-            _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo.Username}");
-
-            var pmcProfile = fullProfile.CharacterData.PmcData;
-
-            if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
-                _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
-
-            if (pmcProfile.Health != null)
-                UpdateProfileHealthValues(pmcProfile);
-
-            if (pmcProfile.Inventory != null)
-            {
-                SendPraporGiftsToNewProfiles(pmcProfile);
-                _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
-            }
-
-            _profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
-            _profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
-
-            if (pmcProfile.Hideout != null)
-            {
-                _profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile);
-                _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
-                _hideoutHelper.UnlockHideoutWallInProfile(pmcProfile);
-            }
-
-            LogProfileDetails(fullProfile);
-            SaveActiveModsToProfile(fullProfile);
-
-            if (pmcProfile.Info != null)
-            {
-                AddPlayerToPmcNames(pmcProfile);
-                CheckForAndRemoveUndefinedDialogues(fullProfile);
-            }
-
-            if (pmcProfile.Skills.Common != null)
-                WarnOnActiveBotReloadSkill(pmcProfile);
-
-            _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
+            _logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
+            return;
         }
+
+        if (fullProfile.SptData is null)
+        {
+            _logger.Error($"{nameof(fullProfile.SptData)} is null on GameController.GameStart");
+            return;
+        }
+
+        if (fullProfile.SptData.Version is null)
+        {
+            _logger.Error($"{nameof(fullProfile.SptData.Version)} is null on GameController.GameStart");
+            return;
+        }
+        
+        if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
+            return;
+
+        fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
+        fullProfile.FriendProfileIds ??= [];
+
+        if (fullProfile.SptData.Version.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
+        {
+            _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData?.PmcData?.Inventory?.Items ?? []);
+            Migrate39xProfile(fullProfile);
+
+            // flag as migrated
+            fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
+            _logger.Info($"Migration of 3.9.x profile: {fullProfile.ProfileInfo?.Username} completed successfully");
+        }
+
+        //3.10 migrations
+        if (fullProfile.SptData.Version.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
+        {
+            Migrate310xProfile(fullProfile);
+
+            // Flag as migrated
+            fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
+
+            _logger.Success($"Migration of 3.10.x profile: ${fullProfile.ProfileInfo?.Username} completed successfully");
+        }
+        
+        fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
+        fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
+
+        if (fullProfile.DialogueRecords is not null)
+            _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+
+        _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
+
+        var pmcProfile = fullProfile.CharacterData.PmcData;
+
+        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+            _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+
+        if (pmcProfile.Health is not null)
+            UpdateProfileHealthValues(pmcProfile);
+
+        if (pmcProfile.Inventory is not null)
+        {
+            SendPraporGiftsToNewProfiles(pmcProfile);
+            _profileFixerService.CheckForOrphanedModdedItems(sessionId, fullProfile);
+        }
+
+        _profileFixerService.CheckForAndRemoveInvalidTraders(fullProfile);
+        _profileFixerService.CheckForAndFixPmcProfileIssues(pmcProfile);
+
+        if (pmcProfile.Hideout is not null)
+        {
+            _profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile);
+            _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
+            _hideoutHelper.UnlockHideoutWallInProfile(pmcProfile);
+        }
+
+        LogProfileDetails(fullProfile);
+        SaveActiveModsToProfile(fullProfile);
+
+        if (pmcProfile.Info is not null)
+        {
+            AddPlayerToPmcNames(pmcProfile);
+            CheckForAndRemoveUndefinedDialogues(fullProfile);
+        }
+
+        if (pmcProfile.Skills?.Common is not null)
+            WarnOnActiveBotReloadSkill(pmcProfile);
+
+        _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
     }
 
     private void Migrate39xProfile(SptProfile fullProfile)
@@ -180,13 +195,9 @@ public class GameController(
     public GameConfigResponse GetGameConfig(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
-        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?.FirstOrDefault(
-                               c =>
-                                   c.Key.Contains("LifeTime") &&
-                                   c.Key.Contains("Pmc")
-                           )
-                           ?.Value ??
-                       0D;
+        var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?
+            .FirstOrDefault(c => c.Key!.Contains("LifeTime") 
+                                 && c.Key.Contains("Pmc"))?.Value ?? 0D;
 
         var config = new GameConfigResponse
         {
@@ -195,7 +206,7 @@ public class GameController(
             IsReportAvailable = false,
             IsTwitchEventMember = false,
             Language = "en",
-            Aid = profile.Aid,
+            Aid = profile?.Aid,
             Taxonomy = 6,
             ActiveProfileId = sessionId,
             Backend = new()
@@ -338,7 +349,7 @@ public class GameController(
     /// <param name="pmcProfile">Profile to adjust values for</param>
     private void UpdateProfileHealthValues(PmcData pmcProfile)
     {
-        var healthLastUpdated = pmcProfile.Health.UpdateTime;
+        var healthLastUpdated = pmcProfile.Health?.UpdateTime;
         var currentTimeStamp = _timeUtil.GetTimeStamp();
         var diffSeconds = currentTimeStamp - healthLastUpdated;
 
@@ -351,21 +362,21 @@ public class GameController(
             double hpRegenPerHour = 456.6;
 
             // Set new values, whatever is smallest
-            energyRegenPerHour += pmcProfile.Bonuses
+            energyRegenPerHour += pmcProfile.Bonuses!
                 .Where((bonus) => bonus.Type == BonusType.EnergyRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
-            hydrationRegenPerHour += pmcProfile.Bonuses
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
+            hydrationRegenPerHour += pmcProfile.Bonuses!
                 .Where((bonus) => bonus.Type == BonusType.HydrationRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
-            hpRegenPerHour += pmcProfile.Bonuses
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
+            hpRegenPerHour += pmcProfile.Bonuses!
                 .Where((bonus) => bonus.Type == BonusType.HealthRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value.Value));
+                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
 
             // Player has energy deficit
-            if (pmcProfile.Health.Energy.Current != pmcProfile.Health.Energy.Maximum)
+            if (pmcProfile.Health?.Energy?.Current != pmcProfile.Health?.Energy?.Maximum)
             {
                 // Set new value, whatever is smallest
-                pmcProfile.Health.Energy.Current += Math.Round(energyRegenPerHour * (diffSeconds.Value / 3600));
+                pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
                 if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum)
                 {
                     pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
@@ -373,9 +384,9 @@ public class GameController(
             }
 
             // Player has hydration deficit
-            if (pmcProfile.Health.Hydration.Current != pmcProfile.Health.Hydration.Maximum)
+            if (pmcProfile.Health?.Hydration?.Current != pmcProfile.Health?.Hydration?.Maximum)
             {
-                pmcProfile.Health.Hydration.Current += Math.Round(hydrationRegenPerHour * (diffSeconds.Value / 3600));
+                pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
                 if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
                 {
                     pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
@@ -383,13 +394,13 @@ public class GameController(
             }
 
             // Check all body parts
-            foreach (var bodyPart in pmcProfile.Health.BodyParts
+            foreach (var bodyPart in pmcProfile.Health!.BodyParts!
                          .Select(bodyPartKvP => bodyPartKvP.Value))
             {
                 // Check part hp
-                if (bodyPart.Health.Current < bodyPart.Health.Maximum)
+                if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
                 {
-                    bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds.Value / 3600));
+                    bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
                 }
 
                 if (bodyPart.Health.Current > bodyPart.Health.Maximum)
@@ -439,20 +450,20 @@ public class GameController(
     /// <param name="pmcProfile">Profile to add gifts to</param>
     private void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
     {
-        var timeStampProfileCreated = pmcProfile.Info.RegistrationDate;
+        var timeStampProfileCreated = pmcProfile.Info?.RegistrationDate;
         var oneDaySeconds = _timeUtil.GetHoursAsSeconds(24);
         var currentTimeStamp = _timeUtil.GetTimeStamp();
 
         // One day post-profile creation
         if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
         {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 1);
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
         }
 
         // Two day post-profile creation
         if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
         {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId, 2);
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
         }
     }
 
@@ -463,41 +474,38 @@ public class GameController(
     private void SaveActiveModsToProfile(SptProfile fullProfile)
     {
         // Add empty mod array if undefined
-        if (fullProfile.SptData.Mods is null)
-        {
-            fullProfile.SptData.Mods = [];
-        }
+        fullProfile.SptData!.Mods ??= [];
 
         // Get active mods
         _logger.Error("NOT IMPLEMENTED - _preSptModLoader SaveActiveModsToProfile()");
-        //var activeMods = _preSptModLoader.GetImportedModDetails(); //TODO IMPLEMENT _preSptModLoader
-        var activeMods = new Dictionary<string, ModDetails>();
-        foreach (var modKvP in activeMods)
-        {
-            var modDetails = modKvP.Value;
-            if (
-                fullProfile.SptData.Mods.Any(
-                    (mod) =>
-                        mod.Author == modDetails.Author &&
-                        mod.Name == modDetails.Name &&
-                        mod.Version == modDetails.Version
-                ))
-            {
-                // Exists already, skip
-                continue;
-            }
-
-            fullProfile.SptData.Mods.Add(
-                new ModDetails
-                {
-                    Author = modDetails.Author,
-                    DateAdded = _timeUtil.GetTimeStamp(),
-                    Name = modDetails.Name,
-                    Version = modDetails.Version,
-                    Url = modDetails.Url,
-                }
-            );
-        }
+        //var activeMods = _preSptModLoader.GetImportedModDetails(); // TODO IMPLEMENT _preSptModLoader
+        // var activeMods = new Dictionary<string, ModDetails>();
+        // foreach (var modKvP in activeMods)
+        // {
+        //     var modDetails = modKvP.Value;
+        //     if (
+        //         fullProfile.SptData.Mods.Any(
+        //             (mod) =>
+        //                 mod.Author == modDetails.Author &&
+        //                 mod.Name == modDetails.Name &&
+        //                 mod.Version == modDetails.Version
+        //         ))
+        //     {
+        //         // Exists already, skip
+        //         continue;
+        //     }
+        //
+        //     fullProfile.SptData.Mods.Add(
+        //         new ModDetails
+        //         {
+        //             Author = modDetails.Author,
+        //             DateAdded = _timeUtil.GetTimeStamp(),
+        //             Name = modDetails.Name,
+        //             Version = modDetails.Version,
+        //             Url = modDetails.Url,
+        //         }
+        //     );
+        // }
     }
 
     /// <summary>
@@ -506,7 +514,7 @@ public class GameController(
     /// <param name="pmcProfile">Profile of player to get name from</param>
     private void AddPlayerToPmcNames(PmcData pmcProfile)
     {
-        var playerName = pmcProfile.Info.Nickname;
+        var playerName = pmcProfile.Info?.Nickname;
         if (playerName is not null)
         {
             var bots = _databaseService.GetBots().Types;
@@ -518,19 +526,19 @@ public class GameController(
             }
 
             // Skip if player name exists already
-            if (bots.TryGetValue("bear", out var bearBot))
+            if (bots!.TryGetValue("bear", out var bearBot))
             {
-                if (bearBot is not null && bearBot.FirstNames.Any(x => x == playerName))
+                if (bearBot is not null && bearBot.FirstNames!.Any(x => x == playerName))
                 {
-                    bearBot.FirstNames.Add(playerName);
+                    bearBot.FirstNames!.Add(playerName);
                 }
             }
 
             if (bots.TryGetValue("bear", out var usecBot))
             {
-                if (usecBot is not null && usecBot.FirstNames.Any(x => x == playerName))
+                if (usecBot is not null && usecBot.FirstNames!.Any(x => x == playerName))
                 {
-                    usecBot.FirstNames.Add(playerName);
+                    usecBot.FirstNames!.Add(playerName);
                 }
             }
         }
@@ -542,7 +550,7 @@ public class GameController(
     /// <param name="fullProfile">Profile to check for dialog in</param>
     private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
-        if (fullProfile.DialogueRecords.TryGetValue("undefined", out var undefinedDialog))
+        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out var _))
         {
             fullProfile.DialogueRecords.Remove("undefined");
         }
@@ -554,10 +562,10 @@ public class GameController(
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)
     {
-        _logger.Debug($"Profile made with: {fullProfile.SptData.Version}");
-        _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT}");
-        _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG}");
-        _logger.Debug($"Mods enabled: {ProgramStatics.MODS}");
+        _logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
+        _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
+        _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
+        _logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
     }
 
     public void Load()

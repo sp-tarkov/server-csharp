@@ -8,9 +8,9 @@ namespace Server
         private static bool _compiled;
         private static bool _mods;
 
-        private static string _sptVersion;
-        private static string _commit;
-        private static double _buildTime;
+        private static string? _sptVersion;
+        private static string? _commit;
+        private static double? _buildTime;
 
         private static BuildInfo buildInfo; // TODO get from buildinfo.json
 
@@ -63,15 +63,15 @@ namespace Server
         {
             return ProgramStatics._mods;
         }
-        public static string SPT_VERSION()
+        public static string? SPT_VERSION()
         {
             return ProgramStatics._sptVersion;
         }
-        public static string COMMIT()
+        public static string? COMMIT()
         {
             return ProgramStatics._commit;
         }
-        public static double BUILD_TIME()
+        public static double? BUILD_TIME()
         {
             return ProgramStatics._buildTime;
         }
