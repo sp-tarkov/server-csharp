@@ -127,7 +127,7 @@ public class BotGenerator(
             ? preparedBotBase.Info.Side // Use side to get usec.json or bear.json when bot will be PMC
             : botGenerationDetails.Role;
         var botJsonTemplateClone = _cloner.Clone(_botHelper.GetBotTemplate(botRole));
-        if (botJsonTemplateClone is not null)
+        if (botJsonTemplateClone is null)
         {
             _logger.Error($"Unable to retrieve: {botRole} bot template, cannot generate bot of this type");
         }
@@ -763,7 +763,7 @@ public class BotGenerator(
                 break;
             default:
                 // Everyone else gets a weighted randomised category
-                botInfo.MemberCategory = _weightedRandomHelper.GetWeightedValue<MemberCategory>(_pmcConfig.AccountTypeWeight);
+                botInfo.MemberCategory = _weightedRandomHelper.GetWeightedValue(_pmcConfig.AccountTypeWeight);
                 break;
         }
 

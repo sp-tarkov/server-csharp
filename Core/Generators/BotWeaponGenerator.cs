@@ -557,7 +557,7 @@ public class BotWeaponGenerator(
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
 
         var cartridgePoolForWeapon = cartridgePool[desiredCaliber];
-        if (cartridgePoolForWeapon is not null || cartridgePoolForWeapon?.Count() == 0)
+        if (cartridgePoolForWeapon is not null || cartridgePoolForWeapon?.Count == 0)
         {
             _logger.Debug(
                 _localisationService.GetText(

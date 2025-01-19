@@ -1949,11 +1949,11 @@ public class ItemHelper(
     // Returns number
     public int GetRandomisedAmmoStackSize(TemplateItem ammoItemTemplate, int maxLimit = 60)
     {
-        return ammoItemTemplate.Properties.StackMaxSize == 1
+        return ammoItemTemplate.Properties?.StackMaxSize == 1
             ? 1
             : _randomUtil.GetInt(
-                (int)ammoItemTemplate.Properties.StackMinRandom,
-                Math.Min((int)ammoItemTemplate.Properties.StackMaxRandom, maxLimit)
+                (int?)ammoItemTemplate.Properties?.StackMinRandom ?? 1,
+                Math.Min((int?)ammoItemTemplate.Properties?.StackMaxRandom ?? 1, maxLimit)
             );
     }
 

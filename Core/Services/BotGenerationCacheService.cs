@@ -1,18 +1,32 @@
 ﻿using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotGenerationCacheService
+public class BotGenerationCacheService(
+    ISptLogger<BotGenerationCacheService> _logger,
+    LocalisationService _localisationService
+    )
 {
+    protected Dictionary<string, List<BotBase>> _storedBots = new Dictionary<string, List<BotBase>>();
+    protected Queue<BotBase> _activeBotsInRaid = [];
+    
+    
     /**
      * Store list of bots in cache, shuffle results before storage
      * @param botsToStore Bots we want to store in the cache
      */
     public void StoreBots(string key, List<BotBase> botsToStore)
     {
-        throw new NotImplementedException();
+        foreach (var bot in botsToStore)
+        {
+            if (!_storedBots.TryAdd(key, [bot]))
+            {
+                _storedBots[key].Add(bot);
+            }
+        }
     }
 
     /**
@@ -21,9 +35,25 @@ public class BotGenerationCacheService
      * @param key role to retrieve (assault/bossTagilla etc)
      * @returns BotBase object
      */
-    public BotBase GetBot(string key)
+    public BotBase? GetBot(string key)
     {
-        throw new NotImplementedException();
+        if (_storedBots.TryGetValue(key, out var bots))
+        {
+            if (bots.Count > 0)
+            {
+                try
+                {
+                    return _activeBotsInRaid.Dequeue();
+                }
+                catch (Exception _)
+                {
+                    _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+                }
+            }
+        }
+        
+        _logger.Error(_localisationService.GetText("bot-no_bot_type_in_cache", key));
+        return null;
     }
 
     /**
@@ -32,7 +62,7 @@ public class BotGenerationCacheService
      */
     public void StoreUsedBot(BotBase botToStore)
     {
-        throw new NotImplementedException();
+        _activeBotsInRaid.Enqueue(botToStore);
     }
 
     /**
@@ -41,9 +71,9 @@ public class BotGenerationCacheService
      * @param profileId Id of bot to get
      * @returns BotBase
      */
-    public BotBase GetUsedBot(string profileId)
+    public BotBase? GetUsedBot(string profileId)
     {
-        throw new NotImplementedException();
+        return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
     }
 
     /**
@@ -51,7 +81,8 @@ public class BotGenerationCacheService
      */
     public void ClearStoredBots()
     {
-        throw new NotImplementedException();
+        _storedBots.Clear();
+        _activeBotsInRaid = [];
     }
 
     /**
@@ -60,16 +91,16 @@ public class BotGenerationCacheService
      */
     public bool CacheHasBotWithKey(string key, int size = 0)
     {
-        throw new NotImplementedException();
+        return _storedBots.ContainsKey(key) && _storedBots[key].Count > size;
     }
 
     public int GetCachedBotCount(string key)
     {
-        throw new NotImplementedException();
+        return _storedBots.TryGetValue(key, out var bot) ? bot.Count : 0;
     }
 
     public string CreateCacheKey(string? role, string? difficulty)
     {
-        throw new NotImplementedException();
+        return $"{role?.ToLower()}{difficulty?.ToLower()}";
     }
 }

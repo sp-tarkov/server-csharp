@@ -137,12 +137,6 @@ public class BotController(
     {
         var raidSettings = GetMostRecentRaidSettings();
 
-        if (raidSettings is null)
-        {
-            _logger.Error($"Unable to get raid settings for session {sessionId}");
-            return [];
-        }
-
         var allPmcsHaveSameNameAsPlayer = _randomUtil.GetChance100(
             _pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance
         );
@@ -372,16 +366,16 @@ public class BotController(
         return raidSettings;
     }
 
-    private MinMax GetPmcLevelRangeForMap(string location)
+    private MinMax? GetPmcLevelRangeForMap(string? location)
     {
-        return _pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location.ToLower(), null)!;
+        return _pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLower() ?? "", null);
     }
 
     private BotGenerationDetails GetBotGenerationDetailsForWave(
         GenerateCondition condition,
         PmcData? pmcProfile,
         bool allPmcsHaveSameNameAsPlayer,
-        GetRaidConfigurationRequestData raidSettings,
+        GetRaidConfigurationRequestData? raidSettings,
         int? botCountToGenerate,
         bool generateAsPmc)
     {
@@ -396,7 +390,7 @@ public class BotController(
             BotRelativeLevelDeltaMin = _pmcConfig.BotRelativeLevelDeltaMin,
             BotCountToGenerate = botCountToGenerate,
             BotDifficulty = condition.Difficulty,
-            LocationSpecificPmcLevelOverride = this.GetPmcLevelRangeForMap(raidSettings.Location!), // Min/max levels for PMCs to generate within
+            LocationSpecificPmcLevelOverride = this.GetPmcLevelRangeForMap(raidSettings?.Location), // Min/max levels for PMCs to generate within
             IsPlayerScav = false,
             AllPmcsHaveSameNameAsPlayer = allPmcsHaveSameNameAsPlayer,
         };

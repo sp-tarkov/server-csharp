@@ -18,7 +18,7 @@ public class BotStaticRouter : StaticRouter
         jsonUtil,
         [
             new RouteAction(
-                "", 
+                "/client/game/bot/generate", 
                 (
                     url, 
                     info, 
