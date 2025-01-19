@@ -169,12 +169,18 @@ public class HandbookHelper(
     /// <returns>currency count in desired type</returns>
     public double FromRUB(double roubleCurrencyCount, string currencyTypeTo)
     {
-        throw new NotImplementedException();
+        if (currencyTypeTo == Money.ROUBLES) {
+            return roubleCurrencyCount;
+        }
+
+        // Get price of currency from handbook
+        var price = GetTemplatePrice(currencyTypeTo);
+        return price is not null ? Math.Max(1, Math.Round((double)(roubleCurrencyCount / price))) : 0;
     }
 
     public HandbookCategory GetCategoryById(string handbookId)
     {
-        throw new NotImplementedException();
+        return _databaseService.GetHandbook().Categories.FirstOrDefault(category => category.Id == handbookId);
     }
 }
 
