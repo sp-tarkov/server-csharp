@@ -18,7 +18,7 @@ public class BotEquipmentFilterService
     protected BotHelper _botHelper;
 
     protected BotConfig _botConfig;
-    protected Dictionary<string, EquipmentFilters> _botEquipmentConfig;
+    protected Dictionary<string, EquipmentFilters?> _botEquipmentConfig;
 
     public BotEquipmentFilterService(
         ISptLogger<BotEquipmentFilterService> logger,
@@ -164,7 +164,7 @@ public class BotEquipmentFilterService
     {
         var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return blacklistDetailsForBot?.Blacklist.FirstOrDefault(
+        return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(
             equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
@@ -179,7 +179,7 @@ public class BotEquipmentFilterService
     {
         var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return whitelistDetailsForBot?.Whitelist.FirstOrDefault(
+        return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(
             equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
@@ -194,7 +194,7 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return weightingDetailsForBot?.WeightingAdjustmentsByBotLevel.FirstOrDefault(
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? [] ).FirstOrDefault(
             x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
         );
     }
@@ -209,7 +209,7 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return weightingDetailsForBot?.WeightingAdjustmentsByBotLevel.FirstOrDefault(
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(
             x => playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max
         );
     }
