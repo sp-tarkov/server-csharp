@@ -41,5 +41,5 @@ public record HandbookItem
     public string? ParentId { get; set; }
 
     [JsonPropertyName("Price")]
-    public decimal? Price { get; set; }
+    public double? Price { get; set; }
 }

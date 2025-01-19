@@ -38,7 +38,7 @@ public class RagfairPriceService(
     {
         foreach (var item in _databaseService.GetItems().Where((x) => x.Value.Type == "Item"))
         {
-            _prices.StaticPrices[item.Key] = Math.Round(_handbookHelper.GetTemplatePrice(item.Key));
+            _prices.StaticPrices[item.Key] = Math.Round(_handbookHelper.GetTemplatePrice(item.Key) ?? 0);
         }
     }
 

@@ -345,7 +345,7 @@ public class RagfairController
         var fleaPrices = _databaseService.GetPrices();
         if (!fleaPrices.TryGetValue(getPriceRequest.TemplateId, out var tplPrice))
         {
-            tplPrice = _handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId);
+            tplPrice = _handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId) ?? 0;
         }
         
         return new GetItemPriceResult{ Avg = tplPrice, Min = tplPrice, Max = tplPrice };

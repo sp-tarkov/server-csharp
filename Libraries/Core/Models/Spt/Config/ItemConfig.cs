@@ -40,7 +40,7 @@ public record HandbookPriceOverride
 {
     /** Price in roubles */
     [JsonPropertyName("price")]
-    public decimal Price { get; set; }
+    public double Price { get; set; }
 
     /** NOT parentId from items.json, but handbook.json */
     [JsonPropertyName("parentId")]
