@@ -175,8 +175,6 @@ public class BotGenerator(
         BotType botJsonTemplate,
         BotGenerationDetails botGenerationDetails)
     {
-        _logger.Error("NOT IMPLEMENTED BotGenerator.GenerateBot");
-
         var botRoleLowercase = botGenerationDetails.Role.ToLower();
         var botLevel = _botLevelGenerator.GenerateBotLevel(
             botJsonTemplate.BotExperience.Level,
