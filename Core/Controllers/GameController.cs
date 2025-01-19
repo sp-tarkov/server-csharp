@@ -48,6 +48,7 @@ public class GameController(
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
     protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected double _deviation = 0.0001;
 
     /// <summary>
     /// Handle client/game/start
@@ -373,7 +374,7 @@ public class GameController(
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
 
             // Player has energy deficit
-            if (pmcProfile.Health?.Energy?.Current != pmcProfile.Health?.Energy?.Maximum)
+            if (Math.Abs((pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum) ?? 1) <= _deviation)
             {
                 // Set new value, whatever is smallest
                 pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
@@ -384,7 +385,7 @@ public class GameController(
             }
 
             // Player has hydration deficit
-            if (pmcProfile.Health?.Hydration?.Current != pmcProfile.Health?.Hydration?.Maximum)
+            if (Math.Abs((pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum) ?? 1) <= _deviation)
             {
                 pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
                 if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
