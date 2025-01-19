@@ -26,11 +26,13 @@ public class TraderPurchasePersisterService(
      * @param traderId Trader to loop up purchases for
      * @returns Dictionary of assort id and count purchased
      */
-    public Dictionary<string, TraderPurchaseData> GetProfileTraderPurchases(
-        string sessionId,
-        string traderId)
+    public Dictionary<string, TraderPurchaseData>? GetProfileTraderPurchases(string sessionId, string traderId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetFullProfile(sessionId);
+
+        return profile.TraderPurchases is null
+            ? null
+            : profile.TraderPurchases[traderId];
     }
 
     /**
@@ -40,12 +42,21 @@ public class TraderPurchasePersisterService(
      * @param assortId Id of assort to get data for
      * @returns TraderPurchaseData
      */
-    public TraderPurchaseData GetProfileTraderPurchase(
+    public TraderPurchaseData? GetProfileTraderPurchase(
         string sessionId,
         string traderId,
         string assortId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetFullProfile(sessionId);
+
+        if (profile.TraderPurchases is null)
+        {
+            return null;
+        }
+
+        var traderPurchases = profile.TraderPurchases[traderId];
+
+        return traderPurchases[assortId];
     }
 
     /**
@@ -54,7 +65,24 @@ public class TraderPurchasePersisterService(
      */
     public void ResetTraderPurchasesStoredInProfile(string traderId)
     {
-        throw new NotImplementedException();
+        // Reset all profiles purchase dictionaries now a trader update has occured;
+        var profiles = _profileHelper.GetProfiles();
+        foreach (var profile in profiles)
+        {
+            // Skip if no purchases
+            if (profile.Value.TraderPurchases is null)
+            {
+                continue;
+            }
+
+            // Skip if no trader-speicifc purchases
+            if (!profile.Value.TraderPurchases.TryGetValue(traderId, out var _))
+            {
+                continue;
+            }
+
+            profile.Value.TraderPurchases[traderId] = new Dictionary<string, TraderPurchaseData>();
+        }
     }
 
     /**
