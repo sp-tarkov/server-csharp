@@ -269,8 +269,7 @@ public class CustomizationController(
             return customisationResultsClone!;
         }
 
-
-        customisationResultsClone!.AddRange(profile.CustomisationUnlocks);
+        customisationResultsClone!.AddRange(profile.CustomisationUnlocks ?? []);
 
         return customisationResultsClone;
     }
