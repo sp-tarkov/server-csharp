@@ -344,7 +344,7 @@ public class BotEquipmentFilterService
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
     protected void AdjustWeighting(
         AdjustmentDetails weightingAdjustments,
-        Dictionary<string, Dictionary<string, double>> botItemPool,
+        Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
         //TODO, bad typing by key with method below due to, EquipmentSlots
@@ -360,7 +360,7 @@ public class BotEquipmentFilterService
     /// <param name="showEditWarnings"></param>
     protected void AdjustWeighting(
         AdjustmentDetails? weightingAdjustments,
-        Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
+        Dictionary<string, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
         if (weightingAdjustments is null)
