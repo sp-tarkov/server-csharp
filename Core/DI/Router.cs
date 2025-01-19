@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
@@ -45,18 +44,18 @@ public abstract class Router
 
 public abstract class StaticRouter : Router
 {
-    private List<RouteAction> actions;
-    private JsonUtil _jsonUtil;
+    private readonly List<RouteAction> _actions;
+    private readonly JsonUtil _jsonUtil;
 
     public StaticRouter(JsonUtil jsonUtil, List<RouteAction> routes) : base()
     {
-        actions = routes;
+        _actions = routes;
         _jsonUtil = jsonUtil;
     }
 
     public object HandleStatic(string url, string? body, string sessionID, string output)
     {
-        var action = actions.Single(route => route.url == url);
+        var action = _actions.Single(route => route.url == url);
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
@@ -66,14 +65,14 @@ public abstract class StaticRouter : Router
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return actions.Select((route) => new HandledRoute(route.url, false)).ToList();
+        return _actions.Select((route) => new HandledRoute(route.url, false)).ToList();
     }
 }
 
 public abstract class DynamicRouter : Router
 {
-    private List<RouteAction> actions;
-    private JsonUtil _jsonUtil;
+    private readonly List<RouteAction> actions;
+    private readonly JsonUtil _jsonUtil;
 
     public DynamicRouter(JsonUtil jsonUtil, List<RouteAction> routes) : base()
     {
