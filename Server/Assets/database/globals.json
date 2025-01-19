@@ -27512,7 +27512,7 @@
               "skinType": []
             },
             {
-              "active": true,
+              "active": false,
               "circle": true,
               "circleCount": 5,
               "enterPoint": "p9",
@@ -27529,7 +27529,7 @@
               "skinType": []
             },
             {
-              "active": true,
+              "active": false,
               "circle": true,
               "circleCount": 5,
               "enterPoint": "p11",
@@ -27546,7 +27546,7 @@
               "skinType": []
             },
             {
-              "active": true,
+              "active": false,
               "circle": true,
               "circleCount": 5,
               "enterPoint": "p9",
