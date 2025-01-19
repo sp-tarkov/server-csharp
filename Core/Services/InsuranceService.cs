@@ -145,7 +145,7 @@ public class InsuranceService
     /// <param name="inventoryItem">Item to be insured</param>
     /// <param name="traderId">Trader item is insured with</param>
     /// <returns>price in roubles</returns>
-    public double GetRoublePriceToInsureItemWithTrader(PmcData pmcData, Item inventoryItem, string traderId)
+    public double GetRoublePriceToInsureItemWithTrader(PmcData? pmcData, Item inventoryItem, string traderId)
     {
         throw new NotImplementedException();
     }

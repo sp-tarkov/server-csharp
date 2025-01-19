@@ -34,17 +34,17 @@ public class InsuranceController(
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var inventoryItemsHash = new Dictionary<string, Item>();
 
-        foreach (var item in pmcData.Inventory.Items)
+        foreach (var item in pmcData?.Inventory?.Items ?? [])
         {
             inventoryItemsHash[item.Id] = item;
         }
 
         // Loop over each trader in request
-        foreach (var trader in request.Traders)
+        foreach (var trader in request.Traders ?? [])
         {
             var items = new Dictionary<string, double>();
 
-            foreach (var itemId in request.Items)
+            foreach (var itemId in request.Items ?? [])
             {
                 // Ensure hash has item in it
                 if (!inventoryItemsHash.ContainsKey(itemId))
