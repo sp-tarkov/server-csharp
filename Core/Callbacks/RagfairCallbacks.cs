@@ -97,7 +97,7 @@ public class RagfairCallbacks(
     /// <returns></returns>
     public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, string sessionID)
     {
-        return _ragfairController.RemoveOffer(pmcData, info, sessionID);
+        return _ragfairController.RemoveOffer(info, sessionID);
     }
 
     /// <summary>
@@ -109,7 +109,7 @@ public class RagfairCallbacks(
     /// <returns></returns>
     public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, string sessionID)
     {
-        return _ragfairController.ExtendOffer(pmcData, info, sessionID);
+        return _ragfairController.ExtendOffer(info, sessionID);
     }
 
     /// <summary>
