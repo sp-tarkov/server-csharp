@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -666,7 +666,7 @@ public record Props
     [JsonPropertyName("shotgunDispersion")]
     public double? ShotgunDispersion { get; set; }
 
-    [JsonPropertyName("chambers")]
+    [JsonPropertyName("Chambers")]
     public List<Slot>? Chambers { get; set; }
 
     [JsonPropertyName("cameraSnap")]
@@ -678,7 +678,7 @@ public record Props
     [JsonPropertyName("cameraToWeaponAngleStep")]
     public double? CameraToWeaponAngleStep { get; set; }
 
-    [JsonPropertyName("reloadMode")]
+    [JsonPropertyName("ReloadMode")]
     public string? ReloadMode { get; set; }
 
     [JsonPropertyName("aimPlane")]
@@ -705,7 +705,7 @@ public record Props
     [JsonPropertyName("foldedSlot")]
     public string? FoldedSlot { get; set; }
 
-    [JsonPropertyName("forbidMissingVitalParts")]
+    [JsonPropertyName("ForbidMissingVitalParts")]
     public bool? ForbidMissingVitalParts { get; set; }
 
     [JsonPropertyName("forbidNonEmptyContainers")]
@@ -1043,10 +1043,10 @@ public record Props
     [JsonPropertyName("repairType")]
     public string? RepairType { get; set; }
 
-    [JsonPropertyName("stackMinRandom")]
+    [JsonPropertyName("StackMinRandom")]
     public double? StackMinRandom { get; set; }
 
-    [JsonPropertyName("stackMaxRandom")]
+    [JsonPropertyName("StackMaxRandom")]
     public double? StackMaxRandom { get; set; }
 
     [JsonPropertyName("ammoType")]
@@ -1160,7 +1160,7 @@ public record Props
     [JsonPropertyName("lightBleedingDelta")]
     public double? LightBleedingDelta { get; set; }
 
-    [JsonPropertyName("showBullet")]
+    [JsonPropertyName("ShowBullet")]
     public bool? ShowBullet { get; set; }
 
     [JsonPropertyName("hasGrenaderComponent")]
@@ -1175,10 +1175,10 @@ public record Props
     [JsonPropertyName("minExplosionDistance")]
     public double? MinExplosionDistance { get; set; }
 
-    [JsonPropertyName("maxExplosionDistance")]
+    [JsonPropertyName("MaxExplosionDistance")]
     public double? MaxExplosionDistance { get; set; }
 
-    [JsonPropertyName("fragmentsCount")]
+    [JsonPropertyName("FragmentsCount")]
     public double? FragmentsCount { get; set; }
 
     [JsonPropertyName("fragmentType")]
@@ -1190,10 +1190,10 @@ public record Props
     [JsonPropertyName("explosionType")]
     public string? ExplosionType { get; set; }
 
-    [JsonPropertyName("ammoLifeTimeSec")]
+    [JsonPropertyName("AmmoLifeTimeSec")]
     public double? AmmoLifeTimeSec { get; set; }
 
-    [JsonPropertyName("ammoTooltipClass")]
+    [JsonPropertyName("AmmoTooltipClass")]
     public string? AmmoTooltipClass { get; set; }
 
     [JsonPropertyName("contusion")]
@@ -1326,37 +1326,10 @@ public record Props
     public List<string>? ProfileVersions { get; set; }
     
     [JsonPropertyName("Side")]
-    public List<string>? Side { get; set; }
+    public List<string>? Side { get; set; }    
     
-    [JsonPropertyName("BodyPart")]
-    public string? BodyPart { get; set; }
-    
-    [JsonPropertyName("IntegratedArmorVest")]
-    public bool? IntegratedArmorVest { get; set; }
-    
-    [JsonPropertyName("WatchPosition")]
-    public XYZ? WatchPosition { get; set; }
-    
-    [JsonPropertyName("WatchPrefab")]
-    public Prefab? WatchPrefab { get; set; }
-    
-    [JsonPropertyName("WatchRotation")]
-    public XYZ? WatchRotation { get; set; }
-    
-    [JsonPropertyName("Game")]
-    public List<string>? Game { get; set; }
-    
-    [JsonPropertyName("Body")]
-    public string? Body { get; set; }
-    
-    [JsonPropertyName("Hands")]
-    public string? Hands { get; set; }
-    
-    [JsonPropertyName("Feet")]
-    public string? Feet { get; set; }
-    
-    [JsonExtensionData] 
-    public Dictionary<string, object> OtherProperties { get; set; } 
+    //[JsonExtensionData] 
+    //public Dictionary<string, object> OtherProperties { get; set; } 
 }
 
 public record WeaponRecoilSettings
