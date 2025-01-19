@@ -124,7 +124,7 @@ public class AssortHelper(
         // Remove items restricted by loyalty levels above those reached by the player
         foreach (var item in assort.LoyalLevelItems)
         {
-            if (assort.LoyalLevelItems[item.Key] > pmcProfile.TradersInfo[traderId].LoyaltyLevel)
+            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] >  info.LoyaltyLevel)
             {
                 strippedAssort = RemoveItemFromAssort(assort, item.Key);
             }
