@@ -7,6 +7,7 @@ using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Extensions.Logging;
+using SptDependencyInjection;
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Server;
@@ -26,7 +27,7 @@ public static class Program
 
         ProgramStatics.Initialize();
 
-        DependencyInjectionRegistrator.RegisterSptComponents(builder.Services);
+        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
         DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, assemblies);
         ILogger logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try

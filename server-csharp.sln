@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Libraries\Core\Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6C0681F9-4013-4579-82DA-0A9297984FD3}"
 EndProject
@@ -15,6 +15,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptDependencyInjection", "Libraries\SptDependencyInjection\SptDependencyInjection.csproj", "{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemTplGenerator", "Tools\ItemTplGenerator\ItemTplGenerator.csproj", "{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptCommon", "SptCommon\SptCommon.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -46,6 +48,10 @@ Global
 		{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,5 +59,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF} = {587959C2-5AFA-4B77-B327-566610F9A289}
+		{AC8643DC-8779-4B4A-BBDA-2D4CC466F765} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 	EndGlobalSection
 EndGlobal

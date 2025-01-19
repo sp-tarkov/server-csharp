@@ -16,7 +16,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Core\Core.csproj"/>
+        <ProjectReference Include="..\Libraries\Core\Core.csproj" />
+        <ProjectReference Include="..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj" />
+        <ProjectReference Include="..\SptCommon\SptCommon.csproj" />
     </ItemGroup>
 
     <ItemGroup>

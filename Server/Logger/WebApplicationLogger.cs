@@ -1,4 +1,4 @@
-using Core.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 using Core.Models.Utils;

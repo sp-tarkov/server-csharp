@@ -1,4 +1,4 @@
-using Core.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Hideout;
 using Core.Models.Enums;
 using Core.Models.Utils;

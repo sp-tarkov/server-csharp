@@ -1,4 +1,4 @@
-using Core.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Servers;
