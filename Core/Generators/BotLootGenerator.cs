@@ -1,4 +1,4 @@
-﻿using Core.Annotations;
+using Core.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
@@ -114,7 +114,7 @@ public class BotLootGenerator(
 
         // This set is passed as a reference to fill up the containers that are already full, this alleviates
         // generation of the bots by avoiding checking the slots of containers we already know are full
-        var containersIdFull = new List<string>();
+        HashSet<string> filledContainerIds = [];
 
         // Special items
         AddLootFromPool(
@@ -124,7 +124,7 @@ public class BotLootGenerator(
             botInventory,
             botRole,
             botItemLimits,
-            containersIdFull: containersIdFull
+            containersIdFull: filledContainerIds
         );
 
         // Healing items / Meds
@@ -137,7 +137,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Drugs
@@ -150,7 +150,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Food
@@ -163,7 +163,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Drink
@@ -176,7 +176,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Currency
@@ -189,7 +189,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Stims
@@ -202,7 +202,7 @@ public class BotLootGenerator(
             botItemLimits,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Grenades
@@ -215,7 +215,7 @@ public class BotLootGenerator(
             null,
             0,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         var itemPriceLimits = GetSingleItemLootPriceLimits(botLevel, isPmc);
@@ -235,7 +235,7 @@ public class BotLootGenerator(
                     botRole,
                     isPmc,
                     botLevel,
-                    containersIdFull
+                    filledContainerIds
                 );
             }
 
@@ -255,7 +255,7 @@ public class BotLootGenerator(
                 botItemLimits,
                 backpackLootRoubleTotal ?? 0,
                 isPmc,
-                containersIdFull
+                filledContainerIds
             );
         }
 
@@ -278,7 +278,7 @@ public class BotLootGenerator(
                 botItemLimits,
                 _pmcConfig.MaxVestLootTotalRub,
                 isPmc,
-                containersIdFull
+                filledContainerIds
             );
         }
 
@@ -298,7 +298,7 @@ public class BotLootGenerator(
             botItemLimits,
             _pmcConfig.MaxPocketLootTotalRub,
             isPmc,
-            containersIdFull
+            filledContainerIds
         );
 
         // Secure
@@ -315,7 +315,7 @@ public class BotLootGenerator(
                 null,
                 -1,
                 isPmc,
-                containersIdFull
+                filledContainerIds
             );
         }
     }
@@ -427,7 +427,7 @@ public class BotLootGenerator(
         ItemSpawnLimitSettings? itemSpawnLimits,
         double totalValueLimitRub = 0,
         bool isPmc = false,
-        List<string>? containersIdFull = null
+        HashSet<string>? containersIdFull = null
     )
     {
         // Loot pool has items
@@ -657,7 +657,7 @@ public class BotLootGenerator(
         string botRole,
         bool isPmc,
         int botLevel,
-        List<string>? containersIdFull) // TODO: type for containersIdFull was Set<string>
+        HashSet<string>? containersIdFull)
     {
         var chosenWeaponType = _randomUtil.GetArrayValue<string>(
             [

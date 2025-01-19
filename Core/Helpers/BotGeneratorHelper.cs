@@ -461,7 +461,7 @@ public class BotGeneratorHelper(
         string? rootItemTplId,
         List<Item> itemWithChildren,
         BotBaseInventory inventory,
-        List<string>? containersIdFull = null)
+        HashSet<string>? containersIdFull = null)
     {
         // Track how many containers are unable to be found
         var missingContainerCount = 0;
