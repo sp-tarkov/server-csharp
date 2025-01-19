@@ -317,7 +317,7 @@ public class BotGenerator(
         var result = experiences[botDifficulty.ToLower()];
         if (result is null)
         {
-            _logger.Debug("Unable to find experience for kill value for: ${ role} ${ botDifficulty}, falling back to `normal`");
+            _logger.Debug($"Unable to find experience for kill value for: { role} { botDifficulty}, falling back to `normal`");
 
             return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
         }
@@ -473,8 +473,8 @@ public class BotGenerator(
     /// <param name="output">Generated bot array, ready to send to client</param>
     public void LogPmcGeneratedCount(List<BotBase> output)
     {
-        var pmcCount = output.Aggregate(0, (acc, cur) => { return cur.Info.Side == "Bear" || cur.Info.Side == "Usec" ? acc + 1 : acc; });
-        _logger.Debug($"Generated {output.Count} total bots. Replaced ${pmcCount} with PMCs");
+        var pmcCount = output.Aggregate(0, (acc, cur) => { return cur.Info.Side is "Bear" or "Usec" ? acc + 1 : acc; });
+        _logger.Debug($"Generated {output.Count} total bots. Replaced {pmcCount} with PMCs");
     }
 
     /// <summary>

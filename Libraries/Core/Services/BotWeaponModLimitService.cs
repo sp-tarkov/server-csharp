@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -166,7 +166,7 @@ public class BotWeaponModLimitService(
         // Has mod limit for bot type been reached
         if (currentCount.Count >= maxLimit)
         {
-            // this.logger.debug(`[${botRole}] scope limit reached! tried to add ${modTpl} but scope count is ${currentCount.count}`);
+            // this.logger.debug($"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.count}`);
             return true;
         }
 

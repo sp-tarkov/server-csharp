@@ -58,7 +58,7 @@ namespace Core.Routers
                     continue;
                 }
 
-                _logger.Debug("event: ${ body.Action}");
+                _logger.Debug($"event: { body.Action}");
                 await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
                 if (output.Warnings.Count > 0) {
                     break;

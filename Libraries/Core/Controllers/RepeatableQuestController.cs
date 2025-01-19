@@ -249,7 +249,7 @@ public class RepeatableQuestController(
             if (questStatusInProfile.Status == QuestStatusEnum.AvailableForFinish)
             {
                 questsToKeep.Add(activeQuest);
-                _logger.Debug($"Keeping repeatable quest: ${activeQuest.Id} in activeQuests since it is available to hand in");
+                _logger.Debug($"Keeping repeatable quest: {activeQuest.Id} in activeQuests since it is available to hand in");
 
                 continue;
             }

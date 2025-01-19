@@ -107,7 +107,7 @@ public class GameController(
             // Flag as migrated
             fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
 
-            _logger.Success($"Migration of 3.10.x profile: ${fullProfile.ProfileInfo?.Username} completed successfully");
+            _logger.Success($"Migration of 3.10.x profile: {fullProfile.ProfileInfo?.Username} completed successfully");
         }
         
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);

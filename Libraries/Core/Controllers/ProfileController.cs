@@ -226,7 +226,7 @@ public class ProfileController(
         var profileToView = _profileHelper.GetFullProfileByAccountId(request.AccountId);
         if (profileToView?.CharacterData?.PmcData is null || profileToView.CharacterData.ScavData is null)
         {
-            _logger.Warning($"Unable to get profile: ${request.AccountId} to show, falling back to own profile");
+            _logger.Warning($"Unable to get profile: {request.AccountId} to show, falling back to own profile");
             profileToView = _profileHelper.GetFullProfile(sessionId);
         }
 

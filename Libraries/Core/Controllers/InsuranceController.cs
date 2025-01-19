@@ -49,7 +49,7 @@ public class InsuranceController(
                 // Ensure hash has item in it
                 if (!inventoryItemsHash.ContainsKey(itemId))
                 {
-                    _logger.Debug("Item with id: ${ itemId} missing from player inventory, skipping");
+                    _logger.Debug($"Item with id: {itemId} missing from player inventory, skipping");
                     continue;
                 }
 

@@ -16,7 +16,7 @@ public class MatchBotDetailsCacheService(
     {
         if (botToCache.Info.Nickname is null)
         {
-            _logger.Warning($"Unable to cache: {botToCache.Info.Settings.Role} bot with id: ${botToCache.Id} as it lacks a nickname");
+            _logger.Warning($"Unable to cache: {botToCache.Info.Settings.Role} bot with id: {botToCache.Id} as it lacks a nickname");
             return;
         }
 

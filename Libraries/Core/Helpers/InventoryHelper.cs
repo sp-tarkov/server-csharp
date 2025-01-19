@@ -387,7 +387,7 @@ public class InventoryHelper(
         }
 
         _logger.Debug(
-            "${ moveRequest.Action} item: ${ moveRequest.item} from slotid: ${ matchingInventoryItem.slotId} to container: ${ moveRequest.to.container}"
+            $"{ moveRequest.Action} item: ${ moveRequest.Item} from slotid: { matchingInventoryItem.SlotId} to container: { moveRequest.To.Container}"
         );
 
         // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
