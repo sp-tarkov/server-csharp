@@ -159,9 +159,8 @@ public class ProfileHelper(
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
             playerLevel = expTable.Length - 1;
 
-        foreach (var expLevel in expTable)
-        {
-            exp += expLevel.Experience;
+        for (var i = 0; i < playerLevel; i++) {
+            exp += expTable[i].Experience;
         }
 
         return exp;

@@ -61,7 +61,7 @@ public class ProfileController(
 
         // Player hasn't completed profile creation process, send defaults
         var currlvl = pmc?.Info?.Level.GetValueOrDefault(1);
-        var xpToNextLevel = _profileHelper.GetExperience((int)(currlvl ?? 1 + 1));
+        var xpToNextLevel = _profileHelper.GetExperience(((currlvl ?? 1) + 1));
         if (pmc?.Info?.Level == null)
         {
             return new MiniProfile
