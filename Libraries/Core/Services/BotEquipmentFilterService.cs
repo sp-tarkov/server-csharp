@@ -375,7 +375,7 @@ public class BotEquipmentFilterService
                 var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
                 foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
                 {
-                    locationToUpdate[itemToAddKvP.Key] = poolAdjustmentKvP.Value[itemToAddKvP.Key];
+                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
                 }
             }
         }
@@ -390,7 +390,7 @@ public class BotEquipmentFilterService
                     // Only make change if item exists as we're editing, not adding
                     if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
-                        locationToUpdate[itemToEditKvP.Key] = poolAdjustmentKvP.Value[itemToEditKvP.Key];
+                        locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }
                     else
                     {
