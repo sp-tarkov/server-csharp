@@ -750,8 +750,15 @@ public class BotLootGenerator(
             return false;
         }
 
-        // Increment item count with this bot type
-        itemSpawnLimits.CurrentLimits[idToCheckFor]++;
+
+        // Use tryAdd to see if it exists, and automatically add 1
+        if (!itemSpawnLimits.CurrentLimits.TryAdd(idToCheckFor, 1))
+        {
+            // if it does exist, come in here and increment
+            // Increment item count with this bot type
+            itemSpawnLimits.CurrentLimits[idToCheckFor]++;
+        }
+        
 
         // Check if over limit
         if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.GlobalLimits[idToCheckFor])
