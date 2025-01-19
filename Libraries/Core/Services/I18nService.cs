@@ -96,13 +96,16 @@ public class I18nService
         {
             return rawLocalizedString;
         }
+        
+        var typeToCheck = args.GetType();
+        var typeProps = typeToCheck.GetProperties();
 
         foreach (var propertyInfo in args.GetType().GetProperties())
         {
             var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
             if (rawLocalizedString.Contains(localizedName))
             {
-                rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args, null)?.ToString() ?? string.Empty);
+                rawLocalizedString = rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args)?.ToString() ?? string.Empty);
             }
         }
         return rawLocalizedString;
