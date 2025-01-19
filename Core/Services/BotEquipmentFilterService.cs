@@ -1,17 +1,38 @@
 using Core.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
+using Core.Utils.Extensions;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class BotEquipmentFilterService(
-    ConfigServer _configServer
-)
+public class BotEquipmentFilterService
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected ISptLogger<BotEquipmentFilterService> _logger;
+    protected ProfileHelper _profileHelper;
+    protected BotHelper _botHelper;
+
+    protected BotConfig _botConfig;
+    protected Dictionary<string, EquipmentFilters> _botEquipmentConfig;
+
+    public BotEquipmentFilterService(
+        ISptLogger<BotEquipmentFilterService> logger,
+        BotHelper botHelper,
+        ProfileHelper profileHelper,
+        ConfigServer configServer)
+    {
+        _logger = logger;
+        _profileHelper = profileHelper;
+        _botHelper = botHelper;
+
+        _botConfig = configServer.GetConfig<BotConfig>();
+        _botEquipmentConfig = _botConfig.Equipment!;
+    }
 
     /// <summary>
     /// Filter a bots data to exclude equipment and cartridges defines in the botConfig
@@ -20,13 +41,49 @@ public class BotEquipmentFilterService(
     /// <param name="baseBotNode">bots json data to filter</param>
     /// <param name="botLevel">Level of the bot</param>
     /// <param name="botGenerationDetails">details on how to generate a bot</param>
-    public void FilterBotEquipment(
-        string sessionId,
-        BotType baseBotNode,
-        int botLevel,
-        BotGenerationDetails botGenerationDetails)
+    public void FilterBotEquipment(string sessionId, BotType baseBotNode, int botLevel, BotGenerationDetails botGenerationDetails)
     {
-        throw new NotImplementedException();
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+
+        var botRole = botGenerationDetails.IsPmc ?? false ? "pmc" : botGenerationDetails.Role;
+        var botEquipmentBlacklist = GetBotEquipmentBlacklist(botRole, botLevel);
+        var botEquipmentWhitelist = GetBotEquipmentWhitelist(botRole, botLevel);
+        var botWeightingAdjustments = GetBotWeightingAdjustments(botRole, botLevel);
+        var botWeightingAdjustmentsByPlayerLevel = GetBotWeightingAdjustmentsByPlayerLevel(
+            botRole,
+            pmcProfile.Info.Level ?? 0
+        );
+
+        var botEquipConfig = _botEquipmentConfig[botRole];
+        var randomisationDetails = _botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
+
+        if (botEquipmentBlacklist is not null || botEquipmentWhitelist is not null)
+        {
+            FilterEquipment(baseBotNode, botEquipmentBlacklist, botEquipmentWhitelist);
+            FilterCartridges(baseBotNode, botEquipmentBlacklist, botEquipmentWhitelist);
+        }
+
+        if (botWeightingAdjustments is not null)
+        {
+            AdjustWeighting(botWeightingAdjustments.Equipment, baseBotNode.BotInventory.Equipment);
+            AdjustWeighting(botWeightingAdjustments.Ammo, baseBotNode.BotInventory.Ammo);
+            // Dont warn when edited item not found, we're editing usec/bear clothing and they dont have each others clothing
+            AdjustWeighting(botWeightingAdjustments?.Clothing, baseBotNode.BotAppearance, false);
+        }
+
+        if (botWeightingAdjustmentsByPlayerLevel is not null)
+        {
+            AdjustWeighting(botWeightingAdjustmentsByPlayerLevel.Equipment, baseBotNode.BotInventory.Equipment);
+            AdjustWeighting(botWeightingAdjustmentsByPlayerLevel.Ammo, baseBotNode.BotInventory.Ammo);
+        }
+
+        if (randomisationDetails is not null)
+        {
+            AdjustChances(randomisationDetails.Equipment, baseBotNode.BotChances.EquipmentChances);
+            AdjustChances(randomisationDetails.WeaponMods, baseBotNode.BotChances.WeaponModsChances);
+            AdjustChances(randomisationDetails.EquipmentMods, baseBotNode.BotChances.EquipmentModsChances);
+            AdjustGenerationChances(randomisationDetails.Generation, baseBotNode.BotGeneration);
+        }
     }
 
     /// <summary>
@@ -35,10 +92,18 @@ public class BotEquipmentFilterService(
     /// <param name="equipmentChanges">Changes to apply</param>
     /// <param name="baseValues">data to update</param>
     protected void AdjustChances(
-        Dictionary<string, int> equipmentChanges,
-        object baseValues)
+        Dictionary<string, double> equipmentChanges,
+        Dictionary<string, double> baseValues)
     {
-        throw new NotImplementedException();
+        if (equipmentChanges is null)
+        {
+            return;
+        }
+
+        foreach (var itemKey in equipmentChanges)
+        {
+            baseValues[itemKey.Key] = equipmentChanges[itemKey.Key];
+        }
     }
 
     /// <summary>
@@ -50,7 +115,16 @@ public class BotEquipmentFilterService(
         Dictionary<string, GenerationData> generationChanges,
         Generation baseBotGeneration)
     {
-        throw new NotImplementedException();
+        if (generationChanges is null)
+        {
+            return;
+        }
+
+        foreach (var itemKey in generationChanges)
+        {
+            baseBotGeneration.Items.Get<GenerationData>(itemKey.Key).Weights = generationChanges.Get<GenerationData>(itemKey.Key).Weights;
+            baseBotGeneration.Items.Get<GenerationData>(itemKey.Key).Whitelist = generationChanges.Get<GenerationData>(itemKey.Key).Whitelist;
+        }
     }
 
     /// <summary>
@@ -60,7 +134,7 @@ public class BotEquipmentFilterService(
     /// <returns>EquipmentFilters object</returns>
     public EquipmentFilters GetBotEquipmentSettings(string botEquipmentRole)
     {
-        throw new NotImplementedException();
+        return _botEquipmentConfig[botEquipmentRole];
     }
 
     /// <summary>
@@ -88,10 +162,10 @@ public class BotEquipmentFilterService(
     /// <returns>EquipmentBlacklistDetails object</returns>
     public EquipmentFilterDetails? GetBotEquipmentBlacklist(string botRole, double playerLevel)
     {
-        var blacklistDetailsForBot = _botConfig.Equipment.GetValueOrDefault(botRole, null);
+        var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return blacklistDetailsForBot?.Blacklist?.FirstOrDefault(
-            (equipmentFilter) => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
+        return blacklistDetailsForBot?.Blacklist.FirstOrDefault(
+            equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
 
@@ -101,9 +175,13 @@ public class BotEquipmentFilterService(
     /// <param name="botRole">Bot type</param>
     /// <param name="playerLevel">Players level</param>
     /// <returns>EquipmentFilterDetails object</returns>
-    protected EquipmentFilterDetails GetBotEquipmentWhitelist(string botRole, int playerLevel)
+    protected EquipmentFilterDetails? GetBotEquipmentWhitelist(string botRole, int playerLevel)
     {
-        throw new NotImplementedException();
+        var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+
+        return whitelistDetailsForBot?.Whitelist.FirstOrDefault(
+            equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
+        );
     }
 
     /// <summary>
@@ -112,9 +190,13 @@ public class BotEquipmentFilterService(
     /// <param name="botRole">Bot type to get adjustments for</param>
     /// <param name="botLevel">Level of bot</param>
     /// <returns>Weighting adjustments for bot items</returns>
-    protected WeightingAdjustmentDetails GetBotWeightingAdjustments(string botRole, int botLevel)
+    protected WeightingAdjustmentDetails? GetBotWeightingAdjustments(string botRole, int botLevel)
     {
-        throw new NotImplementedException();
+        var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+
+        return weightingDetailsForBot?.WeightingAdjustmentsByBotLevel.FirstOrDefault(
+            x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
+        );
     }
 
     /// <summary>
@@ -123,9 +205,13 @@ public class BotEquipmentFilterService(
     /// <param name="botRole">Bot type to get adjustments for</param>
     /// <param name="playerlevel">Level of bot</param>
     /// <returns>Weighting adjustments for bot items</returns>
-    protected WeightingAdjustmentDetails GetBotWeightingAdjustmentsByPlayerLevel(string botRole, int playerlevel)
+    protected WeightingAdjustmentDetails? GetBotWeightingAdjustmentsByPlayerLevel(string botRole, int playerlevel)
     {
-        throw new NotImplementedException();
+        var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
+
+        return weightingDetailsForBot?.WeightingAdjustmentsByBotLevel.FirstOrDefault(
+            x => playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max
+        );
     }
 
     /// <summary>
@@ -135,12 +221,59 @@ public class BotEquipmentFilterService(
     /// <param name="baseBotNode">bot .json file to update</param>
     /// <param name="blacklist">equipment blacklist</param>
     /// <returns>Filtered bot file</returns>
-    protected void FilterEquipment(
-        BotType baseBotNode,
-        EquipmentFilterDetails blacklist,
-        EquipmentFilterDetails whitelist)
+    protected void FilterEquipment(BotType baseBotNode, EquipmentFilterDetails? blacklist, EquipmentFilterDetails? whitelist)
     {
-        throw new NotImplementedException();
+        if (whitelist is not null)
+        {
+            foreach (var equipmentSlotKey in baseBotNode.BotInventory.Equipment)
+            {
+                var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key];
+
+                // Skip equipment slot if whitelist doesn't exist / is empty
+                var whitelistEquipmentForSlot = whitelist.Equipment[equipmentSlotKey.Key.ToString()];
+                if (whitelistEquipmentForSlot is null || whitelistEquipmentForSlot.Count == 0)
+                {
+                    continue;
+                }
+
+                // Filter equipment slot items to just items in whitelist
+                baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key] = new Dictionary<string, double>();
+                foreach (var dict in botEquipment)
+                {
+                    if (whitelistEquipmentForSlot.Contains(dict.Key))
+                    {
+                        baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key][dict.Key] = botEquipment[dict.Key];
+                    }
+                }
+            }
+
+            return;
+        }
+
+        if (blacklist is not null)
+        {
+            foreach (var equipmentSlotKey in baseBotNode.BotInventory.Equipment)
+            {
+                var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key];
+
+                // Skip equipment slot if blacklist doesn't exist / is empty
+                var equipmentSlotBlacklist = blacklist.Equipment[equipmentSlotKey.Key.ToString()];
+                if (equipmentSlotBlacklist is null || equipmentSlotBlacklist.Count == 0)
+                {
+                    continue;
+                }
+
+                // Filter equipment slot items to just items not in blacklist
+                baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key] = new Dictionary<string, double>();
+                foreach (var dict in botEquipment)
+                {
+                    if (!equipmentSlotBlacklist.Contains(dict.Key))
+                    {
+                        baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key][dict.Key] = botEquipment[dict.Key];
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -153,8 +286,67 @@ public class BotEquipmentFilterService(
     /// <returns>Filtered bot file</returns>
     protected void FilterCartridges(
         BotType baseBotNode,
-        EquipmentFilterDetails blacklist,
-        EquipmentFilterDetails whitelist)
+        EquipmentFilterDetails? blacklist,
+        EquipmentFilterDetails? whitelist)
+    {
+        if (whitelist is not null)
+        {
+            foreach ( var ammoCaliber in baseBotNode.BotInventory.Ammo) {
+                var botAmmo  = baseBotNode.BotInventory.Ammo[ammoCaliber.Key];
+
+                // Skip cartridge slot if whitelist doesn't exist / is empty
+                var whiteListedCartridgesForCaliber  = whitelist.Cartridge[ammoCaliber.Key];
+                if (whiteListedCartridgesForCaliber is null || whiteListedCartridgesForCaliber.Count == 0)
+                {
+                    continue;
+                }
+
+                // Filter calibre slot items to just items in whitelist
+                baseBotNode.BotInventory.Ammo[ammoCaliber.Key] = new Dictionary<string, double>();
+                foreach ( var dict in botAmmo) {
+                    if (whitelist.Cartridge[ammoCaliber.Key].Contains(dict.Key))
+                    {
+                        baseBotNode.BotInventory.Ammo[ammoCaliber.Key][dict.Key] = botAmmo[dict.Key];
+                    }
+                }
+            }
+
+            return;
+        }
+
+        if (blacklist is not null)
+        {
+            foreach ( var ammoCaliberKey  in baseBotNode.BotInventory.Ammo) {
+                var botAmmo  = baseBotNode.BotInventory.Ammo[ammoCaliberKey.Key];
+
+                // Skip cartridge slot if blacklist doesn't exist / is empty
+                var cartridgeCaliberBlacklist  = blacklist.Cartridge[ammoCaliberKey.Key];
+                if (cartridgeCaliberBlacklist is null || cartridgeCaliberBlacklist.Count == 0)
+                {
+                    continue;
+                }
+
+                // Filter cartridge slot items to just items not in blacklist
+                baseBotNode.BotInventory.Ammo[ammoCaliberKey.Key] = new Dictionary<string, double>();
+                foreach ( var dict in botAmmo) {
+                    if (!cartridgeCaliberBlacklist.Contains(dict.Key))
+                    {
+                        baseBotNode.BotInventory.Ammo[ammoCaliberKey.Key][dict.Key] = botAmmo[dict.Key];
+                    }
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Add/Edit weighting changes to bot items using values from config/bot.json/equipment
+    /// </summary>
+    /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
+    /// <param name="botItemPool">Bot item dictionary to adjust</param>
+    protected void AdjustWeighting(
+        AdjustmentDetails weightingAdjustments,
+        Dictionary<string, Dictionary<string, double>> botItemPool,
+        bool showEditWarnings = true)
     {
         throw new NotImplementedException();
     }
@@ -166,7 +358,20 @@ public class BotEquipmentFilterService(
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
     protected void AdjustWeighting(
         AdjustmentDetails weightingAdjustments,
-        Dictionary<string, object> botItemPool,
+        Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
+        bool showEditWarnings = true)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <summary>
+    /// Add/Edit weighting changes to bot items using values from config/bot.json/equipment
+    /// </summary>
+    /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
+    /// <param name="botItemPool">Bot item dictionary to adjust</param>
+    protected void AdjustWeighting(
+        AdjustmentDetails weightingAdjustments,
+        Appearance botItemPool,
         bool showEditWarnings = true)
     {
         throw new NotImplementedException();

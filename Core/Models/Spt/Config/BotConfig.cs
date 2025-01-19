@@ -427,19 +427,19 @@ public record RandomisationDetails
     /// Equipment chances
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, float>? Equipment { get; set; }
+    public Dictionary<string, double>? Equipment { get; set; }
 
     /// <summary>
     /// Weapon mod chances
     /// </summary>
     [JsonPropertyName("weaponMods")]
-    public Dictionary<string, float>? WeaponMods { get; set; }
+    public Dictionary<string, double>? WeaponMods { get; set; }
 
     /// <summary>
     /// Equipment mod chances
     /// </summary>
     [JsonPropertyName("equipmentMods")]
-    public Dictionary<string, float>? EquipmentMods { get; set; }
+    public Dictionary<string, double>? EquipmentMods { get; set; }
 
     [JsonPropertyName("nighttimeChanges")]
     public NighttimeChanges? NighttimeChanges { get; set; }
