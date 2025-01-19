@@ -1119,7 +1119,7 @@ public class BotEquipmentModGenerator(
         var parentSlotCompatibleItems = request.ParentTemplate.Properties.Slots?.FirstOrDefault(
                 (slot) => string.Equals(slot.Name.ToLower(), request.ModSlot.ToLower(), StringComparison.Ordinal)
             )
-            ?.Props.Filters[0].Filter;
+            ?.Props.Filters?[0].Filter;
 
         // Mod isn't in existing pool, only add if it has no children and exists inside parent filter
         if (
@@ -1458,7 +1458,7 @@ public class BotEquipmentModGenerator(
             modPool[cylinderMagTemplate.Id] = new();
             foreach (var camora in camoraSlots)
             {
-                modPool[cylinderMagTemplate.Id][camora.Name] = camora.Props.Filters[0].Filter;
+                modPool[cylinderMagTemplate.Id][camora.Name] = camora.Props.Filters?[0].Filter;
             }
 
             itemModPool = modPool[cylinderMagTemplate.Id];

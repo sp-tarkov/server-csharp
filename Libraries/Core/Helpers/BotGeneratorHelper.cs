@@ -260,7 +260,7 @@ public class BotGeneratorHelper(
             currentDurability = _durabilityLimitsHelper.GetRandomizedArmorDurability(
                 itemTemplate,
                 botRole,
-                maxDurability
+                maxDurability.Value
             );
         }
 

@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Utils;
@@ -35,7 +35,7 @@ public class BotWeaponGeneratorHelper(
         double? chamberBulletCount = 0;
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
-            var firstSlotAmmoTpl = magTemplate.Properties.Cartridges[0].Props.Filters[0].Filter[0];
+            var firstSlotAmmoTpl = magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter[0];
             var ammoMaxStackSize = _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount = ammoMaxStackSize == 1
                 ? 1 // Rotating grenade launcher
@@ -48,7 +48,7 @@ public class BotWeaponGeneratorHelper(
         }
         else
         {
-            chamberBulletCount = magTemplate.Properties.Cartridges[0].MaxCount;
+            chamberBulletCount = magTemplate.Properties.Cartridges?[0].MaxCount;
         }
 
         // Get the amount of bullets that would fit in the internal magazine

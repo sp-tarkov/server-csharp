@@ -50,7 +50,6 @@ public class BotNameService(
         var showTypeInNickname = !botGenerationDetails.IsPlayerScav.GetValueOrDefault(false) && _botConfig.ShowTypeInNickname;
         var roleShouldBeUnique = uniqueRoles?.Contains(botRole.ToLower());
 
-        var isUnique = true;
         var attempts = 0;
         while (attempts <= 5)
         {
@@ -78,8 +77,7 @@ public class BotNameService(
             if (roleShouldBeUnique.GetValueOrDefault(false))
             {
                 // Check name in cache
-                isUnique = _usedNameCache.Contains(name);
-                if (!isUnique)
+                if (_usedNameCache.Contains(name))
                 {
                     // Not unique
                     if (attempts >= 5)

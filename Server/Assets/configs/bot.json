@@ -88,7 +88,8 @@
                 "minLimitPercent": 15
             }
         },
-        "pmc": {
+		"botDurabilities": {
+		"pmc": {
             "armor": {
                 "lowestMaxPercent": 90,
                 "highestMaxPercent": 100,
@@ -274,6 +275,7 @@
                 "minLimitPercent": 15
             }
         }
+		}
     },
     "lootItemResourceRandomization": {
         "assault": {

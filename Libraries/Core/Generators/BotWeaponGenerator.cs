@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Generators.WeaponGen;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -607,22 +607,24 @@ public class BotWeaponGenerator(
     /// <returns>List of cartridge tpls</returns>
     protected List<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
-        var cartridges = weaponTemplate.Properties.Chambers?[0].Props?.Filters[0]?.Filter;
+        var cartridges = weaponTemplate.Properties?.Chambers.FirstOrDefault()?.Props?.Filters?[0].Filter;
+        if (cartridges is not null)
+        {
+            return cartridges;
+        }
+        // Fallback to the magazine if possible, e.g. for revolvers
+        //  Grab the magazines template
+        var firstMagazine = weaponTemplate.Properties.Slots.FirstOrDefault(slot => slot.Name == "mod_magazine");
+        var magazineTemplate = _itemHelper.GetItem(firstMagazine.Props.Filters?[0].Filter[0]);
+        var magProperties = magazineTemplate.Value.Properties;
+
+        // Get the first slots array of cartridges
+        cartridges = magProperties.Slots.FirstOrDefault()?.Props.Filters?[0].Filter;
         if (cartridges is null)
         {
-            // Fallback to the magazine if possible, e.g. for revolvers
-            //  Grab the magazines template
-            var firstMagazine = weaponTemplate.Properties.Slots.FirstOrDefault((slot) => slot.Name == "mod_magazine");
-            var magazineTemplate = _itemHelper.GetItem(firstMagazine.Props.Filters[0].Filter[0]);
-
-            // Get the first slots array of cartridges
-            cartridges = magazineTemplate.Value.Properties.Slots[0]?.Props.Filters[0].Filter;
-            if (cartridges is null)
-            {
-                // Normal magazines
-                // None found, try the cartridges array
-                cartridges = magazineTemplate.Value.Properties.Cartridges[0]?.Props.Filters[0].Filter;
-            }
+            // Normal magazines
+            // None found, try the cartridges array
+            cartridges = magProperties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter;
         }
 
         return cartridges;
