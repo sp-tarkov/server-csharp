@@ -53,7 +53,7 @@ public class NoteController(
         NoteActionData body,
         string sessionId)
     {
-        pmcData.Notes.DataNotes.RemoveAt(body.Index.Value);
+        pmcData.Notes?.DataNotes?.RemoveAt(body.Index!.Value);
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
