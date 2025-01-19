@@ -347,6 +347,8 @@ public class BotEquipmentFilterService
         Dictionary<string, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
+        //TODO, bad typing by key with method below due to, EquipmentSlots
+        // MAKE CONSISTENT BEFORE IMPLEMENTING
         throw new NotImplementedException();
     }
 
@@ -355,12 +357,51 @@ public class BotEquipmentFilterService
     /// </summary>
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
+    /// <param name="showEditWarnings"></param>
     protected void AdjustWeighting(
-        AdjustmentDetails weightingAdjustments,
+        AdjustmentDetails? weightingAdjustments,
         Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
-        throw new NotImplementedException();
+        if (weightingAdjustments is null)
+        {
+            return;
+        }
+
+        if (weightingAdjustments.Add?.Count > 0)
+        {
+            foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
+            {
+                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
+                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
+                {
+                    locationToUpdate[itemToAddKvP.Key] = poolAdjustmentKvP.Value[itemToAddKvP.Key];
+                }
+            }
+        }
+
+        if (weightingAdjustments.Edit?.Count > 0)
+        {
+            foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
+            {
+                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
+                foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
+                {
+                    // Only make change if item exists as we're editing, not adding
+                    if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
+                    {
+                        locationToUpdate[itemToEditKvP.Key] = poolAdjustmentKvP.Value[itemToEditKvP.Key];
+                    }
+                    else
+                    {
+                        if (showEditWarnings)
+                        {
+                            _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
