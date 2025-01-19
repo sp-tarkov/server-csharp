@@ -39,7 +39,7 @@ public class InventoryController(
 {
     public void MoveItem(PmcData pmcData, InventoryMoveRequestData moveRequest, string sessionID, ItemEventRouterResponse output)
     {
-        if (output.Warnings.Count > 0)
+        if (output.Warnings?.Count > 0)
         {
             return;
         }
@@ -56,7 +56,7 @@ public class InventoryController(
             }
 
             // Check for item in inventory before allowing internal transfer
-            var originalItemLocation = ownerInventoryItems.From.FirstOrDefault((item) => item.Id == moveRequest.Item);
+            var originalItemLocation = ownerInventoryItems.From?.FirstOrDefault((item) => item.Id == moveRequest.Item);
             if (originalItemLocation is null)
             {
                 // Internal item move but item never existed, possible dupe glitch
@@ -64,9 +64,9 @@ public class InventoryController(
                 return;
             }
 
-            var originalLocationSlotId = originalItemLocation?.SlotId;
+            var originalLocationSlotId = originalItemLocation.SlotId;
 
-            var moveResult = _inventoryHelper.MoveItemInternal(pmcData, ownerInventoryItems.From, moveRequest, out var errorMessage);
+            var moveResult = _inventoryHelper.MoveItemInternal(pmcData, ownerInventoryItems.From ?? [], moveRequest, out var errorMessage);
             if (!moveResult)
             {
                 _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
@@ -74,14 +74,14 @@ public class InventoryController(
             }
 
             // Item is moving into or out of place of fame dogtag slot
-            if (moveRequest.To.Container.StartsWith("dogtag") || originalLocationSlotId.StartsWith("dogtag"))
+            if (moveRequest.To?.Container != null && (moveRequest.To.Container.StartsWith("dogtag") || originalLocationSlotId!.StartsWith("dogtag")))
             {
                 _hideoutHelper.ApplyPlaceOfFameDogtagBonus(pmcData);
             }
         }
         else
         {
-            _inventoryHelper.MoveItemToProfile(ownerInventoryItems.From, ownerInventoryItems.To, moveRequest);
+            _inventoryHelper.MoveItemToProfile(ownerInventoryItems.From ?? [], ownerInventoryItems.To ?? [], moveRequest);
         }
     }
 

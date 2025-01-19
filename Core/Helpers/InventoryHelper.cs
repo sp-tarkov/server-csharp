@@ -248,7 +248,7 @@ public class InventoryHelper(
     /// <returns>OwnerInventoryItems with inventory of player/scav to adjust</returns>
     public OwnerInventoryItems GetOwnerInventoryItems(
         InventoryBaseActionRequestData request,
-        string item,
+        string? item,
         string sessionId)
     {
         var pmcItems = _profileHelper.GetPmcProfile(sessionId).Inventory.Items;
