@@ -36,4 +36,7 @@ public record MiniProfile
 
     [JsonPropertyName("sptData")]
     public Profile.Spt? SptData { get; set; }
+    
+    [JsonPropertyName("hasPassword")]
+    public bool? HasPassword { get; set; }
 }

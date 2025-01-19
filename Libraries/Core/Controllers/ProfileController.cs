@@ -68,6 +68,7 @@ public class ProfileController(
             {
                 Username = profile.ProfileInfo?.Username ?? "",
                 Nickname = "unknown",
+                HasPassword = profile.ProfileInfo.Password != "",
                 Side = "unknown",
                 CurrentLevel = 0,
                 CurrentExperience = 0,
@@ -84,9 +85,10 @@ public class ProfileController(
         {
             Username = profile.ProfileInfo.Username,
             Nickname = pmc.Info.Nickname,
+            HasPassword = profile.ProfileInfo.Password != "",
             Side = pmc.Info.Side,
             CurrentLevel = (int)(pmc.Info.Level),
-            CurrentExperience = (int)(pmc.Info.Experience ?? 0),
+            CurrentExperience = (pmc.Info.Experience ?? 0),
             PreviousExperience = currlvl == 0 ? 0 : _profileHelper.GetExperience((int)currlvl),
             NextLevel = xpToNextLevel,
             MaxLevel = maxLvl,
