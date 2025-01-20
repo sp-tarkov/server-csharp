@@ -89,10 +89,10 @@ public record TemplateSide
 public record ProfileTraderTemplate
 {
     [JsonPropertyName("initialLoyaltyLevel")]
-    public Dictionary<string, int>? InitialLoyaltyLevel { get; set; }
+    public Dictionary<string, int?>? InitialLoyaltyLevel { get; set; }
 
     [JsonPropertyName("initialStanding")]
-    public Dictionary<string, double>? InitialStanding { get; set; }
+    public Dictionary<string, double?>? InitialStanding { get; set; }
 
     [JsonPropertyName("setQuestsAvailableForStart")]
     public bool? SetQuestsAvailableForStart { get; set; }
