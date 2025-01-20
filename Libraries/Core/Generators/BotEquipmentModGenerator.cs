@@ -1483,11 +1483,11 @@ public class BotEquipmentModGenerator(
         ExhaustableArray<string> exhaustableModPool = null;
         var modSlot = "cartridges";
         var camoraFirstSlot = "camora_000";
-        if (itemModPool[modSlot] is not null)
+        if (itemModPool.TryGetValue(modSlot, out var value))
         {
-            exhaustableModPool = CreateExhaustableArray(itemModPool[modSlot]);
+            exhaustableModPool = CreateExhaustableArray(value);
         }
-        else if (itemModPool[camoraFirstSlot] is not null)
+        else if (itemModPool.ContainsKey(camoraFirstSlot))
         {
             modSlot = camoraFirstSlot;
             exhaustableModPool = CreateExhaustableArray(MergeCamoraPools(itemModPool));
@@ -1500,7 +1500,7 @@ public class BotEquipmentModGenerator(
         }
 
         string modTpl = null;
-        bool found = false;
+        var found = false;
         while (exhaustableModPool.HasValues())
         {
             modTpl = exhaustableModPool.GetRandomValue();
@@ -1533,14 +1533,10 @@ public class BotEquipmentModGenerator(
     /// <returns>String array of shells for multiple camora sources</returns>
     public List<string> MergeCamoraPools(Dictionary<string, List<string>> camorasWithShells)
     {
-        var uniqueShells = new HashSet<string>();
-        foreach (var shell in camorasWithShells
-                     .SelectMany(shellKvP => shellKvP.Value))
-        {
-            uniqueShells.Add(shell);
-        }
-
-        return uniqueShells.ToList();
+        return camorasWithShells
+            .SelectMany(shellKvP => shellKvP.Value)
+            .Distinct()
+            .ToList();
     }
 
     /// <summary>
