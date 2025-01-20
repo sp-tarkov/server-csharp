@@ -111,7 +111,7 @@ namespace Core.Servers
             offer.Locked = true;
         }
 
-        public RagfairOffer GetOffer(string offerId) {
+        public RagfairOffer? GetOffer(string offerId) {
             return _ragfairOfferService.GetOfferByOfferId(offerId);
         }
 

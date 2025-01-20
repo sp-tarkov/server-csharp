@@ -744,6 +744,12 @@ public record RagfairInfo
 
     [JsonPropertyName("offers")]
     public List<RagfairOffer>? Offers { get; set; }
+
+    [JsonPropertyName("sellSum")]
+    public double? SellSum { get; set; }
+
+    [JsonPropertyName("notSellSum")]
+    public double? NotSellSum { get; set; }
 }
 
 public record Bonus
