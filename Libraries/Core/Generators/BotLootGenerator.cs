@@ -446,7 +446,7 @@ public class BotLootGenerator(
                 return;
             }
 
-            var weightedItemTpl = _weightedRandomHelper.GetWeightedValue<string>(pool);
+            var weightedItemTpl = _weightedRandomHelper.GetWeightedValue(pool);
             var (key, itemToAddTemplate) = _itemHelper.GetItem(weightedItemTpl);
 
             if (!key)
@@ -456,16 +456,13 @@ public class BotLootGenerator(
                 continue;
             }
 
-            if (itemSpawnLimits is not null)
+            if (itemSpawnLimits is not null && ItemHasReachedSpawnLimit(itemToAddTemplate, botRole, itemSpawnLimits))
             {
-                if (ItemHasReachedSpawnLimit(itemToAddTemplate, botRole, itemSpawnLimits))
-                {
-                    // Remove item from pool to prevent it being picked again
-                    pool.Remove(weightedItemTpl);
+                // Remove item from pool to prevent it being picked again
+                pool.Remove(weightedItemTpl);
 
-                    i--;
-                    continue;
-                }
+                i--;
+                continue;
             }
 
             var newRootItemId = _hashUtil.Generate();
@@ -541,9 +538,9 @@ public class BotLootGenerator(
                 if (fitItemIntoContainerAttempts >= 4)
                 {
                     _logger.Debug(
-                        $"Failed placing item: {i} of: {totalItemCount} items into: {botRole} " +
+                        $"Failed placing item: {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} " +
                         $"containers: {string.Join(",", equipmentSlots)}. Tried: {fitItemIntoContainerAttempts} " +
-                        $"times, reason: {itemAddedResult.ToString()}, skipping"
+                        $"times, reason: {itemAddedResult}, skipping"
                     );
 
                     break;

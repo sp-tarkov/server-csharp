@@ -348,7 +348,7 @@ public class BotWeaponGenerator(
             }
 
             // Iterate over required slots in db item, check mod exists for that slot
-            foreach (var modSlotTemplate in modTemplate.Properties.Slots.Where((slot) => slot.Required ?? false))
+            foreach (var modSlotTemplate in modTemplate.Properties.Slots?.Where((slot) => slot.Required.GetValueOrDefault(false)) ?? [])
             {
                 var slotName = modSlotTemplate.Name;
                 var hasWeaponSlotItem = weaponItemList.Any(
@@ -553,9 +553,7 @@ public class BotWeaponGenerator(
     protected string GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
     {
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
-
-        var cartridgePoolForWeapon = cartridgePool[desiredCaliber];
-        if (cartridgePoolForWeapon is null || cartridgePoolForWeapon?.Count == 0)
+        if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Keys.Count == 0)
         {
             _logger.Debug(
                 _localisationService.GetText(

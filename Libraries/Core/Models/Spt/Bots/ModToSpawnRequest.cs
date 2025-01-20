@@ -38,7 +38,7 @@ public record ModToSpawnRequest
     /// Pool of items to pick from
     /// </summary>
     [JsonPropertyName("itemModPool")]
-    public Dictionary<string, List<string>>? ItemModPool { get; set; }
+    public Dictionary<string, HashSet<string>>? ItemModPool { get; set; }
 
     /// <summary>
     /// List with only weapon tpl in it, ready for mods to be added

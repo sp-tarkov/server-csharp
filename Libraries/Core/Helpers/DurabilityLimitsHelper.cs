@@ -163,6 +163,11 @@ public class DurabilityLimitsHelper(
             return _botConfig.Durability.Default.Weapon.LowestMax;
         }
 
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.LowestMax;
+        }
+
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability);
         return durability.Weapon.LowestMax;
     }
@@ -172,6 +177,11 @@ public class DurabilityLimitsHelper(
         if (botRole is null or "default")
         {
             return _botConfig.Durability.Default.Weapon.HighestMax;
+        }
+
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.HighestMax;
         }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability);
@@ -211,6 +221,11 @@ public class DurabilityLimitsHelper(
             return _botConfig.Durability.Default.Weapon.MinDelta;
         }
 
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.MinDelta;
+        }
+
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
         return value.Weapon.MinDelta;
@@ -221,6 +236,11 @@ public class DurabilityLimitsHelper(
         if (botRole is null or "default")
         {
             return _botConfig.Durability.Default.Weapon.HighestMax;
+        }
+
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.HighestMax;
         }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
@@ -235,6 +255,11 @@ public class DurabilityLimitsHelper(
             return _botConfig.Durability.Default.Armor.MinDelta;
         }
 
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MinDelta;
+        }
+
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
         return value.Armor.MinDelta;
@@ -245,6 +270,11 @@ public class DurabilityLimitsHelper(
         if (botRole is null or "default")
         {
             return _botConfig.Durability.Default.Armor.MaxDelta;
+        }
+
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MaxDelta;
         }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
@@ -259,6 +289,11 @@ public class DurabilityLimitsHelper(
             return _botConfig.Durability.Default.Armor.MinLimitPercent;
         }
 
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MinLimitPercent;
+        }
+
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
         return value.Armor.MinLimitPercent;
@@ -269,6 +304,11 @@ public class DurabilityLimitsHelper(
         if (botRole is null or "default")
         {
             return _botConfig.Durability.Default.Weapon.MinLimitPercent;
+        }
+
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.MinLimitPercent;
         }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
