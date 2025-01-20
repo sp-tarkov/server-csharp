@@ -169,7 +169,7 @@ public class RepeatableQuestController(
         var repeatableQuestDetails = pmcData.RepeatableQuests.FirstOrDefault(
             (repeatable) => repeatable.Name == repeatableConfig.Name
         );
-        if (repeatableQuestDetails is not null)
+        if (repeatableQuestDetails is null)
         {
             // Not in profile, generate
             var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
@@ -382,7 +382,7 @@ public class RepeatableQuestController(
         }
 
         var locationBase = _databaseService.GetLocation(location.ToLower())?.Base;
-        if (locationBase is not null)
+        if (locationBase is null)
         {
             return true;
         }
