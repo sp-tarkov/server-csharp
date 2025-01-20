@@ -21,6 +21,14 @@ namespace SptCommon.Extensions
             }
         }
 
+        /// <summary>
+        /// CARE WHEN USING THIS, THIS IS TO GET PROP ON A TYPE
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="key"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static bool Contains<T>(this object? obj, T key)
         {
             if (obj == null)

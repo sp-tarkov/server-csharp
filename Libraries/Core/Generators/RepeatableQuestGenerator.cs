@@ -130,7 +130,7 @@ public class RepeatableQuestGenerator(
         var maxKillDifficulty = eliminationConfig.MaxKills;
 
         var targetPool = questTypePool.Pool.Elimination;
-        targetsConfig = (ProbabilityObjectArray<Target, string, BossInfo>)targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.Contains(x.Key));
+        targetsConfig = (ProbabilityObjectArray<Target, string, BossInfo>)targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.ContainsKey(x.Key));
         if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.IsBoss.GetValueOrDefault(false)))
         {
             // There are no more targets left for elimination; delete it as a possible quest type

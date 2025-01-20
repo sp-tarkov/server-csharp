@@ -5,7 +5,6 @@ using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using SptCommon.Extensions;
 
 namespace Core.Helpers;
 
@@ -74,7 +73,7 @@ public class AssortHelper(
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
         string assortId)
     {
-        if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.ContainsKey(assortId))
         {
             // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
             return new KeyValuePair<string, List<QuestStatusEnum>>(
@@ -83,7 +82,7 @@ public class AssortHelper(
             );
         }
 
-        if (mergedQuestAssorts.TryGetValue("started", out var dict2) && dict2.Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("success", out var dict2) && dict2.ContainsKey(assortId))
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
                 mergedQuestAssorts["success"][assortId],
@@ -91,7 +90,7 @@ public class AssortHelper(
             );
         }
 
-        if (mergedQuestAssorts.TryGetValue("fail", out var dict3) && dict3.Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("fail", out var dict3) && dict3.ContainsKey(assortId))
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
                 mergedQuestAssorts["fail"][assortId],
@@ -124,7 +123,7 @@ public class AssortHelper(
         // Remove items restricted by loyalty levels above those reached by the player
         foreach (var item in assort.LoyalLevelItems)
         {
-            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] >  info.LoyaltyLevel)
+            if (pmcProfile.TradersInfo.TryGetValue(traderId, out var info) && assort.LoyalLevelItems[item.Key] > info.LoyaltyLevel)
             {
                 strippedAssort = RemoveItemFromAssort(assort, item.Key);
             }
