@@ -153,19 +153,19 @@ public record Props
     public double? RepairSpeed { get; set; }
 
     [JsonPropertyName("ExtraSizeLeft")]
-    public double? ExtraSizeLeft { get; set; }
+    public int? ExtraSizeLeft { get; set; }
 
     [JsonPropertyName("ExtraSizeRight")]
-    public double? ExtraSizeRight { get; set; }
+    public int? ExtraSizeRight { get; set; }
 
     [JsonPropertyName("ExtraSizeUp")]
-    public double? ExtraSizeUp { get; set; }
+    public int? ExtraSizeUp { get; set; }
 
     [JsonPropertyName("FlareTypes")]
     public List<string>? FlareTypes { get; set; }
 
     [JsonPropertyName("ExtraSizeDown")]
-    public double? ExtraSizeDown { get; set; }
+    public int? ExtraSizeDown { get; set; }
 
     [JsonPropertyName("ExtraSizeForceAdd")]
     public bool? ExtraSizeForceAdd { get; set; }
@@ -474,7 +474,7 @@ public record Props
     public bool? Retractable { get; set; }
 
     [JsonPropertyName("SizeReduceRight")]
-    public double? SizeReduceRight { get; set; }
+    public int? SizeReduceRight { get; set; }
 
     [JsonPropertyName("CenterOfImpact")]
     public double? CenterOfImpact { get; set; }
@@ -1512,10 +1512,10 @@ public record GridProps
     public List<GridFilter>? Filters { get; set; }
 
     [JsonPropertyName("cellsH")]
-    public double? CellsH { get; set; }
+    public int? CellsH { get; set; }
 
     [JsonPropertyName("cellsV")]
-    public double? CellsV { get; set; }
+    public int? CellsV { get; set; }
 
     [JsonPropertyName("minCount")]
     public double? MinCount { get; set; }

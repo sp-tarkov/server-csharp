@@ -393,7 +393,7 @@ public class BotInventoryGenerator(
 
         // Roll dice on equipment item
         var shouldSpawn = _randomUtil.GetChance100(spawnChance ?? 0);
-        if (shouldSpawn && !settings.RootEquipmentPool.Any())
+        if (shouldSpawn && settings.RootEquipmentPool.Any())
         {
             var pickedItemDb = new TemplateItem();
             var found = false;
@@ -469,7 +469,8 @@ public class BotInventoryGenerator(
             );
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
-            if (_botConfig.Equipment[settings.BotData.EquipmentRole] is not null &&
+            if (_botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole) &&
+                settings.RandomisationDetails is not null &&
                 settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString()))
             {
                 // Filter out mods from relevant blacklist
@@ -480,7 +481,8 @@ public class BotInventoryGenerator(
             }
 
             // Does item have slots for sub-mods to be inserted into
-            if (pickedItemDb.Properties.Slots.Any() && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
+            if (pickedItemDb.Properties?.Slots?.Count > 0 
+                && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
                     [item],

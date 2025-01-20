@@ -474,13 +474,13 @@ public class BotGeneratorHelper(
             }
 
             // Get container to put item into
-            var container = (inventory.Items ?? []).FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
+            var container = (inventory.Items).FirstOrDefault(item => item.SlotId == equipmentSlotId.ToString());
             if (container is null)
             {
                 missingContainerCount++;
                 if (missingContainerCount == equipmentSlots.Count)
                 {
-                    // Bot doesnt have any containers we want to add item to
+                    // Bot doesn't have any containers we want to add item to
                     _logger.Debug(
                         $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
                     );
