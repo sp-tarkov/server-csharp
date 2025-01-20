@@ -201,7 +201,7 @@ public class BotInventoryGenerator(
                     Inventory = botInventory,
                     BotEquipmentConfig = botEquipConfig,
                     RandomisationDetails = randomistionDetails,
-                    GeneratingPlayerLevel = pmcProfile.Info.Level,
+                    GeneratingPlayerLevel = pmcProfile.Info.Level
                 }
             );
         }
@@ -222,7 +222,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE],
+                GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE, ItemTpl.POCKETS_LARGE],
                 GeneratingPlayerLevel = pmcProfile.Info.Level,
             }
         );
@@ -483,7 +483,7 @@ public class BotInventoryGenerator(
             // Does item have slots for sub-mods to be inserted into
             if (pickedItemDb.Properties?.Slots?.Count > 0 
                 && settings?.GenerateModsBlacklist is not null
-                && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
+                && !settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
                     [item],
@@ -512,17 +512,20 @@ public class BotInventoryGenerator(
     /// <param name="itemTpl">Item mod pool is being retrieved and filtered</param>
     /// <param name="equipmentBlacklist">Blacklist to filter mod pool with</param>
     /// <returns>Filtered pool of mods</returns>
-    public Dictionary<string, List<string>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, List<string>> equipmentBlacklist)
+    public Dictionary<string, HashSet<string>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, List<string>> equipmentBlacklist)
     {
         var modPool = _botEquipmentModPoolService.GetModsForGearSlot(itemTpl);
-        foreach (var modSlot in modPool.Keys ?? Enumerable.Empty<string>())
+        foreach (var modSlot in modPool)
         {
-            var blacklistedMods = equipmentBlacklist[modSlot] ?? [];
-            var filteredMods = modPool[modSlot].Where((slotName) => !blacklistedMods.Contains(slotName));
+            // Get blacklist
+            equipmentBlacklist.TryGetValue(modSlot.Key, out var blacklistedMods);
+
+            // Get mods not on blacklist
+            var filteredMods = modPool[modSlot.Key].Where((slotName) => !(blacklistedMods ?? []).Contains(slotName));
 
             if (filteredMods.Any())
             {
-                modPool[modSlot] = filteredMods.ToList();
+                modPool[modSlot.Key] = filteredMods.ToHashSet();
             }
         }
 

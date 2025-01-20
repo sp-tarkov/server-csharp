@@ -8,7 +8,7 @@ public record FilterPlateModsForSlotByLevelResult
     public Result? Result { get; set; }
 
     [JsonPropertyName("plateModTpls")]
-    public List<string>? PlateModTemplates { get; set; }
+    public HashSet<string>? PlateModTemplates { get; set; }
 }
 
 public enum Result

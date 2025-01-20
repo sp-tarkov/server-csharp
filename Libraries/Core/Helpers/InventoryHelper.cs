@@ -336,7 +336,17 @@ public class InventoryHelper(
     /// <returns>Two-dimensional representation of container</returns>
     protected int[][] GetBlankContainerMap(int containerH, int containerY)
     {
-        return Enumerable.Repeat(Enumerable.Repeat(0, containerH).ToArray(), containerY).ToArray();
+        //var x = new int[containerY][];
+        //for (int i = 0; i < containerY; i++)
+        //{
+        //    x[i] = new int[containerH];
+        //}
+
+        //return x;
+
+        return Enumerable.Range(0, containerY)
+            .Select(i => new int[containerH])
+            .ToArray();
     }
 
     /// <summary>
@@ -395,12 +405,12 @@ public class InventoryHelper(
                     }
 
                     // Fill the corresponding cells in the container map to show the slot is taken
-                    Array.Fill(containerRow, 1, itemLocation.X.Value, fillTo.Value);
+                    Array.Fill(containerRow, 1, itemLocation.X.Value, fW);
                 } catch (Exception ex) {
                     _logger.Error(
                         _localisationService.GetText("inventory-unable_to_fill_container", new {
                             id = item.Id,
-                            error = ex.Message
+                            error = $"{ex.Message} {ex.StackTrace}"
                         })
                     );
                 }

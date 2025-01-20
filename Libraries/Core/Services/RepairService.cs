@@ -6,6 +6,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Utils;
 
 namespace Core.Services;
@@ -13,13 +14,16 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RepairService
 {
+    private readonly ISptLogger<RepairService> _logger;
     private readonly RandomUtil _randomUtil;
     private readonly WeightedRandomHelper _weightedRandomHelper;
 
     public RepairService(
+        ISptLogger<RepairService> _logger,
         RandomUtil randomUtil,
         WeightedRandomHelper weightedRandomHelper)
     {
+        this._logger = _logger;
         _randomUtil = randomUtil;
         _weightedRandomHelper = weightedRandomHelper;
     }
@@ -165,10 +169,26 @@ public class RepairService
     /// Add random buff to item
     /// </summary>
     /// <param name="itemConfig">weapon/armor config</param>
-    /// <param name="repairDetails">Details for item to repair</param>
-    public void AddBuff(Core.Models.Spt.Config.BonusSettings itemConfig, Item item)
+    /// <param name="item">Item to repair</param>
+    public void AddBuff(Models.Spt.Config.BonusSettings itemConfig, Item item)
     {
-        throw new NotImplementedException();
+        _logger.Error("NOT IMPLEMENTED - AddBuff");
+        //var bonusRarity = _weightedRandomHelper.GetWeightedValue<string>(itemConfig.RarityWeight);
+        //var bonusType = _weightedRandomHelper.GetWeightedValue<string>(itemConfig.BonusTypeWeight);
+
+        //var bonusValues = itemConfig[bonusRarity][bonusType].valuesMinMax;
+        //var bonusValue = _randomUtil.GetFloat(bonusValues.min, bonusValues.max);
+
+        //var bonusThresholdPercents = itemConfig[bonusRarity][bonusType].activeDurabilityPercentMinMax;
+        //var bonusThresholdPercent = _randomUtil.GetInt(bonusThresholdPercents.min, bonusThresholdPercents.max);
+
+        //item.Upd.Buff = new UpdBuff {
+        //    Rarity = bonusRarity,
+        //    BuffType = bonusType,
+        //    Value = bonusValue,
+        //    ThresholdDurability = _randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability, 2).toFixed(2),
+        //    )
+        //};
     }
 
     /// <summary>

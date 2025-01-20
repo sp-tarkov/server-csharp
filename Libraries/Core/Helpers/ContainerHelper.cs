@@ -28,44 +28,48 @@ public class ContainerHelper
             return new FindSlotResult(false);
         }
 
-        // Down
+        // Down = y
         for (var y = 0; y < limitY; y++)
         {
-            // Across
+            
             if (container2D[y].All((x) => x == 1))
             {
                 // Every item in row is full, skip row
                 continue;
             }
 
+            // Try each slot on the row (across = x)
             for (var x = 0; x < limitX; x++)
             {
                 var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
+                if (foundSlot)
+                {
+                    return new FindSlotResult(true, x, y, rotation);
+                }
 
                 // Failed to find slot, rotate item and try again
-                if (!foundSlot && itemWidth * itemHeight > 1)
+                if (!foundSlot && ItemBiggerThan1X1(itemWidth, itemHeight))
                 {
-                    // Bigger than 1x1
+                    // Bigger than 1x1, try rotating
                     foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth); // Height/Width swapped
                     if (foundSlot)
                     {
                         // Found a slot for it when rotated
                         rotation = true;
+
+                        return new FindSlotResult(true, x, y, rotation);
                     }
                 }
-
-                if (!foundSlot)
-                {
-                    // Didn't fit this hole, try again
-                    continue;
-                }
-
-                return new FindSlotResult(true, x, y, rotation);
             }
         }
 
         // Tried all possible holes, nothing big enough for the item
         return new FindSlotResult(false);
+    }
+
+    private bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
+    {
+        return itemWidth * itemHeight > 1;
     }
 
     /// <summary>

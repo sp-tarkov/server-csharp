@@ -582,7 +582,7 @@ public class BotGeneratorHelper(
                         {
                             parentItem.ParentId = container.Id;
                             parentItem.SlotId = slotGrid.Name;
-                            parentItem.Location = new ItemLocation()
+                            parentItem.Location = new ItemLocation
                                 {
                                     X = findSlotResult.X,
                                     Y = findSlotResult.Y,

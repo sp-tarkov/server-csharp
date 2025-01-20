@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -31,7 +31,7 @@ public class ExternalInventoryMagGen(
 
     public void Process(InventoryMagGen inventoryMagGen)
     {
-        // Cout of attempts to fit a magazine into bot inventory
+        // Count of attempts to fit a magazine into bot inventory
         var fitAttempts = 0;
 
         // Magazine Db template
@@ -41,6 +41,7 @@ public class ExternalInventoryMagGen(
         List<string> attemptedMagBlacklist = [];
         var defaultMagazineTpl = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weapon);
         var randomizedMagazineCount = _botWeaponGeneratorHelper.GetRandomizedMagazineCount(inventoryMagGen.GetMagCount());
+        var isShotgun = _itemHelper.IsOfBaseclass(weapon.Id, BaseClasses.SHOTGUN);
         for (var i = 0; i < randomizedMagazineCount; i++)
         {
             var magazineWithAmmo = _botWeaponGeneratorHelper.CreateMagazineWithAmmo(
@@ -99,16 +100,23 @@ public class ExternalInventoryMagGen(
                     break;
                 }
 
-                // Edge case - some weapons (SKS) have an internal magazine as default, choose random non-internal magazine to add to bot instead
+                // Edge case - some weapons (SKS + shotguns) have an internal magazine as default, choose random non-internal magazine to add to bot instead
                 if (magTemplate.Properties.ReloadMagType == "InternalMagazine")
                 {
                     var result = GetRandomExternalMagazineForInternalMagazineGun(
                         inventoryMagGen.GetWeaponTemplate().Id,
                         attemptedMagBlacklist
                     );
+
                     if (result?.Id is null)
                     {
-                        _logger.Debug($"Unable to add additional magazine into bot inventory for weapon: {weapon.Name}, attempted: {fitAttempts} times");
+                        // Highly likely shotgun has no external mags
+                        if (isShotgun)
+                        {
+                            break;
+                        }
+
+                        _logger.Debug($"Unable to add additional magazine into bot inventory: vest/pockets for weapon: {weapon.Name}, attempted: {fitAttempts} times. Reason: {fitsIntoInventory}");
 
                         break;
                     }
