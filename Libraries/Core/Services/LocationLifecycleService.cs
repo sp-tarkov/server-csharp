@@ -1,13 +1,26 @@
-﻿using SptCommon.Annotations;
+using Core.Helpers;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Match;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocationLifecycleService
 {
+    private readonly ISptLogger<LocationLifecycleService> _logger;
+    private readonly RewardHelper _rewardHelper;
+
+    public LocationLifecycleService(
+        ISptLogger<LocationLifecycleService> logger,
+        RewardHelper rewardHelper)
+    {
+        _logger = logger;
+        _rewardHelper = rewardHelper;
+    }
+
     /** Handle client/match/local/start */
     public void StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
     {

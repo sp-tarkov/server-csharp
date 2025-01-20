@@ -559,17 +559,6 @@ public class ProfileHelper(
         return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime) ?? false;
     }
 
-    /// <summary>
-    /// Add an achievement to player profile
-    /// </summary>
-    /// <param name="pmcProfile">Profile to add achievement to</param>
-    /// <param name="achievementId">Id of achievement to add</param>
-    public void AddAchievementToProfile(SptProfile pmcProfile, string achievementId)
-    {
-        pmcProfile.CharacterData.PmcData.Achievements[achievementId] = _timeUtil.GetTimeStamp();
-        // TODO: finish off implementation
-    }
-
     protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)

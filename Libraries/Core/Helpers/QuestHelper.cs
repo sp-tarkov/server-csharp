@@ -27,6 +27,7 @@ public class QuestHelper(
     LocaleService _localeService,
     ProfileHelper _profileHelper,
     QuestRewardHelper _questRewardHelper,
+    RewardHelper _rewardHelper,
     LocalisationService _localisationService,
     SeasonalEventService _seasonalEventService,
     TraderHelper _traderHelper,

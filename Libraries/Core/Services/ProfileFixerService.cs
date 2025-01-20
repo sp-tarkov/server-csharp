@@ -18,7 +18,7 @@ public class ProfileFixerService(
     HashUtil _hashUtil,
     JsonUtil _jsonUtil,
     ItemHelper _itemHelper,
-    QuestRewardHelper _questRewardHelper,
+    RewardHelper _rewardHelper,
     TraderHelper _traderHelper,
     HideoutHelper _hideoutHelper,
     DatabaseService _databaseService,
@@ -369,9 +369,9 @@ public class ProfileFixerService(
     /// <param name="questDetails">The quest the reward belongs to</param>
     protected void VerifyQuestProductionUnlock(PmcData pmcProfile, Reward productionUnlockReward, Quest questDetails)
     {
-        var matchingProductions = _questRewardHelper.GetRewardProductionMatch(
+        var matchingProductions = _rewardHelper.GetRewardProductionMatch(
             productionUnlockReward,
-            questDetails
+            questDetails.Id
         );
 
         if (matchingProductions.Count != 1)

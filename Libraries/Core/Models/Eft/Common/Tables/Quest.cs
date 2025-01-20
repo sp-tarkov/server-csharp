@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using SptCommon.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -492,4 +493,17 @@ public record QuestRewards
 
     [JsonPropertyName("Expired")]
     public List<Reward>? Expired { get; set; }
+
+    public List<Reward> this[string propName]
+    {
+        get
+        {
+            var matchingProp = GetType()
+                .GetProperties()
+                .SingleOrDefault(p => p.GetJsonName() == propName)
+                ?.GetValue(this);
+
+            return (List<Reward>)matchingProp;
+        }
+    }
 }
