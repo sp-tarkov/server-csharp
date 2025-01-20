@@ -1,4 +1,4 @@
-﻿using Core.Models.Common;
+using Core.Models.Common;
 
 namespace Core.Models.Spt.Config;
 
@@ -136,7 +136,7 @@ public record Dynamic
 
     [JsonPropertyName("itemPriceMultiplier")]
     /** A multipler to apply to individual tpls price just prior to item quality adjustment */
-    public Dictionary<string, double> ItemPriceMultiplier { get; set; }
+    public Dictionary<string, double>? ItemPriceMultiplier { get; set; }
 
     [JsonPropertyName("_currencies")]
     public string? CurrenciesDescription { get; set; }

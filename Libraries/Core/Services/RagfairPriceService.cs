@@ -5,6 +5,9 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Ragfair;
 using Core.Models.Utils;
+using Core.Models.Enums;
+using System;
+using Core.Servers;
 
 namespace Core.Services;
 
@@ -12,9 +15,15 @@ namespace Core.Services;
 public class RagfairPriceService(
     ISptLogger<RagfairPriceService> _logger,
     HandbookHelper _handbookHelper,
-    DatabaseService _databaseService
+    TraderHelper _traderHelper,
+    PresetHelper _presetHelper,
+    ItemHelper _itemHelper,
+    DatabaseService _databaseService,
+    ConfigServer _configServer
 )
 {
+    RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+
     protected RagfairServerPrices _prices = new RagfairServerPrices
         { StaticPrices = new Dictionary<string, double>(), DynamicPrices = new Dictionary<string, double>() };
 
@@ -152,7 +161,80 @@ public class RagfairPriceService(
     /// <returns></returns>
     public double GetDynamicItemPrice(string itemTemplateId, string desiredCurrency, Item item = null, List<Item> offerItems = null, bool? isPackOffer = null)
     {
-        throw new NotImplementedException();
+        var isPreset = false;
+        var price = GetFleaPriceForItem(itemTemplateId);
+
+        // Adjust price if below handbook price, based on config.
+        if (_ragfairConfig.Dynamic.OfferAdjustment.AdjustPriceWhenBelowHandbookPrice)
+        {
+            price = AdjustPriceIfBelowHandbook(price, itemTemplateId);
+        }
+
+        // Use trader price if higher, based on config.
+        if (_ragfairConfig.Dynamic.UseTraderPriceForOffersIfHigher)
+        {
+            var traderPrice = _traderHelper.GetHighestSellToTraderPrice(itemTemplateId);
+            if (traderPrice > price)
+            {
+                price = traderPrice;
+            }
+        }
+
+        // Prices for weapon presets are handled differently.
+        if (
+            item?.Upd?.SptPresetId is not null &&
+            offerItems is not null &&
+            _presetHelper.IsPresetBaseClass(item.Upd.SptPresetId, BaseClasses.WEAPON)
+        )
+        {
+            price = GetWeaponPresetPrice(item, offerItems, price);
+            isPreset = true;
+        }
+
+        // Check for existence of manual price adjustment multiplier
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(itemTemplateId, out var multiplier))
+        {
+            price *= multiplier;
+        }
+
+        // The quality of the item affects the price + not on the ignore list
+        if (item is not null && !_ragfairConfig.Dynamic.IgnoreQualityPriceVarianceBlacklist.Contains(itemTemplateId))
+        {
+            var qualityModifier = _itemHelper.GetItemQualityModifier(item);
+            price *= qualityModifier;
+        }
+
+        // Make adjustments for unreasonably priced items.
+        foreach (var (key, value) in _ragfairConfig.Dynamic.UnreasonableModPrices)
+        {
+            if (!_itemHelper.IsOfBaseclass(itemTemplateId, key) || !value.Enabled)
+            {
+                continue;
+            }
+
+            price = AdjustUnreasonablePrice(
+                _databaseService.GetHandbook().Items,
+                value,
+                itemTemplateId,
+                price);
+        }
+
+        // Vary the price based on the type of offer.
+        var range = GetOfferTypeRangeValues(isPreset, isPackOffer ?? false);
+        price = RandomiseOfferPrice(price, range);
+
+        // Convert to different currency if required.
+        var roublesId = Money.ROUBLES;
+        if (desiredCurrency != roublesId)
+        {
+            price = _handbookHelper.FromRUB(price, desiredCurrency);
+        }
+
+        if (price < 1)
+        {
+            return 1;
+        }
+        return price;
     }
 
     /// <summary>
@@ -163,11 +245,11 @@ public class RagfairPriceService(
     /// <param name="itemTpl">Item being adjusted</param>
     /// <param name="price">Current price of item</param>
     /// <returns>Adjusted price of item</returns>
-    protected decimal AdjustUnreasonablePrice(
+    protected double AdjustUnreasonablePrice(
         List<HandbookItem> handbookPrices,
         UnreasonableModPrices unreasonableItemChange,
         string itemTpl,
-        decimal price)
+        double price)
     {
         throw new NotImplementedException();
     }
@@ -189,7 +271,7 @@ public class RagfairPriceService(
     /// <param name="itemPrice">price of item</param>
     /// <param name="itemTpl">item template Id being checked</param>
     /// <returns>adjusted price value in roubles</returns>
-    protected decimal AdjustPriceIfBelowHandbook(decimal itemPrice, string itemTpl)
+    protected double AdjustPriceIfBelowHandbook(double itemPrice, string itemTpl)
     {
         throw new NotImplementedException();
     }
@@ -200,7 +282,7 @@ public class RagfairPriceService(
     /// <param name="existingPrice">price to alter</param>
     /// <param name="rangeValues">min and max to adjust price by</param>
     /// <returns>multiplied price</returns>
-    protected decimal RandomiseOfferPrice(decimal existingPrice, MinMax rangeValues)
+    protected double RandomiseOfferPrice(double existingPrice, MinMax rangeValues)
     {
         throw new NotImplementedException();
     }
@@ -212,7 +294,7 @@ public class RagfairPriceService(
     /// <param name="weaponWithChildren">weapon plus mods</param>
     /// <param name="existingPrice">price of existing base weapon</param>
     /// <returns>price of weapon in roubles</returns>
-    protected decimal GetWeaponPresetPrice(Item weaponRootItem, List<Item> weaponWithChildren, decimal existingPrice)
+    protected double GetWeaponPresetPrice(Item weaponRootItem, List<Item> weaponWithChildren, double existingPrice)
     {
         throw new NotImplementedException();
     }

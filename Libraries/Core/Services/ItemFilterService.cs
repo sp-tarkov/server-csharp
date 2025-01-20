@@ -14,8 +14,10 @@ public class ItemFilterService(
     ConfigServer _configServer
 )
 {
-    protected HashSet<string> _lootableItemBlacklistCache = [];
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
+
+    protected HashSet<string>? _lootableItemBlacklistCache;
+    protected HashSet<string>? _itemBlacklistCache;
 
     /**
      * Check if the provided template id is blacklisted in config/item.json/blacklist
@@ -104,12 +106,9 @@ public class ItemFilterService(
 
     public bool IsLootableItemBlacklisted(string itemKey)
     {
-        if (_lootableItemBlacklistCache.Count == 0)
+        if (_lootableItemBlacklistCache is null)
         {
-            foreach (var item in _itemConfig.LootableItemBlacklist)
-            {
-                _lootableItemBlacklistCache.Add(item);
-            }
+            HydrateLootableItemBlacklist();
         }
 
         return _lootableItemBlacklistCache.Contains(itemKey);
@@ -117,6 +116,27 @@ public class ItemFilterService(
 
     public bool IsItemBlacklisted(string tpl)
     {
-        throw new NotImplementedException();
+        if (_itemBlacklistCache is null)
+        {
+            HydrateBlacklist();
+        }
+
+        return _itemBlacklistCache.Contains(tpl);
+    }
+
+    protected void HydrateLootableItemBlacklist()
+    {
+        foreach (var item in _itemConfig.LootableItemBlacklist)
+        {
+            _lootableItemBlacklistCache.Add(item);
+        }
+    }
+
+    protected void HydrateBlacklist()
+    {
+        _itemBlacklistCache = [];
+        foreach (var item in _itemConfig.Blacklist) {
+            _itemBlacklistCache.Add(item);
+        }
     }
 }
