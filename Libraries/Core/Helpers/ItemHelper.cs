@@ -406,7 +406,7 @@ public class ItemHelper(
         var staticPrice = GetStaticItemPrice(tpl);
         var dynamicPrice = GetDynamicItemPrice(tpl);
 
-        return Math.Max(staticPrice ?? 0, dynamicPrice);
+        return Math.Max(staticPrice ?? 0d, dynamicPrice ?? 0d);
     }
 
     /// <summary>
@@ -430,9 +430,14 @@ public class ItemHelper(
     /// </summary>
     /// <param name="tpl">Items tpl id to look up price</param>
     /// <returns>Price in roubles (undefined if not found)</returns>
-    public double GetDynamicItemPrice(string tpl)
+    public double? GetDynamicItemPrice(string tpl)
     {
-        return _databaseService.GetPrices()[tpl];
+        if (_databaseService.GetPrices().TryGetValue(tpl, out var price))
+        {
+            return price;
+        }
+
+        return null;
     }
 
     /// <summary>

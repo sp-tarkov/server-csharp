@@ -70,7 +70,7 @@ public class RagfairPriceService(
     public double GetFleaPriceForItem(string tplId)
     {
         // Get dynamic price (templates/prices), if that doesnt exist get price from static array (templates/handbook)
-        var itemPrice = GetDynamicPriceForItem(tplId) ?? GetStaticPriceForItem(tplId);
+        var itemPrice = _itemHelper.GetDynamicItemPrice(tplId) ?? GetStaticPriceForItem(tplId);
         if (itemPrice is null)
         {
             var itemFromDb = _itemHelper.GetItem(tplId);
@@ -96,16 +96,6 @@ public class RagfairPriceService(
     public double GetFleaPriceForOfferItems(List<Item> offerItems)
     {
         throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// get the dynamic (flea) price for an item
-    /// </summary>
-    /// <param name="itemTpl">item template id to look up</param>
-    /// <returns>price in roubles</returns>
-    public double? GetDynamicPriceForItem(string itemTpl)
-    {
-        return _databaseService.GetPrices()[itemTpl]; ;
     }
 
     /// <summary>

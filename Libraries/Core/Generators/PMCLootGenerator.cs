@@ -59,6 +59,7 @@ public class PMCLootGenerator
         // Hydrate loot dictionary if empty
         if (_pocketLootPool is null)
         {
+            _pocketLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.Pockets;
@@ -138,6 +139,7 @@ public class PMCLootGenerator
         // Hydrate loot dictionary if empty
         if (_vestLootPool is null)
         {
+            _vestLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.TacticalVest;
@@ -219,6 +221,7 @@ public class PMCLootGenerator
         // Hydrate loot dictionary if empty
         if (_backpackLootPool is null)
         {
+            _backpackLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.Backpack;

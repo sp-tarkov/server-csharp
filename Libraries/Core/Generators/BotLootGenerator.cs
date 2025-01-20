@@ -793,10 +793,9 @@ public class BotLootGenerator(
     public void RandomiseMoneyStackSize(string botRole, TemplateItem itemTemplate, Item moneyItem)
     {
         // Get all currency weights for this bot type
-        var currencyWeights = _botConfig.CurrencyStackSize[botRole];
-        if (currencyWeights is null)
+        if (!_botConfig.CurrencyStackSize.TryGetValue(botRole, out var currencyWeights))
         {
-            currencyWeights = new();
+            currencyWeights = _botConfig.CurrencyStackSize["default"];
         }
 
         var currencyWeight = currencyWeights[moneyItem.Template];

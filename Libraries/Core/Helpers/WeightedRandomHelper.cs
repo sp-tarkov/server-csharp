@@ -89,16 +89,59 @@ public class WeightedRandomHelper(
     /// <param name="weightedDict">Values to reduce</param>
     public void ReduceWeightValues(Dictionary<string, double> weightedDict)
     {
-        throw new NotImplementedException();
+        // No values, nothing to reduce
+        if (weightedDict.Count == 0)
+        {
+            return;
+        }
+
+        // Only one value, set to 1 and exit
+        if (weightedDict.Count == 1)
+        {
+            var kvp = weightedDict.FirstOrDefault();
+            weightedDict[kvp.Key] = 1;
+
+            return;
+        }
+
+        var weights = weightedDict.Values.ToList();
+        var commonDivisor = CommonDivisor(weights);
+
+        // No point in dividing by  1
+        if (commonDivisor == 1)
+        {
+            return;
+        }
+
+        foreach (var kvp in weightedDict) {
+            weightedDict[kvp.Key] /= commonDivisor;
+        }
     }
 
+    /**
+     * Get the common divisor between all values in the passed in list and returns it
+     */
     protected double CommonDivisor(List<double> numbers)
     {
-        throw new NotImplementedException();
+        var result = numbers[0];
+        for (var i = 1; i < numbers.Count; i++)
+        {
+            result = Gcd(result, numbers[i]);
+        }
+
+        return result;
     }
 
     protected double Gcd(double a, double b)
     {
-        throw new NotImplementedException();
+        var x = a;
+        var y = b;
+        while (y != 0)
+        {
+            var temp = y;
+            y = x % y;
+            x = temp;
+        }
+        return x;
     }
 }
