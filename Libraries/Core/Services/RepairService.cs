@@ -1,16 +1,29 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
 using Core.Models.Enums;
+using Core.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RepairService
 {
+    private readonly RandomUtil _randomUtil;
+    private readonly WeightedRandomHelper _weightedRandomHelper;
+
+    public RepairService(
+        RandomUtil randomUtil,
+        WeightedRandomHelper weightedRandomHelper)
+    {
+        _randomUtil = randomUtil;
+        _weightedRandomHelper = weightedRandomHelper;
+    }
+
     /// <summary>
     /// Use trader to repair an items durability
     /// </summary>

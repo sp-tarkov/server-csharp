@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
+using SptCommon.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
 
@@ -57,6 +58,19 @@ public record Appearance
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, double>? Voice { get; set; }
+
+    public Dictionary<string, double> this[string propName]
+    {
+        get
+        {
+            var matchingProp = GetType()
+                .GetProperties()
+                .SingleOrDefault(p => p.GetJsonName() == propName)
+                ?.GetValue(this);
+
+            return (Dictionary<string, double>)matchingProp;
+        }
+    }
 }
 
 public record Chances

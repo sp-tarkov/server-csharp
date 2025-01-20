@@ -71,7 +71,7 @@ public class ItemFilterService(
      */
     public List<string> GetBlacklistedItems()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_itemConfig.Blacklist);
     }
 
     /**

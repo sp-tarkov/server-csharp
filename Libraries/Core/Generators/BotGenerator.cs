@@ -668,8 +668,8 @@ public class BotGenerator(
                     // Common skills have additional props
                     if (isCommonSkills)
                     {
-                        ((Common)skillToAdd).PointsEarnedDuringSession = 0;
-                        ((Common)skillToAdd).LastAccess = 0;
+                        skillToAdd.PointsEarnedDuringSession = 0;
+                        skillToAdd.LastAccess = 0;
                     }
 
                     return skillToAdd;

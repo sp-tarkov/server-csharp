@@ -1,18 +1,144 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Utils;
+using Core.Helpers;
+using Core.Servers;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using System.Collections.Generic;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentModPoolService
 {
+    protected ISptLogger<BotEquipmentModPoolService> _logger;
+    protected ItemHelper _itemHelper;
+    protected DatabaseService _databaseService;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+
+    protected bool _weaponPoolGenerated = false;
+    protected Dictionary<string, Dictionary<string, HashSet<string>>> _weaponModPool;
+    protected Dictionary<string, Dictionary<string, HashSet<string>>> _gearModPool;
+    protected BotConfig _botConfig;
+
+    public BotEquipmentModPoolService(
+        ISptLogger<BotEquipmentModPoolService> logger,
+        ItemHelper itemHelper,
+        DatabaseService databaseService,
+        LocalisationService localisationService,
+    ConfigServer configServer
+        )
+    {
+        _logger = logger;
+        _itemHelper = itemHelper;
+        _databaseService = databaseService;
+        _localisationService = localisationService;
+        _configServer = configServer;
+        _botConfig = _configServer.GetConfig<BotConfig>();
+
+        _weaponModPool = new Dictionary<string, Dictionary<string, HashSet<string>>>();
+        _gearModPool = new Dictionary<string, Dictionary<string, HashSet<string>>>();
+    }
+
     /**
      * Store dictionary of mods for each item passed in
      * @param items items to find related mods and store in modPool
      */
-    protected void GeneratePool(List<TemplateItem> items, string poolType)
+    protected void GeneratePool(IEnumerable<TemplateItem>? items, string poolType)
     {
-        throw new NotImplementedException();
+        if (items is null)
+        {
+            _logger.Error(_localisationService.GetText("bot-unable_to_generate_item_pool_no_items", poolType));
+
+            return;
+        }
+
+        // Get weapon or gear pool
+        var pool = poolType == "weapon" ? _weaponModPool : _gearModPool;
+        foreach (var item in items) {
+            if (item.Properties is null)
+            {
+                _logger.Error(_localisationService.GetText("bot-item_missing_props_property", new {
+                    itemTpl = item.Id,
+                    name = item.Name,
+                }));
+
+                continue;
+            }
+
+            // Skip item without slots
+            if (item.Properties.Slots is null || item.Properties.Slots.Count == 0)
+            {
+                continue;
+            }
+
+            // Add base item (weapon/armor) to pool
+            if (!pool.ContainsKey(item.Id))
+            {
+                pool[item.Id] = new Dictionary<string, HashSet<string>>();
+            }
+
+            // iterate over each items mod slots e.g. mod_muzzle
+            foreach (var slot in item.Properties.Slots) {
+                // Get mods that fit into the current mod slot
+                var itemsThatFit = slot.Props.Filters.FirstOrDefault().Filter;
+
+                // Get weapon/armor pool to add mod slots + mod tpls to
+                
+                foreach (var itemToAddTpl in itemsThatFit)
+                {
+                    if (!pool[item.Id].ContainsKey(slot.Name))
+                    {
+                        // Ensure Mod slot key + blank dict value exist
+                        pool[item.Id][slot.Name] = new();
+                    }
+
+                    if (!pool[item.Id][slot.Name].Contains(itemToAddTpl))
+                    {
+                        // Add tpl to list keyed by mod slot
+                        pool[item.Id][slot.Name].Add(itemToAddTpl);
+                    }
+
+                    var subItemDetails = _itemHelper.GetItem(itemToAddTpl).Value;
+                    var hasSubItemsToAdd = (subItemDetails?.Properties?.Slots?.Count ?? 0) > 0;
+                    if (hasSubItemsToAdd && !pool.ContainsKey(subItemDetails.Id))
+                    {
+                        // Recursive call
+                        GeneratePool([subItemDetails], poolType);
+                    }
+                }
+            }
+
+            //foreach (var slot in item.Properties.Slots)
+            //{
+            //    var itemsThatFit = slot.Props.Filters[0].Filter;
+            //    foreach (var itemToAddTpl in itemsThatFit)
+            //    {
+            //        // Ensure key/value exists
+            //        pool.TryAdd(slot.Name, new Dictionary<string, List<string>>());
+            //        pool.TryGetValue(item.Id, out var poolToAddTo);
+            //        poolToAddTo ??= new Dictionary<string, List<string>>();
+
+            //        // only add item to pool if it doesn't already exist
+            //        poolToAddTo.TryAdd(slot.Name, []);
+            //        if (!poolToAddTo[slot.Name].Any(x => x == itemToAddTpl))
+            //        {
+            //            poolToAddTo[slot.Name].Add(itemToAddTpl);
+
+            //            // Check item added into array for slots, need to iterate over those
+            //            var subItemDetails = _itemHelper.GetItem(itemToAddTpl).Value;
+            //            var hasSubItemsToAdd = (subItemDetails?.Properties?.Slots?.Count ?? 0) > 0;
+            //            if (hasSubItemsToAdd && !pool.ContainsKey(subItemDetails.Id))
+            //            {
+            //                // Recursive call
+            //                GeneratePool([subItemDetails], poolType);
+            //            }
+            //        }
+            //    }
+            //}
+        }
     }
 
     /**
@@ -31,7 +157,13 @@ public class BotEquipmentModPoolService
      */
     public List<string> GetCompatibleModsForWeaponSlot(string itemTpl, string slotName)
     {
-        throw new NotImplementedException();
+        if (!_weaponPoolGenerated)
+        {
+            // Get every weapon in db and generate mod pool
+            GenerateWeaponPool();
+        }
+
+        return _weaponModPool[itemTpl][slotName].ToList();
     }
 
     /**
@@ -70,7 +202,12 @@ public class BotEquipmentModPoolService
      */
     protected void GenerateWeaponPool()
     {
-        throw new NotImplementedException();
+        var weapons = _databaseService.GetItems().Values.Where(
+            (item) => item.Type == "Item" && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON));
+        GeneratePool(weapons, "weapon");
+
+        // Flag pool as being complete
+        _weaponPoolGenerated = true;
     }
 
     /**

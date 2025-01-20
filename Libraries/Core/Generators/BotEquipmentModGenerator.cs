@@ -860,7 +860,7 @@ public class BotEquipmentModGenerator(
             request.RandomisationSettings.MinimumMagazineSize is not null
         )
         {
-            modPool = GetFilterdMagazinePoolByCapacity(request, modPool);
+            modPool = GetFilterdMagazinePoolByCapacity(request, modPool).ToList();
         }
 
         // Pick random mod that's compatible
@@ -919,9 +919,24 @@ public class BotEquipmentModGenerator(
     /// <param name="modPool">Pool of magazine tpls to filter</param>
     /// <returns>Filtered pool of magazine tpls</returns>
     /// <exception cref="NotImplementedException"></exception>
-    public List<string> GetFilterdMagazinePoolByCapacity(ModToSpawnRequest modSpawnRequest, List<string> modPool)
+    public IEnumerable<string> GetFilterdMagazinePoolByCapacity(ModToSpawnRequest modSpawnRequest, List<string> modPool)
     {
-        throw new NotImplementedException();
+        var weaponTpl = modSpawnRequest.Weapon[0].Template;
+        modSpawnRequest.RandomisationSettings.MinimumMagazineSize.TryGetValue(weaponTpl, out var minMagSizeFromSettings);
+        var minMagazineSize = minMagSizeFromSettings;
+        var desiredMagazineTpls = modPool.Where((magTpl) => {
+            var magazineDb = _itemHelper.GetItem(magTpl).Value;
+            return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagazineSize;
+        });
+
+        if (!desiredMagazineTpls.Any())
+        {
+            _logger.Warning("Magazine size filter for ${ weaponTpl} was too strict, ignoring filter");
+
+            return modPool;
+        }
+
+        return desiredMagazineTpls;
     }
 
     /// <summary>
@@ -1420,7 +1435,8 @@ public class BotEquipmentModGenerator(
         var result = new List<string>();
 
         // Get item blacklist and mod equipment blacklist as one array
-        var blacklist = _itemFilterService.GetBlacklistedItems().Concat(botEquipBlacklist.Equipment[modSlot]);
+        botEquipBlacklist.Equipment.TryGetValue(modSlot, out var equipmentBlacklistValues);
+        var blacklist = _itemFilterService.GetBlacklistedItems().Concat(equipmentBlacklistValues ?? []);
         result = allowedMods.Where((tpl) => !blacklist.Contains(tpl)).ToList();
 
         return result;
