@@ -12,7 +12,7 @@ namespace Core.Servers;
 
 [Injectable(InjectionType.Singleton)]
 public class SaveServer(
-    FileUtil _vfs,
+    FileUtil _fileUtil,
     IEnumerable<SaveLoadRouter> _saveLoadRouters,
     JsonUtil _jsonUtil,
     HashUtil _hashUtil,
@@ -55,18 +55,18 @@ public class SaveServer(
     public void Load()
     {
         // get files to load
-        if (!_vfs.DirectoryExists(profileFilepath))
+        if (!_fileUtil.DirectoryExists(profileFilepath))
         {
-            _vfs.CreateDirectory(profileFilepath);
+            _fileUtil.CreateDirectory(profileFilepath);
         }
 
-        var files = _vfs.GetFiles(profileFilepath).Where((item) => _vfs.GetFileExtension(item) == "json");
+        var files = _fileUtil.GetFiles(profileFilepath).Where((item) => _fileUtil.GetFileExtension(item) == "json");
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
         foreach (var file in files)
         {
-            LoadProfile(_vfs.StripExtension(file));
+            LoadProfile(_fileUtil.StripExtension(file));
         }
 
         stopwatch.Stop();
@@ -177,10 +177,10 @@ public class SaveServer(
     {
         var filename = $"{sessionID}.json";
         var filePath = $"{profileFilepath}{filename}";
-        if (_vfs.FileExists(filePath))
+        if (_fileUtil.FileExists(filePath))
         {
             // File found, store in profiles[]
-            profiles[sessionID] = _jsonUtil.Deserialize<SptProfile>(_vfs.ReadFile(filePath));
+            profiles[sessionID] = _jsonUtil.Deserialize<SptProfile>(_fileUtil.ReadFile(filePath));
         }
 
         // Run callbacks
@@ -223,7 +223,7 @@ public class SaveServer(
         {
             saveMd5[sessionID] = fmd5;
             // save profile to disk
-            _vfs.WriteFile(filePath, jsonProfile);
+            _fileUtil.WriteFile(filePath, jsonProfile);
         }
 
         start.Stop();
@@ -241,9 +241,9 @@ public class SaveServer(
         if (profiles.ContainsKey(sessionID))
         {
             profiles.Remove(sessionID);
-            _vfs.DeleteFile(file);
+            _fileUtil.DeleteFile(file);
         }
 
-        return !_vfs.FileExists(file);
+        return !_fileUtil.FileExists(file);
     }
 }
