@@ -72,7 +72,7 @@ public class TraderAssortHelper(
             traderId
         );
 
-        foreach (var assortId in assortPurchasesfromTrader)
+        foreach (var assortId in assortPurchasesfromTrader ?? [])
         {
             // Find assort we want to update current buy count of
             var assortToAdjust = traderClone.Assort.Items.FirstOrDefault(x => x.Id == assortId.Key);
@@ -159,24 +159,25 @@ public class TraderAssortHelper(
     {
         // Loop every trader
         var traders = _databaseService.GetTraders();
-        foreach (var trader in traders)
+        foreach (var traderId in traders)
         {
             // Trader has quest assort data
-            if (trader.Value.QuestAssort is not null)
+            var trader = traders[traderId.Key];
+            if (trader.QuestAssort is not null)
             {
                 // Started/Success/fail
-                foreach (var assort in trader.Value.QuestAssort)
+                foreach (var questStatus in trader.QuestAssort)
                 {
                     // Each assort to quest id record
-                    foreach (var assortId in assort.Value.Values)
+                    foreach (var assortId in trader.QuestAssort[questStatus.Key])
                     {
                         // Null guard
-                        if (!_mergedQuestAssorts.TryGetValue(assortId, out var _))
+                        if (!_mergedQuestAssorts.TryGetValue(questStatus.Key, out var _))
                         {
-                            _mergedQuestAssorts.TryAdd(assortId, new Dictionary<string, string>());
+                            _mergedQuestAssorts.TryAdd(questStatus.Key, new Dictionary<string, string>());
                         }
 
-                        _mergedQuestAssorts[assort.Key][assortId] = trader.Value.QuestAssort[assort.Key][assortId];
+                        _mergedQuestAssorts[questStatus.Key][assortId.Key] = trader.QuestAssort[questStatus.Key][assortId.Key];
                     }
                 }
             }

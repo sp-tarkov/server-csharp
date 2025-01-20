@@ -130,15 +130,21 @@ public class TraderHelper(
         ProfileTraderTemplate rawProfileTemplate =
             profiles[fullProfile.ProfileInfo.Edition][pmcData.Info.Side.ToLower()].Trader;
 
-        pmcData.TradersInfo[traderID] = new TraderInfo
+        var newTraderData = new TraderInfo
         {
             Disabled = false,
-            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel[traderID] ?? 1,
+            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel.TryGetValue(traderID, out var value) ? value : 4,
             SalesSum = rawProfileTemplate.InitialSalesSum,
             Standing = GetStartingStanding(traderID, rawProfileTemplate),
             NextResupply = trader.Base.NextResupply,
             Unlocked = trader.Base.UnlockedByDefault
         };
+
+        if (!pmcData.TradersInfo.TryAdd(traderID, newTraderData))
+        {
+            pmcData.TradersInfo[traderID] = newTraderData;
+        }
+
 
         // Check if trader should be locked by default
         if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false)
@@ -192,15 +198,20 @@ public class TraderHelper(
     /// <param name="traderId">Trader id to get standing for</param>
     /// <param name="rawProfileTemplate">Raw profile from profiles.json to look up standing from</param>
     /// <returns>Standing value</returns>
-    protected double GetStartingStanding(string traderId, ProfileTraderTemplate rawProfileTemplate)
+    protected double? GetStartingStanding(string traderId, ProfileTraderTemplate rawProfileTemplate)
     {
-        var initialStanding = rawProfileTemplate.InitialStanding[traderId] ?? 0D;
-        // Edge case for Lightkeeper, 0 standing means seeing `Make Amends - Buyout` quest
-        if (traderId == Traders.LIGHTHOUSEKEEPER && initialStanding == 0) {
-            return 0.01;
+        if (rawProfileTemplate.InitialStanding.TryGetValue(traderId, out var standing))
+        {
+            // Edge case for Lightkeeper, 0 standing means seeing `Make Amends - Buyout` quest
+            if (traderId == Traders.LIGHTHOUSEKEEPER && standing == 0)
+            {
+                return 0.01;
+            }
+
+            return standing;
         }
 
-        return initialStanding;
+        return null;
     }
 
     /// <summary>
@@ -210,13 +221,16 @@ public class TraderHelper(
     /// <param name="suitIds">Suit Ids to add</param>
     protected void AddSuitsToProfile(SptProfile fullProfile, List<string> suitIds)
     {
-        if (fullProfile.Suits is null) {
+        if (fullProfile.Suits is null)
+        {
             fullProfile.Suits = [];
         }
 
-        foreach (var suitId in suitIds) {
+        foreach (var suitId in suitIds)
+        {
             // Don't add dupes
-            if (!fullProfile.Suits.Contains(suitId)) {
+            if (!fullProfile.Suits.Contains(suitId))
+            {
                 fullProfile.Suits.Add(suitId);
             }
         }
@@ -232,7 +246,8 @@ public class TraderHelper(
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var profileTraderData = pmcData.TradersInfo[traderId];
-        if (profileTraderData is null) {
+        if (profileTraderData is null)
+        {
             _logger.Error($"Unable to set trader {traderId} unlocked state to: {status} as trader cannot be found in profile");
 
             return;
@@ -255,7 +270,8 @@ public class TraderHelper(
         // Add standing to trader
         pmcTraderInfo.Standing = AddStandingValuesTogether(pmcTraderInfo.Standing, standingToAdd);
 
-        if (traderId == Traders.FENCE) {
+        if (traderId == Traders.FENCE)
+        {
             // Must add rep to scav profile to ensure consistency
             fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
         }
@@ -285,7 +301,8 @@ public class TraderHelper(
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var traders = _databaseService.GetTraders();
-        foreach (var trader in traders) {
+        foreach (var trader in traders)
+        {
             this.LevelUp(trader.Key, profile);
         }
     }
@@ -309,12 +326,14 @@ public class TraderHelper(
         // Round standing to 2 decimal places to address floating point inaccuracies
         pmcData.TradersInfo[traderID].Standing = Math.Round((pmcData.TradersInfo[traderID].Standing * 100) ?? 0) / 100;
 
-        foreach (var loyaltyLevel in loyaltyLevels) {
+        foreach (var loyaltyLevel in loyaltyLevels)
+        {
             if (loyaltyLevel.MinLevel <= pmcData.Info.Level &&
                 loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum &&
                 loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing &&
                 targetLevel < 4
-            ) {
+               )
+            {
                 // level reached
                 targetLevel++;
             }

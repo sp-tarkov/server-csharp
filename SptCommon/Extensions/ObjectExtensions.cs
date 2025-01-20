@@ -21,8 +21,13 @@ namespace SptCommon.Extensions
             }
         }
 
-        public static bool Contains<T>(this object obj, T key)
+        public static bool Contains<T>(this object? obj, T key)
         {
+            if (obj == null)
+            {
+                throw new ArgumentNullException(nameof(obj));
+            }
+            
             return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
         }
 

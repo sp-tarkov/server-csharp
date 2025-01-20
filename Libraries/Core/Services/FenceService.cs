@@ -508,7 +508,7 @@ public class FenceService(
         var fenceLevels = fenceSettings.Levels.Select(x => x.Key);
         var minLevel = fenceLevels.Min();
         var maxLevel = fenceLevels.Max();
-        var pmcFenceLevel = Math.Floor(pmcFenceInfo.Standing.Value);
+        var pmcFenceLevel = Math.Floor(pmcFenceInfo.Standing ?? 0);
 
         if (pmcFenceLevel < int.Parse(minLevel))
         {

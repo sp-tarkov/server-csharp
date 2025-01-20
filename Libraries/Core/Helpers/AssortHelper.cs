@@ -74,27 +74,27 @@ public class AssortHelper(
         Dictionary<string, Dictionary<string, string>> mergedQuestAssorts,
         string assortId)
     {
-        if (mergedQuestAssorts.Get<Dictionary<string, string>>("started").Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("started", out var dict1) && dict1.Contains(assortId))
         {
             // Assort unlocked by starting quest, assort is visible to player when : started or ready to hand in + handed in
             return new KeyValuePair<string, List<QuestStatusEnum>>(
-                mergedQuestAssorts.Get<Dictionary<string, string>>("started")[assortId],
+                mergedQuestAssorts["started"][assortId],
                 [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish, QuestStatusEnum.Success]
             );
         }
 
-        if (mergedQuestAssorts.Get<Dictionary<string, string>>("success").Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("started", out var dict2) && dict2.Contains(assortId))
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
-                mergedQuestAssorts.Get<Dictionary<string, string>>("success")[assortId],
+                mergedQuestAssorts["success"][assortId],
                 [QuestStatusEnum.Success]
             );
         }
 
-        if (mergedQuestAssorts.Get<Dictionary<string, string>>("fail").Contains(assortId))
+        if (mergedQuestAssorts.TryGetValue("fail", out var dict3) && dict3.Contains(assortId))
         {
             return new KeyValuePair<string, List<QuestStatusEnum>>(
-                mergedQuestAssorts.Get<Dictionary<string, string>>("success")[assortId],
+                mergedQuestAssorts["fail"][assortId],
                 [QuestStatusEnum.Fail]
             );
         }
@@ -143,9 +143,9 @@ public class AssortHelper(
     {
         var idsToRemove = _itemHelper.FindAndReturnChildrenByItems(assort.Items, itemID);
 
-        if (assort.BarterScheme[itemID] is not null && flea)
+        if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && lisToUse is not null && flea)
         {
-            foreach (var barterSchemes in assort.BarterScheme[itemID])
+            foreach (var barterSchemes in lisToUse)
             {
                 foreach (var barterScheme in barterSchemes)
                 {
