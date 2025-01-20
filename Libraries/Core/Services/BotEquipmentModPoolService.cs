@@ -152,7 +152,7 @@ public class BotEquipmentModPoolService
 
         return _gearModPool.TryGetValue(itemTpl, out var value)
             ? value
-            : null;
+            : [];
     }
 
     /**

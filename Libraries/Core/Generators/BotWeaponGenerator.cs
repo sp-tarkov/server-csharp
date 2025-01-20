@@ -553,7 +553,7 @@ public class BotWeaponGenerator(
     protected string GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
     {
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
-        if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) && cartridgePoolForWeapon.Keys.Count > 0)
+        if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Keys.Count == 0)
         {
             _logger.Debug(
                 _localisationService.GetText(

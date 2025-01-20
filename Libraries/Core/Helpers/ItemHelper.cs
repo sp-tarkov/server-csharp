@@ -1459,9 +1459,10 @@ public class ItemHelper(
         }
 
         // Get max number of cartridges in magazine, choose random value between min/max
+        var magProps = magTemplate.Properties;
         var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
-            ? magTemplate.Properties?.Slots?.Count() // Edge case for rotating grenade launcher magazine
-            : magTemplate.Properties?.Cartridges[0]?.MaxCount;
+            ? magProps?.Slots?.Count // Edge case for rotating grenade launcher magazine
+            : magProps?.Cartridges.FirstOrDefault()?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {
