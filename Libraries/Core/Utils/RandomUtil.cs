@@ -418,19 +418,21 @@ public class RandomUtil
     /// <returns>A secure random number between 0 (inclusive) and 1 (exclusive).</returns>
     private static double GetSecureRandomNumber()
     {
-        var buffer = new byte[6];
+        byte[] buffer = new byte[6]; // 48 bits
+        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(buffer);
+        }
 
-        using var rng = RandomNumberGenerator.Create();
+        // Convert the byte array to unsigned long
+        ulong integer = 0;
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            integer |= (ulong)buffer[i] << (8 * (buffer.Length - 1 - i));
+        }
 
-        // Fill buffer with random bytes
-        rng.GetBytes(buffer);
-
-        var integer = 0;
-        for (var i = 0; i < 6; i++) integer = (integer << 8) | buffer[i];
-
-        const ulong maxInt = 1UL << 48;
-
-        return (double)Math.Abs(integer) / maxInt;
+        const ulong maxInteger = 281474976710656; // 2^48
+        return (double)integer / maxInteger;
     }
 
     /// <summary>
