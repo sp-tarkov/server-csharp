@@ -34,7 +34,10 @@ public class WebSocketServer(
         foreach (var wsh in socketHandlers)
         {
             wsh.OnConnection(webSocket, context).Wait();
-            _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+            if (webSocket.State == WebSocketState.Open)
+            {
+                _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+            }
         }
 
         return Task.CompletedTask;

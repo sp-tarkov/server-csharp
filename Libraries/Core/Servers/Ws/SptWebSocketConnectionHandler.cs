@@ -145,13 +145,23 @@ public class SptWebSocketConnectionHandler(
                     sptWebSocketMessageHandler.OnSptMessage(sessionID, ws, readBytes.ToArray()).Wait();
                 }
             }
-            catch (OperationCanceledException e)
+            catch (OperationCanceledException _)
             {
                 _logger.Info("WebSocket disconnecting, receive task finalized...");
             }
-            catch (Exception e)
+            catch(Exception _)
             {
-                _logger.Error("Error reading data from WebSocket", e);
+                lock (_lockObject)
+                {
+                    _sockets.Remove(sessionID);
+                    _socketAliveTimers.Remove(sessionID);
+                    _receiveTasks.Remove(sessionID);
+                    var playerProfile = _profileHelper.GetFullProfile(sessionID);
+                    var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
+                    _logger.Info($"[ws] player: {playerInfoText} has disconnected");
+                }
+                
+                ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed connection", CancellationToken.None);
             }
             finally
             {
