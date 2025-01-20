@@ -30,9 +30,17 @@ public class TraderPurchasePersisterService(
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
 
-        return profile.TraderPurchases is null
-            ? null
-            : profile.TraderPurchases[traderId];
+        if (profile.TraderPurchases is null)
+        {
+            return null;
+        }
+
+        if (profile.TraderPurchases.ContainsKey(traderId))
+        {
+            return profile.TraderPurchases[traderId];
+        }
+
+        return null;
     }
 
     /**
