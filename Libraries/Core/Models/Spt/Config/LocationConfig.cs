@@ -291,7 +291,7 @@ public record ScavRaidTimeSettings
     public ScavRaidTimeConfigSettings Settings { get; set; }
 
     [JsonPropertyName("maps")]
-    public Dictionary<string, ScavRaidTimeLocationSettings> Maps { get; set; }
+    public Dictionary<string, ScavRaidTimeLocationSettings?>? Maps { get; set; }
 }
 
 public record ScavRaidTimeConfigSettings

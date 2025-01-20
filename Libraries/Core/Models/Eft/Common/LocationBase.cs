@@ -253,7 +253,7 @@ public record LocationBase
     public List<object>? Doors { get; set; }
 
     [JsonPropertyName("EscapeTimeLimit")]
-    public int? EscapeTimeLimit { get; set; }
+    public double? EscapeTimeLimit { get; set; }
 
     // BSG fucked up another property name
     [JsonPropertyName("escape_time_limit")]

@@ -5,10 +5,10 @@ namespace Core.Models.Spt.Location;
 public record RaidChanges
 {
     [JsonPropertyName("dynamicLootPercent")]
-    public float? DynamicLootPercent { get; set; }
+    public double? DynamicLootPercent { get; set; }
 
     [JsonPropertyName("staticLootPercent")]
-    public float? StaticLootPercent { get; set; }
+    public double? StaticLootPercent { get; set; }
 
     [JsonPropertyName("simulatedRaidStartSeconds")]
     public int? SimulatedRaidStartSeconds { get; set; }

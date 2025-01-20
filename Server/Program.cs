@@ -1,3 +1,4 @@
+using System.Runtime;
 using Core.Context;
 using Core.Models.External;
 using Core.Models.Spt.Config;
@@ -52,7 +53,8 @@ public static class Program
             // Get the Built app and run it
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
-
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive);
             var httpConfig = serviceProvider.GetService<ConfigServer>()?.GetConfig<HttpConfig>();
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.

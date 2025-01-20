@@ -105,7 +105,7 @@ public class RandomUtil
     /// <param name="number">The original number to be reduced.</param>
     /// <param name="percentage">The percentage by which to reduce the number.</param>
     /// <returns>The reduced number after applying the percentage reduction.</returns>
-    public float ReduceValueByPercent(float number, float percentage)
+    public double ReduceValueByPercent(double number, double percentage)
     {
         var reductionAmount = number * percentage / 100;
 

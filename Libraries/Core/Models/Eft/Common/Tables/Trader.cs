@@ -14,7 +14,7 @@ public record Trader
     public TraderBase? Base { get; set; }
 
     [JsonPropertyName("dialogue")]
-    public Dictionary<string, List<string>>? Dialogue { get; set; }
+    public Dictionary<string, List<string>?>? Dialogue { get; set; }
 
     [JsonPropertyName("questassort")]
     public Dictionary<string, Dictionary<string, string>>? QuestAssort { get; set; }

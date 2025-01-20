@@ -34,7 +34,7 @@ public class TraderHelper(
     /// <param name="traderID">Traders Id to get</param>
     /// <param name="sessionID">Players id</param>
     /// <returns>Trader base</returns>
-    public TraderBase GetTrader(string traderID, string sessionID)
+    public TraderBase? GetTrader(string traderID, string sessionID)
     {
         if (traderID == "ragfair")
         {
@@ -274,7 +274,7 @@ public class TraderHelper(
     /// </summary>
     /// <param name="traderId">Traders id</param>
     /// <returns>Traders key</returns>
-    public Trader GetTraderById(string traderId)
+    public Trader? GetTraderById(string traderId)
     {
         throw new NotImplementedException();
     }
