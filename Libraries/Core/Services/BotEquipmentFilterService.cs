@@ -122,8 +122,8 @@ public class BotEquipmentFilterService
 
         foreach (var itemKey in generationChanges)
         {
-            baseBotGeneration.Items.Get<GenerationData>(itemKey.Key).Weights = generationChanges.Get<GenerationData>(itemKey.Key).Weights;
-            baseBotGeneration.Items.Get<GenerationData>(itemKey.Key).Whitelist = generationChanges.Get<GenerationData>(itemKey.Key).Whitelist;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights = generationChanges.GetByJsonProp<GenerationData>(itemKey.Key).Weights;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist = generationChanges.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist;
         }
     }
 

@@ -143,7 +143,7 @@ public class RepeatableQuestGenerator(
         var targetKey = targetsConfig.Draw()[0];
         var targetDifficulty = 1 / targetsConfig.Probability(targetKey);
 
-        var locations = questTypePool.Pool.Elimination.Targets.Get<TargetLocation>(targetKey).Locations;
+        var locations = questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations;
 
         // we use any as location if "any" is in the pool and we do not hit the specific location random
         // we use any also if the random condition is not met in case only "any" was in the pool
@@ -161,11 +161,11 @@ public class RepeatableQuestGenerator(
             if (locations.Count > 0)
             {
                 locationKey = _randomUtil.DrawRandomFromList(locations).FirstOrDefault();
-                questTypePool.Pool.Elimination.Targets.Get<TargetLocation>(targetKey).Locations = locations.Where(
+                questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations = locations.Where(
                         (l) => l != locationKey
                     )
                     .ToList();
-                if (questTypePool.Pool.Elimination.Targets.Get<TargetLocation>(targetKey).Locations.Count == 0)
+                if (questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations.Count == 0)
                 {
                     questTypePool.Pool.Elimination.Targets.Remove(targetKey);
                 }

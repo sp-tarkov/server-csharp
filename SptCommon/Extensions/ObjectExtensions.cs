@@ -29,7 +29,7 @@ namespace SptCommon.Extensions
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        public static bool Contains<T>(this object? obj, T key)
+        public static bool ContainsJsonProp<T>(this object? obj, T key)
         {
             if (obj == null)
             {
@@ -39,7 +39,7 @@ namespace SptCommon.Extensions
             return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
         }
 
-        public static T? Get<T>(this object? obj, string? toLower)
+        public static T? GetByJsonProp<T>(this object? obj, string? toLower)
         {
             ArgumentNullException.ThrowIfNull(obj);
             ArgumentNullException.ThrowIfNull(toLower);
