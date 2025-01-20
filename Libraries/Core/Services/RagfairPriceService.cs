@@ -8,24 +8,26 @@ using Core.Models.Utils;
 using Core.Models.Enums;
 using System;
 using Core.Servers;
+using Core.Models.Eft.Player;
+using Core.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService(
     ISptLogger<RagfairPriceService> _logger,
+    RandomUtil _randomUtil,
     HandbookHelper _handbookHelper,
     TraderHelper _traderHelper,
     PresetHelper _presetHelper,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
+    LocalisationService _localisationService,
     ConfigServer _configServer
 )
 {
+    protected Dictionary<string, double>? _staticPrices;
     RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-
-    protected RagfairServerPrices _prices = new RagfairServerPrices
-        { StaticPrices = new Dictionary<string, double>(), DynamicPrices = new Dictionary<string, double>() };
 
     /// <summary>
     /// Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
@@ -45,9 +47,9 @@ public class RagfairPriceService(
     /// </summary>
     public void RefreshStaticPrices()
     {
-        foreach (var item in _databaseService.GetItems().Where((x) => x.Value.Type == "Item"))
-        {
-            _prices.StaticPrices[item.Key] = Math.Round(_handbookHelper.GetTemplatePrice(item.Key) ?? 0);
+        _staticPrices = new Dictionary<string, double>();
+        foreach (var item in _databaseService.GetItems().Values.Where(item => item.Type == "Item")) {
+            this._staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id).Value;
         }
     }
 
@@ -67,7 +69,23 @@ public class RagfairPriceService(
     /// <returns>price in roubles</returns>
     public double GetFleaPriceForItem(string tplId)
     {
-        throw new NotImplementedException();
+        // Get dynamic price (templates/prices), if that doesnt exist get price from static array (templates/handbook)
+        var itemPrice = GetDynamicPriceForItem(tplId) ?? GetStaticPriceForItem(tplId);
+        if (itemPrice is null)
+        {
+            var itemFromDb = _itemHelper.GetItem(tplId);
+            _logger.Warning(
+                _localisationService.GetText("ragfair-unable_to_find_item_price_for_item_in_flea_handbook", new {
+                tpl = tplId,
+                name = itemFromDb.Value.Name ?? "" }));
+        }
+
+        // If no price in dynamic/static, set to 1
+        if (itemPrice == 0)
+        {
+            itemPrice = 1;
+        }
+        return itemPrice.Value;
     }
 
     /// <summary>
@@ -85,9 +103,9 @@ public class RagfairPriceService(
     /// </summary>
     /// <param name="itemTpl">item template id to look up</param>
     /// <returns>price in roubles</returns>
-    public double GetDynamicPriceForItem(string itemTpl)
+    public double? GetDynamicPriceForItem(string itemTpl)
     {
-        throw new NotImplementedException();
+        return _databaseService.GetPrices()[itemTpl]; ;
     }
 
     /// <summary>
@@ -95,9 +113,9 @@ public class RagfairPriceService(
     /// </summary>
     /// <param name="itemTpl">item template id to look up</param>
     /// <returns>price in roubles</returns>
-    public double GetStaticPriceForItem(string itemTpl)
+    public double? GetStaticPriceForItem(string itemTpl)
     {
-        throw new NotImplementedException();
+        return _handbookHelper.GetTemplatePrice(itemTpl);
     }
 
     /// <summary>
@@ -113,9 +131,12 @@ public class RagfairPriceService(
     public Dictionary<string, double> GetAllStaticPrices()
     {
         // Refresh the cache so we include any newly added custom items
-        RefreshStaticPrices();
+        if (_staticPrices is null)
+        {
+            RefreshStaticPrices();
+        }
 
-        return _prices.StaticPrices;
+        return _staticPrices;
     }
 
     /// <summary>
@@ -251,7 +272,26 @@ public class RagfairPriceService(
         string itemTpl,
         double price)
     {
-        throw new NotImplementedException();
+        var itemHandbookPrice = handbookPrices.FirstOrDefault((handbookItem) => handbookItem.Id == itemTpl);
+        if (itemHandbookPrice is not null)
+        {
+            return price;
+        }
+
+        // Flea price is over handbook price
+        if (price > itemHandbookPrice.Price * unreasonableItemChange.HandbookPriceOverMultiplier)
+        {
+            // Skip extreme values
+            if (price <= 1)
+            {
+                return price;
+            }
+
+            // Price is over limit, adjust
+            return itemHandbookPrice.Price.Value * unreasonableItemChange.NewPriceHandbookMultiplier;
+        }
+
+        return price;
     }
 
     /// <summary>
@@ -262,7 +302,19 @@ public class RagfairPriceService(
     /// <returns>MinMax values</returns>
     protected MinMax GetOfferTypeRangeValues(bool isPreset, bool isPack)
     {
-        throw new NotImplementedException();
+        // Use different min/max values if the item is a preset or pack
+        var priceRanges = _ragfairConfig.Dynamic.PriceRanges;
+        if (isPreset)
+        {
+            return priceRanges.Preset;
+        }
+
+        if (isPack)
+        {
+            return priceRanges.Pack;
+        }
+
+        return priceRanges.Default;
     }
 
     /// <summary>
@@ -284,7 +336,11 @@ public class RagfairPriceService(
     /// <returns>multiplied price</returns>
     protected double RandomiseOfferPrice(double existingPrice, MinMax rangeValues)
     {
-        throw new NotImplementedException();
+        // Multiply by 100 to get 2 decimal places of precision
+        var multiplier = _randomUtil.GetBiasedRandomNumber(rangeValues.Min.Value * 100, rangeValues.Max.Value * 100, 2, 2);
+
+        // return multiplier back to its original decimal place location
+        return existingPrice * (multiplier / 100);
     }
 
     /// <summary>

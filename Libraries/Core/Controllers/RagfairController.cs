@@ -701,7 +701,7 @@ public class RagfairController
             }
             else
             {
-                requirementsPriceInRub += _ragfairPriceService.GetDynamicPriceForItem(requestedItemTpl) * item.Count.Value;
+                requirementsPriceInRub += _ragfairPriceService.GetDynamicPriceForItem(requestedItemTpl).Value * item.Count.Value;
             }
         }
 

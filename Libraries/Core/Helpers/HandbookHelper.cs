@@ -17,7 +17,7 @@ public class HandbookHelper(
 {
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
     protected bool _lookupCacheGenerated = false;
-    protected LookupCollection _handbookPriceCache = new LookupCollection();
+    protected LookupCollection _handbookPriceCache = new();
     
     /// <summary>
     /// Create an in-memory cache of all items with associated handbook price in handbookPriceCache class

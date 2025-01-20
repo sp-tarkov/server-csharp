@@ -21,6 +21,8 @@ public class TraderHelper(
     LocalisationService _localisationService,
     ConfigServer _configServer,
     ProfileHelper _profileHelper,
+    ItemHelper _itemHelper,
+    HandbookHelper _handbookHelper,
     DatabaseService _databaseService
 )
 {
@@ -266,7 +268,35 @@ public class TraderHelper(
     /// <returns>Rouble price</returns>
     public double GetHighestSellToTraderPrice(string tpl)
     {
-        throw new NotImplementedException();
+        // Find the highest trader price for item
+        var highestPrice = 1d; // Default price
+        foreach (var traderName in Traders.TradersDictionary) {
+            // Get trader and check buy category allows tpl
+            var traderBase = _databaseService.GetTrader(traderName.Value).Base;
+
+            // Skip traders that dont sell
+            if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
+            {
+                continue;
+            }
+
+            // Get loyalty level details player has achieved with this trader
+            // Uses lowest loyalty level as this function is used before a player has logged into server
+            // We have no idea what player loyalty is with traders
+            var traderBuyBackPricePercent = traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
+
+            var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
+            var priceTraderBuysItemAt = Math.Round(
+                _randomUtil.GetPercentOfValue(traderBuyBackPricePercent.Value, itemHandbookPrice.Value));
+
+            // Price from this trader is higher than highest found, update
+            if (priceTraderBuysItemAt > highestPrice)
+            {
+                highestPrice = priceTraderBuysItemAt;
+            }
+        }
+
+        return highestPrice;
     }
 
     /// <summary>

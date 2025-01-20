@@ -126,6 +126,7 @@ public class ItemFilterService(
 
     protected void HydrateLootableItemBlacklist()
     {
+        _lootableItemBlacklistCache = [];
         foreach (var item in _itemConfig.LootableItemBlacklist)
         {
             _lootableItemBlacklistCache.Add(item);
