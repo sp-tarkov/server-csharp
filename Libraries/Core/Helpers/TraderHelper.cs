@@ -16,18 +16,22 @@ namespace Core.Helpers;
 [Injectable]
 public class TraderHelper(
     ISptLogger<TraderHelper> _logger,
+    DatabaseService _databaseService,
+    ProfileHelper _profileHelper,
+    HandbookHelper _handbookHelper,
+    ItemHelper _itemHelper,
+    PlayerService _playerService,
+    LocalisationService _localisationService,
+    FenceService _fenceService,
     TimeUtil _timeUtil,
     RandomUtil _randomUtil,
-    LocalisationService _localisationService,
-    ConfigServer _configServer,
-    ProfileHelper _profileHelper,
-    ItemHelper _itemHelper,
-    HandbookHelper _handbookHelper,
-    DatabaseService _databaseService
+    ConfigServer _configServer
 )
 {
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    private Dictionary<string, int> _highestTraderPriceItems = new();
+    protected Dictionary<string, int?> _highestTraderPriceItems = new();
+    protected List<string> _gameVersions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
+
 
     /// <summary>
     /// Get a trader base object, update profile to reflect players current standing in profile
@@ -223,7 +227,25 @@ public class TraderHelper(
 
     public TraderLoyaltyLevel GetLoyaltyLevel(string traderID, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var traderBase = _databaseService.GetTrader(traderID).Base;
+
+        int? loyaltyLevel = null;
+        if (pmcData.TradersInfo.TryGetValue(traderID, out var traderInfo))
+        {
+            loyaltyLevel = traderInfo.LoyaltyLevel;
+        }
+
+        if (loyaltyLevel is null or < 1)
+        {
+            loyaltyLevel = 1;
+        }
+
+        if (loyaltyLevel > traderBase.LoyaltyLevels.Count)
+        {
+            loyaltyLevel = traderBase.LoyaltyLevels.Count;
+        }
+
+        return traderBase.LoyaltyLevels[(loyaltyLevel - 1) ?? 1];
     }
 
     /// <summary>
@@ -233,10 +255,57 @@ public class TraderHelper(
     /// <param name="newPurchaseDetails">New item assort id + count</param>
     public void AddTraderPurchasesToPlayerProfile(
         string sessionID,
-        object newPurchaseDetails, // TODO: TYPE FUCKEY { items: { itemId: string; count: number }[]; traderId: string }
+        KeyValuePair<List<KeyValuePair<string, double>>, string> newPurchaseDetails,
         Item itemPurchased)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetFullProfile(sessionID);
+        var traderId = newPurchaseDetails.Value;
+
+        // Iterate over assorts bought and add to profile
+        foreach (var purchasedItem in newPurchaseDetails.Key)
+        {
+            var currentTime = _timeUtil.GetTimeStamp();
+
+            // Nullguard traderPurchases
+            profile.TraderPurchases ??= new Dictionary<string, Dictionary<string, TraderPurchaseData>?>();
+            // Nullguard traderPurchases for this trader
+            profile.TraderPurchases[traderId] ??= new Dictionary<string, TraderPurchaseData>();
+
+            // Null guard when dict doesnt exist
+
+            if (profile.TraderPurchases[traderId][purchasedItem.Key] is null)
+            {
+                profile.TraderPurchases[traderId][purchasedItem.Key] = new TraderPurchaseData
+                {
+                    PurchaseCount = purchasedItem.Value,
+                    PurchaseTimestamp = currentTime,
+                };
+
+                continue;
+            }
+
+            if (profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseCount + purchasedItem.Value >
+                GetAccountTypeAdjustedTraderPurchaseLimit(
+                    (double)itemPurchased.Upd.BuyRestrictionMax,
+                    profile.CharacterData.PmcData.Info.GameVersion
+                )
+               )
+            {
+                throw new Exception(
+                    _localisationService.GetText(
+                        "trader-unable_to_purchase_item_limit_reached",
+                        new
+                        {
+                            traderId = traderId,
+                            limit = itemPurchased.Upd.BuyRestrictionMax,
+                        }
+                    )
+                );
+            }
+
+            profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseCount += purchasedItem.Value;
+            profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseTimestamp = currentTime;
+        }
     }
 
     /// <summary>
@@ -247,7 +316,12 @@ public class TraderHelper(
     /// <returns>buyRestrictionMax value</returns>
     public double GetAccountTypeAdjustedTraderPurchaseLimit(double buyRestrictionMax, string gameVersion)
     {
-        throw new NotImplementedException();
+        if (_gameVersions.Contains(gameVersion))
+        {
+            return Math.Floor(buyRestrictionMax * 1.2);
+        }
+
+        return buyRestrictionMax;
     }
 
     /// <summary>
@@ -258,7 +332,52 @@ public class TraderHelper(
     /// <returns>highest rouble cost for item</returns>
     public double GetHighestTraderPriceRouble(string tpl)
     {
-        throw new NotImplementedException();
+        if (_highestTraderPriceItems is not null)
+        {
+            return (double)_highestTraderPriceItems[tpl];
+        }
+
+        if (_highestTraderPriceItems is null)
+        {
+            _highestTraderPriceItems = new Dictionary<string, int?>();
+        }
+
+        // Init dict and fill
+        foreach (var traderName in Traders.TradersDictionary)
+        {
+            // Skip some traders
+            if (traderName.Value == Traders.FENCE)
+            {
+                continue;
+            }
+
+            // Get assorts for trader, skip trader if no assorts found
+            var traderAssorts = _databaseService.GetTrader(traderName.Value).Assort;
+            if (traderAssorts is null)
+            {
+                continue;
+            }
+
+            // Get all item assorts that have parentid of hideout (base item and not a mod of other item)
+            foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
+            {
+                // Get barter scheme (contains cost of item)
+                var barterScheme = traderAssorts.BarterScheme[item.Id].FirstOrDefault().FirstOrDefault();
+
+                // Convert into roubles
+                var roubleAmount = barterScheme.Template == Money.ROUBLES
+                    ? barterScheme.Count
+                    : _handbookHelper.InRUB(barterScheme.Count ?? 1, barterScheme.Template);
+
+                // Existing price smaller in dict than current iteration, overwrite
+                if ((_highestTraderPriceItems[item.Template] ?? 0) < roubleAmount)
+                {
+                    _highestTraderPriceItems[item.Template] = (int)roubleAmount;
+                }
+            }
+        }
+
+        return (double)_highestTraderPriceItems[tpl];
     }
 
     /// <summary>
@@ -268,11 +387,12 @@ public class TraderHelper(
     /// <returns>Rouble price</returns>
     public double GetHighestSellToTraderPrice(string tpl)
     {
-        // Find the highest trader price for item
-        var highestPrice = 1d; // Default price
-        foreach (var traderName in Traders.TradersDictionary) {
+        // Find highest trader price for item
+        var highestPrice = 1; // Default price
+        foreach (var trader in Traders.TradersDictionary)
+        {
             // Get trader and check buy category allows tpl
-            var traderBase = _databaseService.GetTrader(traderName.Value).Base;
+            var traderBase = _databaseService.GetTrader(trader.Value).Base;
 
             // Skip traders that dont sell
             if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
@@ -287,12 +407,13 @@ public class TraderHelper(
 
             var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
             var priceTraderBuysItemAt = Math.Round(
-                _randomUtil.GetPercentOfValue(traderBuyBackPricePercent.Value, itemHandbookPrice.Value));
+                _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice ?? 0)
+            );
 
             // Price from this trader is higher than highest found, update
             if (priceTraderBuysItemAt > highestPrice)
             {
-                highestPrice = priceTraderBuysItemAt;
+                highestPrice = (int)priceTraderBuysItemAt;
             }
         }
 
@@ -304,9 +425,17 @@ public class TraderHelper(
     /// </summary>
     /// <param name="traderId">Traders id</param>
     /// <returns>Traders key</returns>
-    public Trader? GetTraderById(string traderId)
+    public TradersEnum? GetTraderById(string traderId)
     {
-        throw new NotImplementedException();
+        var kvp = Traders.TradersDictionary.Where(x => x.Value == traderId);
+
+        if (!kvp.Any()) {
+            _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_in_enum", traderId));
+
+            return null;
+        }
+
+        return kvp.FirstOrDefault().Key;
     }
 
     /// <summary>
@@ -337,7 +466,7 @@ public class TraderHelper(
     /// <returns>True, values exists in Traders enum as a value</returns>
     public bool TraderEnumHasKey(string key)
     {
-        throw new NotImplementedException();
+        return Traders.TradersDictionary.Any(x => x.Value == key);
     }
 
     /// <summary>
@@ -347,7 +476,6 @@ public class TraderHelper(
     /// <returns>True if Traders enum has the param as a value</returns>
     public bool TraderEnumHasValue(string traderId)
     {
-        _logger.Error("HACK TraderEnumHasValue");
         return Traders.TradersDictionary.ContainsValue(traderId);
     }
 }

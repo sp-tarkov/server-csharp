@@ -22,7 +22,7 @@ public class LocationLifecycleService
     }
 
     /** Handle client/match/local/start */
-    public void StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
+    public StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
     {
         throw new NotImplementedException();
     }

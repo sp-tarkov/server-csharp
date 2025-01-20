@@ -38,7 +38,7 @@ public record SptProfile
 
     /** Assort purchases made by player since last trader refresh */
     [JsonPropertyName("traderPurchases")]
-    public Dictionary<string, Dictionary<string, TraderPurchaseData>>? TraderPurchases { get; set; }
+    public Dictionary<string, Dictionary<string, TraderPurchaseData>?>? TraderPurchases { get; set; }
 
     /** Achievements earned by player */
     [JsonPropertyName("achievements")]
@@ -55,7 +55,7 @@ public record SptProfile
 public record TraderPurchaseData
 {
     [JsonPropertyName("count")]
-    public int? PurchaseCount { get; set; }
+    public double? PurchaseCount { get; set; }
 
     [JsonPropertyName("purchaseTimestamp")]
     public long? PurchaseTimestamp { get; set; }
