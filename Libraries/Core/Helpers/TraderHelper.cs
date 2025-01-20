@@ -76,7 +76,9 @@ public class TraderHelper(
     /// <returns>TraderAssort</returns>
     public TraderAssort GetTraderAssortsByTraderId(string traderId)
     {
-        throw new NotImplementedException();
+        return traderId == Traders.FENCE
+            ? _fenceService.GetRawFenceAssorts()
+            : _databaseService.GetTrader(traderId).Assort;
     }
 
     /// <summary>
@@ -85,9 +87,26 @@ public class TraderHelper(
     /// <param name="traderId">Trader to get assorts for</param>
     /// <param name="assortId">Id of assort to find</param>
     /// <returns>Item object</returns>
-    public Item GetTraderAssortItemByAssortId(string traderId, string assortId)
+    public Item? GetTraderAssortItemByAssortId(string traderId, string assortId)
     {
-        throw new NotImplementedException();
+        var traderAssorts = GetTraderAssortsByTraderId(traderId);
+        if (traderAssorts is null)
+        {
+            _logger.Debug($"No assorts on trader: {traderId} found");
+
+            return null;
+        }
+
+        // Find specific assort in traders data
+        var purchasedAssort = traderAssorts.Items.FirstOrDefault(item => item.Id == assortId);
+        if (purchasedAssort is null)
+        {
+            _logger.Debug($"No assort {assortId} on trader: {traderId} found");
+
+            return null;
+        }
+
+        return purchasedAssort;
     }
 
     /// <summary>
@@ -98,8 +117,73 @@ public class TraderHelper(
     /// <param name="traderID">trader id to reset</param>
     public void ResetTrader(string sessionID, string traderID)
     {
-        // TODO: implement actually
-        return;
+        var profiles = _databaseService.GetProfiles();
+        var trader = _databaseService.GetTrader(traderID);
+
+        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+        if (fullProfile is null)
+        {
+            throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID));
+        }
+
+        var pmcData = fullProfile.CharacterData.PmcData;
+        ProfileTraderTemplate rawProfileTemplate =
+            profiles[fullProfile.ProfileInfo.Edition][pmcData.Info.Side.ToLower()].Trader;
+
+        pmcData.TradersInfo[traderID] = new TraderInfo
+        {
+            Disabled = false,
+            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel[traderID] ?? 1,
+            SalesSum = rawProfileTemplate.InitialSalesSum,
+            Standing = GetStartingStanding(traderID, rawProfileTemplate),
+            NextResupply = trader.Base.NextResupply,
+            Unlocked = trader.Base.UnlockedByDefault
+        };
+
+        // Check if trader should be locked by default
+        if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false)
+        {
+            pmcData.TradersInfo[traderID].Unlocked = true;
+        }
+
+        if (rawProfileTemplate.PurchaseAllClothingByDefaultForTrader?.Contains(traderID) ?? false)
+        {
+            // Get traders clothing
+            var clothing = _databaseService.GetTrader(traderID).Suits;
+            if (clothing?.Count > 0)
+            {
+                // Force suit ids into profile
+                AddSuitsToProfile(
+                    fullProfile,
+                    clothing.Select(suit => suit.SuiteId).ToList()
+                );
+            }
+        }
+
+        if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
+        {
+            var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
+            var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RAGFAIR);
+            if (existingBan is not null)
+            {
+                existingBan.DateTime = newBanDateTime;
+            }
+            else
+            {
+                pmcData.Info.Bans.Add(
+                    new Ban
+                    {
+                        BanType = BanType.RAGFAIR,
+                        DateTime = newBanDateTime
+                    }
+                );
+            }
+        }
+
+        if (traderID == Traders.JAEGER)
+        {
+            pmcData.TradersInfo[traderID].Unlocked = rawProfileTemplate.JaegerUnlocked;
+        }
     }
 
     /// <summary>
@@ -110,7 +194,13 @@ public class TraderHelper(
     /// <returns>Standing value</returns>
     protected double GetStartingStanding(string traderId, ProfileTraderTemplate rawProfileTemplate)
     {
-        throw new NotImplementedException();
+        var initialStanding = rawProfileTemplate.InitialStanding[traderId] ?? 0D;
+        // Edge case for Lightkeeper, 0 standing means seeing `Make Amends - Buyout` quest
+        if (traderId == Traders.LIGHTHOUSEKEEPER && initialStanding == 0) {
+            return 0.01;
+        }
+
+        return initialStanding;
     }
 
     /// <summary>
@@ -120,7 +210,16 @@ public class TraderHelper(
     /// <param name="suitIds">Suit Ids to add</param>
     protected void AddSuitsToProfile(SptProfile fullProfile, List<string> suitIds)
     {
-        throw new NotImplementedException();
+        if (fullProfile.Suits is null) {
+            fullProfile.Suits = [];
+        }
+
+        foreach (var suitId in suitIds) {
+            // Don't add dupes
+            if (!fullProfile.Suits.Contains(suitId)) {
+                fullProfile.Suits.Add(suitId);
+            }
+        }
     }
 
     /// <summary>
@@ -131,7 +230,15 @@ public class TraderHelper(
     /// <param name="sessionId">Session id of player</param>
     public void SetTraderUnlockedState(string traderId, bool status, string sessionId)
     {
-        throw new NotImplementedException();
+        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        var profileTraderData = pmcData.TradersInfo[traderId];
+        if (profileTraderData is null) {
+            _logger.Error($"Unable to set trader {traderId} unlocked state to: {status} as trader cannot be found in profile");
+
+            return;
+        }
+
+        profileTraderData.Unlocked = status;
     }
 
     /// <summary>
@@ -142,7 +249,18 @@ public class TraderHelper(
     /// <param name="standingToAdd">Standing value to add to trader</param>
     public void AddStandingToTrader(string sessionId, string traderId, double standingToAdd)
     {
-        throw new NotImplementedException();
+        var fullProfile = _profileHelper.GetFullProfile(sessionId);
+        var pmcTraderInfo = fullProfile.CharacterData.PmcData.TradersInfo[traderId];
+
+        // Add standing to trader
+        pmcTraderInfo.Standing = AddStandingValuesTogether(pmcTraderInfo.Standing, standingToAdd);
+
+        if (traderId == Traders.FENCE) {
+            // Must add rep to scav profile to ensure consistency
+            fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
+        }
+
+        this.LevelUp(traderId, fullProfile.CharacterData.PmcData);
     }
 
     /// <summary>
@@ -151,9 +269,12 @@ public class TraderHelper(
     /// <param name="currentStanding">current trader standing</param>
     /// <param name="standingToAdd">standing to add to trader standing</param>
     /// <returns>current standing + added standing (clamped if needed)</returns>
-    protected double AddStandingValuesTogether(double currentStanding, double standingToAdd)
+    protected double? AddStandingValuesTogether(double? currentStanding, double standingToAdd)
     {
-        throw new NotImplementedException();
+        var newStanding = currentStanding + standingToAdd;
+
+        // Never let standing fall below 0
+        return newStanding < 0 ? 0 : newStanding;
     }
 
     /// <summary>
@@ -162,7 +283,11 @@ public class TraderHelper(
     /// <param name="sessionId">Profile to check.</param>
     public void ValidateTraderStandingsAndPlayerLevelForProfile(string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetPmcProfile(sessionId);
+        var traders = _databaseService.GetTraders();
+        foreach (var trader in traders) {
+            this.LevelUp(trader.Key, profile);
+        }
     }
 
     /// <summary>
@@ -173,8 +298,30 @@ public class TraderHelper(
     /// <param name="pmcData">Profile to update trader in.</param>
     public void LevelUp(string traderID, PmcData pmcData)
     {
-        // TODO: implement actually
-        return;
+        var loyaltyLevels = _databaseService.GetTrader(traderID).Base.LoyaltyLevels;
+
+        // Level up player
+        pmcData.Info.Level = _playerService.CalculateLevel(pmcData);
+
+        // Level up traders
+        var targetLevel = 0;
+
+        // Round standing to 2 decimal places to address floating point inaccuracies
+        pmcData.TradersInfo[traderID].Standing = Math.Round((pmcData.TradersInfo[traderID].Standing * 100) ?? 0) / 100;
+
+        foreach (var loyaltyLevel in loyaltyLevels) {
+            if (loyaltyLevel.MinLevel <= pmcData.Info.Level &&
+                loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum &&
+                loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing &&
+                targetLevel < 4
+            ) {
+                // level reached
+                targetLevel++;
+            }
+        }
+
+        // set level
+        pmcData.TradersInfo[traderID].LoyaltyLevel = targetLevel;
     }
 
     /// <summary>
@@ -429,7 +576,8 @@ public class TraderHelper(
     {
         var kvp = Traders.TradersDictionary.Where(x => x.Value == traderId);
 
-        if (!kvp.Any()) {
+        if (!kvp.Any())
+        {
             _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_in_enum", traderId));
 
             return null;
