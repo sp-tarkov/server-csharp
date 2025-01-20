@@ -147,7 +147,7 @@ public class QuestHelper(
     /// <returns>true if standing is high enough to fulfill quest requirement</returns>
     public bool TraderStandingRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var requiredLoyaltyLevel =  int.Parse(questProperties.Value.ToString());
+        var requiredLoyaltyLevel = int.Parse(questProperties.Value.ToString());
         if (!profile.TradersInfo.TryGetValue(questProperties.Target.ToString(), out var trader))
         {
             _logger.Error(
@@ -957,7 +957,6 @@ public class QuestHelper(
 
         return questsToShowPlayer;
     }
-
 
     /**
      * Create a clone of the given quest array with the rewards updated to reflect the
