@@ -398,7 +398,28 @@ public class DialogueController(
     /// <returns>GetAllAttachmentsResponse or null if dialogue doesnt exist</returns>
     public GetAllAttachmentsResponse GetAllAttachments(string dialogueId, string sessionId)
     {
-        throw new NotImplementedException();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
+        if (!dialog)
+        {
+            _logger.Error(
+                _localisationService.GetText("dialogue-unable_to_find_in_profile"));
+
+            return null;
+        }
+
+        // Removes corner 'new messages' tag
+        dialogInfo.AttachmentsNew = 0;
+
+        var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
+        var messagesWithAttachments = GetMessageWithAttachments(activeMessages);
+
+        return new GetAllAttachmentsResponse { 
+            Messages = messagesWithAttachments,
+            Profiles = [],
+            HasMessagesWithRewards = MessagesHaveUncollectedRewards(messagesWithAttachments)
+            
+        };
     }
 
     /// <summary>
@@ -435,7 +456,7 @@ public class DialogueController(
     /// <returns>messages with items to collect</returns>
     private List<Message> GetMessageWithAttachments(List<Message> messages)
     {
-        throw new NotImplementedException();
+        return messages.Where(message => (message.Items?.Data?.Count ?? 0) > 0).ToList();
     }
 
     /// <summary>

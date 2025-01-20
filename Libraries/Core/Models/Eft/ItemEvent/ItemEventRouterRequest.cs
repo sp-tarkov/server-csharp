@@ -25,6 +25,21 @@ public record Daum
 
     [JsonPropertyName("to")]
     public To? To { get; set; }
+    
+    [JsonPropertyName("with")]
+    public string? With { get; set; }
+    
+    [JsonPropertyName("fromOwner")]
+    public FromOwner? FromOwner { get; set; }
+}
+
+public record FromOwner
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+    
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
 }
 
 public record To
