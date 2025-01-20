@@ -9,6 +9,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Extensions;
 
 
 namespace Core.Helpers;
@@ -127,8 +128,9 @@ public class TraderHelper(
         }
 
         var pmcData = fullProfile.CharacterData.PmcData;
-        ProfileTraderTemplate rawProfileTemplate =
-            profiles[fullProfile.ProfileInfo.Edition][pmcData.Info.Side.ToLower()].Trader;
+        ProfileTraderTemplate rawProfileTemplate = profiles.GetByJsonProp<ProfileSides>(fullProfile.ProfileInfo.Edition)
+                .GetByJsonProp<TemplateSide>(pmcData.Info.Side.ToLower())
+                .Trader;
 
         var newTraderData = new TraderInfo
         {

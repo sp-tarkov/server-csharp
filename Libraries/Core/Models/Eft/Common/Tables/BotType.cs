@@ -58,19 +58,6 @@ public record Appearance
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, double>? Voice { get; set; }
-
-    public Dictionary<string, double> this[string propName]
-    {
-        get
-        {
-            var matchingProp = GetType()
-                .GetProperties()
-                .SingleOrDefault(p => p.GetJsonName() == propName)
-                ?.GetValue(this);
-
-            return (Dictionary<string, double>)matchingProp;
-        }
-    }
 }
 
 public record Chances

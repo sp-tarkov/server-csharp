@@ -25,7 +25,7 @@ public record KarmaLevel
     public Dictionary<string, GenerationData> ItemLimits { get; set; }
 
     [JsonPropertyName("equipmentBlacklist")]
-    public Dictionary<EquipmentSlots, string[]> EquipmentBlacklist { get; set; }
+    public Dictionary<EquipmentSlots, List<string>> EquipmentBlacklist { get; set; }
 
     [JsonPropertyName("labsAccessCardChancePercent")]
     public double? LabsAccessCardChancePercent { get; set; }

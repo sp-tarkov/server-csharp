@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Utils.Json;
+using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common;
 
@@ -494,13 +496,13 @@ public record BossLocationSpawn
     public bool? IgnoreMaxBots { get; set; }
 
     [JsonPropertyName("Supports")]
-    public BossSupport[] Supports { get; set; }
+    public List<BossSupport> Supports { get; set; }
 
     [JsonPropertyName("sptId")]
     public string? SptId { get; set; }
 
     [JsonPropertyName("SpawnMode")]
-    public string[] SpawnMode { get; set; }
+    public List<string> SpawnMode { get; set; }
 }
 
 public record BossSupport
@@ -509,7 +511,8 @@ public record BossSupport
     public string? BossEscortAmount { get; set; }
 
     [JsonPropertyName("BossEscortDifficult")]
-    public string[] BossEscortDifficulty { get; set; }
+    [JsonConverter(typeof(ListOrTConverterFactory))]
+    public ListOrT<string> BossEscortDifficulty { get; set; }
 
     [JsonPropertyName("BossEscortType")]
     public string? BossEscortType { get; set; }

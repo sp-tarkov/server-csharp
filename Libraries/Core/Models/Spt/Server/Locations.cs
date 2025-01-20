@@ -63,27 +63,6 @@ public record Locations
     [JsonPropertyName("base")]
     public LocationsBase? Base { get; set; }
 
-    public Eft.Common.Location? this[string key]
-    {
-        get
-        {
-            return (Eft.Common.Location?)GetType()
-                       .GetProperties()
-                       .First(p => string.Equals(p.Name, _locationMappings[key], StringComparison.CurrentCultureIgnoreCase))
-                       .GetGetMethod()?
-                       .Invoke(this, null) ?? null;
-        }
-        set
-        {
-            GetType()
-                .GetProperties()
-                .First(p => string.Equals(p.Name, key, StringComparison.CurrentCultureIgnoreCase))
-                .GetSetMethod()
-                ?
-                .Invoke(this, [value]);
-        }
-    }
-
     private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
 
     /// <summary>

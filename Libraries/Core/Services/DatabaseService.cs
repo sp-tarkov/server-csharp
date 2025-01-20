@@ -8,6 +8,7 @@ using Core.Models.Spt.Templates;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Extensions;
 using Hideout = Core.Models.Spt.Hideout.Hideout;
 using Locations = Core.Models.Spt.Server.Locations;
 
@@ -105,7 +106,7 @@ public class DatabaseService(
     public Location GetLocation(string locationId)
     {
         var locations = GetLocations();
-        var desiredLocation = locations[locationId.ToLower()];
+        var desiredLocation = locations.GetByJsonProp<Location>(locationId.ToLower());
         if (desiredLocation == null) throw new Exception(_localisationService.GetText("database-no_location_found_with_id", locationId));
 
         return desiredLocation;

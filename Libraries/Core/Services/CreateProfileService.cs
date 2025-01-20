@@ -11,6 +11,7 @@ using Core.Routers;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 
 namespace Core.Services;
@@ -37,7 +38,7 @@ public class CreateProfileService(
     public string CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
         var account = _saveServer.GetProfile(sessionId).ProfileInfo;
-        var profileTemplate = _cloner.Clone(_databaseService.GetProfiles()?[account.Edition]?[request.Side.ToLower()]);
+        var profileTemplate = _cloner.Clone(_databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower()));
         var pmcData = profileTemplate.Character;
 
         // Delete existing profile

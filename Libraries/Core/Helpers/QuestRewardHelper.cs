@@ -9,6 +9,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 
 namespace Core.Helpers;
@@ -67,7 +68,7 @@ public class QuestRewardHelper(
             questDetails = ApplyMoneyBoost(questDetails, questMoneyRewardBonusMultiplier, state);
 
         // e.g. 'Success' or 'AvailableForFinish'
-        var rewards = questDetails.Rewards[state.ToString()];
+        var rewards = questDetails.Rewards.GetByJsonProp<List<Reward>>(state.ToString());
         return _rewardHelper.ApplyRewards(
             rewards,
             CustomisationSource.UNLOCKED_IN_GAME,

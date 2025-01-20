@@ -460,7 +460,7 @@ public class BotEquipmentFilterService
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
-                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
+                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<string, double>>(poolAdjustmentKvP.Key);
                 foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
                 {
                     locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
@@ -472,7 +472,7 @@ public class BotEquipmentFilterService
         {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
-                var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
+                var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<string, double>>(poolAdjustmentKvP.Key);
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 {
                     // Only make change if item exists as we're editing, not adding
