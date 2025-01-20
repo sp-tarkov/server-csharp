@@ -29,8 +29,8 @@ public record Item
 
 public record ItemLocation
 {
-    public double? X { get; set; }
-    public double? Y { get; set; }
+    public int? X { get; set; }
+    public int? Y { get; set; }
     public object? R { get; set; } // TODO: Can be string or number
     public bool? IsSearched { get; set; }
 

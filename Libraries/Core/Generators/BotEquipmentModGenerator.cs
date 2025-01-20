@@ -61,7 +61,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Iterate over mod pool and choose mods to add to item
-        foreach (var (modSlotName, modPool) in compatibleModsPool)
+        foreach (var (modSlotName, modPool) in compatibleModsPool ?? [])
         {
             // Get the templates slot object from db
             var itemSlotTemplate = GetModItemSlotFromDb(modSlotName, parentTemplate);

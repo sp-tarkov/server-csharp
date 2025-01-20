@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using SptCommon.Annotations;
 
 namespace Core.Helpers;
@@ -13,9 +13,59 @@ public class ContainerHelper
     /// <param name="itemWidth">Width of item</param>
     /// <param name="itemHeight">Height of item</param>
     /// <returns>Location to place item in container</returns>
-    public FindSlotResult FindSlotForItem(List<List<int>> container2D, int itemWidth, int itemHeight)
+    public FindSlotResult FindSlotForItem(int[][] container2D, int itemWidth, int itemHeight)
     {
-        throw new NotImplementedException();
+        var rotation = false;
+        var minVolume = (itemWidth < itemHeight ? itemWidth : itemHeight) - 1;
+        var containerY = container2D.Length;
+        var containerX = container2D[0].Length;
+        var limitY = containerY - minVolume;
+        var limitX = containerX - minVolume;
+
+        // Every x+y slot taken up in container, exit
+        if (container2D.All((x) => x.All((y) =>y == 1)))
+        {
+            return new FindSlotResult(false);
+        }
+
+        // Down
+        for (var y = 0; y < limitY; y++)
+        {
+            // Across
+            if (container2D[y].All((x) => x == 1))
+            {
+                // Every item in row is full, skip row
+                continue;
+            }
+
+            for (var x = 0; x < limitX; x++)
+            {
+                var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
+
+                // Failed to find slot, rotate item and try again
+                if (!foundSlot && itemWidth * itemHeight > 1)
+                {
+                    // Bigger than 1x1
+                    foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth); // Height/Width swapped
+                    if (foundSlot)
+                    {
+                        // Found a slot for it when rotated
+                        rotation = true;
+                    }
+                }
+
+                if (!foundSlot)
+                {
+                    // Didn't fit this hole, try again
+                    continue;
+                }
+
+                return new FindSlotResult(true, x, y, rotation);
+            }
+        }
+
+        // Tried all possible holes, nothing big enough for the item
+        return new FindSlotResult(false);
     }
 
     /// <summary>
@@ -30,7 +80,7 @@ public class ContainerHelper
     /// <param name="itemH">Items height</param>
     /// <returns>True - slot found</returns>
     protected bool LocateSlot(
-        List<List<int>> container2D,
+        int[][] container2D,
         int containerX,
         int containerY,
         int x,
@@ -51,7 +101,7 @@ public class ContainerHelper
     /// <param name="itemH">Items height</param>
     /// <param name="rotate">is item rotated</param>
     public void FillContainerMapWithItem(
-        List<List<int>> container2D,
+        int[][] container2D,
         int x,
         int y,
         int itemW,
@@ -64,14 +114,31 @@ public class ContainerHelper
 
 public class FindSlotResult
 {
+    public FindSlotResult(bool success)
+    {
+        Success = success;
+    }
+
+    public FindSlotResult(bool success, int x, int y, bool rotation)
+    {
+        Success = success;
+        X = x;
+        Y = y;
+        Rotation = rotation;
+    }
+
+    public FindSlotResult()
+    {
+    }
+
     [JsonPropertyName("success")]
     public bool? Success { get; set; }
     
     [JsonPropertyName("x")]
-    public double? X { get; set; }
+    public int? X { get; set; }
     
     [JsonPropertyName("y")]
-    public double? Y { get; set; }
+    public int? Y { get; set; }
     
     [JsonPropertyName("rotation")]
     public bool? Rotation { get; set; }

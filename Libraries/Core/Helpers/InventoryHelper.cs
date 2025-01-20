@@ -8,6 +8,12 @@ using Core.Models.Spt.Config;
 using Core.Models.Spt.Inventory;
 using Core.Models.Utils;
 using Core.Services;
+using Core.Models.Eft.Player;
+using System.ComponentModel;
+using Core.Models.Eft.Hideout;
+using Core.Models.Enums;
+using Core.Models.Spt.Bots;
+using Core.Models.Spt.Services;
 
 namespace Core.Helpers;
 
@@ -16,6 +22,7 @@ public class InventoryHelper(
     ISptLogger<InventoryHelper> _logger,
     ProfileHelper _profileHelper,
     DialogueHelper _dialogueHelper,
+    ItemHelper _itemHelper,
     LocalisationService _localisationService
 )
 {
@@ -187,7 +194,8 @@ public class InventoryHelper(
     /// <returns>[width, height]</returns>
     public List<int> GetItemSize(string? itemTpl, string itemId, List<Item> inventoryItems)
     {
-        throw new NotImplementedException();
+        // -> Prepares item Width and height returns [sizeX, sizeY]
+        return GetSizeByInventoryItemHash(itemTpl, itemId, GetInventoryItemHash(inventoryItems));
     }
 
     /// <summary>
@@ -198,9 +206,126 @@ public class InventoryHelper(
     /// <param name="itemId">Items id</param>
     /// <param name="inventoryItemHash">Hashmap of inventory items</param>
     /// <returns>An array representing the [width, height] of the item</returns>
-    protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemId, InventoryItemHash inventoryItemHash)
+    protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemID, InventoryItemHash inventoryItemHash)
     {
-        throw new NotImplementedException();
+        var toDo = new List<string> { itemID };
+        var result = _itemHelper.GetItem(itemTpl);
+        var tmpItem = result.Value;
+
+        // Invalid item
+        if (!result.Key)
+        {
+            _logger.Error(_localisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl));
+        }
+
+        // Item found but no _props property
+        if (tmpItem is not null && tmpItem.Properties is null)
+        {
+            _localisationService.GetText("inventory-item_missing_props_property", new {
+            itemTpl = itemTpl,
+                itemName =  tmpItem?.Name
+            });
+        }
+
+        // No item object or getItem() returned false
+        if (tmpItem is null && result.Value is null)
+        {
+            // return default size of 1x1
+            _logger.Error(_localisationService.GetText("inventory-return_default_size", itemTpl));
+
+            return [1, 1]; // Invalid input data, return defaults
+        }
+
+        var rootItem = inventoryItemHash.ByItemId[itemID];
+        var foldableWeapon = tmpItem.Properties.Foldable;
+        var foldedSlot = tmpItem.Properties.FoldedSlot;
+
+        var sizeUp = 0;
+        var sizeDown = 0;
+        var sizeLeft = 0;
+        var sizeRight = 0;
+
+        var forcedUp = 0;
+        var forcedDown = 0;
+        var forcedLeft = 0;
+        var forcedRight = 0;
+        var outX = (int)tmpItem.Properties.Width;
+        var outY = (int)tmpItem.Properties.Height;
+
+        // Item types to ignore
+        var skipThisItems = new List<string> { BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER };
+
+        var rootFolded = rootItem?.Upd?.Foldable?.Folded == true;
+
+        // The item itself is collapsible
+        if (foldableWeapon is not null && string.IsNullOrEmpty(foldedSlot) && rootFolded)
+        {
+            outX -= tmpItem.Properties.SizeReduceRight.Value;
+        }
+
+        // Calculate size contribution from child items/attachments
+        if (!skipThisItems.Contains(tmpItem.Parent))
+        {
+            while (toDo.Count > 0)
+            {
+                if (inventoryItemHash.ByParentId.ContainsKey(toDo[0])) {
+                    foreach (var item in inventoryItemHash.ByParentId[toDo[0]]) {
+                        // Filtering child items outside of mod slots, such as those inside containers, without counting their ExtraSize attribute
+                        if (item.SlotId.IndexOf("mod_") < 0)
+                        {
+                            continue;
+                        }
+
+                        toDo.Add(item.Id);
+
+                        // If the barrel is folded the space in the barrel is not counted
+                        var itemResult = _itemHelper.GetItem(item.Template);
+                        if (!itemResult.Key)
+                        {
+                            _logger.Error(
+                                _localisationService.GetText("inventory-get_item_size_item_not_found_by_tpl", item.Template));
+                        }
+
+                        var itm = itemResult.Value;
+                        var childFoldable = itm.Properties.Foldable.GetValueOrDefault(false);
+                        var childFolded = item.Upd?.Foldable is not null && item.Upd.Foldable.Folded == true;
+
+                        if (foldableWeapon is true && foldedSlot == item.SlotId && (rootFolded || childFolded))
+                        {
+                            continue;
+                        }
+
+                        if (childFoldable && rootFolded && childFolded)
+                        {
+                            continue;
+                        }
+
+                        // Calculating child ExtraSize
+                        if (itm.Properties.ExtraSizeForceAdd == true)
+                        {
+                            forcedUp += itm.Properties.ExtraSizeUp.Value;
+                            forcedDown += itm.Properties.ExtraSizeDown.Value;
+                            forcedLeft += itm.Properties.ExtraSizeLeft.Value;
+                            forcedRight += itm.Properties.ExtraSizeRight.Value;
+                        }
+                        else
+                        {
+                            sizeUp = sizeUp < itm.Properties.ExtraSizeUp ? itm.Properties.ExtraSizeUp.Value : sizeUp;
+                            sizeDown = sizeDown < itm.Properties.ExtraSizeDown ? itm.Properties.ExtraSizeDown.Value : sizeDown;
+                            sizeLeft = sizeLeft < itm.Properties.ExtraSizeLeft ? itm.Properties.ExtraSizeLeft.Value : sizeLeft;
+                            sizeRight = sizeRight < itm.Properties.ExtraSizeRight ? itm.Properties.ExtraSizeRight.Value : sizeRight;
+                        }
+                    }
+                }
+
+                toDo.RemoveAt(0);
+            }
+        }
+
+        return [
+            outX + sizeLeft + sizeRight + forcedLeft + forcedRight,
+            outY + sizeUp + sizeDown + forcedUp + forcedDown,
+        ];
     }
 
     /// <summary>
@@ -209,9 +334,9 @@ public class InventoryHelper(
     /// <param name="containerH">Horizontal size of container</param>
     /// <param name="containerY">Vertical size of container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    protected List<List<int>> GetBlankContainerMap(int containerH, int containerY)
+    protected int[][] GetBlankContainerMap(int containerH, int containerY)
     {
-        throw new NotImplementedException();
+        return Enumerable.Repeat(Enumerable.Repeat(0, containerH).ToArray(), containerY).ToArray();
     }
 
     /// <summary>
@@ -222,9 +347,68 @@ public class InventoryHelper(
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public List<List<int>> GetContainerMap(double containerH, double containerV, List<Item> itemList, string containerId)
+    public int[][] GetContainerMap(int containerH, int containerV, List<Item> itemList, string containerId)
     {
-        throw new NotImplementedException();
+        // Create blank 2d map of container
+        var container2D = GetBlankContainerMap(containerH, containerV);
+
+        // Get all items in players inventory keyed by their parentId and by ItemId
+        var inventoryItemHash = GetInventoryItemHash(itemList);
+
+        // Get subset of items that belong to the desired container
+        if (!inventoryItemHash.ByParentId.TryGetValue(containerId, out List<Item> containerItemHash))
+        {
+            // No items in container, exit early
+            return container2D;
+        }
+
+        // Check each item in container
+        foreach (var item in containerItemHash) {
+            var itemLocation = item?.Location as ItemLocation;
+            if (itemLocation is null)
+            {
+                // item has no location property
+                _logger.Error("Unable to find 'location' property on item with id: ${ item._id}, skipping");
+
+                continue;
+            }
+
+            // Get x/y size of item
+            var tmpSize = GetSizeByInventoryItemHash(item.Template, item.Id, inventoryItemHash);
+            var iW = tmpSize[0]; // x
+            var iH = tmpSize[1]; // y
+            var fH = IsVertical(itemLocation) ? iW : iH;
+            var fW = IsVertical(itemLocation) ? iH : iW;
+
+            // Find the ending x coord of container
+            var fillTo = itemLocation.X + fW;
+
+            for (var y = 0; y < fH; y++)
+            {
+                try
+                {
+                    var rowIndex = itemLocation.Y + y;
+                    var containerRow = container2D[rowIndex.Value];
+                    if (containerRow is null)
+                    {
+                        _logger.Error("Unable to find container: { containerId} row line: { itemLocation.y + y}");
+                    }
+
+                    // Fill the corresponding cells in the container map to show the slot is taken
+                    Array.Fill(containerRow, 1, itemLocation.X.Value, fillTo.Value);
+                } catch (Exception ex) {
+                    _logger.Error(
+                        _localisationService.GetText("inventory-unable_to_fill_container", new {
+                            id = item.Id,
+                            error = ex.Message
+                        })
+                    );
+                }
+
+            }
+        }
+
+        return container2D;
     }
 
     protected bool IsVertical(ItemLocation itemLocation)
@@ -234,7 +418,25 @@ public class InventoryHelper(
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)
     {
-        throw new NotImplementedException();
+        var inventoryItemHash = new InventoryItemHash
+        {
+            ByItemId = new(), 
+            ByParentId = new()
+        };
+        foreach (var item in inventoryItems)
+        {
+            inventoryItemHash.ByItemId.TryAdd(item.Id, item);
+
+            if (item.ParentId is null) {
+                continue;
+            }
+
+            if (!inventoryItemHash.ByParentId.ContainsKey(item.ParentId)) {
+                inventoryItemHash.ByParentId[item.ParentId] = [];
+            }
+            inventoryItemHash.ByParentId[item.ParentId].Add(item);
+        }
+        return inventoryItemHash;
     }
 
     /// <summary>
