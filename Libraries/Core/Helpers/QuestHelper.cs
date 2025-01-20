@@ -147,15 +147,15 @@ public class QuestHelper(
     /// <returns>true if standing is high enough to fulfill quest requirement</returns>
     public bool TraderStandingRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var requiredLoyaltyLevel = questProperties.Value as float?;
-        if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
+        var requiredLoyaltyLevel =  int.Parse(questProperties.Value.ToString());
+        if (!profile.TradersInfo.TryGetValue(questProperties.Target.ToString(), out var trader))
         {
             _logger.Error(
                 _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target)
             );
         }
 
-        return CompareAvailableForValues(trader.Standing.Value, requiredLoyaltyLevel.Value, questProperties.CompareMethod);
+        return CompareAvailableForValues(trader.Standing ?? 1, requiredLoyaltyLevel, questProperties.CompareMethod);
     }
 
     protected bool CompareAvailableForValues(double current, float required, string compareMethod)
@@ -231,7 +231,7 @@ public class QuestHelper(
         }
 
         // Should non-season event quests be shown to player
-        if (!_questConfig.ShowNonSeasonalEventQuests ?? false && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
+        if (!(_questConfig.ShowNonSeasonalEventQuests ?? false) && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
         {
             return false;
         }
