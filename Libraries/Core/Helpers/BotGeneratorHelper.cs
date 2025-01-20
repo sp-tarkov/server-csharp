@@ -42,6 +42,7 @@ public class BotGeneratorHelper(
             .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
             ?.GetValue<GetRaidConfigurationRequestData>();
         var raidIsNight = raidSettings?.TimeVariant == DateTimeEnum.PAST;
+        _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out var randomisationSettings);
 
         Upd itemProperties = new();
 
@@ -82,7 +83,7 @@ public class BotGeneratorHelper(
             {
                 HpResource = GetRandomizedResourceValue(
                     itemTemplate.Properties.MaxHpResource ?? 0,
-                    _botConfig.LootItemResourceRandomization[botRole ?? string.Empty].Meds
+                    randomisationSettings?.Meds
                 )
             };
         }
@@ -93,7 +94,7 @@ public class BotGeneratorHelper(
             {
                 HpPercent = GetRandomizedResourceValue(
                     itemTemplate.Properties.MaxResource ?? 0,
-                    _botConfig.LootItemResourceRandomization[botRole ?? string.Empty].Food
+                    randomisationSettings?.Food
                 ),
             };
         }
