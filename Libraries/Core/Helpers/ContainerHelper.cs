@@ -88,7 +88,39 @@ public class ContainerHelper
         int itemW,
         int itemH)
     {
-        throw new NotImplementedException();
+        var foundSlot = true;
+
+        for (var itemY = 0; itemY < itemH; itemY++)
+        {
+            if (foundSlot && y + itemH - 1 > containerY - 1)
+            {
+                foundSlot = false;
+                break;
+            }
+
+            // Does item fit x-ways across
+            for (var itemX = 0; itemX < itemW; itemX++)
+            {
+                if (foundSlot && x + itemW - 1 > containerX - 1)
+                {
+                    foundSlot = false;
+                    break;
+                }
+
+                if (container2D[y + itemY][x + itemX] != 0)
+                {
+                    foundSlot = false;
+                    break;
+                }
+            }
+
+            if (!foundSlot)
+            {
+                break;
+            }
+        }
+
+        return foundSlot;
     }
 
     /// <summary>

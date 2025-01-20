@@ -413,7 +413,8 @@ public class InventoryHelper(
 
     protected bool IsVertical(ItemLocation itemLocation)
     {
-        throw new NotImplementedException();
+        var castValue = itemLocation.R.ToString();
+        return castValue == "1" || castValue == "Vertical" || itemLocation.Rotation?.ToString() == "Vertical";
     }
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)

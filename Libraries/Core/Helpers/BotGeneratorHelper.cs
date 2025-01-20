@@ -535,16 +535,29 @@ public class BotGeneratorHelper(
 
                 // Get root items in container we can iterate over to find out what space is free
                 var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
+                var itemsToRemove = new List<Item>();
+                var itemsToAdd = new List<Item>();
                 foreach (var item in containerItemsToCheck)
                 {
-                    // Look for children on items, insert into array if found
+                    // Check item in contain for children, store for later insertion into `containerItemsToCheck`
                     // (used later when figuring out how much space weapon takes up)
-                    var itemWithChildrens = _itemHelper.FindAndReturnChildrenAsItems(inventory.Items, item.Id);
-                    if (itemWithChildrens.Count <= 1) continue;
+                    var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(inventory.Items, item.Id);
+                    if (itemWithChildItems.Count <= 1) continue;
 
-                    existingContainerItems.Remove(item);
-                    existingContainerItems.AddRange(itemWithChildrens);
+
+                    // Store replaced item + new Child items to add later as we can't modify a collecting while looking over it
+                    itemsToRemove.Add(item);
+                    itemsToAdd.AddRange(itemsToAdd);
                 }
+
+                // Remove the base items flagged above
+                foreach (var item in itemsToRemove)
+                {
+                    existingContainerItems.Remove(item);
+                }
+
+                // Add item back with its child items
+                existingContainerItems.AddRange(itemsToAdd);
 
                 // Get rid of items free/used spots in current grid
                 if (slotGrid.Props is not null)
@@ -594,7 +607,7 @@ public class BotGeneratorHelper(
                 // No space in this grid, move to next container grid and try again
             }
 
-            // if we got to this point, the item couldnt be placed on the container
+            // if we got to this point, the item couldn't be placed on the container
             if (containersIdFull is null) continue;
 
             // if the item was a one by one, we know it must be full. Or if the maps cant find a slot for a one by one

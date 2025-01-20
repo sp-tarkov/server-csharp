@@ -482,6 +482,7 @@ public class BotInventoryGenerator(
 
             // Does item have slots for sub-mods to be inserted into
             if (pickedItemDb.Properties?.Slots?.Count > 0 
+                && settings?.GenerateModsBlacklist is not null
                 && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
