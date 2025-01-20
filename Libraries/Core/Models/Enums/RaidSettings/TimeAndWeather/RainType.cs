@@ -2,9 +2,9 @@
 
 public enum RainType
 {
-    NO_RAIN,
-    DRIZZLING,
-    RAIN,
-    HEAVY,
-    SHOWER
+    NoRain,
+    Drizzling,
+    Rain,
+    Heavy,
+    Shower
 }

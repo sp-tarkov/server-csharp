@@ -2,10 +2,10 @@
 
 public enum BotAmount
 {
-    AS_ONLINE,
-    NO_BOTS,
-    LOW,
-    MEDIUM,
-    HIGH,
-    HORDE
+    AsOnline,
+    NoBots,
+    Low,
+    Medium,
+    High,
+    Horde
 }

@@ -2,12 +2,12 @@
 
 public enum TimeFlowType
 {
-    X0,
-    X0_14,
-    X0_25,
-    X0_5,
-    X1,
-    X2,
-    X4,
-    X8
+    x0,
+    x0_14,
+    x0_25,
+    x0_5,
+    x1,
+    x2,
+    x4,
+    x8
 }

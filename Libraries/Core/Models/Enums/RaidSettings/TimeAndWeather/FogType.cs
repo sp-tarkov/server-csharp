@@ -2,9 +2,9 @@
 
 public enum FogType
 {
-    NO_FOG,
-    FAINT,
-    FOG,
-    HEAVY,
-    CONTINUOUS
+    NoFog,
+    Faint,
+    Fog,
+    Heavy,
+    Continuous
 }

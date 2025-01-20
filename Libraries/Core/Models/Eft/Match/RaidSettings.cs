@@ -17,6 +17,7 @@ public record RaidSettings
     public bool? IsLocationTransition { get; set; }
 
     [JsonPropertyName("timeVariant")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public DateTimeEnum TimeVariant { get; set; }
 
     [JsonPropertyName("metabolismDisabled")]
@@ -35,12 +36,14 @@ public record RaidSettings
     public SideType? Side { get; set; }
 
     [JsonPropertyName("raidMode")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RaidMode? RaidMode { get; set; }
 
     [JsonPropertyName("playersSpawnPlace")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PlayersSpawnPlace? PlayersSpawnPlace { get; set; }
 
-    [JsonPropertyName("canShowGroupPreview")]
+    [JsonPropertyName("CanShowGroupPreview")]
     public bool? CanShowGroupPreview { get; set; }
 }
 
@@ -53,18 +56,23 @@ public record TimeAndWeatherSettings
     public bool? IsRandomWeather { get; set; }
 
     [JsonPropertyName("cloudinessType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public CloudinessType? CloudinessType { get; set; }
 
     [JsonPropertyName("rainType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RainType? RainType { get; set; }
 
     [JsonPropertyName("fogType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public FogType? FogType { get; set; }
 
     [JsonPropertyName("windType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WindSpeed? WindType { get; set; }
 
     [JsonPropertyName("timeFlowType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public TimeFlowType? TimeFlowType { get; set; }
 
     [JsonPropertyName("hourOfDay")]
@@ -77,15 +85,18 @@ public record BotSettings
     public bool? IsScavWars { get; set; }
 
     [JsonPropertyName("botAmount")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BotAmount? BotAmount { get; set; }
 }
 
 public record WavesSettings
 {
     [JsonPropertyName("botAmount")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BotAmount? BotAmount { get; set; }
 
     [JsonPropertyName("botDifficulty")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BotDifficulty? BotDifficulty { get; set; }
 
     [JsonPropertyName("isBosses")]
