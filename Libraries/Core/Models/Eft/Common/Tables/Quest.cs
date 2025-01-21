@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
+using Core.Utils.Json;
+using Core.Utils.Json.Converters;
 using SptCommon.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -205,7 +207,8 @@ public record QuestCondition
     /// Can be: string[] or string
     /// </summary>
     [JsonPropertyName("target")]
-    public object? Target { get; set; } // TODO: string[] | string
+    [JsonConverter(typeof(ListOrTConverterFactory))]
+    public ListOrT<string>? Target { get; set; } // TODO: string[] | string
 
     [JsonPropertyName("value")]
     public object? Value { get; set; } // TODO: string | number

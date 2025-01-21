@@ -22,6 +22,14 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
     {
         switch (reader.TokenType)
         {
+            case JsonTokenType.String:
+            case JsonTokenType.Number:
+                using (var jsonDocument = JsonDocument.ParseValue(ref reader))
+                {
+                    var jsonText = jsonDocument.RootElement.GetRawText();
+                    var value = JsonSerializer.Deserialize<T>(jsonText, options);
+                    return new ListOrT<T>(null, value);
+                }
             case JsonTokenType.StartArray:
                 using (var jsonDocument = JsonDocument.ParseValue(ref reader))
                 {

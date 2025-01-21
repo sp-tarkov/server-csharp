@@ -129,14 +129,23 @@ public class QuestHelper(
     public bool TraderLoyaltyLevelRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
         var requiredLoyaltyLevel = questProperties.Value as float?;
-        if (!profile.TradersInfo.TryGetValue(questProperties.Target as string, out var trader))
+        if (!profile.TradersInfo.TryGetValue(
+                questProperties.Target.IsItem
+                    ? questProperties.Target.Item
+                    : questProperties.Target.List.FirstOrDefault(),
+                out var trader
+            ))
         {
             _logger.Error(
                 _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target)
             );
         }
 
-        return CompareAvailableForValues(trader.LoyaltyLevel.Value, requiredLoyaltyLevel.Value, questProperties.CompareMethod);
+        return CompareAvailableForValues(
+            trader.LoyaltyLevel.Value,
+            requiredLoyaltyLevel.Value,
+            questProperties.CompareMethod
+        );
     }
 
     /// <summary>
@@ -148,7 +157,12 @@ public class QuestHelper(
     public bool TraderStandingRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
         var requiredLoyaltyLevel = int.Parse(questProperties.Value.ToString());
-        if (!profile.TradersInfo.TryGetValue(questProperties.Target.ToString(), out var trader))
+        if (!profile.TradersInfo.TryGetValue(
+                questProperties.Target.IsItem
+                    ? questProperties.Target.Item
+                    : questProperties.Target.List.FirstOrDefault(),
+                out var trader
+            ))
         {
             _logger.Error(
                 _localisationService.GetText("quest-unable_to_find_trader_in_profile", questProperties.Target)
@@ -219,19 +233,22 @@ public class QuestHelper(
         var isHalloweenEventActive = _seasonalEventService.HalloweenEventEnabled();
 
         // Not christmas + quest is for christmas
-        if (!isChristmasEventActive && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Christmas))
+        if (!isChristmasEventActive &&
+            _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Christmas))
         {
             return false;
         }
 
         // Not halloween + quest is for halloween
-        if (!isHalloweenEventActive && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Halloween))
+        if (!isHalloweenEventActive &&
+            _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.Halloween))
         {
             return false;
         }
 
         // Should non-season event quests be shown to player
-        if (!(_questConfig.ShowNonSeasonalEventQuests ?? false) && _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
+        if (!(_questConfig.ShowNonSeasonalEventQuests ?? false) &&
+            _seasonalEventService.IsQuestRelatedToEvent(questId, SeasonalEventType.None))
         {
             return false;
         }
@@ -316,11 +333,9 @@ public class QuestHelper(
                 (q) =>
                 {
                     var acceptedQuestCondition = q.Conditions.AvailableForStart.FirstOrDefault(
-                        (c) =>
-                        {
-                            return (c.ConditionType == "Quest" && ((List<string>)c.Target).Contains(failedQuestId) && c.Status[0] == QuestStatusEnum.Fail
-                                );
-                        }
+                        c => c.ConditionType == "Quest" &&
+                             (c.Target.IsList ? c.Target.List : [c.Target.Item]).Contains(failedQuestId) &&
+                             c.Status[0] == QuestStatusEnum.Fail
                     );
 
                     if (acceptedQuestCondition is null)
@@ -638,7 +653,8 @@ public class QuestHelper(
             }
 
             var condition = questInDb.Conditions.AvailableForFinish.FirstOrDefault(
-                (c) => c.ConditionType == "FindItem" && (((List<string>)c?.Target)?.Contains(itemTpl) ?? false)
+                c => c.ConditionType == "FindItem" &&
+                     ((c.Target.IsList ? c.Target.List : [c.Target.Item])?.Contains(itemTpl) ?? false)
             );
             if (condition is not null)
             {
@@ -728,7 +744,13 @@ public class QuestHelper(
                         return false;
                     }
 
-                    return quest.Conditions.Fail.Any((condition) => (((List<string>)condition.Target)?.Contains(completedQuestId)) ?? false);
+                    return quest.Conditions.Fail.Any(
+                        condition =>
+                            (condition.Target.IsList ? condition.Target.List : [condition.Target.Item])?.Contains(
+                                completedQuestId
+                            ) ??
+                            false
+                    );
                 }
             )
             .ToList();
@@ -758,7 +780,8 @@ public class QuestHelper(
         var preCompleteProfileQuests = _cloner.Clone(pmcData.Quests);
 
         var completedQuestId = body.QuestId;
-        var clientQuestsClone = _cloner.Clone(GetClientQuests(sessionID)); // Must be gathered prior to applyQuestReward() & failQuests()
+        var clientQuestsClone =
+            _cloner.Clone(GetClientQuests(sessionID)); // Must be gathered prior to applyQuestReward() & failQuests()
 
         var newQuestState = QuestStatusEnum.Success;
         UpdateQuestState(pmcData, newQuestState, completedQuestId);
@@ -868,7 +891,9 @@ public class QuestHelper(
             // Player can use trader mods then remove them, leaving quests behind
             if (!profile.TradersInfo.TryGetValue(quest.TraderId, out var trader))
             {
-                _logger.Debug($"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists.");
+                _logger.Debug(
+                    $"Unable to show quest: {quest.QuestName} as its for a trader: {quest.TraderId} that no longer exists."
+                );
                 continue;
             }
 
@@ -890,8 +915,13 @@ public class QuestHelper(
             foreach (var conditionToFulfil in questRequirements)
             {
                 // If the previous quest isn't in the user profile, it hasn't been completed or started
-                var questIdsToFulfil = conditionToFulfil.Target as string[] ?? [];
-                var prerequisiteQuest = profile.Quests.FirstOrDefault(profileQuest => questIdsToFulfil.Contains(profileQuest.QId));
+                var questIdsToFulfil = (conditionToFulfil.Target.IsList
+                                           ? conditionToFulfil.Target.List
+                                           : (conditionToFulfil.Target.Item == null
+                                               ? null
+                                               : [conditionToFulfil.Target.Item])) ?? [];
+                var prerequisiteQuest =
+                    profile.Quests.FirstOrDefault(profileQuest => questIdsToFulfil.Contains(profileQuest.QId));
 
                 if (prerequisiteQuest is null)
                 {
@@ -911,7 +941,10 @@ public class QuestHelper(
                 if (conditionToFulfil.AvailableAfter > 0)
                 {
                     // Compare current time to unlock time for previous quest
-                    prerequisiteQuest.StatusTimers.TryGetValue(prerequisiteQuest.Status.Value, out var previousQuestCompleteTime);
+                    prerequisiteQuest.StatusTimers.TryGetValue(
+                        prerequisiteQuest.Status.Value,
+                        out var previousQuestCompleteTime
+                    );
                     var unlockTime = previousQuestCompleteTime + conditionToFulfil.AvailableAfter;
                     if (unlockTime > _timeUtil.GetTimeStamp())
                     {

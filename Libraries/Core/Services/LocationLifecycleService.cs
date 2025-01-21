@@ -818,7 +818,10 @@ public class LocationLifecycleService
             // Find a quest that has a FindItem condition that has the list items tpl as a target
             var matchingQuests = questDb.Where(quest => {
                 var matchingCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(
-                    questCondition => questCondition.ConditionType == "FindItem" && (questCondition.Target as List<string>).Contains(lostItem.Template)
+                    questCondition => questCondition.ConditionType == "FindItem" &&
+                                      (questCondition.Target.IsList
+                                          ? questCondition.Target.List
+                                          : [questCondition.Target.Item]).Contains(lostItem.Template)
                 );
                 if (matchingCondition is null) {
                     // Quest doesnt have a matching condition
