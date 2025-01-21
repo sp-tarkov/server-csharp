@@ -47,8 +47,8 @@ public record Quest
     [JsonPropertyName("image")]
     public string? Image { get; set; }
 
-    [JsonPropertyName("type")]
-    public QuestTypeEnum? Type { get; set; }
+    [JsonPropertyName("type")] // can be string or QuestTypeEnum
+    public string? Type { get; set; }
 
     [JsonPropertyName("isKey")]
     public bool? IsKey { get; set; }
