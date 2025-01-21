@@ -1,8 +1,9 @@
 {
-  "profiles": {
-    "Spt Server Debug": {
-      "commandName": "Project",
-      "hotReloadEnabled": false
+    "profiles": {
+        "Spt Server Debug": {
+            "commandName": "Project",
+            "hotReloadEnabled": true,
+            "workingDirectory": "$(OutputPath)"
+        }
     }
-  }
 }

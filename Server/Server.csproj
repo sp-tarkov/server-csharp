@@ -11,6 +11,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Libraries\Core\Core.csproj"/>
+        <ProjectReference Include="..\Libraries\SptAssets\SptAssets.csproj" />
     </ItemGroup>
 
     <ItemGroup>

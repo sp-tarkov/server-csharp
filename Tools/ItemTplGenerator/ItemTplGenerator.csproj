@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
+        <ServerGarbageCollection>true</ServerGarbageCollection>
+        <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
@@ -9,6 +11,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\Libraries\Core\Core.csproj" />
+      <ProjectReference Include="..\..\Libraries\SptAssets\SptAssets.csproj" />
       <ProjectReference Include="..\..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj" />
       <ProjectReference Include="..\..\SptCommon\SptCommon.csproj" />
     </ItemGroup>

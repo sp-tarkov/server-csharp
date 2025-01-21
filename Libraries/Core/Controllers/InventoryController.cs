@@ -154,7 +154,7 @@ public class InventoryController(
                     _logger.Success($"Set trader {mailEvent.Entity}: Standing to: {mailEvent.Value}");
                     break;
                 case ProfileChangeEventType.ProfileLevel:
-                    pmcData.Info.Experience = mailEvent.Value.Value;
+                    pmcData.Info.Experience = (int) mailEvent.Value.Value;
                     // Will calculate level below
                     _traderHelper.ValidateTraderStandingsAndPlayerLevelForProfile(sessionId);
                     _logger.Success($"Set profile xp to: {mailEvent.Value}");

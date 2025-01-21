@@ -154,7 +154,7 @@ public class DatabaseImporter : OnLoad
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
-        _databaseServer.SetTables((DatabaseTables)dataToImport);
+        _databaseServer.SetTables(dataToImport);
     }
 
     protected void OnReadValidate(string fileWithPath, string data)
