@@ -102,6 +102,11 @@ public class DurabilityLimitsHelper(
             return "follower";
         }
 
+        if (_botHelper.IsBotZombie(botRole))
+        {
+            return "zombie";
+        }
+
         var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
         if (!roleExistsInConfig)
         {

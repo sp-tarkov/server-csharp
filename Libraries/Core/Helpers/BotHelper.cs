@@ -51,12 +51,17 @@ public class BotHelper(
 
     public bool IsBotBoss(string botRole)
     {
-        return _botConfig.Bosses.Any(x => x.ToLower() == botRole.ToLower());
+        return _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
     {
         return botRole?.ToLower().StartsWith("follower") ?? false;
+    }
+
+    public bool IsBotZombie(string botRole)
+    {
+        return botRole?.ToLower().StartsWith("zombie") ?? false;
     }
 
     /// <summary>
