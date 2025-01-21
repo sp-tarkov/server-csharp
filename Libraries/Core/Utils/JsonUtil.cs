@@ -30,7 +30,8 @@ public class JsonUtil
             new EftEnumConverter<RewardType>(),
             new EftEnumConverter<SideType>(),
             new EftEnumConverter<BonusSkillType>(),
-            new EftEnumConverter<NotificationEventType>()
+            new EftEnumConverter<NotificationEventType>(),
+            new BaseInteractionRequestDataConverter()
         }
     };
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)

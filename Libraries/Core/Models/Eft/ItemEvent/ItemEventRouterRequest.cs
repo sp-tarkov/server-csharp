@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
 
@@ -7,7 +8,7 @@ namespace Core.Models.Eft.ItemEvent;
 public record ItemEventRouterRequest : IRequestData
 {
     [JsonPropertyName("data")]
-    public List<Daum>? Data { get; set; }
+    public List<BaseInteractionRequestData>? Data { get; set; }
 
     [JsonPropertyName("tm")]
     public int? Time { get; set; }

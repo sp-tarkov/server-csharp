@@ -1,4 +1,5 @@
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
 using Core.Models.Utils;
@@ -102,7 +103,7 @@ public abstract class ItemEventRouterDefinition : Router
 {
     public abstract Task<ItemEventRouterResponse>? HandleItemEvent(string url,
         PmcData pmcData,
-        object body,
+        BaseInteractionRequestData body,
         string sessionID,
         ItemEventRouterResponse output);
 }

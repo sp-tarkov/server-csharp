@@ -2,6 +2,7 @@ using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
@@ -56,7 +57,7 @@ public class InventoryItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, object body, string sessionID, ItemEventRouterResponse output)
+    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case ItemEventActions.MOVE:

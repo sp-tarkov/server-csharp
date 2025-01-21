@@ -158,8 +158,7 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.PIN_LOCK:
                 return JsonSerializer.Deserialize<PinOrLockItemRequest>(jsonText, options);
             default:
-                // bitch
-            
+                throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
         }
     }
 
