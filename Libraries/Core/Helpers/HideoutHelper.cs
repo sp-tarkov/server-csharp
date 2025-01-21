@@ -49,7 +49,7 @@ public class HideoutHelper(
     /// </summary>
     /// <param name="productive"></param>
     /// <returns></returns>
-    public bool IsProductionType(Productive productive)
+    public bool IsProductionType(Production Production)
     {
         throw new NotImplementedException();
     }
@@ -189,7 +189,7 @@ public class HideoutHelper(
         throw new NotImplementedException();
     }
 
-    protected void FlagCultistCircleCraftAsComplete(Productive production)
+    protected void FlagCultistCircleCraftAsComplete(Production Production)
     {
         throw new NotImplementedException();
     }
@@ -342,7 +342,7 @@ public class HideoutHelper(
 
     protected void UpdateBitcoinFarm(
         PmcData playerProfile,
-        Productive btcProduction,
+        Production btcProduction,
         int btcFarmCGs,
         bool isGeneratorOn)
     {
@@ -431,7 +431,7 @@ public class HideoutHelper(
         throw new NotImplementedException();
     }
 
-    public bool IsProduction(Productive productive)
+    public bool IsProduction(Production Production)
     {
         throw new NotImplementedException();
     }

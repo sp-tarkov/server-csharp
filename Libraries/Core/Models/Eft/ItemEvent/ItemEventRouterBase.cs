@@ -54,7 +54,7 @@ public record ProfileChange
     public ItemChanges? Items { get; set; }
 
     [JsonPropertyName("production")]
-    public Dictionary<string, Productive>? Production { get; set; }
+    public Dictionary<string, Production>? Production { get; set; }
 
     /** Hideout area improvement id */
     [JsonPropertyName("improvements")]

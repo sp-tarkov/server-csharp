@@ -545,7 +545,7 @@ public record HideoutImprovement
     public long? ImproveCompleteTimestamp { get; set; }
 }
 
-public record Productive
+public record Production // use this instead of productive and scavcase
 {
     public List<Product>? Products { get; set; }
 
@@ -592,17 +592,7 @@ public record Productive
     // Craft is cultist circle sacrifice
     [JsonPropertyName("sptIsCultistCircle")]
     public bool? SptIsCultistCircle { get; set; }
-}
-
-public record Production : Productive
-{
-    public string? RecipeId { get; set; }
-    public int? SkipTime { get; set; }
-    public int? ProductionTime { get; set; }
-}
-
-public record ScavCase : Productive
-{
+    
     public string? RecipeId { get; set; }
 }
 
