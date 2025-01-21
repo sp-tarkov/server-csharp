@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
 
 namespace Core.Models.Eft.ItemEvent;
@@ -22,6 +23,9 @@ public record Daum
 
     [JsonPropertyName("item")]
     public string? Item { get; set; }
+    
+    [JsonPropertyName("items")]
+    public List<Item>? Items { get; set; }
 
     [JsonPropertyName("to")]
     public To? To { get; set; }
@@ -31,6 +35,12 @@ public record Daum
     
     [JsonPropertyName("fromOwner")]
     public FromOwner? FromOwner { get; set; }
+    
+    [JsonPropertyName("qid")]
+    public string? Qid { get; set; }
+    
+    [JsonPropertyName("offer")]
+    public string? Offer { get; set; }
 }
 
 public record FromOwner
