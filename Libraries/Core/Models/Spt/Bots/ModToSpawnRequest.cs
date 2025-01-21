@@ -74,7 +74,7 @@ public record ModToSpawnRequest
     /// List of item tpls the weapon does not support
     /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
-    public List<string>? ConflictingItemTpls { get; set; }
+    public HashSet<string>? ConflictingItemTpls { get; set; }
 
     [JsonPropertyName("botData")]
     public BotData? BotData { get; set; }
