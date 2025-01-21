@@ -42,7 +42,7 @@ namespace Core.Routers
             _cloner = cloner;
         }
 
-        public async Task<ItemEventRouterResponse> HandleEvents(ItemEventRouterRequest info, string sessionID)
+        public ItemEventRouterResponse HandleEvents(ItemEventRouterRequest info, string sessionID)
         {
             var output = _eventOutputHolder.GetOutput(sessionID);
 
@@ -59,7 +59,7 @@ namespace Core.Routers
                 }
 
                 _logger.Debug($"event: { body.Action}");
-                await eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
+                eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
                 if (output.Warnings.Count > 0) {
                     break;
                 }

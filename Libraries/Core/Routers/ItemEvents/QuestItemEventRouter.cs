@@ -33,17 +33,17 @@ public class QuestItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "QuestAccept":
-                return Task.FromResult(_questCallbacks.AcceptQuest(pmcData, body as AcceptQuestRequestData, sessionID));
+                return _questCallbacks.AcceptQuest(pmcData, body as AcceptQuestRequestData, sessionID);
             case "QuestComplete":
-                return Task.FromResult(_questCallbacks.CompleteQuest(pmcData, body as CompleteQuestRequestData, sessionID));
+                return _questCallbacks.CompleteQuest(pmcData, body as CompleteQuestRequestData, sessionID);
             case "QuestHandover":
-                return Task.FromResult(_questCallbacks.HandoverQuest(pmcData, body as HandoverQuestRequestData, sessionID));
+                return _questCallbacks.HandoverQuest(pmcData, body as HandoverQuestRequestData, sessionID);
             case "RepeatableQuestChange":
-                return Task.FromResult(_questCallbacks.ChangeRepeatableQuest(pmcData, body as RepeatableQuestChangeRequest, sessionID));
+                return _questCallbacks.ChangeRepeatableQuest(pmcData, body as RepeatableQuestChangeRequest, sessionID);
             default:
                 throw new Exception($"QuestItemEventRouter being used when it cant handle route {url}");
         }

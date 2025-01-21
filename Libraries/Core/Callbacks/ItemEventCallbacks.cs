@@ -9,9 +9,9 @@ namespace Core.Callbacks;
 [Injectable]
 public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRouter _itemEventRouter)
 {
-    public async Task<string> HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
+    public string HandleEvents(string url, ItemEventRouterRequest info, string sessionID)
     {
-         var eventResponse = await _itemEventRouter.HandleEvents(info, sessionID);
+         var eventResponse = _itemEventRouter.HandleEvents(info, sessionID);
          var result = IsCriticalError(eventResponse.Warnings)
              ? _httpResponseUtil.GetBody(eventResponse, GetErrorCode(eventResponse.Warnings), eventResponse.Warnings[0].ErrorMessage)
              : _httpResponseUtil.GetBody(eventResponse);

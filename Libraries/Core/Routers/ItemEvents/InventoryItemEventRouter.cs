@@ -57,55 +57,55 @@ public class InventoryItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case ItemEventActions.MOVE:
-                return Task.FromResult(_inventoryCallbacks.MoveItem(pmcData, body as InventoryMoveRequestData, sessionID, output));
+                return _inventoryCallbacks.MoveItem(pmcData, body as InventoryMoveRequestData, sessionID, output);
             case ItemEventActions.REMOVE:
-                return Task.FromResult(_inventoryCallbacks.RemoveItem(pmcData, body as InventoryRemoveRequestData, sessionID, output));
+                return _inventoryCallbacks.RemoveItem(pmcData, body as InventoryRemoveRequestData, sessionID, output);
             case ItemEventActions.SPLIT:
-                return Task.FromResult(_inventoryCallbacks.SplitItem(pmcData, body as InventorySplitRequestData, sessionID, output));
+                return _inventoryCallbacks.SplitItem(pmcData, body as InventorySplitRequestData, sessionID, output);
             case ItemEventActions.MERGE:
-                return Task.FromResult(_inventoryCallbacks.MergeItem(pmcData, body as InventoryMergeRequestData, sessionID, output));
+                return _inventoryCallbacks.MergeItem(pmcData, body as InventoryMergeRequestData, sessionID, output);
             case ItemEventActions.TRANSFER:
-                return Task.FromResult(_inventoryCallbacks.TransferItem(pmcData, body as InventoryTransferRequestData, sessionID, output));
+                return _inventoryCallbacks.TransferItem(pmcData, body as InventoryTransferRequestData, sessionID, output);
             case ItemEventActions.SWAP:
-                return Task.FromResult(_inventoryCallbacks.SwapItem(pmcData, body as InventorySwapRequestData, sessionID));
+                return _inventoryCallbacks.SwapItem(pmcData, body as InventorySwapRequestData, sessionID);
             case ItemEventActions.FOLD:
-                return Task.FromResult(_inventoryCallbacks.FoldItem(pmcData, body as InventoryFoldRequestData, sessionID));
+                return _inventoryCallbacks.FoldItem(pmcData, body as InventoryFoldRequestData, sessionID);
             case ItemEventActions.TOGGLE:
-                return Task.FromResult(_inventoryCallbacks.ToggleItem(pmcData, body as InventoryToggleRequestData, sessionID));
+                return _inventoryCallbacks.ToggleItem(pmcData, body as InventoryToggleRequestData, sessionID);
             case ItemEventActions.TAG:
-                return Task.FromResult(_inventoryCallbacks.TagItem(pmcData, body as InventoryTagRequestData, sessionID));
+                return _inventoryCallbacks.TagItem(pmcData, body as InventoryTagRequestData, sessionID);
             case ItemEventActions.BIND:
-                return Task.FromResult(_inventoryCallbacks.BindItem(pmcData, body as InventoryBindRequestData, sessionID, output));
+                return _inventoryCallbacks.BindItem(pmcData, body as InventoryBindRequestData, sessionID, output);
             case ItemEventActions.UNBIND:
-                return Task.FromResult(_inventoryCallbacks.UnBindItem(pmcData, body as InventoryBindRequestData, sessionID, output));
+                return _inventoryCallbacks.UnBindItem(pmcData, body as InventoryBindRequestData, sessionID, output);
             case ItemEventActions.EXAMINE:
-                return Task.FromResult(_inventoryCallbacks.ExamineItem(pmcData, body as InventoryExamineRequestData, sessionID, output));
+                return _inventoryCallbacks.ExamineItem(pmcData, body as InventoryExamineRequestData, sessionID, output);
             case ItemEventActions.READ_ENCYCLOPEDIA:
-                return Task.FromResult(_inventoryCallbacks.ReadEncyclopedia(pmcData, body as InventoryReadEncyclopediaRequestData, sessionID));
+                return _inventoryCallbacks.ReadEncyclopedia(pmcData, body as InventoryReadEncyclopediaRequestData, sessionID);
             case ItemEventActions.APPLY_INVENTORY_CHANGES:
-                return Task.FromResult(_inventoryCallbacks.SortInventory(pmcData, body as InventorySortRequestData, sessionID, output));
+                return _inventoryCallbacks.SortInventory(pmcData, body as InventorySortRequestData, sessionID, output);
             case ItemEventActions.CREATE_MAP_MARKER:
-                return Task.FromResult(_inventoryCallbacks.CreateMapMarker(pmcData, body as InventoryCreateMarkerRequestData, sessionID, output));
+                return _inventoryCallbacks.CreateMapMarker(pmcData, body as InventoryCreateMarkerRequestData, sessionID, output);
             case ItemEventActions.DELETE_MAP_MARKER:
-                return Task.FromResult(_inventoryCallbacks.DeleteMapMarker(pmcData, body as InventoryDeleteMarkerRequestData, sessionID, output));
+                return _inventoryCallbacks.DeleteMapMarker(pmcData, body as InventoryDeleteMarkerRequestData, sessionID, output);
             case ItemEventActions.EDIT_MAP_MARKER:
-                return Task.FromResult(_inventoryCallbacks.EditMapMarker(pmcData, body as InventoryEditMarkerRequestData, sessionID, output));
+                return _inventoryCallbacks.EditMapMarker(pmcData, body as InventoryEditMarkerRequestData, sessionID, output);
             case ItemEventActions.OPEN_RANDOM_LOOT_CONTAINER:
-                return Task.FromResult(_inventoryCallbacks.OpenRandomLootContainer(pmcData, body as OpenRandomLootContainerRequestData, sessionID, output));
+                return _inventoryCallbacks.OpenRandomLootContainer(pmcData, body as OpenRandomLootContainerRequestData, sessionID, output);
             case ItemEventActions.HIDEOUT_QTE_EVENT:
-                return Task.FromResult(_hideoutCallbacks.HandleQTEEvent(pmcData, body as HandleQTEEventRequestData, sessionID, output));
+                return _hideoutCallbacks.HandleQTEEvent(pmcData, body as HandleQTEEventRequestData, sessionID, output);
             case ItemEventActions.REDEEM_PROFILE_REWARD:
-                return Task.FromResult(_inventoryCallbacks.RedeemProfileReward(pmcData, body as RedeemProfileRequestData, sessionID, output));
+                return _inventoryCallbacks.RedeemProfileReward(pmcData, body as RedeemProfileRequestData, sessionID, output);
             case ItemEventActions.SET_FAVORITE_ITEMS:
-                return Task.FromResult(_inventoryCallbacks.SetFavoriteItem(pmcData, body as SetFavoriteItems, sessionID, output));
+                return _inventoryCallbacks.SetFavoriteItem(pmcData, body as SetFavoriteItems, sessionID, output);
             case ItemEventActions.QUEST_FAIL:
-                return Task.FromResult(_inventoryCallbacks.FailQuest(pmcData, body as FailQuestRequestData, sessionID, output));
+                return _inventoryCallbacks.FailQuest(pmcData, body as FailQuestRequestData, sessionID, output);
             case ItemEventActions.PIN_LOCK:
-                return Task.FromResult(_inventoryCallbacks.PinOrLock(pmcData, body as  PinOrLockItemRequest, sessionID, output));
+                return _inventoryCallbacks.PinOrLock(pmcData, body as  PinOrLockItemRequest, sessionID, output);
             default:
                 throw new Exception($"InventoryItemEventRouter being used when it cant handle route {url}");
         }

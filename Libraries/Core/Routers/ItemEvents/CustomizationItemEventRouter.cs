@@ -34,14 +34,14 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "CustomizationBuy":
-                return Task.FromResult(_customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID));
+                return _customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID);
             case "CustomizationSet":
-                return Task.FromResult(_customizationCallbacks.SetClothing(pmcData, body as CustomizationSetRequest, sessionID));
+                return _customizationCallbacks.SetClothing(pmcData, body as CustomizationSetRequest, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }

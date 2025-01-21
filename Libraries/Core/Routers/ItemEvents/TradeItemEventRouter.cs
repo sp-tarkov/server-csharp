@@ -31,15 +31,15 @@ public class TradeItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "TradingConfirm":
-                return Task.FromResult(_tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID));
+                return _tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID);
             case "RagFairBuyOffer":
-                return Task.FromResult(_tradeCallbacks.ProcessRagfairTrade(pmcData, body as ProcessRagfairTradeRequestData, sessionID));
+                return _tradeCallbacks.ProcessRagfairTrade(pmcData, body as ProcessRagfairTradeRequestData, sessionID);
             case "SellAllFromSavage":
-                return Task.FromResult(_tradeCallbacks.SellAllFromSavage(pmcData, body as SellScavItemsToFenceRequestData, sessionID));
+                return _tradeCallbacks.SellAllFromSavage(pmcData, body as SellScavItemsToFenceRequestData, sessionID);
             default:
                 throw new Exception($"TradeItemEventRouter being used when it cant handle route {url}");
         }

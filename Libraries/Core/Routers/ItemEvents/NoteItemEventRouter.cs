@@ -31,16 +31,16 @@ public class NoteItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "AddNote":
-                return Task.FromResult(_noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID));
+                return _noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID);
             case "EditNote":
-                return Task.FromResult(_noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID));
+                return _noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID);
             case "DeleteNote":
-                return Task.FromResult(_noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID));
+                return _noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID);
             default:
                 throw new Exception($"NoteItemEventRouter being used when it cant handle route {url}");
         }

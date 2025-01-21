@@ -31,16 +31,16 @@ public class HealthItemEventRouter : ItemEventRouterDefinition
         ];
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url)
         {
             case "Eat":
-                return Task.FromResult(_healthCallbacks.OffraidEat(pmcData, body as OffraidEatRequestData, sessionID));
+                return _healthCallbacks.OffraidEat(pmcData, body as OffraidEatRequestData, sessionID);
             case "Heal":
-                return Task.FromResult(_healthCallbacks.OffraidHeal(pmcData, body as OffraidHealRequestData, sessionID));
+                return _healthCallbacks.OffraidHeal(pmcData, body as OffraidHealRequestData, sessionID);
             case "RestoreHealth":
-                return Task.FromResult(_healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID));
+                return _healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID);
             default:
                 throw new Exception($"HealthItemEventRouter being used when it cant handle route {url}");
         }

@@ -31,15 +31,15 @@ public class RagfairItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "RagFairAddOffer":
-                return Task.FromResult(_ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID));
+                return _ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID);
             case "RagFairRemoveOffer":
-                return Task.FromResult(_ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID));
+                return _ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID);
             case "RagFairRenewOffer":
-                return Task.FromResult(_ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID));
+                return _ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }

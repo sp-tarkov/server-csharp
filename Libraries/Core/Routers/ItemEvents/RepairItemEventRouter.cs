@@ -30,13 +30,13 @@ public class RepairItemEventRouter : ItemEventRouterDefinition
         };
     }
 
-    public override Task<ItemEventRouterResponse> HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
     {
         switch (url) {
             case "Repair":
-                return Task.FromResult(_repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID));
+                return _repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID);
             case "TraderRepair":
-                return Task.FromResult(_repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID));
+                return _repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID);
             default:
                 throw new Exception($"RepairItemEventRouter being used when it cant handle route {url}");
         }
