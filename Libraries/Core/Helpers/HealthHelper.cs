@@ -1,10 +1,10 @@
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.Profile;
 using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;
 using Effects = Core.Models.Eft.Profile.Effects;
-using Health = Core.Models.Eft.Profile.Health;
 
 namespace Core.Helpers;
 
@@ -32,7 +32,7 @@ public class HealthHelper
     /// <param name="deleteExistingEffects">Should all prior effects be removed before apply new ones  (default - true)</param>
     public void UpdateProfileHealthPostRaid(
         PmcData pmcData,
-        Health postRaidHealth,
+        BotBaseHealth postRaidHealth,
         string sessionID,
         bool isDead)
     {
