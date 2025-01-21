@@ -185,11 +185,11 @@ public class SptHttpListener : IHttpListener
 
     public void SendJson(HttpResponse resp, string? output, string sessionID)
     {
-        if (!string.IsNullOrEmpty(output))
-            resp.Body = new MemoryStream(Encoding.UTF8.GetBytes(output));
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
         resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID}");
+        if (!string.IsNullOrEmpty(output))
+            resp.Body.WriteAsync(Encoding.UTF8.GetBytes(output)).AsTask().Wait();
         resp.StartAsync().Wait();
         resp.CompleteAsync().Wait();
     }

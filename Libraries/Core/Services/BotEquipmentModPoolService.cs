@@ -170,6 +170,31 @@ public class BotEquipmentModPoolService
         return _weaponModPool[itemTpl];
     }
 
+    public Dictionary<string, HashSet<string>>? GetRequiredModsForWeaponSlot(string itemTpl)
+    {
+        var result = new Dictionary<string, HashSet<string>>();
+
+        // Get item from db
+        var itemDb = _itemHelper.GetItem(itemTpl).Value;
+        if (itemDb.Properties.Slots is not null)
+        {
+            // Loop over slots flagged as 'required'
+            foreach (var slot in itemDb.Properties.Slots.Where(slot => slot.Required.GetValueOrDefault(false)))
+            {
+                // Create dict entry for mod slot
+                result.Add(slot.Name, []);
+
+                // Add compatible tpls to dicts hashset
+                foreach (var compatibleItemTpl in slot.Props.Filters.FirstOrDefault().Filter)
+                {
+                    result[slot.Name].Add(compatibleItemTpl);
+                }
+            }
+        }
+
+        return result;
+    }
+
     /**
      * Create weapon mod pool and set generated flag to true
      */

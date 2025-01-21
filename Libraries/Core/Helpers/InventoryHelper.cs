@@ -277,17 +277,16 @@ public class InventoryHelper(
     protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemID, InventoryItemHash inventoryItemHash)
     {
         var toDo = new List<string> { itemID };
-        var result = _itemHelper.GetItem(itemTpl);
-        var tmpItem = result.Value;
+        var (key, tmpItem) = _itemHelper.GetItem(itemTpl);
 
         // Invalid item
-        if (!result.Key)
+        if (!key)
         {
             _logger.Error(_localisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl));
         }
 
         // Item found but no _props property
-        if (tmpItem is not null && tmpItem.Properties is null)
+        if (key && tmpItem.Properties is null)
         {
             _localisationService.GetText("inventory-item_missing_props_property", new {
             itemTpl = itemTpl,
@@ -296,7 +295,7 @@ public class InventoryHelper(
         }
 
         // No item object or getItem() returned false
-        if (tmpItem is null && result.Value is null)
+        if (!key && tmpItem is null)
         {
             // return default size of 1x1
             _logger.Error(_localisationService.GetText("inventory-return_default_size", itemTpl));
@@ -305,7 +304,7 @@ public class InventoryHelper(
         }
 
         var rootItem = inventoryItemHash.ByItemId[itemID];
-        var foldableWeapon = tmpItem.Properties.Foldable;
+        var isFoldable = tmpItem.Properties.Foldable;
         var foldedSlot = tmpItem.Properties.FoldedSlot;
 
         var sizeUp = 0;
@@ -323,10 +322,10 @@ public class InventoryHelper(
         // Item types to ignore
         var skipThisItems = new List<string> { BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER };
 
-        var rootFolded = rootItem?.Upd?.Foldable?.Folded == true;
+        var rootIsFolded = rootItem?.Upd?.Foldable?.Folded == true;
 
         // The item itself is collapsible
-        if (foldableWeapon is not null && string.IsNullOrEmpty(foldedSlot) && rootFolded)
+        if (isFoldable is not null && string.IsNullOrEmpty(foldedSlot) && rootIsFolded)
         {
             outX -= tmpItem.Properties.SizeReduceRight.Value;
         }
@@ -358,12 +357,12 @@ public class InventoryHelper(
                         var childFoldable = itm.Properties.Foldable.GetValueOrDefault(false);
                         var childFolded = item.Upd?.Foldable is not null && item.Upd.Foldable.Folded == true;
 
-                        if (foldableWeapon is true && foldedSlot == item.SlotId && (rootFolded || childFolded))
+                        if (isFoldable is true && foldedSlot == item.SlotId && (rootIsFolded || childFolded))
                         {
                             continue;
                         }
 
-                        if (childFoldable && rootFolded && childFolded)
+                        if (childFoldable && rootIsFolded && childFolded)
                         {
                             continue;
                         }

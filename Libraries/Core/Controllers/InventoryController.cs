@@ -4,6 +4,7 @@ using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Quests;
 using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Routers;
@@ -92,5 +93,105 @@ public class InventoryController(
             _localisationService.GetText("inventory-edit_trader_item"),
             (BackendErrorCodes)228
         );
+    }
+
+    public void PinOrLock(PmcData pmcData, PinOrLockItemRequest info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SetFavoriteItem(PmcData pmcData, SetFavoriteItems info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData info, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionId, ItemEventRouterResponse output)
+    {
+        throw new NotImplementedException();
     }
 }

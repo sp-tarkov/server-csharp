@@ -95,6 +95,12 @@ public class ExternalInventoryMagGen(
                     break;
                 }
 
+                if (defaultMagazineTpl == BaseClasses.MAGAZINE)
+                {
+                    // Magazine base type, do not use
+                    break;
+                }
+
                 // Set chosen magazine tpl to the weapons default magazine tpl and try to fit into inventory next loop
                 magazineTpl = defaultMagazineTpl;
                 magTemplate = _itemHelper.GetItem(magazineTpl).Value;

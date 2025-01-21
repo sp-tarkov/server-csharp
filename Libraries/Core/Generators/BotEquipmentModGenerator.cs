@@ -244,11 +244,11 @@ public class BotEquipmentModGenerator(
      * @param modSlot front/back
      * @returns Armor IItem
      */
-    protected Item GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot)
+    protected Item? GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot)
     {
         var defaultPreset = _presetHelper.GetDefaultPreset(armorItemTpl);
 
-        return defaultPreset?.Items.FirstOrDefault((item) => item.SlotId?.ToLower() == modSlot);
+        return defaultPreset?.Items?.FirstOrDefault((item) => item.SlotId?.ToLower() == modSlot);
     }
 
 
@@ -260,11 +260,6 @@ public class BotEquipmentModGenerator(
     /// <returns>Weapon + mods array</returns>
     public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
     {
-        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
-
-        // Get pool of mods that fit weapon
-        var compatibleModsPool = request.ModPool[request.ParentTemplate.Id];
-
         if (
             !(
                 request.ParentTemplate.Properties.Slots.Any() ||
@@ -288,7 +283,12 @@ public class BotEquipmentModGenerator(
             return request.Weapon;
         }
 
-        var botEquipConfig = _botConfig.Equipment[request.BotData.EquipmentRole];
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+
+        // Get pool of mods that fit weapon
+        request.ModPool.TryGetValue(request.ParentTemplate.Id, out var compatibleModsPool);
+
+        _botConfig.Equipment.TryGetValue(request.BotData.EquipmentRole, out var botEquipConfig);
         var botEquipBlacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
             request.BotData.EquipmentRole,
             pmcProfile.Info.Level ?? 0
@@ -494,11 +494,24 @@ public class BotEquipmentModGenerator(
                 if (isRandomisableSlot && !containsModInPool && modToAddTemplate.Value.Properties.Slots.Any())
                 {
                     var modFromService = _botEquipmentModPoolService.GetModsForWeaponSlot(modToAddTemplate.Value.Id);
-                    if (modFromService.Keys.Any())
+                    if (modFromService?.Keys.Count > 0)
                     {
                         request.ModPool[modToAddTemplate.Value.Id] = modFromService;
                         containsModInPool = true;
                     }
+                }
+
+                // Fallback when mods with REQUIRED children are not in the pool, add them and process
+                if (!containsModInPool && !isRandomisableSlot)
+                {
+                    // Check for required mods the item we've added needs to be classified as 'valid'
+                    var modFromService = _botEquipmentModPoolService.GetRequiredModsForWeaponSlot(modToAddTemplate.Value.Id);
+                    if (modFromService?.Keys.Count > 0)
+                    {
+                        request.ModPool[modToAddTemplate.Value.Id] = modFromService;
+                        containsModInPool = true;
+                    }
+
                 }
 
                 if (containsModInPool)
@@ -871,16 +884,16 @@ public class BotEquipmentModGenerator(
             request.Weapon,
             request.ModSlot
         );
-        if (chosenModResult.SlotBlocked ?? false && !(parentSlot.Required ?? false))
+        if (chosenModResult.SlotBlocked.GetValueOrDefault(false) && !parentSlot.Required.GetValueOrDefault(false))
         {
             // Don't bother trying to fit mod, slot is completely blocked
             return null;
         }
 
         // Log if mod chosen was incompatible
-        if (chosenModResult.Incompatible ?? false && !(parentSlot.Required ?? false))
+        if (chosenModResult.Incompatible.GetValueOrDefault(false) && !(parentSlot.Required.GetValueOrDefault(false)))
         {
-            _logger.Debug(chosenModResult.Reason);
+            _logger.Debug($"Unable to find compatible mod of type: {parentSlot.Name}, in slot: {request.ModSlot} reason: {chosenModResult.Reason}");
         }
 
         // Get random mod to attach from items db for required slots if none found above
@@ -891,14 +904,14 @@ public class BotEquipmentModGenerator(
         }
 
         // Compatible item not found + not required
-        if (!(chosenModResult.Found ?? false) && parentSlot != null && (!parentSlot.Required ?? false))
+        if (!(chosenModResult.Found.GetValueOrDefault(false)) && parentSlot is not null && (!parentSlot.Required.GetValueOrDefault(false)))
         {
             return null;
         }
 
-        if (!(chosenModResult.Found ?? false) && parentSlot != null)
+        if (!(chosenModResult.Found ?? false) && parentSlot is not null)
         {
-            if (parentSlot.Required ?? false)
+            if (parentSlot.Required.GetValueOrDefault(false))
             {
                 _logger.Warning(
                     $"Required slot unable to be filled, {request.ModSlot} on {request.ParentTemplate.Name} {request.ParentTemplate.Id} for weapon: {request.Weapon[0].Template}"
@@ -966,7 +979,7 @@ public class BotEquipmentModGenerator(
 
         // Filter mod pool to only items that appear in parents allowed list
         preFilteredModPool = preFilteredModPool.Where((tpl) => parentSlot.Props.Filters[0].Filter.Contains(tpl)).ToList();
-        if (preFilteredModPool.Count() == 0)
+        if (preFilteredModPool.Count == 0)
         {
             return new() { Incompatible = true, Found = false, Reason = "No mods found in parents allowed list" };
         }
@@ -995,9 +1008,9 @@ public class BotEquipmentModGenerator(
         };
 
         // Limit how many attempts to find a compatible mod can occur before giving up
-        var maxBlockedAttempts = Math.Round(modPool.Count() * 0.75); // 75% of pool size
+        var maxBlockedAttempts = Math.Round(modPool.Count * 0.75); // 75% of pool size
         var blockedAttemptCount = 0;
-        string chosenTpl = null;
+        string chosenTpl;
         while (exhaustableModPool.HasValues())
         {
             chosenTpl = exhaustableModPool.GetRandomValue();
@@ -1015,7 +1028,7 @@ public class BotEquipmentModGenerator(
             }
 
             // Success - Default wanted + only 1 item in pool
-            if (modSpawnType == ModSpawn.DEFAULT_MOD && modPool.Count() == 1)
+            if (modSpawnType == ModSpawn.DEFAULT_MOD && modPool.Count == 1)
             {
                 chosenModResult.Found = true;
                 chosenModResult.Incompatible = false;
@@ -1032,15 +1045,20 @@ public class BotEquipmentModGenerator(
             if (existingItemBlockingChoice is not null)
             {
                 // Give max of x attempts of picking a mod if blocked by another
-                if (blockedAttemptCount > maxBlockedAttempts)
+                // OR Blocked and modpool only had 1 item
+                if (blockedAttemptCount > maxBlockedAttempts || modPool.Count == 1)
                 {
                     blockedAttemptCount = 0; // reset
+                    //chosenModResult.SlotBlocked = true; // Later in code we try to find replacement, but only when "slotBlocked" is not true
+                    chosenModResult.Reason = "Blocked";
+
                     break;
                 }
 
                 blockedAttemptCount++;
 
                 // Not compatible - Try again
+                ;
                 continue;
             }
 
@@ -1073,7 +1091,7 @@ public class BotEquipmentModGenerator(
     /// <param name="modPool"></param>
     /// <param name="tplBlacklist">Tpls that are incompatible and should not be used</param>
     /// <returns>string array of compatible mod tpls with weapon</returns>
-    public List<string> GetFilteredModPool(HashSet<string> modPool, List<string> tplBlacklist)
+    public List<string> GetFilteredModPool(HashSet<string> modPool, HashSet<string> tplBlacklist)
     {
         return modPool.Where((tpl) => !tplBlacklist.Contains(tpl)).ToList();
     }

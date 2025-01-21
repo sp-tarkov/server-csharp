@@ -470,7 +470,7 @@ public class BotInventoryGenerator(
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
             if (_botConfig.Equipment.ContainsKey(settings.BotData.EquipmentRole) &&
-                settings.RandomisationDetails is not null &&
+                settings.RandomisationDetails?.RandomisedArmorSlots != null &&
                 settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString()))
             {
                 // Filter out mods from relevant blacklist

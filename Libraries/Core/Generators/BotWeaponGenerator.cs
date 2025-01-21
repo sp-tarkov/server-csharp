@@ -176,7 +176,7 @@ public class BotWeaponGenerator(
             );
         }
 
-        // Use weapon preset from globals.json if weapon isnt valid
+        // Use weapon preset from globals.json if weapon isn't valid
         if (!IsWeaponValid(weaponWithModsArray, botRole))
         {
             // Weapon is bad, fall back to weapons preset

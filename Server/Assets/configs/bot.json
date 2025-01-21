@@ -288,7 +288,63 @@
                 "minDelta": 0,
                 "minLimitPercent": 15
             }
-		}
+		},
+		"zombie": {
+			"armor": {
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            },
+            "weapon": {
+                "lowestMax": 90,
+                "highestMax": 100,
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            }
+		},
+		"shooterbtr": {
+			"armor": {
+                "maxDelta": 0,
+                "minDelta": 0,
+                "minLimitPercent": 0
+            },
+            "weapon": {
+                "lowestMax": 100,
+                "highestMax": 100,
+                "maxDelta": 0,
+                "minDelta": 0,
+                "minLimitPercent": 0
+            }
+		},
+		"skier": {
+            "armor": {
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            },
+            "weapon": {
+                "lowestMax": 60,
+                "highestMax": 100,
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            }
+        },
+		"peacemaker": {
+            "armor": {
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            },
+            "weapon": {
+                "lowestMax": 60,
+                "highestMax": 100,
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            }
+        }
 		}
     },
     "lootItemResourceRandomization": {
@@ -925,6 +981,9 @@
         },
         "assaultgroup": {},
         "gifter": {
+			"nvgIsActiveChanceDayPercent": 0,
+			"nvgIsActiveChanceNightPercent": 90,
+			"faceShieldIsActiveChancePercent": 0,
             "lightIsActiveDayChancePercent": 25,
             "lightIsActiveNightChancePercent": 75,
             "laserIsActiveChancePercent": 75

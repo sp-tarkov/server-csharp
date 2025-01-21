@@ -258,7 +258,7 @@ public class BotController(
             requestedBot?.Role,
             raidSettings.Location
         );
-        if (convertIntoPmcChanceMinMax is not null && botGenerationDetails.IsPmc is not null && !botGenerationDetails.IsPmc.Value)
+        if (convertIntoPmcChanceMinMax is not null && !botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
             // Bot has % chance to become pmc and isnt one pmc already
             var convertToPmc = _botHelper.RollChanceToBePmc(convertIntoPmcChanceMinMax);

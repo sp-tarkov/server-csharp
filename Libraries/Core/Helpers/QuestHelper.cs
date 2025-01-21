@@ -204,7 +204,7 @@ public class QuestHelper(
      */
     public QuestStatus GetQuestReadyForProfile(
         PmcData pmcData,
-        QuestStatus newState,
+        QuestStatusEnum newState,
         AcceptQuestRequestData acceptedQuest
     )
     {
