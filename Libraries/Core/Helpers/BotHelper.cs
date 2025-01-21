@@ -29,7 +29,7 @@ public class BotHelper(
     /// <returns>BotType object</returns>
     public BotType GetBotTemplate(string role)
     {
-        if (!_databaseService.GetBots().Types.TryGetValue(role.ToLower(), out var bot))
+        if (!_databaseService.GetBots().Types.TryGetValue(role?.ToLower(), out var bot))
         {
             _logger.Error($"Unable to get bot of type: {role} from DB");
 

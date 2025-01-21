@@ -127,26 +127,9 @@ public class DurabilityLimitsHelper(
     /// <returns>Current armor durability</returns>
     public double GetRandomizedArmorDurability(TemplateItem? itemTemplate, string? botRole, double maxDurability)
     {
-        if (botRole is not null)
-        {
-            if (_botHelper.IsBotPmc(botRole))
-            {
-                return GenerateArmorDurability("pmc", maxDurability);
-            }
+        var durabilityRole = GetDurabilityRole(botRole);
 
-            if (_botHelper.IsBotBoss(botRole))
-            {
-                return GenerateArmorDurability("boss", maxDurability);
-            }
-
-            if (_botHelper.IsBotFollower(botRole))
-            {
-                return GenerateArmorDurability("follower", maxDurability);
-            }
-        }
-        
-
-        return GenerateArmorDurability(botRole, maxDurability);
+        return GenerateArmorDurability(durabilityRole, maxDurability);
     }
 
     protected double GenerateMaxWeaponDurability(string? botRole = null)
