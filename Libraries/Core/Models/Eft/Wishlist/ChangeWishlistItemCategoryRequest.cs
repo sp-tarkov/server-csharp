@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Wishlist;
 
-public record ChangeWishlistItemCategoryRequest
+public record ChangeWishlistItemCategoryRequest : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 

@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Quests;
 
-public record HandoverQuestRequestData
+public record HandoverQuestRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "QuestHandover";
-
     [JsonPropertyName("qid")]
     public string? QuestId { get; set; }
 

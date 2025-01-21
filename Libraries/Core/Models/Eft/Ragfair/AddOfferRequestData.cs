@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Ragfair;
 
-public record AddOfferRequestData
+public record AddOfferRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     [JsonPropertyName("sellInOnePiece")]
     public bool? SellInOnePiece { get; set; }
 

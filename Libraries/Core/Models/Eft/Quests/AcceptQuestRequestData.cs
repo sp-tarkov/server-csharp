@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Quests;
 
-public record AcceptQuestRequestData
+public record AcceptQuestRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "QuestAccept";
-
     [JsonPropertyName("qid")]
     public string? QuestId { get; set; }
 

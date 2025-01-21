@@ -7,7 +7,4 @@ public record InventoryExamineRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("item")]
     public string? Item { get; set; }
-
-    [JsonPropertyName("fromOwner")]
-    public OwnerInfo? FromOwner { get; set; }
 }
