@@ -171,8 +171,8 @@ public class DataCallbacks(
     {
         var localeId = url.Replace("/client/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Global?[localeId] 
-                     ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value;
+        var result = locales.Global?[localeId].Value 
+                     ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value.Value;
 
         return _httpResponseUtil.GetUnclearedBody(result);
     }

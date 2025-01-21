@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
+using Core.Utils.Json;
 
 namespace Core.Models.Eft.Common;
 
@@ -11,15 +12,15 @@ public record Location
 
     /** Loose loot positions and item weights */
     [JsonPropertyName("looseLoot")]
-    public LooseLoot? LooseLoot { get; set; }
+    public LazyLoad<LooseLoot>? LooseLoot { get; set; }
 
     /** Static loot item weights */
     [JsonPropertyName("staticLoot")]
-    public Dictionary<string, StaticLootDetails>? StaticLoot { get; set; }
+    public LazyLoad<Dictionary<string, StaticLootDetails>>? StaticLoot { get; set; }
 
     /** Static container positions and item weights */
     [JsonPropertyName("staticContainers")]
-    public StaticContainerDetails? StaticContainers { get; set; }
+    public LazyLoad<StaticContainerDetails>? StaticContainers { get; set; }
 
     [JsonPropertyName("staticAmmo")]
     public Dictionary<string, List<StaticAmmoDetails>> StaticAmmo { get; set; }

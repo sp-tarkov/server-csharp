@@ -1,6 +1,8 @@
+using System.Linq.Expressions;
 using System.Reflection;
 using SptCommon.Annotations;
 using Core.Models.Utils;
+using Core.Utils.Json;
 
 namespace Core.Utils;
 
@@ -12,6 +14,7 @@ public class ImporterUtil
     protected ISptLogger<ImporterUtil> _logger;
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
+    protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
@@ -26,7 +29,8 @@ public class ImporterUtil
         Action<string, object>? onObjectDeserialized = null
     )
     {
-        return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized).ContinueWith(res => (T) res.Result);
+        return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized)
+            .ContinueWith(res => (T)res.Result);
     }
 
     /**
@@ -70,7 +74,40 @@ public class ImporterUtil
                         );
                         try
                         {
-                            var fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
+                            object fileDeserialized = null;
+                            if (propertyType.IsGenericType &&
+                                propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
+                            {
+                                // This expression is create a generic type delegate for lazy loading a LazyLoad type
+                                var expression = Expression.Lambda(
+                                        // this is the expected type of the lambda which is a function of whatever generic type LazyLoad<> is
+                                        typeof(Func<>).MakeGenericType(propertyType.GetGenericArguments()),
+                                        // An expression block will have a return type and then will execute the expression
+                                        Expression.Block(
+                                            // this is the return type
+                                            propertyType.GetGenericArguments()[0],
+                                            // this is the expression
+                                            // This expression casts the result of the Call expression as the generic argument type
+                                            Expression.TypeAs(
+                                                // this expression calls the json util Deserialize method
+                                                Expression.Call(
+                                                    Expression.Constant(_jsonUtil),
+                                                    "Deserialize",
+                                                    [],
+                                                    [Expression.Constant(fileData), Expression.Constant(propertyType.GetGenericArguments()[0])]
+                                                ),
+                                                propertyType.GetGenericArguments()[0]
+                                            )
+                                        )
+                                    )
+                                    .Compile();
+                                fileDeserialized = Activator.CreateInstance(propertyType, expression);
+                            }
+                            else
+                            {
+                                fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
+                            }
+
                             if (onObjectDeserialized != null)
                                 onObjectDeserialized(file, fileDeserialized);
 
@@ -96,6 +133,7 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
+            if (directoriesToIgnore.Contains(directory)) continue;
             tasks.Add(
                 Task.Factory.StartNew(
                     () =>

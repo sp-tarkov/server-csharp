@@ -25,13 +25,13 @@ public class LocaleService(
     public Dictionary<string, string> GetLocaleDb()
     {
         var desiredLocale = _databaseServer.GetTables().Locales.Global[GetDesiredGameLocale()];
-        if (desiredLocale != null) return desiredLocale;
+        if (desiredLocale != null) return desiredLocale.Value;
 
         _logger.Warning(
             $"Unable to find desired locale file using locale: {GetDesiredGameLocale()} from config/locale.json, falling back to 'en'"
         );
 
-        return _databaseServer.GetTables().Locales.Global["en"];
+        return _databaseServer.GetTables().Locales.Global["en"].Value;
     }
 
     /**

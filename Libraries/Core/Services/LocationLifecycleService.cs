@@ -330,7 +330,7 @@ public class LocationLifecycleService
         locationBaseClone.Loot.AddRange(staticLoot);
 
         // Add dynamic loot to output loot
-        var dynamicLootDistClone = _cloner.Clone(location.LooseLoot);
+        var dynamicLootDistClone = _cloner.Clone(location.LooseLoot.Value);
         var dynamicSpawnPoints = _locationLootGenerator.GenerateDynamicLoot(
             dynamicLootDistClone,
             staticAmmoDist,

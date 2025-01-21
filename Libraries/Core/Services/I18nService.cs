@@ -1,4 +1,5 @@
 using Core.Utils;
+using Core.Utils.Json;
 using SptCommon.Extensions;
 
 namespace Core.Services;
@@ -13,7 +14,7 @@ public class I18nService
     private FileUtil _fileUtil;
     private string _setLocale;
 
-    private Dictionary<string, Dictionary<string, string>> _loadedLocales = new();
+    private Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
     // TODO: try convert to primary ctor
     public I18nService(
         FileUtil fileUtil,
@@ -41,8 +42,10 @@ public class I18nService
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
             _loadedLocales.Add(_fileUtil.StripExtension(file),
-                _jsonUtil.Deserialize<Dictionary<string, string>>(_fileUtil.ReadFile(file)) ??
-                new Dictionary<string, string>());
+                new LazyLoad<Dictionary<string, string>>(
+                    () => _jsonUtil.Deserialize<Dictionary<string, string>>(_fileUtil.ReadFile(file)) ??
+                          new Dictionary<string, string>()
+                ));
 
         if (!_loadedLocales.ContainsKey(_defaultLocale))
             throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
@@ -74,10 +77,10 @@ public class I18nService
     {
         if (!_loadedLocales.TryGetValue(_setLocale, out var locales))
             return key;
-        if (!locales.TryGetValue(key, out var value))
+        if (!locales.Value.TryGetValue(key, out var value))
         {
             _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
-            defaults.TryGetValue(key, out value);
+            defaults.Value.TryGetValue(key, out value);
             return value ?? key;
         }
 
