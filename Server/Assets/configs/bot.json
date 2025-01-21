@@ -953,6 +953,9 @@
         },
         "assaultgroup": {},
         "gifter": {
+			"nvgIsActiveChanceDayPercent": 0,
+			"nvgIsActiveChanceNightPercent": 90,
+			"faceShieldIsActiveChancePercent": 0,
             "lightIsActiveDayChancePercent": 25,
             "lightIsActiveNightChancePercent": 75,
             "laserIsActiveChancePercent": 75
