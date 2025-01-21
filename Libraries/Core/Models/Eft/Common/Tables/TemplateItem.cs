@@ -137,8 +137,9 @@ public record Props
     [JsonPropertyName("LootExperience")]
     public double? LootExperience { get; set; }
 
+    // Checked on live
     [JsonPropertyName("ExamineExperience")]
-    public double? ExamineExperience { get; set; }
+    public int? ExamineExperience { get; set; }
 
     [JsonPropertyName("HideEntrails")]
     public bool? HideEntrails { get; set; }

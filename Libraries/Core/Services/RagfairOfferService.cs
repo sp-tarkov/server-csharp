@@ -16,7 +16,7 @@ public class RagfairOfferService
         throw new NotImplementedException();
     }
 
-    public RagfairOffer GetOfferByOfferId(string offerId)
+    public RagfairOffer? GetOfferByOfferId(string offerId)
     {
         throw new NotImplementedException();
     }

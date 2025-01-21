@@ -93,7 +93,7 @@ public record ProfileChangeEvent
     public ProfileChangeEventType? Type { get; set; }
 
     [JsonPropertyName("value")]
-    public double? Value { get; set; }
+    public int? Value { get; set; }
 
     [JsonPropertyName("entity")]
     public string? Entity { get; set; }

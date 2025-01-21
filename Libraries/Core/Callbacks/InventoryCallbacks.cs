@@ -1,9 +1,10 @@
-﻿using SptCommon.Annotations;
 using Core.Controllers;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -14,77 +15,80 @@ public class InventoryCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/game/profile/items/moving Move event
+    ///     Handle client/game/profile/items/moving Move event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.MoveItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// Handle Remove event
+    ///     Handle Remove event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.RemoveItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// Handle Split event
+    ///     Handle Split event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.SplitItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.MergeItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.TransferItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// Handle Swap
+    ///     Handle Swap
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -96,7 +100,6 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -108,7 +111,6 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -120,136 +122,138 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="request"></param>
+    /// <param name="sessionId"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData info, string sessionID)
+    public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
     {
-        return _inventoryController.TagItem(pmcData, info, sessionID);
+        return _inventoryController.TagItem(pmcData, request, sessionId);
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.BindItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.UnBindItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.ExamineItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// Handle ReadEncyclopedia
+    ///     Handle ReadEncyclopedia
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info, string sessionID)
+    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info,
+        string sessionID)
     {
         return _inventoryController.ReadEncyclopedia(pmcData, info, sessionID);
     }
 
     /// <summary>
-    /// Handle ApplyInventoryChanges
+    ///     Handle ApplyInventoryChanges
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.SortInventory(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info,
+        string sessionID, ItemEventRouterResponse output)
     {
         _inventoryController.CreateMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info,
+        string sessionID, ItemEventRouterResponse output)
     {
         _inventoryController.DeleteMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.EditMapMarker(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// Handle OpenRandomLootContainer
+    ///     Handle OpenRandomLootContainer
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData info, string sessionID,
+    public ItemEventRouterResponse OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData info,
+        string sessionID,
         ItemEventRouterResponse output)
     {
         _inventoryController.OpenRandomLootContainer(pmcData, info, sessionID, output);
@@ -257,57 +261,58 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.RedeemProfileReward(pmcData, info, sessionID);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetFavoriteItem(PmcData pmcData, SetFavoriteItems info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse SetFavoriteItem(PmcData pmcData, SetFavoriteItems info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.SetFavoriteItem(pmcData, info, sessionID);
         return output;
     }
 
     /// <summary>
-    /// TODO: MOVE INTO QUEST CODE
-    /// Handle game/profile/items/moving - QuestFail
+    ///     TODO: MOVE INTO QUEST CODE
+    ///     Handle game/profile/items/moving - QuestFail
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _questController.FailQuest(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <param name="output"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, string sessionID,
+        ItemEventRouterResponse output)
     {
         _inventoryController.PinOrLock(pmcData, info, sessionID, output);
         return output;
