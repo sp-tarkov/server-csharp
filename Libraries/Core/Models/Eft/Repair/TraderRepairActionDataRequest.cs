@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Repair;
 
-public record TraderRepairActionDataRequest : BaseRepairActionDataRequest
+public record TraderRepairActionDataRequest : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "TraderRepair";
-
     [JsonPropertyName("tid")]
     public string? TId { get; set; }
 

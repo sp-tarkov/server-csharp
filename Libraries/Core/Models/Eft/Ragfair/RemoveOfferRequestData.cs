@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Ragfair;
 
-public record RemoveOfferRequestData
+public record RemoveOfferRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     [JsonPropertyName("offerId")]
     public string? OfferId { get; set; }
 }

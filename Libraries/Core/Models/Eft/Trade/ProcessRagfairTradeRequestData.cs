@@ -1,12 +1,10 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Trade;
 
-public record ProcessRagfairTradeRequestData
+public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     [JsonPropertyName("offers")]
     public List<OfferRequest>? Offers { get; set; }
 }

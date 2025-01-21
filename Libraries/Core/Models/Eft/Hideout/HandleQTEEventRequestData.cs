@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HandleQTEEventRequestData
+public record HandleQTEEventRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     /** true if QTE was successful, otherwise false */
     [JsonPropertyName("results")]
     public List<bool>? Results { get; set; }

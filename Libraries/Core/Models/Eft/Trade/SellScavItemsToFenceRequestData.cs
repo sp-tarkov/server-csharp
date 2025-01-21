@@ -1,19 +1,11 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Trade;
 
-public record SellScavItemsToFenceRequestData
+public record SellScavItemsToFenceRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "SellAllFromSavage";
-
     [JsonPropertyName("totalValue")]
     public double? TotalValue { get; set; }
-
-    [JsonPropertyName("fromOwner")]
-    public OwnerInfo? FromOwner { get; set; }
-
-    [JsonPropertyName("toOwner")]
-    public OwnerInfo? ToOwner { get; set; }
 }
