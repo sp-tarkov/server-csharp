@@ -5,9 +5,6 @@ namespace Core.Models.Eft.Insurance;
 
 public record InsureRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "Insure";
-
     [JsonPropertyName("tid")]
     public string? TransactionId { get; set; }
 

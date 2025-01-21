@@ -5,9 +5,6 @@ namespace Core.Models.Eft.Health;
 
 public record OffraidEatRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "Eat";
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 

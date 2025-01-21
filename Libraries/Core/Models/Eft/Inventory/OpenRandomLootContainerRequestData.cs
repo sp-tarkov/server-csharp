@@ -2,10 +2,8 @@
 
 namespace Core.Models.Eft.Inventory;
 
-public record OpenRandomLootContainerRequestData
+public record OpenRandomLootContainerRequestData : InventoryBaseActionRequestData
 {
-    public string? Action { get; set; } = "OpenRandomLootContainer";
-
     /// <summary>
     /// Container item id being opened
     /// </summary>

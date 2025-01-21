@@ -4,9 +4,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventoryTagRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "Tag";
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 

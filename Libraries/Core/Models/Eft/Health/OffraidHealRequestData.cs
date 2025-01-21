@@ -4,7 +4,6 @@ namespace Core.Models.Eft.Health;
 
 public record OffraidHealRequestData : BaseInteractionRequestData
 {
-    public override string? Action { get; set; } = "Heal";
     public string? Item { get; set; }
     public BodyPart? Part { get; set; }
     public int? Count { get; set; }

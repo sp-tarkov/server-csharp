@@ -5,9 +5,6 @@ namespace Core.Models.Eft.Notes;
 
 public record NoteActionData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; }
-
     [JsonPropertyName("index")]
     public int? Index { get; set; }
 

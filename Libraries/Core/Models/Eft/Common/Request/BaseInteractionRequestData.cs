@@ -5,7 +5,7 @@ namespace Core.Models.Eft.Common.Request;
 public record BaseInteractionRequestData
 {
     [JsonPropertyName("Action")]
-    public virtual string? Action { get; set; }
+    public string? Action { get; set; }
 
     [JsonPropertyName("fromOwner")]
     public OwnerInfo? FromOwner { get; set; }

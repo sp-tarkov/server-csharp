@@ -5,9 +5,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventoryExamineRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "Examine";
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 

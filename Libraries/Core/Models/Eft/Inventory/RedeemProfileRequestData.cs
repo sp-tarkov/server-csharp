@@ -4,9 +4,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record RedeemProfileRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "RedeemProfileReward";
-
     [JsonPropertyName("events")]
     public List<RedeemProfileRequestEvent>? Events { get; set; }
 }

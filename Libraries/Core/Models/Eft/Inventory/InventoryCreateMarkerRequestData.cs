@@ -5,9 +5,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventoryCreateMarkerRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "CreateMapMarker";
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 

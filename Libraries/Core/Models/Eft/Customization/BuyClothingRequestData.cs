@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Customization;
 
-public record BuyClothingRequestData
+public record BuyClothingRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "CustomizationBuy";
-
     [JsonPropertyName("offer")]
     public string? Offer { get; set; }
 

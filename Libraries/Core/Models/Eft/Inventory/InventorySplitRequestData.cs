@@ -4,9 +4,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventorySplitRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; } = "Split";
-
     /** Id of item to split */
     [JsonPropertyName("splitItem")]
     public string? SplitItem { get; set; }

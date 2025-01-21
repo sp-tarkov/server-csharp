@@ -4,9 +4,6 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventoryToggleRequestData : InventoryBaseActionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "Toggle";
-
     [JsonPropertyName("item")]
     public string? Item { get; set; }
 
