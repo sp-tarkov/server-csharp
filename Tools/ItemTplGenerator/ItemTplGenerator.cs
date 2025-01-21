@@ -2,6 +2,7 @@ using Core.DI;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Microsoft.Extensions.Logging;
@@ -15,7 +16,7 @@ namespace ItemTplGenerator;
 public class ItemTplGenerator(
     DatabaseServer _databaseServer,
     LocaleService _localeService,
-    ILogger<ItemTplGenerator> _logger,
+    ISptLogger<ItemTplGenerator> _logger,
     ItemHelper _itemHelper,
     // @inject("FileSystemSync") protected fileSystemSync: FileSystemSync,
     IEnumerable<OnLoad> _onLoadComponents
@@ -60,7 +61,7 @@ public class ItemTplGenerator(
             new Dictionary<string, Dictionary<string, string>>() { { nameof(Weapons), weaponsObject } }
         );
 
-        _logger.LogInformation("Generating items finished");
+        _logger.Info("Generating items finished");
     }
 
     /**
@@ -133,14 +134,14 @@ public class ItemTplGenerator(
                     // If we still collide, log an error
                     if (itemsObject.ContainsKey(itemKey))
                     {
-                        _logger.LogError(
+                        _logger.Error(
                             $"After rename, itemsObject already contains {itemKey}  {itemsObject[itemKey]} => {item.Id}"
                         );
                     }
                 }
                 else
                 {
-                    _logger.LogError(
+                    _logger.Error(
                         $"New itemOverride entry required: itemsObject already contains {itemKey}  {itemsObject[itemKey]} => {item.Id}"
                     );
                     continue;
@@ -208,7 +209,7 @@ public class ItemTplGenerator(
 
             if (weaponsObject.ContainsKey(weaponName))
             {
-                _logger.LogError($"weapon {weaponName} already exists");
+                _logger.Error($"weapon {weaponName} already exists");
                 continue;
             }
 
@@ -548,7 +549,7 @@ public class ItemTplGenerator(
         {
             if (originalEnumValues.ContainsKey(kv.Value) && originalEnumValues[kv.Value] != kv.Key)
             {
-                _logger.LogWarning(
+                _logger.Warning(
                     $"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}"
                 );
             }
