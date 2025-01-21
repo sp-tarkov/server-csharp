@@ -42,9 +42,13 @@ public class DurabilityLimitsHelper(
                 return GenerateMaxWeaponDurability("follower");
             }
         }
-        
 
-        return GenerateMaxWeaponDurability(botRole);
+        var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
+        if (!roleExistsInConfig)
+        {
+            _logger.Warning($"{botRole} doesn't exist in bot config durability values, using default fallback");
+        }
+        return GenerateMaxWeaponDurability(roleExistsInConfig ? botRole : "default");
     }
 
     /// <summary>
@@ -105,7 +109,12 @@ public class DurabilityLimitsHelper(
             }
         }
 
-        return GenerateWeaponDurability(botRole, maxDurability);
+        var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
+        if (!roleExistsInConfig)
+        {
+            _logger.Warning($"{botRole} doesn't exist in bot config durability values, using default fallback");
+        }
+        return GenerateWeaponDurability(roleExistsInConfig ? botRole : "default", maxDurability);
     }
 
     /// <summary>

@@ -82,12 +82,18 @@ public class ExternalInventoryMagGen(
 
                 if (magazineTpl == defaultMagazineTpl)
                 {
-                    // We were already on default - stop here to prevent infinite looping
+                    // We were already on default - stop here to prevent infinite loop
                     break;
                 }
 
                 // Add failed magazine tpl to blacklist
                 attemptedMagBlacklist.Add(magazineTpl);
+
+                if (defaultMagazineTpl is null)
+                {
+                    // No default to fall back to, stop trying to add mags
+                    break;
+                }
 
                 // Set chosen magazine tpl to the weapons default magazine tpl and try to fit into inventory next loop
                 magazineTpl = defaultMagazineTpl;

@@ -149,7 +149,7 @@ public class BotWeaponGeneratorHelper(
     /// </summary>
     /// <param name="weaponTemplate">Weapon to get default magazine for</param>
     /// <returns>Tpl of magazine</returns>
-    public string GetWeaponsDefaultMagazineTpl(TemplateItem weaponTemplate)
+    public string? GetWeaponsDefaultMagazineTpl(TemplateItem weaponTemplate)
     {
         return weaponTemplate.Properties.DefMagType;
     }

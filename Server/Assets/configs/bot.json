@@ -274,7 +274,21 @@
                 "minDelta": 0,
                 "minLimitPercent": 15
             }
-        }
+        },
+		"gifter": {
+			"armor": {
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            },
+            "weapon": {
+                "lowestMax": 90,
+                "highestMax": 100,
+                "maxDelta": 10,
+                "minDelta": 0,
+                "minLimitPercent": 15
+            }
+		}
 		}
     },
     "lootItemResourceRandomization": {
