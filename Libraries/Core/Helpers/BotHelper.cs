@@ -61,7 +61,7 @@ public class BotHelper(
 
     public bool IsBotZombie(string botRole)
     {
-        return botRole?.ToLower().StartsWith("zombie") ?? false;
+        return botRole?.ToLower().StartsWith("infected") ?? false;
     }
 
     /// <summary>
