@@ -22,7 +22,7 @@ public record Location
     public StaticContainerDetails? StaticContainers { get; set; }
 
     [JsonPropertyName("staticAmmo")]
-    public Dictionary<string, StaticAmmoDetails[]> StaticAmmo { get; set; }
+    public Dictionary<string, List<StaticAmmoDetails>> StaticAmmo { get; set; }
 
     /** All possible static containers on map + their assign groupings */
     [JsonPropertyName("statics")]

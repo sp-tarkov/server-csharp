@@ -27,7 +27,7 @@ public class BotNameService(
     /// </summary>
     public void ClearNameCache()
     {
-        throw new NotImplementedException();
+        _usedNameCache.Clear();
     }
 
     /// <summary>

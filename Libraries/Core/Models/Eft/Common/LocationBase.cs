@@ -575,7 +575,7 @@ public record AdditionalHostilitySettings
     public List<string>? AlwaysFriends { get; set; }
 
     [JsonPropertyName("BearEnemyChance")]
-    public int? BearEnemyChance { get; set; }
+    public double? BearEnemyChance { get; set; }
 
     [JsonPropertyName("BearPlayerBehaviour")]
     public string? BearPlayerBehaviour { get; set; }
@@ -593,10 +593,10 @@ public record AdditionalHostilitySettings
     public string? SavagePlayerBehaviour { get; set; }
 
     [JsonPropertyName("SavageEnemyChance")]
-    public int? SavageEnemyChance { get; set; }
+    public double? SavageEnemyChance { get; set; }
 
     [JsonPropertyName("UsecEnemyChance")]
-    public int? UsecEnemyChance { get; set; }
+    public double? UsecEnemyChance { get; set; }
 
     [JsonPropertyName("UsecPlayerBehaviour")]
     public string? UsecPlayerBehaviour { get; set; }
