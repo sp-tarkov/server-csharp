@@ -302,6 +302,20 @@
                 "minDelta": 0,
                 "minLimitPercent": 15
             }
+		},
+		"shooterbtr": {
+			"armor": {
+                "maxDelta": 0,
+                "minDelta": 0,
+                "minLimitPercent": 0
+            },
+            "weapon": {
+                "lowestMax": 100,
+                "highestMax": 100,
+                "maxDelta": 0,
+                "minDelta": 0,
+                "minLimitPercent": 0
+            }
 		}
 		}
     },
