@@ -5,7 +5,6 @@ using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-using Microsoft.Extensions.Logging;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
 using Path = System.IO.Path;
@@ -14,9 +13,9 @@ namespace ItemTplGenerator;
 
 [Injectable]
 public class ItemTplGenerator(
+    ISptLogger<ItemTplGenerator> _logger,
     DatabaseServer _databaseServer,
     LocaleService _localeService,
-    ISptLogger<ItemTplGenerator> _logger,
     ItemHelper _itemHelper,
     // @inject("FileSystemSync") protected fileSystemSync: FileSystemSync,
     IEnumerable<OnLoad> _onLoadComponents

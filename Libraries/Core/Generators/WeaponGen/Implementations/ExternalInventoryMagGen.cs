@@ -40,8 +40,9 @@ public class ExternalInventoryMagGen(
         var weapon = inventoryMagGen.GetWeaponTemplate();
         List<string> attemptedMagBlacklist = [];
         var defaultMagazineTpl = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weapon);
-        var randomizedMagazineCount = _botWeaponGeneratorHelper.GetRandomizedMagazineCount(inventoryMagGen.GetMagCount());
         var isShotgun = _itemHelper.IsOfBaseclass(weapon.Id, BaseClasses.SHOTGUN);
+
+        var randomizedMagazineCount = _botWeaponGeneratorHelper.GetRandomizedMagazineCount(inventoryMagGen.GetMagCount());
         for (var i = 0; i < randomizedMagazineCount; i++)
         {
             var magazineWithAmmo = _botWeaponGeneratorHelper.CreateMagazineWithAmmo(

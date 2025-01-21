@@ -183,7 +183,7 @@ public class BotController(
 
         if (botCacheCount >= botGenerationDetails.BotCountToGenerate)
         {
-            _logger.Debug($"Cache already has sufficient bots: {botCacheCount}");
+            _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
             return;
         }
 

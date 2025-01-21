@@ -56,7 +56,7 @@ public class BotNameService(
             // Get bot name with leading/trailing whitespace removed
             var name = (isPmc.GetValueOrDefault(false)) // Explicit handling of PMCs, all other bots will get "first_name last_name"
                 ? _botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit, botGenerationDetails.Side)
-                : $"{_randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {_randomUtil.GetArrayValue(botJsonTemplate.LastNames)}";
+                : $"{_randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Count > 0 ? _randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
 

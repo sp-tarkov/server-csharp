@@ -144,7 +144,25 @@ public class ContainerHelper
         int itemH,
         bool rotate)
     {
-        throw new NotImplementedException();
+        // Swap height/width if we want to fit it in rotated
+        var itemWidth = rotate ? itemH : itemW;
+        var itemHeight = rotate ? itemW : itemH;
+
+        for (var tmpY = y; tmpY < y + itemHeight; tmpY++)
+        {
+            for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
+            {
+                if (container2D[tmpY][tmpX] == 0)
+                {
+                    // Flag slot as used
+                    container2D[tmpY][tmpX] = 1;
+                }
+                else
+                {
+                    throw new Exception($"Slot at({ x }, { y}) is already filled. Cannot fit a { itemW} by { itemH} item");
+                }
+            }
+        }
     }
 }
 

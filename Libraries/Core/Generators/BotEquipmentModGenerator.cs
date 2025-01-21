@@ -1384,7 +1384,7 @@ public class BotEquipmentModGenerator(
             );
         }
 
-        if (modPool[modTemplate.Id] is null)
+        if (!modPool.ContainsKey(modTemplate.Id))
         {
             modPool[modTemplate.Id] = new();
         }

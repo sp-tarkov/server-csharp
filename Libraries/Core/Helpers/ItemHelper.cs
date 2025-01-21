@@ -1450,6 +1450,13 @@ public class ItemHelper(
         double minSizeMultiplier = 0.25
     )
     {
+        var isUBGL = IsOfBaseclass(magTemplate.Id, BaseClasses.UBGL);
+        if (isUBGL)
+        {
+            // UBGL don't have mags
+            return;
+        }
+
         // Get cartridge properties and max allowed stack size
         var cartridgeDetails = GetItem(cartridgeTpl);
         if (!cartridgeDetails.Key)
@@ -1467,7 +1474,7 @@ public class ItemHelper(
         var magProps = magTemplate.Properties;
         var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
             ? magProps?.Slots?.Count // Edge case for rotating grenade launcher magazine
-            : magProps?.Cartridges.FirstOrDefault()?.MaxCount;
+            : magProps?.Cartridges?.FirstOrDefault()?.MaxCount;
 
         if (magazineCartridgeMaxCount is null)
         {

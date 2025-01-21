@@ -14,6 +14,7 @@ using Core.Models.Eft.Hideout;
 using Core.Models.Enums;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Services;
+using System.Xml.Linq;
 
 namespace Core.Helpers;
 
@@ -22,6 +23,7 @@ public class InventoryHelper(
     ISptLogger<InventoryHelper> _logger,
     ProfileHelper _profileHelper,
     DialogueHelper _dialogueHelper,
+    ContainerHelper _containerHelper,
     ItemHelper _itemHelper,
     LocalisationService _localisationService
 )
@@ -94,9 +96,9 @@ public class InventoryHelper(
     /// <param name="containerFS2D">Container grid to fit items into</param>
     /// <param name="itemsWithChildren">Items to try and fit into grid</param>
     /// <returns>True all fit</returns>
-    public bool CanPlaceItemsInContainer(List<List<double>>? containerFS2D, List<List<Item>> itemsWithChildren)
+    public bool CanPlaceItemsInContainer(int[][] containerFS2D, List<List<Item>> itemsWithChildren)
     {
-        throw new NotImplementedException();
+        return itemsWithChildren.All(itemWithChildren => CanPlaceItemInContainer(containerFS2D, itemWithChildren));
     }
 
     /// <summary>
@@ -105,9 +107,38 @@ public class InventoryHelper(
     /// <param name="containerFS2D">Container grid</param>
     /// <param name="itemWithChildren">Item to check fits</param>
     /// <returns>True it fits</returns>
-    public bool CanPlaceItemInContainer(List<List<int>>? containerFS2D, List<Item> itemWithChildren)
+    public bool CanPlaceItemInContainer(int[][] containerFS2D, List<Item> itemWithChildren)
     {
-        throw new NotImplementedException();
+        // Get x/y size of item
+        var rootItem = itemWithChildren[0];
+        var itemSize = GetItemSize(rootItem.Template, rootItem.Id, itemWithChildren);
+
+        // Look for a place to slot item into
+        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, itemSize[0], itemSize[1]);
+        if (findSlotResult.Success.GetValueOrDefault(false))
+        {
+            try
+            {
+                _containerHelper.FillContainerMapWithItem(
+                    containerFS2D,
+                    findSlotResult.X.Value,
+                    findSlotResult.Y.Value,
+                    itemSize[0],
+                    itemSize[1],
+                    findSlotResult.Rotation.Value);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_localisationService.GetText("inventory-unable_to_fit_item_into_inventory", ex.Message));
+
+                return false;
+            }
+
+            // Success! exit
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>
@@ -118,12 +149,49 @@ public class InventoryHelper(
     /// <param name="containerId">Id of the container we're fitting item into</param>
     /// <param name="desiredSlotId">Slot id value to use, default is "hideout"</param>
     public void PlaceItemInContainer(
-        List<List<double>> containerFS2D,
+        int[][] containerFS2D,
         List<Item> itemWithChildren,
         string containerId,
         string desiredSlotId = "hideout")
     {
-        throw new NotImplementedException();
+        // Get x/y size of item
+        var rootItemAdded = itemWithChildren[0];
+        var itemSize = GetItemSize(rootItemAdded.Template, rootItemAdded.Id, itemWithChildren);
+
+        // Look for a place to slot item into
+        var findSlotResult = _containerHelper.FindSlotForItem(containerFS2D, itemSize[0], itemSize[1]);
+        if (findSlotResult.Success.GetValueOrDefault(false))
+        {
+            try
+            {
+                _containerHelper.FillContainerMapWithItem(
+                    containerFS2D,
+                    findSlotResult.X.Value,
+                    findSlotResult.Y.Value,
+                    itemSize[0],
+                    itemSize[1],
+                    findSlotResult.Rotation.Value);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(_localisationService.GetText("inventory-fill_container_failed", ex.Message));
+
+                return;
+            }
+            // Store details for object, incuding container item will be placed in
+            rootItemAdded.ParentId = containerId;
+            rootItemAdded.SlotId = desiredSlotId;
+            rootItemAdded.Location = new ItemLocation
+            {
+                X = findSlotResult.X,
+                Y = findSlotResult.Y,
+                R = findSlotResult.Rotation.GetValueOrDefault(false) ? 1 : 0,
+                Rotation = findSlotResult.Rotation,
+            };
+
+            // Success! exit
+            return;
+        }
     }
 
     /// <summary>
@@ -515,7 +583,7 @@ public class InventoryHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="sessionID">session id</param>
     /// <returns>2-dimensional array</returns>
-    protected int[,] GetStashSlotMap(PmcData pmcData, string sessionID)
+    protected int[][] GetStashSlotMap(PmcData pmcData, string sessionID)
     {
         throw new NotImplementedException();
     }
@@ -525,9 +593,15 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="containerTpl">Container to get data for</param>
     /// <returns>blank two-dimensional array</returns>
-    public List<List<double>> GetContainerSlotMap(string containerTpl)
+    public int[][] GetContainerSlotMap(string containerTpl)
     {
-        throw new NotImplementedException();
+        var containerTemplate = _itemHelper.GetItem(containerTpl).Value;
+
+        var firstContainerGrid = containerTemplate.Properties.Grids.FirstOrDefault();
+        var containerH = firstContainerGrid.Props.CellsH;
+        var containerV = firstContainerGrid.Props.CellsV;
+
+        return GetBlankContainerMap(containerH.Value, containerV.Value);
     }
 
     /// <summary>
@@ -535,7 +609,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <returns>two-dimensional array</returns>
-    protected List<List<double>> GetSortingTableSlotMap(PmcData pmcData)
+    protected int[][] GetSortingTableSlotMap(PmcData pmcData)
     {
         throw new NotImplementedException();
     }
