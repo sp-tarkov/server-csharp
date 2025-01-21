@@ -3,7 +3,7 @@
     "profiles": {
         "ItemTplGenerator": {
             "commandName": "Project",
-            "hotReloadEnabled": true
+            "hotReloadEnabled": false
         }
     }
 }

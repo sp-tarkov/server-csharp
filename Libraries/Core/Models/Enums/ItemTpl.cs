@@ -2815,7 +2815,7 @@ public static class ItemTpl
     public static string MAGAZINE_556X45_HK_STEEL_30RND = "5c05413a0db834001c390617";
     public static string MAGAZINE_556X45_MAG5100_100RND = "5c6592372e221600133e47d7";
     public static string MAGAZINE_556X45_MAG560_60RND = "544a37c44bdc2d25388b4567";
-    public static string MAGAZINE_556X45_MK16_30RND = "61840d85568c120fdd2962a5";
+    public static string MAGAZINE_556X45_MK16_FDE_30RND = "61840d85568c120fdd2962a5";
     public static string MAGAZINE_556X45_PMAG_D60_60RND = "59c1383d86f774290a37e0ca";
     public static string MAGAZINE_556X45_PM_GEN2_30RND = "5c6d450c2e221600114c997d";
     public static string MAGAZINE_556X45_STANAG_30RND = "55d4887d4bdc2d962f8b4570";

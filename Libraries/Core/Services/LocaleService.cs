@@ -13,9 +13,6 @@ public class LocaleService(
     ConfigServer _configServer
 )
 {
-    protected ISptLogger<LocaleService> _logger;
-    protected DatabaseServer _databaseServer;
-    protected ConfigServer _configServer;
     protected LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
 
     /**

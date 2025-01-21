@@ -1,3 +1,4 @@
+using Core.Callbacks;
 using Core.DI;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
@@ -23,22 +24,24 @@ public class ItemTplGenerator(
 {
     private string enumDir;
     private Dictionary<string, TemplateItem> items;
-    private Dictionary<string, string> itemOverrides;
-    private List<string> collidedEnumKeys = [];
+    private IDictionary<string, string> itemOverrides;
+    private HashSet<string> collidedEnumKeys = [];
 
     public async Task Run()
     {
+        itemOverrides = ItemOverrides.ItemOverridesDictionary;
         // Load all of the onload components, this gives us access to most of SPTs injections
         foreach (var onLoad in _onLoadComponents)
         {
+            if (onLoad is HttpCallbacks)
+                continue;
             await onLoad.OnLoad();
         }
 
         // Figure out our source and target directories
-        var projectDir = Directory.GetParent("./").Parent;
-        enumDir = Path.Combine(projectDir.FullName, "Core", "Models", "Enums");
+        var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
+        enumDir = Path.Combine(projectDir.FullName, "Libraries", "Core", "Models", "Enums");
         items = _databaseServer.GetTables().Templates.Items;
-        itemOverrides = new Dictionary<string, string>();
 
         // Generate an object containing all item name to ID associations
         var orderedItemsObject = GenerateItemsObject();
@@ -79,9 +82,11 @@ public class ItemTplGenerator(
             var itemPrefix = GetItemPrefix(item);
             var itemName = GetItemName(item);
             var itemSuffix = GetItemSuffix(item);
-
+            
             // Handle the case where the item starts with the parent category name. Avoids things like 'POCKETS_POCKETS'
-            if (itemParentName == itemName.Substring(1, itemParentName.Length + 1) && itemPrefix == "")
+            if (itemName.Length > itemParentName.Length &&
+                itemParentName == itemName.Substring(1, itemParentName.Length) &&
+                itemPrefix == "")
             {
                 itemName = itemName.Substring(itemParentName.Length + 1);
                 if (itemName.Length > 0 && itemName[0] != '_')
@@ -91,7 +96,8 @@ public class ItemTplGenerator(
             }
 
             // Handle the case where the item ends with the parent category name. Avoids things like 'KEY_DORM_ROOM_103_KEY'
-            if (itemParentName == itemName.Substring(itemName.Length - itemParentName.Length))
+            if (itemName.Length >= itemParentName.Length &&
+                itemParentName == itemName.Substring(itemName.Length - itemParentName.Length))
             {
                 itemName = itemName.Substring(0, itemName.Length - itemParentName.Length);
 
@@ -113,14 +119,14 @@ public class ItemTplGenerator(
                 collidedEnumKeys.Add(itemKey);
 
                 var itemNameSuffix = GetItemNameSuffix(item);
-                if (itemNameSuffix != null)
+                if (!string.IsNullOrEmpty(itemNameSuffix))
                 {
                     // Try to update the old key reference if we haven't already
                     if (itemsObject.ContainsKey(itemKey))
                     {
                         var oldItemId = itemsObject[itemKey];
                         var oldItemNameSuffix = GetItemNameSuffix(items[oldItemId]);
-                        if (oldItemNameSuffix != null)
+                        if (!string.IsNullOrEmpty(oldItemNameSuffix))
                         {
                             var oldItemNewKey = SanitizeEnumKey($"{itemKey}_{oldItemNameSuffix}");
                             itemsObject.Remove(itemKey);
@@ -140,9 +146,10 @@ public class ItemTplGenerator(
                 }
                 else
                 {
-                    _logger.Error(
-                        $"New itemOverride entry required: itemsObject already contains {itemKey}  {itemsObject[itemKey]} => {item.Id}"
-                    );
+                    var val = itemsObject.ContainsKey(itemKey) ? 
+                        itemsObject[itemKey] : 
+                        itemKey;
+                    _logger.Error($"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}");
                     continue;
                 }
             }
@@ -154,14 +161,6 @@ public class ItemTplGenerator(
         var itemList = itemsObject.ToList();
         itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
         var orderedItemsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
-        /* I think the above should be the same?
-        var orderedItemsObject = Object.keys(itemsObject)
-            .sort()
-            .reduce((obj, key) => {
-                obj[key] = itemsObject[key];
-                return obj;
-            }, {});
-        */
         return orderedItemsObject;
     }
 
@@ -181,7 +180,6 @@ public class ItemTplGenerator(
             }
 
             var caliber = CleanCaliber(kv.Value.Properties.AmmoCaliber.ToUpper());
-            var localeDb = _localeService.GetLocaleDb();
             var weaponShortName = _localeService.GetLocaleDb()[$"{kv.Key} ShortName"]?.ToUpper();
 
             // Special case for the weird duplicated grenade launcher
@@ -193,9 +191,9 @@ public class ItemTplGenerator(
             // Include any bracketed suffixes that exist, handles the case of colored gun variants
             var weaponFullName = _localeService.GetLocaleDb()[$"{kv.Key} Name"]?.ToUpper();
             if (weaponFullName.RegexMatch("\\((.+?)\\)$", out var itemNameBracketSuffix) &&
-                !weaponShortName.EndsWith(itemNameBracketSuffix.Captures[1].Value))
+                !weaponShortName.EndsWith(itemNameBracketSuffix.Groups[1].Value))
             {
-                weaponShortName += $"_{itemNameBracketSuffix.Captures[1].Value}";
+                weaponShortName += $"_{itemNameBracketSuffix.Groups[1].Value}";
             }
 
             var parentName = GetParentName(kv.Value);
@@ -219,14 +217,6 @@ public class ItemTplGenerator(
         var itemList = weaponsObject.ToList();
         itemList.Sort((kv1, kv2) => kv1.Key.CompareTo(kv2.Key));
         var orderedWeaponsObject = itemList.ToDictionary(kv => kv.Key, kv => kv.Value);
-        /* I think the above should be the same?
-        var orderedWeaponsObject = Object.keys(weaponsObject.Keys)
-            .sort()
-            .reduce((obj, key) => {
-                obj[key] = weaponsObject[key];
-                return obj;
-            }, {});
-        */
         return orderedWeaponsObject;
     }
 
@@ -444,7 +434,7 @@ public class ItemTplGenerator(
                 [
                     BaseClasses.RANDOM_LOOT_CONTAINER,
                     BaseClasses.BUILT_IN_INSERTS,
-                    BaseClasses.STASH,
+                    BaseClasses.STASH
                 ]
             )
         )
@@ -455,28 +445,28 @@ public class ItemTplGenerator(
         else if (_itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]))
         {
             if (localeDb.TryGetValue($"{item.Id} ShortName", out itemName))
-                itemName.ToUpper();
+                itemName = itemName.ToUpper();
         }
         // For everything else, use the full name
         else
         {
             if (localeDb.TryGetValue($"{item.Id} Name", out itemName))
-                itemName.ToUpper();
+                itemName = itemName.ToUpper();
         }
 
         // Fall back in the event we couldn't find a name
-        if (itemName == null)
+        if (string.IsNullOrEmpty(itemName))
         {
-            if (localeDb.TryGetValue("{item.Id} Name", out itemName))
-                itemName.ToUpper();
+            if (localeDb.TryGetValue($"{item.Id} Name", out itemName))
+                itemName = itemName.ToUpper();
         }
 
-        if (itemName == null)
+        if (string.IsNullOrEmpty(itemName))
         {
             itemName = item.Name?.ToUpper() ?? null;
         }
 
-        if (itemName == null)
+        if (string.IsNullOrEmpty(itemName))
         {
             Console.WriteLine($"Unable to get shortname for {item.Id}");
             return "";
@@ -496,7 +486,7 @@ public class ItemTplGenerator(
         // Add grid size for lootable containers
         if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.LOOT_CONTAINER))
         {
-            return $"{item.Properties.Grids[0]?.Props.CellsH}X${item.Properties.Grids[0]?.Props.CellsV}";
+            return $"{item.Properties.Grids[0]?.Props.CellsH}X{item.Properties.Grids[0]?.Props.CellsV}";
         }
 
         // Add ammo caliber to conflicting weapons
@@ -507,14 +497,14 @@ public class ItemTplGenerator(
             // If the item has a bracketed section at the end of its name, include that
             if (itemName?.RegexMatch("\\((.+?)\\)$", out var itemNameBracketSuffix) ?? false)
             {
-                return $"{caliber}_{itemNameBracketSuffix.Captures[1].Value}";
+                return $"{caliber}_{itemNameBracketSuffix.Groups[1].Value}";
             }
 
             return caliber;
         }
 
         // Make sure we have a full name
-        if (itemName == null)
+        if (string.IsNullOrEmpty(itemName))
         {
             return "";
         }
@@ -522,13 +512,13 @@ public class ItemTplGenerator(
         // If the item has a bracketed section at the end of its name, use that
         if (itemName.RegexMatch("\\((.+?)\\)$", out var itemNameBracker))
         {
-            return itemNameBracker.Captures[1].Value;
+            return itemNameBracker.Groups[1].Value;
         }
 
         // If the item has a number at the end of its name, use that
         if (itemName.RegexMatch("#([0-9]+)$", out var itemNameNumberSuffix))
         {
-            return itemNameNumberSuffix.Captures[1].Value;
+            return itemNameNumberSuffix.Groups[1].Value;
         }
 
         return "";
@@ -572,6 +562,7 @@ public class ItemTplGenerator(
             enumFileData += "}\n";
         }
 
+        // TODO: enable once we dont get any more errors
         // this.fileSystemSync.write(outputPath, enumFileData);
     }
 }
