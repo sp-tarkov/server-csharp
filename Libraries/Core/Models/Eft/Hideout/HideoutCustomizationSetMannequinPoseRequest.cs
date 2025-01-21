@@ -1,16 +1,13 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
-namespace Core.Models.Eft.Hideout
+namespace Core.Models.Eft.Hideout;
+
+public record HideoutCustomizationSetMannequinPoseRequest : BaseInteractionRequestData
 {
-    public record HideoutCustomizationSetMannequinPoseRequest
-    {
-        [JsonPropertyName("Action")]
-        public string? Action { get; set; } = "HideoutCustomizationSetMannequinPose";
+    [JsonPropertyName("poses")]
+    public Dictionary<string, string> Poses { get; set; }
 
-        [JsonPropertyName("poses")]
-        public Dictionary<string, string> Poses { get; set; }
-
-        [JsonPropertyName("timestamp")]
-        public double Timestamp { get; set; }
-    }
+    [JsonPropertyName("timestamp")]
+    public double Timestamp { get; set; }
 }

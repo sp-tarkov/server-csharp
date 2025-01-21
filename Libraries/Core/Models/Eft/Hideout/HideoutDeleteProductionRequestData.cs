@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutDeleteProductionRequestData
+public record HideoutDeleteProductionRequestData: BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "HideoutDeleteProductionCommand";
-
     [JsonPropertyName("recipeId")]
     public string? RecipeId { get; set; }
 

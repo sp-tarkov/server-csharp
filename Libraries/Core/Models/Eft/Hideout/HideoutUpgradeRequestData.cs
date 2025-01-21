@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutUpgradeRequestData
+public record HideoutUpgradeRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "HideoutUpgrade";
 
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }

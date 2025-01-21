@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Health;
 
-public record HealthTreatmentRequestData
+public record HealthTreatmentRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string Action { get; set; } = "RestoreHealth";
 
     [JsonPropertyName("trader")]
     public string? Trader { get; set; }

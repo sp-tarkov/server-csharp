@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutTakeItemOutRequestData
+public record HideoutTakeItemOutRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "HideoutTakeItemsFromAreaSlots";
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 

@@ -1,11 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutCustomizationApplyRequestData
+public record HideoutCustomizationApplyRequestData: BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "HideoutCustomizationApply";
 
     /// <summary>
     /// Id of the newly picked item to apply to hideout

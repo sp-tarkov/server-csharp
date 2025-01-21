@@ -1,12 +1,10 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutToggleAreaRequestData
+public record HideoutToggleAreaRequestData : BaseInteractionRequestData
 {
-    [JsonPropertyName("Action")]
-    public string? Action { get; set; } = "HideoutToggleArea";
-
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
 
