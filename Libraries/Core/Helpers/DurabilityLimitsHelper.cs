@@ -25,30 +25,9 @@ public class DurabilityLimitsHelper(
     /// <returns>Max durability of weapon</returns>
     public double GetRandomizedMaxWeaponDurability(TemplateItem itemTemplate, string? botRole = null)
     {
-        if (botRole is not null)
-        {
-            if (_botHelper.IsBotPmc(botRole))
-            {
-                return GenerateMaxWeaponDurability("pmc");
-            }
+        var durabilityRole = GetDurabilityRole(botRole);
 
-            if (_botHelper.IsBotBoss(botRole))
-            {
-                return GenerateMaxWeaponDurability("boss");
-            }
-
-            if (_botHelper.IsBotFollower(botRole))
-            {
-                return GenerateMaxWeaponDurability("follower");
-            }
-        }
-
-        var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
-        if (!roleExistsInConfig)
-        {
-            _logger.Warning($"{botRole} doesn't exist in bot config durability values, using default fallback");
-        }
-        return GenerateMaxWeaponDurability(roleExistsInConfig ? botRole : "default");
+        return GenerateMaxWeaponDurability(durabilityRole);
     }
 
     /// <summary>
@@ -91,30 +70,47 @@ public class DurabilityLimitsHelper(
     /// <returns>Current weapon durability</returns>
     public double GetRandomizedWeaponDurability(TemplateItem itemTemplate, string? botRole, double maxDurability)
     {
-        if (botRole is not null)
+        var durabilityRole = GetDurabilityRole(botRole);
+
+        return GenerateWeaponDurability(durabilityRole, maxDurability);
+    }
+
+    /// <summary>
+    /// Convert a botrole into a durability role used for looking up durability values with
+    /// </summary>
+    /// <param name="botRole">Role to convert</param>
+    /// <returns></returns>
+    private string GetDurabilityRole(string? botRole)
+    {
+        if (botRole is null)
         {
-            if (_botHelper.IsBotPmc(botRole))
-            {
-                return GenerateWeaponDurability("pmc", maxDurability);
-            }
+            return "default";
+        }
 
-            if (_botHelper.IsBotBoss(botRole))
-            {
-                return GenerateWeaponDurability("boss", maxDurability);
-            }
+        if (_botHelper.IsBotPmc(botRole))
+        {
+            return "pmc";
+        }
 
-            if (_botHelper.IsBotFollower(botRole))
-            {
-                return GenerateWeaponDurability("follower", maxDurability);
-            }
+        if (_botHelper.IsBotBoss(botRole))
+        {
+            return "boss";
+        }
+
+        if (_botHelper.IsBotFollower(botRole))
+        {
+            return "follower";
         }
 
         var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
         if (!roleExistsInConfig)
         {
             _logger.Warning($"{botRole} doesn't exist in bot config durability values, using default fallback");
+
+            return "default";
         }
-        return GenerateWeaponDurability(roleExistsInConfig ? botRole : "default", maxDurability);
+
+        return botRole;
     }
 
     /// <summary>
