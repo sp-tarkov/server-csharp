@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Utils;
@@ -6,16 +6,15 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 
-
 namespace Core.Helpers;
 
 [Injectable]
 public class DialogueHelper(
     ISptLogger<DialogueHelper> _logger,
     HashUtil _hashUtil,
-    SaveServer _saveServer,
     DatabaseServer _databaseServer,
     NotifierHelper _notifierHelper,
+    ProfileHelper _profileHelper,
     NotificationSendHelper _notificationSendHelper,
     LocalisationService _localisationService,
     ItemHelper _itemHelper
@@ -56,7 +55,8 @@ public class DialogueHelper(
     /// <returns></returns>
     public List<Item> GetMessageItemContents(string messageID, string sessionID, string itemId)
     {
-        var dialogueData = _saveServer.GetProfile(sessionID).DialogueRecords;
+        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+        var dialogueData = fullProfile.DialogueRecords;
         foreach (var dialogue in dialogueData)
         {
             var message = dialogueData[dialogue.Key].Messages.FirstOrDefault(x => x.Id == messageID);
@@ -65,9 +65,9 @@ public class DialogueHelper(
 
             if (message.Id == messageID)
             {
-                var attachmentsNew = _saveServer.GetProfile(sessionID).DialogueRecords[dialogue.Key].AttachmentsNew;
+                var attachmentsNew = fullProfile.DialogueRecords[dialogue.Key].AttachmentsNew;
                 if (attachmentsNew > 0)
-                    _saveServer.GetProfile(sessionID).DialogueRecords[dialogue.Key].AttachmentsNew = attachmentsNew - 1;
+                    fullProfile.DialogueRecords[dialogue.Key].AttachmentsNew = attachmentsNew - 1;
 
                 // Check reward count when item being moved isn't in reward list
                 // If count is 0, it means after this move occurs the reward array will be empty and all rewards collected
@@ -95,7 +95,7 @@ public class DialogueHelper(
     /// <returns>Dialog dictionary</returns>
     public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(string sessionId)
     {
-        var profile = _saveServer.GetProfile(sessionId);
+        var profile = _profileHelper.GetFullProfile(sessionId);
         if (profile.DialogueRecords is null)
             profile.DialogueRecords = new();
 
