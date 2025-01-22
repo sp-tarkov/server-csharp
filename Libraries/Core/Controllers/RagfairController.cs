@@ -889,7 +889,7 @@ public class RagfairController
     {
         return new ProcessBuyTradeRequestData
         {
-            TId = "ragfair",
+            TransactionId = "ragfair",
             Action = "TradingConfirm",
             SchemeItems = [new ItemRequest { Id = _paymentHelper.GetCurrency(currency), Count = Math.Round(value) }],
             Type = "",

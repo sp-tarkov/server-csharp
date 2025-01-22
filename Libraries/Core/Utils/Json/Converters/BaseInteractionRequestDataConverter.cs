@@ -84,7 +84,19 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case "ChangeWishlistItemCategory":
                 return JsonSerializer.Deserialize<ChangeWishlistItemCategoryRequest>(jsonText);
             case "TradingConfirm":
-                return JsonSerializer.Deserialize<ProcessBaseTradeRequestData>(jsonText);
+            {
+                var json = JsonSerializer.Deserialize<ProcessBaseTradeRequestData>(jsonText);
+
+                switch (json.Type)
+                {
+                    case "buy_from_trader":
+                        return JsonSerializer.Deserialize<ProcessBuyTradeRequestData>(jsonText);
+                    case "sell_from_trader":
+                        return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
+                    default:
+                        throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
+                }
+            }
             case "RagFairBuyOffer":
                 return JsonSerializer.Deserialize<ProcessRagfairTradeRequestData>(jsonText);
             case "SellAllFromSavage":
