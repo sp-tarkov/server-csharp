@@ -12,7 +12,6 @@ using Core.Services;
 using Core.Utils.Collections;
 using SptCommon.Extensions;
 using BodyPart = Core.Models.Spt.Config.BodyPart;
-using Core.Models.Eft.Hideout;
 using Core.Utils.Cloners;
 
 namespace Core.Generators;
@@ -388,22 +387,6 @@ public class RepeatableQuestGenerator(
     }
 
     /// <summary>
-    /// Get a number of kills needed to complete elimination quest
-    /// </summary>
-    /// <param name="targetKey">Target type desired e.g. anyPmc/bossBully/Savage</param>
-    /// <param name="targetsConfig">Config</param>
-    /// <param name="eliminationConfig">Config</param>
-    /// <returns>Number of AI to kill</returns>
-    protected int GetEliminationKillCount(
-        string targetKey,
-        object targetsConfig, // TODO: typing was ProbabilityObjectArray<string, BossInfo>
-        EliminationConfig eliminationConfig
-    )
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
     /// A repeatable quest, besides some more or less static components, exists of reward and condition (see assets/database/templates/repeatableQuests.json)
     /// This is a helper method for GenerateEliminationQuest to create a location condition.
     /// </summary>
@@ -766,7 +749,9 @@ public class RepeatableQuestGenerator(
     /// <returns>List of Exit objects</returns>
     protected List<Exit> GetLocationExitsForSide(string locationKey, string playerSide)
     {
-        throw new NotImplementedException();
+        var mapExtracts = _databaseService.GetLocation(locationKey.ToLower()).AllExtracts;
+
+        return mapExtracts.Where((exit) => exit.Side == playerSide).ToList();
     }
 
     protected RepeatableQuest GeneratePickupQuest(
@@ -797,7 +782,12 @@ public class RepeatableQuestGenerator(
     /// <returns>Exit condition</returns>
     protected QuestConditionCounterCondition GenerateExplorationExitCondition(Exit exit)
     {
-        throw new NotImplementedException();
+        return new QuestConditionCounterCondition {
+            Id = _hashUtil.Generate(),
+            DynamicLocale = true,
+            ExitName = exit.Name,
+            ConditionType = "ExitName"
+        };
     }
 
     /// <summary>

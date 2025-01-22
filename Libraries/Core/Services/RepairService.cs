@@ -58,7 +58,7 @@ public class RepairService
         string sessionID,
         PmcData pmcData,
         string repairedItemId,
-        decimal repairCost,
+        double repairCost,
         string traderId,
         ItemEventRouterResponse output
     )
