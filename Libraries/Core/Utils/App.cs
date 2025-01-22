@@ -11,7 +11,8 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class App
 {
-    protected Dictionary<string, long> _onUpdateLastRun;
+    protected Dictionary<string, long> _onUpdateLastRun = new Dictionary<string, long>();
+    protected Timer _timer;
     protected CoreConfig _coreConfig;
 
     protected ISptLogger<App> _logger;
@@ -78,7 +79,7 @@ public class App
         foreach (var onLoad in _onLoad)
             await onLoad.OnLoad();
 
-        new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+        _ = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
 
 
         _logger.Success(GetRandomisedStartMessage());
@@ -94,38 +95,46 @@ public class App
         return _localisationService.GetText("server_start_success");
     }
 
-    protected async Task Update(IEnumerable<OnUpdate> onUpdateComponents)
+    protected void Update(IEnumerable<OnUpdate> onUpdateComponents)
     {
-        // If the server has failed to start, skip any update calls
-        if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid()) return;
-
-        foreach (var updateable in onUpdateComponents)
+        try
         {
-            var success = false;
-            if (!_onUpdateLastRun.TryGetValue(updateable.GetRoute(), out var lastRunTimeTimestamp))
-                lastRunTimeTimestamp = 0;
-            var secondsSinceLastRun = _timeUtil.GetTimeStamp() - lastRunTimeTimestamp;
+            // If the server has failed to start, skip any update calls
+            if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid()) return;
 
-            try
+            foreach (var updateable in onUpdateComponents)
             {
-                success = await updateable.OnUpdate(secondsSinceLastRun);
-            }
-            catch (Exception err)
-            {
-                LogUpdateException(err, updateable);
-            }
+                var success = false;
+                if (!_onUpdateLastRun.TryGetValue(updateable.GetRoute(), out var lastRunTimeTimestamp))
+                    lastRunTimeTimestamp = 0;
+                var secondsSinceLastRun = _timeUtil.GetTimeStamp() - lastRunTimeTimestamp;
 
-            if (success)
-            {
-                _onUpdateLastRun[updateable.GetRoute()] = _timeUtil.GetTimeStamp();
-            }
-            else
-            {
-                /* temporary for debug */
-                var warnTime = 20 * 60;
+                try
+                {
+                    success = updateable.OnUpdate(secondsSinceLastRun);
+                }
+                catch (Exception err)
+                {
+                    LogUpdateException(err, updateable);
+                }
 
-                if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
+                if (success)
+                {
+                    _onUpdateLastRun[updateable.GetRoute()] = _timeUtil.GetTimeStamp();
+                }
+                else
+                {
+                    /* temporary for debug */
+                    var warnTime = 20 * 60;
+
+                    if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
+                }
             }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 
