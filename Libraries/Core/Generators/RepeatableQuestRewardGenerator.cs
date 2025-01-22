@@ -60,7 +60,7 @@ public class RepeatableQuestRewardGenerator(
         double difficulty,
         string traderId,
         RepeatableQuestConfig repeatableConfig,
-        EliminationConfig eliminationConfig,
+        BaseQuestConfig eliminationConfig,
         List<string>? rewardTplBlacklist = null)
     {
         // Get vars to configure rewards with
