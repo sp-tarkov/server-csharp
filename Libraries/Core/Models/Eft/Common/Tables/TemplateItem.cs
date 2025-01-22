@@ -977,7 +977,8 @@ public record Props
     public string? StimulatorBuffs { get; set; }
 
     [JsonPropertyName("effects_health")]
-    public object? EffectsHealth { get; set; } // TODO: object here
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    public Dictionary<string, EffectsHealthProps>? EffectsHealth { get; set; }
 
     [JsonPropertyName("effects_damage")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
