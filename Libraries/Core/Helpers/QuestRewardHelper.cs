@@ -50,14 +50,14 @@ public class QuestRewardHelper(
         // TODO: consider moving repeatable quest data to profile-agnostic location
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile.CharacterData.PmcData;
-        if (pmcProfile != null)
+        if (pmcProfile is null)
         {
             _logger.Error($"Unable to get pmc profile for: {sessionId}, no rewards given");
             return Enumerable.Empty<Item>();
         }
 
         var questDetails = GetQuestFromDb(questId, pmcProfile);
-        if (questDetails != null)
+        if (questDetails is null)
         {
             _logger.Warning(_localisationService.GetText("quest-unable_to_find_quest_in_db_no_quest_rewards", questId));
             return Enumerable.Empty<Item>();
