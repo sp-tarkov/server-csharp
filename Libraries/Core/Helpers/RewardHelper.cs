@@ -218,6 +218,7 @@ namespace Core.Helpers
             pmcData.UnlockedInfo.UnlockedProductionRecipe.Add(matchingCraftId);
             if (response is not null)
             {
+                response.ProfileChanges[sessionID].RecipeUnlocked ??= new Dictionary<string, bool>();
                 response.ProfileChanges[sessionID].RecipeUnlocked[matchingCraftId] = true;
             }
         }
