@@ -49,16 +49,16 @@ public class InsuranceCallbacks(
         throw new NotImplementedException();
     }
 
-    public Task<bool> OnUpdate(long timeSinceLastRun)
+    public bool OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
         {
             // _insuranceController.ProcessReturn();
             // TODO: InsuranceController is not implemented rn
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 
     public string GetRoute()

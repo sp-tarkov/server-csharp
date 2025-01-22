@@ -23,15 +23,15 @@ public class SaveCallbacks(
         _saveServer.Load();
     }
 
-    public Task<bool> OnUpdate(long secondsSinceLastRun)
+    public bool OnUpdate(long secondsSinceLastRun)
     {
         if (secondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
         {
             _saveServer.Save();
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 
     public string GetRoute()

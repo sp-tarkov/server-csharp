@@ -161,16 +161,16 @@ public class HideoutCallbacks(
         return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 
-    public Task<bool> OnUpdate(long timeSinceLastRun)
+    public bool OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
         {
             // TODO
             // _hideoutController.Update();
-            return Task.FromResult(true);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
     }
 
     public string GetRoute()

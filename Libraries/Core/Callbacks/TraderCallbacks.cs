@@ -25,9 +25,9 @@ public class TraderCallbacks(
         return Task.CompletedTask;
     }
 
-    public Task<bool> OnUpdate(long _)
+    public bool OnUpdate(long _)
     {
-        return Task.FromResult(_traderController.Update());
+        return _traderController.Update();
     }
 
     public string GetRoute()

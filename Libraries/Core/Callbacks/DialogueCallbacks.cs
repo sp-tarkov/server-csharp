@@ -321,10 +321,10 @@ public class DialogueCallbacks(
         throw new NotImplementedException(); // Not implemented in Node
     }
 
-    public Task<bool> OnUpdate(long timeSinceLastRun)
+    public bool OnUpdate(long timeSinceLastRun)
     {
         _dialogueController.Update();
-        return Task.FromResult(true);
+        return true;
     }
 
     public string GetRoute()

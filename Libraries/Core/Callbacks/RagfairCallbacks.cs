@@ -24,9 +24,10 @@ public class RagfairCallbacks(
 {
     private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
-    public async Task OnLoad()
+    public Task OnLoad()
     {
         // await _ragfairServer.Load();
+        return Task.CompletedTask;
     }
 
     public string GetRoute()
@@ -34,7 +35,7 @@ public class RagfairCallbacks(
         return "spt-ragfair";
     }
 
-    public async Task<bool> OnUpdate(long timeSinceLastRun)
+    public bool OnUpdate(long timeSinceLastRun)
     {
          if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds) {
             // There is a flag inside this class that only makes it run once.
@@ -44,7 +45,7 @@ public class RagfairCallbacks(
              _ragfairController.Update();
         
              // Process all offers / expire offers
-             await _ragfairServer.Update();
+             _ragfairServer.Update();
         
              return true;
          }
