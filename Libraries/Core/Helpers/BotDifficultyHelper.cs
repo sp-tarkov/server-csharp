@@ -1,12 +1,28 @@
 ﻿using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
+using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Helpers;
 
 [Injectable]
-public class BotDifficultyHelper
+public class BotDifficultyHelper(
+    ISptLogger<BotDifficultyHelper> _logger,
+    DatabaseService _databaseService,
+    RandomUtil _randomUtil,
+    LocalisationService _localisationService,
+    BotHelper _botHelper,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    
     /// <summary>
     /// Get difficulty settings for desired bot type, if not found use assault bot types
     /// </summary>
@@ -14,9 +30,30 @@ public class BotDifficultyHelper
     /// <param name="difficulty">difficulty to get settings for (easy/normal etc)</param>
     /// <param name="botDb">bots from database</param>
     /// <returns>Difficulty object</returns>
-    public DifficultyCategories GetBotDifficultySettings(string botType, string difficultyLevel, Bots botDatabase)
+    public DifficultyCategories GetBotDifficultySettings(string type, string difficulty, Bots botDb)
     {
-        throw new NotImplementedException();
+        var desiredType = type.ToLower();
+        if (!botDb.Types.TryGetValue(desiredType, out var _)) {
+            // No bot found, get fallback difficulty values
+            _logger.Warning(_localisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type));
+            botDb.Types[desiredType] = _cloner.Clone(botDb.Types["assault"]);
+        }
+
+        // Get settings from raw bot json template file
+        var difficultySettings = _botHelper.GetBotTemplate(desiredType).BotDifficulty[difficulty];
+        if (difficultySettings is null) {
+            // No bot settings found, use 'assault' bot difficulty instead
+            _logger.Warning(
+                _localisationService.GetText("bot-unable_to_get_bot_difficulty_fallback_to_assault", new {
+                botType = desiredType,
+                difficulty = difficulty,
+            }));
+            botDb.Types[desiredType].BotDifficulty[difficulty] = _cloner.Clone(
+                botDb.Types["assault"].BotDifficulty[difficulty]
+            );
+        }
+
+        return _cloner.Clone(difficultySettings);
     }
 
     /// <summary>
@@ -25,9 +62,16 @@ public class BotDifficultyHelper
     /// <param name="type">"usec" / "bear"</param>
     /// <param name="difficulty">what difficulty to retrieve</param>
     /// <returns>Difficulty object</returns>
-    protected DifficultyCategories GetDifficultySettings(string botType, string difficultyLevel)
+    protected DifficultyCategories GetDifficultySettings(string type, string difficulty)
     {
-        throw new NotImplementedException();
+        var difficultySetting =
+            _pmcConfig.Difficulty.ToLower() == "asonline"
+                ? difficulty
+                : _pmcConfig.Difficulty.ToLower();
+
+        difficultySetting = ConvertBotDifficultyDropdownToBotDifficulty(difficultySetting);
+
+        return _cloner.Clone(_databaseService.GetBots().Types[type].BotDifficulty[difficultySetting]);
     }
 
     /// <summary>
@@ -35,9 +79,16 @@ public class BotDifficultyHelper
     /// </summary>
     /// <param name="dropDownDifficulty">Dropdown difficulty value to convert</param>
     /// <returns>bot difficulty</returns>
-    public string ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficultyValue)
+    public string ConvertBotDifficultyDropdownToBotDifficulty(string dropDownDifficulty)
     {
-        throw new NotImplementedException();
+        switch (dropDownDifficulty.ToLower()) {
+            case "medium":
+                return "normal";
+            case "random":
+                return ChooseRandomDifficulty();
+            default:
+                return dropDownDifficulty.ToLower();
+        }
     }
 
     /// <summary>
@@ -46,6 +97,6 @@ public class BotDifficultyHelper
     /// <returns>random difficulty</returns>
     public string ChooseRandomDifficulty()
     {
-        throw new NotImplementedException();
+        return _randomUtil.GetArrayValue(["easy", "normal", "hard", "impossible"]);
     }
 }
