@@ -292,7 +292,7 @@ public class GameController(
     public GameKeepAliveResponse GetKeepAlive(string sessionId)
     {
         _profileActivityService.SetActivityTimestamp(sessionId);
-        return new GameKeepAliveResponse() { Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
+        return new GameKeepAliveResponse { Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
     }
 
     /// <summary>

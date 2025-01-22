@@ -102,7 +102,7 @@ public class MailSendService(
      */
     public void SendLocalisedNpcMessageToPlayer(
         string sessionId,
-        string trader,
+        string? trader,
         MessageType messageType,
         string messageLocaleId,
         List<Item>? items,
@@ -350,7 +350,7 @@ public class MailSendService(
             ProfileChangeEvents = (messageDetails.ProfileChangeEvents?.Count == 0) ? messageDetails.ProfileChangeEvents : null
         };
 
-        // handle replyTo
+        // Handle replyTo
         if (messageDetails.ReplyTo is not null)
         {
             var replyMessage = GetMessageToReplyTo(messageDetails.RecipientId, messageDetails.ReplyTo, dialogId);
@@ -548,30 +548,30 @@ public class MailSendService(
      */
     private Dialogue GetDialog(SendMessageDetails messageDetails)
     {
-        var dialogsInProfile = _dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
         var senderId = GetMessageSenderIdByType(messageDetails);
         if (senderId is null)
+        {
             throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
+        }
+
+        var dialogsInProfile = _dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
 
         // Does dialog exist
-        var senderDialog = dialogsInProfile.FirstOrDefault(x => x.Key == senderId).Value;
-        if (senderDialog is null)
+        if (!dialogsInProfile.ContainsKey(senderId))
         {
-            // create if doesnt
-            dialogsInProfile[senderId] = senderDialog = new Dialogue()
+            // Doesn't exist, create
+            dialogsInProfile[senderId] = new Dialogue
             {
                 Id = senderId,
-                Type = (messageDetails.DialogType is not null) ? messageDetails.DialogType : messageDetails.Sender,
-                Messages = new(),
+                Type = messageDetails.DialogType ?? messageDetails.Sender,
+                Messages = [],
                 Pinned = false,
                 New = 0,
                 AttachmentsNew = 0
             };
-
-            senderDialog = dialogsInProfile[senderId];
         }
 
-        return senderDialog;
+        return dialogsInProfile[senderId]; ;
     }
 
     /**
