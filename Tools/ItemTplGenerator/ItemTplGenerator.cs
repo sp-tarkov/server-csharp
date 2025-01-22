@@ -190,7 +190,7 @@ public class ItemTplGenerator(
 
             // Include any bracketed suffixes that exist, handles the case of colored gun variants
             var weaponFullName = _localeService.GetLocaleDb()[$"{kv.Key} Name"]?.ToUpper();
-            if (weaponFullName.RegexMatch("\\((.+?)\\)$", out var itemNameBracketSuffix) &&
+            if (weaponFullName.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) &&
                 !weaponShortName.EndsWith(itemNameBracketSuffix.Groups[1].Value))
             {
                 weaponShortName += $"_{itemNameBracketSuffix.Groups[1].Value}";
@@ -495,7 +495,7 @@ public class ItemTplGenerator(
             var caliber = CleanCaliber(item.Properties.AmmoCaliber.ToUpper());
 
             // If the item has a bracketed section at the end of its name, include that
-            if (itemName?.RegexMatch("\\((.+?)\\)$", out var itemNameBracketSuffix) ?? false)
+            if (itemName?.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) ?? false)
             {
                 return $"{caliber}_{itemNameBracketSuffix.Groups[1].Value}";
             }
@@ -510,7 +510,7 @@ public class ItemTplGenerator(
         }
 
         // If the item has a bracketed section at the end of its name, use that
-        if (itemName.RegexMatch("\\((.+?)\\)$", out var itemNameBracker))
+        if (itemName.RegexMatch(@"\((.+?)\)$", out var itemNameBracker))
         {
             return itemNameBracker.Groups[1].Value;
         }
