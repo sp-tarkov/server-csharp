@@ -215,7 +215,7 @@ public class EventOutputHolder
     {
         return traderData.ToDictionary(
             trader => trader.Key,
-            trader => new TraderData()
+            trader => new TraderData
             {
                 SalesSum = trader.Value.SalesSum,
                 Disabled = trader.Value.Disabled,
