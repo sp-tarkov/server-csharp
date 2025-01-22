@@ -23,15 +23,5 @@ public record ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
     public int? SchemeId { get; set; }
 
     [JsonPropertyName("scheme_items")]
-    public List<SchemeItem>? SchemeItems { get; set; }
-}
-
-public record SchemeItem
-{
-    /** Id of stack to take money from, is money tpl when Action is `SptInsure` */
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public List<ItemRequest>? SchemeItems { get; set; }
 }

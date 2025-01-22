@@ -5,6 +5,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Eft.Trade;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Routers;
@@ -27,6 +28,7 @@ public class TradeController(
     ProfileHelper _profileHelper,
     RagfairOfferHelper _ragfairOfferHelper,
     TraderHelper _traderHelper,
+    RagfairServer _ragfairServer,
     HttpResponseUtil _httpResponseUtil,
     LocalisationService _localisationService,
     RagfairPriceService _ragfairPriceService,
@@ -46,9 +48,33 @@ public class TradeController(
     public ItemEventRouterResponse ConfirmTrading(
         PmcData pmcData,
         ProcessBaseTradeRequestData request,
-        string sessionId)
+        string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionID);
+
+        // Buying
+        if (request.Type == "buy_from_trader")
+        {
+            var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
+            ProcessBuyTradeRequestData buyData = (ProcessBuyTradeRequestData)request;
+            _tradeHelper.buyItem(pmcData, buyData, sessionID, foundInRaid, output);
+
+            return output;
+        }
+
+        // Selling
+        if (request.Type == "sell_to_trader")
+        {
+            ProcessSellTradeRequestData sellData = (ProcessSellTradeRequestData)request;
+            _tradeHelper.sellItem(pmcData, pmcData, sellData, sessionID, output);
+
+            return output;
+        }
+
+        var errorMessage = $"Unhandled trade event: {request.Type}";
+        _logger.Error(errorMessage);
+
+        return _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
     }
 
     /// <summary>
@@ -61,9 +87,48 @@ public class TradeController(
     public ItemEventRouterResponse ConfirmRagfairTrading(
         PmcData pmcData,
         ProcessRagfairTradeRequestData request,
-        string sessionId)
+        string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionID);
+
+        foreach (var offer in request.Offers)
+        {
+            var fleaOffer = _ragfairServer.GetOffer(offer.Id);
+            if (fleaOffer is null)
+            {
+                return _httpResponseUtil.AppendErrorToOutput(
+                    output,
+                    $"Offer with ID {offer.Id} not found",
+                    BackendErrorCodes.OfferNotFound
+                );
+            }
+
+            if (offer.Count == 0)
+            {
+                var errorMessage = _localisationService.GetText(
+                    "ragfair-unable_to_purchase_0_count_item",
+                    _itemHelper.GetItem(fleaOffer.Items[0].Template).Value.Name
+                );
+                return _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.OfferOutOfStock);
+            }
+
+            if (_ragfairOfferHelper.OfferIsFromTrader(fleaOffer))
+            {
+                BuyTraderItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
+            }
+            else
+            {
+                BuyPmcItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
+            }
+
+            // Exit loop early if problem found
+            if (output.Warnings.Count > 0)
+            {
+                return output;
+            }
+        }
+
+        return output;
     }
 
     /// <summary>
@@ -78,10 +143,30 @@ public class TradeController(
         string sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
-        OfferRequest offerRequest,
+        OfferRequest requestOffer,
         ItemEventRouterResponse output)
     {
-        throw new NotImplementedException();
+        // Skip buying items when player doesn't have needed loyalty
+        if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData)) {
+            var errorMessage = $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
+            _logger.Debug(errorMessage);
+
+            _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
+
+            return;
+        }
+
+        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData {
+            Action = "TradingConfirm",
+            Type = "buy_from_ragfair",
+            TransactionId = fleaOffer.User.Id,
+            ItemId = fleaOffer.Root,
+            Count = requestOffer.Count,
+            SchemeId = 0,
+            SchemeItems = requestOffer.Items,
+        };
+
+        _tradeHelper.buyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
     }
 
     /// <summary>
