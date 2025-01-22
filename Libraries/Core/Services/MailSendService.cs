@@ -142,7 +142,14 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds ?? 172800;
+            if (maxStorageTimeSeconds is not null && maxStorageTimeSeconds > 0)
+            {
+                details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
+            }
+            else
+            {
+                details.ItemsMaxStorageLifetimeSeconds = 172800;
+            }
         }
 
         if (systemData is not null)
@@ -571,7 +578,7 @@ public class MailSendService(
             };
         }
 
-        return dialogsInProfile[senderId]; ;
+        return dialogsInProfile[senderId];
     }
 
     /**
