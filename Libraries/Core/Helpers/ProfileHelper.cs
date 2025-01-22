@@ -303,8 +303,13 @@ public class ProfileHelper(
                 FoundInRaidItems = new(),
                 LastPlayerState = null,
                 LastSessionDate = 0,
-                OverallCounters = new(),
-                SessionCounters = new(),
+                OverallCounters = new()
+                {
+                    Items = []
+                },
+                SessionCounters = new(){
+                    Items = []
+                },
                 SessionExperienceMult = 0,
                 SurvivorClass = "Unknown",
                 TotalInGameTime = 0,
