@@ -423,14 +423,14 @@ public class TraderHelper(
     /// <param name="newPurchaseDetails">New item assort id + count</param>
     public void AddTraderPurchasesToPlayerProfile(
         string sessionID,
-        KeyValuePair<List<KeyValuePair<string, double>>, string> newPurchaseDetails,
+        PurchaseDetails newPurchaseDetails,
         Item itemPurchased)
     {
         var profile = _profileHelper.GetFullProfile(sessionID);
-        var traderId = newPurchaseDetails.Value;
+        var traderId = newPurchaseDetails.TraderId;
 
         // Iterate over assorts bought and add to profile
-        foreach (var purchasedItem in newPurchaseDetails.Key)
+        foreach (var purchasedItem in newPurchaseDetails.Items)
         {
             var currentTime = _timeUtil.GetTimeStamp();
 
@@ -441,18 +441,18 @@ public class TraderHelper(
 
             // Null guard when dict doesnt exist
 
-            if (profile.TraderPurchases[traderId][purchasedItem.Key] is null)
+            if (profile.TraderPurchases[traderId][purchasedItem.ItemId] is null)
             {
-                profile.TraderPurchases[traderId][purchasedItem.Key] = new TraderPurchaseData
+                profile.TraderPurchases[traderId][purchasedItem.ItemId] = new TraderPurchaseData
                 {
-                    PurchaseCount = purchasedItem.Value,
+                    PurchaseCount = purchasedItem.Count,
                     PurchaseTimestamp = currentTime,
                 };
 
                 continue;
             }
 
-            if (profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseCount + purchasedItem.Value >
+            if (profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount + purchasedItem.Count >
                 GetAccountTypeAdjustedTraderPurchaseLimit(
                     (double)itemPurchased.Upd.BuyRestrictionMax,
                     profile.CharacterData.PmcData.Info.GameVersion
@@ -471,8 +471,8 @@ public class TraderHelper(
                 );
             }
 
-            profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseCount += purchasedItem.Value;
-            profile.TraderPurchases[traderId][purchasedItem.Key].PurchaseTimestamp = currentTime;
+            profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount += purchasedItem.Count;
+            profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp = currentTime;
         }
     }
 
