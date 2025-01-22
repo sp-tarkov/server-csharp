@@ -23,6 +23,7 @@ public class TradeController(
     EventOutputHolder _eventOutputHolder,
     TradeHelper _tradeHelper,
     TimeUtil _timeUtil,
+    RandomUtil _randomUtil,
     HashUtil _hashUtil,
     ItemHelper _itemHelper,
     ProfileHelper _profileHelper,
@@ -32,6 +33,7 @@ public class TradeController(
     HttpResponseUtil _httpResponseUtil,
     LocalisationService _localisationService,
     RagfairPriceService _ragfairPriceService,
+    MailSendService _mailSendService,
     ConfigServer _configServer
 )
 {
@@ -147,7 +149,8 @@ public class TradeController(
         ItemEventRouterResponse output)
     {
         // Skip buying items when player doesn't have needed loyalty
-        if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData)) {
+        if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
+        {
             var errorMessage = $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
             _logger.Debug(errorMessage);
 
@@ -156,7 +159,8 @@ public class TradeController(
             return;
         }
 
-        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData {
+        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData
+        {
             Action = "TradingConfirm",
             Type = "buy_from_ragfair",
             TransactionId = fleaOffer.User.Id,
@@ -181,10 +185,42 @@ public class TradeController(
         string sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
-        OfferRequest offerRequest,
+        OfferRequest requestOffer,
         ItemEventRouterResponse output)
     {
-        throw new NotImplementedException();
+        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData
+        {
+            Action = "TradingConfirm",
+            Type = "buy_from_ragfair",
+            TransactionId = "ragfair",
+            ItemId = fleaOffer.Id, // Store ragfair offerId in buyRequestData.item_id
+            Count = requestOffer.Count,
+            SchemeId = 0,
+            SchemeItems = requestOffer.Items,
+        };
+
+        // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
+        _tradeHelper.buyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
+        if (output.Warnings?.Count > 0)
+        {
+            return;
+        }
+
+        // resolve when a profile buy another profile's offer
+        var offerOwnerId = fleaOffer.User?.Id;
+        var offerBuyCount = requestOffer.Count;
+
+        var isPlayerOffer = IsPlayerOffer(fleaOffer.Id, fleaOffer.User?.Id);
+        if (isPlayerOffer)
+        {
+            // Complete selling the offer now its been purchased
+            _ragfairOfferHelper.CompleteOffer(offerOwnerId, fleaOffer, offerBuyCount ?? 0);
+
+            return;
+        }
+
+        // Remove/lower stack count of item purchased from PMC flea offer
+        _ragfairServer.RemoveOfferStack(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -195,9 +231,23 @@ public class TradeController(
     /// <returns>true if offer was made by a player</returns>
     private bool IsPlayerOffer(
         string offerId,
-        string offerOwnerId)
+        string? offerOwnerId)
     {
-        throw new NotImplementedException();
+        // No ownerid, not player offer
+        if (offerOwnerId is null)
+        {
+            return false;
+        }
+
+        var offerCreatorProfile = _profileHelper.GetPmcProfile(offerOwnerId);
+        if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
+        {
+            // No profile or no offers
+            return false;
+        }
+
+        // Does offer id exist in profile
+        return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
     }
 
     /// <summary>
@@ -210,7 +260,7 @@ public class TradeController(
         RagfairOffer fleaOffer,
         PmcData pmcData)
     {
-        throw new NotImplementedException();
+        return fleaOffer.LoyaltyLevel > pmcData.TradersInfo[fleaOffer.User.Id].LoyaltyLevel;
     }
 
     /// <summary>
@@ -225,7 +275,11 @@ public class TradeController(
         SellScavItemsToFenceRequestData request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionId);
+
+        MailMoneyToPlayer(sessionId, (int)request.TotalValue, Traders.FENCE);
+
+        return output;
     }
 
     /// <summary>
@@ -239,7 +293,28 @@ public class TradeController(
         int roublesToSend,
         string trader)
     {
-        throw new NotImplementedException();
+        _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+
+        // Create single currency item with all currency on it
+        Item rootCurrencyReward = new Item
+        {
+            Id = _hashUtil.Generate(),
+            Template = Money.ROUBLES,
+            Upd = new Upd { StackObjectsCount = roublesToSend },
+        };
+
+        // Ensure money is properly split to follow its max stack size limit
+        var curencyReward = _itemHelper.SplitStackIntoSeparateItems(rootCurrencyReward);
+
+        // Send mail from trader
+        _mailSendService.SendLocalisedNpcMessageToPlayer(
+            sessionId,
+            _traderHelper.GetTraderById(trader).ToString(),
+            MessageType.MESSAGE_WITH_ITEMS,
+            _randomUtil.GetArrayValue((_databaseService.GetTrader(trader).Dialogue.TryGetValue("SoldItems", out var items)) ? items : new List<string>()),
+            curencyReward.SelectMany(x => x).ToList(),
+            _timeUtil.GetHoursAsSeconds(72)
+        );
     }
 
     /// <summary>
@@ -253,9 +328,24 @@ public class TradeController(
     private int GetPriceOfItemAndChildren(
         string parentItemId,
         List<Item> items,
-        Dictionary<string, int> handbookPrices,
+        Dictionary<string, int?> handbookPrices,
         TraderBase traderDetails)
     {
-        throw new NotImplementedException();
+        var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(items, parentItemId);
+
+        var totalPrice = 0;
+        foreach (var itemToSell in itemWithChildren) {
+            var itemDetails = _itemHelper.GetItem(itemToSell.Template);
+            if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category))) 
+            {
+                // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
+                continue;
+            }
+
+            // Get price of item multiplied by how many are in stack
+            totalPrice += (int)((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));
+        }
+
+        return totalPrice;
     }
 }
