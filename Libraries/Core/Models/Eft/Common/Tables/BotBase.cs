@@ -231,6 +231,9 @@ public record BotBaseHealth
     public CurrentMax? Hydration { get; set; }
     public CurrentMax? Energy { get; set; }
     public CurrentMax? Temperature { get; set; }
+
+    [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonPropertyName("BodyParts")]
     public Dictionary<string, BodyPartHealth>? BodyParts { get; set; }
     public double? UpdateTime { get; set; }
     public bool? Immortal { get; set; }
