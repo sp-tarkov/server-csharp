@@ -1822,7 +1822,7 @@ public class ItemHelper(
 
         foreach (var mod in itemWithChildren)
         {
-            if (idMappings[mod.Id] is null)
+            if (!idMappings.ContainsKey(mod.Id))
             {
                 idMappings[mod.Id] = _hashUtil.Generate();
             }
