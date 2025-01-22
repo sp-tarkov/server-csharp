@@ -290,7 +290,7 @@ public class QuestHelper(
                         {
                             return (
                                 condition.ConditionType == "Quest" &&
-                                (condition.Target?.List.Contains(startedQuestId) ?? false) &&
+                                (condition.Target?.Item?.Contains(startedQuestId) ?? false) &&
                                 (condition.Status?.Contains(QuestStatusEnum.Started) ?? false)
                             );
                         }
