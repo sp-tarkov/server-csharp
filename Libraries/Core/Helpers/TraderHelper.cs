@@ -135,7 +135,7 @@ public class TraderHelper(
         var newTraderData = new TraderInfo
         {
             Disabled = false,
-            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel.TryGetValue(traderID, out var value) ? value : 4,
+            LoyaltyLevel = rawProfileTemplate.InitialLoyaltyLevel.GetValueOrDefault(traderID, 1),
             SalesSum = rawProfileTemplate.InitialSalesSum,
             Standing = GetStartingStanding(traderID, rawProfileTemplate),
             NextResupply = trader.Base.NextResupply,
