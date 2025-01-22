@@ -40,13 +40,13 @@ namespace Core.Servers
             _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
         }
 
-        public async Task Load(){
+        public void Load(){
             _logger.Info(_localisationService.GetText("ragfair-generating_offers"));
-            await _ragfairOfferGenerator.GenerateDynamicOffers();
-            await Update();
+            _ragfairOfferGenerator.GenerateDynamicOffers(); 
+            Update();
         }
 
-        public async Task Update()
+        public void Update()
         {
             _ragfairOfferService.ExpireStaleOffers();
 
@@ -69,7 +69,7 @@ namespace Core.Servers
             if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
             {
                 var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
-                await _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
+                _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
 
                 // Clear out expired offers now we've generated them
                 _ragfairOfferService.ResetExpiredOffers();

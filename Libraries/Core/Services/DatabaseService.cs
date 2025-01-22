@@ -22,7 +22,7 @@ public class DatabaseService(
     HashUtil _hashUtil
 )
 {
-    protected bool isDataValid;
+    protected bool isDataValid = true;
     
     /**
      * @returns assets/database/

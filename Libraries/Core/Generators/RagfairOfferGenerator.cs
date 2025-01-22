@@ -140,9 +140,9 @@ public class RagfairOfferGenerator()
     /// Create multiple offers for items by using a unique list of items we've generated previously
     /// </summary>
     /// <param name="expiredOffers">optional, expired offers to regenerate</param>
-    public async Task GenerateDynamicOffers(List<List<Item>> expiredOffers = null)
+    public void GenerateDynamicOffers(List<List<Item>> expiredOffers = null)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: GenerateDynamicOffers");
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ public class RagfairOfferGenerator()
     /// <param name="assortItemWithChildren">Item with its children to process into offers</param>
     /// <param name="isExpiredOffer">is an expired offer</param>
     /// <param name="config">Ragfair dynamic config</param>
-    protected async Task CreateOffersFromAssort(List<Item> assortItemWithChildren, bool isExpiredOffer, Dynamic config)
+    protected void CreateOffersFromAssort(List<Item> assortItemWithChildren, bool isExpiredOffer, Dynamic config)
     {
         throw new NotImplementedException();
     }
@@ -185,7 +185,7 @@ public class RagfairOfferGenerator()
     /// <param name="traderID">Trader to generate offers for</param>
     public void GenerateFleaOffersForTrader(string traderID)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: GenerateFleaOffersForTrader");
     }
 
     /// <summary>

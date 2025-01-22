@@ -42,7 +42,8 @@ public class RagfairOfferService
     /// <returns>Number of expired offers</returns>
     public int GetExpiredOfferCount()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: GetExpiredOfferCount");
+        return 0;
     }
 
     /// <summary>
@@ -51,7 +52,8 @@ public class RagfairOfferService
     /// <returns>Expired offer assorts</returns>
     public List<List<Item>> GetExpiredOfferAssorts()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: GetExpiredOfferAssorts");
+        return new List<List<Item>>();
     }
 
     /// <summary>
@@ -59,7 +61,7 @@ public class RagfairOfferService
     /// </summary>
     public void ResetExpiredOffers()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: ResetExpiredOffers");
     }
 
     /// <summary>
@@ -103,17 +105,19 @@ public class RagfairOfferService
     /// <returns>true if they do</returns>
     public bool TraderOffersNeedRefreshing(string traderID)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: TraderOffersNeedRefreshing");
+        return false;
     }
 
     public void AddPlayerOffers()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: AddPlayerOffers");
+        // throw new NotImplementedException();
     }
 
     public void ExpireStaleOffers()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: ExpireStaleOffers");
     }
 
     /// <summary>

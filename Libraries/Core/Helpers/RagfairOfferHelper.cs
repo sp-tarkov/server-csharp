@@ -135,9 +135,9 @@ public class RagfairOfferHelper
      * @param sessionID Session id to process offers for
      * @returns true = complete
      */
-    public bool ProcessOffersOnProfile(string sessionID)
+    public void ProcessOffersOnProfile(string sessionID)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: ProcessOffersOnProfile");
     }
 
     /**

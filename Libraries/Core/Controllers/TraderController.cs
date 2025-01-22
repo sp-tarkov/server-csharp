@@ -101,8 +101,9 @@ public class TraderController(
                     continue;
                 case Traders.FENCE:
                 {
-                    if (_fenceService.NeedsPartialRefresh())
-                        _fenceService.GenerateFenceAssorts();
+                    _logger.Warning($"commented out Fence refresh as not implemented so we can get further");
+                    // if (_fenceService.NeedsPartialRefresh())
+                    //     _fenceService.GenerateFenceAssorts();
 
                     continue;
                 }

@@ -8,11 +8,12 @@ public class RagfairRequiredItemsService
 {
     public List<RagfairOffer> GetRequiredItemsById(string searchId)
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: GetRequiredItemsById");
+        return new List<RagfairOffer>();
     }
 
     public void BuildRequiredItemTable()
     {
-        throw new NotImplementedException();
+        Console.WriteLine($"actually implement me plz: owo: BuildRequiredItemTable");
     }
 }
