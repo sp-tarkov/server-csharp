@@ -79,9 +79,8 @@ public class App
         foreach (var onLoad in _onLoad)
             await onLoad.OnLoad();
 
-        _ = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
-
-
+        _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
+        
         _logger.Success(GetRandomisedStartMessage());
     }
 
