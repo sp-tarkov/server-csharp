@@ -1121,7 +1121,7 @@ public class QuestHelper(
             }
         }
 
-        return questsToShowPlayer;
+        return UpdateQuestsForGameEdition(questsToShowPlayer, profile.Info.GameVersion);
     }
 
     /**
@@ -1141,6 +1141,9 @@ public class QuestHelper(
             var propsAsDict = quest.Rewards.GetAllPropsAsDict<List<Reward>>();
             foreach (var rewardType in propsAsDict)
             {
+                if (rewardType.Value is null)
+                    continue;
+                
                 propsAsDict[rewardType.Key] = propsAsDict[rewardType.Key]
                     .Where(
                         reward =>

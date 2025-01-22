@@ -12,6 +12,7 @@ public record Reward
     public string? Id { get; set; }
     
     [JsonPropertyName("type")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RewardType? Type { get; set; }
 
     [JsonPropertyName("index")]

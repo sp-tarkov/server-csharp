@@ -32,6 +32,7 @@ public class JsonUtil
             new EftEnumConverter<BonusSkillType>(),
             new EftEnumConverter<NotificationEventType>(),
             new EftEnumConverter<QuestTypeEnum>(),
+            new EftEnumConverter<RewardType>(),
             new BaseInteractionRequestDataConverter()
         }
     };
