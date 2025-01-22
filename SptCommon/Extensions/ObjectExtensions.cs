@@ -48,5 +48,34 @@ namespace SptCommon.Extensions
                 return default;
             return (T?)cachedProperty.GetValue(obj);
         }
+
+        public static List<T?> GetAllPropValuesAsList<T>(this object? obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+
+            var list = obj.GetType().GetProperties();
+            var result = new List<T?>();
+
+            foreach (var prop in list)
+            {
+                result.Add((T?)prop.GetValue(obj));
+            }
+            
+            return result;
+        }
+
+        public static Dictionary<string, T?> GetAllPropsAsDict<T>(this object? obj)
+        {
+            var result = new Dictionary<string, T?>();
+            
+            var props = obj.GetType().GetProperties();
+
+            foreach (var prop in props)
+            {
+                result.Add(prop.Name, (T?)prop.GetValue(obj));
+            }
+            
+            return result;
+        }
     }
 }
