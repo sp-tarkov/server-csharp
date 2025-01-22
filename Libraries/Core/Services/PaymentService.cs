@@ -78,4 +78,9 @@ public class PaymentService
     {
         throw new NotImplementedException();
     }
+
+    public void GiveProfileMoney(PmcData profileToReceiveMoney, double? sellRequestPrice, ProcessSellTradeRequestData sellRequest, ItemEventRouterResponse output, string sessionId)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Trade;
 
 namespace Core.Models.Eft.Inventory;
 
@@ -14,7 +16,7 @@ public record AddItemsDirectRequest
 
     /// Runs after EACH item with children is added
     [JsonPropertyName("callback")]
-    public Action<double>? Callback { get; set; }
+    public Action<double, ProcessBuyTradeRequestData, string, PmcData>? Callback { get; set; }
 
     /// Should sorting table be used when no space found in stash
     [JsonPropertyName("useSortingTable")]

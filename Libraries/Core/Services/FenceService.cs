@@ -528,7 +528,7 @@ public class FenceService(
     /// </summary>
     /// <param name="assortId">assort id to adjust</param>
     /// <param name="buyCount">Count of items bought</param>
-    public void AmendOrRemoveFenceOffer(string assortId, int buyCount)
+    public void AmendOrRemoveFenceOffer(string assortId, double buyCount)
     {
         throw new NotImplementedException();
     }
