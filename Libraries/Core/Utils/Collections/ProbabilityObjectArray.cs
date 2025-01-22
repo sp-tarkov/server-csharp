@@ -196,14 +196,15 @@ public class ProbabilityObject<K, V>
 {
     public ProbabilityObject()
     { }
+
     [JsonPropertyName("key")]
-    public K Key { get; }
+    public K Key { get; set; }
 
     [JsonPropertyName("relativeProbability")]
-    public double RelativeProbability { get; }
+    public double RelativeProbability { get; set; }
 
     [JsonPropertyName("data")]
-    public V? Data { get; }
+    public V? Data { get; set; }
 
     /**
      * varructor for the ProbabilityObject
