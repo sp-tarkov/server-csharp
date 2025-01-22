@@ -52,6 +52,11 @@ public class EventOutputHolder
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
+        if (_outputStore.ContainsKey(sessionId))
+        {
+            _outputStore.Remove(sessionId);
+        }
+        
         _outputStore.Add(
             sessionId,
             new ItemEventRouterResponse
