@@ -280,6 +280,7 @@ public record BotBaseInventory
     public string? QuestStashItems { get; set; }
 
     /** Key is hideout area enum numeric as string e.g. "24", value is area _id  */
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutAreaStashes")]
     public Dictionary<string, string>? HideoutAreaStashes { get; set; }
 

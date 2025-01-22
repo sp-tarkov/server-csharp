@@ -103,6 +103,7 @@ public record PmcDataRepeatableQuest
     [JsonPropertyName("endTime")]
     public long? EndTime { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("changeRequirement")]
     public Dictionary<string?, ChangeRequirement?>? ChangeRequirement { get; set; }
 
