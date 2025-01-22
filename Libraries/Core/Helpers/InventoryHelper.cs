@@ -3,6 +3,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Inventory;
@@ -10,6 +11,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 using SptCommon.Annotations;
 
 namespace Core.Helpers;
@@ -17,19 +19,18 @@ namespace Core.Helpers;
 [Injectable]
 public class InventoryHelper(
     ISptLogger<InventoryHelper> _logger,
-    HashUtil hashUtil,
-    HttpResponseUtil httpResponseUtil,
-    FenceService fenceService,
-    DialogueHelper dialogueHelper,
-    ContainerHelper containerHelper,
-    DatabaseServer databaseServer,
-    PaymentHelper paymentHelper,
-    TraderAssortHelper traderAssortHelper,
-    ProfileHelper _profileHelper,
+    HashUtil _hashUtil,
+    HttpResponseUtil _httpResponseUtil,
+    FenceService _fenceService,
     DialogueHelper _dialogueHelper,
     ContainerHelper _containerHelper,
+    DatabaseServer _databaseServer,
+    PaymentHelper _paymentHelper,
+    TraderAssortHelper _traderAssortHelper,
+    ProfileHelper _profileHelper,
     ItemHelper _itemHelper,
-    LocalisationService _localisationService
+    LocalisationService _localisationService,
+    ICloner _cloner
 )
 {
     /// <summary>
@@ -45,7 +46,32 @@ public class InventoryHelper(
         PmcData pmcData,
         ItemEventRouterResponse output)
     {
-        throw new NotImplementedException();
+        // Check all items fit into inventory before adding
+        if (!CanPlaceItemsInInventory(sessionId, request.ItemsWithModsToAdd))
+        {
+            // No space, exit
+            _httpResponseUtil.AppendErrorToOutput(
+                output,
+                _localisationService.GetText("inventory-no_stash_space"),
+                BackendErrorCodes.NotEnoughSpace);
+
+            return;
+        }
+
+        foreach (var itemToAdd in request.ItemsWithModsToAdd) {
+            var addItemRequest = new AddItemDirectRequest{
+                ItemWithModsToAdd = itemToAdd,
+                FoundInRaid = request.FoundInRaid,
+                UseSortingTable = request.UseSortingTable,
+                Callback = request.Callback };
+
+            // Add to player inventory
+            AddItemToStash(sessionId, addItemRequest, pmcData, output);
+            if (output.Warnings.Count > 0)
+            {
+                return;
+            }
+        }
     }
 
     /// <summary>
@@ -61,7 +87,61 @@ public class InventoryHelper(
         PmcData pmcData,
         ItemEventRouterResponse output)
     {
-        throw new NotImplementedException();
+        var itemWithModsToAddClone = _cloner.Clone(request.ItemWithModsToAdd);
+
+        // Get stash layouts ready for use
+        var stashFS2D = GetStashSlotMap(pmcData, sessionId);
+        if (stashFS2D is null)
+        {
+            _logger.Error("Unable to get stash map for players: { sessionId} stash");
+
+            return;
+        }
+        var sortingTableFS2D = GetSortingTableSlotMap(pmcData);
+
+        // Find empty slot in stash for item being added - adds 'location' + parentid + slotId properties to root item
+        PlaceItemInInventory(
+            stashFS2D,
+            sortingTableFS2D,
+            itemWithModsToAddClone,
+            pmcData.Inventory,
+            request.UseSortingTable.GetValueOrDefault(false),
+            output);
+        if (output.Warnings.Count > 0)
+        {
+            // Failed to place, error out
+            return;
+        }
+
+        // Apply/remove FiR to item + mods
+        SetFindInRaidStatusForItem(itemWithModsToAddClone, request.FoundInRaid.GetValueOrDefault(false));
+
+        // Remove trader properties from root item
+        RemoveTraderRagfairRelatedUpdProperties(itemWithModsToAddClone[0].Upd);
+
+        // Run callback
+        try
+        {
+            if (request.Callback is not null)
+            {
+                request.Callback(itemWithModsToAddClone.FirstOrDefault().Upd.StackObjectsCount.Value);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Callback failed
+            var message = ex.Message;
+
+            _httpResponseUtil.AppendErrorToOutput(output, message);
+
+            return;
+        }
+
+        // Add item + mods to output and profile inventory
+        output.ProfileChanges[sessionId].Items.NewItems.AddRange(itemWithModsToAddClone.Select(x => x.ConvertToProduct()));
+        pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
+
+        _logger.Debug($"Added ${ itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: ${itemWithModsToAddClone[0].Template } with: ${ itemWithModsToAddClone.Count - 1} mods to inventory");
     }
 
     /// <summary>
@@ -210,8 +290,8 @@ public class InventoryHelper(
     /// <param name="useSortingTable">Should sorting table to be used if main stash has no space</param>
     /// <param name="output">Output to send back to client</param>
     protected void PlaceItemInInventory(
-        List<List<double>> stashFS2D,
-        List<List<double>> sortingTableFS2D,
+        int[][] stashFS2D,
+        int[][] sortingTableFS2D,
         List<Item> itemWithChildren,
         BotBaseInventory playerInventory,
         bool useSortingTable,

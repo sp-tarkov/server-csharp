@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.DI;
 using Core.Models.Spt.Config;
 using Core.Servers;
@@ -23,9 +23,9 @@ public class SaveCallbacks(
         _saveServer.Load();
     }
 
-    public Task<bool> OnUpdate(long SecondsSinceLastRun)
+    public Task<bool> OnUpdate(long secondsSinceLastRun)
     {
-        if (SecondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
+        if (secondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
         {
             _saveServer.Save();
             return Task.FromResult(true);

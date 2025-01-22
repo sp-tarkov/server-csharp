@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Inventory;
@@ -15,7 +15,7 @@ public record AddItemDirectRequest
     public bool? FoundInRaid { get; set; }
 
     [JsonPropertyName("callback")]
-    public Action<int>? Callback { get; set; }
+    public Action<double>? Callback { get; set; }
 
     [JsonPropertyName("useSortingTable")]
     public bool? UseSortingTable { get; set; }
