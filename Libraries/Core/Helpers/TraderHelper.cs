@@ -213,7 +213,7 @@ public class TraderHelper(
             return standing;
         }
 
-        return null;
+        return 0;
     }
 
     /// <summary>
