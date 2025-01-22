@@ -21,6 +21,12 @@ public static class Program
         HarmonyBootstrapper.LoadAllPatches(assemblies);
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog();
+        builder.WebHost.ConfigureKestrel(
+            serverOptions =>
+            {
+                serverOptions.Limits.KeepAliveTimeout = TimeSpan.FromMinutes(25);
+            }
+        );
 
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
         
