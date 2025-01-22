@@ -429,7 +429,7 @@ public class InventoryHelper(
     /// <param name="itemId">Items id to remove</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
-    public void RemoveItem(PmcData profile, string? itemId, string sessionId, ItemEventRouterResponse? output)
+    public void RemoveItem(PmcData profile, string? itemId, string sessionId, ItemEventRouterResponse? output = null)
     {
         if (itemId is null)
         {
