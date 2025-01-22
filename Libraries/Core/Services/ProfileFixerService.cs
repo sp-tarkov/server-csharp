@@ -559,7 +559,7 @@ public class ProfileFixerService(
 
             foreach (var message in dialog.Value.Messages)
             {
-                if (message.Items.Data is null)
+                if (message.Items is null || message.Items.Data is null)
                     continue; // skip messages with no items
 
                 // Fix message with no items but have the flags to indicate items to collect
