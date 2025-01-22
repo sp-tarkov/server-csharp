@@ -60,7 +60,7 @@ namespace Core.Routers
 
                 _logger.Debug($"event: { body.Action}");
                 eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
-                if (output.Warnings.Count > 0) {
+                if (output.Warnings?.Count > 0) {
                     break;
                 }
             }
