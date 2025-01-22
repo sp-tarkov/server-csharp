@@ -1,5 +1,6 @@
 using Core.Utils.Cloners;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Components.Web;
 
 namespace Core.Utils.Collections;
 
@@ -46,6 +47,17 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
         return probCumsum;
     }
 
+    public ProbabilityObjectArray<T, K, V> Filter(Predicate<ProbabilityObject<K, V>> predicate)
+    {
+        var filtered = new ProbabilityObjectArray<T, K, V>(_mathUtil, _cloner, new List<T>());
+        foreach (var probabilityObject in this)
+        {
+            if (predicate.Invoke(probabilityObject))
+                filtered.Add(probabilityObject);
+        }
+        return filtered;
+    }
+    
     /**
      * Clone this ProbabilitObjectArray
      * @returns     {ProbabilityObjectArray}                                Deep Copy of this ProbabilityObjectArray

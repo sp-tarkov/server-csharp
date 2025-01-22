@@ -12,6 +12,8 @@ using Core.Services;
 using Core.Utils.Collections;
 using SptCommon.Extensions;
 using BodyPart = Core.Models.Spt.Config.BodyPart;
+using Core.Models.Eft.Hideout;
+using Core.Utils.Cloners;
 
 namespace Core.Generators;
 
@@ -25,10 +27,13 @@ public class RepeatableQuestGenerator(
     ItemHelper _itemHelper,
     RepeatableQuestRewardGenerator _repeatableQuestRewardGenerator,
     DatabaseService _databaseService,
-    ConfigServer _configServer
+    LocalisationService _localisationService,
+    ConfigServer _configServer,
+    ICloner _cloner
 )
 {
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected int _maxRandomNumberAttempts = 6;
 
     /// <summary>
     /// This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see assets/database/templates/repeatableQuests.json).
@@ -130,7 +135,8 @@ public class RepeatableQuestGenerator(
         var maxKillDifficulty = eliminationConfig.MaxKills;
 
         var targetPool = questTypePool.Pool.Elimination;
-        targetsConfig = (ProbabilityObjectArray<Target, string, BossInfo>)targetsConfig.Where((x) => questTypePool.Pool.Elimination.Targets.ContainsKey(x.Key));
+        targetsConfig = targetsConfig.Filter((x) => questTypePool.Pool.Elimination.Targets.ContainsKey(x.Key));
+
         if (targetsConfig.Count == 0 || targetsConfig.All((x) => x.Data.IsBoss.GetValueOrDefault(false)))
         {
             // There are no more targets left for elimination; delete it as a possible quest type
@@ -405,7 +411,13 @@ public class RepeatableQuestGenerator(
     /// <returns>Elimination-location-subcondition object</returns>
     protected QuestConditionCounterCondition GenerateEliminationLocation(List<string> location)
     {
-        throw new NotImplementedException();
+        return new QuestConditionCounterCondition
+        {
+            Id = _hashUtil.Generate(),
+            DynamicLocale = true,
+            Target = location,
+            ConditionType = "Location"
+        };
     }
 
     /// <summary>
@@ -478,14 +490,156 @@ public class RepeatableQuestGenerator(
     /// <param name="traderId">trader from which the quest will be provided</param>
     /// <param name="repeatableConfig">The configuration for the repeatably kind (daily, weekly) as configured in QuestConfig for the requested quest</param>
     /// <returns>quest type format for "Completion" (see assets/database/templates/repeatableQuests.json)</returns>
-    protected RepeatableQuest GenerateCompletionQuest(
+    protected RepeatableQuest? GenerateCompletionQuest(
         string sessionId,
         int pmcLevel,
         string traderId,
         RepeatableQuestConfig repeatableConfig
     )
     {
-        throw new NotImplementedException();
+        var completionConfig = repeatableConfig.QuestConfig.Completion;
+        var levelsConfig = repeatableConfig.RewardScaling.Levels;
+        var roublesConfig = repeatableConfig.RewardScaling.Roubles;
+
+        var quest = GenerateRepeatableTemplate("Completion", traderId, repeatableConfig.Side, sessionId);
+
+        // Filter the items.json items to items the player must retrieve to complete quest: shouldn't be a quest item or "non-existant"
+        var possibleItemsToRetrievePool = _repeatableQuestRewardGenerator.GetRewardableItems(
+            repeatableConfig,
+            traderId);
+
+        // Be fair, don't var the items be more expensive than the reward
+        var multi = _randomUtil.GetFloat((float)0.5, 1);
+        var roublesBudget = Math.Floor(
+            (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi));
+        roublesBudget = Math.Max(roublesBudget, 5000d);
+        var itemSelection = possibleItemsToRetrievePool.Where(
+            (x) => _itemHelper.GetItemPrice(x.Key) < roublesBudget).ToList();
+
+        // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
+        // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
+        if (repeatableConfig.QuestConfig.Completion.UseWhitelist.GetValueOrDefault(false)) {
+            var itemWhitelist = _databaseService.GetTemplates().RepeatableQuests.Data.Completion.ItemsWhitelist;
+
+            // Filter and concatenate the arrays according to current player level
+            var itemIdsWhitelisted = itemWhitelist
+                .Where((p) => p.MinPlayerLevel <= pmcLevel)
+                .SelectMany(x => x.ItemIds).ToList(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
+            itemSelection = itemSelection.Where((x) => {
+                // Whitelist can contain item tpls and item base type ids
+                return (
+                    itemIdsWhitelisted.Any((v) => _itemHelper.IsOfBaseclass(x.Key, v)) ||
+                    itemIdsWhitelisted.Contains(x.Key)
+                );
+            }).ToList();
+            // check if items are missing
+            // var flatList = itemSelection.reduce((a, il) => a.concat(il[0]), []);
+            // var missing = itemIdsWhitelisted.filter(l => !flatList.includes(l));
+        }
+
+        if (repeatableConfig.QuestConfig.Completion.UseBlacklist.GetValueOrDefault(false)) {
+            var itemBlacklist = _databaseService.GetTemplates().RepeatableQuests.Data.Completion.ItemsBlacklist;
+
+            // we filter and concatenate the arrays according to current player level
+            var itemIdsBlacklisted = itemBlacklist
+                .Where((p) => p.MinPlayerLevel <= pmcLevel)
+                .SelectMany(x => x.ItemIds).ToList(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
+
+            itemSelection = itemSelection.Where((x) => {
+                return (
+                    itemIdsBlacklisted.All((v) => !_itemHelper.IsOfBaseclass(x.Key, v)) ||
+                    !itemIdsBlacklisted.Contains(x.Key)
+                );
+            }).ToList();
+        }
+
+        if (!itemSelection.Any()) {
+            _logger.Error(_localisationService.GetText("repeatable-completion_quest_whitelist_too_small_or_blacklist_too_restrictive"));
+
+            return null;
+        }
+
+        // Draw items to ask player to retrieve
+        var isAmmo = 0;
+
+        // Store the indexes of items we are asking player to provide
+        var distinctItemsToRetrieveCount = _randomUtil.GetInt(1, completionConfig.UniqueItemCount.Value);
+        var chosenRequirementItemsTpls = new List<string>();
+        var usedItemIndexes = new HashSet<int>();
+        for (var i = 0; i < distinctItemsToRetrieveCount; i++) {
+            var chosenItemIndex = _randomUtil.RandInt(itemSelection.Count());
+            var found = false;
+
+            for (var j = 0; j < _maxRandomNumberAttempts; j++) {
+                if (usedItemIndexes.Contains(chosenItemIndex)) {
+                    chosenItemIndex = _randomUtil.RandInt(itemSelection.Count());
+                } else {
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                _logger.Error(_localisationService.GetText("repeatable-no_reward_item_found_in_price_range", new {
+                        minPrice = 0,
+                        roublesBudget = roublesBudget }));
+
+                return null;
+            }
+            usedItemIndexes.Add(chosenItemIndex);
+
+            var itemSelected = itemSelection[chosenItemIndex];
+            var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Key).Value;
+            var minValue = (double)completionConfig.MinimumRequestedAmount.Value;
+            var maxValue = (double)completionConfig.MaximumRequestedAmount.Value;
+            if (_itemHelper.IsOfBaseclass(itemSelected.Key, BaseClasses.AMMO)) {
+                // Prevent multiple ammo requirements from being picked
+                if (isAmmo > 0 && isAmmo < _maxRandomNumberAttempts) {
+                    isAmmo++;
+                    i--;
+
+                    continue;
+                }
+                isAmmo++;
+                minValue = (double)completionConfig.MinimumRequestedBulletAmount.Value;
+                maxValue = (double)completionConfig.MaximumRequestedBulletAmount.Value;
+            }
+            var value = minValue;
+
+            // Get the value range within budget
+            var x = Math.Floor(roublesBudget / itemUnitPrice);
+            maxValue = Math.Min(maxValue, x);
+            if (maxValue > minValue) {
+                // If it doesn't blow the budget we have for the request, draw a random amount of the selected
+                // Item type to be requested
+                value = _randomUtil.RandInt((int)minValue, (int)maxValue + 1);
+            }
+            roublesBudget -= value * itemUnitPrice;
+
+            // Push a CompletionCondition with the item and the amount of the item
+            chosenRequirementItemsTpls.Add(itemSelected.Key);
+            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Key, value));
+
+            if (roublesBudget > 0) {
+                // Reduce the list possible items to fulfill the new budget constraint
+                itemSelection = itemSelection.Where((dbItem) => _itemHelper.GetItemPrice(dbItem.Key) < roublesBudget).ToList();
+                if (!itemSelection.Any()) {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+
+        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
+            pmcLevel,
+            1,
+            traderId,
+            repeatableConfig,
+            completionConfig,
+            chosenRequirementItemsTpls);
+
+        return quest;
     }
 
     /// <summary>
@@ -495,7 +649,7 @@ public class RepeatableQuestGenerator(
     /// <param name="itemTpl">id of the item to request</param>
     /// <param name="value">amount of items of this specific type to request</param>
     /// <returns>object of "Completion"-condition</returns>
-    protected RepeatableQuest GenerateCompletionAvailableForFinish(string itemTpl, int value)
+    protected QuestCondition GenerateCompletionAvailableForFinish(string itemTpl, double value)
     {
         throw new NotImplementedException();
     }
@@ -509,14 +663,99 @@ public class RepeatableQuestGenerator(
     /// <param name="questTypePool">Pools for quests (used to avoid redundant quests)</param>
     /// <param name="repeatableConfig">The configuration for the repeatably kind (daily, weekly) as configured in QuestConfig for the requested quest</param>
     /// <returns>object of quest type format for "Exploration" (see assets/database/templates/repeatableQuests.json)</returns>
-    protected RepeatableQuest GenerateExplorationQuest(
+    protected RepeatableQuest? GenerateExplorationQuest(
         string sessionId,
         int pmcLevel,
         string traderId,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig)
     {
-        throw new NotImplementedException();
+        var explorationConfig = repeatableConfig.QuestConfig.Exploration;
+        var requiresSpecificExtract =
+            _randomUtil.Random.Next() < repeatableConfig.QuestConfig.Exploration.SpecificExits.Probability;
+
+        if (questTypePool.Pool.Exploration.Locations.Count == 0)
+        {
+            // there are no more locations left for exploration; delete it as a possible quest type
+            questTypePool.Types = questTypePool.Types.Where((t) => t != "Exploration").ToList();
+            return null;
+        }
+
+        // If location drawn is factory, it's possible to either get factory4_day and factory4_night or only one
+        // of the both
+        var locationKey = _randomUtil.DrawRandomFromDict(questTypePool.Pool.Exploration.Locations)[0];
+        var locationTarget = questTypePool.Pool.Exploration.Locations[locationKey];
+
+        // Remove the location from the available pool
+        questTypePool.Pool.Exploration.Locations.Remove(locationKey);
+
+        // Different max extract count when specific extract needed
+        var exitTimesMax = requiresSpecificExtract
+            ? explorationConfig.MaximumExtractsWithSpecificExit
+            : explorationConfig.MaximumExtracts + 1;
+        var numExtracts = _randomUtil.RandInt(1, exitTimesMax);
+
+        var quest = GenerateRepeatableTemplate("Exploration", traderId, repeatableConfig.Side, sessionId);
+
+        var exitStatusCondition = new QuestConditionCounterCondition{
+            Id = _hashUtil.Generate(),
+            DynamicLocale = true,
+            Status = ["Survived"],
+            ConditionType = "ExitStatus",
+        };
+        var locationCondition = new QuestConditionCounterCondition{
+            Id = _hashUtil.Generate(),
+            DynamicLocale = true,
+            Target = locationTarget,
+            ConditionType = "Location",
+        };
+
+        quest.Conditions.AvailableForFinish[0].Counter.Id = _hashUtil.Generate();
+        quest.Conditions.AvailableForFinish[0].Counter.Conditions = [exitStatusCondition, locationCondition];
+        quest.Conditions.AvailableForFinish[0].Value = numExtracts;
+        quest.Conditions.AvailableForFinish[0].Id = _hashUtil.Generate();
+        quest.Location = GetQuestLocationByMapId(locationKey.ToString());
+
+        if (requiresSpecificExtract)
+        {
+            // Fetch extracts for the requested side
+            var mapExits = GetLocationExitsForSide(locationKey.ToString(), repeatableConfig.Side);
+
+            // Only get exits that have a greater than 0% chance to spawn
+            var exitPool = mapExits.Where((exit) => exit.Chance > 0).ToList();
+
+            // Exclude exits with a requirement to leave (e.g. car extracts)
+            var possibleExits = exitPool.Where(
+                (exit) =>
+                    exit.PassageRequirement is not null ||
+                    repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains("PassageRequirement")).ToList();
+
+            if (possibleExits.Count == 0)
+            {
+                _logger.Error("Unable to choose specific exit on map: ${ locationKey}, Possible exit pool was empty");
+            }
+            else
+            {
+                // Choose one of the exits we filtered above
+                var chosenExit = _randomUtil.DrawRandomFromList(possibleExits, 1)[0];
+
+                // Create a quest condition to leave raid via chosen exit
+                var exitCondition = GenerateExplorationExitCondition(chosenExit);
+                quest.Conditions.AvailableForFinish[0].Counter.Conditions.Add(exitCondition);
+            }
+        }
+
+        // Difficulty for exploration goes from 1 extract to maxExtracts
+        // Difficulty for reward goes from 0.2...1 -> map
+        var difficulty = _mathUtil.MapToRange(numExtracts, 1, explorationConfig.MaximumExtracts.Value, 0.2, 1);
+        quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
+            pmcLevel,
+            difficulty,
+            traderId,
+            repeatableConfig,
+            explorationConfig);
+
+        return quest;
     }
 
     /// <summary>
@@ -576,6 +815,90 @@ public class RepeatableQuestGenerator(
         string side,
         string sessionId)
     {
-        throw new NotImplementedException();
+        Quest questData = null;
+        switch (type)
+        {
+            case "Elimination":
+                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Elimination;
+                break;
+            case "Completion":
+                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Completion;
+                break;
+            case "Exploration":
+                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Exploration;
+                break;
+            case "Pickup":
+                questData = _databaseService.GetTemplates().RepeatableQuests.Templates.Pickup;
+                break;
+        }
+        var questClone = _cloner.Clone(questData);
+        questClone.Id = _hashUtil.Generate();
+        questClone.TraderId = traderId;
+
+        /*  in locale, these id correspond to the text of quests
+            template ids -pmc  : Elimination = 616052ea3054fc0e2c24ce6e / Completion = 61604635c725987e815b1a46 / Exploration = 616041eb031af660100c9967
+            template ids -scav : Elimination = 62825ef60e88d037dc1eb428 / Completion = 628f588ebb558574b2260fe5 / Exploration = 62825ef60e88d037dc1eb42c
+        */
+
+        // Get template id from config based on side and type of quest
+        var typeIds = side.ToLower() == "pmc" ? _questConfig.QuestTemplateIds.Pmc : _questConfig.QuestTemplateIds.Scav;
+        var templateId = string.Empty;
+        switch (type)
+        {
+            case "Completion":
+                templateId = typeIds.Completion;
+                break;
+            case "Elimination":
+                templateId = typeIds.Elimination;
+                break;
+            case "Exploration":
+                templateId = typeIds.Exploration;
+                break;
+            case "Pickup":
+                templateId = typeIds.Pickup;
+                break;
+        }
+
+        questClone.TemplateId = templateId;
+
+        // Force REF templates to use prapors ID - solves missing text issue
+        var desiredTraderId = traderId == Traders.REF ? Traders.PRAPOR : traderId;
+
+        questClone.Name = questClone.Name
+            .Replace("{traderId}", traderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.Note = questClone.Note
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.Description = questClone.Description
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.SuccessMessageText = questClone.SuccessMessageText
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.FailMessageText = questClone.FailMessageText
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.StartedMessageText = questClone.StartedMessageText
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.ChangeQuestMessageText = questClone.ChangeQuestMessageText
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.AcceptPlayerMessage = questClone.AcceptPlayerMessage
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.DeclinePlayerMessage = questClone.DeclinePlayerMessage
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+        questClone.CompletePlayerMessage = questClone.CompletePlayerMessage
+            .Replace("{traderId}", desiredTraderId)
+            .Replace("{templateId}", questClone.TemplateId);
+
+        questClone.QuestStatus.Id = _hashUtil.Generate();
+        questClone.QuestStatus.Uid = sessionId; // Needs to match user id
+        questClone.QuestStatus.QId = questClone.Id; // Needs to match quest id
+
+        return (RepeatableQuest)questClone;
     }
 }
