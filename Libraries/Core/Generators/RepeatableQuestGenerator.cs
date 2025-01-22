@@ -510,7 +510,7 @@ public class RepeatableQuestGenerator(
             (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi));
         roublesBudget = Math.Max(roublesBudget, 5000d);
         var itemSelection = possibleItemsToRetrievePool.Where(
-            (x) => _itemHelper.GetItemPrice(x.Key) < roublesBudget);
+            (x) => _itemHelper.GetItemPrice(x.Key) < roublesBudget).ToList();
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
         // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
@@ -527,7 +527,7 @@ public class RepeatableQuestGenerator(
                     itemIdsWhitelisted.Any((v) => _itemHelper.IsOfBaseclass(x.Key, v)) ||
                     itemIdsWhitelisted.Contains(x.Key)
                 );
-            });
+            }).ToList();
             // check if items are missing
             // var flatList = itemSelection.reduce((a, il) => a.concat(il[0]), []);
             // var missing = itemIdsWhitelisted.filter(l => !flatList.includes(l));
@@ -546,7 +546,7 @@ public class RepeatableQuestGenerator(
                     itemIdsBlacklisted.All((v) => !_itemHelper.IsOfBaseclass(x.Key, v)) ||
                     !itemIdsBlacklisted.Contains(x.Key)
                 );
-            });
+            }).ToList();
         }
 
         if (!itemSelection.Any()) {
@@ -585,10 +585,10 @@ public class RepeatableQuestGenerator(
             usedItemIndexes.Add(chosenItemIndex);
 
             var itemSelected = itemSelection[chosenItemIndex];
-            var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected[0]).Value;
+            var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Key).Value;
             var minValue = (double)completionConfig.MinimumRequestedAmount.Value;
             var maxValue = (double)completionConfig.MaximumRequestedAmount.Value;
-            if (_itemHelper.IsOfBaseclass(itemSelected[0], BaseClasses.AMMO)) {
+            if (_itemHelper.IsOfBaseclass(itemSelected.Key, BaseClasses.AMMO)) {
                 // Prevent multiple ammo requirements from being picked
                 if (isAmmo > 0 && isAmmo < _maxRandomNumberAttempts) {
                     isAmmo++;
@@ -613,13 +613,13 @@ public class RepeatableQuestGenerator(
             roublesBudget -= value * itemUnitPrice;
 
             // Push a CompletionCondition with the item and the amount of the item
-            chosenRequirementItemsTpls.Add(itemSelected[0]);
-            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected[0], value));
+            chosenRequirementItemsTpls.Add(itemSelected.Key);
+            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Key, value));
 
             if (roublesBudget > 0) {
                 // Reduce the list possible items to fulfill the new budget constraint
-                itemSelection = itemSelection.Where((dbItem) => _itemHelper.GetItemPrice(dbItem.Key) < roublesBudget);
-                if (itemSelection.Count() == 0) {
+                itemSelection = itemSelection.Where((dbItem) => _itemHelper.GetItemPrice(dbItem.Key) < roublesBudget).ToList();
+                if (!itemSelection.Any()) {
                     break;
                 }
             } else {
