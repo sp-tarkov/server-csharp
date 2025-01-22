@@ -90,6 +90,7 @@ public record BotBase
     [JsonPropertyName("SurvivorClass")]
     public SurvivorClass? SurvivorClass { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public DictionaryOrList<string, int>? WishList { get; set; }
