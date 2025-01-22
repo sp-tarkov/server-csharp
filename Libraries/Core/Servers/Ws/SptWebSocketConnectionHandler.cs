@@ -102,7 +102,7 @@ public class SptWebSocketConnectionHandler(
                 var ws = GetSessionWebSocket(sessionID);
 
                 var sendTask = ws.SendAsync(
-                    Encoding.UTF8.GetBytes(_jsonUtil.Serialize(output)),
+                    Encoding.UTF8.GetBytes(_jsonUtil.Serialize(output, output.GetType())),
                     WebSocketMessageType.Text,
                     true,
                     CancellationToken.None
