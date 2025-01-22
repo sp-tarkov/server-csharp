@@ -1,11 +1,13 @@
 ﻿using Core.Utils;
+using Core.Utils.Cloners;
+using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;
 
 [TestClass]
 public sealed class RandomUtilTests
 {
-    private RandomUtil _randomUtil = new();
+    private RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil()));
 	
 	[TestMethod]
 	public void GetIntTest()

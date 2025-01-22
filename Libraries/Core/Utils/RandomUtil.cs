@@ -1,25 +1,15 @@
 using System.Security.Cryptography;
 using SptCommon.Annotations;
 using Core.Models.Utils;
+using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 namespace Core.Utils;
 
 // TODO: Finish porting this class
 [Injectable(InjectionType.Singleton)]
-public class RandomUtil
+public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 {
-    protected ISptLogger<RandomUtil>? _logger = null;
-
-    public RandomUtil
-    (
-        ISptLogger<RandomUtil> logger
-    )
-    {
-        _logger = logger;
-    }
-    
-    public RandomUtil() { }
-
     public readonly Random Random = new();
 
     /// <summary>
@@ -284,9 +274,36 @@ public class RandomUtil
     /// <param name="replacement">Whether to draw with replacement. Defaults to true.</param>
     /// <typeparam name="T">The type of elements in the list.</typeparam>
     /// <returns>A List containing the drawn elements.</returns>
-    public IEnumerable<T> DrawRandomFromList<T>(IEnumerable<T> originalList, int count = 1, bool replacement = true)
+    public List<T> DrawRandomFromList<T>(List<T> originalList, int count = 1, bool replacement = true)
     {
-        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+        var list = originalList;
+        var drawCount = count;
+
+        if (!replacement)
+        {
+            list = _cloner.Clone(originalList);
+            // Adjust drawCount to avoid drawing more elements than available
+            if (drawCount > list.Count)
+            {
+                drawCount = list.Count;
+            }
+        }
+
+        var results = new List<T>();
+        for (var i = 0; i < drawCount; i++)
+        {
+            var randomIndex = RandInt(list.Count);
+            if (replacement)
+            {
+                results.Add(list[randomIndex]);
+            }
+            else
+            {
+                results.Add(list.Splice(randomIndex, 1)[0]);
+            }
+        }
+
+        return results;
     }
 
     /// <summary>
@@ -300,7 +317,9 @@ public class RandomUtil
     /// <returns>A list of randomly drawn keys from the dictionary.</returns>
     public List<TKey> DrawRandomFromDict<TKey, TVal>(Dictionary<TKey, TVal> dict, int count = 1, bool replacement = true) where TKey : notnull
     {
-        throw new NotImplementedException("ICloneable needs implemented on types before this can be written");
+        var keys = dict.Keys.ToList();
+        var randomKeys = DrawRandomFromList(keys, count, replacement);
+        return randomKeys;
     }
 
     /// <summary>
