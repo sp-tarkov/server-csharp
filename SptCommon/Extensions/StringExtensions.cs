@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 
 namespace SptCommon.Extensions;
@@ -7,7 +8,7 @@ public static class StringExtensions
     private static readonly Dictionary<string, Regex> RegexCache = new();
     private static readonly object RegexCacheLock = new();
 
-    public static string RegexReplace(this string source, string regexString, string newValue)
+    public static string RegexReplace(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, string newValue)
     {
         Regex regex;
         lock (RegexCacheLock)
@@ -21,7 +22,7 @@ public static class StringExtensions
         return regex.Replace(source, newValue);
     }
     
-    public static bool RegexMatch(this string source, string regexString, out Match? matchedString)
+    public static bool RegexMatch(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, out Match? matchedString)
     {
         Regex regex;
         lock (RegexCacheLock)
