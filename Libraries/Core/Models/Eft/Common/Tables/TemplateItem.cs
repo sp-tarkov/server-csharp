@@ -978,6 +978,7 @@ public record Props
 
     [JsonPropertyName("effects_health")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Dictionary<string, EffectsHealthProps>? EffectsHealth { get; set; }
 
     [JsonPropertyName("effects_damage")]
@@ -1692,6 +1693,12 @@ public record EffectsHealthProps
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
+    
+    [JsonPropertyName("delay")]
+    public double? Delay { get; set; }
+
+    [JsonPropertyName("duration")]
+    public double? Duration { get; set; }
 }
 
 public record EffectsDamage
@@ -1720,6 +1727,9 @@ public record EffectsDamage
 
 public record EffectDamageProps
 {
+    [JsonPropertyName("value")]
+    public double? Value { get; set; }
+    
     [JsonPropertyName("delay")]
     public double? Delay { get; set; }
 
