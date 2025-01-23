@@ -48,8 +48,9 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
 
     public int GetErrorCode(List<Warning> warnings)
     {
-        return int.Parse((warnings[0].Code is null 
-            ? BackendErrorCodes.UnknownError.ToString() 
+        // TODO: dont think this actually works
+        return int.Parse((warnings[0].Code is null || warnings[0].Code == "None" 
+            ? (BackendErrorCodes.UnknownError).ToString()
             : warnings.FirstOrDefault()?.Code) ?? string.Empty);
     }
 }
