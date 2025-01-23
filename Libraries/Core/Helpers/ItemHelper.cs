@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Services;
@@ -2012,6 +2013,19 @@ public class ItemHelper(
                 item.Upd.SpawnedInSession = null;
             }
         }
+    }
+
+    public Product GetProductFromItem(Item item)
+    {
+        return new Product
+        {
+            Id = item.Id,
+            Template = item.Template,
+            ParentId = item.ParentId,
+            SlotId = item.SlotId,
+            Location = item.Location,
+            Upd = item.Upd,
+        };
     }
 }
 

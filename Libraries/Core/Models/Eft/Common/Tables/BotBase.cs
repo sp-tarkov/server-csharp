@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Utils.Json;
@@ -618,18 +619,6 @@ public record Production // use this instead of productive and scavcase
     public bool? SptIsCultistCircle { get; set; }
     
     public string? RecipeId { get; set; }
-}
-
-public record Product
-{
-    [JsonPropertyName("_id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
-
-    [JsonPropertyName("upd")]
-    public Upd? Upd { get; set; }
 }
 
 public record BotHideoutArea

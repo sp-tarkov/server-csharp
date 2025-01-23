@@ -182,7 +182,7 @@ public record Product
     public string? SlotId { get; set; }
 
     [JsonPropertyName("location")]
-    public ItemLocation? Location { get; set; }
+    public object? Location { get; set; }
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
