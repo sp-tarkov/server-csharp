@@ -35,6 +35,7 @@ public record EndLocalRaidRequestData : IRequestData
 
 public record EndRaidResult
 {
+    [JsonPropertyName("profile")]
     public PmcData? Profile { get; set; }
 
     /// <summary>
