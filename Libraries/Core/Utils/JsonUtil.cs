@@ -33,6 +33,7 @@ public class JsonUtil
             new EftEnumConverter<NotificationEventType>(),
             new EftEnumConverter<QuestTypeEnum>(),
             new EftEnumConverter<RewardType>(),
+            new EftEnumConverter<ExitStatus>(),
             new BaseInteractionRequestDataConverter()
         }
     };

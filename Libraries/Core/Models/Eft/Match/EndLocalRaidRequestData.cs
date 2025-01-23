@@ -42,6 +42,7 @@ public record EndRaidResult
     /// "Survived/Transit" etc
     /// </summary>
     [JsonPropertyName("result")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ExitStatus? Result { get; set; }
 
     [JsonPropertyName("killerId")]

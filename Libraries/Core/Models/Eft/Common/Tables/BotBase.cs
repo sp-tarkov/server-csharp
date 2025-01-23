@@ -163,9 +163,7 @@ public record Info
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int? RegistrationDate { get; set; }
     public string? GameVersion { get; set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public MemberCategory? MemberCategory { get; set; }
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public MemberCategory? SelectedMemberCategory { get; set; }
     [JsonPropertyName("lockedMoveCommands")]
     public bool? LockedMoveCommands { get; set; }
@@ -403,6 +401,8 @@ public record Victim
     public double? Distance { get; set; }
     public double? Level { get; set; }
     public string? Weapon { get; set; }
+    public double? PrestigeLevel { get; set; }
+    public string? ColliderType { get; set; }
     public string? Role { get; set; }
     public string? Location { get; set; }
 }
@@ -425,6 +425,7 @@ public record CounterKeyValue
 
 public record Aggressor
 {
+    public double? PrestigeLevel { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? AccountId { get; set; }
 
@@ -438,6 +439,8 @@ public record Aggressor
     public string? HeadSegment { get; set; }
     public string? WeaponName { get; set; }
     public string? Category { get; set; }
+    public string? ColliderType { get; set; }
+    public string? Role { get; set; }
 }
 
 public record DamageHistory
@@ -576,17 +579,17 @@ public record Production // use this instead of productive and scavcase
     public List<Product>? Products { get; set; }
 
     /** Seconds passed of production */
-    public int? Progress { get; set; }
+    public double? Progress { get; set; }
 
     /** Is craft in some state of being worked on by client (crafting/ready to pick up) */
     [JsonPropertyName("inProgress")]
     public bool? InProgress { get; set; }
 
-    public string? StartTimestamp { get; set; }
-    public int? SkipTime { get; set; }
+    public long? StartTimestamp { get; set; }
+    public double? SkipTime { get; set; }
 
     /** Seconds needed to fully craft */
-    public int? ProductionTime { get; set; }
+    public double? ProductionTime { get; set; }
 
     public List<Item>? GivenItemsInStart { get; set; }
     public bool? Interrupted { get; set; }

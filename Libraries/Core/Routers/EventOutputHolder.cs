@@ -122,7 +122,7 @@ public class EventOutputHolder
                 // Water collector / Bitcoin etc
                 production.Value.SptIsComplete = false;
                 production.Value.Progress = 0;
-                production.Value.StartTimestamp = _timeUtil.GetTimeStamp().ToString();
+                production.Value.StartTimestamp = _timeUtil.GetTimeStamp();
             }
             else if (!production.Value.InProgress ?? false)
             {
