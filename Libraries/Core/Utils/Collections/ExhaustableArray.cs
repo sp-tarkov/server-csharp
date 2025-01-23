@@ -2,7 +2,7 @@ using Core.Utils.Cloners;
 
 namespace Core.Utils.Collections;
 
-public class ExhaustableArray<T> : IExhaustableArray<T>
+public record ExhaustableArray<T> : IExhaustableArray<T>
 {
     private LinkedList<T>? pool;
     private RandomUtil _randomUtil;

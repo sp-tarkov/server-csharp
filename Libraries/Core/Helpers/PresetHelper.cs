@@ -15,7 +15,7 @@ public class PresetHelper(
 {
     protected Dictionary<string, List<string>> _lookup = new();
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
-    protected Dictionary<string, Preset> _defaultWeaponPresets;
+    protected Dictionary<string, Preset>? _defaultWeaponPresets;
 
     public void HydratePresetStore(Dictionary<string, List<string>> input)
     {
@@ -40,10 +40,10 @@ public class PresetHelper(
      */
     public Dictionary<string, Preset> GetDefaultWeaponPresets()
     {
-        if (_defaultWeaponPresets == null)
+        if (_defaultWeaponPresets is null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            tempPresets = tempPresets.Where(
+            _defaultWeaponPresets = tempPresets.Where(
                     p =>
                         p.Value.Encyclopedia != null &&
                         _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)

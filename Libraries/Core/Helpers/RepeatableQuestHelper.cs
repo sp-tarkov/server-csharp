@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -15,7 +15,7 @@ public class RepeatableQuestHelper(
 )
 {
     /// <summary>
-    /// Get the relevant elimination config based on the current players PMC level
+    ///     Get the relevant elimination config based on the current players PMC level
     /// </summary>
     /// <param name="pmcLevel">Level of PMC character</param>
     /// <param name="repeatableConfig">Main repeatable config</param>
@@ -23,7 +23,7 @@ public class RepeatableQuestHelper(
     public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
         return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(
-            (x) => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
+            x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
         );
     }
 
