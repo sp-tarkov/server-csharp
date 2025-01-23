@@ -3,15 +3,26 @@ using Core.Helpers;
 using Core.Models.Eft.Builds;
 using Core.Models.Eft.PresetBuild;
 using Core.Models.Eft.Profile;
+using Core.Models.Enums;
+using Core.Models.Utils;
+using Core.Routers;
+using Core.Servers;
 using Core.Services;
+using Core.Utils;
 using Core.Utils.Cloners;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class BuildController(
-    ProfileHelper _profileHelper,
+    ISptLogger<BuildController> _logger,
+    HashUtil _hashUtil,
+    EventOutputHolder _eventOutputHolder,
     DatabaseService _databaseService,
+    ProfileHelper _profileHelper,
+    LocalisationService _localisationService,
+    ItemHelper _itemHelper,
+    SaveServer _saveServer,
     ICloner _cloner
 )
 {
@@ -68,7 +79,31 @@ public class BuildController(
     /// <param name="body"></param>
     public void SaveWeaponBuild(string sessionId, PresetBuildActionRequestData body)
     {
-        throw new NotImplementedException();
+        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+
+        // Replace duplicate Id's. The first item is the base item.
+        // The root ID and the base item ID need to match.
+        body.Items = _itemHelper.ReplaceIDs(body.Items, pmcData);
+        body.Root = body.Items.FirstOrDefault().Id;
+
+        // Create new object ready to save into profile userbuilds.weaponBuilds
+        WeaponBuild newBuild = new WeaponBuild { Id = body.Id, Name = body.Name, Root = body.Root, Items = body.Items };
+
+        var profile = _profileHelper.GetFullProfile(sessionId);
+
+        var savedWeaponBuilds = profile.UserBuildData.WeaponBuilds;
+        var existingBuild = savedWeaponBuilds.FirstOrDefault(x => x.Id == body.Id);
+        if (existingBuild is not null)
+        {
+            // exists, replace
+            profile.UserBuildData.WeaponBuilds.Remove(existingBuild);
+            profile.UserBuildData.WeaponBuilds.Add(existingBuild);
+        }
+        else
+        {
+            // Add fresh
+            profile.UserBuildData.WeaponBuilds.Add(newBuild);
+        }
     }
 
     /// <summary>
@@ -76,9 +111,42 @@ public class BuildController(
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
-    public void SaveEquipmentBuild(string sessionId, PresetBuildActionRequestData request)
+    public void SaveEquipmentBuild(string sessionID, PresetBuildActionRequestData request)
     {
-        throw new NotImplementedException();
+        var buildType = "equipmentBuilds";
+        var profile = _profileHelper.GetFullProfile(sessionID);
+        var pmcData = profile.CharacterData.PmcData;
+
+        List<EquipmentBuild> existingSavedEquipmentBuilds =
+            _saveServer.GetProfile(sessionID).UserBuildData.EquipmentBuilds;
+
+        // Replace duplicate ID's. The first item is the base item.
+        // Root ID and the base item ID need to match.
+        request.Items = _itemHelper.ReplaceIDs(request.Items, pmcData);
+
+        EquipmentBuild newBuild = new EquipmentBuild
+        {
+            Id = request.Id,
+            Name = request.Name,
+            BuildType = EquipmentBuildType.Custom,
+            Root = request.Items[0].Id,
+            Items = request.Items,
+        };
+
+        var existingBuild = existingSavedEquipmentBuilds.FirstOrDefault(
+            build => build.Name == request.Name || build.Id == request.Id
+        );
+        if (existingBuild is not null)
+        {
+            // Already exists, replace
+            profile.UserBuildData.EquipmentBuilds.Remove(existingBuild);
+            profile.UserBuildData.EquipmentBuilds.Add(newBuild);
+        }
+        else
+        {
+            // Fresh, add new
+            profile.UserBuildData.EquipmentBuilds.Add(newBuild);
+        }
     }
 
     /// <summary>
@@ -99,7 +167,30 @@ public class BuildController(
     /// <param name="request"></param>
     public void CreateMagazineTemplate(string sessionId, SetMagazineRequest request)
     {
-        throw new NotImplementedException();
+        MagazineBuild result = new MagazineBuild
+        {
+            Id = request.Id,
+            Name = request.Name,
+            Caliber = request.Caliber,
+            TopCount = request.TopCount,
+            BottomCount = request.BottomCount,
+            Items = request.Items,
+        };
+
+        var profile = _profileHelper.GetFullProfile(sessionId);
+
+        profile.UserBuildData.MagazineBuilds ??= [];
+
+        var existingArrayId = profile.UserBuildData.MagazineBuilds.FirstOrDefault((item) => item.Name == request.Name);
+        if (existingArrayId is not null)
+        {
+            {
+                profile.UserBuildData.MagazineBuilds.Remove(existingArrayId);
+            }
+
+
+            profile.UserBuildData.MagazineBuilds.Add(result);
+        }
     }
 
     /// <summary>
@@ -107,8 +198,41 @@ public class BuildController(
     /// </summary>
     /// <param name="idToRemove"></param>
     /// <param name="sessionId"></param>
-    private void RemovePlayerBuild(string idToRemove, string sessionId)
+    private void RemovePlayerBuild(string idToRemove, string sessionID)
     {
-        throw new NotImplementedException();
+        var profile = _saveServer.GetProfile(sessionID);
+        var weaponBuilds = profile.UserBuildData.WeaponBuilds;
+        var equipmentBuilds = profile.UserBuildData.EquipmentBuilds;
+        var magazineBuilds = profile.UserBuildData.MagazineBuilds;
+
+        // Check for id in weapon array first
+        var matchingWeaponBuild = weaponBuilds.FirstOrDefault(weaponBuild => weaponBuild.Id == idToRemove);
+        if (matchingWeaponBuild is not null)
+        {
+            weaponBuilds.Remove(matchingWeaponBuild);
+
+            return;
+        }
+
+        // Id not found in weapons, try equipment
+        var matchingEquipmentBuild = equipmentBuilds.FirstOrDefault(equipmentBuild => equipmentBuild.Id == idToRemove);
+        if (matchingEquipmentBuild is not null)
+        {
+            equipmentBuilds.Remove(matchingEquipmentBuild);
+
+            return;
+        }
+
+        // Id not found in weapons/equipment, try mags
+        var matchingMagazineBuild = magazineBuilds.FirstOrDefault(magBuild => magBuild.Id == idToRemove);
+        if (matchingMagazineBuild is not null)
+        {
+            magazineBuilds.Remove(matchingMagazineBuild);
+
+            return;
+        }
+
+        // Not found in weapons,equipment or magazines, not good
+        _logger.Error(_localisationService.GetText("build-unable_to_delete_preset", idToRemove));
     }
 }
