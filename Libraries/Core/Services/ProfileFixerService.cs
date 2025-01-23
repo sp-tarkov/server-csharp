@@ -641,7 +641,7 @@ public class ProfileFixerService(
 
         foreach (var TraderPurchase in fullProfile.TraderPurchases)
         {
-            if (_traderHelper.TraderEnumHasValue(TraderPurchase.Key))
+            if (!_traderHelper.TraderEnumHasValue(TraderPurchase.Key))
             {
                 _logger.Error(_localisationService.GetText("fixer-trader_found", TraderPurchase.Key));
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
