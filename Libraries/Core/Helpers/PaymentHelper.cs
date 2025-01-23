@@ -36,6 +36,13 @@ public class PaymentHelper(ConfigServer _configServer)
     /// <returns></returns>
     public string GetCurrency(string currency)
     {
-        throw new NotImplementedException();
+        return currency switch
+        {
+            "EUR" => Money.EUROS,
+            "USD" => Money.DOLLARS,
+            "RUB" => Money.ROUBLES,
+            "GP" => Money.GP,
+            _ => ""
+        };
     }
 }
