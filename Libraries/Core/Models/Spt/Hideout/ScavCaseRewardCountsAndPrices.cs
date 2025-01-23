@@ -17,14 +17,14 @@ public record ScavCaseRewardCountsAndPrices
 public record RewardCountAndPriceDetails
 {
     [JsonPropertyName("minCount")]
-    public int? MinCount { get; set; }
+    public double? MinCount { get; set; }
 
     [JsonPropertyName("maxCount")]
-    public int? MaxCount { get; set; }
+    public double? MaxCount { get; set; }
 
     [JsonPropertyName("minPriceRub")]
-    public int? MinPriceRub { get; set; }
+    public double? MinPriceRub { get; set; }
 
     [JsonPropertyName("maxPriceRub")]
-    public int? MaxPriceRub { get; set; }
+    public double? MaxPriceRub { get; set; }
 }
