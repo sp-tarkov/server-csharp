@@ -57,6 +57,9 @@ public class LocalisationService
 
     public string GetRandomTextThatMatchesPartialKey(string partialKey)
     {
-        throw new NotImplementedException();
+        var values = _localeService.GetLocaleKeysThatStartsWithValue(partialKey);
+        var chosenKey = _randomUtil.GetArrayValue(values);
+
+        return GetText(chosenKey);
     }
 }

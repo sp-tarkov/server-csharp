@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+using System.Globalization;
 using SptCommon.Annotations;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -153,5 +153,10 @@ public class LocaleService(
     protected CultureInfo GetPlatformLocale()
     {
         return CultureInfo.InstalledUICulture;
+    }
+
+    public List<string> GetLocaleKeysThatStartsWithValue(string partialKey)
+    {
+        return GetLocaleDb().Keys.Where(x => x.StartsWith(partialKey)).ToList();
     }
 }
