@@ -675,6 +675,9 @@ public record HideoutItem
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
+    
+    [JsonPropertyName("count")]
+    public double? Count { get; set; }
 }
 
 public record LastCompleted
