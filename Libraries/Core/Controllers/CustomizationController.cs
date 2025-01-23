@@ -25,13 +25,16 @@ public class CustomizationController(
     ICloner _cloner
 )
 {
-    /// <summary>
-    /// Get purchasable clothing items from trader that match players side (usec/bear)
-    /// </summary>
-    /// <param name="traderId">trader to look up clothing for</param>
-    /// <param name="sessionId">Session id</param>
-    /// <returns>Suit array</returns>
-    public List<Suit> GetTraderSuits(string traderId, string sessionId)
+        protected string _lowerParentClothingId = "5cd944d01388ce000a659df9";
+        protected string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
+
+/// <summary>
+/// Get purchasable clothing items from trader that match players side (usec/bear)
+/// </summary>
+/// <param name="traderId">trader to look up clothing for</param>
+/// <param name="sessionId">Session id</param>
+/// <returns>Suit array</returns>
+public List<Suit> GetTraderSuits(string traderId, string sessionId)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var clothing = _databaseService.GetCustomization();
@@ -104,6 +107,7 @@ public class CustomizationController(
             Source = CustomisationSource.UNLOCKED_IN_GAME,
             Type = CustomisationType.SUITE
         };
+
         profile.CustomisationUnlocks.Add(rewardToStore);
 
         return output;
@@ -314,20 +318,19 @@ public class CustomizationController(
             return;
         }
 
-        switch (dbSuit.Parent)
+        // Body
+        if (dbSuit.Parent == _upperParentClothingId)
         {
-            case "5cd944d01388ce000a659df9":
-                if (pmcData.Customization is null) return;
+            pmcData.Customization.Body = dbSuit.Properties.Body;
+            pmcData.Customization.Hands = dbSuit.Properties.Hands;
 
-                pmcData.Customization.Body = dbSuit.Properties?.Body;
-                pmcData.Customization.Hands = dbSuit.Properties?.Hands;
+            return;
+        }
 
-                return;
-            case "5cd944ca1388ce03a44dc2a4":
-                if (pmcData.Customization is null) return;
-
-                pmcData.Customization.Feet = dbSuit.Properties?.Feet;
-                break;
+        // Feet
+        if (dbSuit.Parent == _lowerParentClothingId)
+        {
+            pmcData.Customization.Feet = dbSuit.Properties.Feet;
         }
     }
 }
