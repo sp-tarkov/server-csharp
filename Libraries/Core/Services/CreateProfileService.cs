@@ -49,7 +49,7 @@ public class CreateProfileService(
         pmcData.Savage = account.ScavengerId;
         pmcData.SessionId = sessionId;
         pmcData.Info.Nickname = request.Nickname;
-        pmcData.Info.LowerNickname = account.Username.ToLower();
+        pmcData.Info.LowerNickname = request.Nickname.ToLower();
         pmcData.Info.RegistrationDate = (int)_timeUtil.GetTimeStamp();
         pmcData.Info.Voice = _databaseService.GetCustomization()[request.VoiceId].Name;
         pmcData.Stats = _profileHelper.GetDefaultCounters();

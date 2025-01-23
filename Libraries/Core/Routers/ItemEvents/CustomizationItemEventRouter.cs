@@ -41,7 +41,7 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
             case "CustomizationBuy":
                 return _customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID);
             case "CustomizationSet":
-                return _customizationCallbacks.SetClothing(pmcData, body as CustomizationSetRequest, sessionID);
+                return _customizationCallbacks.SetCustomisation(pmcData, body as CustomizationSetRequest, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");
         }

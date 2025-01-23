@@ -97,9 +97,6 @@ public class CustomizationController(
 
         var profile = _saveServer.GetProfile(sessionId);
 
-        // TODO - remove now they're stored in profile.CustomisationUnlocks?
-        profile.Suits?.Add(suitId!);
-
         //TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
         var rewardToStore = new CustomisationStorage
         {
@@ -281,9 +278,9 @@ public class CustomizationController(
     /// <param name="request"></param>
     /// <param name="pmcData"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetClothing(string sessionId, CustomizationSetRequest request, PmcData pmcData)
+    public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
-        foreach (var customisation in request.Customizations!)
+        foreach (var customisation in request.Customizations)
         {
             switch (customisation.Type)
             {
