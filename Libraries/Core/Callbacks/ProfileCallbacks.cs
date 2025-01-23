@@ -1,5 +1,6 @@
 ﻿using SptCommon.Annotations;
 using Core.Controllers;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
@@ -11,7 +12,8 @@ namespace Core.Callbacks;
 public class ProfileCallbacks(
     HttpResponseUtil _httpResponse,
     TimeUtil _timeUtil,
-    ProfileController _profileController
+    ProfileController _profileController,
+    ProfileHelper _profileHelper
 )
 {
     /**
@@ -91,6 +93,12 @@ public class ProfileCallbacks(
      */
     public string GetReservedNickname(string url, EmptyRequestData info, string sessionID)
     {
+        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+        if (fullProfile?.ProfileInfo?.Username is not null)
+        {
+            return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
+        }
+
         return _httpResponse.GetBody("SPTarkov");
     }
 

@@ -85,8 +85,8 @@ public class CustomizationCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetClothing(PmcData pmcData, CustomizationSetRequest info, string sessionID)
+    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest info, string sessionID)
     {
-        return _customizationController.SetClothing(sessionID, info, pmcData);
+        return _customizationController.SetCustomisation(sessionID, info, pmcData);
     }
 }
