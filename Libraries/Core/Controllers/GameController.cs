@@ -88,27 +88,6 @@ public class GameController(
         
         if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
             return;
-
-        if (fullProfile.SptData.Version!.Contains("3.9.") && fullProfile.SptData.Migrations.All(m => m.Key != "39x"))
-        {
-            _inventoryHelper.ValidateInventoryUsesMongoIds(fullProfile.CharacterData?.PmcData?.Inventory?.Items ?? []);
-            Migrate39xProfile(fullProfile);
-
-            // flag as migrated
-            fullProfile.SptData.Migrations.Add("39x", _timeUtil.GetTimeStamp());
-            _logger.Info($"Migration of 3.9.x profile: {fullProfile.ProfileInfo?.Username} completed successfully");
-        }
-
-        //3.10 migrations
-        if (fullProfile.SptData.Version!.Contains("3.10.") && fullProfile.SptData.Migrations.All(m => m.Key != "310x"))
-        {
-            Migrate310xProfile(fullProfile);
-
-            // Flag as migrated
-            fullProfile.SptData.Migrations["310x"] = _timeUtil.GetTimeStamp();
-
-            _logger.Success($"Migration of 3.10.x profile: {fullProfile.ProfileInfo?.Username} completed successfully");
-        }
         
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
         fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
@@ -156,26 +135,6 @@ public class GameController(
             WarnOnActiveBotReloadSkill(pmcProfile);
 
         _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
-    }
-
-    private void Migrate39xProfile(SptProfile fullProfile)
-    {
-        throw new NotImplementedException();
-    }
-
-    private void Migrate310xProfile(SptProfile fullProfile)
-    {
-        throw new NotImplementedException();
-    }
-
-    /// <summary>
-    /// Handles migrating profiles from older SPT versions
-    /// </summary>
-    /// <param name="fullProfile"></param>
-    /// <remarks>Formerly migrate39xProfile in node server</remarks>
-    private void MigrateProfile(SptProfile fullProfile)
-    {
-        throw new NotImplementedException();
     }
 
     /// <summary>
@@ -354,13 +313,13 @@ public class GameController(
 
             // Set new values, whatever is smallest
             energyRegenPerHour += pmcProfile.Bonuses!
-                .Where((bonus) => bonus.Type == BonusType.EnergyRegeneration)
+                .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
             hydrationRegenPerHour += pmcProfile.Bonuses!
-                .Where((bonus) => bonus.Type == BonusType.HydrationRegeneration)
+                .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
             hpRegenPerHour += pmcProfile.Bonuses!
-                .Where((bonus) => bonus.Type == BonusType.HealthRegeneration)
+                .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
 
             // Player has energy deficit

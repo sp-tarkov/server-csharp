@@ -132,13 +132,15 @@ public class BotController(
 
     public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
     {
-        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+        // var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+        //
+        // // Use this opportunity to create and cache bots for later retrieval
+        // var multipleBotTypesRequested = info.Conditions?.Count > 1;
+        // return multipleBotTypesRequested
+        //     ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
+        //     : ReturnSingleBotFromCache(sessionId, info);
 
-        // Use this opportunity to create and cache bots for later retrieval
-        var multipleBotTypesRequested = info.Conditions?.Count > 1;
-        return multipleBotTypesRequested
-            ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
-            : ReturnSingleBotFromCache(sessionId, info);
+        return new List<BotBase>();
     }
 
     private List<BotBase> GenerateMultipleBotsAndCache(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
@@ -402,27 +404,6 @@ public class BotController(
             IsPlayerScav = false,
             AllPmcsHaveSameNameAsPlayer = allPmcsHaveSameNameAsPlayer,
         };
-    }
-
-    public int GetBotLimit(string type)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public bool IsBotPmc(string botRole)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsBotBoss(string botRole)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsBotFollower(string botRole)
-    {
-        throw new NotImplementedException();
     }
 
     public int GetBotCap(string location)

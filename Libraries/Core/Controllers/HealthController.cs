@@ -12,6 +12,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
+using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;
 
 namespace Core.Controllers;
 
@@ -37,9 +38,78 @@ public class HealthController(
     public ItemEventRouterResponse OffRaidHeal(
         PmcData pmcData,
         OffraidHealRequestData request,
-        string sessionId)
+        string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionID);
+
+        // Update medkit used (hpresource)
+        var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
+        if (healingItemToUse is null) {
+            var errorMessage = _localisationService.GetText("health-healing_item_not_found", request.Item);
+            _logger.Error(errorMessage);
+
+            return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
+        }
+
+        // Ensure item has a upd object
+        _itemHelper.AddUpdObjectToItem(healingItemToUse);
+
+        if (healingItemToUse.Upd.MedKit is not null) {
+            healingItemToUse.Upd.MedKit.HpResource -= request.Count;
+        } else {
+            // Get max healing from db
+            var maxhp = _itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
+            healingItemToUse.Upd.MedKit = new UpdMedKit { HpResource = maxhp - request.Count }; // Subtract amout used from max
+            // request.count appears to take into account healing effects removed, e.g. bleeds
+            // Salewa heals limb for 20 and fixes light bleed = (20+45 = 65)
+        }
+
+        // Resource in medkit is spent, delete it
+        if (healingItemToUse.Upd.MedKit.HpResource <= 0) {
+            _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+        }
+
+        var healingItemDbDetails = _itemHelper.GetItem(healingItemToUse.Template);
+
+        var healItemEffectDetails = healingItemDbDetails.Value.Properties.EffectsDamage;
+        BodyPartHealth bodyPartToHeal = pmcData.Health.BodyParts.GetValueOrDefault(request.Part.ToString());
+        if (bodyPartToHeal is null) {
+            _logger.Warning($"Player: {sessionID} Tried to heal a non-existent body part: {request.Part}");
+
+            return output;
+        }
+
+        // Get inital heal amount
+        var amountToHealLimb = request.Count;
+
+        // Check if healing item removes negative effects
+        var itemRemovesEffects = healingItemDbDetails.Value.Properties.EffectsDamage.Count > 0;
+        if (itemRemovesEffects && bodyPartToHeal.Effects is not null) {
+            // Can remove effects and limb has effects to remove
+            var effectsOnBodyPart = bodyPartToHeal.Effects.Keys;
+            foreach (var effectKey in effectsOnBodyPart) {
+                // Check if healing item removes the effect on limb
+                var matchingEffectFromHealingItem = healItemEffectDetails.GetValueOrDefault(effectKey);
+                if (matchingEffectFromHealingItem is null) {
+                    // Healing item doesnt have matching effect, it doesnt remove the effect
+                    continue;
+                }
+
+                // Adjust limb heal amount based on if its fixing an effect (request.count is TOTAL cost of hp resource on heal item, NOT amount to heal limb)
+                amountToHealLimb -= (int)(matchingEffectFromHealingItem.Cost ?? 0);
+                bodyPartToHeal.Effects.Remove(effectKey);
+            }
+        }
+
+        // Adjust body part hp value
+        bodyPartToHeal.Health.Current += amountToHealLimb;
+
+        // Ensure we've not healed beyond the limbs max hp
+        if (bodyPartToHeal.Health.Current > bodyPartToHeal.Health.Maximum) {
+            bodyPartToHeal.Health.Current = bodyPartToHeal.Health.Maximum;
+        }
+
+        return output;
     }
 
     /// <summary>
