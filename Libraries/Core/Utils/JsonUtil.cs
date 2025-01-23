@@ -52,7 +52,6 @@ public class JsonUtil
         return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
     }
 
-
     public string? Serialize<T>(T? obj, bool indented = false)
     {
         return obj == null ? null : JsonSerializer.Serialize(obj, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
