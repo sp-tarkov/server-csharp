@@ -762,7 +762,11 @@ public class ItemHelper(
             ItemTpl.BARTER_DOGTAG_BEAR_TUE,
             ItemTpl.BARTER_DOGTAG_USEC,
             ItemTpl.BARTER_DOGTAG_USEC_EOD,
-            ItemTpl.BARTER_DOGTAG_USEC_TUE
+            ItemTpl.BARTER_DOGTAG_USEC_TUE,
+            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_1,
+            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_2,
+            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_1,
+            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
         ];
 
         return dogTagTpls.Contains(tpl);
