@@ -27,7 +27,7 @@ public class BotHelper(
     /// </summary>
     /// <param name="role">botRole to get template for</param>
     /// <returns>BotType object</returns>
-    public BotType GetBotTemplate(string role)
+    public BotType? GetBotTemplate(string role)
     {
         if (!_databaseService.GetBots().Types.TryGetValue(role?.ToLower(), out var bot))
         {

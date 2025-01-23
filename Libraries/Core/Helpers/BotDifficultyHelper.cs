@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
@@ -27,29 +27,30 @@ public class BotDifficultyHelper(
     /// Get difficulty settings for desired bot type, if not found use assault bot types
     /// </summary>
     /// <param name="type">bot type to retrieve difficulty of</param>
-    /// <param name="difficulty">difficulty to get settings for (easy/normal etc)</param>
+    /// <param name="desiredDifficulty">difficulty to get settings for (easy/normal etc)</param>
     /// <param name="botDb">bots from database</param>
     /// <returns>Difficulty object</returns>
-    public DifficultyCategories GetBotDifficultySettings(string type, string difficulty, Bots botDb)
+    public DifficultyCategories GetBotDifficultySettings(string type, string desiredDifficulty, Bots botDb)
     {
         var desiredType = type.ToLower();
-        if (!botDb.Types.TryGetValue(desiredType, out var _)) {
+        if (!botDb.Types.ContainsKey(desiredType)) {
             // No bot found, get fallback difficulty values
             _logger.Warning(_localisationService.GetText("bot-unable_to_get_bot_fallback_to_assault", type));
             botDb.Types[desiredType] = _cloner.Clone(botDb.Types["assault"]);
         }
 
         // Get settings from raw bot json template file
-        var difficultySettings = _botHelper.GetBotTemplate(desiredType).BotDifficulty[difficulty];
+        var botTemplate = _botHelper.GetBotTemplate(desiredType);
+        botTemplate.BotDifficulty.TryGetValue(desiredDifficulty, out var difficultySettings);
         if (difficultySettings is null) {
             // No bot settings found, use 'assault' bot difficulty instead
             _logger.Warning(
                 _localisationService.GetText("bot-unable_to_get_bot_difficulty_fallback_to_assault", new {
                 botType = desiredType,
-                difficulty = difficulty,
+                difficulty = desiredDifficulty,
             }));
-            botDb.Types[desiredType].BotDifficulty[difficulty] = _cloner.Clone(
-                botDb.Types["assault"].BotDifficulty[difficulty]
+            botDb.Types[desiredType].BotDifficulty[desiredDifficulty] = _cloner.Clone(
+                botDb.Types["assault"].BotDifficulty[desiredDifficulty]
             );
         }
 
