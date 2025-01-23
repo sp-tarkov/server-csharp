@@ -115,7 +115,7 @@ public class HealthController(
         return output;
     }
 
-    protected void ApplyEdibleEffect(CurrentMax bodyValue, EffectsHealthProps consumptionDetails, bool foodIsSingleUse,
+    protected void ApplyEdibleEffect(CurrentMinMax bodyValue, EffectsHealthProps consumptionDetails, bool foodIsSingleUse,
         OffraidEatRequestData request)
     {
         if (foodIsSingleUse)
