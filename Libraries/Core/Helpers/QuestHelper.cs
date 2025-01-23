@@ -814,7 +814,7 @@ public class QuestHelper(
             }
 
             // Create dict of status to add to quest in profile
-            var statusesDict = new Dictionary<QuestStatusEnum, long>();
+            var statusesDict = new Dictionary<QuestStatusEnum, double>();
             foreach (var status in statuses)
             {
                 statusesDict.Add(status, _timeUtil.GetTimeStamp());
