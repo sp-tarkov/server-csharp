@@ -285,7 +285,7 @@ public class CustomizationController(
     {
         foreach (var customisation in request.Customizations!)
         {
-            switch (customisation.Id)
+            switch (customisation.Type)
             {
                 case "dogTag":
                     pmcData.Customization!.DogTag = customisation.Id;
