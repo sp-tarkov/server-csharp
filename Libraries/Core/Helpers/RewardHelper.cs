@@ -356,12 +356,16 @@ namespace Core.Helpers
                 // Here we generate a new id for the root item
                 target.Id = _hashUtil.Generate();
 
-                foreach (var mod in mods)
+                // Add cloned mods to root item array
+                var clonedMods = _cloner.Clone(mods);
+                foreach (var mod in clonedMods)
                 {
-                    itemsClone.Add(_cloner.Clone(mod));
+                    itemsClone.Add(mod);
                 }
 
-                rewardItems.AddRange(rewardItems.Concat(_itemHelper.ReparentItemAndChildren(target, itemsClone)));
+                // Re-parent items + generate new ids to ensure valid ids
+                var itemsToAdd = _itemHelper.ReparentItemAndChildren(target, itemsClone);
+                rewardItems.AddRange(itemsToAdd);
             }
 
             return rewardItems;
