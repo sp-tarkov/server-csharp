@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -10,6 +9,7 @@ using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Controllers;
@@ -25,16 +25,16 @@ public class CustomizationController(
     ICloner _cloner
 )
 {
-        protected string _lowerParentClothingId = "5cd944d01388ce000a659df9";
-        protected string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
+    protected string _lowerParentClothingId = "5cd944d01388ce000a659df9";
+    protected string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
 
-/// <summary>
-/// Get purchasable clothing items from trader that match players side (usec/bear)
-/// </summary>
-/// <param name="traderId">trader to look up clothing for</param>
-/// <param name="sessionId">Session id</param>
-/// <returns>Suit array</returns>
-public List<Suit> GetTraderSuits(string traderId, string sessionId)
+    /// <summary>
+    ///     Get purchasable clothing items from trader that match players side (usec/bear)
+    /// </summary>
+    /// <param name="traderId">trader to look up clothing for</param>
+    /// <param name="sessionId">Session id</param>
+    /// <returns>Suit array</returns>
+    public List<Suit> GetTraderSuits(string traderId, string sessionId)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
         var clothing = _databaseService.GetCustomization();
@@ -50,14 +50,16 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
             .ToList();
 
         if (matchingSuits == null)
+        {
             throw new Exception(_localisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
+        }
 
         return matchingSuits;
     }
 
     /// <summary>
-    /// Handle CustomizationBuy event
-    /// Purchase/unlock a clothing item from a trader
+    ///     Handle CustomizationBuy event
+    ///     Purchase/unlock a clothing item from a trader
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="buyClothingRequest">Request object</param>
@@ -73,7 +75,9 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
         var traderOffer = GetTraderClothingOffer(sessionId, buyClothingRequest.Offer);
         if (traderOffer is null)
         {
-            _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer));
+            _logger.Error(
+                _localisationService.GetText("customisation-unable_to_find_suit_by_id", buyClothingRequest.Offer)
+            );
             return output;
         }
 
@@ -87,7 +91,7 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
                     new
                     {
                         itemId = suitDetails?.Id,
-                        itemName = suitDetails?.Name,
+                        itemName = suitDetails?.Name
                     }
                 )
             );
@@ -122,40 +126,47 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
         if (foundSuit == null)
+        {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
+        }
 
         return foundSuit;
     }
 
     /// <summary>
-    /// Update output object and player profile with purchase details
+    ///     Update output object and player profile with purchase details
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="itemsToPayForClothingWith">Clothing purchased</param>
     /// <param name="output">Client response</param>
-    private void PayForClothingItems(string sessionId, PmcData pmcData, List<PaymentItemForClothing>? itemsToPayForClothingWith,
+    private void PayForClothingItems(string sessionId, PmcData pmcData,
+        List<PaymentItemForClothing>? itemsToPayForClothingWith,
         ItemEventRouterResponse output)
     {
         foreach (var inventoryItemToProcess in itemsToPayForClothingWith ?? [])
-        {
             PayForClothingItem(sessionId, pmcData, inventoryItemToProcess, output);
-        }
     }
 
     /// <summary>
-    /// Update output object and player profile with purchase details for single piece of clothing
+    ///     Update output object and player profile with purchase details for single piece of clothing
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="paymentItemDetails">Payment details</param>
     /// <param name="output">Client response</param>
-    private void PayForClothingItem(string sessionId, PmcData pmcData, PaymentItemForClothing? paymentItemDetails, ItemEventRouterResponse output)
+    private void PayForClothingItem(string sessionId, PmcData pmcData, PaymentItemForClothing? paymentItemDetails,
+        ItemEventRouterResponse output)
     {
         var inventoryItem = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == paymentItemDetails?.Id);
         if (inventoryItem == null)
         {
-            _logger.Error(_localisationService.GetText("customisation-unable_to_find_clothing_item_in_inventory", paymentItemDetails?.Id));
+            _logger.Error(
+                _localisationService.GetText(
+                    "customisation-unable_to_find_clothing_item_in_inventory",
+                    paymentItemDetails?.Id
+                )
+            );
             return;
         }
 
@@ -180,8 +191,12 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
         inventoryItem.Upd ??= new Upd { StackObjectsCount = 1 };
 
         if (inventoryItem.Upd?.StackObjectsCount == null)
+        {
             if (inventoryItem.Upd != null)
+            {
                 inventoryItem.Upd.StackObjectsCount = 1;
+            }
+        }
 
         if (inventoryItem.Upd?.StackObjectsCount == paymentItemDetails?.Count)
         {
@@ -223,7 +238,6 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -233,16 +247,16 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
         var result = new List<Suit>();
 
         foreach (var trader in traders)
-        {
             if (trader.Value.Base?.CustomizationSeller is not null && trader.Value.Base.CustomizationSeller.Value)
+            {
                 result.AddRange(GetTraderSuits(trader.Key, sessionId));
-        }
+            }
 
         return result;
     }
 
     /// <summary>
-    /// Handle client/hideout/customization/offer/list
+    ///     Handle client/hideout/customization/offer/list
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="info"></param>
@@ -253,7 +267,7 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
     }
 
     /// <summary>
-    /// Handle client/customization/storage
+    ///     Handle client/customization/storage
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="info"></param>
@@ -276,7 +290,7 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
     }
 
     /// <summary>
-    /// Handle CustomizationSet event
+    ///     Handle CustomizationSet event
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
@@ -285,7 +299,6 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
     public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
         foreach (var customisation in request.Customizations)
-        {
             switch (customisation.Type)
             {
                 case "dogTag":
@@ -298,13 +311,12 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
                     _logger.Error($"Unhandled customisation type: {customisation.Type}");
                     break;
             }
-        }
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
-    /// Applies a purchased suit to the players doll
+    ///     Applies a purchased suit to the players doll
     /// </summary>
     /// <param name="customisation">Suit to apply to profile</param>
     /// <param name="pmcData">Profile to update</param>
@@ -314,7 +326,9 @@ public List<Suit> GetTraderSuits(string traderId, string sessionId)
 
         if (dbSuit is null)
         {
-            _logger.Error($"Unable to find suit customisation id: {customisation.Id}, cannot apply clothing to player profile: {pmcData.Id}");
+            _logger.Error(
+                $"Unable to find suit customisation id: {customisation.Id}, cannot apply clothing to player profile: {pmcData.Id}"
+            );
             return;
         }
 
