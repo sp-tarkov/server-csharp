@@ -88,7 +88,7 @@ public class PMCLootGenerator
                 {
                     // Set price of item as its weight
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
-                    _pocketLootPool[tpl] = price;
+                    _pocketLootPool[tpl] = price ?? 0;
                 }
             }
 
@@ -167,7 +167,7 @@ public class PMCLootGenerator
                 {
                     // Set price of item as its weight
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
-                    _vestLootPool[tpl] = price;
+                    _vestLootPool[tpl] = price ?? 0;
                 }
             }
 
@@ -247,7 +247,7 @@ public class PMCLootGenerator
                 {
                     // Set price of item as its weight
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
-                    _backpackLootPool[tpl] = price;
+                    _backpackLootPool[tpl] = price ?? 0;
                 }
             }
 

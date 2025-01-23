@@ -173,7 +173,7 @@ public class InsuranceController(
      * @param insured - The insurance object containing the items to evaluate for deletion.
      * @returns A Set containing the IDs of items that should be deleted.
      */
-    private object FindItemsToDelete(string rootItemParentID, Insurance insured)
+    private HashSet<string> FindItemsToDelete(string rootItemParentID, Insurance insured)
     {
         var toDelete = new HashSet<string>();
 
@@ -433,7 +433,7 @@ public class InsuranceController(
             _logger.Debug($"Processing attachments of parent {parentName}");
 
             // Process the attachments for this individual parent item.
-            ProcessAttachmentByParent(mainParentToAttachmentsMap.Values, insuredTraderId, toDelete);
+            ProcessAttachmentByParent(parentObj.Value, insuredTraderId, toDelete);
         }
     }
 
