@@ -61,7 +61,6 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case HideoutEventActions.HIDEOUT_RECORD_SHOOTING_RANGE_POINTS:
                 return JsonSerializer.Deserialize<RecordShootingRangePoints>(jsonText);
             case HideoutEventActions.HIDEOUT_IMPROVE_AREA:
-                return JsonSerializer.Deserialize<HideoutImproveAreaRequestData>(jsonText);
             case HideoutEventActions.HIDEOUT_CANCEL_PRODUCTION_COMMAND:
                 return JsonSerializer.Deserialize<HideoutImproveAreaRequestData>(jsonText);
             case HideoutEventActions.HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START:
@@ -142,7 +141,6 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.TAG:
                 return JsonSerializer.Deserialize<InventoryTagRequestData>(jsonText);
             case ItemEventActions.BIND:
-                return JsonSerializer.Deserialize<InventoryBindRequestData>(jsonText);
             case ItemEventActions.UNBIND:
                 return JsonSerializer.Deserialize<InventoryBindRequestData>(jsonText);
             case ItemEventActions.EXAMINE:
