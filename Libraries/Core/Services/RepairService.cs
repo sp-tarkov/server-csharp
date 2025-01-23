@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Helpers;
+using Core.Models.Common;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;

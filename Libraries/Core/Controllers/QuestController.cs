@@ -255,7 +255,7 @@ public class QuestController(
             return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
         }
 
-        var totalItemCountToRemove = 0;
+        var totalItemCountToRemove = 0d;
         foreach (var itemHandover in handoverQuestRequest.Items)
         {
             var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
@@ -279,7 +279,7 @@ public class QuestController(
                 _questHelper.ChangeItemStack(
                     pmcData,
                     itemHandover.Id,
-                    itemHandover.Count - itemCountToRemove ?? 0,
+                    (int)(itemHandover.Count - itemCountToRemove ?? 0),
                     sessionID,
                     output
                 );
@@ -377,7 +377,7 @@ public class QuestController(
         return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
     }
 
-    private void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, int counterValue)
+    private void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, double counterValue)
     {
         if (pmcData.TaskConditionCounters[conditionId] != null)
         {
