@@ -62,7 +62,17 @@ public class TraderPurchasePersisterService(
             return null;
         }
 
+        if (!profile.TraderPurchases.TryGetValue(traderId, out var _))
+        {
+            profile.TraderPurchases.TryAdd(traderId, new Dictionary<string, TraderPurchaseData>());
+        }
+
         var traderPurchases = profile.TraderPurchases[traderId];
+
+        if (!traderPurchases.TryGetValue(assortId, out var _))
+        {
+            traderPurchases.TryAdd(assortId, new TraderPurchaseData());
+        }
 
         return traderPurchases[assortId];
     }
