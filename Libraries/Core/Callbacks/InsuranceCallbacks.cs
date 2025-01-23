@@ -44,9 +44,7 @@ public class InsuranceCallbacks(
     /// <returns></returns>
     public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {
-        // return _insuranceController.Insure(pmcData, info, sessionID);
-        // TODO: InsuranceController is not implemented rn
-        throw new NotImplementedException();
+        return _insuranceController.Insure(pmcData, info, sessionID);
     }
 
     public bool OnUpdate(long timeSinceLastRun)
