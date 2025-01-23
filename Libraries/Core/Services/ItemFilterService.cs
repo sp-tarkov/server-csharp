@@ -104,6 +104,11 @@ public class ItemFilterService(
         throw new NotImplementedException();
     }
 
+    /**
+     * Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
+     * @param tpl template id
+     * @returns true if blacklisted
+     */
     public bool IsLootableItemBlacklisted(string itemKey)
     {
         if (_lootableItemBlacklistCache is null)
@@ -139,5 +144,25 @@ public class ItemFilterService(
         foreach (var item in _itemConfig.Blacklist) {
             _itemBlacklistCache.Add(item);
         }
+    }
+
+    /**
+     * Check if the provided template id is boss item in config/item.json
+     * @param tpl template id
+     * @returns true if boss item
+     */
+    public bool IsBossItem(string tpl)
+    {
+        return _itemConfig.BossItems.Contains(tpl);
+    }
+
+    /**
+     * Check if item is blacklisted from being a reward for player
+     * @param tpl item tpl to check is on blacklist
+     * @returns True when blacklisted
+     */
+    public bool IsItemRewardBlacklisted(string tpl)
+    {
+        return _itemConfig.RewardItemBlacklist.Contains(tpl);
     }
 }

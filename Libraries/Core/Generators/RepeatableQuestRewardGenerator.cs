@@ -1,6 +1,7 @@
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Player;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Repeatable;
@@ -9,6 +10,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using System.Linq;
 
 namespace Core.Generators;
 
@@ -69,7 +71,7 @@ public class RepeatableQuestRewardGenerator(
         // Get budget to spend on item rewards (copy of raw roubles given)
         var itemRewardBudget = rewardParams.RewardRoubles;
 
-        // Possible improvement -> draw trader-specific items e.g. with this.itemHelper.isOfBaseclass(val._id, ItemHelper.BASECLASS.FoodDrink)
+        // Possible improvement -> draw trader-specific items e.g. with _itemHelper.isOfBaseclass(val._id, ItemHelper.BASECLASS.FoodDrink)
         QuestRewards rewards = new() { Started = [], Success = [], Fail = [] };
 
         // Start reward index to keep track
@@ -94,11 +96,11 @@ public class RepeatableQuestRewardGenerator(
         }
 
         // Add money reward
-        rewards.Success.Add(GetMoneyReward(traderId, rewardParams.RewardRoubles, rewardIndex));
+        rewards.Success.Add(GetMoneyReward(traderId, rewardParams.RewardRoubles.Value, rewardIndex));
         rewardIndex++;
 
         // Add GP coin reward
-        rewards.Success.Add(GenerateItemReward(Money.GP, rewardParams.GpCoinRewardCount, rewardIndex));
+        rewards.Success.Add(GenerateItemReward(Money.GP, rewardParams.GpCoinRewardCount.Value, rewardIndex));
         rewardIndex++;
 
         // Add preset weapon to reward if checks pass
@@ -283,9 +285,38 @@ public class RepeatableQuestRewardGenerator(
         throw new NotImplementedException();
     }
 
-    private List<TemplateItem> ChooseRewardItemsWithinBudget(RepeatableQuestConfig repeatableConfig, double? itemRewardBudget, string traderId)
+    private List<TemplateItem> ChooseRewardItemsWithinBudget(RepeatableQuestConfig repeatableConfig, double? roublesBudget, string traderId)
     {
-        throw new NotImplementedException();
+        // First filter for type and baseclass to avoid lookup in handbook for non-available items
+        var rewardableItemPool = GetRewardableItems(repeatableConfig, traderId);
+        var minPrice = Math.Min(25000, 0.5 * roublesBudget.Value);
+
+        var rewardableItemPoolWithinBudget = FilterRewardPoolWithinBudget(
+            rewardableItemPool,
+            roublesBudget.Value,
+            minPrice);
+
+        if (rewardableItemPoolWithinBudget.Count == 0)
+        {
+            _logger.Warning(_localisationService.GetText("repeatable-no_reward_item_found_in_price_range", new {
+                minPrice = minPrice,
+                roublesBudget = roublesBudget }));
+
+            // In case we don't find any items in the price range
+            rewardableItemPoolWithinBudget = rewardableItemPool
+                .Where((x) => _itemHelper.GetItemPrice(x.Id) < roublesBudget)
+                .ToList();
+        }
+
+        return rewardableItemPoolWithinBudget;
+    }
+
+    private List<TemplateItem> FilterRewardPoolWithinBudget(List<TemplateItem> rewardItems, double roublesBudget, double minPrice)
+    {
+        return rewardItems.Where((item) => {
+            var itemPrice = _presetHelper.GetDefaultPresetOrItemPrice(item.Id);
+            return itemPrice < roublesBudget && itemPrice > minPrice;
+        }).ToList();
     }
 
     private KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(double? itemRewardBudget, double rewardIndex)
@@ -293,19 +324,109 @@ public class RepeatableQuestRewardGenerator(
         throw new NotImplementedException();
     }
 
-    private Reward GenerateItemReward(string d235b4d86f7742e017bc88a, object gpCoinRewardCount, double rewardIndex)
+    private Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)
     {
-        throw new NotImplementedException();
+        var id = _hashUtil.Generate();
+        var questRewardItem = new Reward{
+            Id = _hashUtil.Generate(),
+            Unknown = false,
+            GameMode = [],
+            AvailableInGameEditions = [],
+            Index = index,
+            Target = id,
+            Value = count,
+            IsEncoded = false,
+            FindInRaid = foundInRaid,
+            Type = RewardType.Item,
+            Items = [],
+        };
+
+        var rootItem = new Item { Id = id, Template = tpl, Upd = new Upd { StackObjectsCount = count, SpawnedInSession = foundInRaid }
+        };
+        questRewardItem.Items = [rootItem];
+
+        return questRewardItem;
     }
 
-    private Reward GetMoneyReward(string traderId, object rewardRoubles, double rewardIndex)
+    private Reward GetMoneyReward(string traderId, double rewardRoubles, int rewardIndex)
     {
-        throw new NotImplementedException();
+        // Determine currency based on trader
+        // PK and Fence use Euros, everyone else is Roubles
+        var currency = traderId is Traders.PEACEKEEPER or Traders.FENCE ? Money.EUROS : Money.ROUBLES;
+
+        // Convert reward amount to Euros if necessary
+        var rewardAmountToGivePlayer =
+        currency == Money.EUROS ? _handbookHelper.FromRUB(rewardRoubles, Money.EUROS) : rewardRoubles;
+
+        // Get chosen currency + amount and return
+        return GenerateItemReward(currency, rewardAmountToGivePlayer, rewardIndex, false);
     }
 
 
-    public Dictionary<string, List<TemplateItem>> GetRewardableItems(RepeatableQuestConfig repeatableConfig, string traderId)
+    public List<TemplateItem> GetRewardableItems(RepeatableQuestConfig repeatableQuestConfig, string traderId)
     {
-        throw new NotImplementedException();
+        // Get an array of seasonal items that should not be shown right now as seasonal event is not active
+        var seasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
+
+        // Check for specific baseclasses which don't make sense as reward item
+        // also check if the price is greater than 0; there are some items whose price can not be found
+        // those are not in the game yet (e.g. AGS grenade launcher)
+        return _databaseService.GetItems().Values.Where((itemTemplate => {
+            // Base "Item" item has no parent, ignore it
+            if (itemTemplate.Parent == "")
+            {
+                return false;
+            }
+
+            if (seasonalItems.Contains(itemTemplate.Id))
+            {
+                return false;
+            }
+
+            var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(
+                (trader) => trader.TraderId == traderId);
+
+            return IsValidRewardItem(itemTemplate.Id, repeatableQuestConfig, traderWhitelist?.RewardBaseWhitelist);
+        })).ToList();
+    }
+
+    private bool IsValidRewardItem(string tpl, RepeatableQuestConfig repeatableQuestConfig, List<string>? itemBaseWhitelist = null)
+    {
+        // Return early if not valid item to give as reward
+        if (!_itemHelper.isValidItem(tpl))
+        {
+            return false;
+        }
+
+        // Check item is not blacklisted
+        if (
+            _itemFilterService.IsItemBlacklisted(tpl) ||
+            _itemFilterService.IsItemRewardBlacklisted(tpl) ||
+            repeatableQuestConfig.RewardBlacklist.Contains(tpl) ||
+            _itemFilterService.IsItemBlacklisted(tpl)
+        )
+        {
+            return false;
+        }
+
+        // Item has blacklisted base types
+        if (_itemHelper.IsOfBaseclasses(tpl, repeatableQuestConfig.RewardBaseTypeBlacklist ))
+        {
+            return false;
+        }
+
+        // Skip boss items
+        if (_itemFilterService.IsBossItem(tpl))
+        {
+            return false;
+        }
+
+        // Trader has specific item base types they can give as rewards to player
+        if (itemBaseWhitelist is not null && !_itemHelper.IsOfBaseclasses(tpl, itemBaseWhitelist))
+        {
+            return false;
+        }
+
+        return true;
     }
 }

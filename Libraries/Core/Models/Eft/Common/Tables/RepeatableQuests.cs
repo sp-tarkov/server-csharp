@@ -71,16 +71,16 @@ public record RepeatableQuestStatus
 public record RepeatableTemplates
 {
     [JsonPropertyName("Elimination")]
-    public Quest? Elimination { get; set; }
+    public RepeatableQuest? Elimination { get; set; }
 
     [JsonPropertyName("Completion")]
-    public Quest? Completion { get; set; }
+    public RepeatableQuest? Completion { get; set; }
 
     [JsonPropertyName("Exploration")]
-    public Quest? Exploration { get; set; }
+    public RepeatableQuest? Exploration { get; set; }
     
     [JsonPropertyName("Pickup")]
-    public Quest? Pickup { get; set; }
+    public RepeatableQuest? Pickup { get; set; }
 }
 
 public record PmcDataRepeatableQuest

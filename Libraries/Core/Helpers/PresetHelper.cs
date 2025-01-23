@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
 using Core.Services;
@@ -171,7 +171,7 @@ public class PresetHelper(
      * @param tpl The item template to get the price of
      * @returns The price of the given item preset, or base item if no preset exists
      */
-    public decimal GetDefaultPresetOrItemPrice(string tpl)
+    public double GetDefaultPresetOrItemPrice(string tpl)
     {
         // Get default preset if it exists
         var defaultPreset = GetDefaultPreset(tpl);

@@ -497,7 +497,7 @@ public class RepeatableQuestGenerator(
             (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi));
         roublesBudget = Math.Max(roublesBudget, 5000d);
         var itemSelection = possibleItemsToRetrievePool.Where(
-            (x) => _itemHelper.GetItemPrice(x.Key) < roublesBudget).ToList();
+            (x) => _itemHelper.GetItemPrice(x.Id) < roublesBudget).ToList();
 
         // We also have the option to use whitelist and/or blacklist which is defined in repeatableQuests.json as
         // [{"minPlayerLevel": 1, "itemIds": ["id1",...]}, {"minPlayerLevel": 15, "itemIds": ["id3",...]}]
@@ -511,8 +511,8 @@ public class RepeatableQuestGenerator(
             itemSelection = itemSelection.Where((x) => {
                 // Whitelist can contain item tpls and item base type ids
                 return (
-                    itemIdsWhitelisted.Any((v) => _itemHelper.IsOfBaseclass(x.Key, v)) ||
-                    itemIdsWhitelisted.Contains(x.Key)
+                    itemIdsWhitelisted.Any((v) => _itemHelper.IsOfBaseclass(x.Id, v)) ||
+                    itemIdsWhitelisted.Contains(x.Id)
                 );
             }).ToList();
             // check if items are missing
@@ -530,8 +530,8 @@ public class RepeatableQuestGenerator(
 
             itemSelection = itemSelection.Where((x) => {
                 return (
-                    itemIdsBlacklisted.All((v) => !_itemHelper.IsOfBaseclass(x.Key, v)) ||
-                    !itemIdsBlacklisted.Contains(x.Key)
+                    itemIdsBlacklisted.All((v) => !_itemHelper.IsOfBaseclass(x.Id, v)) ||
+                    !itemIdsBlacklisted.Contains(x.Id)
                 );
             }).ToList();
         }
@@ -572,10 +572,10 @@ public class RepeatableQuestGenerator(
             usedItemIndexes.Add(chosenItemIndex);
 
             var itemSelected = itemSelection[chosenItemIndex];
-            var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Key).Value;
+            var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Id).Value;
             var minValue = (double)completionConfig.MinimumRequestedAmount.Value;
             var maxValue = (double)completionConfig.MaximumRequestedAmount.Value;
-            if (_itemHelper.IsOfBaseclass(itemSelected.Key, BaseClasses.AMMO)) {
+            if (_itemHelper.IsOfBaseclass(itemSelected.Id, BaseClasses.AMMO)) {
                 // Prevent multiple ammo requirements from being picked
                 if (isAmmo > 0 && isAmmo < _maxRandomNumberAttempts) {
                     isAmmo++;
@@ -600,12 +600,12 @@ public class RepeatableQuestGenerator(
             roublesBudget -= value * itemUnitPrice;
 
             // Push a CompletionCondition with the item and the amount of the item
-            chosenRequirementItemsTpls.Add(itemSelected.Key);
-            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Key, value));
+            chosenRequirementItemsTpls.Add(itemSelected.Id);
+            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Id, value));
 
             if (roublesBudget > 0) {
                 // Reduce the list possible items to fulfill the new budget constraint
-                itemSelection = itemSelection.Where((dbItem) => _itemHelper.GetItemPrice(dbItem.Key) < roublesBudget).ToList();
+                itemSelection = itemSelection.Where((dbItem) => _itemHelper.GetItemPrice(dbItem.Id) < roublesBudget).ToList();
                 if (!itemSelection.Any()) {
                     break;
                 }
@@ -805,7 +805,7 @@ public class RepeatableQuestGenerator(
         string side,
         string sessionId)
     {
-        Quest questData = null;
+        RepeatableQuest questData = null;
         switch (type)
         {
             case "Elimination":
@@ -889,6 +889,6 @@ public class RepeatableQuestGenerator(
         questClone.QuestStatus.Uid = sessionId; // Needs to match user id
         questClone.QuestStatus.QId = questClone.Id; // Needs to match quest id
 
-        return (RepeatableQuest)questClone;
+        return questClone;
     }
 }
