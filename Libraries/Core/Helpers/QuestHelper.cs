@@ -659,20 +659,16 @@ public class QuestHelper(
      */
     public Quest GetQuestFromDb(string questId, PmcData pmcData)
     {
-        // May be a repeatable quest
-        var quest = _databaseService.GetQuests()[questId];
-        if (quest == null)
+        // Maybe a repeatable quest?
+        if (_databaseService.GetQuests().TryGetValue(questId, out var quest))
         {
-            // Check daily/weekly objects
-            foreach (var repeatableQuest in pmcData.RepeatableQuests)
-            {
-                quest = repeatableQuest.ActiveQuests.FirstOrDefault(r => r.Id == questId);
-                if (quest != null)
-                    break;
-            }
+            return quest;
         }
 
-        return quest;
+        // Check daily/weekly objects
+        return pmcData.RepeatableQuests
+            .SelectMany(x => x.ActiveQuests)
+            .FirstOrDefault(x => x.Id == questId);
     }
 
     /// <summary>
