@@ -480,7 +480,7 @@ public class ProfileHelper(
             pointsToAddToSkill *= skillProgressRate;
         }
 
-        if (_inventoryConfig.SkillGainMultipliers[skill.ToString()] != null)
+        if (_inventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out var _))
             pointsToAddToSkill *= _inventoryConfig.SkillGainMultipliers[skill.ToString()];
 
         profileSkill.Progress += pointsToAddToSkill;

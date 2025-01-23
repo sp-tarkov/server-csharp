@@ -92,7 +92,7 @@ public class TraderAssortHelper(
                 continue;
             }
 
-            assortToAdjust.Upd.BuyRestrictionCurrent = (int)assortPurchasesfromTrader[assortId.Key].PurchaseCount;
+            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
         }
 
         // Get rid of quest locked assorts

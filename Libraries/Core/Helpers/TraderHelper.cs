@@ -441,7 +441,8 @@ public class TraderHelper(
 
             // Null guard when dict doesnt exist
 
-            if (profile.TraderPurchases[traderId][purchasedItem.ItemId] is null)
+            if (profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount is null 
+                || profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp is null)
             {
                 profile.TraderPurchases[traderId][purchasedItem.ItemId] = new TraderPurchaseData
                 {

@@ -414,7 +414,7 @@ public class TradeHelper(
             (double)assortBeingPurchased.Upd?.BuyRestrictionMax,
             pmcData.Info.GameVersion
         );
-        if ((traderPurchaseData?.PurchaseCount ?? 0 + count) > traderItemPurchaseLimit)
+        if (((traderPurchaseData?.PurchaseCount ?? 0) + count) > traderItemPurchaseLimit)
         {
             throw new Exception(
                 $"Unable to purchase: {count} items, this would exceed your purchase limit of {traderItemPurchaseLimit} from the trader: {traderId} assort: {assortId} this refresh"
