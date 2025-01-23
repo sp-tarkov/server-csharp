@@ -1,5 +1,7 @@
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Trade;
 
 namespace Core.Models.Eft.Inventory;
 
@@ -15,7 +17,7 @@ public record AddItemDirectRequest
     public bool? FoundInRaid { get; set; }
 
     [JsonPropertyName("callback")]
-    public Action<double>? Callback { get; set; }
+    public Action<double, ProcessBuyTradeRequestData?, string?, PmcData?>? Callback { get; set; }
 
     [JsonPropertyName("useSortingTable")]
     public bool? UseSortingTable { get; set; }

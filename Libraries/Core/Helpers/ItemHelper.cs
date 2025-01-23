@@ -373,7 +373,7 @@ public class ItemHelper(
     // found in the handbook. If the price can't be found at all return 0
     // @param List<string> tpls item tpls to look up the price of
     // @returns Total price in roubles
-    public decimal GetItemAndChildrenPrice(List<string> tpls)
+    public double GetItemAndChildrenPrice(List<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl));
