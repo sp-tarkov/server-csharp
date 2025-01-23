@@ -48,34 +48,35 @@ namespace Core.Servers
 
         public void Update()
         {
-            _ragfairOfferService.ExpireStaleOffers();
-
-            // Generate trader offers
-            var traders = GetUpdateableTraders();
-            foreach (var traderId in traders) {
-                // Edge case - skip generating fence offers
-                if (traderId == Traders.FENCE)
-                {
-                    continue;
-                }
-
-                if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
-                {
-                    _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
-                }
-            }
-
-            // Regenerate expired offers when over threshold limit
-            if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
-            {
-                var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
-                _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
-
-                // Clear out expired offers now we've generated them
-                _ragfairOfferService.ResetExpiredOffers();
-            }
-
-            _ragfairRequiredItemsService.BuildRequiredItemTable();
+            _logger.Info($"reimplement me: Ragfairserver.Update()");
+            // _ragfairOfferService.ExpireStaleOffers();
+            //
+            // // Generate trader offers
+            // var traders = GetUpdateableTraders();
+            // foreach (var traderId in traders) {
+            //     // Edge case - skip generating fence offers
+            //     if (traderId == Traders.FENCE)
+            //     {
+            //         continue;
+            //     }
+            //
+            //     if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
+            //     {
+            //         _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
+            //     }
+            // }
+            //
+            // // Regenerate expired offers when over threshold limit
+            // if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
+            // {
+            //     var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
+            //     _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
+            //
+            //     // Clear out expired offers now we've generated them
+            //     _ragfairOfferService.ResetExpiredOffers();
+            // }
+            //
+            // _ragfairRequiredItemsService.BuildRequiredItemTable();
         }
 
         /**
