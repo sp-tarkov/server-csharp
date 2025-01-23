@@ -891,7 +891,7 @@ public class RagfairController
         {
             TransactionId = "ragfair",
             Action = "TradingConfirm",
-            SchemeItems = [new ItemRequest { Id = _paymentHelper.GetCurrency(currency), Count = Math.Round(value) }],
+            SchemeItems = [new IdWithCount { Id = _paymentHelper.GetCurrency(currency), Count = Math.Round(value) }],
             Type = "",
             ItemId = "",
             Count = 0,

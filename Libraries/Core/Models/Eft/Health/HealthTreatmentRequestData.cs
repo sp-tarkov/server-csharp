@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
+using Core.Models.Common;
 using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Health;
@@ -9,25 +10,16 @@ public record HealthTreatmentRequestData : BaseInteractionRequestData
     [JsonPropertyName("trader")]
     public string? Trader { get; set; }
 
+    /** Id of stack to take money from */
+    /** Amount of money to take off player for treatment */
     [JsonPropertyName("items")]
-    public List<ItemCost>? Items { get; set; }
+    public List<IdWithCount>? Items { get; set; }
 
     [JsonPropertyName("difference")]
     public Difference? Difference { get; set; }
 
     [JsonPropertyName("timestamp")]
     public long? Timestamp { get; set; }
-}
-
-public record ItemCost
-{
-    /** Id of stack to take money from */
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-
-    /** Amount of money to take off player for treatment */
-    [JsonPropertyName("count")]
-    public int? Count { get; set; }
 }
 
 public record Difference
@@ -45,23 +37,30 @@ public record Difference
 public record BodyParts
 {
     [JsonPropertyName("Head")]
-    public BodyPart? Head { get; set; }
+    public BodyPartEffects? Head { get; set; }
 
     [JsonPropertyName("Chest")]
-    public BodyPart? Chest { get; set; }
+    public BodyPartEffects? Chest { get; set; }
 
     [JsonPropertyName("Stomach")]
-    public BodyPart? Stomach { get; set; }
+    public BodyPartEffects? Stomach { get; set; }
 
     [JsonPropertyName("LeftArm")]
-    public BodyPart? LeftArm { get; set; }
+    public BodyPartEffects? LeftArm { get; set; }
 
     [JsonPropertyName("RightArm")]
-    public BodyPart? RightArm { get; set; }
+    public BodyPartEffects? RightArm { get; set; }
 
     [JsonPropertyName("LeftLeg")]
-    public BodyPart? LeftLeg { get; set; }
+    public BodyPartEffects? LeftLeg { get; set; }
 
     [JsonPropertyName("RightLeg")]
-    public BodyPart? RightLeg { get; set; }
+    public BodyPartEffects? RightLeg { get; set; }
+}
+
+public record BodyPartEffects
+{
+    public double Health { get; set; }
+    /** Effects in array to be removed */
+    public List<string> Effects { get; set; }
 }

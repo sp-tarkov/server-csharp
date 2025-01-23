@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Common;
 using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Trade;
@@ -18,14 +19,5 @@ public record OfferRequest
     public int? Count { get; set; }
 
     [JsonPropertyName("items")]
-    public List<ItemRequest>? Items { get; set; }
-}
-
-public record ItemRequest
-{
-    [JsonPropertyName("id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public List<IdWithCount>? Items { get; set; }
 }

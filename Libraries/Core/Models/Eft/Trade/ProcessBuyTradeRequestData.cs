@@ -1,3 +1,4 @@
+using Core.Models.Common;
 using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Trade;
@@ -14,5 +15,5 @@ public record ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
     public int? SchemeId { get; set; }
 
     [JsonPropertyName("scheme_items")]
-    public List<ItemRequest>? SchemeItems { get; set; }
+    public List<IdWithCount>? SchemeItems { get; set; }
 }

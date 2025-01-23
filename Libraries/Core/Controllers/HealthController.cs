@@ -1,15 +1,17 @@
-using SptCommon.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.ItemEvent;
-using Core.Models.Eft.Common.Tables;
-using Core.Helpers;
+using Core.Models.Eft.Trade;
+using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Routers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using SptCommon.Annotations;
+using SptCommon.Extensions;
 
 namespace Core.Controllers;
 
@@ -23,10 +25,10 @@ public class HealthController(
     LocalisationService _localisationService,
     HttpResponseUtil _httpResponseUtil,
     HealthHelper _healthHelper,
-    ICloner cloner)
+    ICloner _cloner)
 {
     /// <summary>
-    /// When healing in menu
+    ///     When healing in menu
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Healing request</param>
@@ -41,8 +43,8 @@ public class HealthController(
     }
 
     /// <summary>
-    /// Handle Eat event
-    /// Consume food/water outside of a raid
+    ///     Handle Eat event
+    ///     Consume food/water outside of a raid
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Eat request</param>
@@ -56,11 +58,14 @@ public class HealthController(
         var output = _eventOutputHolder.GetOutput(sessionID);
         var resourceLeft = 0d;
 
-        var itemToConsume = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == request.Item);
+        var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         if (itemToConsume is null)
         {
             // Item not found, very bad
-            return _httpResponseUtil.AppendErrorToOutput(output, _localisationService.GetText("health-unable_to_find_item_to_consume", request.Item));
+            return _httpResponseUtil.AppendErrorToOutput(
+                output,
+                _localisationService.GetText("health-unable_to_find_item_to_consume", request.Item)
+            );
         }
 
         var consumedItemMaxResource = _itemHelper.GetItem(itemToConsume.Template).Value.Properties.MaxResource;
@@ -71,7 +76,7 @@ public class HealthController(
 
             if (itemToConsume.Upd.FoodDrink is null)
             {
-                itemToConsume.Upd.FoodDrink = new UpdFoodDrink{ HpPercent = consumedItemMaxResource - request.Count };
+                itemToConsume.Upd.FoodDrink = new UpdFoodDrink { HpPercent = consumedItemMaxResource - request.Count };
             }
             else
             {
@@ -92,7 +97,7 @@ public class HealthController(
         var foodItemEffectDetails = foodItemDbDetails.Properties.EffectsHealth;
         var foodIsSingleUse = foodItemDbDetails.Properties.MaxResource == 1;
 
-        foreach (var (key, effectProps) in foodItemEffectDetails) {
+        foreach (var (key, effectProps) in foodItemEffectDetails)
             switch (key)
             {
                 case "Hydration":
@@ -103,14 +108,15 @@ public class HealthController(
                     break;
 
                 default:
-                    _logger.Warning($"Unhandled effect after consuming: ${ itemToConsume.Template}, ${key}");
+                    _logger.Warning($"Unhandled effect after consuming: ${itemToConsume.Template}, ${key}");
                     break;
             }
-        }
+
         return output;
     }
 
-    protected void ApplyEdibleEffect(CurrentMax bodyValue, EffectsHealthProps consumptionDetails, bool foodIsSingleUse, OffraidEatRequestData request)
+    protected void ApplyEdibleEffect(CurrentMax bodyValue, EffectsHealthProps consumptionDetails, bool foodIsSingleUse,
+        OffraidEatRequestData request)
     {
         if (foodIsSingleUse)
         {
@@ -138,8 +144,8 @@ public class HealthController(
     }
 
     /// <summary>
-    /// Handle RestoreHealth event
-    /// Occurs on post-raid healing page
+    ///     Handle RestoreHealth event
+    ///     Occurs on post-raid healing page
     /// </summary>
     /// <param name="pmcData">player profile</param>
     /// <param name="request">Request data from client</param>
@@ -147,23 +153,72 @@ public class HealthController(
     /// <returns></returns>
     public ItemEventRouterResponse HealthTreatment(
         PmcData pmcData,
-        HealthTreatmentRequestData request,
-        string sessionId)
+        HealthTreatmentRequestData healthTreatmentRequest,
+        string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionID);
+        var payMoneyRequest = new ProcessBuyTradeRequestData
+        {
+            Action = healthTreatmentRequest.Action,
+            TransactionId = Traders.THERAPIST,
+            SchemeItems = healthTreatmentRequest.Items,
+            Type = "",
+            ItemId = "",
+            Count = 0,
+            SchemeId = 0
+        };
+
+        _paymentService.PayMoney(pmcData, payMoneyRequest, sessionID, output);
+        if (output.Warnings.Count > 0)
+        {
+            return output;
+        }
+
+        foreach (var bodyPartKvP in healthTreatmentRequest.Difference.BodyParts.GetAllPropsAsDict())
+        {
+            // Get body part from request + from pmc profile
+            var partRequest = (BodyPartEffects)bodyPartKvP.Value;
+            var profilePart = pmcData.Health.BodyParts[bodyPartKvP.Key];
+
+            // Bodypart healing is chosen when part request hp is above 0
+            if (partRequest.Health > 0)
+            {
+                // Heal bodypart
+                profilePart.Health.Current = profilePart.Health.Maximum;
+            }
+
+            // Check for effects to remove
+            if (partRequest.Effects?.Count > 0)
+            {
+                // Found some, loop over them and remove from pmc profile
+                foreach (var effect in partRequest.Effects)
+                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Remove(effect);
+
+                // Remove empty effect object
+                if (pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Count == 0)
+                {
+                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects = null;
+                }
+            }
+        }
+
+        // Inform client of new post-raid, post-therapist heal values
+        output.ProfileChanges[sessionID].Health = _cloner.Clone(pmcData.Health);
+
+        return output;
     }
 
     /// <summary>
-    /// applies skills from hideout workout.
+    ///     applies skills from hideout workout.
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="info">Request data</param>
     /// <param name="sessionId">session id</param>
     public void ApplyWorkoutChanges(
         PmcData? pmcData,
-        WorkoutData info,
+        WorkoutData request,
         string sessionId)
     {
-        throw new NotImplementedException();
+        pmcData.Skills.Common = request.Skills.Common;
     }
 }

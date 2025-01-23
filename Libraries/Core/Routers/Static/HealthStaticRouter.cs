@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Health;
@@ -24,7 +24,7 @@ public class HealthStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _healthCallbacks.handleWorkoutEffects(url, info as WorkoutData, sessionID),
+                ) => _healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
                 typeof(WorkoutData)),
         ]
     )

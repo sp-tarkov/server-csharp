@@ -13,6 +13,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
 using Product = Core.Models.Eft.ItemEvent.Product;
+using System.Collections.Generic;
 
 namespace Core.Helpers;
 
@@ -1133,18 +1134,18 @@ public class QuestHelper(
      */
     protected List<Quest> UpdateQuestsForGameEdition(List<Quest> quests, string gameVersion)
     {
-        _logger.Debug("[UpdateQuestsForGameEdition] If you are hitting this method, please confirm the return is compared to Node");
+        _logger.Debug("[UpdateQuestsForGameEdition] If you are hitting this method, please confirm the return is comparable to Node");
         var modifiedQuests = _cloner.Clone(quests);
         foreach (var quest in modifiedQuests)
         {
             // Remove any reward that doesn't pass the game edition check
-            var propsAsDict = quest.Rewards.GetAllPropsAsDict<List<Reward>>();
+            var propsAsDict = quest.Rewards.GetAllPropsAsDict();
             foreach (var rewardType in propsAsDict)
             {
                 if (rewardType.Value is null)
                     continue;
                 
-                propsAsDict[rewardType.Key] = propsAsDict[rewardType.Key]
+                propsAsDict[rewardType.Key] = ((List<Reward>)propsAsDict[rewardType.Key])
                     .Where(
                         reward =>
                             _rewardHelper.RewardIsForGameEdition(reward, gameVersion)

@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -23,7 +23,7 @@ public class HealthCallbacks(
     /// <param name="info">HealthListener.Instance.CurrentHealth class</param>
     /// <param name="sessionID">session id</param>
     /// <returns>empty response, no data sent back to client</returns>
-    public string handleWorkoutEffects(string url, WorkoutData info, string sessionID)
+    public string HandleWorkoutEffects(string url, WorkoutData info, string sessionID)
     {
         _healthController.ApplyWorkoutChanges(_profileHelper.GetPmcProfile(sessionID), info, sessionID);
         return _httpResponseUtil.EmptyResponse();
