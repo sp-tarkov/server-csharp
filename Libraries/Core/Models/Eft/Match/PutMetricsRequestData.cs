@@ -8,7 +8,7 @@ public record PutMetricsRequestData : IRequestData
     [JsonPropertyName("sid")]
     public string? SessionId { get; set; }
 
-    [JsonPropertyName("settings")]
+    [JsonPropertyName("Settings")]
     public object? Settings { get; set; }
 
     [JsonPropertyName("SharedSettings")]

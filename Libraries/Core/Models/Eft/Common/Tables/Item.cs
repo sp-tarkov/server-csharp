@@ -19,7 +19,7 @@ public record Item
 
     [JsonPropertyName("location")]
     public object? Location { get; set; } // TODO: Can be IItemLocation or number
-    
+
     [JsonPropertyName("desc")]
     public string? Desc { get; set; }
 
@@ -45,10 +45,13 @@ public record ItemLocation
 {
     [JsonPropertyName("x")]
     public int? X { get; set; }
+
     [JsonPropertyName("y")]
     public int? Y { get; set; }
+
     [JsonPropertyName("r")]
     public object? R { get; set; } // TODO: Can be string or number
+
     [JsonPropertyName("isSearched")]
     public bool? IsSearched { get; set; }
 
@@ -70,8 +73,10 @@ public record Upd
     public string? SptPresetId { get; set; }
 
     public UpdFaceShield? FaceShield { get; set; }
+
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? StackObjectsCount { get; set; } // TODO: LootDumpGen is outputting doubles, we can turn back to int once fixed
+
     public bool? UnlimitedCount { get; set; }
     public UpdRepairable? Repairable { get; set; }
     public UpdRecodableComponent? RecodableComponent { get; set; }
@@ -188,6 +193,8 @@ public record UpdSight
 
     [JsonPropertyName("SelectedScope")]
     public int? SelectedScope { get; set; }
+    
+    public double? ScopeZoomValue { get; set; }
 }
 
 public record UpdFoldable
@@ -244,7 +251,7 @@ public record UpdDogtag
     public string? Nickname { get; set; }
 
     [JsonPropertyName("Side")]
-    public string? Side { get; set; }
+    public object? Side { get; set; }
 
     [JsonPropertyName("Level")]
     public double? Level { get; set; }
@@ -266,6 +273,8 @@ public record UpdDogtag
 
     [JsonPropertyName("WeaponName")]
     public string? WeaponName { get; set; }
+
+    public bool? CarriedByGroupMember { get; set; }
 }
 
 public record UpdSideEffect

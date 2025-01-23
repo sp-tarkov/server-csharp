@@ -152,48 +152,45 @@ public record Info
     public string? LowerNickname { get; set; }
     public string? Side { get; set; }
     public bool? SquadInviteRestriction { get; set; }
-    public bool? HasCoopExtension { get; set; }
-    public bool? HasPveGame { get; set; }
+    public int? PrestigeLevel { get; set; }
     public string? Voice { get; set; }
     public int? Level { get; set; }
     public int? Experience { get; set; }
-
-    [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public int? RegistrationDate { get; set; }
-    public string? GameVersion { get; set; }
-    public double? AccountType { get; set; }
-    public MemberCategory? MemberCategory { get; set; }
-    public MemberCategory? SelectedMemberCategory { get; set; }
-
-    [JsonPropertyName("lockedMoveCommands")]
-    public bool? LockedMoveCommands { get; set; }
-
-    public double? SavageLockTime { get; set; }
-    public long? LastTimePlayedAsSavage { get; set; }
-    public BotInfoSettings? Settings { get; set; }
-    public long? NicknameChangeDate { get; set; }
-    public List<object>? NeedWipeOptions { get; set; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    [JsonPropertyName("lastCompletedWipe")]
-    public LastCompleted? LastCompletedWipe { get; set; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    [JsonPropertyName("lastWipeTimestamp")]
-    public LastCompleted? LastWipeTimestamp { get; set; }
-
     public List<Ban>? Bans { get; set; }
     public bool? BannedState { get; set; }
     public long? BannedUntil { get; set; }
     public bool? IsStreamerModeAvailable { get; set; }
-
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public int? RegistrationDate { get; set; }
+    public string? GameVersion { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public MemberCategory? MemberCategory { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public MemberCategory? SelectedMemberCategory { get; set; }
+    [JsonPropertyName("lockedMoveCommands")]
+    public bool? LockedMoveCommands { get; set; }
+    public double? SavageLockTime { get; set; }
+    public long? LastTimePlayedAsSavage { get; set; }
+    public BotInfoSettings? Settings { get; set; }
+    public List<object>? NeedWipeOptions { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("lastCompletedWipe")]
+    public LastCompleted? LastCompletedWipe { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
+    [JsonPropertyName("lastWipeTimestamp")]
+    public LastCompleted? LastWipeTimestamp { get; set; }
+    public double? AccountType { get; set; }
+    public long? NicknameChangeDate { get; set; }
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("lastCompletedEvent")]
     public LastCompleted? LastCompletedEvent { get; set; }
-
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
-    public int? PrestigeLevel { get; set; }
+    public double? GroupId { get; set; }
+    public double? TeamId { get; set; }
+    public bool? HasCoopExtension { get; set; }
+    public bool? HasPveGame { get; set; }
+    public string? Type { get; set; }
 }
 
 public record BotInfoSettings
@@ -237,9 +234,10 @@ public record Customization
 
 public record BotBaseHealth
 {
-    public CurrentMax? Hydration { get; set; }
-    public CurrentMax? Energy { get; set; }
-    public CurrentMax? Temperature { get; set; }
+    public CurrentMinMax? Hydration { get; set; }
+    public CurrentMinMax? Energy { get; set; }
+    public CurrentMinMax? Temperature { get; set; }
+    public CurrentMinMax? Poison { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonPropertyName("BodyParts")]
@@ -250,7 +248,7 @@ public record BotBaseHealth
 
 public record BodyPartHealth
 {
-    public CurrentMax? Health { get; set; }
+    public CurrentMinMax? Health { get; set; }
     public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; }
 }
 
@@ -261,10 +259,13 @@ public record BodyPartEffectProperties
     public double? Time { get; set; }
 }
 
-public record CurrentMax
+public record CurrentMinMax
 {
     public double? Current { get; set; }
+    public double? Minimum { get; set; }
     public double? Maximum { get; set; }
+    public double? OverDamageReceivedMultiplier { get; set; }
+    public double? EnvironmentDamageMultiplier { get; set; }
 }
 
 public record BotBaseInventory
@@ -326,7 +327,7 @@ public record Skills
 
 public record BaseSkill
 {
-    public int? PointsEarnedDuringSession { get; set; }
+    public double? PointsEarnedDuringSession { get; set; }
     public long? LastAccess { get; set; }
     public string? Id { get; set; }
     public double? Progress { get; set; }

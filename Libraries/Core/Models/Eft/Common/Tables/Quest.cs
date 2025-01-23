@@ -154,7 +154,7 @@ public record QuestStatus
     public QuestStatusEnum? Status { get; set; }
     
     [JsonPropertyName("statusTimers")]
-    public Dictionary<QuestStatusEnum, long>? StatusTimers { get; set; }
+    public Dictionary<QuestStatusEnum, double>? StatusTimers { get; set; }
     
     [JsonPropertyName("completedConditions")]
     public List<string>? CompletedConditions { get; set; }
