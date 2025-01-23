@@ -34,6 +34,7 @@ public class JsonUtil
             new EftEnumConverter<QuestTypeEnum>(),
             new EftEnumConverter<RewardType>(),
             new EftEnumConverter<ExitStatus>(),
+            new EftEnumConverter<MemberCategory>(),
             new BaseInteractionRequestDataConverter()
         }
     };
