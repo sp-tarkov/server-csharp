@@ -97,7 +97,7 @@ public class RepeatableQuestController(
             {
                 var quest = new RepeatableQuest();
                 var lifeline = 0;
-                while (quest.Id is null && questTypePool.Types.Count > 0)
+                while (quest?.Id == null && questTypePool.Types.Count > 0)
                 {
                     quest = _repeatableQuestGenerator.GenerateRepeatableQuest(
                         sessionID,
@@ -135,12 +135,16 @@ public class RepeatableQuestController(
             fullProfile.SptData.FreeRepeatableRefreshUsedCount[repeatableTypeLower] = 0;
 
             // Create stupid redundant change requirements from quest data
+            generatedRepeatables.ChangeRequirement = new();
             foreach (var quest in generatedRepeatables.ActiveQuests)
-                generatedRepeatables.ChangeRequirement[quest.Id] = new ChangeRequirement
-                {
-                    ChangeCost = quest.ChangeCost,
-                    ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01]) // Randomise standing cost to replace
-                };
+                generatedRepeatables.ChangeRequirement.TryAdd(
+                    quest.Id,
+                    new ChangeRequirement
+                    {
+                        ChangeCost = quest.ChangeCost,
+                        ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01]) // Randomise standing loss to replace
+                    }
+                );
 
             // Reset free repeatable values in player profile to defaults
             generatedRepeatables.FreeChanges = repeatableConfig.FreeChanges;
