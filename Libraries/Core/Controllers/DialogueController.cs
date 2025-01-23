@@ -3,6 +3,7 @@ using Core.Helpers;
 using Core.Helpers.Dialogue;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
+using Core.Models.Eft.Ws;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -17,6 +18,7 @@ public class DialogueController(
     ISptLogger<DialogueController> _logger,
     TimeUtil _timeUtil,
     DialogueHelper _dialogueHelper,
+    NotificationSendHelper _notificationSendHelper,
     ProfileHelper _profileHelper,
     ConfigServer _configServer,
     SaveServer _saveServer,
@@ -351,7 +353,7 @@ public class DialogueController(
     /// <returns>true if uncollected rewards found</returns>
     private bool MessagesHaveUncollectedRewards(List<Message> messages)
     {
-        return messages.Any((message) => (message.Items?.Data?.Count ?? 0) > 0);
+        return messages.Any(message => (message.Items?.Data?.Count ?? 0) > 0);
     }
 
     /// <summary>
@@ -364,7 +366,25 @@ public class DialogueController(
         string? dialogueId,
         string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _saveServer.GetProfile(sessionId);
+        var dialog = profile.DialogueRecords.GetValueOrDefault(dialogueId);
+        if (dialog is null)
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "dialogue-unable_to_find_in_profile",
+                    new
+                    {
+                        sessionId,
+                        dialogueId,
+                    }
+                )
+            );
+
+            return;
+        }
+
+        profile.DialogueRecords.Remove(dialogueId);
     }
 
     /// <summary>
@@ -375,7 +395,24 @@ public class DialogueController(
     /// <param name="sessionId"></param>
     public void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
     {
-        throw new NotImplementedException();
+        var dialog = _dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
+        if (dialog is null)
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "dialogue-unable_to_find_in_profile",
+                    new
+                    {
+                        sessionId,
+                        dialogueId,
+                    }
+                )
+            );
+
+            return;
+        }
+
+        dialog.Pinned = shouldPin;
     }
 
     /// <summary>
@@ -386,7 +423,27 @@ public class DialogueController(
     /// <param name="sessionId">Player profile id</param>
     public void SetRead(List<string>? dialogueIds, string sessionId)
     {
-        throw new NotImplementedException();
+        var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
+        if (dialogs is null || !dialogs.Any())
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "dialogue-unable_to_find_dialogs_in_profile",
+                    new
+                    {
+                        sessionId,
+                    }
+                )
+            );
+
+            return;
+        }
+
+        foreach (var dialogId in dialogueIds)
+        {
+            dialogs[dialogId].New = 0;
+            dialogs[dialogId].AttachmentsNew = 0;
+        }
     }
 
     /// <summary>
@@ -403,7 +460,8 @@ public class DialogueController(
         if (!dialog)
         {
             _logger.Error(
-                _localisationService.GetText("dialogue-unable_to_find_in_profile"));
+                _localisationService.GetText("dialogue-unable_to_find_in_profile")
+            );
 
             return null;
         }
@@ -414,11 +472,11 @@ public class DialogueController(
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
         var messagesWithAttachments = GetMessageWithAttachments(activeMessages);
 
-        return new GetAllAttachmentsResponse { 
+        return new GetAllAttachmentsResponse
+        {
             Messages = messagesWithAttachments,
             Profiles = [],
             HasMessagesWithRewards = MessagesHaveUncollectedRewards(messagesWithAttachments)
-            
         };
     }
 
@@ -435,18 +493,9 @@ public class DialogueController(
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
         return (_dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId)
-            ?.HandleMessage(sessionId, request) ?? request.DialogId) ?? string.Empty;
-    }
-
-    /// <summary>
-    /// Get messages from a specific dialog that have items not expired
-    /// </summary>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="dialogueId">Dialog to get mail attachments from</param>
-    /// <returns>message list</returns>
-    private List<Message> GetActiveMessagesFromDialogue(string sessionId, string dialogueId)
-    {
-        throw new NotImplementedException();
+                    ?.HandleMessage(sessionId, request) ??
+                request.DialogId) ??
+               string.Empty;
     }
 
     /// <summary>
@@ -503,13 +552,58 @@ public class DialogueController(
         return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 
-    public FriendRequestSendResponse SendFriendRequest(string sessionId, FriendRequestData request)
+    public FriendRequestSendResponse SendFriendRequest(string sessionID, FriendRequestData request)
     {
-        throw new NotImplementedException();
+        // To avoid needing to jump between profiles, auto-accept all friend requests
+        var friendProfile = _profileHelper.GetFullProfile(request.To);
+        if (friendProfile?.CharacterData?.PmcData is null)
+        {
+            return new FriendRequestSendResponse
+            {
+                Status = BackendErrorCodes.PlayerProfileNotFound,
+                RequestId = "", // Unused in an error state
+                RetryAfter = 600,
+            };
+        }
+
+        // Only add the profile to the friends list if it doesn't already exist
+        var profile = _saveServer.GetProfile(sessionID);
+        if (!profile.FriendProfileIds.Contains(request.To))
+        {
+            profile.FriendProfileIds.Add(request.To);
+        }
+
+        // We need to delay this so that the friend request gets properly added to the clientside list before we accept it
+        _ = new Timer(
+            _ =>
+            {
+                WsFriendsListAccept notification = new WsFriendsListAccept
+                {
+                    EventType = NotificationEventType.friendListRequestAccept,
+                    Profile = _profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
+                };
+                _notificationSendHelper.SendMessage(sessionID, notification);
+            },
+            null,
+            TimeSpan.FromMicroseconds(1000),
+            Timeout.InfiniteTimeSpan // This should mean it does this callback once after 1 second and then stops
+        );
+
+        return new FriendRequestSendResponse
+        {
+            Status = BackendErrorCodes.None,
+            RequestId = friendProfile.ProfileInfo.Aid.ToString(),
+            RetryAfter = 600
+        };
     }
 
     public void DeleteFriend(string sessionID, DeleteFriendRequest request)
     {
-        throw new NotImplementedException();
+        var profile = _saveServer.GetProfile(sessionID);
+        var friendIndex = profile.FriendProfileIds.IndexOf(request.FriendId);
+        if (friendIndex != -1)
+        {
+            profile.FriendProfileIds.RemoveAt(friendIndex);
+        }
     }
 }
