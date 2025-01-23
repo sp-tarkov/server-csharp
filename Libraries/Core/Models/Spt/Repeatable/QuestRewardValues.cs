@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Repeatable;
 
@@ -14,7 +14,7 @@ public record QuestRewardValues
     public double? RewardReputation { get; set; }
 
     [JsonPropertyName("rewardNumItems")]
-    public double? RewardNumItems { get; set; }
+    public int? RewardNumItems { get; set; }
 
     [JsonPropertyName("rewardRoubles")]
     public double? RewardRoubles { get; set; }
