@@ -13,4 +13,7 @@ public record FriendRequestData : IRequestData
 
     [JsonPropertyName("retryAfter")]
     public int? RetryAfter { get; set; }
+    
+    [JsonPropertyName("to")]
+    public string? To { get; set; }
 }

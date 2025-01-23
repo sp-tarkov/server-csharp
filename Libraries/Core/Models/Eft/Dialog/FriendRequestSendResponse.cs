@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.Dialog;
 
 public record FriendRequestSendResponse
 {
     [JsonPropertyName("status")]
-    public int? Status { get; set; }
+    public BackendErrorCodes? Status { get; set; }
 
     [JsonPropertyName("requestId")]
     public string? RequestId { get; set; }
