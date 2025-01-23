@@ -58,7 +58,8 @@ public class FileUtil
 
     public string ReadFile(string path)
     {
-        return File.ReadAllText(path);
+        using var reader = new StreamReader(path);
+        return reader.ReadToEnd();
     }
 
     public void WriteFile(string filePath, string jsonProfile)
