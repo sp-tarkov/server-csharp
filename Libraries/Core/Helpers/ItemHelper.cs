@@ -376,7 +376,7 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(List<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl));
+        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0));
     }
 
     /// <summary>
@@ -762,7 +762,11 @@ public class ItemHelper(
             ItemTpl.BARTER_DOGTAG_BEAR_TUE,
             ItemTpl.BARTER_DOGTAG_USEC,
             ItemTpl.BARTER_DOGTAG_USEC_EOD,
-            ItemTpl.BARTER_DOGTAG_USEC_TUE
+            ItemTpl.BARTER_DOGTAG_USEC_TUE,
+            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_1,
+            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_2,
+            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_1,
+            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
         ];
 
         return dogTagTpls.Contains(tpl);
