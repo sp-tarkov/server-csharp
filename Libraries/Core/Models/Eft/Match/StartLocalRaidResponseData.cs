@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -13,6 +13,7 @@ public record StartLocalRaidResponseData
     [JsonPropertyName("serverSettings")]
     public LocationServices? ServerSettings { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("profile")]
     public ProfileInsuredItems? Profile { get; set; }
 

@@ -495,6 +495,8 @@ public record BossLocationSpawn
     [JsonPropertyName("IgnoreMaxBots")]
     public bool? IgnoreMaxBots { get; set; }
 
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Supports")]
     public List<BossSupport> Supports { get; set; }
 
