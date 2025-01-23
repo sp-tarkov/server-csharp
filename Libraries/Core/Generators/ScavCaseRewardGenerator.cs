@@ -1,6 +1,7 @@
 ﻿using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
+using Core.Models.Eft.ItemEvent;
 using Core.Models.Spt.Hideout;
 
 namespace Core.Generators;
