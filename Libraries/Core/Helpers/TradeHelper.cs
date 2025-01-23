@@ -56,11 +56,49 @@ public class TradeHelper(
     )
     {
         List<Item> offerItems = [];
-        Action<double, ProcessBuyTradeRequestData, string, PmcData>? buyCallback = null;
+        Action<double>? buyCallback;
 
         if (buyRequestData.TransactionId.ToLower() == "ragfair")
         {
-            buyCallback = BuyCallback1;
+            buyCallback = (buyCount =>
+            {
+                var allOffers = _ragfairServer.GetOffers();
+
+                // We store ragfair offerid in buyRequestData.item_id
+                var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
+                var itemPurchased = offerWithItem.Items.FirstOrDefault();
+
+                // Ensure purchase does not exceed trader item limit
+                var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
+                if (assortHasBuyRestrictions)
+                {
+                    this.checkPurchaseIsWithinTraderItemLimit(
+                        sessionID,
+                        pmcData,
+                        buyRequestData.TransactionId,
+                        itemPurchased,
+                        buyRequestData.ItemId,
+                        buyCount
+                    );
+
+                    // Decrement trader item count
+                    PurchaseDetails itemPurchaseDetails = new PurchaseDetails()
+                    {
+                        Items =
+                        [
+                            new PurchaseItems()
+                            {
+                                ItemId = buyRequestData.ItemId,
+                                Count = buyCount
+                            }
+                        ],
+                        TraderId = buyRequestData.TransactionId
+                    };
+                    _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDetails, itemPurchased);
+                }
+            });
+            
+            // buyCallback = BuyCallback1;
             // Get raw offer from ragfair, clone to prevent altering offer itself
             var allOffers = _ragfairServer.GetOffers();
             var offerWithItemCloned = _cloner.Clone(allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId));
@@ -68,7 +106,17 @@ public class TradeHelper(
         }
         else if (buyRequestData.TransactionId == Traders.FENCE)
         {
-            buyCallback = BuyCallback2;
+            buyCallback = (buyCount =>
+            {
+                // Update assort/flea item values
+                var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                var itemPurchased = traderAssorts.FirstOrDefault(assort => assort.Id == buyRequestData.ItemId);
+
+                // Decrement trader item count
+                itemPurchased.Upd.StackObjectsCount -= buyCount;
+
+                _fenceService.AmendOrRemoveFenceOffer(buyRequestData.ItemId, buyCount);
+            });
 
             var fenceItems = _fenceService.GetRawFenceAssorts().Items;
             var rootItemIndex = fenceItems.FindIndex(item => item.Id == buyRequestData.ItemId);
@@ -85,7 +133,57 @@ public class TradeHelper(
         }
         else
         {
-            buyCallback = BuyCallback3;
+            buyCallback = (buyCount =>
+            {
+                // Update assort/flea item values
+                var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
+                var itemPurchased = traderAssorts.FirstOrDefault(item => item.Id == buyRequestData.ItemId);
+
+                // Ensure purchase does not exceed trader item limit
+                var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
+                if (assortHasBuyRestrictions)
+                {
+                    // Will throw error if check fails
+                    this.checkPurchaseIsWithinTraderItemLimit(
+                        sessionID,
+                        pmcData,
+                        buyRequestData.TransactionId,
+                        itemPurchased,
+                        buyRequestData.ItemId,
+                        buyCount
+                    );
+                }
+
+                // Check if trader has enough stock
+                if (itemPurchased.Upd.StackObjectsCount < buyCount)
+                {
+                    throw new Exception(
+                        $"Unable to purchase {buyCount} items, this would exceed the remaining stock left {itemPurchased.Upd.StackObjectsCount} from the traders assort: {buyRequestData.TransactionId} this refresh"
+                    );
+                }
+
+                // Decrement trader item count
+                itemPurchased.Upd.StackObjectsCount -= buyCount;
+
+                if (assortHasBuyRestrictions)
+                {
+                    var itemPurchaseDat = new PurchaseDetails()
+                    {
+                        Items = new List<PurchaseItems>()
+                        {
+                            new PurchaseItems()
+                            {
+                                ItemId = buyRequestData.ItemId,
+                                Count = buyCount
+                            }
+                        },
+                        TraderId = buyRequestData.TransactionId
+                    };
+
+                    _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDat, itemPurchased);
+                }
+            });
+            
             // Get all trader assort items
             var traderItems = _traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId).Items;
 
@@ -151,121 +249,7 @@ public class TradeHelper(
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.UnknownTradingError);
         }
     }
-
-    public void BuyCallback1(
-        double buyCount,
-        ProcessBuyTradeRequestData buyRequestData,
-        string sessionID,
-        PmcData pmcData)
-    {
-        var allOffers = _ragfairServer.GetOffers();
-
-        // We store ragfair offerid in buyRequestData.item_id
-        var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
-        var itemPurchased = offerWithItem.Items.FirstOrDefault();
-
-        // Ensure purchase does not exceed trader item limit
-        var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
-        if (assortHasBuyRestrictions)
-        {
-            this.checkPurchaseIsWithinTraderItemLimit(
-                sessionID,
-                pmcData,
-                buyRequestData.TransactionId,
-                itemPurchased,
-                buyRequestData.ItemId,
-                buyCount
-            );
-
-            // Decrement trader item count
-            PurchaseDetails itemPurchaseDetails = new PurchaseDetails()
-            {
-                Items =
-                [
-                    new PurchaseItems()
-                    {
-                        ItemId = buyRequestData.ItemId,
-                        Count = buyCount
-                    }
-                ],
-                TraderId = buyRequestData.TransactionId
-            };
-            _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDetails, itemPurchased);
-        }
-    }
-
-    public void BuyCallback2(
-        double buyCount,
-        ProcessBuyTradeRequestData buyRequestData,
-        string sessionID,
-        PmcData pmcData)
-    {
-        // Update assort/flea item values
-        var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
-        var itemPurchased = traderAssorts.FirstOrDefault(assort => assort.Id == buyRequestData.ItemId);
-
-        // Decrement trader item count
-        itemPurchased.Upd.StackObjectsCount -= buyCount;
-
-        _fenceService.AmendOrRemoveFenceOffer(buyRequestData.ItemId, buyCount);
-    }
-
-    public void BuyCallback3(
-        double buyCount,
-        ProcessBuyTradeRequestData buyRequestData,
-        string sessionID,
-        PmcData pmcData)
-    {
-        // Update assort/flea item values
-        var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
-        var itemPurchased = traderAssorts.FirstOrDefault(item => item.Id == buyRequestData.ItemId);
-
-        // Ensure purchase does not exceed trader item limit
-        var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
-        if (assortHasBuyRestrictions)
-        {
-            // Will throw error if check fails
-            this.checkPurchaseIsWithinTraderItemLimit(
-                sessionID,
-                pmcData,
-                buyRequestData.TransactionId,
-                itemPurchased,
-                buyRequestData.ItemId,
-                buyCount
-            );
-        }
-
-        // Check if trader has enough stock
-        if (itemPurchased.Upd.StackObjectsCount < buyCount)
-        {
-            throw new Exception(
-                $"Unable to purchase {buyCount} items, this would exceed the remaining stock left {itemPurchased.Upd.StackObjectsCount} from the traders assort: {buyRequestData.TransactionId} this refresh"
-            );
-        }
-
-        // Decrement trader item count
-        itemPurchased.Upd.StackObjectsCount -= buyCount;
-
-        if (assortHasBuyRestrictions)
-        {
-            var itemPurchaseDat = new PurchaseDetails()
-            {
-                Items = new List<PurchaseItems>()
-                {
-                    new PurchaseItems()
-                    {
-                        ItemId = buyRequestData.ItemId,
-                        Count = buyCount
-                    }
-                },
-                TraderId = buyRequestData.TransactionId
-            };
-
-            _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDat, itemPurchased);
-        }
-    }
-
-
+    
     /// <summary>
     /// Sell item to trader
     /// </summary>

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -13,6 +14,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
+using SptCommon.Extensions;
 using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Helpers;
@@ -76,7 +78,7 @@ public class InventoryHelper(
 
             // Add to player inventory
             AddItemToStash(sessionId, addItemRequest, pmcData, output);
-            if (output.Warnings.Count > 0) return;
+            if (output.Warnings?.Count > 0) return;
         }
     }
 
@@ -116,7 +118,7 @@ public class InventoryHelper(
             request.UseSortingTable.GetValueOrDefault(false),
             output
         );
-        if (output.Warnings.Count > 0)
+        if (output.Warnings?.Count > 0)
             // Failed to place, error out
             return;
 
@@ -130,14 +132,14 @@ public class InventoryHelper(
         try
         {
             if (request.Callback is not null)
-                request.Callback(rootItemToAdd.Upd.StackObjectsCount.Value, null, null, null);
+                request.Callback(rootItemToAdd.Upd.StackObjectsCount.Value);
         }
         catch (Exception ex)
         {
             // Callback failed
             var message = ex.Message;
-
             _httpResponseUtil.AppendErrorToOutput(output, message);
+            _logger.Error($"[InventoryHelper]: {ex.Message}");
 
             return;
         }
@@ -148,7 +150,7 @@ public class InventoryHelper(
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
         _logger.Debug(
-            $"Added ${rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: ${rootItemToAdd.Template} with: ${itemWithModsToAddClone.Count - 1} mods to inventory"
+            $"Added {rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: {rootItemToAdd.Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
         );
     }
 
@@ -768,11 +770,12 @@ public class InventoryHelper(
         // Check each item in container
         foreach (var item in containerItemHash)
         {
-            var itemLocation = item?.Location as ItemLocation;
+            var location = (JsonElement)item.Location;
+            var itemLocation = location.ToObject<ItemLocation>();
             if (itemLocation is null)
             {
                 // item has no location property
-                _logger.Error("Unable to find 'location' property on item with id: ${ item._id}, skipping");
+                _logger.Error($"Unable to find 'location' property on item with id: {item.Id}, skipping");
 
                 continue;
             }
@@ -793,7 +796,7 @@ public class InventoryHelper(
                     var rowIndex = itemLocation.Y + y;
                     var containerRow = container2D[rowIndex.Value];
                     if (containerRow is null)
-                        _logger.Error("Unable to find container: { containerId} row line: { itemLocation.y + y}");
+                        _logger.Error($"Unable to find container: {containerId} row line: {itemLocation.Y + y}");
 
                     // Fill the corresponding cells in the container map to show the slot is taken
                     Array.Fill(containerRow, 1, itemLocation.X.Value, fW);
@@ -950,7 +953,7 @@ public class InventoryHelper(
     /// </summary>
     /// <param name="sessionId">Players id</param>
     /// <returns>Dictionary of 2 values, horizontal and vertical stash size</returns>
-    protected Dictionary<int, int> GetPlayerStashSize(string sessionId)
+    protected List<int> GetPlayerStashSize(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var stashRowBonus = profile.Bonuses.FirstOrDefault(bonus => bonus.Type == BonusType.StashRows);
@@ -964,7 +967,7 @@ public class InventoryHelper(
         {
             _logger.Error(_localisationService.GetText("inventory-stash_not_found", stashTPL));
 
-            return new Dictionary<int, int>();
+            return new List<int>();
         }
 
         var stashItemDetails = stashItemResult.Value;
@@ -976,7 +979,7 @@ public class InventoryHelper(
         // Player has a bonus, apply to vertical size
         if (stashRowBonus is not null) stashV += (int)stashRowBonus.Value;
 
-        return new Dictionary<int, int> { { stashH.Value, stashV.Value } };
+        return [stashH.Value, stashV.Value];
     }
 
     /// <summary>

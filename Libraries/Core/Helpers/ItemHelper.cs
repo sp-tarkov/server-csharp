@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
@@ -8,6 +9,7 @@ using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 
 namespace Core.Helpers;
@@ -2027,7 +2029,7 @@ public class ItemHelper(
             Template = item.Template,
             ParentId = item.ParentId,
             SlotId = item.SlotId,
-            Location = item.Location,
+            Location = ((JsonElement)item.Location).ToObject<ItemLocation>(),
             Upd = item.Upd,
         };
     }

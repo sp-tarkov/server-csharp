@@ -10,7 +10,6 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Services;
 
@@ -64,13 +63,13 @@ public class PaymentService(
                     itemRequest.Count = 0;
                 } else {
                     // If the item is money, add its count to the currencyAmounts object.
-                    currencyAmounts.TryAdd(item.Template, (currencyAmounts[item.Template] ?? 0) + itemRequest.Count);
+                    currencyAmounts.TryAdd(item.Template, (currencyAmounts.GetValueOrDefault(item.Template, 0)) + itemRequest.Count);
                 }
             } else {
                 // Used by `SptInsure`
                 // Handle differently, `id` is the money type tpl
                 var currencyTpl = itemRequest.Id;
-                currencyAmounts.TryAdd(currencyTpl, (currencyAmounts[currencyTpl] ?? 0) + itemRequest.Count);
+                currencyAmounts.TryAdd(currencyTpl, (currencyAmounts.GetValueOrDefault(currencyTpl, 0)) + itemRequest.Count);
             }
         }
 
@@ -87,7 +86,7 @@ public class PaymentService(
                 AddPaymentToOutput(pmcData, currencyTpl.Key, (int)currencyAmount, sessionID, output);
 
                 // If there are warnings, exit early.
-                if (output.Warnings.Count > 0) {
+                if (output.Warnings?.Count > 0) {
                     return;
                 }
 
