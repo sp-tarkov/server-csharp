@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Utils.Json;
 
@@ -33,9 +33,8 @@ public record Location
     [JsonPropertyName("allExtracts")]
     public Exit[] AllExtracts { get; set; }
 
-    // TODO: talk to chomp about this type!
-    [JsonPropertyName("statics")]
-    public Dictionary<string, object>? Statics { get; set; }
+    [Obsolete("USE StaticContainer INSTEAD")]
+    public object Statics { get; set; }
 }
 
 public record StaticContainer
@@ -131,6 +130,7 @@ public record StaticPropsBase
     public Item[] Items { get; set; }
 }
 
+[Obsolete("use SpawnpointTemplate")]
 public record StaticWeaponProps : StaticPropsBase
 {
     [JsonPropertyName("Items")]
@@ -140,13 +140,13 @@ public record StaticWeaponProps : StaticPropsBase
 public record StaticContainerDetails
 {
     [JsonPropertyName("staticWeapons")]
-    public StaticWeaponProps[] StaticWeapons { get; set; }
+    public List<SpawnpointTemplate> StaticWeapons { get; set; }
 
     [JsonPropertyName("staticContainers")]
-    public StaticContainerData[] StaticContainers { get; set; }
+    public List<StaticContainerData> StaticContainers { get; set; }
 
     [JsonPropertyName("staticForced")]
-    public StaticForcedProps[] StaticForced { get; set; }
+    public List<SpawnpointTemplate> StaticForced { get; set; }
 }
 
 public record StaticContainerData
@@ -155,7 +155,7 @@ public record StaticContainerData
     public float? Probability { get; set; }
 
     [JsonPropertyName("template")]
-    public StaticContainerProps? Template { get; set; }
+    public SpawnpointTemplate? Template { get; set; }
 }
 
 public record StaticAmmoDetails
@@ -176,6 +176,7 @@ public record StaticForcedProps
     public string? ItemTpl { get; set; }
 }
 
+[Obsolete("use SpawnpointTemplate")]
 public record StaticContainerProps : StaticPropsBase
 {
     [JsonPropertyName("Items")]

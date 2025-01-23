@@ -1,4 +1,4 @@
-﻿using Core.Context;
+using Core.Context;
 using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
@@ -8,6 +8,7 @@ using Core.Models.Spt.Location;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace Core.Services;
 
@@ -35,7 +36,7 @@ public class RaidTimeAdjustmentService(
             $"Adjusting dynamic loot multipliers to {raidAdjustments.DynamicLootPercent}% and static loot multipliers to {raidAdjustments.StaticLootPercent}% of original"
         );
 
-        // Change loot multipler values before they're used below
+        // Change loot multiplier values before they're used below
         AdjustLootMultipliers(_locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
         AdjustLootMultipliers(_locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
 
@@ -50,15 +51,13 @@ public class RaidTimeAdjustmentService(
     /// <summary>
     /// Adjust the loot multiplier values passed in to be a % of their original value
     /// </summary>
-    /// <param name="mapLootMultipliers">Multipliers to adjust</param>
+    /// <param name="mapLootMultiplers">Multipliers to adjust</param>
     /// <param name="loosePercent">Percent to change values to</param>
-    protected void AdjustLootMultipliers(LootMultiplier mapLootMultiplers, double? loosePercent)
+    protected void AdjustLootMultipliers(Dictionary<string, double> mapLootMultiplers, double? loosePercent)
     {
-        var props = mapLootMultiplers.GetType().GetProperties();
-        foreach (var multiplier in props)
+        foreach (var location in mapLootMultiplers)
         {
-            var propValue = (double)multiplier.GetValue(mapLootMultiplers);
-            multiplier.SetValue(mapLootMultiplers, _randomUtil.GetPercentOfValue(propValue, loosePercent ?? 1));
+            mapLootMultiplers[location.Key] = _randomUtil.GetPercentOfValue(mapLootMultiplers[location.Key], loosePercent ?? 1);
         }
     }
 

@@ -1,75 +1,376 @@
-﻿using System.Text.Json.Serialization;
-using SptCommon.Annotations;
+using System.Text.Json.Serialization;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
+using Core.Utils.Collections;
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
 [Injectable]
 public class LocationLootGenerator(
-    
-    )
+    ISptLogger<LocationLootGenerator> _logger,
+    RandomUtil _randomUtil,
+    MathUtil _mathUtil,
+    ItemHelper _itemHelper,
+    InventoryHelper _inventoryHelper,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService,
+    SeasonalEventService _seasonalEventService,
+    ItemFilterService _itemFilterService,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
-    private LocationConfig _locationConfig;
-    private SeasonalEventConfig _seasonalEventConfig;
+    protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
 
     /// Create a list of container objects with randomised loot
-    /// </summary>
     /// <param name="locationBase">Map base to generate containers for</param>
     /// <param name="staticAmmoDist">Static ammo distribution</param>
     /// <returns>List of container objects</returns>
-    public List<SpawnpointTemplate> GenerateStaticContainers(LocationBase locationBase, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
+    public List<SpawnpointTemplate> GenerateStaticContainers(LocationBase locationBase,
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
-        throw new NotImplementedException();
+        var staticLootItemCount = 0;
+        var result = new List<SpawnpointTemplate>();
+        var locationId = locationBase.Id.ToLower();
+
+        var mapData = _databaseService.GetLocation(locationId);
+
+        var staticWeaponsOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticWeapons);
+        if (staticWeaponsOnMapClone is null)
+        {
+            _logger.Error(
+                _localisationService.GetText("location-unable_to_find_static_weapon_for_map", locationBase.Name)
+            );
+        }
+
+        // Add mounted weapons to output loot
+        result.AddRange(staticWeaponsOnMapClone);
+
+        var allStaticContainersOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticContainers);
+        if (allStaticContainersOnMapClone is null)
+        {
+            _logger.Error(
+                _localisationService.GetText("location-unable_to_find_static_container_for_map", locationBase.Name)
+            );
+        }
+
+        // Containers that MUST be added to map (e.g. quest containers)
+        var staticForcedOnMapClone = _cloner.Clone(mapData.StaticContainers.Value.StaticForced);
+        if (staticForcedOnMapClone is null)
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "location-unable_to_find_forced_static_data_for_map",
+                    locationBase.Name
+                )
+            );
+        }
+
+        // Remove christmas items from loot data
+        if (!_seasonalEventService.ChristmasEventEnabled())
+        {
+            allStaticContainersOnMapClone = allStaticContainersOnMapClone.Where(
+                    item => !_seasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
+                )
+                .ToList();
+        }
+
+        var staticRandomisableContainersOnMap = GetRandomisableContainersOnMap(allStaticContainersOnMapClone);
+
+        // Keep track of static loot count
+        var staticContainerCount = 0;
+
+        // Find all 100% spawn containers
+        var staticLootDist = mapData.StaticLoot;
+        var guaranteedContainers = GetGuaranteedContainers(allStaticContainersOnMapClone);
+        staticContainerCount += guaranteedContainers.Count;
+
+        // Add loot to guaranteed containers and add to result
+        foreach (var container in guaranteedContainers)
+        {
+            var containerWithLoot = AddLootToContainer(
+                container,
+                staticForcedOnMapClone,
+                staticLootDist.Value,
+                staticAmmoDist,
+                locationId
+            );
+            result.Add(containerWithLoot.Template);
+
+            staticLootItemCount += containerWithLoot.Template.Items.Count;
+        }
+
+        _logger.Debug($"Added {guaranteedContainers.Count} guaranteed containers");
+
+        // Randomisation is turned off globally or just turned off for this map
+        if (
+            !(
+                _locationConfig.ContainerRandomisationSettings.Enabled &&
+                _locationConfig.ContainerRandomisationSettings.Maps[locationId]
+            )
+        )
+        {
+            _logger.Debug(
+                $"Container randomisation disabled, Adding {staticRandomisableContainersOnMap.Count} containers to {locationBase.Name}"
+            );
+            foreach (var container in staticRandomisableContainersOnMap)
+            {
+                var containerWithLoot = AddLootToContainer(
+                    container,
+                    staticForcedOnMapClone,
+                    staticLootDist.Value,
+                    staticAmmoDist,
+                    locationId
+                );
+                result.Add(containerWithLoot.Template);
+
+                staticLootItemCount += containerWithLoot.Template.Items.Count;
+            }
+
+            _logger.Success($"A total of {staticLootItemCount} static items spawned");
+
+            return result;
+        }
+
+        // Group containers by their groupId
+        if (mapData.StaticContainer is null)
+        {
+            _logger.Warning(_localisationService.GetText("location-unable_to_generate_static_loot", locationId));
+
+            return result;
+        }
+
+        var mapping = GetGroupIdToContainerMappings(mapData.StaticContainer, staticRandomisableContainersOnMap);
+
+        // For each of the container groups, choose from the pool of containers, hydrate container with loot and add to result array
+        foreach (var (key, data) in mapping)
+        {
+            // Count chosen was 0, skip
+            if (data.ChosenCount == 0)
+            {
+                continue;
+            }
+
+            if (data.ContainerIdsWithProbability.Count == 0)
+            {
+                _logger.Debug($"`Group: {key} has no containers with< 100 % spawn chance to choose from, skipping");
+
+                continue;
+            }
+
+            // EDGE CASE: These are containers without a group and have a probability < 100%
+            if (key == "")
+            {
+                var containerIdsCopy = _cloner.Clone(data.ContainerIdsWithProbability);
+                // Roll each containers probability, if it passes, it gets added
+                data.ContainerIdsWithProbability = new Dictionary<string, double>();
+                foreach (var containerId in containerIdsCopy)
+                    if (_randomUtil.GetChance100(containerIdsCopy[containerId.Key] * 100))
+                    {
+                        data.ContainerIdsWithProbability[containerId.Key] = containerIdsCopy[containerId.Key];
+                    }
+
+                // Set desired count to size of array (we want all containers chosen)
+                data.ChosenCount = data.ContainerIdsWithProbability.Count;
+
+                // EDGE CASE: chosen container count could be 0
+                if (data.ChosenCount == 0)
+                {
+                    continue;
+                }
+            }
+
+            // Pass possible containers into function to choose some
+            var chosenContainerIds = GetContainersByProbability(key, data);
+            foreach (var chosenContainerId in chosenContainerIds)
+            {
+                // Look up container object from full list of containers on map
+                var containerObject = staticRandomisableContainersOnMap.FirstOrDefault(
+                    staticContainer => staticContainer.Template.Id == chosenContainerId
+                );
+                if (containerObject is null)
+                {
+                    _logger.Debug(
+                        $"Container: {chosenContainerId} not found in staticRandomisableContainersOnMap, this is bad"
+                    );
+                    continue;
+                }
+
+                // Add loot to container and push into result object
+                var containerWithLoot = AddLootToContainer(
+                    containerObject,
+                    staticForcedOnMapClone,
+                    staticLootDist.Value,
+                    staticAmmoDist,
+                    locationId
+                );
+                result.Add(containerWithLoot.Template);
+                staticContainerCount++;
+
+                staticLootItemCount += containerWithLoot.Template.Items.Count;
+            }
+        }
+
+        _logger.Success("A total of { staticLootItemCount}static items spawned");
+
+        _logger.Success(
+            _localisationService.GetText("location-containers_generated_success", staticContainerCount)
+        );
+
+        return result;
     }
 
     /// <summary>
-    /// Get containers with a non-100% chance to spawn OR are NOT on the container type randomistion blacklist
+    ///     Get containers with a non-100% chance to spawn OR are NOT on the container type randomistion blacklist
     /// </summary>
     /// <param name="staticContainers"></param>
     /// <returns>StaticContainerData array</returns>
     protected List<StaticContainerData> GetRandomisableContainersOnMap(List<StaticContainerData> staticContainers)
     {
-        throw new NotImplementedException();
+        return staticContainers.Where(
+                staticContainer =>
+                    staticContainer.Probability != 1 &&
+                    !staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) &&
+                    !_locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+                        staticContainer.Template.Items[0].Template
+                    )
+            )
+            .ToList();
     }
 
     /// <summary>
-    /// Get containers with 100% spawn rate or have a type on the randomistion ignore list
+    ///     Get containers with 100% spawn rate or have a type on the randomistion ignore list
     /// </summary>
     /// <param name="staticContainersOnMap"></param>
     /// <returns>IStaticContainerData array</returns>
     protected List<StaticContainerData> GetGuaranteedContainers(List<StaticContainerData> staticContainersOnMap)
     {
-        throw new NotImplementedException();
+        return staticContainersOnMap.Where(
+                staticContainer =>
+                    staticContainer.Probability == 1 ||
+                    staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) ||
+                    _locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+                        staticContainer.Template.Items[0].Template
+                    )
+            )
+            .ToList();
     }
 
     /// <summary>
-    /// Choose a number of containers based on their probabilty value to fulfil the desired count in containerData.chosenCount
+    ///     Choose a number of containers based on their probabilty value to fulfil the desired count in
+    ///     containerData.chosenCount
     /// </summary>
     /// <param name="groupId">Name of the group the containers are being collected for</param>
     /// <param name="containerData">Containers and probability values for a groupId</param>
     /// <returns>List of chosen container Ids</returns>
-    protected List<string> GetContainersByProbabilty(string groupId, ContainerGroupCount containerData)
+    protected List<string> GetContainersByProbability(string groupId, ContainerGroupCount containerData)
     {
-        throw new NotImplementedException();
+        var chosenContainerIds = new List<string>();
+
+        var containerIds = containerData.ContainerIdsWithProbability.Keys.ToList();
+        if (containerData.ChosenCount > containerIds.Count)
+        {
+            _logger.Debug(
+                $"Group: {groupId} wants {containerData.ChosenCount} containers but pool only has {containerIds.Count}, add what's available"
+            );
+            return containerIds;
+        }
+
+        // Create probability array with all possible container ids in this group and their relative probability of spawning
+        var containerDistribution =
+            new ProbabilityObjectArray<ProbabilityObject<string, double>, string, double>(_mathUtil, _cloner, []);
+        foreach (var x in containerIds)
+        {
+            var value = containerData.ContainerIdsWithProbability[x];
+            containerDistribution.Add(new ProbabilityObject<string, double>(x, value, value));
+        }
+
+        chosenContainerIds.AddRange(containerDistribution.Draw(containerData.ChosenCount));
+
+        return chosenContainerIds;
     }
 
     /// <summary>
-    /// Get a mapping of each groupid and the containers in that group + count of containers to spawn on map
+    ///     Get a mapping of each groupid and the containers in that group + count of containers to spawn on map
     /// </summary>
     /// <param name="containersGroups">Container group values</param>
     /// <returns>dictionary keyed by groupId</returns>
     protected Dictionary<string, ContainerGroupCount> GetGroupIdToContainerMappings(
-        object staticContainerGroupData, // TODO: Type fuckery staticContainerGroupData was IStaticContainer | Record<string, IContainerMinMax>
+        StaticContainer staticContainerGroupData,
         List<StaticContainerData> staticContainersOnMap)
     {
-        throw new NotImplementedException();
+        // Create dictionary of all group ids and choose a count of containers the map will spawn of that group
+        var mapping = new Dictionary<string, ContainerGroupCount>();
+        foreach (var groupKvP in staticContainerGroupData.ContainersGroups)
+        {
+            var groupData = staticContainerGroupData.ContainersGroups[groupKvP.Key];
+            if (!mapping.ContainsKey(groupKvP.Key))
+            {
+                mapping[groupKvP.Key] = new ContainerGroupCount
+                {
+                    ContainerIdsWithProbability = new Dictionary<string, double>(),
+                    ChosenCount = _randomUtil.GetInt(
+                        (int)Math.Round(
+                            groupData.MinContainers.Value *
+                            _locationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
+                        ),
+                        (int)Math.Round(
+                            groupData.MaxContainers.Value *
+                            _locationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
+                        )
+                    )
+                };
+            }
+        }
+
+        // Add an empty group for containers without a group id but still have a < 100% chance to spawn
+        // Likely bad BSG data, will be fixed...eventually, example of the groupids: `NEED_TO_BE_FIXED1`,`NEED_TO_BE_FIXED_SE02`, `NEED_TO_BE_FIXED_NW_01`
+        mapping[""] = new ContainerGroupCount { ChosenCount = -1 };
+
+        // Iterate over all containers and add to group keyed by groupId
+        // Containers without a group go into a group with empty key ""
+        foreach (var container in staticContainersOnMap)
+        {
+            var groupData = staticContainerGroupData.Containers[container.Template.Id];
+            if (groupData is null)
+            {
+                _logger.Error(
+                    _localisationService.GetText(
+                        "location-unable_to_find_container_in_statics_json",
+                        container.Template.Id
+                    )
+                );
+
+                continue;
+            }
+
+            if (container.Probability == 1)
+            {
+                _logger.Debug(
+                    $"Container {container.Template.Id} with group ${groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
+                );
+
+                continue;
+            }
+
+            mapping[groupData.GroupId].ContainerIdsWithProbability[container.Template.Id] = container.Probability.Value;
+        }
+
+        return mapping;
     }
 
     /// <summary>
-    /// Choose loot to put into a static container based on weighting
-    /// Handle forced items + seasonal item removal when not in season
+    ///     Choose loot to put into a static container based on weighting
+    ///     Handle forced items + seasonal item removal when not in season
     /// </summary>
     /// <param name="staticContainer">The container itself we will add loot to</param>
     /// <param name="staticForced">Loot we need to force into the container</param>
@@ -77,38 +378,76 @@ public class LocationLootGenerator(
     /// <param name="staticAmmoDist">staticAmmo.json</param>
     /// <param name="locationName">Name of the map to generate static loot for</param>
     /// <returns>StaticContainerData</returns>
-    protected StaticContainerData AddLootToContainer(StaticContainerData staticContainer, List<StaticForcedProps> staticForced,
-        Dictionary<string, StaticLootDetails> staticLootDist, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string locationName
+    protected StaticContainerData AddLootToContainer(StaticContainerData staticContainer,
+        List<SpawnpointTemplate> staticForced,
+        Dictionary<string, StaticLootDetails> staticLootDist,
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string locationName
     )
     {
         throw new NotImplementedException();
     }
 
     /// <summary>
-    /// Get a 2D grid of a container's item slots
+    ///     Get a 2D grid of a container's item slots
     /// </summary>
     /// <param name="containerTpl">Tpl id of the container</param>
-    /// <returns>List<List<int>></returns>
-    protected List<List<int>> GetContainerMapping(string containerTpl)
+    protected int[][] GetContainerMapping(string containerTpl)
     {
-        throw new NotImplementedException();
+        // Get template from db
+        var containerTemplate = _itemHelper.GetItem(containerTpl).Value;
+
+        // Get height/width
+        var height = containerTemplate.Properties.Grids[0].Props.CellsV;
+        var width = containerTemplate.Properties.Grids[0].Props.CellsH;
+
+        return _inventoryHelper.GetBlankContainerMap(height.Value, width.Value);
     }
 
     /// <summary>
-    /// Look up a containers itemcountDistribution data and choose an item count based on the found weights
+    ///     Look up a containers itemcountDistribution data and choose an item count based on the found weights
     /// </summary>
     /// <param name="containerTypeId">Container to get item count for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
     /// <param name="locationName">Map name (to get per-map multiplier for from config)</param>
     /// <returns>item count</returns>
-    protected int GetWeightedCountOfContainerItems(string containerTypeId, Dictionary<string, StaticLootDetails> staticLootDist, string locationName)
+    protected int GetWeightedCountOfContainerItems(string containerTypeId,
+        Dictionary<string, StaticLootDetails> staticLootDist, string locationName)
     {
-        throw new NotImplementedException();
+        // Create probability array to calcualte the total count of lootable items inside container
+        var itemCountArray =
+            new ProbabilityObjectArray<ProbabilityObject<int, float?>, int, float?>(_mathUtil, _cloner, []);
+        var countDistribution = staticLootDist[containerTypeId]?.ItemCountDistribution;
+        if (countDistribution is null)
+        {
+            _logger.Warning(
+                _localisationService.GetText(
+                    "location-unable_to_find_count_distribution_for_container",
+                    new
+                    {
+                        containerId = containerTypeId, locationName
+                    }
+                )
+            );
+
+            return 0;
+        }
+
+        foreach (var itemCountDistribution in countDistribution)
+            // Add each count of items into array
+            itemCountArray.Add(
+                new ProbabilityObject<int, float?>(
+                    itemCountDistribution.Count.Value,
+                    itemCountDistribution.RelativeProbability.Value,
+                    null
+                )
+            );
+
+        return (int)Math.Round(GetStaticLootMultiplierForLocation(locationName) * itemCountArray.Draw()[0]);
     }
 
     /// <summary>
-    /// Get all possible loot items that can be placed into a container
-    /// Do not add seasonal items if found + current date is inside seasonal event
+    ///     Get all possible loot items that can be placed into a container
+    ///     Do not add seasonal items if found + current date is inside seasonal event
     /// </summary>
     /// <param name="containerTypeId">Container to get possible loot for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
@@ -116,46 +455,80 @@ public class LocationLootGenerator(
     protected object GetPossibleLootItemsForContainer(string containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist) // TODO: Type Fuckery, return type was ProbabilityObjectArray<string, number>
     {
-        throw new NotImplementedException();
+        var seasonalEventActive = _seasonalEventService.SeasonalEventEnabled();
+        var seasonalItemTplBlacklist = _seasonalEventService.GetInactiveSeasonalEventItems();
+
+        var itemDistribution =
+            new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner, []);
+
+        var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
+        if (itemContainerDistribution is null)
+        {
+            _logger.Warning(_localisationService.GetText("location-missing_item_distribution_data", containerTypeId));
+
+            return itemDistribution;
+        }
+
+        foreach (var icd in itemContainerDistribution)
+        {
+            if (!seasonalEventActive && seasonalItemTplBlacklist.Contains(icd.Tpl))
+            {
+                // Skip seasonal event items if they're not enabled
+                continue;
+            }
+
+            // Ensure no blacklisted lootable items are in pool
+            if (_itemFilterService.IsLootableItemBlacklisted(icd.Tpl))
+            {
+                continue;
+            }
+
+            itemDistribution.Add(new ProbabilityObject<string, float?>(icd.Tpl, icd.RelativeProbability.Value, null));
+        }
+
+        return itemDistribution;
     }
 
-    protected double GetLooseLootMultiplerForLocation(string location)
+    protected double GetLooseLootMultiplierForLocation(string location)
     {
-        throw new NotImplementedException();
+        return _locationConfig.LooseLootMultiplier[location];
     }
 
     protected double GetStaticLootMultiplierForLocation(string location)
     {
-        throw new NotImplementedException();
+        return _locationConfig.StaticLootMultiplier[location];
     }
 
     /// <summary>
-    /// Create array of loose + forced loot using probability system
+    ///     Create array of loose + forced loot using probability system
     /// </summary>
     /// <param name="dynamicLootDist"></param>
     /// <param name="staticAmmoDist"></param>
     /// <param name="locationName">Location to generate loot for</param>
     /// <returns>Array of spawn points with loot in them</returns>
-    public List<SpawnpointTemplate> GenerateDynamicLoot(LooseLoot dynamicLootDist, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
+    public List<SpawnpointTemplate> GenerateDynamicLoot(LooseLoot dynamicLootDist,
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
         string locationName)
     {
         throw new NotImplementedException();
     }
 
     /// <summary>
-    /// Add forced spawn point loot into loot parameter list
+    ///     Add forced spawn point loot into loot parameter list
     /// </summary>
     /// <param name="lootLocationTemplates">List to add forced loot spawn locations to</param>
     /// <param name="forcedSpawnPoints">Forced loot locations that must be added</param>
     /// <param name="locationName">Name of map currently having force loot created for</param>
-    protected void addForcedLoot(List<SpawnpointTemplate> lootLocationTemplates, List<SpawnpointsForced> forcedSpawnPoints, string locationName,
+    protected void addForcedLoot(List<SpawnpointTemplate> lootLocationTemplates,
+        List<SpawnpointsForced> forcedSpawnPoints, string locationName,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
         throw new NotImplementedException();
     }
 
     // TODO: rewrite, BIG yikes
-    protected ContainerItem CreateStaticLootItem(string chosenTemplate, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDistribution,
+    protected ContainerItem CreateStaticLootItem(string chosenTemplate,
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDistribution,
         string? parentIdentifier = null)
     {
         throw new NotImplementedException();

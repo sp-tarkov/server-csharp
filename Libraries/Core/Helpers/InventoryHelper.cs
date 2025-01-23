@@ -731,7 +731,7 @@ public class InventoryHelper(
     /// <param name="containerH">Horizontal size of container</param>
     /// <param name="containerY">Vertical size of container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    protected int[][] GetBlankContainerMap(int containerH, int containerY)
+    public int[][] GetBlankContainerMap(int containerH, int containerY)
     {
         //var x = new int[containerY][];
         //for (int i = 0; i < containerY; i++)

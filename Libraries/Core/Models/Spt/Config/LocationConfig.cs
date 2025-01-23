@@ -22,10 +22,10 @@ public record LocationConfig : BaseConfig
     public SplitWaveSettings SplitWaveIntoSingleSpawnsSettings { get; set; }
 
     [JsonPropertyName("looseLootMultiplier")]
-    public LootMultiplier LooseLootMultiplier { get; set; }
+    public Dictionary<string, double> LooseLootMultiplier { get; set; }
 
     [JsonPropertyName("staticLootMultiplier")]
-    public LootMultiplier StaticLootMultiplier { get; set; }
+    public Dictionary<string, double> StaticLootMultiplier { get; set; }
 
     /// <summary>
     /// Custom bot waves to add to a locations base json on game start if addCustomBotWavesToMaps is true
