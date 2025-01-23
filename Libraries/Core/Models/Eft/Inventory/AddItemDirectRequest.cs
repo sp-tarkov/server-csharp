@@ -17,7 +17,7 @@ public record AddItemDirectRequest
     public bool? FoundInRaid { get; set; }
 
     [JsonPropertyName("callback")]
-    public Action<double, ProcessBuyTradeRequestData?, string?, PmcData?>? Callback { get; set; }
+    public Action<double>? Callback { get; set; }
 
     [JsonPropertyName("useSortingTable")]
     public bool? UseSortingTable { get; set; }
