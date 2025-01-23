@@ -722,7 +722,7 @@ public class RepeatableQuestGenerator(
             DynamicLocale = true,
             VisibilityConditions = [],
             GlobalQuestCounterId = "",
-            Target = new ListOrT<string>([], itemTpl),
+            Target = new ListOrT<string>([itemTpl], null),
             Value = value,
             MinDurability = minDurability,
             MaxDurability = 100,
@@ -881,7 +881,7 @@ public class RepeatableQuestGenerator(
         // var locationTarget = questTypePool.pool.Pickup.locations[locationKey];
 
         var findCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x => x.ConditionType == "FindItem");
-        findCondition.Target = new ListOrT<string>([], itemTypeToFetchWithCount.ItemType);
+        findCondition.Target = new ListOrT<string>([itemTypeToFetchWithCount.ItemType], null);
         findCondition.Value = itemCountToFetch;
 
         var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(
