@@ -4,9 +4,6 @@ namespace Core.Models.Eft.Trade;
 
 public record ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 {
-    [JsonPropertyName("tid")]
-    public string? Tid { get; set; }
-
     [JsonPropertyName("price")]
     public double? Price { get; set; }
 
