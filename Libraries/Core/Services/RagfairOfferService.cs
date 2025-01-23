@@ -1,15 +1,20 @@
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Utils;
+using Core.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferService(
     ISptLogger<RagfairOfferService> _logger,
+    TimeUtil _timeUtil,
     DatabaseService _databaseService,
+    RagfairOfferHelper _ragfairOfferHelper ,
     RagfairOfferService _ragfairOfferService,
+    RagfairOfferHolder _ragfairOfferHolder,
     LocalisationService _localisationService)
 {
     /// <summary>
@@ -131,7 +136,10 @@ public class RagfairOfferService(
 
     public void ExpireStaleOffers()
     {
-        Console.WriteLine($"actually implement me plz: owo: ExpireStaleOffers");
+        var time = _timeUtil.GetTimeStamp();
+        foreach (var staleOffer in _ragfairOfferHolder.GetStaleOffers(time)) {
+            ProcessStaleOffer(staleOffer);
+        }
     }
 
     /// <summary>
