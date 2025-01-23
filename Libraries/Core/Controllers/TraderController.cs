@@ -101,7 +101,7 @@ public class TraderController(
                     continue;
                 case Traders.FENCE:
                 {
-                    _logger.Warning($"commented out Fence refresh as not implemented so we can get further");
+                    _logger.Error($"Not implemented - TraderController.Update()");
                     // if (_fenceService.NeedsPartialRefresh())
                     //     _fenceService.GenerateFenceAssorts();
 
