@@ -85,6 +85,11 @@ public class BotController(
         var botTypes = Enum.GetValues<WildSpawnType>().Select(item => item.ToString()).ToList();
         foreach (var botType in botTypes)
         {
+            if (botTypesDb is null)
+            {
+                continue;
+            }
+
             // If bot is usec/bear, swap to different name
             var botTypeLower = _botHelper.IsBotPmc(botType)
                 ? _botHelper.GetPmcSideByRole(botType).ToLower()
@@ -93,15 +98,18 @@ public class BotController(
             BotType? botDetails = null;
 
             // Get details from db
-            if (botTypesDb != null && !botTypesDb.TryGetValue(botTypeLower, out botDetails))
+            if (!botTypesDb.TryGetValue(botTypeLower, out botDetails))
             {
-                // No bot of this type found, skip
+                // No bot of this type found, copy details from assault
+                result[botTypeLower] = result["assault"];
+                _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
                 continue;
             }
 
             if (botDetails?.BotDifficulty is null)
             {
                 // Bot has no difficulty values, skip
+                _logger.Warning($"Unable to find bot: {botTypeLower} difficulty values in db, skipping");
                 continue;
             }
 
