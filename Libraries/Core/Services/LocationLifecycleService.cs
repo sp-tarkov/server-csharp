@@ -383,7 +383,7 @@ public class LocationLifecycleService
         var serverDetails = request.ServerId.Split(".");
 
         var locationName = serverDetails[0].ToLower();
-        var isPmc = serverDetails[1].ToLower() == "pmc";
+        var isPmc = serverDetails[1].ToLower().Contains("pmc");
         var mapBase = _databaseService.GetLocation(locationName).Base;
         var isDead = IsPlayerDead(request.Results);
         var isTransfer = IsMapToMapTransfer(request.Results);
@@ -949,11 +949,17 @@ public class LocationLifecycleService
 
         foreach (var trasferType in transferTypes) {
             var rootId = $"{Traders.BTR}_{trasferType}";
-            var itemsToSend = request?.TransferItems?[rootId] ?? [];
+            List<Item>? itemsToSend = null;
 
+            // if rootId doesnt exist in TransferItems, skip
+            if (!request?.TransferItems?.TryGetValue(rootId, out itemsToSend) ?? false)
+            {
+                continue;
+            }
+            
             // Filter out the btr container item from transferred items before delivering
-            itemsToSend = itemsToSend.Where(item => item.Id != Traders.BTR).ToList();
-            if (itemsToSend.Count == 0) {
+            itemsToSend = itemsToSend?.Where(item => item.Id != Traders.BTR).ToList();
+            if (itemsToSend?.Count == 0) {
                 continue;
             }
 
