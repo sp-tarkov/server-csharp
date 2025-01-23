@@ -231,7 +231,7 @@ public class QuestHelper(
             QId = acceptedQuest.QuestId,
             StartTime = currentTimestamp,
             Status = newState,
-            StatusTimers = new Dictionary<QuestStatusEnum, long>(),
+            StatusTimers = new Dictionary<QuestStatusEnum, double>(),
         };
 
         // Check if quest has a prereq to be placed in a 'pending' state, otherwise set status timers value
@@ -1222,7 +1222,7 @@ public class QuestHelper(
             else
             {
                 // Failing an entirely new quest that doesn't exist in profile
-                Dictionary<QuestStatusEnum, long> statusTimers = new Dictionary<QuestStatusEnum, long>();
+                Dictionary<QuestStatusEnum, double> statusTimers = new Dictionary<QuestStatusEnum, double>();
 
                 if (!statusTimers.TryGetValue(QuestStatusEnum.Fail, out var _))
                 {
@@ -1297,7 +1297,7 @@ public class QuestHelper(
                     existingQuestInProfile.AvailableAfter = availableAfterTimestamp;
                     existingQuestInProfile.Status = QuestStatusEnum.AvailableAfter;
                     existingQuestInProfile.StartTime = 0;
-                    existingQuestInProfile.StatusTimers = new Dictionary<QuestStatusEnum, long>();
+                    existingQuestInProfile.StatusTimers = new Dictionary<QuestStatusEnum, double>();
 
                     continue;
                 }
@@ -1308,7 +1308,7 @@ public class QuestHelper(
                         QId = quest.Id,
                         StartTime = 0,
                         Status = QuestStatusEnum.AvailableAfter,
-                        StatusTimers = new Dictionary<QuestStatusEnum, long>
+                        StatusTimers = new Dictionary<QuestStatusEnum, double>
                         {
                             { QuestStatusEnum.AvailableAfter, _timeUtil.GetTimeStamp() }
                         },
