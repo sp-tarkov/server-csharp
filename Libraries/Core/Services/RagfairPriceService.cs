@@ -170,7 +170,7 @@ public class RagfairPriceService(
     /// <param name="offerItems"></param>
     /// <param name="isPackOffer"></param>
     /// <returns></returns>
-    public double GetDynamicItemPrice(string itemTemplateId, string desiredCurrency, Item item = null, List<Item> offerItems = null, bool? isPackOffer = null)
+    public double? GetDynamicItemPrice(string itemTemplateId, string desiredCurrency, Item item = null, List<Item> offerItems = null, bool? isPackOffer = null)
     {
         var isPreset = false;
         var price = GetFleaPriceForItem(itemTemplateId);
