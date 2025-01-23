@@ -944,11 +944,10 @@ public class ItemHelper(
     public List<Item> ReplaceIDs(List<Item> originalItems, PmcData pmcData = null, List<InsuredItem> insuredItems = null,
         Dictionary<string, string> fastPanel = null)
     {
-        var items = _cloner.Clone(originalItems);
-        var serialisedInventory = _jsonUtil.Serialize(items);
+        var serialisedInventory = _jsonUtil.Serialize(originalItems);
         var hideoutAreaStashes = pmcData?.Inventory?.HideoutAreaStashes ?? new();
 
-        foreach (var item in items)
+        foreach (var item in originalItems)
         {
             if (pmcData != null)
             {
@@ -985,7 +984,7 @@ public class ItemHelper(
             }
         }
 
-        items = _jsonUtil.Deserialize<List<Item>>(serialisedInventory);
+        var items = _jsonUtil.Deserialize<List<Item>>(serialisedInventory);
 
         // fix dupe id's
         var dupes = new Dictionary<string, double?>();
