@@ -6,13 +6,18 @@ namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
-    int maxOffersPerTemplate,
     RagfairServerHelper ragfairServerHelper,
     ProfileHelper profileHelper)
 {
     protected Dictionary<string, RagfairOffer> _offersById;
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTemplate;
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTrader;
+    protected int _maxOffersPerTemplate; //TODO - set from config?
+
+    public void SetMaxOffersPerTemplate(int max)
+    {
+        _maxOffersPerTemplate = max;
+    }
 
     public RagfairOffer? GetOfferById(string id)
     {
@@ -68,7 +73,7 @@ public class RagfairOfferHolder(
         // for this template, just dont add in more
         if (
             !(ragfairServerHelper.IsTrader(trader) || profileHelper.IsPlayer(trader)) &&
-            (GetOffersByTemplate(itemTpl)?.Count ?? 0) >= maxOffersPerTemplate
+            (GetOffersByTemplate(itemTpl)?.Count ?? 0) >= _maxOffersPerTemplate
         )
         {
             return;

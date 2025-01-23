@@ -13,7 +13,6 @@ public class RagfairOfferService(
     TimeUtil _timeUtil,
     DatabaseService _databaseService,
     RagfairOfferHelper _ragfairOfferHelper ,
-    RagfairOfferService _ragfairOfferService,
     RagfairOfferHolder _ragfairOfferHolder,
     LocalisationService _localisationService)
 {
