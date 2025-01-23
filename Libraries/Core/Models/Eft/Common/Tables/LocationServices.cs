@@ -55,6 +55,7 @@ public record TraderService
 
     [JsonPropertyName("ServiceItemCost")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Dictionary<string, ServiceItemCostDetails>? ServiceItemCost { get; set; }
 
     [JsonPropertyName("UniqueItems")]
@@ -64,10 +65,12 @@ public record TraderService
 public record ServiceRequirements
 {
     [JsonPropertyName("CompletedQuests")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public List<CompletedQuest>? CompletedQuests { get; set; }
 
     [JsonPropertyName("Standings")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Dictionary<string, StandingRequirement>? Standings { get; set; }
 }
 
