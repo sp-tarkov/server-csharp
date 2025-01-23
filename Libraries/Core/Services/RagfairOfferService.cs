@@ -1,11 +1,16 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Utils;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class RagfairOfferService
+public class RagfairOfferService(
+    ISptLogger<RagfairOfferService> _logger,
+    DatabaseService _databaseService,
+    RagfairOfferService _ragfairOfferService,
+    LocalisationService _localisationService)
 {
     /// <summary>
     /// Get all offers
@@ -101,12 +106,21 @@ public class RagfairOfferService
     /// <summary>
     /// Do the trader offers on flea need to be refreshed
     /// </summary>
-    /// <param name="traderID">Trader to check</param>
+    /// <param name="traderId">Trader to check</param>
     /// <returns>true if they do</returns>
-    public bool TraderOffersNeedRefreshing(string traderID)
+    public bool TraderOffersNeedRefreshing(string traderId)
     {
-        Console.WriteLine($"actually implement me plz: owo: TraderOffersNeedRefreshing");
-        return false;
+        var trader = _databaseService.GetTrader(traderId);
+        if (trader?.Base == null) {
+            _logger.Error(_localisationService.GetText("ragfair-trader_missing_base_file", traderId));
+
+            return false;
+        }
+
+        // No value, occurs when first run, trader offers need to be added to flea
+        trader.Base.RefreshTraderRagfairOffers ??= true;
+
+        return trader.Base.RefreshTraderRagfairOffers.GetValueOrDefault(false);
     }
 
     public void AddPlayerOffers()
