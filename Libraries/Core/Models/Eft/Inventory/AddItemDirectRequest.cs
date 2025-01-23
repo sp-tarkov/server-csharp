@@ -1,7 +1,5 @@
 using System.Text.Json.Serialization;
-using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Trade;
 
 namespace Core.Models.Eft.Inventory;
 
