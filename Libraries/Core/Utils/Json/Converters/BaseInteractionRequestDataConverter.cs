@@ -91,7 +91,7 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
                 {
                     case "buy_from_trader":
                         return JsonSerializer.Deserialize<ProcessBuyTradeRequestData>(jsonText);
-                    case "sell_from_trader":
+                    case "sell_to_trader":
                         return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
                     default:
                         throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
