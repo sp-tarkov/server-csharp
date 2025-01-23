@@ -2,7 +2,7 @@
 
 public enum MemberCategory
 {
-    DEFAULT = 0,
+    Default = 0,
     DEVELOPER = 1,
     UNIQUE_ID = 2,
     TRADER = 4,
