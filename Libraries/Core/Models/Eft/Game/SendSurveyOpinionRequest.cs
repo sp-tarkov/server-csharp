@@ -8,10 +8,6 @@ public record SendSurveyOpinionRequest : IRequestData
     [JsonPropertyName("resultJson")]
     public string? ResultJson { get; set; }
     
-}
-
-public record SurveyResult
-{
     [JsonPropertyName("surveyId")]
     public int? SurveyId { get; set; }
 
@@ -30,4 +26,3 @@ public record SurveyOpinionAnswer
     [JsonPropertyName("answers")]
     public object? Answers { get; set; }
 }
-
