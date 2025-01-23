@@ -94,6 +94,7 @@ public class InventoryHelper(
         ItemEventRouterResponse output)
     {
         var itemWithModsToAddClone = _cloner.Clone(request.ItemWithModsToAdd);
+        var rootItemToAdd = itemWithModsToAddClone.FirstOrDefault();
 
         // Get stash layouts ready for use
         var stashFS2D = GetStashSlotMap(pmcData, sessionId);
@@ -123,13 +124,13 @@ public class InventoryHelper(
         SetFindInRaidStatusForItem(itemWithModsToAddClone, request.FoundInRaid.GetValueOrDefault(false));
 
         // Remove trader properties from root item
-        RemoveTraderRagfairRelatedUpdProperties(itemWithModsToAddClone[0].Upd);
+        RemoveTraderRagfairRelatedUpdProperties(rootItemToAdd.Upd);
 
         // Run callback
         try
         {
             if (request.Callback is not null)
-                request.Callback(itemWithModsToAddClone.FirstOrDefault().Upd.StackObjectsCount.Value);
+                request.Callback(rootItemToAdd.Upd.StackObjectsCount.Value);
         }
         catch (Exception ex)
         {
@@ -147,7 +148,7 @@ public class InventoryHelper(
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
         _logger.Debug(
-            $"Added ${itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: ${itemWithModsToAddClone[0].Template} with: ${itemWithModsToAddClone.Count - 1} mods to inventory"
+            $"Added ${rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: ${rootItemToAdd.Template} with: ${itemWithModsToAddClone.Count - 1} mods to inventory"
         );
     }
 
