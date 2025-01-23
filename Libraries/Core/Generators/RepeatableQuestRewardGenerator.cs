@@ -1,7 +1,6 @@
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Player;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Repeatable;
@@ -10,7 +9,8 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using System.Linq;
+using Core.Models.Eft.Common;
+using Core.Models.Spt.Server;
 
 namespace Core.Generators;
 
@@ -110,7 +110,7 @@ public class RepeatableQuestRewardGenerator(
         if (traderWhitelistDetails?.RewardCanBeWeapon ?? false && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0)
            )
         {
-            var chosenWeapon = GetRandomWeaponPresetWithinBudget(itemRewardBudget, rewardIndex);
+            var chosenWeapon = GetRandomWeaponPresetWithinBudget(itemRewardBudget.Value, rewardIndex);
             if (chosenWeapon is not null)
             {
                 rewards.Success.Add(chosenWeapon.Value.Key);
@@ -319,9 +319,81 @@ public class RepeatableQuestRewardGenerator(
         }).ToList();
     }
 
-    private KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(double? itemRewardBudget, double rewardIndex)
+    private KeyValuePair<Reward, double>? GetRandomWeaponPresetWithinBudget(double roublesBudget, int rewardIndex)
     {
-        throw new NotImplementedException();
+        // Add a random default preset weapon as reward
+        var defaultPresetPool = new ExhaustableArray<Preset>(
+            _presetHelper.GetDefaultWeaponPresets().Values.ToList(),
+            _randomUtil,
+            _cloner);
+
+        while (defaultPresetPool.HasValues())
+        {
+            var randomPreset = defaultPresetPool.GetRandomValue();
+            if (randomPreset is null)
+            {
+                continue;
+            }
+
+            // Gather all tpls so we can get prices of them
+            var tpls = randomPreset.Items.Select((item) => item.Template).ToList();
+
+            // Does preset items fit our budget
+            var presetPrice = _itemHelper.GetItemAndChildrenPrice(tpls);
+            if (presetPrice <= roublesBudget)
+            {
+                _logger.Debug("Added weapon: ${ tpls[0]}with price: ${ presetPrice}");
+                var chosenPreset = _cloner.Clone(randomPreset);
+
+                return new KeyValuePair<Reward, double>(GeneratePresetReward(chosenPreset.Encyclopedia, 1, rewardIndex, chosenPreset.Items), presetPrice);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Helper to create a reward item structured as required by the client
+     *
+     * @param   {string}    tpl             ItemId of the rewarded item
+     * @param   {integer}   count           Amount of items to give
+     * @param   {integer}   index           All rewards will be appended to a list, for unknown reasons the client wants the index
+     * @param preset Optional array of preset items
+     * @returns {object}                    Object of "Reward"-item-type
+     */
+    protected Reward GeneratePresetReward(string tpl, int count, int index, List<Item>? preset, bool foundInRaid = true)
+    {
+        var id = _hashUtil.Generate();
+        var questRewardItem = new Reward{
+            Id = _hashUtil.Generate(),
+            Unknown = false,
+            GameMode =[],
+            AvailableInGameEditions =[],
+            Index = index,
+            Target =id,
+            Value = count,
+            IsEncoded = false,
+            FindInRaid =foundInRaid,
+            Type =RewardType.Item,
+            Items =[],
+        };
+
+        // Get presets root item
+        var rootItem = preset.FirstOrDefault((item) => item.Template == tpl);
+        if (rootItem is null)
+        {
+            _logger.Warning($"Root item of preset: ${ tpl} not found");
+        }
+
+        if (rootItem.Upd is not null)
+        {
+            rootItem.Upd.SpawnedInSession = foundInRaid;
+        }
+
+        questRewardItem.Items = _itemHelper.ReparentItemAndChildren(rootItem, preset);
+        questRewardItem.Target = rootItem.Id; // Target property and root items id must match
+
+        return questRewardItem;
     }
 
     private Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)

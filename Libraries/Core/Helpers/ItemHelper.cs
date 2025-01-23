@@ -376,7 +376,7 @@ public class ItemHelper(
     public double GetItemAndChildrenPrice(List<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
-        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl));
+        return tpls.Aggregate(0, (total, tpl) => total + (int)GetItemPrice(tpl).GetValueOrDefault(0));
     }
 
     /// <summary>

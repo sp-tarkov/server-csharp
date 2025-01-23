@@ -148,13 +148,13 @@ public class RepeatableQuestGenerator(
         var targetKey = targetsConfig.Draw()[0];
         var targetDifficulty = 1 / targetsConfig.Probability(targetKey);
 
-        var locations = questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations;
+        questTypePool.Pool.Elimination.Targets.TryGetValue(targetKey, out var targetLocationPool);
+        var locations = targetLocationPool.Locations;
 
         // we use any as location if "any" is in the pool and we do not hit the specific location random
         // we use any also if the random condition is not met in case only "any" was in the pool
         var locationKey = "any";
-        if (locations.Contains("any") &&
-            (eliminationConfig.SpecificLocationProbability < rand.Next() || locations.Count <= 1)
+        if (locations.Contains("any") && (eliminationConfig.SpecificLocationProbability < rand.Next() || locations.Count <= 1)
            )
         {
             locationKey = "any";
@@ -634,6 +634,7 @@ public class RepeatableQuestGenerator(
     /// <returns>object of "Completion"-condition</returns>
     protected QuestCondition GenerateCompletionAvailableForFinish(string itemTpl, double value)
     {
+        _logger.Error("NOT IMPLEMENTED - GenerateCompletionAvailableForFinish");
         throw new NotImplementedException();
     }
 
