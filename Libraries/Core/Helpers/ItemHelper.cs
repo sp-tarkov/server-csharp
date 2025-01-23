@@ -9,6 +9,7 @@ using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using Core.Utils.Collections;
 using SptCommon.Extensions;
 
 
@@ -1569,22 +1570,13 @@ public class ItemHelper(
         List<string>? cartridgeWhitelist = null
     )
     {
-        var ammos = staticAmmoDist[caliber];
+        var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
         if (ammos is null && fallbackCartridgeTpl is not null)
         {
             _logger.Error($"Unable to pick a cartridge for caliber: {caliber} as staticAmmoDist has no data. using fallback value of {fallbackCartridgeTpl}");
 
             return fallbackCartridgeTpl;
         }
-
-        // STATICAMMODIST CANT NOT BE AN LIST?
-        // if (!Array.(ammos) && fallbackCartridgeTpl) {
-        //     this.logger.error(
-        //         `Unable to pick a cartridge for caliber: ${caliber}, the chosen staticAmmoDist data is not an array. Using fallback value of ${fallbackCartridgeTpl}`,
-        //     );
-        //
-        //     return fallbackCartridgeTpl;
-        // }
 
         if (ammos is null && fallbackCartridgeTpl is null)
         {
@@ -1593,21 +1585,17 @@ public class ItemHelper(
             return null;
         }
 
-        _logger.Error($"FINISH IMPLEMENTATION: ItemHelper::DrawAmmoTpl");
-        return null;
-
-        // TODO: implement ProbabilityObjectArray Type
-        // var ammoArray = new ProbabilityObjectArray<string>(_mathUtil, _cloner);
-        // for (const icd of ammos) {
-        //     // Whitelist exists and tpl not inside it, skip
-        //     // Fixes 9x18mm kedr issues
-        //     if (cartridgeWhitelist && !cartridgeWhitelist.includes(icd.tpl)) {
-        //         continue;
-        //     }
-        //
-        //     ammoArray.push(new ProbabilityObject(icd.tpl, icd.relativeProbability));
-        // }
-        // return ammoArray.draw(1)[0];
+        var ammoArray = new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner, []);
+        foreach (var icd in ammos) {
+            // Whitelist exists and tpl not inside it, skip
+            // Fixes 9x18mm kedr issues
+            if (cartridgeWhitelist is not null && !cartridgeWhitelist.Contains(icd.Tpl)) {
+                continue;
+            }
+        
+            ammoArray.Add(new ProbabilityObject<string, float?>(icd.Tpl, (double)icd.RelativeProbability, null));
+        }
+        return ammoArray.Draw(1)[0];
     }
 
     /// <summary>
