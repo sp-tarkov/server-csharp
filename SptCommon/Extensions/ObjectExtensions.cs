@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 
 namespace SptCommon.Extensions
 {
@@ -76,6 +77,12 @@ namespace SptCommon.Extensions
             }
             
             return result;
+        }
+        
+        public static T ToObject<T>(this JsonElement element)
+        {
+            var json = element.GetRawText();
+            return JsonSerializer.Deserialize<T>(json);
         }
     }
 }
