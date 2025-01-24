@@ -65,9 +65,9 @@ namespace SptCommon.Extensions
             return result;
         }
 
-        public static Dictionary<string, object> GetAllPropsAsDict(this object? obj)
+        public static Dictionary<string, object?> GetAllPropsAsDict(this object? obj)
         {
-            var result = new Dictionary<string, object>();
+            var result = new Dictionary<string, object?>();
             var props = obj.GetType().GetProperties();
 
             foreach (var prop in props)

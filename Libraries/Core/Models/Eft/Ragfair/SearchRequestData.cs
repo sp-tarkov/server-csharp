@@ -64,7 +64,7 @@ public record SearchRequestData : IRequestData
     public string? NeededSearchId { get; set; }
 
     [JsonPropertyName("buildItems")]
-    public BuildItems? BuildItems { get; set; }
+    public Dictionary<string, double>? BuildItems { get; set; }
 
     [JsonPropertyName("buildCount")]
     public int? BuildCount { get; set; }
@@ -81,9 +81,4 @@ public enum OfferOwnerType
     ANYOWNERTYPE = 0,
     TRADEROWNERTYPE = 1,
     PLAYEROWNERTYPE = 2
-}
-
-public record BuildItems
-{
-    // Define properties for BuildItems here if needed
 }

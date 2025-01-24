@@ -49,7 +49,7 @@ public record ItemLocation
 public record Upd
 {
     public UpdBuff? Buff { get; set; }
-    public int? OriginalStackObjectsCount { get; set; }
+    public double? OriginalStackObjectsCount { get; set; }
     public UpdTogglable? Togglable { get; set; }
     public UpdMap? Map { get; set; }
     public UpdTag? Tag { get; set; }
