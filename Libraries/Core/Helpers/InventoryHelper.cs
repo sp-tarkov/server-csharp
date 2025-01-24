@@ -132,7 +132,7 @@ public class InventoryHelper(
         try
         {
             if (request.Callback is not null)
-                request.Callback(rootItemToAdd.Upd.StackObjectsCount.Value);
+                request.Callback((int) (rootItemToAdd.Upd.StackObjectsCount ?? 0));
         }
         catch (Exception ex)
         {

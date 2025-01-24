@@ -1,7 +1,5 @@
-using System.Runtime.InteropServices.JavaScript;
 using Core.Helpers;
 using Core.Models.Common;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -10,6 +8,7 @@ using Core.Models.Spt.Fence;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 
 namespace Core.Services;
@@ -26,7 +25,7 @@ public class FenceService(
     LocalisationService localisationService,
     ConfigServer configServer,
     ICloner cloner
- )
+)
 {
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
@@ -109,7 +108,8 @@ public class FenceService(
      */
     public TraderAssort GetFenceAssorts(PmcData pmcProfile)
     {
-        if (traderConfig.Fence.RegenerateAssortsOnRefresh) {
+        if (traderConfig.Fence.RegenerateAssortsOnRefresh)
+        {
             // Using base assorts made earlier, do some alterations and store in fenceAssort
             GenerateFenceAssorts();
         }
@@ -119,7 +119,8 @@ public class FenceService(
         AdjustAssortItemPricesByConfigMultiplier(assort, 1, traderConfig.Fence.PresetPriceMult);
 
         // merge normal fence assorts + discount assorts if player standing is large enough
-        if (pmcProfile.TradersInfo[Traders.FENCE].Standing >= 6) {
+        if (pmcProfile.TradersInfo[Traders.FENCE].Standing >= 6)
+        {
             var discountAssort = cloner.Clone(fenceDiscountAssort);
             AdjustAssortItemPricesByConfigMultiplier(
                 discountAssort,
@@ -151,7 +152,8 @@ public class FenceService(
         // Fix IDs
         clonedItems = itemHelper.ReparentItemAndChildren(root, clonedItems);
         root.ParentId = "hideout";
-        if (root.Upd?.SpawnedInSession != null) {
+        if (root.Upd?.SpawnedInSession != null)
+        {
             root.Upd.SpawnedInSession = false;
         }
 
@@ -190,8 +192,10 @@ public class FenceService(
     protected double? GetAmmoBoxPrice(List<Item> items)
     {
         double? total = 0D;
-        foreach (var item in items) {
-            if (itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO)) {
+        foreach (var item in items)
+        {
+            if (itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO))
+            {
                 total += handbookHelper.GetTemplatePrice(item.Template) * (item.Upd?.StackObjectsCount ?? 1);
             }
         }
@@ -211,9 +215,11 @@ public class FenceService(
         double presetMultiplier
     )
     {
-        foreach (var item in assort.Items) {
+        foreach (var item in assort.Items)
+        {
             // Skip sub-items when adjusting prices
-            if (item.SlotId != "hideout") {
+            if (item.SlotId != "hideout")
+            {
                 continue;
             }
 
@@ -229,15 +235,18 @@ public class FenceService(
      */
     protected TraderAssort MergeAssorts(TraderAssort firstAssort, TraderAssort secondAssort)
     {
-        foreach (var itemId in secondAssort.BarterScheme.Keys) {
+        foreach (var itemId in secondAssort.BarterScheme.Keys)
+        {
             firstAssort.BarterScheme[itemId] = secondAssort.BarterScheme[itemId];
         }
 
-        foreach (var item in secondAssort.Items) {
+        foreach (var item in secondAssort.Items)
+        {
             firstAssort.Items.Add(item);
         }
 
-        foreach (var itemId in secondAssort.LoyalLevelItems.Keys) {
+        foreach (var itemId in secondAssort.LoyalLevelItems.Keys)
+        {
             firstAssort.LoyalLevelItems[itemId] = secondAssort.LoyalLevelItems[itemId];
         }
 
@@ -259,13 +268,19 @@ public class FenceService(
     )
     {
         // Is preset
-        if (item.Upd?.SptPresetId != null) {
-            if (assort.BarterScheme?[item.Id] != null) {
+        if (item.Upd?.SptPresetId != null)
+        {
+            if (assort.BarterScheme?[item.Id] != null)
+            {
                 assort.BarterScheme[item.Id][0][0].Count *= presetModifier;
             }
-        } else if (assort.BarterScheme?[item.Id] != null) {
+        }
+        else if (assort.BarterScheme?[item.Id] != null)
+        {
             assort.BarterScheme[item.Id][0][0].Count *= modifier;
-        } else {
+        }
+        else
+        {
             logger.LogWarning($"adjustItemPriceByModifier() - no action taken for item: {item.Template}");
         }
     }
@@ -274,7 +289,8 @@ public class FenceService(
      * Get fence assorts with no price adjustments based on fence rep
      * @returns ITraderAssort
      */
-    public TraderAssort GetRawFenceAssorts() {
+    public TraderAssort GetRawFenceAssorts()
+    {
         return MergeAssorts(cloner.Clone(fenceAssort), cloner.Clone(fenceDiscountAssort));
     }
 
@@ -320,22 +336,26 @@ public class FenceService(
         UpdateFenceAssorts(newDiscountItems, fenceDiscountAssort);
 
         // Add new barter items to fence barter scheme
-        foreach (var barterItemKey in newItems.BarterScheme.Keys) {
+        foreach (var barterItemKey in newItems.BarterScheme.Keys)
+        {
             fenceAssort.BarterScheme[barterItemKey] = newItems.BarterScheme[barterItemKey];
         }
 
         // Add loyalty items to fence assorts loyalty object
-        foreach (var loyaltyItemKey in newItems.LoyalLevelItems.Keys) {
+        foreach (var loyaltyItemKey in newItems.LoyalLevelItems.Keys)
+        {
             fenceAssort.LoyalLevelItems[loyaltyItemKey] = newItems.LoyalLevelItems[loyaltyItemKey];
         }
 
         // Add new barter items to fence assorts discounted barter scheme
-        foreach (var barterItemKey in newDiscountItems.BarterScheme.Keys) {
+        foreach (var barterItemKey in newDiscountItems.BarterScheme.Keys)
+        {
             fenceDiscountAssort.BarterScheme[barterItemKey] = newDiscountItems.BarterScheme[barterItemKey];
         }
 
         // Add loyalty items to fence discount assorts loyalty object
-        foreach (var loyaltyItemKey in newDiscountItems.LoyalLevelItems.Keys) {
+        foreach (var loyaltyItemKey in newDiscountItems.LoyalLevelItems.Keys)
+        {
             fenceDiscountAssort.LoyalLevelItems[loyaltyItemKey] = newDiscountItems.LoyalLevelItems[loyaltyItemKey];
         }
 
@@ -353,21 +373,26 @@ public class FenceService(
         TraderAssort existingFenceAssorts
     )
     {
-        foreach (var itemWithChildren in newFenceAssorts.SptItems) 
+        foreach (var itemWithChildren in newFenceAssorts.SptItems)
         {
             // Find the root item
             var newRootItem = itemWithChildren.FirstOrDefault((item) => item.SlotId == "hideout");
-            if (newRootItem == null) {
+            if (newRootItem == null)
+            {
                 var firstItem = itemWithChildren.FirstOrDefault((x) => x != null);
-                logger.LogError($"Unable to process fence assort as root item is missing, {firstItem?.Template}, skipping");
+                logger.LogError(
+                    $"Unable to process fence assort as root item is missing, {firstItem?.Template}, skipping"
+                );
                 continue;
             }
 
             // Find a matching root item with same tpl in existing assort
-            var existingRootItem = existingFenceAssorts.Items.FirstOrDefault((item) => item.Template == newRootItem.Template && item.SlotId == "hideout");
+            var existingRootItem = existingFenceAssorts.Items.FirstOrDefault(
+                (item) => item.Template == newRootItem.Template && item.SlotId == "hideout"
+            );
 
             // Check if same type of item exists + its on list of item types to always stack
-            if (existingRootItem != null && ItemInPreventDupeCategoryList(newRootItem.Template)) 
+            if (existingRootItem != null && ItemInPreventDupeCategoryList(newRootItem.Template))
             {
                 var existingFullItemTree = itemHelper.FindAndReturnChildrenAsItems(
                     existingFenceAssorts.Items,
@@ -376,7 +401,8 @@ public class FenceService(
                 if (itemHelper.isSameItems(itemWithChildren, existingFullItemTree, fenceItemUpdCompareProperties))
                 {
                     // Guard against a missing stack count
-                    if (existingRootItem.Upd?.StackObjectsCount == null) {
+                    if (existingRootItem.Upd?.StackObjectsCount == null)
+                    {
                         existingRootItem.Upd.StackObjectsCount = 1;
                     }
 
@@ -388,14 +414,15 @@ public class FenceService(
             }
 
             // if the Upd doesnt exist just initialize it
-            if (newRootItem.Upd == null) {
+            if (newRootItem.Upd == null)
+            {
                 newRootItem.Upd = new();
             }
+
             // New assort to be added to existing assorts
             existingFenceAssorts.Items.AddRange(itemWithChildren);
             existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
             existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
-            
         }
     }
 
@@ -422,10 +449,16 @@ public class FenceService(
         var rootPresetItems = allRootItems.Where((item) => item?.Upd?.SptPresetId != null);
 
         // Get count of weapons
-        var currentWeaponPresetCount = rootPresetItems.Aggregate(0, (count, item) => itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON) ? count + 1 : count);
+        var currentWeaponPresetCount = rootPresetItems.Aggregate(
+            0,
+            (count, item) => itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON) ? count + 1 : count
+        );
 
         // Get count of equipment
-        var currentEquipmentPresetCount = rootPresetItems.Aggregate(0, (count, item) => itemHelper.ArmorItemCanHoldMods(item.Template) ? count + 1 : count);
+        var currentEquipmentPresetCount = rootPresetItems.Aggregate(
+            0,
+            (count, item) => itemHelper.ArmorItemCanHoldMods(item.Template) ? count + 1 : count
+        );
 
         // Normal item count is total count minus weapon + armor count
         var nonPresetItemAssortCount = allRootItems.Count() - (currentWeaponPresetCount + currentEquipmentPresetCount);
@@ -433,9 +466,13 @@ public class FenceService(
         // Get counts of items to generate, never var values fall below 0
         var itemCountToGenerate = Math.Max(generationValues.Item.Value - nonPresetItemAssortCount, 0);
         var weaponCountToGenerate = Math.Max(generationValues.WeaponPreset.Value - currentWeaponPresetCount, 0);
-        var equipmentCountToGenerate = Math.Max(generationValues.EquipmentPreset.Value - currentEquipmentPresetCount, 0);
+        var equipmentCountToGenerate = Math.Max(
+            generationValues.EquipmentPreset.Value - currentEquipmentPresetCount,
+            0
+        );
 
-        return new GenerationAssortValues {
+        return new GenerationAssortValues
+        {
             Item = itemCountToGenerate,
             WeaponPreset = weaponCountToGenerate,
             EquipmentPreset = equipmentCountToGenerate
@@ -449,9 +486,11 @@ public class FenceService(
      */
     protected void DeleteRandomAssorts(int itemCountToReplace, TraderAssort assort)
     {
-        if (assort?.Items?.Count > 0) {
+        if (assort?.Items?.Count > 0)
+        {
             var rootItems = assort.Items.Where((item) => item.SlotId == "hideout").ToList();
-            for (var index = 0; index < itemCountToReplace; index++) {
+            for (var index = 0; index < itemCountToReplace; index++)
+            {
                 RemoveRandomItemFromAssorts(assort, rootItems);
             }
         }
@@ -470,15 +509,17 @@ public class FenceService(
         var stackSize = rootItemToAdjust.Upd?.StackObjectsCount ?? 1;
 
         // Get a random count of the chosen item to remove
-        var itemCountToRemove = randomUtil.GetInt(1, (int) stackSize);
+        var itemCountToRemove = randomUtil.GetInt(1, (int)stackSize);
 
         var isEntireStackToBeRemoved = Math.Abs(itemCountToRemove - stackSize) < 0.1;
 
         // Partial stack reduction
-        if (!isEntireStackToBeRemoved) {
-            if (rootItemToAdjust.Upd == null) {
+        if (!isEntireStackToBeRemoved)
+        {
+            if (rootItemToAdjust.Upd == null)
+            {
                 logger.LogWarning($"Fence Item: {rootItemToAdjust.Template} lacks a Upd object, adding");
-                rootItemToAdjust.Upd = new ();
+                rootItemToAdjust.Upd = new();
             }
 
             // Reduce stack to at smallest, 1
@@ -489,7 +530,8 @@ public class FenceService(
 
         // Remove item + child mods (if any)
         var itemWithChildren = itemHelper.FindAndReturnChildrenAsItems(assort.Items, rootItemToAdjust.Id);
-        foreach (var itemToDelete in itemWithChildren) {
+        foreach (var itemToDelete in itemWithChildren)
+        {
             // Delete item from assort items array
             assort.Items.Splice(assort.Items.IndexOf(itemToDelete), 1);
         }
@@ -506,9 +548,9 @@ public class FenceService(
      * @param totalItemCount total item count
      * @returns rounded int of items to replace
      */
-    protected int GetCountOfItemsToReplace(int totalItemCount) 
+    protected int GetCountOfItemsToReplace(int totalItemCount)
     {
-        return (int) Math.Round(totalItemCount * (traderConfig.Fence.PartialRefreshChangePercent / 100));
+        return (int)Math.Round(totalItemCount * (traderConfig.Fence.PartialRefreshChangePercent / 100));
     }
 
     /**
@@ -517,7 +559,8 @@ public class FenceService(
      */
     public int GetOfferCount()
     {
-        if ((fenceAssort?.Items?.Count ?? 0) == 0) {
+        if ((fenceAssort?.Items?.Count ?? 0) == 0)
+        {
             return 0;
         }
 
@@ -557,7 +600,8 @@ public class FenceService(
     protected TraderAssort ConvertIntoFenceAssort(CreateFenceAssortsResult intermediaryAssorts)
     {
         var result = CreateFenceAssortSkeleton();
-        foreach (var itemWithChilden in intermediaryAssorts.SptItems) {
+        foreach (var itemWithChilden in intermediaryAssorts.SptItems)
+        {
             result.Items.AddRange(itemWithChilden);
         }
 
@@ -573,7 +617,8 @@ public class FenceService(
      */
     protected void CreateInitialFenceAssortGenerationValues()
     {
-        var result = new FenceAssortGenerationValues() {
+        var result = new FenceAssortGenerationValues()
+        {
             Normal = new GenerationAssortValues() { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 },
             Discount = new GenerationAssortValues() { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 }
         };
@@ -581,25 +626,25 @@ public class FenceService(
         result.Normal.Item = traderConfig.Fence.AssortSize;
 
         result.Normal.WeaponPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.WeaponPresetMinMax.Min,
-            (int) traderConfig.Fence.WeaponPresetMinMax.Max
+            (int)traderConfig.Fence.WeaponPresetMinMax.Min,
+            (int)traderConfig.Fence.WeaponPresetMinMax.Max
         );
 
         result.Normal.EquipmentPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.EquipmentPresetMinMax.Min,
-            (int) traderConfig.Fence.EquipmentPresetMinMax.Max
+            (int)traderConfig.Fence.EquipmentPresetMinMax.Min,
+            (int)traderConfig.Fence.EquipmentPresetMinMax.Max
         );
 
         result.Discount.Item = traderConfig.Fence.DiscountOptions.AssortSize;
 
         result.Discount.WeaponPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Min,
-            (int) traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Max
+            (int)traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Min,
+            (int)traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Max
         );
 
         result.Discount.EquipmentPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Min,
-            (int) traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Max
+            (int)traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Min,
+            (int)traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Max
         );
 
         desiredAssortCounts = result;
@@ -611,7 +656,8 @@ public class FenceService(
      */
     protected TraderAssort CreateFenceAssortSkeleton()
     {
-        return new TraderAssort() {
+        return new TraderAssort()
+        {
             Items = [],
             BarterScheme = new(),
             LoyalLevelItems = new(),
@@ -631,11 +677,13 @@ public class FenceService(
         var baseFenceAssortClone = cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
         var itemTypeLimitCounts = InitItemLimitCounter(traderConfig.Fence.ItemTypeLimits);
 
-        if (itemCounts.Item > 0) {
+        if (itemCounts.Item > 0)
+        {
             AddItemAssorts(itemCounts.Item, result, baseFenceAssortClone, itemTypeLimitCounts, loyaltyLevel);
         }
 
-        if (itemCounts.WeaponPreset > 0 || itemCounts.EquipmentPreset > 0) {
+        if (itemCounts.WeaponPreset > 0 || itemCounts.EquipmentPreset > 0)
+        {
             // Add presets
             AddPresetsToAssort(
                 itemCounts.WeaponPreset,
@@ -666,23 +714,32 @@ public class FenceService(
     )
     {
         var priceLimits = traderConfig.Fence.ItemCategoryRoublePriceLimit;
-        var assortRootItems = baseFenceAssortClone.Items.Where(item => item.ParentId == "hideout" && item.Upd?.SptPresetId == null).ToList();
-        if (assortRootItems.Count == 0) {
+        var assortRootItems = baseFenceAssortClone.Items
+            .Where(item => item.ParentId == "hideout" && item.Upd?.SptPresetId == null)
+            .ToList();
+        if (assortRootItems.Count == 0)
+        {
             logger.LogError("Unable to add assorts to Fence as no root items exist in items being added");
             return;
         }
 
-        for (var i = 0; i < assortCount; i++) {
+        for (var i = 0; i < assortCount; i++)
+        {
             var chosenBaseAssortRoot = randomUtil.GetArrayValue(assortRootItems);
-            if (chosenBaseAssortRoot == null) {
+            if (chosenBaseAssortRoot == null)
+            {
                 logger.LogError(localisationService.GetText("fence-unable_to_find_assort_by_id"));
                 continue;
             }
-            var desiredAssortItemAndChildrenClone = cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(baseFenceAssortClone.Items, chosenBaseAssortRoot.Id));
+
+            var desiredAssortItemAndChildrenClone = cloner.Clone(
+                itemHelper.FindAndReturnChildrenAsItems(baseFenceAssortClone.Items, chosenBaseAssortRoot.Id)
+            );
 
             var itemDbDetails = itemHelper.GetItem(chosenBaseAssortRoot.Template).Value;
             var itemLimitCount = GetMatchingItemLimit(itemTypeLimits, itemDbDetails.Id);
-            if (itemLimitCount?.current >= itemLimitCount?.max) {
+            if (itemLimitCount?.current >= itemLimitCount?.max)
+            {
                 // Skip adding item as assort as limit reached, decrement i counter so we still get another item
                 i--;
                 continue;
@@ -691,20 +748,23 @@ public class FenceService(
             var itemIsPreset = presetHelper.IsPreset(chosenBaseAssortRoot.Id);
 
             var price = baseFenceAssortClone.BarterScheme?[chosenBaseAssortRoot.Id][0][0].Count;
-            if (price == 0 || (price == 1 && !itemIsPreset) || price == 100) {
+            if (price == 0 || (price == 1 && !itemIsPreset) || price == 100)
+            {
                 // Don't allow "special" items / presets
                 i--;
                 continue;
             }
 
-            if (price > priceLimits[itemDbDetails.Parent]) {
+            if (price > priceLimits[itemDbDetails.Parent])
+            {
                 // Too expensive for fence, try another item
                 i--;
                 continue;
             }
 
             // Increment count as item is being added
-            if (itemLimitCount.HasValue) {
+            if (itemLimitCount.HasValue)
+            {
                 var value = itemLimitCount.Value;
                 value.current += 1;
             }
@@ -720,14 +780,16 @@ public class FenceService(
 
             // Only randomise Upd values for single
             var isSingleStack = Math.Abs((rootItemBeingAdded.Upd?.StackObjectsCount ?? 0) - 1) < 0.1;
-            if (isSingleStack) {
+            if (isSingleStack)
+            {
                 RandomiseItemUpdProperties(itemDbDetails, rootItemBeingAdded);
             }
 
             // Skip items already in the assort if it exists in the prevent duplicate list
             var existingItemThatMatches = GetMatchingItem(rootItemBeingAdded, itemDbDetails, assorts.SptItems);
             var shouldBeStacked = ItemShouldBeForceStacked(existingItemThatMatches, itemDbDetails);
-            if (shouldBeStacked && existingItemThatMatches != null) {
+            if (shouldBeStacked && existingItemThatMatches != null)
+            {
                 // Decrement loop counter so another items gets added
                 i--;
                 existingItemThatMatches.Upd.StackObjectsCount++;
@@ -736,16 +798,19 @@ public class FenceService(
             }
 
             // Add mods to armors so they dont show as red in the trade screen
-            if (itemHelper.ItemRequiresSoftInserts(rootItemBeingAdded.Template)) {
+            if (itemHelper.ItemRequiresSoftInserts(rootItemBeingAdded.Template))
+            {
                 RandomiseArmorModDurability(desiredAssortItemAndChildrenClone, itemDbDetails);
             }
 
             assorts.SptItems.Add(desiredAssortItemAndChildrenClone);
 
-            assorts.BarterScheme[rootItemBeingAdded.Id] = cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id]);
+            assorts.BarterScheme[rootItemBeingAdded.Id] =
+                cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id]);
 
             // Only adjust item price by quality for solo items, never multi-stack
-            if (isSingleStack) {
+            if (isSingleStack)
+            {
                 AdjustItemPriceByQuality(assorts.BarterScheme, rootItemBeingAdded, itemDbDetails);
             }
 
@@ -769,30 +834,49 @@ public class FenceService(
     {
         // Get matching root items
         var matchingItems = itemsWithChildren
-            .Where((itemWithChildren) => itemWithChildren.FirstOrDefault((item) => item.Template == rootItemBeingAdded.Template && item.ParentId == "hideout") != null).SelectMany(i => i).ToList();
-        if (matchingItems.Count == 0) {
+            .Where(
+                (itemWithChildren) => itemWithChildren.FirstOrDefault(
+                                          (item) => item.Template == rootItemBeingAdded.Template &&
+                                                    item.ParentId == "hideout"
+                                      ) !=
+                                      null
+            )
+            .SelectMany(i => i)
+            .ToList();
+        if (matchingItems.Count == 0)
+        {
             // Nothing matches by tpl and is root item, exit early
             return null;
         }
 
-        var isMedical = itemHelper.IsOfBaseclasses(rootItemBeingAdded.Template, [
-            BaseClasses.MEDICAL,
-            BaseClasses.MEDKIT
-        ]);
+        var isMedical = itemHelper.IsOfBaseclasses(
+            rootItemBeingAdded.Template,
+            [
+                BaseClasses.MEDICAL,
+                BaseClasses.MEDKIT
+            ]
+        );
         var isGearAndHasSlots =
-            itemHelper.IsOfBaseclasses(rootItemBeingAdded.Template, [
-                BaseClasses.ARMORED_EQUIPMENT,
-                BaseClasses.SEARCHABLE_ITEM
-            ]) && (itemDbDetails.Properties.Slots?.Count ?? 0) > 0;
+            itemHelper.IsOfBaseclasses(
+                rootItemBeingAdded.Template,
+                [
+                    BaseClasses.ARMORED_EQUIPMENT,
+                    BaseClasses.SEARCHABLE_ITEM
+                ]
+            ) &&
+            (itemDbDetails.Properties.Slots?.Count ?? 0) > 0;
 
         // Only one match and its not medical or armored gear
-        if (matchingItems.Count == 1 && !(isMedical || isGearAndHasSlots)) {
+        if (matchingItems.Count == 1 && !(isMedical || isGearAndHasSlots))
+        {
             return matchingItems[0];
         }
 
         // Items have sub properties that need to be checked against
-        foreach (var item in matchingItems) {
-            if (isMedical && rootItemBeingAdded.Upd?.MedKit?.HpResource == item.Upd?.MedKit?.HpResource) {
+        foreach (var item in matchingItems)
+        {
+            if (isMedical && rootItemBeingAdded.Upd?.MedKit?.HpResource == item.Upd?.MedKit?.HpResource)
+            {
                 // e.g. bandages with multiple use
                 // Both undefined === both max resoruce left
                 return item;
@@ -803,7 +887,8 @@ public class FenceService(
                 isGearAndHasSlots &&
                 rootItemBeingAdded.Upd.Repairable?.Durability == item.Upd.Repairable?.Durability &&
                 rootItemBeingAdded.Upd.Repairable?.MaxDurability == item.Upd.Repairable?.MaxDurability
-            ) {
+            )
+            {
                 return item;
             }
         }
@@ -820,19 +905,22 @@ public class FenceService(
     protected bool ItemShouldBeForceStacked(Item? existingItem, TemplateItem itemDbDetails)
     {
         // No existing item in assort
-        if (existingItem == null) {
+        if (existingItem == null)
+        {
             return false;
         }
 
         // Don't stack child items, only root items
-        if (existingItem.ParentId != "hideout") {
+        if (existingItem.ParentId != "hideout")
+        {
             return false;
         }
 
         return ItemInPreventDupeCategoryList(itemDbDetails.Id);
     }
 
-    protected bool ItemInPreventDupeCategoryList(string tpl) {
+    protected bool ItemInPreventDupeCategoryList(string tpl)
+    {
         // Item type in config list
         return itemHelper.IsOfBaseclasses(tpl, traderConfig.Fence.PreventDuplicateOffersOfCategory);
     }
@@ -850,12 +938,14 @@ public class FenceService(
     )
     {
         // Healing items
-        if (itemRoot.Upd?.MedKit != null) {
+        if (itemRoot.Upd?.MedKit != null)
+        {
             var itemTotalMax = itemTemplate.Properties.MaxHpResource;
             var current = itemRoot.Upd.MedKit.HpResource;
 
             // Current and max match, no adjustment necessary
-            if (itemTotalMax == current) {
+            if (itemTotalMax == current)
+            {
                 return;
             }
 
@@ -869,17 +959,23 @@ public class FenceService(
         }
 
         // Adjust price based on durability
-        if (itemRoot.Upd?.Repairable != null || itemHelper.IsOfBaseclass(itemRoot.Template, BaseClasses.KEY_MECHANICAL)) {
+        if (itemRoot.Upd?.Repairable != null || itemHelper.IsOfBaseclass(itemRoot.Template, BaseClasses.KEY_MECHANICAL))
+        {
             var itemQualityModifier = itemHelper.GetItemQualityModifier(itemRoot);
             var basePrice = barterSchemes[itemRoot.Id][0][0].Count;
-            barterSchemes[itemRoot.Id][0][0].Count = Math.Round((double) basePrice * itemQualityModifier);
+            barterSchemes[itemRoot.Id][0][0].Count = Math.Round((double)basePrice * itemQualityModifier);
         }
     }
 
-    protected (int current, int max)? GetMatchingItemLimit(Dictionary<string, (int current, int max)> itemTypeLimits, string itemTpl)
+    protected (int current, int max)? GetMatchingItemLimit(
+        Dictionary<string, (int current, int max)> itemTypeLimits,
+        string itemTpl
+    )
     {
-        foreach (var baseTypeKey in itemTypeLimits.Keys) {
-            if (itemHelper.IsOfBaseclass(itemTpl, baseTypeKey)) {
+        foreach (var baseTypeKey in itemTypeLimits.Keys)
+        {
+            if (itemHelper.IsOfBaseclass(itemTpl, baseTypeKey))
+            {
                 return itemTypeLimits[baseTypeKey];
             }
         }
@@ -903,17 +999,24 @@ public class FenceService(
     )
     {
         var weaponPresetsAddedCount = 0;
-        if (desiredWeaponPresetsCount > 0) {
-            var weaponPresetRootItems = baseFenceAssort.Items.Where(item => item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON));
-            while (weaponPresetsAddedCount < desiredWeaponPresetsCount) {
+        if (desiredWeaponPresetsCount > 0)
+        {
+            var weaponPresetRootItems = baseFenceAssort.Items.Where(
+                item => item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
+            );
+            while (weaponPresetsAddedCount < desiredWeaponPresetsCount)
+            {
                 var randomPresetRoot = randomUtil.GetArrayValue(weaponPresetRootItems);
-                if (traderConfig.Fence.Blacklist.Contains(randomPresetRoot.Template)) {
+                if (traderConfig.Fence.Blacklist.Contains(randomPresetRoot.Template))
+                {
                     continue;
                 }
 
                 var rootItemDb = itemHelper.GetItem(randomPresetRoot.Template).Value;
 
-                var presetWithChildrenClone = cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id));
+                var presetWithChildrenClone = cloner.Clone(
+                    itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id)
+                );
 
                 RandomiseItemUpdProperties(rootItemDb, presetWithChildrenClone[0]);
 
@@ -924,8 +1027,10 @@ public class FenceService(
                 var itemPrice =
                     handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
                     itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
-                if (priceLimitRouble != null) {
-                    if (itemPrice > priceLimitRouble) {
+                if (priceLimitRouble != null)
+                {
+                    if (itemPrice > priceLimitRouble)
+                    {
                         // Too expensive, try again
                         continue;
                     }
@@ -942,9 +1047,11 @@ public class FenceService(
 
                 // Set assort price
                 // Must be careful to use correct id as the item has had its IDs regenerated
-                assorts.BarterScheme[presetWithChildrenClone[0].Id] = [
+                assorts.BarterScheme[presetWithChildrenClone[0].Id] =
+                [
                     [
-                        new BarterScheme() {
+                        new BarterScheme()
+                        {
                             Template = Money.ROUBLES,
                             Count = Math.Round(itemPrice),
                         }
@@ -957,16 +1064,22 @@ public class FenceService(
         }
 
         var equipmentPresetsAddedCount = 0;
-        if (desiredEquipmentPresetsCount <= 0) {
+        if (desiredEquipmentPresetsCount <= 0)
+        {
             return;
         }
 
-        var equipmentPresetRootItems = baseFenceAssort.Items.Where((item) => item.Upd?.SptPresetId != null && itemHelper.ArmorItemCanHoldMods(item.Template));
-        while (equipmentPresetsAddedCount < desiredEquipmentPresetsCount) {
+        var equipmentPresetRootItems = baseFenceAssort.Items.Where(
+            (item) => item.Upd?.SptPresetId != null && itemHelper.ArmorItemCanHoldMods(item.Template)
+        );
+        while (equipmentPresetsAddedCount < desiredEquipmentPresetsCount)
+        {
             var randomPresetRoot = randomUtil.GetArrayValue(equipmentPresetRootItems);
             var rootItemDb = itemHelper.GetItem(randomPresetRoot.Template).Value;
 
-            var presetWithChildrenClone = cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id));
+            var presetWithChildrenClone = cloner.Clone(
+                itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id)
+            );
 
             // Need to add mods to armors so they dont show as red in the trade screen
             if (itemHelper.ItemRequiresSoftInserts(randomPresetRoot.Template))
@@ -981,8 +1094,10 @@ public class FenceService(
             var itemPrice =
                 handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
                 itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
-            if (priceLimitRouble != null) {
-                if (itemPrice > priceLimitRouble) {
+            if (priceLimitRouble != null)
+            {
+                if (itemPrice > priceLimitRouble)
+                {
                     // Too expensive, try again
                     continue;
                 }
@@ -999,9 +1114,11 @@ public class FenceService(
 
             // Set assort price
             // Must be careful to use correct id as the item has had its IDs regenerated
-            assorts.BarterScheme[presetWithChildrenClone[0].Id] = [
+            assorts.BarterScheme[presetWithChildrenClone[0].Id] =
+            [
                 [
-                    new BarterScheme(){
+                    new BarterScheme()
+                    {
                         Template = Money.ROUBLES,
                         Count = Math.Round(itemPrice),
                     }
@@ -1021,19 +1138,23 @@ public class FenceService(
     protected void RandomiseArmorModDurability(List<Item> armor, TemplateItem itemDbDetails)
     {
         // Armor has no mods, nothing to randomise
-        if (itemDbDetails.Properties.Slots == null) {
+        if (itemDbDetails.Properties.Slots == null)
+        {
             return;
         }
 
         // Check for and adjust soft insert durability values
         var requiredSlots = itemDbDetails.Properties.Slots?.Where(slot => slot.Required ?? false).ToList();
-        if ((requiredSlots?.Count ?? 0) > 1) {
+        if ((requiredSlots?.Count ?? 0) > 1)
+        {
             RandomiseArmorSoftInsertDurabilities(requiredSlots, armor);
         }
 
         // Check for and adjust plate durability values
-        var plateSlots = itemDbDetails.Properties.Slots?.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name)).ToList();
-        if ((plateSlots?.Count ?? 0) > 1) {
+        var plateSlots = itemDbDetails.Properties.Slots?.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name))
+            .ToList();
+        if ((plateSlots?.Count ?? 0) > 1)
+        {
             RandomiseArmorInsertsDurabilities(plateSlots, armor);
         }
     }
@@ -1045,26 +1166,37 @@ public class FenceService(
      */
     protected void RandomiseArmorSoftInsertDurabilities(List<Slot> softInsertSlots, List<Item> armorItemAndMods)
     {
-        foreach (var requiredSlot in softInsertSlots) {
+        foreach (var requiredSlot in softInsertSlots)
+        {
             var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters[0].Plate).Value;
-            var durabilityValues = GetRandomisedArmorDurabilityValues(modItemDbDetails, traderConfig.Fence.ArmorMaxDurabilityPercentMinMax);
-            var plateTpl = requiredSlot.Props.Filters[0].Plate ?? string.Empty; // "Plate" property appears to be the 'default' item for slot
-            if (plateTpl == "") {
+            var durabilityValues = GetRandomisedArmorDurabilityValues(
+                modItemDbDetails,
+                traderConfig.Fence.ArmorMaxDurabilityPercentMinMax
+            );
+            var plateTpl =
+                requiredSlot.Props.Filters[0].Plate ??
+                string.Empty; // "Plate" property appears to be the 'default' item for slot
+            if (plateTpl == "")
+            {
                 // Some bsg plate properties are empty, skip mod
                 continue;
             }
 
             // Find items mod to apply dura changes to
-            var modItemToAdjust = armorItemAndMods.FirstOrDefault(mod => mod.SlotId.ToLower() == requiredSlot.Name.ToLower());
+            var modItemToAdjust =
+                armorItemAndMods.FirstOrDefault(mod => mod.SlotId.ToLower() == requiredSlot.Name.ToLower());
 
             itemHelper.AddUpdObjectToItem(modItemToAdjust);
 
-            if (modItemToAdjust.Upd.Repairable == null) {
-                modItemToAdjust.Upd.Repairable = new UpdRepairable(){
+            if (modItemToAdjust.Upd.Repairable == null)
+            {
+                modItemToAdjust.Upd.Repairable = new UpdRepairable()
+                {
                     Durability = modItemDbDetails.Properties.MaxDurability,
                     MaxDurability = modItemDbDetails.Properties.MaxDurability
                 };
             }
+
             modItemToAdjust.Upd.Repairable.Durability = durabilityValues.Durability;
             modItemToAdjust.Upd.Repairable.MaxDurability = durabilityValues.MaxDurability;
 
@@ -1075,7 +1207,7 @@ public class FenceService(
                 modItemToAdjust.Upd.Repairable.Durability < modItemDbDetails.Properties.MaxDurability)
             {
                 // Is damaged
-                modItemToAdjust.Upd.FaceShield =  new UpdFaceShield() { Hits = randomUtil.GetInt(1, 3) };
+                modItemToAdjust.Upd.FaceShield = new UpdFaceShield() { Hits = randomUtil.GetInt(1, 3) };
             }
         }
     }
@@ -1088,9 +1220,11 @@ public class FenceService(
      */
     protected void RandomiseArmorInsertsDurabilities(List<Slot> plateSlots, List<Item> armorItemAndMods)
     {
-        foreach (var plateSlot in plateSlots) {
+        foreach (var plateSlot in plateSlots)
+        {
             var plateTpl = plateSlot.Props.Filters[0].Plate;
-            if (plateTpl == null) {
+            if (plateTpl == null)
+            {
                 // Bsg data lacks a default plate, skip randomisng for this mod
                 continue;
             }
@@ -1100,10 +1234,14 @@ public class FenceService(
             var modItemDbDetails = itemHelper.GetItem(plateTpl).Value;
 
             // Chance to remove plate
-            var plateExistsChance = traderConfig.Fence.ChancePlateExistsInArmorPercent[modItemDbDetails?.Properties?.ArmorClass?.ToString() ?? "3"];
-            if (!randomUtil.GetChance100(plateExistsChance)) {
+            var plateExistsChance =
+                traderConfig.Fence.ChancePlateExistsInArmorPercent[
+                    modItemDbDetails?.Properties?.ArmorClass?.ToString() ?? "3"];
+            if (!randomUtil.GetChance100(plateExistsChance))
+            {
                 // Remove plate from armor
-                armorWithMods = armorItemAndMods.Where(item => item.SlotId.ToLower() != plateSlot.Name.ToLower()).ToList();
+                armorWithMods = armorItemAndMods.Where(item => item.SlotId.ToLower() != plateSlot.Name.ToLower())
+                    .ToList();
 
                 continue;
             }
@@ -1116,15 +1254,20 @@ public class FenceService(
             // Find items mod to apply dura changes to
             var modItemToAdjust = armorWithMods.FirstOrDefault(mod => mod.SlotId.ToLower() == plateSlot.Name.ToLower());
 
-            if (modItemToAdjust == null) {
-                logger.LogWarning($"Unable to randomise armor items {armorWithMods[0].Template} ${plateSlot.Name} slot as it cannot be found, skipping");
+            if (modItemToAdjust == null)
+            {
+                logger.LogWarning(
+                    $"Unable to randomise armor items {armorWithMods[0].Template} ${plateSlot.Name} slot as it cannot be found, skipping"
+                );
                 continue;
             }
 
             itemHelper.AddUpdObjectToItem(modItemToAdjust);
 
-            if (modItemToAdjust?.Upd?.Repairable == null) {
-                modItemToAdjust.Upd.Repairable = new UpdRepairable(){
+            if (modItemToAdjust?.Upd?.Repairable == null)
+            {
+                modItemToAdjust.Upd.Repairable = new UpdRepairable()
+                {
                     Durability = modItemDbDetails.Properties.MaxDurability,
                     MaxDurability = modItemDbDetails.Properties.MaxDurability
                 };
@@ -1143,28 +1286,35 @@ public class FenceService(
     protected int GetSingleItemStackCount(TemplateItem itemDbDetails)
     {
         MinMax? overrideValues;
-        if (itemHelper.IsOfBaseclass(itemDbDetails.Id, BaseClasses.AMMO)) {
+        if (itemHelper.IsOfBaseclass(itemDbDetails.Id, BaseClasses.AMMO))
+        {
             overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
-            if (overrideValues != null) {
-                return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+            if (overrideValues != null)
+            {
+                return randomUtil.GetInt((int)overrideValues.Min, (int)overrideValues.Max);
             }
 
             // No override, use stack max size from item db
             return itemDbDetails.Properties.StackMaxSize == 1
                 ? 1
-                : randomUtil.GetInt((int) itemDbDetails.Properties.StackMinRandom, (int) itemDbDetails.Properties.StackMaxRandom);
+                : randomUtil.GetInt(
+                    (int)itemDbDetails.Properties.StackMinRandom,
+                    (int)itemDbDetails.Properties.StackMaxRandom
+                );
         }
 
         // Check for override in config, use values if exists
         overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Id];
-        if (overrideValues != null) {
-            return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+        if (overrideValues != null)
+        {
+            return randomUtil.GetInt((int)overrideValues.Min, (int)overrideValues.Max);
         }
 
         // Check for parent override
         overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
-        if (overrideValues != null) {
-            return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+        if (overrideValues != null)
+        {
+            return randomUtil.GetInt((int)overrideValues.Min, (int)overrideValues.Max);
         }
 
         return 1;
@@ -1180,11 +1330,14 @@ public class FenceService(
         var toDelete = new List<string>();
 
         // Find mods to remove from item that could've been scavenged by other players in-raid
-        foreach (var itemMod in itemAndMods) {
-            if (PresetModItemWillBeRemoved(itemMod, toDelete)) {
+        foreach (var itemMod in itemAndMods)
+        {
+            if (PresetModItemWillBeRemoved(itemMod, toDelete))
+            {
                 // Skip if not an item
                 var itemDbDetails = itemHelper.GetItem(itemMod.Template);
-                if (!itemDbDetails.Key) {
+                if (!itemDbDetails.Key)
+                {
                     continue;
                 }
 
@@ -1194,8 +1347,10 @@ public class FenceService(
         }
 
         // Reverse loop and remove items
-        for (var index = itemAndMods.Count - 1; index >= 0; --index) {
-            if (toDelete.Contains(itemAndMods[index].Id)) {
+        for (var index = itemAndMods.Count - 1; index >= 0; --index)
+        {
+            if (toDelete.Contains(itemAndMods[index].Id))
+            {
                 itemAndMods.Splice(index, 1);
             }
         }
@@ -1211,7 +1366,8 @@ public class FenceService(
     {
         var slotIdsThatCanFail = traderConfig.Fence.PresetSlotsToRemoveChancePercent;
         var removalChance = slotIdsThatCanFail[weaponMod.SlotId];
-        if (removalChance is null or 0.0) {
+        if (removalChance is null or 0.0)
+        {
             return false;
         }
 
@@ -1228,54 +1384,65 @@ public class FenceService(
      */
     protected void RandomiseItemUpdProperties(TemplateItem itemDetails, Item itemToAdjust)
     {
-        if (itemDetails.Properties == null) {
-            logger.LogError($"Item {itemDetails.Name} lacks a _props field, unable to randomise item: {itemToAdjust.Id}");
+        if (itemDetails.Properties == null)
+        {
+            logger.LogError(
+                $"Item {itemDetails.Name} lacks a _props field, unable to randomise item: {itemToAdjust.Id}"
+            );
             return;
         }
 
         // Randomise hp resource of med items
-        if (itemDetails.Properties.MaxHpResource != null && (itemDetails.Properties.MaxHpResource ?? 0) > 0) {
-            itemToAdjust.Upd.MedKit = new UpdMedKit() { HpResource = randomUtil.GetInt(1, (int) itemDetails.Properties.MaxHpResource) };
+        if (itemDetails.Properties.MaxHpResource != null && (itemDetails.Properties.MaxHpResource ?? 0) > 0)
+        {
+            itemToAdjust.Upd.MedKit = new UpdMedKit()
+                { HpResource = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxHpResource) };
         }
 
         // Randomise armor durability
         if (
             (itemDetails.Parent == BaseClasses.ARMORED_EQUIPMENT ||
-                itemDetails.Parent == BaseClasses.FACECOVER ||
-                itemDetails.Parent == BaseClasses.ARMOR_PLATE) &&
+             itemDetails.Parent == BaseClasses.FACECOVER ||
+             itemDetails.Parent == BaseClasses.ARMOR_PLATE) &&
             (itemDetails.Properties.MaxDurability ?? 0) > 0
-        ) {
+        )
+        {
             var values = GetRandomisedArmorDurabilityValues(
                 itemDetails,
                 traderConfig.Fence.ArmorMaxDurabilityPercentMinMax
             );
-            itemToAdjust.Upd.Repairable = new UpdRepairable() { Durability = values.Durability, MaxDurability= values.MaxDurability };
+            itemToAdjust.Upd.Repairable = new UpdRepairable()
+                { Durability = values.Durability, MaxDurability = values.MaxDurability };
 
             return;
         }
 
         // Randomise Weapon durability
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.WEAPON)) {
+        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.WEAPON))
+        {
             var weaponDurabilityLimits = traderConfig.Fence.WeaponDurabilityPercentMinMax;
             var maxDuraMin = (weaponDurabilityLimits.Max.Min / 100) * itemDetails.Properties.MaxDurability;
             var maxDuraMax = (weaponDurabilityLimits.Max.Max / 100) * itemDetails.Properties.MaxDurability;
-            var chosenMaxDurability = randomUtil.GetInt((int) maxDuraMin, (int) maxDuraMax);
+            var chosenMaxDurability = randomUtil.GetInt((int)maxDuraMin, (int)maxDuraMax);
 
             var currentDuraMin = (weaponDurabilityLimits.Current.Min / 100) * itemDetails.Properties.MaxDurability;
             var currentDuraMax = (weaponDurabilityLimits.Current.Max / 100) * itemDetails.Properties.MaxDurability;
             var currentDurability = Math.Min(
-                randomUtil.GetInt((int) currentDuraMin, (int) currentDuraMax),
+                randomUtil.GetInt((int)currentDuraMin, (int)currentDuraMax),
                 chosenMaxDurability
             );
 
-            itemToAdjust.Upd.Repairable = new UpdRepairable { Durability = currentDurability, MaxDurability = chosenMaxDurability };
+            itemToAdjust.Upd.Repairable = new UpdRepairable
+                { Durability = currentDurability, MaxDurability = chosenMaxDurability };
 
             return;
         }
 
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.REPAIR_KITS)) {
-            itemToAdjust.Upd.RepairKit = new UpdRepairKit {
-                Resource = randomUtil.GetInt(1, (int) itemDetails.Properties.MaxRepairResource),
+        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.REPAIR_KITS))
+        {
+            itemToAdjust.Upd.RepairKit = new UpdRepairKit
+            {
+                Resource = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxRepairResource),
             };
 
             return;
@@ -1283,20 +1450,24 @@ public class FenceService(
 
         // Mechanical key + has limited uses
         if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.KEY_MECHANICAL) &&
-            (itemDetails.Properties.MaximumNumberOfUsage ?? 0) > 1) {
-            itemToAdjust.Upd.Key = new UpdKey {
-                NumberOfUsages = randomUtil.GetInt(0, (int) itemDetails.Properties.MaximumNumberOfUsage - 1),
+            (itemDetails.Properties.MaximumNumberOfUsage ?? 0) > 1)
+        {
+            itemToAdjust.Upd.Key = new UpdKey
+            {
+                NumberOfUsages = randomUtil.GetInt(0, (int)itemDetails.Properties.MaximumNumberOfUsage - 1),
             };
 
             return;
         }
 
         // Randomise items that use resources (e.g. fuel)
-        if ((itemDetails.Properties.MaxResource ?? 0) > 0) {
+        if ((itemDetails.Properties.MaxResource ?? 0) > 0)
+        {
             var resourceMax = itemDetails.Properties.MaxResource;
-            var resourceCurrent = randomUtil.GetInt(1, (int) itemDetails.Properties.MaxResource);
+            var resourceCurrent = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxResource);
 
-            itemToAdjust.Upd.Resource = new UpdResource { Value = resourceMax - resourceCurrent, UnitsConsumed = resourceCurrent };
+            itemToAdjust.Upd.Resource = new UpdResource
+                { Value = resourceMax - resourceCurrent, UnitsConsumed = resourceCurrent };
         }
     }
 
@@ -1313,12 +1484,12 @@ public class FenceService(
     {
         var maxDuraMin = (equipmentDurabilityLimits.Max.Min / 100) * itemDetails.Properties.MaxDurability;
         var maxDuraMax = (equipmentDurabilityLimits.Max.Max / 100) * itemDetails.Properties.MaxDurability;
-        var chosenMaxDurability = randomUtil.GetInt((int) maxDuraMin, (int) maxDuraMax);
+        var chosenMaxDurability = randomUtil.GetInt((int)maxDuraMin, (int)maxDuraMax);
 
         var currentDuraMin = (equipmentDurabilityLimits.Current.Min / 100) * itemDetails.Properties.MaxDurability;
         var currentDuraMax = (equipmentDurabilityLimits.Current.Max / 100) * itemDetails.Properties.MaxDurability;
         var chosenCurrentDurability = Math.Min(
-            randomUtil.GetInt((int) currentDuraMin, (int) currentDuraMax),
+            randomUtil.GetInt((int)currentDuraMin, (int)currentDuraMax),
             chosenMaxDurability
         );
 
@@ -1334,8 +1505,9 @@ public class FenceService(
     {
         var itemTypeCounts = new Dictionary<string, (int current, int max)>();
 
-        foreach (var x in limits.Keys) {
-            itemTypeCounts[x] = new () { current = 0, max = limits[x] };
+        foreach (var x in limits.Keys)
+        {
+            itemTypeCounts[x] = new() { current = 0, max = limits[x] };
         }
 
         return itemTypeCounts;
@@ -1356,10 +1528,11 @@ public class FenceService(
      * Get fence refresh time in seconds
      * @returns Refresh time in seconds
      */
-    protected int GetFenceRefreshTime() {
+    protected int GetFenceRefreshTime()
+    {
         var fence = traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == Traders.FENCE).Seconds;
 
-        return randomUtil.GetInt((int) fence.Min, (int) fence.Max);
+        return randomUtil.GetInt((int)fence.Min, (int)fence.Max);
     }
 
     /**
@@ -1372,20 +1545,23 @@ public class FenceService(
         var fenceSettings = databaseService.GetGlobals().Configuration.FenceSettings;
         var pmcFenceInfo = pmcData.TradersInfo[fenceSettings.FenceIdentifier];
 
-        if (pmcFenceInfo == null) {
+        if (pmcFenceInfo == null)
+        {
             return fenceSettings.Levels["0"];
         }
 
         var fenceLevels = fenceSettings.Levels.Keys.Select(int.Parse);
         var minLevel = fenceLevels.Min();
         var maxLevel = fenceLevels.Max();
-        var pmcFenceLevel = Math.Floor((double) pmcFenceInfo.Standing);
+        var pmcFenceLevel = Math.Floor((double)pmcFenceInfo.Standing);
 
-        if (pmcFenceLevel < minLevel) {
+        if (pmcFenceLevel < minLevel)
+        {
             return fenceSettings.Levels[minLevel.ToString()];
         }
 
-        if (pmcFenceLevel > maxLevel) {
+        if (pmcFenceLevel > maxLevel)
+        {
             return fenceSettings.Levels[maxLevel.ToString()];
         }
 
@@ -1401,19 +1577,23 @@ public class FenceService(
     {
         var isNormalAssort = true;
         var fenceAssortItem = fenceAssort.Items.FirstOrDefault((item) => item.Id == assortId);
-        if (fenceAssortItem == null) {
+        if (fenceAssortItem == null)
+        {
             // Not in main assorts, check secondary section
             fenceAssortItem = fenceDiscountAssort.Items.FirstOrDefault((item) => item.Id == assortId);
-            if (fenceAssortItem == null) {
+            if (fenceAssortItem == null)
+            {
                 logger.LogError(localisationService.GetText("fence-unable_to_find_offer_by_id", assortId));
 
                 return;
             }
+
             isNormalAssort = false;
         }
 
         // Player wants to buy whole stack, delete stack
-        if ((fenceAssortItem.Upd?.StackObjectsCount ?? 0) == buyCount) {
+        if ((fenceAssortItem.Upd?.StackObjectsCount ?? 0) == buyCount)
+        {
             DeleteOffer(assortId, isNormalAssort ? fenceAssort.Items : fenceDiscountAssort.Items);
             return;
         }
@@ -1426,16 +1606,21 @@ public class FenceService(
     {
         // Assort could have child items, remove those too
         var itemWithChildrenToRemove = itemHelper.FindAndReturnChildrenAsItems(assorts, assortId);
-        foreach (var itemToRemove in itemWithChildrenToRemove) {
+        foreach (var itemToRemove in itemWithChildrenToRemove)
+        {
             var indexToRemove = assorts.FindIndex((item) => item.Id == itemToRemove.Id);
 
             // No offer found in main assort, check discount items
-            if (indexToRemove == -1) {
+            if (indexToRemove == -1)
+            {
                 indexToRemove = fenceDiscountAssort.Items.FindIndex((item) => item.Id == itemToRemove.Id);
                 fenceDiscountAssort.Items.Splice(indexToRemove, 1);
 
-                if (indexToRemove == -1) {
-                    logger.LogWarning($"unable to remove fence assort item: {itemToRemove.Id} tpl: {itemToRemove.Template}");
+                if (indexToRemove == -1)
+                {
+                    logger.LogWarning(
+                        $"unable to remove fence assort item: {itemToRemove.Id} tpl: {itemToRemove.Template}"
+                    );
                 }
 
                 return;

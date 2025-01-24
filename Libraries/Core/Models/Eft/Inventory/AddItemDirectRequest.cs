@@ -15,7 +15,7 @@ public record AddItemDirectRequest
     public bool? FoundInRaid { get; set; }
 
     [JsonPropertyName("callback")]
-    public Action<double>? Callback { get; set; }
+    public Action<int>? Callback { get; set; }
 
     [JsonPropertyName("useSortingTable")]
     public bool? UseSortingTable { get; set; }
