@@ -18,9 +18,11 @@ public class LocationLootGenerator(
     ISptLogger<LocationLootGenerator> _logger,
     RandomUtil _randomUtil,
     MathUtil _mathUtil,
+    HashUtil _hashUtil,
     ItemHelper _itemHelper,
     InventoryHelper _inventoryHelper,
     DatabaseService _databaseService,
+    ContainerHelper _containerHelper,
     LocalisationService _localisationService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
@@ -379,12 +381,94 @@ public class LocationLootGenerator(
     /// <param name="locationName">Name of the map to generate static loot for</param>
     /// <returns>StaticContainerData</returns>
     protected StaticContainerData AddLootToContainer(StaticContainerData staticContainer,
-        List<SpawnpointTemplate> staticForced,
+        List<StaticForced>? staticForced,
         Dictionary<string, StaticLootDetails> staticLootDist,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string locationName
     )
     {
-        throw new NotImplementedException();
+        var containerClone = _cloner.Clone(staticContainer);
+        var containerTpl = containerClone.Template.Items[0].Template;
+
+        // Create new unique parent id to prevent any collisions
+        var parentId = _hashUtil.Generate();
+        containerClone.Template.Root = parentId;
+        containerClone.Template.Items[0].Id = parentId;
+
+        var containerMap = GetContainerMapping(containerTpl);
+
+        // Choose count of items to add to container
+        var itemCountToAdd = GetWeightedCountOfContainerItems(containerTpl, staticLootDist, locationName);
+
+        // Get all possible loot items for container
+        var containerLootPool = GetPossibleLootItemsForContainer(containerTpl, staticLootDist);
+
+        // Some containers need to have items forced into it (quest keys etc)
+        var tplsForced = staticForced
+            .Where((forcedStaticProp) => forcedStaticProp.ContainerId == containerClone.Template.Id)
+            .Select((x) => x.ItemTpl);
+
+        // Draw random loot
+        // Allow money to spawn more than once in container
+        var failedToFitCount = 0;
+        var locklist = _itemHelper.GetMoneyTpls();
+
+        // Choose items to add to container, factor in weighting + lock money down
+        // Filter out items picked that're already in the above `tplsForced` array
+        var chosenTpls = containerLootPool
+            .Draw(itemCountToAdd, _locationConfig.AllowDuplicateItemsInStaticContainers, locklist)
+            .Where((tpl) => !tplsForced.Contains(tpl));
+
+        // Add forced loot to chosen item pool
+        var tplsToAddToContainer = tplsForced.Concat(chosenTpls);
+        foreach (var tplToAdd in tplsToAddToContainer) {
+            var chosenItemWithChildren = CreateStaticLootItem(tplToAdd, staticAmmoDist, parentId);
+            if (chosenItemWithChildren is null)
+            {
+                continue;
+            }
+
+            var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
+                ? [chosenItemWithChildren.Items[0]] // Strip children from parent
+                : chosenItemWithChildren.Items;
+            var width = chosenItemWithChildren.Width;
+            var height = chosenItemWithChildren.Height;
+
+            // look for open slot to put chosen item into
+            var result = _containerHelper.FindSlotForItem(containerMap, width, height);
+            if (!result.Success.GetValueOrDefault(false))
+            {
+                if (failedToFitCount >= _locationConfig.FitLootIntoContainerAttempts)
+                {
+                    // x attempts to fit an item, container is probably full, stop trying to add more
+                    break;
+                }
+
+                // Can't fit item, skip
+                failedToFitCount++;
+
+                continue;
+            }
+
+            _containerHelper.FillContainerMapWithItem(
+                containerMap,
+                result.X.Value,
+                result.Y.Value,
+                width,
+                height,
+                result.Rotation.GetValueOrDefault(false));
+
+            var rotation = result.Rotation.GetValueOrDefault(false) ? 1 : 0;
+
+            items[0].SlotId = "main";
+            items[0].Location = new { X = result.X, Y = result.Y, R = rotation };
+
+            // Add loot to container before returning
+            foreach (var item in items) {
+                containerClone.Template.Items.Add(item);
+            }
+        }
+
+        return containerClone;
     }
 
     /// <summary>
@@ -452,7 +536,7 @@ public class LocationLootGenerator(
     /// <param name="containerTypeId">Container to get possible loot for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
     /// <returns>ProbabilityObjectArray of item tpls + probabilty</returns>
-    protected object GetPossibleLootItemsForContainer(string containerTypeId,
+    protected ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?> GetPossibleLootItemsForContainer(string containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist) // TODO: Type Fuckery, return type was ProbabilityObjectArray<string, number>
     {
         var seasonalEventActive = _seasonalEventService.SeasonalEventEnabled();
@@ -519,7 +603,7 @@ public class LocationLootGenerator(
     /// <param name="lootLocationTemplates">List to add forced loot spawn locations to</param>
     /// <param name="forcedSpawnPoints">Forced loot locations that must be added</param>
     /// <param name="locationName">Name of map currently having force loot created for</param>
-    protected void addForcedLoot(List<SpawnpointTemplate> lootLocationTemplates,
+    protected void AddForcedLoot(List<SpawnpointTemplate> lootLocationTemplates,
         List<SpawnpointsForced> forcedSpawnPoints, string locationName,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
