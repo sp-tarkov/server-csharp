@@ -17,6 +17,12 @@ public class HideoutHelper(
     LocalisationService _localisationService
 )
 {
+    public const string BitcoinFarm = "5d5c205bd582a50d042a3c0e";
+    public const string CultistCircleCraftId = "66827062405f392b203a44cf";
+    public const string BitcoinProductionId = "5d5c205bd582a50d042a3c0e";
+    public const string WaterCollector = "5d5589c1f934db045e6c5492";
+    public const int MaxSkillPoint = 5000;
+    
     /// <summary>
     /// Add production to profiles' Hideout.Production array
     /// </summary>
@@ -31,12 +37,27 @@ public class HideoutHelper(
     {
         throw new NotImplementedException();
     }
+    
+    /// <summary>
+    /// Add production to profiles' Hideout.Production array
+    /// </summary>
+    /// <param name="profileData">Profile to add production to</param>
+    /// <param name="productionRequest">Production request</param>
+    /// <param name="sessionId">Session id</param>
+    /// <returns>client response</returns>
+    public void RegisterProduction(
+        PmcData profileData,
+        HideoutContinuousProductionStartRequestData productionRequest,
+        string sessionId)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// This convenience function initializes new Production Object
     /// with all the constants.
     /// </summary>
-    public void InitProduction(
+    public Production InitProduction(
         string recipeId,
         int productionTime,
         bool needFuelForAllProductionTime)
