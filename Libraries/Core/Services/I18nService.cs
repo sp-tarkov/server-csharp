@@ -114,9 +114,9 @@ public class I18nService
         return rawLocalizedString;
     }
 
-    public string GetLocalised<T>(string key, T value) where T : IConvertible
+    public string GetLocalised<T>(string key, T? value) where T : IConvertible
     {
         var rawLocalizedString = GetLocalised(key);
-        return rawLocalizedString.Replace("%s", value.ToString());
+        return rawLocalizedString.Replace("%s", value?.ToString());
     }
 }

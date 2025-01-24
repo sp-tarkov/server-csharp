@@ -6,10 +6,10 @@ namespace Core.Models.Eft.Common.Tables;
 public record Item
 {
     [JsonPropertyName("_id")]
-    public required string Id { get; set; }
+    public string? Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public string Template { get; set; }
+    public string? Template { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
@@ -25,6 +25,42 @@ public record Item
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
+
+    public HideoutItem ConvertToHideoutItem(Item item, double? count = null)
+    {
+        return new HideoutItem()
+        {
+            Id = item.Id,
+            Template = item.Template,
+            Upd = item.Upd,
+            Count = count
+        };
+    }
+}
+
+public record HideoutItem
+{
+    [JsonPropertyName("id")]
+    public string? Id { get; set; }
+    
+    [JsonPropertyName("_tpl")]
+    public string? Template { get; set; }
+    
+    [JsonPropertyName("upd")]
+    public Upd? Upd { get; set; }
+    
+    [JsonPropertyName("count")]
+    public double? Count { get; set; }
+
+    public Item ConvertToItem(HideoutItem hideoutItem)
+    {
+        return new Item()
+        {
+            Id = hideoutItem.Id,
+            Template = hideoutItem.Template,
+            Upd = hideoutItem.Upd,
+        };
+    }
 }
 
 public record ItemLocation

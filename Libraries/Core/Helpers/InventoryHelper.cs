@@ -69,7 +69,7 @@ public class InventoryHelper(
         {
             var addItemRequest = new AddItemDirectRequest
             {
-                ItemWithModsToAdd = itemToAdd,
+                ItemWithModsToAdd = itemToAdd.Select(x => x.ConvertToHideoutItem(x)).ToList(),
                 FoundInRaid = request.FoundInRaid,
                 UseSortingTable = request.UseSortingTable,
                 Callback = request.Callback
@@ -95,7 +95,8 @@ public class InventoryHelper(
         ItemEventRouterResponse output)
     {
         var itemWithModsToAddClone = _cloner.Clone(request.ItemWithModsToAdd);
-        var rootItemToAdd = itemWithModsToAddClone.FirstOrDefault();
+        var hideoutItemsConvertedToItems = itemWithModsToAddClone.Select(x => x.ConvertToItem(x)).ToList();
+        var rootItemToAdd = hideoutItemsConvertedToItems.FirstOrDefault();
 
         // Get stash layouts ready for use
         var stashFS2D = GetStashSlotMap(pmcData, sessionId);
@@ -112,7 +113,7 @@ public class InventoryHelper(
         PlaceItemInInventory(
             stashFS2D,
             sortingTableFS2D,
-            itemWithModsToAddClone,
+            hideoutItemsConvertedToItems,
             pmcData.Inventory,
             request.UseSortingTable.GetValueOrDefault(false),
             output
@@ -122,7 +123,7 @@ public class InventoryHelper(
             return;
 
         // Apply/remove FiR to item + mods
-        SetFindInRaidStatusForItem(itemWithModsToAddClone, request.FoundInRaid.GetValueOrDefault(false));
+        SetFindInRaidStatusForItem(hideoutItemsConvertedToItems, request.FoundInRaid.GetValueOrDefault(false));
 
         // Remove trader properties from root item
         RemoveTraderRagfairRelatedUpdProperties(rootItemToAdd.Upd);
@@ -144,12 +145,13 @@ public class InventoryHelper(
         }
 
         // Add item + mods to output and profile inventory
+        
         output.ProfileChanges[sessionId]
-            .Items.NewItems.AddRange(itemWithModsToAddClone.Select(x => x));
-        pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
+            .Items.NewItems.AddRange(hideoutItemsConvertedToItems);
+        pmcData.Inventory.Items.AddRange(hideoutItemsConvertedToItems);
 
         _logger.Debug(
-            $"Added {rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: {rootItemToAdd.Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
+            $"Added {rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: {rootItemToAdd.Template} with: {hideoutItemsConvertedToItems.Count - 1} mods to inventory"
         );
     }
 

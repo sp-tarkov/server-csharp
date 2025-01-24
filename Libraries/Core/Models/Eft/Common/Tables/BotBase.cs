@@ -665,12 +665,6 @@ public record HideoutSlot
     public List<HideoutItem>? Items { get; set; }
 }
 
-public record HideoutItem : Item
-{
-    [JsonPropertyName("count")]
-    public double? Count { get; set; }
-}
-
 public record LastCompleted
 {
     [JsonPropertyName("$oid")]

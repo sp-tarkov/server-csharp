@@ -176,7 +176,7 @@ public class HideoutController(
         }
 
         // Upgrade includes a container improvement/addition
-        if (hideoutStage?.Container is not null)
+        if (!string.IsNullOrEmpty(hideoutStage?.Container))
         {
             AddContainerImprovementToProfile(
                 output,
@@ -365,7 +365,7 @@ public class HideoutController(
 
             hideoutArea.Slots[hideoutSlotIndex].Items =
             [
-                new HideoutItem()
+                new HideoutItem
                 {
                     Id = item.inventoryItem.Id,
                     Template = item.inventoryItem.Template,
@@ -1285,5 +1285,21 @@ public class HideoutController(
     public List<QteData> GetQteList(string sessionId)
     {
         return _databaseService.GetHideout().Qte;
+    }
+    
+    /**
+     * Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
+     */
+    public void Update() {
+        foreach (var sessionID in _saveServer.GetProfiles()) {
+            if (sessionID.Value.CharacterData.PmcData.Hideout is not null &&
+                _profileActivityService.ActiveWithinLastMinutes(
+                    sessionID.Key,
+                    _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes
+                )
+                ) {
+                _hideoutHelper.UpdatePlayerHideout(sessionID.Key);
+            }
+        }
     }
 }
