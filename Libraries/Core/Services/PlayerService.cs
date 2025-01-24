@@ -1,7 +1,5 @@
-﻿using SptCommon.Annotations;
 using Core.Models.Eft.Common;
-using Core.Models.Utils;
-using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -10,13 +8,19 @@ public class PlayerService(
     DatabaseService _databaseService
 )
 {
+    /**
+     * Get level of player
+     * @param pmcData Player profile
+     * @returns Level of player
+     */
     public int? CalculateLevel(PmcData pmcData)
     {
         var accExp = 0;
 
-        for (int i = 0; i < _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable.Length; i++)
+        var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
+        for (var i = 0; i < expTable.Length; i++)
         {
-            accExp += _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable[i].Experience ?? 0;
+            accExp += expTable[i].Experience ?? 0;
 
             if (pmcData.Info.Experience < accExp)
             {
