@@ -6,6 +6,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
+using static Core.Services.MatchLocationService;
 
 namespace Core.Controllers;
 
@@ -36,7 +37,7 @@ public class MatchController(
     /// Handle client/match/group/delete
     /// </summary>
     /// <param name="info"></param>
-    public void DeleteGroup(object info) // TODO: info is `any` in the node server
+    public void DeleteGroup(DeleteGroupRequest info) // TODO: info is `any` in the node server
     {
         _matchLocationService.DeleteGroup(info);
     }
