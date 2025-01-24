@@ -40,7 +40,7 @@ public class RepairController(
                 body.TId,
                 output);
 
-            if (output.Warnings.Count > 0)
+            if (output.Warnings?.Count > 0)
             {
                 return output;
             }

@@ -20,7 +20,7 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class RepairService(
     ISptLogger<RepairService> _logger,
-    RandomUtil randomUtil,
+    RandomUtil _randomUtil,
     DatabaseService _databaseService,
     ItemHelper _itemHelper,
     TraderHelper _traderHelper,
@@ -31,10 +31,7 @@ public class RepairService(
     ConfigServer _configServer,
     WeightedRandomHelper _weightedRandomHelper)
 {
-    private readonly ISptLogger<RepairService> _logger;
-    private readonly RandomUtil _randomUtil;
-    private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
+    protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
 
 
     /// <summary>
