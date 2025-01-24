@@ -56,7 +56,7 @@ public class TradeHelper(
     )
     {
         List<Item> offerItems = [];
-        Action<double>? buyCallback;
+        Action<int>? buyCallback;
 
         if (buyRequestData.TransactionId.ToLower() == "ragfair")
         {

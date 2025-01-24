@@ -83,7 +83,7 @@ public record FenceConfig
 
     /** Key: item tpl */
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
-    public Dictionary<string, MinMax> ItemStackSizeOverrideMinMax { get; set; }
+    public Dictionary<string, MinMax?> ItemStackSizeOverrideMinMax { get; set; }
 
     [JsonPropertyName("itemTypeLimits")]
     public Dictionary<string, int> ItemTypeLimits { get; set; }
@@ -97,11 +97,11 @@ public record FenceConfig
 
     /** Max rouble price before item is not listed on flea */
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
-    public Dictionary<string, double> ItemCategoryRoublePriceLimit { get; set; }
+    public Dictionary<string, double?> ItemCategoryRoublePriceLimit { get; set; }
 
     /** Each slotid with % to be removed prior to listing on fence */
     [JsonPropertyName("presetSlotsToRemoveChancePercent")]
-    public Dictionary<string, double> PresetSlotsToRemoveChancePercent { get; set; }
+    public Dictionary<string, double?> PresetSlotsToRemoveChancePercent { get; set; }
 
     /** Block seasonal items from appearing when season is inactive */
     [JsonPropertyName("blacklistSeasonalItems")]
