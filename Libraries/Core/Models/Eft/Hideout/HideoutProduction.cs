@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.Hideout;
 
@@ -21,7 +22,7 @@ public record HideoutProduction
     public string? Id { get; set; }
 
     [JsonPropertyName("areaType")]
-    public int? AreaType { get; set; }
+    public HideoutAreas? AreaType { get; set; }
 
     [JsonPropertyName("requirements")]
     public List<Requirement>? Requirements { get; set; }

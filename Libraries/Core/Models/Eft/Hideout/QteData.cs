@@ -89,24 +89,24 @@ public record QteEffect
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public QteRewardType? EffectType { get; set; }
+    public QteRewardType? Type { get; set; }
 
     [JsonPropertyName("skillId")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public SkillTypes? SkillIdentifier { get; set; }
+    public SkillTypes? SkillId { get; set; }
 
     [JsonPropertyName("levelMultipliers")]
     public List<SkillLevelMultiplier>? LevelMultipliers { get; set; }
 
     [JsonPropertyName("time")]
-    public int? DurationInMilliseconds { get; set; }
+    public int? Time { get; set; }
 
     [JsonPropertyName("weight")]
-    public float? EffectWeight { get; set; }
+    public float? Weight { get; set; }
 
     [JsonPropertyName("result")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public QteResultType? ResultType { get; set; }
+    public QteResultType? Result { get; set; }
 }
 
 public record SkillLevelMultiplier

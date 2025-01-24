@@ -536,7 +536,7 @@ public record InsuredItem
 
 public record Hideout
 {
-    public Dictionary<string, Production>? Production { get; set; }
+    public Dictionary<string, Production?>? Production { get; set; }
     public List<BotHideoutArea>? Areas { get; set; }
     public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
     
