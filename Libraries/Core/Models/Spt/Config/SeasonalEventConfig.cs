@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
@@ -132,7 +132,7 @@ public record ZombieSettings
     public bool? Enabled { get; set; }
     
     [JsonPropertyName("mapInfectionAmount")]
-    public Dictionary<string, int>? MapInfectionAmount { get; set; }
+    public Dictionary<string, double>? MapInfectionAmount { get; set; }
 
     [JsonPropertyName("disableBosses")]
     public List<string>? DisableBosses { get; set; }

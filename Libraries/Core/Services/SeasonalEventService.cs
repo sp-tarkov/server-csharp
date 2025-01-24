@@ -6,6 +6,10 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
+using SptCommon.Extensions;
+using Core.Models.Spt.Bots;
+using Core.Utils;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Core.Services;
 
@@ -17,6 +21,7 @@ public class SeasonalEventService(
     LocalisationService _localisationService,
     BotHelper _botHelper,
     ProfileHelper _profileHelper,
+    //DatabaseImporter _databaseImporter,
     ConfigServer _configServer
 )
 {
@@ -670,7 +675,35 @@ public class SeasonalEventService(
 
     protected void ConfigureZombies(ZombieSettings zombieSettings)
     {
-        throw new NotImplementedException();
+        var globals = _databaseService.GetGlobals();
+        var infectionHalloween = globals.Configuration.SeasonActivity.InfectionHalloween;
+        infectionHalloween.DisplayUIEnabled = true;
+        infectionHalloween.Enabled = true;
+
+        var globalInfectionDict = globals.LocationInfection.GetAllPropsAsDict();
+        foreach (var infectedLocationKvP in zombieSettings.MapInfectionAmount) {
+            var mappedLocations = GetLocationFromInfectedLocation(infectedLocationKvP.Key);
+
+            foreach (var locationKey in mappedLocations) {
+                _databaseService.GetLocation(
+                    locationKey.ToLower()).Base.Events.Halloween2024.InfectionPercentage =
+                    zombieSettings.MapInfectionAmount[infectedLocationKvP.Key];
+            }
+
+            globalInfectionDict[infectedLocationKvP.Key] =
+                zombieSettings.MapInfectionAmount[infectedLocationKvP.Key];
+        }
+
+        foreach (var locationId in zombieSettings.DisableBosses) {
+            _databaseService.GetLocation(locationId).Base.BossLocationSpawn = [];
+        }
+
+        foreach (var locationId in zombieSettings.DisableWaves) {
+            _databaseService.GetLocation(locationId).Base.Waves = [];
+        }
+
+        var locationsWithActiveInfection = GetLocationsWithZombies(zombieSettings.MapInfectionAmount);
+        AddEventBossesToMaps("halloweenzombies", locationsWithActiveInfection);
     }
 
     /// <summary>
@@ -680,7 +713,18 @@ public class SeasonalEventService(
     /// <returns>List of location ids</returns>
     protected List<string> GetLocationsWithZombies(Dictionary<string, double> locationInfections)
     {
-        throw new NotImplementedException();
+        var result = new List<string>();
+
+        // Get only the locations with an infection above 0
+        var infectionKeys = locationInfections.Where(
+            (location) => locationInfections[location.Key] > 0);
+
+        // Convert the infected location id into its generic location id
+        foreach (var location in infectionKeys) {
+            result.AddRange(GetLocationFromInfectedLocation(location.Key));
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -690,12 +734,36 @@ public class SeasonalEventService(
     /// <returns>List of locations</returns>
     protected List<string> GetLocationFromInfectedLocation(string infectedLocationKey)
     {
-        throw new NotImplementedException();
+        return infectedLocationKey switch
+        {
+            "factory4" => ["factory4_day", "factory4_night"],
+            "Sandbox" => ["sandbox", "sandbox_high"],
+            _ => [infectedLocationKey]
+        };
     }
 
     protected void AddEventWavesToMaps(string eventType)
     {
-        throw new NotImplementedException();
+        var wavesToAddByMap = _seasonalEventConfig.EventWaves[eventType.ToLower()];
+
+        if (wavesToAddByMap is null)
+        {
+            _logger.Warning($"Unable to add: { eventType} waves, eventWaves is missing");
+            return;
+        }
+
+        var locations = _databaseService.GetLocations().GetAllPropsAsDict();
+        foreach (var map in wavesToAddByMap) {
+            var wavesToAdd = wavesToAddByMap[map.Key];
+            if (wavesToAdd is null)
+            {
+                _logger.Warning($"Unable to add: {eventType} wave to: {map.Key}");
+                continue;
+            }
+
+            ((Location)locations[map.Key]).Base.Waves = [];
+            ((Location)locations[map.Key]).Base.Waves.AddRange(wavesToAdd);
+        }
     }
 
     /// <summary>
@@ -705,7 +773,36 @@ public class SeasonalEventService(
     /// <param name="mapIdWhitelist">OPTIONAL - Maps to add bosses to</param>
     protected void AddEventBossesToMaps(string eventType, List<string> mapIdWhitelist = null)
     {
-        throw new NotImplementedException();
+        var botsToAddPerMap = _seasonalEventConfig.EventBossSpawns[eventType.ToLower()];
+        if (botsToAddPerMap is null)
+        {
+            _logger.Warning($"Unable to add: ${eventType} bosses, eventBossSpawns is missing");
+            return;
+        }
+
+        var mapKeys = botsToAddPerMap;
+        var locations = _databaseService.GetLocations().GetAllPropsAsDict();
+        foreach (var map in mapKeys) {
+            var bossesToAdd = botsToAddPerMap[map.Key];
+            if (bossesToAdd is null)
+            {
+                _logger.Warning($"Unable to add: ${ eventType} bosses to: ${map.Key}");
+                continue;
+            }
+
+            if (mapIdWhitelist is null || !mapIdWhitelist.Contains(map.Key))
+            {
+                continue;
+            }
+
+            foreach (var boss in bossesToAdd) {
+                var mapBosses = ((Location)locations[map.Key]).Base.BossLocationSpawn;
+                if (!mapBosses.Any((bossSpawn) => bossSpawn.BossName == boss.BossName))
+                {
+                    ((Location)locations[map.Key]).Base.BossLocationSpawn.AddRange(bossesToAdd);
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -714,7 +811,35 @@ public class SeasonalEventService(
     /// <param name="eventType">What event is active</param>
     protected void AdjustTraderIcons(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        switch (eventType)
+        {
+            case SeasonalEventType.Halloween:
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5a7c2ebb86f7746e324a06ab.png"] =
+                    "./assets/images/traders/halloween/5a7c2ebb86f7746e324a06ab.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5ac3b86a86f77461491d1ad8.png"] =
+                    "./assets/images/traders/halloween/5ac3b86a86f77461491d1ad8.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/5c06531a86f7746319710e1b.png"] =
+                    "./assets/images/traders/halloween/5c06531a86f7746319710e1b.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91ca086f77469a81232e4.png"] =
+                    "./assets/images/traders/halloween/59b91ca086f77469a81232e4.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cab86f77469aa5343ca.png"] =
+                    "./assets/images/traders/halloween/59b91cab86f77469aa5343ca.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cb486f77469a81232e5.png"] =
+                    "./assets/images/traders/halloween/59b91cb486f77469a81232e5.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/59b91cbd86f77469aa5343cb.png"] =
+                    "./assets/images/traders/halloween/59b91cbd86f77469aa5343cb.png";
+                _httpConfig.ServerImagePathOverride["./assets/images/traders/579dc571d53a0658a154fbec.png"] =
+                    "./assets/images/traders/halloween/579dc571d53a0658a154fbec.png";
+                break;
+            case SeasonalEventType.Christmas:
+                // TODO: find christmas trader icons
+                break;
+        }
+
+        // TODO: implement this properly as new function
+        //_databaseImporter.LoadImages($"{ _databaseImporter.GetSptDataPath()} images /"
+        //    ,["traders"]
+        //    ,["/files/trader/avatar/"]);
     }
 
     /// <summary>
