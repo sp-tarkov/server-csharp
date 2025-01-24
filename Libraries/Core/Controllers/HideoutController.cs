@@ -666,7 +666,7 @@ public class HideoutController(
                 continue;
             }
 
-            if (_hideoutHelper.IsProductionType(production.Value))
+            if (production.Value.GetType() == typeof(HideoutProduction))
             {
                 // Production or ScavCase
                 if (production.Value.RecipeId == request.RecipeId)
@@ -922,7 +922,7 @@ public class HideoutController(
         string? prodId = null;
         foreach (var production in ongoingProductions)
         {
-            if (_hideoutHelper.IsProductionType(production.Value))
+            if (production.Value.GetType() == typeof(HideoutProduction))
             {
                 // Production or ScavCase
                 if ((production.Value).RecipeId == request.RecipeId)
