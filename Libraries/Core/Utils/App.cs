@@ -82,6 +82,10 @@ public class App
         _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
         
         _logger.Success(GetRandomisedStartMessage());
+        _logger.Success(".oooO  Oooo.");
+        _logger.Success("( ( )  ( ) )");
+        _logger.Success(" \\ (    ) /");
+        _logger.Success("  \\_)  (_/");
     }
 
     protected string GetRandomisedStartMessage()
