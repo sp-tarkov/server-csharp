@@ -71,7 +71,7 @@ public class PMCLootGenerator
             var itemsToAdd = items.Where(
                 (item) =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.isValidItem(item.Value.Id) &&
+                    _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent) &&
                     ItemFitsInto1By2Slot(item.Value)
@@ -151,7 +151,7 @@ public class PMCLootGenerator
             var itemsToAdd = items.Where(
                 (item) =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.isValidItem(item.Value.Id) &&
+                    _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent) &&
                     ItemFitsInto2By2Slot(item.Value));
@@ -233,7 +233,7 @@ public class PMCLootGenerator
             var itemsToAdd = items.Where(
                 (item) =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.isValidItem(item.Value.Id) &&
+                    _itemHelper.IsValidItem(item.Value.Id) &&
                 !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent));
 

@@ -1,5 +1,7 @@
 using Core.Helpers;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Spt.Config;
+using Core.Servers;
 using SptCommon.Annotations;
 
 namespace Core.Utils;
@@ -7,36 +9,23 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
     RagfairServerHelper ragfairServerHelper,
-    ProfileHelper profileHelper)
+    ProfileHelper profileHelper,
+    ConfigServer configServer)
 {
+    
     protected Dictionary<string, RagfairOffer> _offersById;
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTemplate;
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTrader;
-    protected int _maxOffersPerTemplate; //TODO - set from config?
-
-    public void SetMaxOffersPerTemplate(int max)
-    {
-        _maxOffersPerTemplate = max;
-    }
-
+    protected int _maxOffersPerTemplate = (int) configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
+    
     public RagfairOffer? GetOfferById(string id)
     {
-        if (_offersById.ContainsKey(id))
-        {
-            return _offersById[id];
-        }
-
-        return null;
+        return _offersById.GetValueOrDefault(id);
     }
 
-    public List<RagfairOffer> GetOffersByTemplate(string templateId)
+    public List<RagfairOffer>? GetOffersByTemplate(string templateId)
     {
-        if (_offersByTemplate.ContainsKey(templateId))
-        {
-            return _offersByTemplate[templateId].Values.ToList();
-        }
-
-        return null;
+        return _offersByTemplate.TryGetValue(templateId, out var value) ? value.Values.ToList() : null;
     }
 
     public List<RagfairOffer> GetOffersByTrader(string traderId)

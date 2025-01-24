@@ -44,7 +44,7 @@ public record RagfairOffer
 
     /** Rouble price - same as requirementsCost */
     [JsonPropertyName("summaryCost")]
-    public decimal? SummaryCost { get; set; }
+    public double? SummaryCost { get; set; }
 
     [JsonPropertyName("user")]
     public RagfairOfferUser? User { get; set; }

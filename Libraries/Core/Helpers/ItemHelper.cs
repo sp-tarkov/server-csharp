@@ -243,7 +243,7 @@ public class ItemHelper(
      * @param tpl the template id / tpl
      * @returns boolean; true for items that may be in player possession and not quest items
      */
-    public bool isValidItem(string tpl, List<string> invalidBaseTypes = null)
+    public bool IsValidItem(string tpl, List<string> invalidBaseTypes = null)
     {
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
         var itemDetails = GetItem(tpl);

@@ -26,7 +26,7 @@ public class RagfairCallbacks(
 
     public Task OnLoad()
     {
-        // await _ragfairServer.Load();
+        _ragfairServer.Load();
         return Task.CompletedTask;
     }
 

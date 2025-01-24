@@ -2,168 +2,344 @@ using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using Core.Routers;
+using Core.Servers;
 using Core.Utils;
+using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferService(
-    ISptLogger<RagfairOfferService> _logger,
-    TimeUtil _timeUtil,
-    DatabaseService _databaseService,
-    RagfairOfferHelper _ragfairOfferHelper ,
-    RagfairOfferHolder _ragfairOfferHolder,
-    LocalisationService _localisationService)
+    ISptLogger<RagfairOfferService> logger,
+    TimeUtil timeUtil,
+    HashUtil hashUtil,
+    DatabaseService databaseService,
+    SaveServer saveServer,
+    RagfairServerHelper ragfairServerHelper,
+    ItemHelper itemHelper,
+    ProfileHelper profileHelper,
+    LocalisationService localisationService,
+    ConfigServer configServer,
+    ICloner cloner,
+    RagfairOfferHolder ragfairOfferHolder
+)
 {
-    /// <summary>
-    /// Get all offers
-    /// </summary>
-    /// <returns>List of RagfairOffer</returns>
+    protected bool playerOffersLoaded;
+
+    /** Offer id + offer object */
+    protected Dictionary<string, RagfairOffer> expiredOffers = new();
+
+    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+
+    /**
+     * Get all offers
+     * @returns IRagfairOffer array
+     */
     public List<RagfairOffer> GetOffers()
     {
-        throw new NotImplementedException();
+        return ragfairOfferHolder.GetOffers();
     }
 
     public RagfairOffer? GetOfferByOfferId(string offerId)
     {
-        throw new NotImplementedException();
+        return ragfairOfferHolder.GetOfferById(offerId);
     }
 
-    public List<RagfairOffer> GetOffersOfType(string templateId)
+    public List<RagfairOffer>? GetOffersOfType(string templateId)
     {
-        throw new NotImplementedException();
+        return ragfairOfferHolder.GetOffersByTemplate(templateId);
     }
 
     public void AddOffer(RagfairOffer offer)
     {
-        throw new NotImplementedException();
+        ragfairOfferHolder.AddOffer(offer);
     }
 
     public void AddOfferToExpired(RagfairOffer staleOffer)
     {
-        throw new NotImplementedException();
+        expiredOffers[staleOffer.Id] = staleOffer;
     }
 
-    /// <summary>
-    /// Get total count of current expired offers
-    /// </summary>
-    /// <returns>Number of expired offers</returns>
+    /**
+     * Get total count of current expired offers
+     * @returns Number of expired offers
+     */
     public int GetExpiredOfferCount()
     {
-        Console.WriteLine($"actually implement me plz: owo: GetExpiredOfferCount");
-        return 0;
+        return expiredOffers.Keys.Count;
     }
 
-    /// <summary>
-    /// Get a list of lists of expired offer items + children
-    /// </summary>
-    /// <returns>Expired offer assorts</returns>
+    /**
+     * Get an array of arrays of expired offer items + children
+     * @returns Expired offer assorts
+     */
     public List<List<Item>> GetExpiredOfferAssorts()
     {
-        Console.WriteLine($"actually implement me plz: owo: GetExpiredOfferAssorts");
-        return new List<List<Item>>();
+        var expiredItems = new List<List<Item>>();
+
+        foreach (var expiredOfferId in expiredOffers.Keys)
+        {
+            var expiredOffer = expiredOffers[expiredOfferId];
+            expiredItems.Add(expiredOffer.Items);
+        }
+
+        return expiredItems;
     }
 
-    /// <summary>
-    /// Clear out internal expiredOffers dictionary of all items
-    /// </summary>
+    /**
+     * Clear out internal expiredOffers dictionary of all items
+     */
     public void ResetExpiredOffers()
     {
-        Console.WriteLine($"actually implement me plz: owo: ResetExpiredOffers");
+        expiredOffers = new();
     }
 
-    /// <summary>
-    /// Does the offer exist on the ragfair
-    /// </summary>
-    /// <param name="offerId">offer id to check for</param>
-    /// <returns>offer exists - true</returns>
+    /**
+     * Does the offer exist on the ragfair
+     * @param offerId offer id to check for
+     * @returns offer exists - true
+     */
     public bool DoesOfferExist(string offerId)
     {
-        throw new NotImplementedException();
+        return ragfairOfferHolder.GetOfferById(offerId) != null;
     }
 
-    /// <summary>
-    /// Remove an offer from ragfair by offer id
-    /// </summary>
-    /// <param name="offerId">Offer id to remove</param>
+    /**
+     * Remove an offer from ragfair by offer id
+     * @param offerId Offer id to remove
+     */
     public void RemoveOfferById(string offerId)
     {
-        throw new NotImplementedException();
+        var offer = ragfairOfferHolder.GetOfferById(offerId);
+        if (offer == null)
+        {
+            logger.Warning(localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+            return;
+        }
+
+        ragfairOfferHolder.RemoveOffer(offer);
     }
 
-    /// <summary>
-    /// Reduce size of an offer stack by specified amount
-    /// </summary>
-    /// <param name="offerId">Offer to adjust stack size of</param>
-    /// <param name="amount">How much to deduct from offers stack size</param>
+    /**
+     * Reduce size of an offer stack by specified amount
+     * @param offerId Offer to adjust stack size of
+     * @param amount How much to deduct from offers stack size
+     */
     public void RemoveOfferStack(string offerId, int amount)
     {
-        throw new NotImplementedException();
+        var offer = ragfairOfferHolder.GetOfferById(offerId);
+        if (offer != null)
+        {
+            offer.Items[0].Upd.StackObjectsCount -= amount;
+            if (offer.Items[0].Upd.StackObjectsCount <= 0)
+            {
+                ProcessStaleOffer(offer);
+            }
+        }
     }
 
     public void RemoveAllOffersByTrader(string traderId)
     {
-        throw new NotImplementedException();
+        ragfairOfferHolder.RemoveAllOffersByTrader(traderId);
     }
 
-    /// <summary>
-    /// Do the trader offers on flea need to be refreshed
-    /// </summary>
-    /// <param name="traderId">Trader to check</param>
-    /// <returns>true if they do</returns>
-    public bool TraderOffersNeedRefreshing(string traderId)
+    /**
+     * Do the trader offers on flea need to be refreshed
+     * @param traderID Trader to check
+     * @returns true if they do
+     */
+    public bool TraderOffersNeedRefreshing(string traderID)
     {
-        var trader = _databaseService.GetTrader(traderId);
-        if (trader?.Base == null) {
-            _logger.Error(_localisationService.GetText("ragfair-trader_missing_base_file", traderId));
-
+        var trader = databaseService.GetTrader(traderID);
+        if (trader?.Base == null)
+        {
+            logger.Error(localisationService.GetText("ragfair-trader_missing_base_file", traderID));
             return false;
         }
 
         // No value, occurs when first run, trader offers need to be added to flea
         trader.Base.RefreshTraderRagfairOffers ??= true;
 
-        return trader.Base.RefreshTraderRagfairOffers.GetValueOrDefault(false);
+        return trader.Base.RefreshTraderRagfairOffers.Value;
     }
 
     public void AddPlayerOffers()
     {
-        Console.WriteLine($"actually implement me plz: owo: AddPlayerOffers");
-        // throw new NotImplementedException();
+        if (!playerOffersLoaded)
+        {
+            foreach (var sessionID in saveServer.GetProfiles().Keys)
+            {
+                var pmcData = saveServer.GetProfile(sessionID)?.CharacterData?.PmcData;
+
+                if (pmcData?.RagfairInfo == null || pmcData.RagfairInfo.Offers == null)
+                {
+                    // Profile is wiped
+                    continue;
+                }
+
+                ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
+            }
+
+            playerOffersLoaded = true;
+        }
     }
 
     public void ExpireStaleOffers()
     {
-        var time = _timeUtil.GetTimeStamp();
-        foreach (var staleOffer in _ragfairOfferHolder.GetStaleOffers(time)) {
+        var time = timeUtil.GetTimeStamp();
+        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time))
+        {
             ProcessStaleOffer(staleOffer);
         }
     }
 
-    /// <summary>
-    /// Remove stale offer from flea
-    /// </summary>
-    /// <param name="staleOffer">Stale offer to process</param>
+    /**
+     * Remove stale offer from flea
+     * @param staleOffer Stale offer to process
+     */
     protected void ProcessStaleOffer(RagfairOffer staleOffer)
     {
-        throw new NotImplementedException();
+        var staleOfferUserId = staleOffer.User.Id;
+        var isTrader = ragfairServerHelper.IsTrader(staleOfferUserId);
+        var isPlayer = profileHelper.IsPlayer(staleOfferUserId.RegexReplace("^pmc", ""));
+
+        // Skip trader offers, managed by RagfairServer.update()
+        if (isTrader)
+        {
+            return;
+        }
+
+        // Handle dynamic offer
+        if (!(isTrader || isPlayer))
+        {
+            // Dynamic offer
+            AddOfferToExpired(staleOffer);
+        }
+
+        // Handle player offer - items need returning/XP adjusting. Checking if offer has actually expired or not.
+        if (isPlayer && staleOffer.EndTime <= timeUtil.GetTimeStamp())
+        {
+            ReturnPlayerOffer(staleOffer);
+            return;
+        }
+
+        // Remove expired existing offer from global offers
+        RemoveOfferById(staleOffer.Id);
     }
 
     protected void ReturnPlayerOffer(RagfairOffer playerOffer)
     {
-        throw new NotImplementedException();
+        var pmcId = playerOffer.User.Id;
+        var profile = profileHelper.GetProfileByPmcId(pmcId);
+        if (profile == null)
+        {
+            logger.Error($"Unable to return flea offer {playerOffer.Id} as the profile: {pmcId} could not be found");
+            return;
+        }
+
+        var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex((o) => o.Id == playerOffer.Id);
+        if (offerinProfileIndex == -1)
+        {
+            logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));
+            return;
+        }
+
+        // Reduce player ragfair rep
+        profile.RagfairInfo.Rating -= databaseService.GetGlobals().Configuration.RagFair.RatingDecreaseCount;
+        profile.RagfairInfo.IsRatingGrowing = false;
+
+        // Increment players 'notSellSum' value
+        profile.RagfairInfo.NotSellSum ??= 0;
+        profile.RagfairInfo.NotSellSum += playerOffer.SummaryCost;
+
+        var firstOfferItem = playerOffer.Items[0];
+        if (firstOfferItem.Upd.StackObjectsCount > firstOfferItem.Upd.OriginalStackObjectsCount)
+        {
+            playerOffer.Items[0].Upd.StackObjectsCount = firstOfferItem.Upd.OriginalStackObjectsCount;
+        }
+
+        playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
+        // Remove player offer from flea
+        ragfairOfferHolder.RemoveOffer(playerOffer);
+
+        // Send failed offer items to player in mail
+        var unstackedItems = UnstackOfferItems(playerOffer.Items);
+
+        // Need to regenerate Ids to ensure returned item(s) have correct parent values
+        var newParentId = hashUtil.Generate();
+        foreach (var item in unstackedItems)
+        {
+            // Refresh root items' parentIds
+            if (item.ParentId == "hideout")
+            {
+                item.ParentId = newParentId;
+            }
+        }
+
+        ragfairServerHelper.ReturnItems(profile.SessionId, unstackedItems);
+        profile.RagfairInfo.Offers.Splice(offerinProfileIndex, 1);
     }
 
-    /// <summary>
-    /// Flea offer items are stacked up often beyond the StackMaxSize limit
-    /// Unstack the items into a list of root items and their children
-    /// Will create new items equal to the
-    /// </summary>
-    /// <param name="items">Offer items to unstack</param>
-    /// <returns>Unstacked list of items</returns>
+    /**
+     * Flea offer items are stacked up often beyond the StackMaxSize limit
+     * Un stack the items into an array of root items and their children
+     * Will create new items equal to the
+     * @param items Offer items to unstack
+     * @returns Unstacked array of items
+     */
     protected List<Item> UnstackOfferItems(List<Item> items)
     {
-        throw new NotImplementedException();
+        var result = new List<Item>();
+        var rootItem = items[0];
+        var itemDetails = itemHelper.GetItem(rootItem.Template);
+        var itemMaxStackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;
+
+        var totalItemCount = rootItem.Upd?.StackObjectsCount ?? 1;
+
+        // Items within stack tolerance, return existing data - no changes needed
+        if (totalItemCount <= itemMaxStackSize)
+        {
+            // Edge case - Ensure items stack count isnt < 1
+            if (items[0]?.Upd?.StackObjectsCount < 1)
+            {
+                items[0].Upd.StackObjectsCount = 1;
+            }
+
+            return items;
+        }
+
+        // Single item with no children e.g. ammo, use existing de-stacking code
+        if (items.Count == 1)
+        {
+            return itemHelper.SplitStack(rootItem);
+        }
+
+        // Item with children, needs special handling
+        // Force new item to have stack size of 1
+        for (var index = 0; index < totalItemCount; index++)
+        {
+            var itemAndChildrenClone = cloner.Clone(items);
+
+            // Ensure upd object exits
+            itemAndChildrenClone[0].Upd ??= new();
+
+            // Force item to be singular
+            itemAndChildrenClone[0].Upd.StackObjectsCount = 1;
+
+            // Ensure items IDs are unique to prevent collisions when added to player inventory
+            var reparentedItemAndChildren = itemHelper.ReparentItemAndChildren(
+                itemAndChildrenClone[0],
+                itemAndChildrenClone
+            );
+            itemHelper.RemapRootItemId(reparentedItemAndChildren);
+
+            result.AddRange(reparentedItemAndChildren);
+        }
+
+        return result;
     }
 }

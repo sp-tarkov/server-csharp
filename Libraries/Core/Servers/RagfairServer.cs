@@ -6,130 +6,119 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Services;
 
-namespace Core.Servers
+namespace Core.Servers;
+
+[Injectable]
+public class RagfairServer(
+    ISptLogger<RagfairServer> _logger,
+    RagfairOfferService _ragfairOfferService,
+    RagfairCategoriesService _ragfairCategoriesService,
+    RagfairRequiredItemsService _ragfairRequiredItemsService,
+    LocalisationService _localisationService,
+    RagfairOfferGenerator _ragfairOfferGenerator,
+    ConfigServer _configServer
+)
 {
-    [Injectable]
-    public class RagfairServer
+    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+
+    public void Load()
     {
-        protected ISptLogger<RagfairServer> _logger;
-        protected RagfairOfferService _ragfairOfferService;
-        protected RagfairCategoriesService _ragfairCategoriesService;
-        protected RagfairRequiredItemsService _ragfairRequiredItemsService;
-        protected LocalisationService _localisationService;
-        protected RagfairOfferGenerator _ragfairOfferGenerator;
-        protected ConfigServer _configServer;
-        protected RagfairConfig _ragfairConfig;
+        _logger.Info(_localisationService.GetText("ragfair-generating_offers"));
+        _ragfairOfferGenerator.GenerateDynamicOffers();
+        Update();
+    }
 
-        public RagfairServer(
-            ISptLogger<RagfairServer> logger,
-            RagfairOfferService ragfairOfferService,
-            RagfairCategoriesService ragfairCategoriesService,
-            RagfairRequiredItemsService ragfairRequiredItemsService,
-            LocalisationService localisationService,
-            RagfairOfferGenerator ragfairOfferGenerator,
-            ConfigServer configServer)
+    public void Update()
+    {
+        _ragfairOfferService.ExpireStaleOffers();
+        // Generate trader offers
+        var traders = GetUpdateableTraders();
+        foreach (var traderId in traders)
         {
-            _logger = logger;
-            _ragfairOfferService = ragfairOfferService;
-            _ragfairCategoriesService = ragfairCategoriesService;
-            _ragfairRequiredItemsService = ragfairRequiredItemsService;
-            _localisationService = localisationService;
-            _ragfairOfferGenerator = ragfairOfferGenerator;
-            _configServer = configServer;
-
-            _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-        }
-
-        public void Load(){
-            _logger.Info(_localisationService.GetText("ragfair-generating_offers"));
-            _ragfairOfferGenerator.GenerateDynamicOffers(); 
-            Update();
-        }
-
-        public void Update()
-        {
-            _logger.Info($"reimplement me: Ragfairserver.Update()");
-            // _ragfairOfferService.ExpireStaleOffers();
-            //
-            // // Generate trader offers
-            // var traders = GetUpdateableTraders();
-            // foreach (var traderId in traders) {
-            //     // Edge case - skip generating fence offers
-            //     if (traderId == Traders.FENCE)
-            //     {
-            //         continue;
-            //     }
-            //
-            //     if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
-            //     {
-            //         _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
-            //     }
-            // }
-            //
-            // // Regenerate expired offers when over threshold limit
-            // if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
-            // {
-            //     var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
-            //     _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
-            //
-            //     // Clear out expired offers now we've generated them
-            //     _ragfairOfferService.ResetExpiredOffers();
-            // }
-            //
-            // _ragfairRequiredItemsService.BuildRequiredItemTable();
-        }
-
-        /**
-     * Get traders who need to be periodically refreshed
-     * @returns string array of traders
-     */
-        public List<string> GetUpdateableTraders()
-        {
-            return _ragfairConfig.Traders.Keys.ToList();
-        }
-
-        public Dictionary<string, int> GetAllActiveCategories(
-            bool fleaUnlocked,
-            SearchRequestData searchRequestData,
-            List<RagfairOffer> offers){
-            return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
-        }
-
-        /**
-     * Disable/Hide an offer from flea
-     * @param offerId
-     */
-        public void HideOffer(string offerId){
-            var offers = _ragfairOfferService.GetOffers();
-            var offer = offers.FirstOrDefault((x) => x.Id == offerId);
-
-            if (offer is null) {
-                _logger.Error(_localisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
-
-                return;
+            // Edge case - skip generating fence offers
+            if (traderId == Traders.FENCE)
+            {
+                continue;
             }
 
-            offer.Locked = true;
+            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
+            {
+                _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
+            }
         }
 
-        public RagfairOffer? GetOffer(string offerId) {
-            return _ragfairOfferService.GetOfferByOfferId(offerId);
+        // Regenerate expired offers when over threshold limit
+        if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
+        {
+            var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
+            _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
+
+            // Clear out expired offers now we've generated them
+            _ragfairOfferService.ResetExpiredOffers();
         }
 
-        public List<RagfairOffer> GetOffers() {
-            return _ragfairOfferService.GetOffers();
+        _ragfairRequiredItemsService.BuildRequiredItemTable();
+    }
+
+    /**
+ * Get traders who need to be periodically refreshed
+ * @returns string array of traders
+ */
+    public List<string> GetUpdateableTraders()
+    {
+        return _ragfairConfig.Traders.Keys.ToList();
+    }
+
+    public Dictionary<string, int> GetAllActiveCategories(
+        bool fleaUnlocked,
+        SearchRequestData searchRequestData,
+        List<RagfairOffer> offers
+    )
+    {
+        return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
+    }
+
+    /**
+ * Disable/Hide an offer from flea
+ * @param offerId
+ */
+    public void HideOffer(string offerId)
+    {
+        var offers = _ragfairOfferService.GetOffers();
+        var offer = offers.FirstOrDefault((x) => x.Id == offerId);
+
+        if (offer is null)
+        {
+            _logger.Error(_localisationService.GetText("ragfair-offer_not_found_unable_to_hide", offerId));
+
+            return;
         }
 
-        public void RemoveOfferStack(string offerId, int amount) {
-            _ragfairOfferService.RemoveOfferStack(offerId, amount);
-        }
+        offer.Locked = true;
+    }
 
-        public bool DoesOfferExist(string offerId) {
-            return _ragfairOfferService.DoesOfferExist(offerId);
-        }
+    public RagfairOffer? GetOffer(string offerId)
+    {
+        return _ragfairOfferService.GetOfferByOfferId(offerId);
+    }
 
-        public void AddPlayerOffers() {
-            _ragfairOfferService.AddPlayerOffers();
-        }
-}
+    public List<RagfairOffer> GetOffers()
+    {
+        return _ragfairOfferService.GetOffers();
+    }
+
+    public void RemoveOfferStack(string offerId, int amount)
+    {
+        _ragfairOfferService.RemoveOfferStack(offerId, amount);
+    }
+
+    public bool DoesOfferExist(string offerId)
+    {
+        return _ragfairOfferService.DoesOfferExist(offerId);
+    }
+
+    public void AddPlayerOffers()
+    {
+        _ragfairOfferService.AddPlayerOffers();
+    }
 }

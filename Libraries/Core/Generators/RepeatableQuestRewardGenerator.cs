@@ -695,7 +695,7 @@ public class RepeatableQuestRewardGenerator(
         List<string>? itemBaseWhitelist = null)
     {
         // Return early if not valid item to give as reward
-        if (!_itemHelper.isValidItem(tpl))
+        if (!_itemHelper.IsValidItem(tpl))
         {
             return false;
         }
