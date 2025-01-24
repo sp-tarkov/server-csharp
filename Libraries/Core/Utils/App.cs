@@ -124,7 +124,7 @@ public class App
                 else
                 {
                     /* temporary for debug */
-                    var warnTime = 20 * 60;
+                    const int warnTime = 20 * 60;
 
                     if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
                 }
