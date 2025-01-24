@@ -12,8 +12,6 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
-using Product = Core.Models.Eft.ItemEvent.Product;
-using System.Collections.Generic;
 
 namespace Core.Helpers;
 
@@ -544,7 +542,7 @@ public class QuestHelper(
     {
         output.ProfileChanges[sessionId]
             .Items.ChangedItems.Add(
-                new Product
+                new Item
                 {
                     Id = item.Id,
                     Template = item.Template,

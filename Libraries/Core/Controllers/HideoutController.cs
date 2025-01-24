@@ -600,7 +600,7 @@ public class HideoutController(
         return productionTime * fenceLevel.ScavCaseTimeModifier;
     }
 
-    public void AddScavCaseRewardsToProfile(PmcData pmcData, List<Product> rewards, string recipeId)
+    public void AddScavCaseRewardsToProfile(PmcData pmcData, List<Item> rewards, string recipeId)
     {
         pmcData.Hideout.Production[$"ScavCase{recipeId}"] = new Production { Products = rewards, RecipeId = recipeId };
     }
@@ -1236,7 +1236,7 @@ public class HideoutController(
             if (existingMannequin is null)
             {
                 var standId = _hashUtil.Generate();
-                var mannequinToAdd = new Product
+                var mannequinToAdd = new Item
                 {
                     Id = standId,
                     Template = ItemTpl.INVENTORY_DEFAULT,
@@ -1246,7 +1246,7 @@ public class HideoutController(
                 pmcData.Inventory.Items.Add(mannequinToAdd);
 
                 // Add pocket child item
-                var mannequinPocketItemToAdd = new Product
+                var mannequinPocketItemToAdd = new Item
                 {
                     Id = _hashUtil.Generate(),
                     Template = pmcData.Inventory.Items.FirstOrDefault(

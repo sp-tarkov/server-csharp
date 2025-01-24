@@ -13,7 +13,6 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Dialog;
-using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Controllers;
 
@@ -307,7 +306,7 @@ public class InventoryController(
         var mapItem = _mapMarkerService.EditMarkerOnMap(pmcData, request);
 
         // sync with client
-        output.ProfileChanges[sessionId].Items.ChangedItems.Add(mapItem.ConvertToProduct());
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(mapItem);
     }
 
     public void DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData request, string sessionId,
@@ -316,7 +315,7 @@ public class InventoryController(
         var mapItem = _mapMarkerService.DeleteMarkerFromMap(pmcData, request);
 
         // sync with client
-        output.ProfileChanges[sessionId].Items.ChangedItems.Add(mapItem.ConvertToProduct());
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(mapItem);
     }
 
     public void CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData request, string sessionId,
@@ -325,7 +324,7 @@ public class InventoryController(
         var adjustedMapItem = _mapMarkerService.CreateMarkerOnMap(pmcData, request);
 
         // Sync with client
-        output.ProfileChanges[sessionId].Items.ChangedItems.Add(adjustedMapItem.ConvertToProduct());
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(adjustedMapItem);
     }
 
     public void SortInventory(PmcData pmcData, InventorySortRequestData request, string sessionId,
@@ -682,7 +681,7 @@ public class InventoryController(
         destinationItem.Upd.StackObjectsCount +=
             sourceItem.Upd.StackObjectsCount; // Add source stackcount to destination
         output.ProfileChanges[sessionID]
-            .Items.DeletedItems.Add(new Product { Id = sourceItem.Id }); // Inform client source item being deleted
+            .Items.DeletedItems.Add(new Item { Id = sourceItem.Id }); // Inform client source item being deleted
 
         var indexOfItemToRemove = inventoryItems.From.FindIndex((x) => x.Id == sourceItem.Id);
         if (indexOfItemToRemove == -1)
@@ -733,7 +732,7 @@ public class InventoryController(
         // Inform client of change
         output.ProfileChanges[sessionID]
             .Items.NewItems.Add(
-                new Product
+                new Item
                 {
                     Id = request.NewItem,
                     Template = itemToSplit.Template,

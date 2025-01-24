@@ -2007,19 +2007,6 @@ public class ItemHelper(
             }
         }
     }
-
-    public Product GetProductFromItem(Item item)
-    {
-        return new Product
-        {
-            Id = item.Id,
-            Template = item.Template,
-            ParentId = item.ParentId,
-            SlotId = item.SlotId,
-            Location = ((JsonElement)item.Location).ToObject<ItemLocation>(),
-            Upd = item.Upd,
-        };
-    }
 }
 
 public class ItemSize

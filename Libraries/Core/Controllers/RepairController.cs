@@ -46,7 +46,7 @@ public class RepairController(
             }
 
             // Add repaired item to output object
-            output.ProfileChanges[sessionID].Items.ChangedItems.Add(repairDetails.RepairedItem.ConvertToProduct());
+            output.ProfileChanges[sessionID].Items.ChangedItems.Add(repairDetails.RepairedItem);
 
             // Add skill points for repairing weapons
             _repairService.AddRepairSkillPoints(sessionID, repairDetails, pmcData);

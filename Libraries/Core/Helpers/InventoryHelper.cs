@@ -15,7 +15,6 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
-using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Helpers;
 
@@ -146,7 +145,7 @@ public class InventoryHelper(
 
         // Add item + mods to output and profile inventory
         output.ProfileChanges[sessionId]
-            .Items.NewItems.AddRange(itemWithModsToAddClone.Select(x => x.ConvertToProduct()));
+            .Items.NewItems.AddRange(itemWithModsToAddClone.Select(x => x));
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
         _logger.Debug(
@@ -463,7 +462,7 @@ public class InventoryHelper(
         var insuredItems = profile.InsuredItems;
 
         // We have output object, inform client of root item deletion, not children
-        if (output is not null) output.ProfileChanges[sessionId].Items.DeletedItems.Add(new Product { Id = itemId });
+        if (output is not null) output.ProfileChanges[sessionId].Items.DeletedItems.Add(new Item { Id = itemId });
 
         foreach (var item in itemAndChildrenToRemove)
         {
@@ -576,7 +575,7 @@ public class InventoryHelper(
                 itemToReduce.Upd.StackObjectsCount -= remainingCount;
                 remainingCount = 0;
                 if (output is not null)
-                    output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce.ConvertToProduct());
+                    output.ProfileChanges[sessionId].Items.ChangedItems.Add(itemToReduce);
             }
 
             if (remainingCount == 0)

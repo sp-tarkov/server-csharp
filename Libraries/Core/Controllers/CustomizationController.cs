@@ -10,7 +10,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
-using Product = Core.Models.Eft.ItemEvent.Product;
 
 namespace Core.Controllers;
 
@@ -174,7 +173,7 @@ public class CustomizationController(
         {
             output.ProfileChanges[sessionId]
                 .Items?.DeletedItems.Add(
-                    new Product
+                    new Item
                     {
                         Id = inventoryItem.Id,
                         Template = inventoryItem.Template,
@@ -202,7 +201,7 @@ public class CustomizationController(
         {
             output.ProfileChanges[sessionId]
                 .Items?.DeletedItems.Add(
-                    new Product
+                    new Item
                     {
                         Id = inventoryItem.Id,
                         Template = inventoryItem.Template,
@@ -225,7 +224,7 @@ public class CustomizationController(
         inventoryItem.Upd.StackObjectsCount -= paymentItemDetails.Count;
         output.ProfileChanges[sessionId]
             .Items?.ChangedItems?.Add(
-                new Product
+                new Item
                 {
                     Id = inventoryItem.Id,
                     Template = inventoryItem.Template,

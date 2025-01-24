@@ -235,7 +235,7 @@ namespace Core.Helpers
             var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
 
             // Area that will be used to craft unlocked item
-            var desiredHideoutAreaType = int.Parse(craftUnlockReward.TraderId.ToString());
+            var desiredHideoutAreaType = (HideoutAreas)craftUnlockReward.TraderId;
 
             var matchingProductions = craftingRecipes.Where(
                     (prod) =>

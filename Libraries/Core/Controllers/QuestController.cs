@@ -13,7 +13,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using Product = Core.Models.Eft.ItemEvent.Product;
 
 
 namespace Core.Controllers;
@@ -297,7 +296,7 @@ public class QuestController(
                 // Important: don't tell the client to remove the attachments, it will handle it
                 output.ProfileChanges[sessionID]
                     .Items.DeletedItems.Add(
-                        new Product
+                        new Item
                         {
                             Id = itemHandover.Id
                         }
