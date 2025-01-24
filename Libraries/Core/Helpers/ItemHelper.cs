@@ -470,7 +470,7 @@ public class ItemHelper(
     /// <returns>List of TemplateItem objects</returns>
     public List<TemplateItem> GetItems()
     {
-        return _cloner.Clone(_databaseService.GetItems().Values).ToList();
+        return _cloner.Clone(_databaseService.GetItems().Values.ToList());
     }
 
     /**
@@ -1822,7 +1822,7 @@ public class ItemHelper(
             }
 
             // Has parentId + no remapping exists for its parent
-            if (mod.ParentId is not null && idMappings[mod.ParentId] is null)
+            if (mod.ParentId is not null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
             {
                 // Make remapping for items parentId
                 idMappings[mod.ParentId] = _hashUtil.Generate();

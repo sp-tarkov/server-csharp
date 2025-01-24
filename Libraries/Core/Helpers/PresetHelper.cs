@@ -63,7 +63,7 @@ public class PresetHelper(
         if (_defaultEquipmentPresets == null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            tempPresets = tempPresets.Where(
+            _defaultEquipmentPresets = tempPresets.Where(
                     p =>
                         p.Value.Encyclopedia != null &&
                         _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)

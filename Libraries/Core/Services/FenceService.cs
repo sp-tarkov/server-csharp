@@ -756,7 +756,7 @@ public class FenceService(
                 continue;
             }
 
-            if (price > priceLimits[itemDbDetails.Parent])
+            if (priceLimits.ContainsKey(itemDbDetails.Parent) && price > priceLimits[itemDbDetails.Parent])
             {
                 // Too expensive for fence, try another item
                 i--;
@@ -1024,11 +1024,9 @@ public class FenceService(
                 RemoveRandomModsOfItem(presetWithChildrenClone);
 
                 // Check chosen item is below price cap
-                var priceLimitRouble = traderConfig.Fence.ItemCategoryRoublePriceLimit[rootItemDb.Parent];
-                var itemPrice =
-                    handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
-                    itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
-                if (priceLimitRouble != null)
+                var itemPrice = handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
+                                itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
+                if (traderConfig.Fence.ItemCategoryRoublePriceLimit.TryGetValue(rootItemDb.Parent, out var priceLimitRouble))
                 {
                     if (itemPrice > priceLimitRouble)
                     {
@@ -1305,15 +1303,13 @@ public class FenceService(
         }
 
         // Check for override in config, use values if exists
-        overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Id];
-        if (overrideValues != null)
+        if (traderConfig.Fence.ItemStackSizeOverrideMinMax.TryGetValue(itemDbDetails.Id, out overrideValues))
         {
             return randomUtil.GetInt((int)overrideValues.Min, (int)overrideValues.Max);
         }
 
         // Check for parent override
-        overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
-        if (overrideValues != null)
+        if (traderConfig.Fence.ItemStackSizeOverrideMinMax.TryGetValue(itemDbDetails.Parent, out overrideValues))
         {
             return randomUtil.GetInt((int)overrideValues.Min, (int)overrideValues.Max);
         }
@@ -1366,8 +1362,7 @@ public class FenceService(
     protected bool PresetModItemWillBeRemoved(Item weaponMod, List<string> itemsBeingDeleted)
     {
         var slotIdsThatCanFail = traderConfig.Fence.PresetSlotsToRemoveChancePercent;
-        var removalChance = slotIdsThatCanFail[weaponMod.SlotId];
-        if (removalChance is null or 0.0)
+        if (!slotIdsThatCanFail.TryGetValue(weaponMod.SlotId, out var removalChance) || removalChance == 0.0)
         {
             return false;
         }

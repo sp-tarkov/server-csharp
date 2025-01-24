@@ -179,11 +179,16 @@ public class FenceBaseAssortGenerator(
             var itemQualityModifier = itemHelper.GetItemQualityModifierForItems(itemAndChildren);
 
             // Multiply weapon+mods rouble price by quality modifier
-            baseFenceAssort.BarterScheme[itemAndChildren[0].Id] = [[]];
-            baseFenceAssort.BarterScheme[itemAndChildren[0].Id][0][0] = new BarterScheme()
+            baseFenceAssort.BarterScheme[itemAndChildren[0].Id] = new()
             {
-                Template = Money.ROUBLES,
-                Count = Math.Round(price * itemQualityModifier),
+                new()
+                {
+                    new BarterScheme
+                    {
+                        Template = Money.ROUBLES,
+                        Count = Math.Round(price * itemQualityModifier),
+                    }
+                }
             };
 
             baseFenceAssort.LoyalLevelItems[itemAndChildren[0].Id] = 1;
