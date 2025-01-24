@@ -125,7 +125,7 @@ public class HideoutCallbacks(
     /// <summary>
     /// Handle client/game/profile/items/moving - HideoutCancelProductionCommand
     /// </summary>
-    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutImproveAreaRequestData request, string sessionID)
+    public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutCancelProductionRequestData request, string sessionID)
     {
          return _hideoutController.CancelProduction(sessionID, pmcData, request);
     }
