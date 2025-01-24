@@ -5,6 +5,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Fence;
+using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
@@ -15,7 +16,7 @@ namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class FenceService(
-    ILogger logger,
+    ISptLogger<FenceService> logger,
     TimeUtil timeUtil,
     RandomUtil randomUtil,
     DatabaseService databaseService,
