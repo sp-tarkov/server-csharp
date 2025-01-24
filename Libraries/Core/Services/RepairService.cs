@@ -1,17 +1,19 @@
 using System.Text.Json.Serialization;
 using Core.Helpers;
 using Core.Models.Common;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
+using Core.Models.Eft.Trade;
 using Core.Models.Enums;
+using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using Core.Models.Spt.Config;
-using Core.Models.Eft.Trade;
+using SptCommon.Annotations;
+using SptCommon.Extensions;
+using BonusSettings = Core.Models.Spt.Config.BonusSettings;
 
 namespace Core.Services;
 
@@ -36,7 +38,7 @@ public class RepairService(
 
 
     /// <summary>
-    /// Use trader to repair an items durability
+    ///     Use trader to repair an items durability
     /// </summary>
     /// <param name="sessionID">Session id</param>
     /// <param name="pmcData">Profile to find item to repair in</param>
@@ -50,13 +52,14 @@ public class RepairService(
         string traderId
     )
     {
-        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == repairItemDetails.Id);
+        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == repairItemDetails.Id);
         if (itemToRepair is null)
         {
             _logger.Error(
                 _localisationService.GetText(
                     "repair-unable_to_find_item_in_inventory_cant_repair",
-                    repairItemDetails.Id)
+                    repairItemDetails.Id
+                )
             );
         }
 
@@ -66,6 +69,7 @@ public class RepairService(
         {
             _logger.Error(_localisationService.GetText("repair-unable_to_find_trader_details_by_id", traderId));
         }
+
         var repairQualityMultiplier = traderRepairDetails.Quality;
         var repairRate = priceCoef <= 0 ? 1 : priceCoef / 100 + 1;
 
@@ -80,28 +84,34 @@ public class RepairService(
             repairItemDetails.Count.Value,
             false,
             repairQualityMultiplier.Value,
-            repairQualityMultiplier != 0 && _repairConfig.ApplyRandomizeDurabilityLoss);
+            repairQualityMultiplier != 0 && _repairConfig.ApplyRandomizeDurabilityLoss
+        );
 
         // get repair price
         var itemRepairCost = items[itemToRepair.Template].Properties.RepairCost;
         if (itemRepairCost is null)
         {
             _logger.Error(
-                _localisationService.GetText("repair-unable_to_find_item_repair_cost", itemToRepair.Template));
+                _localisationService.GetText("repair-unable_to_find_item_repair_cost", itemToRepair.Template)
+            );
         }
+
         var repairCost = Math.Round(
-            itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * _repairConfig.PriceMultiplier);
+            itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * _repairConfig.PriceMultiplier
+        );
 
-        _logger.Debug($"item base repair cost: ${ itemRepairCost}");
-        _logger.Debug($"price multiplier: ${ _repairConfig.PriceMultiplier}");
-        _logger.Debug($"repair cost: ${ repairCost}");
+        _logger.Debug($"item base repair cost: ${itemRepairCost}");
+        _logger.Debug($"price multiplier: ${_repairConfig.PriceMultiplier}");
+        _logger.Debug($"repair cost: ${repairCost}");
 
-        return new RepairDetails{
-        RepairCost = repairCost,
-        RepairedItem = itemToRepair,
-        RepairedItemIsArmor = repairItemIsArmor,
-        RepairAmount = repairItemDetails.Count,
-        RepairedByKit = false };
+        return new RepairDetails
+        {
+            RepairCost = repairCost,
+            RepairedItem = itemToRepair,
+            RepairedItemIsArmor = repairItemIsArmor,
+            RepairAmount = repairItemDetails.Count,
+            RepairedByKit = false
+        };
     }
 
     /// <summary>
@@ -121,8 +131,9 @@ public class RepairService(
         ItemEventRouterResponse output
     )
     {
-        var options = new ProcessBuyTradeRequestData {
-            SchemeItems = [new() { Count = Math.Round(repairCost), Id = Money.ROUBLES }],
+        var options = new ProcessBuyTradeRequestData
+        {
+            SchemeItems = [new IdWithCount { Count = Math.Round(repairCost), Id = Money.ROUBLES }],
             TransactionId = traderId,
             Action = "SptRepair",
             Type = "",
@@ -135,7 +146,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Add skill points to profile after repairing an item
+    ///     Add skill points to profile after repairing an item
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="repairDetails">Details of item repaired, cost/item</param>
@@ -152,7 +163,7 @@ public class RepairService(
 
             if (skillPoints > 0)
             {
-                _logger.Debug($"Added: { skillPoints} WEAPON_TREATMENT points to skill");
+                _logger.Debug($"Added: {skillPoints} WEAPON_TREATMENT points to skill");
                 _profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.WeaponTreatment, skillPoints, true);
             }
         }
@@ -160,10 +171,13 @@ public class RepairService(
         // Handle kit repair of armor
         if (
             repairDetails.RepairedByKit.GetValueOrDefault(false) &&
-            _itemHelper.IsOfBaseclasses(repairDetails.RepairedItem.Template, [
-                BaseClasses.ARMOR_PLATE,
-                BaseClasses.BUILT_IN_INSERTS,
-            ])
+            _itemHelper.IsOfBaseclasses(
+                repairDetails.RepairedItem.Template,
+                [
+                    BaseClasses.ARMOR_PLATE,
+                    BaseClasses.BUILT_IN_INSERTS
+                ]
+            )
         )
         {
             var itemDetails = _itemHelper.GetItem(repairDetails.RepairedItem.Template);
@@ -173,7 +187,8 @@ public class RepairService(
                 _logger.Error(
                     _localisationService.GetText(
                         "repair-unable_to_find_item_in_db",
-                        repairDetails.RepairedItem.Template)
+                        repairDetails.RepairedItem.Template
+                    )
                 );
 
                 return;
@@ -186,13 +201,15 @@ public class RepairService(
                 _logger.Error(
                     _localisationService.GetText(
                         "repair-item_has_no_repair_points",
-                        repairDetails.RepairedItem.Template)
+                        repairDetails.RepairedItem.Template
+                    )
                 );
             }
+
             var pointsToAddToVestSkill =
                 repairDetails.RepairPoints * _repairConfig.ArmorKitSkillPointGainPerRepairPointMultiplier;
 
-            _logger.Debug($"Added: { pointsToAddToVestSkill} { vestSkillToLevel} skill");
+            _logger.Debug($"Added: {pointsToAddToVestSkill} {vestSkillToLevel} skill");
             _profileHelper.AddSkillPointsToPlayer(pmcData, vestSkillToLevel, pointsToAddToVestSkill);
         }
 
@@ -200,7 +217,7 @@ public class RepairService(
         var intellectGainedFromRepair = GetIntellectGainedFromRepair(repairDetails);
         if (intellectGainedFromRepair > 0)
         {
-            _logger.Debug($"Added: { intellectGainedFromRepair} intellect skill");
+            _logger.Debug($"Added: {intellectGainedFromRepair} intellect skill");
             _profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Intellect, intellectGainedFromRepair);
         }
     }
@@ -220,13 +237,15 @@ public class RepairService(
                 _logger.Error(
                     _localisationService.GetText(
                         "repair-item_has_no_repair_points",
-                        repairDetails.RepairedItem.Template)
+                        repairDetails.RepairedItem.Template
+                    )
                 );
             }
 
             return Math.Min(
                 repairDetails.RepairPoints.Value * intRepairMultiplier,
-                _repairConfig.MaxIntellectGainPerRepair.Kit);
+                _repairConfig.MaxIntellectGainPerRepair.Kit
+            );
         }
 
         // Trader repair - Not as accurate as kit, needs data from live
@@ -234,7 +253,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Return an approximation of the amount of skill points live would return for the given repairDetails
+    ///     Return an approximation of the amount of skill points live would return for the given repairDetails
     /// </summary>
     /// <param name="repairDetails">The repair details to calculate skill points for</param>
     /// <returns>The number of skill points to reward the user</returns>
@@ -287,7 +306,7 @@ public class RepairService(
     )
     {
         // Find item to repair in inventory
-        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault((x) => x.Id == itemToRepairId);
+        var itemToRepair = pmcData.Inventory.Items.FirstOrDefault(x => x.Id == itemToRepairId);
         if (itemToRepair is null)
         {
             _logger.Error(_localisationService.GetText("repair-item_not_found_unable_to_repair", itemToRepairId));
@@ -299,7 +318,8 @@ public class RepairService(
         var repairAmount = repairKits[0].Count / GetKitDivisor(itemToRepairDetails, repairItemIsArmor, pmcData);
         var shouldApplyDurabilityLoss = ShouldRepairKitApplyDurabilityLoss(
             pmcData,
-            _repairConfig.ApplyRandomizeDurabilityLoss);
+            _repairConfig.ApplyRandomizeDurabilityLoss
+        );
 
         _repairHelper.UpdateItemDurability(
             itemToRepair,
@@ -308,16 +328,20 @@ public class RepairService(
             repairAmount.Value,
             true,
             1,
-            shouldApplyDurabilityLoss);
+            shouldApplyDurabilityLoss
+        );
 
         // Find and use repair kit defined in body
-        foreach (var repairKit in repairKits) {
-            var repairKitInInventory = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == repairKit.Id);
+        foreach (var repairKit in repairKits)
+        {
+            var repairKitInInventory = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == repairKit.Id);
             if (repairKitInInventory is null)
             {
                 _logger.Error(
-                    _localisationService.GetText("repair-repair_kit_not_found_in_inventory", repairKit.Id));
+                    _localisationService.GetText("repair-repair_kit_not_found_in_inventory", repairKit.Id)
+                );
             }
+
             var repairKitDetails = itemsDb[repairKitInInventory.Template];
             var repairKitReductionAmount = repairKit.Count;
 
@@ -329,7 +353,8 @@ public class RepairService(
             output.ProfileChanges[sessionId].Items.ChangedItems.Add(repairKitInInventory);
         }
 
-        return new RepairDetails{
+        return new RepairDetails
+        {
             RepairPoints = repairKits[0].Count,
             RepairedItem = itemToRepair,
             RepairedItemIsArmor = repairItemIsArmor,
@@ -339,7 +364,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Calculate value repairkit points need to be divided by to get the durability points to be added to an item
+    ///     Calculate value repairkit points need to be divided by to get the durability points to be added to an item
     /// </summary>
     /// <param name="itemToRepairDetails">Item to repair details</param>
     /// <param name="isArmor">Is the item being repaired armor</param>
@@ -353,7 +378,7 @@ public class RepairService(
 
         var intellectRepairPointsPerLevel = globalConfig.SkillsSettings.Intellect.RepairPointsCostReduction;
         var profileIntellectLevel =
-        _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.Intellect)?.Progress ?? 0;
+            _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.Intellect)?.Progress ?? 0;
         var intellectPointReduction = intellectRepairPointsPerLevel * Math.Truncate(profileIntellectLevel / 100);
 
         if (isArmor)
@@ -368,7 +393,10 @@ public class RepairService(
             var armorClassDivisor = globals.Configuration.RepairSettings.ArmorClassDivisor;
             var armorClassMultiplier = 1.0 + armorClass / armorClassDivisor;
 
-            return durabilityPointCostArmor.Value * armorBonus.Value * destructability.Value * armorClassMultiplier.Value;
+            return durabilityPointCostArmor.Value *
+                   armorBonus.Value *
+                   destructability.Value *
+                   armorClassMultiplier.Value;
         }
 
         var repairWeaponBonus = GetBonusMultiplierValue(BonusType.RepairWeaponBonus, pmcData) - 1;
@@ -379,14 +407,14 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Get the bonus multiplier for a skill from a player profile
+    ///     Get the bonus multiplier for a skill from a player profile
     /// </summary>
     /// <param name="skillBonus">Bonus to get multiplier of</param>
     /// <param name="pmcData">Player profile to look in for skill</param>
     /// <returns>Multiplier value</returns>
     protected double GetBonusMultiplierValue(BonusType skillBonus, PmcData pmcData)
     {
-        var bonusesMatched = pmcData?.Bonuses?.Where((b) => b.Type == skillBonus);
+        var bonusesMatched = pmcData?.Bonuses?.Where(b => b.Type == skillBonus);
         var value = 1d;
         if (bonusesMatched is not null)
         {
@@ -398,7 +426,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Should a repair kit apply total durability loss on repair
+    ///     Should a repair kit apply total durability loss on repair
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="applyRandomizeDurabilityLoss">Value from repair config</param>
@@ -421,7 +449,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Update repair kits Resource object if it doesn't exist
+    ///     Update repair kits Resource object if it doesn't exist
     /// </summary>
     /// <param name="repairKitDetails">Repair kit details from db</param>
     /// <param name="repairKitInInventory">Repair kit to update</param>
@@ -430,17 +458,18 @@ public class RepairService(
         var maxRepairAmount = repairKitDetails.Properties.MaxRepairResource;
         if (repairKitInInventory.Upd is null)
         {
-            _logger.Debug($"Repair kit: ${ repairKitInInventory.Id} in inventory lacks upd object, adding");
-            repairKitInInventory.Upd = new Upd{ RepairKit = new UpdRepairKit{ Resource = maxRepairAmount } };
+            _logger.Debug($"Repair kit: ${repairKitInInventory.Id} in inventory lacks upd object, adding");
+            repairKitInInventory.Upd = new Upd { RepairKit = new UpdRepairKit { Resource = maxRepairAmount } };
         }
+
         if (repairKitInInventory.Upd.RepairKit?.Resource is null)
         {
-            repairKitInInventory.Upd.RepairKit = new UpdRepairKit{ Resource = maxRepairAmount };
+            repairKitInInventory.Upd.RepairKit = new UpdRepairKit { Resource = maxRepairAmount };
         }
     }
 
     /// <summary>
-    /// Chance to apply buff to an item (Armor/weapon) if repaired by armor kit
+    ///     Chance to apply buff to an item (Armor/weapon) if repaired by armor kit
     /// </summary>
     /// <param name="repairDetails">Repair details of item</param>
     /// <param name="pmcData">Player profile</param>
@@ -455,12 +484,15 @@ public class RepairService(
         if (ShouldBuffItem(repairDetails, pmcData))
         {
             if (
-                _itemHelper.IsOfBaseclasses(repairDetails.RepairedItem.Template, [
-                    BaseClasses.ARMOR,
-                    BaseClasses.VEST,
-                    BaseClasses.HEADWEAR,
-                    BaseClasses.ARMOR_PLATE,
-                ])
+                _itemHelper.IsOfBaseclasses(
+                    repairDetails.RepairedItem.Template,
+                    [
+                        BaseClasses.ARMOR,
+                        BaseClasses.VEST,
+                        BaseClasses.HEADWEAR,
+                        BaseClasses.ARMOR_PLATE
+                    ]
+                )
             )
             {
                 var armorConfig = _repairConfig.RepairKit.Armor;
@@ -476,11 +508,11 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Add random buff to item
+    ///     Add random buff to item
     /// </summary>
     /// <param name="itemConfig">weapon/armor config</param>
     /// <param name="item">Item to repair</param>
-    public void AddBuff(Models.Spt.Config.BonusSettings itemConfig, Item item)
+    public void AddBuff(BonusSettings itemConfig, Item item)
     {
         var bonusRarityName = _weightedRandomHelper.GetWeightedValue(itemConfig.RarityWeight);
         var bonusTypeName = _weightedRandomHelper.GetWeightedValue(itemConfig.BonusTypeWeight);
@@ -490,18 +522,24 @@ public class RepairService(
         var bonusValue = _randomUtil.GetDouble(bonusValues.Min.Value, bonusValues.Max.Value);
 
         var bonusThresholdPercents = bonusRarity[bonusTypeName].ActiveDurabilityPercentMinMax;
-        var bonusThresholdPercent = _randomUtil.GetDouble(bonusThresholdPercents.Min.Value, bonusThresholdPercents.Max.Value);
+        var bonusThresholdPercent = _randomUtil.GetDouble(
+            bonusThresholdPercents.Min.Value,
+            bonusThresholdPercents.Max.Value
+        );
 
-        item.Upd.Buff = new UpdBuff {
+        item.Upd.Buff = new UpdBuff
+        {
             Rarity = bonusRarityName,
             BuffType = bonusTypeName,
             Value = bonusValue,
-            ThresholdDurability = Math.Round(_randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value))
+            ThresholdDurability = Math.Round(
+                _randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value)
+            )
         };
     }
 
     /// <summary>
-    /// Check if item should be buffed by checking the item type and relevant player skill level
+    ///     Check if item should be buffed by checking the item type and relevant player skill level
     /// </summary>
     /// <param name="repairDetails">Item that was repaired</param>
     /// <param name="itemTpl">tpl of item to be buffed</param>
@@ -509,22 +547,98 @@ public class RepairService(
     /// <returns>True if item should have buff applied</returns>
     protected bool ShouldBuffItem(RepairDetails repairDetails, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var globals = _databaseService.GetGlobals();
+
+        var hasTemplate = _itemHelper.GetItem(repairDetails.RepairedItem.Template);
+        if (!hasTemplate.Key)
+        {
+            return false;
+        }
+
+        var template = hasTemplate.Value;
+
+        // Returns SkillTypes.LIGHT_VESTS/HEAVY_VESTS/WEAPON_TREATMENT
+        var itemSkillType = (SkillTypes)GetItemSkillType(template);
+        if (itemSkillType == null)
+        {
+            return false;
+        }
+
+        // Skill < level 10 + repairing weapon
+        if (
+            itemSkillType == SkillTypes.WeaponTreatment &&
+            _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.WeaponTreatment)?.Progress < 1000
+        )
+        {
+            return false;
+        }
+
+        // Skill < level 10 + repairing armor
+        if (
+            new List<SkillTypes> { SkillTypes.LightVests, SkillTypes.HeavyVests }.Contains(itemSkillType) &&
+            _profileHelper.GetSkillFromProfile(pmcData, itemSkillType)?.Progress < 1000
+        )
+        {
+            return false;
+        }
+
+        var skillSettings = globals.Configuration.SkillsSettings.GetAllPropsAsDict();
+        BuffSettings buffSettings = null;
+        switch (itemSkillType)
+        {
+            case SkillTypes.LightVests:
+            case SkillTypes.HeavyVests:
+                buffSettings = ((ArmorSkills)skillSettings[itemSkillType.ToString()]).BuffSettings;
+                break;
+            case SkillTypes.WeaponTreatment:
+                buffSettings = ((WeaponTreatment)skillSettings[itemSkillType.ToString()]).BuffSettings;
+                break;
+            default:
+                _logger.Error($"Unhandled buff type: {itemSkillType}");
+                break;
+        }
+
+        var commonBuffMinChanceValue = buffSettings.CommonBuffMinChanceValue;
+        var commonBuffChanceLevelBonus = buffSettings.CommonBuffChanceLevelBonus;
+        var receivedDurabilityMaxPercent = buffSettings.ReceivedDurabilityMaxPercent;
+
+        var skillLevel =
+            Math.Truncate((_profileHelper.GetSkillFromProfile(pmcData, itemSkillType)?.Progress ?? 0) / 100);
+
+        if (repairDetails.RepairPoints is null)
+        {
+            _logger.Error(
+                _localisationService.GetText("repair-item_has_no_repair_points", repairDetails.RepairedItem.Template)
+            );
+        }
+
+        var durabilityToRestorePercent = repairDetails.RepairPoints / template.Properties.MaxDurability;
+        var durabilityMultiplier = GetDurabilityMultiplier(
+            receivedDurabilityMaxPercent.Value,
+            durabilityToRestorePercent.Value
+        );
+
+        var doBuff = commonBuffMinChanceValue + commonBuffChanceLevelBonus * skillLevel * durabilityMultiplier;
+        var random = new Random();
+        return random.Next() <= doBuff;
     }
 
     /// <summary>
-    /// Based on item, what underlying skill does this item use for buff settings
+    ///     Based on item, what underlying skill does this item use for buff settings
     /// </summary>
     /// <param name="itemTemplate">Item to check for skill</param>
     /// <returns>Skill name</returns>
     protected SkillTypes? GetItemSkillType(TemplateItem itemTemplate)
     {
-        var isArmorRelated = _itemHelper.IsOfBaseclasses(itemTemplate.Id, [
-            BaseClasses.ARMOR,
-            BaseClasses.VEST,
-            BaseClasses.HEADWEAR,
-            BaseClasses.ARMOR_PLATE,
-        ]);
+        var isArmorRelated = _itemHelper.IsOfBaseclasses(
+            itemTemplate.Id,
+            [
+                BaseClasses.ARMOR,
+                BaseClasses.VEST,
+                BaseClasses.HEADWEAR,
+                BaseClasses.ARMOR_PLATE
+            ]
+        );
 
         if (isArmorRelated)
         {
@@ -554,7 +668,7 @@ public class RepairService(
     }
 
     /// <summary>
-    /// Ensure multiplier is between 1 and 0.01
+    ///     Ensure multiplier is between 1 and 0.01
     /// </summary>
     /// <param name="receiveDurabilityMaxPercent">Max durability percent</param>
     /// <param name="receiveDurabilityPercent">current durability percent</param>
@@ -572,19 +686,19 @@ public class RepairDetails
 {
     [JsonPropertyName("repairCost")]
     public double? RepairCost { get; set; }
-    
+
     [JsonPropertyName("repairPoints")]
     public double? RepairPoints { get; set; }
-    
+
     [JsonPropertyName("repairedItem")]
     public Item? RepairedItem { get; set; }
-    
+
     [JsonPropertyName("repairedItemIsArmor")]
     public bool? RepairedItemIsArmor { get; set; }
-    
+
     [JsonPropertyName("repairAmount")]
     public double? RepairAmount { get; set; }
-    
+
     [JsonPropertyName("repairedByKit")]
     public bool? RepairedByKit { get; set; }
 }
