@@ -5,17 +5,13 @@ using Core.Models.Eft.InRaid;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
-using Core.Services;
-
 
 namespace Core.Controllers;
 
 [Injectable]
 public class InRaidController(
     ISptLogger<InRaidController> _logger,
-    SaveServer _saveServer,
     ProfileHelper _profileHelper,
-    LocalisationService _localisationService,
     ApplicationContext _applicationContext,
     ConfigServer _configServer
 )
@@ -30,7 +26,7 @@ public class InRaidController(
     /// <param name="info">Register player request</param>
     public void AddPlayer(string sessionId, RegisterPlayerRequestData info)
     {
-        throw new NotImplementedException();
+        _applicationContext.AddValue(ContextVariableType.REGISTER_PLAYER_REQUEST, info);
     }
 
     /// <summary>
@@ -42,7 +38,14 @@ public class InRaidController(
     /// <param name="sessionId"></param>
     public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, string sessionId)
     {
-        throw new NotImplementedException();
+        var serverScavProfile = _profileHelper.GetScavProfile(sessionId);
+
+        // If equipment match overwrite existing data from update to date raid data for scavenger screen to work correctly.
+        // otherwise Scav inventory will be overwritten and break scav regeneration, breaking profile.
+        if (serverScavProfile.Inventory.Equipment == offRaidProfileData.Inventory.Equipment)
+        {
+            serverScavProfile.Inventory.Items = offRaidProfileData.Inventory.Items;
+        }
     }
 
     /// <summary>
@@ -61,7 +64,7 @@ public class InRaidController(
     /// <returns></returns>
     public double GetTraitorScavHostileChance(string url, string sessionId)
     {
-        throw new NotImplementedException();
+        return _inRaidConfig.PlayerScavHostileChancePercent;
     }
 
     /// <summary>
