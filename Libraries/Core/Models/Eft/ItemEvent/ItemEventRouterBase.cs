@@ -164,26 +164,6 @@ public record TraderData
     public bool? Disabled { get; set; }
 }
 
-public record Product
+public record Product : Item
 {
-    [JsonPropertyName("_id")]
-    public string? Id { get; set; }
-
-    /// <summary>
-    /// _tpl
-    /// </summary>
-    [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
-
-    [JsonPropertyName("parentId")]
-    public string? ParentId { get; set; }
-
-    [JsonPropertyName("slotId")]
-    public string? SlotId { get; set; }
-
-    [JsonPropertyName("location")]
-    public ItemLocation? Location { get; set; }
-
-    [JsonPropertyName("upd")]
-    public Upd? Upd { get; set; }
 }
