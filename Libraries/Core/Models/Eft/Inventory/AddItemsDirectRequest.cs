@@ -16,7 +16,7 @@ public record AddItemsDirectRequest
 
     /// Runs after EACH item with children is added
     [JsonPropertyName("callback")]
-    public Action<double>? Callback { get; set; }
+    public Action<int>? Callback { get; set; }
 
     /// Should sorting table be used when no space found in stash
     [JsonPropertyName("useSortingTable")]
