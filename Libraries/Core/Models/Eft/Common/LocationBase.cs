@@ -688,10 +688,10 @@ public record ColliderParams
     public string? Parent { get; set; }
 
     [JsonPropertyName("_props")]
-    public Props? Props { get; set; }
+    public ColliderProps? Props { get; set; }
 }
 
-public record Props
+public record ColliderProps
 {
     [JsonPropertyName("Center")]
     public XYZ? Center { get; set; }
