@@ -79,13 +79,6 @@
                 "min": 3000,
                 "max": 7500
             }
-        },
-        {
-            "traderId": "ragfair",
-            "seconds": {
-                "min": 3600,
-                "max": 3600
-            }
         }
     ],
     "updateTimeDefault": 3600,
