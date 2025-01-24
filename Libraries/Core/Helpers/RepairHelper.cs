@@ -1,12 +1,26 @@
+using Core.Models.Eft.Common;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
-using Props = Core.Models.Eft.Common.Props;
+using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Helpers;
 
 [Injectable]
-public class RepairHelper
+public class RepairHelper(
+    ISptLogger<RepairHelper> _logger,
+    RandomUtil _randomUtil,
+    DatabaseService _databaseService,
+    ConfigServer _configServer,
+    ICloner _cloner
+)
 {
+    protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
+
     /// <summary>
     /// Alter an items durability after a repair by trader/repair kit
     /// </summary>
@@ -27,7 +41,58 @@ public class RepairHelper
         bool applyMaxDurabilityDegradation = true
     )
     {
-        throw new NotImplementedException();
+        _logger.Debug($"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}");
+
+        var itemMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
+        var itemCurrentDurability = _cloner.Clone(itemToRepair.Upd.Repairable.Durability);
+        var itemCurrentMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
+
+        var newCurrentDurability = itemCurrentDurability + amountToRepair;
+        var newCurrentMaxDurability = itemCurrentMaxDurability + amountToRepair;
+
+        // Ensure new max isnt above items max
+        if (newCurrentMaxDurability > itemMaxDurability) {
+            newCurrentMaxDurability = itemMaxDurability;
+        }
+
+        // Ensure new current isnt above items max
+        if (newCurrentDurability > itemMaxDurability) {
+            newCurrentDurability = itemMaxDurability;
+        }
+
+        // Update Repairable properties with new values after repair
+        itemToRepair.Upd.Repairable = new UpdRepairable { Durability = newCurrentDurability, MaxDurability = newCurrentMaxDurability };
+
+        // when modders set the repair coefficient to 0 it means that they dont want to lose durability on items
+        // the code below generates a random degradation on the weapon durability
+        if (applyMaxDurabilityDegradation) {
+            var randomisedWearAmount = isArmor
+                ? GetRandomisedArmorRepairDegradationValue(
+                      itemToRepairDetails.Properties.ArmorMaterial,
+                      useRepairKit,
+                      itemCurrentMaxDurability ?? 0,
+                      traderQualityMultipler
+                  )
+                : GetRandomisedWeaponRepairDegradationValue(
+                      itemToRepairDetails.Properties,
+                      useRepairKit,
+                      itemCurrentMaxDurability ?? 0,
+                      traderQualityMultipler
+                  );
+
+            // Apply wear to durability
+            itemToRepair.Upd.Repairable.MaxDurability -= randomisedWearAmount;
+
+            // After adjusting max durability with degradation, ensure current dura isnt above max
+            if (itemToRepair.Upd.Repairable.Durability > itemToRepair.Upd.Repairable.MaxDurability) {
+                itemToRepair.Upd.Repairable.Durability = itemToRepair.Upd.Repairable.MaxDurability;
+            }
+        }
+
+        // Repair mask cracks
+        if (itemToRepair.Upd.FaceShield is not null && itemToRepair.Upd.FaceShield?.Hits > 0) {
+            itemToRepair.Upd.FaceShield.Hits = 0;
+        }
     }
 
     /// <summary>
@@ -41,11 +106,25 @@ public class RepairHelper
     protected double GetRandomisedArmorRepairDegradationValue(
         string armorMaterial,
         bool isRepairKit,
-        int armorMax,
+        double armorMax,
         double traderQualityMultipler
     )
     {
-        throw new NotImplementedException();
+        // Degradation value is based on the armor material
+        var armorMaterialSettings = _databaseService.GetGlobals().Configuration.ArmorMaterials[armorMaterial];
+
+        var minMultiplier = isRepairKit
+            ? armorMaterialSettings.MinRepairKitDegradation
+            : armorMaterialSettings.MinRepairDegradation;
+
+        var maxMultiplier = isRepairKit
+            ? armorMaterialSettings.MaxRepairKitDegradation
+            : armorMaterialSettings.MaxRepairDegradation;
+
+        var duraLossPercent = _randomUtil.GetFloat((float)minMultiplier, (float)maxMultiplier);
+        var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultipler;
+
+        return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }
 
     /// <summary>
@@ -59,10 +138,21 @@ public class RepairHelper
     protected double GetRandomisedWeaponRepairDegradationValue(
         Props itemProps,
         bool isRepairKit,
-        int weaponMax,
+        double weaponMax,
         double traderQualityMultipler
     )
     {
-        throw new NotImplementedException();
+        var minRepairDeg = isRepairKit ? itemProps.MinRepairKitDegradation : itemProps.MinRepairDegradation;
+        var maxRepairDeg = isRepairKit ? itemProps.MaxRepairKitDegradation : itemProps.MaxRepairDegradation;
+
+        // WORKAROUND: Some items are always 0 when repairkit is true
+        if (maxRepairDeg == 0) {
+            maxRepairDeg = itemProps.MaxRepairDegradation;
+        }
+
+        var duraLossPercent = _randomUtil.GetFloat((float)minRepairDeg, (float)maxRepairDeg);
+        var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultipler;
+
+        return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }
 }
