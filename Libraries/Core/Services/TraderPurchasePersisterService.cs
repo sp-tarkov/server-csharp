@@ -101,6 +101,7 @@ public class TraderPurchasePersisterService(
 
             profile.Value.TraderPurchases[traderId] = new Dictionary<string, TraderPurchaseData>();
         }
+        _logger.Debug($"Reset trader: {traderId} assort buy limits");
     }
 
     /**
