@@ -72,7 +72,7 @@ public class TraderController(
             }
 
             // Create dict of pristine trader assorts on server start
-            if (_traderAssortService.GetPristineTraderAssort(trader.Key) != null)
+            if (_traderAssortService.GetPristineTraderAssort(trader.Key) == null)
             {
                 var assortsClone = _cloner.Clone(trader.Value.Assort);
                 _traderAssortService.SetPristineTraderAssort(trader.Key, assortsClone);
