@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Props = Core.Models.Eft.Common.Props;
 
@@ -21,7 +21,7 @@ public class RepairHelper
         Item itemToRepair,
         TemplateItem itemToRepairDetails,
         bool isArmor,
-        int amountToRepair,
+        double amountToRepair,
         bool useRepairKit,
         double traderQualityMultipler,
         bool applyMaxDurabilityDegradation = true

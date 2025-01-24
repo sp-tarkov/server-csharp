@@ -100,10 +100,10 @@ public record UpdBuff
     public string? BuffType { get; set; }
 
     [JsonPropertyName("Value")]
-    public int? Value { get; set; }
+    public double? Value { get; set; }
 
     [JsonPropertyName("ThresholdDurability")]
-    public int? ThresholdDurability { get; set; }
+    public double? ThresholdDurability { get; set; }
 }
 
 public record UpdTogglable

@@ -432,7 +432,7 @@ public record Config
     public AirdropGlobalSettings? Airdrop { get; set; }
 
     [JsonPropertyName("ArmorMaterials")]
-    public ArmorMaterials? ArmorMaterials { get; set; }
+    public Dictionary<string, ArmorType>? ArmorMaterials { get; set; }
 
     [JsonPropertyName("ArenaEftTransferSettings")]
     public ArenaEftTransferSettings
@@ -1406,33 +1406,6 @@ public record ArenaEftTransferSettings
     public double? RubTaxMultiplier { get; set; }
     public Dictionary<string, double>? TransferLimitsByGameEdition { get; set; }
     public Dictionary<string, double>? TransferLimitsSettings { get; set; }
-}
-
-public record ArmorMaterials
-{
-    [JsonPropertyName("UHMWPE")]
-    public ArmorType? UHMWPE { get; set; }
-
-    [JsonPropertyName("Aramid")]
-    public ArmorType? Aramid { get; set; }
-
-    [JsonPropertyName("Combined")]
-    public ArmorType? Combined { get; set; }
-
-    [JsonPropertyName("Titan")]
-    public ArmorType? Titan { get; set; }
-
-    [JsonPropertyName("Aluminium")]
-    public ArmorType? Aluminium { get; set; }
-
-    [JsonPropertyName("ArmoredSteel")]
-    public ArmorType? ArmoredSteel { get; set; }
-
-    [JsonPropertyName("Ceramic")]
-    public ArmorType? Ceramic { get; set; }
-
-    [JsonPropertyName("Glass")]
-    public ArmorType? Glass { get; set; }
 }
 
 public record ArmorType

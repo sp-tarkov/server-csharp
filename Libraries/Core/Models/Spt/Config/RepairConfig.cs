@@ -1,4 +1,4 @@
-﻿using Core.Models.Common;
+using Core.Models.Common;
 
 namespace Core.Models.Spt.Config;
 
