@@ -440,14 +440,14 @@ public class InventoryController(
         // Remove kvp from requested fast panel index
 
         // TODO - does this work
-        pmcData.Inventory.FastPanel.Remove(request.Index.ToString());
+        pmcData.Inventory.FastPanel.Remove(request.Index);
     }
 
     public void BindItem(PmcData pmcData, InventoryBindRequestData bindRequest, string sessionId,
         ItemEventRouterResponse output)
     {
         foreach (var kvp in pmcData.Inventory.FastPanel
-                     .Where(kvp => kvp.Value == bindRequest.Index.Value.ToString()))
+                     .Where(kvp => kvp.Value == bindRequest.Index))
         {
             pmcData.Inventory.FastPanel.Remove(kvp.Key);
 
@@ -455,7 +455,7 @@ public class InventoryController(
         }
 
         // Create link between fast panel slot and requested item
-        pmcData.Inventory.FastPanel[bindRequest.Index.ToString()] = bindRequest.Item;
+        pmcData.Inventory.FastPanel[bindRequest.Index] = bindRequest.Item;
     }
 
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
@@ -764,7 +764,7 @@ public class InventoryController(
             return;
         }
 
-        var profileToRemoveItemFrom = request?.FromOwner.Id == pmcData.Id
+        var profileToRemoveItemFrom = request.FromOwner is null || request.FromOwner?.Id == pmcData.Id
             ? pmcData
             : _profileHelper.GetFullProfile(sessionId).CharacterData.ScavData;
 

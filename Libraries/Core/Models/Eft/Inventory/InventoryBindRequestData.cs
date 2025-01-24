@@ -8,5 +8,5 @@ public record InventoryBindRequestData : InventoryBaseActionRequestData
     public string? Item { get; set; }
 
     [JsonPropertyName("index")]
-    public int? Index { get; set; }
+    public string? Index { get; set; }
 }
