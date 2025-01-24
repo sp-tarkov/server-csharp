@@ -771,7 +771,10 @@ public class LocationLifecycleService
                 CheckForAndFixPickupQuestsAfterDeath(sessionId, lostQuestItems, pmcProfile.Quests);
             }
 
-            _pmcChatResponseService.SendKillerResponse(sessionId, pmcProfile, postRaidProfile.Stats.Eft.Aggressor);
+            if (postRaidProfile.Stats.Eft.Aggressor is not null)
+            {
+                _pmcChatResponseService.SendKillerResponse(sessionId, pmcProfile, postRaidProfile.Stats.Eft.Aggressor);
+            }
 
             _inRaidHelper.DeleteInventory(pmcProfile, sessionId);
 

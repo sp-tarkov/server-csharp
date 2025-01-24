@@ -1,13 +1,34 @@
-﻿using SptCommon.Annotations;
+using System.Text.RegularExpressions;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Utils;
+using Core.Helpers;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class PmcChatResponseService
+public class PmcChatResponseService(
+    ISptLogger<OpenZoneService> _logger,
+    HashUtil _hashUtil,
+    RandomUtil _randomUtil,
+    NotificationSendHelper _notificationSendHelper,
+    WeightedRandomHelper _weightedRandomHelper,
+    DatabaseService _databaseService,
+    LocalisationService _localisationService,
+    GiftService _giftService,
+    LocaleService _localeService,
+    MatchBotDetailsCacheService _matchBotDetailsCacheService,
+    ConfigServer _configServer)
 {
+    protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
+    protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
+
     /**
      * For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
      * @param sessionId Session id
@@ -16,7 +37,30 @@ public class PmcChatResponseService
      */
     public void SendVictimResponse(string sessionId, List<Victim> pmcVictims, PmcData pmcData)
     {
-        throw new System.NotImplementedException();
+        foreach (var victim in pmcVictims) {
+            if (!_randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent))
+            {
+                continue;
+            }
+
+            if (string.IsNullOrEmpty(victim.Name))
+            {
+                _logger.Warning($"Victim: { victim.ProfileId} does not have a nickname, skipping pmc response message send");
+
+                continue;
+            }
+
+            var victimDetails = GetVictimDetails(victim);
+            var message = ChooseMessage(true, pmcData, victim);
+            if (message is not null)
+            {
+                _notificationSendHelper.SendMessageToPlayer(
+                    sessionId,
+                    victimDetails,
+                    message,
+                    MessageType.USER_MESSAGE);
+            }
+        }
     }
 
     /**
@@ -27,7 +71,50 @@ public class PmcChatResponseService
      */
     public void SendKillerResponse(string sessionId, PmcData pmcData, Aggressor killer)
     {
-        throw new System.NotImplementedException();
+        if (killer is null)
+        {
+            return;
+        }
+
+        if (!_randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent))
+        {
+            return;
+        }
+
+        // find bot by name in cache
+        var killerDetailsInCache = _matchBotDetailsCacheService.GetBotByNameAndSide(killer.Name, killer.Side);
+        if (killerDetailsInCache is null)
+        {
+            return;
+        }
+
+        // If killer wasn't a PMC, skip
+        var pmcTypes = new List<string> { "pmcUSEC", "pmcBEAR" };
+        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role))
+        {
+            return;
+        }
+
+        var killerDetails = new UserDialogInfo {
+            Id = killerDetailsInCache.Id,
+            Aid = _hashUtil.GenerateAccountId(), // TODO: pass correct value
+            Info = new UserDialogDetails
+            {
+                Nickname = killerDetailsInCache.Info.Nickname,
+                Side = killerDetailsInCache.Info.Side,
+                Level = killerDetailsInCache.Info.Level,
+                MemberCategory = killerDetailsInCache.Info.MemberCategory,
+                SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory,
+            },
+        };
+
+        var message = ChooseMessage(false, pmcData);
+        if (message is null)
+        {
+            return;
+        }
+
+        _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
     }
 
     /**
@@ -39,7 +126,52 @@ public class PmcChatResponseService
      */
     protected string? ChooseMessage(bool isVictim, PmcData pmcData, Victim? victimData = null)
     {
-        throw new System.NotImplementedException();
+        // Positive/negative etc
+        var responseType = ChooseResponseType(isVictim);
+
+        // Get all locale keys
+        var possibleResponseLocaleKeys = GetResponseLocaleKeys(responseType, isVictim);
+        if (possibleResponseLocaleKeys.Count == 0)
+        {
+            _logger.Warning(_localisationService.GetText("pmcresponse-unable_to_find_key", responseType));
+
+            return null;
+        }
+
+        // Choose random response from above list and request it from localisation service
+        var responseText = _localisationService.GetText(_randomUtil.GetArrayValue(possibleResponseLocaleKeys), new {
+            playerName = pmcData.Info.Nickname,
+            playerLevel = pmcData.Info.Level,
+            playerSide = pmcData.Info.Side,
+            victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : "",
+        });
+
+        // Give the player a gift code if they were killed and response is 'pity'.
+        if (responseType == "pity")
+        {
+            var giftKeys = _giftService.GetGiftIds();
+            var randomGiftKey = _randomUtil.GetArrayValue(giftKeys);
+
+            Regex.Replace(responseText, "/(%giftcode%)/gi", randomGiftKey); // TODO: does regex still work
+        }
+
+        if (AppendSuffixToMessageEnd(isVictim))
+        {
+            var suffixText = _localisationService.GetText(_randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys()));
+            responseText += $"{suffixText}";
+        }
+
+        if (StripCapitalisation(isVictim))
+        {
+            responseText = responseText.ToLower();
+        }
+
+        if (AllCaps(isVictim))
+        {
+            responseText = responseText.ToUpper();
+        }
+
+        return responseText;
     }
 
     /**
@@ -50,7 +182,7 @@ public class PmcChatResponseService
      */
     protected string GetLocationName(string locationKey)
     {
-        throw new System.NotImplementedException();
+        return _localeService.GetLocaleDb()[locationKey] ?? locationKey;
     }
 
     /**
@@ -60,7 +192,11 @@ public class PmcChatResponseService
      */
     protected bool StripCapitalisation(bool isVictim)
     {
-        throw new System.NotImplementedException();
+        var chance = isVictim
+            ? _pmcResponsesConfig.Victim.StripCapitalisationChancePercent
+            : _pmcResponsesConfig.Killer.StripCapitalisationChancePercent;
+
+        return _randomUtil.GetChance100(chance);
     }
 
     /**
@@ -70,7 +206,11 @@ public class PmcChatResponseService
      */
     protected bool AllCaps(bool isVictim)
     {
-        throw new System.NotImplementedException();
+        var chance = isVictim
+            ? _pmcResponsesConfig.Victim.AllCapsChancePercent
+            : _pmcResponsesConfig.Killer.AllCapsChancePercent;
+
+        return _randomUtil.GetChance100(chance);
     }
 
     /**
@@ -80,7 +220,11 @@ public class PmcChatResponseService
      */
     protected bool AppendSuffixToMessageEnd(bool isVictim)
     {
-        throw new System.NotImplementedException();
+        var chance = isVictim
+            ? _pmcResponsesConfig.Victim.AppendBroToMessageEndChancePercent
+            : _pmcResponsesConfig.Killer.AppendBroToMessageEndChancePercent;
+
+        return _randomUtil.GetChance100(chance);
     }
 
     /**
@@ -90,7 +234,11 @@ public class PmcChatResponseService
      */
     protected string ChooseResponseType(bool isVictim = true)
     {
-        throw new System.NotImplementedException();
+        var responseWeights = isVictim
+            ? _pmcResponsesConfig.Victim.ResponseTypeWeights
+            : _pmcResponsesConfig.Killer.ResponseTypeWeights;
+
+        return _weightedRandomHelper.GetWeightedValue<string>(responseWeights);
     }
 
     /**
@@ -101,7 +249,10 @@ public class PmcChatResponseService
      */
     protected List<string> GetResponseLocaleKeys(string keyType, bool isVictim = true)
     {
-        throw new System.NotImplementedException();
+        var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
+        var keys = _localisationService.GetKeys();
+
+        return keys.Where((x) => x.StartsWith($"{ keyBase}{ keyType}")).ToList();
     }
 
     /**
@@ -110,17 +261,22 @@ public class PmcChatResponseService
      */
     protected List<string> GetResponseSuffixLocaleKeys()
     {
-        throw new System.NotImplementedException();
+        var keys = _localisationService.GetKeys();
+
+        return keys.Where((x) => x.StartsWith("pmcresponse-suffix")).ToList();
     }
 
     /**
+     * TODO: is this used?
      * Randomly draw a victim of the list and return their details
      * @param pmcVictims Possible victims to choose from
      * @returns IUserDialogInfo
      */
     protected UserDialogInfo ChooseRandomVictim(List<Victim> pmcVictims)
     {
-        throw new System.NotImplementedException();
+        var randomVictim = _randomUtil.GetArrayValue(pmcVictims);
+
+        return GetVictimDetails(randomVictim);
     }
 
     /**
@@ -130,6 +286,30 @@ public class PmcChatResponseService
      */
     protected UserDialogInfo GetVictimDetails(Victim pmcVictim)
     {
-        throw new System.NotImplementedException();
+        var categories = new List<MemberCategory>{
+            MemberCategory.UNIQUE_ID,
+            MemberCategory.Default,
+            MemberCategory.Default,
+            MemberCategory.Default,
+            MemberCategory.Default,
+            MemberCategory.Default,
+            MemberCategory.Default,
+            MemberCategory.SHERPA,
+            MemberCategory.DEVELOPER
+        };
+
+        var chosenCategory = _randomUtil.GetArrayValue(categories);
+
+        return new UserDialogInfo {
+            Id = pmcVictim.ProfileId,
+            Aid = int.Parse(pmcVictim.AccountId),
+            Info = new UserDialogDetails{
+                Nickname = pmcVictim.Name,
+                Level = pmcVictim.Level,
+                Side = pmcVictim.Side,
+                MemberCategory = chosenCategory,
+                SelectedMemberCategory = chosenCategory
+            },
+        };
     }
 }

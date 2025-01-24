@@ -29,12 +29,14 @@ public class MatchBotDetailsCacheService(
         _botDetailsCache.Clear();
     }
 
-    public BotBase GetBotByNameAndSide(string botName, string botSide)
+    public BotBase? GetBotByNameAndSide(string botName, string botSide)
     {
         var botInCache = _botDetailsCache.GetValueOrDefault($"{botName}{botSide}`", null);
         if (botInCache is null)
         {
             _logger.Warning($"Bot not found in match bot cache: {botName.ToLower()} {botSide}");
+
+            return null;
         }
 
         return botInCache;
