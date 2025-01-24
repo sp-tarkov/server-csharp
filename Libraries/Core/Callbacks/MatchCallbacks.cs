@@ -1,9 +1,10 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Match;
 using Core.Services;
 using Core.Utils;
+using static Core.Services.MatchLocationService;
 
 namespace Core.Callbacks;
 
@@ -238,7 +239,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string DeleteGroup(string url, EmptyRequestData info, string sessionID)
+    public string DeleteGroup(string url, DeleteGroupRequest info, string sessionID)
     {
         _matchController.DeleteGroup(info);
         return _httpResponseUtil.GetBody(true);
