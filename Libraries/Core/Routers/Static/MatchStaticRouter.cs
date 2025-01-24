@@ -1,9 +1,10 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Match;
 using Core.Utils;
+using static Core.Services.MatchLocationService;
 
 namespace Core.Routers.Static;
 
@@ -59,7 +60,7 @@ public class MatchStaticRouter : StaticRouter
                     info, 
                     sessionID, 
                     output
-                ) => _matchCallbacks.DeleteGroup(url, info as EmptyRequestData, sessionID)),
+                ) => _matchCallbacks.DeleteGroup(url, info as DeleteGroupRequest, sessionID)),
             new RouteAction(
                 "/client/match/group/leave",
                 (
