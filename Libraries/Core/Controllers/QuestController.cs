@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
