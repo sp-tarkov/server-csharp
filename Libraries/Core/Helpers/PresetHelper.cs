@@ -76,6 +76,8 @@ public class PresetHelper(
 
     public bool IsPreset(string id)
     {
+        if (string.IsNullOrEmpty(id))
+            return false;
         return _databaseService.GetGlobals().ItemPresets.ContainsKey(id);
     }
 
