@@ -1,7 +1,9 @@
+using System.Runtime.InteropServices.JavaScript;
 using System.Text.Json.Serialization;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
@@ -23,6 +25,7 @@ public class LocationLootGenerator(
     InventoryHelper _inventoryHelper,
     DatabaseService _databaseService,
     ContainerHelper _containerHelper,
+    PresetHelper _presetHelper,
     LocalisationService _localisationService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
@@ -296,7 +299,7 @@ public class LocationLootGenerator(
             containerDistribution.Add(new ProbabilityObject<string, double>(x, value, value));
         }
 
-        chosenContainerIds.AddRange(containerDistribution.Draw(containerData.ChosenCount));
+        chosenContainerIds.AddRange(containerDistribution.Draw((int)containerData.ChosenCount));
 
         return chosenContainerIds;
     }
@@ -434,7 +437,7 @@ public class LocationLootGenerator(
             var height = chosenItemWithChildren.Height;
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(containerMap, width, height);
+            var result = _containerHelper.FindSlotForItem(containerMap, (int)width, (int)height);
             if (!result.Success.GetValueOrDefault(false))
             {
                 if (failedToFitCount >= _locationConfig.FitLootIntoContainerAttempts)
@@ -453,8 +456,8 @@ public class LocationLootGenerator(
                 containerMap,
                 result.X.Value,
                 result.Y.Value,
-                width,
-                height,
+                (int)width,
+                (int)height,
                 result.Rotation.GetValueOrDefault(false));
 
             var rotation = result.Rotation.GetValueOrDefault(false) ? 1 : 0;
@@ -611,31 +614,185 @@ public class LocationLootGenerator(
     }
 
     // TODO: rewrite, BIG yikes
-    protected ContainerItem CreateStaticLootItem(string chosenTemplate,
-        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDistribution,
-        string? parentIdentifier = null)
+    protected ContainerItem? CreateStaticLootItem(
+        string chosenTpl,
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
+        string? parentId = null)
     {
-        throw new NotImplementedException();
+        var itemTemplate = _itemHelper.GetItem(chosenTpl).Value;
+        if (itemTemplate.Properties is null) {
+            _logger.Error($"Unable to process item: ${{chosenTpl}}. it lacks _props");
+
+            return null;
+        }
+        var width = itemTemplate.Properties.Width;
+        var height = itemTemplate.Properties.Height;
+        List<Item> items = [ new Item { Id = _hashUtil.Generate(), Template = chosenTpl }];
+        var rootItem = items.FirstOrDefault();
+
+        // Use passed in parentId as override for new item
+        if (!string.IsNullOrEmpty(parentId)) {
+            rootItem.ParentId = parentId;
+        }
+
+        if (
+            _itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MONEY) ||
+            _itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO)
+        ) {
+            // Edge case - some ammos e.g. flares or M406 grenades shouldn't be stacked
+            var stackCount = itemTemplate.Properties.StackMaxSize == 1
+                    ? 1
+                    : _randomUtil.GetInt((int)(itemTemplate.Properties.StackMinRandom), (int)(itemTemplate.Properties.StackMaxRandom));
+
+            rootItem.Upd = new Upd { StackObjectsCount = stackCount };
+        }
+        // No spawn point, use default template
+        else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.WEAPON)) {
+            List<Item> children = [];
+            var defaultPreset = _cloner.Clone(_presetHelper.GetDefaultPreset(chosenTpl));
+            if (defaultPreset?.Items is not null) {
+                try {
+                    children = _itemHelper.ReparentItemAndChildren(defaultPreset.Items[0], defaultPreset.Items);
+                } catch (Exception e) {
+                    // this item already broke it once without being reproducible tpl = "5839a40f24597726f856b511"; AKS-74UB Default
+                    // 5ea03f7400685063ec28bfa8 // ppsh default
+                    // 5ba26383d4351e00334c93d9 //mp7_devgru
+                    _logger.Error(
+                        _localisationService.GetText("location-preset_not_found", new {
+                            tpl = chosenTpl,
+                            defaultId = defaultPreset.Id,
+                            defaultName = defaultPreset.Name,
+                            parentId,
+                        })
+                    );
+
+                    throw;
+                }
+            } else {
+                // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesnt have any default presets and kills this code below as it has no chidren to reparent
+                _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
+            }
+
+            rootItem = items[0];
+            if (rootItem is null) {
+                _logger.Error(
+                    _localisationService.GetText("location-missing_root_item", new {
+                        tpl = chosenTpl,
+                        parentId,
+                    })
+                );
+
+                throw new Exception(_localisationService.GetText("location-critical_error_see_log"));
+            }
+
+            try {
+                if (children?.Count > 0) {
+                    items = _itemHelper.ReparentItemAndChildren(rootItem, children);
+                }
+            } catch (Exception e) {
+                _logger.Error(
+                    _localisationService.GetText("location-unable_to_reparent_item", new {
+                        tpl = chosenTpl,
+                        parentId = parentId,
+                    })
+                );
+
+                throw;
+            }
+
+            // Here we should use generalized BotGenerators functions e.g. fillExistingMagazines in the future since
+            // it can handle revolver ammo (it's not restructured to be used here yet.)
+            // General: Make a WeaponController for Ragfair preset stuff and the generating weapons and ammo stuff from
+            // BotGenerator
+            var magazine = items.FirstOrDefault(item => item.SlotId == "mod_magazine");
+            // some weapon presets come without magazine; only fill the mag if it exists
+            if (magazine is not null) {
+                var magTemplate = _itemHelper.GetItem(magazine.Template).Value;
+                var weaponTemplate = _itemHelper.GetItem(chosenTpl).Value;
+
+                // Create array with just magazine
+                var defaultWeapon = _itemHelper.GetItem(rootItem.Template).Value;
+                List<Item> magazineWithCartridges = [magazine];
+                _itemHelper.FillMagazineWithRandomCartridge(
+                    magazineWithCartridges,
+                    magTemplate,
+                    staticAmmoDist,
+                    weaponTemplate.Properties.AmmoCaliber,
+                    0.25,
+                    defaultWeapon.Properties.DefAmmo,
+                    defaultWeapon
+                );
+
+                // Replace existing magazine with above array
+                items.Remove(magazine);
+                items.AddRange(magazineWithCartridges);
+            }
+
+            var size = _itemHelper.GetItemSize(items, rootItem.Id);
+            width = size.Width;
+            height = size.Height;
+        }
+        // No spawnpoint to fall back on, generate manually
+        else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO_BOX)) {
+            _itemHelper.AddCartridgesToAmmoBox(items, itemTemplate);
+        } else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE)) {
+            if (_randomUtil.GetChance100(_locationConfig.MagazineLootHasAmmoChancePercent)) {
+                // Create array with just magazine
+                List<Item> magazineWithCartridges = [rootItem];
+                _itemHelper.FillMagazineWithRandomCartridge(
+                    magazineWithCartridges,
+                    itemTemplate,
+                    staticAmmoDist,
+                    null,
+                    _locationConfig.MinFillStaticMagazinePercent / 100
+                );
+
+                // Replace existing magazine with above array
+                items.Remove(rootItem);
+                items.AddRange(magazineWithCartridges);
+            }
+        } else if (_itemHelper.ArmorItemCanHoldMods(chosenTpl)) {
+            var defaultPreset = _presetHelper.GetDefaultPreset(chosenTpl);
+            if (defaultPreset is not null) {
+                List<Item> presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+                _itemHelper.RemapRootItemId(presetAndMods);
+
+                // Use original items parentId otherwise item doesnt get added to container correctly
+                presetAndMods[0].ParentId = rootItem.ParentId;
+                items = presetAndMods;
+            } else {
+                // We make base item above, at start of function, no need to do it here
+                if ((itemTemplate.Properties.Slots?.Count ?? 0) > 0) {
+                    items = _itemHelper.AddChildSlotItems(
+                        items,
+                        itemTemplate,
+                        _locationConfig.EquipmentLootSettings.ModSpawnChancePercent
+                    );
+                }
+            }
+        }
+
+        return new ContainerItem { Items = items, Width = width, Height = height };
     }
 }
 
 public class ContainerGroupCount
 {
     [JsonPropertyName("containerIdsWithProbability")]
-    public Dictionary<string, double> ContainerIdsWithProbability { get; set; }
+    public Dictionary<string, double>? ContainerIdsWithProbability { get; set; }
 
     [JsonPropertyName("chosenCount")]
-    public int ChosenCount { get; set; }
+    public double? ChosenCount { get; set; }
 }
 
 public class ContainerItem
 {
     [JsonPropertyName("items")]
-    public List<Item> Items { get; set; }
+    public List<Item>? Items { get; set; }
 
     [JsonPropertyName("width")]
-    public int Width { get; set; }
+    public double? Width { get; set; }
 
     [JsonPropertyName("height")]
-    public int Height { get; set; }
+    public double? Height { get; set; }
 }
