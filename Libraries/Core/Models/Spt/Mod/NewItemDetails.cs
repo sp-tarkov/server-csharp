@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
-using Props = Core.Models.Eft.Common.Props;
 
 namespace Core.Models.Spt.Mod;
 
@@ -16,7 +16,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     public string? ItemTplToClone { get; set; }
 
     [JsonPropertyName("overrideProperties")]
-    public Props? OverrideProperties { get; set; }
+    public ColliderProps? OverrideProperties { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }

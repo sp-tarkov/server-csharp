@@ -101,7 +101,7 @@ public class InsuranceController(
     protected void ProcessInsuredItems(List<Insurance> insuranceDetails, string sessionId)
     {
         _logger.Debug(
-            $"Processing {insuranceDetails.Count} insurance packages, which includes a total of ${CountAllInsuranceItems(insuranceDetails)} items, in profile ${sessionId}"
+            $"Processing {insuranceDetails.Count} insurance packages, which includes a total of: {CountAllInsuranceItems(insuranceDetails)} items, in profile: {sessionId}"
         );
 
         // Iterate over each of the insurance packages.
@@ -697,7 +697,7 @@ public class InsuranceController(
 
         foreach (var softInsertSlot in softInsertSlots)
         {
-            _logger.Debug($"SoftInsertSlots: ${softInsertSlot.SlotId}");
+            _logger.Debug($"SoftInsertSlots: {softInsertSlot.SlotId}");
             pmcData.InsuredItems.Add(new InsuredItem { TId = body.TransactionId, ItemId = softInsertSlot.Id });
         }
     }
