@@ -126,7 +126,8 @@ public class LocationLifecycleService
         _logger.Debug($"Starting: {request.Location}");
 
         var playerProfile = _profileHelper.GetPmcProfile(sessionId);
-
+        GenerateLocationAndLoot(request.Location, !request.ShouldSkipLootGeneration ?? true);
+        
         var result = new StartLocalRaidResponseData
         {
             ServerId = $"{request.Location}.{request.PlayerSide} {_timeUtil.GetTimeStamp()}", // TODO - does this need to be more verbose - investigate client?
@@ -135,7 +136,7 @@ public class LocationLifecycleService
             {
                 InsuredItems = playerProfile.InsuredItems
             },
-            LocationLoot = GenerateLocationAndLoot(request.Location, request.ShouldSkipLootGeneration == false),
+            LocationLoot = GenerateLocationAndLoot(request.Location, !request.ShouldSkipLootGeneration ?? true),
             TransitionType = TransitionType.NONE,
             Transition = new Transition
             {
@@ -314,7 +315,7 @@ public class LocationLifecycleService
         }
 
         // Check for a loot multipler adjustment in app context and apply if one is found
-        var locationConfigClone = new LocationConfig();
+        LocationConfig? locationConfigClone = null;
         var raidAdjustments = _applicationContext
             .GetLatestValue(ContextVariableType.RAID_ADJUSTMENTS)
             ?.GetValue<RaidChanges>();
