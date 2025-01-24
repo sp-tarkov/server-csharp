@@ -282,7 +282,7 @@ public class FenceService(
         }
         else
         {
-            logger.LogWarning($"adjustItemPriceByModifier() - no action taken for item: {item.Template}");
+            logger.Warning($"adjustItemPriceByModifier() - no action taken for item: {item.Template}");
         }
     }
 
@@ -381,7 +381,7 @@ public class FenceService(
             if (newRootItem == null)
             {
                 var firstItem = itemWithChildren.FirstOrDefault((x) => x != null);
-                logger.LogError(
+                logger.Error(
                     $"Unable to process fence assort as root item is missing, {firstItem?.Template}, skipping"
                 );
                 continue;
@@ -519,7 +519,7 @@ public class FenceService(
         {
             if (rootItemToAdjust.Upd == null)
             {
-                logger.LogWarning($"Fence Item: {rootItemToAdjust.Template} lacks a Upd object, adding");
+                logger.Warning($"Fence Item: {rootItemToAdjust.Template} lacks a Upd object, adding");
                 rootItemToAdjust.Upd = new();
             }
 
@@ -720,7 +720,7 @@ public class FenceService(
             .ToList();
         if (assortRootItems.Count == 0)
         {
-            logger.LogError("Unable to add assorts to Fence as no root items exist in items being added");
+            logger.Error("Unable to add assorts to Fence as no root items exist in items being added");
             return;
         }
 
@@ -729,7 +729,7 @@ public class FenceService(
             var chosenBaseAssortRoot = randomUtil.GetArrayValue(assortRootItems);
             if (chosenBaseAssortRoot == null)
             {
-                logger.LogError(localisationService.GetText("fence-unable_to_find_assort_by_id"));
+                logger.Error(localisationService.GetText("fence-unable_to_find_assort_by_id"));
                 continue;
             }
 
@@ -1257,7 +1257,7 @@ public class FenceService(
 
             if (modItemToAdjust == null)
             {
-                logger.LogWarning(
+                logger.Warning(
                     $"Unable to randomise armor items {armorWithMods[0].Template} ${plateSlot.Name} slot as it cannot be found, skipping"
                 );
                 continue;
@@ -1387,7 +1387,7 @@ public class FenceService(
     {
         if (itemDetails.Properties == null)
         {
-            logger.LogError(
+            logger.Error(
                 $"Item {itemDetails.Name} lacks a _props field, unable to randomise item: {itemToAdjust.Id}"
             );
             return;
@@ -1584,7 +1584,7 @@ public class FenceService(
             fenceAssortItem = fenceDiscountAssort.Items.FirstOrDefault((item) => item.Id == assortId);
             if (fenceAssortItem == null)
             {
-                logger.LogError(localisationService.GetText("fence-unable_to_find_offer_by_id", assortId));
+                logger.Error(localisationService.GetText("fence-unable_to_find_offer_by_id", assortId));
 
                 return;
             }
@@ -1619,7 +1619,7 @@ public class FenceService(
 
                 if (indexToRemove == -1)
                 {
-                    logger.LogWarning(
+                    logger.Warning(
                         $"unable to remove fence assort item: {itemToRemove.Id} tpl: {itemToRemove.Template}"
                     );
                 }
