@@ -79,7 +79,7 @@ public class RagfairServerHelper(
         if (
             ragfairConfig.Dynamic.Blacklist.DamagedAmmoPacks &&
             itemDetails.Value.Parent == BaseClasses.AMMO_BOX &&
-            itemDetails[1]._name.includes("_damaged")
+            itemDetails.Value.Name.Contains("_damaged")
         ) {
             return false;
         }
@@ -92,8 +92,9 @@ public class RagfairServerHelper(
      * @param itemTemplateId Item tpl to check is blacklisted
      * @returns True if its blacklsited
      */
-    protected isItemOnCustomFleaBlacklist(itemTemplateId: string): boolean {
-        return ragfairConfig.dynamic.blacklist.custom.includes(itemTemplateId);
+    protected bool IsItemOnCustomFleaBlacklist(string itemTemplateId)
+    {
+        return ragfairConfig.Dynamic.Blacklist.Custom.Contains(itemTemplateId);
     }
 
     /**
@@ -101,8 +102,8 @@ public class RagfairServerHelper(
      * @param parentId Parent Id to check is blacklisted
      * @returns true if blacklisted
      */
-    protected isItemCategoryOnCustomFleaBlacklist(itemParentId: string): boolean {
-        return ragfairConfig.dynamic.blacklist.customItemCategoryList.includes(itemParentId);
+    protected bool IsItemCategoryOnCustomFleaBlacklist(string itemParentId) {
+        return ragfairConfig.Dynamic.Blacklist.CustomItemCategoryList.Contains(itemParentId);
     }
 
     /**
@@ -110,8 +111,8 @@ public class RagfairServerHelper(
      * @param traderId
      * @returns True if id was a trader
      */
-    public isTrader(traderId: string): boolean {
-        return traderId in databaseService.getTraders();
+    public bool IsTrader(string traderId) {
+        return databaseService.GetTraders().ContainsKey(traderId);
     }
 
     /**
@@ -119,71 +120,69 @@ public class RagfairServerHelper(
      * @param sessionID Player to send items to
      * @param returnedItems Items to send to player
      */
-    public returnItems(sessionID: string, returnedItems: IItem[]): void {
-        mailSendService.sendLocalisedNpcMessageToPlayer(
+    public void ReturnItems(string sessionID, List<Item> returnedItems)
+    {
+        mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
-            traderHelper.getTraderById(Traders.RAGMAN),
+            traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
             MessageType.MESSAGE_WITH_ITEMS,
             RagfairServerHelper.goodsReturnedTemplate,
             returnedItems,
-            timeUtil.getHoursAsSeconds(
-                databaseService.getGlobals().config.RagFair.yourOfferDidNotSellMaxStorageTimeInHour,
-            ),
+            timeUtil.GetHoursAsSeconds((int) databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
         );
     }
 
-    public calculateDynamicStackCount(tplId: string, isWeaponPreset: boolean): number {
-        var config = ragfairConfig.dynamic;
+    public int CalculateDynamicStackCount(string tplId, bool isWeaponPreset)
+    {
+        var config = ragfairConfig.Dynamic;
 
         // Lookup item details - check if item not found
-        var itemDetails = itemHelper.getItem(tplId);
-        if (!itemDetails[0]) {
-            throw new JSType.Error(
-                localisationService.getText(
+        var itemDetails = itemHelper.GetItem(tplId);
+        if (!itemDetails.Key) {
+            throw new Exception(
+                localisationService.GetText(
                     "ragfair-item_not_in_db_unable_to_generate_dynamic_stack_count",
-                    tplId,
-                ),
+                    tplId
+                )
             );
         }
 
         // Item Types to return one of
-        if (
-            isWeaponPreset ||
-            itemHelper.isOfBaseclasses(itemDetails[1]._id, ragfairConfig.dynamic.showAsSingleStack)
+        if (isWeaponPreset ||
+            itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
         ) {
             return 1;
         }
 
         // Get max stack count
-        var maxStackCount = itemDetails[1]._props.StackMaxSize;
+        var maxStackCount = itemDetails.Value?.Properties?.StackMaxSize;
 
         // non-stackable - use different values to calculate stack size
-        if (!maxStackCount || maxStackCount === 1) {
-            return Math.round(randomUtil.getInt(config.nonStackableCount.min, config.nonStackableCount.max));
+        if (maxStackCount is null or 1) {
+            return randomUtil.GetInt((int) config.NonStackableCount.Min, (int) config.NonStackableCount.Max);
         }
 
-        var stackPercent = Math.round(
-            randomUtil.getInt(config.stackablePercent.min, config.stackablePercent.max),
-        );
+        var stackPercent = Math.Round(randomUtil.GetDouble((double) config.StackablePercent.Min, (double) config.StackablePercent.Max));
 
-        return Math.round((maxStackCount / 100) * stackPercent);
+        return (int) ((maxStackCount / 100) * stackPercent);
     }
 
     /**
      * Choose a currency at random with bias
      * @returns currency tpl
      */
-    public getDynamicOfferCurrency(): string {
-        var currencies = ragfairConfig.dynamic.currencies;
-        var bias: string[] = [];
+    public string GetDynamicOfferCurrency()
+    {
+        var currencies = ragfairConfig.Dynamic.Currencies;
+        var bias = new List<string>();
 
-        for (var item in currencies) {
-            for (let i = 0; i < currencies[item]; i++) {
-                bias.push(item);
+        foreach (var item in currencies.Keys) {
+            for (var i = 0; i < currencies[item]; i++) {
+                bias.Add(item);
             }
         }
 
-        return bias[Math.floor(Math.random() * bias.length)];
+        return bias[(int) Math.Floor(randomUtil.RandNum(0, 1) * bias.Count)];
     }
 
     /**
@@ -191,9 +190,10 @@ public class RagfairServerHelper(
      * @param item Preset item
      * @returns Array of weapon and its children
      */
-    public getPresetItems(item: IItem): IItem[] {
-        var preset = cloner.clone(databaseService.getGlobals().ItemPresets[item._id]._items);
-        return itemHelper.reparentItemAndChildren(item, preset);
+    public List<Item> GetPresetItems(Item item)
+    {
+        var preset = cloner.Clone(databaseService.GetGlobals().ItemPresets[item.Id].Items);
+        return itemHelper.ReparentItemAndChildren(item, preset);
     }
 
     /**
@@ -201,15 +201,15 @@ public class RagfairServerHelper(
      * @param item Preset item
      * @returns
      */
-    public getPresetItemsByTpl(item: IItem): IItem[] {
-        var presets = [];
-        for (var itemId in databaseService.getGlobals().ItemPresets) {
-            if (databaseService.getGlobals().ItemPresets[itemId]._items[0]._tpl === item._tpl) {
-                var presetItems = cloner.clone(databaseService.getGlobals().ItemPresets[itemId]._items);
-                presets.push(itemHelper.reparentItemAndChildren(item, presetItems));
+    public List<Item> GetPresetItemsByTpl(Item item)
+    {
+        var presets = new List<Item>();
+        foreach (var itemId in databaseService.GetGlobals().ItemPresets.Keys) {
+            if (databaseService.GetGlobals().ItemPresets[itemId].Items[0].Template == item.Template) {
+                var presetItems = cloner.Clone(databaseService.GetGlobals().ItemPresets[itemId].Items);
+                presets.AddRange(itemHelper.ReparentItemAndChildren(item, presetItems));
             }
         }
-
         return presets;
     }
 }
