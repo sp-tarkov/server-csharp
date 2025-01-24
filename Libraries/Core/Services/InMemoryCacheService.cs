@@ -1,38 +1,54 @@
-﻿using SptCommon.Annotations;
+using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class InMemoryCacheService
+public class InMemoryCacheService(
+    ICloner _cloner)
 {
+
+    protected Dictionary<string, object?> _cacheData = new();
+
     // Store data into an in-memory object
     // key to store data against
     // Data to store in cache
-    public void StoreByKey(string key, object dataToCache)
+    public void StoreByKey<T>(string key, T dataToCache)
     {
-        throw new NotImplementedException();
+        _cacheData[key] = _cloner.Clone(dataToCache);
     }
 
-    // Retreve data stored by a key
+    // Retrieve data stored by a key
     // key
     // Stored data
-    public T GetDataByKey<T>(string key)
+    public T? GetDataByKey<T>(string key)
     {
-        throw new NotImplementedException();
+        if (_cacheData.ContainsKey(key))
+        {
+            return (T)_cacheData[key];
+        }
+
+        return default;
     }
 
-    // Does data exists against the provided key
+    // Does data exist against the provided key
     // Key to check for data against
     // true if exists
     public bool HasStoredDataByKey(string key)
     {
-        throw new NotImplementedException();
+        return _cacheData.ContainsKey(key);
     }
 
     // Remove data stored against key
     // Key to remove data against
     public void ClearDataStoredByKey(string key)
     {
-        throw new NotImplementedException();
+        _cacheData.Remove(key);
+    }
+
+    // Remove all data stored
+    public void ClearCache()
+    {
+        _cacheData.Clear();
     }
 }
