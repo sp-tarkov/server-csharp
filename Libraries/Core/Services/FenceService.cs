@@ -1222,7 +1222,7 @@ public class FenceService(
         foreach (var plateSlot in plateSlots)
         {
             var plateTpl = plateSlot.Props.Filters[0].Plate;
-            if (plateTpl == null)
+            if (string.IsNullOrEmpty(plateTpl))
             {
                 // Bsg data lacks a default plate, skip randomisng for this mod
                 continue;
@@ -1233,13 +1233,11 @@ public class FenceService(
             var modItemDbDetails = itemHelper.GetItem(plateTpl).Value;
 
             // Chance to remove plate
-            var plateExistsChance =
-                traderConfig.Fence.ChancePlateExistsInArmorPercent[
-                    modItemDbDetails?.Properties?.ArmorClass?.ToString() ?? "3"];
+            var plateExistsChance = traderConfig.Fence.ChancePlateExistsInArmorPercent[modItemDbDetails?.Properties?.ArmorClass?.ToString() ?? "3"];
             if (!randomUtil.GetChance100(plateExistsChance))
             {
                 // Remove plate from armor
-                armorWithMods = armorItemAndMods.Where(item => item.SlotId.ToLower() != plateSlot.Name.ToLower())
+                armorItemAndMods = armorItemAndMods.Where(item => item.SlotId.ToLower() != plateSlot.Name.ToLower())
                     .ToList();
 
                 continue;

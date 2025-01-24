@@ -55,6 +55,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         return (float)GetSecureRandomNumber() * (max - min) + min;
     }
 
+
     /// <summary>
     /// Generates a random floating-point number within the specified range ~15-17 digits (8 bytes).
     /// </summary>

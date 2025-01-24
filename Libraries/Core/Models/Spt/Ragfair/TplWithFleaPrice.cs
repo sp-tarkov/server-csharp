@@ -9,5 +9,5 @@ public record TplWithFleaPrice
 
     // Roubles
     [JsonPropertyName("price")]
-    public decimal? Price { get; set; }
+    public double? Price { get; set; }
 }

@@ -175,7 +175,7 @@ public class PaymentService(
             if (item.Upd.StackObjectsCount < currencyMaxStackSize) {
                 if (item.Upd.StackObjectsCount + calcAmount > currencyMaxStackSize) {
                     // calculate difference
-                    calcAmount -= (currencyMaxStackSize - item.Upd.StackObjectsCount) ?? 0;
+                    calcAmount -= (int) ((currencyMaxStackSize - item.Upd.StackObjectsCount) ?? 0);
                     item.Upd.StackObjectsCount = currencyMaxStackSize;
                 } else {
                     skipSendingMoneyToStash = true;
@@ -195,7 +195,7 @@ public class PaymentService(
         Item rootCurrencyReward = new Item {
             Id = _hashUtil.Generate(),
             Template = currencyTpl,
-            Upd = new Upd { StackObjectsCount = Math.Round(calcAmount) },
+            Upd = new Upd { StackObjectsCount = Math.Round((double) calcAmount) }
         };
 
         // Ensure money is properly split to follow its max stack size limit

@@ -26,7 +26,7 @@ public record RagfairOffer
 
     /** Handbook price */
     [JsonPropertyName("itemsCost")]
-    public decimal? ItemsCost { get; set; }
+    public double? ItemsCost { get; set; }
 
     /** Rouble price per item */
     [JsonPropertyName("requirementsCost")]
@@ -72,7 +72,7 @@ public record OfferRequirement
     public string? Template { get; set; }
 
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 
     [JsonPropertyName("onlyFunctional")]
     public bool? OnlyFunctional { get; set; }
@@ -93,7 +93,7 @@ public record RagfairOfferUser
     public string? Nickname { get; set; }
 
     [JsonPropertyName("rating")]
-    public decimal? Rating { get; set; }
+    public double? Rating { get; set; }
 
     [JsonPropertyName("memberType")]
     public MemberCategory? MemberType { get; set; }

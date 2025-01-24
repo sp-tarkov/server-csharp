@@ -1,59 +1,159 @@
-﻿using SptCommon.Annotations;
+﻿using Core.Helpers;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
+using Core.Servers;
+using Core.Services;
+using Core.Utils;
 
 namespace Core.Generators;
 
 [Injectable]
-public class RagfairAssortGenerator()
+public class RagfairAssortGenerator(
+    HashUtil hashUtil,
+    ItemHelper itemHelper,
+    PresetHelper presetHelper,
+    SeasonalEventService seasonalEventService,
+    ConfigServer configServer
+)
 {
+    protected List<List<Item>> generatedAssortItems = [];
+    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
-    /// <summary>
-    /// Get an array of arrays that can be sold on the flea
-    /// Each sub array contains item + children (if any)
-    /// </summary>
-    /// <returns>List of Lists</returns>
+    protected List<string> ragfairItemInvalidBaseTypes =
+    [
+        BaseClasses.LOOT_CONTAINER, // Safe, barrel cache etc
+        BaseClasses.STASH, // Player inventory stash
+        BaseClasses.SORTING_TABLE,
+        BaseClasses.INVENTORY,
+        BaseClasses.STATIONARY_CONTAINER,
+        BaseClasses.POCKETS,
+        BaseClasses.BUILT_IN_INSERTS,
+    ];
+
+    /**
+     * Get an array of arrays that can be sold on the flea
+     * Each sub array contains item + children (if any)
+     * @returns array of arrays
+     */
     public List<List<Item>> GetAssortItems()
     {
-        throw new NotImplementedException();
+        if (!AssortsAreGenerated())
+        {
+            generatedAssortItems = GenerateRagfairAssortItems();
+        }
+
+        return generatedAssortItems;
     }
 
-    /// <summary>
-    /// Check internal generatedAssortItems array has objects
-    /// </summary>
-    /// <returns>true if array has objects</returns>
+    /**
+     * Check internal generatedAssortItems array has objects
+     * @returns true if array has objects
+     */
     protected bool AssortsAreGenerated()
     {
-        throw new NotImplementedException();
+        return generatedAssortItems.Count > 0;
     }
 
-    /// <summary>
-    /// Generate an array of arrays (item + children) the flea can sell
-    /// </summary>
-    /// <returns>List of Lists (item + children)</returns>
+    /**
+     * Generate an array of arrays (item + children) the flea can sell
+     * @returns array of arrays (item + children)
+     */
     protected List<List<Item>> GenerateRagfairAssortItems()
     {
-        throw new NotImplementedException();
+        List<List<Item>> results = [];
+
+        /** Get cloned items from db */
+        var dbItemsClone = itemHelper.GetItems().Where((item) => item.Type != "Node");
+
+        /** Store processed preset tpls so we dont add them when procesing non-preset items */
+        List<string> processedArmorItems = [];
+        var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
+        var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();
+
+        var presets = GetPresetsToAdd();
+        foreach (var preset in presets)
+        {
+            // Update Ids and clone
+            var presetAndMods = itemHelper.ReplaceIDs(preset.Items);
+            itemHelper.RemapRootItemId(presetAndMods);
+
+            // Add presets base item tpl to the processed list so its skipped later on when processing items
+            processedArmorItems.Add(preset.Items[0].Template);
+
+            presetAndMods[0].ParentId = "hideout";
+            presetAndMods[0].SlotId = "hideout";
+            presetAndMods[0].Upd = new Upd()
+                { StackObjectsCount = 99999999, UnlimitedCount = true, SptPresetId = preset.Id };
+
+            results.Add(presetAndMods);
+        }
+
+        foreach (var item in dbItemsClone)
+        {
+            if (!itemHelper.IsValidItem(item.Id, ragfairItemInvalidBaseTypes))
+            {
+                continue;
+            }
+
+            // Skip seasonal items when not in-season
+            if (
+                ragfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent &&
+                !seasonalEventActive &&
+                seasonalItemTplBlacklist.Contains(item.Id)
+            )
+            {
+                continue;
+            }
+
+            if (processedArmorItems.Contains(item.Id))
+            {
+                // Already processed
+                continue;
+            }
+
+            var ragfairAssort = CreateRagfairAssortRootItem(
+                item.Id,
+                item.Id
+            ); // tplid and id must be the same so hideout recipe rewards work
+
+            results.Add([ragfairAssort]);
+        }
+
+        return results;
     }
 
-    /// <summary>
-    /// Get presets from globals to add to flea
-    /// ragfairConfig.dynamic.showDefaultPresetsOnly decides if its all presets or just defaults
-    /// </summary>
-    /// <returns>Dictionary</returns>
+    /**
+     * Get presets from globals to add to flea
+     * ragfairConfig.dynamic.showDefaultPresetsOnly decides if its all presets or just defaults
+     * @returns IPreset array
+     */
     protected List<Preset> GetPresetsToAdd()
     {
-        throw new NotImplementedException();
+        return ragfairConfig.Dynamic.ShowDefaultPresetsOnly
+            ? presetHelper.GetDefaultPresets().Values.ToList()
+            : presetHelper.GetAllPresets();
     }
 
-    /// <summary>
-    /// Create a base assort item and return it with populated values + 999999 stack count + unlimited count = true
-    /// </summary>
-    /// <param name="tplId">tplid to add to item</param>
-    /// <param name="id">id to add to item</param>
-    /// <returns>Hydrated Item object</returns>
-    protected Item CreateRagfairAssortRootItem(string tplId, string id_checkTodoComment) // TODO: string id = this.hashUtil.generate() 
+    /**
+     * Create a base assort item and return it with populated values + 999999 stack count + unlimited count = true
+     * @param tplId tplid to add to item
+     * @param id id to add to item
+     * @returns Hydrated Item object
+     */
+    protected Item CreateRagfairAssortRootItem(string tplId, string? id = null)
     {
-        throw new NotImplementedException();
+        if (string.IsNullOrEmpty(id))
+            id = hashUtil.Generate();
+        return new Item()
+        {
+            Id = id,
+            Template = tplId,
+            ParentId = "hideout",
+            SlotId = "hideout",
+            Upd = new Upd() { StackObjectsCount = 99999999, UnlimitedCount = true }
+        };
     }
 }

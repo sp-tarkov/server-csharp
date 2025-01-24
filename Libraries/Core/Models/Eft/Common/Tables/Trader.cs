@@ -233,7 +233,7 @@ public record BarterScheme
     public bool? SptQuestLocked { get; set; }
 
     [JsonPropertyName("level")]
-    public double? Level { get; set; }
+    public int? Level { get; set; }
 
     [JsonPropertyName("side")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
