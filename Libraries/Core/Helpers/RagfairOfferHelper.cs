@@ -6,11 +6,20 @@ using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Utils;
+using SptCommon.Extensions;
+using Core.Models.Spt.Services;
+using Core.Services;
 
 namespace Core.Helpers;
 
 [Injectable]
-public class RagfairOfferHelper
+public class RagfairOfferHelper(
+    ISptLogger<RagfairOfferHelper> _logger,
+    TimeUtil _timeUtil,
+    DatabaseService _databaseService,
+    ProfileHelper _profileHelper)
 {
     /// <summary>
     /// Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see
@@ -132,12 +141,44 @@ public class RagfairOfferHelper
 
     /**
      * Process all player-listed flea offers for a desired profile
-     * @param sessionID Session id to process offers for
+     * @param sessionId Session id to process offers for
      * @returns true = complete
      */
-    public void ProcessOffersOnProfile(string sessionID)
+    public bool ProcessOffersOnProfile(string sessionId)
     {
-        Console.WriteLine($"actually implement me plz: owo: ProcessOffersOnProfile");
+        var timestamp = _timeUtil.GetTimeStamp();
+        var profileOffers = GetProfileOffers(sessionId);
+
+        // No offers, don't do anything
+        if (profileOffers?.Count == 0)
+        {
+            return true;
+        }
+
+        foreach (var offer in profileOffers) {
+            if (offer.SellResults?.Count > 0 && timestamp >= offer.SellResults[0].SellTime)
+            {
+                // Checks first item, first is spliced out of array after being processed
+                // Item sold
+                var totalItemsCount = 1d;
+                var boughtAmount = 1;
+
+                if (!offer.SellInOnePiece.GetValueOrDefault(false))
+                {
+                    // offer.items.reduce((sum, item) => sum + item.upd?.StackObjectsCount ?? 0, 0);
+                    totalItemsCount = GetTotalStackCountSize([offer.Items]);
+                    boughtAmount = offer.SellResults[0].Amount.Value;
+                }
+
+                var ratingToAdd = (offer.SummaryCost / totalItemsCount) * boughtAmount;
+                IncreaseProfileRagfairRating(_profileHelper.GetFullProfile(sessionId), ratingToAdd.Value);
+
+                CompleteOffer(sessionId, offer, boughtAmount);
+                offer.SellResults.Splice(0, 1); // Remove the sell result object now its been processed
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -145,9 +186,15 @@ public class RagfairOfferHelper
      * @param itemsInInventoryToList items to sum up
      * @returns Total stack count
      */
-    public int GetTotalStackCountSize(List<List<Item>> itemsInInventoryToList)
+    public double GetTotalStackCountSize(List<List<Item>> itemsInInventoryToList)
     {
-        throw new NotImplementedException();
+        var total = 0d;
+        foreach (var itemAndChildren in itemsInInventoryToList) {
+            // Only count the root items stack count in total
+            total += itemAndChildren[0]?.Upd?.StackObjectsCount.GetValueOrDefault(1) ?? 1;
+        }
+
+        return total;
     }
 
     /**
@@ -155,19 +202,37 @@ public class RagfairOfferHelper
      * @param sessionId Profile to update
      * @param amountToIncrementBy Raw amount to add to players ragfair rating (excluding the reputation gain multiplier)
      */
-    public void IncreaseProfileRagfairRating(SptProfile profile, int amountToIncrementBy)
+    public void IncreaseProfileRagfairRating(SptProfile profile, double? amountToIncrementBy)
     {
-        throw new NotImplementedException();
+        var ragfairGlobalsConfig = _databaseService.GetGlobals().Configuration.RagFair;
+
+        profile.CharacterData.PmcData.RagfairInfo.IsRatingGrowing = true;
+        if (amountToIncrementBy is null)
+        {
+            _logger.Warning($"Unable to increment ragfair rating, value was not a number: { amountToIncrementBy}");
+
+            return;
+        }
+        profile.CharacterData.PmcData.RagfairInfo.Rating +=
+            (ragfairGlobalsConfig.RatingIncreaseCount / ragfairGlobalsConfig.RatingSumForIncrease) *
+            amountToIncrementBy;
     }
 
     /**
      * Return all offers a player has listed on a desired profile
-     * @param sessionID Session id
+     * @param sessionId Session id
      * @returns List of ragfair offers
      */
-    protected List<RagfairOffer> GetProfileOffers(string sessionID)
+    protected List<RagfairOffer> GetProfileOffers(string sessionId)
     {
-        throw new NotImplementedException();
+        var profile = _profileHelper.GetPmcProfile(sessionId);
+
+        if (profile.RagfairInfo?.Offers is null)
+        {
+            return [];
+        }
+
+        return profile.RagfairInfo.Offers;
     }
 
     /**

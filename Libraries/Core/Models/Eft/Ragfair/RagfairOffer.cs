@@ -117,5 +117,5 @@ public record SellResult
     public long? SellTime { get; set; }
 
     [JsonPropertyName("amount")]
-    public decimal? Amount { get; set; }
+    public int? Amount { get; set; }
 }
