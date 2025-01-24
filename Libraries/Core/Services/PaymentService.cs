@@ -183,7 +183,7 @@ public class PaymentService(
                 }
 
                 // Inform client of change to items StackObjectsCount
-                output.ProfileChanges[sessionID].Items.ChangedItems.Add(_itemHelper.GetProductFromItem(item));
+                output.ProfileChanges[sessionID].Items.ChangedItems.Add(item);
 
                 if (skipSendingMoneyToStash) {
                     break;
@@ -275,7 +275,7 @@ public class PaymentService(
             } else {
                 profileMoneyItem.Upd.StackObjectsCount -= leftToPay;
                 leftToPay = 0;
-                output.ProfileChanges[sessionID].Items.ChangedItems.Add(_itemHelper.GetProductFromItem(profileMoneyItem));
+                output.ProfileChanges[sessionID].Items.ChangedItems.Add(profileMoneyItem);
             }
 
             if (leftToPay == 0) {

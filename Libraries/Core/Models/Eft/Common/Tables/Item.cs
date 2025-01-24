@@ -9,7 +9,7 @@ public record Item
     public required string Id { get; set; }
 
     [JsonPropertyName("_tpl")]
-    public required string Template { get; set; }
+    public string Template { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
@@ -25,20 +25,6 @@ public record Item
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
-
-    public ItemEvent.Product ConvertToProduct()
-    {
-        // TODO - maybe this entire product item can be replaced with Item?
-        return new ItemEvent.Product
-        {
-            Id = Id,
-            Template = Template,
-            ParentId = ParentId,
-            SlotId = SlotId,
-            Upd = Upd,
-            Location = (ItemLocation)Location
-        };
-    }
 }
 
 public record ItemLocation

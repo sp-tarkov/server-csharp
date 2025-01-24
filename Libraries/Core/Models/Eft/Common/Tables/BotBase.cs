@@ -576,7 +576,7 @@ public record HideoutImprovement
 
 public record Production // use this instead of productive and scavcase
 {
-    public List<Product>? Products { get; set; }
+    public List<Item>? Products { get; set; }
 
     /** Seconds passed of production */
     public double? Progress { get; set; }
@@ -665,17 +665,8 @@ public record HideoutSlot
     public List<HideoutItem>? Items { get; set; }
 }
 
-public record HideoutItem
+public record HideoutItem : Item
 {
-    [JsonPropertyName("_id")]
-    public string? Id { get; set; }
-
-    [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
-
-    [JsonPropertyName("upd")]
-    public Upd? Upd { get; set; }
-    
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 }

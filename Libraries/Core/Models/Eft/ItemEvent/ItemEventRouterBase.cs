@@ -136,13 +136,13 @@ public record EquipmentBuildChange
 public record ItemChanges
 {
     [JsonPropertyName("new")]
-    public List<Product>? NewItems { get; set; }
+    public List<Item>? NewItems { get; set; }
 
     [JsonPropertyName("change")]
-    public List<Product>? ChangedItems { get; set; }
+    public List<Item>? ChangedItems { get; set; }
 
     [JsonPropertyName("del")]
-    public List<Product> DeletedItems { get; set; } // Only needs _id property
+    public List<Item> DeletedItems { get; set; } // Only needs _id property
 }
 
 /** Related to TraderInfo */
@@ -162,8 +162,4 @@ public record TraderData
 
     [JsonPropertyName("disabled")]
     public bool? Disabled { get; set; }
-}
-
-public record Product : Item
-{
 }

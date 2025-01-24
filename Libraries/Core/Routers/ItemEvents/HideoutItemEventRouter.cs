@@ -70,7 +70,7 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
             case HideoutEventActions.HIDEOUT_IMPROVE_AREA:
                 return _hideoutCallbacks.ImproveArea(pmcData, body as HideoutImproveAreaRequestData, sessionID);
             case HideoutEventActions.HIDEOUT_CANCEL_PRODUCTION_COMMAND:
-                return _hideoutCallbacks.CancelProduction(pmcData, body as HideoutImproveAreaRequestData, sessionID);
+                return _hideoutCallbacks.CancelProduction(pmcData, body as HideoutCancelProductionRequestData, sessionID);
             case HideoutEventActions.HIDEOUT_CIRCLE_OF_CULTIST_PRODUCTION_START:
                 return _hideoutCallbacks.CicleOfCultistProductionStart(pmcData, body as HideoutCircleOfCultistProductionStartRequestData, sessionID);
             case HideoutEventActions.HIDEOUT_DELETE_PRODUCTION_COMMAND:
