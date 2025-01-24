@@ -178,7 +178,7 @@ public class HealthController(
                     break;
 
                 default:
-                    _logger.Warning($"Unhandled effect after consuming: ${itemToConsume.Template}, ${key}");
+                    _logger.Warning($"Unhandled effect after consuming: {itemToConsume.Template}, {key}");
                     break;
             }
 
