@@ -240,7 +240,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Get the front/back/side weights based on bots level
-        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting?.FirstOrDefault(
+        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting.FirstOrDefault(
             (armorWeight) =>
                 settings.BotData.Level >= armorWeight.LevelRange.Min &&
                 settings.BotData.Level <= armorWeight.LevelRange.Max
@@ -256,7 +256,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Get the specific plate slot weights (front/back/side)
-        var plateWeights = plateSlotWeights[modSlot];
+        var plateWeights = plateSlotWeights.Values[modSlot];
         if (plateWeights is null)
         {
             // No weights, return original array of plate tpls
@@ -270,15 +270,15 @@ public class BotEquipmentModGenerator(
         var chosenArmorPlateLevel = _weightedRandomHelper.GetWeightedValue<string>(plateWeights);
 
         // Convert the array of ids into database items
-        var platesFromDb = existingPlateTplPool.Select((plateTpl) => _itemHelper.GetItem(plateTpl)[1]);
+        var platesFromDb = existingPlateTplPool.Select((plateTpl) => _itemHelper.GetItem(plateTpl).Value);
 
         // Filter plates to the chosen level based on its armorClass property
-        var platesOfDesiredLevel = platesFromDb.Filter((item) => item._props.armorClass == chosenArmorPlateLevel);
-        if (platesOfDesiredLevel.length > 0)
+        var platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass == chosenArmorPlateLevel);
+        if (platesOfDesiredLevel.Count() > 0)
         {
             // Plates found
             result.Result = Result.SUCCESS;
-            result.PlateModTemplates = platesOfDesiredLevel.map((item) => item._id);
+            result.PlateModTemplates = platesOfDesiredLevel.Select((item) => item.Id);
 
             return result;
         }
@@ -286,26 +286,26 @@ public class BotEquipmentModGenerator(
         // no plates found that fit requirements, lets get creative
 
         // Get lowest and highest plate classes available for this armor
-        const minMaxArmorPlateClass  = this.getMinMaxArmorPlateClass(platesFromDb);
+        var minMaxArmorPlateClass  = GetMinMaxArmorPlateClass(platesFromDb);
 
         // Increment plate class level in attempt to get useable plate
-        let findCompatiblePlateAttempts = 0;
-        const maxAttempts  = 3;
-        for (let i = 0; i < maxAttempts; i++)
+        var findCompatiblePlateAttempts = 0;
+        var maxAttempts  = 3;
+        for (var i = 0; i < maxAttempts; i++)
         {
-            chosenArmorPlateLevel = (Number.parseInt(chosenArmorPlateLevel) + 1).toString();
+            chosenArmorPlateLevel = (int.Parse(chosenArmorPlateLevel)) + 1).ToString();
 
             // New chosen plate class is higher than max, then set to min and check if valid
-            if (Number(chosenArmorPlateLevel) > minMaxArmorPlateClass.max)
+            if (chosenArmorPlateLevel > minMaxArmorPlateClass.max)
             {
                 chosenArmorPlateLevel = minMaxArmorPlateClass.min.toString();
             }
 
             findCompatiblePlateAttempts++;
 
-            platesOfDesiredLevel = platesFromDb.filter((item) => item._props.armorClass == = chosenArmorPlateLevel);
+            platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass == chosenArmorPlateLevel);
             // Valid plates found, exit
-            if (platesOfDesiredLevel.length > 0)
+            if (platesOfDesiredLevel.Count() > 0)
             {
                 break;
             }
@@ -313,7 +313,7 @@ public class BotEquipmentModGenerator(
             // No valid plate class found in 3 tries, attempt default plates
             if (findCompatiblePlateAttempts >= maxAttempts)
             {
-                this.logger.debug(
+                _logger.Debug(
                     $"Plate filter too restrictive for armor: ${{ armorItem._name}} ${{ armorItem._id}}, unable to find plates of level: ${{ chosenArmorPlateLevel}}, using items default plate"
                 );
 

@@ -345,7 +345,6 @@
                 "minLimitPercent": 15
             }
         }
-		}
     },
     "lootItemResourceRandomization": {
         "assault": {
@@ -2324,7 +2323,8 @@
                         "min": 1,
                         "max": 10
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 25,
                         "3": 20,
                         "4": 5,
@@ -2359,6 +2359,7 @@
                         "5": 1,
                         "6": 1
                     }
+				}
                 },
                 {
                     "levelRange": {
@@ -2406,7 +2407,8 @@
                         "min": 15,
                         "max": 24
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 10,
                         "3": 15,
                         "4": 24,
@@ -2441,13 +2443,15 @@
                         "5": 5,
                         "6": 4
                     }
+					}
                 },
                 {
                     "levelRange": {
                         "min": 25,
                         "max": 35
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 2,
                         "3": 10,
                         "4": 35,
@@ -2482,13 +2486,16 @@
                         "5": 15,
                         "6": 5
                     }
+					}
+                    
                 },
                 {
                     "levelRange": {
                         "min": 36,
                         "max": 55
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 0,
                         "3": 4,
                         "4": 32,
@@ -2522,14 +2529,16 @@
                         "4": 32,
                         "5": 50,
                         "6": 20
-                    }
+                    }}
+                    
                 },
                 {
                     "levelRange": {
                         "min": 56,
                         "max": 90
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 0,
                         "3": 0,
                         "4": 10,
@@ -2564,6 +2573,8 @@
                         "5": 40,
                         "6": 50
                     }
+					}
+                    
                 }
             ],
             "whitelist": [
