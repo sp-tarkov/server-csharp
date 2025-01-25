@@ -9,5 +9,5 @@ public record ExtendOfferRequestData : InventoryBaseActionRequestData
     public string? OfferId { get; set; }
 
     [JsonPropertyName("renewalTime")]
-    public int? RenewalTime { get; set; }
+    public long? RenewalTime { get; set; }
 }

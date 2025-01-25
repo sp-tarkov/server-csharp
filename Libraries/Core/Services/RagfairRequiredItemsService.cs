@@ -33,7 +33,7 @@ public class RagfairRequiredItemsService(
                 _requiredItemsCache.TryAdd(requirement.Template, []);
 
                 // Add matching offer
-                _requiredItemsCache[requirement.Template].Add(offer);
+                _requiredItemsCache.GetValueOrDefault(requirement.Template)?.Add(offer);
             }
         }
     }

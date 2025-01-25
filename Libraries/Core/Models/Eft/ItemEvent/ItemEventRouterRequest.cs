@@ -11,7 +11,7 @@ public record ItemEventRouterRequest : IRequestData
     public List<BaseInteractionRequestData>? Data { get; set; }
 
     [JsonPropertyName("tm")]
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 
     [JsonPropertyName("reload")]
     public int? Reload { get; set; }

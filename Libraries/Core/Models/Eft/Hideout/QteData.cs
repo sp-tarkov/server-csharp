@@ -99,7 +99,7 @@ public record QteEffect
     public List<SkillLevelMultiplier>? LevelMultipliers { get; set; }
 
     [JsonPropertyName("time")]
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 
     [JsonPropertyName("weight")]
     public float? Weight { get; set; }

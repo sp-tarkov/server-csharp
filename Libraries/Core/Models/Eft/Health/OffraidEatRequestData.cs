@@ -12,5 +12,5 @@ public record OffraidEatRequestData : BaseInteractionRequestData
     public int? Count { get; set; }
 
     [JsonPropertyName("time")]
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 }

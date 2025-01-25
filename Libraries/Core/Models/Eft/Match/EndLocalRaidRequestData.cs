@@ -67,7 +67,7 @@ public record EndRaidResult
     /// Seconds in raid
     /// </summary>
     [JsonPropertyName("playTime")]
-    public int? PlayTime { get; set; }
+    public double? PlayTime { get; set; }
 }
 
 public record LocationTransit
