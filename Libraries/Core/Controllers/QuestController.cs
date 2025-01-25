@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -12,6 +13,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 
 namespace Core.Controllers;
@@ -217,7 +219,7 @@ public class QuestController(
         {
             if (condition.Id == handoverQuestRequest.ConditionId && handoverQuestTypes.Contains(condition.ConditionType))
             {
-                handedInCount = int.Parse((string)condition.Value);
+                handedInCount = int.Parse(condition.Value.ToString());
                 isItemHandoverQuest = condition.ConditionType == handoverQuestTypes.FirstOrDefault();
                 handoverRequirements = condition;
 

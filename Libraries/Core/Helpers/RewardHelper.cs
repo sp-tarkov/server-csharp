@@ -100,14 +100,14 @@ namespace Core.Helpers
                     case RewardType.Experience:
                         _profileHelper.AddExperienceToPmc(
                             sessionId,
-                            (int)reward.Value
+                            int.Parse(reward.Value.ToString())
                         ); // this must occur first as the output object needs to take the modified profile exp value
                         break;
                     case RewardType.TraderStanding:
                         _traderHelper.AddStandingToTrader(
                             sessionId,
                             reward.Target,
-                            (double)reward.Value
+                            double.Parse(reward.Value.ToString())
                         );
                         break;
                     case RewardType.TraderUnlock:
