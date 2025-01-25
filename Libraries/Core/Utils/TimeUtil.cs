@@ -154,7 +154,7 @@ public class TimeUtil
         int minutes = now.Minute;
     
         // If minutes greater than 0, subtract 1 hour
-        if (minutes > 0)
+        if (hours > 0 && minutes > 0)
         {
             hours--;
         }
