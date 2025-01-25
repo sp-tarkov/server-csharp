@@ -83,7 +83,7 @@ public class App
         
         _logger.Success(GetRandomisedStartMessage());
         _logger.Success(".oooO  Oooo.");
-        _logger.Success("( ( )  ( ) )");
+        _logger.Success("( ( )  ( ) )"); // TODO: Remove later
         _logger.Success(" \\ (    ) /");
         _logger.Success("  \\_)  (_/");
     }
