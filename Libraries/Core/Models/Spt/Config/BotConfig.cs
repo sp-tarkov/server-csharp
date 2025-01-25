@@ -529,6 +529,7 @@ public class ArmorPlateWeights
     [JsonPropertyName("levelRange")]
     public MinMax LevelRange { get; set; }
 
+    [JsonPropertyName("values")]
     public Dictionary<string, Dictionary<string, double>> Values { get; set; }
 }
 
