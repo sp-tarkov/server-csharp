@@ -636,7 +636,7 @@ public class LocationLootGenerator(
         // Positions not in forced but have 100% chance to spawn
         List<Spawnpoint> guaranteedLoosePoints = [];
 
-        var blacklistedSpawnpoints = _locationConfig.LooseLootBlacklist[locationName];
+        var blacklistedSpawnpoints = _locationConfig.LooseLootBlacklist.GetValueOrDefault(locationName);
         var spawnpointArray = new ProbabilityObjectArray<ProbabilityObject<string, Spawnpoint>, string, Spawnpoint>(_mathUtil, _cloner, []);
 
         foreach (var spawnpoint in allDynamicSpawnpoints)

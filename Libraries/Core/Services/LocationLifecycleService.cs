@@ -126,7 +126,6 @@ public class LocationLifecycleService
         _logger.Debug($"Starting: {request.Location}");
 
         var playerProfile = _profileHelper.GetPmcProfile(sessionId);
-        GenerateLocationAndLoot(request.Location, !request.ShouldSkipLootGeneration ?? true);
         
         var result = new StartLocalRaidResponseData
         {

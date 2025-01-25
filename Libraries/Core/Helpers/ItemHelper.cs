@@ -1431,11 +1431,11 @@ public class ItemHelper(
             chosenCaliber,
             staticAmmoDist,
             defaultCartridgeTpl,
-            weapon?.Properties?.Chambers[0]?.Props?.Filters[0]?.Filter
+            (weapon?.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?.FirstOrDefault()?.Filter) ?? null
         );
         if (cartridgeTpl is null)
         {
-            _logger.Debug($"Unable to fill item: {magazine[0].Id} {magTemplate.Name} with cartridges, none found.");
+            _logger.Debug($"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found.");
 
             return;
         }
