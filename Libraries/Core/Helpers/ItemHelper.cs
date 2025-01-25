@@ -989,6 +989,31 @@ public class ItemHelper(
         }
     }
 
+    public List<Item> ReplaceIDs(List<Item> items)
+    {
+        foreach (var item in items)
+        {
+
+            // Generate new id
+            var newId = _hashUtil.Generate();
+
+            // Keep copy of original id
+            var originalId = item.Id;
+
+            // Update items id to new one we generated
+            item.Id = newId;
+
+            // Find all children of item and update their parent ids to match
+            var childItems = items.Where(x => x.ParentId == originalId);
+            foreach (var childItem in childItems)
+            {
+                childItem.ParentId = newId;
+            }
+        }
+
+        return items;
+    }
+
     /// <summary>
     /// Regenerate all GUIDs with new IDs, with the exception of special item types (e.g. quest, sorting table, etc.) This
     /// function will not mutate the original items list, but will return a new list with new GUIDs.
@@ -1000,128 +1025,72 @@ public class ItemHelper(
     /// <returns>List<Item></returns>
     public List<Item> ReplaceIDs(
         List<Item> originalItems,
-        PmcData pmcData = null,
+        PmcData? pmcData = null,
         List<InsuredItem>? insuredItems = null,
         Dictionary<string, string>? fastPanel = null)
     {
-        var serialisedInventory = _jsonUtil.Serialize(originalItems);
-        var hideoutAreaStashes = pmcData?.Inventory?.HideoutAreaStashes ?? [];
+        // Blacklist
+        var itemIdBlacklist = new HashSet<string>();
+
+        if (pmcData != null)
+        {
+            itemIdBlacklist.UnionWith(
+                new List<string>{
+                    pmcData.Inventory.Equipment,
+                    pmcData.Inventory.QuestRaidItems,
+                    pmcData.Inventory.QuestStashItems,
+                    pmcData.Inventory.SortingTable,
+                    pmcData.Inventory.Stash,
+                    pmcData.Inventory.HideoutCustomizationStashId
+                });
+            itemIdBlacklist.UnionWith(pmcData.Inventory.HideoutAreaStashes.Keys);
+        }
+        
+
+        // Add insured items ids to blacklist
+        if (insuredItems is not null)
+        {
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+        }
+
 
         foreach (var item in originalItems)
         {
-            if (pmcData != null)
-            {
-                // Insured items should not be renamed. Only works for PMCs.
-                if (insuredItems?.FirstOrDefault(i => i.ItemId == item.Id) != null)
-                    continue;
-
-                // Do not replace the IDs of specific types of items.
-                if (item.Id == pmcData?.Inventory?.Equipment ||
-                    item.Id == pmcData?.Inventory?.QuestRaidItems ||
-                    item.Id == pmcData?.Inventory?.QuestStashItems ||
-                    item.Id == pmcData?.Inventory?.SortingTable ||
-                    item.Id == pmcData?.Inventory?.Stash ||
-                    item.Id == pmcData?.Inventory?.HideoutCustomizationStashId ||
-                    (hideoutAreaStashes?.ContainsKey(item.Id) ?? false))
-                {
-                    continue;
-                }
-            }
-
-            // Replace the ID of the item in the serialised inventory using a regular expression.
-            var oldId = item.Id;
-            var newId = _hashUtil.Generate();
-            serialisedInventory = serialisedInventory.Replace(oldId, newId); // Node uses regex with "g" flag to replace all instances
-
-            // Also replace in quick slot if the old ID exists.
-            if (fastPanel != null)
-            {
-                foreach (var itemSlot in fastPanel)
-                {
-                    if (fastPanel[itemSlot.Key] == oldId)
-                        fastPanel[itemSlot.Key] = fastPanel[itemSlot.Key].Replace(oldId, newId); // Node uses regex with "g" flag to replace all instances
-                }
-            }
-        }
-
-        var items = _jsonUtil.Deserialize<List<Item>>(serialisedInventory);
-
-        // fix dupe id's
-        var dupes = new Dictionary<string, double?>();
-        var newParents = new Dictionary<string, List<Item>>();
-        var childrenMapping = new Dictionary<string, Dictionary<string, double?>>();
-        var oldToNewIds = new Dictionary<string, List<string>>();
-
-        // Finding duplicate IDs involves scanning the item three times.
-        // First scan - Check which ids are duplicated.
-        // Second scan - Map parents to items.
-        // Third scan - Resolve IDs.
-        foreach (var item in items)
-        {
-            if (!dupes.TryAdd(item.Id, 0))
-            {
-                dupes[item.Id] += 1;
-            }
-        }
-
-        foreach (var item in items)
-        {
-            if (!(dupes[item.Id] > 1))
+            if (itemIdBlacklist.Contains(item.Id))
             {
                 continue;
             }
 
+            // Generate new id
             var newId = _hashUtil.Generate();
-            if (!newParents.ContainsKey(item.ParentId))
+
+            // Keep copy of original id
+            var originalId = item.Id;
+
+            // Update items id to new one we generated
+            item.Id = newId;
+
+            // Find all children of item and update their parent ids to match
+            var childItems = originalItems.Where(x => x.ParentId == originalId);
+            foreach (var childItem in childItems)
             {
-                newParents.Add(item.ParentId, []);
+                childItem.ParentId = newId;
             }
 
-            var newParentsItems = newParents.GetValueOrDefault(item.ParentId);
-            newParentsItems.Add(item);
-
-            if (!oldToNewIds.ContainsKey(item.Id))
+            // Also replace in quick slot if the old ID exists.
+            if (pmcData.Inventory.FastPanel is null)
             {
-                oldToNewIds.Add(item.Id, []);
+                continue;
             }
 
-            var oldToNewIdsItems = oldToNewIds.GetValueOrDefault(item.Id);
-            oldToNewIdsItems.Add(newId);
-        }
-
-        foreach (var item in items)
-        {
-            if (dupes[item.Id] > 1)
+            // Update quickslot id
+            if (pmcData.Inventory.FastPanel.ContainsKey(originalId))
             {
-                var oldId = item.Id;
-                var newId = oldToNewIds[oldId][0];
-                oldToNewIds[oldId].RemoveAt(0);
-                item.Id = newId;
-
-                // Extract one of the children that's also duplicated.
-                if (newParents.ContainsKey(oldId) && newParents[oldId].Count > 0)
-                {
-                    childrenMapping[newId] = new();
-                    for (int i = 0; i < newParents[oldId].Count; i++)
-                    {
-                        // Make sure we haven't already assigned another duplicate child of
-                        // same slot and location to this parent.
-                        var childId = GetChildId(newParents[oldId][i]);
-
-                        if (!childrenMapping.ContainsKey(childId))
-                        {
-                            childrenMapping[newId][childId] = 1;
-                            newParents[oldId][i].ParentId = newId;
-                            // Some very fucking sketchy stuff on this childIndex
-                            // No clue wth was that childIndex supposed to be, but its not
-                            newParents[oldId].RemoveAt(i);
-                        }
-                    }
-                }
+                pmcData.Inventory.FastPanel[originalId] = newId;
             }
         }
 
-        return items;
+        return originalItems;
     }
 
     /// <summary>
