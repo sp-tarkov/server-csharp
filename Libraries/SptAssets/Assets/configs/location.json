@@ -257,21 +257,21 @@
     "addCustomBotWavesToMaps": true,
     "enableBotTypeLimits": true,
     "botTypeLimits": {
-        "tarkovstreets": [
+        "TarkovStreets": [
             {
                 "type": "marksman",
                 "min": 2,
                 "max": 4
             }
         ],
-        "woods": [
+        "Woods": [
             {
                 "type": "marksman",
                 "min": 2,
                 "max": 5
             }
         ],
-        "bigmap": [
+        "Bigmap": [
             {
                 "type": "marksman",
                 "min": 2,

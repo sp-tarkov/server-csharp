@@ -619,7 +619,7 @@ public record ChancedEnemy
 public record MinMaxBot : MinMax
 {
     [JsonPropertyName("WildSpawnType")]
-    public object? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
+    public string? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
 }
 
 public record MinPlayerWaitTime
