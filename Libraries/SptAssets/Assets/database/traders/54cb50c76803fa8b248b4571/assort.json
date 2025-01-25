@@ -8408,22 +8408,22 @@
       }
     },
     {
-      "_id": "677e990ea03da7967902c88f",
-      "_tpl": "67614b3ab8c060ebb204b106",
-      "parentId": "hideout",
-      "slotId": "hideout",
-      "upd": {
-        "StackObjectsCount": 10
-      }
-    },
-    {
-      "_id": "672767168e0d0c98fd0523f8",
+      "_id": "678ddf585cafcfbb56059366",
       "_tpl": "5e85a9f4add9fe03027d9bf1",
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
         "StackObjectsCount": 20,
         "BuyRestrictionMax": 10
+      }
+    },
+    {
+      "_id": "677e990ea03da7967902c88f",
+      "_tpl": "67614b3ab8c060ebb204b106",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "StackObjectsCount": 10
       }
     }
   ],
@@ -11858,18 +11858,18 @@
         }
       ]
     ],
-    "677e990ea03da7967902c88f": [
+    "678ddf585cafcfbb56059366": [
       [
         {
-          "count": 6969,
+          "count": 2618,
           "_tpl": "5449016a4bdc2d6f028b456f"
         }
       ]
     ],
-    "672767168e0d0c98fd0523f8": [
+    "677e990ea03da7967902c88f": [
       [
         {
-          "count": 2618,
+          "count": 6969,
           "_tpl": "5449016a4bdc2d6f028b456f"
         }
       ]
@@ -12296,7 +12296,7 @@
     "67877f84ecc0f80789060854": 1,
     "67877f85ecc0f8078906085a": 4,
     "67877f85ecc0f8078906086a": 3,
-    "677e990ea03da7967902c88f": 1,
-    "672767168e0d0c98fd0523f8": 3
+    "678ddf585cafcfbb56059366": 3,
+    "677e990ea03da7967902c88f": 1
   }
 }
