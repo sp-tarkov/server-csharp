@@ -23,7 +23,6 @@ public class BotCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string GetBotLimit(string url, EmptyRequestData info, string sessionID)
     {
         var splitUrl = url.Split('/');

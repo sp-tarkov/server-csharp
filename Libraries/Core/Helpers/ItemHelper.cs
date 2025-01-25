@@ -1851,12 +1851,9 @@ public class ItemHelper(
     // Optional: new id to use
     // Returns New root id
 
-    public string RemapRootItemId(List<Item> itemWithChildren, string newId = null)
+    public string RemapRootItemId(List<Item> itemWithChildren, string? newId = null)
     {
-        if (newId is null)
-        {
-            newId = _hashUtil.Generate();
-        }
+        newId ??= _hashUtil.Generate();
 
         var rootItemExistingId = itemWithChildren[0].Id;
 

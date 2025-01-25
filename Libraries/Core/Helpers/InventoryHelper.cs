@@ -69,7 +69,7 @@ public class InventoryHelper(
         {
             var addItemRequest = new AddItemDirectRequest
             {
-                ItemWithModsToAdd = itemToAdd.Select(x => x.ConvertToHideoutItem(x)).ToList(),
+                ItemWithModsToAdd = itemToAdd,
                 FoundInRaid = request.FoundInRaid,
                 UseSortingTable = request.UseSortingTable,
                 Callback = request.Callback
@@ -95,14 +95,12 @@ public class InventoryHelper(
         ItemEventRouterResponse output)
     {
         var itemWithModsToAddClone = _cloner.Clone(request.ItemWithModsToAdd);
-        var hideoutItemsConvertedToItems = itemWithModsToAddClone.Select(x => x.ConvertToItem(x)).ToList();
-        var rootItemToAdd = hideoutItemsConvertedToItems.FirstOrDefault();
 
         // Get stash layouts ready for use
         var stashFS2D = GetStashSlotMap(pmcData, sessionId);
         if (stashFS2D is null)
         {
-            _logger.Error("Unable to get stash map for players: { sessionId} stash");
+            _logger.Error($"Unable to get stash map for players: {sessionId} stash");
 
             return;
         }
@@ -113,7 +111,7 @@ public class InventoryHelper(
         PlaceItemInInventory(
             stashFS2D,
             sortingTableFS2D,
-            hideoutItemsConvertedToItems,
+            itemWithModsToAddClone,
             pmcData.Inventory,
             request.UseSortingTable.GetValueOrDefault(false),
             output
@@ -123,16 +121,16 @@ public class InventoryHelper(
             return;
 
         // Apply/remove FiR to item + mods
-        SetFindInRaidStatusForItem(hideoutItemsConvertedToItems, request.FoundInRaid.GetValueOrDefault(false));
+        SetFindInRaidStatusForItem(itemWithModsToAddClone, request.FoundInRaid.GetValueOrDefault(false));
 
         // Remove trader properties from root item
-        RemoveTraderRagfairRelatedUpdProperties(rootItemToAdd.Upd);
+        RemoveTraderRagfairRelatedUpdProperties(itemWithModsToAddClone[0].Upd);
 
         // Run callback
         try
         {
             if (request.Callback is not null)
-                request.Callback((int) (rootItemToAdd.Upd.StackObjectsCount ?? 0));
+                request.Callback((int)(itemWithModsToAddClone[0].Upd.StackObjectsCount ?? 0));
         }
         catch (Exception ex)
         {
@@ -147,11 +145,11 @@ public class InventoryHelper(
         // Add item + mods to output and profile inventory
         
         output.ProfileChanges[sessionId]
-            .Items.NewItems.AddRange(hideoutItemsConvertedToItems);
-        pmcData.Inventory.Items.AddRange(hideoutItemsConvertedToItems);
+            .Items.NewItems.AddRange(itemWithModsToAddClone);
+        pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
         _logger.Debug(
-            $"Added {rootItemToAdd.Upd?.StackObjectsCount ?? 1} item: {rootItemToAdd.Template} with: {hideoutItemsConvertedToItems.Count - 1} mods to inventory"
+            $"Added {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
         );
     }
 
@@ -920,7 +918,7 @@ public class InventoryHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="sessionID">session id</param>
     /// <returns>2-dimensional array</returns>
-    protected int[][] GetStashSlotMap(PmcData pmcData, string sessionID)
+    protected int[][]? GetStashSlotMap(PmcData pmcData, string sessionID)
     {
         var playerStashSize = GetPlayerStashSize(sessionID);
         return GetContainerMap(

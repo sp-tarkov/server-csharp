@@ -127,7 +127,7 @@ public class PrestigeController(
             var item = prePrestigePmc.Inventory.Items.FirstOrDefault((item) => item.Id == transferRequest.Id);
             var addItemRequest = new AddItemDirectRequest
             {
-                ItemWithModsToAdd = [item.ConvertToHideoutItem(item)],
+                ItemWithModsToAdd = [item],
                 FoundInRaid = item.Upd?.SpawnedInSession,
                 UseSortingTable = false,
                 Callback = null,

@@ -52,13 +52,13 @@ public record HideoutItem
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 
-    public Item ConvertToItem(HideoutItem hideoutItem)
+    public Item ConvertToItem()
     {
-        return new Item()
+        return new Item
         {
-            Id = hideoutItem.Id,
-            Template = hideoutItem.Template,
-            Upd = hideoutItem.Upd,
+            Id = Id,
+            Template = Template,
+            Upd = Upd,
         };
     }
 }

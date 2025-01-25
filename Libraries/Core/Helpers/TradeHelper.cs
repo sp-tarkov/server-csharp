@@ -1,4 +1,4 @@
-﻿using System.Text.RegularExpressions;
+using System.Text.RegularExpressions;
 using System.Transactions;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
@@ -72,7 +72,7 @@ public class TradeHelper(
                 var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
                 if (assortHasBuyRestrictions)
                 {
-                    this.checkPurchaseIsWithinTraderItemLimit(
+                    CheckPurchaseIsWithinTraderItemLimit(
                         sessionID,
                         pmcData,
                         buyRequestData.TransactionId,
@@ -82,7 +82,7 @@ public class TradeHelper(
                     );
 
                     // Decrement trader item count
-                    PurchaseDetails itemPurchaseDetails = new PurchaseDetails()
+                    PurchaseDetails itemPurchaseDetails = new PurchaseDetails
                     {
                         Items =
                         [
@@ -144,7 +144,7 @@ public class TradeHelper(
                 if (assortHasBuyRestrictions)
                 {
                     // Will throw error if check fails
-                    this.checkPurchaseIsWithinTraderItemLimit(
+                    CheckPurchaseIsWithinTraderItemLimit(
                         sessionID,
                         pmcData,
                         buyRequestData.TransactionId,
@@ -272,7 +272,7 @@ public class TradeHelper(
         if (sellRequest.TransactionId == Traders.RAGMAN)
         {
             // Edge case, `Circulate` quest needs to track when certain items are sold to him
-            this.incrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
+            IncrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
         }
 
         var pattern = @"\s+";
@@ -311,7 +311,7 @@ public class TradeHelper(
         _paymentService.GiveProfileMoney(profileToReceiveMoney, sellRequest.Price, sellRequest, output, sessionID);
     }
 
-    protected void incrementCirculateSoldToTraderCounter(
+    protected void IncrementCirculateSoldToTraderCounter(
         PmcData profileWithItemsToSell,
         PmcData profileToReceiveMoney,
         ProcessSellTradeRequestData sellRequest
@@ -396,7 +396,7 @@ public class TradeHelper(
     /// <param name="assortBeingPurchased">the item from trader being bought</param>
     /// <param name="assortId">Id of assort being purchased</param>
     /// <param name="count">How many of the item are being bought</param>
-    protected void checkPurchaseIsWithinTraderItemLimit(
+    protected void CheckPurchaseIsWithinTraderItemLimit(
         string sessionId,
         PmcData pmcData,
         string traderId,

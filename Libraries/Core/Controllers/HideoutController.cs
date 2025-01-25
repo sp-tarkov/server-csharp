@@ -442,7 +442,7 @@ public class HideoutController(
 
         AddItemDirectRequest request = new AddItemDirectRequest
         {
-            ItemWithModsToAdd = [itemToReturn],
+            ItemWithModsToAdd = [itemToReturn.ConvertToItem()],
             FoundInRaid = itemToReturn.Upd?.SpawnedInSession,
             Callback = null,
             UseSortingTable = false,
