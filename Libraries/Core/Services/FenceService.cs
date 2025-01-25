@@ -25,7 +25,7 @@ public class FenceService(
     PresetHelper presetHelper,
     LocalisationService localisationService,
     ConfigServer configServer,
-    ICloner cloner
+    ICloner _cloner
 )
 {
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
@@ -116,13 +116,13 @@ public class FenceService(
         }
 
         // Clone assorts so we can adjust prices before sending to client
-        var assort = cloner.Clone(fenceAssort);
+        var assort = _cloner.Clone(fenceAssort);
         AdjustAssortItemPricesByConfigMultiplier(assort, 1, traderConfig.Fence.PresetPriceMult);
 
         // merge normal fence assorts + discount assorts if player standing is large enough
         if (pmcProfile.TradersInfo[Traders.FENCE].Standing >= 6)
         {
-            var discountAssort = cloner.Clone(fenceDiscountAssort);
+            var discountAssort = _cloner.Clone(fenceDiscountAssort);
             AdjustAssortItemPricesByConfigMultiplier(
                 discountAssort,
                 traderConfig.Fence.DiscountOptions.ItemPriceMult,
@@ -145,7 +145,7 @@ public class FenceService(
     {
         // HUGE THANKS TO LACYWAY AND LEAVES FOR PROVIDING THIS SOLUTION FOR SPT TO IMPLEMENT!!
         // Copy the item and its children
-        var clonedItems = cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(items, mainItem.Id));
+        var clonedItems = _cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(items, mainItem.Id));
         var root = clonedItems[0];
 
         var cost = GetItemPrice(root.Template, clonedItems);
@@ -292,7 +292,7 @@ public class FenceService(
      */
     public TraderAssort GetRawFenceAssorts()
     {
-        return MergeAssorts(cloner.Clone(fenceAssort), cloner.Clone(fenceDiscountAssort));
+        return MergeAssorts(_cloner.Clone(fenceAssort), _cloner.Clone(fenceDiscountAssort));
     }
 
     /**
@@ -675,7 +675,7 @@ public class FenceService(
     {
         var result = new CreateFenceAssortsResult() { SptItems = [], BarterScheme = new(), LoyalLevelItems = new() };
 
-        var baseFenceAssortClone = cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
+        var baseFenceAssortClone = _cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
         var itemTypeLimitCounts = InitItemLimitCounter(traderConfig.Fence.ItemTypeLimits);
 
         if (itemCounts.Item > 0)
@@ -733,7 +733,7 @@ public class FenceService(
                 continue;
             }
 
-            var desiredAssortItemAndChildrenClone = cloner.Clone(
+            var desiredAssortItemAndChildrenClone = _cloner.Clone(
                 itemHelper.FindAndReturnChildrenAsItems(baseFenceAssortClone.Items, chosenBaseAssortRoot.Id)
             );
 
@@ -771,7 +771,7 @@ public class FenceService(
             }
 
             // MUST randomise Ids as its possible to add the same base fence assort twice = duplicate IDs = dead client
-            desiredAssortItemAndChildrenClone = itemHelper.ReplaceIDs(desiredAssortItemAndChildrenClone);
+            desiredAssortItemAndChildrenClone = itemHelper.ReplaceIDs(_cloner.Clone(desiredAssortItemAndChildrenClone));
             itemHelper.RemapRootItemId(desiredAssortItemAndChildrenClone);
 
             var rootItemBeingAdded = desiredAssortItemAndChildrenClone[0];
@@ -807,7 +807,7 @@ public class FenceService(
             assorts.SptItems.Add(desiredAssortItemAndChildrenClone);
 
             assorts.BarterScheme[rootItemBeingAdded.Id] =
-                cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id]);
+                _cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id]);
 
             // Only adjust item price by quality for solo items, never multi-stack
             if (isSingleStack)
@@ -1015,7 +1015,7 @@ public class FenceService(
 
                 var rootItemDb = itemHelper.GetItem(randomPresetRoot.Template).Value;
 
-                var presetWithChildrenClone = cloner.Clone(
+                var presetWithChildrenClone = _cloner.Clone(
                     itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id)
                 );
 
@@ -1076,7 +1076,7 @@ public class FenceService(
             var randomPresetRoot = randomUtil.GetArrayValue(equipmentPresetRootItems);
             var rootItemDb = itemHelper.GetItem(randomPresetRoot.Template).Value;
 
-            var presetWithChildrenClone = cloner.Clone(
+            var presetWithChildrenClone = _cloner.Clone(
                 itemHelper.FindAndReturnChildrenAsItems(baseFenceAssort.Items, randomPresetRoot.Id)
             );
 

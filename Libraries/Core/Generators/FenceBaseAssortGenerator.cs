@@ -7,6 +7,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Generators;
 
@@ -22,7 +23,8 @@ public class FenceBaseAssortGenerator(
     SeasonalEventService seasonalEventService,
     LocalisationService localisationService,
     ConfigServer configServer,
-    FenceService fenceService
+    FenceService fenceService,
+    ICloner _cloner
 )
 {
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
@@ -147,7 +149,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Construct preset + mods
-            var itemAndChildren = itemHelper.ReplaceIDs(defaultPreset.Items);
+            var itemAndChildren = itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
 
             // Find root item and add some properties to it
             for (var i = 0; i < itemAndChildren.Count; i++)

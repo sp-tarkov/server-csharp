@@ -213,7 +213,7 @@ namespace Core.Helpers
             var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
 
             // Area that will be used to craft unlocked item
-            var desiredHideoutAreaType = (HideoutAreas)craftUnlockReward.TraderId;
+            var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
 
             var matchingProductions = craftingRecipes.Where(
                     (prod) =>
@@ -361,7 +361,7 @@ namespace Core.Helpers
             if (defaultPreset is not null)
             {
                 // Found preset, use mods to hydrate reward item
-                var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+                var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
                 var newRootId = _itemHelper.RemapRootItemId(presetAndMods);
 
                 reward.Items = presetAndMods;

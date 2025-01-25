@@ -7,6 +7,7 @@ using Core.Models.Spt.Dialog;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Services;
 
@@ -22,7 +23,8 @@ public class MailSendService(
     NotificationSendHelper _notificationSendHelper,
     LocalisationService _localisationService,
     ItemHelper _itemHelper,
-    TraderHelper _traderHelper
+    TraderHelper _traderHelper,
+    ICloner _cloner
 )
 {
     private const string _systemSenderId = "59e7125688a45068a6249071";
@@ -453,7 +455,7 @@ public class MailSendService(
             };
 
             // Ensure Ids are unique and cont collide with items in player inventory later
-            messageDetails.Items = _itemHelper.ReplaceIDs(messageDetails.Items);
+            messageDetails.Items = _itemHelper.ReplaceIDs(_cloner.Clone(messageDetails.Items));
 
             // Ensure item exits in items db
             foreach (var reward in messageDetails.Items)
