@@ -230,7 +230,7 @@ public class BotGenerator(
 
         bot.Info.Experience = botLevel.Exp;
         bot.Info.Level = botLevel.Level;
-        bot.Info.Settings.Experience = GetExperienceRewardForKillByDifficulty(
+        bot.Info.Settings.Experience = (int)GetExperienceRewardForKillByDifficulty(
             botJsonTemplate.BotExperience.Reward,
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
