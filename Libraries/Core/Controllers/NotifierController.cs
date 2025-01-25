@@ -10,10 +10,7 @@ namespace Core.Controllers;
 [Injectable]
 public class NotifierController(
     HttpServerHelper _httpServerHelper,
-    NotifierHelper _notifierHelper,
-    NotificationService _notificationService,
-     _timeout,
-     _pollInterval
+    NotifierHelper _notifierHelper
     )
 {
     /// <summary>
@@ -62,11 +59,11 @@ public class NotifierController(
 
         //        _notificationService.UpdateMessageOnQueue(sessionID, []);
         //        resolve(messages);
-            };
+            //};
 
             // immediately check
-            checkNotifications();
-        });
+        //    checkNotifications();
+        //});
     }
 
     /// <summary>
