@@ -74,12 +74,7 @@ public class CreateProfileService(
         AddMissingInternalContainersToProfile(pmcData);
 
         // Change item IDs to be unique
-        pmcData.Inventory.Items = _itemHelper.ReplaceIDs(
-            pmcData.Inventory.Items,
-            pmcData,
-            null,
-            pmcData.Inventory.FastPanel
-        );
+        _itemHelper.ReplaceProfileInventoryIds(pmcData.Inventory);
 
         // Create profile
         var profileDetails = new SptProfile

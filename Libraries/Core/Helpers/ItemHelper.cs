@@ -1,16 +1,13 @@
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
-using SptCommon.Extensions;
 
 
 namespace Core.Helpers;
@@ -933,8 +930,67 @@ public class ItemHelper(
         }
     }
 
+    public void ReplaceProfileInventoryIds(BotBaseInventory inventory, List<InsuredItem>? insuredItems = null)
+    {
+        // Blacklist
+        var itemIdBlacklist = new HashSet<string>();
+        itemIdBlacklist.UnionWith(
+            new List<string>{
+                inventory.Equipment,
+                inventory.QuestRaidItems,
+                inventory.QuestStashItems,
+                inventory.SortingTable,
+                inventory.Stash,
+                inventory.HideoutCustomizationStashId
+            });
+        itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Keys);
+
+        // Add insured items ids to blacklist
+        if (insuredItems is not null)
+        {
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+        }
+
+
+        foreach (var item in inventory.Items)
+        {
+            if (itemIdBlacklist.Contains(item.Id))
+            {
+                continue;
+            }
+
+            // Generate new id
+            var newId = _hashUtil.Generate();
+
+            // Keep copy of original id
+            var originalId = item.Id;
+
+            // Update items id to new one we generated
+            item.Id = newId;
+
+            // Find all children of item and update their parent ids to match
+            var childItems = inventory.Items.Where(x => x.ParentId == originalId);
+            foreach (var childItem in childItems)
+            {
+                childItem.ParentId = newId;
+            }
+
+            // Also replace in quick slot if the old ID exists.
+            if (inventory.FastPanel is null)
+            {
+                continue;
+            }
+
+            // Update quickslot id
+            if (inventory.FastPanel.ContainsKey(originalId))
+            {
+                inventory.FastPanel[originalId] = newId;
+            }
+        }
+    }
+
     /// <summary>
-    /// Regenerate all GUIDs with new IDs, for the exception of special item types (e.g. quest, sorting table, etc.) This
+    /// Regenerate all GUIDs with new IDs, with the exception of special item types (e.g. quest, sorting table, etc.) This
     /// function will not mutate the original items list, but will return a new list with new GUIDs.
     /// </summary>
     /// <param name="originalItems">Items to adjust the IDs of</param>
@@ -942,11 +998,14 @@ public class ItemHelper(
     /// <param name="insuredItems">Insured items that should not have their IDs replaced</param>
     /// <param name="fastPanel">Quick slot panel</param>
     /// <returns>List<Item></returns>
-    public List<Item> ReplaceIDs(List<Item> originalItems, PmcData pmcData = null, List<InsuredItem> insuredItems = null,
-        Dictionary<string, string> fastPanel = null)
+    public List<Item> ReplaceIDs(
+        List<Item> originalItems,
+        PmcData pmcData = null,
+        List<InsuredItem>? insuredItems = null,
+        Dictionary<string, string>? fastPanel = null)
     {
         var serialisedInventory = _jsonUtil.Serialize(originalItems);
-        var hideoutAreaStashes = pmcData?.Inventory?.HideoutAreaStashes ?? new();
+        var hideoutAreaStashes = pmcData?.Inventory?.HideoutAreaStashes ?? [];
 
         foreach (var item in originalItems)
         {
