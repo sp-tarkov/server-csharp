@@ -96,7 +96,18 @@ public class QuestHelper(
     /// <returns>Reduction of cartesian product between two quest lists</returns>
     public List<Quest> GetDeltaQuests(List<Quest> before, List<Quest> after)
     {
-        throw new System.NotImplementedException();
+        List<string> knownQuestsIds = [];
+        foreach (var quest in before) {
+            knownQuestsIds.Add(quest.Id);
+        }
+
+        if (knownQuestsIds.Count != 0) {
+            return after.Where((q) => {
+                return knownQuestsIds.IndexOf(q.Id) == -1;
+            }).ToList();
+        }
+
+        return after;
     }
 
     /// <summary>
@@ -107,7 +118,43 @@ public class QuestHelper(
     /// <returns>the adjusted skill progress gain</returns>
     public int AdjustSkillExpForLowLevels(Common profileSkill, int progressAmount)
     {
-        throw new System.NotImplementedException();
+        var currentLevel = Math.Floor((double)(profileSkill.Progress / 100));
+
+        // Only run this if the current level is under 9
+        if (currentLevel >= 9) {
+            return progressAmount;
+        }
+
+        // This calculates how much progress we have in the skill's starting level
+        var startingLevelProgress = (profileSkill.Progress % 100) * ((currentLevel + 1) / 10);
+
+        // The code below assumes a 1/10th progress skill amount
+        var remainingProgress = progressAmount / 10;
+
+        // We have to do this loop to handle edge cases where the provided XP bumps your level up
+        // See "CalculateExpOnFirstLevels" in client for original logic
+        var adjustedSkillProgress = 0;
+        while (remainingProgress > 0 && currentLevel < 9) {
+            // Calculate how much progress to add, limiting it to the current level max progress
+            var currentLevelRemainingProgress = (currentLevel + 1) * 10 - startingLevelProgress;
+            _logger.Debug($"currentLevelRemainingProgress: {currentLevelRemainingProgress}");
+            var progressToAdd = Math.Min(remainingProgress, currentLevelRemainingProgress ?? 0);
+            var adjustedProgressToAdd = (10 / (currentLevel + 1)) * progressToAdd;
+            _logger.Debug($"Progress To Add: {progressToAdd}  Adjusted for level: {adjustedProgressToAdd}");
+
+            // Add the progress amount adjusted by level
+            adjustedSkillProgress += (int)adjustedProgressToAdd;
+            remainingProgress -= (int)progressToAdd;
+            startingLevelProgress = 0;
+            currentLevel++;
+        }
+
+        // If there's any remaining progress, add it. This handles if you go from level 8 -> 9
+        if (remainingProgress > 0) {
+            adjustedSkillProgress += remainingProgress;
+        }
+
+        return adjustedSkillProgress;
     }
 
     /// <summary>
@@ -419,7 +466,7 @@ public class QuestHelper(
      */
     protected bool QuestIsProfileBlacklisted(string gameVersion, string questId)
     {
-        var questBlacklist = _questConfig.ProfileBlacklist[gameVersion];
+        var questBlacklist = _questConfig.ProfileBlacklist?.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         {
             // Not blacklisted
@@ -1128,7 +1175,6 @@ public class QuestHelper(
      */
     protected List<Quest> UpdateQuestsForGameEdition(List<Quest> quests, string gameVersion)
     {
-        _logger.Debug("[UpdateQuestsForGameEdition] If you are hitting this method, please confirm the return is comparable to Node");
         var modifiedQuests = _cloner.Clone(quests);
         foreach (var quest in modifiedQuests)
         {
@@ -1174,7 +1220,7 @@ public class QuestHelper(
                         return false;
                     }
 
-                    return quest.Conditions.Fail.Any(condition => (condition.Target.List?.Contains(completedQuestId) ?? false));
+                    return quest.Conditions.Fail.Any(condition => (condition.Target?.List?.Contains(completedQuestId) ?? false));
                 }
             )
             .ToList();
@@ -1279,8 +1325,8 @@ public class QuestHelper(
         foreach (var quest in quests)
         {
             // If quest has prereq of completed quest + availableAfter value > 0 (quest has wait time)
-            var nextQuestWaitCondition = quest.Conditions.AvailableForStart.FirstOrDefault(
-                x => (x.Target?.List.Contains(completedQuestId) ?? false) && x.AvailableAfter > 0
+            var nextQuestWaitCondition = quest.Conditions?.AvailableForStart?.FirstOrDefault(
+                x => (x.Target?.List?.Contains(completedQuestId) ?? false) && x.AvailableAfter > 0
             );
 
             if (nextQuestWaitCondition is not null)
