@@ -7,6 +7,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Generators;
 
@@ -16,7 +17,8 @@ public class RagfairAssortGenerator(
     ItemHelper itemHelper,
     PresetHelper presetHelper,
     SeasonalEventService seasonalEventService,
-    ConfigServer configServer
+    ConfigServer configServer,
+    ICloner _cloner
 )
 {
     protected List<List<Item>> generatedAssortItems = [];
@@ -77,7 +79,7 @@ public class RagfairAssortGenerator(
         foreach (var preset in presets)
         {
             // Update Ids and clone
-            var presetAndMods = itemHelper.ReplaceIDs(preset.Items);
+            var presetAndMods = itemHelper.ReplaceIDs(_cloner.Clone(preset.Items));
             itemHelper.RemapRootItemId(presetAndMods);
 
             // Add presets base item tpl to the processed list so its skipped later on when processing items

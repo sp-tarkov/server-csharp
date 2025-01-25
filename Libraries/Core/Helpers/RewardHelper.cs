@@ -361,7 +361,7 @@ namespace Core.Helpers
             if (defaultPreset is not null)
             {
                 // Found preset, use mods to hydrate reward item
-                var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+                var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
                 var newRootId = _itemHelper.RemapRootItemId(presetAndMods);
 
                 reward.Items = presetAndMods;

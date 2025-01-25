@@ -714,7 +714,7 @@ public class HideoutController(
             var defaultPreset = _presetHelper.GetDefaultPreset(recipe.EndProduct);
 
             // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-            List<Item> presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+            List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
 
             _itemHelper.RemapRootItemId(presetAndMods);
 
@@ -752,7 +752,7 @@ public class HideoutController(
             var countOfItemsToReward = recipe.Count;
             for (var index = 1; index < countOfItemsToReward; index++)
             {
-                List<Item> itemAndMods = _itemHelper.ReplaceIDs(itemAndChildrenToSendToPlayer.FirstOrDefault());
+                List<Item> itemAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(itemAndChildrenToSendToPlayer.FirstOrDefault()));
                 itemAndChildrenToSendToPlayer.AddRange([itemAndMods]);
             }
         }
