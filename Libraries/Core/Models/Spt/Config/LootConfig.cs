@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Config;
@@ -14,5 +14,5 @@ public record LootConfig : BaseConfig
 
     /** Loose loot probability adjustments to apply on game start */
     [JsonPropertyName("looseLootSpawnPointAdjustments")]
-    public Dictionary<string, Dictionary<string, double>> LooseLootSpawnPointAdjustments { get; set; }
+    public Dictionary<string, Dictionary<string, double>>? LooseLootSpawnPointAdjustments { get; set; }
 }
