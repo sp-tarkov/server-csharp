@@ -464,7 +464,7 @@ public class LocationLootGenerator(
             var rotation = result.Rotation.GetValueOrDefault(false) ? 1 : 0;
 
             items[0].SlotId = "main";
-            items[0].Location = new { X = result.X, Y = result.Y, R = rotation };
+            items[0].Location = new ItemLocation{ X = result.X, Y = result.Y, R = rotation };
 
             // Add loot to container before returning
             foreach (var item in items)
@@ -1042,7 +1042,7 @@ public class LocationLootGenerator(
             }
             else
             {
-                // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesnt have any default presets and kills this code below as it has no chidren to reparent
+                // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesn't have any default presets and kills this code below as it has no chidren to reparent
                 _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
             }
 
