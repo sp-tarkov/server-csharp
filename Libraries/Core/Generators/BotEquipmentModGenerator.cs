@@ -11,6 +11,8 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
+using Core.Models.Eft.Player;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Core.Generators;
 
@@ -35,8 +37,7 @@ public class BotEquipmentModGenerator(
     BotEquipmentModPoolService _botEquipmentModPoolService,
     ConfigServer _configServer,
     ICloner _cloner
-)
-{
+) {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
@@ -50,28 +51,23 @@ public class BotEquipmentModGenerator(
     /// <param name="shouldForceSpawn">should this mod be forced to spawn</param>
     /// <returns>Item + compatible mods as an array</returns>
     public List<Item> GenerateModsForEquipment(List<Item> equipment, string parentId, TemplateItem parentTemplate, GenerateEquipmentProperties settings,
-        EquipmentFilterDetails specificBlacklist, bool shouldForceSpawn = false)
-    {
+        EquipmentFilterDetails specificBlacklist, bool shouldForceSpawn = false) {
         var forceSpawn = shouldForceSpawn;
 
         // Get mod pool for the desired item
-        if (!settings.ModPool.TryGetValue(parentTemplate.Id, out var compatibleModsPool))
-        {
+        if (!settings.ModPool.TryGetValue(parentTemplate.Id, out var compatibleModsPool)) {
             _logger.Warning($"bot: {settings.BotData.Role} lacks a mod slot pool for item: {parentTemplate.Id} {parentTemplate.Name}");
         }
 
         // Iterate over mod pool and choose mods to add to item
-        foreach (var (modSlotName, modPool) in compatibleModsPool ?? [])
-        {
+        foreach (var (modSlotName, modPool) in compatibleModsPool ?? []) {
             // Get the templates slot object from db
             var itemSlotTemplate = GetModItemSlotFromDb(modSlotName, parentTemplate);
-            if (itemSlotTemplate is null)
-            {
+            if (itemSlotTemplate is null) {
                 _logger.Error(
                     _localisationService.GetText(
                         "bot-mod_slot_missing_from_item",
-                        new
-                        {
+                        new {
                             modSlot = modSlotName,
                             parentId = parentTemplate.Id,
                             parentName = parentTemplate.Name,
@@ -91,14 +87,12 @@ public class BotEquipmentModGenerator(
             );
 
             // Rolled to skip mod and it shouldn't be force-spawned
-            if (modSpawnResult == ModSpawn.SKIP && !forceSpawn)
-            {
+            if (modSpawnResult == ModSpawn.SKIP && !forceSpawn) {
                 continue;
             }
 
             // Ensure submods for nvgs all spawn together
-            if (modSlotName == "mod_nvg")
-            {
+            if (modSlotName == "mod_nvg") {
                 forceSpawn = true;
             }
 
@@ -107,8 +101,7 @@ public class BotEquipmentModGenerator(
 
             // Filter the pool of items in blacklist
             var filteredModPool = FilterModsByBlacklist(modPoolToChooseFrom, specificBlacklist, modSlotName);
-            if (filteredModPool.Count > 0)
-            {
+            if (filteredModPool.Count > 0) {
                 // use filtered pool as it has items in it
                 modPoolToChooseFrom = filteredModPool;
             }
@@ -117,16 +110,14 @@ public class BotEquipmentModGenerator(
             if (
                 settings.BotEquipmentConfig.FilterPlatesByLevel.GetValueOrDefault(false) &&
                 _itemHelper.IsRemovablePlateSlot(modSlotName.ToLower())
-            )
-            {
+            ) {
                 var plateSlotFilteringOutcome = FilterPlateModsForSlotByLevel(
                     settings,
                     modSlotName.ToLower(),
                     compatibleModsPool[modSlotName],
                     parentTemplate
                 );
-                switch (plateSlotFilteringOutcome.Result)
-                {
+                switch (plateSlotFilteringOutcome.Result) {
                     case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
                         _logger.Debug(
                             $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
@@ -148,27 +139,23 @@ public class BotEquipmentModGenerator(
             string modTpl = null;
             var found = false;
             var exhaustableModPool = CreateExhaustableArray(modPoolToChooseFrom.ToList());
-            while (exhaustableModPool.HasValues())
-            {
+            while (exhaustableModPool.HasValues()) {
                 modTpl = exhaustableModPool.GetRandomValue();
                 if (modTpl is not null &&
-                    !_botGeneratorHelper.IsItemIncompatibleWithCurrentItems(equipment, modTpl, modSlotName).Incompatible.GetValueOrDefault(false))
-                {
+                    !_botGeneratorHelper.IsItemIncompatibleWithCurrentItems(equipment, modTpl, modSlotName).Incompatible.GetValueOrDefault(false)) {
                     found = true;
                     break;
                 }
             }
 
             // Compatible item not found but slot REQUIRES item, get random item from db
-            if (!found && itemSlotTemplate.Required.GetValueOrDefault(false))
-            {
+            if (!found && itemSlotTemplate.Required.GetValueOrDefault(false)) {
                 modTpl = GetRandomModTplFromItemDb(modTpl, itemSlotTemplate, modSlotName, equipment);
                 found = modTpl is not null;
             }
 
             // Compatible item not found + not required - skip
-            if (!(found || itemSlotTemplate.Required.GetValueOrDefault(false)))
-            {
+            if (!(found || itemSlotTemplate.Required.GetValueOrDefault(false))) {
                 continue;
             }
 
@@ -182,8 +169,7 @@ public class BotEquipmentModGenerator(
                     parentTemplate,
                     settings.BotData.Role
                 )
-            )
-            {
+            ) {
                 continue;
             }
 
@@ -194,8 +180,7 @@ public class BotEquipmentModGenerator(
             );
 
             // Does item being added exist in mod pool - has its own mod pool
-            if (settings.ModPool.ContainsKey(modTpl))
-            {
+            if (settings.ModPool.ContainsKey(modTpl)) {
                 // Call self again with mod being added as item to add child mods to
                 GenerateModsForEquipment(
                     equipment,
@@ -220,10 +205,122 @@ public class BotEquipmentModGenerator(
     /// <param name="armorItem">The armor items db template</param>
     /// <returns>Array of plate tpls to choose from</returns>
     public FilterPlateModsForSlotByLevelResult FilterPlateModsForSlotByLevel(GenerateEquipmentProperties settings, string modSlot,
-        HashSet<string> existingPlateTplPool, TemplateItem armorItem)
-    {
-        throw new NotImplementedException();
+        HashSet<string> existingPlateTplPool, TemplateItem armorItem) {
+        var result = new FilterPlateModsForSlotByLevelResult {
+            Result = Result.UNKNOWN_FAILURE,
+            PlateModTemplates = null,
+        };
+
+        // Not pmc or not a plate slot, return original mod pool array
+        if (!_itemHelper.IsRemovablePlateSlot(modSlot)) {
+            result.Result = Result.NOT_PLATE_HOLDING_SLOT;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Get the front/back/side weights based on bots level
+        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting?.FirstOrDefault(
+            (armorWeight) =>
+                settings.BotData.Level >= armorWeight.LevelRange.Min &&
+                settings.BotData.Level <= armorWeight.LevelRange.Max
+                );
+        if (plateSlotWeights is null) {
+            // No weights, return original array of plate tpls
+            result.Result = Result.LACKS_PLATE_WEIGHTS;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Get the specific plate slot weights (front/back/side)
+        var plateWeights = plateSlotWeights[modSlot];
+        if (plateWeights is null) {
+            // No weights, return original array of plate tpls
+            result.Result = Result.LACKS_PLATE_WEIGHTS;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Choose a plate level based on weighting
+        var chosenArmorPlateLevel = _weightedRandomHelper.GetWeightedValue<string>(plateWeights);
+
+        // Convert the array of ids into database items
+        var platesFromDb = existingPlateTplPool.Select((plateTpl) => _itemHelper.GetItem(plateTpl)[1]);
+
+        // Filter plates to the chosen level based on its armorClass property
+        var platesOfDesiredLevel = platesFromDb.Filter((item) => item._props.armorClass == chosenArmorPlateLevel);
+        if (platesOfDesiredLevel.length > 0) {
+            // Plates found
+            result.Result = Result.SUCCESS;
+            result.PlateModTemplates = platesOfDesiredLevel.map((item) => item._id);
+
+            return result;
+        }
+
+        // no plates found that fit requirements, lets get creative
+
+        // Get lowest and highest plate classes available for this armor
+        const minMaxArmorPlateClass = this.getMinMaxArmorPlateClass(platesFromDb);
+
+        // Increment plate class level in attempt to get useable plate
+        let findCompatiblePlateAttempts = 0;
+        const maxAttempts = 3;
+        for (let i = 0; i < maxAttempts; i++) {
+            chosenArmorPlateLevel = (Number.parseInt(chosenArmorPlateLevel) + 1).toString();
+
+            // New chosen plate class is higher than max, then set to min and check if valid
+            if (Number(chosenArmorPlateLevel) > minMaxArmorPlateClass.max) {
+                chosenArmorPlateLevel = minMaxArmorPlateClass.min.toString();
+            }
+
+            findCompatiblePlateAttempts++;
+
+            platesOfDesiredLevel = platesFromDb.filter((item) => item._props.armorClass === chosenArmorPlateLevel);
+            // Valid plates found, exit
+            if (platesOfDesiredLevel.length > 0) {
+                break;
+            }
+
+            // No valid plate class found in 3 tries, attempt default plates
+            if (findCompatiblePlateAttempts >= maxAttempts) {
+                this.logger.debug(
+                    `Plate filter too restrictive for armor: ${ armorItem._name} ${ armorItem._id}, unable to find plates of level: ${ chosenArmorPlateLevel}, using items default plate`,
+                );
+
+        const defaultPlate = this.getDefaultPlateTpl(armorItem, modSlot);
+        if (defaultPlate) {
+            // Return Default Plates cause couldn't get lowest level available from original selection
+            result.result = Result.SUCCESS;
+            result.plateModTpls = [defaultPlate];
+
+            return result;
+        }
+
+        // No plate found after filtering AND no default plate
+
+        // Last attempt, get default preset and see if it has a plate default
+        const defaultPresetPlateSlot = this.getDefaultPresetArmorSlot(armorItem._id, modSlot);
+        if (defaultPresetPlateSlot) {
+            // Found a plate, exit
+            const plateItem = this.itemHelper.getItem(defaultPresetPlateSlot._tpl);
+            platesOfDesiredLevel = [plateItem[1]];
+
+            break;
+        }
+
+        // Everything failed, no default plate or no default preset armor plate
+        result.result = Result.NO_DEFAULT_FILTER;
+
+        return result;
     }
+
+        // Only return the items ids
+        result.result = Result.SUCCESS;
+        result.plateModTpls = platesOfDesiredLevel.map((item) => item._id);
+
+        return result;
 
     /**
      * Get the default plate an armor has in its db item
