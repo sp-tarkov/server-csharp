@@ -254,9 +254,14 @@ public class LootGenerator(
     /// </summary>
     /// <param name="limits">limits as defined in config</param>
     /// <returns>record, key: item tplId, value: current/max item count allowed</returns>
-    protected Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, double> limits)
+    private Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, double> limits)
     {
-        throw new NotImplementedException();
+        var itemTypeCounts = new Dictionary<string, ItemLimit>();
+        foreach (var itemTypeId in limits) {
+            itemTypeCounts[itemTypeId.Key] = new ItemLimit() { Current = 0, Max = limits[itemTypeId.Key] };
+        }
+
+        return itemTypeCounts;
     }
 
     /// <summary>
@@ -267,11 +272,46 @@ public class LootGenerator(
     /// <param name="options">item filters</param>
     /// <param name="result">array to add found item to</param>
     /// <returns>true if item was valid and added to pool</returns>
-    protected bool FindAndAddRandomItemToLoot(object items, object itemTypeCounts,
-        LootRequest options, // TODO: items type was [string, ITemplateItem][], itemTypeCounts was Record<string, { current: number; max: number }>
+    protected bool FindAndAddRandomItemToLoot(TemplateItem[] items, Dictionary<string, ItemLimit> itemTypeCounts,
+        LootRequest options,
         List<Item> result)
     {
-        throw new NotImplementedException();
+        var randomItem = _randomUtil.GetArrayValue(items);
+
+        var itemLimitCount = itemTypeCounts[randomItem.Parent];
+        if (itemLimitCount is not null && itemLimitCount.Current > itemLimitCount.Max) {
+            return false;
+        }
+
+        // Skip armors as they need to come from presets
+        if (_itemHelper.ArmorItemCanHoldMods(randomItem.Id)) {
+            return false;
+        }
+
+        var newLootItem = new Item {
+            Id = _hashUtil.Generate(),
+            Template = randomItem.Id,
+            Upd = {
+                StackObjectsCount = 1,
+                SpawnedInSession = true,
+            },
+        };
+
+        // Special case - handle items that need a stackcount > 1
+        if (randomItem.Properties.StackMaxSize > 1) {
+            newLootItem.Upd.StackObjectsCount = GetRandomisedStackCount(randomItem, options);
+        }
+
+        newLootItem.Template = randomItem.Id;
+        result.Add(newLootItem);
+
+        if (itemLimitCount is not null) {
+            // Increment item count as it's in limit array
+            itemLimitCount.Current++;
+        }
+
+        // Item added okay
+        return true;
     }
 
     /// <summary>
