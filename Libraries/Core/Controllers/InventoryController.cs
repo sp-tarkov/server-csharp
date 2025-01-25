@@ -362,7 +362,7 @@ public class InventoryController(
     public void ExamineItem(PmcData pmcData, InventoryExamineRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
-        var itemId = "";
+        string? itemId = null;
         if (request.FromOwner is not null)
         {
             try
@@ -375,17 +375,29 @@ public class InventoryController(
             }
 
             // get hideout item
-            if (request.FromOwner.Type == "HideoutProduction") itemId = request.Item;
+            if (request.FromOwner.Type == "HideoutProduction")
+            {
+                itemId = request.Item;
+            }
         }
 
         if (itemId is null)
         {
             // item template
-            if (_databaseService.GetItems().ContainsKey(request.Item)) itemId = request.Item;
+            if (_databaseService.GetItems().ContainsKey(request.Item))
+            {
+                itemId = request.Item;
+            }
+        }
 
+        if (itemId is null)
+        {
             // Player inventory
             var target = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
-            if (target is not null) itemId = target.Template;
+            if (target is not null)
+            {
+                itemId = target.Template;
+            }
         }
 
         if (itemId is not null)
