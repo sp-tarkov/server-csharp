@@ -46,7 +46,7 @@ public record LootRequest
     /// key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, int>? ItemLimits { get; set; }
+    public Dictionary<string, double>? ItemLimits { get; set; }
 
     [JsonPropertyName("itemStackLimits")]
     public Dictionary<string, MinMax>? ItemStackLimits { get; set; }
