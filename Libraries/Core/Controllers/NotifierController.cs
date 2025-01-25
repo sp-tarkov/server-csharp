@@ -1,14 +1,20 @@
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Notifier;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using Core.Services;
+using System.Diagnostics.Tracing;
 
 namespace Core.Controllers;
 
 [Injectable]
 public class NotifierController(
     HttpServerHelper _httpServerHelper,
-    NotifierHelper _notifierHelper
-)
+    NotifierHelper _notifierHelper,
+    NotificationService _notificationService,
+     _timeout,
+     _pollInterval
+    )
 {
     /// <summary>
     /// Resolve an array of session notifications.
@@ -20,7 +26,47 @@ public class NotifierController(
     /// <param name="sessionId"></param>
     public async Task NotifyAsync(string sessionId)
     {
-        throw new NotImplementedException();
+        // TODO: Finish implementation of the NotifyAsync method
+        //
+        //return new Promise((resolve) => {
+        //    // keep track of our timeout
+        //    let counter = 0;
+
+        //    /**
+        //     * Check for notifications, resolve if any, otherwise poll
+        //     *  intermittently for a period of time.
+        //     */
+        //    var checkNotifications = () => {
+        //        /**
+        //         * If there are no pending messages we should either check again later
+        //         *  or timeout now with a default response.
+        //         */
+        //        if (!_notificationService.Has(sessionID)) {
+        //            // have we exceeded timeout? if so reply with default ping message
+        //            if (counter > _timeout) {
+        //                return resolve([_notifierHelper.getDefaultNotification()]);
+        //            }
+
+        //            // check again
+        //            setTimeout(checkNotifications, _pollInterval);
+
+        //            // update our timeout counter
+        //            counter += _pollInterval;
+        //            return;
+        //        }
+
+        //        /**
+        //         * Maintaining array reference is not necessary, so we can just copy and reinitialize
+        //         */
+        //        var messages = _notificationService.Get(sessionID);
+
+        //        _notificationService.UpdateMessageOnQueue(sessionID, []);
+        //        resolve(messages);
+            };
+
+            // immediately check
+            checkNotifications();
+        });
     }
 
     /// <summary>
