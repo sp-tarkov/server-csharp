@@ -406,7 +406,7 @@ public class BotController(
 
     public int GetBotCap(string location)
     {
-        var botCap = _botConfig.MaxBotCap.GetValueOrDefault(location);
+        var botCap = _botConfig.MaxBotCap.FirstOrDefault(x => x.Key.ToLower() == location.ToLower());
         if (location == "default")
         {
             _logger.Warning(
@@ -414,7 +414,7 @@ public class BotController(
             );
         }
 
-        return botCap;
+        return botCap.Value;
     }
 
     public object GetAiBotBrainTypes()
