@@ -20,11 +20,13 @@ public class RagfairOfferHelper(
     TimeUtil _timeUtil,
     RagfairSortHelper _ragfairSortHelper,
     PresetHelper _presetHelper,
+    RagfairHelper _ragfairHelper,
     PaymentHelper _paymentHelper,
     TraderHelper _traderHelper,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
     RagfairOfferService _ragfairOfferService,
+    RagfairRequiredItemsService _ragfairRequiredItemsService,
     ProfileHelper _profileHelper,
     ConfigServer _configServer)
 {
@@ -60,7 +62,43 @@ public class RagfairOfferHelper(
         List<string> tieredFleaLimitTypes,
         int playerLevel)
     {
-        throw new NotImplementedException();
+        var offerItemTpl = offer.Items.FirstOrDefault().Template;
+        if (tieredFlea.AmmoTplUnlocks is not null && _itemHelper.IsOfBaseclass(offerItemTpl, BaseClasses.AMMO))
+        {
+            if (tieredFlea.AmmoTplUnlocks.TryGetValue(offerItemTpl, out var unlockLevel) && playerLevel < unlockLevel)
+            {
+                offer.Locked = true;
+
+                return;
+            }
+        }
+
+        // Check for a direct level requirement for the offer item
+        if (tieredFlea.UnlocksTpl.TryGetValue(offerItemTpl, out var itemLevelRequirement))
+        {
+            if (playerLevel < itemLevelRequirement)
+            {
+                offer.Locked = true;
+
+                return;
+            }
+        }
+
+        // Optimisation - Ensure the item has at least one of the limited base types
+        if (_itemHelper.IsOfBaseclasses(offerItemTpl, tieredFleaLimitTypes))
+        {
+            // Loop over flea types
+            foreach (var tieredItemType in tieredFleaLimitTypes
+                         .Where(tieredItemType => _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType)))
+            {
+                if (playerLevel < tieredFlea.UnlocksType[tieredItemType])
+                {
+                    offer.Locked = true;
+                }
+
+                break;
+            }
+        }
     }
 
     /// <summary>
@@ -72,7 +110,23 @@ public class RagfairOfferHelper(
     /// <returns>Matching RagfairOffer objects</returns>
     public List<RagfairOffer> GetOffersThatRequireItem(SearchRequestData searchRequest, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        // Get all offers that require the desired item and filter out offers from non traders if player below ragifar unlock
+        var requiredOffers = _ragfairRequiredItemsService.GetRequiredItemsById(searchRequest.NeededSearchId);
+        var tieredFlea = _ragfairConfig.TieredFlea;
+        var tieredFleaLimitTypes = tieredFlea.UnlocksType;
+        return requiredOffers.Where((offer) => {
+            if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+            {
+                return false;
+            }
+
+            if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+            {
+                CheckAndLockOfferFromPlayerTieredFlea(tieredFlea, offer, tieredFleaLimitTypes.Keys.ToList(), pmcData.Info.Level.Value);
+            }
+
+            return true;
+        }).ToList();
     }
 
     /// <summary>
@@ -564,12 +618,17 @@ public class RagfairOfferHelper(
 
     /**
      * Delete an offer from a desired profile and from ragfair offers
-     * @param sessionID Session id of profile to delete offer from
+     * @param sessionId Session id of profile to delete offer from
      * @param offerId Id of offer to delete
      */
-    protected void DeleteOfferById(string sessionID, string offerId)
+    protected void DeleteOfferById(string sessionId, string offerId)
     {
-        throw new NotImplementedException();
+        var profileRagfairInfo = _profileHelper.GetPmcProfile(sessionId).RagfairInfo;
+        var index = profileRagfairInfo.Offers.FindIndex((o) => o.Id == offerId);
+        profileRagfairInfo.Offers.Splice(index, 1);
+
+        // Also delete from ragfair
+        _ragfairOfferService.RemoveOfferById(offerId);
     }
 
     /**
@@ -604,7 +663,106 @@ public class RagfairOfferHelper(
      */
     protected bool PassesSearchFilterCriteria(SearchRequestData searchRequest, RagfairOffer offer, PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var isDefaultUserOffer = offer.User.MemberType == MemberCategory.Default;
+        var offerRootItem = offer.Items[0];
+        var offerMoneyTypeTpl = offer.Requirements[0].Template;
+        var isTraderOffer = OfferIsFromTrader(offer);
+
+        if (pmcData.Info.Level < _databaseService.GetGlobals().Configuration.RagFair.MinUserLevel && isDefaultUserOffer)
+        {
+            // Skip item if player is < global unlock level (default is 15) and item is from a dynamically generated source
+            return false;
+        }
+
+        if (searchRequest.OfferOwnerType == OfferOwnerType.TRADEROWNERTYPE && !isTraderOffer)
+        {
+            // don't include player offers
+            return false;
+        }
+
+        if (searchRequest.OfferOwnerType == OfferOwnerType.PLAYEROWNERTYPE && isTraderOffer)
+        {
+            // don't include trader offers
+            return false;
+        }
+
+        if (
+            searchRequest.OneHourExpiration.GetValueOrDefault(false) &&
+            offer.EndTime - _timeUtil.GetTimeStamp() > TimeUtil.OneHourAsSeconds
+        )
+        {
+            // offer expires within an hour
+            return false;
+        }
+
+        if (searchRequest.QuantityFrom > 0 && searchRequest.QuantityFrom >= offerRootItem.Upd.StackObjectsCount)
+        {
+            // too little items to offer
+            return false;
+        }
+
+        if (searchRequest.QuantityTo > 0 && searchRequest.QuantityTo <= offerRootItem.Upd.StackObjectsCount)
+        {
+            // too many items to offer
+            return false;
+        }
+
+        if (searchRequest.OnlyFunctional.GetValueOrDefault(false) && !IsItemFunctional(offerRootItem, offer))
+        {
+            // don't include non-functional items
+            return false;
+        }
+
+        if (offer.Items.Count == 1)
+        {
+            // Single item
+            if (
+                IsConditionItem(offerRootItem) &&
+                !ItemQualityInRange(offerRootItem, searchRequest.ConditionFrom.Value, searchRequest.ConditionTo.Value)
+            )
+            {
+                return false;
+            }
+        }
+        else
+        {
+            var itemQualityPercent = _itemHelper.GetItemQualityModifierForItems(offer.Items) * 100;
+            if (itemQualityPercent < searchRequest.ConditionFrom)
+            {
+                return false;
+            }
+
+            if (itemQualityPercent > searchRequest.ConditionTo)
+            {
+                return false;
+            }
+        }
+
+        if (searchRequest.Currency > 0 && _paymentHelper.IsMoneyTpl(offerMoneyTypeTpl))
+        {
+            // Use 'currencies' as mapping for the money choice dropdown, e.g. 0 = all, 2 = "USD;
+            string[] currencies = ["all", "RUB", "USD", "EUR"];
+            if (_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl) != currencies[searchRequest.Currency.Value])
+            {
+                // Don't include item paid in wrong currency
+                return false;
+            }
+        }
+
+        if (searchRequest.PriceFrom > 0 && searchRequest.PriceFrom >= offer.RequirementsCost)
+        {
+            // price is too low
+            return false;
+        }
+
+        if (searchRequest.PriceTo > 0 && searchRequest.PriceTo <= offer.RequirementsCost)
+        {
+            // price is too high
+            return false;
+        }
+
+        // Passes above checks, search criteria filters have not filtered offer out
+        return true;
     }
 
     /**
