@@ -45,6 +45,7 @@ public class BotGeneratorHelper(
         _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out var randomisationSettings);
 
         Upd itemProperties = new();
+        var hasProperties = false;
 
         if (itemTemplate?.Properties?.MaxDurability is not null)
         {
@@ -52,22 +53,26 @@ public class BotGeneratorHelper(
             {
                 // Is weapon
                 itemProperties.Repairable = GenerateWeaponRepairableProperties(itemTemplate, botRole);
+                hasProperties = true;
             }
             else if (itemTemplate.Properties.ArmorClass is not null)
             {
                 // Is armor
                 itemProperties.Repairable = GenerateArmorRepairableProperties(itemTemplate, botRole);
+                hasProperties = true;
             }
         }
 
         if (itemTemplate?.Properties?.HasHinge ?? false)
         {
             itemProperties.Togglable = new UpdTogglable { On = true };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.Foldable ?? false)
         {
             itemProperties.Foldable = new UpdFoldable { Folded = false };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.WeapFireType?.Count == 0)
@@ -75,6 +80,7 @@ public class BotGeneratorHelper(
             itemProperties.FireMode = itemTemplate.Properties.WeapFireType.Contains("fullauto")
                 ? new UpdFireMode { FireMode = "fullauto" }
                 : new UpdFireMode { FireMode = _randomUtil.GetArrayValue(itemTemplate.Properties.WeapFireType) };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.MaxHpResource is not null)
@@ -86,6 +92,7 @@ public class BotGeneratorHelper(
                     randomisationSettings?.Meds
                 )
             };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Properties?.MaxResource is not null && itemTemplate.Properties?.FoodUseTime is not null)
@@ -97,6 +104,7 @@ public class BotGeneratorHelper(
                     randomisationSettings?.Food
                 ),
             };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Parent == BaseClasses.FLASHLIGHT)
@@ -106,6 +114,7 @@ public class BotGeneratorHelper(
                 ? GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveNightChancePercent", 50)
                 : GetBotEquipmentSettingFromConfig(botRole, "lightIsActiveDayChancePercent", 25);
             itemProperties.Light = new UpdLight { IsActive = _randomUtil.GetChance100(lightLaserActiveChance), SelectedMode = 0, };
+            hasProperties = true;
         }
         else if (itemTemplate?.Parent == BaseClasses.TACTICAL_COMBO)
         {
@@ -120,6 +129,7 @@ public class BotGeneratorHelper(
                 IsActive = _randomUtil.GetChance100(lightLaserActiveChance),
                 SelectedMode = 0,
             };
+            hasProperties = true;
         }
 
         if (itemTemplate?.Parent == BaseClasses.NIGHTVISION)
@@ -129,20 +139,23 @@ public class BotGeneratorHelper(
                 ? GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceNightPercent", 90)
                 : GetBotEquipmentSettingFromConfig(botRole, "nvgIsActiveChanceDayPercent", 15);
             itemProperties.Togglable = new UpdTogglable { On = _randomUtil.GetChance100(nvgActiveChance) };
+            hasProperties = true;
         }
 
         // Togglable face shield
-        if (!(itemTemplate?.Properties?.HasHinge ?? false) || !(itemTemplate.Properties.FaceShieldComponent ?? false)) return itemProperties;
+        if ((itemTemplate?.Properties?.HasHinge ?? false) && (itemTemplate.Properties.FaceShieldComponent ?? false))
+        {
+            var faceShieldActiveChance = GetBotEquipmentSettingFromConfig(
+                botRole,
+                "faceShieldIsActiveChancePercent",
+                75
+            );
+            itemProperties.Togglable = new UpdTogglable { On = _randomUtil.GetChance100(faceShieldActiveChance) };
+            hasProperties = true;
+        }
 
         // Get chance from botconfig for bot type, use 75% if no value found
-        var faceShieldActiveChance = GetBotEquipmentSettingFromConfig(
-            botRole,
-            "faceShieldIsActiveChancePercent",
-            75
-        );
-        itemProperties.Togglable = new UpdTogglable { On = _randomUtil.GetChance100(faceShieldActiveChance) };
-
-        return itemProperties;
+        return hasProperties ? itemProperties : null;
     }
 
     /// <summary>
