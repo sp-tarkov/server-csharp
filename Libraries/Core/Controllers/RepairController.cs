@@ -69,6 +69,25 @@ public class RepairController(
         RepairActionDataRequest body,
         PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionId);
+
+        // repair item
+        var repairDetails = _repairService.RepairItemByKit(
+            sessionId,
+            pmcData,
+            body.RepairKitsInfo,
+            body.Target,
+            output
+        );
+
+        _repairService.AddBuffToItem(repairDetails, pmcData);
+
+        // add repaired item to send to client
+        output.ProfileChanges[sessionId].Items.ChangedItems.Add(repairDetails.RepairedItem);
+
+        // Add skill points for repairing items
+        _repairService.AddRepairSkillPoints(sessionId, repairDetails, pmcData);
+
+        return output;
     }
 }
