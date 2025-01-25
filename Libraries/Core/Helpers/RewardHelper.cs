@@ -13,44 +13,20 @@ using SptCommon.Annotations;
 namespace Core.Helpers
 {
     [Injectable]
-    public class RewardHelper
+    public class RewardHelper(
+        ISptLogger<RewardHelper> _logger,
+        HashUtil _hashUtil,
+        TimeUtil _timeUtil,
+        ItemHelper _itemHelper,
+        DatabaseService _databaseService,
+        ProfileHelper _profileHelper,
+        LocalisationService _localisationService,
+        TraderHelper _traderHelper,
+        PresetHelper _presetHelper,
+        ICloner _cloner,
+        PlayerService _playerService
+    )
     {
-        private readonly ISptLogger<RewardHelper> _logger;
-        private readonly HashUtil _hashUtil;
-        private readonly TimeUtil _timeUtil;
-        private readonly ItemHelper _itemHelper;
-        private readonly DatabaseService _databaseService;
-        private readonly ProfileHelper _profileHelper;
-        private readonly LocalisationService _localisationService;
-        private readonly TraderHelper _traderHelper;
-        private readonly PresetHelper _presetHelper;
-        private readonly ICloner _cloner;
-
-        public RewardHelper(
-            ISptLogger<RewardHelper> logger,
-            HashUtil hashUtil,
-            TimeUtil timeUtil,
-            ItemHelper itemHelper,
-            DatabaseService databaseService,
-            ProfileHelper profileHelper,
-            LocalisationService localisationService,
-            TraderHelper traderHelper,
-            PresetHelper presetHelper,
-            ICloner cloner
-        )
-        {
-            _logger = logger;
-            _hashUtil = hashUtil;
-            _timeUtil = timeUtil;
-            _itemHelper = itemHelper;
-            _databaseService = databaseService;
-            _profileHelper = profileHelper;
-            _localisationService = localisationService;
-            _traderHelper = traderHelper;
-            _presetHelper = presetHelper;
-            _cloner = cloner;
-        }
-
         /**
          * Apply the given rewards to the passed in profile
          * @param rewards List of rewards to apply
@@ -102,6 +78,8 @@ namespace Core.Helpers
                             sessionId,
                             int.Parse(reward.Value.ToString())
                         ); // this must occur first as the output object needs to take the modified profile exp value
+                        // Recalculate level in event player leveled up
+                        pmcProfile.Info.Level = _playerService.CalculateLevel(pmcProfile);
                         break;
                     case RewardType.TraderStanding:
                         _traderHelper.AddStandingToTrader(

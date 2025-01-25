@@ -60,7 +60,8 @@ public class SptWebSocketConnectionHandler(
                 }
 
                 // Once the websocket dies, we dispose of it
-                _logger.Debug(_localisationService.GetText("websocket-socket_lost_deleting_handle"));
+                //_logger.Debug(_localisationService.GetText("websocket-socket_lost_deleting_handle"));
+                // this is expected and relayed via "Player has disconnected" i dont think this is needed
                 lock (_lockObject)
                 {
                     if (_socketAliveTimers.TryGetValue(sessionID, out var timer))

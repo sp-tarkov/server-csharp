@@ -336,7 +336,7 @@ public class QuestHelper(
                         {
                             return (
                                 condition.ConditionType == "Quest" &&
-                                (condition.Target?.Item?.Contains(startedQuestId) ?? false) &&
+                                ((condition.Target?.Item?.Contains(startedQuestId) ?? false) || (condition.Target?.List?.Contains(startedQuestId) ?? false))&&
                                 (condition.Status?.Contains(QuestStatusEnum.Started) ?? false)
                             );
                         }
@@ -365,7 +365,7 @@ public class QuestHelper(
                         return false;
                     }
 
-                    if (!QuestIsProfileWhitelisted(profile.Info.GameVersion, quest.Id))
+                    if (QuestIsProfileWhitelisted(profile.Info.GameVersion, quest.Id))
                     {
                         return false;
                     }
@@ -949,8 +949,7 @@ public class QuestHelper(
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData body, string sessionID)
     {
         var completeQuestResponse = _eventOutputHolder.GetOutput(sessionID);
-
-        var completedQuest = GetQuestFromDb(body.QuestId, pmcData);
+        
         var preCompleteProfileQuests = _cloner.Clone(pmcData.Quests);
 
         var completedQuestId = body.QuestId;
@@ -1008,10 +1007,7 @@ public class QuestHelper(
         {
             completeQuestResponse.ProfileChanges[sessionID].QuestsStatus.AddRange(questStatusChanges);
         }
-
-        // Recalculate level in event player leveled up
-        pmcData.Info.Level = _playerService.CalculateLevel(pmcData);
-
+        
         return completeQuestResponse;
     }
 
@@ -1326,8 +1322,8 @@ public class QuestHelper(
         {
             // If quest has prereq of completed quest + availableAfter value > 0 (quest has wait time)
             var nextQuestWaitCondition = quest.Conditions?.AvailableForStart?.FirstOrDefault(
-                x => (x.Target?.List?.Contains(completedQuestId) ?? false) && x.AvailableAfter > 0
-            );
+                x => ((x.Target?.List?.Contains(completedQuestId) ?? false) || (x.Target?.Item?.Contains(completedQuestId) ?? false)) && x.AvailableAfter > 0
+            ); // as we have to use the ListOrT type now, check both List and Item for the above checks
 
             if (nextQuestWaitCondition is not null)
             {

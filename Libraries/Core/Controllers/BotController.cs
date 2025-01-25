@@ -408,7 +408,7 @@ public class BotController(
 
     public int GetBotCap(string location)
     {
-        var botCap = _botConfig.MaxBotCap[location.ToLower()];
+        var botCap = _botConfig.MaxBotCap.GetValueOrDefault(location);
         if (location == "default")
         {
             _logger.Warning(
