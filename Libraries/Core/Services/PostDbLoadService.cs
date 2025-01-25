@@ -1,13 +1,40 @@
-﻿using SptCommon.Annotations;
+using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Utils;
+using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
-public class PostDbLoadService
+public class PostDbLoadService(
+    ISptLogger<PostDbLoadService> _logger,
+    HashUtil _hashUtil,
+    DatabaseService _databaseService,
+    ConfigServer _configServer,
+    ICloner _cloner)
 {
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+
     public void PerformPostDbLoadActions()
     {
         // TODO:
+    }
+
+    protected void CloneExistingCraftsAndAddNew()
+    {
+        var hideoutCraftDb = _databaseService.GetHideout().Production;
+        var craftsToAdd = _hideoutConfig.HideoutCraftsToAdd;
+        foreach (var craftToAdd in craftsToAdd) {
+            var clonedCraft = _cloner.Clone(
+                hideoutCraftDb.Recipes.FirstOrDefault((x) => x.Id == craftToAdd.CraftIdToCopy));
+            clonedCraft.Id = _hashUtil.Generate();
+            clonedCraft.Requirements = craftToAdd.Requirements;
+            clonedCraft.EndProduct = craftToAdd.CraftOutputTpl;
+
+            hideoutCraftDb.Recipes.Add(clonedCraft);
+        }
     }
 
     protected void AdjustMinReserveRaiderSpawnChance()
