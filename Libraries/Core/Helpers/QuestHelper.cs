@@ -466,7 +466,7 @@ public class QuestHelper(
      */
     protected bool QuestIsProfileBlacklisted(string gameVersion, string questId)
     {
-        var questBlacklist = _questConfig.ProfileBlacklist[gameVersion];
+        var questBlacklist = _questConfig.ProfileBlacklist?.GetValueOrDefault(gameVersion);
         if (questBlacklist is null)
         {
             // Not blacklisted
@@ -1175,7 +1175,6 @@ public class QuestHelper(
      */
     protected List<Quest> UpdateQuestsForGameEdition(List<Quest> quests, string gameVersion)
     {
-        _logger.Debug("[UpdateQuestsForGameEdition] If you are hitting this method, please confirm the return is comparable to Node");
         var modifiedQuests = _cloner.Clone(quests);
         foreach (var quest in modifiedQuests)
         {
@@ -1326,8 +1325,8 @@ public class QuestHelper(
         foreach (var quest in quests)
         {
             // If quest has prereq of completed quest + availableAfter value > 0 (quest has wait time)
-            var nextQuestWaitCondition = quest.Conditions.AvailableForStart.FirstOrDefault(
-                x => (x.Target?.List.Contains(completedQuestId) ?? false) && x.AvailableAfter > 0
+            var nextQuestWaitCondition = quest.Conditions?.AvailableForStart?.FirstOrDefault(
+                x => (x.Target?.List?.Contains(completedQuestId) ?? false) && x.AvailableAfter > 0
             );
 
             if (nextQuestWaitCondition is not null)
