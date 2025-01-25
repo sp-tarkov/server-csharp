@@ -227,12 +227,6 @@ public class BotController(
         var requestedBot = request.Conditions?.FirstOrDefault();
 
         var raidSettings = GetMostRecentRaidSettings();
-        
-        if (raidSettings is null)
-        {
-            _logger.Error($"Unable to get raid settings for session {sessionId}");
-            return [];
-        }
 
         // Create generation request for when cache is empty
         var condition = new GenerateCondition
@@ -264,7 +258,7 @@ public class BotController(
         // Does non pmc bot have a chance of being converted into a pmc
         var convertIntoPmcChanceMinMax = GetPmcConversionMinMaxForLocation(
             requestedBot?.Role,
-            raidSettings.Location
+            raidSettings?.Location
         );
         if (convertIntoPmcChanceMinMax is not null && !botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
@@ -354,10 +348,9 @@ public class BotController(
 
     private MinMax? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
     {
-        var mapSpecificConversionValues = _pmcConfig.ConvertIntoPmcChance!.GetValueOrDefault(location?.ToLower(), null);
-        return mapSpecificConversionValues is null 
-            ? _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole)
-            : mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower());
+        return _pmcConfig.ConvertIntoPmcChance!.TryGetValue(location?.ToLower() ?? "", out var mapSpecificConversionValues)
+            ? mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower())
+            : _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole);
     }
 
     private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
