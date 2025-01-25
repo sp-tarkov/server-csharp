@@ -1,11 +1,14 @@
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Player;
 using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
@@ -18,16 +21,21 @@ namespace Core.Helpers;
 public class RagfairOfferHelper(
     ISptLogger<RagfairOfferHelper> _logger,
     TimeUtil _timeUtil,
+    HashUtil _hashUtil,
     RagfairSortHelper _ragfairSortHelper,
     PresetHelper _presetHelper,
     RagfairHelper _ragfairHelper,
     PaymentHelper _paymentHelper,
     TraderHelper _traderHelper,
+    QuestHelper _questHelper,
+    RagfairServerHelper _ragfairServerHelper,
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
     RagfairOfferService _ragfairOfferService,
+    MailSendService _mailSendService,
     RagfairRequiredItemsService _ragfairRequiredItemsService,
     ProfileHelper _profileHelper,
+    EventOutputHolder _eventOutputHolder,
     ConfigServer _configServer)
 {
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
@@ -687,9 +695,75 @@ public class RagfairOfferHelper(
      * @param boughtAmount Amount item was purchased for
      * @returns ItemEventRouterResponse
      */
-    public ItemEventRouterResponse CompleteOffer(string sessionID, RagfairOffer offer, int boughtAmount)
+    public ItemEventRouterResponse CompleteOffer(string offerOwnerSessionId, RagfairOffer offer, int boughtAmount)
     {
-        throw new NotImplementedException();
+        var itemTpl = offer.Items[0].Template;
+        var paymentItemsToSendToPlayer = new List<Item>();
+        var offerStackCount = offer.Items[0].Upd.StackObjectsCount;
+        var sellerProfile = _profileHelper.GetPmcProfile(offerOwnerSessionId);
+
+        // Pack or ALL items of a multi-offer were bought - remove entire ofer
+        if (offer.SellInOnePiece.GetValueOrDefault(false) || boughtAmount == offerStackCount)
+        {
+            DeleteOfferById(offerOwnerSessionId, offer.Id);
+        }
+        else
+        {
+            var offerRootItem = offer.Items[0];
+
+            // Reduce offer root items stack count
+            offerRootItem.Upd.StackObjectsCount -= boughtAmount;
+        }
+
+        // Assemble payment to send to seller now offer was purchased
+        foreach (var requirement in offer.Requirements) {
+            // Create an item template item
+            var requestedItem = new Item{
+                Id = _hashUtil.Generate(),
+                Template = requirement.Template,
+                Upd = new Upd{ StackObjectsCount = requirement.Count * boughtAmount },
+            };
+
+            var stacks = _itemHelper.SplitStack(requestedItem);
+            foreach (var item in stacks) {
+                var outItems = new List<Item> { item };
+
+                // TODO - is this code used?, may have been when adding barters to flea was still possible for player
+                if (requirement.OnlyFunctional.GetValueOrDefault(false))
+                {
+                    var presetItems = _ragfairServerHelper.GetPresetItemsByTpl(item);
+                    if (presetItems.Count > 0)
+                    {
+                        outItems.Add(presetItems[0]);
+                    }
+                }
+
+                paymentItemsToSendToPlayer.AddRange(outItems);
+            }
+        }
+
+        var ragfairDetails = new MessageContentRagfair{
+            OfferId = offer.Id,
+            // pack-offers NEED to be the full item count,
+            // otherwise it only removes 1 from the pack, leaving phantom offer on client ui
+            Count = offer.SellInOnePiece.GetValueOrDefault(false) ? offerStackCount.Value : boughtAmount,
+            HandbookId = itemTpl };
+
+        _mailSendService.SendDirectNpcMessageToPlayer(
+            offerOwnerSessionId,
+            _traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
+            MessageType.FLEAMARKET_MESSAGE,
+            GetLocalisedOfferSoldMessage(itemTpl, boughtAmount),
+            paymentItemsToSendToPlayer,
+            _timeUtil.GetHoursAsSeconds((int)_questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile).Value),
+            null,
+            ragfairDetails);
+
+    // Adjust sellers sell sum values
+    sellerProfile.RagfairInfo.SellSum ??= 0;
+    sellerProfile.RagfairInfo.SellSum += offer.SummaryCost;
+
+        return _eventOutputHolder.GetOutput(offerOwnerSessionId);
     }
 
     /**

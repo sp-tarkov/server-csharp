@@ -40,11 +40,11 @@ public class MailSendService(
      */
     public void SendDirectNpcMessageToPlayer(
         string sessionId,
-        string trader,
+        string? trader,
         MessageType messageType,
         string message,
         List<Item>? items,
-        long? maxStorageTimeSeconds,
+        double? maxStorageTimeSeconds,
         SystemData? systemData,
         MessageContentRagfair? ragfair
     )
@@ -72,14 +72,14 @@ public class MailSendService(
             DialogType = MessageType.NPC_TRADER,
             Trader = trader,
             MessageText = message,
-            Items = new()
+            Items = []
         };
 
         // Add items to message
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds ?? 172800;
+            details.ItemsMaxStorageLifetimeSeconds = (long?)(maxStorageTimeSeconds ?? 172800);
         }
 
         if (systemData is not null)

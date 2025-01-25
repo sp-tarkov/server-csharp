@@ -1004,7 +1004,7 @@ public class LocationLifecycleService
             MessageType.BTR_ITEMS_DELIVERY,
             messageId,
             items,
-            messageStoreTime);
+            (int)messageStoreTime);
     }
 
     protected void HandleInsuredItemLostEvent(

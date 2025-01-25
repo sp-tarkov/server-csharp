@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Profile;
 
@@ -8,7 +8,7 @@ public record MessageContentRagfair
     public string? OfferId { get; set; }
 
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 
     [JsonPropertyName("handbookId")]
     public string? HandbookId { get; set; }
