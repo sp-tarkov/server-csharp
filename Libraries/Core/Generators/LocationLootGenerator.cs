@@ -794,7 +794,7 @@ public class LocationLootGenerator(
         List<Spawnpoint> forcedSpawnPoints, string locationName,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
-        var lootToForceSingleAmountOnMap = _locationConfig.ForcedLootSingleSpawnById[locationName];
+        var lootToForceSingleAmountOnMap = _locationConfig.ForcedLootSingleSpawnById.GetValueOrDefault(locationName);
         if (lootToForceSingleAmountOnMap is not null)
         {
             // Process loot items defined as requiring only 1 spawn position as they appear in multiple positions on the map
