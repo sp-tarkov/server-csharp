@@ -38,7 +38,7 @@ public record LocationBase
     public List<Banner>? Banners { get; set; }
 
     [JsonPropertyName("BossLocationSpawn")]
-    public List<BossLocationSpawn>? BossLocationSpawn { get; set; }
+    public List<BossLocationSpawn> BossLocationSpawn { get; set; }
 
     [JsonPropertyName("secretExits")]
     public List<Exit>? SecretExits { get; set; }
@@ -328,7 +328,7 @@ public record LocationBase
     public int? UsersSummonSeconds { get; set; }
 
     [JsonPropertyName("waves")]
-    public List<Wave>? Waves { get; set; }
+    public List<Wave> Waves { get; set; }
 }
 
 public record Transit
