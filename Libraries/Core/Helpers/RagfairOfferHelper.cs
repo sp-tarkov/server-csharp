@@ -46,7 +46,47 @@ public class RagfairOfferHelper(
         Dictionary<string, TraderAssort> traderAssorts,
         PmcData pmcData)
     {
-        throw new NotImplementedException();
+        var playerIsFleaBanned = _profileHelper.PlayerIsFleaBanned(pmcData);
+        var tieredFlea = _ragfairConfig.TieredFlea;
+        var tieredFleaLimitTypes = tieredFlea.UnlocksType;
+        return _ragfairOfferService.GetOffers()
+            .Where(
+                offer =>
+                {
+                    if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+                    {
+                        return false;
+                    }
+
+                    var isDisplayable = IsDisplayableOffer(
+                        searchRequest,
+                        itemsToAdd,
+                        traderAssorts,
+                        offer,
+                        pmcData,
+                        playerIsFleaBanned
+                    );
+
+                    if (!isDisplayable)
+                    {
+                        return false;
+                    }
+
+                    // Not trader offer + tiered flea enabled
+                    if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+                    {
+                        CheckAndLockOfferFromPlayerTieredFlea(
+                            tieredFlea,
+                            offer,
+                            tieredFleaLimitTypes.Keys.ToList(),
+                            pmcData.Info.Level.Value
+                        );
+                    }
+
+                    return true;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -114,19 +154,28 @@ public class RagfairOfferHelper(
         var requiredOffers = _ragfairRequiredItemsService.GetRequiredItemsById(searchRequest.NeededSearchId);
         var tieredFlea = _ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
-        return requiredOffers.Where((offer) => {
-            if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
-            {
-                return false;
-            }
+        return requiredOffers.Where(
+                offer =>
+                {
+                    if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
+                    {
+                        return false;
+                    }
 
-            if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
-            {
-                CheckAndLockOfferFromPlayerTieredFlea(tieredFlea, offer, tieredFleaLimitTypes.Keys.ToList(), pmcData.Info.Level.Value);
-            }
+                    if (tieredFlea.Enabled && !OfferIsFromTrader(offer))
+                    {
+                        CheckAndLockOfferFromPlayerTieredFlea(
+                            tieredFlea,
+                            offer,
+                            tieredFleaLimitTypes.Keys.ToList(),
+                            pmcData.Info.Level.Value
+                        );
+                    }
 
-            return true;
-        }).ToList();
+                    return true;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -624,7 +673,7 @@ public class RagfairOfferHelper(
     protected void DeleteOfferById(string sessionId, string offerId)
     {
         var profileRagfairInfo = _profileHelper.GetPmcProfile(sessionId).RagfairInfo;
-        var index = profileRagfairInfo.Offers.FindIndex((o) => o.Id == offerId);
+        var index = profileRagfairInfo.Offers.FindIndex(o => o.Id == offerId);
         profileRagfairInfo.Offers.Splice(index, 1);
 
         // Also delete from ragfair

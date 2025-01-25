@@ -122,8 +122,8 @@ public class BotEquipmentFilterService
 
         foreach (var itemKey in generationChanges)
         {
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights = generationChanges.GetByJsonProp<GenerationData>(itemKey.Key).Weights;
-            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist = generationChanges.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Weights = generationChanges.GetValueOrDefault(itemKey.Key).Weights;
+            baseBotGeneration.Items.GetByJsonProp<GenerationData>(itemKey.Key).Whitelist = generationChanges.GetValueOrDefault(itemKey.Key).Whitelist;
         }
     }
 
@@ -476,7 +476,7 @@ public class BotEquipmentFilterService
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 {
                     // Only make change if item exists as we're editing, not adding
-                    if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
+                    if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) == 0)
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }

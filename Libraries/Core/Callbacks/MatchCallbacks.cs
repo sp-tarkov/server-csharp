@@ -303,6 +303,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
+        _matchController.ConfigureOfflineRaid(info, sessionID);
         return _httpResponseUtil.NullResponse();
     }
 

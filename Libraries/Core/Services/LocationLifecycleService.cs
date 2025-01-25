@@ -156,6 +156,7 @@ public class LocationLifecycleService
         var transitionData = _applicationContext
             .GetLatestValue(ContextVariableType.TRANSIT_INFO)
             ?.GetValue<LocationTransit>();
+        
         if (transitionData is not null) {
             _logger.Success($"Player: {sessionId} is in transit to {request.Location}");
             result.Transition.TransitionType = TransitionType.COMMON;

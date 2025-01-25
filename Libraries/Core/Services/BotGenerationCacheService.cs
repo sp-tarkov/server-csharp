@@ -1,6 +1,7 @@
 ﻿using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
+using SptCommon.Extensions;
 
 namespace Core.Services;
 
@@ -43,7 +44,7 @@ public class BotGenerationCacheService(
             {
                 try
                 {
-                    return _activeBotsInRaid.Dequeue();
+                    return bots.Pop();
                 }
                 catch (Exception _)
                 {

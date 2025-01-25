@@ -132,15 +132,13 @@ public class BotController(
 
     public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
     {
-        // var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
-        //
-        // // Use this opportunity to create and cache bots for later retrieval
-        // var multipleBotTypesRequested = info.Conditions?.Count > 1;
-        // return multipleBotTypesRequested
-        //     ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
-        //     : ReturnSingleBotFromCache(sessionId, info);
-
-        return new List<BotBase>();
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+        
+        // Use this opportunity to create and cache bots for later retrieval
+        var multipleBotTypesRequested = info.Conditions?.Count > 1;
+        return multipleBotTypesRequested
+            ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
+            : ReturnSingleBotFromCache(sessionId, info);
     }
 
     private List<BotBase> GenerateMultipleBotsAndCache(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
@@ -205,16 +203,16 @@ public class BotController(
 
         for (var i = 0; i < botsToGenerate; i++)
         {
-            try
-            {
+            // try
+            // {
                 var detailsClone = _cloner.Clone(botGenerationDetails);
                 GenerateSingleBotAndStoreInCache(detailsClone, sessionId, cacheKey);
                 progressWriter.Increment();
-            }
-            catch (Exception e)
-            {
-                _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
-            }
+            // }
+            // catch (Exception e)
+            // {
+            //     _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
+            // }
         }
 
         _logger.Debug(
@@ -358,7 +356,7 @@ public class BotController(
     {
         var mapSpecificConversionValues = _pmcConfig.ConvertIntoPmcChance!.GetValueOrDefault(location?.ToLower(), null);
         return mapSpecificConversionValues is null 
-            ? _pmcConfig.ConvertIntoPmcChance.GetByJsonProp<Dictionary<string, MinMax>>("default").GetByJsonProp<MinMax>(requestedBotRole) 
+            ? _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole)
             : mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower());
     }
 
