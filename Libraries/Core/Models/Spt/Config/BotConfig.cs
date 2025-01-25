@@ -524,10 +524,12 @@ public record AdjustmentDetails
     public Dictionary<string, Dictionary<string, float>> Edit { get; set; }
 }
 
-public class ArmorPlateWeights : Dictionary<string, object>
+public class ArmorPlateWeights
 {
     [JsonPropertyName("levelRange")]
     public MinMax LevelRange { get; set; }
+
+    public Dictionary<string, Dictionary<string, double>> Values { get; set; }
 }
 
 public record RandomisedResourceDetails
