@@ -44,7 +44,7 @@ public record InRaidConfig : BaseConfig
     public bool KeepFiRSecureContainerOnDeath { get; set; }
 
     /** If enabled always keep found in raid status on items */
-    [JsonPropertyName("alwaysKeepFoundInRaidonRaidEnd")]
+    [JsonPropertyName("alwaysKeepFoundInRaidOnRaidEnd")]
     public bool AlwaysKeepFoundInRaidOnRaidEnd { get; set; }
 
     /** Percentage chance a player scav hot is hostile to the player when scavving */
