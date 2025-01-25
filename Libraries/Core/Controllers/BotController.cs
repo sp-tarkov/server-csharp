@@ -356,7 +356,7 @@ public class BotController(
     {
         var mapSpecificConversionValues = _pmcConfig.ConvertIntoPmcChance!.GetValueOrDefault(location?.ToLower(), null);
         return mapSpecificConversionValues is null 
-            ? _pmcConfig.ConvertIntoPmcChance.GetByJsonProp<Dictionary<string, MinMax>>("default").GetByJsonProp<MinMax>(requestedBotRole) 
+            ? _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole)
             : mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower());
     }
 
