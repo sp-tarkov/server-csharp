@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Notes;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Utils.Json;
@@ -779,10 +780,4 @@ public record Bonus
 
     [JsonPropertyName("skillType")]
     public BonusSkillType? SkillType { get; set; }
-}
-
-public record Note
-{
-    public double? Time { get; set; }
-    public string? Text { get; set; }
 }
