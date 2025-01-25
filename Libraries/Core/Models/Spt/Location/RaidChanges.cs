@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Spt.Location;
 
@@ -11,5 +11,5 @@ public record RaidChanges
     public double? StaticLootPercent { get; set; }
 
     [JsonPropertyName("simulatedRaidStartSeconds")]
-    public int? SimulatedRaidStartSeconds { get; set; }
+    public double? SimulatedRaidStartSeconds { get; set; }
 }
