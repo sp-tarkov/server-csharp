@@ -345,6 +345,7 @@
                 "minLimitPercent": 15
             }
         }
+		}
     },
     "lootItemResourceRandomization": {
         "assault": {
