@@ -196,7 +196,7 @@ public record BotInfoSettings
 {
     public string? Role { get; set; }
     public string? BotDifficulty { get; set; }
-    public double? Experience { get; set; }
+    public int? Experience { get; set; }
     public double? StandingForKill { get; set; }
     public double? AggressorBonus { get; set; }
     public bool? UseSimpleAnimator { get; set; }
