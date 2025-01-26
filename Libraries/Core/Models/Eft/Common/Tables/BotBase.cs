@@ -158,6 +158,8 @@ public record Info
     public int? PrestigeLevel { get; set; }
     public string? Voice { get; set; }
     public int? Level { get; set; }
+
+    ///Experience the bot has gained
     public int? Experience { get; set; }
     public List<Ban>? Bans { get; set; }
     public bool? BannedState { get; set; }
@@ -198,6 +200,8 @@ public record BotInfoSettings
 {
     public string? Role { get; set; }
     public string? BotDifficulty { get; set; }
+
+    // Experience given for being killed
     public int? Experience { get; set; }
     public double? StandingForKill { get; set; }
     public double? AggressorBonus { get; set; }

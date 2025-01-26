@@ -27,6 +27,11 @@ public class BotLevelGenerator(
     /// <returns>IRandomisedBotLevelResult object</returns>
     public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
+        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
+        {
+            return new RandomisedBotLevelResult() { Exp = 0, Level = 1 };
+        }
+
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativeBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
