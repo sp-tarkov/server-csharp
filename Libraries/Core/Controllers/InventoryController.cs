@@ -293,7 +293,7 @@ public class InventoryController(
                 UseSortingTable = true
             };
             _inventoryHelper.AddItemsToStash(sessionId, addItemsRequest, pmcData, output);
-            if (output.Warnings.Count > 0) return;
+            if (output.Warnings?.Count > 0) return;
         }
 
         // Find and delete opened container item from player inventory
