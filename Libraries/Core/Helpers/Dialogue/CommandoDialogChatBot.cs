@@ -36,7 +36,7 @@ public class CommandoDialogChatBot(
         };
     }
 
-    protected string GetUnrecognizedCommandMessage()
+    protected override string GetUnrecognizedCommandMessage()
     {
         return "I'm sorry soldier, I don't recognize the command you are trying to use! Type \"help\" to see available commands.";
     }

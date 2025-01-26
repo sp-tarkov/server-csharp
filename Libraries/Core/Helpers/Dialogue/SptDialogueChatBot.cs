@@ -22,13 +22,13 @@ public class SptDialogueChatBot(
     SeasonalEventService _seasonalEventService,
     GiftService _giftService,
     LocalisationService _localisationService
-) : AbstractDialogChatBot(_logger, _mailSendService, _chatCommands)
+) : IDialogueChatBot
 {
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
     protected List<string> _listOfMessages = ["hello", "hi", "sup", "yo", "hey"];
 
-    public override UserDialogInfo GetChatBot()
+    public UserDialogInfo GetChatBot()
     {
         return new UserDialogInfo
         {

@@ -92,8 +92,5 @@ public abstract class AbstractDialogChatBot(
         _chatCommands.Add(chatCommand);
     }
 
-    protected string GetUnrecognizedCommandMessage()
-    {
-        throw new NotImplementedException();
-    }
+    protected abstract string GetUnrecognizedCommandMessage();
 }
