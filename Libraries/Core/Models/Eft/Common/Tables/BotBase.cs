@@ -457,6 +457,7 @@ public record DamageHistory
     public LethalDamage? LethalDamage { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public BodyPartsDamageHistory? BodyParts { get; set; }
 }
 
