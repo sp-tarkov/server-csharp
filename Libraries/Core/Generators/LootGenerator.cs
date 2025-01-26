@@ -280,8 +280,8 @@ public class LootGenerator(
     {
         var randomItem = _randomUtil.GetArrayValue(items);
 
-        var itemLimitCount = itemTypeCounts[randomItem.Parent];
-        if (itemLimitCount is not null && itemLimitCount.Current > itemLimitCount.Max) {
+        var itemLimitCount = itemTypeCounts.TryGetValue(randomItem.Parent, out var randomItemLimitCount);
+        if (!itemLimitCount && randomItemLimitCount?.Current > randomItemLimitCount?.Max) {
             return false;
         }
 
@@ -293,7 +293,7 @@ public class LootGenerator(
         var newLootItem = new Item {
             Id = _hashUtil.Generate(),
             Template = randomItem.Id,
-            Upd = {
+            Upd = new Upd {
                 StackObjectsCount = 1,
                 SpawnedInSession = true,
             },
@@ -307,9 +307,9 @@ public class LootGenerator(
         newLootItem.Template = randomItem.Id;
         result.Add(newLootItem);
 
-        if (itemLimitCount is not null) {
+        if (randomItemLimitCount is not null) {
             // Increment item count as it's in limit array
-            itemLimitCount.Current++;
+            randomItemLimitCount.Current++;
         }
 
         // Item added okay
@@ -324,7 +324,15 @@ public class LootGenerator(
     /// <returns>stack count</returns>
     protected int GetRandomisedStackCount(TemplateItem item, LootRequest options)
     {
-        throw new NotImplementedException();
+        var min = item.Properties.StackMinRandom;
+        var max = item.Properties.StackMaxSize;
+
+        if (options.ItemStackLimits.TryGetValue(item.Id, out var itemLimits)) {
+            min = itemLimits.Min;
+            max = (int?)itemLimits.Max;
+        }
+
+        return _randomUtil.GetInt((int)(min ?? 1), max ?? 1);
     }
 
     /// <summary>
@@ -376,8 +384,8 @@ public class LootGenerator(
         }
 
         // Check chosen preset hasn't exceeded spawn limit
-        var itemLimitCount = itemTypeCounts[itemDbDetails.Value.Parent];
-        if (itemLimitCount is not null && itemLimitCount.Current > itemLimitCount.Max) {
+        var hasItemLimitCount = itemTypeCounts.TryGetValue(itemDbDetails.Value.Parent, out var itemLimitCount);
+        if (!hasItemLimitCount && itemLimitCount?.Current > itemLimitCount?.Max) {
             return false;
         }
 
