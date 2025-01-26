@@ -5,9 +5,9 @@ namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class InMemoryCacheService(
-    ICloner _cloner)
+    ICloner _cloner
+)
 {
-
     protected Dictionary<string, object?> _cacheData = new();
 
     // Store data into an in-memory object

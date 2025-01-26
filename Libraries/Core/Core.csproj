@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Utils\Extensions\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SptDependencyInjection\SptDependencyInjection.csproj" />
     </ItemGroup>
 
