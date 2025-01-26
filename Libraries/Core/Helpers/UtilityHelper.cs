@@ -7,6 +7,9 @@ public class UtilityHelper
 {
     public List<T> ArrayIntersect<T>(List<T> a, List<T> b)
     {
-        throw new NotImplementedException();
+        //a.Intersect(x => b.Contains(x)).ToList();
+        // gives error Delegate type could not be infered
+        
+        return a.Where(x => b.Contains(x)).ToList();
     }
 }

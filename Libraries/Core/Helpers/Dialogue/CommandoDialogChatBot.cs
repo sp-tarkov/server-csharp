@@ -38,6 +38,6 @@ public class CommandoDialogChatBot(
 
     protected string GetUnrecognizedCommandMessage()
     {
-        throw new NotImplementedException();
+        return "I'm sorry soldier, I don't recognize the command you are trying to use! Type \"help\" to see available commands.";
     }
 }
