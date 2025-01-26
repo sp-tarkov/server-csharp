@@ -144,7 +144,7 @@ public class DurabilityLimitsHelper(
     {
         var lowestMaxPercent = _botConfig.Durability.Pmc.Armor.LowestMaxPercent;
         var highestMaxPercent = _botConfig.Durability.Pmc.Armor.HighestMaxPercent;
-        var multiplier = _randomUtil.GetInt(lowestMaxPercent, highestMaxPercent);
+        var multiplier = _randomUtil.GetDouble(lowestMaxPercent, highestMaxPercent);
 
         return itemMaxDurability * (multiplier / 100);
     }

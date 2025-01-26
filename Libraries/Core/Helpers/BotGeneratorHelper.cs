@@ -47,7 +47,7 @@ public class BotGeneratorHelper(
         Upd itemProperties = new();
         var hasProperties = false;
 
-        if (itemTemplate?.Properties?.MaxDurability is not null)
+        if (itemTemplate?.Properties?.MaxDurability is not null && itemTemplate.Properties.MaxDurability > 0)
         {
             if (itemTemplate.Properties.WeapClass is not null)
             {
