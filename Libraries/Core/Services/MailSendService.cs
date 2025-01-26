@@ -301,8 +301,7 @@ public class MailSendService(
 
         // TODO: clean up old code here
         // Offer Sold notifications are now separate from the main notification
-        if (
-            _messageTypes.Contains(senderDialog.Type ?? MessageType.SYSTEM_MESSAGE) &&
+        if (_messageTypes.Contains(senderDialog.Type ?? MessageType.SYSTEM_MESSAGE) &&
             messageDetails?.RagfairDetails is not null
         )
         {
@@ -322,8 +321,8 @@ public class MailSendService(
     public void SendPlayerMessageToNpc(string sessionId, string targetNpcId, string message)
     {
         var playerProfile = _saveServer.GetProfile(sessionId);
-        var dialogWithNpc = playerProfile.DialogueRecords[targetNpcId];
-        if (dialogWithNpc is null)
+        if (playerProfile.DialogueRecords != null ||
+            !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc))
         {
             _logger.Error(_localisationService.GetText("mailsend-missing_npc_dialog", targetNpcId));
             return;
