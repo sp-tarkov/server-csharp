@@ -530,13 +530,17 @@ public class BotGeneratorHelper(
             foreach (var slotGrid in value?.Properties?.Grids ?? [])
             {
                 // Grid is empty, skip or item size is bigger than grid
-                if (slotGrid.Props?.CellsH == 0 || slotGrid.Props?.CellsV == 0 || itemSize[0] * itemSize[1] > slotGrid.Props?.CellsV * slotGrid.Props?.CellsH)
+                if (slotGrid.Props?.CellsH == 0 ||
+                    slotGrid.Props?.CellsV == 0 ||
+                    itemSize[0] * itemSize[1] > slotGrid.Props?.CellsV * slotGrid.Props?.CellsH)
+                {
                     continue;
+                }
 
                 // Can't put item type in grid, skip all grids as we're assuming they have the same rules
                 if (!ItemAllowedInContainer(slotGrid, rootItemTplId))
                 {
-                    // Multiple containers, maybe next one allows item, only break out of loop for this containers grids
+                    // Multiple containers, maybe next one allows item, only break out of loop for the containers grids
                     break;
                 }
 
@@ -548,44 +552,22 @@ public class BotGeneratorHelper(
 
                 // Get root items in container we can iterate over to find out what space is free
                 var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
-                var itemsToRemove = new List<Item>();
-                var itemsToAdd = new List<Item>();
-                foreach (var item in containerItemsToCheck)
-                {
-                    // Check item in contain for children, store for later insertion into `containerItemsToCheck`
-                    // (used later when figuring out how much space weapon takes up)
-                    var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(inventory.Items, item.Id);
-                    if (itemWithChildItems.Count <= 1) continue;
+                var containerItemsWithChildren = GetContainerItemsWithChildren(containerItemsToCheck, inventory.Items);
 
-
-                    // Store replaced item + new Child items to add later as we can't modify a collecting while looking over it
-                    itemsToRemove.Add(item);
-                    itemsToAdd.AddRange(itemsToAdd);
-                }
-
-                // Remove the base items flagged above
-                foreach (var item in itemsToRemove)
-                {
-                    existingContainerItems.Remove(item);
-                }
-
-                // Add item back with its child items
-                existingContainerItems.AddRange(itemsToAdd);
-
-                // Get rid of items free/used spots in current grid
                 if (slotGrid.Props is not null)
                 {
+                    // Get rid of an items free/used spots in current grid
                     var slotGridMap = _inventoryHelper.GetContainerMap(
                         slotGrid.Props.CellsH.GetValueOrDefault(),
                         slotGrid.Props.CellsV.GetValueOrDefault(),
-                        existingContainerItems,
+                        containerItemsWithChildren,
                         container.Id
                     );
 
                     // Try to fit item into grid
                     var findSlotResult = _containerHelper.FindSlotForItem(slotGridMap, itemSize[0], itemSize[1]);
 
-                    // Open slot found, add item to inventory
+                    // Free slot found, add item
                     if (findSlotResult.Success ?? false)
                     {
                         var parentItem = itemWithChildren.FirstOrDefault((i) => i.Id == rootItemId);
@@ -631,6 +613,28 @@ public class BotGeneratorHelper(
         }
 
         return ItemAddedResult.NO_SPACE;
+    }
+
+    /// <summary>
+    /// Take a list of items and check if they need children + add them
+    /// </summary>
+    /// <param name="containerItems"></param>
+    /// <param name="inventoryItems"></param>
+    /// <returns></returns>
+    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerItems, List<Item> inventoryItems)
+    {
+        var result = new List<Item>();
+        foreach (var item in containerItems)
+        {
+            // Check item in container for children, store for later insertion into `containerItemsToCheck`
+            // (used later when figuring out how much space weapon takes up)
+            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(inventoryItems, item.Id);
+
+            // Item had children, replace existing data with item + its children 
+            result.AddRange(itemWithChildItems);
+        }
+
+        return result;
     }
 
     /// <summary>
