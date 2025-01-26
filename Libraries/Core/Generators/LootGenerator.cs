@@ -10,6 +10,7 @@ using Core.Models.Spt.Services;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace Core.Generators;
 
@@ -24,7 +25,8 @@ public class LootGenerator(
     ItemFilterService _itemFilterService,
     LocalisationService _localisationService,
     WeightedRandomHelper _weightedRandomHelper,
-    RagfairLinkedItemService _ragfairLinkedItemService
+    RagfairLinkedItemService _ragfairLinkedItemService,
+    ICloner _cloner
     )
 {
 
@@ -389,7 +391,7 @@ public class LootGenerator(
             return false;
         }
 
-        var presetAndMods = _itemHelper.ReplaceIDs(chosenPreset.Items);
+        var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(chosenPreset.Items));
         _itemHelper.RemapRootItemId(presetAndMods);
         // Add chosen preset tpl to result array
         foreach (var item in presetAndMods) {
@@ -443,7 +445,7 @@ public class LootGenerator(
         }
 
         // Clean up Ids to ensure they're all unique and prevent collisions
-        var presetAndMods = _itemHelper.ReplaceIDs(chosenWeaponPreset.Items);
+        var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(chosenWeaponPreset.Items));
         _itemHelper.RemapRootItemId(presetAndMods);
 
         // Add preset to return object
