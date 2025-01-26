@@ -213,7 +213,7 @@ public class TraderHelper(
             return standing;
         }
 
-        return 0;
+        return rawProfileTemplate.InitialStanding["default"];
     }
 
     /// <summary>
@@ -326,7 +326,7 @@ public class TraderHelper(
         var targetLevel = 0;
 
         // Round standing to 2 decimal places to address floating point inaccuracies
-        pmcData.TradersInfo[traderID].Standing = Math.Round((pmcData.TradersInfo[traderID].Standing * 100) ?? 0) / 100;
+        pmcData.TradersInfo[traderID].Standing = Math.Round(((pmcData.TradersInfo[traderID].Standing * 100) ?? 0), 2) / 100;
 
         foreach (var loyaltyLevel in loyaltyLevels)
         {
@@ -622,10 +622,11 @@ public class TraderHelper(
     /// </summary>
     /// <param name="traderEnumValue">The trader enum value to validate</param>
     /// <returns>The validated trader enum value as a string, or an empty string if invalid</returns>
-    public string GetValidTraderIdByEnumValue(string traderEnumValue) // TODO: param was Traders
+    /// TODO: THIS IS NOT DOING WHAT IT USED TOO
+    public string GetValidTraderIdByEnumValue(string traderEnumValue)
     {
         var traderId = _databaseService.GetTraders();
-        var id = traderId.FirstOrDefault(x => x.Value.Base.Nickname.ToLower() == traderEnumValue.ToLower()).Key;
+        var id = traderId.FirstOrDefault(x => x.Value.Base.Id == traderEnumValue).Key;
         return id;
     }
 
