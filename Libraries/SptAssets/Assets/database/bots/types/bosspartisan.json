@@ -2537,7 +2537,10 @@
       },
       "Caliber9x18PM": {
         "5737218f245977612125ba51": 1
-      }
+      },
+	  "Caliber40mmRU": {
+		  "5656eb674bdc2d35148b457c": 1
+	  }
     },
     "equipment": {
       "ArmBand": {},
