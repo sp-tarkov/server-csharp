@@ -8,6 +8,7 @@ using System.Text.Json.Serialization;
 
 public record ItemEventRouterBase
 {
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("warnings")]
     public List<Warning>? Warnings { get; set; }
 
@@ -53,6 +54,7 @@ public record ProfileChange
     [JsonPropertyName("items")]
     public ItemChanges? Items { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("production")]
     public Dictionary<string, Production>? Production { get; set; }
 
@@ -72,9 +74,11 @@ public record ProfileChange
     [JsonPropertyName("moneyTransferLimitData")]
     public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("repeatableQuests")]
     public List<PmcDataRepeatableQuest>? RepeatableQuests { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("recipeUnlocked")]
     public Dictionary<string, bool>? RecipeUnlocked { get; set; }
 
