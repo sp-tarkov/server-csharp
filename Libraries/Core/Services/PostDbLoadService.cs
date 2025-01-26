@@ -19,6 +19,7 @@ public class PostDbLoadService(
     CustomLocationWaveService _customLocationWaveService,
     OpenZoneService _openZoneService,
     ItemBaseClassService _itemBaseClassService,
+    RaidWeatherService _raidWeatherService,
     ConfigServer _configServer,
     ICloner _cloner)
 {
@@ -113,6 +114,9 @@ public class PostDbLoadService(
         ApplyFleaPriceOverrides();
 
         AddCustomItemPresetsToGlobals();
+
+        var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
+        _raidWeatherService.GenerateWeather(currentSeason);
     }
 
     protected void CloneExistingCraftsAndAddNew()
