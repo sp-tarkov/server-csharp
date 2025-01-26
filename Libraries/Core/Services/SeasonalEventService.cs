@@ -897,7 +897,21 @@ public class SeasonalEventService(
     /// </summary>
     protected void EnableDancingTree()
     {
-        throw new NotImplementedException();
+        var maps = _databaseService.GetLocations();
+        List<string> mapsToCheck = ["hideout", "base", "privatearea"];
+        foreach (KeyValuePair<string, object?> map in maps.GetAllPropsAsDict())
+        {
+            // Skip maps that have no tree
+            if (mapsToCheck.Contains(map.Key)) {
+                continue;
+            }
+
+            var mapData = map.Value as Location;
+            if (mapData.Base?.Events?.Khorovod?.Chance is not null) {
+                mapData.Base.Events.Khorovod.Chance = 100;
+                mapData.Base.BotLocationModifier.KhorovodChance = 100;
+            }
+        }
     }
 
     /// <summary>
@@ -905,12 +919,69 @@ public class SeasonalEventService(
     /// </summary>
     protected void AddGifterBotToMaps()
     {
-        throw new NotImplementedException();
+        var gifterSettings = _seasonalEventConfig.GifterSettings;
+        var maps = _databaseService.GetLocations().GetAllPropsAsDict();
+        foreach (var gifterMapSettings in gifterSettings) {
+            Location mapData = maps.FirstOrDefault(x => x.Key == gifterMapSettings.Map).Value as Location;
+            // Dont add gifter to map twice
+            if (mapData.Base.BossLocationSpawn.Any((boss) => boss.BossName == "gifter")) {
+                continue;
+            }
+
+            mapData.Base.BossLocationSpawn.Add(new BossLocationSpawn {
+                BossName = "gifter",
+                BossChance = gifterMapSettings.SpawnChance,
+                BossZone = gifterMapSettings.Zones,
+                IsBossPlayer = false,
+                BossDifficulty = "normal",
+                BossEscortType = "gifter",
+                BossEscortDifficulty = "normal",
+                BossEscortAmount = "0",
+                ForceSpawn = true,
+                SpawnMode = ["regular", "pve"],
+                Time = -1,
+                TriggerId = "",
+                TriggerName = "",
+                Delay = 0,
+                IsRandomTimeSpawn = false,
+            });
+        }
     }
 
     protected void HandleModEvent(SeasonalEvent seasonalEvent, Config globalConfig)
     {
-        throw new NotImplementedException();
+        if (seasonalEvent.Settings?.EnableChristmasHideout ?? false) {
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
+            globalConfig.EventType.Add("Christmas");
+        }
+
+        if (seasonalEvent.Settings?.EnableHalloweenHideout ?? false) {
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
+            globalConfig.EventType.Add("Halloween");
+            globalConfig.EventType.Add("HalloweenIllumination");
+        }
+
+        if (seasonalEvent.Settings?.AddEventGearToBots ?? false) {
+            AddEventGearToBots(seasonalEvent.Type);
+        }
+        if (seasonalEvent.Settings?.AddEventLootToBots ?? false) {
+            AddEventLootToBots(seasonalEvent.Type);
+        }
+
+        if (seasonalEvent.Settings?.EnableSummoning ?? false) {
+            EnableHalloweenSummonEvent();
+            AddEventBossesToMaps("halloweensummon");
+        }
+        if (seasonalEvent.Settings?.ZombieSettings?.Enabled ?? false) {
+            ConfigureZombies(seasonalEvent.Settings.ZombieSettings);
+        }
+        if (seasonalEvent.Settings?.ForceSeason is not null) {
+            _weatherConfig.OverrideSeason = seasonalEvent.Settings.ForceSeason;
+        }
+
+        if (seasonalEvent.Settings?.AdjustBotAppearances ?? false) {
+            AdjustBotAppearanceValues(seasonalEvent.Type);
+        }
     }
 
     /// <summary>
