@@ -510,7 +510,7 @@ public class ProfileHelper(
     /// <returns>True if account is developer</returns>
     public bool IsDeveloperAccount(string sessionID)
     {
-        return GetFullProfile(sessionID)?.ProfileInfo?.Edition?.ToLower().StartsWith("spt developer") == false;
+        return GetFullProfile(sessionID)?.ProfileInfo?.Edition?.ToLower().StartsWith("spt developer") ?? false;
     }
 
     /// <summary>
