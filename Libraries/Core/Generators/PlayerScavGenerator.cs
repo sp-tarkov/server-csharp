@@ -242,8 +242,11 @@ public class PlayerScavGenerator(
             // Adjustment value zero, nothing to do
             if (modKvP.Value == 0)
                 continue;
-
-            baseBotNode.BotChances.WeaponModsChances[modKvP.Key] += karmaSettings.Modifiers.Mod[modKvP.Key];
+            if (karmaSettings.Modifiers.Mod.TryGetValue(modKvP.Key, out var value))
+            {
+                baseBotNode.BotChances.WeaponModsChances[modKvP.Key] += value;
+            };
+            
         }
 
         // Adjust item spawn quantity values
