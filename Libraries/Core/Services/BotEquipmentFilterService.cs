@@ -51,7 +51,7 @@ public class BotEquipmentFilterService
         var botWeightingAdjustments = GetBotWeightingAdjustments(botRole, botLevel);
         var botWeightingAdjustmentsByPlayerLevel = GetBotWeightingAdjustmentsByPlayerLevel(
             botRole,
-            pmcProfile.Info.Level ?? 0
+            pmcProfile?.Info?.Level ?? 0
         );
 
         var botEquipConfig = _botEquipmentConfig[botRole.ToLower()];

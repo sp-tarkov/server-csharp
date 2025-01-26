@@ -120,8 +120,8 @@ public class BotInventoryGenerator(
             QuestRaidItems = questRaidItemsId,
             QuestStashItems = questStashItemsId,
             SortingTable = sortingTableId,
-            HideoutAreaStashes = { },
-            FastPanel = { },
+            HideoutAreaStashes = new Dictionary<string, string>(),
+            FastPanel = new Dictionary<string, string>(),
             FavoriteItems = [],
             HideoutCustomizationStashId = hideoutCustomizationStashId,
         };
@@ -203,7 +203,7 @@ public class BotInventoryGenerator(
                     Inventory = botInventory,
                     BotEquipmentConfig = botEquipConfig,
                     RandomisationDetails = randomistionDetails,
-                    GeneratingPlayerLevel = pmcProfile.Info.Level
+                    GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1
                 }
             );
         }
@@ -225,7 +225,7 @@ public class BotInventoryGenerator(
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
                 GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE, ItemTpl.POCKETS_LARGE],
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -240,7 +240,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -255,7 +255,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -270,7 +270,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -285,7 +285,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -320,7 +320,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
     }

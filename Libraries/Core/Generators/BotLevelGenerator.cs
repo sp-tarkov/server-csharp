@@ -74,6 +74,9 @@ public class BotLevelGenerator(
             )
             : Math.Min(levelDetails.Min.Value, maxAvailableLevel); // Not pmc with override or non-pmc
 
+        // Force min level to be 1
+        minPossibleLevel = Math.Max(1, minPossibleLevel);
+
         var maxPossibleLevel = isPmc && pmcOverride is not null
             ? Math.Min(pmcOverride.Max.Value, maxAvailableLevel) // Was a PMC and they have a level override
             : Math.Min(levelDetails.Max.Value, maxAvailableLevel); // Not pmc with override or non-pmc

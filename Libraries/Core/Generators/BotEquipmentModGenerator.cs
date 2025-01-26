@@ -435,7 +435,7 @@ public class BotEquipmentModGenerator(
         _botConfig.Equipment.TryGetValue(request.BotData.EquipmentRole, out var botEquipConfig);
         var botEquipBlacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
             request.BotData.EquipmentRole,
-            pmcProfile.Info.Level ?? 0
+            pmcProfile?.Info?.Level ?? 0
         );
         var botWeaponSightWhitelist = _botEquipmentFilterService.GetBotWeaponSightWhitelist(
             request.BotData.EquipmentRole
