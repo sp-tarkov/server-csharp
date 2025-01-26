@@ -439,7 +439,7 @@ public class LootGenerator(
         _itemHelper.RemapRootItemId(presetAndMods);
 
         // Add preset to return object
-        itemsToReturn.AddRange(presetAndMods);
+        itemsToReturn.Add(presetAndMods);
 
         // Get a random collection of weapon mods related to chosen weawpon and add them to result array
         var linkedItemsToWeapon = _ragfairLinkedItemService.GetLinkedDbItems(chosenWeaponTpl);
@@ -490,9 +490,9 @@ public class LootGenerator(
 
                 for (var index = 0; index < rewardCount; index++) {
                     var chosenAmmoBox = _randomUtil.GetArrayValue(ammoBoxesMatchingCaliber);
-                    var ammoBoxItem = new List<Item> { new Item() { Id = _hashUtil.Generate(), Template = chosenAmmoBox.Id } };
-                    _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, chosenAmmoBox);
-                    rewards.AddRange(ammoBoxItem);
+                    var ammoBoxReward = new List<Item> { new() { Id = _hashUtil.Generate(), Template = chosenAmmoBox.Id } };
+                    _itemHelper.AddCartridgesToAmmoBox(ammoBoxReward, chosenAmmoBox);
+                    rewards.Add(ammoBoxReward);
                 }
 
                 continue;
@@ -517,9 +517,9 @@ public class LootGenerator(
             for (var index = 0; index < rewardCount; index++) {
                 // Choose a random item from pool
                 var chosenRewardItem = _randomUtil.GetArrayValue(rewardItemPool);
-                var rewardItem = new List<Item> { new Item() { Id = _hashUtil.Generate(), Template = chosenRewardItem.Id } };
+                var rewardItem = new List<Item> { new() { Id = _hashUtil.Generate(), Template = chosenRewardItem.Id } };
 
-                rewards.AddRange(rewardItem);
+                rewards.Add(rewardItem);
             }
         }
 
@@ -560,9 +560,9 @@ public class LootGenerator(
             // Find a random item of the desired type and add as reward
             for (var index = 0; index < rewardCount; index++) {
                 var chosenItem = _randomUtil.DrawRandomFromList(relatedItems.ToList());
-                var item = new List<Item> { new Item() { Id = _hashUtil.Generate(), Template = chosenItem[0].Id } };
+                var reward = new List<Item> { new Item() { Id = _hashUtil.Generate(), Template = chosenItem[0].Id } };
 
-                modRewards.AddRange(item);
+                modRewards.Add(reward);
             }
         }
 
