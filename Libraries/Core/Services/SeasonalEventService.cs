@@ -10,6 +10,7 @@ using SptCommon.Extensions;
 using Core.Models.Spt.Bots;
 using Core.Utils;
 using static System.Net.Mime.MediaTypeNames;
+using System;
 
 namespace Core.Services;
 
@@ -174,7 +175,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventName">Name of event to get gear changes for</param>
     /// <returns>bots with equipment changes</returns>
-    protected Dictionary<string, Dictionary<string, Dictionary<string, int>>> GetEventBotGear(SeasonalEventType eventType)
+    protected Dictionary<string, Dictionary<string, Dictionary<string, int>>>? GetEventBotGear(SeasonalEventType eventType)
     {
         return _seasonalEventConfig.EventGear.GetValueOrDefault(eventType, null);
     }
@@ -220,7 +221,7 @@ public class SeasonalEventService(
     /// </summary>
     public void EnableSeasonalEvents()
     {
-        if (_currentlyActiveEvents.Count > 0)
+        if (_currentlyActiveEvents.Any())
         {
             var globalConfig = _databaseService.GetGlobals().Configuration;
             foreach (var activeEvent in _currentlyActiveEvents)
@@ -571,8 +572,8 @@ public class SeasonalEventService(
                 var props = botDb.BotAppearance.GetType().GetProperties();
                 foreach (var itemKey in weightAdjustments)
                 {
-                    var prop = props.FirstOrDefault(x => x.Name.ToLower() == appearanceKey.Key.ToLower());
-                    var propValue = (Dictionary<string, int>)prop.GetValue(botDb.BotAppearance);
+                    var prop = props.FirstOrDefault(x => string.Equals(x.Name, appearanceKey.Key, StringComparison.CurrentCultureIgnoreCase));
+                    var propValue = (Dictionary<string, double>)prop.GetValue(botDb.BotAppearance);
                     propValue[itemKey.Key] = weightAdjustments[itemKey.Key];
                     prop.SetValue(botDb.BotAppearance, propValue);
                 }
@@ -595,13 +596,13 @@ public class SeasonalEventService(
                 continue;
             }
 
-            Location location = (Location)locationProp.GetValue(locations);
+            var location = (Location)locationProp.GetValue(locations);
             if (location?.Base?.BotLocationModifier?.AdditionalHostilitySettings is null)
             {
                 continue;
             }
 
-            List<AdditionalHostilitySettings> newHostilitySettings = useDefault ? new() : hostilitySettings[locationProp.Name];
+            var newHostilitySettings = useDefault ? new() : hostilitySettings[locationProp.Name];
             if (newHostilitySettings is null)
             {
                 continue;
@@ -648,10 +649,10 @@ public class SeasonalEventService(
     /// </summary>
     protected void AdjustZryachiyMeleeChance()
     {
-        var zyrach = _databaseService.GetBots().Types.FirstOrDefault(x => x.Key.ToLower() == "bosszryachiy");
+        var zryachiyKvP = _databaseService.GetBots().Types.FirstOrDefault(x => x.Key.ToLower() == "bosszryachiy");
         var value = new Dictionary<string, double>();
 
-        foreach (var chance in zyrach.Value.BotChances.EquipmentChances)
+        foreach (var chance in zryachiyKvP.Value.BotChances.EquipmentChances)
         {
             if (chance.Key.ToLower() == "Scabbard")
             {
@@ -662,7 +663,7 @@ public class SeasonalEventService(
             value.Add(chance.Key, chance.Value);
         }
 
-        zyrach.Value.BotChances.EquipmentChances = value;
+        zryachiyKvP.Value.BotChances.EquipmentChances = value;
     }
 
     /// <summary>
@@ -849,10 +850,18 @@ public class SeasonalEventService(
     {
         var gifterBot = _databaseService.GetBots().Types["gifter"];
         var items = gifterBot.BotInventory.Items.Backpack.Keys.ToList();
-        gifterBot.BotDifficulty["Easy"].Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty["Normal"].Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty["Hard"].Patrol["ITEMS_TO_DROP"] = items;
-        gifterBot.BotDifficulty["Impossible"].Patrol["ITEMS_TO_DROP"] = items;
+
+        gifterBot.BotDifficulty["easy"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
+        gifterBot.BotDifficulty["easy"].Patrol["ITEMS_TO_DROP"] = items;
+
+        gifterBot.BotDifficulty["normal"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
+        gifterBot.BotDifficulty["normal"].Patrol["ITEMS_TO_DROP"] = items;
+
+        gifterBot.BotDifficulty["hard"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
+        gifterBot.BotDifficulty["hard"].Patrol["ITEMS_TO_DROP"] = items;
+
+        gifterBot.BotDifficulty["impossible"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
+        gifterBot.BotDifficulty["impossible"].Patrol["ITEMS_TO_DROP"] = items;
     }
 
     /// <summary>
@@ -861,7 +870,40 @@ public class SeasonalEventService(
     /// <param name="eventType">Name of the event to read equipment in from config</param>
     protected void AddEventGearToBots(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        var botGearChanges = GetEventBotGear(eventType);
+        if (botGearChanges is null)
+        {
+            _logger.Warning(_localisationService.GetText("gameevent-no_gear_data", eventType));
+
+            return;
+        }
+
+        // Iterate over bots with changes to apply
+        foreach (var botKvP in botGearChanges) {
+            var botToUpdate = _databaseService.GetBots().Types[botKvP.Key.ToLower()];
+            if (botToUpdate is null)
+            {
+                _logger.Warning(_localisationService.GetText("gameevent-bot_not_found", botKvP));
+                continue;
+            }
+
+            // Iterate over each equipment slot change
+            var gearAmendmentsBySlot = botGearChanges[botKvP.Key];
+            foreach (var equipmentKvP in gearAmendmentsBySlot) {
+                // Adjust slots spawn chance to be at least 75%
+                botToUpdate.BotChances.EquipmentChances[equipmentKvP.Key] = Math.Max(
+                    botToUpdate.BotChances.EquipmentChances[equipmentKvP.Key],
+                    75);
+
+                // Grab gear to add and loop over it
+                foreach (var itemToAddKvP in equipmentKvP.Value)
+                {
+                    var equipmentSlot = (EquipmentSlots)Enum.Parse(typeof(EquipmentSlots), equipmentKvP.Key);
+                    var equipmentDict = botToUpdate.BotInventory.Equipment[equipmentSlot];
+                    equipmentDict[itemToAddKvP.Key] = equipmentKvP.Value[itemToAddKvP.Key];
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -870,7 +912,35 @@ public class SeasonalEventService(
     /// <param name="eventType">Name of the event to read loot in from config</param>
     protected void AddEventLootToBots(SeasonalEventType eventType)
     {
-        throw new NotImplementedException();
+        var botLootChanges = GetEventBotLoot(eventType);
+        if (botLootChanges is null)
+        {
+            _logger.Warning(_localisationService.GetText("gameevent-no_gear_data", eventType));
+
+            return;
+        }
+
+        // Iterate over bots with changes to apply
+        foreach (var botKvpP in botLootChanges) {
+            var botToUpdate = _databaseService.GetBots().Types[botKvpP.Key.ToLower()];
+            if (botToUpdate is null)
+            {
+                _logger.Warning(_localisationService.GetText("gameevent-bot_not_found", botKvpP));
+                continue;
+            }
+
+            // Iterate over each loot slot change
+            var lootAmendmentsBySlot = botLootChanges[botKvpP.Key];
+            foreach (var slotKvP in lootAmendmentsBySlot) {
+                // Grab loot to add and loop over it
+                var itemTplsToAdd = slotKvP.Value;
+                foreach (var itemKvP in itemTplsToAdd)
+                {
+                    var dict = botToUpdate.BotInventory.Items.GetAllPropsAsDict();
+                    dict[itemKvP.Key] = itemTplsToAdd[itemKvP.Key];
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -899,14 +969,14 @@ public class SeasonalEventService(
     {
         var maps = _databaseService.GetLocations();
         List<string> mapsToCheck = ["hideout", "base", "privatearea"];
-        foreach (KeyValuePair<string, object?> map in maps.GetAllPropsAsDict())
+        foreach (var mapKvP in maps.GetDictionary())
         {
             // Skip maps that have no tree
-            if (mapsToCheck.Contains(map.Key)) {
+            if (mapsToCheck.Contains(mapKvP.Key)) {
                 continue;
             }
 
-            var mapData = map.Value as Location;
+            var mapData = mapKvP.Value;
             if (mapData.Base?.Events?.Khorovod?.Chance is not null) {
                 mapData.Base.Events.Khorovod.Chance = 100;
                 mapData.Base.BotLocationModifier.KhorovodChance = 100;
@@ -920,9 +990,14 @@ public class SeasonalEventService(
     protected void AddGifterBotToMaps()
     {
         var gifterSettings = _seasonalEventConfig.GifterSettings;
-        var maps = _databaseService.GetLocations().GetAllPropsAsDict();
-        foreach (var gifterMapSettings in gifterSettings) {
-            Location mapData = maps.FirstOrDefault(x => x.Key == gifterMapSettings.Map).Value as Location;
+        var maps = _databaseService.GetLocations().GetDictionary();
+        foreach (var gifterMapSettings in gifterSettings)
+        {
+            if (!maps.TryGetValue(gifterMapSettings.Map, out var mapData))
+            {
+                _logger.Warning($"AddGifterBotToMaps() Map not found {gifterMapSettings.Map}");
+                continue;
+            }
             // Dont add gifter to map twice
             if (mapData.Base.BossLocationSpawn.Any((boss) => boss.BossName == "gifter")) {
                 continue;

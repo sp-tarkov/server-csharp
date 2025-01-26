@@ -100,6 +100,7 @@ public class PostDbLoadService(
 
         if (_seasonalEventService.IsAutomaticEventDetectionEnabled())
         {
+            _seasonalEventService.CacheActiveEvents();
             _seasonalEventService.EnableSeasonalEvents();
         }
 
