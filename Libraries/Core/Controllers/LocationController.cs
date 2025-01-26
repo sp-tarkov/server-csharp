@@ -61,13 +61,7 @@ public class LocationController(
     /// <returns></returns>
     public GetAirdropLootResponse? GetAirDropLoot(GetAirdropLootRequest? request)
     {
-        if (request is null)
-        {
-            // client sometimes requests this after a raid has ended, just return null
-            return null;
-        }
-        
-        if (request.ContainerId is not null)
+        if (request?.ContainerId is not null)
         {
             return _airdropService.GenerateCustomAirdropLoot(request);
         }

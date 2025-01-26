@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 
 namespace Core.Models.Spt.Config;
@@ -10,23 +10,23 @@ public record ItemConfig : BaseConfig
 
     /** Items that should be globally blacklisted */
     [JsonPropertyName("blacklist")]
-    public List<string> Blacklist { get; set; }
+    public HashSet<string> Blacklist { get; set; }
 
     /** Items that should not be lootable from any location */
     [JsonPropertyName("lootableItemBlacklist")]
-    public List<string> LootableItemBlacklist { get; set; }
+    public HashSet<string> LootableItemBlacklist { get; set; }
 
     /** items that should not be given as rewards */
     [JsonPropertyName("rewardItemBlacklist")]
-    public List<string> RewardItemBlacklist { get; set; }
+    public HashSet<string> RewardItemBlacklist { get; set; }
 
     /** Item base types that should not be given as rewards */
     [JsonPropertyName("rewardItemTypeBlacklist")]
-    public List<string> RewardItemTypeBlacklist { get; set; }
+    public HashSet<string> RewardItemTypeBlacklist { get; set; }
 
     /** Items that can only be found on bosses */
     [JsonPropertyName("bossItems")]
-    public List<string> BossItems { get; set; }
+    public HashSet<string> BossItems { get; set; }
 
     [JsonPropertyName("handbookPriceOverride")]
     public Dictionary<string, HandbookPriceOverride> HandbookPriceOverride { get; set; }

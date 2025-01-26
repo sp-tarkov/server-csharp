@@ -51,7 +51,7 @@ public class AirdropService(
         _logger.Debug($"Chose: {airdropType} for airdrop loot");
 
         // Common/weapon/etc
-        var airdropConfig = GetAirdropLootConfigByType((AirdropTypeEnum)airdropType);
+        var airdropConfig = GetAirdropLootConfigByType(airdropType);
 
         // generate loot to put into airdrop crate
         var crateLoot = airdropConfig.UseForcedLoot.GetValueOrDefault(false)
@@ -138,7 +138,7 @@ public class AirdropService(
     /// </summary>
     /// <param name="airdropType">Type of airdrop to get settings for</param>
     /// <returns>LootRequest</returns>
-    protected AirdropLootRequest GetAirdropLootConfigByType(AirdropTypeEnum airdropType)
+    protected AirdropLootRequest GetAirdropLootConfigByType(SptAirdropTypeEnum? airdropType)
     {
         var lootSettingsByType = _airdropConfig.Loot[airdropType.ToString()];
         if (lootSettingsByType is null) {
@@ -146,6 +146,7 @@ public class AirdropService(
                 _localisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType)
             );
 
+            // TODO: Get Radar airdrop to work. Atm Radar will default to common supply drop (mixed)
             // Default to common
             lootSettingsByType = _airdropConfig.Loot[AirdropTypeEnum.Common.ToString()];
         }
@@ -153,8 +154,9 @@ public class AirdropService(
         // Get all items that match the blacklisted types and fold into item blacklist
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = _itemHelper.GetItems()
-            .Where((templateItem) => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-            .Select((templateItem) => templateItem.Id);
+            .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
+            .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
+            .Select(templateItem => templateItem.Id);
         var itemBlacklist = new HashSet<string>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
