@@ -312,8 +312,8 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
-                RootEquipmentSlot = EquipmentSlots.Earpiece,
-                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
+                RootEquipmentSlot = EquipmentSlots.TacticalVest,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.TacticalVest],
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
