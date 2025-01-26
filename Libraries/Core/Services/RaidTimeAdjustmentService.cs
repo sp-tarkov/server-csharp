@@ -73,11 +73,12 @@ public class RaidTimeAdjustmentService(
         mapBase.Waves = mapBase.Waves.Where(x => x.TimeMax > raidAdjustments.SimulatedRaidStartSeconds).ToList();
 
         // Adjust wave min/max times to match new simulated start
+        var startSeconds = raidAdjustments.SimulatedRaidStartSeconds.GetValueOrDefault(1);
         foreach (var wave in mapBase.Waves)
         {
             // Dont let time fall below 0
-            wave.TimeMax -= Math.Max(raidAdjustments.SimulatedRaidStartSeconds ?? 1, 0);
-            wave.TimeMax -= Math.Max(raidAdjustments.SimulatedRaidStartSeconds ?? 1, 0);
+            wave.TimeMin -= (int)Math.Max(startSeconds, 0);
+            wave.TimeMax -= (int)Math.Max(startSeconds, 0);
         }
 
         _logger.Debug(
@@ -141,11 +142,11 @@ public class RaidTimeAdjustmentService(
             // Store time reduction percent in app context so loot gen can pick it up later
             _applicationContext.AddValue(
                 ContextVariableType.RAID_ADJUSTMENTS,
-                new
+                new RaidChanges
                 {
-                    dynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent),
-                    staticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent),
-                    simulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60,
+                    DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent),
+                    StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent),
+                    SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60,
                 }
             );
         }

@@ -287,15 +287,15 @@ public class PmcChatResponseService(
     protected UserDialogInfo GetVictimDetails(Victim pmcVictim)
     {
         var categories = new List<MemberCategory>{
-            MemberCategory.UNIQUE_ID,
+            MemberCategory.UniqueId,
             MemberCategory.Default,
             MemberCategory.Default,
             MemberCategory.Default,
             MemberCategory.Default,
             MemberCategory.Default,
             MemberCategory.Default,
-            MemberCategory.SHERPA,
-            MemberCategory.DEVELOPER
+            MemberCategory.Sherpa,
+            MemberCategory.Developer
         };
 
         var chosenCategory = _randomUtil.GetArrayValue(categories);

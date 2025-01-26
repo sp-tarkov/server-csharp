@@ -7,7 +7,7 @@ public record OffraidHealRequestData : BaseInteractionRequestData
     public string? Item { get; set; }
     public BodyPart? Part { get; set; }
     public int? Count { get; set; }
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 }
 
 public enum BodyPart

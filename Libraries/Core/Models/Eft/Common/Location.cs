@@ -146,7 +146,16 @@ public record StaticContainerDetails
     public List<StaticContainerData> StaticContainers { get; set; }
 
     [JsonPropertyName("staticForced")]
-    public List<SpawnpointTemplate> StaticForced { get; set; }
+    public List<StaticForced> StaticForced { get; set; }
+}
+
+public record StaticForced
+{
+    [JsonPropertyName("containerId")]
+    public string ContainerId { get; set; }
+
+    [JsonPropertyName("itemTpl")]
+    public string ItemTpl { get; set; }
 }
 
 public record StaticContainerData

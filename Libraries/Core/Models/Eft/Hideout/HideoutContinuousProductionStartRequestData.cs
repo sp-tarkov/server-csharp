@@ -11,3 +11,10 @@ public record HideoutContinuousProductionStartRequestData : BaseInteractionReque
     [JsonPropertyName("timestamp")]
     public double? Timestamp { get; set; }
 }
+
+public record HideoutProperties
+{
+    public int? BtcFarmGcs { get; set; }
+    public bool IsGeneratorOn { get; set; }
+    public bool WaterCollectorHasFilter  { get; set; }
+}

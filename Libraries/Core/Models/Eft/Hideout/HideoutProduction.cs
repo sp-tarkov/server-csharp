@@ -56,7 +56,7 @@ public record HideoutProduction
     public bool? IsCodeProduction { get; set; }
 }
 
-public record Requirement : RequirementBase
+public record Requirement
 {
     [JsonPropertyName("templateId")]
     public string? TemplateId { get; set; }
@@ -87,10 +87,7 @@ public record Requirement : RequirementBase
 
     [JsonPropertyName("gameVersions")]
     public List<string>? GameVersions { get; set; }
-}
-
-public record RequirementBase
-{
+    
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }

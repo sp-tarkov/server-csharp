@@ -68,7 +68,7 @@ public class ItemBaseClassService(
             HydrateItemBaseClassCache();
         }
 
-        if (itemTpl is null)
+        if (string.IsNullOrEmpty(itemTpl))
         {
             _logger.Warning("Unable to check itemTpl base class as value passed is null");
 

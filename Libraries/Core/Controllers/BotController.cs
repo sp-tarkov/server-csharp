@@ -132,15 +132,13 @@ public class BotController(
 
     public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
     {
-        // var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
-        //
-        // // Use this opportunity to create and cache bots for later retrieval
-        // var multipleBotTypesRequested = info.Conditions?.Count > 1;
-        // return multipleBotTypesRequested
-        //     ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
-        //     : ReturnSingleBotFromCache(sessionId, info);
-
-        return new List<BotBase>();
+        var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
+        
+        // Use this opportunity to create and cache bots for later retrieval
+        var multipleBotTypesRequested = info.Conditions?.Count > 1;
+        return multipleBotTypesRequested
+            ? GenerateMultipleBotsAndCache(info, pmcProfile, sessionId)
+            : ReturnSingleBotFromCache(sessionId, info);
     }
 
     private List<BotBase> GenerateMultipleBotsAndCache(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
@@ -205,16 +203,16 @@ public class BotController(
 
         for (var i = 0; i < botsToGenerate; i++)
         {
-            try
-            {
+            // try
+            // {
                 var detailsClone = _cloner.Clone(botGenerationDetails);
                 GenerateSingleBotAndStoreInCache(detailsClone, sessionId, cacheKey);
                 progressWriter.Increment();
-            }
-            catch (Exception e)
-            {
-                _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
-            }
+            // }
+            // catch (Exception e)
+            // {
+            //     _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
+            // }
         }
 
         _logger.Debug(
@@ -229,12 +227,6 @@ public class BotController(
         var requestedBot = request.Conditions?.FirstOrDefault();
 
         var raidSettings = GetMostRecentRaidSettings();
-        
-        if (raidSettings is null)
-        {
-            _logger.Error($"Unable to get raid settings for session {sessionId}");
-            return [];
-        }
 
         // Create generation request for when cache is empty
         var condition = new GenerateCondition
@@ -266,7 +258,7 @@ public class BotController(
         // Does non pmc bot have a chance of being converted into a pmc
         var convertIntoPmcChanceMinMax = GetPmcConversionMinMaxForLocation(
             requestedBot?.Role,
-            raidSettings.Location
+            raidSettings?.Location
         );
         if (convertIntoPmcChanceMinMax is not null && !botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
@@ -356,10 +348,9 @@ public class BotController(
 
     private MinMax? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
     {
-        var mapSpecificConversionValues = _pmcConfig.ConvertIntoPmcChance!.GetValueOrDefault(location?.ToLower(), null);
-        return mapSpecificConversionValues is null 
-            ? _pmcConfig.ConvertIntoPmcChance.GetByJsonProp<Dictionary<string, MinMax>>("default").GetByJsonProp<MinMax>(requestedBotRole) 
-            : mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower());
+        return _pmcConfig.ConvertIntoPmcChance!.TryGetValue(location?.ToLower() ?? "", out var mapSpecificConversionValues)
+            ? mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower())
+            : _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole);
     }
 
     private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
@@ -408,7 +399,7 @@ public class BotController(
 
     public int GetBotCap(string location)
     {
-        var botCap = _botConfig.MaxBotCap[location.ToLower()];
+        var botCap = _botConfig.MaxBotCap.FirstOrDefault(x => x.Key.ToLower() == location.ToLower());
         if (location == "default")
         {
             _logger.Warning(
@@ -416,7 +407,7 @@ public class BotController(
             );
         }
 
-        return botCap;
+        return botCap.Value;
     }
 
     public object GetAiBotBrainTypes()

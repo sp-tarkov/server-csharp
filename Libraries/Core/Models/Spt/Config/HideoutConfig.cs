@@ -1,5 +1,6 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Eft.Hideout;
 
 namespace Core.Models.Spt.Config;
 
@@ -40,6 +41,22 @@ public record HideoutConfig : BaseConfig
 
     [JsonPropertyName("cultistCircle")]
     public CultistCircleSettings CultistCircle { get; set; }
+
+    [JsonPropertyName("hideoutCraftsToAdd")]
+    public List<HideoutCraftToAdd> HideoutCraftsToAdd { get; set; }
+}
+
+public record HideoutCraftToAdd
+{
+    [JsonPropertyName("requirements")]
+    public List<Requirement> Requirements { get; set; }
+
+    [JsonPropertyName("craftIdToCopy")]
+    public string CraftIdToCopy { get; set; }
+
+    [JsonPropertyName("craftOutputTpl")]
+    public string CraftOutputTpl { get; set; }
+
 }
 
 public record CultistCircleSettings

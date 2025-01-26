@@ -101,6 +101,7 @@ public class TraderPurchasePersisterService(
 
             profile.Value.TraderPurchases[traderId] = new Dictionary<string, TraderPurchaseData>();
         }
+        _logger.Debug($"Reset trader: {traderId} assort buy limits");
     }
 
     /**
@@ -147,9 +148,9 @@ public class TraderPurchasePersisterService(
                 if (resetTimeForItem < _timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile
-                    _logger.Debug($"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
+                    _logger.Debug($"Not a bad warning: Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
 
-                    profile.TraderPurchases.Remove(purchaseKvP.Key);
+                    profile.TraderPurchases[traderId].Remove(purchaseKvP.Key);
                 }
             }
         }

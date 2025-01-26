@@ -59,9 +59,9 @@ public class LocationController(
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
-    public GetAirdropLootResponse GetAirDropLoot(GetAirdropLootRequest request)
+    public GetAirdropLootResponse? GetAirDropLoot(GetAirdropLootRequest? request)
     {
-        if (request.ContainerId is not null)
+        if (request?.ContainerId is not null)
         {
             return _airdropService.GenerateCustomAirdropLoot(request);
         }

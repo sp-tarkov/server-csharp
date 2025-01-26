@@ -126,7 +126,7 @@ public class LocationLifecycleService
         _logger.Debug($"Starting: {request.Location}");
 
         var playerProfile = _profileHelper.GetPmcProfile(sessionId);
-
+        
         var result = new StartLocalRaidResponseData
         {
             ServerId = $"{request.Location}.{request.PlayerSide} {_timeUtil.GetTimeStamp()}", // TODO - does this need to be more verbose - investigate client?
@@ -135,7 +135,7 @@ public class LocationLifecycleService
             {
                 InsuredItems = playerProfile.InsuredItems
             },
-            LocationLoot = GenerateLocationAndLoot(request.Location, request.ShouldSkipLootGeneration == false),
+            LocationLoot = GenerateLocationAndLoot(request.Location, !request.ShouldSkipLootGeneration ?? true),
             TransitionType = TransitionType.NONE,
             Transition = new Transition
             {
@@ -156,6 +156,7 @@ public class LocationLifecycleService
         var transitionData = _applicationContext
             .GetLatestValue(ContextVariableType.TRANSIT_INFO)
             ?.GetValue<LocationTransit>();
+        
         if (transitionData is not null) {
             _logger.Success($"Player: {sessionId} is in transit to {request.Location}");
             result.Transition.TransitionType = TransitionType.COMMON;
@@ -314,7 +315,7 @@ public class LocationLifecycleService
         }
 
         // Check for a loot multipler adjustment in app context and apply if one is found
-        var locationConfigClone = new LocationConfig();
+        LocationConfig? locationConfigClone = null;
         var raidAdjustments = _applicationContext
             .GetLatestValue(ContextVariableType.RAID_ADJUSTMENTS)
             ?.GetValue<RaidChanges>();
@@ -484,6 +485,11 @@ public class LocationLifecycleService
      */
     protected void HandleCarExtract(string extractName, PmcData pmcData, string sessionId)
     {
+        pmcData.CarExtractCounts?.TryAdd(extractName, 0);
+        
+        // Increment extract count value
+        pmcData.CarExtractCounts[extractName] += 1;
+        
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
             _inRaidConfig.CarExtractBaseStandingGain,
@@ -512,10 +518,14 @@ public class LocationLifecycleService
      */
     protected void HandleCoopExtract(string sessionId, PmcData pmcData, string extractName)
     {
+        pmcData.CoopExtractCounts?.TryAdd(extractName, 0);
+        
+        pmcData.CoopExtractCounts[extractName] += 1;
+        
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
-            _inRaidConfig.CarExtractBaseStandingGain,
-            pmcData.CarExtractCounts[extractName]);
+            _inRaidConfig.CoopExtractBaseStandingGain,
+            pmcData.CoopExtractCounts[extractName]);
         
         var fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
@@ -523,8 +533,6 @@ public class LocationLifecycleService
         // Check if new standing has leveled up trader
         _traderHelper.LevelUp(fenceId, pmcData);
         pmcData.TradersInfo[fenceId].LoyaltyLevel = Math.Max((int)pmcData.TradersInfo[fenceId].LoyaltyLevel, 1);
-
-        _logger.Debug($"Car extract: {extractName} used, total times taken: {pmcData.CarExtractCounts[extractName]}");
 
         // Copy updated fence rep values into scav profile to ensure consistency
         var scavData = _profileHelper.GetScavProfile(sessionId);
@@ -1003,7 +1011,7 @@ public class LocationLifecycleService
             MessageType.BTR_ITEMS_DELIVERY,
             messageId,
             items,
-            messageStoreTime);
+            (int)messageStoreTime);
     }
 
     protected void HandleInsuredItemLostEvent(

@@ -1,6 +1,7 @@
 ﻿using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
+using SptCommon.Extensions;
 
 namespace Core.Services;
 
@@ -12,6 +13,7 @@ public class BotGenerationCacheService(
 {
     protected Dictionary<string, List<BotBase>> _storedBots = new Dictionary<string, List<BotBase>>();
     protected Queue<BotBase> _activeBotsInRaid = [];
+    protected Lock _lock = new Lock();
     
     
     /**
@@ -20,11 +22,14 @@ public class BotGenerationCacheService(
      */
     public void StoreBots(string key, List<BotBase> botsToStore)
     {
-        foreach (var bot in botsToStore)
+        lock (_lock)
         {
-            if (!_storedBots.TryAdd(key, [bot]))
+            foreach (var bot in botsToStore)
             {
-                _storedBots[key].Add(bot);
+                if (!_storedBots.TryAdd(key, [bot]))
+                {
+                    _storedBots[key].Add(bot);
+                }
             }
         }
     }
@@ -37,21 +42,24 @@ public class BotGenerationCacheService(
      */
     public BotBase? GetBot(string key)
     {
-        if (_storedBots.TryGetValue(key, out var bots))
+        lock (_lock)
         {
-            if (bots.Count > 0)
+            if (_storedBots.TryGetValue(key, out var bots))
             {
-                try
+                if (bots.Count > 0)
                 {
-                    return _activeBotsInRaid.Dequeue();
-                }
-                catch (Exception _)
-                {
-                    _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+                    try
+                    {
+                        return bots.PopFirst();
+                    }
+                    catch (Exception _)
+                    {
+                        _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+                    }
                 }
             }
         }
-        
+
         _logger.Error(_localisationService.GetText("bot-no_bot_type_in_cache", key));
         return null;
     }
@@ -62,7 +70,10 @@ public class BotGenerationCacheService(
      */
     public void StoreUsedBot(BotBase botToStore)
     {
-        _activeBotsInRaid.Enqueue(botToStore);
+        lock (_lock)
+        {
+            _activeBotsInRaid.Enqueue(botToStore);
+        }
     }
 
     /**
@@ -73,7 +84,10 @@ public class BotGenerationCacheService(
      */
     public BotBase? GetUsedBot(string profileId)
     {
-        return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
+        lock (_lock)
+        {
+            return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
+        }
     }
 
     /**
@@ -81,8 +95,11 @@ public class BotGenerationCacheService(
      */
     public void ClearStoredBots()
     {
-        _storedBots.Clear();
-        _activeBotsInRaid = [];
+        lock (_lock)
+        {
+            _storedBots.Clear();
+            _activeBotsInRaid = [];
+        }
     }
 
     /**

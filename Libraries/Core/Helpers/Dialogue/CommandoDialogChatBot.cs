@@ -28,8 +28,8 @@ public class CommandoDialogChatBot(
             Info = new UserDialogDetails
             {
                 Level = 1,
-                MemberCategory = MemberCategory.DEVELOPER,
-                SelectedMemberCategory = MemberCategory.DEVELOPER,
+                MemberCategory = MemberCategory.Developer,
+                SelectedMemberCategory = MemberCategory.Developer,
                 Nickname = "Commando",
                 Side = "Usec"
             }
@@ -38,6 +38,6 @@ public class CommandoDialogChatBot(
 
     protected string GetUnrecognizedCommandMessage()
     {
-        throw new NotImplementedException();
+        return "I'm sorry soldier, I don't recognize the command you are trying to use! Type \"help\" to see available commands.";
     }
 }

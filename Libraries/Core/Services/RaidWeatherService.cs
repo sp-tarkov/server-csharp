@@ -12,8 +12,6 @@ namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class RaidWeatherService(
-    ISptLogger<RaidWeatherService> _logger,
-    DatabaseService _databaseService,
     TimeUtil _timeUtil,
     WeatherGenerator _weatherGenerator,
     SeasonalEventService _seasonalEventService,

@@ -102,6 +102,7 @@ public class BotInventoryGenerator(
         var questRaidItemsId = _hashUtil.Generate();
         var questStashItemsId = _hashUtil.Generate();
         var sortingTableId = _hashUtil.Generate();
+        var hideoutCustomizationStashId = _hashUtil.Generate();
 
         return new BotBaseInventory
         {
@@ -111,17 +112,18 @@ public class BotInventoryGenerator(
                 new() { Id = stashId, Template = ItemTpl.STASH_STANDARD_STASH_10X30 },
                 new() { Id = questRaidItemsId, Template = ItemTpl.STASH_QUESTRAID },
                 new() { Id = questStashItemsId, Template = ItemTpl.STASH_QUESTOFFLINE },
-                new() { Id = sortingTableId, Template = ItemTpl.SORTINGTABLE_SORTING_TABLE }
+                new() { Id = sortingTableId, Template = ItemTpl.SORTINGTABLE_SORTING_TABLE },
+                new() { Id = hideoutCustomizationStashId, Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION }
             ],
             Equipment = equipmentId,
             Stash = stashId,
             QuestRaidItems = questRaidItemsId,
             QuestStashItems = questStashItemsId,
             SortingTable = sortingTableId,
-            HideoutAreaStashes = { },
-            FastPanel = { },
+            HideoutAreaStashes = new Dictionary<string, string>(),
+            FastPanel = new Dictionary<string, string>(),
             FavoriteItems = [],
-            HideoutCustomizationStashId = "",
+            HideoutCustomizationStashId = hideoutCustomizationStashId,
         };
     }
 
@@ -201,7 +203,7 @@ public class BotInventoryGenerator(
                     Inventory = botInventory,
                     BotEquipmentConfig = botEquipConfig,
                     RandomisationDetails = randomistionDetails,
-                    GeneratingPlayerLevel = pmcProfile.Info.Level
+                    GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1
                 }
             );
         }
@@ -223,7 +225,7 @@ public class BotInventoryGenerator(
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
                 GenerateModsBlacklist = [ItemTpl.POCKETS_1X4_TUE, ItemTpl.POCKETS_LARGE],
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -238,7 +240,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -253,7 +255,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -268,7 +270,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -283,7 +285,7 @@ public class BotInventoryGenerator(
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
 
@@ -310,15 +312,15 @@ public class BotInventoryGenerator(
         GenerateEquipment(
             new GenerateEquipmentProperties
             {
-                RootEquipmentSlot = EquipmentSlots.Earpiece,
-                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.Earpiece],
+                RootEquipmentSlot = EquipmentSlots.TacticalVest,
+                RootEquipmentPool = templateInventory.Equipment[EquipmentSlots.TacticalVest],
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
                 Inventory = botInventory,
                 BotEquipmentConfig = botEquipConfig,
                 RandomisationDetails = randomistionDetails,
-                GeneratingPlayerLevel = pmcProfile.Info.Level,
+                GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
     }
@@ -395,7 +397,7 @@ public class BotInventoryGenerator(
         var shouldSpawn = _randomUtil.GetChance100(spawnChance ?? 0);
         if (shouldSpawn && settings.RootEquipmentPool.Any())
         {
-            var pickedItemDb = new TemplateItem();
+            TemplateItem pickedItemDb = null;
             var found = false;
 
             // Limit attempts to find a compatible item as it's expensive to check them all
@@ -465,7 +467,7 @@ public class BotInventoryGenerator(
 
             var botEquipBlacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
                 settings.BotData.EquipmentRole,
-                (double)settings.GeneratingPlayerLevel
+                settings.GeneratingPlayerLevel.Value
             );
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
@@ -479,11 +481,10 @@ public class BotInventoryGenerator(
                     botEquipBlacklist.Equipment
                 );
             }
-
+            var itemIsOnGenerateModBlacklist = settings.GenerateModsBlacklist != null && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id);
             // Does item have slots for sub-mods to be inserted into
             if (pickedItemDb.Properties?.Slots?.Count > 0 
-                && settings?.GenerateModsBlacklist is not null
-                && !settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
+                && !itemIsOnGenerateModBlacklist)
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
                     [item],

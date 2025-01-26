@@ -25,7 +25,7 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
             EventIdentifier = dialogueMessage.Id,
             OfferId = ragfairData.OfferId,
             HandbookId = ragfairData.HandbookId,
-            Count = ragfairData.Count
+            Count = (int)ragfairData.Count
         };
     }
 

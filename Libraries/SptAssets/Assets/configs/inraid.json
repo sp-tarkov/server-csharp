@@ -27,6 +27,6 @@
     "scavExtractStandingGain": 0.01,
     "pmcKillProbabilityForScavGain": 0.2,
     "keepFiRSecureContainerOnDeath": false,
-    "alwaysKeepFoundInRaidonRaidEnd": false,
+    "alwaysKeepFoundInRaidOnRaidEnd": false,
     "playerScavHostileChancePercent": 15
 }

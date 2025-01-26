@@ -176,7 +176,7 @@ public class HideoutController(
         }
 
         // Upgrade includes a container improvement/addition
-        if (hideoutStage?.Container is not null)
+        if (!string.IsNullOrEmpty(hideoutStage?.Container))
         {
             AddContainerImprovementToProfile(
                 output,
@@ -365,7 +365,7 @@ public class HideoutController(
 
             hideoutArea.Slots[hideoutSlotIndex].Items =
             [
-                new HideoutItem()
+                new HideoutItem
                 {
                     Id = item.inventoryItem.Id,
                     Template = item.inventoryItem.Template,
@@ -442,7 +442,7 @@ public class HideoutController(
 
         AddItemDirectRequest request = new AddItemDirectRequest
         {
-            ItemWithModsToAdd = [itemToReturn],
+            ItemWithModsToAdd = [itemToReturn.ConvertToItem()],
             FoundInRaid = itemToReturn.Upd?.SpawnedInSession,
             Callback = null,
             UseSortingTable = false,
@@ -666,7 +666,7 @@ public class HideoutController(
                 continue;
             }
 
-            if (_hideoutHelper.IsProductionType(production.Value))
+            if (production.Value.GetType() == typeof(HideoutProduction))
             {
                 // Production or ScavCase
                 if (production.Value.RecipeId == request.RecipeId)
@@ -714,7 +714,7 @@ public class HideoutController(
             var defaultPreset = _presetHelper.GetDefaultPreset(recipe.EndProduct);
 
             // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-            List<Item> presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+            List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
 
             _itemHelper.RemapRootItemId(presetAndMods);
 
@@ -752,7 +752,7 @@ public class HideoutController(
             var countOfItemsToReward = recipe.Count;
             for (var index = 1; index < countOfItemsToReward; index++)
             {
-                List<Item> itemAndMods = _itemHelper.ReplaceIDs(itemAndChildrenToSendToPlayer.FirstOrDefault());
+                List<Item> itemAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(itemAndChildrenToSendToPlayer.FirstOrDefault()));
                 itemAndChildrenToSendToPlayer.AddRange([itemAndMods]);
             }
         }
@@ -922,7 +922,7 @@ public class HideoutController(
         string? prodId = null;
         foreach (var production in ongoingProductions)
         {
-            if (_hideoutHelper.IsProductionType(production.Value))
+            if (production.Value.GetType() == typeof(HideoutProduction))
             {
                 // Production or ScavCase
                 if ((production.Value).RecipeId == request.RecipeId)
@@ -1285,5 +1285,21 @@ public class HideoutController(
     public List<QteData> GetQteList(string sessionId)
     {
         return _databaseService.GetHideout().Qte;
+    }
+    
+    /**
+     * Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
+     */
+    public void Update() {
+        foreach (var sessionID in _saveServer.GetProfiles()) {
+            if (sessionID.Value.CharacterData.PmcData.Hideout is not null &&
+                _profileActivityService.ActiveWithinLastMinutes(
+                    sessionID.Key,
+                    _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes
+                )
+                ) {
+                _hideoutHelper.UpdatePlayerHideout(sessionID.Key);
+            }
+        }
     }
 }

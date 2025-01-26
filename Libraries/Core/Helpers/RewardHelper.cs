@@ -13,44 +13,20 @@ using SptCommon.Annotations;
 namespace Core.Helpers
 {
     [Injectable]
-    public class RewardHelper
+    public class RewardHelper(
+        ISptLogger<RewardHelper> _logger,
+        HashUtil _hashUtil,
+        TimeUtil _timeUtil,
+        ItemHelper _itemHelper,
+        DatabaseService _databaseService,
+        ProfileHelper _profileHelper,
+        LocalisationService _localisationService,
+        TraderHelper _traderHelper,
+        PresetHelper _presetHelper,
+        ICloner _cloner,
+        PlayerService _playerService
+    )
     {
-        private readonly ISptLogger<RewardHelper> _logger;
-        private readonly HashUtil _hashUtil;
-        private readonly TimeUtil _timeUtil;
-        private readonly ItemHelper _itemHelper;
-        private readonly DatabaseService _databaseService;
-        private readonly ProfileHelper _profileHelper;
-        private readonly LocalisationService _localisationService;
-        private readonly TraderHelper _traderHelper;
-        private readonly PresetHelper _presetHelper;
-        private readonly ICloner _cloner;
-
-        public RewardHelper(
-            ISptLogger<RewardHelper> logger,
-            HashUtil hashUtil,
-            TimeUtil timeUtil,
-            ItemHelper itemHelper,
-            DatabaseService databaseService,
-            ProfileHelper profileHelper,
-            LocalisationService localisationService,
-            TraderHelper traderHelper,
-            PresetHelper presetHelper,
-            ICloner cloner
-        )
-        {
-            _logger = logger;
-            _hashUtil = hashUtil;
-            _timeUtil = timeUtil;
-            _itemHelper = itemHelper;
-            _databaseService = databaseService;
-            _profileHelper = profileHelper;
-            _localisationService = localisationService;
-            _traderHelper = traderHelper;
-            _presetHelper = presetHelper;
-            _cloner = cloner;
-        }
-
         /**
          * Apply the given rewards to the passed in profile
          * @param rewards List of rewards to apply
@@ -100,14 +76,16 @@ namespace Core.Helpers
                     case RewardType.Experience:
                         _profileHelper.AddExperienceToPmc(
                             sessionId,
-                            (int)reward.Value
+                            int.Parse(reward.Value.ToString())
                         ); // this must occur first as the output object needs to take the modified profile exp value
+                        // Recalculate level in event player leveled up
+                        pmcProfile.Info.Level = _playerService.CalculateLevel(pmcProfile);
                         break;
                     case RewardType.TraderStanding:
                         _traderHelper.AddStandingToTrader(
                             sessionId,
                             reward.Target,
-                            (double)reward.Value
+                            double.Parse(reward.Value.ToString())
                         );
                         break;
                     case RewardType.TraderUnlock:
@@ -235,7 +213,7 @@ namespace Core.Helpers
             var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
 
             // Area that will be used to craft unlocked item
-            var desiredHideoutAreaType = (HideoutAreas)craftUnlockReward.TraderId;
+            var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
 
             var matchingProductions = craftingRecipes.Where(
                     (prod) =>
@@ -383,7 +361,7 @@ namespace Core.Helpers
             if (defaultPreset is not null)
             {
                 // Found preset, use mods to hydrate reward item
-                var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
+                var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
                 var newRootId = _itemHelper.RemapRootItemId(presetAndMods);
 
                 reward.Items = presetAndMods;

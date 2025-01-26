@@ -165,8 +165,7 @@ public class HideoutCallbacks(
     {
         if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
         {
-            // TODO
-            // _hideoutController.Update();
+            _hideoutController.Update();
             return true;
         }
 

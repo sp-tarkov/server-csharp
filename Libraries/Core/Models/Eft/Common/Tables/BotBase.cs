@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Notes;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Utils.Json;
@@ -20,6 +21,7 @@ public record BotBase
     [JsonPropertyName("sessionId")]
     public string? SessionId { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("savage")]
     public string? Savage { get; set; }
 
@@ -44,6 +46,7 @@ public record BotBase
     [JsonPropertyName("Stats")]
     public Stats? Stats { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Encyclopedia")]
     public Dictionary<string, bool>? Encyclopedia { get; set; }
 
@@ -155,6 +158,8 @@ public record Info
     public int? PrestigeLevel { get; set; }
     public string? Voice { get; set; }
     public int? Level { get; set; }
+
+    ///Experience the bot has gained
     public int? Experience { get; set; }
     public List<Ban>? Bans { get; set; }
     public bool? BannedState { get; set; }
@@ -195,7 +200,9 @@ public record BotInfoSettings
 {
     public string? Role { get; set; }
     public string? BotDifficulty { get; set; }
-    public double? Experience { get; set; }
+
+    // Experience given for being killed
+    public int? Experience { get; set; }
     public double? StandingForKill { get; set; }
     public double? AggressorBonus { get; set; }
     public bool? UseSimpleAnimator { get; set; }
@@ -361,6 +368,9 @@ public record EftStats
     public OverallCounters? OverallCounters { get; set; }
     public float? SessionExperienceMult { get; set; }
     public float? ExperienceBonusMult { get; set; }
+
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Aggressor? Aggressor { get; set; }
     public List<DroppedItem>? DroppedItems { get; set; }
     public List<FoundInRaidItem>? FoundInRaidItems { get; set; }
@@ -405,6 +415,14 @@ public record Victim
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
     public string? Location { get; set; }
+    [JsonPropertyName("GInterface186.ProfileId")]
+    public string? UnusedProfileId { get; set; }
+    [JsonPropertyName("GInterface186.Nickname")]
+    public string? UnusedName { get; set; }
+    [JsonPropertyName("GInterface186.Side")]
+    public string? UnusedSide { get; set; }
+    [JsonPropertyName("GInterface186.PrestigeLevel")]
+    public int? UnusedPrestige { get; set; }
 }
 
 public record SessionCounters
@@ -441,14 +459,25 @@ public record Aggressor
     public string? Category { get; set; }
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
+    [JsonPropertyName("GInterface186.ProfileId")]
+    public string? UnusedProfileId { get; set; }
+    [JsonPropertyName("GInterface186.Nickname")]
+    public string? UnusedName { get; set; }
+    [JsonPropertyName("GInterface186.Side")]
+    public string? UnusedSide { get; set; }
+    [JsonPropertyName("GInterface186.PrestigeLevel")]
+    public int? UnusedPrestige { get; set; }
 }
 
 public record DamageHistory
 {
     public string? LethalDamagePart { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public LethalDamage? LethalDamage { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public BodyPartsDamageHistory? BodyParts { get; set; }
 }
 
@@ -665,12 +694,6 @@ public record HideoutSlot
     public List<HideoutItem>? Items { get; set; }
 }
 
-public record HideoutItem : Item
-{
-    [JsonPropertyName("count")]
-    public double? Count { get; set; }
-}
-
 public record LastCompleted
 {
     [JsonPropertyName("$oid")]
@@ -785,10 +808,4 @@ public record Bonus
 
     [JsonPropertyName("skillType")]
     public BonusSkillType? SkillType { get; set; }
-}
-
-public record Note
-{
-    public double? Time { get; set; }
-    public string? Text { get; set; }
 }

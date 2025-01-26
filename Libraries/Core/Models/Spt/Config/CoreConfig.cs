@@ -179,7 +179,7 @@ public record ChatbotFeatures
     public CommandoFeatures CommandoFeatures { get; set; }
 
     [JsonPropertyName("commandUseLimits")]
-    public Dictionary<string, int> CommandUseLimits { get; set; }
+    public Dictionary<string, int?> CommandUseLimits { get; set; }
 
     [JsonPropertyName("ids")]
     public Dictionary<string, string> Ids { get; set; }

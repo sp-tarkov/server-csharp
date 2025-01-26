@@ -11,6 +11,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 using SptCommon.Extensions;
 
 namespace Core.Generators;
@@ -26,7 +27,8 @@ public class ScavCaseRewardGenerator(
     RagfairPriceService _ragfairPriceService,
     SeasonalEventService _seasonalEventService,
     ItemFilterService _itemFilterService,
-    ConfigServer _configServer
+    ConfigServer _configServer,
+    ICloner _cloner
 )
 {
     protected ScavCaseConfig _scavCaseConfig = _configServer.GetConfig<ScavCaseConfig>();
@@ -312,7 +314,7 @@ public class ScavCaseRewardGenerator(
                 }
 
                 // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-                List<Item> presetAndMods = _itemHelper.ReplaceIDs(preset.Items);
+                List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(preset.Items));
                 _itemHelper.RemapRootItemId(presetAndMods);
 
                 resultItem = presetAndMods;

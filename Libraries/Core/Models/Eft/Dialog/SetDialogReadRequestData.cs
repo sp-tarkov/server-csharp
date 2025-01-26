@@ -5,6 +5,6 @@ namespace Core.Models.Eft.Dialog;
 
 public record SetDialogReadRequestData : IRequestData
 {
-    [JsonPropertyName("dialogId")]
+    [JsonPropertyName("dialogs")]
     public List<string>? Dialogs { get; set; }
 }

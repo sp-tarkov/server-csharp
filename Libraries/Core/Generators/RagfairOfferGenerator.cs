@@ -157,7 +157,7 @@ public class RagfairOfferGenerator(
         if (isTrader) {
             return new RagfairOfferUser(){
                 Id = userID,
-                MemberType = MemberCategory.TRADER
+                MemberType = MemberCategory.Trader
             };
         }
 

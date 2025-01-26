@@ -19,7 +19,7 @@ public class ProfileActivityService(
     public bool ActiveWithinLastMinutes(string sessionId, int minutes)
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
-        var storedActivityTimestamp = profileActivityTimestamps[sessionId];
+        var storedActivityTimestamp = profileActivityTimestamps.GetValueOrDefault(sessionId);
 
         if (storedActivityTimestamp != null)
             return false;

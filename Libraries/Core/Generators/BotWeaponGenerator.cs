@@ -33,7 +33,7 @@ public class BotWeaponGenerator(
     IEnumerable<IInventoryMagGen> inventoryMagGenComponents
 )
 {
-    protected List<IInventoryMagGen> _inventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
+    protected IEnumerable<IInventoryMagGen> _inventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
@@ -42,13 +42,8 @@ public class BotWeaponGenerator(
     private static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {
         var inventoryMagGens = components.ToList();
-        inventoryMagGens.ToList()
-            .Sort(
-                (a, b) =>
-                    a.GetPriority() -
-                    b.GetPriority()
-            );
-        return inventoryMagGens.ToList();
+        inventoryMagGens.Sort((a, b) => a.GetPriority() - b.GetPriority());
+        return inventoryMagGens;
     }
 
     /// <summary>
@@ -398,7 +393,7 @@ public class BotWeaponGenerator(
 
             return;
         }
-
+        var isInternalMag = magTemplate.Properties.ReloadMagType == "InternalMagazine";
         var ammoTemplate = _itemHelper.GetItem(generatedWeaponResult.ChosenAmmoTemplate).Value;
         if (ammoTemplate is null)
         {
@@ -722,7 +717,6 @@ public class BotWeaponGenerator(
     /// <param name="weaponWithMods">Weapon items list to amend</param>
     /// <param name="magazine">Magazine item details we're adding cartridges to</param>
     /// <param name="chosenAmmoTpl">Cartridge to put into the magazine</param>
-    /// <param name="newStackSize">How many cartridges should go into the magazine</param>
     /// <param name="magazineTemplate">Magazines db template</param>
     protected void AddOrUpdateMagazinesChildWithAmmo(List<Item> weaponWithMods, Item magazine, string chosenAmmoTpl, TemplateItem magazineTemplate)
     {
@@ -736,8 +730,7 @@ public class BotWeaponGenerator(
         }
 
         // Create array with just magazine
-        List<Item> magazineWithCartridges = new();
-        magazineWithCartridges.AddRange(magazine);
+        List<Item> magazineWithCartridges = [magazine];
 
         // Add full cartridge child items to above array
         _itemHelper.FillMagazineWithCartridge(magazineWithCartridges, magazineTemplate, chosenAmmoTpl, 1);

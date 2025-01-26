@@ -67,17 +67,11 @@ namespace SptCommon.Extensions
 
         public static Dictionary<string, object?> GetAllPropsAsDict(this object? obj)
         {
-            var result = new Dictionary<string, object?>();
             var props = obj.GetType().GetProperties();
 
-            foreach (var prop in props)
-            {
-                result.Add(prop.Name, prop.GetValue(obj));
-            }
-            
-            return result;
+            return props.ToDictionary(prop => prop.Name, prop => prop.GetValue(obj));
         }
-        
+
         public static T ToObject<T>(this JsonElement element)
         {
             var json = element.GetRawText();

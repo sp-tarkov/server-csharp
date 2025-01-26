@@ -3,9 +3,11 @@ using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Profile;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Quests;
 using Core.Models.Spt.Repeatable;
 using Core.Models.Utils;
 using Core.Routers;
@@ -23,7 +25,7 @@ public class RepeatableQuestController(
     TimeUtil _timeUtil,
     HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    HttpResponseUtil _responseUtil,
+    HttpResponseUtil _httpResponseUtil,
     ProfileHelper _profileHelper,
     ProfileFixerService _profileFixerService,
     LocalisationService _localisationService,
@@ -39,10 +41,270 @@ public class RepeatableQuestController(
 {
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
-    public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info,
-        string sessionId)
+    public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest changeRequest,
+        string sessionID)
     {
-        throw new NotImplementedException();
+        var output = _eventOutputHolder.GetOutput(sessionID);
+
+        var fullProfile = _profileHelper.GetFullProfile(sessionID);
+
+        // Check for existing quest in (daily/weekly/scav arrays)
+        var repeatables = GetRepeatableById(changeRequest.QuestId, pmcData);
+        var questToReplace = repeatables.Quest;
+        var repeatablesOfTypeInProfile = repeatables.RepeatableType;
+        if (repeatables.RepeatableType is null || repeatables.Quest is null)
+        {
+            // Unable to find quest being replaced
+            var message = _localisationService.GetText("quest-unable_to_find_repeatable_to_replace");
+            _logger.Error(message);
+
+            return _httpResponseUtil.AppendErrorToOutput(output, message);
+        }
+
+        // Subtype name of quest - daily/weekly/scav
+        var repeatableTypeLower = repeatablesOfTypeInProfile.Name.ToLower();
+
+        // Save for later standing loss calculation
+        var replacedQuestTraderId = questToReplace.TraderId;
+
+        // Update active quests to exclude the quest we're replacing
+        repeatablesOfTypeInProfile.ActiveQuests = repeatablesOfTypeInProfile.ActiveQuests.Where(
+                quest => quest.Id != changeRequest.QuestId
+            )
+            .ToList();
+
+        // Save for later cost calculations
+        var previousChangeRequirement = _cloner.Clone(
+            repeatablesOfTypeInProfile.ChangeRequirement[changeRequest.QuestId]
+        );
+
+        // Delete the replaced quest change requirement data as we're going to add new data below
+        repeatablesOfTypeInProfile.ChangeRequirement.Remove(changeRequest.QuestId);
+
+        // Get config for this repeatable sub-type (daily/weekly/scav)
+        var repeatableConfig = _questConfig.RepeatableQuests.FirstOrDefault(
+            config => config.Name == repeatablesOfTypeInProfile.Name
+        );
+
+        // If the configuration dictates to replace with the same quest type, adjust the available quest types
+        if (repeatableConfig?.KeepDailyQuestTypeOnReplacement is not null)
+        {
+            repeatableConfig.Types = [questToReplace.Type.ToString()];
+        }
+
+        // Generate meta-data for what type/levelrange of quests can be generated for player
+        var allowedQuestTypes = GenerateQuestPool(repeatableConfig, pmcData.Info.Level);
+        var newRepeatableQuest = AttemptToGenerateRepeatableQuest(
+            sessionID,
+            pmcData,
+            allowedQuestTypes,
+            repeatableConfig
+        );
+        if (newRepeatableQuest is null)
+        {
+            // Unable to find quest being replaced
+            var message =
+                $"Unable to generate repeatable quest of type: {repeatableTypeLower} to replace trader: ${replacedQuestTraderId} quest ${changeRequest.QuestId}";
+            _logger.Error(message);
+
+            return _httpResponseUtil.AppendErrorToOutput(output, message);
+        }
+
+        // Add newly generated quest to daily/weekly/scav type array
+        newRepeatableQuest.Side = repeatableConfig.Side;
+        repeatablesOfTypeInProfile.ActiveQuests.Add(newRepeatableQuest);
+
+        _logger.Debug(
+            $"Removing: {repeatableConfig.Name} quest: {questToReplace.Id} from trader: {questToReplace.TraderId} as its been replaced"
+        );
+
+        RemoveQuestFromProfile(fullProfile, questToReplace.Id);
+
+        // Delete the replaced quest change requirement from profile
+        CleanUpRepeatableChangeRequirements(repeatablesOfTypeInProfile, questToReplace.Id);
+
+        // Add replacement quests change requirement data to profile
+        repeatablesOfTypeInProfile.ChangeRequirement[newRepeatableQuest.Id] = new ChangeRequirement
+        {
+            ChangeCost = newRepeatableQuest.ChangeCost,
+            ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01])
+        };
+
+        // Check if we should charge player for replacing quest
+        var isFreeToReplace = UseFreeRefreshIfAvailable(
+            fullProfile,
+            repeatablesOfTypeInProfile,
+            repeatableTypeLower
+        );
+        if (!isFreeToReplace)
+        {
+            // Reduce standing with trader for not doing their quest
+            var traderOfReplacedQuest = pmcData.TradersInfo[replacedQuestTraderId];
+            traderOfReplacedQuest.Standing -= previousChangeRequirement.ChangeStandingCost;
+
+            var charismaBonus = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.Charisma)?.Progress ?? 0;
+            foreach (var cost in previousChangeRequirement.ChangeCost)
+            {
+                // Not free, Charge player + appy charisma bonus to cost of replacement
+                cost.Count = (int)Math.Truncate(cost.Count.Value * (1 - Math.Truncate(charismaBonus / 100) * 0.001));
+                _paymentService.AddPaymentToOutput(pmcData, cost.TemplateId, cost.Count.Value, sessionID, output);
+                if (output.Warnings.Count > 0)
+                {
+                    return output;
+                }
+            }
+        }
+
+        // Clone data before we send it to client
+        var repeatableToChangeClone = _cloner.Clone(repeatablesOfTypeInProfile);
+
+        // Purge inactive repeatables
+        repeatableToChangeClone.InactiveQuests = [];
+
+        // Nullguard
+        output.ProfileChanges[sessionID].RepeatableQuests ??= [];
+
+        // Update client output with new repeatable
+        output.ProfileChanges[sessionID].RepeatableQuests.Add(repeatableToChangeClone);
+
+        return output;
+    }
+
+    /**
+     * Some accounts have access to free repeatable quest refreshes
+     * Track the usage of them inside players profile
+     * @param fullProfile Player profile
+     * @param repeatableSubType Can be daily / weekly / scav repeatable
+     * @param repeatableTypeName Subtype of repeatable quest: daily / weekly / scav
+     * @returns Is the repeatable being replaced for free
+     */
+    protected bool UseFreeRefreshIfAvailable(SptProfile? fullProfile, PmcDataRepeatableQuest repeatableSubType,
+        string repeatableTypeName)
+    {
+        // No free refreshes, exit early
+        if (repeatableSubType.FreeChangesAvailable <= 0)
+        {
+            // Reset counter to 0
+            repeatableSubType.FreeChangesAvailable = 0;
+
+            return false;
+        }
+
+        // Only certain game versions have access to free refreshes
+        var hasAccessToFreeRefreshSystem = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(
+            fullProfile.CharacterData.PmcData
+        );
+
+        // If the player has access and available refreshes:
+        if (hasAccessToFreeRefreshSystem)
+        {
+            // Initialize/retrieve free refresh count for the desired subtype: daily/weekly
+            fullProfile.SptData.FreeRepeatableRefreshUsedCount ??= new Dictionary<string, int>();
+            var repeatableRefreshCounts = fullProfile.SptData.FreeRepeatableRefreshUsedCount;
+            repeatableRefreshCounts.TryAdd(repeatableTypeName, 0); // Set to 0 if undefined
+
+            // Increment the used count and decrement the available count.
+            repeatableRefreshCounts[repeatableTypeName]++;
+            repeatableSubType.FreeChangesAvailable--;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Clean up the repeatables `changeRequirement` dictionary of expired data
+     * @param repeatablesOfTypeInProfile The repeatables that have the replaced and new quest
+     * @param replacedQuestId Id of the replaced quest
+     */
+    private void CleanUpRepeatableChangeRequirements(PmcDataRepeatableQuest repeatablesOfTypeInProfile,
+        string replacedQuestId)
+    {
+        if (repeatablesOfTypeInProfile.ActiveQuests.Count == 1)
+        {
+            // Only one repeatable quest being replaced (e.g. scav_daily), remove everything ready for new quest requirement to be added
+            // Will assist in cleanup of existing profiles data
+            repeatablesOfTypeInProfile.ChangeRequirement.Clear();
+        }
+        else
+        {
+            // Multiple active quests of this type (e.g. daily or weekly) are active, just remove the single replaced quest
+            repeatablesOfTypeInProfile.ChangeRequirement.Remove(replacedQuestId);
+        }
+    }
+
+    private RepeatableQuest AttemptToGenerateRepeatableQuest(string sessionId, PmcData pmcData,
+        QuestTypePool questTypePool, RepeatableQuestConfig repeatableConfig)
+    {
+        const int maxAttempts = 10;
+        RepeatableQuest newRepeatableQuest = null;
+        var attempts = 0;
+        while (attempts < maxAttempts && questTypePool.Types.Count > 0)
+        {
+            newRepeatableQuest = _repeatableQuestGenerator.GenerateRepeatableQuest(
+                sessionId,
+                pmcData.Info.Level.Value,
+                pmcData.TradersInfo,
+                questTypePool,
+                repeatableConfig
+            );
+
+            if (newRepeatableQuest is not null)
+            {
+                // Successfully generated a quest, exit loop
+                break;
+            }
+
+            attempts++;
+        }
+
+        if (attempts > maxAttempts)
+        {
+            _logger.Debug("We were stuck in repeatable quest generation. This should never happen. Please report");
+        }
+
+        return newRepeatableQuest;
+    }
+
+    private void RemoveQuestFromProfile(SptProfile? fullProfile, string questToReplaceId)
+    {
+        // Find quest we're replacing in pmc profile quests array and remove it
+        _questHelper.FindAndRemoveQuestFromArrayIfExists(questToReplaceId, fullProfile.CharacterData.PmcData.Quests);
+
+        // Find quest we're replacing in scav profile quests array and remove it
+        if (fullProfile.CharacterData.ScavData is not null)
+        {
+            _questHelper.FindAndRemoveQuestFromArrayIfExists(
+                questToReplaceId,
+                fullProfile.CharacterData.ScavData.Quests
+            );
+        }
+    }
+
+    /**
+     * Find a repeatable (daily/weekly/scav) from a players profile by its id
+     * @param questId Id of quest to find
+     * @param pmcData Profile that contains quests to look through
+     * @returns IGetRepeatableByIdResult
+     */
+    protected GetRepeatableByIdResult GetRepeatableById(string questId, PmcData pmcData)
+    {
+        foreach (var repeatablesInProfile in pmcData.RepeatableQuests)
+        {
+            // Check for existing quest in (daily/weekly/scav arrays)
+            var questToReplace =
+                repeatablesInProfile.ActiveQuests.FirstOrDefault(repeatable => repeatable.Id == questId);
+            if (questToReplace is null)
+            {
+                // Not found, skip to next repeatable sub-type
+                continue;
+            }
+
+            return new GetRepeatableByIdResult { Quest = questToReplace, RepeatableType = repeatablesInProfile };
+        }
+
+        return null;
     }
 
     public List<PmcDataRepeatableQuest> GetClientRepeatableQuests(string sessionID)
@@ -135,7 +397,7 @@ public class RepeatableQuestController(
             fullProfile.SptData.FreeRepeatableRefreshUsedCount[repeatableTypeLower] = 0;
 
             // Create stupid redundant change requirements from quest data
-            generatedRepeatables.ChangeRequirement = new();
+            generatedRepeatables.ChangeRequirement = new Dictionary<string, ChangeRequirement>();
             foreach (var quest in generatedRepeatables.ActiveQuests)
                 generatedRepeatables.ChangeRequirement.TryAdd(
                     quest.Id,

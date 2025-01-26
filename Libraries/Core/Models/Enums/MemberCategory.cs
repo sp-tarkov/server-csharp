@@ -3,15 +3,15 @@
 public enum MemberCategory
 {
     Default = 0,
-    DEVELOPER = 1,
-    UNIQUE_ID = 2,
-    TRADER = 4,
-    GROUP = 8,
-    SYSTEM = 16,
-    CHAT_MODERATOR = 32,
-    CHAT_MODERATOR_WITH_PERMANENT_BAN = 64,
-    UNIT_TEST = 128,
-    SHERPA = 256,
-    EMISSARY = 512,
-    UNHEARD = 1024
+    Developer = 1,
+    UniqueId = 2,
+    Trader = 4,
+    Group = 8,
+    System = 16,
+    ChatModerator = 32,
+    ChatModeratorWithPermanentBan = 64,
+    UnitTest = 128,
+    Sherpa = 256,
+    Emissary = 512,
+    Unheard = 1024
 }

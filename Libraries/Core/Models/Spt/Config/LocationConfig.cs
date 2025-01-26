@@ -158,7 +158,7 @@ public record EquipmentLootSettings
 {
     // Percentage chance item will be added to equipment
     [JsonPropertyName("modSpawnChancePercent")]
-    public Dictionary<string, int> ModSpawnChancePercent { get; set; }
+    public Dictionary<string, double?> ModSpawnChancePercent { get; set; }
 }
 
 public record FixEmptyBotWavesSettings

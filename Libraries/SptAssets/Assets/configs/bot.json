@@ -2324,47 +2324,50 @@
                         "min": 1,
                         "max": 10
                     },
-                    "front_plate": {
-                        "2": 25,
-                        "3": 20,
-                        "4": 5,
-                        "5": 1,
-                        "6": 1
-                    },
-                    "back_plate": {
-                        "2": 25,
-                        "3": 20,
-                        "4": 5,
-                        "5": 1,
-                        "6": 1
-                    },
-                    "side_plate": {
-                        "2": 25,
-                        "3": 20,
-                        "4": 5,
-                        "5": 1,
-                        "6": 1
-                    },
-                    "left_side_plate": {
-                        "2": 25,
-                        "3": 20,
-                        "4": 5,
-                        "5": 1,
-                        "6": 1
-                    },
-                    "right_side_plate": {
-                        "2": 25,
-                        "3": 20,
-                        "4": 5,
-                        "5": 1,
-                        "6": 1
-                    }
+					"values": {
+						"front_plate": {
+						"2": 25,
+						"3": 20,
+						"4": 5,
+						"5": 1,
+						"6": 1
+						},
+						"back_plate": {
+							"2": 25,
+							"3": 20,
+							"4": 5,
+							"5": 1,
+							"6": 1
+						},
+						"side_plate": {
+							"2": 25,
+							"3": 20,
+							"4": 5,
+							"5": 1,
+							"6": 1
+						},
+						"left_side_plate": {
+							"2": 25,
+							"3": 20,
+							"4": 5,
+							"5": 1,
+							"6": 1
+						},
+						"right_side_plate": {
+							"2": 25,
+							"3": 20,
+							"4": 5,
+							"5": 1,
+							"6": 1
+						}
+					}
                 },
                 {
                     "levelRange": {
                         "min": 11,
                         "max": 14
                     },
+					"values": {
                     "front_plate": {
                         "2": 30,
                         "3": 20,
@@ -2399,14 +2402,15 @@
                         "4": 5,
                         "5": 1,
                         "6": 1
-                    }
+                    }}
                 },
                 {
                     "levelRange": {
                         "min": 15,
                         "max": 24
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 10,
                         "3": 15,
                         "4": 24,
@@ -2441,13 +2445,15 @@
                         "5": 5,
                         "6": 4
                     }
+					}
                 },
                 {
                     "levelRange": {
                         "min": 25,
                         "max": 35
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 2,
                         "3": 10,
                         "4": 35,
@@ -2482,13 +2488,16 @@
                         "5": 15,
                         "6": 5
                     }
+					}
+                    
                 },
                 {
                     "levelRange": {
                         "min": 36,
                         "max": 55
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 0,
                         "3": 4,
                         "4": 32,
@@ -2522,14 +2531,16 @@
                         "4": 32,
                         "5": 50,
                         "6": 20
-                    }
+                    }}
+                    
                 },
                 {
                     "levelRange": {
                         "min": 56,
                         "max": 90
                     },
-                    "front_plate": {
+					"values": {
+						"front_plate": {
                         "2": 0,
                         "3": 0,
                         "4": 10,
@@ -2564,6 +2575,8 @@
                         "5": 40,
                         "6": 50
                     }
+					}
+                    
                 }
             ],
             "whitelist": [
@@ -2882,18 +2895,18 @@
         }
     },
     "maxBotCap": {
-        "factory4_day": 12,
-        "factory4_night": 12,
-        "bigmap": 18,
-        "woods": 19,
-        "shoreline": 20,
-        "lighthouse": 18,
-        "rezervbase": 20,
-        "interchange": 20,
-        "laboratory": 18,
-        "tarkovstreets": 20,
-        "sandbox": 11,
-        "sandbox_high": 12,
+        "Factory4Day": 12,
+        "Factory4Night": 12,
+        "Bigmap": 18,
+        "Woods": 19,
+        "Shoreline": 20,
+        "Lighthouse": 18,
+        "RezervBase": 20,
+        "Interchange": 20,
+        "Laboratory": 18,
+        "TarkovStreets": 20,
+        "Sandbox": 11,
+        "SandboxHigh": 12,
         "default": 18
     },
     "walletLoot": {

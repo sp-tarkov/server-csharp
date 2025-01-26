@@ -1300,24 +1300,25 @@
             "collectionTimeHours": 48,
             "maxToSendPlayer": 5
         },
-		"MechanicGiftDay1": {
-			"items": [
-				{
-					"_id": "678d4d81189b5f2a7538f14d",
-					"_tpl": "590c2c9c86f774245b1f03f2",
-					"slotId": "main",
-					"upd": {
-						"StackObjectsCount": 1
-					},
-					"parentId": "678d4d90fc70718b8c4067ad"
-				}
-			],
-			"sender": "Trader",
+        "MechanicGiftDay1": {
+            "items": [
+                {
+                    "_id": "678d4d81189b5f2a7538f14d",
+                    "_tpl": "590c2c9c86f774245b1f03f2",
+                    "slotId": "main",
+                    "upd": {
+                        "StackObjectsCount": 1,
+                        "SpawnedInSession": true
+                    },
+                    "parentId": "678d4d90fc70718b8c4067ad"
+                }
+            ],
+            "sender": "Trader",
             "trader": "MECHANIC",
             "localeTextId": "6776e324810eb26b880fb4a5 0",
             "collectionTimeHours": 72,
             "maxToSendPlayer": 1
-		},
+        },
         "KAPPA4U": {
             "items": [
                 {

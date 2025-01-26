@@ -8,4 +8,11 @@ public static class ListExtensions
         source.RemoveRange(index,count);
         return items;
     }
+
+    public static T PopFirst<T>(this List<T> source)
+    {
+        T r = source.First();
+        source.Remove(source.First());
+        return r;
+    }
 }

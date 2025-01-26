@@ -293,7 +293,7 @@ public class InventoryController(
                 UseSortingTable = true
             };
             _inventoryHelper.AddItemsToStash(sessionId, addItemsRequest, pmcData, output);
-            if (output.Warnings.Count > 0) return;
+            if (output.Warnings?.Count > 0) return;
         }
 
         // Find and delete opened container item from player inventory
@@ -362,7 +362,7 @@ public class InventoryController(
     public void ExamineItem(PmcData pmcData, InventoryExamineRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
-        var itemId = "";
+        string? itemId = null;
         if (request.FromOwner is not null)
         {
             try
@@ -375,17 +375,29 @@ public class InventoryController(
             }
 
             // get hideout item
-            if (request.FromOwner.Type == "HideoutProduction") itemId = request.Item;
+            if (request.FromOwner.Type == "HideoutProduction")
+            {
+                itemId = request.Item;
+            }
         }
 
         if (itemId is null)
         {
             // item template
-            if (_databaseService.GetItems().ContainsKey(request.Item)) itemId = request.Item;
+            if (_databaseService.GetItems().ContainsKey(request.Item))
+            {
+                itemId = request.Item;
+            }
+        }
 
+        if (itemId is null)
+        {
             // Player inventory
             var target = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
-            if (target is not null) itemId = target.Template;
+            if (target is not null)
+            {
+                itemId = target.Template;
+            }
         }
 
         if (itemId is not null)
@@ -440,14 +452,14 @@ public class InventoryController(
         // Remove kvp from requested fast panel index
 
         // TODO - does this work
-        pmcData.Inventory.FastPanel.Remove(request.Index.ToString());
+        pmcData.Inventory.FastPanel.Remove(request.Index);
     }
 
     public void BindItem(PmcData pmcData, InventoryBindRequestData bindRequest, string sessionId,
         ItemEventRouterResponse output)
     {
         foreach (var kvp in pmcData.Inventory.FastPanel
-                     .Where(kvp => kvp.Value == bindRequest.Index.Value.ToString()))
+                     .Where(kvp => kvp.Value == bindRequest.Index))
         {
             pmcData.Inventory.FastPanel.Remove(kvp.Key);
 
@@ -455,7 +467,7 @@ public class InventoryController(
         }
 
         // Create link between fast panel slot and requested item
-        pmcData.Inventory.FastPanel[bindRequest.Index.ToString()] = bindRequest.Item;
+        pmcData.Inventory.FastPanel[bindRequest.Index] = bindRequest.Item;
     }
 
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
@@ -764,7 +776,7 @@ public class InventoryController(
             return;
         }
 
-        var profileToRemoveItemFrom = request?.FromOwner.Id == pmcData.Id
+        var profileToRemoveItemFrom = request.FromOwner is null || request.FromOwner?.Id == pmcData.Id
             ? pmcData
             : _profileHelper.GetFullProfile(sessionId).CharacterData.ScavData;
 

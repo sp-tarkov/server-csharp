@@ -207,5 +207,139 @@
             "5696686a4bdc2da3298b456a": { "min": 20, "max": 50 },
             "5d235b4d86f7742e017bc88a": { "min": 20, "max": 40 }
         }
-    }
+    },
+    "hideoutCraftsToAdd": [
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "665829424de4820934746ce6",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "66582889efd94e2d665b14a2",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        },
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "6658291eefd94e2d665b14a4",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "6658285190486915542256c4",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        },
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "665829a6efd94e2d665b14a8",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "665828f490486915542256c6",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        },
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "665886abdaadd1069736c539",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "66588bb047fbd536a674240e",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        },
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "6658876e146af22739040fad",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "66588b514de4820934746dc6",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        },
+        {
+            "craftIdToCopy": "66582be04de4820934746cea",
+            "craftOutputTpl": "6658892e6e007c6f33662002",
+            "requirements": [
+                {
+                    "templateId": "5c07df7f0db834001b73588a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "544fb5454bdc2df8738b456a",
+                    "type": "Tool"
+                },
+                {
+                    "templateId": "66588ba291f6e93c4c06efef",
+                    "count": 1,
+                    "isFunctional": false,
+                    "isEncoded": false,
+                    "isSpawnedInSession": false,
+                    "type": "Item"
+                }
+            ]
+        }
+    ]
 }

@@ -78,7 +78,7 @@ public class BotGenerator(
             Id = bot.Id,
             Aid = bot.Aid,
             SessionId = bot.SessionId,
-            Savage = bot.Savage,
+            Savage = null,
             KarmaValue = bot.KarmaValue,
             Info = bot.Info,
             Customization = bot.Customization,
@@ -199,7 +199,11 @@ public class BotGenerator(
             botRoleLowercase,
             _botConfig.BotRolesThatMustHaveUniqueName
         );
-        bot.Info.LowerNickname = bot.Info.Nickname.ToLower();
+
+        // Only Pmcs should have a lower nickname
+        bot.Info.LowerNickname = botGenerationDetails.IsPmc.GetValueOrDefault(false)
+            ? bot.Info.Nickname.ToLower()
+            : string.Empty;
 
         // Only run when generating a 'fake' playerscav, not actual player scav
         if (!botGenerationDetails.IsPlayerScav.GetValueOrDefault(false) && ShouldSimulatePlayerScav(botRoleLowercase))
@@ -230,7 +234,7 @@ public class BotGenerator(
 
         bot.Info.Experience = botLevel.Exp;
         bot.Info.Level = botLevel.Level;
-        bot.Info.Settings.Experience = GetExperienceRewardForKillByDifficulty(
+        bot.Info.Settings.Experience = (int)GetExperienceRewardForKillByDifficulty(
             botJsonTemplate.BotExperience.Reward,
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
@@ -249,6 +253,7 @@ public class BotGenerator(
         bot.Info.Voice = _weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
         bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav.GetValueOrDefault(false));
         bot.Skills = GenerateSkills(botJsonTemplate.BotSkills); // TODO: fix bad type, bot jsons store skills in dict, output needs to be array
+        bot.Info.PrestigeLevel = 0;
 
         if (botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
@@ -281,7 +286,7 @@ public class BotGenerator(
         }
 
         // Generate new bot ID
-        AddIdsToBot(bot);
+        AddIdsToBot(bot, botGenerationDetails);
 
         // Generate new inventory ID
         GenerateInventoryId(bot);
@@ -579,7 +584,7 @@ public class BotGenerator(
                     }
                 }
             },
-            UpdateTime = _timeUtil.GetTimeStamp(),
+            UpdateTime = 0, // 0 for pscav too
             Immortal = false
         };
 
@@ -683,13 +688,14 @@ public class BotGenerator(
     /// Generate an id+aid for a bot and apply
     /// </summary>
     /// <param name="bot">bot to update</param>
+    /// <param name="botGenerationDetails"></param>
     /// <returns></returns>
-    public void AddIdsToBot(BotBase bot)
+    public void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
     {
         var botId = _hashUtil.Generate();
 
         bot.Id = botId;
-        bot.Aid = _hashUtil.GenerateAccountId();
+        bot.Aid = botGenerationDetails.IsPmc.GetValueOrDefault(false) ? _hashUtil.GenerateAccountId() : 0;
     }
 
     /// <summary>
@@ -742,7 +748,7 @@ public class BotGenerator(
         if (botInfo.Nickname?.ToLower() == "nikita")
         {
             botInfo.GameVersion = GameEditions.UNHEARD;
-            botInfo.MemberCategory = MemberCategory.DEVELOPER;
+            botInfo.MemberCategory = MemberCategory.Developer;
 
             return botInfo.GameVersion;
         }
@@ -754,10 +760,10 @@ public class BotGenerator(
         switch (botInfo.GameVersion)
         {
             case GameEditions.EDGE_OF_DARKNESS:
-                botInfo.MemberCategory = MemberCategory.UNIQUE_ID;
+                botInfo.MemberCategory = MemberCategory.UniqueId;
                 break;
             case GameEditions.UNHEARD:
-                botInfo.MemberCategory = MemberCategory.UNHEARD;
+                botInfo.MemberCategory = MemberCategory.Unheard;
                 break;
             default:
                 // Everyone else gets a weighted randomised category

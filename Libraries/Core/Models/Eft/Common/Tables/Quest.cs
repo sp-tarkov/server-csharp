@@ -257,7 +257,7 @@ public record QuestCondition
     public QuestConditionCounter? Counter { get; set; }
 
     [JsonPropertyName("plantTime")]
-    public int? PlantTime { get; set; }
+    public double? PlantTime { get; set; }
 
     [JsonPropertyName("zoneId")]
     public string? ZoneId { get; set; }
@@ -266,7 +266,7 @@ public record QuestCondition
     public bool? CountInRaid { get; set; }
 
     [JsonPropertyName("completeInSeconds")]
-    public int? CompleteInSeconds { get; set; }
+    public double? CompleteInSeconds { get; set; }
 
     [JsonPropertyName("isEncoded")]
     public bool? IsEncoded { get; set; }

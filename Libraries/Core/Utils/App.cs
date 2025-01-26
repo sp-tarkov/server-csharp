@@ -82,6 +82,10 @@ public class App
         _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
         
         _logger.Success(GetRandomisedStartMessage());
+        _logger.Success(".oooO  Oooo.");
+        _logger.Success("( ( )  ( ) )"); // TODO: Remove later
+        _logger.Success(" \\ (    ) /");
+        _logger.Success("  \\_)  (_/");
     }
 
     protected string GetRandomisedStartMessage()
@@ -124,7 +128,7 @@ public class App
                 else
                 {
                     /* temporary for debug */
-                    var warnTime = 20 * 60;
+                    const int warnTime = 20 * 60;
 
                     if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
                 }

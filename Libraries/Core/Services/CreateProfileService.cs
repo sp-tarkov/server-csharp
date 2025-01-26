@@ -32,13 +32,16 @@ public class CreateProfileService(
     SaveServer _saveServer,
     EventOutputHolder _eventOutputHolder,
     PlayerScavGenerator _playerScavGenerator,
-    ICloner _cloner
+    ICloner _cloner,
+    MailSendService _mailSendService
 )
 {
     public string CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
         var account = _saveServer.GetProfile(sessionId).ProfileInfo;
-        var profileTemplate = _cloner.Clone(_databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower()));
+        var profileTemplate = _cloner.Clone(
+            _databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower())
+        );
         var pmcData = profileTemplate.Character;
 
         // Delete existing profile
@@ -74,12 +77,7 @@ public class CreateProfileService(
         AddMissingInternalContainersToProfile(pmcData);
 
         // Change item IDs to be unique
-        pmcData.Inventory.Items = _itemHelper.ReplaceIDs(
-            pmcData.Inventory.Items,
-            pmcData,
-            null,
-            pmcData.Inventory.FastPanel
-        );
+        _itemHelper.ReplaceProfileInventoryIds(pmcData.Inventory);
 
         // Create profile
         var profileDetails = new SptProfile
@@ -444,18 +442,17 @@ public class CreateProfileService(
                 QuestStatusEnum.Started,
                 sessionID,
                 response
-            );
+            ).ToList();
 
-            /* TODO:
-        _mailSendService.sendLocalisedNpcMessageToPlayer(
-            sessionID,
-            this.traderHelper.getTraderById(questFromDb.traderId),
-            MessageType.QUEST_START,
-            messageId,
-            itemRewards,
-            this.timeUtil.getHoursAsSeconds(100),
-        );
-        */
+
+            _mailSendService.SendLocalisedNpcMessageToPlayer(
+                sessionID,
+                questFromDb.TraderId,
+                MessageType.QUEST_START,
+                messageId,
+                itemRewards,
+                _timeUtil.GetHoursAsSeconds(100)
+            );
         }
     }
 }

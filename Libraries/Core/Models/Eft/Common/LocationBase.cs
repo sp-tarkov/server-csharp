@@ -38,7 +38,7 @@ public record LocationBase
     public List<Banner>? Banners { get; set; }
 
     [JsonPropertyName("BossLocationSpawn")]
-    public List<BossLocationSpawn>? BossLocationSpawn { get; set; }
+    public List<BossLocationSpawn> BossLocationSpawn { get; set; }
 
     [JsonPropertyName("secretExits")]
     public List<Exit>? SecretExits { get; set; }
@@ -274,7 +274,7 @@ public record LocationBase
     public LocationEvents? Events { get; set; }
 
     [JsonPropertyName("exit_access_time")]
-    public int? ExitAccessTime { get; set; }
+    public double? ExitAccessTime { get; set; }
 
     [JsonPropertyName("ForceOnlineRaidInPVE")]
     public bool? ForceOnlineRaidInPVE { get; set; }
@@ -286,7 +286,7 @@ public record LocationBase
     public int? ExitCount { get; set; }
 
     [JsonPropertyName("exit_time")]
-    public int? ExitTime { get; set; }
+    public double? ExitTime { get; set; }
 
     [JsonPropertyName("exits")]
     public List<Exit>? Exits { get; set; }
@@ -328,7 +328,7 @@ public record LocationBase
     public int? UsersSummonSeconds { get; set; }
 
     [JsonPropertyName("waves")]
-    public List<Wave>? Waves { get; set; }
+    public List<Wave> Waves { get; set; }
 }
 
 public record Transit
@@ -361,7 +361,7 @@ public record Transit
     public string? Target { get; set; }
 
     [JsonPropertyName("time")]
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 }
 
 public record NonWaveGroupScenario
@@ -619,7 +619,7 @@ public record ChancedEnemy
 public record MinMaxBot : MinMax
 {
     [JsonPropertyName("WildSpawnType")]
-    public object? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
+    public string? WildSpawnType { get; set; } // TODO: Could be WildSpawnType or string
 }
 
 public record MinPlayerWaitTime
@@ -628,7 +628,7 @@ public record MinPlayerWaitTime
     public int? MinPlayers { get; set; }
 
     [JsonPropertyName("time")]
-    public int? Time { get; set; }
+    public long? Time { get; set; }
 }
 
 public record Preview

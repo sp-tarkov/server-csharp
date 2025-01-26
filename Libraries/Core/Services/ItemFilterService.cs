@@ -10,14 +10,13 @@ namespace Core.Services;
 public class ItemFilterService(
     ISptLogger<ItemFilterService> _logger,
     ICloner _cloner,
-    DatabaseServer _databaseServer,
     ConfigServer _configServer
 )
 {
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
 
-    protected HashSet<string>? _lootableItemBlacklistCache = new HashSet<string>();
-    protected HashSet<string>? _itemBlacklistCache = new HashSet<string>();
+    protected HashSet<string>? _lootableItemBlacklistCache = [];
+    protected HashSet<string>? _itemBlacklistCache = [];
 
     /**
      * Check if the provided template id is blacklisted in config/item.json/blacklist
@@ -26,7 +25,14 @@ public class ItemFilterService(
      */
     public bool ItemBlacklisted(string tpl)
     {
-        throw new NotImplementedException();
+        if (_itemBlacklistCache.Count == 0)
+        {
+            foreach (var item in _itemConfig.Blacklist) {
+                _itemBlacklistCache.Add(item);
+            }
+        }
+
+        return _itemBlacklistCache.Contains(tpl);
     }
 
     /**
@@ -36,7 +42,14 @@ public class ItemFilterService(
      */
     public bool LootableItemBlacklisted(string tpl)
     {
-        throw new NotImplementedException();
+        if (_lootableItemBlacklistCache.Count == 0)
+        {
+            foreach (var item in _itemConfig.LootableItemBlacklist) {
+                _itemBlacklistCache.Add(item);
+            }
+        }
+
+        return _lootableItemBlacklistCache.Contains(tpl);
     }
 
     /**
@@ -46,7 +59,7 @@ public class ItemFilterService(
      */
     public bool ItemRewardBlacklisted(string tpl)
     {
-        throw new NotImplementedException();
+        return _itemConfig.RewardItemBlacklist.Contains(tpl);
     }
 
     /**
@@ -55,7 +68,7 @@ public class ItemFilterService(
      */
     public List<string> GetItemRewardBlacklist()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_itemConfig.RewardItemBlacklist).ToList();
     }
 
     /**
@@ -64,7 +77,7 @@ public class ItemFilterService(
      */
     public List<string> GetItemRewardBaseTypeBlacklist()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist).ToList();
     }
 
     /**
@@ -73,7 +86,7 @@ public class ItemFilterService(
      */
     public List<string> GetBlacklistedItems()
     {
-        return _cloner.Clone(_itemConfig.Blacklist);
+        return _cloner.Clone(_itemConfig.Blacklist).ToList();
     }
 
     /**
@@ -82,7 +95,7 @@ public class ItemFilterService(
      */
     public List<string> GetBlacklistedLootableItems()
     {
-        throw new NotImplementedException();
+        return _cloner.Clone(_itemConfig.LootableItemBlacklist).ToList();
     }
 
     /**
@@ -92,7 +105,7 @@ public class ItemFilterService(
      */
     public bool BossItem(string tpl)
     {
-        throw new NotImplementedException();
+        return _itemConfig.BossItems.Contains(tpl);
     }
 
     /**
@@ -101,7 +114,8 @@ public class ItemFilterService(
      */
     public List<string> GetBossItems()
     {
-        throw new NotImplementedException();
+        
+        return _cloner.Clone(_itemConfig.BossItems).ToList();
     }
 
     /**

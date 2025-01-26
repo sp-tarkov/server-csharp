@@ -27,6 +27,11 @@ public class BotLevelGenerator(
     /// <returns>IRandomisedBotLevelResult object</returns>
     public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
+        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
+        {
+            return new RandomisedBotLevelResult() { Exp = 0, Level = 1 };
+        }
+
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativeBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
@@ -73,6 +78,9 @@ public class BotLevelGenerator(
                 maxAvailableLevel // Fallback if value above is crazy (default is 79)
             )
             : Math.Min(levelDetails.Min.Value, maxAvailableLevel); // Not pmc with override or non-pmc
+
+        // Force min level to be 1
+        minPossibleLevel = Math.Max(1, minPossibleLevel);
 
         var maxPossibleLevel = isPmc && pmcOverride is not null
             ? Math.Min(pmcOverride.Max.Value, maxAvailableLevel) // Was a PMC and they have a level override

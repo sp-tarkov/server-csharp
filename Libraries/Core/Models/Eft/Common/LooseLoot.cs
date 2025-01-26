@@ -9,7 +9,7 @@ public record LooseLoot
     public SpawnpointCount? SpawnpointCount { get; set; }
 
     [JsonPropertyName("spawnpointsForced")]
-    public List<SpawnpointsForced>? SpawnpointsForced { get; set; }
+    public List<Spawnpoint>? SpawnpointsForced { get; set; }
 
     [JsonPropertyName("spawnpoints")]
     public List<Spawnpoint>? Spawnpoints { get; set; }
@@ -22,18 +22,6 @@ public record SpawnpointCount
 
     [JsonPropertyName("std")]
     public double? Std { get; set; }
-}
-
-public record SpawnpointsForced
-{
-    [JsonPropertyName("locationId")]
-    public string? LocationId { get; set; }
-
-    [JsonPropertyName("probability")]
-    public double? Probability { get; set; }
-
-    [JsonPropertyName("template")]
-    public SpawnpointTemplate? Template { get; set; }
 }
 
 public record SpawnpointTemplate

@@ -6,12 +6,12 @@ using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Helpers;
+using Core.Models.Common;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
-
 namespace Core.Generators;
 
 [Injectable]
@@ -222,7 +222,156 @@ public class BotEquipmentModGenerator(
     public FilterPlateModsForSlotByLevelResult FilterPlateModsForSlotByLevel(GenerateEquipmentProperties settings, string modSlot,
         HashSet<string> existingPlateTplPool, TemplateItem armorItem)
     {
-        throw new NotImplementedException();
+        var result = new FilterPlateModsForSlotByLevelResult
+        {
+            Result = Result.UNKNOWN_FAILURE,
+            PlateModTemplates = null,
+        };
+
+        // Not pmc or not a plate slot, return original mod pool array
+        if (!_itemHelper.IsRemovablePlateSlot(modSlot))
+        {
+            result.Result = Result.NOT_PLATE_HOLDING_SLOT;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Get the front/back/side weights based on bots level
+        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting.FirstOrDefault(
+            (armorWeight) =>
+                settings.BotData.Level >= armorWeight.LevelRange.Min &&
+                settings.BotData.Level <= armorWeight.LevelRange.Max
+        );
+
+        if (plateSlotWeights is null)
+        {
+            // No weights, return original array of plate tpls
+            result.Result = Result.LACKS_PLATE_WEIGHTS;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Get the specific plate slot weights (front/back/side)
+        if (!plateSlotWeights.Values.TryGetValue(modSlot, out var plateWeights))
+        {
+            // No weights, return original array of plate tpls
+            result.Result = Result.LACKS_PLATE_WEIGHTS;
+            result.PlateModTemplates = existingPlateTplPool;
+
+            return result;
+        }
+
+        // Choose a plate level based on weighting
+        var chosenArmorPlateLevelString = _weightedRandomHelper.GetWeightedValue(plateWeights);
+
+        // Convert the array of ids into database items
+        var platesFromDb = existingPlateTplPool.Select((plateTpl) => _itemHelper.GetItem(plateTpl).Value);
+
+        // Filter plates to the chosen level based on its armorClass property
+        var platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass.Value == double.Parse(chosenArmorPlateLevelString));
+        if (platesOfDesiredLevel.Any())
+        {
+            // Plates found
+            result.Result = Result.SUCCESS;
+            result.PlateModTemplates = platesOfDesiredLevel.Select((item) => item.Id).ToHashSet();
+
+            return result;
+        }
+
+        // no plates found that fit requirements, lets get creative
+
+        // Get lowest and highest plate classes available for this armor
+        var minMaxArmorPlateClass  = GetMinMaxArmorPlateClass(platesFromDb.ToList());
+
+        // Increment plate class level in attempt to get useable plate
+        var findCompatiblePlateAttempts = 0;
+        var maxAttempts  = 3;
+        for (var i = 0; i < maxAttempts; i++)
+        {
+            var chosenArmorPlateLevelDouble = int.Parse(chosenArmorPlateLevelString) + 1;
+            chosenArmorPlateLevelString = chosenArmorPlateLevelDouble.ToString();
+
+            // New chosen plate class is higher than max, then set to min and check if valid
+            if (chosenArmorPlateLevelDouble > minMaxArmorPlateClass.Max)
+            {
+                chosenArmorPlateLevelString = minMaxArmorPlateClass.Min.ToString();
+            }
+
+            findCompatiblePlateAttempts++;
+
+            platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass == chosenArmorPlateLevelDouble);
+            // Valid plates found, exit
+            if (platesOfDesiredLevel.Any())
+            {
+                break;
+            }
+
+            // No valid plate class found in 3 tries, attempt default plates
+            if (findCompatiblePlateAttempts >= maxAttempts)
+            {
+                _logger.Debug(
+                    $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
+                );
+
+                var defaultPlate = GetDefaultPlateTpl(armorItem, modSlot);
+                if (defaultPlate is not null)
+                {
+                    // Return Default Plates cause couldn't get lowest level available from original selection
+                    result.Result = Result.SUCCESS;
+                    result.PlateModTemplates = [defaultPlate];
+
+                    return result;
+                }
+
+                // No plate found after filtering AND no default plate
+
+                // Last attempt, get default preset and see if it has a plate default
+                var defaultPresetPlateSlot  = GetDefaultPresetArmorSlot(armorItem.Id, modSlot);
+                if (defaultPresetPlateSlot is not null)
+                {
+                    // Found a plate, exit
+                    var plateItem  = _itemHelper.GetItem(defaultPresetPlateSlot.Template);
+                    platesOfDesiredLevel = [plateItem.Value];
+
+                    break;
+                }
+
+                // Everything failed, no default plate or no default preset armor plate
+                result.Result = Result.NO_DEFAULT_FILTER;
+
+                return result;
+            }
+        }
+        
+        // Only return the items ids
+        result.Result = Result.SUCCESS;
+        result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id).ToHashSet();
+
+        return result;
+    }
+
+    private MinMax GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
+    {
+        platePool.Sort((x, y) => {
+            if (x.Properties.ArmorClass < y.Properties.ArmorClass)
+            {
+                return -1;
+            }
+
+            if (x.Properties.ArmorClass > y.Properties.ArmorClass)
+            {
+                return 1;
+            }
+
+            return 0;
+        });
+
+        return new MinMax {
+            Min = (platePool[0].Properties.ArmorClass),
+            Max = (platePool[platePool.Count - 1].Properties.ArmorClass),
+        };
     }
 
     /**
@@ -231,7 +380,7 @@ public class BotEquipmentModGenerator(
      * @param modSlot front/back
      * @returns Tpl of plate
      */
-    protected string GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
+    protected string? GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
     {
         var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => slot.Name.ToLower() == modSlot);
 
@@ -291,7 +440,7 @@ public class BotEquipmentModGenerator(
         _botConfig.Equipment.TryGetValue(request.BotData.EquipmentRole, out var botEquipConfig);
         var botEquipBlacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
             request.BotData.EquipmentRole,
-            pmcProfile.Info.Level ?? 0
+            pmcProfile?.Info?.Level ?? 0
         );
         var botWeaponSightWhitelist = _botEquipmentFilterService.GetBotWeaponSightWhitelist(
             request.BotData.EquipmentRole
@@ -360,7 +509,7 @@ public class BotEquipmentModGenerator(
             }
 
             if (!IsModValidForSlot(modToAdd, modsParentSlot, modSlot, request.ParentTemplate, request.BotData.Role)
-            )
+               )
             {
                 continue;
             }
@@ -511,7 +660,6 @@ public class BotEquipmentModGenerator(
                         request.ModPool[modToAddTemplate.Value.Id] = modFromService;
                         containsModInPool = true;
                     }
-
                 }
 
                 if (containsModInPool)
@@ -936,10 +1084,13 @@ public class BotEquipmentModGenerator(
         var weaponTpl = modSpawnRequest.Weapon[0].Template;
         modSpawnRequest.RandomisationSettings.MinimumMagazineSize.TryGetValue(weaponTpl, out var minMagSizeFromSettings);
         var minMagazineSize = minMagSizeFromSettings;
-        var desiredMagazineTpls = modPool.Where((magTpl) => {
-            var magazineDb = _itemHelper.GetItem(magTpl).Value;
-            return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagazineSize;
-        });
+        var desiredMagazineTpls = modPool.Where(
+            (magTpl) =>
+            {
+                var magazineDb = _itemHelper.GetItem(magTpl).Value;
+                return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagazineSize;
+            }
+        );
 
         if (!desiredMagazineTpls.Any())
         {
@@ -1370,7 +1521,8 @@ public class BotEquipmentModGenerator(
     /// <param name="modTemplate">db object for modItem we get compatible mods from</param>
     /// <param name="modPool">Pool of mods we are adding to</param>
     /// <param name="botEquipBlacklist">A blacklist of items that cannot be picked</param>
-    public void AddCompatibleModsForProvidedMod(string desiredSlotName, TemplateItem modTemplate, Dictionary<string, Dictionary<string, HashSet<string>>> modPool,
+    public void AddCompatibleModsForProvidedMod(string desiredSlotName, TemplateItem modTemplate,
+        Dictionary<string, Dictionary<string, HashSet<string>>> modPool,
         EquipmentFilterDetails botEquipBlacklist)
     {
         var desiredSlotObject = modTemplate.Properties.Slots?.FirstOrDefault((slot) => slot.Name.Contains(desiredSlotName));
@@ -1573,7 +1725,9 @@ public class BotEquipmentModGenerator(
         var whitelistedSightTypes = botWeaponSightWhitelist[weaponDetails.Value.Parent];
         if (whitelistedSightTypes is null)
         {
-            _logger.Debug($"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering");
+            _logger.Debug(
+                $"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering"
+            );
 
             return scopes;
         }

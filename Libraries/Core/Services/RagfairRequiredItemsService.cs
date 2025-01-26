@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Ragfair;
@@ -10,7 +11,7 @@ public class RagfairRequiredItemsService(
     PaymentHelper _paymentHelper)
 {
 
-    protected Dictionary<string, List<RagfairOffer>> _requiredItemsCache;
+    protected ConcurrentDictionary<string, List<RagfairOffer>> _requiredItemsCache;
 
     public List<RagfairOffer>? GetRequiredItemsById(string searchId)
     {
@@ -20,7 +21,7 @@ public class RagfairRequiredItemsService(
 
     public void BuildRequiredItemTable()
     {
-        _requiredItemsCache = new Dictionary<string, List<RagfairOffer>>();
+        _requiredItemsCache = new ConcurrentDictionary<string, List<RagfairOffer>>();
         foreach (var offer in _ragfairOfferService.GetOffers()) {
             foreach (var requirement in offer.Requirements) {
                 if (_paymentHelper.IsMoneyTpl(requirement.Template))
@@ -33,7 +34,7 @@ public class RagfairRequiredItemsService(
                 _requiredItemsCache.TryAdd(requirement.Template, []);
 
                 // Add matching offer
-                _requiredItemsCache[requirement.Template].Add(offer);
+                _requiredItemsCache.GetValueOrDefault(requirement.Template)?.Add(offer);
             }
         }
     }
