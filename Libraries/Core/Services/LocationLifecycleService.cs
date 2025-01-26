@@ -485,6 +485,11 @@ public class LocationLifecycleService
      */
     protected void HandleCarExtract(string extractName, PmcData pmcData, string sessionId)
     {
+        pmcData.CarExtractCounts?.TryAdd(extractName, 0);
+        
+        // Increment extract count value
+        pmcData.CarExtractCounts[extractName] += 1;
+        
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
             _inRaidConfig.CarExtractBaseStandingGain,
@@ -513,10 +518,14 @@ public class LocationLifecycleService
      */
     protected void HandleCoopExtract(string sessionId, PmcData pmcData, string extractName)
     {
+        pmcData.CoopExtractCounts?.TryAdd(extractName, 0);
+        
+        pmcData.CoopExtractCounts[extractName] += 1;
+        
         var newFenceStanding = GetFenceStandingAfterExtract(
             pmcData,
-            _inRaidConfig.CarExtractBaseStandingGain,
-            pmcData.CarExtractCounts[extractName]);
+            _inRaidConfig.CoopExtractBaseStandingGain,
+            pmcData.CoopExtractCounts[extractName]);
         
         var fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
@@ -524,8 +533,6 @@ public class LocationLifecycleService
         // Check if new standing has leveled up trader
         _traderHelper.LevelUp(fenceId, pmcData);
         pmcData.TradersInfo[fenceId].LoyaltyLevel = Math.Max((int)pmcData.TradersInfo[fenceId].LoyaltyLevel, 1);
-
-        _logger.Debug($"Car extract: {extractName} used, total times taken: {pmcData.CarExtractCounts[extractName]}");
 
         // Copy updated fence rep values into scav profile to ensure consistency
         var scavData = _profileHelper.GetScavProfile(sessionId);
