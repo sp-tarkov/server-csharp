@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
@@ -22,6 +23,7 @@ public class RagfairOfferHelper(
     ISptLogger<RagfairOfferHelper> _logger,
     TimeUtil _timeUtil,
     HashUtil _hashUtil,
+    BotHelper _botHelper,
     RagfairSortHelper _ragfairSortHelper,
     PresetHelper _presetHelper,
     RagfairHelper _ragfairHelper,
@@ -32,6 +34,8 @@ public class RagfairOfferHelper(
     ItemHelper _itemHelper,
     DatabaseService _databaseService,
     RagfairOfferService _ragfairOfferService,
+    LocaleService _localeService,
+    LocalisationService _localisationService,
     MailSendService _mailSendService,
     RagfairRequiredItemsService _ragfairRequiredItemsService,
     ProfileHelper _profileHelper,
@@ -39,6 +43,8 @@ public class RagfairOfferHelper(
     ConfigServer _configServer)
 {
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected static string _goodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
 
     /// <summary>
     ///     Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see
@@ -774,7 +780,31 @@ public class RagfairOfferHelper(
      */
     protected string GetLocalisedOfferSoldMessage(string itemTpl, int boughtAmount)
     {
+        // Generate a message to inform that item was sold
+        var globalLocales = _localeService.GetLocaleDb();
+        if (!globalLocales.TryGetValue(_goodSoldTemplate, out var soldMessageLocaleGuid))
+        {
+            _logger.Error(
+                _localisationService.GetText("ragfair-unable_to_find_locale_by_key", _goodSoldTemplate));
+        }
+
+        // Used to replace tokens in sold message sent to player
+        var messageKey = $"{itemTpl}Name";
+        var hasKey = globalLocales.TryGetValue(messageKey, out var value);
+        
+        var tplVars = new SystemData {
+            SoldItem = hasKey ? value : itemTpl,
+            BuyerNickname = _botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit),
+            ItemCount = boughtAmount,
+        };
+
         throw new NotImplementedException();
+
+        //const offerSoldMessageText = soldMessageLocaleGuid.replace(/{\w +}/ g, (matched) => {
+        //    return tplVars[matched.replace(/{|}/ g, "")];
+        //});
+
+        //return offerSoldMessageText.replace(/ "/g, "");
     }
 
     /**
