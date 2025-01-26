@@ -147,7 +147,7 @@ public record StageImprovementRequirement
     public string? Type { get; set; }
 }
 
-public record StageRequirement : RequirementBase
+public record StageRequirement
 {
     [JsonPropertyName("areaType")]
     public int? AreaType { get; set; }
@@ -181,4 +181,7 @@ public record StageRequirement : RequirementBase
 
     [JsonPropertyName("skillLevel")]
     public int? SkillLevel { get; set; }
+    
+    [JsonPropertyName("type")]
+    public string? Type { get; set; }
 }
