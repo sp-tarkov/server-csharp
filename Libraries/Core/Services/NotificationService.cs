@@ -8,19 +8,22 @@ public class NotificationService
 {
     protected Dictionary<string, List<WsNotificationEvent>> _messageQueue = new();
 
-    public Dictionary<string, List<object>> GetMessageQueue()
+    public Dictionary<string, List<WsNotificationEvent>> GetMessageQueue()
     {
-        throw new NotImplementedException();
+        return _messageQueue;
     }
 
-    public List<object> GetMessageFromQueue(string sessionId)
+    public List<WsNotificationEvent>? GetMessageFromQueue(string sessionId)
     {
-        throw new NotImplementedException();
+        return _messageQueue.GetValueOrDefault(sessionId);
     }
 
     public void UpdateMessageOnQueue(string sessionId, List<WsNotificationEvent> value)
     {
-        throw new NotImplementedException();
+        if (_messageQueue.ContainsKey(sessionId))
+        {
+            _messageQueue[sessionId] = value;
+        }
     }
 
     public bool Has(string sessionID)
@@ -33,7 +36,9 @@ public class NotificationService
     /// </summary>
     public WsNotificationEvent Pop(string sessionID)
     {
-        throw new NotImplementedException();
+        var result = Get(sessionID).First();
+        Get(sessionID).Remove(result);
+        return result;
     }
 
     /// <summary>
