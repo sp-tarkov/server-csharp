@@ -199,7 +199,11 @@ public class BotGenerator(
             botRoleLowercase,
             _botConfig.BotRolesThatMustHaveUniqueName
         );
-        bot.Info.LowerNickname = bot.Info.Nickname.ToLower();
+
+        // Only Pmcs should have a lower nickname
+        bot.Info.LowerNickname = botGenerationDetails.IsPmc.GetValueOrDefault(false)
+            ? bot.Info.Nickname.ToLower()
+            : string.Empty;
 
         // Only run when generating a 'fake' playerscav, not actual player scav
         if (!botGenerationDetails.IsPlayerScav.GetValueOrDefault(false) && ShouldSimulatePlayerScav(botRoleLowercase))
