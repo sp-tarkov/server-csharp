@@ -6,7 +6,7 @@ namespace Core.Models.Eft.Health;
 
 using System.Text.Json.Serialization;
 
-public class WorkoutData : Dictionary<string, object> , IRequestData
+public class WorkoutData : IRequestData
 {
     [JsonPropertyName("skills")]
     public WorkoutSkills? Skills { get; set; }
