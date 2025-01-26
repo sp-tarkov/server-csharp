@@ -182,6 +182,9 @@ public record UpdFaceShield
 {
     [JsonPropertyName("Hits")]
     public int? Hits { get; set; }
+    
+    [JsonPropertyName("HitSeed")]
+    public int? HitSeed { get; set; }
 }
 
 public record UpdRepairable

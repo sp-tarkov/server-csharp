@@ -28,8 +28,8 @@ public class CommandoDialogChatBot(
             Info = new UserDialogDetails
             {
                 Level = 1,
-                MemberCategory = MemberCategory.DEVELOPER,
-                SelectedMemberCategory = MemberCategory.DEVELOPER,
+                MemberCategory = MemberCategory.Developer,
+                SelectedMemberCategory = MemberCategory.Developer,
                 Nickname = "Commando",
                 Side = "Usec"
             }

@@ -748,7 +748,7 @@ public class BotGenerator(
         if (botInfo.Nickname?.ToLower() == "nikita")
         {
             botInfo.GameVersion = GameEditions.UNHEARD;
-            botInfo.MemberCategory = MemberCategory.DEVELOPER;
+            botInfo.MemberCategory = MemberCategory.Developer;
 
             return botInfo.GameVersion;
         }
@@ -760,10 +760,10 @@ public class BotGenerator(
         switch (botInfo.GameVersion)
         {
             case GameEditions.EDGE_OF_DARKNESS:
-                botInfo.MemberCategory = MemberCategory.UNIQUE_ID;
+                botInfo.MemberCategory = MemberCategory.UniqueId;
                 break;
             case GameEditions.UNHEARD:
-                botInfo.MemberCategory = MemberCategory.UNHEARD;
+                botInfo.MemberCategory = MemberCategory.Unheard;
                 break;
             default:
                 // Everyone else gets a weighted randomised category

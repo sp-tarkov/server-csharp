@@ -998,6 +998,6 @@ public class RagfairOfferHelper(
     /// <returns>True = from trader</returns>
     public bool OfferIsFromTrader(RagfairOffer offer)
     {
-        return offer.User.MemberType == MemberCategory.TRADER;
+        return offer.User.MemberType == MemberCategory.Trader;
     }
 }

@@ -30,7 +30,7 @@ public class RagfairCategoriesService(
             .Where(
                 offer =>
                 {
-                    var isTraderOffer = offer.User.MemberType == MemberCategory.TRADER;
+                    var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
 
                     // Not level 15 and offer is from player, skip
                     if (!fleaUnlocked || !isTraderOffer)

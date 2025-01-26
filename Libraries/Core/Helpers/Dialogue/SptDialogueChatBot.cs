@@ -29,8 +29,8 @@ public class SptDialogueChatBot(
             Info = new UserDialogDetails
             {
                 Level = 1,
-                MemberCategory = MemberCategory.DEVELOPER,
-                SelectedMemberCategory = MemberCategory.DEVELOPER,
+                MemberCategory = MemberCategory.Developer,
+                SelectedMemberCategory = MemberCategory.Developer,
                 Nickname = _coreConfig.SptFriendNickname,
                 Side = "Usec"
             }

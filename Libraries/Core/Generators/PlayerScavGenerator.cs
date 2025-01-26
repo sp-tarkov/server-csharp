@@ -81,7 +81,7 @@ public class PlayerScavGenerator(
         scavData.Info.Bans = [];
         scavData.Info.RegistrationDate = pmcDataClone.Info.RegistrationDate;
         scavData.Info.GameVersion = pmcDataClone.Info.GameVersion;
-        scavData.Info.MemberCategory = MemberCategory.UNIQUE_ID;
+        scavData.Info.MemberCategory = MemberCategory.UniqueId;
         scavData.Info.LockedMoveCommands = true;
         scavData.RagfairInfo = pmcDataClone.RagfairInfo;
         scavData.UnlockedInfo = pmcDataClone.UnlockedInfo;
