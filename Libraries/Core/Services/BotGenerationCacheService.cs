@@ -48,9 +48,9 @@ public class BotGenerationCacheService(
             {
                 if (bots.Count > 0)
                 {
-                    return bots.PopFirst();
                     try
                     {
+                        return bots.PopFirst();
                     }
                     catch (Exception _)
                     {
