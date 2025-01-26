@@ -34,12 +34,13 @@ public class RagfairPriceService(
     /// </summary>
     public async Task OnLoadAsync()
     {
-        throw new NotImplementedException();
+        RefreshStaticPrices();
+        RefreshDynamicPrices();
     }
 
     public string GetRoute()
     {
-        throw new NotImplementedException();
+        return "RagfairPriceService";
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public class RagfairPriceService(
     /// </summary>
     public void RefreshDynamicPrices()
     {
-        throw new NotImplementedException();
+        // TODO: remove as redundant?
     }
 
     /// <summary>
@@ -95,7 +96,13 @@ public class RagfairPriceService(
     /// <returns>Rouble price</returns>
     public double GetFleaPriceForOfferItems(List<Item> offerItems)
     {
-        throw new NotImplementedException();
+        // Preset weapons take the direct prices.json value, otherwise they're massivly inflated
+        if (_itemHelper.IsOfBaseclass(offerItems[0].Template, BaseClasses.WEAPON))
+        {
+            return GetFleaPriceForItem(offerItems[0].Template);
+        }
+
+        return offerItems.Sum(item => GetFleaPriceForItem(item.Template));
     }
 
     /// <summary>
