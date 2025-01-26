@@ -21,6 +21,7 @@ public record BotBase
     [JsonPropertyName("sessionId")]
     public string? SessionId { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("savage")]
     public string? Savage { get; set; }
 
@@ -363,6 +364,9 @@ public record EftStats
     public OverallCounters? OverallCounters { get; set; }
     public float? SessionExperienceMult { get; set; }
     public float? ExperienceBonusMult { get; set; }
+
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Aggressor? Aggressor { get; set; }
     public List<DroppedItem>? DroppedItems { get; set; }
     public List<FoundInRaidItem>? FoundInRaidItems { get; set; }
@@ -448,6 +452,8 @@ public record Aggressor
 public record DamageHistory
 {
     public string? LethalDamagePart { get; set; }
+
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public LethalDamage? LethalDamage { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]

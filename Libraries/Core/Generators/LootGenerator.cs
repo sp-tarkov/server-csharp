@@ -272,7 +272,7 @@ public class LootGenerator(
     /// <param name="options">item filters</param>
     /// <param name="result">array to add found item to</param>
     /// <returns>true if item was valid and added to pool</returns>
-    protected bool FindAndAddRandomItemToLoot(TemplateItem[] items, Dictionary<string, ItemLimit> itemTypeCounts,
+    protected bool FindAndAddRandomItemToLoot(List<TemplateItem> items, Dictionary<string, ItemLimit> itemTypeCounts,
         LootRequest options,
         List<Item> result)
     {

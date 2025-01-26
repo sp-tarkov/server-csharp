@@ -102,6 +102,7 @@ public class BotInventoryGenerator(
         var questRaidItemsId = _hashUtil.Generate();
         var questStashItemsId = _hashUtil.Generate();
         var sortingTableId = _hashUtil.Generate();
+        var hideoutCustomizationStashId = _hashUtil.Generate();
 
         return new BotBaseInventory
         {
@@ -111,7 +112,8 @@ public class BotInventoryGenerator(
                 new() { Id = stashId, Template = ItemTpl.STASH_STANDARD_STASH_10X30 },
                 new() { Id = questRaidItemsId, Template = ItemTpl.STASH_QUESTRAID },
                 new() { Id = questStashItemsId, Template = ItemTpl.STASH_QUESTOFFLINE },
-                new() { Id = sortingTableId, Template = ItemTpl.SORTINGTABLE_SORTING_TABLE }
+                new() { Id = sortingTableId, Template = ItemTpl.SORTINGTABLE_SORTING_TABLE },
+                new() { Id = hideoutCustomizationStashId, Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION }
             ],
             Equipment = equipmentId,
             Stash = stashId,
@@ -121,7 +123,7 @@ public class BotInventoryGenerator(
             HideoutAreaStashes = { },
             FastPanel = { },
             FavoriteItems = [],
-            HideoutCustomizationStashId = "",
+            HideoutCustomizationStashId = hideoutCustomizationStashId,
         };
     }
 

@@ -78,7 +78,7 @@ public class BotGenerator(
             Id = bot.Id,
             Aid = bot.Aid,
             SessionId = bot.SessionId,
-            Savage = bot.Savage,
+            Savage = null,
             KarmaValue = bot.KarmaValue,
             Info = bot.Info,
             Customization = bot.Customization,
@@ -286,7 +286,7 @@ public class BotGenerator(
         }
 
         // Generate new bot ID
-        AddIdsToBot(bot);
+        AddIdsToBot(bot, botGenerationDetails);
 
         // Generate new inventory ID
         GenerateInventoryId(bot);
@@ -584,7 +584,7 @@ public class BotGenerator(
                     }
                 }
             },
-            UpdateTime = _timeUtil.GetTimeStamp(),
+            UpdateTime = 0, // 0 for pscav too
             Immortal = false
         };
 
@@ -688,13 +688,14 @@ public class BotGenerator(
     /// Generate an id+aid for a bot and apply
     /// </summary>
     /// <param name="bot">bot to update</param>
+    /// <param name="botGenerationDetails"></param>
     /// <returns></returns>
-    public void AddIdsToBot(BotBase bot)
+    public void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
     {
         var botId = _hashUtil.Generate();
 
         bot.Id = botId;
-        bot.Aid = _hashUtil.GenerateAccountId();
+        bot.Aid = botGenerationDetails.IsPmc.GetValueOrDefault(false) ? _hashUtil.GenerateAccountId() : 0;
     }
 
     /// <summary>
