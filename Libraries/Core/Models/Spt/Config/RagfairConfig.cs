@@ -387,7 +387,7 @@ public record TieredFlea
     /// key: tpl, value: playerlevel
     /// </summary>
     [JsonPropertyName("unlocksTpl")]
-    public Dictionary<string, int> UnlocksTpl { get; set; }
+    public Dictionary<string, int?> UnlocksTpl { get; set; }
 
     /// <summary>
     /// key: item type id, value: playerlevel
@@ -396,7 +396,7 @@ public record TieredFlea
     public Dictionary<string, int> UnlocksType { get; set; }
 
     [JsonPropertyName("ammoTplUnlocks")]
-    public Dictionary<string, int> AmmoTplUnlocks { get; set; }
+    public Dictionary<string, int?> AmmoTplUnlocks { get; set; }
     
     [JsonPropertyName("ammoTiersEnabled")]
     public bool AmmoTiersEnabled { get; set; }
