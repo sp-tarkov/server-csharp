@@ -94,15 +94,6 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Find issues in the scav profile data that may cause issues
-    /// </summary>
-    /// <param name="scavProfile">profile to check and fix</param>
-    public void CheckForAndFixScavProfileIssues(PmcData scavProfile)
-    {
-        return;
-    }
-
-    /// <summary>
     /// Attempt to fix common item issues that corrupt profiles
     /// </summary>
     /// <param name="pmcProfile">Profile to check items of</param>
