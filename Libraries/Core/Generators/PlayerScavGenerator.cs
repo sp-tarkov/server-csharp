@@ -244,6 +244,7 @@ public class PlayerScavGenerator(
                 continue;
             if (karmaSettings.Modifiers.Mod.TryGetValue(modKvP.Key, out var value))
             {
+                baseBotNode.BotChances.WeaponModsChances.TryAdd(modKvP.Key, 0);
                 baseBotNode.BotChances.WeaponModsChances[modKvP.Key] += value;
             };
             
