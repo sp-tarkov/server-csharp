@@ -249,6 +249,7 @@ public class BotGenerator(
         bot.Info.Voice = _weightedRandomHelper.GetWeightedValue(botJsonTemplate.BotAppearance.Voice);
         bot.Health = GenerateHealth(botJsonTemplate.BotHealth, botGenerationDetails.IsPlayerScav.GetValueOrDefault(false));
         bot.Skills = GenerateSkills(botJsonTemplate.BotSkills); // TODO: fix bad type, bot jsons store skills in dict, output needs to be array
+        bot.Info.PrestigeLevel = 0;
 
         if (botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
