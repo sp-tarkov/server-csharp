@@ -397,7 +397,7 @@ public class BotInventoryGenerator(
         var shouldSpawn = _randomUtil.GetChance100(spawnChance ?? 0);
         if (shouldSpawn && settings.RootEquipmentPool.Any())
         {
-            var pickedItemDb = new TemplateItem();
+            TemplateItem pickedItemDb = null;
             var found = false;
 
             // Limit attempts to find a compatible item as it's expensive to check them all
@@ -467,7 +467,7 @@ public class BotInventoryGenerator(
 
             var botEquipBlacklist = _botEquipmentFilterService.GetBotEquipmentBlacklist(
                 settings.BotData.EquipmentRole,
-                (double)settings.GeneratingPlayerLevel
+                settings.GeneratingPlayerLevel.Value
             );
 
             // Edge case: Filter the armor items mod pool if bot exists in config dict + config has armor slot
@@ -481,11 +481,10 @@ public class BotInventoryGenerator(
                     botEquipBlacklist.Equipment
                 );
             }
-
+            var itemIsOnGenerateModBlacklist = settings.GenerateModsBlacklist != null && settings.GenerateModsBlacklist.Contains(pickedItemDb.Id);
             // Does item have slots for sub-mods to be inserted into
             if (pickedItemDb.Properties?.Slots?.Count > 0 
-                && settings?.GenerateModsBlacklist is not null
-                && !settings.GenerateModsBlacklist.Contains(pickedItemDb.Id))
+                && !itemIsOnGenerateModBlacklist)
             {
                 var childItemsToAdd = _botEquipmentModGenerator.GenerateModsForEquipment(
                     [item],
