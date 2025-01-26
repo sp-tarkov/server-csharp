@@ -51,11 +51,12 @@ public class PlayerScavGenerator(
         var scavKarmaLevel = GetScavKarmaLevel(pmcDataClone);
 
         // use karma level to get correct karmaSettings
-        var playerScavKarmaSettings = _playerScavConfig.KarmaLevel[scavKarmaLevel.ToString()];
-        if (playerScavKarmaSettings == null)
+        if (!_playerScavConfig.KarmaLevel.TryGetValue(scavKarmaLevel.ToString(), out var playerScavKarmaSettings))
+        {
             _logger.Error(_localisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));
+        }
 
-        _logger.Debug($"generated player scav loadout with karma level {scavKarmaLevel}");
+        _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
 
         // Edit baseBotNode values
         var baseBotNode = ConstructBotBaseTemplate(playerScavKarmaSettings.BotTypeForLoot);
