@@ -12,9 +12,6 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
-using Core.Models.Eft.Player;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Core.Generators;
 
 [Injectable]
@@ -257,8 +254,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Get the specific plate slot weights (front/back/side)
-        var plateWeights = plateSlotWeights.Values[modSlot];
-        if (plateWeights is null)
+        if (!plateSlotWeights.Values.TryGetValue(modSlot, out var plateWeights))
         {
             // No weights, return original array of plate tpls
             result.Result = Result.LACKS_PLATE_WEIGHTS;
@@ -268,14 +264,14 @@ public class BotEquipmentModGenerator(
         }
 
         // Choose a plate level based on weighting
-        var chosenArmorPlateLevel = _weightedRandomHelper.GetWeightedValue<string>(plateWeights);
+        var chosenArmorPlateLevelString = _weightedRandomHelper.GetWeightedValue(plateWeights);
 
         // Convert the array of ids into database items
         var platesFromDb = existingPlateTplPool.Select((plateTpl) => _itemHelper.GetItem(plateTpl).Value);
 
         // Filter plates to the chosen level based on its armorClass property
-        var platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass.Value == Double.Parse(chosenArmorPlateLevel));
-        if (platesOfDesiredLevel.Count() > 0)
+        var platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass.Value == double.Parse(chosenArmorPlateLevelString));
+        if (platesOfDesiredLevel.Any())
         {
             // Plates found
             result.Result = Result.SUCCESS;
@@ -294,19 +290,20 @@ public class BotEquipmentModGenerator(
         var maxAttempts  = 3;
         for (var i = 0; i < maxAttempts; i++)
         {
-            chosenArmorPlateLevel = (int.Parse(chosenArmorPlateLevel) + 1.ToString());
+            var chosenArmorPlateLevelDouble = int.Parse(chosenArmorPlateLevelString) + 1;
+            chosenArmorPlateLevelString = chosenArmorPlateLevelDouble.ToString();
 
             // New chosen plate class is higher than max, then set to min and check if valid
-            if (Double.Parse(chosenArmorPlateLevel) > minMaxArmorPlateClass.Max)
+            if (chosenArmorPlateLevelDouble > minMaxArmorPlateClass.Max)
             {
-                chosenArmorPlateLevel = minMaxArmorPlateClass.Min.ToString();
+                chosenArmorPlateLevelString = minMaxArmorPlateClass.Min.ToString();
             }
 
             findCompatiblePlateAttempts++;
 
-            platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass == Double.Parse(chosenArmorPlateLevel));
+            platesOfDesiredLevel = platesFromDb.Where((item) => item.Properties.ArmorClass == chosenArmorPlateLevelDouble);
             // Valid plates found, exit
-            if (platesOfDesiredLevel.Count() > 0)
+            if (platesOfDesiredLevel.Any())
             {
                 break;
             }
@@ -315,7 +312,7 @@ public class BotEquipmentModGenerator(
             if (findCompatiblePlateAttempts >= maxAttempts)
             {
                 _logger.Debug(
-                    $"Plate filter too restrictive for armor: ${{ armorItem._name}} ${{ armorItem._id}}, unable to find plates of level: ${{ chosenArmorPlateLevel}}, using items default plate"
+                    $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
                 );
 
                 var defaultPlate = GetDefaultPlateTpl(armorItem, modSlot);
@@ -350,7 +347,7 @@ public class BotEquipmentModGenerator(
         
         // Only return the items ids
         result.Result = Result.SUCCESS;
-        result.PlateModTemplates = platesOfDesiredLevel.Select((item) => item.Id).ToHashSet();
+        result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id).ToHashSet();
 
         return result;
     }
@@ -358,8 +355,16 @@ public class BotEquipmentModGenerator(
     private MinMax GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
         platePool.Sort((x, y) => {
-            if (x.Properties.ArmorClass < y.Properties.ArmorClass) return -1;
-            if (x.Properties.ArmorClass > y.Properties.ArmorClass) return 1;
+            if (x.Properties.ArmorClass < y.Properties.ArmorClass)
+            {
+                return -1;
+            }
+
+            if (x.Properties.ArmorClass > y.Properties.ArmorClass)
+            {
+                return 1;
+            }
+
             return 0;
         });
 
@@ -375,7 +380,7 @@ public class BotEquipmentModGenerator(
      * @param modSlot front/back
      * @returns Tpl of plate
      */
-    protected string GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
+    protected string? GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
     {
         var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => slot.Name.ToLower() == modSlot);
 
