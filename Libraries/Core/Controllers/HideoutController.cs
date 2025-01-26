@@ -1272,6 +1272,12 @@ public class HideoutController(
     /// <returns></returns>
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(string sessionId, PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request)
     {
+        if (request.Poses is null)
+        {
+            _logger.Warning("this really shouldnt be possible, but a request has come in with a pose change without poses");
+            return _eventOutputHolder.GetOutput(sessionId);
+        }
+        
         foreach (var poseKvP in request.Poses)
         {
             // Nullguard
