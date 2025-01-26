@@ -42,7 +42,13 @@ public class BotGeneratorHelper(
             .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
             ?.GetValue<GetRaidConfigurationRequestData>();
         var raidIsNight = raidSettings?.TimeVariant == DateTimeEnum.PAST;
-        _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out var randomisationSettings);
+
+        RandomisedResourceDetails randomisationSettings = null;
+        if (botRole is not null)
+        {
+            _botConfig.LootItemResourceRandomization.TryGetValue(botRole, out randomisationSettings);
+        }
+
 
         Upd itemProperties = new();
         var hasProperties = false;
