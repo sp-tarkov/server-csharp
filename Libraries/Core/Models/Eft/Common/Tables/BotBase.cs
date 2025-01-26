@@ -45,6 +45,7 @@ public record BotBase
     [JsonPropertyName("Stats")]
     public Stats? Stats { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Encyclopedia")]
     public Dictionary<string, bool>? Encyclopedia { get; set; }
 
