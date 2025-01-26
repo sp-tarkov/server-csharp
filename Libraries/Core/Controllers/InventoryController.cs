@@ -545,6 +545,11 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
+    /**
+     * Swap Item
+     * its used for "reload" if you have weapon in hands and magazine is somewhere else in rig or backpack in equipment
+     * Also used to swap items using quick selection on character screen
+     */
     public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData request, string sessionId)
     {
         // During post-raid scav transfer, the swap may be in the scav inventory
@@ -602,6 +607,16 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
+    /**
+     * TODO: Adds no data to output to send to client, is this by design?
+     * Transfer items from one stack into another while keeping original stack
+     * Used to take items from scav inventory into stash or to insert ammo into mags (shotgun ones) and reloading weapon by clicking "Reload"
+     * @param pmcData Player profile
+     * @param body Transfer request
+     * @param sessionID Session id
+     * @param output Client response
+     * @returns IItemEventRouterResponse
+     */
     public void TransferItem(PmcData pmcData, InventoryTransferRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -620,7 +635,7 @@ public class InventoryController(
             return;
         }
 
-        if (destinationItem is not null)
+        if (destinationItem is null)
         {
             var errorMessage = $"Unable to transfer stack, cannot find destination: {request.With}";
             _logger.Error(errorMessage);
