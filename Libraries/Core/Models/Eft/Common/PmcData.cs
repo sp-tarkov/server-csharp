@@ -15,7 +15,7 @@ public record PmcData : BotBase
     public object CheckedChambers { get; set; }
 }
 
-public record PostRaidPmcData : BotBase
+public record PostRaidPmcData : PmcData
 {
 }
 
