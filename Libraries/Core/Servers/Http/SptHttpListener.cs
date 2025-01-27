@@ -14,6 +14,13 @@ namespace Core.Servers.Http;
 [Injectable]
 public class SptHttpListener : IHttpListener
 {
+    // we want to reserve on the list 512KB capacity before it needs to expand, should be enough for most requests
+    private const int InitialCapacityForListBuffer = 1024 * 512;
+
+    // We want to read 1KB at a time, for most request this is already big enough
+    private const int BodyReadBufferSize = 1024 * 1;
+    
+    
     protected readonly HttpRouter _router;
     protected readonly IEnumerable<ISerializer> _serializers;
     protected readonly ISptLogger<SptHttpListener> _logger;
@@ -67,15 +74,17 @@ public class SptHttpListener : IHttpListener
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
                 // reserve some capacity to avoid having the list to resize
-                var totalRead = new List<byte>(1024 * 32);
-                // read 8KB at a time
-                var memory = new Memory<byte>(new byte[100]);
+                var totalRead = new List<byte>(InitialCapacityForListBuffer);
+                // read 1KB at a time
+                var memory = new Memory<byte>(new byte[BodyReadBufferSize]);
                 var readTask = req.Body.ReadAsync(memory).AsTask();
                 readTask.Wait();
+                var readBytes = 0;
                 while (readTask.Result != 0)
                 {
+                    readBytes += readTask.Result;
                     totalRead.AddRange(memory.ToArray());
-                    memory = new Memory<byte>(new byte[100]);
+                    memory = new Memory<byte>(new byte[BodyReadBufferSize]);
                     readTask = req.Body.ReadAsync(memory).AsTask();
                     readTask.Wait();
                 }
@@ -83,14 +92,14 @@ public class SptHttpListener : IHttpListener
                 if (requestCompressed)
                 {
                     using var uncompressedDataStream = new MemoryStream();
-                    using var compressedDataStream = new MemoryStream(totalRead.ToArray());
+                    using var compressedDataStream = new MemoryStream(totalRead[..readBytes].ToArray());
                     using var deflateStream = new ZLibStream(compressedDataStream, CompressionMode.Decompress, true);
                     deflateStream.CopyTo(uncompressedDataStream);
                     value = Encoding.UTF8.GetString(uncompressedDataStream.ToArray());
                 }
                 else
                 {
-                    value = Encoding.UTF8.GetString(totalRead.ToArray());
+                    value = Encoding.UTF8.GetString(totalRead[..readBytes].ToArray());
                 }
                 
                 if (!requestIsCompressed) {
