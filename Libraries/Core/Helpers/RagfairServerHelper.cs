@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.JavaScript;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -182,7 +182,9 @@ public class RagfairServerHelper(
             }
         }
 
-        return bias[(int) Math.Floor(randomUtil.RandNum(0, 1) * bias.Count)];
+        var index = Math.Min((int)Math.Floor((randomUtil.RandNum(0, 1, 14) * bias.Count)), 99);
+
+        return bias[index];
     }
 
     /**

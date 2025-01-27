@@ -20,8 +20,9 @@ public record Requirement
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
 
+    // Can be decimal value
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public double? Count { get; set; }
 
     [JsonPropertyName("level")]
     public int? Level { get; set; }

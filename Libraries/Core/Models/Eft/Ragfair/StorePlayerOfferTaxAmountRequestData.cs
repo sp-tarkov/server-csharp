@@ -1,8 +1,9 @@
 using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Ragfair;
 
-public record StorePlayerOfferTaxAmountRequestData
+public record StorePlayerOfferTaxAmountRequestData : IRequestData
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }

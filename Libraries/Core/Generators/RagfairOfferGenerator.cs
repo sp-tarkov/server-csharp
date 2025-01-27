@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.JavaScript;
+using System.Runtime.InteropServices.JavaScript;
 using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
@@ -331,8 +331,10 @@ public class RagfairOfferGenerator(
             ? expiredOffers ?? []
             : ragfairAssortGenerator.GetAssortItems();
 
-
-        assortItemsToProcess.ForEach(assortItemWithChildren => CreateOffersFromAssort(assortItemWithChildren, replacingExpiredOffers, ragfairConfig.Dynamic));
+        foreach (var assortItem in assortItemsToProcess)
+        {
+            CreateOffersFromAssort(assortItem, replacingExpiredOffers, ragfairConfig.Dynamic);
+        }
 
     }
 
@@ -465,8 +467,11 @@ public class RagfairOfferGenerator(
                     armorConfig.PlateSlotIdToRemovePool.Contains(item.SlotId?.ToLower())
                 );
 
-                foreach (var plateItem in offerItemPlatesToRemove) {
-                    itemWithChildren.Splice(itemWithChildren.IndexOf(plateItem), 1);
+                // Latest first, to ensure we don't move later items off by 1 each time we remove an item below it
+                var indexesToRemove = offerItemPlatesToRemove.Select(plateItem => itemWithChildren.IndexOf(plateItem)).ToList();
+                foreach (var index in indexesToRemove.OrderByDescending(x => x))
+                {
+                    itemWithChildren.RemoveAt(index);
                 }
             }
         }

@@ -1148,7 +1148,7 @@ public class ItemHelper(
     public bool IsQuestItem(string tpl)
     {
         var itemDetails = GetItem(tpl);
-        if (itemDetails.Key && itemDetails.Value.Properties.QuestItem != null)
+        if (itemDetails.Key && itemDetails.Value.Properties.QuestItem.GetValueOrDefault(false))
             return true;
 
         return false;
