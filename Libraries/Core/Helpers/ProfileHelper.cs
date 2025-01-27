@@ -589,7 +589,7 @@ public class ProfileHelper(
 
         foreach (var pocket in pockets)
         {
-            pocket.Id = newPocketTpl;
+            pocket.Template = newPocketTpl;
         }
     }
 

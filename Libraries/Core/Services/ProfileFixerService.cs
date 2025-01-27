@@ -193,7 +193,7 @@ public class ProfileFixerService(
             pmcProfile.Customization.Hands = defaultHands.Id;
         }
 
-        // check Hands
+        // check Feet
         if (customizationDb[pmcProfile.Customization.Feet] is null)
         {
             var defaultFeet = playerIsUsec
