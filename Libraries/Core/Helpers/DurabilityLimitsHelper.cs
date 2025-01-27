@@ -229,17 +229,17 @@ public class DurabilityLimitsHelper(
     {
         if (botRole is null or "default")
         {
-            return _botConfig.Durability.Default.Weapon.HighestMax;
+            return _botConfig.Durability.Default.Weapon.MaxDelta;
         }
 
         if (botRole == "pmc")
         {
-            return _botConfig.Durability.Pmc.Weapon.HighestMax;
+            return _botConfig.Durability.Pmc.Weapon.MaxDelta;
         }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
-        return value.Weapon.HighestMax;
+        return value.Weapon.MaxDelta;
     }
 
     protected int GetMinArmorDeltaFromConfig(string? botRole = null)
