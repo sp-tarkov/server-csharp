@@ -579,7 +579,7 @@ public class ItemHelper(
             if (medkit is not null)
             {
                 // Meds
-                result = medkit.HpResource ?? 0 / itemDetails.Properties.MaxHpResource ?? 0;
+                result = (medkit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
             }
             else if (repairable is not null)
             {
@@ -588,7 +588,7 @@ public class ItemHelper(
             else if (foodDrink is not null)
             {
                 // food & drink
-                result = foodDrink.HpPercent ?? 0 / itemDetails.Properties.MaxResource ?? 0;
+                result = (foodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
             else if (key is not null && key.NumberOfUsages > 0 && itemDetails.Properties.MaximumNumberOfUsage > 0)
             {
@@ -599,12 +599,12 @@ public class ItemHelper(
             else if (resource is not null && resource.UnitsConsumed > 0)
             {
                 // Things like fuel tank
-                result = resource.Value ?? 0 / itemDetails.Properties.MaxResource ?? 0;
+                result = (resource.Value ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
             else if (repairKit is not null)
             {
                 // Repair kits
-                result = repairKit.Resource ?? 0 / itemDetails.Properties.MaxRepairResource ?? 0;
+                result = (repairKit.Resource ?? 0) / (itemDetails.Properties.MaxRepairResource ?? 0);
             }
 
             if (result == 0)

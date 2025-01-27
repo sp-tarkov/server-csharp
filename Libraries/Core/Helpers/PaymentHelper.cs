@@ -20,6 +20,7 @@ public class PaymentHelper(ConfigServer _configServer)
         var moneyTypes = new List<string>
         {
             Money.DOLLARS,
+            Money.EUROS,
             Money.ROUBLES,
             Money.GP,
 

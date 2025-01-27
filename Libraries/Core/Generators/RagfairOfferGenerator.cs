@@ -13,6 +13,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using Server;
 using SptCommon.Extensions;
+using Core.Models.Eft.Player;
 
 namespace Core.Generators;
 
@@ -95,7 +96,7 @@ public class RagfairOfferGenerator(
         var isTrader = ragfairServerHelper.IsTrader(userID);
 
         var offerRequirements = barterScheme.Select((barter) => {
-            var offerRequirement = new OfferRequirement(){
+            var offerRequirement = new OfferRequirement{
                 Template = barter.Template,
                 Count = Math.Round((double) barter.Count, 2),
                 OnlyFunctional = barter.OnlyFunctional ?? false,
@@ -115,7 +116,7 @@ public class RagfairOfferGenerator(
         var itemStackCount = itemsClone[0].Upd?.StackObjectsCount ?? 1;
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
-        // On offer refresh dont re-add cartridges to ammo box that already has cartridges
+        // On offer refresh don't re-add cartridges to ammo box that already has cartridges
         if (itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX) && itemsClone.Count == 1) {
             itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(items[0].Template).Value);
         }
@@ -123,7 +124,7 @@ public class RagfairOfferGenerator(
         var roubleListingPrice = Math.Round((double) ConvertOfferRequirementsIntoRoubles(offerRequirements));
         var singleItemListingPrice = isPackOffer ? roubleListingPrice / itemStackCount : roubleListingPrice;
 
-        var offer = new RagfairOffer() {
+        var offer = new RagfairOffer {
             Id= hashUtil.Generate(),
             InternalId= offerCounter,
             User= CreateUserDataForFleaOffer(userID, isTrader),
@@ -131,7 +132,7 @@ public class RagfairOfferGenerator(
             Items= itemsClone,
             ItemsCost= Math.Round((double) handbookHelper.GetTemplatePrice(items[0].Template)), // Handbook price
             Requirements= offerRequirements,
-            RequirementsCost= Math.Round((double) singleItemListingPrice),
+            RequirementsCost= Math.Round(singleItemListingPrice),
             SummaryCost= roubleListingPrice,
             StartTime= time,
             EndTime= GetOfferEndTime(userID, time),
@@ -458,17 +459,21 @@ public class RagfairOfferGenerator(
             );
 
         // Remove removable plates if % check passes
-        if (itemHelper.ArmorItemCanHoldMods(itemWithChildren[0].Template)) {
+        if (itemHelper.ArmorItemCanHoldMods(itemWithChildren[0].Template))
+        {
             var armorConfig = ragfairConfig.Dynamic.Armor;
 
             var shouldRemovePlates = randomUtil.GetChance100(armorConfig.RemoveRemovablePlateChance);
-            if (shouldRemovePlates && itemHelper.ArmorItemHasRemovablePlateSlots(itemWithChildren[0].Template)) {
-                var offerItemPlatesToRemove = itemWithChildren.Where((item) =>
-                    armorConfig.PlateSlotIdToRemovePool.Contains(item.SlotId?.ToLower())
+            if (shouldRemovePlates && itemHelper.ArmorItemHasRemovablePlateSlots(itemWithChildren[0].Template))
+            {
+                var offerItemPlatesToRemove = itemWithChildren.Where(
+                    (item) =>
+                        armorConfig.PlateSlotIdToRemovePool.Contains(item.SlotId?.ToLower())
                 );
 
                 // Latest first, to ensure we don't move later items off by 1 each time we remove an item below it
-                var indexesToRemove = offerItemPlatesToRemove.Select(plateItem => itemWithChildren.IndexOf(plateItem)).ToList();
+                var indexesToRemove = offerItemPlatesToRemove.Select(plateItem => itemWithChildren.IndexOf(plateItem))
+                    .ToList();
                 foreach (var index in indexesToRemove.OrderByDescending(x => x))
                 {
                     itemWithChildren.RemoveAt(index);

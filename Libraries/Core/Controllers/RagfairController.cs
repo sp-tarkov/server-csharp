@@ -346,7 +346,7 @@ public class RagfairController
     /**
      * Called when creating an offer on flea, fills values in top right corner
      * @param getPriceRequest Client request object
-     * @param ignoreTraderOffers Should trader offers be ignored in the calcualtion
+     * @param ignoreTraderOffers Should trader offers be ignored in the calculation
      * @returns min/avg/max values for an item based on flea offers available
      */
     public GetItemPriceResult GetItemMinAvgMaxFleaPriceValues(GetMarketPriceRequestData getPriceRequest, bool ignoreTraderOffers = true)
@@ -358,7 +358,7 @@ public class RagfairController
         if (offers.Count > 0)
         {
             // These get calculated while iterating through the list below
-            var minMax = new MinMax(0, int.MaxValue);
+            var minMax = new MinMax(int.MaxValue, 0);
 
             // Get the average offer price, excluding barter offers
             var average = GetAveragePriceFromOffers(offers, minMax, ignoreTraderOffers);

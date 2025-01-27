@@ -146,14 +146,18 @@ public class RagfairOfferHolder(
         }
         else
         {
-            var valueMapped = new Dictionary<string, RagfairOffer>();
-            valueMapped.Add(offer.Id, offer);
+            var valueMapped = new Dictionary<string, RagfairOffer> { { offer.Id, offer } };
             _offersByTrader.Add(trader, valueMapped);
         }
     }
 
-    protected bool IsStale(RagfairOffer offer, long time)
+    protected bool IsStale(RagfairOffer? offer, long time)
     {
-        return offer.EndTime < time || (offer.Items[0].Upd?.StackObjectsCount ?? 0) < 1;
+        if (offer is null)
+        {
+            return false;
+        }
+
+        return offer.EndTime < time || (offer.Items.FirstOrDefault().Upd?.StackObjectsCount ?? 0) < 1;
     }
 }
