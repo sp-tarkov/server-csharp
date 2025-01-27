@@ -11,6 +11,7 @@ using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Generators;
 
@@ -360,7 +361,8 @@ public class LootGenerator(
 
         // No `_encyclopedia` property, not possible to reliably get root item tpl
         if (chosenPreset.Encyclopedia is null) {
-            _logger.Debug("$Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug("$Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
 
             return false;
         }
@@ -368,7 +370,8 @@ public class LootGenerator(
         // Get preset root item db details via its `_encyclopedia` property
         var itemDbDetails = _itemHelper.GetItem(chosenPreset.Encyclopedia);
         if (!itemDbDetails.Key) {
-            _logger.Debug($"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping");
 
             return false;
         }
@@ -493,7 +496,8 @@ public class LootGenerator(
                 var ammoBoxesMatchingCaliber = ammoBoxesDetails.Where((x) => 
                     x.Properties.AmmoCaliber == weaponCaliber);
                 if (!ammoBoxesMatchingCaliber.Any()) {
-                    _logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
+                    if(_logger.IsLogEnabled(LogLevel.Debug))
+                        _logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
 
                     continue;
                 }
@@ -519,7 +523,8 @@ public class LootGenerator(
             );
 
             if (rewardItemPool.Count() == 0) {
-                _logger.Debug($"No items with base type of {rewardKey} found, skipping");
+                if(_logger.IsLogEnabled(LogLevel.Debug))
+                    _logger.Debug($"No items with base type of {rewardKey} found, skipping");
 
                 continue;
             }
@@ -561,9 +566,10 @@ public class LootGenerator(
                 (item) => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
             );
             if (relatedItems is null || relatedItems.Count() == 0) {
-                _logger.Debug(
-                    $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
-                    );
+                if(_logger.IsLogEnabled(LogLevel.Debug))
+                    _logger.Debug(
+                        $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
+                        );
                 continue;
             }
 

@@ -11,6 +11,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Generators;
 
@@ -529,9 +530,10 @@ public class BotWeaponGenerator(
             }
 
             var defaultMagTplId = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weaponTemplate);
-            _logger.Debug(
-                $"[{botRole}] Unable to find magazine for weapon: {weaponTemplate.Id} {weaponTemplate.Name}, using mag template default: {defaultMagTplId}."
-            );
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug(
+                    $"[{botRole}] Unable to find magazine for weapon: {weaponTemplate.Id} {weaponTemplate.Name}, using mag template default: {defaultMagTplId}."
+                );
 
             return defaultMagTplId;
         }
@@ -550,17 +552,18 @@ public class BotWeaponGenerator(
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
         if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Keys.Count == 0)
         {
-            _logger.Debug(
-                _localisationService.GetText(
-                    "bot-no_caliber_data_for_weapon_falling_back_to_default",
-                    new
-                    {
-                        weaponId = weaponTemplate.Id,
-                        weaponName = weaponTemplate.Name,
-                        defaultAmmo = weaponTemplate.Properties.DefAmmo,
-                    }
-                )
-            );
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug(
+                    _localisationService.GetText(
+                        "bot-no_caliber_data_for_weapon_falling_back_to_default",
+                        new
+                        {
+                            weaponId = weaponTemplate.Id,
+                            weaponName = weaponTemplate.Name,
+                            defaultAmmo = weaponTemplate.Properties.DefAmmo,
+                        }
+                    )
+                );
 
             // Immediately returns, default ammo is guaranteed to be compatible
             return weaponTemplate.Properties.DefAmmo;

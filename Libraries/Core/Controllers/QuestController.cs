@@ -14,6 +14,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Controllers;
@@ -188,7 +189,8 @@ public class QuestController(
             var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == acceptedQuest.QuestId);
             if (matchingQuest is not null)
             {
-                _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
+                if(_logger.IsLogEnabled(LogLevel.Debug))
+                    _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
                 matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
 
                 return matchingQuest;
