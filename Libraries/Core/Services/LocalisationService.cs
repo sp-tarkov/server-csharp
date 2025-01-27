@@ -52,7 +52,7 @@ public class LocalisationService
 
     public ICollection<string> GetKeys()
     {
-        throw new NotImplementedException();
+        return _i18nService.GetLocalisedKeys();
     }
 
     public string GetRandomTextThatMatchesPartialKey(string partialKey)

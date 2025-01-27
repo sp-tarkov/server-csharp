@@ -119,4 +119,9 @@ public class I18nService
         var rawLocalizedString = GetLocalised(key);
         return rawLocalizedString.Replace("%s", value?.ToString());
     }
+
+    public List<string> GetLocalisedKeys()
+    {
+        return _loadedLocales["en"].Value?.Keys.ToList()!;
+    }
 }

@@ -16,9 +16,9 @@ public class LocaleService(
     protected LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
 
     /**
- * Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
- * @returns dictionary
- */
+     * Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
+     * @returns dictionary
+     */
     public Dictionary<string, string> GetLocaleDb()
     {
         var desiredLocale = _databaseServer.GetTables().Locales.Global[GetDesiredGameLocale()];
