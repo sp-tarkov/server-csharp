@@ -387,7 +387,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksFaceCover ?? false)
+        if (itemToEquip.Properties.BlocksFaceCover.GetValueOrDefault(false))
         {
             var existingFaceCover = itemsEquipped.FirstOrDefault((item) => item.SlotId == "FaceCover");
             if (existingFaceCover is not null)
@@ -403,7 +403,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksEarpiece ?? false)
+        if (itemToEquip.Properties.BlocksEarpiece.GetValueOrDefault(false))
         {
             var existingEarpiece = itemsEquipped.FirstOrDefault((item) => item.SlotId == "Earpiece");
             if (existingEarpiece is not null)
@@ -419,7 +419,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksArmorVest is not null)
+        if (itemToEquip.Properties.BlocksArmorVest.GetValueOrDefault(false))
         {
             var existingArmorVest = itemsEquipped.FirstOrDefault((item) => item.SlotId == "ArmorVest");
             if (existingArmorVest is not null)
