@@ -16,6 +16,7 @@ using Core.Utils.Cloners;
 using Core.Utils.Collections;
 using SptCommon.Annotations;
 using Insurance = Core.Models.Eft.Profile.Insurance;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
 
@@ -85,7 +86,10 @@ public class InsuranceController(
 
         var profileInsuranceDetails = _saveServer.GetProfile(sessionId).InsuranceList;
         if (profileInsuranceDetails.Count > 0)
-            _logger.Debug($"Found {profileInsuranceDetails.Count} insurance packages in profile {sessionId}");
+        {
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Found {profileInsuranceDetails.Count} insurance packages in profile {sessionId}");
+        }
 
         return profileInsuranceDetails.Where(insured => insuranceTime >= insured.ScheduledTime).ToList();
     }
@@ -99,9 +103,10 @@ public class InsuranceController(
      */
     protected void ProcessInsuredItems(List<Insurance> insuranceDetails, string sessionId)
     {
-        _logger.Debug(
-            $"Processing {insuranceDetails.Count} insurance packages, which includes a total of: {CountAllInsuranceItems(insuranceDetails)} items, in profile: {sessionId}"
-        );
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug(
+                $"Processing {insuranceDetails.Count} insurance packages, which includes a total of: {CountAllInsuranceItems(insuranceDetails)} items, in profile: {sessionId}"
+            );
 
         // Iterate over each of the insurance packages.
         foreach (var insured in insuranceDetails)
@@ -162,7 +167,8 @@ public class InsuranceController(
             )
             .ToList();
 
-        _logger.Debug($"Removed processed insurance package. Remaining packages: {profile.InsuranceList.Count}");
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Removed processed insurance package. Remaining packages: {profile.InsuranceList.Count}");
     }
 
     /**
@@ -205,7 +211,8 @@ public class InsuranceController(
         // Log the number of items marked for deletion, if any
         if (!toDelete.Any())
         {
-            _logger.Debug($"Marked {toDelete.Count} items for deletion from insurance.");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Marked {toDelete.Count} items for deletion from insurance.");
         }
 
         return toDelete;
@@ -429,7 +436,8 @@ public class InsuranceController(
             // Log the parent item's name.
             itemsMap.TryGetValue(parentObj.Key, out var parentItem);
             var parentName = _itemHelper.GetItemName(parentItem.Template);
-            _logger.Debug($"Processing attachments of parent {parentName}");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Processing attachments of parent {parentName}");
 
             // Process the attachments for this individual parent item.
             ProcessAttachmentByParent(parentObj.Value, insuredTraderId, toDelete);
@@ -473,7 +481,8 @@ public class InsuranceController(
 
         LogAttachmentsBeingRemoved(attachmentIdsToRemove, attachments, weightedAttachmentByPrice);
 
-        _logger.Debug($"Number of attachments to be deleted: {attachmentIdsToRemove.Count}");
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Number of attachments to be deleted: {attachmentIdsToRemove.Count}");
     }
 
     private void LogAttachmentsBeingRemoved(List<string> attachmentIdsToRemove, List<Item> attachments, Dictionary<string, double> attachmentPrices)
@@ -613,7 +622,8 @@ public class InsuranceController(
         // Log the roll with as much detail as possible.
         var itemName = insuredItem is not null ? $"{_itemHelper.GetItemName(insuredItem.Template)}" : "";
         var status = roll ? "Delete" : "Keep";
-        _logger.Debug($"Rolling {itemName} with {trader} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}");
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Rolling {itemName} with {trader} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}");
 
         return roll;
     }
@@ -696,7 +706,8 @@ public class InsuranceController(
 
         foreach (var softInsertSlot in softInsertSlots)
         {
-            _logger.Debug($"SoftInsertSlots: {softInsertSlot.SlotId}");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"SoftInsertSlots: {softInsertSlot.SlotId}");
             pmcData.InsuredItems.Add(new InsuredItem { TId = body.TransactionId, ItemId = softInsertSlot.Id });
         }
     }
@@ -727,7 +738,8 @@ public class InsuranceController(
                 // Ensure hash has item in it
                 if (!inventoryItemsHash.ContainsKey(itemId))
                 {
-                    _logger.Debug($"Item with id: {itemId} missing from player inventory, skipping");
+                    if(_logger.IsLogEnabled(LogLevel.Debug))
+                        _logger.Debug($"Item with id: {itemId} missing from player inventory, skipping");
                     continue;
                 }
 

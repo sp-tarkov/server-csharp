@@ -13,6 +13,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Json;
 using Server;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Controllers;
@@ -95,7 +96,8 @@ public class GameController(
         if (fullProfile.DialogueRecords is not null)
             _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
 
-        _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
@@ -521,10 +523,13 @@ public class GameController(
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)
     {
-        _logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
-        _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
-        _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
-        _logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
+            _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
+            _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
+            _logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
+        }
     }
 
     public void Load()

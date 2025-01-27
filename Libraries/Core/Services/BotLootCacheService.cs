@@ -22,13 +22,17 @@ public class BotLootCacheService(
 )
 {
     protected Dictionary<string, BotLootCache> _lootCache = new();
+    protected object _lock = new();
 
     /// <summary>
     /// Remove cached bot loot data
     /// </summary>
     public void ClearCache()
     {
-        _lootCache.Clear();
+        lock (_lock)
+        {
+            _lootCache.Clear();
+        }
     }
 
     /// <summary>
@@ -46,14 +50,21 @@ public class BotLootCacheService(
         BotType botJsonTemplate,
         MinMax? itemPriceMinMax = null)
     {
-        if (!BotRoleExistsInCache(botRole))
+        lock (_lock)
         {
-            InitCacheForBotRole(botRole);
-            AddLootToCache(botRole, isPmc, botJsonTemplate);
+            if (!BotRoleExistsInCache(botRole))
+            {
+                InitCacheForBotRole(botRole);
+                AddLootToCache(botRole, isPmc, botJsonTemplate);
+            }
         }
 
         Dictionary<string, double> result = null;
-        var botRoleCache = _lootCache[botRole];
+        BotLootCache botRoleCache;
+        lock (_lock)
+        {
+            botRoleCache = _lootCache[botRole];
+        }
         switch (lootType)
         {
             case LootCacheType.Special:
@@ -436,21 +447,25 @@ public class BotLootCacheService(
             filteredVestItems[itemKvP.Key] = itemKvP.Value;
         }
 
-        var cacheForRole = _lootCache[botRole];
+        BotLootCache cacheForRole;
+        lock (_lock)
+        {
+            cacheForRole = _lootCache[botRole];
 
-        cacheForRole.HealingItems = healingItems;
-        cacheForRole.DrugItems = drugItems;
-        cacheForRole.FoodItems = foodItems;
-        cacheForRole.DrinkItems = drinkItems;
-        cacheForRole.CurrencyItems = currencyItems;
-        cacheForRole.StimItems = stimItems;
-        cacheForRole.GrenadeItems = grenadeItems;
+            cacheForRole.HealingItems = healingItems;
+            cacheForRole.DrugItems = drugItems;
+            cacheForRole.FoodItems = foodItems;
+            cacheForRole.DrinkItems = drinkItems;
+            cacheForRole.CurrencyItems = currencyItems;
+            cacheForRole.StimItems = stimItems;
+            cacheForRole.GrenadeItems = grenadeItems;
 
-        cacheForRole.SpecialItems = specialLootItems;
-        cacheForRole.BackpackLoot = filteredBackpackItems;
-        cacheForRole.PocketLoot = filteredPocketItems;
-        cacheForRole.VestLoot = filteredVestItems;
-        cacheForRole.SecureLoot = secureLootTPool;
+            cacheForRole.SpecialItems = specialLootItems;
+            cacheForRole.BackpackLoot = filteredBackpackItems;
+            cacheForRole.PocketLoot = filteredPocketItems;
+            cacheForRole.VestLoot = filteredVestItems;
+            cacheForRole.SecureLoot = secureLootTPool;
+        }
     }
 
     /// <summary>
@@ -546,7 +561,8 @@ public class BotLootCacheService(
     /// <returns>true if they exist</returns>
     protected bool BotRoleExistsInCache(string botRole)
     {
-        return _lootCache.ContainsKey(botRole);
+        lock (_lock)
+            return _lootCache.ContainsKey(botRole);
     }
 
     /// <summary>
@@ -555,23 +571,26 @@ public class BotLootCacheService(
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        _lootCache[botRole] = new()
+        lock (_lock)
         {
-            BackpackLoot = new(),
-            PocketLoot = new(),
-            VestLoot = new(),
-            SecureLoot = new(),
-            CombinedPoolLoot = new(),
+            _lootCache.Add(botRole, new()
+            {
+                BackpackLoot = new(),
+                PocketLoot = new(),
+                VestLoot = new(),
+                SecureLoot = new(),
+                CombinedPoolLoot = new(),
 
-            SpecialItems = new(),
-            GrenadeItems = new(),
-            DrugItems = new(),
-            FoodItems = new(),
-            DrinkItems = new(),
-            CurrencyItems = new(),
-            HealingItems = new(),
-            StimItems = new(),
-        };
+                SpecialItems = new(),
+                GrenadeItems = new(),
+                DrugItems = new(),
+                FoodItems = new(),
+                DrinkItems = new(),
+                CurrencyItems = new(),
+                HealingItems = new(),
+                StimItems = new(),
+            });
+        }
     }
 
     /// <summary>

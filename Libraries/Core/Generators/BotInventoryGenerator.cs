@@ -10,6 +10,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Generators;
@@ -342,7 +343,8 @@ public class BotInventoryGenerator(
 
         if (!tacVestsWithArmor.Any())
         {
-            _logger.Debug($"Unable to filter to only armored rigs as bot: {botRole} has none in pool");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Unable to filter to only armored rigs as bot: {botRole} has none in pool");
 
             return;
         }
@@ -365,7 +367,8 @@ public class BotInventoryGenerator(
 
         if (!allowEmptyResult && !tacVestsWithoutArmor.Any())
         {
-            _logger.Debug($"Unable to filter to only unarmored rigs as bot: {botRole} has none in pool");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Unable to filter to only unarmored rigs as bot: {botRole} has none in pool");
 
             return;
         }
@@ -420,7 +423,8 @@ public class BotInventoryGenerator(
                 if (!dbResult.Key)
                 {
                     _logger.Error(_localisationService.GetText("bot-missing_item_template", chosenItemTpl));
-                    _logger.Debug($"EquipmentSlot-> {settings.RootEquipmentSlot}");
+                    if(_logger.IsLogEnabled(LogLevel.Debug))
+                        _logger.Debug($"EquipmentSlot-> {settings.RootEquipmentSlot}");
 
                     // Remove picked item
                     settings.RootEquipmentPool.Remove(chosenItemTpl);

@@ -940,8 +940,7 @@ public class BotEquipmentModGenerator(
             return ModSpawn.SPAWN;
         }
 
-
-        var spawnMod = _probabilityHelper.RollChance(modSpawnChances.GetValueOrDefault(modSlotName));
+        var spawnMod = _probabilityHelper.RollChance(modSpawnChances.GetValueOrDefault(modSlotName.ToLower()));
         if (!spawnMod && (slotRequired.GetValueOrDefault(false) || (botEquipConfig.WeaponSlotIdsToMakeRequired?.Contains(modSlotName) ?? false)))
         {
             // Edge case: Mod is required but spawn chance roll failed, choose default mod spawn for slot

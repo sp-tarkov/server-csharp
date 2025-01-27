@@ -5,6 +5,7 @@ using Core.Models.Eft.Location;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Controllers;
@@ -37,7 +38,8 @@ public class LocationController(
             var mapBase = kvp.Value.Base;
             if (mapBase == null)
             {
-                _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
+                if(_logger.IsLogEnabled(LogLevel.Debug))
+                    _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
                 continue;
             }
 
