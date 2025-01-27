@@ -46,7 +46,10 @@ public class SeasonalEventService(
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_BIG,
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_MEDIUM,
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_SMALL,
-        ItemTpl.HEADWEAR_ELF_HAT
+        ItemTpl.HEADWEAR_ELF_HAT,
+        ItemTpl.HEADWEAR_MASKA1SCH_BULLETPROOF_HELMET_CHRISTMAS_EDITION,
+        ItemTpl.ARMOR_6B13_M_ASSAULT_ARMOR_CHRISTMAS_EDITION,
+        ItemTpl.HEADWEAR_HAT_WITH_HORNS,
     ];
 
     protected IReadOnlyList<string> _halloweenEventItems =
