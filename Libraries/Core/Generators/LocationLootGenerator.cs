@@ -437,14 +437,14 @@ public class LocationLootGenerator(
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
             var itemSize = GetItemSize(items);
-            var width = itemSize.Width;
-            var height = itemSize.Height;
+            var width = (int)itemSize.Width;
+            var height = (int)itemSize.Height;
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(containerMap, (int)width, (int)height);
+            var result = _containerHelper.FindSlotForItem(containerMap, width, height);
             if (!result.Success.GetValueOrDefault(false))
             {
-                if (failedToFitCount >= _locationConfig.FitLootIntoContainerAttempts)
+                if (failedToFitCount > _locationConfig.FitLootIntoContainerAttempts)
                 {
                     // x attempts to fit an item, container is probably full, stop trying to add more
                     break;
@@ -455,13 +455,13 @@ public class LocationLootGenerator(
 
                 continue;
             }
-
+            
             _containerHelper.FillContainerMapWithItem(
                 containerMap,
                 result.X.Value,
                 result.Y.Value,
-                (int)width,
-                (int)height,
+                width,
+                height,
                 result.Rotation.GetValueOrDefault(false)
             );
 
