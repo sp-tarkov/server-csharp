@@ -70,13 +70,13 @@ public class TimeUtil
     /// <summary>
     /// Gets the start of day timestamp for the given date
     /// </summary>
-    /// <param name="dateTime">datetime to get the time stamp for, if null it uses current date.</param>
+    /// <param name="timestamp">datetime to get the time stamp for, if null it uses current date.</param>
     /// <returns>Unix epoch for the start of day of the calculated date</returns>
     public long GetStartOfDayTimeStamp(long? timestamp)
     {
         DateTime now = timestamp.HasValue 
             ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).DateTime
-            : DateTime.Now;
+            : GetDateTimeNow();
     
         DateTime startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
         return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();
@@ -137,7 +137,7 @@ public class TimeUtil
     /// <returns>Time stamp of the next hour in unix time seconds</returns>
     public long GetTimeStampOfNextHour()
     {
-        DateTime now = DateTime.Now;
+        DateTime now = DateTime.UtcNow;
         TimeSpan timeUntilNextHour = TimeSpan.FromMinutes(60 - now.Minute)
             .Subtract(TimeSpan.FromSeconds(now.Second))
             .Subtract(TimeSpan.FromMilliseconds(now.Millisecond));
@@ -154,7 +154,7 @@ public class TimeUtil
     /// <returns>Timestamp</returns>
     public long GetTodayMidnightTimeStamp()
     {
-        DateTime now = DateTime.Now;
+        DateTime now = DateTime.UtcNow;
         int hours = now.Hour;
         int minutes = now.Minute;
     

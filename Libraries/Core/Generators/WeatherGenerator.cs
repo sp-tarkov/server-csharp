@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;
@@ -28,7 +28,7 @@ public class WeatherGenerator(
      */
     public void CalculateGameTime(WeatherData data)
     {
-        var computedDate = DateTime.Now;
+        var computedDate = _timeUtil.GetDateTimeNow();
         var formattedDate = _timeUtil.FormatDate(computedDate);
 
         data.Date = formattedDate;
