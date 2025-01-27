@@ -222,6 +222,8 @@ public class HideoutHelper(
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         var hideoutProperties = GetHideoutProperties(pmcData);
+        
+        pmcData.Hideout.SptUpdateLastRunTimestamp ??= _timeUtil.GetTimeStamp();
 
         UpdateAreasWithResources(sessionID, pmcData, hideoutProperties);
         UpdateProductionTimers(pmcData, hideoutProperties);
