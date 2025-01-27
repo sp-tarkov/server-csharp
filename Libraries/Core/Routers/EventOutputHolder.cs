@@ -83,7 +83,7 @@ public class EventOutputHolder
                         }
                     }
                 },
-                Warnings = { }
+                Warnings = []
             }
         );
     }
