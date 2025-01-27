@@ -405,7 +405,7 @@ public class BotInventoryGenerator(
             var found = false;
 
             // Limit attempts to find a compatible item as it's expensive to check them all
-            var maxAttempts = Math.Round(settings.RootEquipmentPool.Count() * 0.75); // Roughly 75% of pool size
+            var maxAttempts = Math.Round(settings.RootEquipmentPool.Count * 0.75); // Roughly 75% of pool size
             var attempts = 0;
             while (!found)
             {
