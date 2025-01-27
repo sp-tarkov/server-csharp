@@ -224,7 +224,7 @@ public class LocationLootGenerator(
             }
         }
 
-        _logger.Success("A total of { staticLootItemCount}static items spawned");
+        _logger.Success($"A total of {staticLootItemCount}static items spawned");
 
         _logger.Success(
             _localisationService.GetText("location-containers_generated_success", staticContainerCount)
