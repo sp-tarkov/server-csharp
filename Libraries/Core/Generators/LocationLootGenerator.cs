@@ -146,14 +146,14 @@ public class LocationLootGenerator(
         }
 
         // Group containers by their groupId
-        if (mapData.StaticContainer is null)
+        if (mapData.Statics is null)
         {
             _logger.Warning(_localisationService.GetText("location-unable_to_generate_static_loot", locationId));
 
             return result;
         }
 
-        var mapping = GetGroupIdToContainerMappings(mapData.StaticContainer, staticRandomisableContainersOnMap);
+        var mapping = GetGroupIdToContainerMappings(mapData.Statics, staticRandomisableContainersOnMap);
 
         // For each of the container groups, choose from the pool of containers, hydrate container with loot and add to result array
         foreach (var (key, data) in mapping)
@@ -316,8 +316,7 @@ public class LocationLootGenerator(
         var mapping = new Dictionary<string, ContainerGroupCount>();
         foreach (var groupKvP in staticContainerGroupData.ContainersGroups)
         {
-            var groupData = staticContainerGroupData.ContainersGroups[groupKvP.Key];
-            if (!mapping.ContainsKey(groupKvP.Key))
+            if (!staticContainerGroupData.ContainersGroups.TryGetValue(groupKvP.Key, out var groupData))
             {
                 mapping[groupKvP.Key] = new ContainerGroupCount
                 {
@@ -338,14 +337,13 @@ public class LocationLootGenerator(
 
         // Add an empty group for containers without a group id but still have a < 100% chance to spawn
         // Likely bad BSG data, will be fixed...eventually, example of the groupids: `NEED_TO_BE_FIXED1`,`NEED_TO_BE_FIXED_SE02`, `NEED_TO_BE_FIXED_NW_01`
-        mapping[""] = new ContainerGroupCount { ChosenCount = -1 };
+        mapping[""] = new ContainerGroupCount { ContainerIdsWithProbability = new Dictionary<string, double>(), ChosenCount = -1 };
 
         // Iterate over all containers and add to group keyed by groupId
         // Containers without a group go into a group with empty key ""
         foreach (var container in staticContainersOnMap)
         {
-            var groupData = staticContainerGroupData.Containers[container.Template.Id];
-            if (groupData is null)
+            if (!staticContainerGroupData.Containers.TryGetValue(container.Template.Id, out var groupData))
             {
                 _logger.Error(
                     _localisationService.GetText(
@@ -357,7 +355,7 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            if (container.Probability == 1)
+            if (container.Probability >= 1)
             {
                 _logger.Debug(
                     $"Container {container.Template.Id} with group ${groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
@@ -366,7 +364,12 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            mapping[groupData.GroupId].ContainerIdsWithProbability[container.Template.Id] = container.Probability.Value;
+            mapping.TryAdd(groupData.GroupId, new ContainerGroupCount
+            {
+                ChosenCount = 0d,
+                ContainerIdsWithProbability = new Dictionary<string, double>()
+            });
+            mapping[groupData.GroupId].ContainerIdsWithProbability.TryAdd(container.Template.Id, container.Probability.Value);
         }
 
         return mapping;
@@ -462,15 +465,14 @@ public class LocationLootGenerator(
             );
 
             var rotation = result.Rotation.GetValueOrDefault(false) ? 1 : 0;
-
+             
             items[0].SlotId = "main";
             items[0].Location = new ItemLocation{ X = result.X, Y = result.Y, R = rotation };
 
             // Add loot to container before returning
-            foreach (var item in items)
-            {
-                containerClone.Template.Items.Add(item);
-            }
+            containerClone.Template.Items.AddRange(items);
+
+            itemAddedCount++;
         }
 
         return containerClone;

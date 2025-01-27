@@ -27,14 +27,11 @@ public record Location
 
     /** All possible static containers on map + their assign groupings */
     [JsonPropertyName("statics")]
-    public StaticContainer? StaticContainer { get; set; }
+    public StaticContainer? Statics { get; set; }
 
     /** All possible map extracts */
     [JsonPropertyName("allExtracts")]
     public Exit[] AllExtracts { get; set; }
-
-    [Obsolete("USE StaticContainer INSTEAD")]
-    public object Statics { get; set; }
 }
 
 public record StaticContainer
