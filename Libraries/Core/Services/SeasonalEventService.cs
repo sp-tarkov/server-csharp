@@ -849,19 +849,14 @@ public class SeasonalEventService(
     protected void AddLootItemsToGifterDropItemsList()
     {
         var gifterBot = _databaseService.GetBots().Types["gifter"];
-        var items = gifterBot.BotInventory.Items.Backpack.Keys.ToList();
+        var itemsCSV = string.Join(",", gifterBot.BotInventory.Items.Backpack.Keys);
+        string[] difficulties = ["easy", "normal", "hard", "impossible"];
 
-        gifterBot.BotDifficulty["easy"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
-        gifterBot.BotDifficulty["easy"].Patrol["ITEMS_TO_DROP"] = items;
-
-        gifterBot.BotDifficulty["normal"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
-        gifterBot.BotDifficulty["normal"].Patrol["ITEMS_TO_DROP"] = items;
-
-        gifterBot.BotDifficulty["hard"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
-        gifterBot.BotDifficulty["hard"].Patrol["ITEMS_TO_DROP"] = items;
-
-        gifterBot.BotDifficulty["impossible"].Patrol.TryAdd("ITEMS_TO_DROP", 0);
-        gifterBot.BotDifficulty["impossible"].Patrol["ITEMS_TO_DROP"] = items;
+        foreach (var difficulty in difficulties)
+        {
+            gifterBot.BotDifficulty[difficulty].Patrol.TryAdd("ITEMS_TO_DROP", "");
+            gifterBot.BotDifficulty[difficulty].Patrol["ITEMS_TO_DROP"] = itemsCSV;
+        }
     }
 
     /// <summary>
