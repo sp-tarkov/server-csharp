@@ -45,7 +45,8 @@ public class SeasonalEventService(
         ItemTpl.BACKPACK_SANTAS_BAG,
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_BIG,
         ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_MEDIUM,
-        ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_SMALL
+        ItemTpl.RANDOMLOOTCONTAINER_NEW_YEAR_GIFT_SMALL,
+        ItemTpl.HEADWEAR_ELF_HAT
     ];
 
     protected IReadOnlyList<string> _halloweenEventItems =
