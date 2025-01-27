@@ -124,7 +124,7 @@ public class TradeController(
             }
 
             // Exit loop early if problem found
-            if (output.Warnings.Count > 0)
+            if (output.Warnings?.Count > 0)
             {
                 return output;
             }

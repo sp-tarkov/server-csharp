@@ -14,7 +14,8 @@ public class NotificationSendHelper(
     IWebSocketConnectionHandler _sptWebSocketConnectionHandler,
     HashUtil _hashUtil,
     SaveServer _saveServer,
-    NotificationService _notificationService
+    NotificationService _notificationService,
+    TimeUtil _timeUtil
 )
 {
     /// <summary>
@@ -47,7 +48,28 @@ public class NotificationSendHelper(
         string messageText,
         MessageType messageType)
     {
-        throw new NotImplementedException();
+        var dialog = GetDialog(sessionId, messageType, senderDetails);
+
+        dialog.New += 1;
+        Message message = new Message {
+            Id = _hashUtil.Generate(),
+            UserId = dialog.Id,
+            MessageType = messageType,
+            DateTime = _timeUtil.GetTimeStamp(),
+            Text = messageText,
+            HasRewards = null,
+            RewardCollected = null,
+            Items = null,
+        };
+        dialog.Messages.Add(message);
+
+        WsChatMessageReceived notification = new WsChatMessageReceived {
+            EventType = NotificationEventType.new_message,
+            EventIdentifier = message.Id,
+            DialogId = message.UserId,
+            Message = message,
+        };
+        SendMessage(sessionId, notification);
     }
 
     /// <summary>
@@ -59,6 +81,26 @@ public class NotificationSendHelper(
     /// <returns>Dialogue</returns>
     protected Models.Eft.Profile.Dialogue GetDialog(string sessionId, MessageType messageType, UserDialogInfo senderDetails)
     {
-        throw new NotImplementedException();
+        // Use trader id if sender is trader, otherwise use nickname
+        var key = senderDetails.Id;
+        var dialogueData = _saveServer.GetProfile(sessionId).DialogueRecords;
+        var isNewDialogue = dialogueData.ContainsKey(key);
+        var dialogue = dialogueData[key];
+
+        // Existing dialog not found, make new one
+        if (isNewDialogue) {
+            dialogue = new Models.Eft.Profile.Dialogue {
+                Id = key,
+                Type = messageType,
+                Messages = [],
+                Pinned = false,
+                New = 0,
+                AttachmentsNew = 0,
+                Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
+            };
+
+            dialogueData[key] = dialogue;
+        }
+        return dialogue;
     }
 }

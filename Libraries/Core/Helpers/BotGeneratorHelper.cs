@@ -256,7 +256,7 @@ public class BotGeneratorHelper(
             maxDurability
         );
 
-        return new UpdRepairable { Durability = (int)currentDurability, MaxDurability = (int)maxDurability };
+        return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
 
     /// <summary>
@@ -267,12 +267,12 @@ public class BotGeneratorHelper(
     /// <returns>Repairable object</returns>
     private UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
-        double? maxDurability;
-        double? currentDurability;
+        double maxDurability;
+        double currentDurability;
         if (itemTemplate.Properties?.ArmorClass == 0)
         {
-            maxDurability = itemTemplate.Properties.MaxDurability;
-            currentDurability = itemTemplate.Properties.MaxDurability;
+            maxDurability = itemTemplate.Properties.MaxDurability.Value;
+            currentDurability = itemTemplate.Properties.MaxDurability.Value;
         }
         else
         {
@@ -280,11 +280,11 @@ public class BotGeneratorHelper(
             currentDurability = _durabilityLimitsHelper.GetRandomizedArmorDurability(
                 itemTemplate,
                 botRole,
-                maxDurability.Value
+                maxDurability
             );
         }
 
-        return new UpdRepairable { Durability = (int)currentDurability!, MaxDurability = (int)maxDurability! };
+        return new UpdRepairable { Durability = Math.Round(currentDurability, 5), MaxDurability = Math.Round(maxDurability, 5) };
     }
 
     /// <summary>
@@ -387,7 +387,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksFaceCover ?? false)
+        if (itemToEquip.Properties.BlocksFaceCover.GetValueOrDefault(false))
         {
             var existingFaceCover = itemsEquipped.FirstOrDefault((item) => item.SlotId == "FaceCover");
             if (existingFaceCover is not null)
@@ -403,7 +403,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksEarpiece ?? false)
+        if (itemToEquip.Properties.BlocksEarpiece.GetValueOrDefault(false))
         {
             var existingEarpiece = itemsEquipped.FirstOrDefault((item) => item.SlotId == "Earpiece");
             if (existingEarpiece is not null)
@@ -419,7 +419,7 @@ public class BotGeneratorHelper(
         }
 
         // Does item being checked get blocked/block existing item
-        if (itemToEquip.Properties.BlocksArmorVest is not null)
+        if (itemToEquip.Properties.BlocksArmorVest.GetValueOrDefault(false))
         {
             var existingArmorVest = itemsEquipped.FirstOrDefault((item) => item.SlotId == "ArmorVest");
             if (existingArmorVest is not null)
