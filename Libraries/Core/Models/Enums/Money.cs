@@ -1,4 +1,4 @@
-﻿namespace Core.Models.Enums;
+namespace Core.Models.Enums;
 
 public record Money
 {
@@ -6,4 +6,9 @@ public record Money
     public const string EUROS = "569668774bdc2da2298b4568";
     public const string DOLLARS = "5696686a4bdc2da3298b456a";
     public const string GP = "5d235b4d86f7742e017bc88a";
+
+    public static List<string> GetMoneyTpls()
+    {
+        return [ROUBLES, EUROS, DOLLARS, GP];
+    }
 }

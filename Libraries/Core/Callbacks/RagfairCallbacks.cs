@@ -19,6 +19,7 @@ public class RagfairCallbacks(
     RagfairServer _ragfairServer,
     RagfairController _ragfairController,
     RagfairTaxService _ragfairTaxService,
+    RagfairPriceService _ragfairPriceService,
     ConfigServer _configServer
     ) : OnLoad, OnUpdate
 {
@@ -27,6 +28,7 @@ public class RagfairCallbacks(
     public Task OnLoad()
     {
         _ragfairServer.Load();
+        _ragfairPriceService.Load();
         return Task.CompletedTask;
     }
 

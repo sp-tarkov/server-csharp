@@ -223,21 +223,33 @@ public class RagfairController
      * @param offer Flea offer to update
      * @param fullProfile Players full profile
      */
-    private void SetTraderOfferPurchaseLimits(RagfairOffer offer, SptProfile fullProfile)
+    private void SetTraderOfferPurchaseLimits(RagfairOffer offerToUpdate, SptProfile fullProfile)
     {
-        // No trader found, create a blank record for them
-        fullProfile.TraderPurchases[offer.User.Id] ??= new();
+        var assortId = offerToUpdate.Items.First().Id;
 
-        var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
-        var assortId = offer.Items.First().Id;
-        var assortData = traderAssorts.FirstOrDefault((item) => item.Id == assortId);
+        // No trader found in profile, create a blank record for them
+        var existsInProfile = !fullProfile.TraderPurchases.TryAdd(offerToUpdate.User.Id, new Dictionary<string, TraderPurchaseData>());
+        if (!existsInProfile)
+        {
+            // Not purchased by player before, use value from assort data
 
-        // Use value stored in profile, otherwise use value directly from in-memory trader assort data
-        offer.BuyRestrictionCurrent = (int)(fullProfile.TraderPurchases[offer.User.Id][assortId] is not null
-            ? fullProfile.TraderPurchases[offer.User.Id][assortId].PurchaseCount
-            : assortData.Upd.BuyRestrictionCurrent);
+            // Find patching assort by its id
+            var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offerToUpdate.User.Id).Items;
+            var assortData = traderAssorts.FirstOrDefault((item) => item.Id == assortId);
 
-        offer.BuyRestrictionMax = assortData.Upd.BuyRestrictionMax;
+            // Set restriction based on data found above
+            offerToUpdate.BuyRestrictionMax = assortData.Upd.BuyRestrictionMax;
+
+            return;
+        }
+
+        // Get purchases player made with trader since last reset
+        var traderPurchases = fullProfile.TraderPurchases[offerToUpdate.User.Id];
+
+        // Get specific assort purchase data and set current purchase buy value
+        traderPurchases.TryGetValue(assortId, out var assortTraderPurchaseData);
+
+        offerToUpdate.BuyRestrictionCurrent = (int?)assortTraderPurchaseData?.PurchaseCount ?? 0;
     }
 
     /**
@@ -292,7 +304,7 @@ public class RagfairController
      */
     private bool IsLinkedSearch(SearchRequestData searchRequest)
     {
-        return searchRequest.LinkedSearchId != "";
+        return !string.IsNullOrEmpty(searchRequest.LinkedSearchId);
     }
 
     /**
@@ -302,7 +314,7 @@ public class RagfairController
      */
     private bool IsRequiredSearch(SearchRequestData searchRequest)
     {
-        return searchRequest.NeededSearchId != "";
+        return !string.IsNullOrEmpty(searchRequest.NeededSearchId);
     }
 
     /**
@@ -317,7 +329,7 @@ public class RagfairController
         PmcData pmcProfile)
     {
         // Searching for items in preset menu
-        if (searchRequest.BuildCount is not null)
+        if (searchRequest.BuildCount > 0)
         {
             return _ragfairOfferHelper.GetOffersForBuild(searchRequest, itemsToAdd, traderAssorts, pmcProfile);
         }

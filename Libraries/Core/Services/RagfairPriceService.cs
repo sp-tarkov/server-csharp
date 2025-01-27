@@ -30,7 +30,7 @@ public class RagfairPriceService(
     /// <summary>
     /// Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
     /// </summary>
-    public async Task OnLoadAsync()
+    public void Load()
     {
         RefreshStaticPrices();
         RefreshDynamicPrices();
@@ -133,8 +133,10 @@ public class RagfairPriceService(
     public Dictionary<string, double> GetAllFleaPrices()
     {
         var dynamicPrices = _databaseService.GetPrices();
-        // { ...this.prices.dynamic, ...this.prices.static };
-        return dynamicPrices.Concat(_staticPrices).ToDictionary();
+        // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
+        return dynamicPrices.Concat(_staticPrices)
+            .GroupBy(x => x.Key)
+            .ToDictionary(x => x.Key, x => x.First().Value);
     }
 
     public Dictionary<string, double> GetAllStaticPrices()

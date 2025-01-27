@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
 
@@ -49,7 +49,7 @@ public class ItemBaseClassService(
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
         var parent = _databaseService.GetItems()[item.Parent];
 
-        if (parent.Parent != "")
+        if (!string.IsNullOrEmpty(parent.Parent))
         {
             AddBaseItems(itemIdToUpdate, parent);
         }

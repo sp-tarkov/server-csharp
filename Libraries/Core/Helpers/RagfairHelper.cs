@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
@@ -50,12 +50,12 @@ public class RagfairHelper(
         var result = new List<string>();
 
         // Case: weapon builds
-        if (request.BuildCount != null) {
+        if (request.BuildCount > 0) {
             return request.BuildItems.Keys.ToList();
         }
 
         // Case: search
-        if (request.LinkedSearchId != null) {
+        if (!string.IsNullOrEmpty(request.LinkedSearchId)) {
             var data = ragfairLinkedItemService.GetLinkedItems(request.LinkedSearchId);
             result = data == null ? [] : [..data];
         }
