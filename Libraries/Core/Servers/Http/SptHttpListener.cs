@@ -66,21 +66,31 @@ public class SptHttpListener : IHttpListener
                                           compressHeader != "0";
                 var requestCompressed = req.Method == "PUT" || requestIsCompressed;
 
-                var length = req.Headers.ContentLength;
-                var memory = new Memory<byte>(new byte[(int)length]);
-                req.Body.ReadAsync(memory).AsTask().Wait();
+                // reserve some capacity to avoid having the list to resize
+                var totalRead = new List<byte>(1024 * 32);
+                // read 8KB at a time
+                var memory = new Memory<byte>(new byte[100]);
+                var readTask = req.Body.ReadAsync(memory).AsTask();
+                readTask.Wait();
+                while (readTask.Result != 0)
+                {
+                    totalRead.AddRange(memory.ToArray());
+                    memory = new Memory<byte>(new byte[100]);
+                    readTask = req.Body.ReadAsync(memory).AsTask();
+                    readTask.Wait();
+                }
                 string value;
                 if (requestCompressed)
                 {
                     using var uncompressedDataStream = new MemoryStream();
-                    using var compressedDataStream = new MemoryStream(memory.ToArray());
+                    using var compressedDataStream = new MemoryStream(totalRead.ToArray());
                     using var deflateStream = new ZLibStream(compressedDataStream, CompressionMode.Decompress, true);
                     deflateStream.CopyTo(uncompressedDataStream);
                     value = Encoding.UTF8.GetString(uncompressedDataStream.ToArray());
                 }
                 else
                 {
-                    value = Encoding.UTF8.GetString(memory.ToArray());
+                    value = Encoding.UTF8.GetString(totalRead.ToArray());
                 }
                 
                 if (!requestIsCompressed) {
