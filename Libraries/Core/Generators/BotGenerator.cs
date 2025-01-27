@@ -319,10 +319,10 @@ public class BotGenerator(
     /// <returns>Experience for kill</returns>
     public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax> experiences, string botDifficulty, string role)
     {
-        var result = experiences[botDifficulty.ToLower()];
-        if (result is null)
+
+        if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
-            _logger.Debug($"Unable to find experience for kill value for: { role} { botDifficulty}, falling back to `normal`");
+            _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
 
             return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
         }
