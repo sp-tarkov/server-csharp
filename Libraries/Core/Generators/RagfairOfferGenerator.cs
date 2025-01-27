@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices.JavaScript;
 using Core.Helpers;
 using SptCommon.Annotations;
@@ -327,15 +328,26 @@ public class RagfairOfferGenerator(
     {
         var replacingExpiredOffers = (expiredOffers?.Count ?? 0) > 0;
 
+        var stopwatch = Stopwatch.StartNew();
         // get assort items from param if they exist, otherwise grab freshly generated assorts
         var assortItemsToProcess = replacingExpiredOffers
             ? expiredOffers ?? []
             : ragfairAssortGenerator.GetAssortItems();
-
+        stopwatch.Stop();
+        logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts");
+        stopwatch.Restart();
+        var tasks = new List<Task>();
         foreach (var assortItem in assortItemsToProcess)
         {
-            CreateOffersFromAssort(assortItem, replacingExpiredOffers, ragfairConfig.Dynamic);
+            tasks.Add(
+                Task.Factory.StartNew(
+                    () => { CreateOffersFromAssort(assortItem, replacingExpiredOffers, ragfairConfig.Dynamic); }
+                )
+            );
         }
+        Task.WaitAll(tasks.ToArray());
+        stopwatch.Stop();
+        logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to CreateOffersFromAssort");
 
     }
 

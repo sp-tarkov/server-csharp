@@ -149,21 +149,31 @@ public class BotController(
             _pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance
         );
 
+        var tasks = new List<Task>();
         // Map conditions to promises for bot generation
         foreach (var condition in request.Conditions ?? [])
         {
-            var botGenerationDetails = GetBotGenerationDetailsForWave(
-                condition,
-                pmcProfile,
-                allPmcsHaveSameNameAsPlayer,
-                raidSettings,
-                _botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 15),
-                _botHelper.IsBotPmc(condition.Role)
-            );
+            tasks.Add(
+                Task.Factory.StartNew(
+                    () =>
+                    {
+                        var botGenerationDetails = GetBotGenerationDetailsForWave(
+                            condition,
+                            pmcProfile,
+                            allPmcsHaveSameNameAsPlayer,
+                            raidSettings,
+                            _botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 15),
+                            _botHelper.IsBotPmc(condition.Role)
+                        );
 
-            // Generate bots for the current condition
-            GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+                        // Generate bots for the current condition
+                        GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+                    }
+                )
+            );
         }
+        
+        Task.WaitAll(tasks.ToArray());
 
         return [];
     }
