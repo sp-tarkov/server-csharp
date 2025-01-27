@@ -436,8 +436,9 @@ public class LocationLootGenerator(
             var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
-            var width = chosenItemWithChildren.Width;
-            var height = chosenItemWithChildren.Height;
+            var itemSize = GetItemSize(items);
+            var width = itemSize.Width;
+            var height = itemSize.Height;
 
             // look for open slot to put chosen item into
             var result = _containerHelper.FindSlotForItem(containerMap, (int)width, (int)height);
@@ -498,7 +499,7 @@ public class LocationLootGenerator(
         }
 
         
-        // Multi-mod-item, use helper to get size of item + mods
+        // Multi-mod-item, use helper to get size of item + attached mods
         var result = _inventoryHelper.GetItemSize(rootItem.Template, rootItem.Id, items);
         return new ItemSize
         {
