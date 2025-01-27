@@ -213,11 +213,8 @@ public class BotInventoryGenerator(
             new GenerateEquipmentProperties
             {
                 RootEquipmentSlot = EquipmentSlots.Pockets,
-                // Unheard profiles have unique sized pockets, TODO - handle this somewhere else in a better way
-                RootEquipmentPool =
-                    chosenGameVersion == GameEditions.UNHEARD
-                        ? new Dictionary<string, double> { [ItemTpl.POCKETS_1X4_TUE] = 1 }
-                        : templateInventory.Equipment[EquipmentSlots.Pockets],
+                // Unheard profiles have unique sized pockets
+                RootEquipmentPool = GetPocketPoolByGameEdition(chosenGameVersion, templateInventory),
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData { Role = botRole, Level = botLevel, EquipmentRole = botEquipmentRole },
@@ -323,6 +320,13 @@ public class BotInventoryGenerator(
                 GeneratingPlayerLevel = pmcProfile?.Info?.Level ?? 1,
             }
         );
+    }
+
+    protected Dictionary<string, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory)
+    {
+        return chosenGameVersion == GameEditions.UNHEARD
+            ? new Dictionary<string, double> { [ItemTpl.POCKETS_1X4_TUE] = 1 }
+            : templateInventory.Equipment.GetValueOrDefault(EquipmentSlots.Pockets);
     }
 
     /// <summary>
