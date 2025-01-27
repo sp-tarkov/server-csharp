@@ -43,7 +43,7 @@ public record RewardDetails
     public bool FoundInRaid { get; set; }
 
     [JsonPropertyName("rewardTplPool")]
-    public Dictionary<string, int>? RewardTplPool { get; set; }
+    public Dictionary<string, double>? RewardTplPool { get; set; }
 
     [JsonPropertyName("rewardTypePool")]
     public List<string>? RewardTypePool { get; set; }
