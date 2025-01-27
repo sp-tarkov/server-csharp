@@ -1594,21 +1594,21 @@ public class ItemHelper(
     protected string? DrawAmmoTpl(
         string caliber,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
-        string fallbackCartridgeTpl,
+        string? fallbackCartridgeTpl = null,
         List<string>? cartridgeWhitelist = null
     )
     {
         var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
-        if (ammos is null && fallbackCartridgeTpl is not null)
+        if (ammos.Count == 0 && fallbackCartridgeTpl is not null)
         {
-            _logger.Error($"Unable to pick a cartridge for caliber: {caliber} as staticAmmoDist has no data. using fallback value of {fallbackCartridgeTpl}");
+            _logger.Warning($"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. using fallback value of {fallbackCartridgeTpl}");
 
             return fallbackCartridgeTpl;
         }
 
-        if (ammos is null && fallbackCartridgeTpl is null)
+        if (ammos.Count == 0 && fallbackCartridgeTpl is null)
         {
-            _logger.Debug($"Unable to pick a cartridge for caliber: {caliber} as staticAmmoDist has no data. No fallback value provided");
+            _logger.Warning($"Unable to pick a cartridge for caliber: {caliber}, staticAmmoDist has no data. No fallback value provided");
 
             return null;
         }
@@ -1623,7 +1623,8 @@ public class ItemHelper(
         
             ammoArray.Add(new ProbabilityObject<string, float?>(icd.Tpl, (double)icd.RelativeProbability, null));
         }
-        return ammoArray.Draw(1)[0];
+
+        return ammoArray.Draw(1).FirstOrDefault();
     }
 
     /// <summary>
