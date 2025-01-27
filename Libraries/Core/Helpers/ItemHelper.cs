@@ -943,7 +943,7 @@ public class ItemHelper(
                 inventory.Stash,
                 inventory.HideoutCustomizationStashId
             });
-        itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Keys);
+        itemIdBlacklist.UnionWith(inventory.HideoutAreaStashes.Values);
 
         // Add insured items ids to blacklist
         if (insuredItems is not null)
