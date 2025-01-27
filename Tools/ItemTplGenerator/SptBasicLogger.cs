@@ -1,4 +1,5 @@
 ﻿using Core.Models.Logging;
+using Core.Models.Spt.Logging;
 using Core.Models.Utils;
 using SptCommon.Annotations;
 
@@ -52,5 +53,10 @@ public class SptBasicLogger<T> : ISptLogger<T>
     public void WriteToLogFile(string body)
     {
         Console.WriteLine($"{categoryName}: {body}");
+    }
+
+    public bool IsLogEnabled(LogLevel level)
+    {
+        return true;
     }
 }

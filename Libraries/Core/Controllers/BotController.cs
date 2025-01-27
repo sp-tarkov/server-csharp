@@ -15,6 +15,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
 
@@ -102,7 +103,8 @@ public class BotController(
             {
                 // No bot of this type found, copy details from assault
                 result[botTypeLower] = result["assault"];
-                _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
+                if(_logger.IsLogEnabled(LogLevel.Debug))
+                    _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
                 continue;
             }
 
@@ -149,21 +151,31 @@ public class BotController(
             _pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance
         );
 
+        var tasks = new List<Task>();
         // Map conditions to promises for bot generation
         foreach (var condition in request.Conditions ?? [])
         {
-            var botGenerationDetails = GetBotGenerationDetailsForWave(
-                condition,
-                pmcProfile,
-                allPmcsHaveSameNameAsPlayer,
-                raidSettings,
-                _botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 15),
-                _botHelper.IsBotPmc(condition.Role)
-            );
+            tasks.Add(
+                Task.Factory.StartNew(
+                    () =>
+                    {
+                        var botGenerationDetails = GetBotGenerationDetailsForWave(
+                            condition,
+                            pmcProfile,
+                            allPmcsHaveSameNameAsPlayer,
+                            raidSettings,
+                            _botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 15),
+                            _botHelper.IsBotPmc(condition.Role)
+                        );
 
-            // Generate bots for the current condition
-            GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+                        // Generate bots for the current condition
+                        GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+                    }
+                )
+            );
         }
+        
+        Task.WaitAll(tasks.ToArray());
 
         return [];
     }
@@ -191,15 +203,17 @@ public class BotController(
 
         if (botCacheCount >= botGenerationDetails.BotCountToGenerate)
         {
-            _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
             return;
         }
 
         // We're below desired count, add bots to cache
         var botsToGenerate = botGenerationDetails.BotCountToGenerate - botCacheCount;
         var progressWriter = new ProgressWriter(botGenerationDetails.BotCountToGenerate.GetValueOrDefault(30));
-
-        _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
+        
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
 
         for (var i = 0; i < botsToGenerate; i++)
         {
@@ -215,10 +229,11 @@ public class BotController(
             // }
         }
 
-        _logger.Debug(
-            $"Generated {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
-            $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty}bots"
-        );
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug(
+                $"Generated {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
+                $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty}bots"
+            );
     }
 
     private List<BotBase> ReturnSingleBotFromCache(string sessionId, GenerateBotsRequestData request)
@@ -303,11 +318,12 @@ public class BotController(
         {
             // No bot in cache, generate new and store in cache
             GenerateSingleBotAndStoreInCache(botGenerationDetails, sessionId, cacheKey);
-
-            _logger.Debug(
-                $"Generated {botGenerationDetails.BotCountToGenerate} " +
-                $"{botGenerationDetails.Role} ({botGenerationDetails.EventRole ?? ""}) {botGenerationDetails.BotDifficulty} bots"
-            );
+            
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug(
+                    $"Generated {botGenerationDetails.BotCountToGenerate} " +
+                    $"{botGenerationDetails.Role} ({botGenerationDetails.EventRole ?? ""}) {botGenerationDetails.BotDifficulty} bots"
+                );
         }
 
         var desiredBot = _botGenerationCacheService.GetBot(cacheKey);

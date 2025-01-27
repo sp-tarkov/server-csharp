@@ -2,6 +2,7 @@ using SptCommon.Annotations;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 using Core.Models.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Server.Logger;
 
@@ -87,5 +88,26 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     {
         //TODO - implement + turn object into json
         _logger.LogError("NOT IMPLEMENTED - WriteToLogFile");
+    }
+
+    public bool IsLogEnabled(LogLevel level)
+    {
+        return _logger.IsEnabled(ConvertLogLevel(level));
+    }
+
+    protected Microsoft.Extensions.Logging.LogLevel ConvertLogLevel(LogLevel level)
+    {
+        return level switch
+        {
+            LogLevel.Trace => Microsoft.Extensions.Logging.LogLevel.Trace,
+            LogLevel.Debug => Microsoft.Extensions.Logging.LogLevel.Debug,
+            LogLevel.Success
+                or LogLevel.Info
+                or LogLevel.Custom => Microsoft.Extensions.Logging.LogLevel.Information,
+            LogLevel.Warn => Microsoft.Extensions.Logging.LogLevel.Warning,
+            LogLevel.Error => Microsoft.Extensions.Logging.LogLevel.Error,
+            LogLevel.Fatal => Microsoft.Extensions.Logging.LogLevel.Critical,
+            _ => throw new ArgumentOutOfRangeException(nameof(level), level, null)
+        };
     }
 }

@@ -11,9 +11,9 @@ public class BotGenerationCacheService(
     LocalisationService _localisationService
     )
 {
-    protected Dictionary<string, List<BotBase>> _storedBots = new Dictionary<string, List<BotBase>>();
+    protected Dictionary<string, List<BotBase>> _storedBots = new();
     protected Queue<BotBase> _activeBotsInRaid = [];
-    protected Lock _lock = new Lock();
+    protected object _lock = new();
     
     
     /**
@@ -108,16 +108,25 @@ public class BotGenerationCacheService(
      */
     public bool CacheHasBotWithKey(string key, int size = 0)
     {
-        return _storedBots.ContainsKey(key) && _storedBots[key].Count > size;
+        lock (_lock)
+        {
+            return _storedBots.ContainsKey(key) && _storedBots[key].Count > size;
+        }
     }
 
     public int GetCachedBotCount(string key)
     {
-        return _storedBots.TryGetValue(key, out var bot) ? bot.Count : 0;
+        lock (_lock)
+        {
+            return _storedBots.TryGetValue(key, out var bot) ? bot.Count : 0;
+        }
     }
 
     public string CreateCacheKey(string? role, string? difficulty)
     {
-        return $"{role?.ToLower()}{difficulty?.ToLower()}";
+        lock (_lock)
+        {
+            return $"{role?.ToLower()}{difficulty?.ToLower()}";
+        }
     }
 }

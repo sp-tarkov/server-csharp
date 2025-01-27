@@ -1,4 +1,5 @@
 using Core.Models.Logging;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Models.Utils;
 
@@ -14,4 +15,5 @@ public interface ISptLogger<T>
     void Debug(string data, Exception? ex = null);
     void Critical(string data, Exception? ex = null);
     void WriteToLogFile(string body);
+    bool IsLogEnabled(LogLevel level);
 }
