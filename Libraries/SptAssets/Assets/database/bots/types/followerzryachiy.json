@@ -4,16 +4,16 @@
       "5fb53d0b7b5d1342ee24bd64": 1
     },
     "feet": {
-      "5fb535bd1c69e5198e234125": 9849,
-      "5fb535cf1c69e5198e234126": 9776
+      "5fb535bd1c69e5198e234125": 1055,
+      "5fb535cf1c69e5198e234126": 1048
     },
     "hands": {
       "5cc2e68f14c02e28b47de290": 1
     },
     "head": {
-      "5fb52a3a1c69e5198e234118": 6491,
-      "5fb52a537b5d1342ee24bd57": 6585,
-      "5fb5297a0359a84b77066e56": 6549
+      "5fb52a3a1c69e5198e234118": 1395,
+      "5fb52a537b5d1342ee24bd57": 1396,
+      "5fb5297a0359a84b77066e56": 1414
     },
     "voice": {
       "SectantPriest": 1
@@ -86,6 +86,14 @@
   },
   "skills": {
     "Common": {
+      "BotReload": {
+        "min": 1000,
+        "max": 1000
+      },
+      "BotSound": {
+        "min": 5000,
+        "max": 5000
+      },
       "Endurance": {
         "min": 5000,
         "max": 5000
@@ -93,14 +101,6 @@
       "Strength": {
         "min": 5000,
         "max": 5000
-      },
-      "BotSound": {
-        "min": 5000,
-        "max": 5000
-      },
-      "BotReload": {
-        "min": 1000,
-        "max": 1000
       }
     }
   },
@@ -109,9 +109,9 @@
       "Headwear": {},
       "Earpiece": {},
       "FaceCover": {
-        "5ab8f4ff86f77431c60d91ba": 7492,
-        "635267ab3c89e2112001f826": 4601,
-        "5b432b2f5acfc4771e1c6622": 7532
+        "635267ab3c89e2112001f826": 9809,
+        "5ab8f4ff86f77431c60d91ba": 16080,
+        "5b432b2f5acfc4771e1c6622": 16170
       },
       "ArmorVest": {},
       "Eyewear": {},
@@ -121,12 +121,12 @@
       },
       "Backpack": {},
       "FirstPrimaryWeapon": {
-        "55801eed4bdc2d89578b4588": 6040,
-        "5c46fbd72e2216398b5a8c9c": 3771
+        "55801eed4bdc2d89578b4588": 1300,
+        "5c46fbd72e2216398b5a8c9c": 803
       },
       "SecondPrimaryWeapon": {
-        "57dc2fa62459775949412633": 9404,
-        "59984ab886f7743e98271174": 5491
+        "57dc2fa62459775949412633": 507,
+        "59984ab886f7743e98271174": 293
       },
       "Holster": {},
       "Scabbard": {},
@@ -139,8 +139,8 @@
     },
     "Ammo": {
       "Caliber762x54R": {
-        "5887431f2459777e1612938f": 181,
-        "560d61e84bdc2da74d8b4571": 113
+        "5887431f2459777e1612938f": 60,
+        "560d61e84bdc2da74d8b4571": 37
       },
       "Caliber545x39": {
         "56dff4a2d2720bbd668b456a": 1
@@ -335,20 +335,20 @@
     },
     "items": {
       "TacticalVest": {
-        "55d482194bdc2d1d4e8b456b": 29,
-        "5c88f24b2e22160bc12c69a6": 22,
-        "599860ac86f77436b225ed1a": 16
+        "55d482194bdc2d1d4e8b456b": 1,
+        "5c88f24b2e22160bc12c69a6": 2,
+        "599860ac86f77436b225ed1a": 2
       },
       "Pockets": {
-        "559ba5b34bdc2d1f1a8b4582": 7,
-        "590c678286f77426c9660122": 4
+        "559ba5b34bdc2d1f1a8b4582": 5,
+        "590c678286f77426c9660122": 3
       },
       "Backpack": {},
       "SecuredContainer": {
-        "5887431f2459777e1612938f": 5510,
-        "56dff4a2d2720bbd668b456a": 1479,
-        "560d61e84bdc2da74d8b4571": 3610,
-        "56d59d3ad2720bdb418b4577": 850
+        "5887431f2459777e1612938f": 31500,
+        "56dff4a2d2720bbd668b456a": 8023,
+        "560d61e84bdc2da74d8b4571": 18530,
+        "56d59d3ad2720bdb418b4577": 4580
       },
       "SpecialLoot": {}
     }
@@ -2298,7 +2298,7 @@
       "TacticalVest": 100,
       "Backpack": 0,
       "FirstPrimaryWeapon": 100,
-      "SecondPrimaryWeapon": 75,
+      "SecondPrimaryWeapon": 76,
       "Holster": 0,
       "Scabbard": 0,
       "Pockets": 100,
