@@ -471,11 +471,41 @@ public class LocationLootGenerator(
 
             // Add loot to container before returning
             containerClone.Template.Items.AddRange(items);
-
-            itemAddedCount++;
         }
 
         return containerClone;
+    }
+
+    protected ItemSize? GetItemSize(List<Item>? items)
+    {
+        var rootItem = items[0];
+        if (items.Count == 1)
+        {
+            var itemTemplate = _itemHelper.GetItem(rootItem.Template).Value;
+            if (itemTemplate.Properties is null)
+            {
+                _logger.Error($"Unable to process item: ${{chosenTpl}}. it lacks _props");
+
+                return null;
+            }
+
+            // Single item, get items properties
+            return new ItemSize
+            {
+                Width = itemTemplate.Properties.Width.Value,
+                Height = itemTemplate.Properties.Height.Value
+            };
+        }
+
+        
+        // Multi-mod-item, use helper to get size of item + mods
+        var result = _inventoryHelper.GetItemSize(rootItem.Template, rootItem.Id, items);
+        return new ItemSize
+        {
+            Width = result[0],
+            Height = result[1]
+        };
+
     }
 
     /// <summary>
