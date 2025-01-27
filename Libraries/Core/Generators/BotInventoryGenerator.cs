@@ -332,7 +332,7 @@ public class BotInventoryGenerator(
     /// <summary>
     /// Remove non-armored rigs from parameter data
     /// </summary>
-    /// <param name="templateEquipment">Equpiment to filter TacticalVest of</param>
+    /// <param name="templateEquipment">Equipment to filter TacticalVest of</param>
     /// <param name="botRole">Role of bot vests are being filtered for</param>
     public void FilterRigsToThoseWithProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole)
     {
@@ -523,15 +523,20 @@ public class BotInventoryGenerator(
         foreach (var modSlot in modPool)
         {
             // Get blacklist
-            equipmentBlacklist.TryGetValue(modSlot.Key, out var blacklistedMods);
+            if (!equipmentBlacklist.TryGetValue(modSlot.Key, out var blacklistedMods))
+            {
+                blacklistedMods = [];
+            };
 
             // Get mods not on blacklist
-            var filteredMods = modPool[modSlot.Key].Where((slotName) => !(blacklistedMods ?? []).Contains(slotName));
-
-            if (filteredMods.Any())
+            var filteredMods = modPool[modSlot.Key].Where((slotName) => !(blacklistedMods).Contains(slotName));
+            if (!filteredMods.Any())
             {
-                modPool[modSlot.Key] = filteredMods.ToHashSet();
+                _logger.Warning($"Filtering {modSlot.Key} pool resulting in 0 items, skipping filter");
+                continue;
             }
+
+            modPool[modSlot.Key] = filteredMods.ToHashSet();
         }
 
         return modPool;
@@ -589,16 +594,12 @@ public class BotInventoryGenerator(
             new()
             {
                 Slot = EquipmentSlots.SecondPrimaryWeapon,
-                ShouldSpawn = shouldSpawnPrimary
-                    ? _randomUtil.GetChance100(equipmentChances.EquipmentChances["SecondPrimaryWeapon"])
-                    : false
+                ShouldSpawn = shouldSpawnPrimary && _randomUtil.GetChance100(equipmentChances.EquipmentChances["SecondPrimaryWeapon"])
             },
             new()
             {
                 Slot = EquipmentSlots.Holster,
-                ShouldSpawn = shouldSpawnPrimary
-                    ? _randomUtil.GetChance100(equipmentChances.EquipmentChances["Holster"]) // Primary weapon = roll for chance at pistol
-                    : true // No primary = force pistol
+                ShouldSpawn = !shouldSpawnPrimary || _randomUtil.GetChance100(equipmentChances.EquipmentChances["Holster"]) // No primary = force pistol
             }
         ];
     }

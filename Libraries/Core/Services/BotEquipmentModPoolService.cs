@@ -143,7 +143,7 @@ public class BotEquipmentModPoolService
      * @param itemTpl items tpl to look up mods for
      * @returns Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value
      */
-    public Dictionary<string, HashSet<string>>? GetModsForGearSlot(string itemTpl)
+    public Dictionary<string, HashSet<string>> GetModsForGearSlot(string itemTpl)
     {
         if (!_armorPoolGenerated)
         {
