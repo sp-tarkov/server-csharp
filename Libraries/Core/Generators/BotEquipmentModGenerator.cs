@@ -409,13 +409,7 @@ public class BotEquipmentModGenerator(
     /// <returns>Weapon + mods array</returns>
     public List<Item> GenerateModsForWeapon(string sessionId, GenerateWeaponRequest request)
     {
-        if (
-            !(
-                request.ParentTemplate.Properties.Slots.Any() ||
-                request.ParentTemplate.Properties.Cartridges.Any() ||
-                request.ParentTemplate.Properties.Chambers.Any()
-            )
-        )
+        if (ItemLacksSlotsCartridgesAndChambers(request.ParentTemplate))
         {
             _logger.Error(
                 _localisationService.GetText(
@@ -689,6 +683,13 @@ public class BotEquipmentModGenerator(
         }
 
         return request.Weapon;
+    }
+
+    protected bool ItemLacksSlotsCartridgesAndChambers(TemplateItem item)
+    {
+        return item.Properties.Slots?.Count == 0
+               && item.Properties.Cartridges?.Count == 0
+               && item.Properties.Chambers?.Count == 0;
     }
 
     /// <summary>
