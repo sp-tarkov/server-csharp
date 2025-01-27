@@ -1,4 +1,5 @@
 using Core.Models.Logging;
+using Core.Models.Spt.Logging;
 using Core.Models.Utils;
 
 namespace UnitTests.Mock;
@@ -53,6 +54,11 @@ public class MockLogger<T> : ISptLogger<T>
     public void WriteToLogFile(string body)
     {
         throw new NotImplementedException();
+    }
+
+    public bool IsLogEnabled(LogLevel level)
+    {
+        return true;
     }
 
     public void WriteToLogFile(object body)

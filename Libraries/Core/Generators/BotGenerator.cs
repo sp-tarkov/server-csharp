@@ -12,6 +12,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using BodyPart = Core.Models.Eft.Common.Tables.BodyPart;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Generators;
@@ -322,7 +323,8 @@ public class BotGenerator(
 
         if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
-            _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+                _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
 
             return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
         }
@@ -479,7 +481,8 @@ public class BotGenerator(
     public void LogPmcGeneratedCount(List<BotBase> output)
     {
         var pmcCount = output.Aggregate(0, (acc, cur) => { return cur.Info.Side is "Bear" or "Usec" ? acc + 1 : acc; });
-        _logger.Debug($"Generated {output.Count} total bots. Replaced {pmcCount} with PMCs");
+        if(_logger.IsLogEnabled(LogLevel.Debug))
+            _logger.Debug($"Generated {output.Count} total bots. Replaced {pmcCount} with PMCs");
     }
 
     /// <summary>
