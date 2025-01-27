@@ -6,17 +6,15 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
-using SptCommon.Extensions;
-using Core.Models.Spt.Bots;
 using Core.Utils;
-using static System.Net.Mime.MediaTypeNames;
-using System;
+using SptCommon.Extensions;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class SeasonalEventService(
     ISptLogger<SeasonalEventService> _logger,
+    TimeUtil _timeUtil,
     DatabaseService _databaseService,
     GiftService _giftService,
     LocalisationService _localisationService,
@@ -288,7 +286,7 @@ public class SeasonalEventService(
             return _weatherConfig.OverrideSeason.Value;
         }
 
-        var currentDate = new DateTime();
+        var currentDate = _timeUtil.GetDateTimeNow();
         foreach (var seasonRange in _weatherConfig.SeasonDates)
         {
             if (

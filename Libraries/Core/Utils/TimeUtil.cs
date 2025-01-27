@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 
 namespace Core.Utils;
 
@@ -42,6 +42,11 @@ public class TimeUtil
     public string GetDate()
     {
         return FormatDate(DateTimeOffset.UtcNow);
+    }
+
+    public DateTime GetDateTimeNow()
+    {
+        return DateTime.UtcNow;
     }
 
     /// <summary>
