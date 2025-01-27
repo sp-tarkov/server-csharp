@@ -586,7 +586,30 @@ public class LootGenerator(
     /// <returns>List of item with children lists</returns>
     public List<List<Item>> GetRandomLootContainerLoot(RewardDetails rewardContainerDetails)
     {
-        throw new NotImplementedException();
+        List<List<Item>> itemsToReturn = [];
+
+        // Get random items and add to newItemRequest
+        for (var index = 0; index < rewardContainerDetails.RewardCount; index++) {
+            // Pick random reward from pool, add to request object
+            var chosenRewardItemTpl = PickRewardItem(rewardContainerDetails);
+
+            if (_presetHelper.HasPreset(chosenRewardItemTpl)) {
+                var preset = _presetHelper.GetDefaultPreset(chosenRewardItemTpl);
+
+                // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
+                List<Item> presetAndMods = _itemHelper.ReplaceIDs(preset.Items);
+
+                _itemHelper.RemapRootItemId(presetAndMods);
+                itemsToReturn.Add(presetAndMods);
+
+                continue;
+            }
+
+            List<Item> rewardItem = [new Item { Id = _hashUtil.Generate(), Template = chosenRewardItemTpl }];
+            itemsToReturn.Add(rewardItem);
+        }
+
+        return itemsToReturn;
     }
 
     /// <summary>
@@ -596,7 +619,15 @@ public class LootGenerator(
     /// <returns>Single tpl</returns>
     protected string PickRewardItem(RewardDetails rewardContainerDetails)
     {
-        throw new NotImplementedException();
+        if (rewardContainerDetails.RewardTplPool is not null && rewardContainerDetails.RewardTplPool.Count > 0) {
+            return _weightedRandomHelper.GetWeightedValue(rewardContainerDetails.RewardTplPool);
+        }
+
+        return _randomUtil.GetArrayValue(
+            GetItemRewardPool([], rewardContainerDetails.RewardTypePool, true, true).ItemPool.Select(
+                (item) => item.Id
+            )
+        );
     }
 }
 
