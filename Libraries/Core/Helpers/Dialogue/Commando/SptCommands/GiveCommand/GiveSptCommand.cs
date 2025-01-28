@@ -131,7 +131,7 @@ public class GiveSptCommand(
                     .Where((i) => IsItemAllowed(i))
                     .Select((i) => localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name)
                     .Where((i) => !string.IsNullOrEmpty(i))
-                    .Select((i) => ({ Match = StringSimilarity(item.ToLower(), i.ToLower())ItemName = i }))
+                    .Select((i) => ({ Match = StringSimilarity(item.ToLower(), i.ToLower())ItemName = i })) // We need to find a similar system to string-similarity-js
                     .Sort((a1, a2) => a2.match - a1.match);
 
                 if (closestItemsMatchedByName[0].match >= _acceptableConfidence) {
