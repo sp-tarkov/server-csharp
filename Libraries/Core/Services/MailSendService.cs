@@ -46,9 +46,9 @@ public class MailSendService(
         MessageType messageType,
         string message,
         List<Item>? items,
-        double? maxStorageTimeSeconds,
-        SystemData? systemData,
-        MessageContentRagfair? ragfair
+        long? maxStorageTimeSeconds = 172800,
+        SystemData? systemData = null,
+        MessageContentRagfair? ragfair = null
     )
     {
         if (trader is null)
@@ -81,7 +81,7 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = (long?)(maxStorageTimeSeconds ?? 172800);
+            details.ItemsMaxStorageLifetimeSeconds = (long?)(maxStorageTimeSeconds);
         }
 
         if (systemData is not null)
@@ -108,7 +108,7 @@ public class MailSendService(
         MessageType messageType,
         string messageLocaleId,
         List<Item>? items,
-        long? maxStorageTimeSeconds,
+        long? maxStorageTimeSeconds = 172800,
         SystemData? systemData = null,
         MessageContentRagfair? ragfair = null
     )
@@ -174,8 +174,8 @@ public class MailSendService(
         string sessionId,
         string message,
         List<Item>? items,
-        long? maxStorageTimeSeconds,
-        List<ProfileChangeEvent>? profileChangeEvents)
+        long? maxStorageTimeSeconds = 172800,
+        List<ProfileChangeEvent>? profileChangeEvents = null)
     {
         SendMessageDetails details = new()
         {
@@ -191,7 +191,7 @@ public class MailSendService(
             var rootItemParentId = _hashUtil.Generate();
 
             details.Items.AddRange(_itemHelper.AdoptOrphanedItems(rootItemParentId, items));
-            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds ?? 172800;
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
         }
 
         if ((profileChangeEvents?.Count ?? 0) > 0)
@@ -205,7 +205,7 @@ public class MailSendService(
         string messageLocaleId,
         List<Item>? items,
         List<ProfileChangeEvent>? profileChangeEvents,
-        long? maxStorageTimeSeconds
+        long? maxStorageTimeSeconds = 172800
     )
     {
         SendMessageDetails details = new()
@@ -220,7 +220,7 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds ?? 172800;
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
         }
 
         if ((profileChangeEvents?.Count ?? 0) > 0)
@@ -241,8 +241,8 @@ public class MailSendService(
         string sessionId,
         UserDialogInfo senderDetails,
         string message,
-        List<Item>? items,
-        long? maxStorageTimeSeconds
+        List<Item>? items = null,
+        long? maxStorageTimeSeconds = 172800
     )
     {
         SendMessageDetails details = new()
@@ -258,7 +258,7 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds ?? 172800;
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
         }
 
         SendMessageToPlayer(details);
