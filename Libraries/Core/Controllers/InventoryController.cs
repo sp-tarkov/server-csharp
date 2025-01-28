@@ -367,17 +367,11 @@ public class InventoryController(
         {
             try
             {
-                itemId = GetExaminedItemTpl(request);
+                itemId = GetExaminedItemTpl(request, sessionId);
             }
             catch
             {
                 _logger.Error(_localisationService.GetText("inventory-examine_item_does_not_exist", request.Item));
-            }
-
-            // get hideout item
-            if (request.FromOwner.Type == "HideoutProduction")
-            {
-                itemId = request.Item;
             }
         }
 
@@ -407,7 +401,7 @@ public class InventoryController(
         }
     }
 
-    protected string? GetExaminedItemTpl(InventoryExamineRequestData request)
+    protected string? GetExaminedItemTpl(InventoryExamineRequestData request, string? sessionId)
     {
         if (_presetHelper.IsPreset(request.Item)) return _presetHelper.GetBaseItemTpl(request.Item);
 
@@ -439,6 +433,30 @@ public class InventoryController(
 
             // Unable to find item in database or ragfair
             _logger.Warning(_localisationService.GetText("inventory-unable_to_find_item", request.Item));
+        }
+        
+        // get hideout item
+        if (request.FromOwner.Type == "HideoutProduction")
+        {
+            return request.Item;
+        }
+
+        if (request.FromOwner.Type == "Mail")
+        {
+            // when inspecting an item in mail rewards, we are given on the message its in and its mongoId, not the Template, so we have to go find it ourselves
+            // all mail the player has
+            var mail = _profileHelper.GetFullProfile(sessionId).DialogueRecords;
+            // per trader/person mail
+            var dialogue = mail.FirstOrDefault(x => x.Value.Messages.Any(m => m.Id == request.FromOwner.Id));
+            // check each message from that trader/person for messages that match the ID we got
+            var message = dialogue.Value.Messages.FirstOrDefault(m => m.Id == request.FromOwner.Id);
+            // get the Id given and get the Template ID from that
+            var item = message.Items.Data.FirstOrDefault(item => item.Id == request.Item);
+
+            if (item is not null)
+            {
+                return item.Template;
+            }
         }
 
         _logger.Error($"Unable to get item with id: {request.Item}");
