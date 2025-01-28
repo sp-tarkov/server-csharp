@@ -73,9 +73,6 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
                 return JsonSerializer.Deserialize<HideoutCustomizationSetMannequinPoseRequest>(jsonText);
             case "Insure":
                 return JsonSerializer.Deserialize<InsureRequestData>(jsonText);
-            
-            /////////////////////////////////////////// InventoryBaseActionRequestData
-            
             case "AddToWishList":
                 return JsonSerializer.Deserialize<AddToWishlistRequest>(jsonText);
             case "RemoveFromWishList":

@@ -666,14 +666,11 @@ public class HideoutController(
                 continue;
             }
 
-            if (production.Value.GetType() == typeof(HideoutProduction))
+            // Production or ScavCase
+            if (production.Value.RecipeId == request.RecipeId)
             {
-                // Production or ScavCase
-                if (production.Value.RecipeId == request.RecipeId)
-                {
-                    prodId = production.Key; // Set to objects key
-                    break;
-                }
+                prodId = production.Key; // Set to objects key
+                break;
             }
         }
 
@@ -899,8 +896,7 @@ public class HideoutController(
 
     private TaskConditionCounter GetHoursCraftingTaskConditionCounter(PmcData pmcData, HideoutProduction recipe)
     {
-        var counterHoursCrafting = pmcData.TaskConditionCounters[HideoutController.NameTaskConditionCountersCraftingId];
-        if (counterHoursCrafting is null)
+        if (!pmcData.TaskConditionCounters.TryGetValue(HideoutController.NameTaskConditionCountersCraftingId, out var _))
         {
             // Doesn't exist, create
             pmcData.TaskConditionCounters[HideoutController.NameTaskConditionCountersCraftingId] = new TaskConditionCounter
@@ -910,10 +906,9 @@ public class HideoutController(
                 SourceId = "CounterCrafting",
                 Value = 0,
             };
-            counterHoursCrafting = pmcData.TaskConditionCounters[HideoutController.NameTaskConditionCountersCraftingId];
         }
 
-        return counterHoursCrafting;
+        return pmcData.TaskConditionCounters[HideoutController.NameTaskConditionCountersCraftingId];
     }
 
     private void HandleScavCase(string sessionID, PmcData pmcData, HideoutTakeProductionRequestData request, ItemEventRouterResponse output)

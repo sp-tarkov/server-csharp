@@ -184,7 +184,7 @@ public class EventOutputHolder
             }
 
             // Ensure we don't inform client of production again
-            if (storageForSessionId[production.Key])
+            if (storageForSessionId.ContainsKey(production.Key))
             {
                 productions.Remove(production.Key);
 
@@ -192,9 +192,9 @@ public class EventOutputHolder
             }
 
             // Flag started craft as having been seen by client so it won't happen subsequent times
-            if (production.Value.Progress > 0 && !storageForSessionId[production.Key])
+            if (production.Value.Progress > 0 && !storageForSessionId.ContainsKey(production.Key))
             {
-                storageForSessionId[production.Key] = true;
+                storageForSessionId.TryAdd(production.Key, true);
             }
         }
 
