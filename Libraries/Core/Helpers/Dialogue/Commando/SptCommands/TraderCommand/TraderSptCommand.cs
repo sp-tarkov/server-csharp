@@ -19,6 +19,19 @@ public class TraderSptCommand : ISptCommand
 
     public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
+        // TODO: Finish implementation/fix errors.
+        // if (TraderSptCommand.commandRegex.test(request.text) is null)
+        // {
+        //     this.mailSendService.sendUserMessageToPlayer(
+        //         sessionId,
+        //         commandHandler,
+        //         "Invalid use of trader command. Use 'help' for more information.",
+        //     );
+        //     return request.DialogId;
+        // }
+        //
+        // return request.DialogId;
+
         throw new NotImplementedException();
     }
 }
