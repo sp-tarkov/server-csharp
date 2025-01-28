@@ -24,6 +24,7 @@ public class CompareUtil
      */
     public bool RecursiveCompare(object v1, object v2)
     {
+        // TODO: Fix this shit.
         // const typeOfv1 = typeof v1;
         // const typeOfv2 = typeof v2;
         // if (CompareUtil.typesToCheckAgainst.has(typeOfv1)) {
