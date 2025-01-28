@@ -1204,7 +1204,7 @@ public class ItemHelper(
     /// <param name="itemId">The unique identifier of the item for which to find the main parent.</param>
     /// <param name="itemsMap">A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.</param>
     /// <returns>The Item object representing the top-most parent of the given item, or null if no such parent exists.</returns>
-    public Item GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
+    public Item? GetAttachmentMainParent(string itemId, Dictionary<string, Item> itemsMap)
     {
         var currentItem = itemsMap.FirstOrDefault(x => x.Key == itemId).Value;
 
@@ -1246,7 +1246,7 @@ public class ItemHelper(
      * @param itemsMap - A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.
      * @returns The Item object representing the equipment parent of the given item, or `null` if no such parent exists.
      */
-    public Item GetEquipmentParent(string itemId, Dictionary<string, Item> itemsMap)
+    public Item? GetEquipmentParent(string itemId, Dictionary<string, Item> itemsMap)
     {
         var currentItem = itemsMap.GetValueOrDefault(itemId);
 
@@ -1318,7 +1318,7 @@ public class ItemHelper(
      * @param item Db item template to look up Cartridge filter values from
      * @returns Caliber of cartridge
      */
-    public string GetRandomCompatibleCaliberTemplateId(TemplateItem item)
+    public string? GetRandomCompatibleCaliberTemplateId(TemplateItem item)
     {
         var cartridges = item?.Properties?.Cartridges[0]?.Props?.Filters[0]?.Filter;
 
@@ -1679,7 +1679,7 @@ public class ItemHelper(
     {
         var localeDb = _localeService.GetLocaleDb();
         var result = localeDb[$"{itemTpl} Name"];
-        if (result?.Count() > 0)
+        if (result?.Length > 0)
         {
             return result;
         }
@@ -1784,9 +1784,9 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public string? GetCompatibleTplFromArray(List<string> possibleTpls, HashSet<string> incompatibleModTpls)
+    public string GetCompatibleTplFromArray(List<string> possibleTpls, HashSet<string> incompatibleModTpls)
     {
-        if (possibleTpls.Count() == 0)
+        if (!possibleTpls.Any())
         {
             return null;
         }
@@ -1795,7 +1795,7 @@ public class ItemHelper(
         var count = 0;
         while (chosenTpl is null)
         {
-            // Loop over choosing a random tpl until one is found or count varaible reaches the same size as the possible tpls array
+            // Loop over choosing a random tpl until one is found or count variable reaches the same size as the possible tpls array
             var tpl = _randomUtil.GetArrayValue(possibleTpls);
             if (incompatibleModTpls.Contains(tpl))
             {
@@ -1939,20 +1939,15 @@ public class ItemHelper(
     // Returns A Map where the keys are the item IDs and the values are the corresponding Item objects.
     public Dictionary<string, Item> GenerateItemsMap(List<Item> items)
     {
-        Dictionary<string, Item> itemsMap = new();
-        foreach (var item in items)
-        {
-            itemsMap.Add(item.Id, item);
-        }
-
-        return itemsMap;
+        // Convert list to dictionary, keyed by items Id
+        return items.ToDictionary(item => item.Id);
     }
 
     // Add a blank upd object to passed in item if it does not exist already
     // item to add upd to
     // text to write to log when upd object was not found
     // Returns True when upd object was added
-    public bool AddUpdObjectToItem(Item item, string warningMessageWhenMissing = null)
+    public bool AddUpdObjectToItem(Item item, string? warningMessageWhenMissing = null)
     {
         if (item.Upd is null)
         {
