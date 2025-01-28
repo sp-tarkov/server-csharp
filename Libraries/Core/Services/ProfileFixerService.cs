@@ -550,11 +550,11 @@ public class ProfileFixerService(
 
             foreach (var message in dialog.Value.Messages)
             {
-                if (message.Items is null || message.Items.Data is null)
+                if (message.Items?.Data is null)
                     continue; // skip messages with no items
 
                 // Fix message with no items but have the flags to indicate items to collect
-                if (message.Items.Data.Count == 0 && (message.HasRewards ?? false))
+                if (message.Items.Data.Count == 0 && (message.HasRewards.GetValueOrDefault(false)))
                 {
                     message.HasRewards = false;
                     message.RewardCollected = true;
@@ -565,7 +565,7 @@ public class ProfileFixerService(
                 foreach (var item in message.Items.Data)
                 {
                     // Check item exists in itemsDb
-                    if (itemsDb[item.Template] is null)
+                    if (!itemsDb.ContainsKey(item.Template))
                         _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
@@ -595,7 +595,12 @@ public class ProfileFixerService(
 
         foreach (var repeatable in fullProfile.CharacterData.PmcData.RepeatableQuests ?? new())
         {
-            foreach (var activeQuest in repeatable.ActiveQuests ?? new())
+            if (repeatable.ActiveQuests is null)
+            {
+                continue;
+            }
+
+            foreach (var activeQuest in repeatable.ActiveQuests)
             {
                 if (!_traderHelper.TraderEnumHasValue(activeQuest.TraderId))
                 {
@@ -611,19 +616,21 @@ public class ProfileFixerService(
                     continue;
                 }
 
-                foreach (var successReward in activeQuest.Rewards.Success ?? new())
+                if (activeQuest.Rewards?.Success is null)
                 {
-                    if (successReward.Type.ToString() == "Item")
+                    continue;
+                }
+                // Get Item rewards only
+                foreach (var successReward in activeQuest.Rewards.Success.Where(reward => reward.Type == RewardType.Item))
+                {
+                    foreach (var item in successReward.Items)
                     {
-                        foreach (var item in successReward.Items)
+                        if (!itemsDb.ContainsKey(item.Template))
                         {
-                            if (itemsDb[item.Template] is null)
-                            {
-                                _logger.Warning(
-                                    $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
-                                );
-                                repeatable.ActiveQuests.Remove(activeQuest);
-                            }
+                            _logger.Warning(
+                                $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
+                            );
+                            repeatable.ActiveQuests.Remove(activeQuest);
                         }
                     }
                 }
@@ -689,6 +696,7 @@ public class ProfileFixerService(
                     return true;
                 }
 
+                // Found a broken item
                 break;
             }
         }
@@ -714,7 +722,7 @@ public class ProfileFixerService(
             }
 
             // Check item exists in itemsDb
-            if (itemsDb[item.TemplateId] is null)
+            if (!itemsDb.ContainsKey(item.TemplateId))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.TemplateId));
 
