@@ -639,7 +639,7 @@ public class BotEquipmentModGenerator(
                     var modFromService = _botEquipmentModPoolService.GetModsForWeaponSlot(modToAddTemplate.Value.Id);
                     if (modFromService?.Keys.Count > 0)
                     {
-                        request.ModPool[modToAddTemplate.Value.Id] = modFromService;
+                        request.ModPool[modToAddTemplate.Value.Id] = modFromService.ToDictionary();
                         containsModInPool = true;
                     }
                 }

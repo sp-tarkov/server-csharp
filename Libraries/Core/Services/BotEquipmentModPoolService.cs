@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
@@ -19,8 +20,8 @@ public class BotEquipmentModPoolService
 
     protected bool _weaponPoolGenerated;
     protected bool _armorPoolGenerated;
-    protected Dictionary<string, Dictionary<string, HashSet<string>>> _weaponModPool;
-    protected Dictionary<string, Dictionary<string, HashSet<string>>> _gearModPool;
+    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _weaponModPool;
+    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _gearModPool;
     protected BotConfig _botConfig;
 
     public BotEquipmentModPoolService(
@@ -38,8 +39,8 @@ public class BotEquipmentModPoolService
         _configServer = configServer;
         _botConfig = _configServer.GetConfig<BotConfig>();
 
-        _weaponModPool = new Dictionary<string, Dictionary<string, HashSet<string>>>();
-        _gearModPool = new Dictionary<string, Dictionary<string, HashSet<string>>>();
+        _weaponModPool = new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
+        _gearModPool = new ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>>();
     }
 
     /**
@@ -75,10 +76,7 @@ public class BotEquipmentModPoolService
             }
 
             // Add base item (weapon/armor) to pool
-            if (!pool.ContainsKey(item.Id))
-            {
-                pool[item.Id] = new Dictionary<string, HashSet<string>>();
-            }
+            pool.TryAdd(item.Id, new ConcurrentDictionary<string, HashSet<string>>());
 
             // iterate over each items mod slots e.g. mod_muzzle
             foreach (var slot in item.Properties.Slots) {
@@ -143,7 +141,7 @@ public class BotEquipmentModPoolService
      * @param itemTpl items tpl to look up mods for
      * @returns Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value
      */
-    public Dictionary<string, HashSet<string>> GetModsForGearSlot(string itemTpl)
+    public ConcurrentDictionary<string, HashSet<string>> GetModsForGearSlot(string itemTpl)
     {
         if (!_armorPoolGenerated)
         {
@@ -160,7 +158,7 @@ public class BotEquipmentModPoolService
      * @param itemTpl Weapons tpl to look up mods for
      * @returns Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value
      */
-    public Dictionary<string, HashSet<string>> GetModsForWeaponSlot(string itemTpl)
+    public ConcurrentDictionary<string, HashSet<string>> GetModsForWeaponSlot(string itemTpl)
     {
         if (!_weaponPoolGenerated)
         {

@@ -16,6 +16,8 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
+using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Core.Controllers;
 
@@ -150,7 +152,7 @@ public class BotController(
         var allPmcsHaveSameNameAsPlayer = _randomUtil.GetChance100(
             _pmcConfig.AllPMCsHavePlayerNameWithRandomPrefixChance
         );
-
+        var stopwatch = Stopwatch.StartNew();
         var tasks = new List<Task>();
         // Map conditions to promises for bot generation
         foreach (var condition in request.Conditions ?? [])
@@ -176,6 +178,8 @@ public class BotController(
         }
         
         Task.WaitAll(tasks.ToArray());
+        stopwatch.Stop();
+        _logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
 
         return [];
     }

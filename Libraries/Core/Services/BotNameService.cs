@@ -21,6 +21,7 @@ public class BotNameService(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected HashSet<string> _usedNameCache = new HashSet<string>();
+    protected object _lock = new();
 
     /// <summary>
     /// Clear out any entries in Name Set
@@ -42,7 +43,7 @@ public class BotNameService(
         BotType botJsonTemplate,
         BotGenerationDetails botGenerationDetails,
         string botRole,
-        List<string> uniqueRoles = null)
+        List<string>? uniqueRoles = null)
     {
         var isPmc = botGenerationDetails.IsPmc;
 
@@ -77,7 +78,7 @@ public class BotNameService(
             if (roleShouldBeUnique.GetValueOrDefault(false))
             {
                 // Check name in cache
-                if (_usedNameCache.Contains(name))
+                if (CacheContainsName(name))
                 {
                     // Not unique
                     if (attempts >= 5)
@@ -97,13 +98,29 @@ public class BotNameService(
             }
 
             // Add bot name to cache to prevent being used again
-            _usedNameCache.Add(name);
+            AddNameToCache(name);
 
             return name;
         }
 
         // Should never reach here
         return $"BOT {botRole} {botGenerationDetails.BotDifficulty}";
+    }
+
+    private bool AddNameToCache(string name)
+    {
+        lock (_lock)
+        {
+            return _usedNameCache.Add(name);
+        }
+    }
+
+    protected bool CacheContainsName(string name)
+    {
+        lock (_lock)
+        {
+            return _usedNameCache.Contains(name);
+        }
     }
 
     /// <summary>

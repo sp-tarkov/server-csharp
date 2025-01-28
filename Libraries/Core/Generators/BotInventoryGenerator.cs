@@ -543,7 +543,7 @@ public class BotInventoryGenerator(
             modPool[modSlot.Key] = filteredMods.ToHashSet();
         }
 
-        return modPool;
+        return modPool.ToDictionary();
     }
 
     /// <summary>
