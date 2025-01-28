@@ -166,7 +166,7 @@
     "botRelativeLevelDeltaMax": 10,
     "botRelativeLevelDeltaMin": 70,
     "_isUsec": "Percentage chance PMC will be USEC",
-    "isUsec": 50,
+    "isUsec": 60,
     "_pmcType": "Controls what bot brain can be chosen for each PMC bot type, the number is the weighting to be picked",
     "pmcType": {
         "pmcbear": {
