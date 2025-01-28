@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Core.Models.Eft.Common.Tables;
 using SptCommon.Annotations;
 using Core.Models.Eft.Ws;
 using Core.Models.Enums;
@@ -35,6 +36,7 @@ public class JsonUtil
             new EftEnumConverter<RewardType>(),
             new EftEnumConverter<ExitStatus>(),
             new EftEnumConverter<MemberCategory>(),
+            new EftEnumConverter<PinLockState>(),
             new BaseInteractionRequestDataConverter()
         }
     };

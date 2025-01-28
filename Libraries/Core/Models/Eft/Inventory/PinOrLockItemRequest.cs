@@ -11,5 +11,6 @@ public record PinOrLockItemRequest : InventoryBaseActionRequestData
 
     /** "Pinned"/"Locked"/"Free" */
     [JsonPropertyName("State")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PinLockState? State { get; set; }
 }
