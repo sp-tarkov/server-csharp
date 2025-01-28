@@ -60,7 +60,9 @@ public abstract class StaticRouter : Router
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+        {
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
+        }
         return action.action(url, info, sessionID, output);
     }
 
@@ -87,7 +89,9 @@ public abstract class DynamicRouter : Router
         var type = action.bodyType;
         IRequestData? info = null;
         if (type != null && !string.IsNullOrEmpty(body))
-            info = (IRequestData?) _jsonUtil.Deserialize(body, type);
+        {
+            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
+        }
         return action.action(url, info, sessionID, output);
     }
 

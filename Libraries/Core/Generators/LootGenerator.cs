@@ -362,7 +362,9 @@ public class LootGenerator(
         // No `_encyclopedia` property, not possible to reliably get root item tpl
         if (chosenPreset.Encyclopedia is null) {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug("$Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
+            }
 
             return false;
         }
@@ -371,7 +373,9 @@ public class LootGenerator(
         var itemDbDetails = _itemHelper.GetItem(chosenPreset.Encyclopedia);
         if (!itemDbDetails.Key) {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"$Unable to find preset with tpl: {chosenPreset.Encyclopedia}, skipping");
+            }
 
             return false;
         }
@@ -497,7 +501,9 @@ public class LootGenerator(
                     x.Properties.AmmoCaliber == weaponCaliber);
                 if (!ammoBoxesMatchingCaliber.Any()) {
                     if(_logger.IsLogEnabled(LogLevel.Debug))
+                    {
                         _logger.Debug($"No ammo box with caliber {weaponCaliber} found, skipping");
+                    }
 
                     continue;
                 }
@@ -524,7 +530,9 @@ public class LootGenerator(
 
             if (rewardItemPool.Count() == 0) {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"No items with base type of {rewardKey} found, skipping");
+                }
 
                 continue;
             }
@@ -567,9 +575,11 @@ public class LootGenerator(
             );
             if (relatedItems is null || relatedItems.Count() == 0) {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug(
                         $"No items found to fulfil reward type: {rewardKey} for weapon: {chosenWeaponPreset.Name}, skipping type"
-                        );
+                    );
+                }
                 continue;
             }
 

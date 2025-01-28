@@ -324,7 +324,9 @@ public class BotGenerator(
         if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
+            }
 
             return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
         }
@@ -482,7 +484,9 @@ public class BotGenerator(
     {
         var pmcCount = output.Aggregate(0, (acc, cur) => { return cur.Info.Side is "Bear" or "Usec" ? acc + 1 : acc; });
         if(_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug($"Generated {output.Count} total bots. Replaced {pmcCount} with PMCs");
+        }
     }
 
     /// <summary>

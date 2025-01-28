@@ -194,7 +194,7 @@ public class RepeatableQuestGenerator(
             else
             {
                 // never should reach this if everything works out
-                _logger.Debug("Encountered issue when creating Elimination quest. Please report.");
+                _logger.Error("Encountered issue when creating Elimination quest. Please report.");
             }
         }
 

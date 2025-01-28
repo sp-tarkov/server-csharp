@@ -12,6 +12,8 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
+
 namespace Core.Generators;
 
 [Injectable]
@@ -128,9 +130,12 @@ public class BotEquipmentModGenerator(
                 switch (plateSlotFilteringOutcome.Result)
                 {
                     case Result.UNKNOWN_FAILURE or Result.NO_DEFAULT_FILTER:
-                        _logger.Debug(
-                            $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
-                        );
+                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                        {
+                            _logger.Debug(
+                                $"Plate slot: {modSlotName} selection for armor: {parentTemplate.Id} failed: {plateSlotFilteringOutcome.Result}, skipping"
+                            );
+                        }
 
                         continue;
                     case Result.LACKS_PLATE_WEIGHTS:
@@ -283,11 +288,11 @@ public class BotEquipmentModGenerator(
         // no plates found that fit requirements, lets get creative
 
         // Get lowest and highest plate classes available for this armor
-        var minMaxArmorPlateClass  = GetMinMaxArmorPlateClass(platesFromDb.ToList());
+        var minMaxArmorPlateClass = GetMinMaxArmorPlateClass(platesFromDb.ToList());
 
         // Increment plate class level in attempt to get useable plate
         var findCompatiblePlateAttempts = 0;
-        var maxAttempts  = 3;
+        var maxAttempts = 3;
         for (var i = 0; i < maxAttempts; i++)
         {
             var chosenArmorPlateLevelDouble = int.Parse(chosenArmorPlateLevelString) + 1;
@@ -311,9 +316,12 @@ public class BotEquipmentModGenerator(
             // No valid plate class found in 3 tries, attempt default plates
             if (findCompatiblePlateAttempts >= maxAttempts)
             {
-                _logger.Debug(
-                    $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"Plate filter too restrictive for armor: {armorItem.Name} {armorItem.Id}, unable to find plates of level: {chosenArmorPlateLevelString}, using items default plate"
+                    );
+                }
 
                 var defaultPlate = GetDefaultPlateTpl(armorItem, modSlot);
                 if (defaultPlate is not null)
@@ -328,11 +336,11 @@ public class BotEquipmentModGenerator(
                 // No plate found after filtering AND no default plate
 
                 // Last attempt, get default preset and see if it has a plate default
-                var defaultPresetPlateSlot  = GetDefaultPresetArmorSlot(armorItem.Id, modSlot);
+                var defaultPresetPlateSlot = GetDefaultPresetArmorSlot(armorItem.Id, modSlot);
                 if (defaultPresetPlateSlot is not null)
                 {
                     // Found a plate, exit
-                    var plateItem  = _itemHelper.GetItem(defaultPresetPlateSlot.Template);
+                    var plateItem = _itemHelper.GetItem(defaultPresetPlateSlot.Template);
                     platesOfDesiredLevel = [plateItem.Value];
 
                     break;
@@ -344,7 +352,7 @@ public class BotEquipmentModGenerator(
                 return result;
             }
         }
-        
+
         // Only return the items ids
         result.Result = Result.SUCCESS;
         result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id).ToHashSet();
@@ -354,21 +362,25 @@ public class BotEquipmentModGenerator(
 
     private MinMax GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
-        platePool.Sort((x, y) => {
-            if (x.Properties.ArmorClass < y.Properties.ArmorClass)
+        platePool.Sort(
+            (x, y) =>
             {
-                return -1;
+                if (x.Properties.ArmorClass < y.Properties.ArmorClass)
+                {
+                    return -1;
+                }
+
+                if (x.Properties.ArmorClass > y.Properties.ArmorClass)
+                {
+                    return 1;
+                }
+
+                return 0;
             }
+        );
 
-            if (x.Properties.ArmorClass > y.Properties.ArmorClass)
-            {
-                return 1;
-            }
-
-            return 0;
-        });
-
-        return new MinMax {
+        return new MinMax
+        {
             Min = (platePool[0].Properties.ArmorClass),
             Max = (platePool[platePool.Count - 1].Properties.ArmorClass),
         };
@@ -502,8 +514,7 @@ public class BotEquipmentModGenerator(
                 continue;
             }
 
-            if (!IsModValidForSlot(modToAdd, modsParentSlot, modSlot, request.ParentTemplate, request.BotData.Role)
-               )
+            if (!IsModValidForSlot(modToAdd, modsParentSlot, modSlot, request.ParentTemplate, request.BotData.Role))
             {
                 continue;
             }
@@ -591,11 +602,7 @@ public class BotEquipmentModGenerator(
                     request.WeaponStats.HasRearIronSight = true;
                 }
             }
-            else if (
-                !request.WeaponStats.HasOptic ??
-                false &&
-                _itemHelper.IsOfBaseclass(modToAddTemplate.Value.Id, BaseClasses.SIGHTS)
-            )
+            else if (!(request.WeaponStats.HasOptic ?? false) && _itemHelper.IsOfBaseclass(modToAddTemplate.Value.Id, BaseClasses.SIGHTS))
             {
                 request.WeaponStats.HasOptic = true;
             }
@@ -687,9 +694,7 @@ public class BotEquipmentModGenerator(
 
     protected bool ItemLacksSlotsCartridgesAndChambers(TemplateItem item)
     {
-        return item.Properties.Slots?.Count == 0
-               && item.Properties.Cartridges?.Count == 0
-               && item.Properties.Chambers?.Count == 0;
+        return item.Properties.Slots?.Count == 0 && item.Properties.Cartridges?.Count == 0 && item.Properties.Chambers?.Count == 0;
     }
 
     /// <summary>
@@ -972,7 +977,11 @@ public class BotEquipmentModGenerator(
         if (modPool is null && !(parentSlot?.Required ?? false))
         {
             // Nothing in mod pool + item not required
-            _logger.Debug($"Mod pool for optional slot: {request.ModSlot} on item: {request.ParentTemplate.Name} was empty, skipping mod");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Mod pool for optional slot: {request.ModSlot} on item: {request.ParentTemplate.Name} was empty, skipping mod");
+            }
+
             return null;
         }
 
@@ -1041,7 +1050,10 @@ public class BotEquipmentModGenerator(
         // Log if mod chosen was incompatible
         if (chosenModResult.Incompatible.GetValueOrDefault(false) && !(parentSlot.Required.GetValueOrDefault(false)))
         {
-            _logger.Debug($"Unable to find compatible mod of type: {parentSlot.Name}, in slot: {request.ModSlot} reason: {chosenModResult.Reason}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Unable to find compatible mod of type: {parentSlot.Name}, in slot: {request.ModSlot} reason: {chosenModResult.Reason}");
+            }
         }
 
         // Get random mod to attach from items db for required slots if none found above
@@ -1279,7 +1291,10 @@ public class BotEquipmentModGenerator(
         {
             if (request.ItemModPool[request.ModSlot]?.Count > 1)
             {
-                _logger.Debug($"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"{request.BotData.Role} No default: {request.ModSlot} mod found for: {weaponTemplate.Name}, using existing pool");
+                }
             }
 
             // Couldn't find default in globals, use existing mod pool data
@@ -1305,8 +1320,7 @@ public class BotEquipmentModGenerator(
 
         // Mod isn't in existing pool, only add if it has no children and exists inside parent filter
         if (
-            parentSlotCompatibleItems?.Contains(matchingModFromPreset.Template) ??
-            false &&
+            (parentSlotCompatibleItems?.Contains(matchingModFromPreset.Template) ?? false) &&
             _itemHelper.GetItem(matchingModFromPreset.Template).Value.Properties.Slots?.Count == 0
         )
         {
@@ -1317,17 +1331,23 @@ public class BotEquipmentModGenerator(
             }
 
             // Above chosen mod had conflicts with existing weapon mods
-            _logger.Debug(
-                $"{request.BotData.Role} Chosen default: {request.ModSlot} mod found for: {weaponTemplate.Name} weapon conflicts with item on weapon, cannot use default"
-            );
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(
+                    $"{request.BotData.Role} Chosen default: {request.ModSlot} mod found for: {weaponTemplate.Name} weapon conflicts with item on weapon, cannot use default"
+                );
+            }
 
             var existingModPool = request.ItemModPool[request.ModSlot];
             if (existingModPool.Count == 1)
             {
                 // The only item in pool isn't compatible
-                _logger.Debug(
-                    $"{request.BotData.Role} {request.ModSlot} Mod pool for: {weaponTemplate.Name} weapon has only incompatible items, using parent list instead"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"{request.BotData.Role} {request.ModSlot} Mod pool for: {weaponTemplate.Name} weapon has only incompatible items, using parent list instead"
+                    );
+                }
 
                 // Last ditch, use full pool of items minus conflicts
                 var newListOfModsForSlot = parentSlotCompatibleItems.Where((tpl) => !request.ConflictingItemTpls.Contains(tpl));
@@ -1481,7 +1501,10 @@ public class BotEquipmentModGenerator(
                     }
                 )
             );
-            _logger.Debug($"Item -> {parentTemplate?.Id}; Slot -> {modSlot}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Item -> {parentTemplate?.Id}; Slot -> {modSlot}");
+            }
 
             return false;
         }
@@ -1724,9 +1747,12 @@ public class BotEquipmentModGenerator(
         var whitelistedSightTypes = botWeaponSightWhitelist[weaponDetails.Value.Parent];
         if (whitelistedSightTypes is null)
         {
-            _logger.Debug(
-                $"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering"
-            );
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(
+                    $"Unable to find whitelist for weapon type: {weaponDetails.Value.Parent} {weaponDetails.Value.Name}, skipping sight filtering"
+                );
+            }
 
             return scopes;
         }
@@ -1777,7 +1803,10 @@ public class BotEquipmentModGenerator(
         // No mods added to return list after filtering has occurred, send back the original mod list
         if (filteredScopesAndMods is null || filteredScopesAndMods.Count() == 0)
         {
-            _logger.Debug($"Scope whitelist too restrictive for: {weapon.Template} {weaponDetails.Value.Name}, skipping filter");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Scope whitelist too restrictive for: {weapon.Template} {weaponDetails.Value.Name}, skipping filter");
+            }
 
             return scopes;
         }

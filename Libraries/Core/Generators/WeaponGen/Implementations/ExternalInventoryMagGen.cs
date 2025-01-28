@@ -5,6 +5,7 @@ using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
@@ -71,7 +72,10 @@ public class ExternalInventoryMagGen(
                 // Prevent infinite loop by only allowing 5 attempts at fitting a magazine into inventory
                 if (fitAttempts > 5)
                 {
-                    _logger.Debug($"Failed {fitAttempts} times to add magazine {magazineTpl} to bot inventory, stopping");
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"Failed {fitAttempts} times to add magazine {magazineTpl} to bot inventory, stopping");
+                    }
 
                     break;
                 }
@@ -129,7 +133,10 @@ public class ExternalInventoryMagGen(
                             break;
                         }
 
-                        _logger.Debug($"Unable to add additional magazine into bot inventory: vest/pockets for weapon: {weapon.Name}, attempted: {fitAttempts} times. Reason: {fitsIntoInventory}");
+                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                        {
+                            _logger.Debug($"Unable to add additional magazine into bot inventory: vest/pockets for weapon: {weapon.Name}, attempted: {fitAttempts} times. Reason: {fitsIntoInventory}");
+                        }
 
                         break;
                     }

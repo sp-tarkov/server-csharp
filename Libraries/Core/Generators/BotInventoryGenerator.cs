@@ -344,7 +344,9 @@ public class BotInventoryGenerator(
         if (!tacVestsWithArmor.Any())
         {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Unable to filter to only armored rigs as bot: {botRole} has none in pool");
+            }
 
             return;
         }
@@ -368,7 +370,9 @@ public class BotInventoryGenerator(
         if (!allowEmptyResult && !tacVestsWithoutArmor.Any())
         {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Unable to filter to only unarmored rigs as bot: {botRole} has none in pool");
+            }
 
             return;
         }
@@ -424,7 +428,9 @@ public class BotInventoryGenerator(
                 {
                     _logger.Error(_localisationService.GetText("bot-missing_item_template", chosenItemTpl));
                     if(_logger.IsLogEnabled(LogLevel.Debug))
+                    {
                         _logger.Debug($"EquipmentSlot-> {settings.RootEquipmentSlot}");
+                    }
 
                     // Remove picked item
                     settings.RootEquipmentPool.Remove(chosenItemTpl);

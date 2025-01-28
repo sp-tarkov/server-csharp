@@ -9,6 +9,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Generators;
@@ -56,7 +57,10 @@ public class PlayerScavGenerator(
             _logger.Error(_localisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));
         }
 
-        _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
+        }
 
         // Edit baseBotNode values
         var baseBotNode = ConstructBotBaseTemplate(playerScavKarmaSettings.BotTypeForLoot);
@@ -164,7 +168,12 @@ public class PlayerScavGenerator(
             );
 
             if (result != ItemAddedResult.SUCCESS)
-                _logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
+            {
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
+                }
+            }
         }
     }
 

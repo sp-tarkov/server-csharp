@@ -539,7 +539,9 @@ public class BotLootGenerator(
                 {
                     // Bot has no container to put item in, exit
                     if(_logger.IsLogEnabled(LogLevel.Debug))
+                    {
                         _logger.Debug($"Unable to add: {totalItemCount} items to bot as it lacks a container to include them");
+                    }
                     break;
                 }
 
@@ -547,11 +549,13 @@ public class BotLootGenerator(
                 if (fitItemIntoContainerAttempts >= 4)
                 {
                     if(_logger.IsLogEnabled(LogLevel.Debug))
+                    {
                         _logger.Debug(
                             $"Failed placing item: {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} " +
                             $"containers: {string.Join(",", equipmentSlots)}. Tried: {fitItemIntoContainerAttempts} " +
                             $"times, reason: {itemAddedResult}, skipping"
                         );
+                    }
 
                     break;
                 }
@@ -707,7 +711,9 @@ public class BotLootGenerator(
             if (result != ItemAddedResult.SUCCESS)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Failed to add additional weapon {generatedWeapon.Weapon[0].Id} to bot backpack, reason: {result.ToString()}");
+                }
             }
         }
     }
@@ -759,6 +765,7 @@ public class BotLootGenerator(
             if (currentLimitCount > currentLimitCount * 10)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug(
                         _localisationService.GetText(
                             "bot-item_spawn_limit_reached_skipping_item",
@@ -770,6 +777,7 @@ public class BotLootGenerator(
                             }
                         )
                     );
+                }
 
                 return false;
             }
