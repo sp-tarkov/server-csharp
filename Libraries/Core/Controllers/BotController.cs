@@ -405,7 +405,7 @@ public class BotController(
             IsPmc = generateAsPmc,
             Side = generateAsPmc ? _botHelper.GetPmcSideByRole(condition.Role ?? string.Empty) : "Savage",
             Role = condition.Role,
-            PlayerLevel = pmcProfile?.Info?.Level ?? 0,
+            PlayerLevel = pmcProfile?.Info?.Level,
             PlayerName = pmcProfile?.Info?.Nickname,
             BotRelativeLevelDeltaMax = _pmcConfig.BotRelativeLevelDeltaMax,
             BotRelativeLevelDeltaMin = _pmcConfig.BotRelativeLevelDeltaMin,
