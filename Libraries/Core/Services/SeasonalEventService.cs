@@ -51,7 +51,14 @@ public class SeasonalEventService(
         ItemTpl.ARMOR_6B13_M_ASSAULT_ARMOR_CHRISTMAS_EDITION,
         ItemTpl.HEADWEAR_HAT_WITH_HORNS,
         ItemTpl.BARTER_JAR_OF_PICKLES,
-        ItemTpl.BARTER_OLIVIER_SALAD_BOX
+        ItemTpl.BARTER_OLIVIER_SALAD_BOX,
+        ItemTpl.FACECOVER_ASTRONOMER_MASK,
+        ItemTpl.FACECOVER_CIPOLLINO_MASK,
+        ItemTpl.FACECOVER_ROOSTER_MASK,
+        ItemTpl.FACECOVER_FOX_MASK,
+        ItemTpl.FACECOVER_GRINCH_MASK,
+        ItemTpl.FACECOVER_HARE_MASK,
+        ItemTpl.FACECOVER_AYBOLIT_MASK
     ];
 
     protected IReadOnlyList<string> _halloweenEventItems =
