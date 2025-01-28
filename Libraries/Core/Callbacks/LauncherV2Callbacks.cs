@@ -99,14 +99,4 @@ public class LauncherV2Callbacks(
             }
         );
     }
-
-    public string Profile()
-    {
-        throw new NotImplementedException();
-    }
-
-    public string ProfileMods()
-    {
-        throw new NotImplementedException();
-    }
 }

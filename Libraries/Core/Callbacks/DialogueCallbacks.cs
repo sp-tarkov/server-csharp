@@ -308,17 +308,17 @@ public class DialogueCallbacks(
 
     public string ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest info, string sessionID)
     {
-        throw new NotImplementedException(); // Not implemented in Node
+        return "Not Implemented!"; // Not implemented in Node
     }
 
     public string AddUserToMail(string url, AddUserGroupMailRequest info, string sessionID)
     {
-        throw new NotImplementedException(); // Not implemented in Node
+        return "Not Implemented!"; // Not implemented in Node
     }
 
     public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
-        throw new NotImplementedException(); // Not implemented in Node
+        return "Not Implemented!"; // Not implemented in Node
     }
 
     public bool OnUpdate(long timeSinceLastRun)
