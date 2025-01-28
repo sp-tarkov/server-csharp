@@ -82,25 +82,28 @@ public class NotificationSendHelper(
     protected Models.Eft.Profile.Dialogue GetDialog(string sessionId, MessageType messageType, UserDialogInfo senderDetails)
     {
         // Use trader id if sender is trader, otherwise use nickname
-        var key = senderDetails.Id;
+        var dialogKey = senderDetails.Id;
+
+        // Get all dialogs with pmcs/traders player has
         var dialogueData = _saveServer.GetProfile(sessionId).DialogueRecords;
-        var isNewDialogue = dialogueData.ContainsKey(key);
-        var dialogue = dialogueData[key];
 
-        // Existing dialog not found, make new one
-        if (isNewDialogue) {
-            dialogue = new Models.Eft.Profile.Dialogue {
-                Id = key,
-                Type = messageType,
-                Messages = [],
-                Pinned = false,
-                New = 0,
-                AttachmentsNew = 0,
-                Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails],
-            };
+        // Ensure empty dialog exists based on sender details passed in
+        dialogueData.TryAdd(dialogKey, GetEmptyDialogTemplate(dialogKey, messageType, senderDetails));
 
-            dialogueData[key] = dialogue;
-        }
-        return dialogue;
+        return dialogueData[dialogKey];
+    }
+
+    protected Models.Eft.Profile.Dialogue GetEmptyDialogTemplate(string dialogKey, MessageType messageType, UserDialogInfo senderDetails)
+    {
+        return new Models.Eft.Profile.Dialogue
+        {
+            Id = dialogKey,
+            Type = messageType,
+            Messages = [],
+            Pinned = false,
+            New = 0,
+            AttachmentsNew = 0,
+            Users = senderDetails.Info.MemberCategory == MemberCategory.Trader ? null : [senderDetails]
+        };
     }
 }
