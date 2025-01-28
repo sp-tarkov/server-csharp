@@ -13,7 +13,6 @@ public class NotifierCallbacks(
     NotifierController _notifierController
 )
 {
-
     /// <summary>
     /// Handle client/notifier/channel/create
     /// </summary>

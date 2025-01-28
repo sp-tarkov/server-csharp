@@ -140,11 +140,9 @@ public class CustomItemService(
      */
     protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
-        // for (const propKey in overrideProperties) {
-        //     itemClone._props[propKey] = overrideProperties[propKey];
-        // }
-        // TODO: this will need to be different
-        throw new NotImplementedException();
+        foreach (var propKey in overrideProperties.GetAllPropsAsDict()) {
+            itemClone.Properties.GetAllPropsAsDict()[propKey.Key] = overrideProperties.GetAllPropsAsDict()[propKey.Key];
+        }
     }
 
     /**
