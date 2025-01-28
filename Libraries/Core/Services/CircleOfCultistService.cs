@@ -680,7 +680,22 @@ public class CircleOfCultistService(
         HashSet<string> itemRewardBlacklist,
         HashSet<string> rewardPool)
     {
-        throw new NotImplementedException();
+        var activeTasks = pmcData.Quests.Where((quest) => quest.Status == QuestStatusEnum.Started);
+        foreach (var task in activeTasks) {
+            var questData = _questHelper.GetQuestFromDb(task.QId, pmcData);
+            var handoverConditions = questData.Conditions.AvailableForFinish.Where(
+                (condition) => condition.ConditionType == "HandoverItem"
+            );
+            foreach (var condition in handoverConditions) {
+                foreach (var neededItem in condition.Target.List) {
+                    if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem)) {
+                        continue;
+                    }
+                    _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
+                    rewardPool.Add(neededItem);
+                }
+            }
+        }
     }
 
     /// <summary>
