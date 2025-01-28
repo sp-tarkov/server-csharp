@@ -411,104 +411,17 @@ public record ReceivedGift
 
 public record Vitality
 {
-    [JsonPropertyName("health")]
-    public Health? Health { get; set; }
-
-    [JsonPropertyName("effects")]
-    public Effects? Effects { get; set; }
-}
-
-public record Health
-{
     [JsonPropertyName("Hydration")]
     public double? Hydration { get; set; }
-
+    
     [JsonPropertyName("Energy")]
     public double? Energy { get; set; }
-
+    
     [JsonPropertyName("Temperature")]
     public double? Temperature { get; set; }
-
-    [JsonPropertyName("Head")]
-    public double? Head { get; set; }
-
-    [JsonPropertyName("Chest")]
-    public double? Chest { get; set; }
-
-    [JsonPropertyName("Stomach")]
-    public double? Stomach { get; set; }
-
-    [JsonPropertyName("LeftArm")]
-    public double? LeftArm { get; set; }
-
-    [JsonPropertyName("RightArm")]
-    public double? RightArm { get; set; }
-
-    [JsonPropertyName("LeftLeg")]
-    public double? LeftLeg { get; set; }
-
-    [JsonPropertyName("RightLeg")]
-    public double? RightLeg { get; set; }
-}
-
-public record Effects
-{
-    [JsonPropertyName("Head")]
-    public Head? Head { get; set; }
-
-    [JsonPropertyName("Chest")]
-    public Chest? Chest { get; set; }
-
-    [JsonPropertyName("Stomach")]
-    public Stomach? Stomach { get; set; }
-
-    [JsonPropertyName("LeftArm")]
-    public LeftArm? LeftArm { get; set; }
-
-    [JsonPropertyName("RightArm")]
-    public RightArm? RightArm { get; set; }
-
-    [JsonPropertyName("LeftLeg")]
-    public LeftLeg? LeftLeg { get; set; }
-
-    [JsonPropertyName("RightLeg")]
-    public RightLeg? RightLeg { get; set; }
-}
-
-public record Head
-{
-}
-
-public record Chest
-{
-}
-
-public record Stomach
-{
-}
-
-public record LeftArm
-{
-    [JsonPropertyName("Fracture")]
-    public double? Fracture { get; set; }
-}
-
-public record RightArm
-{
-    [JsonPropertyName("Fracture")]
-    public double? Fracture { get; set; }
-}
-
-public record LeftLeg
-{
-    [JsonPropertyName("Fracture")]
-    public double? Fracture { get; set; }
-}
-
-public record RightLeg
-{
-    [JsonPropertyName("Fracture")]
-    public double? Fracture { get; set; }
+    
+    [JsonPropertyName("Health")] // This now does health and effects to each bodypart
+    public Dictionary<string, BodyPartHealth>? Health { get; set; }
 }
 
 public record Inraid

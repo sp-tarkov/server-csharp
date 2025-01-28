@@ -1,9 +1,10 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutCustomizationSetMannequinPoseRequest : BaseInteractionRequestData
+public record HideoutCustomizationSetMannequinPoseRequest : InventoryBaseActionRequestData
 {
     [JsonPropertyName("poses")]
     public Dictionary<string, string>? Poses { get; set; }

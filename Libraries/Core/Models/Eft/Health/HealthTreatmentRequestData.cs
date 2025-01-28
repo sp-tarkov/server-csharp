@@ -1,10 +1,11 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Eft.Common.Request;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Health;
 
-public record HealthTreatmentRequestData : BaseInteractionRequestData
+public record HealthTreatmentRequestData : InventoryBaseActionRequestData
 {
 
     [JsonPropertyName("trader")]
@@ -28,10 +29,10 @@ public record Difference
     public BodyParts? BodyParts { get; set; }
 
     [JsonPropertyName("Energy")]
-    public int? Energy { get; set; }
+    public double? Energy { get; set; }
 
     [JsonPropertyName("Hydration")]
-    public int? Hydration { get; set; }
+    public double? Hydration { get; set; }
 }
 
 public record BodyParts

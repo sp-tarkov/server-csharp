@@ -1,11 +1,13 @@
 ﻿using SptCommon.Annotations;
 using Core.DI;
+using Core.Helpers;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 
 namespace Core.Routers.SaveLoad;
 
 [Injectable(InjectableTypeOverride = typeof(SaveLoadRouter))]
-public class HealthSaveLoadRouter : SaveLoadRouter
+public class HealthSaveLoadRouter() : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
@@ -14,34 +16,87 @@ public class HealthSaveLoadRouter : SaveLoadRouter
 
     public override SptProfile HandleLoad(SptProfile profile)
     {
-        if (profile?.VitalityData == null)
-            profile.VitalityData = new() { Health = null, Effects = null };
-
-        profile.VitalityData.Health = new()
-        {
-            Hydration = 0,
-            Energy = 0,
-            Temperature = 0,
-            Head = 0,
-            Chest = 0,
-            Stomach = 0,
-            LeftArm = 0,
-            RightArm = 0,
-            LeftLeg = 0,
-            RightLeg = 0
-        };
-
-        profile.VitalityData.Effects = new()
-        {
-            Head = new(),
-            Chest = new(),
-            Stomach = new(),
-            LeftArm = new(),
-            RightArm = new(),
-            LeftLeg = new(),
-            RightLeg = new()
-        };
+        DefaultVitality(profile.VitalityData);
 
         return profile;
+    }
+    
+    public void DefaultVitality(Vitality? vitality)
+    {
+        vitality ??= new Vitality { Health = null, Energy = 0, Temperature = 0, Hydration = 0 };
+        
+        vitality.Health = new Dictionary<string, BodyPartHealth>
+        {
+            {
+                "Head", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "Chest", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "Stomach", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "LeftArm", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "RightArm", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "LeftLeg", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            },
+            {
+                "RightLeg", new BodyPartHealth
+                {
+                    Health = new CurrentMinMax
+                    {
+                        Current = 0,
+                    },
+                    Effects = new Dictionary<string, BodyPartEffectProperties>()
+                }
+            }
+        };
     }
 }

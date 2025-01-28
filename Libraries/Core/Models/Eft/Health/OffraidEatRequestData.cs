@@ -1,9 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
+using Core.Models.Eft.Inventory;
 
 namespace Core.Models.Eft.Health;
 
-public record OffraidEatRequestData : BaseInteractionRequestData
+public record OffraidEatRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("item")]
     public string? Item { get; set; }

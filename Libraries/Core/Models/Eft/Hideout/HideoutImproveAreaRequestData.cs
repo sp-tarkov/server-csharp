@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Inventory;
 using Core.Models.Enums;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutImproveAreaRequestData : BaseInteractionRequestData
+public record HideoutImproveAreaRequestData : InventoryBaseActionRequestData
 {
     /** Hideout area id from areas.json */
     [JsonPropertyName("id")]

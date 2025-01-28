@@ -365,7 +365,7 @@ public class LocationLifecycleService
     /** Handle client/match/local/end */
     public void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
     {
-                // Clear bot loot cache
+        // Clear bot loot cache
         _botLootCacheService.ClearCache();
 
         var fullProfile = _profileHelper.GetFullProfile(sessionId);

@@ -1,10 +1,11 @@
 ﻿using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Request;
+using Core.Models.Eft.Inventory;
 using Core.Models.Enums;
 
 namespace Core.Models.Eft.Hideout;
 
-public record HideoutUpgradeCompleteRequestData : BaseInteractionRequestData
+public record HideoutUpgradeCompleteRequestData : InventoryBaseActionRequestData
 {
 
     [JsonPropertyName("areaType")]
