@@ -1,29 +1,54 @@
-﻿namespace Core.Services.Cache;
+using Core.Models.Utils;
+using Core.Utils;
+using SptCommon.Annotations;
 
-public class BundleHashCacheService
+namespace Core.Services.Cache;
+
+[Injectable]
+public class BundleHashCacheService(
+    ISptLogger<BundleHashCacheService> _logger,
+    HashUtil _hashUtil,
+    JsonUtil _jsonUtil,
+    FileUtil _fileUtil
+    )
 {
-    public int GetStoredValue(string key)
+    protected Dictionary<string, string> _bundleHashes = new();
+    protected readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
+
+    public string GetStoredValue(string key)
     {
-        throw new NotImplementedException();
+        _bundleHashes.TryGetValue(key, out var value);
+
+        return value;
     }
 
-    public void StoreValue(string key, int value)
+    public void StoreValue(string key, string value)
     {
-        throw new NotImplementedException();
+        _bundleHashes.Add(key, value);
+
+        _fileUtil.WriteFile(_bundleHashCachePath, _jsonUtil.Serialize(_bundleHashes));
+
+        _logger.Debug($"Bundle {key} hash stored in {_bundleHashCachePath}");
     }
 
-    public bool MatchWithStoredHash(string bundlePath, int hash)
+    public bool MatchWithStoredHash(string bundlePath, string hash)
     {
-        throw new NotImplementedException();
+        return GetStoredValue(bundlePath) == hash;
     }
 
     public bool CalculateAndMatchHash(string bundlePath)
     {
-        throw new NotImplementedException();
+        var fileContents = _fileUtil.ReadFile(bundlePath);
+        var generatedHash = _hashUtil.GenerateCrc32ForData(fileContents);
+
+        return MatchWithStoredHash(bundlePath, generatedHash);
     }
 
     public void CalculateAndStoreHash(string bundlePath)
     {
-        throw new NotImplementedException();
+        var fileContents = _fileUtil.ReadFile(bundlePath);
+        var generatedHash = _hashUtil.GenerateCrc32ForData(fileContents);
+
+        StoreValue(bundlePath, generatedHash);
     }
 }

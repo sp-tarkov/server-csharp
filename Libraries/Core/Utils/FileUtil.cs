@@ -62,11 +62,11 @@ public class FileUtil
         return reader.ReadToEnd();
     }
 
-    public void WriteFile(string filePath, string jsonProfile)
+    public void WriteFile(string filePath, string json)
     {
         if (!FileExists(filePath))
             CreateFile(filePath);
-        File.WriteAllText(filePath, jsonProfile);
+        File.WriteAllText(filePath, json);
     }
 
     private void CreateFile(string filePath)
