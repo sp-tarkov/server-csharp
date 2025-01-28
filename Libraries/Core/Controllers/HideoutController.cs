@@ -1014,8 +1014,8 @@ public class HideoutController(
 
     private void HandleMusclePain(PmcData pmcData, QteResult finishEffect)
     {
-        var hasMildPain = pmcData.Health.BodyParts["Chest"].Effects?["MildMusclePain"];
-        var hasSeverePain = pmcData.Health.BodyParts["Chest"].Effects?["SevereMusclePain"];
+        var hasMildPain = pmcData.Health.BodyParts["Chest"].Effects?.ContainsKey("MildMusclePain");
+        var hasSeverePain = pmcData.Health.BodyParts["Chest"].Effects?.ContainsKey("SevereMusclePain");
 
         // Has no muscle pain at all, add mild
         if (hasMildPain is null && hasSeverePain is null)
