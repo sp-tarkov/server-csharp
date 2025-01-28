@@ -36,7 +36,6 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse OffraidEat(PmcData pmcData, OffraidEatRequestData info, string sessionID)
     {
         return _healthController.OffRaidEat(pmcData, info, sessionID);
@@ -49,7 +48,6 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse OffraidHeal(PmcData pmcData, OffraidHealRequestData info, string sessionID)
     {
         return _healthController.OffRaidHeal(pmcData, info, sessionID);
@@ -62,7 +60,6 @@ public class HealthCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse HealthTreatment(PmcData pmcData, HealthTreatmentRequestData info, string sessionID)
     {
         return _healthController.HealthTreatment(pmcData, info, sessionID);

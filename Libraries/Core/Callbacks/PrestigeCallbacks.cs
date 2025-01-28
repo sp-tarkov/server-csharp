@@ -19,7 +19,6 @@ public class PrestigeCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string GetPrestige(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_prestigeController.GetPrestige(sessionID, info));
@@ -32,7 +31,6 @@ public class PrestigeCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string ObtainPrestige(string url, List<ObtainPrestigeRequest> info, string sessionID)
     {
         _prestigeController.ObtainPrestige(sessionID, info);

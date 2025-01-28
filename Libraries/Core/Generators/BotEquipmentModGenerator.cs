@@ -1078,7 +1078,6 @@ public class BotEquipmentModGenerator(
     /// <param name="modSpawnRequest">Request data</param>
     /// <param name="modPool">Pool of magazine tpls to filter</param>
     /// <returns>Filtered pool of magazine tpls</returns>
-    /// <exception cref="NotImplementedException"></exception>
     public IEnumerable<string> GetFilterdMagazinePoolByCapacity(ModToSpawnRequest modSpawnRequest, HashSet<string> modPool)
     {
         var weaponTpl = modSpawnRequest.Weapon[0].Template;

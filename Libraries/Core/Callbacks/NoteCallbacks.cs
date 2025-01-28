@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
@@ -17,7 +17,6 @@ public class NoteCallbacks(NoteController _noteController)
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
         return _noteController.AddNote(pmcData, info, sessionID);
@@ -30,7 +29,6 @@ public class NoteCallbacks(NoteController _noteController)
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
         return _noteController.EditNote(pmcData, info, sessionID);
@@ -43,7 +41,6 @@ public class NoteCallbacks(NoteController _noteController)
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
         return _noteController.DeleteNote(pmcData, info, sessionID);

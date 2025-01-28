@@ -63,7 +63,6 @@ public class RepairController(
     /// <param name="body">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse RepairWithKit(
         string sessionId,
         RepairActionDataRequest body,

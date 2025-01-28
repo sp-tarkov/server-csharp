@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
@@ -21,7 +21,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info, string sessionID)
     {
         return _repeatableQuestController.ChangeRepeatableQuest(pmcData, info, sessionID);
@@ -34,7 +33,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData info, string sessionID)
     {
         if (info.Type == "repeatable")
@@ -50,7 +48,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionID)
     {
         return _questController.CompleteQuest(pmcData, info, sessionID);
@@ -63,7 +60,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData info, string sessionID)
     {
         return _questController.HandoverQuest(pmcData, info, sessionID);
@@ -76,7 +72,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string ListQuests(string url, ListQuestsRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_questController.GetClientQuest(sessionID));
@@ -89,7 +84,6 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public string ActivityPeriods(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_repeatableQuestController.GetClientRepeatableQuests(sessionID));

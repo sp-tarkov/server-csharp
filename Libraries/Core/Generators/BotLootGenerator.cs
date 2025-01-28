@@ -40,7 +40,6 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     private ItemSpawnLimitSettings GetItemSpawnLimitsForBot(string botRole)
     {
         var limits = GetItemSpawnLimitsForBotType(botRole);
@@ -365,7 +364,6 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     private List<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
         List<EquipmentSlots> result = [EquipmentSlots.Pockets];
@@ -427,7 +425,6 @@ public class BotLootGenerator(
     /// <param name="containersIdFull"></param>
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
-    /// <exception cref="NotImplementedException"></exception>
     private void AddLootFromPool
     (
         Dictionary<string, double> pool,
@@ -583,7 +580,6 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="walletId"></param>
     /// <returns></returns>
-    /// <exception cref="NotImplementedException"></exception>
     public List<List<Item>> CreateWalletLoot(string walletId)
     {
         List<List<Item>> result = [];
