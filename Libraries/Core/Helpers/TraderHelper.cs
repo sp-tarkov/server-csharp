@@ -10,6 +10,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
 namespace Core.Helpers;
@@ -93,7 +94,10 @@ public class TraderHelper(
         var traderAssorts = GetTraderAssortsByTraderId(traderId);
         if (traderAssorts is null)
         {
-            _logger.Debug($"No assorts on trader: {traderId} found");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"No assorts on trader: {traderId} found");
+            }
 
             return null;
         }
@@ -102,7 +106,10 @@ public class TraderHelper(
         var purchasedAssort = traderAssorts.Items.FirstOrDefault(item => item.Id == assortId);
         if (purchasedAssort is null)
         {
-            _logger.Debug($"No assort {assortId} on trader: {traderId} found");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"No assort {assortId} on trader: {traderId} found");
+            }
 
             return null;
         }

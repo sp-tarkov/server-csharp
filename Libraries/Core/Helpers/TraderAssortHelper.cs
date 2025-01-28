@@ -8,6 +8,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -78,16 +79,22 @@ public class TraderAssortHelper(
             var assortToAdjust = traderClone.Assort.Items.FirstOrDefault(x => x.Id == assortId.Key);
             if (assortToAdjust is null)
             {
-                _logger.Debug($"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping");
+                }
 
                 continue;
             }
 
             if (assortToAdjust.Upd is null)
             {
-                _logger.Debug(
-                    $"Unable to adjust assort {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"Unable to adjust assort {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
+                    );
+                }
 
                 continue;
             }

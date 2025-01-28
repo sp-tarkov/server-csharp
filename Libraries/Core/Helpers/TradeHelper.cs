@@ -1,5 +1,4 @@
 using System.Text.RegularExpressions;
-using System.Transactions;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -14,6 +13,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -122,7 +122,10 @@ public class TradeHelper(
             var rootItemIndex = fenceItems.FindIndex(item => item.Id == buyRequestData.ItemId);
             if (rootItemIndex == -1)
             {
-                _logger.Debug($"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists");
+                }
                 var message = _localisationService.GetText("ragfair-offer_no_longer_exists");
                 _httpResponseUtil.AppendErrorToOutput(output, message);
 
@@ -293,7 +296,10 @@ public class TradeHelper(
                 return;
             }
 
-            _logger.Debug($"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}");
+            }
 
             if (sellRequest.TransactionId == Traders.FENCE)
             {

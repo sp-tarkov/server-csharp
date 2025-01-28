@@ -5,6 +5,7 @@ using Core.Servers;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -82,7 +83,10 @@ public class RagfairSellHelper(
             _logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%");
         }
 
-        _logger.Debug($"Rolling to sell: { itemSellCount}items(chance: { effectiveSellChance}%)");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Rolling to sell: { itemSellCount}items(chance: { effectiveSellChance}%)");
+        }
 
         // No point rolling for a sale on a 0% chance item, exit early
         if (effectiveSellChance == 0)
@@ -115,11 +119,17 @@ public class RagfairSellHelper(
                 sellTimestamp += (long)newSellTime;
                 result.Add( new SellResult{ SellTime = sellTimestamp, Amount = boughtAmount });
 
-                _logger.Debug($"Offer will sell at: { _timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString()}, bought: {boughtAmount}");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Offer will sell at: { _timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString()}, bought: {boughtAmount}");
+                }
             }
             else
             {
-                _logger.Debug($"Offer rolled not to sell, item count: { boughtAmount}");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Offer rolled not to sell, item count: { boughtAmount}");
+                }
             }
 
             remainingCount -= boughtAmount;

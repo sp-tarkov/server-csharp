@@ -1,4 +1,3 @@
-using Core.Models.Eft.Common;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
@@ -7,6 +6,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -41,7 +41,10 @@ public class RepairHelper(
         bool applyMaxDurabilityDegradation = true
     )
     {
-        _logger.Debug($"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Adding {amountToRepair} to {itemToRepairDetails.Name} using kit: {useRepairKit}");
+        }
 
         var itemMaxDurability = _cloner.Clone(itemToRepair.Upd.Repairable.MaxDurability);
         var itemCurrentDurability = _cloner.Clone(itemToRepair.Upd.Repairable.Durability);

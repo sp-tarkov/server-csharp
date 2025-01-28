@@ -9,6 +9,7 @@ namespace Core.Helpers;
 public class PaymentHelper(ConfigServer _configServer)
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
+    protected List<string> _moneyTpls = [Money.DOLLARS, Money.EUROS, Money.ROUBLES, Money.GP];
 
     /// <summary>
     /// Is the passed in tpl money (also checks custom currencies in inventoryConfig.customMoneyTpls)
@@ -17,17 +18,9 @@ public class PaymentHelper(ConfigServer _configServer)
     /// <returns></returns>
     public bool IsMoneyTpl(string tpl)
     {
-        var moneyTypes = new List<string>
-        {
-            Money.DOLLARS,
-            Money.EUROS,
-            Money.ROUBLES,
-            Money.GP,
+        _moneyTpls.AddRange(_inventoryConfig.CustomMoneyTpls);
 
-        };
-        moneyTypes.AddRange(_inventoryConfig.CustomMoneyTpls);
-
-        return moneyTypes.Contains(tpl);
+        return _moneyTpls.Contains(tpl);
     }
 
     /// <summary>

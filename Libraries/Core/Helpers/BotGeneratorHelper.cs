@@ -9,6 +9,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -500,9 +501,12 @@ public class BotGeneratorHelper(
                 if (missingContainerCount == equipmentSlots.Count)
                 {
                     // Bot doesn't have any containers we want to add item to
-                    _logger.Debug(
-                        $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
-                    );
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug(
+                            $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
+                        );
+                    }
 
                     return ItemAddedResult.NO_CONTAINERS;
                 }

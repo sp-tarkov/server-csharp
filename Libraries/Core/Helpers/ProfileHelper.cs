@@ -9,6 +9,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -394,7 +395,10 @@ public class ProfileHelper(
         var profile = GetFullProfile(playerId);
         if (profile == null)
         {
-            _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
+            }
             return false;
         }
 

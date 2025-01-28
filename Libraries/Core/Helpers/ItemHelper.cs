@@ -8,7 +8,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Collections;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -1463,7 +1463,10 @@ public class ItemHelper(
         );
         if (cartridgeTpl is null)
         {
-            _logger.Debug($"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found.");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Unable to fill item: {magazine.FirstOrDefault().Id} {magTemplate.Name} with cartridges, none found.");
+            }
 
             return;
         }
@@ -1740,9 +1743,12 @@ public class ItemHelper(
             var itemPool = slot.Props.Filters[0].Filter ?? [];
             if (itemPool.Count() == 0)
             {
-                _logger.Debug(
-                    $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, parents' 'Filter' array is empty, skipping"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, parents' 'Filter' array is empty, skipping"
+                    );
+                }
 
                 continue;
             }
@@ -1750,9 +1756,12 @@ public class ItemHelper(
             var chosenTpl = GetCompatibleTplFromArray(itemPool, incompatibleModTpls);
             if (chosenTpl is null)
             {
-                _logger.Debug(
-                    $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count()}, skipping"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count()}, skipping"
+                    );
+                }
 
                 continue;
             }
@@ -1955,7 +1964,10 @@ public class ItemHelper(
 
             if (warningMessageWhenMissing is not null)
             {
-                _logger.Debug(warningMessageWhenMissing);
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(warningMessageWhenMissing);
+                }
             }
 
             return true;

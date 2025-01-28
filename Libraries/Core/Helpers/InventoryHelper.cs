@@ -15,6 +15,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
 
@@ -148,9 +149,12 @@ public class InventoryHelper(
             .Items.NewItems.AddRange(itemWithModsToAddClone);
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
-        _logger.Debug(
-            $"Added {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
-        );
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(
+                $"Added {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
+            );
+        }
     }
 
     /// <summary>
@@ -444,16 +448,19 @@ public class InventoryHelper(
         var itemAndChildrenToRemove = _itemHelper.FindAndReturnChildrenAsItems(profile.Inventory.Items, itemId);
         if (itemAndChildrenToRemove.Count == 0)
         {
-            _logger.Debug(
-                _localisationService.GetText(
-                    "inventory-unable_to_remove_item_id_not_found",
-                    new
-                    {
-                        ChildId = itemId,
-                        ProfileId = profile.Id
-                    }
-                )
-            );
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(
+                    _localisationService.GetText(
+                        "inventory-unable_to_remove_item_id_not_found",
+                        new
+                        {
+                            ChildId = itemId,
+                            ProfileId = profile.Id
+                        }
+                    )
+                );
+            }
 
             return;
         }
@@ -1071,9 +1078,12 @@ public class InventoryHelper(
             return false;
         }
 
-        _logger.Debug(
-            $"{moveRequest.Action} item: ${moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
-        );
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(
+                $"{moveRequest.Action} item: ${moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
+            );
+        }
 
         // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
         if (matchingInventoryItem.SlotId?.Contains("camora_") is null && moveRequest.To.Container == "cartridges")
