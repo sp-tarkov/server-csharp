@@ -233,21 +233,6 @@
         "sandbox": ["6575a6ca8778e96ded05a802", "6582bd252b50c61c565828e2"],
         "factory4_day": ["591093bb86f7747caa7bb2ee", "66c0b39ca1f68fcc1d0c0cc3"]
     },
-    "splitWaveIntoSingleSpawnsSettings": {
-        "enabled": true,
-        "ignoreMaps": [
-            "base",
-            "develop",
-            "hideout",
-            "privatearea",
-            "suburbs",
-            "terminal",
-            "town",
-            "factory4_day",
-            "factory4_night"
-        ],
-        "waveSizeThreshold": 4
-    },
     "rogueLighthouseSpawnTimeSettings": {
         "enabled": false,
         "waitTimeSeconds": 120
