@@ -80,11 +80,6 @@ public class PostDbLoadService(
             FixRoguesSpawningInstantlyOnLighthouse();
         }
 
-        if (_locationConfig.SplitWaveIntoSingleSpawnsSettings.Enabled)
-        {
-            //SplitBotWavesIntoSingleWaves();
-        }
-
         AdjustLabsRaiderSpawnRate();
 
         AdjustHideoutCraftTimes(_hideoutConfig.OverrideCraftTimeSeconds);
@@ -322,13 +317,6 @@ public class PostDbLoadService(
         foreach (var wave in instantRogueBossSpawns) {
             wave.Time = rogueSpawnDelaySeconds;
         }
-    }
-
-// Find and split waves with large numbers of bots into smaller waves - BSG appears to reduce the size of these
-// waves to one bot when they're waiting to spawn for too long
-    protected void SplitBotWavesIntoSingleWaves()
-    {
-        throw new NotImplementedException();
     }
 
 // Make non-trigger-spawned raiders spawn earlier + always

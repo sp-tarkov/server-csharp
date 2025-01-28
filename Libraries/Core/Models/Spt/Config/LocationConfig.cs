@@ -15,12 +15,6 @@ public record LocationConfig : BaseConfig
     [JsonPropertyName("rogueLighthouseSpawnTimeSettings")]
     public RogueLighthouseSpawnTimeSettings RogueLighthouseSpawnTimeSettings { get; set; }
 
-    /// <summary>
-    /// When a map has hit max alive bots, any wave that should spawn will be reduced to 1 bot in size and placed in a spawn queue, this splits waves into smaller sizes to reduce the impact of this behaviour
-    /// </summary>
-    [JsonPropertyName("splitWaveIntoSingleSpawnsSettings")]
-    public SplitWaveSettings SplitWaveIntoSingleSpawnsSettings { get; set; }
-
     [JsonPropertyName("looseLootMultiplier")]
     public Dictionary<string, double> LooseLootMultiplier { get; set; }
 
