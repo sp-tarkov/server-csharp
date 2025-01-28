@@ -24,6 +24,8 @@ public class BotEquipmentModPoolService
     protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _gearModPool;
     protected BotConfig _botConfig;
 
+    private readonly Lock _lock = new();
+
     public BotEquipmentModPoolService(
         ISptLogger<BotEquipmentModPoolService> logger,
         ItemHelper itemHelper,
@@ -84,19 +86,18 @@ public class BotEquipmentModPoolService
                 var itemsThatFit = slot.Props.Filters.FirstOrDefault().Filter;
 
                 // Get weapon/armor pool to add mod slots + mod tpls to
-                
+
+                var itemModPool = pool[item.Id];
                 foreach (var itemToAddTpl in itemsThatFit)
                 {
-                    if (!pool[item.Id].ContainsKey(slot.Name))
-                    {
-                        // Ensure Mod slot key + blank dict value exist
-                        pool[item.Id][slot.Name] = new();
-                    }
+                    // Ensure Mod slot key + blank dict value exist
+                    InitSetInDict(itemModPool, slot.Name);
 
-                    if (!pool[item.Id][slot.Name].Contains(itemToAddTpl))
+                    // Does tpl exist inside mod_slots hashset
+                    if (!SetContainsTpl(itemModPool[slot.Name], itemToAddTpl))
                     {
-                        // Add tpl to list keyed by mod slot
-                        pool[item.Id][slot.Name].Add(itemToAddTpl);
+                        // Keyed by mod slot
+                        AddTplToSet(itemModPool[slot.Name], itemToAddTpl);
                     }
 
                     var subItemDetails = _itemHelper.GetItem(itemToAddTpl).Value;
@@ -111,12 +112,36 @@ public class BotEquipmentModPoolService
         }
     }
 
+    private bool SetContainsTpl(HashSet<string> itemSet, string tpl)
+    {
+        lock (_lock)
+        {
+            return itemSet.Contains(tpl);
+        }
+    }
+
+    private bool AddTplToSet(HashSet<string> itemSet, string itemToAddTpl)
+    {
+        lock (_lock)
+        {
+            return itemSet.Add(itemToAddTpl);
+        }
+    }
+
+    private bool InitSetInDict(ConcurrentDictionary<string, HashSet<string>> dictionary, string slotName)
+    {
+        lock (_lock)
+        {
+            return dictionary.TryAdd(slotName, []);
+        }
+    }
+
     /**
      * Empty the mod pool
      */
     public void ResetPool()
     {
-        throw new NotImplementedException();
+        _weaponModPool.Clear();
     }
 
     /**
