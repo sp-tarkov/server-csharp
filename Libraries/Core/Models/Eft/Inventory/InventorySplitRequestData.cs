@@ -16,5 +16,6 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
     [JsonPropertyName("container")]
     public Container? Container { get; set; }
 
+    [JsonPropertyName("count")]
     public int? Count { get; set; }
 }
