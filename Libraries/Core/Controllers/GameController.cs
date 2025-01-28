@@ -88,24 +88,34 @@ public class GameController(
         fullProfile.FriendProfileIds ??= [];
         
         if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
+        {
             return;
+        }
         
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
         fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
 
         if (fullProfile.DialogueRecords is not null)
+        {
             _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+        }
 
         if(_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
+        }
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
         if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+        {
             _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+        }
 
         if (pmcProfile.Health is not null)
+        {
             UpdateProfileHealthValues(pmcProfile);
+        }
 
         if (pmcProfile.Inventory is not null)
         {
@@ -134,7 +144,9 @@ public class GameController(
         }
 
         if (pmcProfile.Skills?.Common is not null)
+        {
             WarnOnActiveBotReloadSkill(pmcProfile);
+        }
 
         _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
     }
@@ -317,9 +329,11 @@ public class GameController(
             energyRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
+            
             hydrationRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
+            
             hpRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
                 .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
@@ -439,7 +453,7 @@ public class GameController(
 
         // Get active mods
         _logger.Error("NOT IMPLEMENTED - _preSptModLoader SaveActiveModsToProfile()");
-        //var activeMods = _preSptModLoader.GetImportedModDetails(); // TODO IMPLEMENT _preSptModLoader
+        //var activeMods = _preSptModLoader.GetImportedModDetails(); // TODO: IMPLEMENT _preSptModLoader
         // var activeMods = new Dictionary<string, ModDetails>();
         // foreach (var modKvP in activeMods)
         // {

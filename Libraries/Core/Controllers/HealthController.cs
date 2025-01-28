@@ -44,7 +44,8 @@ public class HealthController(
 
         // Update medkit used (hpresource)
         var healingItemToUse = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
-        if (healingItemToUse is null) {
+        if (healingItemToUse is null)
+        {
             var errorMessage = _localisationService.GetText("health-healing_item_not_found", request.Item);
             _logger.Error(errorMessage);
 
@@ -54,9 +55,12 @@ public class HealthController(
         // Ensure item has a upd object
         _itemHelper.AddUpdObjectToItem(healingItemToUse);
 
-        if (healingItemToUse.Upd.MedKit is not null) {
+        if (healingItemToUse.Upd.MedKit is not null)
+        {
             healingItemToUse.Upd.MedKit.HpResource -= request.Count;
-        } else {
+        }
+        else
+        {
             // Get max healing from db
             var maxhp = _itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
             healingItemToUse.Upd.MedKit = new UpdMedKit { HpResource = maxhp - request.Count }; // Subtract amout used from max
@@ -65,7 +69,8 @@ public class HealthController(
         }
 
         // Resource in medkit is spent, delete it
-        if (healingItemToUse.Upd.MedKit.HpResource <= 0) {
+        if (healingItemToUse.Upd.MedKit.HpResource <= 0)
+        {
             _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
         }
 
@@ -73,7 +78,8 @@ public class HealthController(
 
         var healItemEffectDetails = healingItemDbDetails.Value.Properties.EffectsDamage;
         BodyPartHealth bodyPartToHeal = pmcData.Health.BodyParts.GetValueOrDefault(request.Part.ToString());
-        if (bodyPartToHeal is null) {
+        if (bodyPartToHeal is null)
+        {
             _logger.Warning($"Player: {sessionID} Tried to heal a non-existent body part: {request.Part}");
 
             return output;
@@ -84,13 +90,16 @@ public class HealthController(
 
         // Check if healing item removes negative effects
         var itemRemovesEffects = healingItemDbDetails.Value.Properties.EffectsDamage.Count > 0;
-        if (itemRemovesEffects && bodyPartToHeal.Effects is not null) {
+        if (itemRemovesEffects && bodyPartToHeal.Effects is not null)
+        {
             // Can remove effects and limb has effects to remove
             var effectsOnBodyPart = bodyPartToHeal.Effects.Keys;
-            foreach (var effectKey in effectsOnBodyPart) {
+            foreach (var effectKey in effectsOnBodyPart)
+            {
                 // Check if healing item removes the effect on limb
                 var matchingEffectFromHealingItem = healItemEffectDetails.GetValueOrDefault(effectKey);
-                if (matchingEffectFromHealingItem is null) {
+                if (matchingEffectFromHealingItem is null)
+                {
                     // Healing item doesnt have matching effect, it doesnt remove the effect
                     continue;
                 }
@@ -105,7 +114,8 @@ public class HealthController(
         bodyPartToHeal.Health.Current += amountToHealLimb;
 
         // Ensure we've not healed beyond the limbs max hp
-        if (bodyPartToHeal.Health.Current > bodyPartToHeal.Health.Maximum) {
+        if (bodyPartToHeal.Health.Current > bodyPartToHeal.Health.Maximum)
+        {
             bodyPartToHeal.Health.Current = bodyPartToHeal.Health.Maximum;
         }
 
@@ -262,7 +272,9 @@ public class HealthController(
             {
                 // Found some, loop over them and remove from pmc profile
                 foreach (var effect in partRequest.Effects)
+                {
                     pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Remove(effect);
+                }
 
                 // Remove empty effect object
                 if (pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Count == 0)

@@ -152,7 +152,10 @@ public class TradeController(
         if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
         {
             var errorMessage = $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
-            _logger.Debug(errorMessage);
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(errorMessage);
+            }
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
 
@@ -293,7 +296,10 @@ public class TradeController(
         int roublesToSend,
         string trader)
     {
-        _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+        }
 
         // Create single currency item with all currency on it
         Item rootCurrencyReward = new Item
@@ -334,9 +340,10 @@ public class TradeController(
         var itemWithChildren = _itemHelper.FindAndReturnChildrenAsItems(items, parentItemId);
 
         var totalPrice = 0;
-        foreach (var itemToSell in itemWithChildren) {
+        foreach (var itemToSell in itemWithChildren)
+        {
             var itemDetails = _itemHelper.GetItem(itemToSell.Template);
-            if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category))) 
+            if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
             {
                 // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
                 continue;

@@ -39,7 +39,9 @@ public class LocationController(
             if (mapBase == null)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
+                }
                 continue;
             }
 

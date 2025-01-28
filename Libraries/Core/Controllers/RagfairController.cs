@@ -18,6 +18,7 @@ using Core.Generators;
 using System.Xml.Linq;
 using System;
 using Core.Models.Spt.Services;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
 
@@ -290,7 +291,10 @@ public class RagfairController
         else
         {
             _logger.Error(_localisationService.GetText("ragfair-unable_to_get_categories"));
-            _logger.Debug(_jsonUtil.Serialize(searchRequest));
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(_jsonUtil.Serialize(searchRequest));
+            }
             return new Dictionary<string, int>();
         }
 
@@ -530,7 +534,7 @@ public class RagfairController
     private ItemEventRouterResponse CreateMultiOffer(string sessionID, AddOfferRequestData offerRequest, SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        var itemsToListCount = offerRequest.Items.Count; // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used to commented out for now // Does not count stack size, only items
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
@@ -631,7 +635,7 @@ public class RagfairController
     private ItemEventRouterResponse CreatePackOffer(string sessionID, AddOfferRequestData offerRequest, SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        var itemsToListCount = offerRequest.Items.Count; // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used so commented out for now // Does not count stack size, only items
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
@@ -731,7 +735,7 @@ public class RagfairController
         ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        //var itemsToListCount = offerRequest.Items.Count; // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used so commented out for now // Does not count stack size, only items
 
         // Find items to be listed on flea from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
@@ -840,7 +844,10 @@ public class RagfairController
                 offerRequest.SellInOnePiece.GetValueOrDefault(false)
             );
 
-        _logger.Debug($"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Offer tax to charge: {tax}, pulled from client: {storedClientTaxValue.Count is not null}");
+        }
 
         // cleanup of cache now we've used the tax value from it
         _ragfairTaxService.ClearStoredOfferTaxById(offerRequest.Items.First());

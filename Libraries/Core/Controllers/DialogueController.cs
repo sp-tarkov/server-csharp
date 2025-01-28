@@ -253,14 +253,18 @@ public class DialogueController(
         };
 
         if (request.Type != MessageType.USER_MESSAGE)
+        {
             return profile.DialogueRecords[request.DialogId!];
+        }
 
         var dialogue = profile.DialogueRecords[request.DialogId!];
         dialogue.Users = [];
         var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
         if (chatBot is null)
+        {
             return profile.DialogueRecords[request.DialogId!];
+        }
 
         dialogue.Users ??= [];
         dialogue.Users.Add(chatBot.GetChatBot());
@@ -286,7 +290,9 @@ public class DialogueController(
         result.AddRange(userDialogs);
 
         if (result.Any(userDialog => userDialog.Id == fullProfile.ProfileInfo?.ProfileId))
+        {
             return result;
+        }
 
         // Player doesn't exist, add them in before returning
         var pmcProfile = fullProfile.CharacterData?.PmcData;
@@ -492,10 +498,11 @@ public class DialogueController(
     {
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
-        return (_dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId)
-                    ?.HandleMessage(sessionId, request) ??
-                request.DialogId) ??
-               string.Empty;
+        return (_dialogueChatBots.FirstOrDefault(cb => 
+                        cb.GetChatBot().Id == request.DialogId)
+                    ?.HandleMessage(sessionId, request) 
+                ?? request.DialogId) 
+               ?? string.Empty;
     }
 
     /// <summary>

@@ -190,7 +190,9 @@ public class QuestController(
             if (matchingQuest is not null)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
+                }
                 matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
 
                 return matchingQuest;

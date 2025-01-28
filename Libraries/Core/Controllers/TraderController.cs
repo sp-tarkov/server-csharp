@@ -102,7 +102,9 @@ public class TraderController(
                 case Traders.FENCE:
                 {
                     if (_fenceService.NeedsPartialRefresh())
+                    {
                         _fenceService.GenerateFenceAssorts();
+                    }
                     continue;
                 }
             }
@@ -134,7 +136,9 @@ public class TraderController(
             traders.Add(_traderHelper.GetTrader(traderId, sessionId));
 
             if (pmcData?.Info != null)
+            {
                 _traderHelper.LevelUp(traderId, pmcData);
+            }
         }
 
         traders.Sort(SortByTraderId);

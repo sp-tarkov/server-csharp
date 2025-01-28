@@ -199,7 +199,9 @@ public class LauncherV2Controller(
         {
             if (info.Username == profile.Value.ProfileInfo!.Username 
                 && info.Password == profile.Value.ProfileInfo.Password)
+            {
                 return profile.Key;
+            }
         }
 
         return null;

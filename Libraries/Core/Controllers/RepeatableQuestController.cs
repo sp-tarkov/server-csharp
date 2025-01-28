@@ -114,9 +114,12 @@ public class RepeatableQuestController(
         newRepeatableQuest.Side = repeatableConfig.Side;
         repeatablesOfTypeInProfile.ActiveQuests.Add(newRepeatableQuest);
 
-        _logger.Debug(
-            $"Removing: {repeatableConfig.Name} quest: {questToReplace.Id} from trader: {questToReplace.TraderId} as its been replaced"
-        );
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(
+                $"Removing: {repeatableConfig.Name} quest: {questToReplace.Id} from trader: {questToReplace.TraderId} as its been replaced"
+            );
+        }
 
         RemoveQuestFromProfile(fullProfile, questToReplace.Id);
 
@@ -261,7 +264,7 @@ public class RepeatableQuestController(
 
         if (attempts > maxAttempts)
         {
-            _logger.Debug("We were stuck in repeatable quest generation. This should never happen. Please report");
+            _logger.Error("We were stuck in repeatable quest generation. This should never happen. Please report");
         }
 
         return newRepeatableQuest;
@@ -333,7 +336,10 @@ public class RepeatableQuestController(
             {
                 returnData.Add(generatedRepeatables);
 
-                _logger.Debug($"[Quest Check] {repeatableTypeLower} quests are still valid.");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"[Quest Check] {repeatableTypeLower} quests are still valid.");
+                }
 
                 continue;
             }
@@ -343,7 +349,10 @@ public class RepeatableQuestController(
             // Set endtime to be now + new duration
             generatedRepeatables.EndTime = currentTime + repeatableConfig.ResetTime;
             generatedRepeatables.InactiveQuests = [];
-            _logger.Debug($"Generating new {repeatableTypeLower}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Generating new {repeatableTypeLower}");
+            }
 
             // Put old quests to inactive (this is required since only then the client makes them fail due to non-completion)
             // Also need to push them to the "inactiveQuests" list since we need to remove them from offraidData.profile.Quests
@@ -371,7 +380,7 @@ public class RepeatableQuestController(
                     lifeline++;
                     if (lifeline > 10)
                     {
-                        _logger.Debug(
+                        _logger.Error(
                             "We were stuck in repeatable quest generation. This should never happen. Please report"
                         );
 
@@ -470,7 +479,10 @@ public class RepeatableQuestController(
         // Scav and daily quests not unlocked yet
         if (repeatableConfig.Side == "Scav" && !PlayerHasDailyScavQuestsUnlocked(pmcData))
         {
-            _logger.Debug("Daily scav quests still locked, Intel center not built");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("Daily scav quests still locked, Intel center not built");
+            }
 
             return false;
         }
@@ -516,9 +528,12 @@ public class RepeatableQuestController(
             if (questStatusInProfile.Status == QuestStatusEnum.AvailableForFinish)
             {
                 questsToKeep.Add(activeQuest);
-                _logger.Debug(
-                    $"Keeping repeatable quest: {activeQuest.Id} in activeQuests since it is available to hand in"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug( // TODO: this shouldnt happen, doesnt on live
+                        $"Keeping repeatable quest: {activeQuest.Id} in activeQuests since it is available to hand in"
+                    );
+                }
 
                 continue;
             }
@@ -616,10 +631,12 @@ public class RepeatableQuestController(
         {
             var locationNames = new List<string>();
             foreach (var locationName in value)
+            {
                 if (IsPmcLevelAllowedOnLocation(locationName, pmcLevel))
                 {
                     locationNames.Add(locationName);
                 }
+            }
 
             if (locationNames.Count > 0)
             {
@@ -668,9 +685,7 @@ public class RepeatableQuestController(
         }
 
         // Add elite bonus to daily quests
-        if (repeatableConfig.Name.ToLower() == "daily" &&
-            _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData)
-           )
+        if (repeatableConfig.Name.ToLower() == "daily" && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData))
         {
             // Elite charisma skill gives extra daily quest(s)
             questCount += _databaseService
