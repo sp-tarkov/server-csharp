@@ -51,7 +51,10 @@ public class BotController(
             .First(p => p.Name.ToLower() == (typeInLower == "assaultgroup" ? "assault" : typeInLower))
             .GetValue(_botConfig.PresetBatch);
 
-        if (value != null) return value;
+        if (value != null)
+        {
+            return value;
+        }
 
         _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
         return 30;
@@ -67,13 +70,17 @@ public class BotController(
         var difficulty = diffLevel.ToLower();
 
         if (!(raidConfig != null || ignoreRaidSettings))
+        {
             _logger.Error(_localisationService.GetText("bot-missing_application_context", "RAID_CONFIGURATION"));
+        }
 
         // Check value chosen in pre-raid difficulty dropdown
         // If value is not 'asonline', change requested difficulty to be what was chosen in dropdown
         var botDifficultyDropDownValue = raidConfig?.WavesSettings?.BotDifficulty?.ToString().ToLower() ?? "asonline";
         if (botDifficultyDropDownValue != "asonline")
+        {
             difficulty = _botDifficultyHelper.ConvertBotDifficultyDropdownToBotDifficulty(botDifficultyDropDownValue);
+        }
 
         var botDb = _databaseService.GetBots();
         return _botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
@@ -106,7 +113,9 @@ public class BotController(
                 // No bot of this type found, copy details from assault
                 result[botTypeLower] = result["assault"];
                 if(_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
+                }
                 continue;
             }
 
@@ -208,7 +217,9 @@ public class BotController(
         if (botCacheCount >= botGenerationDetails.BotCountToGenerate)
         {
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
+            }
             return;
         }
 
@@ -217,27 +228,31 @@ public class BotController(
         var progressWriter = new ProgressWriter(botGenerationDetails.BotCountToGenerate.GetValueOrDefault(30));
         
         if(_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
+        }
 
         for (var i = 0; i < botsToGenerate; i++)
         {
-            // try
-            // {
+            try
+            {
                 var detailsClone = _cloner.Clone(botGenerationDetails);
                 GenerateSingleBotAndStoreInCache(detailsClone, sessionId, cacheKey);
                 progressWriter.Increment();
-            // }
-            // catch (Exception e)
-            // {
-            //     _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
-            // }
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
+            }
         }
 
         if(_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug(
                 $"Generated {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
                 $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty}bots"
             );
+        }
     }
 
     private List<BotBase> ReturnSingleBotFromCache(string sessionId, GenerateBotsRequestData request)
@@ -324,10 +339,12 @@ public class BotController(
             GenerateSingleBotAndStoreInCache(botGenerationDetails, sessionId, cacheKey);
             
             if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug(
                     $"Generated {botGenerationDetails.BotCountToGenerate} " +
                     $"{botGenerationDetails.Role} ({botGenerationDetails.EventRole ?? ""}) {botGenerationDetails.BotDifficulty} bots"
                 );
+            }
         }
 
         var desiredBot = _botGenerationCacheService.GetBot(cacheKey);

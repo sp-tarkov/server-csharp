@@ -6,7 +6,9 @@ using LogLevel = Core.Models.Spt.Logging.LogLevel;
 namespace Core.Controllers;
 
 [Injectable]
-public class ClientLogController(ISptLogger<ClientLogController> _logger)
+public class ClientLogController(
+    ISptLogger<ClientLogController> _logger
+    )
 {
 
     /// <summary>

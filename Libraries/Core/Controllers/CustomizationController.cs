@@ -118,13 +118,19 @@ public class CustomizationController(
 
     private bool OutfitAlreadyPurchased(object suitId, string sessionId)
     {
-        return (_saveServer.GetProfile(sessionId).Suits ?? []).Contains(suitId);
+        var suits = _saveServer.GetProfile(sessionId).Suits;
+
+        if (suits is null || suits.Count == 0)
+        {
+            return false;
+        }
+        return suits.Contains(suitId);
     }
 
     private Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
-        if (foundSuit == null)
+        if (foundSuit is null)
         {
             _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
         }
@@ -143,8 +149,15 @@ public class CustomizationController(
         List<PaymentItemForClothing>? itemsToPayForClothingWith,
         ItemEventRouterResponse output)
     {
-        foreach (var inventoryItemToProcess in itemsToPayForClothingWith ?? [])
+        if (itemsToPayForClothingWith is null || itemsToPayForClothingWith.Count == 0)
+        {
+            return;
+        }
+        
+        foreach (var inventoryItemToProcess in itemsToPayForClothingWith)
+        {
             PayForClothingItem(sessionId, pmcData, inventoryItemToProcess, output);
+        }
     }
 
     /// <summary>
@@ -298,6 +311,7 @@ public class CustomizationController(
     public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
         foreach (var customisation in request.Customizations)
+        {
             switch (customisation.Type)
             {
                 case "dogTag":
@@ -310,6 +324,7 @@ public class CustomizationController(
                     _logger.Error($"Unhandled customisation type: {customisation.Type}");
                     break;
             }
+        }
 
         return _eventOutputHolder.GetOutput(sessionId);
     }

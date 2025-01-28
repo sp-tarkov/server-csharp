@@ -9,6 +9,7 @@ using Core.Utils;
 using System.Text.RegularExpressions;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -263,7 +264,10 @@ public class ProfileFixerService(
 
         foreach (var counterKeyToRemove in taskConditionKeysToRemove)
         {
-            _logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Removed: {counterKeyToRemove} TaskConditionCounter object");
+            }
             pmcProfile.TaskConditionCounters.Remove(counterKeyToRemove);
         }
     }
@@ -386,7 +390,11 @@ public class ProfileFixerService(
         if (!pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Contains(matchingProductionId))
         {
             pmcProfile.UnlockedInfo.UnlockedProductionRecipe.Add(matchingProductionId);
-            _logger.Debug($"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}");
+            
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}");
+            }
         }
     }
 
@@ -407,7 +415,10 @@ public class ProfileFixerService(
 
             if (genSlots < 6 + extraGenSlots)
             {
-                _logger.Debug("Updating generator area slots to a size of 6 + hideout management skill");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug("Updating generator area slots to a size of 6 + hideout management skill");
+                }
                 AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.GENERATOR, (int)(6 + extraGenSlots ?? 0), pmcProfile);
             }
         }
@@ -419,7 +430,10 @@ public class ProfileFixerService(
 
         if (waterCollSlots < 1 + extraWaterCollSlots)
         {
-            _logger.Debug("Updating water collector area slots to a size of 1 + hideout management skill");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("Updating water collector area slots to a size of 1 + hideout management skill");
+            }
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.WATER_COLLECTOR, (int)(1 + extraWaterCollSlots ?? 0), pmcProfile);
         }
 
@@ -428,7 +442,10 @@ public class ProfileFixerService(
 
         if (filterSlots < 3 + extraFilterSlots)
         {
-            _logger.Debug("Updating air filter area slots to a size of 3 + hideout management skill");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("Updating air filter area slots to a size of 3 + hideout management skill");
+            }
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.AIR_FILTERING, (int)(3 + extraFilterSlots ?? 0), pmcProfile);
         }
 
@@ -438,7 +455,10 @@ public class ProfileFixerService(
         // BTC Farm doesnt have extra slots for hideout management, but we still check for modded stuff!!
         if (btcFarmSlots < 50 + extraBtcSlots)
         {
-            _logger.Debug("Updating bitcoin farm area slots to a size of 50 + hideout management skill");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("Updating bitcoin farm area slots to a size of 50 + hideout management skill");
+            }
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.BITCOIN_FARM, (int)(50 + extraBtcSlots ?? 0), pmcProfile);
         }
 
@@ -447,7 +467,10 @@ public class ProfileFixerService(
             .Count;
         if (cultistAreaSlots < 1)
         {
-            _logger.Debug("Updating cultist area slots to a size of 1");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("Updating cultist area slots to a size of 1");
+            }
             AddEmptyObjectsToHideoutAreaSlots(HideoutAreas.CIRCLE_OF_CULTISTS, 1, pmcProfile);
         }
     }
@@ -485,8 +508,7 @@ public class ProfileFixerService(
     {
         var skills = pmcProfile.Skills.Common;
 
-        foreach (var skill in skills
-                     .Where(skill => skill.Progress > 5100))
+        foreach (var skill in skills.Where(skill => skill.Progress > 5100))
         {
             skill.Progress = 5100;
         }
@@ -566,7 +588,9 @@ public class ProfileFixerService(
                 {
                     // Check item exists in itemsDb
                     if (!itemsDb.ContainsKey(item.Template))
+                    {
                         _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
+                    }
 
                     if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                     {
@@ -620,6 +644,7 @@ public class ProfileFixerService(
                 {
                     continue;
                 }
+
                 // Get Item rewards only
                 foreach (var successReward in activeQuest.Rewards.Success.Where(reward => reward.Type == RewardType.Item))
                 {
@@ -749,7 +774,7 @@ public class ProfileFixerService(
     {
         var dbHideoutAreas = _databaseService.GetHideout().Areas;
 
-        foreach (var profileArea in pmcProfile.Hideout.Areas)
+        foreach (var profileArea in pmcProfile.Hideout?.Areas ?? [])
         {
             var areaType = profileArea.Type;
             var level = profileArea.Level;
@@ -769,7 +794,7 @@ public class ProfileFixerService(
             }
 
             // Iterate over area levels, check for bonuses, add if needed
-            var dbArea = dbHideoutAreas.FirstOrDefault((area) => area.Type == areaType);
+            var dbArea = dbHideoutAreas?.FirstOrDefault((area) => area.Type == areaType);
             if (dbArea is null)
             {
                 continue;
@@ -778,7 +803,7 @@ public class ProfileFixerService(
             foreach (var areaLevel in areaLevelsToCheck)
             {
                 // Get areas level bonuses from db
-                var levelBonuses = dbArea.Stages[areaLevel]?.Bonuses;
+                var levelBonuses = dbArea.Stages?[areaLevel].Bonuses;
                 if (levelBonuses is null || levelBonuses.Count == 0)
                 {
                     continue;
@@ -805,29 +830,29 @@ public class ProfileFixerService(
      * @param bonus bonus to find
      * @returns matching bonus
      */
-    protected Bonus? GetBonusFromProfile(List<Bonus> profileBonuses, Bonus bonus)
+    protected Bonus? GetBonusFromProfile(List<Bonus>? profileBonuses, Bonus bonus)
     {
         // match by id first, used by "TextBonus" bonuses
         if (bonus.Id is null)
         {
-            return profileBonuses.FirstOrDefault((x) => x.Id == bonus.Id);
+            return profileBonuses?.FirstOrDefault((x) => x.Id == bonus.Id);
         }
 
         return bonus.Type switch
         {
-            BonusType.StashSize => profileBonuses.FirstOrDefault(
+            BonusType.StashSize => profileBonuses?.FirstOrDefault(
                 (x) => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId
             ),
-            BonusType.AdditionalSlots => profileBonuses.FirstOrDefault(
-                (x) => x.Type == bonus.Type && x.Value == bonus.Value && x.IsVisible == bonus.IsVisible
+            BonusType.AdditionalSlots => profileBonuses?.FirstOrDefault(
+                (x) => x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible
             ),
-            _ => profileBonuses.FirstOrDefault((x) => x.Type == bonus.Type && x.Value == bonus.Value)
+            _ => profileBonuses?.FirstOrDefault((x) => x.Type == bonus.Type && x.Value == bonus.Value)
         };
     }
 
     public void CheckForAndRemoveInvalidTraders(SptProfile fullProfile)
     {
-        foreach (var traderKvP in fullProfile.CharacterData.PmcData.TradersInfo)
+        foreach (var traderKvP in fullProfile.CharacterData?.PmcData?.TradersInfo)
         {
             var traderId = traderKvP.Key;
             if (!_traderHelper.TraderEnumHasValue(traderId))
@@ -835,13 +860,13 @@ public class ProfileFixerService(
                 _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning($"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo.ProfileId} profile");
+                    _logger.Warning($"Non - default trader: {traderId} removed from PMC TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile");
                     fullProfile.CharacterData.PmcData.TradersInfo.Remove(traderId);
                 }
             }
         }
 
-        foreach (var traderKvP in fullProfile.CharacterData.ScavData.TradersInfo)
+        foreach (var traderKvP in fullProfile.CharacterData.ScavData?.TradersInfo)
         {
             var traderId = traderKvP.Key;
             if (!_traderHelper.TraderEnumHasValue(traderId))
@@ -849,7 +874,7 @@ public class ProfileFixerService(
                 _logger.Error(_localisationService.GetText("fixer-trader_found", traderId));
                 if (_coreConfig.Fixes.RemoveInvalidTradersFromProfile)
                 {
-                    _logger.Warning($"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo.ProfileId} profile");
+                    _logger.Warning($"Non - default trader: {traderId} removed from Scav TradersInfo in: {fullProfile.ProfileInfo?.ProfileId} profile");
                     fullProfile.CharacterData.ScavData.TradersInfo.Remove(traderId);
                 }
             }
