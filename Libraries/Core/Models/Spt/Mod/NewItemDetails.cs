@@ -16,7 +16,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     public string? ItemTplToClone { get; set; }
 
     [JsonPropertyName("overrideProperties")]
-    public ColliderProps? OverrideProperties { get; set; }
+    public Props? OverrideProperties { get; set; }
 
     [JsonPropertyName("parentId")]
     public string? ParentId { get; set; }
@@ -28,10 +28,10 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
 public record NewItemDetailsBase
 {
     [JsonPropertyName("fleaPriceRoubles")]
-    public float? FleaPriceRoubles { get; set; }
+    public double? FleaPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookPriceRoubles")]
-    public float? HandbookPriceRoubles { get; set; }
+    public double? HandbookPriceRoubles { get; set; }
 
     [JsonPropertyName("handbookParentId")]
     public string? HandbookParentId { get; set; }
