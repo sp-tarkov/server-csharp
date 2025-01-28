@@ -12,7 +12,7 @@ using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
 

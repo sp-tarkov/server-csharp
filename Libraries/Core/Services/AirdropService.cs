@@ -9,6 +9,7 @@ using Core.Models.Utils;
 using Core.Generators;
 using Core.Utils;
 using Core.Helpers;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -48,7 +49,10 @@ public class AirdropService(
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
         var airdropType = forcedAirdropType != null ? forcedAirdropType : ChooseAirdropType();
-        _logger.Debug($"Chose: {airdropType} for airdrop loot");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Chose: {airdropType} for airdrop loot");
+        }
 
         // Common/weapon/etc
         var airdropConfig = GetAirdropLootConfigByType(airdropType);

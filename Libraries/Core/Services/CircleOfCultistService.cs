@@ -15,6 +15,7 @@ using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -691,7 +692,11 @@ public class CircleOfCultistService(
                     if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem)) {
                         continue;
                     }
-                    _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
+
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
+                    }
                     rewardPool.Add(neededItem);
                 }
             }
@@ -730,7 +735,11 @@ public class CircleOfCultistService(
                         // Dont reward items sacrificed
                         continue;
                     }
-                    _logger.Debug($"Added Hideout Loot: {_itemHelper.GetItemName(rewardToAdd.TemplateId)}");
+
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"Added Hideout Loot: {_itemHelper.GetItemName(rewardToAdd.TemplateId)}");
+                    }
                     rewardPool.Add(rewardToAdd.TemplateId);
                 }
             }
@@ -787,7 +796,11 @@ public class CircleOfCultistService(
                     continue;
                 }
             }
-            _logger.Debug($"Added: {_itemHelper.GetItemName(randomItem.Id)}");
+
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Added: {_itemHelper.GetItemName(randomItem.Id)}");
+            }
             rewardPool.Add(randomItem.Id);
             currentItemCount++;
         }

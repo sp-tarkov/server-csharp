@@ -11,6 +11,7 @@ using Core.Utils;
 using SptCommon.Extensions;
 using Hideout = Core.Models.Spt.Hideout.Hideout;
 using Locations = Core.Models.Spt.Server.Locations;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -312,7 +313,10 @@ public class DatabaseService(
         if (!isDataValid) _logger.Error(_localisationService.GetText("database-invalid_data"));
 
         start.Stop();
-        _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
+        }
     }
 
     /**

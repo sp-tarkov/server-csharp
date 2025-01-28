@@ -7,6 +7,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using SptCommon.Extensions;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -381,7 +382,10 @@ public class BotEquipmentFilterService
                     {
                         if (showEditWarnings)
                         {
-                            _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            if (_logger.IsLogEnabled(LogLevel.Debug))
+                            {
+                                _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            }
                         }
                     }
                 }
@@ -433,7 +437,10 @@ public class BotEquipmentFilterService
                     {
                         if (showEditWarnings)
                         {
-                            _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            if (_logger.IsLogEnabled(LogLevel.Debug))
+                            {
+                                _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            }
                         }
                     }
                 }
@@ -484,7 +491,10 @@ public class BotEquipmentFilterService
                     {
                         if (showEditWarnings)
                         {
-                            _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            if (_logger.IsLogEnabled(LogLevel.Debug))
+                            {
+                                _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
+                            }
                         }
                     }
                 }

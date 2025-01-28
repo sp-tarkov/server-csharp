@@ -6,6 +6,7 @@ using Core.Models.Spt.Dialog;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -74,7 +75,10 @@ public class GiftService(
 
         if (_profileHelper.PlayerHasRecievedMaxNumberOfGift(playerId, giftId, maxGiftsToSendCount))
         {
-            _logger.Debug($"Player already received gift: {giftId}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Player already received gift: {giftId}");
+            }
 
             return GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED;
         }

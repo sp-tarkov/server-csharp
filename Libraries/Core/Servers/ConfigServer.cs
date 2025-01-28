@@ -3,7 +3,7 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Utils;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Servers;
 
@@ -51,7 +51,10 @@ public class ConfigServer
 
     public void Initialize()
     {
-        _logger.Debug("Importing configs...");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug("Importing configs...");
+        }
 
         // Get all filepaths
         var filepath = "./assets/configs/";

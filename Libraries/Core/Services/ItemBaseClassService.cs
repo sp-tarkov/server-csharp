@@ -1,6 +1,7 @@
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -88,7 +89,10 @@ public class ItemBaseClassService(
             return _itemBaseClassesCache[itemTpl].Any(baseClasses.Contains);
         }
 
-        _logger.Debug(_localisationService.GetText("baseclass-item_not_found", itemTpl));
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(_localisationService.GetText("baseclass-item_not_found", itemTpl));
+        }
 
         // Not found in cache, Hydrate again - some mods add items late
         HydrateItemBaseClassCache();

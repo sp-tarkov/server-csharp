@@ -6,7 +6,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Servers;
 
@@ -71,7 +71,10 @@ public class SaveServer(
         }
 
         stopwatch.Stop();
-        _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
+        }
     }
 
     /**
@@ -88,7 +91,10 @@ public class SaveServer(
                 totalTime += SaveProfile(sessionID.Key);
             }
 
-            _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
+            }
         }
     }
 

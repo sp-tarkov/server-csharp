@@ -6,6 +6,7 @@ using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -166,7 +167,10 @@ public class BotWeaponModLimitService(
         // Has mod limit for bot type been reached
         if (currentCount.Count >= maxLimit)
         {
-            // this.logger.debug($"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.count}`);
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}");
+            }
             return true;
         }
 

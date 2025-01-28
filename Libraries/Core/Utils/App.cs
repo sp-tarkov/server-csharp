@@ -5,6 +5,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Server;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Utils;
 
@@ -58,22 +59,25 @@ public class App
         // execute onLoad callbacks
         _logger.Info(_localisationService.GetText("executing_startup_callbacks"));
 
-        _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
-        _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
-        _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
-        _logger.Debug($"PATH: {_encodingUtil.ToBase64(Environment.ProcessPath ?? "null returned")}");
-        _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
-
-        // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
-
-        if (ProgramStatics.BUILD_TIME() is not null)
+        if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
-        }
+            _logger.Debug($"OS: {Environment.OSVersion.Version} | {Environment.OSVersion.Platform}");
+            _logger.Debug($"Ran as admin: {Environment.IsPrivilegedProcess}");
+            _logger.Debug($"CPU cores: {Environment.ProcessorCount}");
+            _logger.Debug($"PATH: {_encodingUtil.ToBase64(Environment.ProcessPath ?? "null returned")}");
+            _logger.Debug($"Server: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion}");
 
-        if (ProgramStatics.COMMIT() is not null)
-        {
-            _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
+            // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
+
+            if (ProgramStatics.BUILD_TIME() is not null)
+            {
+                _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
+            }
+
+            if (ProgramStatics.COMMIT() is not null)
+            {
+                _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
+            }
         }
 
         foreach (var onLoad in _onLoad)
@@ -126,7 +130,13 @@ public class App
                     /* temporary for debug */
                     const int warnTime = 20 * 60;
 
-                    if (secondsSinceLastRun % warnTime == 0) _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
+                    if (secondsSinceLastRun % warnTime == 0)
+                    {
+                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                        {
+                            _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
+                        }
+                    }
                 }
             }
         }

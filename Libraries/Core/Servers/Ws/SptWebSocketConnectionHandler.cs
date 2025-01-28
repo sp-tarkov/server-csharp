@@ -8,6 +8,7 @@ using Core.Models.Utils;
 using Core.Servers.Ws.Message;
 using Core.Services;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Servers.Ws;
 
@@ -80,7 +81,10 @@ public class SptWebSocketConnectionHandler(
 
     private void TimedTask(WebSocket ws, string sessionID)
     {
-        _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
+        }
 
         if (ws.State == WebSocketState.Open)
         {
@@ -109,11 +113,17 @@ public class SptWebSocketConnectionHandler(
                     CancellationToken.None
                 );
                 sendTask.Wait();
-                _logger.Debug(_localisationService.GetText("websocket-message_sent"));
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(_localisationService.GetText("websocket-message_sent"));
+                }
             }
             else
             {
-                _logger.Debug(_localisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(_localisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
+                }
             }
         }
         catch (Exception err)

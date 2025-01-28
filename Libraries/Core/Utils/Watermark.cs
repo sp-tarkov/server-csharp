@@ -4,6 +4,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
+using Server;
 
 namespace Core.Utils;
 
@@ -80,14 +81,14 @@ public class Watermark {
         text = [versionLabel];
         text = [..text, ..description];
 
-        /*
-        if (ProgramStatics.DEBUG) {
-            text = text.concat([...warning]);
+        
+        if (ProgramStatics.DEBUG()) {
+            text.AddRange(warning);
         }
-        if (!ProgramStatics.MODS) {
-            text = text.concat([...modding]);
+        if (!ProgramStatics.MODS()) {
+            text.AddRange(modding);
         }
-        */
+        
 
         if (sptConfig.CustomWatermarkLocaleKeys?.Count > 0) {
             foreach (var key in sptConfig.CustomWatermarkLocaleKeys) {
@@ -106,8 +107,8 @@ public class Watermark {
      * @returns string
      */
     public string GetVersionTag(bool withEftVersion = false) {
-        var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
-        var versionTag = /*ProgramStatics.DEBUG&*/ $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
+        var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
+        var versionTag = /*ProgramStatics.DEBUG*/ $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
 
         if (withEftVersion) {
             var tarkovVersion = sptConfig.CompatibleTarkovVersion.Split(".").Last();

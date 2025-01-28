@@ -11,6 +11,7 @@ using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
 using Insurance = Core.Models.Eft.Profile.Insurance;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -149,7 +150,10 @@ public class InsuranceService(
         // If override in config is non-zero, use that instead of trader values
         if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
-            _logger.Debug($"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds");
+            }
             return _timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
         }
 

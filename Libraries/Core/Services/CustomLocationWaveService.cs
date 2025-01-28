@@ -3,6 +3,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using SptCommon.Annotations;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -79,9 +80,12 @@ public class CustomLocationWaveService(
                 }
 
                 locationBase.BossLocationSpawn.Add(bossWave);
-                _logger.Debug(
-                    $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
+                    );
+                }
             }
         }
 

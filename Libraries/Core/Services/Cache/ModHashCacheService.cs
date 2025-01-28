@@ -1,7 +1,7 @@
 using Core.Models.Utils;
 using Core.Utils;
 using SptCommon.Annotations;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services.Cache;
 [Injectable]
@@ -28,7 +28,10 @@ public class ModHashCacheService(
 
         _fileUtil.WriteFile(_modCachePath, _jsonUtil.Serialize(_modHashes));
 
-        _logger.Debug($"Mod {key} hash stored in: {_modCachePath}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Mod {key} hash stored in: {_modCachePath}");
+        }
     }
 
     public bool MatchWithStoredHash(string modName, string hash)

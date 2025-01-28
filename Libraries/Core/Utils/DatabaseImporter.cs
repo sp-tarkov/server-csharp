@@ -7,6 +7,7 @@ using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Utils;
 
@@ -220,7 +221,10 @@ public class DatabaseImporter : OnLoad
                 
                 var pathOverride = GetImagePathOverride(imagePath);
                 if (!string.IsNullOrEmpty(pathOverride)) {
-                    _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
+                    }
                     imagePath = pathOverride;
                 }
 

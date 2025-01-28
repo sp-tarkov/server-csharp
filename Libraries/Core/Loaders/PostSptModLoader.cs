@@ -2,6 +2,7 @@
 using Core.DI;
 using Core.Models.External;
 using Core.Models.Utils;
+using Server;
 
 
 namespace Core.Loaders;
@@ -14,9 +15,10 @@ public class PostSptModLoader(
 {
     public async Task OnLoad()
     {
-        // if (ProgramStatics.MODS) {
-        //     await this.postSptModLoader.load();
-        // } TODO: needs to be implemented
+        if (ProgramStatics.MODS()) {
+            // await _postSptModLoader.load();
+            // TODO: Huh?
+        }
         _logger.Info("Loading PostSptMods...");
         foreach (var postSptLoadMod in _postSptLoadMods)
         {

@@ -148,7 +148,7 @@ public class TraderPurchasePersisterService(
                 if (resetTimeForItem < _timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile
-                    _logger.Debug($"Not a bad warning: Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
+                    _logger.Debug($"Removed trader: {traderId} purchase: {purchaseKvP} from profile: {profile.ProfileInfo.ProfileId}");
 
                     profile.TraderPurchases[traderId].Remove(purchaseKvP.Key);
                 }

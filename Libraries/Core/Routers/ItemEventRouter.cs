@@ -6,6 +6,7 @@ using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Routers
 {
@@ -58,7 +59,10 @@ namespace Core.Routers
                     continue;
                 }
 
-                _logger.Debug($"event: { body.Action}");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"event: { body.Action}");
+                }
                 eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
                 if (output.Warnings?.Count > 0) {
                     break;

@@ -7,7 +7,7 @@ using Core.Models.Utils;
 using Core.Routers;
 using Core.Services;
 using Core.Utils;
-
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Servers.Http;
 
@@ -103,7 +103,10 @@ public class SptHttpListener : IHttpListener
                 }
                 
                 if (!requestIsCompressed) {
-                    _logger.Debug(value);
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug(value);
+                    }
                 }
 
                 var response = GetResponse(sessionId, req, value);
@@ -141,7 +144,10 @@ public class SptHttpListener : IHttpListener
         if (IsDebugRequest(req)) {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
-            // Console.WriteLine($"Response: {output}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Response: {output}");
+            }
             // TODO: this.logRequest(req, output);
             return;
         }

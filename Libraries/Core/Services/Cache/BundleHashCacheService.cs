@@ -1,6 +1,7 @@
 using Core.Models.Utils;
 using Core.Utils;
 using SptCommon.Annotations;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services.Cache;
 
@@ -28,7 +29,10 @@ public class BundleHashCacheService(
 
         _fileUtil.WriteFile(_bundleHashCachePath, _jsonUtil.Serialize(_bundleHashes));
 
-        _logger.Debug($"Bundle {key} hash stored in {_bundleHashCachePath}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Bundle {key} hash stored in {_bundleHashCachePath}");
+        }
     }
 
     public bool MatchWithStoredHash(string bundlePath, string hash)

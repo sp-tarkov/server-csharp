@@ -6,6 +6,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -85,7 +86,10 @@ public class BotNameService(
                     {
                         // 5 attempts to generate a name, pool probably isn't big enough
                         var genericName = $"{botGenerationDetails.Side} {_randomUtil.GetInt(100000, 999999)}";
-                        _logger.Debug($"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}");
+                        if (_logger.IsLogEnabled(LogLevel.Debug))
+                        {
+                            _logger.Debug($"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}");
+                        }
 
                         return genericName;
                     }
