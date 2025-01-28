@@ -175,9 +175,11 @@ public class LocationLifecycleService
 
         AdjustExtracts(request.PlayerSide, request.Location, result.LocationLoot);
 
-        // Clear bot cache ready for a fresh raid
+        // Clear bot cache ready for next raid after this
         _botGenerationCacheService.ClearStoredBots();
         _botNameService.ClearNameCache();
+
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
         return result;
     }
