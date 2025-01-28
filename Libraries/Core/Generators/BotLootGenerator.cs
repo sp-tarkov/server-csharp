@@ -43,11 +43,21 @@ public class BotLootGenerator(
     /// <exception cref="NotImplementedException"></exception>
     private ItemSpawnLimitSettings GetItemSpawnLimitsForBot(string botRole)
     {
-        // Init item limits
-        Dictionary<string, double> limitsForBotDict = new();
-        InitItemLimitArray(botRole, limitsForBotDict);
+        var limits = GetItemSpawnLimitsForBotType(botRole);
 
-        return new ItemSpawnLimitSettings { CurrentLimits = limitsForBotDict, GlobalLimits = GetItemSpawnLimitsForBotType(botRole) };
+        // Clone limits and set all values to 0 to use as a running total
+        var limitsForBotDict = _cloner.Clone(limits);
+        // Init current count of items we want to limit
+        foreach (var limit in limitsForBotDict)
+        {
+            limitsForBotDict[limit.Key] = 0;
+        }
+
+        return new ItemSpawnLimitSettings
+        {
+            CurrentLimits = limitsForBotDict,
+            GlobalLimits = GetItemSpawnLimitsForBotType(botRole)
+        };
     }
 
     /// <summary>
@@ -707,22 +717,6 @@ public class BotLootGenerator(
     }
 
     /// <summary>
-    /// Hydrate item limit array to contain items that have a limit for a specific bot type
-    /// All values are set to 0
-    /// </summary>
-    /// <param name="botRole">Role the bot has</param>
-    /// <param name="limitCount"></param>
-    public void InitItemLimitArray(string botRole, Dictionary<string, double> limitCount)
-    {
-        // Init current count of items we want to limit
-        var spawnLimits = GetItemSpawnLimitsForBotType(botRole);
-        foreach (var limit in spawnLimits)
-        {
-            spawnLimits[limit.Key] = 0;
-        }
-    }
-
-    /// <summary>
     /// Check if an item has reached its bot-specific spawn limit
     /// </summary>
     /// <param name="itemTemplate">Item we check to see if its reached spawn limit</param>
@@ -762,10 +756,11 @@ public class BotLootGenerator(
         
 
         // Check if over limit
+        var currentLimitCount = itemSpawnLimits.CurrentLimits[idToCheckFor];
         if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.GlobalLimits[idToCheckFor])
         {
             // Prevent edge-case of small loot pools + code trying to add limited item over and over infinitely
-            if (itemSpawnLimits.CurrentLimits[idToCheckFor] > itemSpawnLimits.CurrentLimits[idToCheckFor] * 10)
+            if (currentLimitCount > currentLimitCount * 10)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
                     _logger.Debug(
@@ -775,7 +770,7 @@ public class BotLootGenerator(
                             {
                                 botRole = botRole,
                                 itemName = itemTemplate.Name,
-                                attempts = itemSpawnLimits.CurrentLimits[idToCheckFor]
+                                attempts = currentLimitCount
                             }
                         )
                     );
@@ -837,7 +832,7 @@ public class BotLootGenerator(
             return _botConfig.ItemSpawnLimits["pmc"];
         }
 
-        if (_botConfig.ItemSpawnLimits[botRole.ToLower()] is not null)
+        if (_botConfig.ItemSpawnLimits.ContainsKey(botRole.ToLower()))
         {
             return _botConfig.ItemSpawnLimits[botRole.ToLower()];
         }
