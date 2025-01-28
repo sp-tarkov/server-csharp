@@ -23,7 +23,8 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _notifierCallbacks.Notify(url, info, sessionID)),
+                ) => _notifierCallbacks.Notify(url, info, sessionID)
+            ),
             new RouteAction(
                 "/notifierServer",
                 (
@@ -31,23 +32,8 @@ public class NotifierDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _notifierCallbacks.Notify(url, info, sessionID)),
-            new RouteAction(
-                "/push/notifier/get/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => _notifierCallbacks.GetNotifier(url, info, sessionID)),
-            new RouteAction(
-                "/push/notifier/getwebsocket/",
-                (
-                    url,
-                    info,
-                    sessionID,
-                    output
-                ) => _notifierCallbacks.GetNotifier(url, info, sessionID)),
+                ) => _notifierCallbacks.Notify(url, info, sessionID)
+            )
         ]
     )
     {
