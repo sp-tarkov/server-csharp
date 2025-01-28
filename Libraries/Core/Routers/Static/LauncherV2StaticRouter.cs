@@ -38,7 +38,7 @@ public class LauncherV2StaticRouter : StaticRouter
             new RouteAction(
                 "/launcher/v2/Remove",
                 (url, info, sessionID, _) => launcherV2Callbacks.Remove(info as LoginRequestData),
-                    typeof(LoginRequestData)
+                typeof(LoginRequestData)
             ),
             new RouteAction(
                 "/launcher/v2/version",
@@ -51,15 +51,7 @@ public class LauncherV2StaticRouter : StaticRouter
             new RouteAction(
                 "/launcher/v2/profiles",
                 (url, _, sessionID, _) => launcherV2Callbacks.Profiles()
-            ),
-            new RouteAction(
-                "/launcher/v2/profile",
-                (url, _, sessionID, _) => launcherV2Callbacks.Profile()
-            ),
-            new RouteAction(
-                "/launcher/v2/profileMods",
-                (url, _, sessionID, _) => launcherV2Callbacks.ProfileMods()
-            ),
+            )
         ]
     )
     {

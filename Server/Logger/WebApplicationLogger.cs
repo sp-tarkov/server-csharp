@@ -79,11 +79,6 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
         _logger.LogCritical(ex, GetColorizedText(data, LogTextColor.Black, LogBackgroundColor.Red));
     }
 
-    public void WriteToLogFile(Daum body)
-    {   
-        throw new NotImplementedException();
-    }
-
     public void WriteToLogFile(string data)
     {
         //TODO - implement + turn object into json
