@@ -78,7 +78,7 @@ public record Props
     public string? ItemSound { get; set; }
 
     [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string
-    public object? Prefab { get; set; }
+    public Prefab? Prefab { get; set; }
 
     [JsonPropertyName("UsePrefab")]
     public Prefab? UsePrefab { get; set; }
