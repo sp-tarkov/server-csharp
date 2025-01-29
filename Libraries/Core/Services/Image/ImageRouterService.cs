@@ -1,6 +1,6 @@
 using SptCommon.Annotations;
 
-namespace Core.Services.Mod.Image;
+namespace Core.Services.Image;
 
 [Injectable(InjectionType.Singleton)]
 public class ImageRouterService
