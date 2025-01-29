@@ -2045,8 +2045,8 @@ public class ItemHelper(
 public class ItemSize
 {
     [JsonPropertyName("width")]
-    public double Width { get; set; }
+    public int Width { get; set; }
 
     [JsonPropertyName("height")]
-    public double Height { get; set; }
+    public int Height { get; set; }
 }

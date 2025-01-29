@@ -103,8 +103,8 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.SearchFriend(url, info as SearchFriendRequestData, sessionID),
-                typeof(SearchFriendRequestData)),
+                ) => profileCallbacks.SearchProfiles(url, info as SearchProfilesRequestData, sessionID),
+                typeof(SearchProfilesRequestData)),
             new RouteAction(
                 "/launcher/profile/info",
                 (url, info, sessionID, output) =>

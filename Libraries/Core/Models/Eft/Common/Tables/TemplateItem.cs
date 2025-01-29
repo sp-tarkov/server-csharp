@@ -56,11 +56,13 @@ public record Props
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("Width")]
-    public double? Width { get; set; }
+    public int? Width { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("Height")]
-    public double? Height { get; set; }
+    public int? Height { get; set; }
 
     [JsonPropertyName("StackMaxSize")]
     public int? StackMaxSize { get; set; }

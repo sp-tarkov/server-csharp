@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -131,9 +131,9 @@ public class ProfileCallbacks(
     /**
      * Handle client/game/profile/search
      */
-    public string SearchFriend(string url, SearchFriendRequestData info, string sessionID)
+    public string SearchProfiles(string url, SearchProfilesRequestData info, string sessionID)
     {
-        return _httpResponse.GetBody(_profileController.GetFriends(info, sessionID));
+        return _httpResponse.GetBody(_profileController.SearchProfiles(info, sessionID));
     }
 
     /**

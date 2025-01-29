@@ -177,9 +177,8 @@ public class ProfileController(
     /**
      * Handle client/game/profile/search
      */
-    public List<SearchFriendResponse> GetFriends(SearchFriendRequestData info, string sessionID)
+    public List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData info, string sessionID)
     {
-        // TODO: We should probably rename this method in the next client update
         var result = new List<SearchFriendResponse>();
 
         // Find any profiles with a nickname containing the entered name

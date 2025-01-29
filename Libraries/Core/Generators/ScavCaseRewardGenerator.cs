@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+using Core.Helpers;
 using Core.Models.Common;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
@@ -32,8 +32,8 @@ public class ScavCaseRewardGenerator(
 )
 {
     protected ScavCaseConfig _scavCaseConfig = _configServer.GetConfig<ScavCaseConfig>();
-    protected List<TemplateItem> _dbItemsCache = new List<TemplateItem>();
-    protected List<TemplateItem> _dbAmmoItemsCache = new List<TemplateItem>();
+    protected List<TemplateItem> _dbItemsCache = [];
+    protected List<TemplateItem> _dbAmmoItemsCache = [];
 
     /// <summary>
     /// Create an array of rewards that will be given to the player upon completing their scav case build
