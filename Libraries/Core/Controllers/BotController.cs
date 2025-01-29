@@ -17,6 +17,7 @@ using Core.Utils.Cloners;
 using SptCommon.Extensions;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 using System.Diagnostics;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 
 namespace Core.Controllers;
@@ -447,14 +448,25 @@ public class BotController(
         return botCap.Value;
     }
 
-    public object GetAiBotBrainTypes()
+    public AiBotBrainTypes GetAiBotBrainTypes()
     {
-        // TODO: Returns `any` in the node server
-        return new
+        return new AiBotBrainTypes
         {
-            pmc = _pmcConfig.PmcType,
-            assault = _botConfig.AssaultBrainType,
-            playerScav = _botConfig.PlayerScavBrainType,
+            PmcType = _pmcConfig.PmcType,
+            Assault = _botConfig.AssaultBrainType,
+            PlayerScav = _botConfig.PlayerScavBrainType,
         };
     }
+}
+
+public record AiBotBrainTypes
+{
+    [JsonPropertyName("pmc")]
+    public Dictionary<string,Dictionary<string,Dictionary<string,double>>> PmcType { get; set; }
+    
+    [JsonPropertyName("assault")]
+    public Dictionary<string,Dictionary<string,int>> Assault { get; set; }
+    
+    [JsonPropertyName("playerScav")]
+    public Dictionary<string,Dictionary<string,int>> PlayerScav { get; set; }
 }

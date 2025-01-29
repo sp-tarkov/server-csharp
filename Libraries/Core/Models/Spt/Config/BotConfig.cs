@@ -458,7 +458,9 @@ public record NighttimeChanges
     /// </summary>
     [JsonPropertyName("equipmentModsModifiers")]
     public Dictionary<string, float> EquipmentModsModifiers { get; set; }
-    //public Dictionary<string, float> WeaponModsModifiers { get; set; } //TODO
+    
+    [JsonPropertyName("weaponModsModifiers")]
+    public Dictionary<string, float> WeaponModsModifiers { get; set; } // TODO: currently not in use anywhere
 }
 
 public record EquipmentFilterDetails
