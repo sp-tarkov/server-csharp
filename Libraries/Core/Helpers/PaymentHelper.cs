@@ -10,6 +10,7 @@ public class PaymentHelper(ConfigServer _configServer)
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     protected List<string> _moneyTpls = [Money.DOLLARS, Money.EUROS, Money.ROUBLES, Money.GP];
+    protected bool _addedCustomMoney;
 
     /// <summary>
     /// Is the passed in tpl money (also checks custom currencies in inventoryConfig.customMoneyTpls)
@@ -18,7 +19,11 @@ public class PaymentHelper(ConfigServer _configServer)
     /// <returns></returns>
     public bool IsMoneyTpl(string tpl)
     {
-        _moneyTpls.AddRange(_inventoryConfig.CustomMoneyTpls);
+        if (!_addedCustomMoney)
+        {
+            _moneyTpls.AddRange(_inventoryConfig.CustomMoneyTpls);
+            _addedCustomMoney = true;
+        }
 
         return _moneyTpls.Contains(tpl);
     }
