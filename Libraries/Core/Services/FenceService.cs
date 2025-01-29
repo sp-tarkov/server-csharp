@@ -207,24 +207,19 @@ public class FenceService(
     /**
      * Adjust all items contained inside an assort by a multiplier
      * @param assort (clone)Assort that contains items with prices to adjust
-     * @param itemMultipler multipler to use on items
-     * @param presetMultiplier preset multipler to use on presets
+     * @param itemMultiplier multiplier to use on items
+     * @param presetMultiplier preset multiplier to use on presets
      */
     protected void AdjustAssortItemPricesByConfigMultiplier(
         TraderAssort assort,
-        double itemMultipler,
+        double itemMultiplier,
         double presetMultiplier
     )
     {
-        foreach (var item in assort.Items)
+        // Skip sub-items when adjusting prices
+        foreach (var item in assort.Items.Where(x => x.SlotId is not "hideout"))
         {
-            // Skip sub-items when adjusting prices
-            if (item.SlotId != "hideout")
-            {
-                continue;
-            }
-
-            AdjustItemPriceByModifier(item, assort, itemMultipler, presetMultiplier);
+            AdjustItemPriceByModifier(item, assort, itemMultiplier, presetMultiplier);
         }
     }
 
