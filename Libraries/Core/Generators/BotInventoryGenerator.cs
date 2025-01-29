@@ -39,6 +39,20 @@ public class BotInventoryGenerator(
 {
     private BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
+    // Slots handled individually inside `GenerateAndAddEquipmentToBot`
+    List<EquipmentSlots> _excludedEquipmentSlots =
+    [
+        EquipmentSlots.Pockets,
+        EquipmentSlots.FirstPrimaryWeapon,
+        EquipmentSlots.SecondPrimaryWeapon,
+        EquipmentSlots.Holster,
+        EquipmentSlots.ArmorVest,
+        EquipmentSlots.TacticalVest,
+        EquipmentSlots.FaceCover,
+        EquipmentSlots.Headwear,
+        EquipmentSlots.Earpiece
+    ];
+
     /// <summary>
     /// Add equipment/weapons/loot to bot
     /// </summary>
@@ -142,20 +156,6 @@ public class BotInventoryGenerator(
     public void GenerateAndAddEquipmentToBot(string sessionId, BotTypeInventory templateInventory, Chances wornItemChances, string botRole,
         BotBaseInventory botInventory, int botLevel, string chosenGameVersion, GetRaidConfigurationRequestData raidConfig)
     {
-        // These will be handled later
-        var excludedSlots = new List<EquipmentSlots>()
-        {
-            EquipmentSlots.Pockets,
-            EquipmentSlots.FirstPrimaryWeapon,
-            EquipmentSlots.SecondPrimaryWeapon,
-            EquipmentSlots.Holster,
-            EquipmentSlots.ArmorVest,
-            EquipmentSlots.TacticalVest,
-            EquipmentSlots.FaceCover,
-            EquipmentSlots.Headwear,
-            EquipmentSlots.Earpiece
-        };
-
         _botConfig.Equipment.TryGetValue(_botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig);
         var randomistionDetails = _botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
 
@@ -188,7 +188,7 @@ public class BotInventoryGenerator(
         {
             // Skip some slots as they need to be done in a specific order + with specific parameter values
             // e.g. Weapons
-            if (excludedSlots.Contains(equipmentSlot))
+            if (_excludedEquipmentSlots.Contains(equipmentSlot))
             {
                 continue;
             }

@@ -586,7 +586,7 @@ public class LootGenerator(
             // Find a random item of the desired type and add as reward
             for (var index = 0; index < rewardCount; index++) {
                 var chosenItem = _randomUtil.DrawRandomFromList(relatedItems.ToList());
-                var reward = new List<Item> { new Item() { Id = _hashUtil.Generate(), Template = chosenItem[0].Id } };
+                var reward = new List<Item> { new() { Id = _hashUtil.Generate(), Template = chosenItem[0].Id } };
 
                 modRewards.Add(reward);
             }

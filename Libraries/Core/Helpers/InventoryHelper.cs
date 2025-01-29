@@ -40,6 +40,9 @@ public class InventoryHelper(
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
+    // Item types to ignore inside `GetSizeByInventoryItemHash`
+    List<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
+
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
     /// </summary>
@@ -655,12 +658,8 @@ public class InventoryHelper(
         var forcedDown = 0;
         var forcedLeft = 0;
         var forcedRight = 0;
-        var outX = (int)tmpItem.Properties.Width;
-        var outY = (int)tmpItem.Properties.Height;
-
-        // Item types to ignore
-        var skipThisItems = new List<string>
-            { BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER };
+        var outX = tmpItem.Properties.Width;
+        var outY = tmpItem.Properties.Height;
 
         var rootIsFolded = rootItem?.Upd?.Foldable?.Folded == true;
 
@@ -669,7 +668,7 @@ public class InventoryHelper(
             outX -= tmpItem.Properties.SizeReduceRight.Value;
 
         // Calculate size contribution from child items/attachments
-        if (!skipThisItems.Contains(tmpItem.Parent))
+        if (!_itemBaseTypesToIgnore.Contains(tmpItem.Parent))
             while (toDo.Count > 0)
             {
                 if (inventoryItemHash.ByParentId.ContainsKey(toDo[0]))
@@ -726,8 +725,8 @@ public class InventoryHelper(
 
         return
         [
-            outX + sizeLeft + sizeRight + forcedLeft + forcedRight,
-            outY + sizeUp + sizeDown + forcedUp + forcedDown
+            outX.Value + sizeLeft + sizeRight + forcedLeft + forcedRight,
+            outY.Value + sizeUp + sizeDown + forcedUp + forcedDown
         ];
     }
 

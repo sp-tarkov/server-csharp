@@ -496,7 +496,7 @@ public class HideoutController(
             recipe.Requirements.Where((r) => r.Type == "Item" || r.Type == "Tool")
         );
 
-        List<IdWithCount> itemsToDelete = new List<IdWithCount>();
+        List<IdWithCount> itemsToDelete = [];
         var output = _eventOutputHolder.GetOutput(sessionID);
         itemsToDelete.AddRange(body.Tools);
         itemsToDelete.AddRange(body.Items);
@@ -789,7 +789,7 @@ public class HideoutController(
         hoursCrafting += recipe.ProductionTime;
         if (hoursCrafting / _hideoutConfig.HoursForSkillCrafting >= 1)
         {
-            // Spent enough time crafting to get a bonus xp multipler
+            // Spent enough time crafting to get a bonus xp multiplier
             var multiplierCrafting = Math.Floor((double)hoursCrafting / _hideoutConfig.HoursForSkillCrafting);
             craftingExpAmount += (int)(1 * multiplierCrafting);
             hoursCrafting -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;

@@ -72,7 +72,7 @@ public class DialogueHelper(
                 // Check reward count when item being moved isn't in reward list
                 // If count is 0, it means after this move occurs the reward array will be empty and all rewards collected
                 if (message.Items.Data is null)
-                    message.Items.Data = new();
+                    message.Items.Data = [];
 
                 var rewardItems = message.Items.Data?.Where(x => x.Id != itemId);
                 if (rewardItems.Count() == 0)
@@ -85,7 +85,7 @@ public class DialogueHelper(
             }
         }
 
-        return new List<Item>();
+        return [];
     }
 
     /// <summary>
@@ -96,10 +96,7 @@ public class DialogueHelper(
     public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(string sessionId)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
-        if (profile.DialogueRecords is null)
-            profile.DialogueRecords = new();
-
-        return profile.DialogueRecords;
+        return profile.DialogueRecords ?? (profile.DialogueRecords = new());
     }
 
     public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(string profileId, string dialogueId)

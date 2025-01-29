@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.DI;
 using Core.Models.Eft.Profile;
 
@@ -9,7 +9,7 @@ public class InsuranceSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new List<HandledRoute>() { new HandledRoute("spt-insurance", false) };
+        return [new ("spt-insurance", false)];
     }
 
     public override SptProfile HandleLoad(SptProfile profile)

@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.DI;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
@@ -11,7 +11,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new List<HandledRoute>() { new HandledRoute("spt-health", false) };
+        return [new("spt-health", false)];
     }
 
     public override SptProfile HandleLoad(SptProfile profile)

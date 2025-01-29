@@ -48,6 +48,9 @@ public class HttpRouter
             wrapper.Output = wrapper.Output.Replace(sessionID, sessionID);
         }
 
+        //var filepath = $"c:\\SharpServer\\{req.Path.ToString().Substring(1).Replace("/", ".")}.json";
+        //File.WriteAllText(filepath, wrapper.Output);
+
         return wrapper.Output;
     }
 
