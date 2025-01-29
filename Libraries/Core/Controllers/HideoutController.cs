@@ -695,7 +695,7 @@ public class HideoutController(
             return;
         }
 
-        // Variables for managemnet of skill
+        // Variables for management of skill
         var craftingExpAmount = 0;
 
         var counterHoursCrafting = GetHoursCraftingTaskConditionCounter(pmcData, recipe);

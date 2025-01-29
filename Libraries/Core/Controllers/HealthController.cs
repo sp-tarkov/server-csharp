@@ -97,10 +97,9 @@ public class HealthController(
             foreach (var effectKey in effectsOnBodyPart)
             {
                 // Check if healing item removes the effect on limb
-                var matchingEffectFromHealingItem = healItemEffectDetails.GetValueOrDefault(effectKey);
-                if (matchingEffectFromHealingItem is null)
+                if (!healItemEffectDetails.TryGetValue(Enum.Parse<DamageEffectType>(effectKey), out var matchingEffectFromHealingItem))
                 {
-                    // Healing item doesnt have matching effect, it doesnt remove the effect
+                    // Healing item doesn't have matching effect, it doesn't remove the effect
                     continue;
                 }
 
@@ -180,10 +179,10 @@ public class HealthController(
         foreach (var (key, effectProps) in foodItemEffectDetails)
             switch (key)
             {
-                case "Hydration":
+                case HealthFactor.Hydration:
                     ApplyEdibleEffect(pmcData.Health.Hydration, effectProps, foodIsSingleUse, request);
                     break;
-                case "Energy":
+                case HealthFactor.Energy:
                     ApplyEdibleEffect(pmcData.Health.Energy, effectProps, foodIsSingleUse, request);
                     break;
 

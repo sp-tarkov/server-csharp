@@ -207,7 +207,7 @@ public record Props
     public string? UnlootableFromSlot { get; set; }
 
     [JsonPropertyName("UnlootableFromSide")]
-    public List<string>? UnlootableFromSide { get; set; }
+    public List<PlayerSideMask>? UnlootableFromSide { get; set; }
 
     // Type confirmed via client
     [JsonPropertyName("AnimationVariantsNumber")]
@@ -216,8 +216,9 @@ public record Props
     [JsonPropertyName("DiscardingBlock")]
     public bool? DiscardingBlock { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("DropSoundType")]
-    public string? DropSoundType { get; set; }
+    public ItemDropSoundType? DropSoundType { get; set; }
 
     [JsonPropertyName("RagFairCommissionModifier")]
     public double? RagFairCommissionModifier { get; set; }
@@ -251,7 +252,7 @@ public record Props
     public bool? CanPutIntoDuringTheRaid { get; set; }
 
     [JsonPropertyName("CantRemoveFromSlotsDuringRaid")]
-    public List<string>? CantRemoveFromSlotsDuringRaid { get; set; }
+    public List<EquipmentSlots>? CantRemoveFromSlotsDuringRaid { get; set; }
 
     [JsonPropertyName("KeyIds")]
     public List<string>? KeyIds { get; set; }
@@ -992,12 +993,12 @@ public record Props
     [JsonPropertyName("effects_health")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<string, EffectsHealthProps>? EffectsHealth { get; set; }
+    public Dictionary<HealthFactor, EffectsHealthProps>? EffectsHealth { get; set; }
 
     [JsonPropertyName("effects_damage")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public Dictionary<string, EffectDamageProps>? EffectsDamage { get; set; }
+    public Dictionary<DamageEffectType, EffectDamageProps>? EffectsDamage { get; set; }
 
     // Confirmed in client
     [JsonPropertyName("MaximumNumberOfUsage")]
@@ -1015,11 +1016,13 @@ public record Props
     [JsonPropertyName("knifeHitRadius")]
     public double? KnifeHitRadius { get; set; }
 
+    // Confirmed on client
     [JsonPropertyName("knifeHitSlashDam")]
-    public double? KnifeHitSlashDam { get; set; }
+    public int? KnifeHitSlashDam { get; set; }
 
+    // Confirmed on client
     [JsonPropertyName("knifeHitStabDam")]
-    public double? KnifeHitStabDam { get; set; }
+    public int? KnifeHitStabDam { get; set; }
 
     [JsonPropertyName("knifeDurab")]
     public double? KnifeDurab { get; set; }
@@ -1030,11 +1033,13 @@ public record Props
     [JsonPropertyName("SecondryDistance")]
     public double? SecondryDistance { get; set; }
 
+    // Confirmed on client
     [JsonPropertyName("SlashPenetration")]
-    public double? SlashPenetration { get; set; }
+    public int? SlashPenetration { get; set; }
 
+    // Confirmed on client
     [JsonPropertyName("StabPenetration")]
-    public double? StabPenetration { get; set; }
+    public int? StabPenetration { get; set; }
 
     [JsonPropertyName("PrimaryConsumption")]
     public double? PrimaryConsumption { get; set; }
@@ -1055,7 +1060,7 @@ public record Props
     public bool? DisplayOnModel { get; set; }
 
     [JsonPropertyName("AdditionalAnimationLayer")]
-    public double? AdditionalAnimationLayer { get; set; }
+    public int? AdditionalAnimationLayer { get; set; }
 
     [JsonPropertyName("StaminaBurnRate")]
     public double? StaminaBurnRate { get; set; }
@@ -1066,8 +1071,9 @@ public record Props
     [JsonPropertyName("ConfigPathStr")]
     public string? ConfigPathStr { get; set; }
 
+    // Confirmed on client
     [JsonPropertyName("MaxMarkersCount")]
-    public double? MaxMarkersCount { get; set; }
+    public int? MaxMarkersCount { get; set; }
 
     [JsonPropertyName("scaleMin")]
     public double? ScaleMin { get; set; }
@@ -1101,6 +1107,7 @@ public record Props
     [JsonPropertyName("MaxRepairResource")]
     public int? MaxRepairResource { get; set; }
 
+    // Confirmed on client - MongoId
     [JsonPropertyName("TargetItemFilter")]
     public List<string>? TargetItemFilter { get; set; }
 
@@ -1159,11 +1166,13 @@ public record Props
     [JsonPropertyName("MisfireChance")]
     public double? MisfireChance { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("MinFragmentsCount")]
-    public double? MinFragmentsCount { get; set; }
+    public int? MinFragmentsCount { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("MaxFragmentsCount")]
-    public double? MaxFragmentsCount { get; set; }
+    public int? MaxFragmentsCount { get; set; }
 
     [JsonPropertyName("ammoShiftChance")]
     public double? AmmoShiftChance { get; set; }
@@ -1246,8 +1255,9 @@ public record Props
     [JsonPropertyName("MaxExplosionDistance")]
     public double? MaxExplosionDistance { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("FragmentsCount")]
-    public double? FragmentsCount { get; set; }
+    public int? FragmentsCount { get; set; }
 
     [JsonPropertyName("FragmentType")]
     public string? FragmentType { get; set; }
@@ -1307,7 +1317,7 @@ public record Props
     public double? Rate { get; set; }
 
     [JsonPropertyName("ThrowType")]
-    public string? ThrowType { get; set; }
+    public ThrowWeapType? ThrowType { get; set; }
 
     [JsonPropertyName("ExplDelay")]
     public double? ExplDelay { get; set; }
@@ -1355,7 +1365,7 @@ public record Props
     public bool? RemoveShellAfterFire { get; set; }
 
     [JsonPropertyName("RepairStrategyTypes")]
-    public List<string>? RepairStrategyTypes { get; set; }
+    public List<RepairStrategyType>? RepairStrategyTypes { get; set; }
 
     [JsonPropertyName("IsEncoded")]
     public bool? IsEncoded { get; set; }

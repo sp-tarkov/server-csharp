@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
@@ -254,7 +253,7 @@ public record BotBaseHealth
 public record BodyPartHealth
 {
     public CurrentMinMax? Health { get; set; }
-    public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; }
+    public Dictionary<string, BodyPartEffectProperties>? Effects { get; set; } // TODO: change key to DamageEffectType enum
 }
 
 public record BodyPartEffectProperties

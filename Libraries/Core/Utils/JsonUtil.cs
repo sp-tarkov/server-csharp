@@ -37,6 +37,11 @@ public class JsonUtil
             new EftEnumConverter<ExitStatus>(),
             new EftEnumConverter<MemberCategory>(),
             new EftEnumConverter<PinLockState>(),
+            new EftEnumConverter<PlayerSideMask>(),
+            new EftEnumConverter<EquipmentSlots>(),
+            new EftEnumConverter<DamageEffectType>(),
+            new EftEnumConverter<RepairStrategyType>(),
+            new EftEnumConverter<ThrowWeapType>(),
             new BaseInteractionRequestDataConverter()
         }
     };
