@@ -43,7 +43,6 @@ public abstract class AbstractDialogChatBot(
                 null
             );
             // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
-            // TODO: there must be a better way of doing this
             TimeoutCallback.RunInTimespan(
                 () =>
                 {

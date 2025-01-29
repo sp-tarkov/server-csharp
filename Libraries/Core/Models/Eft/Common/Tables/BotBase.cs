@@ -399,7 +399,6 @@ public record FoundInRaidItem
     public string? ItemId { get; set; }
 }
 
-// TODO: Same as Aggressor?
 public record Victim
 {
     public string? AccountId { get; set; }
@@ -474,24 +473,11 @@ public record DamageHistory
     public string? LethalDamagePart { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public LethalDamage? LethalDamage { get; set; }
+    public DamageStats? LethalDamage { get; set; }
 
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public BodyPartsDamageHistory? BodyParts { get; set; }
-}
-
-// TODO: this record seems exactly the same as DamageStats, why have it?
-public record LethalDamage
-{
-    public double? Amount { get; set; }
-    public string? Type { get; set; }
-    public string? SourceId { get; set; }
-
-    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public string? OverDamageFrom { get; set; }
-    public bool? Blunt { get; set; }
-    public double? ImpactsCount { get; set; }
 }
 
 public record BodyPartsDamageHistory
@@ -511,6 +497,7 @@ public record DamageStats
     public double? Amount { get; set; }
     public string? Type { get; set; }
     public string? SourceId { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? OverDamageFrom { get; set; }
     public bool? Blunt { get; set; }
     public double? ImpactsCount { get; set; }
