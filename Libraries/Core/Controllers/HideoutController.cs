@@ -772,7 +772,7 @@ public class HideoutController(
         {
             foreach (var tool in hideoutProduction.SptRequiredTools)
             {
-                toolsToSendToPlayer.AddRange([tool]);
+                toolsToSendToPlayer.Add([tool]);
             }
         }
 
