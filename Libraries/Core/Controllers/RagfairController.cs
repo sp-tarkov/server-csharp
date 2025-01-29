@@ -140,7 +140,7 @@ public class RagfairController
         var traderAssorts = _ragfairHelper.GetDisplayableAssorts(sessionID);
         var result = new GetOffersResult
         {
-            Offers = new List<RagfairOffer>(),
+            Offers = [],
             OffersCount = searchRequest.Limit,
             SelectedCategory = searchRequest.HandbookId,
         };
@@ -986,7 +986,7 @@ public class RagfairController
                 )
             );
 
-            pmcData.RagfairInfo.Offers = new List<RagfairOffer>();
+            pmcData.RagfairInfo.Offers = [];
         }
 
         var playerOfferIndex = playerProfileOffers.FindIndex(offer => offer.Id == removeRequest.OfferId);

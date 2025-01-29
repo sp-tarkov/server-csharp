@@ -118,7 +118,7 @@ public class ExternalInventoryMagGen(
                 }
 
                 // Edge case - some weapons (SKS + shotguns) have an internal magazine as default, choose random non-internal magazine to add to bot instead
-                if (magTemplate.Properties.ReloadMagType == "InternalMagazine")
+                if (magTemplate.Properties.ReloadMagType == ReloadMode.InternalMagazine)
                 {
                     var result = GetRandomExternalMagazineForInternalMagazineGun(
                         inventoryMagGen.GetWeaponTemplate().Id,
@@ -179,7 +179,7 @@ public class ExternalInventoryMagGen(
         }
 
         // Non-internal magazines that fit into the weapon
-        var externalMagazineOnlyPool = magazinePool.Where((x) => x.Properties.ReloadMagType != "InternalMagazine");
+        var externalMagazineOnlyPool = magazinePool.Where((x) => x.Properties.ReloadMagType != ReloadMode.InternalMagazine);
         if (externalMagazineOnlyPool is null || externalMagazineOnlyPool?.Count() == 0)
         {
             return null;

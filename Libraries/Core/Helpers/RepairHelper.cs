@@ -124,7 +124,7 @@ public class RepairHelper(
             ? armorMaterialSettings.MaxRepairKitDegradation
             : armorMaterialSettings.MaxRepairDegradation;
 
-        var duraLossPercent = _randomUtil.GetFloat((float)minMultiplier, (float)maxMultiplier);
+        var duraLossPercent = _randomUtil.GetDouble((double)minMultiplier, (double)maxMultiplier);
         var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultipler;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
@@ -153,7 +153,7 @@ public class RepairHelper(
             maxRepairDeg = itemProps.MaxRepairDegradation;
         }
 
-        var duraLossPercent = _randomUtil.GetFloat((float)minRepairDeg, (float)maxRepairDeg);
+        var duraLossPercent = _randomUtil.GetDouble((double)minRepairDeg, (double)maxRepairDeg);
         var duraLossMultipliedByTraderMultiplier = duraLossPercent * weaponMax * traderQualityMultipler;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);

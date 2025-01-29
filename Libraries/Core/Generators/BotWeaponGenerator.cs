@@ -394,7 +394,7 @@ public class BotWeaponGenerator(
 
             return;
         }
-        var isInternalMag = magTemplate.Properties.ReloadMagType == "InternalMagazine";
+        var isInternalMag = magTemplate.Properties.ReloadMagType == ReloadMode.InternalMagazine;
         var ammoTemplate = _itemHelper.GetItem(generatedWeaponResult.ChosenAmmoTemplate).Value;
         if (ammoTemplate is null)
         {
@@ -508,7 +508,7 @@ public class BotWeaponGenerator(
         {
             // Edge case - magazineless chamber loaded weapons dont have magazines, e.g. mp18
             // return default mag tpl
-            if (weaponTemplate.Properties.ReloadMode == "OnlyBarrel")
+            if (weaponTemplate.Properties.ReloadMode == ReloadMode.OnlyBarrel)
             {
                 return _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weaponTemplate);
             }

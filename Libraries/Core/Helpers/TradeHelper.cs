@@ -170,16 +170,16 @@ public class TradeHelper(
 
                 if (assortHasBuyRestrictions)
                 {
-                    var itemPurchaseDat = new PurchaseDetails()
+                    var itemPurchaseDat = new PurchaseDetails
                     {
-                        Items = new List<PurchaseItems>()
-                        {
-                            new PurchaseItems()
+                        Items =
+                        [
+                            new PurchaseItems
                             {
                                 ItemId = buyRequestData.ItemId,
                                 Count = buyCount
                             }
-                        },
+                        ],
                         TraderId = buyRequestData.TransactionId
                     };
 

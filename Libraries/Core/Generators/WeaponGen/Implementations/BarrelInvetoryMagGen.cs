@@ -1,5 +1,6 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Helpers;
+using Core.Models.Enums;
 using Core.Utils;
 
 namespace Core.Generators.WeaponGen.Implementations;
@@ -17,7 +18,7 @@ public class BarrelInvetoryMagGen(
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        return inventoryMagGen.GetWeaponTemplate().Properties.ReloadMode == "OnlyBarrel";
+        return inventoryMagGen.GetWeaponTemplate().Properties.ReloadMode == ReloadMode.OnlyBarrel;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)

@@ -529,9 +529,7 @@ public class RepairService(
             Rarity = bonusRarityName,
             BuffType = bonusTypeName,
             Value = bonusValue,
-            ThresholdDurability = Math.Round(
-                _randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value)
-            )
+            ThresholdDurability = _randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value, 0)
         };
     }
 

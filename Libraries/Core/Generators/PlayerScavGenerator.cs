@@ -151,7 +151,7 @@ public class PlayerScavGenerator(
             var itemTemplate = itemResult.Value;
             var itemsToAdd = new List<Item>()
             {
-                new Item()
+                new()
                 {
                     Id = _hashUtil.Generate(),
                     Template = itemTemplate.Id,

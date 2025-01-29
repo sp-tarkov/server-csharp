@@ -264,7 +264,7 @@ public class RepeatableQuestRewardGenerator(
         return Math.Floor(
             effectiveDifficulty *
             _mathUtil.Interp1(pmcLevel, levelsConfig, xpConfig) *
-            _randomUtil.GetFloat((float)(1 - rewardSpreadConfig), (float)(1 + rewardSpreadConfig)) ??
+            _randomUtil.GetDouble((double)(1 - rewardSpreadConfig), (double)(1 + rewardSpreadConfig)) ??
             0
         );
     }
@@ -276,7 +276,7 @@ public class RepeatableQuestRewardGenerator(
         return Math.Ceiling(
             effectiveDifficulty *
             _mathUtil.Interp1(pmcLevel, levelsConfig, gpCoinConfig) *
-            _randomUtil.GetFloat((float)(1 - rewardSpreadConfig), (float)(1 + rewardSpreadConfig)) ??
+            _randomUtil.GetDouble((double)(1 - rewardSpreadConfig), (double)(1 + rewardSpreadConfig)) ??
             0
         );
     }
@@ -289,7 +289,7 @@ public class RepeatableQuestRewardGenerator(
                    100 *
                    effectiveDifficulty *
                    _mathUtil.Interp1(pmcLevel, levelsConfig, reputationConfig) *
-                   _randomUtil.GetFloat((float)(1 - rewardSpreadConfig), (float)(1 + rewardSpreadConfig)) ??
+                   _randomUtil.GetDouble((double)(1 - rewardSpreadConfig), (double)(1 + rewardSpreadConfig)) ??
                    0
                ) /
                100;
@@ -307,7 +307,7 @@ public class RepeatableQuestRewardGenerator(
         return Math.Floor(
             effectiveDifficulty *
             _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) *
-            _randomUtil.GetFloat((float)(1 - rewardSpreadConfig), (float)(1 + rewardSpreadConfig)) ??
+            _randomUtil.GetDouble((double)(1 - rewardSpreadConfig), (double)(1 + rewardSpreadConfig)) ??
             0
         );
     }
