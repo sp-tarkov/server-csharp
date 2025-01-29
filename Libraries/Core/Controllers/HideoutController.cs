@@ -1189,8 +1189,7 @@ public class HideoutController(
             return output;
         }
 
-        // pmcData.Hideout.Customization[GetHideoutCustomisationType(itemDetails.Type)];
-        // this is in the Node server, doesnt do anything
+        pmcData.Hideout.Customization[GetHideoutCustomisationType(itemDetails.Type)] = itemDetails.ItemId;
 
         return output;
     }
