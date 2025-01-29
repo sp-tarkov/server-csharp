@@ -78,18 +78,19 @@ public class RagfairOfferService(
      */
     public List<List<Item>> GetExpiredOfferAssorts()
     {
+        // list of lists of item+children
         var expiredItems = new List<List<Item>>();
 
-        foreach (var expiredOfferId in expiredOffers.Keys)
+        foreach (var expiredOfferKvP in expiredOffers)
         {
-            if (!expiredOffers.TryGetValue(expiredOfferId, out var expiredOffer))
+            if (expiredOfferKvP.Value?.Items is null)
             {
-                logger.Error($"Unable to remove expired flea offer: {expiredOfferId} as it cannot be found, skipping");
+                logger.Error($"Unable to process expired offer: {expiredOfferKvP.Key}, it has no items");
 
                 continue;
             }
 
-            expiredItems.Add(expiredOffer.Items);
+            expiredItems.Add(expiredOfferKvP.Value.Items);
         }
 
         return expiredItems;
@@ -100,7 +101,7 @@ public class RagfairOfferService(
      */
     public void ResetExpiredOffers()
     {
-        expiredOffers = new();
+        expiredOffers.Clear();
     }
 
     /**
