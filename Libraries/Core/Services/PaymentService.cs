@@ -10,6 +10,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -135,7 +136,10 @@ public class PaymentService(
             _traderHelper.LevelUp(request.TransactionId, pmcData);
         }
 
-        _logger.Debug("Item(s) taken. Status OK.");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug("Item(s) taken. Status OK.");
+        }
     }
 
     private double? GetTraderItemHandbookPriceRouble(string? traderAssortId, string traderId)

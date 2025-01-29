@@ -1,15 +1,21 @@
+using System.Text.Json;
 using Core.Helpers;
+using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Customization;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Eft.Trade;
+using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
+using SptCommon.Extensions;
+using Location = Core.Models.Eft.Inventory.Location;
 
 namespace Core.Controllers;
 
@@ -21,7 +27,8 @@ public class CustomizationController(
     SaveServer _saveServer,
     LocalisationService _localisationService,
     ProfileHelper _profileHelper,
-    ICloner _cloner
+    ICloner _cloner,
+    PaymentService _paymentService
 )
 {
     protected string _lowerParentClothingId = "5cd944d01388ce000a659df9";
@@ -97,7 +104,7 @@ public class CustomizationController(
 
             return output;
         }
-
+        
         // Charge player for buying item
         PayForClothingItems(sessionId, pmcData, buyClothingRequest.Items, output);
 
@@ -156,97 +163,19 @@ public class CustomizationController(
         
         foreach (var inventoryItemToProcess in itemsToPayForClothingWith)
         {
-            PayForClothingItem(sessionId, pmcData, inventoryItemToProcess, output);
-        }
-    }
-
-    /// <summary>
-    ///     Update output object and player profile with purchase details for single piece of clothing
-    /// </summary>
-    /// <param name="sessionId">Session id</param>
-    /// <param name="pmcData">Player profile</param>
-    /// <param name="paymentItemDetails">Payment details</param>
-    /// <param name="output">Client response</param>
-    private void PayForClothingItem(string sessionId, PmcData pmcData, PaymentItemForClothing? paymentItemDetails,
-        ItemEventRouterResponse output)
-    {
-        var inventoryItem = pmcData.Inventory?.Items?.FirstOrDefault(x => x.Id == paymentItemDetails?.Id);
-        if (inventoryItem == null)
-        {
-            _logger.Error(
-                _localisationService.GetText(
-                    "customisation-unable_to_find_clothing_item_in_inventory",
-                    paymentItemDetails?.Id
-                )
-            );
-            return;
-        }
-
-        if (paymentItemDetails?.Del != null)
-        {
-            output.ProfileChanges[sessionId]
-                .Items?.DeletedItems.Add(
-                    new Item
-                    {
-                        Id = inventoryItem.Id,
-                        Template = inventoryItem.Template,
-                        ParentId = inventoryItem.ParentId,
-                        SlotId = inventoryItem.SlotId,
-                        Location = (ItemLocation?)inventoryItem.Location,
-                        Upd = inventoryItem.Upd
-                    }
-                );
-        }
-
-        pmcData.Inventory?.Items?.Remove(inventoryItem);
-
-        inventoryItem.Upd ??= new Upd { StackObjectsCount = 1 };
-
-        if (inventoryItem.Upd?.StackObjectsCount == null)
-        {
-            if (inventoryItem.Upd != null)
+            var options = new ProcessBuyTradeRequestData
             {
-                inventoryItem.Upd.StackObjectsCount = 1;
-            }
+                SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count.Value, Id = inventoryItemToProcess.Id }],
+                TransactionId = Traders.RAGMAN,
+                Action = "BuyCustomization",
+                Type = "",
+                ItemId = "",
+                Count = 0,
+                SchemeId = 0
+            };
+
+            _paymentService.PayMoney(pmcData, options, sessionId, output);
         }
-
-        if (inventoryItem.Upd?.StackObjectsCount == paymentItemDetails?.Count)
-        {
-            output.ProfileChanges[sessionId]
-                .Items?.DeletedItems.Add(
-                    new Item
-                    {
-                        Id = inventoryItem.Id,
-                        Template = inventoryItem.Template,
-                        ParentId = inventoryItem.ParentId,
-                        SlotId = inventoryItem.SlotId,
-                        Location = (ItemLocation?)inventoryItem.Location,
-                        Upd = inventoryItem.Upd
-                    }
-                );
-
-            pmcData.Inventory?.Items?.Remove(inventoryItem);
-            return;
-        }
-
-        if (!(inventoryItem.Upd?.StackObjectsCount > paymentItemDetails?.Count))
-        {
-            return;
-        }
-
-        inventoryItem.Upd.StackObjectsCount -= paymentItemDetails.Count;
-        output.ProfileChanges[sessionId]
-            .Items?.ChangedItems?.Add(
-                new Item
-                {
-                    Id = inventoryItem.Id,
-                    Template = inventoryItem.Template,
-                    ParentId = inventoryItem.ParentId,
-                    SlotId = inventoryItem.SlotId,
-                    Location = (ItemLocation?)inventoryItem.Location,
-                    Upd = inventoryItem.Upd
-                }
-            );
     }
 
     /// <summary>
