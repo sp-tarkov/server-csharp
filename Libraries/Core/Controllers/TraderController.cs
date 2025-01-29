@@ -185,12 +185,11 @@ public class TraderController(
     public GetItemPricesResponse GetItemPrices(string sessionId, string traderId)
     {
         var handbookPrices = _ragfairPriceService.GetAllStaticPrices();
-        var handbookPricesClone = _cloner.Clone(handbookPrices);
 
         return new()
         {
             SupplyNextTime = _traderHelper.GetNextUpdateTimestamp(traderId),
-            Prices = handbookPricesClone,
+            Prices = handbookPrices,
             CurrencyCourses = new Dictionary<string, double>()
             {
                 { "5449016a4bdc2d6f028b456f", handbookPrices[Money.ROUBLES] },

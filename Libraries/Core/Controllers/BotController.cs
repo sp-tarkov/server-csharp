@@ -189,7 +189,10 @@ public class BotController(
         
         Task.WaitAll(tasks.ToArray());
         stopwatch.Stop();
-        _logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
+        }
 
         return [];
     }

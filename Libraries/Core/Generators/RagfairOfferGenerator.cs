@@ -15,6 +15,7 @@ using Core.Utils.Cloners;
 using Server;
 using SptCommon.Extensions;
 using Core.Models.Eft.Player;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Generators;
 
@@ -334,7 +335,10 @@ public class RagfairOfferGenerator(
             ? expiredOffers ?? []
             : ragfairAssortGenerator.GetAssortItems();
         stopwatch.Stop();
-        logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts");
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts");
+        }
         stopwatch.Restart();
         var tasks = new List<Task>();
         foreach (var assortItem in assortItemsToProcess)
@@ -347,8 +351,10 @@ public class RagfairOfferGenerator(
         }
         Task.WaitAll(tasks.ToArray());
         stopwatch.Stop();
-        logger.Info($"Took {stopwatch.ElapsedMilliseconds}ms to CreateOffersFromAssort");
-
+        if (logger.IsLogEnabled(LogLevel.Debug))
+        {
+            logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to CreateOffersFromAssort");
+        }
     }
 
     /**

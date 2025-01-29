@@ -1168,6 +1168,7 @@ public class FenceService(
         foreach (var requiredSlot in softInsertSlots)
         {
             var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters[0].Plate).Value;
+            
             var durabilityValues = GetRandomisedArmorDurabilityValues(
                 modItemDbDetails,
                 traderConfig.Fence.ArmorMaxDurabilityPercentMinMax
