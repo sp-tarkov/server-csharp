@@ -42,6 +42,7 @@ public class JsonUtil
             new EftEnumConverter<DamageEffectType>(),
             new EftEnumConverter<RepairStrategyType>(),
             new EftEnumConverter<ThrowWeapType>(),
+            new EftEnumConverter<EventType>(),
             new BaseInteractionRequestDataConverter()
         }
     };

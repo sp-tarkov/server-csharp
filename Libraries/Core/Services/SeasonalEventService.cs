@@ -471,9 +471,9 @@ public class SeasonalEventService(
     {
         _halloweenEventActive = true;
 
-        globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
-        globalConfig.EventType.Add("Halloween");
-        globalConfig.EventType.Add("HalloweenIllumination");
+        globalConfig.EventType = globalConfig.EventType.Where((x) => x != EventType.None).ToList();
+        globalConfig.EventType.Add(EventType.Halloween);
+        globalConfig.EventType.Add(EventType.HalloweenIllumination);
         globalConfig.Health.ProfileHealthSettings.DefaultStimulatorBuff = "Buffs_Halloween";
         AddEventGearToBots(eventType.Type);
         AdjustZryachiyMeleeChance();
@@ -513,8 +513,8 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
-            globalConfig.EventType.Add("Christmas");
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != EventType.None).ToList();
+            globalConfig.EventType.Add(EventType.Christmas);
         }
 
         AddEventGearToBots(eventType.Type);
@@ -539,8 +539,8 @@ public class SeasonalEventService(
 
         if (eventType.Settings?.EnableChristmasHideout ?? false)
         {
-            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
-            globalConfig.EventType.Add("Christmas");
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != EventType.None).ToList();
+            globalConfig.EventType.Add(EventType.Christmas);
         }
 
         AddEventGearToBots(SeasonalEventType.Christmas);
@@ -1032,14 +1032,14 @@ public class SeasonalEventService(
     protected void HandleModEvent(SeasonalEvent seasonalEvent, Config globalConfig)
     {
         if (seasonalEvent.Settings?.EnableChristmasHideout ?? false) {
-            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
-            globalConfig.EventType.Add("Christmas");
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != EventType.None).ToList();
+            globalConfig.EventType.Add(EventType.Christmas);
         }
 
         if (seasonalEvent.Settings?.EnableHalloweenHideout ?? false) {
-            globalConfig.EventType = globalConfig.EventType.Where((x) => x != "None").ToList();
-            globalConfig.EventType.Add("Halloween");
-            globalConfig.EventType.Add("HalloweenIllumination");
+            globalConfig.EventType = globalConfig.EventType.Where((x) => x != EventType.None).ToList();
+            globalConfig.EventType.Add(EventType.Halloween);
+            globalConfig.EventType.Add(EventType.HalloweenIllumination);
         }
 
         if (seasonalEvent.Settings?.AddEventGearToBots ?? false) {

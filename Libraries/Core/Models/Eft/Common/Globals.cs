@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.Common;
 
@@ -538,7 +539,7 @@ public record Config
     public BTRSettings? BTRSettings { get; set; }
 
     [JsonPropertyName("EventType")]
-    public List<string> EventType { get; set; }
+    public List<EventType> EventType { get; set; }
 
     [JsonPropertyName("WalkSpeed")]
     public XYZ? WalkSpeed { get; set; }
