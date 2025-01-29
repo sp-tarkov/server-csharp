@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Core.Models.Enums;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -64,11 +65,13 @@ public record Props
     [JsonPropertyName("Height")]
     public int? Height { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("StackMaxSize")]
     public int? StackMaxSize { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("Rarity")]
-    public string? Rarity { get; set; }
+    public LootRarity? Rarity { get; set; }
 
     [JsonPropertyName("SpawnChance")]
     public double? SpawnChance { get; set; }
@@ -136,10 +139,11 @@ public record Props
     [JsonPropertyName("QuestStashMaxCount")]
     public double? QuestStashMaxCount { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("LootExperience")]
-    public double? LootExperience { get; set; }
+    public int? LootExperience { get; set; }
 
-    // Checked on live
+    // Type confirmed via client
     [JsonPropertyName("ExamineExperience")]
     public int? ExamineExperience { get; set; }
 
@@ -149,11 +153,13 @@ public record Props
     [JsonPropertyName("InsuranceDisabled")]
     public bool? InsuranceDisabled { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("RepairCost")]
-    public double? RepairCost { get; set; }
+    public int? RepairCost { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("RepairSpeed")]
-    public double? RepairSpeed { get; set; }
+    public int? RepairSpeed { get; set; }
 
     [JsonPropertyName("ExtraSizeLeft")]
     public int? ExtraSizeLeft { get; set; }
@@ -203,8 +209,9 @@ public record Props
     [JsonPropertyName("UnlootableFromSide")]
     public List<string>? UnlootableFromSide { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("AnimationVariantsNumber")]
-    public double? AnimationVariantsNumber { get; set; }
+    public int? AnimationVariantsNumber { get; set; }
 
     [JsonPropertyName("DiscardingBlock")]
     public bool? DiscardingBlock { get; set; }
@@ -224,8 +231,9 @@ public record Props
     [JsonPropertyName("DiscardLimit")]
     public double? DiscardLimit { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("MaxResource")]
-    public double? MaxResource { get; set; }
+    public int? MaxResource { get; set; }
 
     [JsonPropertyName("Resource")]
     public double? Resource { get; set; }
@@ -459,7 +467,7 @@ public record Props
     public double? CheckOverride { get; set; }
 
     [JsonPropertyName("ReloadMagType")]
-    public string? ReloadMagType { get; set; }
+    public ReloadMode? ReloadMagType { get; set; }
 
     [JsonPropertyName("VisibleAmmoRangesString")]
     public string? VisibleAmmoRangesString { get; set; }
@@ -548,9 +556,10 @@ public record Props
     [JsonPropertyName("armorZone")]
     public List<string>? ArmorZone { get; set; }
 
+    // Type confirmed via client
     [JsonPropertyName("armorClass")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
-    public double? ArmorClass { get; set; } // TODO: object here
+    public int? ArmorClass { get; set; }
 
     [JsonPropertyName("armorColliders")]
     public List<string>? ArmorColliders { get; set; }
@@ -685,7 +694,7 @@ public record Props
     public double? CameraToWeaponAngleStep { get; set; }
 
     [JsonPropertyName("ReloadMode")]
-    public string? ReloadMode { get; set; }
+    public ReloadMode? ReloadMode { get; set; }
 
     [JsonPropertyName("AimPlane")]
     public double? AimPlane { get; set; }
@@ -988,8 +997,9 @@ public record Props
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Dictionary<string, EffectDamageProps>? EffectsDamage { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("MaximumNumberOfUsage")]
-    public double? MaximumNumberOfUsage { get; set; }
+    public int? MaximumNumberOfUsage { get; set; }
 
     [JsonPropertyName("knifeHitDelay")]
     public double? KnifeHitDelay { get; set; }
@@ -1069,8 +1079,9 @@ public record Props
     [JsonPropertyName("medEffectType")]
     public string? MedEffectType { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("MaxHpResource")]
-    public double? MaxHpResource { get; set; }
+    public int? MaxHpResource { get; set; }
 
     [JsonPropertyName("hpResourceRate")]
     public double? HpResourceRate { get; set; }
@@ -1084,8 +1095,9 @@ public record Props
     [JsonPropertyName("MaxOpticZoom")]
     public double? MaxOpticZoom { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("MaxRepairResource")]
-    public double? MaxRepairResource { get; set; }
+    public int? MaxRepairResource { get; set; }
 
     [JsonPropertyName("TargetItemFilter")]
     public List<string>? TargetItemFilter { get; set; }
@@ -1129,8 +1141,9 @@ public record Props
     [JsonPropertyName("buckshotBullets")]
     public double? BuckshotBullets { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("PenetrationPower")]
-    public double? PenetrationPower { get; set; }
+    public int? PenetrationPower { get; set; }
 
     [JsonPropertyName("PenetrationPowerDeviation")]
     public double? PenetrationPowerDeviation { get; set; }

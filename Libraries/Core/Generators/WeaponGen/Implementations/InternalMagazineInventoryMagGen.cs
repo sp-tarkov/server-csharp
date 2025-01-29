@@ -1,5 +1,6 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Helpers;
+using Core.Models.Enums;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
@@ -15,7 +16,7 @@ public class InternalMagazineInventoryMagGen(
 
     public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen)
     {
-        return inventoryMagGen.GetMagazineTemplate().Properties.ReloadMagType == "InternalMagazine";
+        return inventoryMagGen.GetMagazineTemplate().Properties.ReloadMagType == ReloadMode.InternalMagazine;
     }
 
     public void Process(InventoryMagGen inventoryMagGen)
