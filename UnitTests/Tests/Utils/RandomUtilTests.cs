@@ -1,5 +1,6 @@
-﻿using Core.Utils;
+using Core.Utils;
 using Core.Utils.Cloners;
+using Newtonsoft.Json.Linq;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;
@@ -192,5 +193,13 @@ public sealed class RandomUtilTests
     public void GetNumberPrecision_WithDoubles_ReturnsDecimalPoints(double value, int decimalPoints)
     {
         Assert.AreEqual(decimalPoints, _randomUtil.GetNumberPrecision(value));
+    }
+
+    [TestMethod]
+    [DataRow(new[] { "test" }, "test", "Expected first array value")]
+    public void GetArrayValueTest(string[] input, string expectedOutput, string failMessage)
+    {
+        var result = _randomUtil.GetArrayValue(input);
+        Assert.AreEqual(input.First(), result, failMessage);
     }
 }
