@@ -188,7 +188,7 @@ public sealed class RandomUtilTests
     [DataRow(0.0001, 4)]
     [DataRow(0, 0)]
     [DataRow(10000000, 0)]
-    [DataRow(0.000_000_000_000_1D, 13)]
+    [DataRow(0.000_000_000_000_000_000_000_000_1D, 25)]
     public void GetNumberPrecision_WithDoubles_ReturnsDecimalPoints(double value, int decimalPoints)
     {
         Assert.AreEqual(decimalPoints, _randomUtil.GetNumberPrecision(value));

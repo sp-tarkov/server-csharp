@@ -414,10 +414,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>The number of decimal places, or 0 if none exist.</returns>
     public int GetNumberPrecision(double num)
     {
+        var preciseNum = (decimal)num;
         var factor = 0;
-        while (num % 1 > double.Epsilon)
+        while ((double)(preciseNum % 1) > double.Epsilon)
         {
-            num *= 10D;
+            preciseNum *= 10M;
             factor++;
         }
         return factor;
