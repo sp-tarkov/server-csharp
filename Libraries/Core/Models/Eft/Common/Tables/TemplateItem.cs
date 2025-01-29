@@ -466,6 +466,7 @@ public record Props
     [JsonPropertyName("CheckOverride")]
     public double? CheckOverride { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("ReloadMagType")]
     public ReloadMode? ReloadMagType { get; set; }
 
@@ -693,6 +694,7 @@ public record Props
     [JsonPropertyName("CameraToWeaponAngleStep")]
     public double? CameraToWeaponAngleStep { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("ReloadMode")]
     public ReloadMode? ReloadMode { get; set; }
 
