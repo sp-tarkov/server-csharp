@@ -1,10 +1,24 @@
+using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Utils;
 using SptCommon.Annotations;
 
 namespace Core.Services;
 
 [Injectable]
-public class BackupService
+public class BackupService(
+    ISptLogger<BackupService> _logger,
+    JsonUtil _jsonUtil,
+    TimeUtil _timeUtil,
+    ConfigServer _configServer,
+    FileUtil _fileUtil)
 {
+    protected BackupConfig _backupConfig = _configServer.GetConfig<BackupConfig>();
+
+    protected readonly List<string> _activeServerMods = [];
+    protected readonly string _profileDir = "./user/profiles";
+
     /**
  * Initializes the backup process.
  *
@@ -13,9 +27,59 @@ public class BackupService
  *
  * @returns A promise that resolves when the backup process is complete.
  */
-    public async Task InitAsync()
+    public void Init()
     {
-        // TODO implement
+        if (!IsEnabled())
+        {
+            return;
+        }
+
+        var targetDir = GenerateBackupTargetDir();
+
+        // Fetch all profiles in the profile directory.
+        List<string> currentProfilePaths = [];
+        try
+        {
+            currentProfilePaths = _fileUtil.GetFiles(_profileDir);
+        }
+        catch (Exception ex)
+        {
+            _logger.Debug("Skipping profile backup: Unable to read profiles directory");
+            return;
+        }
+
+        if (currentProfilePaths.Count == 0)
+        {
+            _logger.Debug("No profiles to backup");
+            return;
+        }
+
+        try
+        {
+            _fileUtil.CreateDirectory(targetDir);
+
+            // Track write promises.
+            var profileIds = currentProfilePaths.Select(x => x.Last());
+            foreach (var profileId in profileIds)
+            {
+                var fullPath = $"{_profileDir}";
+                var destinationPath = "";
+                _fileUtil.CopyFile(fullPath, destinationPath);
+
+            }
+
+            // Write a copy of active mods.
+            _fileUtil.WriteFile($"{targetDir}/activeMods.json", _jsonUtil.Serialize(_activeServerMods));
+
+            _logger.Debug($"Profile backup created in: {targetDir}");
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Unable to write to backup profile directory: { ex.Message}");
+            return;
+        }
+
+        CleanBackups();
     }
 
     /**
@@ -26,7 +90,7 @@ public class BackupService
      *
      * @returns A promise that resolves to a List of JSON file names.
      */
-    protected async Task<List<string>> FetchProfileFilesAsync()
+    protected List<string> FetchProfileFiles()
     {
         throw new NotImplementedException();
     }
@@ -38,7 +102,15 @@ public class BackupService
      */
     protected bool IsEnabled()
     {
-        throw new NotImplementedException();
+        if (_backupConfig.Enabled)
+        {
+            return true;
+        }
+
+        _logger.Debug("Profile backups disabled");
+
+        return false;
+
     }
 
     /**
@@ -49,7 +121,8 @@ public class BackupService
      */
     protected string GenerateBackupTargetDir()
     {
-        throw new NotImplementedException();
+        var backupDate = GenerateBackupDate();
+        return Path.GetFullPath($"{ _backupConfig.Directory}/${backupDate}");
     }
 
     /**
@@ -59,8 +132,9 @@ public class BackupService
      */
     protected string GenerateBackupDate()
     {
-        throw new NotImplementedException();
-    }
+        var date = _timeUtil.GetDateTimeNow();
+
+        return $"{date.Year}-{date.Month}-{date.Day}_{date.Hour}-{date.Minute}-{date.Second}"; }
 
     /**
      * Cleans up old backups in the backup directory.
@@ -70,9 +144,20 @@ public class BackupService
      *
      * @returns A promise that resolves when the cleanup is complete.
      */
-    protected async Task CleanBackupsAsync()
+    protected void CleanBackups()
     {
-        throw new NotImplementedException();
+        var backupDir = _backupConfig.Directory;
+        var backupPaths = GetBackupPaths(backupDir);
+
+        // Filter out invalid backup paths by ensuring they contain a valid date.
+        var validBackupPaths = backupPaths.Where((path) => ExtractDateFromFolderName(path) != null);
+
+        var excessCount = validBackupPaths.Count() - _backupConfig.MaxBackups;
+        if (excessCount > 0)
+        {
+            var excessBackups = backupPaths.Slice(0, excessCount);
+            RemoveExcessBackups(excessBackups);
+        }
     }
 
     /**
@@ -81,8 +166,11 @@ public class BackupService
      * @param dir - The directory to search for backup files.
      * @returns A promise that resolves to a List of sorted backup file paths.
      */
-    private async Task<List<string>> GetBackupPathsAsync(string dir)
+    private List<string> GetBackupPaths(string dir)
     {
+        // TODO: Fully implement
+        var backups = _fileUtil.GetFiles(dir).Where(x => x.EndsWith(".json")).ToList();
+        //return backups.Sort(CompareBackupDates.Bind(this));
         throw new NotImplementedException();
     }
 
@@ -95,7 +183,15 @@ public class BackupService
      */
     private long? CompareBackupDates(string a, string b)
     {
-        throw new NotImplementedException();
+        var dateA = ExtractDateFromFolderName(a);
+        var dateB = ExtractDateFromFolderName(b);
+
+        if (!dateA.HasValue || !dateB.HasValue)
+        {
+            return null; // Skip comparison if either date is invalid.
+        }
+
+        return dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc();
     }
 
     /**
@@ -106,7 +202,22 @@ public class BackupService
      */
     private DateTime? ExtractDateFromFolderName(string folderName)
     {
-        throw new NotImplementedException();
+        // backup
+        var parts = folderName.Split('-', '_');
+        if (parts.Length != 6)
+        {
+            _logger.Warning($"Invalid backup folder name format: {folderName}");
+            return null;
+        }
+
+        var year = int.Parse(parts[0]);
+        var month = int.Parse(parts[1]);
+        var day = int.Parse(parts[2]);
+        var hour = int.Parse(parts[3]);
+        var minute = int.Parse(parts[4]);
+        var second = int.Parse(parts[5]);
+
+        return new DateTime(year, month, day, hour, minute, second);
     }
 
     /**
@@ -115,9 +226,13 @@ public class BackupService
      * @param backups - A List of backup file names to be removed.
      * @returns A promise that resolves when all specified backups have been removed.
      */
-    private async Task RemoveExcessBackupsAsync(List<string> backups)
+    private void RemoveExcessBackups(List<string> backupFilenames)
     {
-        throw new NotImplementedException();
+        var filePathsToDelete = backupFilenames.Select(x => x);
+        foreach (var pathToDelete in filePathsToDelete)
+        {
+            _fileUtil.DeleteFile($"{_backupConfig.Directory}/{pathToDelete}");
+        }
     }
 
     /**
@@ -125,6 +240,16 @@ public class BackupService
      */
     protected void StartBackupInterval()
     {
+        if (!_backupConfig.BackupInterval.Enabled)
+        {
+            return;
+        }
+
+        var minutes = _backupConfig.BackupInterval.IntervalMinutes * 60 * 1000; // Minutes to milliseconds
+        //SetInterval(() => {
+        //    Init().catch((error) => this.logger.error(`Profile backup failed: ${ error.message}`));
+        //}, minutes);
+
         throw new NotImplementedException();
     }
 
@@ -135,6 +260,14 @@ public class BackupService
      */
     protected List<string> GetActiveServerMods()
     {
+        List<string> result = [];
+
+        //var activeMods = _preSptModLoader.getImportedModDetails();
+        //foreach (var activeModKey in activeMods) {
+        //    result.Add($"{ activeModKey} -{ activeMods[activeModKey].author ?? "unknown"} -{ activeMods[activeModKey].version ?? ""}");
+        //}
+        //return result;
+
         throw new NotImplementedException();
     }
 }
