@@ -11,6 +11,8 @@ namespace Core.Utils;
 public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 {
     public readonly Random Random = new();
+    private const int DecimalPointRandomPrecision = 6;
+    private static readonly int DecimalPointRandomPrecisionMultiplier = (int) Math.Pow(10, DecimalPointRandomPrecision);
 
     /// <summary>
     /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
@@ -22,40 +24,20 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// Generates a random integer between the specified minimum and maximum values, inclusive.
     /// </summary>
     /// <param name="min">The minimum value (inclusive).</param>
-    /// <param name="max">The maximum value (inclusive).</param>
+    /// <param name="max">The maximum value (optional).</param>
+    /// <param name="exclusive">If max is exclusive or not.</param>
     /// <returns>A random integer between the specified minimum and maximum values.</returns>
-    public int GetInt(int min, int max)
+    public int GetInt(int min, int max = int.MaxValue, bool exclusive = false)
     {
         // Prevents a potential integer overflow.
-        if (max == int.MaxValue) max -= 1;
+        if (exclusive && max == int.MaxValue)
+        {
+            max -= 1;
+        }
 
-        // maxVal is exclusive of the passed value, so add 1
-        return max > min ? Random.Next(min, max + 1) : min;
+        return max > min ? Random.Next(min, exclusive ? max : max + 1) : min;
     }
-
-    /// <summary>
-    /// Generates a random integer between 1 (inclusive) and the specified maximum value (exclusive).
-    /// If the maximum value is less than or equal to 1, it returns 1.
-    /// </summary>
-    /// <param name="max">The upper bound (exclusive) for the random integer generation.</param>
-    /// <returns>A random integer between 1 and max - 1, or 1 if max is less than or equal to 1.</returns>
-    public int GetIntEx(int max)
-    {
-        return max > 2 ? Random.Next(1, max - 1) : 1;
-    }
-
-    /// <summary>
-    /// Generates a random floating-point number within the specified range ~6-9 digits (4 bytes).
-    /// </summary>
-    /// <param name="min">The minimum value of the range (inclusive).</param>
-    /// <param name="max">The maximum value of the range (exclusive).</param>
-    /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
-    public float GetFloat(float min, float max)
-    {
-        return (float)GetSecureRandomNumber() * (max - min) + min;
-    }
-
-
+    
     /// <summary>
     /// Generates a random floating-point number within the specified range ~15-17 digits (8 bytes).
     /// </summary>
@@ -64,7 +46,13 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
     public double GetDouble(double min, double max)
     {
-        return GetSecureRandomNumber() * (max - min) + min;
+        var realMin = (long) (min * DecimalPointRandomPrecisionMultiplier);
+        var realMax = (long) (max * DecimalPointRandomPrecisionMultiplier);
+
+        return Math.Round(
+            Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier,
+            DecimalPointRandomPrecision
+        );
     }
 
     /// <summary>
@@ -73,7 +61,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random boolean value, where the probability of `true` and `false` is approximately equal.</returns>
     public bool GetBool()
     {
-        return GetSecureRandomNumber() < 0.5;
+        return Random.Next(0, 2) == 1;
     }
 
     /// <summary>
@@ -83,11 +71,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <param name="number">The number to calculate the percentage of.</param>
     /// <param name="toFixed">The number of decimal places to round the result to (default is 2).</param>
     /// <returns>The calculated percentage of the given number, rounded to the specified number of decimal places.</returns>
-    public float GetPercentOfValue(double percent, double number, int toFixed = 2)
+    public double GetPercentOfValue(double percent, double number, int toFixed = 2)
     {
         var num = percent * number / 100;
 
-        return (float)Math.Round(num, toFixed);
+        return Math.Round(num, toFixed);
     }
 
     /// <summary>
@@ -110,9 +98,9 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>`true` if the event occurs, `false` otherwise.</returns>
     public bool GetChance100(double? chancePercent)
     {
-        chancePercent = Math.Clamp(chancePercent ?? 0, 0f, 100f);
+        chancePercent = Math.Clamp(chancePercent ?? 0, 0D, 100D);
 
-        return GetIntEx(100) <= chancePercent;
+        return GetInt(0, 100) <= chancePercent;
     }
 
     /// <summary>
@@ -196,7 +184,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         // Check if the generated value is valid
         if (valueDrawn < 0)
             return attempt > 100
-                ? GetDouble(0.01f, mean * 2f)
+                ? GetDouble(0.01D, mean * 2D)
                 : GetNormallyDistributedRandomNumber(mean, sigma, attempt + 1);
 
         return valueDrawn;
@@ -229,42 +217,20 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// and MaxSignificantDigits(15), inclusive. If not provided, precision is determined by the input values.
     /// </param>
     /// <returns></returns>
-    public double RandNum(double val1, double val2 = 0, byte? precision = null)
+    public double RandNum(double val1, double val2 = 0, int precision = DecimalPointRandomPrecision)
     {
         if (!double.IsFinite(val1) || !double.IsFinite(val2)) throw new ArgumentException("RandNum() parameters 'value1' and 'value2' must be finite numbers.");
 
         // Determine the range
         var min = Math.Min(val1, val2);
         var max = Math.Max(val1, val2);
-
-        // Validate and adjust precision
-        if (precision is not null)
-        {
-            if (precision > MaxSignificantDigits)
-                throw new ArgumentOutOfRangeException(
-                    nameof(precision), "Must be less than 16");
-
-            // Calculate the number of whole-number digits in the maximum absolute value of the range
-            var maxAbsoluteValue = Math.Max(Math.Abs(min), Math.Abs(max));
-            var wholeNumberDigits = (int)Math.Floor(Math.Log10(maxAbsoluteValue)) + 1;
-
-            var maxAllowedPrecision = Math.Max(0, MaxSignificantDigits - wholeNumberDigits);
-
-            if (precision > maxAllowedPrecision)
-                throw new ArgumentException(
-                    $"RandNum() precision of {precision} exceeds the allowable precision ({maxAllowedPrecision}) for the given values."
-                );
-        }
-
-        var result = GetSecureRandomNumber() * (max - min) + min;
-
-        // Determine effective precision
-        var maxPrecision = Math.Max(GetNumberPrecision(val1), GetNumberPrecision(val2));
-        var effectivePrecision = precision ?? maxPrecision;
-
-        var factor = Math.Pow(2, effectivePrecision);
-
-        return Math.Round(result * factor) / factor;
+        
+        var realPrecision = (long) Math.Pow(10, precision);
+        
+        var minInt = (long) (min * realPrecision);
+        var maxInt = (long) (max * realPrecision);
+        
+        return Math.Round(Random.NextInt64(minInt, maxInt) / (double) realPrecision, precision);
     }
 
     /// <summary>
@@ -436,23 +402,9 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// produce a floating-point number in the range [0, 1).
     /// </summary>
     /// <returns>A secure random number between 0 (inclusive) and 1 (exclusive).</returns>
-    private static double GetSecureRandomNumber()
+    private double GetSecureRandomNumber()
     {
-        var buffer = new byte[6]; // 48 bits
-        using (var rng = RandomNumberGenerator.Create())
-        {
-            rng.GetBytes(buffer);
-        }
-
-        // Convert byte array to unsigned long
-        ulong value = 0;
-        for (var i = 0; i < buffer.Length; i++)
-        {
-            value |= (ulong)buffer[i] << (8 * (buffer.Length - 1 - i));
-        }
-
-        const ulong maxInteger = 281474976710656; // 2^48
-        return (double)value / maxInteger;
+        return Random.NextSingle();
     }
 
     /// <summary>
@@ -462,11 +414,13 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>The number of decimal places, or 0 if none exist.</returns>
     public int GetNumberPrecision(double num)
     {
-        var parts = num.ToString($"G{MaxSignificantDigits}").Split('.');
-
-        return parts.Length > 1
-            ? parts[1].Length
-            : 0;
+        var factor = 0;
+        while (num % 1 > double.Epsilon)
+        {
+            num *= 10D;
+            factor++;
+        }
+        return factor;
     }
 
     public T? GetArrayValue<T>(IEnumerable<T> list)

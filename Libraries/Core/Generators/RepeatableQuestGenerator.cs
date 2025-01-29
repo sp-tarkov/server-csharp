@@ -515,7 +515,7 @@ public class RepeatableQuestGenerator(
         );
 
         // Be fair, don't var the items be more expensive than the reward
-        var multi = _randomUtil.GetFloat((float)0.5, 1);
+        var multi = _randomUtil.GetDouble(0.5, 1);
         var roublesBudget = Math.Floor(
             (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi)
         );

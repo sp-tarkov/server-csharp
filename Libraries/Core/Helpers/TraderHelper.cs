@@ -582,9 +582,7 @@ public class TraderHelper(
             var traderBuyBackPricePercent = traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
 
             var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
-            var priceTraderBuysItemAt = Math.Round(
-                _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice ?? 0)
-            );
+            var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice ?? 0, 0);
 
             // Price from this trader is higher than highest found, update
             if (priceTraderBuysItemAt > highestPrice)

@@ -12,8 +12,8 @@ public sealed class RandomUtilTests
 	[TestMethod]
 	public void GetIntTest()
 	{
-		// Run 100 test cases
-		for (var i = 0; i < 100; i++)
+		// Run 10000 test cases
+		for (var i = 0; i < 10000; i++)
 		{
 			var result = _randomUtil.GetInt(0, 10);
 	
@@ -27,10 +27,10 @@ public sealed class RandomUtilTests
 	[TestMethod]
 	public void GetIntExTest()
 	{
-		// Run 100 test cases
-		for (var i = 0; i < 100; i++)
+		// Run 10000 test cases
+		for (var i = 0; i < 10000; i++)
 		{
-			var result = _randomUtil.GetIntEx(10);
+			var result = _randomUtil.GetInt(1, 10, true);
 	
 			if (result < 1 || result > 9)
 			{
@@ -40,16 +40,16 @@ public sealed class RandomUtilTests
 	}
 	
 	[TestMethod]
-	public void GetFloatTest()
+	public void GetDoubleTest()
 	{
-		// Run 100 test cases
-		for (var i = 0; i < 100; i++)
+		// Run 10000 test cases
+		for (var i = 0; i < 10000; i++)
 		{
-			var result = _randomUtil.GetFloat(0f, 10f);
+			var result = _randomUtil.GetDouble(0D, 10D);
 	
-			if (result < 0f || result >= 9f)
+			if (result is < 0d or >= 10d)
 			{
-				Assert.Fail($"GetFloat(0f, 10f) out of range. Expected range [0.0f, 9.999f] but was {result}.");
+				Assert.Fail($"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}.");
 			}
 		}
 	}
@@ -135,11 +135,11 @@ public sealed class RandomUtilTests
 	[TestMethod]
 	public void RandNumTest()
 	{
-		for (var i = 0; i < 100; i++)
+		for (var i = 0; i < 10000; i++)
 		{
-			var result = _randomUtil.RandNum(0, 10);
+			var result = _randomUtil.RandNum(0, 10, 15);
 	
-			if (result < 0 || result > 9)
+			if (result < 0 || result >= 10)
 			{
 				Assert.Fail($"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}.");
 			}
@@ -150,11 +150,11 @@ public sealed class RandomUtilTests
 			}
 		}
 		
-		for (var i = 0; i < 100; i++)
+		for (var i = 0; i < 10000; i++)
 		{
 			var result = _randomUtil.RandNum(10);
 	
-			if (result < 0 || result > 9)
+			if (result < 0 || result >= 10)
 			{
 				Assert.Fail($"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}.");
 			}
@@ -182,4 +182,15 @@ public sealed class RandomUtilTests
 			result.SequenceEqual(orig), 
 			$"Shuffle test failed. Expected: {string.Join(", ", orig)}, but got {string.Join(", ", result)}");
 	}
+    
+    [TestMethod]
+    [DataRow(0.1, 1)]
+    [DataRow(0.0001, 4)]
+    [DataRow(0, 0)]
+    [DataRow(10000000, 0)]
+    [DataRow(0.000_000_000_000_1D, 13)]
+    public void GetNumberPrecision_WithDoubles_ReturnsDecimalPoints(double value, int decimalPoints)
+    {
+        Assert.AreEqual(decimalPoints, _randomUtil.GetNumberPrecision(value));
+    }
 }
