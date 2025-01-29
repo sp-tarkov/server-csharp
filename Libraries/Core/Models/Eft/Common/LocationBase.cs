@@ -615,7 +615,7 @@ public record ChancedEnemy
     public int? EnemyChance { get; set; }
 
     [JsonPropertyName("Role")]
-    public WildSpawnType? Role { get; set; }
+    public string? Role { get; set; }
 }
 
 public record MinMaxBot : MinMax
