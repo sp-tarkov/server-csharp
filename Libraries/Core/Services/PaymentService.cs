@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -86,31 +86,33 @@ public class PaymentService(
         // Loop through each type of currency involved in the trade.
         foreach (var currencyTpl in currencyAmounts)
         {
+            if (currencyTpl.Value <= 0)
+            {
+                continue;
+            }
+
             var currencyAmount = currencyTpl.Value;
             totalCurrencyAmount += (int)currencyAmount;
 
-            if (currencyAmount > 0)
+            // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
+            AddPaymentToOutput(pmcData, currencyTpl.Key, (int)currencyAmount, sessionID, output);
+
+            // If there are warnings, exit early.
+            if (output.Warnings?.Count > 0)
             {
-                // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
-                AddPaymentToOutput(pmcData, currencyTpl.Key, (int)currencyAmount, sessionID, output);
+                return;
+            }
 
-                // If there are warnings, exit early.
-                if (output.Warnings?.Count > 0)
-                {
-                    return;
-                }
+            if (payToTrader)
+            {
+                // Convert the amount to the trader's currency and update the sales sum.
+                var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
+                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl.Key),
+                    _paymentHelper.GetCurrency(trader.Currency)
+                );
 
-                if (payToTrader)
-                {
-                    // Convert the amount to the trader's currency and update the sales sum.
-                    var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
-                        _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl.Key),
-                        _paymentHelper.GetCurrency(trader.Currency)
-                    );
-
-                    // Only update traders
-                    pmcData.TradersInfo[request.TransactionId].SalesSum += costOfPurchaseInCurrency;
-                }
+                // Only update traders
+                pmcData.TradersInfo[request.TransactionId].SalesSum += costOfPurchaseInCurrency;
             }
         }
 
