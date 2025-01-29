@@ -73,7 +73,7 @@ public record RadioStation
     public bool? Enabled { get; set; }
 
     [JsonPropertyName("Station")]
-    public string? Station { get; set; }
+    public RadioStationType? Station { get; set; }
 }
 
 public record LocationInfection

@@ -1,6 +1,7 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Core.Models;
 using Core.Models.Eft.Common.Tables;
 using SptCommon.Annotations;
 using Core.Models.Eft.Ws;
@@ -43,6 +44,9 @@ public class JsonUtil
             new EftEnumConverter<RepairStrategyType>(),
             new EftEnumConverter<ThrowWeapType>(),
             new EftEnumConverter<EventType>(),
+            new EftEnumConverter<TraderServiceType>(),
+            new EftEnumConverter<CurrencyType>(),
+            new EftEnumConverter<RadioStationType>(),
             new BaseInteractionRequestDataConverter()
         }
     };

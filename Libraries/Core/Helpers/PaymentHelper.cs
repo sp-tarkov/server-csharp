@@ -33,14 +33,14 @@ public class PaymentHelper(ConfigServer _configServer)
     /// </summary>
     /// <param name="currency"></param>
     /// <returns></returns>
-    public string GetCurrency(string currency)
+    public string GetCurrency(CurrencyType? currency)
     {
         return currency switch
         {
-            "EUR" => Money.EUROS,
-            "USD" => Money.DOLLARS,
-            "RUB" => Money.ROUBLES,
-            "GP" => Money.GP,
+            CurrencyType.EUR => Money.EUROS,
+            CurrencyType.USD => Money.DOLLARS,
+            CurrencyType.RUB => Money.ROUBLES,
+            CurrencyType.GP => Money.GP,
             _ => ""
         };
     }

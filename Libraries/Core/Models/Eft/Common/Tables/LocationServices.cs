@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
+using Core.Models.Enums;
 using Core.Utils.Json.Converters;
 
 namespace Core.Models.Eft.Common.Tables;
@@ -48,7 +49,7 @@ public record TraderService
     public string? TraderId { get; set; }
 
     [JsonPropertyName("TraderServiceType")]
-    public string? TraderServiceType { get; set; }
+    public TraderServiceType? TraderServiceType { get; set; }
 
     [JsonPropertyName("Requirements")]
     public ServiceRequirements? Requirements { get; set; }

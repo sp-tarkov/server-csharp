@@ -53,7 +53,7 @@ public record TraderBase
     public bool? BuyerUp { get; set; }
 
     [JsonPropertyName("currency")]
-    public string? Currency { get; set; }
+    public CurrencyType? Currency { get; set; }
 
     [JsonPropertyName("customization_seller")]
     public bool? CustomizationSeller { get; set; }
@@ -100,8 +100,9 @@ public record TraderBase
     [JsonPropertyName("name")]
     public string? Name { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("nextResupply")]
-    public double? NextResupply { get; set; }
+    public int? NextResupply { get; set; }
 
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }

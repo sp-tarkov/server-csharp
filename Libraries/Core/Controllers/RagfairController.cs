@@ -852,7 +852,7 @@ public class RagfairController
         // cleanup of cache now we've used the tax value from it
         _ragfairTaxService.ClearStoredOfferTaxById(offerRequest.Items.First());
 
-        var buyTradeRequest = CreateBuyTradeRequestObject("RUB", tax.Value);
+        var buyTradeRequest = CreateBuyTradeRequestObject(CurrencyType.RUB, tax.Value);
         _paymentService.PayMoney(pmcData, buyTradeRequest, sessionId, output);
         if (output.Warnings.Count > 0)
         {
@@ -1061,7 +1061,7 @@ public class RagfairController
                 sellInOncePiece
             );
 
-            var request = CreateBuyTradeRequestObject("RUB", tax);
+            var request = CreateBuyTradeRequestObject(CurrencyType.RUB, tax);
             _paymentService.PayMoney(pmcData, request, sessionId, output);
             if (output.Warnings.Count > 0)
             {
@@ -1084,7 +1084,7 @@ public class RagfairController
      * @param value Amount of currency
      * @returns IProcessBuyTradeRequestData
      */
-    private ProcessBuyTradeRequestData CreateBuyTradeRequestObject(string currency, double value)
+    private ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, double value)
     {
         return new ProcessBuyTradeRequestData
         {

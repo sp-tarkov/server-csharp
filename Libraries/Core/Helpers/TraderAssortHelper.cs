@@ -1,4 +1,4 @@
-﻿using Core.Generators;
+using Core.Generators;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -201,7 +201,7 @@ public class TraderAssortHelper(
         trader.Assort.Items = GetPristineTraderAssorts(trader.Base.Id);
 
         // Update resupply value to next timestamp
-        trader.Base.NextResupply = _traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
+        trader.Base.NextResupply = (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
 
         // Flag a refresh is needed so ragfair update() will pick it up
         trader.Base.RefreshTraderRagfairOffers = true;

@@ -48,7 +48,7 @@ public class TraderHelper(
         {
             return new()
             {
-                Currency = "RUB"
+                Currency = CurrencyType.RUB
             };
         }
 

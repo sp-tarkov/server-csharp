@@ -81,7 +81,7 @@ public class TraderController(
             _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(trader.Key);
 
             // Set to next hour on clock or current time + 60 mins
-            trader.Value.Base.NextResupply = traderResetStartsWithServer ? _traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : nextHourTimestamp;
+            trader.Value.Base.NextResupply = traderResetStartsWithServer ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : (int)nextHourTimestamp;
         }
     }
 
