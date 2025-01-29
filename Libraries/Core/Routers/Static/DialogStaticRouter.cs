@@ -250,7 +250,7 @@ public class DialogStaticRouter : StaticRouter
                 ) => _dialogueCallbacks.IgnoreFriend(url, info as UIDRequestData, sessionID),
                 typeof(UIDRequestData)),
             new RouteAction(
-                "",
+                "/client/friend/ignore/remove",
                 (
                     url, 
                     info, 
