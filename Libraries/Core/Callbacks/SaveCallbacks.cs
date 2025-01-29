@@ -19,7 +19,7 @@ public class SaveCallbacks(
 
     public async Task OnLoad()
     {
-        await _backupService.InitAsync();
+        _backupService.Init();
         _saveServer.Load();
     }
 
