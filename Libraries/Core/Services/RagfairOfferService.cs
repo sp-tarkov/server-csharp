@@ -4,7 +4,6 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
-using Core.Routers;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
@@ -83,7 +82,13 @@ public class RagfairOfferService(
 
         foreach (var expiredOfferId in expiredOffers.Keys)
         {
-            var expiredOffer = expiredOffers[expiredOfferId];
+            if (!expiredOffers.TryGetValue(expiredOfferId, out var expiredOffer))
+            {
+                logger.Error($"Unable to remove expired flea offer: {expiredOfferId} as it cannot be found, skipping");
+
+                continue;
+            }
+
             expiredItems.Add(expiredOffer.Items);
         }
 
