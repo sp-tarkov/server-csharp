@@ -94,7 +94,6 @@ public class FileUtil(
     /// <param name="copyFromPath">Source file to copy from</param>
     /// <param name="destinationPath"></param>
     /// <param name="overwrite">Should destination file be overwritten</param>
-    /// <exception cref="NotImplementedException"></exception>
     public void CopyFile(string copyFromPath, string destinationPath, bool overwrite = false)
     {
         // Check it exists first
