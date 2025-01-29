@@ -68,7 +68,7 @@ public record TraderBase
     public double? GridHeight { get; set; }
 
     [JsonPropertyName("sell_modifier_for_prohibited_items")]
-    public decimal? SellModifierForProhibitedItems { get; set; }
+    public int? ProhibitedItemsSellModifier { get; set; }
 
     [JsonPropertyName("insurance")]
     public TraderInsurance? Insurance { get; set; }
@@ -122,9 +122,11 @@ public record TraderBase
 
 public record ItemBuyData
 {
+    // MongoId
     [JsonPropertyName("category")]
     public List<string>? Category { get; set; }
 
+    // MongoId
     [JsonPropertyName("id_list")]
     public List<string>? IdList { get; set; }
 }
@@ -134,20 +136,24 @@ public record TraderInsurance
     [JsonPropertyName("availability")]
     public bool? Availability { get; set; }
 
+    // MongoId
     [JsonPropertyName("excluded_category")]
     public List<string>? ExcludedCategory { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("max_return_hour")]
-    public double? MaxReturnHour { get; set; }
+    public int? MaxReturnHour { get; set; }
 
     [JsonPropertyName("max_storage_time")]
     public double? MaxStorageTime { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("min_payment")]
-    public double? MinPayment { get; set; }
+    public int? MinPayment { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("min_return_hour")]
-    public double? MinReturnHour { get; set; }
+    public int? MinReturnHour { get; set; }
 }
 
 public record TraderLoyaltyLevel
@@ -165,11 +171,12 @@ public record TraderLoyaltyLevel
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? InsurancePriceCoefficient { get; set; }
 
+    // Chceked on client
     [JsonPropertyName("minLevel")]
-    public double? MinLevel { get; set; }
+    public int? MinLevel { get; set; }
 
     [JsonPropertyName("minSalesSum")]
-    public double? MinSalesSum { get; set; }
+    public long? MinSalesSum { get; set; }
 
     [JsonPropertyName("minStanding")]
     public double? MinStanding { get; set; }
@@ -279,6 +286,7 @@ public record SuitRequirements
     [JsonPropertyName("profileLevel")]
     public double? ProfileLevel { get; set; }
 
+    // Checked in client
     [JsonPropertyName("standing")]
     public double? Standing { get; set; }
 

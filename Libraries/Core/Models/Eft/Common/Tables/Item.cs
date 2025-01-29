@@ -5,9 +5,11 @@ namespace Core.Models.Eft.Common.Tables;
 
 public record Item
 {
+    // MongoId
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
+    // MongoId
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
 

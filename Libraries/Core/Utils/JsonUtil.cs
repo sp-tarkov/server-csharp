@@ -47,6 +47,9 @@ public class JsonUtil
             new EftEnumConverter<TraderServiceType>(),
             new EftEnumConverter<CurrencyType>(),
             new EftEnumConverter<RadioStationType>(),
+            new EftEnumConverter<ArmorMaterial>(),
+            new EftEnumConverter<RequirementState>(),
+            new EftEnumConverter<ExfiltrationType>(),
             new BaseInteractionRequestDataConverter()
         }
     };

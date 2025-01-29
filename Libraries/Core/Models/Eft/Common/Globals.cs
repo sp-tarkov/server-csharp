@@ -258,38 +258,43 @@ public record ProjectileExplosionParams
     [JsonPropertyName("ArmorDistanceDistanceDamage")]
     public XYZ? ArmorDistanceDistanceDamage { get; set; }
 
+    // Checked in client
     [JsonPropertyName("MinExplosionDistance")]
-    public float? MinExplosionDistance { get; set; }
+    public double? MinExplosionDistance { get; set; }
 
     [JsonPropertyName("MaxExplosionDistance")]
     public float? MaxExplosionDistance { get; set; }
 
+    // Checked in client
     [JsonPropertyName("FragmentsCount")]
-    public double? FragmentsCount { get; set; }
+    public int? FragmentsCount { get; set; }
 
     [JsonPropertyName("Strength")]
-    public float? Strength { get; set; }
+    public double? Strength { get; set; }
 
+    // Checked in client
     [JsonPropertyName("ArmorDamage")]
-    public float? ArmorDamage { get; set; }
+    public double? ArmorDamage { get; set; }
 
+    // Checked in client
     [JsonPropertyName("StaminaBurnRate")]
-    public float? StaminaBurnRate { get; set; }
+    public double? StaminaBurnRate { get; set; }
 
+    // Checked in client
     [JsonPropertyName("PenetrationPower")]
-    public float? PenetrationPower { get; set; }
+    public double? PenetrationPower { get; set; }
 
     [JsonPropertyName("DirectionalDamageAngle")]
-    public float? DirectionalDamageAngle { get; set; }
+    public double? DirectionalDamageAngle { get; set; }
 
     [JsonPropertyName("DirectionalDamageMultiplier")]
-    public float? DirectionalDamageMultiplier { get; set; }
+    public double? DirectionalDamageMultiplier { get; set; }
 
     [JsonPropertyName("FragmentType")]
     public string? FragmentType { get; set; }
 
     [JsonPropertyName("DeadlyDistance")]
-    public float? DeadlyDistance { get; set; }
+    public double? DeadlyDistance { get; set; }
 }
 
 public record Config
@@ -333,8 +338,9 @@ public record Config
     [JsonPropertyName("RunddansSettings")]
     public RunddansSettings? RunddansSettings { get; set; }
 
+    // Checked in client
     [JsonPropertyName("SavagePlayCooldown")]
-    public double? SavagePlayCooldown { get; set; }
+    public int? SavagePlayCooldown { get; set; }
 
     [JsonPropertyName("SavagePlayCooldownNdaFree")]
     public double? SavagePlayCooldownNdaFree { get; set; }
@@ -433,7 +439,7 @@ public record Config
     public AirdropGlobalSettings? Airdrop { get; set; }
 
     [JsonPropertyName("ArmorMaterials")]
-    public Dictionary<string, ArmorType>? ArmorMaterials { get; set; }
+    public Dictionary<ArmorMaterial, ArmorType>? ArmorMaterials { get; set; }
 
     [JsonPropertyName("ArenaEftTransferSettings")]
     public ArenaEftTransferSettings
@@ -1121,14 +1127,17 @@ public record Exp
     [JsonPropertyName("loot_attempts")]
     public List<LootAttempt>? LootAttempts { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("expForLevelOneDogtag")]
     public double? ExpForLevelOneDogtag { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("expForLockedDoorOpen")]
-    public double? ExpForLockedDoorOpen { get; set; }
+    public int? ExpForLockedDoorOpen { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("expForLockedDoorBreach")]
-    public double? ExpForLockedDoorBreach { get; set; }
+    public int? ExpForLockedDoorBreach { get; set; }
 
     [JsonPropertyName("triggerMult")]
     public double? TriggerMult { get; set; }
@@ -1151,20 +1160,24 @@ public record MatchEnd
     [JsonPropertyName("README")]
     public string? ReadMe { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("survived_exp_requirement")]
-    public double? SurvivedExperienceRequirement { get; set; }
+    public int? SurvivedExperienceRequirement { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("survived_seconds_requirement")]
-    public double? SurvivedSecondsRequirement { get; set; }
+    public int? SurvivedSecondsRequirement { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("survived_exp_reward")]
-    public double? SurvivedExperienceReward { get; set; }
+    public int? SurvivedExperienceReward { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("mia_exp_reward")]
-    public double? MiaExperienceReward { get; set; }
+    public int? MiaExperienceReward { get; set; }
 
     [JsonPropertyName("runner_exp_reward")]
-    public double? RunnerExperienceReward { get; set; }
+    public int? RunnerExperienceReward { get; set; }
 
     [JsonPropertyName("leftMult")]
     public double? LeftMultiplier { get; set; }
@@ -1271,8 +1284,9 @@ public record Armor
 
 public record Class
 {
+    // Checked in client
     [JsonPropertyName("resistance")]
-    public double? Resistance { get; set; }
+    public int? Resistance { get; set; }
 }
 
 public record Mastering
@@ -1283,11 +1297,13 @@ public record Mastering
     [JsonPropertyName("Templates")]
     public List<string>? Templates { get; set; }
 
+    // Checked in client
     [JsonPropertyName("Level2")]
-    public double? Level2 { get; set; }
+    public int? Level2 { get; set; }
 
+    // Checked in client
     [JsonPropertyName("Level3")]
-    public double? Level3 { get; set; }
+    public int? Level3 { get; set; }
 }
 
 public record Customization
@@ -2273,8 +2289,9 @@ public record RagFair
     [JsonPropertyName("priceStabilizerStartIntervalInHours")]
     public double? PriceStabilizerStartIntervalInHours { get; set; }
 
+    // Checked in client
     [JsonPropertyName("minUserLevel")]
-    public double? MinUserLevel { get; set; }
+    public int? MinUserLevel { get; set; }
 
     [JsonPropertyName("communityTax")]
     public float? CommunityTax { get; set; }
@@ -2282,8 +2299,9 @@ public record RagFair
     [JsonPropertyName("communityItemTax")]
     public float? CommunityItemTax { get; set; }
 
+    // Checked in client
     [JsonPropertyName("communityRequirementTax")]
-    public float? CommunityRequirementTax { get; set; }
+    public double? CommunityRequirementTax { get; set; }
 
     [JsonPropertyName("offerPriorityCost")]
     public float? OfferPriorityCost { get; set; }
@@ -2316,7 +2334,7 @@ public record RagFair
     public float? BalancerAveragePriceCoefficient { get; set; }
 
     [JsonPropertyName("delaySinceOfferAdd")]
-    public float? DelaySinceOfferAdd { get; set; }
+    public int? DelaySinceOfferAdd { get; set; }
 
     [JsonPropertyName("uniqueBuyerTimeoutInDays")]
     public double? UniqueBuyerTimeoutInDays { get; set; }
@@ -2328,28 +2346,28 @@ public record RagFair
     public long? RagfairTurnOnTimestamp { get; set; }
 
     [JsonPropertyName("ratingSumForIncrease")]
-    public float? RatingSumForIncrease { get; set; }
+    public double? RatingSumForIncrease { get; set; }
 
     [JsonPropertyName("ratingIncreaseCount")]
     public double? RatingIncreaseCount { get; set; }
 
     [JsonPropertyName("ratingSumForDecrease")]
-    public float? RatingSumForDecrease { get; set; }
+    public double? RatingSumForDecrease { get; set; }
 
     [JsonPropertyName("ratingDecreaseCount")]
     public double? RatingDecreaseCount { get; set; }
 
     [JsonPropertyName("maxSumForIncreaseRatingPerOneSale")]
-    public float? MaxSumForIncreaseRatingPerOneSale { get; set; }
+    public double? MaxSumForIncreaseRatingPerOneSale { get; set; }
 
     [JsonPropertyName("maxSumForDecreaseRatingPerOneSale")]
-    public float? MaxSumForDecreaseRatingPerOneSale { get; set; }
+    public double? MaxSumForDecreaseRatingPerOneSale { get; set; }
 
     [JsonPropertyName("maxSumForRarity")]
     public MaxSumForRarity? MaxSumForRarity { get; set; }
 
     [JsonPropertyName("ChangePriceCoef")]
-    public float? ChangePriceCoef { get; set; }
+    public double? ChangePriceCoef { get; set; }
 
     [JsonPropertyName("ItemRestrictions")]
     public List<ItemGlobalRestrictions>? ItemRestrictions { get; set; }
@@ -3930,11 +3948,12 @@ public record Overheat
 
 public record FenceSettings
 {
+    // MongoId
     [JsonPropertyName("FenceId")]
     public string? FenceIdentifier { get; set; }
 
     [JsonPropertyName("Levels")]
-    public Dictionary<string, FenceLevel>? Levels { get; set; }
+    public Dictionary<double, FenceLevel>? Levels { get; set; }
 
     [JsonPropertyName("paidExitStandingNumerator")]
     public double? PaidExitStandingNumerator { get; set; }

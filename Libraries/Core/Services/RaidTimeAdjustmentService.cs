@@ -3,6 +3,7 @@ using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
+using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Location;
 using Core.Models.Utils;
@@ -199,12 +200,12 @@ public class RaidTimeAdjustmentService(
         List<ExtractChange> result = [];
         // Adjust train exits only
         foreach (var exit in mapBase.Exits) {
-            if (exit.PassageRequirement != "Train") {
+            if (exit.PassageRequirement != RequirementState.Train) {
                 continue;
             }
 
             // Prepare train adjustment object
-            ExtractChange exitChange = new ExtractChange {
+            var exitChange = new ExtractChange {
                 Name = exit.Name,
                 MinTime = null,
                 MaxTime = null,

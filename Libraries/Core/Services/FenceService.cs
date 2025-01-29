@@ -1542,25 +1542,25 @@ public class FenceService(
 
         if (pmcFenceInfo == null)
         {
-            return fenceSettings.Levels["0"];
+            return fenceSettings.Levels[0];
         }
 
-        var fenceLevels = fenceSettings.Levels.Keys.Select(int.Parse);
+        var fenceLevels = fenceSettings.Levels.Keys;
         var minLevel = fenceLevels.Min();
         var maxLevel = fenceLevels.Max();
         var pmcFenceLevel = Math.Floor((double)pmcFenceInfo.Standing);
 
         if (pmcFenceLevel < minLevel)
         {
-            return fenceSettings.Levels[minLevel.ToString()];
+            return fenceSettings.Levels[minLevel];
         }
 
         if (pmcFenceLevel > maxLevel)
         {
-            return fenceSettings.Levels[maxLevel.ToString()];
+            return fenceSettings.Levels[maxLevel];
         }
 
-        return fenceSettings.Levels[pmcFenceLevel.ToString()];
+        return fenceSettings.Levels[pmcFenceLevel];
     }
 
     /**

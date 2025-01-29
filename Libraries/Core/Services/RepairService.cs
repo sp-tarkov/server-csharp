@@ -383,8 +383,8 @@ public class RepairService(
             var durabilityPointCostArmor = globalRepairSettings.DurabilityPointCostArmor;
             var repairArmorBonus = GetBonusMultiplierValue(BonusType.RepairArmorBonus, pmcData);
             var armorBonus = 1.0 - (repairArmorBonus - 1.0) - intellectPointReduction;
-            var materialType = itemToRepairDetails.Properties.ArmorMaterial ?? "";
-            var armorMaterial = globalConfig.ArmorMaterials[materialType];
+            var materialType = itemToRepairDetails.Properties.ArmorMaterial.Value;
+            globalConfig.ArmorMaterials.TryGetValue(materialType, out var armorMaterial);
             var destructability = 1 + armorMaterial.Destructibility;
             var armorClass = itemToRepairDetails.Properties.ArmorClass.Value;
             var armorClassDivisor = globals.Configuration.RepairSettings.ArmorClassDivisor;

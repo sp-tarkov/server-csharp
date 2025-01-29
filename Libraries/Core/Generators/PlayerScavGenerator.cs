@@ -334,7 +334,7 @@ public class PlayerScavGenerator(
         // Set cooldown time.
         // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
         var scavLockDuration = _databaseService.GetGlobals().Configuration.SavagePlayCooldown;
-        var modifier = 1D;
+        var modifier = 1;
 
         foreach (var bonus in pmcData.Bonuses)
         {
@@ -342,12 +342,12 @@ public class PlayerScavGenerator(
             {
                 // Value is negative, so add.
                 // Also note that for scav cooldown, multiple bonuses stack additively.
-                modifier += (bonus?.Value ?? 1) / 100;
+                modifier += (int)(bonus?.Value ?? 1) / 100;
             }
         }
 
         var fenceInfo = _fenceService.GetFenceInfo(pmcData);
-        modifier *= fenceInfo.SavageCooldownModifier ?? 1;
+        modifier *= (int)(fenceInfo.SavageCooldownModifier ?? 1);
         scavLockDuration *= modifier;
 
         var fullProfile = _profileHelper.GetFullProfile(pmcData?.SessionId);
@@ -355,7 +355,7 @@ public class PlayerScavGenerator(
             scavLockDuration = 10;
 
         if (scavData?.Info != null)
-            scavData.Info.SavageLockTime = Math.Round(_timeUtil.GetTimeStamp() / 1000 + scavLockDuration ?? 0);
+            scavData.Info.SavageLockTime = Math.Round((double)(_timeUtil.GetTimeStamp() / 1000 + scavLockDuration ?? 0));
 
         return scavData;
     }

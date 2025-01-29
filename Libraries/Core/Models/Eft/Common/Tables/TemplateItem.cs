@@ -581,8 +581,9 @@ public record Props
     [JsonPropertyName("BluntThroughput")]
     public double? BluntThroughput { get; set; }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("ArmorMaterial")]
-    public string? ArmorMaterial { get; set; }
+    public ArmorMaterial? ArmorMaterial { get; set; }
 
     [JsonPropertyName("ArmorType")]
     public string? ArmorType { get; set; }

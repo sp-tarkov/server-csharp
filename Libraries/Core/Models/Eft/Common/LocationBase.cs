@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Enums;
 using Core.Utils.Json;
 using Core.Utils.Json.Converters;
 
@@ -273,8 +274,9 @@ public record LocationBase
     [JsonPropertyName("Events")]
     public LocationEvents? Events { get; set; }
 
+    // Checked in client
     [JsonPropertyName("exit_access_time")]
-    public double? ExitAccessTime { get; set; }
+    public int? ExitAccessTime { get; set; }
 
     [JsonPropertyName("ForceOnlineRaidInPVE")]
     public bool? ForceOnlineRaidInPVE { get; set; }
@@ -613,7 +615,7 @@ public record ChancedEnemy
     public int? EnemyChance { get; set; }
 
     [JsonPropertyName("Role")]
-    public string? Role { get; set; }
+    public WildSpawnType? Role { get; set; }
 }
 
 public record MinMaxBot : MinMax
@@ -745,10 +747,10 @@ public record Exit
     public double? ExfiltrationTimePVE { get; set; }
 
     [JsonPropertyName("ExfiltrationType")]
-    public string? ExfiltrationType { get; set; }
+    public ExfiltrationType? ExfiltrationType { get; set; }
 
     [JsonPropertyName("RequiredSlot")]
-    public string? RequiredSlot { get; set; }
+    public EquipmentSlots? RequiredSlot { get; set; }
 
     [JsonPropertyName("Id")]
     public string? Id { get; set; }
@@ -759,6 +761,7 @@ public record Exit
     [JsonPropertyName("MaxTimePVE")]
     public double? MaxTimePVE { get; set; }
 
+    // Checked in client
     [JsonPropertyName("MinTime")]
     public double? MinTime { get; set; }
 
@@ -775,7 +778,7 @@ public record Exit
     public string? _NameLower { get; set; }
 
     [JsonPropertyName("PassageRequirement")]
-    public string? PassageRequirement { get; set; }
+    public RequirementState? PassageRequirement { get; set; }
 
     [JsonPropertyName("PlayersCount")]
     public int? PlayersCount { get; set; }

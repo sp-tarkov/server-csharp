@@ -1,3 +1,4 @@
+using Core.Models.Eft.Common;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
@@ -7,6 +8,7 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
+using Core.Models.Enums;
 
 namespace Core.Helpers;
 
@@ -71,7 +73,7 @@ public class RepairHelper(
         if (applyMaxDurabilityDegradation) {
             var randomisedWearAmount = isArmor
                 ? GetRandomisedArmorRepairDegradationValue(
-                      itemToRepairDetails.Properties.ArmorMaterial,
+                      itemToRepairDetails.Properties.ArmorMaterial.Value,
                       useRepairKit,
                       itemCurrentMaxDurability ?? 0,
                       traderQualityMultipler
@@ -101,20 +103,23 @@ public class RepairHelper(
     /// <summary>
     /// Repairing armor reduces the total durability value slightly, get a randomised (to 2dp) amount based on armor material
     /// </summary>
-    /// <param name="armorMaterial">What material is the armor being repaired made of</param>
+    /// <param name="material">What material is the armor being repaired made of</param>
     /// <param name="isRepairKit">Was a repair kit used</param>
     /// <param name="armorMax">Max amount of durability item can have</param>
     /// <param name="traderQualityMultipler">Different traders produce different loss values</param>
     /// <returns>Amount to reduce max durability by</returns>
     protected double GetRandomisedArmorRepairDegradationValue(
-        string armorMaterial,
+        ArmorMaterial material,
         bool isRepairKit,
         double armorMax,
         double traderQualityMultipler
     )
     {
         // Degradation value is based on the armor material
-        var armorMaterialSettings = _databaseService.GetGlobals().Configuration.ArmorMaterials[armorMaterial];
+        if (!_databaseService.GetGlobals().Configuration.ArmorMaterials.TryGetValue(material, out var armorMaterialSettings))
+        {
+            _logger.Error($"Unable to find armor with a type of: {material}");
+        }
 
         var minMultiplier = isRepairKit
             ? armorMaterialSettings.MinRepairKitDegradation
