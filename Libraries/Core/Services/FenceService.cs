@@ -216,8 +216,8 @@ public class FenceService(
         double presetMultiplier
     )
     {
-        // Skip sub-items when adjusting prices
-        foreach (var item in assort.Items.Where(x => x.SlotId is not "hideout"))
+        // Only get root items
+        foreach (var item in assort.Items.Where(x => x.SlotId is "hideout"))
         {
             AdjustItemPriceByModifier(item, assort, itemMultiplier, presetMultiplier);
         }
@@ -510,14 +510,16 @@ public class FenceService(
      */
     protected void RemoveRandomItemFromAssorts(TraderAssort assort, List<Item> rootItems)
     {
+        // Pick a random root item to remove from Fence
         var rootItemToAdjust = randomUtil.GetArrayValue(rootItems);
 
         // Items added by mods may not have a Upd object, assume item stack size is 1
         var stackSize = rootItemToAdjust.Upd?.StackObjectsCount ?? 1;
 
-        // Get a random count of the chosen item to remove
+        // Get a random count of the chosen item to remove if its > 1
         var itemCountToRemove = randomUtil.GetInt(1, (int)stackSize);
 
+        // Check if we're removing all or just part of the item
         var isEntireStackToBeRemoved = Math.Abs(itemCountToRemove - stackSize) < 0.1;
 
         // Partial stack reduction
@@ -540,7 +542,7 @@ public class FenceService(
         foreach (var itemToDelete in itemWithChildren)
         {
             // Delete item from assort items array
-            assort.Items.Splice(assort.Items.IndexOf(itemToDelete), 1);
+            assort.Items.Remove(itemToDelete);
         }
 
         // Need to remove item from all areas of trader assort
