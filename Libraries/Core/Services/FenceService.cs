@@ -266,12 +266,12 @@ public class FenceService(
         // Is preset
         if (item.Upd?.SptPresetId != null)
         {
-            if (assort.BarterScheme?[item.Id] != null)
+            if (assort.BarterScheme?.ContainsKey(item.Id) ?? false)
             {
                 assort.BarterScheme[item.Id][0][0].Count *= presetModifier;
             }
         }
-        else if (assort.BarterScheme?[item.Id] != null)
+        else if (assort.BarterScheme?.ContainsKey(item.Id) ?? false)
         {
             assort.BarterScheme[item.Id][0][0].Count *= modifier;
         }

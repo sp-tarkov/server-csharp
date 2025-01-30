@@ -36,23 +36,6 @@ public class ItemFilterService(
     }
 
     /**
-     * Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
-     * @param tpl template id
-     * @returns true if blacklisted
-     */
-    public bool LootableItemBlacklisted(string tpl)
-    {
-        if (_lootableItemBlacklistCache.Count == 0)
-        {
-            foreach (var item in _itemConfig.LootableItemBlacklist) {
-                _itemBlacklistCache.Add(item);
-            }
-        }
-
-        return _lootableItemBlacklistCache.Contains(tpl);
-    }
-
-    /**
      * Check if item is blacklisted from being a reward for player
      * @param tpl item tpl to check is on blacklist
      * @returns True when blacklisted
@@ -125,7 +108,7 @@ public class ItemFilterService(
      */
     public bool IsLootableItemBlacklisted(string itemKey)
     {
-        if (_lootableItemBlacklistCache is null)
+        if (!_lootableItemBlacklistCache.Any())
         {
             HydrateLootableItemBlacklist();
         }
@@ -135,7 +118,7 @@ public class ItemFilterService(
 
     public bool IsItemBlacklisted(string tpl)
     {
-        if (_itemBlacklistCache is null)
+        if (!_itemBlacklistCache.Any())
         {
             HydrateBlacklist();
         }
@@ -145,7 +128,6 @@ public class ItemFilterService(
 
     protected void HydrateLootableItemBlacklist()
     {
-        _lootableItemBlacklistCache = [];
         foreach (var item in _itemConfig.LootableItemBlacklist)
         {
             _lootableItemBlacklistCache.Add(item);
@@ -154,7 +136,6 @@ public class ItemFilterService(
 
     protected void HydrateBlacklist()
     {
-        _itemBlacklistCache = [];
         foreach (var item in _itemConfig.Blacklist) {
             _itemBlacklistCache.Add(item);
         }
