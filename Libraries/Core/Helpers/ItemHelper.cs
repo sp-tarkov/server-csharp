@@ -509,20 +509,20 @@ public class ItemHelper(
 
     /**
      * Calculate the average quality of an item and its children
-     * @param items An offers item to process
+     * @param itemWithChildren An offers item to process
      * @param skipArmorItemsWithoutDurability Skip over armor items without durability
      * @returns % quality modifier between 0 and 1
      */
-    public double GetItemQualityModifierForItems(List<Item> items, bool? skipArmorItemsWithoutDurability = null)
+    public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool? skipArmorItemsWithoutDurability = null)
     {
-        if (IsOfBaseclass(items[0].Template, BaseClasses.WEAPON))
+        if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
         {
-            return GetItemQualityModifier(items[0]);
+            return GetItemQualityModifier(itemWithChildren[0]);
         }
 
         var qualityModifier = 0D;
         var itemsWithQualityCount = 0D;
-        foreach (var item in items)
+        foreach (var item in itemWithChildren)
         {
             var result = GetItemQualityModifier(item, skipArmorItemsWithoutDurability);
             if (result == -1)
