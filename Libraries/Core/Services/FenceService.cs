@@ -263,17 +263,28 @@ public class FenceService(
         double presetModifier
     )
     {
+        if (assort?.BarterScheme is null)
+        {
+            logger.Warning($"Unable to adjust item: {item.Id} on assort as it lacks a barterScheme object");
+
+            return;
+        }
+
         // Is preset
         if (item.Upd?.SptPresetId != null)
         {
-            if (assort.BarterScheme?.ContainsKey(item.Id) ?? false)
+            if (assort.BarterScheme.TryGetValue(item.Id, out var barterSchemeForPreset))
             {
-                assort.BarterScheme[item.Id][0][0].Count *= presetModifier;
+                barterSchemeForPreset[0][0].Count *= presetModifier;
             }
+
+            return;
         }
-        else if (assort.BarterScheme?.ContainsKey(item.Id) ?? false)
+
+        // Normal item
+        if (assort.BarterScheme.TryGetValue(item.Id, out var barterScheme))
         {
-            assort.BarterScheme[item.Id][0][0].Count *= modifier;
+            barterScheme[0][0].Count *= modifier;
         }
         else
         {
