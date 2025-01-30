@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
@@ -72,7 +72,7 @@ public class HandbookHelper(
     /// </summary>
     /// <param name="tpl">Item tpl to look up price for</param>
     /// <returns>price in roubles</returns>
-    public double? GetTemplatePrice(string tpl)
+    public double GetTemplatePrice(string tpl)
     {
         if (!_lookupCacheGenerated)
         {
@@ -102,14 +102,15 @@ public class HandbookHelper(
         {
             _handbookPriceCache.Items.ById[tpl] = handbookItem.Price ?? 0;
         }
-        return handbookItem.Price;
+
+        return handbookItem.Price.Value;
     }
 
     public double GetTemplatePriceForItems(List<Item> items)
     {
         var total = 0D;
         foreach (var item in items) {
-            total += GetTemplatePrice(item.Template) ?? 0;
+            total += GetTemplatePrice(item.Template);
         }
 
         return total;
@@ -158,7 +159,7 @@ public class HandbookHelper(
     {
         return (int) (currencyTypeFrom == Money.ROUBLES 
             ? nonRoubleCurrencyCount 
-            : Math.Round(nonRoubleCurrencyCount * (GetTemplatePrice(currencyTypeFrom) ?? 0)));
+            : Math.Round(nonRoubleCurrencyCount * (GetTemplatePrice(currencyTypeFrom))));
     }
 
     /// <summary>
@@ -175,7 +176,7 @@ public class HandbookHelper(
 
         // Get price of currency from handbook
         var price = GetTemplatePrice(currencyTypeTo);
-        return (int) (price is not null ? Math.Max(1, Math.Round((double)(roubleCurrencyCount / price))) : 0);
+        return (int) (price > 0 ? Math.Max(1, Math.Round(roubleCurrencyCount / price)) : 0);
     }
 
     public HandbookCategory GetCategoryById(string handbookId)

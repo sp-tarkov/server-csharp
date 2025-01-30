@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -61,7 +61,7 @@ public class CircleOfCultistService(
 
         // `cultistRecipes` just has single recipeId
         var cultistCraftData = _databaseService.GetHideout().Production.CultistRecipes.FirstOrDefault();
-        List<Item> sacrificedItems = GetSacrificedItems(pmcData);
+        var sacrificedItems = GetSacrificedItems(pmcData);
         var sacrificedItemCostRoubles = sacrificedItems.Aggregate(
             0D,
             (sum, curr) => sum + (_itemHelper.GetItemPrice(curr.Template) ?? 0)
@@ -69,7 +69,7 @@ public class CircleOfCultistService(
 
         var rewardAmountMultiplier = GetRewardAmountMultiplier(pmcData, _hideoutConfig.CultistCircle);
 
-        // Get the rouble amount we generate rewards with from cost of sacrified items * above multipler
+        // Get the rouble amount we generate rewards with from cost of sacrificed items * above multiplier
         var rewardAmountRoubles = Math.Round(sacrificedItemCostRoubles * rewardAmountMultiplier);
 
         // Check if it matches any direct swap recipes

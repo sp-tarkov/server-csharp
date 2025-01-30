@@ -151,7 +151,7 @@ public class PaymentService(
         }
 
         var assortItemPriceRouble = _handbookHelper.GetTemplatePrice(purchasedAssortItem.Template);
-        if (assortItemPriceRouble is null)
+        if (assortItemPriceRouble == 0)
         {
             _logger.Debug($"No item price found for {purchasedAssortItem.Template} on trader: {traderId} in assort: {traderAssortId}");
 

@@ -48,7 +48,7 @@ public class RagfairPriceService(
     {
         _staticPrices = new Dictionary<string, double>();
         foreach (var item in _databaseService.GetItems().Values.Where(item => item.Type == "Item")) {
-            this._staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id).Value;
+            _staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
         }
     }
 

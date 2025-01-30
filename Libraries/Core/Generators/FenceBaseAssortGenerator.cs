@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -37,7 +37,7 @@ public class FenceBaseAssortGenerator(
         var blockedSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
         var baseFenceAssort = databaseService.GetTrader(Traders.FENCE).Assort;
 
-        foreach (var rootItemDb in itemHelper.GetItems().Where((item) => IsValidFenceItem(item)))
+        foreach (var rootItemDb in itemHelper.GetItems().Where(IsValidFenceItem))
         {
             // Skip blacklisted items
             if (itemFilterService.IsItemBlacklisted(rootItemDb.Id))

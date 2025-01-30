@@ -407,7 +407,7 @@ public class ItemHelper(
         var staticPrice = GetStaticItemPrice(tpl);
         var dynamicPrice = GetDynamicItemPrice(tpl);
 
-        return Math.Max(staticPrice ?? 0d, dynamicPrice ?? 0d);
+        return Math.Max(staticPrice, dynamicPrice ?? 0d);
     }
 
     /// <summary>
@@ -415,7 +415,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="tpl">Items tpl id to look up price</param>
     /// <returns>Price in roubles (0 if not found)</returns>
-    public double? GetStaticItemPrice(string tpl)
+    public double GetStaticItemPrice(string tpl)
     {
         var handbookPrice = _handbookHelper.GetTemplatePrice(tpl);
         if (handbookPrice >= 1)
@@ -448,15 +448,11 @@ public class ItemHelper(
     /// <returns>Fixed item</returns>
     public Item FixItemStackCount(Item item)
     {
-        if (item.Upd is null)
-        {
-            item.Upd = new() { StackObjectsCount = 1 };
-        }
+        // Ensure item has 'Upd' object
+        item.Upd ??= new() { StackObjectsCount = 1 };
 
-        if (item.Upd.StackObjectsCount is null)
-        {
-            item.Upd.StackObjectsCount = 1;
-        }
+        // Ensure item has 'StackObjectsCount' property
+        item.Upd.StackObjectsCount ??= 1;
 
         return item;
     }

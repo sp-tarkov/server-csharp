@@ -570,7 +570,7 @@ public class BotLootGenerator(
             // Stop adding items to bots pool if rolling total is over total limit
             if (totalValueLimitRub > 0)
             {
-                currentTotalRub += _handbookHelper.GetTemplatePrice(itemToAddTemplate.Id) ?? 0;
+                currentTotalRub += _handbookHelper.GetTemplatePrice(itemToAddTemplate.Id);
                 if (currentTotalRub > totalValueLimitRub)
                 {
                     break;
