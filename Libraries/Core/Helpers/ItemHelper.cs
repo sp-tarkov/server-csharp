@@ -468,15 +468,15 @@ public class ItemHelper(
 
     /**
      * Gets item data from items.json
-     * @param tpl items template id to look up
+     * @param itemTpl items template id to look up
      * @returns bool - is valid + template item object as array
      */
-    public KeyValuePair<bool, TemplateItem?> GetItem(string? tpl)
+    public KeyValuePair<bool, TemplateItem?> GetItem(string itemTpl)
     {
         // -> Gets item from <input: _tpl>
-        if (_databaseService.GetItems().Keys.Contains(tpl))
+        if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
-            return new(true, _databaseService.GetItems()[tpl]);
+            return new(true, item);
         }
 
         return new(false, null);
@@ -489,19 +489,22 @@ public class ItemHelper(
      */
     public bool ItemHasSlots(string itemTpl)
     {
-        return GetItem(itemTpl).Value.Properties.Slots?.Count() > 0;
+        if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
+        {
+            return GetItem(itemTpl).Value.Properties?.Slots?.Count() > 0;
+        }
+
+        return false;
     }
 
     /**
      * Checks if the item is in the database
-     * @param tpl Template id of the item to check
+     * @param itemTpl Template id of the item to check
      * @returns true if the item is in the database
      */
-    public bool IsItemInDb(string tpl)
+    public bool IsItemInDb(string itemTpl)
     {
-        var itemDetails = GetItem(tpl);
-
-        return itemDetails.Key;
+        return _databaseService.GetItems().ContainsKey(itemTpl);
     }
 
     /**
@@ -550,14 +553,20 @@ public class ItemHelper(
     public double GetItemQualityModifier(Item item, bool? skipArmorItemsWithoutDurability = null)
     {
         // Default to 100%
-        var result = 1D;
+        var result = 1d;
 
         // Is armor and has 0 max durability
         var itemDetails = GetItem(item.Template).Value;
-        if (skipArmorItemsWithoutDurability ??
-            false &&
-            IsOfBaseclass(item.Template, BaseClasses.ARMOR) &&
-            itemDetails.Properties.MaxDurability == 0
+        if (itemDetails?.Properties is null)
+        {
+            _logger.Warning($"Item: {item.Template} lacks properties, cannot ascertain quality level, assuming 100%");
+
+            return 1;
+        }
+
+        if (skipArmorItemsWithoutDurability.GetValueOrDefault(false)
+            && IsOfBaseclass(item.Template, BaseClasses.ARMOR)
+            && itemDetails?.Properties?.MaxDurability == 0
            )
         {
             return -1;
@@ -565,42 +574,33 @@ public class ItemHelper(
 
         if (item.Upd is not null)
         {
-            var medkit = item.Upd.MedKit;
-            var repairable = item.Upd.Repairable;
-            var foodDrink = item.Upd.FoodDrink;
-            var key = item.Upd.Key;
-            var resource = item.Upd.Resource;
-            var repairKit = item.Upd.RepairKit;
-
-            if (medkit is not null)
+            if (item.Upd.MedKit is not null)
             {
                 // Meds
-                result = (medkit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
+                result = (item.Upd.MedKit.HpResource ?? 0) / (itemDetails.Properties.MaxHpResource ?? 0);
             }
-            else if (repairable is not null)
+            else if (item.Upd.Repairable is not null)
             {
-                result = GetRepairableItemQualityValue(itemDetails, repairable, item);
+                result = GetRepairableItemQualityValue(itemDetails, item.Upd.Repairable, item);
             }
-            else if (foodDrink is not null)
+            else if (item.Upd.FoodDrink is not null)
             {
-                // food & drink
-                result = (foodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
+                result = (item.Upd.FoodDrink.HpPercent ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
-            else if (key is not null && key.NumberOfUsages > 0 && itemDetails.Properties.MaximumNumberOfUsage > 0)
+            else if (item.Upd.Key?.NumberOfUsages > 0 && itemDetails.Properties.MaximumNumberOfUsage > 0)
             {
                 // keys - keys count upwards, not down like everything else
                 var maxNumOfUsages = itemDetails.Properties.MaximumNumberOfUsage;
-                result = (maxNumOfUsages ?? 0 - key.NumberOfUsages ?? 0) / maxNumOfUsages ?? 0;
+                result = (maxNumOfUsages ?? 0 - item.Upd.Key.NumberOfUsages ?? 0) / maxNumOfUsages ?? 0;
             }
-            else if (resource is not null && resource.UnitsConsumed > 0)
+            else if (item.Upd.Resource?.UnitsConsumed > 0)
             {
-                // Things like fuel tank
-                result = (resource.Value ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
+                // E.g. fuel tank
+                result = (item.Upd.Resource.Value ?? 0) / (itemDetails.Properties.MaxResource ?? 0);
             }
-            else if (repairKit is not null)
+            else if (item.Upd.RepairKit is not null)
             {
-                // Repair kits
-                result = (repairKit.Resource ?? 0) / (itemDetails.Properties.MaxRepairResource ?? 0);
+                result = (item.Upd.RepairKit.Resource ?? 0) / (itemDetails.Properties.MaxRepairResource ?? 0);
             }
 
             if (result == 0)
@@ -634,9 +634,7 @@ public class ItemHelper(
         }
 
         // Attempt to get the max durability from _props. If not available, use Repairable max durability value instead.
-        var maxDurability = itemDetails.Properties.MaxDurability is not null
-            ? itemDetails.Properties.MaxDurability
-            : repairable.MaxDurability;
+        var maxDurability = itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
         var durability = repairable.Durability / maxDurability;
 
         if (durability is null)
@@ -719,7 +717,8 @@ public class ItemHelper(
 
         foreach (var itemFromAssort in assort)
         {
-            if (itemFromAssort.ParentId == itemIdToFind && !list.Any((item) => itemFromAssort.Id == item.Id))
+            // Parent matches desired item + all items in list do not match
+            if (itemFromAssort.ParentId == itemIdToFind && list.All(item => itemFromAssort.Id != item.Id))
             {
                 list.Add(itemFromAssort);
                 list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
@@ -792,8 +791,7 @@ public class ItemHelper(
     /// <returns>True if it can be stacked.</returns>
     public bool? IsItemTplStackable(string tpl)
     {
-        var item = _databaseService.GetItems()[tpl];
-        if (item is null)
+        if (!_databaseService.GetItems().TryGetValue(tpl, out var item))
         {
             return null;
         }
