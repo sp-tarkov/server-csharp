@@ -62,7 +62,7 @@
           "index": 5,
           "parentId": "",
           "target": "Charisma",
-          "value": 20,
+          "value": 15,
           "visibilityConditions": []
         },
         {
@@ -244,7 +244,7 @@
           "isHidden": false,
           "items": [
             {
-              "_id": "678c47f2b42ab80f6513f2a4",
+              "_id": "6793f638fc630e99950ed5c7",
               "_tpl": "6759bb94b8913ff13e049669",
               "upd": {
                 "SpawnedInSession": true,
@@ -252,7 +252,7 @@
               }
             }
           ],
-          "target": "678c47f2b42ab80f6513f2a4",
+          "target": "6793f638fc630e99950ed5c7",
           "type": "Item",
           "unknown": false,
           "value": 1
@@ -274,7 +274,7 @@
           "isHidden": false,
           "items": [
             {
-              "_id": "678c47f2b42ab80f6513f2a6",
+              "_id": "6793f638fc630e99950ed5c9",
               "_tpl": "67614b542eb91250020f2b86",
               "upd": {
                 "SpawnedInSession": true,
@@ -282,7 +282,7 @@
               }
             }
           ],
-          "target": "678c47f2b42ab80f6513f2a6",
+          "target": "6793f638fc630e99950ed5c9",
           "type": "Item",
           "unknown": false,
           "value": 1
@@ -602,7 +602,7 @@
           "index": 5,
           "parentId": "",
           "target": "Charisma",
-          "value": 20,
+          "value": 15,
           "visibilityConditions": []
         },
         {
@@ -680,7 +680,7 @@
           "isHidden": false,
           "items": [
             {
-              "_id": "678c47f2b42ab80f6513f2a8",
+              "_id": "6793f638fc630e99950ed5cb",
               "_tpl": "674d90b55704568fe60bc8f5",
               "upd": {
                 "SpawnedInSession": true,
@@ -688,7 +688,7 @@
               }
             }
           ],
-          "target": "678c47f2b42ab80f6513f2a8",
+          "target": "6793f638fc630e99950ed5cb",
           "type": "Item",
           "unknown": false,
           "value": 1
@@ -816,7 +816,7 @@
           "isHidden": false,
           "items": [
             {
-              "_id": "678c47f2b42ab80f6513f2aa",
+              "_id": "6793f638fc630e99950ed5cd",
               "_tpl": "6759e07e4ff23436160d7fed",
               "upd": {
                 "SpawnedInSession": true,
@@ -824,7 +824,7 @@
               }
             }
           ],
-          "target": "678c47f2b42ab80f6513f2aa",
+          "target": "6793f638fc630e99950ed5cd",
           "type": "Item",
           "unknown": false,
           "value": 1
@@ -880,7 +880,7 @@
           "isHidden": false,
           "items": [
             {
-              "_id": "678c47f2b42ab80f6513f2ac",
+              "_id": "6793f638fc630e99950ed5cf",
               "_tpl": "67614b6b47c71ea3d40256d7",
               "upd": {
                 "SpawnedInSession": true,
@@ -888,7 +888,7 @@
               }
             }
           ],
-          "target": "678c47f2b42ab80f6513f2ac",
+          "target": "6793f638fc630e99950ed5cf",
           "type": "Item",
           "unknown": false,
           "value": 1

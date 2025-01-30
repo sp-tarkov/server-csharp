@@ -530,7 +530,7 @@ public record Config
     public bool? DiscardLimitsEnabled { get; set; }
 
     [JsonPropertyName("EnvironmentSettings")]
-    public EnvironmentSetting2? EnvironmentSettings { get; set; }
+    public EnvironmentUISettings? EnvironmentSettings { get; set; }
 
     [JsonPropertyName("EventSettings")]
     public EventSettings? EventSettings { get; set; }
@@ -701,7 +701,7 @@ public record SeasonActivityHalloween
     public double? ZombieBleedMul { get; set; }
 }
 
-public record EnvironmentSetting2
+public record EnvironmentUISettings
 {
     public EnvironmentUIData? EnvironmentUIData { get; set; }
 }
@@ -4268,6 +4268,9 @@ public record AudioSettings
     [JsonPropertyName("EnvironmentSettings")]
     public EnvironmentSettings? EnvironmentSettings { get; set; }
 
+    [JsonPropertyName("MetaXRAudioPluginSettings")]
+    public MetaXRAudioPluginSettings? MetaXRAudioPluginSettings { get; set; }
+
     [JsonPropertyName("PlayerSettings")]
     public PlayerSettings? PlayerSettings { get; set; }
 
@@ -4315,6 +4318,12 @@ public record EnvironmentSettings
 
     [JsonPropertyName("SurfaceMultipliers")]
     public List<SurfaceMultiplier>? SurfaceMultipliers { get; set; }
+}
+
+public record MetaXRAudioPluginSettings
+{
+    public bool? EnabledPluginErrorChecker { get; set; }
+    public double? OutputVolumeCheckCooldown { get; set; }
 }
 
 public record SurfaceMultiplier

@@ -27170,6 +27170,10 @@
           }
         ]
       },
+      "MetaXRAudioPluginSettings": {
+        "EnabledPluginErrorChecker": true,
+        "OutputVolumeCheckCooldown": 0.3
+      },
       "PlayerSettings": {
         "BaseMaxMovementRolloff": 70,
         "EnabledOcclusionDynamicRolloff": true,
