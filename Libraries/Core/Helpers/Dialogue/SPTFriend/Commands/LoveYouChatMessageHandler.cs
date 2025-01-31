@@ -4,12 +4,13 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SptMessageHandlers;
+namespace Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class SptMessageHandler(
+public class LoveYouChatMessageHandler(
     MailSendService _mailSendService,
-    RandomUtil _randomUtil) : IChatMessageHandler
+    RandomUtil _randomUtil
+) : IChatMessageHandler
 {
     public int GetPriority()
     {
@@ -18,7 +19,7 @@ public class SptMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "spt";
+        return message.ToLower() == "love you";
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
@@ -26,7 +27,12 @@ public class SptMessageHandler(
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue(["Its me!!", "spt? i've heard of that project"]),
+            _randomUtil.GetArrayValue([
+                "That's quite forward but i love you too in a purely chatbot-human way",
+                "I love you too buddy :3!",
+                "uwu",
+                $"love you too {sender?.Info?.Nickname}",
+            ]),
             [],
             null
         );

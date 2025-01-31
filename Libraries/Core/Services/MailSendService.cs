@@ -321,7 +321,7 @@ public class MailSendService(
     public void SendPlayerMessageToNpc(string sessionId, string targetNpcId, string message)
     {
         var playerProfile = _saveServer.GetProfile(sessionId);
-        if (playerProfile.DialogueRecords != null ||
+        if (playerProfile.DialogueRecords is null ||
             !playerProfile.DialogueRecords.TryGetValue(targetNpcId, out var dialogWithNpc))
         {
             _logger.Error(_localisationService.GetText("mailsend-missing_npc_dialog", targetNpcId));

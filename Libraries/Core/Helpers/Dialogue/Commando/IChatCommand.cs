@@ -1,4 +1,4 @@
-﻿using Core.Models.Eft.Dialog;
+using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 
 namespace Core.Helpers.Dialog.Commando;

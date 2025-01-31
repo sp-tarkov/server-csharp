@@ -6,7 +6,7 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SptMessageHandlers;
+namespace Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
 public class GiveMeSpaceMessageHandler(

@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Core.Helpers.Dialog.Commando.SptCommands;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
@@ -23,7 +24,7 @@ public class GiveSptCommand(
     LocaleService _localeService,
     ICloner _cloner
 
-)
+) : ISptCommand
 {
     protected Dictionary<string, SavedCommand> _savedCommand = new();
     private static readonly Regex _commandRegex = new("""/^spt give(((([a - z]{ 2,5}) )?"(.+)"|\w+) )?([0 - 9]+)$/""");

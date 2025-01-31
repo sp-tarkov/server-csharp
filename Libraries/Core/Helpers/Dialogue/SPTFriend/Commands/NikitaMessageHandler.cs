@@ -4,10 +4,10 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SptMessageHandlers
+namespace Core.Helpers.Dialogue.SPTFriend.Commands
 {
     [Injectable]
-    public class AreYouABotMessageHandler(
+    public class NikitaMessageHandler(
         MailSendService _mailSendService,
         RandomUtil _randomUtil) : IChatMessageHandler
     {
@@ -18,7 +18,7 @@ namespace Core.Helpers.Dialogue.SptMessageHandlers
 
         public bool CanHandle(string message)
         {
-            return message.ToLower() == "are you a bot";
+            return message.ToLower() == "nikita";
         }
 
         public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
@@ -26,8 +26,13 @@ namespace Core.Helpers.Dialogue.SptMessageHandlers
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue(["beep boop", "**sad boop**", "probably", "sometimes", "yeah lol"]),
-                [], null
+                _randomUtil.GetArrayValue([
+                    "I know that guy!",
+                    "Cool guy, he made EFT!",
+                    "Legend",
+                    "The mastermind of my suffering",
+                    "Remember when he said webel-webel-webel-webel, classic Nikita moment",
+                ]), [], null
             );
         }
     }

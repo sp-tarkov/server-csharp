@@ -28,7 +28,7 @@ public class DialogueHelper(
     public MessagePreview GetMessagePreview(Models.Eft.Profile.Dialogue? dialogue)
     {
         // The last message of the dialogue should be shown on the preview.
-        var message = dialogue.Messages[dialogue.Messages.Count - 1];
+        var message = dialogue.Messages.Last();
         MessagePreview result = new()
         {
             DateTime = message?.DateTime,

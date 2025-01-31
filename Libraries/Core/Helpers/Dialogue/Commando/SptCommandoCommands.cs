@@ -62,7 +62,7 @@ public class SptCommandoCommands : IChatCommand
     public string Handle(string command, UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
         return _sptCommands
-            .Find((c) => c.GetCommand() == command)
+            .First((c) => c.GetCommand() == command)
             .PerformAction(commandHandler, sessionId, request);
     }
 }

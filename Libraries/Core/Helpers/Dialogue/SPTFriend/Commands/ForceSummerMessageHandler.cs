@@ -7,10 +7,10 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SptMessageHandlers
+namespace Core.Helpers.Dialogue.SPTFriend.Commands
 {
     [Injectable]
-    public class ForceSnowMessageHandler(
+    public class ForceSummerMessageHandler(
         LocalisationService _localisationService,
         MailSendService _mailSendService,
         RandomUtil _randomUtil,
@@ -25,19 +25,19 @@ namespace Core.Helpers.Dialogue.SptMessageHandlers
 
         public bool CanHandle(string message)
         {
-            return message.ToLower() == "itsonlysnowalan";
+            return message.ToLower() == "givemesunshine";
         }
 
         public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
         {
-            _weatherConfig.OverrideSeason = Season.WINTER;
+            _weatherConfig.OverrideSeason = Season.SUMMER;
 
             _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            sptFriendUser,
-                _randomUtil.GetArrayValue([_localisationService.GetText("chatbot-snow_enabled")]),
-            [], 
-            null
+                sessionId,
+                sptFriendUser,
+                _randomUtil.GetArrayValue([_localisationService.GetText("chatbot-summer_enabled")]),
+                [],
+                null
             );
         }
     }

@@ -1,3 +1,4 @@
+using Core.Helpers.Dialogue.SPTFriend.Commands;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Profile;
 using Core.Services;
@@ -7,7 +8,7 @@ using SptCommon.Annotations;
 namespace Core.Helpers.Dialogue.SptMessageHandlers
 {
     [Injectable]
-    public class NikitaMessageHandler(
+    public class AreYouABotMessageHandler(
         MailSendService _mailSendService,
         RandomUtil _randomUtil) : IChatMessageHandler
     {
@@ -18,7 +19,7 @@ namespace Core.Helpers.Dialogue.SptMessageHandlers
 
         public bool CanHandle(string message)
         {
-            return message.ToLower() == "nikita";
+            return message.ToLower() == "are you a bot";
         }
 
         public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
@@ -26,13 +27,8 @@ namespace Core.Helpers.Dialogue.SptMessageHandlers
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue([
-                    "I know that guy!",
-                    "Cool guy, he made EFT!",
-                    "Legend",
-                    "The mastermind of my suffering",
-                    "Remember when he said webel-webel-webel-webel, classic Nikita moment",
-                ]), [], null
+                _randomUtil.GetArrayValue(["beep boop", "**sad boop**", "probably", "sometimes", "yeah lol"]),
+                [], null
             );
         }
     }

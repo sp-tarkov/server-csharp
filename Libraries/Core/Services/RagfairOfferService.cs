@@ -121,9 +121,10 @@ public class RagfairOfferService(
     public void RemoveOfferById(string offerId)
     {
         var offer = ragfairOfferHolder.GetOfferById(offerId);
-        if (offer == null)
+        if (offer is null)
         {
             logger.Warning(localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+
             return;
         }
 

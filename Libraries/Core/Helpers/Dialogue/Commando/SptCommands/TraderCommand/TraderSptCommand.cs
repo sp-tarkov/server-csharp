@@ -1,12 +1,19 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
+using Core.Services;
+using System.Text.RegularExpressions;
+using Core.Models.Utils;
 
 namespace Core.Helpers.Dialog.Commando.SptCommands.TraderCommand;
 
 [Injectable]
-public class TraderSptCommand : ISptCommand
+public class TraderSptCommand(
+    ISptLogger<TraderSptCommand> _logger,
+    MailSendService _mailSendService) : ISptCommand
 {
+    protected Regex _commandRegex = new("""/^spt trader(?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0 - 9]+)$/""");
+
     public string GetCommand()
     {
         return "trader";
@@ -19,19 +26,18 @@ public class TraderSptCommand : ISptCommand
 
     public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
-        // TODO: Finish implementation/fix errors.
-        // if (TraderSptCommand.commandRegex.test(request.text) is null)
-        // {
-        //     this.mailSendService.sendUserMessageToPlayer(
-        //         sessionId,
-        //         commandHandler,
-        //         "Invalid use of trader command. Use 'help' for more information.",
-        //     );
-        //     return request.DialogId;
-        // }
-        //
-        // return request.DialogId;
+         if (!_commandRegex.IsMatch(request.Text))
+         {
+             _mailSendService.SendUserMessageToPlayer(
+                 sessionId,
+                 commandHandler,
+                 "Invalid use of trader command. Use 'help' for more information.");
+             return request.DialogId;
+         }
 
-        throw new NotImplementedException();
+         // TODO: implement remaining, copy from give command
+         _logger.Error("NOT IMPLEMENTED: TraderSptCommand");
+        
+         return request.DialogId;
     }
 }

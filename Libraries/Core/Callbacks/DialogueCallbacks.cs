@@ -296,11 +296,6 @@ public class DialogueCallbacks(
         return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public string RemoveMail(string url, RemoveMailMessageRequest info, string sessionID)
-    {
-        return _httpResponseUtil.EmptyArrayResponse();
-    }
-
     public string CreateGroupMail(string url, CreateGroupMailRequest info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();

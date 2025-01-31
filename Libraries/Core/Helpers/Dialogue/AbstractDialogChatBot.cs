@@ -22,6 +22,7 @@ public abstract class AbstractDialogChatBot(
         if ((request.Text ?? "").Length == 0)
         {
             _logger.Error("Command came in as empty text! Invalid data!");
+
             return request.DialogId;
         }
 
@@ -35,49 +36,7 @@ public abstract class AbstractDialogChatBot(
 
         if (splitCommand.FirstOrDefault()?.ToLower() == "help")
         {
-            _mailSendService.SendUserMessageToPlayer(
-                sessionId,
-                GetChatBot(),
-                "The available commands will be listed below:",
-                [],
-                null
-            );
-            // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
-            TimeoutCallback.RunInTimespan(
-                () =>
-                {
-                    foreach (var chatCommand in _chatCommands)
-                    {
-                        _mailSendService.SendUserMessageToPlayer(
-                            sessionId,
-                            GetChatBot(),
-                            $"Commands available for \"{chatCommand.GetCommandPrefix()}\" prefix:",
-                            [],
-                            null
-                        );
-
-                        TimeoutCallback.RunInTimespan(
-                            () =>
-                            {
-                                foreach (var subCommand in chatCommand.GetCommands())
-                                {
-                                    _mailSendService.SendUserMessageToPlayer(
-                                        sessionId,
-                                        GetChatBot(),
-                                        $"Subcommand {subCommand}:\\n{chatCommand.GetCommandHelp(subCommand)}",
-                                        [],
-                                        null
-                                    );
-                                }
-                            },
-                            TimeSpan.FromSeconds(1)
-                        );
-                    }
-                },
-                TimeSpan.FromSeconds(1)
-            );
-
-            return request.DialogId;
+            return SendPlayerHelpMessage(sessionId, request);
         }
 
         _mailSendService.SendUserMessageToPlayer(
@@ -89,6 +48,53 @@ public abstract class AbstractDialogChatBot(
         );
 
         return null;
+    }
+
+    private string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    {
+        _mailSendService.SendUserMessageToPlayer(
+            sessionId,
+            GetChatBot(),
+            "The available commands will be listed below:",
+            [],
+            null
+        );
+        // due to BSG being dumb with messages we need a mandatory timeout between messages so they get out on the right order
+        TimeoutCallback.RunInTimespan(
+            () =>
+            {
+                foreach (var chatCommand in _chatCommands)
+                {
+                    _mailSendService.SendUserMessageToPlayer(
+                        sessionId,
+                        GetChatBot(),
+                        $"Commands available for \"{chatCommand.GetCommandPrefix()}\" prefix:",
+                        [],
+                        null
+                    );
+
+                    TimeoutCallback.RunInTimespan(
+                        () =>
+                        {
+                            foreach (var subCommand in chatCommand.GetCommands())
+                            {
+                                _mailSendService.SendUserMessageToPlayer(
+                                    sessionId,
+                                    GetChatBot(),
+                                    $"Subcommand {subCommand}:\\n{chatCommand.GetCommandHelp(subCommand)}",
+                                    [],
+                                    null
+                                );
+                            }
+                        },
+                        TimeSpan.FromSeconds(1)
+                    );
+                }
+            },
+            TimeSpan.FromSeconds(1)
+        );
+
+        return request.DialogId;
     }
 
     public void RegisterChatCommand(IChatCommand chatCommand)

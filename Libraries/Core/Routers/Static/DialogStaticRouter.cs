@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -91,15 +91,6 @@ public class DialogStaticRouter : StaticRouter
                     output
                 ) => _dialogueCallbacks.SetRead(url, info as SetDialogReadRequestData, sessionID),
                 typeof(SetDialogReadRequestData)),
-            new RouteAction(
-                "/client/mail/dialog/remove",
-                (
-                    url, 
-                    info, 
-                    sessionID, 
-                    output
-                ) => _dialogueCallbacks.RemoveMail(url, info as RemoveMailMessageRequest, sessionID),
-                typeof(RemoveMailMessageRequest)),
             new RouteAction(
                 "/client/mail/dialog/getAllAttachments",
                 (
