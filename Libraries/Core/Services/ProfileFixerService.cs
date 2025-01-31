@@ -299,8 +299,8 @@ public class ProfileFixerService(
         {
             if (!quests.ContainsKey(profileQuests[i].QId) || activeRepeatableQuests.Any((x) => x.Id == profileQuests[i].QId))
             {
-                profileQuests.RemoveAt(i);
                 _logger.Info($"Successfully removed orphaned quest: {profileQuests[i].QId} that doesn't exist in quest data");
+                profileQuests.RemoveAt(i);
             }
         }
     }
