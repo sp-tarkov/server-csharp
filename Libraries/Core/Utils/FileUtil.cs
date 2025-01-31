@@ -92,20 +92,21 @@ public class FileUtil(
     /// Copy a file from one path to another
     /// </summary>
     /// <param name="copyFromPath">Source file to copy from</param>
-    /// <param name="destinationPath"></param>
+    /// <param name="destinationFilePath"></param>
     /// <param name="overwrite">Should destination file be overwritten</param>
-    public void CopyFile(string copyFromPath, string destinationPath, bool overwrite = false)
+    public void CopyFile(string copyFromPath, string destinationFilePath, bool overwrite = false)
     {
         // Check it exists first
         if (!FileExists(copyFromPath))
         {
-            _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationPath}");
+            _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
         }
 
+        
         // Ensure dir exists
-        Directory.CreateDirectory(destinationPath);
+        Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
 
         // Copy the file
-        File.Copy(copyFromPath, destinationPath, overwrite);
+        File.Copy(copyFromPath, destinationFilePath, overwrite);
     }
 }

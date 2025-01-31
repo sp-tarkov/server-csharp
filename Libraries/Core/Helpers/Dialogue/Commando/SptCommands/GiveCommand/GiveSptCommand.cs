@@ -26,7 +26,7 @@ public class GiveSptCommand(
 )
 {
     protected Dictionary<string, SavedCommand> _savedCommand = new();
-    //private const Regex _commandRegex = new Regex(@"/^spt give(((([a - z]{ 2,5}) )?")(.+)"|\w+) )?([0 - 9]+)$/";
+    private static readonly Regex _commandRegex = new("""/^spt give(((([a - z]{ 2,5}) )?"(.+)"|\w+) )?([0 - 9]+)$/""");
     private const double _acceptableConfidence = 0.9d;
 
     // Exception for flares
@@ -52,9 +52,6 @@ public class GiveSptCommand(
 
     public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
-        throw new NotImplementedException();
-        /**
-
         if (!_commandRegex.IsMatch(request.Text)) {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
@@ -113,7 +110,7 @@ public class GiveSptCommand(
 
             if (isItemName) {
                 try {
-                    locale = result.Groups[4] ?? _localeService.GetDesiredGameLocale() ?? "en";
+                    locale = result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
                 } catch (Exception ex) {
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
@@ -125,34 +122,43 @@ public class GiveSptCommand(
                 }
 
                 localizedGlobal = GetGlobalsLocale(locale);
-
-                var closestItemsMatchedByName = _itemHelper
+                var allAllowedItemNames = _itemHelper
                     .GetItems()
-                    .Where((i) => IsItemAllowed(i))
-                    .Select((i) => localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name)
-                    .Where((i) => !string.IsNullOrEmpty(i))
-                    .Select((i) => ({ Match = StringSimilarity(item.ToLower(), i.ToLower())ItemName = i })) // We need to find a similar system to string-similarity-js
-                    .Sort((a1, a2) => a2.match - a1.match);
+                    .Where(IsItemAllowed)
+                    .Select(i => localizedGlobal
+                        .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLower())
+                    .Where(i => !string.IsNullOrEmpty(i));
 
-                if (closestItemsMatchedByName[0].match >= _acceptableConfidence) {
+                var closestItemsMatchedByName = allAllowedItemNames
+                    .Select(
+                        i => new
+                        {
+                            Match = StringSimilarity.Match(item.ToLower(), i.ToLower()),
+                            ItemName = i
+                        }
+                    ).ToList();
+                    
+                    
+                    closestItemsMatchedByName.Sort((a1, a2) => (int)a2.Match - (int)a1.Match); // We need to find a similar system to string-similarity-js
+
+                if (closestItemsMatchedByName[0].Match >= _acceptableConfidence) {
                     item = closestItemsMatchedByName[0].ItemName;
                 } else {
                     var i = 1;
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
                     var itemList = slicedItems
-                        .map((match) => $"{i++}. {match.ItemName} (conf: ${(match.match * 100).toFixed(2)})")
-                        .Join("\n");
+                        .Select(match => $"{i++}. {match.ItemName} (conf: ${Math.Round(match.Match * 100), 2})");
                     _savedCommand.Add(
                         sessionId,
                         new SavedCommand(
                             quantity,
-                            slicedItems.map((item) => item.ItemName),
+                            slicedItems.Select(item => item.ItemName).ToList(),
                             locale));
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        "Could not find exact match. Closest matches are:\n\n${itemList}\n\nUse 'spt give [number]' to select one.");
+                        $"Could not find exact match. Closest matches are:\n\n${itemList}\n\nUse 'spt give [number]' to select one.");
 
                     return request.DialogId;
                 }
@@ -165,8 +171,8 @@ public class GiveSptCommand(
         var tplId = isItemName
             ? _itemHelper
                   .GetItems()
-                  .Where((i) => IsItemAllowed(i))
-                  .FirstOrDefault((i) => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item).Id
+                  .Where(i => IsItemAllowed(i))
+                  .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item).Id
             : item;
 
         var checkedItem = _itemHelper.GetItem(tplId);
@@ -227,8 +233,6 @@ public class GiveSptCommand(
 
         _mailSendService.SendSystemMessageToPlayer(sessionId, "SPT GIVE", itemsToSend);
         return request.DialogId;
-
-        */
     }
 
     protected Dictionary<string, string> GetGlobalsLocale(string desiredLocale)
