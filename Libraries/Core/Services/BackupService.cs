@@ -58,12 +58,11 @@ public class BackupService(
         {
             _fileUtil.CreateDirectory(targetDir);
 
-            // Track write promises.
-            var profileIds = currentProfilePaths.Select(x => x.Last());
-            foreach (var profileId in profileIds)
+            foreach (var profilePath in currentProfilePaths)
             {
-                var fullPath = $"{_profileDir}";
-                var destinationPath = "";
+                var profileFileName = profilePath.Split("\\")[1];
+                var fullPath = $"{_profileDir}/{profileFileName}";
+                var destinationPath = $"{targetDir}\\{profileFileName}";
                 _fileUtil.CopyFile(fullPath, destinationPath);
 
             }
@@ -122,7 +121,7 @@ public class BackupService(
     protected string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
-        return Path.GetFullPath($"{ _backupConfig.Directory}/${backupDate}");
+        return Path.GetFullPath($"{ _backupConfig.Directory}/{backupDate}");
     }
 
     /**
@@ -168,10 +167,10 @@ public class BackupService(
      */
     private List<string> GetBackupPaths(string dir)
     {
-        // TODO: Fully implement
-        var backups = _fileUtil.GetFiles(dir).Where(x => x.EndsWith(".json")).ToList();
-        //return backups.Sort(CompareBackupDates.Bind(this));
-        throw new NotImplementedException();
+        var backups = _fileUtil.GetDirectories(dir).ToList();
+        backups.Sort(CompareBackupDates);
+
+        return backups;
     }
 
     /**
@@ -181,17 +180,17 @@ public class BackupService(
      * @param b - The name of the second backup folder.
      * @returns The difference in time between the two dates in milliseconds, or `null` if either date is invalid.
      */
-    private long? CompareBackupDates(string a, string b)
+    private int CompareBackupDates(string a, string b)
     {
         var dateA = ExtractDateFromFolderName(a);
         var dateB = ExtractDateFromFolderName(b);
 
         if (!dateA.HasValue || !dateB.HasValue)
         {
-            return null; // Skip comparison if either date is invalid.
+            return 0; // Skip comparison if either date is invalid.
         }
 
-        return dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc();
+        return (int)(dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
     }
 
     /**
@@ -203,19 +202,19 @@ public class BackupService(
     private DateTime? ExtractDateFromFolderName(string folderName)
     {
         // backup
-        var parts = folderName.Split('-', '_');
-        if (parts.Length != 6)
+        var parts = folderName.Split('\\','-', '_');
+        if (parts.Length != 7)
         {
             _logger.Warning($"Invalid backup folder name format: {folderName}");
             return null;
         }
 
-        var year = int.Parse(parts[0]);
-        var month = int.Parse(parts[1]);
-        var day = int.Parse(parts[2]);
-        var hour = int.Parse(parts[3]);
-        var minute = int.Parse(parts[4]);
-        var second = int.Parse(parts[5]);
+        var year = int.Parse(parts[1]);
+        var month = int.Parse(parts[2]);
+        var day = int.Parse(parts[3]);
+        var hour = int.Parse(parts[4]);
+        var minute = int.Parse(parts[5]);
+        var second = int.Parse(parts[6]);
 
         return new DateTime(year, month, day, hour, minute, second);
     }
@@ -247,7 +246,7 @@ public class BackupService(
 
         var minutes = _backupConfig.BackupInterval.IntervalMinutes * 60 * 1000; // Minutes to milliseconds
         //SetInterval(() => {
-        //    Init().catch((error) => this.logger.error(`Profile backup failed: ${ error.message}`));
+        //    Init().catch((error) => this.logger.error(`Profile backup failed: { error.message}`));
         //}, minutes);
 
         throw new NotImplementedException();
