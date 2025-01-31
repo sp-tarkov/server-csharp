@@ -29,7 +29,7 @@ public class GiftService(
      */
     public bool GiftExists(string giftId)
     {
-        return _giftConfig.Gifts[giftId] is not null;
+        return _giftConfig.Gifts.ContainsKey(giftId);
     }
 
     public Gift GetGiftById(string giftId)
