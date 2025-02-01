@@ -184,7 +184,7 @@ public class RagfairController
         {
             var start = searchRequest.Page * searchRequest.Limit;
             var end = (int)Math.Min((double)((searchRequest.Page + 1) * searchRequest.Limit), result.Offers.Count);
-            result.Offers = result.Offers.Slice(start.Value, end);
+            result.Offers = result.Offers.Slice(start.Value, end - start.Value);
         }
 
         return result;
