@@ -48,6 +48,9 @@ public record SearchRequestData : IRequestData
     [JsonPropertyName("offerOwnerType")]
     public OfferOwnerType? OfferOwnerType { get; set; }
 
+    /// <summary>
+    /// 'Only Operational'
+    /// </summary>
     [JsonPropertyName("onlyFunctional")]
     public bool? OnlyFunctional { get; set; }
 
