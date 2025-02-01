@@ -238,7 +238,7 @@ public class RepeatableQuestController(
         }
     }
 
-    private RepeatableQuest AttemptToGenerateRepeatableQuest(string sessionId, PmcData pmcData,
+    private RepeatableQuest? AttemptToGenerateRepeatableQuest(string sessionId, PmcData pmcData,
         QuestTypePool questTypePool, RepeatableQuestConfig repeatableConfig)
     {
         const int maxAttempts = 10;

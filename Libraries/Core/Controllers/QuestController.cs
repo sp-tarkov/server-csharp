@@ -169,11 +169,8 @@ public class QuestController(
         if (repeatableQuestProfile.Side == "Scav" && _questTypes.Contains(repeatableQuestProfile.Type.ToString()))
         {
             var fullProfile = _profileHelper.GetFullProfile(sessionID);
-            if (fullProfile.CharacterData.ScavData.Quests is null)
-            {
-                fullProfile.CharacterData.ScavData.Quests = [];
-            }
 
+            fullProfile.CharacterData.ScavData.Quests ??= [];
             fullProfile.CharacterData.ScavData.Quests.Add(newRepeatableQuest);
         }
 

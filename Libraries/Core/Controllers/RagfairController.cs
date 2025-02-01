@@ -199,7 +199,7 @@ public class RagfairController
         var firstItem = offer.Items[0];
         var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
 
-        var assortPurchased = traderAssorts.FirstOrDefault(x => x.Id == offer.Items.First().Id);
+        var assortPurchased = traderAssorts?.FirstOrDefault(x => x.Id == offer.Items.First().Id);
         if (assortPurchased is null)
         {
             _logger.Warning(
@@ -939,7 +939,7 @@ public class RagfairController
         // Count how many items are being sold and multiply the requested amount accordingly
         foreach (var itemId in itemIdsFromFleaOfferRequest)
         {
-            var item = pmcData.Inventory.Items.FirstOrDefault((i) => i.Id == itemId);
+            var item = pmcData.Inventory?.Items?.FirstOrDefault((i) => i.Id == itemId);
             if (item is null)
             {
                 errorMessage = _localisationService.GetText("ragfair-unable_to_find_item_in_inventory", new { id = itemId });

@@ -229,7 +229,7 @@ public class HideoutController(
         HideoutArea dbHideoutArea, Stage hideoutStage)
     {
         // Add key/value to `hideoutAreaStashes` dictionary - used to link hideout area to inventory stash by its id
-        if (pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(dbHideoutArea.Type.ToString()) is null)
+        if (!pmcData.Inventory.HideoutAreaStashes.ContainsKey(dbHideoutArea.Type.ToString()))
         {
             pmcData.Inventory.HideoutAreaStashes[dbHideoutArea.Type.ToString()] = dbHideoutArea.Id;
         }
@@ -432,7 +432,7 @@ public class HideoutController(
         }
 
         // Assume only one item in slot
-        var itemToReturn = hideoutArea.Slots.FirstOrDefault(slot => slot.LocationIndex == slotIndexToRemove)?.Items.FirstOrDefault();
+        var itemToReturn = hideoutArea.Slots?.FirstOrDefault(slot => slot.LocationIndex == slotIndexToRemove)?.Items.FirstOrDefault();
         if (itemToReturn is null)
         {
             _logger.Warning($"Unable to remove resource from area: {removeResourceRequest.AreaType} slot as no item found, RESTART CLIENT IMMEDIATELY");
@@ -440,7 +440,7 @@ public class HideoutController(
             return output;
         }
 
-        AddItemDirectRequest request = new AddItemDirectRequest
+        var request = new AddItemDirectRequest
         {
             ItemWithModsToAdd = [itemToReturn.ConvertToItem()],
             FoundInRaid = itemToReturn.Upd?.SpawnedInSession,
@@ -451,7 +451,7 @@ public class HideoutController(
         _inventoryHelper.AddItemToStash(sessionID, request, pmcData, output);
         if (output.Warnings?.Count > 0)
         {
-            // Adding to stash failed, drop out - dont remove item from hideout area slot
+            // Adding to stash failed, drop out - don't remove item from hideout area slot
             return output;
         }
 
@@ -555,7 +555,7 @@ public class HideoutController(
             }
         }
 
-        var recipe = _databaseService.GetHideout().Production.ScavRecipes.FirstOrDefault(r => r.Id == body.RecipeId);
+        var recipe = _databaseService.GetHideout().Production?.ScavRecipes?.FirstOrDefault(r => r.Id == body.RecipeId);
         if (recipe is null)
         {
             _logger.Error(
@@ -1015,9 +1015,9 @@ public class HideoutController(
         var hasSeverePain = pmcData.Health.BodyParts["Chest"].Effects?.ContainsKey("SevereMusclePain");
 
         // Has no muscle pain at all, add mild
-        if (hasMildPain is null && hasSeverePain is null)
+        if (!hasMildPain.GetValueOrDefault(false) && !hasSeverePain.GetValueOrDefault(false))
         {
-            // nullguard
+            // Nullguard
             pmcData.Health.BodyParts["Chest"].Effects ??= new Dictionary<string, BodyPartEffectProperties>();
             pmcData.Health.BodyParts["Chest"].Effects["MildMusclePain"] = new BodyPartEffectProperties
             {
@@ -1027,7 +1027,7 @@ public class HideoutController(
             return;
         }
 
-        if (hasMildPain is not null)
+        if (hasMildPain.GetValueOrDefault(false))
         {
             // Already has mild pain, remove mild and add severe
             pmcData.Health.BodyParts["Chest"].Effects.Remove("MildMusclePain");
@@ -1041,7 +1041,7 @@ public class HideoutController(
 
     public void RecordShootingRangePoints(string sessionId, PmcData pmcData, RecordShootingRangePoints request)
     {
-        var shootingRangeKey = "ShootingRangePoints";
+        const string shootingRangeKey = "ShootingRangePoints";
         var overallCounterItems = pmcData.Stats.Eft.OverallCounters.Items;
 
         // Find counter by key
@@ -1218,7 +1218,7 @@ public class HideoutController(
         var slots = _itemHelper.GetItem(equipmentPresetStage.Container).Value.Properties.Slots;
         foreach (var mannequinSlot in slots)
         {
-            // Chek if we've already added this manniquin
+            // Check if we've already added this mannequin
             var existingMannequin = pmcData.Inventory.Items.FirstOrDefault(
                 (item) => item.ParentId == equipmentPresetHideoutArea.Id && item.SlotId == mannequinSlot.Name
             );

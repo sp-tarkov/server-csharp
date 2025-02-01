@@ -1576,10 +1576,7 @@ public class BotEquipmentModGenerator(
             );
         }
 
-        if (!modPool.ContainsKey(modTemplate.Id))
-        {
-            modPool[modTemplate.Id] = new();
-        }
+        modPool.TryAdd(modTemplate.Id, new Dictionary<string, HashSet<string>>());
 
         modPool[modTemplate.Id][desiredSlotObject.Name] = supportedSubMods.ToHashSet();
     }
@@ -1646,8 +1643,7 @@ public class BotEquipmentModGenerator(
     public void FillCamora(List<Item> items, Dictionary<string, Dictionary<string, HashSet<string>>> modPool, string cylinderMagParentId,
         TemplateItem cylinderMagTemplate)
     {
-        var itemModPool = modPool[cylinderMagTemplate.Id];
-        if (itemModPool is null)
+        if (!modPool.TryGetValue(cylinderMagTemplate.Id, out var itemModPool))
         {
             _logger.Warning(
                 _localisationService.GetText(
@@ -1672,8 +1668,8 @@ public class BotEquipmentModGenerator(
         }
 
         ExhaustableArray<string> exhaustableModPool = null;
-        var modSlot = "cartridges";
-        var camoraFirstSlot = "camora_000";
+        string modSlot = "cartridges";
+        const string camoraFirstSlot = "camora_000";
         if (itemModPool.TryGetValue(modSlot, out var value))
         {
             exhaustableModPool = CreateExhaustableArray(value.ToList());
@@ -1690,7 +1686,7 @@ public class BotEquipmentModGenerator(
             return;
         }
 
-        string modTpl = null;
+        string? modTpl = null;
         var found = false;
         while (exhaustableModPool.HasValues())
         {
@@ -1713,7 +1709,13 @@ public class BotEquipmentModGenerator(
         {
             var modSlotId = slot.Name;
             var modId = _hashUtil.Generate();
-            items.Add(new() { Id = modId, Template = modTpl, ParentId = cylinderMagParentId, SlotId = modSlotId });
+            items.Add(new()
+            {
+                Id = modId,
+                Template = modTpl,
+                ParentId = cylinderMagParentId,
+                SlotId = modSlotId
+            });
         }
     }
 
@@ -1744,8 +1746,7 @@ public class BotEquipmentModGenerator(
         var weaponDetails = _itemHelper.GetItem(weapon.Template);
 
         // Return original scopes array if whitelist not found
-        var whitelistedSightTypes = botWeaponSightWhitelist[weaponDetails.Value.Parent];
-        if (whitelistedSightTypes is null)
+        if (!botWeaponSightWhitelist.TryGetValue(weaponDetails.Value.Parent, out var whitelistedSightTypes))
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {

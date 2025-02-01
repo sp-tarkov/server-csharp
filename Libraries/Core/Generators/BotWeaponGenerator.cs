@@ -394,9 +394,9 @@ public class BotWeaponGenerator(
 
             return;
         }
-        var isInternalMag = magTemplate.Properties.ReloadMagType == ReloadMode.InternalMagazine;
-        var ammoTemplate = _itemHelper.GetItem(generatedWeaponResult.ChosenAmmoTemplate).Value;
-        if (ammoTemplate is null)
+        //var isInternalMag = magTemplate.Properties.ReloadMagType == ReloadMode.InternalMagazine;
+        var ammoTemplate = _itemHelper.GetItem(generatedWeaponResult.ChosenAmmoTemplate);
+        if (!ammoTemplate.Key)
         {
             _logger.Error(
                 _localisationService.GetText("bot-unable_to_find_ammo_item", generatedWeaponResult.ChosenAmmoTemplate)
@@ -415,7 +415,7 @@ public class BotWeaponGenerator(
             magWeights,
             magTemplate,
             weaponTemplate,
-            ammoTemplate,
+            ammoTemplate.Value,
             inventory
         );
 
@@ -426,7 +426,7 @@ public class BotWeaponGenerator(
         AddAmmoToSecureContainer(
             _botConfig.SecureContainerAmmoStackCount,
             generatedWeaponResult.ChosenAmmoTemplate,
-            ammoTemplate.Properties.StackMaxSize ?? 0,
+            ammoTemplate.Value.Properties.StackMaxSize ?? 0,
             inventory
         );
     }
@@ -605,7 +605,7 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get cartridges for</param>
     /// <returns>List of cartridge tpls</returns>
-    protected List<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
+    protected List<string>? GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
         var cartridges = weaponTemplate.Properties?.Chambers.FirstOrDefault()?.Props?.Filters?[0].Filter;
         if (cartridges is not null)
