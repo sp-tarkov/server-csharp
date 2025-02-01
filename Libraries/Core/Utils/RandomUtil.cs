@@ -73,7 +73,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>The calculated percentage of the given number, rounded to the specified number of decimal places.</returns>
     public double GetPercentOfValue(double percent, double number, int toFixed = 2)
     {
-        var num = percent * number / 100;
+        var num = percent * (number / 100);
 
         return Math.Round(num, toFixed);
     }

@@ -150,21 +150,25 @@ public class RagfairServerHelper(
         // Item Types to return one of
         if (isWeaponPreset ||
             itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
-        ) {
+        )
+        {
             return 1;
         }
 
-        // Get max stack count
-        var maxStackCount = itemDetails.Value?.Properties?.StackMaxSize;
+        // Get max possible stack count
+        var maxStackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;
 
         // non-stackable - use different values to calculate stack size
-        if (maxStackCount is null or 1) {
-            return randomUtil.GetInt((int) config.NonStackableCount.Min, (int) config.NonStackableCount.Max);
+        if (maxStackSize == 1)
+        {
+            return (int)randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
         }
 
-        var stackPercent = Math.Round(randomUtil.GetDouble((double) config.StackablePercent.Min, (double) config.StackablePercent.Max));
+        // Get a % to get of stack size
+        var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min.Value, config.StackablePercent.Max.Value);
 
-        return (int) ((maxStackCount / 100) * stackPercent);
+        // Min value to return should be no less than 1
+        return Math.Max((int)randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);
     }
 
     /**
