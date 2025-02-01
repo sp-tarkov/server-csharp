@@ -645,7 +645,7 @@ public class RagfairController
 
         // Find items to be listed on flea (+ children) from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (result.Items is null || result.ErrorMessage is not null)
+        if (result.Items is null || result.ErrorMessage?.Length > 0)
         {
             _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
