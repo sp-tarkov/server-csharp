@@ -923,7 +923,6 @@ public class CircleOfCultistService(
                 CircleOfCultistSlotId
             );
             // Add item + mods to output and profile inventory
-            output.ProfileChanges[sessionId].Items.NewItems.AddRange(itemToAdd);
             pmcData.Inventory.Items.AddRange(itemToAdd);
         }
     }
