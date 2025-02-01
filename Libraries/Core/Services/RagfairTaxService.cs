@@ -6,6 +6,7 @@ using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -117,7 +118,11 @@ public class RagfairTaxService(
         }
 
         var taxValue = Math.Round(discountedTax.Value * itemComissionMult);
-        _logger.Debug("Tax Calculated to be: {taxValue}");
+        
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Tax Calculated to be: {taxValue}");
+        }
 
         return taxValue;
     }
