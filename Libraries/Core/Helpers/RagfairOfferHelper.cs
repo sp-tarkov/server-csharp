@@ -304,6 +304,7 @@ public class RagfairOfferHelper(
         {
             // prepare temp list for offers
             offersToSort.Clear();
+            offersToSort.AddRange(possibleOffers);
 
             // Remove offers with locked = true (quest locked) when > 1 possible offers
             // single trader item = shows greyed out
@@ -319,7 +320,7 @@ public class RagfairOfferHelper(
                     .ToList();
 
                 // Exclude trader offers over their buy restriction limit
-                offersToSort = GetOffersInsideBuyRestrictionLimits(possibleOffers);
+                offersToSort = GetOffersInsideBuyRestrictionLimits(offersToSort);
             }
 
             // Sort offers by price and pick the best
