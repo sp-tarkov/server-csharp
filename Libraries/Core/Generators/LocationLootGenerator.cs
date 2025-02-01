@@ -693,7 +693,7 @@ public class LocationLootGenerator(
 
         foreach (var spawnpoint in allDynamicSpawnpoints)
         {
-            // Point is blacklsited, skip
+            // Point is blacklisted, skip
             if (blacklistedSpawnpoints?.Contains(spawnpoint.Template.Id) ?? false)
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
