@@ -148,7 +148,7 @@ public class RagfairController
         result.Offers = GetOffersForSearchType(searchRequest, itemsToAdd, traderAssorts, profile.CharacterData.PmcData);
 
         // Client requested a category refresh
-        if (searchRequest.UpdateOfferCount is not null)
+        if (searchRequest.UpdateOfferCount.GetValueOrDefault(false))
         {
             result.Categories = GetSpecificCategories(profile.CharacterData.PmcData, searchRequest, result.Offers);
         }
