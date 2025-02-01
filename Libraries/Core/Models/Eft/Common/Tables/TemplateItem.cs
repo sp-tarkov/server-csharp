@@ -216,8 +216,8 @@ public record Props
     [JsonPropertyName("DiscardingBlock")]
     public bool? DiscardingBlock { get; set; }
 
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     [JsonPropertyName("DropSoundType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ItemDropSoundType? DropSoundType { get; set; }
 
     [JsonPropertyName("RagFairCommissionModifier")]

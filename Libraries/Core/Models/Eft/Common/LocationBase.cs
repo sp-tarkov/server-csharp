@@ -747,9 +747,11 @@ public record Exit
     public double? ExfiltrationTimePVE { get; set; }
 
     [JsonPropertyName("ExfiltrationType")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ExfiltrationType? ExfiltrationType { get; set; }
 
     [JsonPropertyName("RequiredSlot")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public EquipmentSlots? RequiredSlot { get; set; }
 
     [JsonPropertyName("Id")]
@@ -778,6 +780,7 @@ public record Exit
     public string? _NameLower { get; set; }
 
     [JsonPropertyName("PassageRequirement")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public RequirementState? PassageRequirement { get; set; }
 
     [JsonPropertyName("PlayersCount")]
