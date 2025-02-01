@@ -534,15 +534,17 @@ public class CircleOfCultistService(
     protected int GetDirectRewardBaseTypeStackSize(string rewardTpl)
     {
         var itemDetails = _itemHelper.GetItem(rewardTpl);
-        if (!itemDetails.Key) {
+        if (!itemDetails.Key)
+        {
             _logger.Warning($"{rewardTpl} is not an item, setting stack size to 1");
 
             return 1;
         }
 
         // Look for parent in dict
-        var settings = _hideoutConfig.CultistCircle.DirectRewardStackSize[itemDetails.Value.Parent];
-        if (settings is null) {
+        var settings = _hideoutConfig.CultistCircle.DirectRewardStackSize.GetValueOrDefault(itemDetails.Value.Parent);
+        if (settings is null)
+        {
             return 1;
         }
 
@@ -557,7 +559,8 @@ public class CircleOfCultistService(
     protected void FlagDirectRewardAsAcceptedInProfile(string sessionId, DirectRewardSettings directReward)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
-        AcceptedCultistReward dataToStoreInProfile = new AcceptedCultistReward {
+        AcceptedCultistReward dataToStoreInProfile = new AcceptedCultistReward
+        {
             Timestamp = _timeUtil.GetTimeStamp(),
             SacrificeItems = directReward.RequiredItems,
             RewardItems = directReward.Reward,
@@ -575,12 +578,14 @@ public class CircleOfCultistService(
     /// <returns>Size of stack</returns>
     protected int GetRewardStackSize(string itemTpl, int rewardPoolRemaining)
     {
-        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.AMMO)) {
+        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.AMMO))
+        {
             var ammoTemplate = _itemHelper.GetItem(itemTpl).Value;
             return _itemHelper.GetRandomisedAmmoStackSize(ammoTemplate);
         }
 
-        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.MONEY)) {
+        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.MONEY))
+        {
             // Get currency-specific values from config
             var settings = _hideoutConfig.CultistCircle.CurrencyRewards[itemTpl];
 
@@ -634,31 +639,39 @@ public class CircleOfCultistService(
         itemRewardBlacklist.UnionWith(itemsMatchingTypeBlacklist);
 
         // Hideout and task rewards are ONLY if the bonus is active
-        switch (craftingInfo.RewardType) {
-            case CircleRewardType.RANDOM: {
+        switch (craftingInfo.RewardType)
+        {
+            case CircleRewardType.RANDOM:
+            {
                 // Does reward pass the high value threshold
                 var isHighValueReward = craftingInfo.RewardAmountRoubles >= cultistCircleConfig.HighValueThresholdRub;
                 GenerateRandomisedItemsAndAddToRewardPool(rewardPool, itemRewardBlacklist, isHighValueReward);
 
                 break;
             }
-            case CircleRewardType.HIDEOUT_TASK: {
+            case CircleRewardType.HIDEOUT_TASK:
+            {
                 // Hideout/Task loot
                 AddHideoutUpgradeRequirementsToRewardPool(hideoutDbData, pmcData, itemRewardBlacklist, rewardPool);
                 AddTaskItemRequirementsToRewardPool(pmcData, itemRewardBlacklist, rewardPool);
 
                 // If we have no tasks or hideout stuff left or need more loot to fill it out, default to high value
-                if (rewardPool.Count < cultistCircleConfig.MaxRewardItemCount + 2) {
+                if (rewardPool.Count < cultistCircleConfig.MaxRewardItemCount + 2)
+                {
                     GenerateRandomisedItemsAndAddToRewardPool(rewardPool, itemRewardBlacklist, true);
                 }
+
                 break;
             }
         }
 
         // Add custom rewards from config
-        if (cultistCircleConfig.AdditionalRewardItemPool.Count > 0) {
-            foreach (var additionalReward in cultistCircleConfig.AdditionalRewardItemPool) {
-                if (itemRewardBlacklist.Contains(additionalReward)) {
+        if (cultistCircleConfig.AdditionalRewardItemPool.Count > 0)
+        {
+            foreach (var additionalReward in cultistCircleConfig.AdditionalRewardItemPool)
+            {
+                if (itemRewardBlacklist.Contains(additionalReward))
+                {
                     continue;
                 }
 
@@ -682,14 +695,18 @@ public class CircleOfCultistService(
         HashSet<string> rewardPool)
     {
         var activeTasks = pmcData.Quests.Where((quest) => quest.Status == QuestStatusEnum.Started);
-        foreach (var task in activeTasks) {
+        foreach (var task in activeTasks)
+        {
             var questData = _questHelper.GetQuestFromDb(task.QId, pmcData);
             var handoverConditions = questData.Conditions.AvailableForFinish.Where(
                 (condition) => condition.ConditionType == "HandoverItem"
             );
-            foreach (var condition in handoverConditions) {
-                foreach (var neededItem in condition.Target.List) {
-                    if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem)) {
+            foreach (var condition in handoverConditions)
+            {
+                foreach (var neededItem in condition.Target.List)
+                {
+                    if (itemRewardBlacklist.Contains(neededItem) || !_itemHelper.IsValidItem(neededItem))
+                    {
                         continue;
                     }
 
@@ -697,6 +714,7 @@ public class CircleOfCultistService(
                     {
                         _logger.Debug($"Added Task Loot: {_itemHelper.GetItemName(neededItem)}");
                     }
+
                     rewardPool.Add(neededItem);
                 }
             }
@@ -717,21 +735,25 @@ public class CircleOfCultistService(
         HashSet<string> rewardPool)
     {
         var dbAreas = hideoutDbData.Areas;
-        foreach (var profileArea in GetPlayerAccessibleHideoutAreas(pmcData.Hideout.Areas)) {
+        foreach (var profileArea in GetPlayerAccessibleHideoutAreas(pmcData.Hideout.Areas))
+        {
             var currentStageLevel = profileArea.Level;
             var areaType = profileArea.Type;
 
             // Get next stage of area
             var dbArea = dbAreas.FirstOrDefault((area) => area.Type == areaType);
             var nextStageDbData = dbArea?.Stages[(currentStageLevel + 1).ToString()];
-            if (nextStageDbData is not null) {
+            if (nextStageDbData is not null)
+            {
                 // Next stage exists, gather up requirements and add to pool
                 var itemRequirements = GetItemRequirements(nextStageDbData.Requirements);
-                foreach (var rewardToAdd in itemRequirements) {
+                foreach (var rewardToAdd in itemRequirements)
+                {
                     if (
                         itemRewardBlacklist.Contains(rewardToAdd.TemplateId) ||
                         !_itemHelper.IsValidItem(rewardToAdd.TemplateId)
-                    ) {
+                    )
+                    {
                         // Dont reward items sacrificed
                         continue;
                     }
@@ -740,6 +762,7 @@ public class CircleOfCultistService(
                     {
                         _logger.Debug($"Added Hideout Loot: {_itemHelper.GetItemName(rewardToAdd.TemplateId)}");
                     }
+
                     rewardPool.Add(rewardToAdd.TemplateId);
                 }
             }
@@ -753,14 +776,19 @@ public class CircleOfCultistService(
     /// <returns>Active area array</returns>
     protected List<BotHideoutArea> GetPlayerAccessibleHideoutAreas(List<BotHideoutArea> areas)
     {
-        return areas.Where((area) => {
-            if (area.Type == HideoutAreas.CHRISTMAS_TREE && !_seasonalEventService.ChristmasEventEnabled()) {
-                // Christmas tree area and not Christmas, skip
-                return false;
-            }
+        return areas.Where(
+                (area) =>
+                {
+                    if (area.Type == HideoutAreas.CHRISTMAS_TREE && !_seasonalEventService.ChristmasEventEnabled())
+                    {
+                        // Christmas tree area and not Christmas, skip
+                        return false;
+                    }
 
-            return true;
-        }).ToList();
+                    return true;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -782,17 +810,21 @@ public class CircleOfCultistService(
         while (
             currentItemCount < _hideoutConfig.CultistCircle.MaxRewardItemCount + 2 &&
             attempts < allItems.Count
-        ) {
+        )
+        {
             attempts++;
             var randomItem = _randomUtil.GetArrayValue(allItems);
-            if (itemRewardBlacklist.Contains(randomItem.Id) || !_itemHelper.IsValidItem(randomItem.Id)) {
+            if (itemRewardBlacklist.Contains(randomItem.Id) || !_itemHelper.IsValidItem(randomItem.Id))
+            {
                 continue;
             }
 
             // Valuable check
-            if (itemsShouldBeHighValue) {
+            if (itemsShouldBeHighValue)
+            {
                 var itemValue = _itemHelper.GetItemMaxPrice(randomItem.Id);
-                if (itemValue < _hideoutConfig.CultistCircle.HighValueThresholdRub) {
+                if (itemValue < _hideoutConfig.CultistCircle.HighValueThresholdRub)
+                {
                     continue;
                 }
             }
@@ -801,6 +833,7 @@ public class CircleOfCultistService(
             {
                 _logger.Debug($"Added: {_itemHelper.GetItemName(randomItem.Id)}");
             }
+
             rewardPool.Add(randomItem.Id);
             currentItemCount++;
         }
@@ -817,13 +850,13 @@ public class CircleOfCultistService(
     {
         return requirements.Where((requirement) => requirement.Type == "Item").ToList();
     }
-    
+
     /// <summary>
     /// Iterate over passed in hideout requirements and return the Item
     /// </summary>
     /// <param name="requirements">Requirements to iterate over</param>
     /// <returns>Array of item requirements</returns>
-    protected  List<Requirement> GetItemRequirements(List<Requirement> requirements)
+    protected List<Requirement> GetItemRequirements(List<Requirement> requirements)
     {
         return requirements.Where((requirement) => requirement.Type == "Item").ToList();
     }
@@ -836,10 +869,11 @@ public class CircleOfCultistService(
     protected Dictionary<string, DirectRewardSettings> GenerateSacrificedItemsCache(List<DirectRewardSettings> directRewards)
     {
         var result = new Dictionary<string, DirectRewardSettings>();
-        foreach (var rewardSettings in directRewards) {
+        foreach (var rewardSettings in directRewards)
+        {
             rewardSettings.RequiredItems.Sort();
             var concat = string.Concat(rewardSettings.RequiredItems, ",");
-            
+
             var key = _hashUtil.GenerateMd5ForData(concat);
             result[key] = rewardSettings;
         }
@@ -866,19 +900,22 @@ public class CircleOfCultistService(
     )
     {
         var canAddToContainer = false;
-        while (!canAddToContainer && rewards.Count > 0) {
+        while (!canAddToContainer && rewards.Count > 0)
+        {
             canAddToContainer = _inventoryHelper.CanPlaceItemsInContainer(
                 _cloner.Clone(containerGrid), // MUST clone grid before passing in as function modifies grid
                 rewards
             );
 
             // Doesn't fit, remove one item
-            if (!canAddToContainer) {
+            if (!canAddToContainer)
+            {
                 rewards.PopFirst();
             }
         }
 
-        foreach (var itemToAdd in rewards) {
+        foreach (var itemToAdd in rewards)
+        {
             _inventoryHelper.PlaceItemInContainer(
                 containerGrid,
                 itemToAdd,
