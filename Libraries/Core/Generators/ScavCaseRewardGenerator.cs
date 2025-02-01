@@ -72,7 +72,7 @@ public class ScavCaseRewardGenerator(
         var commonRewards = RandomiseContainerItemRewards(randomlyPickedCommonRewards, "common");
         var rareRewards = RandomiseContainerItemRewards(randomlyPickedRareRewards, "rare");
         var superRareRewards = RandomiseContainerItemRewards(randomlyPickedSuperRareRewards, "superrare");
-        
+
         var result = new List<List<Item>>();
         result = result.Concat(commonRewards).ToList();
         result = result.Concat(rareRewards).ToList();
@@ -92,97 +92,125 @@ public class ScavCaseRewardGenerator(
 
         // Get an array of seasonal items that should not be shown right now as seasonal event is not active
         var inactiveSeasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
-        if (!_dbItemsCache.Any()) {
-            _dbItemsCache = _databaseService.GetItems().Values.Where(item => {
-                // Base "Item" item has no parent, ignore it
-                if (item.Parent == "") {
-                    return false;
-                }
+        if (!_dbItemsCache.Any())
+        {
+            _dbItemsCache = _databaseService.GetItems()
+                .Values.Where(
+                    item =>
+                    {
+                        // Base "Item" item has no parent, ignore it
+                        if (item.Parent == "")
+                        {
+                            return false;
+                        }
 
-                if (item.Type == "Node") {
-                    return false;
-                }
+                        if (item.Type == "Node")
+                        {
+                            return false;
+                        }
 
-                if (item.Properties.QuestItem ?? false) {
-                    return false;
-                }
+                        if (item.Properties.QuestItem ?? false)
+                        {
+                            return false;
+                        }
 
-                // Skip item if item id is on blacklist
-                if (
-                    item.Type != "Item" ||
-                    _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
-                    _itemFilterService.IsItemBlacklisted(item.Id)
-                ) {
-                    return false;
-                }
+                        // Skip item if item id is on blacklist
+                        if (
+                            item.Type != "Item" ||
+                            _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
+                            _itemFilterService.IsItemBlacklisted(item.Id)
+                        )
+                        {
+                            return false;
+                        }
 
-                // Globally reward-blacklisted
-                if (_itemFilterService.IsItemRewardBlacklisted(item.Id)) {
-                    return false;
-                }
+                        // Globally reward-blacklisted
+                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        {
+                            return false;
+                        }
 
-                if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id)) {
-                    return false;
-                }
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        {
+                            return false;
+                        }
 
-                // Skip item if parent id is blacklisted
-                if (_itemHelper.IsOfBaseclasses(item.Id, _scavCaseConfig.RewardItemParentBlacklist)) {
-                    return false;
-                }
+                        // Skip item if parent id is blacklisted
+                        if (_itemHelper.IsOfBaseclasses(item.Id, _scavCaseConfig.RewardItemParentBlacklist))
+                        {
+                            return false;
+                        }
 
-                if (inactiveSeasonalItems.Contains(item.Id)) {
-                    return false;
-                }
+                        if (inactiveSeasonalItems.Contains(item.Id))
+                        {
+                            return false;
+                        }
 
-                return true;
-            }).ToList();
+                        return true;
+                    }
+                )
+                .ToList();
         }
 
-        if (!_dbAmmoItemsCache.Any()) {
-            _dbAmmoItemsCache = _databaseService.GetItems().Values.Where(item => {
-                // Base "Item" item has no parent, ignore it
-                if (item.Parent == "") {
-                    return false;
-                }
+        if (!_dbAmmoItemsCache.Any())
+        {
+            _dbAmmoItemsCache = _databaseService.GetItems()
+                .Values.Where(
+                    item =>
+                    {
+                        // Base "Item" item has no parent, ignore it
+                        if (item.Parent == "")
+                        {
+                            return false;
+                        }
 
-                if (item.Type != "Item") {
-                    return false;
-                }
+                        if (item.Type != "Item")
+                        {
+                            return false;
+                        }
 
-                // Not ammo, skip
-                if (!_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO)) {
-                    return false;
-                }
+                        // Not ammo, skip
+                        if (!_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO))
+                        {
+                            return false;
+                        }
 
-                // Skip item if item id is on blacklist
-                if (
-                    _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
-                    _itemFilterService.IsItemBlacklisted(item.Id)
-                ) {
-                    return false;
-                }
+                        // Skip item if item id is on blacklist
+                        if (
+                            _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
+                            _itemFilterService.IsItemBlacklisted(item.Id)
+                        )
+                        {
+                            return false;
+                        }
 
-                // Globally reward-blacklisted
-                if (_itemFilterService.IsItemRewardBlacklisted(item.Id)) {
-                    return false;
-                }
+                        // Globally reward-blacklisted
+                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        {
+                            return false;
+                        }
 
-                if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id)) {
-                    return false;
-                }
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        {
+                            return false;
+                        }
 
-                // Skip seasonal items
-                if (inactiveSeasonalItems.Contains(item.Id)) {
-                    return false;
-                }
+                        // Skip seasonal items
+                        if (inactiveSeasonalItems.Contains(item.Id))
+                        {
+                            return false;
+                        }
 
-                // Skip ammo that doesn't stack as high as value in config
-                if (item.Properties.StackMaxSize < _scavCaseConfig.AmmoRewards.MinStackSize) {
-                    return false;
-                }
+                        // Skip ammo that doesn't stack as high as value in config
+                        if (item.Properties.StackMaxSize < _scavCaseConfig.AmmoRewards.MinStackSize)
+                        {
+                            return false;
+                        }
 
-                return true;
-            }).ToList();
+                        return true;
+                    }
+                )
+                .ToList();
         }
     }
 
@@ -202,20 +230,28 @@ public class ScavCaseRewardGenerator(
         var rewardWasMoney = false;
         var rewardWasAmmo = false;
         var randomCount = _randomUtil.GetInt((int)itemFilters.MinCount, (int)itemFilters.MaxCount);
-        for (var i = 0; i < randomCount; i++) {
-            if (RewardShouldBeMoney() && !rewardWasMoney) {
+        for (var i = 0; i < randomCount; i++)
+        {
+            if (RewardShouldBeMoney() && !rewardWasMoney)
+            {
                 // Only allow one reward to be money
                 result.Add(GetRandomMoney());
-                if (!_scavCaseConfig.AllowMultipleMoneyRewardsPerRarity) {
+                if (!_scavCaseConfig.AllowMultipleMoneyRewardsPerRarity)
+                {
                     rewardWasMoney = true;
                 }
-            } else if (RewardShouldBeAmmo() && !rewardWasAmmo) {
+            }
+            else if (RewardShouldBeAmmo() && !rewardWasAmmo)
+            {
                 // Only allow one reward to be ammo
                 result.Add(GetRandomAmmo(rarity));
-                if (!_scavCaseConfig.AllowMultipleAmmoRewardsPerRarity) {
+                if (!_scavCaseConfig.AllowMultipleAmmoRewardsPerRarity)
+                {
                     rewardWasAmmo = true;
                 }
-            } else {
+            }
+            else
+            {
                 result.Add(_randomUtil.GetArrayValue(items));
             }
         }
@@ -263,20 +299,25 @@ public class ScavCaseRewardGenerator(
     /// <returns>random ammo item from items.json</returns>
     protected TemplateItem GetRandomAmmo(string rarity)
     {
-        var possibleAmmoPool = _dbAmmoItemsCache.Where(ammo => {
-            // Is ammo handbook price between desired range
-            var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(ammo.Id);
-            if (
-                handbookPrice >= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Max &&
-                handbookPrice <= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Max
-            ) {
-                return true;
+        var possibleAmmoPool = _dbAmmoItemsCache.Where(
+            ammo =>
+            {
+                // Is ammo handbook price between desired range
+                var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(ammo.Id);
+                if (
+                    handbookPrice >= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Min &&
+                    handbookPrice <= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Max
+                )
+                {
+                    return true;
+                }
+
+                return false;
             }
+        );
 
-            return false;
-        });
-
-        if (!possibleAmmoPool.Any()) {
+        if (!possibleAmmoPool.Any())
+        {
             _logger.Warning("Unable to get a list of ammo that matches desired criteria for scav case reward");
         }
 
@@ -294,20 +335,24 @@ public class ScavCaseRewardGenerator(
     {
         /** Each array is an item + children */
         List<List<Item>> result = [];
-        foreach (var rewardItemDb in rewardItems) {
+        foreach (var rewardItemDb in rewardItems)
+        {
             List<Item> resultItem = [new Item { Id = _hashUtil.Generate(), Template = rewardItemDb.Id, Upd = null }];
             var rootItem = resultItem.FirstOrDefault();
 
-            if (_itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.AMMO_BOX)) {
+            if (_itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.AMMO_BOX))
+            {
                 _itemHelper.AddCartridgesToAmmoBox(resultItem, rewardItemDb);
             }
             // Armor or weapon = use default preset from globals.json
             else if (
                 _itemHelper.ArmorItemHasRemovableOrSoftInsertSlots(rewardItemDb.Id) ||
                 _itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.WEAPON)
-            ) {
+            )
+            {
                 var preset = _presetHelper.GetDefaultPreset(rewardItemDb.Id);
-                if (preset is null) {
+                if (preset is null)
+                {
                     _logger.Warning($"No preset for item: {rewardItemDb.Id} {rewardItemDb.Name}, skipping");
 
                     continue;
@@ -318,7 +363,9 @@ public class ScavCaseRewardGenerator(
                 _itemHelper.RemapRootItemId(presetAndMods);
 
                 resultItem = presetAndMods;
-            } else if (_itemHelper.IsOfBaseclasses(rewardItemDb.Id, [BaseClasses.AMMO, BaseClasses.MONEY])) {
+            }
+            else if (_itemHelper.IsOfBaseclasses(rewardItemDb.Id, [BaseClasses.AMMO, BaseClasses.MONEY]))
+            {
                 rootItem.Upd = new Upd { StackObjectsCount = GetRandomAmountRewardForScavCase(rewardItemDb, rarity) };
             }
 
@@ -337,13 +384,19 @@ public class ScavCaseRewardGenerator(
         List<TemplateItem> dbItems,
         RewardCountAndPriceDetails itemFilters)
     {
-        return dbItems.Where(item => {
-            var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(item.Id);
-            if (handbookPrice >= itemFilters.MinPriceRub && handbookPrice <= itemFilters.MaxPriceRub) {
-                return true;
-            }
-            return false;
-        }).ToList();
+        return dbItems.Where(
+                item =>
+                {
+                    var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(item.Id);
+                    if (handbookPrice >= itemFilters.MinPriceRub && handbookPrice <= itemFilters.MaxPriceRub)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -389,12 +442,14 @@ public class ScavCaseRewardGenerator(
     protected int GetRandomAmountRewardForScavCase(TemplateItem itemToCalculate, string rarity)
     {
         var amountToGive = 1;
-        if (itemToCalculate.Parent == BaseClasses.AMMO) {
+        if (itemToCalculate.Parent == BaseClasses.AMMO)
+        {
             amountToGive = _randomUtil.GetInt(
                 _scavCaseConfig.AmmoRewards.MinStackSize,
                 itemToCalculate.Properties.StackMaxSize ?? 0
             );
-        } else if (itemToCalculate.Parent == BaseClasses.MONEY)
+        }
+        else if (itemToCalculate.Parent == BaseClasses.MONEY)
         {
             amountToGive = itemToCalculate.Id switch
             {
@@ -417,6 +472,7 @@ public class ScavCaseRewardGenerator(
                 _ => amountToGive
             };
         }
+
         return amountToGive;
     }
 }
