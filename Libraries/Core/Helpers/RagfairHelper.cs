@@ -61,7 +61,7 @@ public class RagfairHelper(
         }
 
         // Case: category
-        if (request.HandbookId != null) {
+        if (!string.IsNullOrEmpty(request.HandbookId)) {
             var handbook = GetCategoryList(request.HandbookId);
 
             if (result.Count != null && result.Count > 0) {
