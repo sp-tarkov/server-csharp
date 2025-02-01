@@ -735,11 +735,11 @@ public class RagfairController
         ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used so commented out for now // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasn't used so commented out for now // Does not count stack size, only items
 
         // Find items to be listed on flea from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (result.Items is null || result.ErrorMessage is not null)
+        if (result.Items is null || result.ErrorMessage?.Length > 0)
         {
             _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
