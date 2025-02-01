@@ -30,15 +30,15 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
     {
         switch (value.Action)
         {
-            case "CustomizationBuy":
+            case ItemEventActions.CUSTOMIZATION_BUY:
                 return JsonSerializer.Deserialize<BuyClothingRequestData>(jsonText);
-            case "CustomizationSet":
+            case ItemEventActions.CUSTOMIZATION_SET:
                 return JsonSerializer.Deserialize<CustomizationSetRequest>(jsonText);
-            case "Eat":
+            case ItemEventActions.EAT:
                 return JsonSerializer.Deserialize<OffraidEatRequestData>(jsonText);
-            case "Heal":
+            case ItemEventActions.HEAL:
                 return JsonSerializer.Deserialize<OffraidHealRequestData>(jsonText);
-            case "RestoreHealth":
+            case ItemEventActions.RESTORE_HEALTH:
                 return JsonSerializer.Deserialize<HealthTreatmentRequestData>(jsonText);
             case HideoutEventActions.HIDEOUT_UPGRADE:
                 return JsonSerializer.Deserialize<HideoutUpgradeRequestData>(jsonText);
@@ -71,53 +71,53 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
                 return JsonSerializer.Deserialize<HideoutCustomizationApplyRequestData>(jsonText);
             case HideoutEventActions.HIDEOUT_CUSTOMIZATION_SET_MANNEQUIN_POSE:
                 return JsonSerializer.Deserialize<HideoutCustomizationSetMannequinPoseRequest>(jsonText);
-            case "Insure":
+            case ItemEventActions.INSURE:
                 return JsonSerializer.Deserialize<InsureRequestData>(jsonText);
-            case "AddToWishList":
+            case ItemEventActions.ADD_TO_WISHLIST:
                 return JsonSerializer.Deserialize<AddToWishlistRequest>(jsonText);
-            case "RemoveFromWishList":
+            case ItemEventActions.REMOVE_FROM_WISHLIST:
                 return JsonSerializer.Deserialize<RemoveFromWishlistRequest>(jsonText);
-            case "ChangeWishlistItemCategory":
+            case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
                 return JsonSerializer.Deserialize<ChangeWishlistItemCategoryRequest>(jsonText);
-            case "TradingConfirm":
+            case ItemEventActions.TRADING_CONFIRM:
             {
                 var json = JsonSerializer.Deserialize<ProcessBaseTradeRequestData>(jsonText);
 
                 switch (json.Type)
                 {
-                    case "buy_from_trader":
+                    case ItemEventActions.BUY_FROM_TRADER:
                         return JsonSerializer.Deserialize<ProcessBuyTradeRequestData>(jsonText);
-                    case "sell_to_trader":
+                    case ItemEventActions.SELL_TO_TRADER:
                         return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
                     default:
                         throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
                 }
             }
-            case "RagFairBuyOffer":
+            case ItemEventActions.RAGFAIR_BUY_OFFER:
                 return JsonSerializer.Deserialize<ProcessRagfairTradeRequestData>(jsonText);
-            case "SellAllFromSavage":
+            case ItemEventActions.SELL_ALL_FROM_SAVAGE:
                 return JsonSerializer.Deserialize<SellScavItemsToFenceRequestData>(jsonText);
-            case "Repair":
+            case ItemEventActions.REPAIR:
                 return JsonSerializer.Deserialize<RepairActionDataRequest>(jsonText);
-            case "TraderRepair":
+            case ItemEventActions.TRADER_REPAIR:
                 return JsonSerializer.Deserialize<TraderRepairActionDataRequest>(jsonText);
-            case "RagFairAddOffer":
+            case ItemEventActions.RAGFAIR_ADD_OFFER:
                 return JsonSerializer.Deserialize<AddOfferRequestData>(jsonText);
-            case "RagFairRemoveOffer":
+            case ItemEventActions.RAGFAIR_REMOVE_OFFER:
                 return JsonSerializer.Deserialize<RemoveOfferRequestData>(jsonText);
-            case "RagFairRenewOffer":
+            case ItemEventActions.RAGFAIR_RENEW_OFFER:
                 return JsonSerializer.Deserialize<ExtendOfferRequestData>(jsonText);
-            case "QuestAccept":
+            case ItemEventActions.QUEST_ACCEPT:
                 return JsonSerializer.Deserialize<AcceptQuestRequestData>(jsonText);
-            case "QuestComplete":
+            case ItemEventActions.QUEST_COMPLETE:
                 return JsonSerializer.Deserialize<CompleteQuestRequestData>(jsonText);
-            case "QuestHandover":
+            case ItemEventActions.QUEST_HANDOVER:
                 return JsonSerializer.Deserialize<HandoverQuestRequestData>(jsonText);
-            case "RepeatableQuestChange":
+            case ItemEventActions.REPEATABLE_QUEST_CHANGE:
                 return JsonSerializer.Deserialize<RepeatableQuestChangeRequest>(jsonText);
-            case "AddNote":
-            case "EditNote":
-            case "DeleteNote":
+            case ItemEventActions.ADD_NOTE:
+            case ItemEventActions.EDIT_NOTE:
+            case ItemEventActions.DELETE_NOTE:
                 return JsonSerializer.Deserialize<NoteActionData>(jsonText);
             case ItemEventActions.MOVE:
                 return JsonSerializer.Deserialize<InventoryMoveRequestData>(jsonText);
