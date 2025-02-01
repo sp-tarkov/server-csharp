@@ -917,14 +917,11 @@ public class HideoutController(
         string? prodId = null;
         foreach (var production in ongoingProductions)
         {
-            if (production.Value.GetType() == typeof(HideoutProduction))
+            // Production or ScavCase
+            if ((production.Value).RecipeId == request.RecipeId)
             {
-                // Production or ScavCase
-                if ((production.Value).RecipeId == request.RecipeId)
-                {
-                    prodId = production.Key; // Set to objects key
-                    break;
-                }
+                prodId = production.Key; // Set to objects key
+                break;
             }
         }
 
@@ -1271,7 +1268,7 @@ public class HideoutController(
             _logger.Warning("this really shouldnt be possible, but a request has come in with a pose change without poses");
             return _eventOutputHolder.GetOutput(sessionId);
         }
-        
+
         foreach (var poseKvP in request.Poses)
         {
             // Nullguard
@@ -1286,18 +1283,21 @@ public class HideoutController(
     {
         return _databaseService.GetHideout().Qte;
     }
-    
+
     /**
      * Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
      */
-    public void Update() {
-        foreach (var sessionID in _saveServer.GetProfiles()) {
+    public void Update()
+    {
+        foreach (var sessionID in _saveServer.GetProfiles())
+        {
             if (sessionID.Value.CharacterData.PmcData.Hideout is not null &&
                 _profileActivityService.ActiveWithinLastMinutes(
                     sessionID.Key,
                     _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes
                 )
-                ) {
+               )
+            {
                 _hideoutHelper.UpdatePlayerHideout(sessionID.Key);
             }
         }
