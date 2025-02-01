@@ -9,14 +9,14 @@ public static class ListExtensions
         return items;
     }
 
-    public static T PopFirst<T>(this List<T> source)
+    public static T PopFirst<T>(this IList<T> source)
     {
         T r = source.First();
         source.Remove(source.First());
         return r;
     }
 
-    public static T PopLast<T>(this List<T> source)
+    public static T PopLast<T>(this IList<T> source)
     {
         T r = source.Last();
         source.Remove(source.Last());

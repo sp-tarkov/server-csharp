@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
 using SptCommon.Extensions;
@@ -50,7 +50,7 @@ public class BotGenerationCacheService(
                 {
                     try
                     {
-                        return bots.PopFirst();
+                        return bots.PopLast();
                     }
                     catch (Exception _)
                     {
