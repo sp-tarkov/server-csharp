@@ -15,4 +15,11 @@ public static class ListExtensions
         source.Remove(source.First());
         return r;
     }
+
+    public static T PopLast<T>(this List<T> source)
+    {
+        T r = source.Last();
+        source.Remove(source.Last());
+        return r;
+    }
 }

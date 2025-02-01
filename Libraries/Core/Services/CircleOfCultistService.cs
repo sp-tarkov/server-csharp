@@ -40,7 +40,7 @@ public class CircleOfCultistService(
 )
 {
     protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    public const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
+    protected const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
 
     /// <summary>
     /// Start a sacrifice event
@@ -98,7 +98,7 @@ public class CircleOfCultistService(
         // Remove sacrificed items from circle inventory
         foreach (var item in sacrificedItems)
         {
-            if (item.SlotId == CircleOfCultistService.CircleOfCultistSlotId)
+            if (item.SlotId == CircleOfCultistSlotId)
             {
                 _inventoryHelper.RemoveItem(pmcData, item.Id, sessionId, output);
             }
@@ -265,7 +265,7 @@ public class CircleOfCultistService(
     {
         // Get root items that are in the cultist sacrifice window
         var inventoryRootItemsInCultistGrid = pmcData.Inventory.Items.Where(
-            (item) => item.SlotId == CircleOfCultistService.CircleOfCultistSlotId
+            (item) => item.SlotId == CircleOfCultistSlotId
         );
 
         // Get rootitem + its children
@@ -359,7 +359,7 @@ public class CircleOfCultistService(
                     Id = _hashUtil.Generate(),
                     Template = randomItemTplFromPool,
                     ParentId = cultistCircleStashId,
-                    SlotId = CircleOfCultistService.CircleOfCultistSlotId,
+                    SlotId = CircleOfCultistSlotId,
                     Upd = new Upd
                     {
                         StackObjectsCount = stackSize,
@@ -444,7 +444,7 @@ public class CircleOfCultistService(
                     Id = _hashUtil.Generate(),
                     Template = rewardTpl,
                     ParentId = cultistCircleStashId,
-                    SlotId = CircleOfCultistService.CircleOfCultistSlotId,
+                    SlotId = CircleOfCultistSlotId,
                     Upd = new Upd
                     {
                         StackObjectsCount = stackSize,
@@ -910,7 +910,7 @@ public class CircleOfCultistService(
             // Doesn't fit, remove one item
             if (!canAddToContainer)
             {
-                rewards.PopFirst();
+                rewards.PopLast();
             }
         }
 
@@ -920,7 +920,7 @@ public class CircleOfCultistService(
                 containerGrid,
                 itemToAdd,
                 cultistCircleStashId,
-                CircleOfCultistService.CircleOfCultistSlotId
+                CircleOfCultistSlotId
             );
             // Add item + mods to output and profile inventory
             output.ProfileChanges[sessionId].Items.NewItems.AddRange(itemToAdd);
