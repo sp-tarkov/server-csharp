@@ -6,27 +6,76 @@ using SptCommon.Annotations;
 
 namespace Core.Services;
 
-[Injectable]
-public class BackupService(
-    ISptLogger<BackupService> _logger,
-    JsonUtil _jsonUtil,
-    TimeUtil _timeUtil,
-    ConfigServer _configServer,
-    FileUtil _fileUtil)
+[Injectable(InjectionType.Singleton)]
+public class BackupService
 {
-    protected BackupConfig _backupConfig = _configServer.GetConfig<BackupConfig>();
+    protected ISptLogger<BackupService> _logger;
+    protected JsonUtil _jsonUtil;
+    protected TimeUtil _timeUtil;
+    protected FileUtil _fileUtil;
+    protected BackupConfig _backupConfig;
 
-    protected readonly List<string> _activeServerMods = [];
-    protected readonly string _profileDir = "./user/profiles";
+    protected readonly List<string> _activeServerMods;
+    protected const string _profileDir = "./user/profiles";
+
+    // Runs Init() every x minutes
+    protected Timer _backupIntervalTimer;
+
+    public BackupService(
+        ISptLogger<BackupService> _logger,
+        JsonUtil _jsonUtil,
+        TimeUtil _timeUtil,
+        ConfigServer _configServer,
+        FileUtil _fileUtil)
+    {
+        this._logger = _logger;
+        this._jsonUtil = _jsonUtil;
+        this._timeUtil = _timeUtil;
+        this._fileUtil = _fileUtil;
+
+        _activeServerMods = GetActiveServerMods();
+        _backupConfig = _configServer.GetConfig<BackupConfig>();
+    }
 
     /**
- * Initializes the backup process.
- *
- * This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
- * up old backups if the number exceeds the configured maximum.
- *
- * @returns A promise that resolves when the backup process is complete.
- */
+     * Start the backup interval if enabled in config.
+     */
+    public void StartBackupSystem()
+    {
+        if (!_backupConfig.BackupInterval.Enabled)
+        {
+            // Not backing up at regular intervals, run once and exit
+            Init();
+
+            return;
+        }
+
+        _backupIntervalTimer = new Timer(
+            _ =>
+            {
+                try
+                {
+                    Init();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error($"Profile backup failed: {ex.Message}, {ex.StackTrace}");
+                }
+            },
+            null,
+            TimeSpan.Zero,
+            TimeSpan.FromMinutes(_backupConfig.BackupInterval.IntervalMinutes)
+        );
+    }
+
+    /**
+     * Initializes the backup process.
+     * 
+     * This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
+     * up old backups if the number exceeds the configured maximum.
+     * 
+     * @returns A promise that resolves when the backup process is complete.
+     */
     public void Init()
     {
         if (!IsEnabled())
@@ -37,14 +86,14 @@ public class BackupService(
         var targetDir = GenerateBackupTargetDir();
 
         // Fetch all profiles in the profile directory.
-        List<string> currentProfilePaths = [];
+        List<string> currentProfilePaths;
         try
         {
             currentProfilePaths = _fileUtil.GetFiles(_profileDir);
         }
         catch (Exception ex)
         {
-            _logger.Debug("Skipping profile backup: Unable to read profiles directory");
+            _logger.Debug($"Skipping profile backup: Unable to read profiles directory, {ex.Message}");
             return;
         }
 
@@ -60,21 +109,23 @@ public class BackupService(
 
             foreach (var profilePath in currentProfilePaths)
             {
-                var profileFileName = profilePath.Split("\\")[1];
-                var fullPath = $"{_profileDir}/{profileFileName}";
-                var destinationPath = $"{targetDir}\\{profileFileName}";
-                _fileUtil.CopyFile(fullPath, destinationPath);
+                // Get filename + extension, removing the path
+                var profileFileName = _fileUtil.GetFileNameAndExtension(profilePath);
 
+                // Create absolute path to file
+                var relativeSourceFilePath = Path.Combine(_profileDir, profileFileName);
+                var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
+                _fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath);
             }
 
             // Write a copy of active mods.
-            _fileUtil.WriteFile($"{targetDir}/activeMods.json", _jsonUtil.Serialize(_activeServerMods));
+            _fileUtil.WriteFile(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
 
             _logger.Debug($"Profile backup created in: {targetDir}");
         }
         catch (Exception ex)
         {
-            _logger.Error($"Unable to write to backup profile directory: { ex.Message}");
+            _logger.Error($"Unable to write to backup profile directory: {ex.Message}");
             return;
         }
 
@@ -83,10 +134,10 @@ public class BackupService(
 
     /**
      * Fetches the names of all JSON files in the profile directory.
-     *
+     * 
      * This method normalizes the profile directory path and reads all files within it. It then filters the files to
      * include only those with a `.json` extension and returns their names.
-     *
+     * 
      * @returns A promise that resolves to a List of JSON file names.
      */
     protected List<string> FetchProfileFiles()
@@ -96,7 +147,7 @@ public class BackupService(
 
     /**
      * Check to see if the backup service is enabled via the config.
-     *
+     * 
      * @returns True if enabled, false otherwise.
      */
     protected bool IsEnabled()
@@ -109,38 +160,38 @@ public class BackupService(
         _logger.Debug("Profile backups disabled");
 
         return false;
-
     }
 
     /**
      * Generates the target directory path for the backup. The directory path is constructed using the `directory` from
      * the configuration and the current backup date.
-     *
+     * 
      * @returns The target directory path for the backup.
      */
     protected string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
-        return Path.GetFullPath($"{ _backupConfig.Directory}/{backupDate}");
+        return Path.GetFullPath($"{_backupConfig.Directory}/{backupDate}");
     }
 
     /**
      * Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
-     *
+     * 
      * @returns The formatted backup date string.
      */
     protected string GenerateBackupDate()
     {
         var date = _timeUtil.GetDateTimeNow();
 
-        return $"{date.Year}-{date.Month}-{date.Day}_{date.Hour}-{date.Minute}-{date.Second}"; }
+        return $"{date.Year}-{date.Month}-{date.Day}_{date.Hour}-{date.Minute}-{date.Second}";
+    }
 
     /**
      * Cleans up old backups in the backup directory.
-     *
+     * 
      * This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
      * the configured maximum, it deletes the oldest backups.
-     *
+     * 
      * @returns A promise that resolves when the cleanup is complete.
      */
     protected void CleanBackups()
@@ -149,19 +200,35 @@ public class BackupService(
         var backupPaths = GetBackupPaths(backupDir);
 
         // Filter out invalid backup paths by ensuring they contain a valid date.
-        var validBackupPaths = backupPaths.Where((path) => ExtractDateFromFolderName(path) != null);
-
-        var excessCount = validBackupPaths.Count() - _backupConfig.MaxBackups;
+        var backupPathsWithCreationDateTime = GetBackupPathsWithCreationTimestamp(backupPaths);
+        var excessCount = backupPathsWithCreationDateTime.Count - _backupConfig.MaxBackups;
         if (excessCount > 0)
         {
-            var excessBackups = backupPaths.Slice(0, excessCount);
-            RemoveExcessBackups(excessBackups);
+            var excessBackupPaths = backupPaths.GetRange(0, excessCount);
+            RemoveExcessBackups(excessBackupPaths);
         }
+    }
+
+    private SortedDictionary<long, string> GetBackupPathsWithCreationTimestamp(List<string> backupPaths)
+    {
+        var result = new SortedDictionary<long, string>();
+        foreach (var backupPath in backupPaths)
+        {
+            var date = ExtractDateFromFolderName(backupPath);
+            if (!date.HasValue)
+            {
+                continue;
+            }
+
+            result.Add(date.Value.ToFileTimeUtc(), backupPath);
+        }
+
+        return result;
     }
 
     /**
      * Retrieves and sorts the backup file paths from the specified directory.
-     *
+     * 
      * @param dir - The directory to search for backup files.
      * @returns A promise that resolves to a List of sorted backup file paths.
      */
@@ -175,7 +242,7 @@ public class BackupService(
 
     /**
      * Compares two backup folder names based on their extracted dates.
-     *
+     * 
      * @param a - The name of the first backup folder.
      * @param b - The name of the second backup folder.
      * @returns The difference in time between the two dates in milliseconds, or `null` if either date is invalid.
@@ -195,14 +262,14 @@ public class BackupService(
 
     /**
      * Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
-     *
+     * 
      * @param folderName - The name of the folder from which to extract the date.
      * @returns A DateTime object if the folder name is in the correct format, otherwise null.
      */
     private DateTime? ExtractDateFromFolderName(string folderName)
     {
         // backup
-        var parts = folderName.Split('\\','-', '_');
+        var parts = folderName.Split('\\', '-', '_');
         if (parts.Length != 7)
         {
             _logger.Warning($"Invalid backup folder name format: {folderName}");
@@ -221,7 +288,7 @@ public class BackupService(
 
     /**
      * Removes excess backups from the backup directory.
-     *
+     * 
      * @param backups - A List of backup file names to be removed.
      * @returns A promise that resolves when all specified backups have been removed.
      */
@@ -230,43 +297,27 @@ public class BackupService(
         var filePathsToDelete = backupFilenames.Select(x => x);
         foreach (var pathToDelete in filePathsToDelete)
         {
-            _fileUtil.DeleteFile($"{_backupConfig.Directory}/{pathToDelete}");
+            _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
+            _logger.Debug($"Deleted old backup: {pathToDelete}");
         }
-    }
-
-    /**
-     * Start the backup interval if enabled in the configuration.
-     */
-    protected void StartBackupInterval()
-    {
-        if (!_backupConfig.BackupInterval.Enabled)
-        {
-            return;
-        }
-
-        var minutes = _backupConfig.BackupInterval.IntervalMinutes * 60 * 1000; // Minutes to milliseconds
-        //SetInterval(() => {
-        //    Init().catch((error) => this.logger.error(`Profile backup failed: { error.message}`));
-        //}, minutes);
-
-        throw new NotImplementedException();
     }
 
     /**
      * Get a List of active server mod details.
-     *
+     * 
      * @returns A List of mod names.
      */
     protected List<string> GetActiveServerMods()
     {
+        _logger.Error($"NOT IMPLEMENTED - GetActiveServerMods");
         List<string> result = [];
+
+        return result;
 
         //var activeMods = _preSptModLoader.getImportedModDetails();
         //foreach (var activeModKey in activeMods) {
         //    result.Add($"{ activeModKey} -{ activeMods[activeModKey].author ?? "unknown"} -{ activeMods[activeModKey].version ?? ""}");
         //}
         //return result;
-
-        throw new NotImplementedException();
     }
 }

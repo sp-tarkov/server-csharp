@@ -27,7 +27,7 @@ public class FileUtil(
         return Path.GetExtension(path).Replace(".", "");
     }
 
-    public string GetFileName(string path)
+    public string GetFileNameAndExtension(string path)
     {
         return Path.GetFileName(path);
     }
@@ -47,9 +47,9 @@ public class FileUtil(
         return Directory.Exists(path);
     }
 
-    public void CreateDirectory(string path)
+    public DirectoryInfo CreateDirectory(string path)
     {
-        Directory.CreateDirectory(path);
+        return Directory.CreateDirectory(path);
     }
 
     public bool FileExists(string path)
@@ -108,5 +108,15 @@ public class FileUtil(
 
         // Copy the file
         File.Copy(copyFromPath, destinationFilePath, overwrite);
+    }
+
+    /// <summary>
+    /// Delete a directory, must be empty unless 'deleteContent' is set to 'true'
+    /// </summary>
+    /// <param name="directory"></param>
+    /// <param name="deleteContent"></param>
+    public void DeleteDirectory(string directory, bool deleteContent = false)
+    {
+        Directory.Delete(directory, deleteContent);
     }
 }

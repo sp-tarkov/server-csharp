@@ -201,5 +201,9 @@ public class TimeUtil
         var dateToCompare = date ?? DateTime.UtcNow;
         return (long)(dateToCompare - DateTime.UnixEpoch).TotalMilliseconds;
     }
-    
+
+    public int GetSecondsAsMilliseconds(int seconds)
+    {
+        return seconds * 60 * 1000;
+    }
 }

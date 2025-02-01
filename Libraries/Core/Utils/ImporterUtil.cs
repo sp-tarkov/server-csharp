@@ -57,7 +57,7 @@ public class ImporterUtil
         foreach (var file in files)
         {
             if (_fileUtil.GetFileExtension(file) != "json") continue;
-            if (filesToIgnore.Contains(_fileUtil.GetFileName(file).ToLower())) continue;
+            if (filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower())) continue;
             tasks.Add(
                 Task.Factory.StartNew(
                     () =>
