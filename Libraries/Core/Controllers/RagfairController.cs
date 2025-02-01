@@ -224,33 +224,35 @@ public class RagfairController
      * @param offer Flea offer to update
      * @param fullProfile Players full profile
      */
-    private void SetTraderOfferPurchaseLimits(RagfairOffer offerToUpdate, SptProfile fullProfile)
+    private void SetTraderOfferPurchaseLimits(RagfairOffer offer, SptProfile fullProfile)
     {
-        var assortId = offerToUpdate.Items.First().Id;
+        var offerRootItem = offer.Items.First();
+        var assortId = offerRootItem.Id;
 
         // No trader found in profile, create a blank record for them
-        var existsInProfile = !fullProfile.TraderPurchases.TryAdd(offerToUpdate.User.Id, new Dictionary<string, TraderPurchaseData>());
+        var existsInProfile = !fullProfile.TraderPurchases.TryAdd(offer.User.Id, new Dictionary<string, TraderPurchaseData>());
         if (!existsInProfile)
         {
             // Not purchased by player before, use value from assort data
 
             // Find patching assort by its id
-            var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offerToUpdate.User.Id).Items;
-            var assortData = traderAssorts.FirstOrDefault((item) => item.Id == assortId);
+            var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(offer.User.Id).Items;
+            var assortData = traderAssorts.FirstOrDefault(item => item.Id == assortId);
 
             // Set restriction based on data found above
-            offerToUpdate.BuyRestrictionMax = assortData.Upd.BuyRestrictionMax;
+            offer.BuyRestrictionMax = assortData.Upd.BuyRestrictionMax;
 
             return;
         }
 
         // Get purchases player made with trader since last reset
-        var traderPurchases = fullProfile.TraderPurchases[offerToUpdate.User.Id];
+        var traderPurchases = fullProfile.TraderPurchases[offer.User.Id];
 
         // Get specific assort purchase data and set current purchase buy value
         traderPurchases.TryGetValue(assortId, out var assortTraderPurchaseData);
 
-        offerToUpdate.BuyRestrictionCurrent = (int?)assortTraderPurchaseData?.PurchaseCount ?? 0;
+        offer.BuyRestrictionCurrent = (int?)assortTraderPurchaseData?.PurchaseCount ?? 0;
+        offer.BuyRestrictionMax = offerRootItem.Upd.BuyRestrictionMax;
     }
 
     /**
