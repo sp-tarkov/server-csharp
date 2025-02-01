@@ -372,7 +372,7 @@ public class RagfairOfferHelper(
         // Weapon/equipment search + offer is preset
         if (
             searchRequest.BuildItems.Count == 0 && // Prevent equipment loadout searches filtering out presets
-            searchRequest.BuildCount is not null &&
+            searchRequest.BuildCount.GetValueOrDefault(0) > 0 &&
             _presetHelper.HasPreset(offerRootItem.Template))
         {
             return false;
