@@ -429,7 +429,7 @@ public class BotEquipmentFilterService
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
                 {
                     // Only make change if item exists as we're editing, not adding
-                    if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
+                    if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
                         locationToUpdate[itemToEditKvP.Key] = itemToEditKvP.Value;
                     }
