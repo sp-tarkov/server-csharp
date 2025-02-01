@@ -25,7 +25,6 @@ public class RagfairCategoriesService(
         bool fleaUnlocked)
     {
         // Get offers valid for search request, then reduce them down to just the counts
-        var results = new Dictionary<string, int>();
         return offers
             .Where(
                 offer =>
@@ -33,7 +32,7 @@ public class RagfairCategoriesService(
                     var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
 
                     // Not level 15 and offer is from player, skip
-                    if (!fleaUnlocked || !isTraderOffer)
+                    if (!fleaUnlocked && !isTraderOffer)
                     {
                         return false;
                     }
@@ -41,8 +40,7 @@ public class RagfairCategoriesService(
                     // Skip items not for currency when `removeBartering` is enabled
                     if (
                         searchRequestData.RemoveBartering.GetValueOrDefault(false) &&
-                        (offer.Requirements.Count > 1 ||
-                         !_paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template))
+                        (offer.Requirements.Count > 1 || !_paymentHelper.IsMoneyTpl(offer.Requirements.FirstOrDefault().Template))
                     )
                     {
                         return false;
