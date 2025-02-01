@@ -175,7 +175,7 @@ public class LocationLootGenerator(
             {
                 if(_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"`Group: {key} has no containers with< 100 % spawn chance to choose from, skipping");
+                    _logger.Debug($"Group: {key} has no containers with < 100 % spawn chance to choose from, skipping");
                 }
 
                 continue;

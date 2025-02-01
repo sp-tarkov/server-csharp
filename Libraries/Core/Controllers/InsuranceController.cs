@@ -768,7 +768,7 @@ public class InsuranceController(
                     continue;
                 }
 
-                items.Add(
+                items.TryAdd(
                     inventoryItemsHash[itemId].Template,
                     _insuranceService.GetRoublePriceToInsureItemWithTrader(pmcData, inventoryItemsHash[itemId], trader)
                 );

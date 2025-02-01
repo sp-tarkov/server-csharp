@@ -1080,7 +1080,7 @@ public class InventoryHelper(
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug(
-                $"{moveRequest.Action} item: ${moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
+                $"{moveRequest.Action} item: {moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
             );
         }
 
