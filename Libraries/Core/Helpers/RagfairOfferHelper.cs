@@ -797,14 +797,17 @@ public class RagfairOfferHelper(
             BuyerNickname = _botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit),
             ItemCount = boughtAmount,
         };
+        
+        // Node searches for anything inside {property}: e.g.: "Your {soldItem} {itemCount} items were bought by {buyerNickname}."
+        // each part the takes the inside "Key" and gets it from the tplVars object
+        // 'Your Kalashnikov AKS-74U 5.45x39 assault rifle 1 items were bought by HB.'
+        // then seems to replace any " with nothing
 
-        throw new NotImplementedException();
-
-        //const offerSoldMessageText = soldMessageLocaleGuid.replace(/{\w +}/ g, (matched) => {
-        //    return tplVars[matched.replace(/{|}/ g, "")];
-        //});
-
-        //return offerSoldMessageText.replace(/ "/g, "");
+        // Seems to be much simpler just replacing each key like this.
+        soldMessageLocaleGuid = soldMessageLocaleGuid.Replace("{soldItem}", tplVars.SoldItem);
+        soldMessageLocaleGuid = soldMessageLocaleGuid.Replace("{itemCount}", tplVars.ItemCount.ToString());
+        soldMessageLocaleGuid = soldMessageLocaleGuid.Replace("{buyerNickname}", tplVars.BuyerNickname);
+        return soldMessageLocaleGuid;
     }
 
     /**
