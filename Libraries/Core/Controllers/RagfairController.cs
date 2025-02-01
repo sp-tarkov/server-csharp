@@ -635,7 +635,7 @@ public class RagfairController
     private ItemEventRouterResponse CreatePackOffer(string sessionID, AddOfferRequestData offerRequest, SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
-        // var itemsToListCount = offerRequest.Items.Count; // Wasnt used so commented out for now // Does not count stack size, only items
+        // var itemsToListCount = offerRequest.Items.Count; // Wasn't used so commented out for now // Does not count stack size, only items
 
         // multi-offers are all the same item,
         // Get first item and its children and use as template
@@ -645,7 +645,7 @@ public class RagfairController
 
         // Find items to be listed on flea (+ children) from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (result.Items is null || result.ErrorMessage?.Length > 0)
+        if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
         {
             _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
@@ -739,7 +739,7 @@ public class RagfairController
 
         // Find items to be listed on flea from player inventory
         var result = GetItemsToListOnFleaFromInventory(pmcData, offerRequest.Items);
-        if (result.Items is null || result.ErrorMessage?.Length > 0)
+        if (result.Items is null || !string.IsNullOrEmpty(result.ErrorMessage))
         {
             _httpResponseUtil.AppendErrorToOutput(output, result.ErrorMessage);
         }
