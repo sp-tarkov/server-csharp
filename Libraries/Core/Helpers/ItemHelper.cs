@@ -517,7 +517,7 @@ public class ItemHelper(
     {
         if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
         {
-            return GetItemQualityModifier(itemWithChildren[0]);
+            return Math.Round(GetItemQualityModifier(itemWithChildren[0]), 5);
         }
 
         var qualityModifier = 0D;
@@ -540,7 +540,7 @@ public class ItemHelper(
             return 1;
         }
 
-        return Math.Min(qualityModifier / itemsWithQualityCount, 1);
+        return Math.Min(Math.Round(qualityModifier / itemsWithQualityCount, 5), 1);
     }
 
     /**
@@ -624,7 +624,7 @@ public class ItemHelper(
      */
     protected double GetRepairableItemQualityValue(TemplateItem itemDetails, UpdRepairable repairable, Item item)
     {
-        // Edge case, max durability is below durability
+        // Edge case, durability above max
         if (repairable.Durability > repairable.MaxDurability)
         {
             _logger.Warning(
@@ -634,10 +634,10 @@ public class ItemHelper(
         }
 
         // Attempt to get the max durability from _props. If not available, use Repairable max durability value instead.
-        var maxDurability = itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
-        var durability = repairable.Durability / maxDurability;
+        var maxPossibleDurability = itemDetails.Properties?.MaxDurability ?? repairable.MaxDurability;
+        var durability = repairable.Durability / maxPossibleDurability;
 
-        if (durability is null)
+        if (durability == 0)
         {
             _logger.Error(_localisationService.GetText("item-durability_value_invalid_use_default", item.Template));
 
