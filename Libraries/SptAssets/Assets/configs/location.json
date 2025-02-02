@@ -189,9 +189,18 @@
             "5939e5a786f77461f11c0098",
             "64e74a3d4d49d23b2c39d319",
             "6614230055afee107f05e998",
-            "66b22630a6b4e5ec7c02cdb7"
+            "66b22630a6b4e5ec7c02cdb7",
+            "675f80d4fe1b59cf490d3527",
+            "67499d0eeca8acb2d2061639",
+            "675f7acc4076a741a3061566",
+            "675f80d4fe1b59cf490d3527",
+            "675f7f224076a741a3061568",
+            "675f7b168d28a25ec7007dbb"
         ],
-        "interchange": ["64e74a5ac2b4f829615ec336"],
+        "interchange": [
+            "64e74a5ac2b4f829615ec336",
+            "667a8ef464eea5fdef0db135"
+        ],
         "lighthouse": [
             "6331bb0d1aa9f42b804997a6",
             "6398a0861c712b1e1d4dadf1",
@@ -199,12 +208,22 @@
             "64e74a64aac4cd0a7264ecdf",
             "661666458c2aa9cb1602503b"
         ],
-        "rezervbase": ["64e74a4baac4cd0a7264ecdd", "6398a072e301557ae24cec92"],
+        "rezervbase": [
+            "64e74a4baac4cd0a7264ecdd",
+            "6398a072e301557ae24cec92",
+            "67499b3eeca8acb2d2061636",
+            "67499b9b909d2013670a5029"
+        ],
         "shoreline": [
             "64e74a534d49d23b2c39d31b",
             "661421c7c1f2f548c50ee649",
             "6614217b6d9d5abcad0ff098",
-            "661423200d240a5f5d0f679b"
+            "661423200d240a5f5d0f679b",
+            "6707d1f9571b50abc703b651",
+            "66760b3deb51b08bd40c2b08",
+            "67499adbeca8acb2d2061634",
+            "6614238e0d240a5f5d0f679d",
+            "666073159916667083033cb9"
         ],
         "tarkovstreets": [
             "638df4cc7b560b03794a18d2",
@@ -227,11 +246,31 @@
             "64f69b4267e11a7c6206e010",
             "64f5b4f71a5f313cb144c06c",
             "657acb2ac900be5902191ac9",
-            "6582dbf0b8d7830efc45016f"
+            "6582dbf0b8d7830efc45016f",
+            "66687bc89111279d600b5062"
         ],
-        "laboratory": ["6398a4cfb5992f573c6562b3", "64e74a44c2b4f829615ec334"],
+        "laboratory": [
+            "6398a4cfb5992f573c6562b3",
+            "64e74a44c2b4f829615ec334",
+            "6711039f9e648049e50b3307",
+            "6707cef3571b50abc703b64f",
+            "6707cd70aab679420007e018",
+            "6707cc67cc1667e49e0f7232",
+            "6707cf827d279daad80fa95f"
+        ],
         "sandbox": ["6575a6ca8778e96ded05a802", "6582bd252b50c61c565828e2"],
-        "factory4_day": ["591093bb86f7747caa7bb2ee", "66c0b39ca1f68fcc1d0c0cc3"]
+        "factory4_day": [
+            "591093bb86f7747caa7bb2ee",
+            "66c0b39ca1f68fcc1d0c0cc3",
+            "66a0e523e749756c920d02d0",
+            "593a87af86f774122f54a951"
+        ],
+        "factory4_night": [
+            "591093bb86f7747caa7bb2ee",
+            "66c0b39ca1f68fcc1d0c0cc3",
+            "66a0e523e749756c920d02d0",
+            "593a87af86f774122f54a951"
+        ]
     },
     "rogueLighthouseSpawnTimeSettings": {
         "enabled": false,
