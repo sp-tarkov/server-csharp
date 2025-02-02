@@ -14,33 +14,30 @@ public class PresetController(
 )
 {
     /// <summary>
-    /// 
+    /// Keyed by item tpl, value = collection of preset ids
     /// </summary>
     public void Initialize()
     {
         var presets = _databaseService.GetGlobals().ItemPresets;
-        var reverse = new Dictionary<string, List<string>>();
-        foreach (var (key, preset) in presets)
+        var result = new Dictionary<string, HashSet<string>>();
+        foreach (var (presetId, preset) in presets)
         {
-            if (key != preset.Id)
+            if (presetId != preset.Id)
             {
                 _logger.Error(
-                    $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({key} != {preset.Id}). Skipping"
+                    $"Preset for template tpl: '{preset.Items[0].Template} {preset.Name}' has invalid key: ({presetId} != {preset.Id}). Skipping"
                 );
 
                 continue;
             }
 
             var tpl = preset.Items.FirstOrDefault()?.Template;
-            if (!reverse.ContainsKey(tpl))
-            {
-                reverse[tpl] = [];
-            }
+            result.TryAdd(tpl, []);
 
-            reverse.TryGetValue(tpl, out var listToAddTo);
-            listToAddTo?.Add(preset.Id);
+            result.TryGetValue(tpl, out var listToAddTo);
+            listToAddTo.Add(presetId);
         }
 
-        _presetHelper.HydratePresetStore(reverse);
+        _presetHelper.HydratePresetStore(result);
     }
 }
