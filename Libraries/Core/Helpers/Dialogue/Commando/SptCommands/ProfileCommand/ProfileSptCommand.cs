@@ -96,7 +96,7 @@ public class ProfileSptCommand(
                      return request.DialogId;
                  }
         
-                 if (quantity < 0 || quantity > 51) {
+                 if (quantity is < 0 or > 51) {
                      _mailSendService.SendUserMessageToPlayer(
                          sessionId,
                          commandHandler,
@@ -116,7 +116,7 @@ public class ProfileSptCommand(
                  _mailSendService.SendUserMessageToPlayer(
                      sessionId,
                      commandHandler,
-                     $"If you are reading this, this is bad. Please report this to SPT staff with a screenshot. Command ${command}."
+                     $"If you are reading this, this is bad. Please report this to SPT staff with a screenshot. Command: {command}."
                  );
                  return request.DialogId;
          }

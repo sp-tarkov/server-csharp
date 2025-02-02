@@ -1105,7 +1105,7 @@ public class BotEquipmentModGenerator(
 
         if (!desiredMagazineTpls.Any())
         {
-            _logger.Warning("Magazine size filter for ${ weaponTpl} was too strict, ignoring filter");
+            _logger.Warning($"Magazine size filter for { weaponTpl} was too strict, ignoring filter");
 
             return modPool;
         }

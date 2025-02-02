@@ -785,33 +785,33 @@ public class SeasonalEventService(
     /// <param name="mapIdWhitelist">OPTIONAL - Maps to add bosses to</param>
     protected void AddEventBossesToMaps(string eventType, List<string> mapIdWhitelist = null)
     {
-        var botsToAddPerMap = _seasonalEventConfig.EventBossSpawns[eventType.ToLower()];
-        if (botsToAddPerMap is null)
+        if (!_seasonalEventConfig.EventBossSpawns.TryGetValue(eventType.ToLower(), out var botsToAddPerMap))
         {
-            _logger.Warning($"Unable to add: ${eventType} bosses, eventBossSpawns is missing");
+            _logger.Warning($"Unable to add: {eventType} bosses, eventBossSpawns is missing");
             return;
         }
 
         var mapKeys = botsToAddPerMap;
         var locations = _databaseService.GetLocations().GetAllPropsAsDict();
-        foreach (var map in mapKeys) {
-            var bossesToAdd = botsToAddPerMap[map.Key];
-            if (bossesToAdd is null)
+        foreach (var (key, _) in mapKeys) {
+            if (!botsToAddPerMap.TryGetValue(key, out var bossesToAdd))
             {
-                _logger.Warning($"Unable to add: ${ eventType} bosses to: ${map.Key}");
+                _logger.Warning($"Unable to add: {eventType} bosses to: {key}");
+
                 continue;
             }
 
-            if (mapIdWhitelist is null || !mapIdWhitelist.Contains(map.Key))
+            if (mapIdWhitelist is null || !mapIdWhitelist.Contains(key))
             {
                 continue;
             }
 
             foreach (var boss in bossesToAdd) {
-                var mapBosses = ((Location)locations[map.Key]).Base.BossLocationSpawn;
-                if (!mapBosses.Any((bossSpawn) => bossSpawn.BossName == boss.BossName))
+                var mapBosses = ((Location)locations[key]).Base.BossLocationSpawn;
+                // If no bosses match by name
+                if (mapBosses.All(bossSpawn => bossSpawn.BossName != boss.BossName))
                 {
-                    ((Location)locations[map.Key]).Base.BossLocationSpawn.AddRange(bossesToAdd);
+                    ((Location)locations[key]).Base.BossLocationSpawn.AddRange(bossesToAdd);
                 }
             }
         }

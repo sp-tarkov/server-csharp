@@ -1257,13 +1257,18 @@ public class FenceService(
                 traderConfig.Fence.ArmorMaxDurabilityPercentMinMax
             );
 
-            // Find items mod to apply dura changes to
-            var modItemToAdjust = armorWithMods.FirstOrDefault(mod => mod.SlotId.ToLower() == plateSlot.Name.ToLower());
+            // Find items mod to apply durability changes to
+            var modItemToAdjust = armorWithMods.FirstOrDefault(mod => string.Equals(
+                    mod.SlotId,
+                    plateSlot.Name,
+                    StringComparison.OrdinalIgnoreCase
+                )
+            );
 
             if (modItemToAdjust == null)
             {
                 logger.Warning(
-                    $"Unable to randomise armor items {armorWithMods[0].Template} ${plateSlot.Name} slot as it cannot be found, skipping"
+                    $"Unable to randomise armor items {armorWithMods[0].Template} {plateSlot.Name} slot as it cannot be found, skipping"
                 );
                 continue;
             }
@@ -1272,7 +1277,7 @@ public class FenceService(
 
             if (modItemToAdjust?.Upd?.Repairable == null)
             {
-                modItemToAdjust.Upd.Repairable = new UpdRepairable()
+                modItemToAdjust.Upd.Repairable = new UpdRepairable
                 {
                     Durability = modItemDbDetails.Properties.MaxDurability,
                     MaxDurability = modItemDbDetails.Properties.MaxDurability

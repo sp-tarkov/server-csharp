@@ -14,6 +14,7 @@ using Core.Utils;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
 using BonusSettings = Core.Models.Spt.Config.BonusSettings;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -97,9 +98,12 @@ public class RepairService(
             itemRepairCost.Value * repairItemDetails.Count.Value * repairRate.Value * _repairConfig.PriceMultiplier
         );
 
-        _logger.Debug($"item base repair cost: ${itemRepairCost}");
-        _logger.Debug($"price multiplier: ${_repairConfig.PriceMultiplier}");
-        _logger.Debug($"repair cost: ${repairCost}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"item base repair cost: {itemRepairCost}");
+            _logger.Debug($"price multiplier: {_repairConfig.PriceMultiplier}");
+            _logger.Debug($"repair cost: {repairCost}");
+        }
 
         return new RepairDetails
         {
@@ -455,7 +459,11 @@ public class RepairService(
         var maxRepairAmount = repairKitDetails.Properties.MaxRepairResource;
         if (repairKitInInventory.Upd is null)
         {
-            _logger.Debug($"Repair kit: ${repairKitInInventory.Id} in inventory lacks upd object, adding");
+            if(_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Repair kit: {repairKitInInventory.Id} in inventory lacks upd object, adding");
+            }
+            
             repairKitInInventory.Upd = new Upd { RepairKit = new UpdRepairKit { Resource = maxRepairAmount } };
         }
 

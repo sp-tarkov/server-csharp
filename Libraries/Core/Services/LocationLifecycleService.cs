@@ -225,7 +225,7 @@ public class LocationLifecycleService
 
             // No matching bot in config, skip
             if (locationBotHostilityDetails is null) {
-                _logger.Warning("No bot: ${botId} hostility values found on: ${location.Id}, can only edit existing. Skipping");
+                _logger.Warning($"No bot: {botId} hostility values found on: {location.Id}, can only edit existing. Skipping");
 
                 continue;
             }

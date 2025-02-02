@@ -202,7 +202,7 @@ public class InventoryHelper(
         var stashFS2D = _cloner.Clone(GetStashSlotMap(pmcData, sessionId));
         if (stashFS2D is null)
         {
-            _logger.Error($"Unable to get stash map for players: ${sessionId} stash");
+            _logger.Error($"Unable to get stash map for players: {sessionId} stash");
 
             return false;
         }

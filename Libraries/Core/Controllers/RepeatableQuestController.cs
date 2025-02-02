@@ -105,7 +105,7 @@ public class RepeatableQuestController(
         {
             // Unable to find quest being replaced
             var message =
-                $"Unable to generate repeatable quest of type: {repeatableTypeLower} to replace trader: ${replacedQuestTraderId} quest ${changeRequest.QuestId}";
+                $"Unable to generate repeatable quest of type: {repeatableTypeLower} to replace trader: ${replacedQuestTraderId} quest: {changeRequest.QuestId}";
             _logger.Error(message);
 
             return _httpResponseUtil.AppendErrorToOutput(output, message);

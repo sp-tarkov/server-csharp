@@ -376,7 +376,7 @@ public class LocationLootGenerator(
                 if(_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        $"Container {container.Template.Id} with group ${groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
+                        $"Container {container.Template.Id} with group: {groupData.GroupId} had 100 % chance to spawn was picked as random container, skipping"
                     );
                 }
 
@@ -504,7 +504,7 @@ public class LocationLootGenerator(
             var itemTemplate = _itemHelper.GetItem(rootItem.Template).Value;
             if (itemTemplate.Properties is null)
             {
-                _logger.Error($"Unable to process item: ${{chosenTpl}}. it lacks _props");
+                _logger.Error($"Unable to process item: {rootItem.Template}. it lacks _props");
 
                 return null;
             }
@@ -1044,7 +1044,7 @@ public class LocationLootGenerator(
         var itemTemplate = _itemHelper.GetItem(chosenTpl).Value;
         if (itemTemplate.Properties is null)
         {
-            _logger.Error($"Unable to process item: ${{chosenTpl}}. it lacks _props");
+            _logger.Error($"Unable to process item: {chosenTpl}. it lacks _props");
 
             return null;
         }

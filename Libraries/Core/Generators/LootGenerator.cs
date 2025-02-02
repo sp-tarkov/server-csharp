@@ -363,7 +363,7 @@ public class LootGenerator(
         if (chosenPreset.Encyclopedia is null) {
             if(_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug("$Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
+                _logger.Debug($"Preset with id: {chosenPreset?.Id} lacks encyclopedia property, skipping");
             }
 
             return false;

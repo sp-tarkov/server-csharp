@@ -66,7 +66,7 @@ public class CustomLocationWaveService(
             var locationBase = _databaseService.GetLocation(mapKvP.Key).Base;
             if (locationBase is null)
             {
-                _logger.Warning($"Unable to add custom boss wave to location: ${mapKvP}, location not found");
+                _logger.Warning($"Unable to add custom boss wave to location: {mapKvP}, location not found");
 
                 continue;
             }

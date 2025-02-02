@@ -542,7 +542,7 @@ public class RagfairOfferHelper(
             // No trader assort data
             _logger.Warning(
                 $"Unable to find trader: " +
-                $"${offer.User.Nickname}assort for item: ${_itemHelper.GetItemName(offer.Items[0].Template)} " +
+                $"${offer.User.Nickname}assort for item: {_itemHelper.GetItemName(offer.Items[0].Template)} " +
                 $"{offer.Items[0].Template}, cannot check if buy restriction reached"
             );
 
@@ -967,33 +967,6 @@ public class RagfairOfferHelper(
 
         // For other presets, make sure the offer has more than 1 item
         return offer.Items.Count > 1;
-    }
-
-    /// <summary>
-    ///     Should a ragfair offer be visible to the player
-    /// </summary>
-    /// <param name="searchRequest">Search request</param>
-    /// <param name="itemsToAdd">?</param>
-    /// <param name="traderAssorts">Trader assort items - used for filtering out locked trader items</param>
-    /// <param name="offer">The flea offer</param>
-    /// <param name="pmcProfile">Player profile</param>
-    /// <param name="playerIsFleaBanned">Optional parameter</param>
-    /// <returns>True = should be shown to player</returns>
-    public bool DisplayableOffer(
-        SearchRequestData searchRequest,
-        List<string> itemsToAdd,
-        Dictionary<string, TraderAssort> traderAssorts,
-        RagfairOffer offer,
-        PmcData pmcProfile,
-        bool? playerIsFleaBanned = null
-    )
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsDisplayableOfferThatNeedsItem(SearchRequestData searchRequest, RagfairOffer offer)
-    {
-        return offer.Requirements.Any(requirement => requirement.Template == searchRequest.NeededSearchId);
     }
 
     /// <summary>

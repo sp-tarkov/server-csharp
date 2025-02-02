@@ -820,7 +820,7 @@ public class RepeatableQuestGenerator(
 
             if (possibleExits.Count == 0)
             {
-                _logger.Error("Unable to choose specific exit on map: ${ locationKey}, Possible exit pool was empty");
+                _logger.Error($"Unable to choose specific exit on map: {locationKey}, Possible exit pool was empty");
             }
             else
             {

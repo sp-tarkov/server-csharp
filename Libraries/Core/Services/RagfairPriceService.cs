@@ -8,6 +8,7 @@ using Core.Models.Enums;
 using Core.Servers;
 using Core.Utils;
 using Core.Models.Eft.Common;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -480,13 +481,14 @@ public class RagfairPriceService(
             return new WeaponPreset { IsDefault = true, Preset = defaultPreset };
         }
         var nonDefaultPresets = _presetHelper.GetPresets(weapon.Template);
-        if (nonDefaultPresets.Count == 1)
+
+        if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Item Id: ${ weapon.Template} has no default encyclopedia entry but only one preset(${ nonDefaultPresets[0].Name}), choosing preset(${ nonDefaultPresets[0].Name})");
-        }
-        else
-        {
-            _logger.Debug($"Item Id: ${ weapon.Template} has no default encyclopedia entry, choosing first preset(${ nonDefaultPresets[0].Name}) of ${ nonDefaultPresets.Count}");
+            _logger.Debug(
+                nonDefaultPresets.Count == 1
+                    ? $"Item Id: ${weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
+                    : $"Item Id: ${weapon.Template} has no default encyclopedia entry, choosing first preset(${nonDefaultPresets[0].Name}) of ${nonDefaultPresets.Count}"
+            );
         }
 
         return new WeaponPreset { IsDefault = false, Preset = nonDefaultPresets[0] };

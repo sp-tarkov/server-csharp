@@ -159,7 +159,7 @@ public class GiveSptCommand(
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        $"Could not find exact match. Closest matches are:\n\n${itemList}\n\nUse 'spt give [number]' to select one.");
+                        $"Could not find exact match. Closest matches are:\n\n{itemList}\n\nUse 'spt give [number]' to select one.");
 
                     return request.DialogId;
                 }
