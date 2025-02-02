@@ -3,6 +3,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using SptCommon.Annotations;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -99,7 +100,11 @@ public class BackupService
 
         if (currentProfilePaths.Count == 0)
         {
-            _logger.Debug("No profiles to backup");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug("No profiles to backup");
+            }
+
             return;
         }
 
@@ -121,7 +126,10 @@ public class BackupService
             // Write a copy of active mods.
             _fileUtil.WriteFile(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
 
-            _logger.Debug($"Profile backup created in: {targetDir}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Profile backup created in: {targetDir}");
+            }
         }
         catch (Exception ex)
         {
@@ -130,19 +138,6 @@ public class BackupService
         }
 
         CleanBackups();
-    }
-
-    /**
-     * Fetches the names of all JSON files in the profile directory.
-     * 
-     * This method normalizes the profile directory path and reads all files within it. It then filters the files to
-     * include only those with a `.json` extension and returns their names.
-     * 
-     * @returns A promise that resolves to a List of JSON file names.
-     */
-    protected List<string> FetchProfileFiles()
-    {
-        throw new NotImplementedException();
     }
 
     /**
@@ -157,7 +152,10 @@ public class BackupService
             return true;
         }
 
-        _logger.Debug("Profile backups disabled");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug("Profile backups disabled");
+        }
 
         return false;
     }
@@ -298,7 +296,11 @@ public class BackupService
         foreach (var pathToDelete in filePathsToDelete)
         {
             _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
-            _logger.Debug($"Deleted old backup: {pathToDelete}");
+
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Deleted old backup: {pathToDelete}");
+            }
         }
     }
 
