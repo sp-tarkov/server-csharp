@@ -11,7 +11,7 @@ namespace Core.Helpers.Dialogue.SPTFriend.Commands
     [Injectable]
     public class HelloMessageHandler(
         MailSendService _mailSendService,
-        RandomUtil _randomUtil) : ISptCommand
+        RandomUtil _randomUtil) : IChatMessageHandler
     {
         protected List<string> _listOfMessages = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
