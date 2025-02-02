@@ -13,11 +13,14 @@ public class PresetHelper(
     ICloner _cloner
 )
 {
-    protected Dictionary<string, List<string>> _lookup = new();
+    /// <summary>
+    /// Preset cache - key = item tpl, value = preset ids
+    /// </summary>
+    protected Dictionary<string, HashSet<string>> _lookup = new();
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
     protected Dictionary<string, Preset>? _defaultWeaponPresets;
 
-    public void HydratePresetStore(Dictionary<string, List<string>> input)
+    public void HydratePresetStore(Dictionary<string, HashSet<string>> input)
     {
         _lookup = input;
     }
