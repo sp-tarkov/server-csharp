@@ -417,7 +417,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     private bool CanIncreaseRewardItemStackSize(TemplateItem item, int maxRoublePriceToStack,
-        int? randomChanceToPass = null)
+        int randomChanceToPass = 100)
     {
         var isEligibleForStackSizeIncrease =
             _presetHelper.GetDefaultPresetOrItemPrice(item.Id) < maxRoublePriceToStack &&
@@ -431,7 +431,7 @@ public class RepeatableQuestRewardGenerator(
             ) &&
             !_itemHelper.ItemRequiresSoftInserts(item.Id);
 
-        return isEligibleForStackSizeIncrease && _randomUtil.GetChance100(randomChanceToPass ?? 100);
+        return isEligibleForStackSizeIncrease && _randomUtil.GetChance100(randomChanceToPass);
     }
 
     /**
