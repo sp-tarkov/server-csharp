@@ -601,6 +601,8 @@ public class RagfairOfferHelper(
         }
 
         foreach (var offer in profileOffers)
+        {
+            var firstSellResult = offer.SellResults?.FirstOrDefault();
             if (offer.SellResults?.Count > 0 && timestamp >= offer.SellResults[0].SellTime)
             {
                 // Checks first item, first is spliced out of array after being processed
@@ -612,15 +614,16 @@ public class RagfairOfferHelper(
                 {
                     // offer.items.reduce((sum, item) => sum + item.upd?.StackObjectsCount ?? 0, 0);
                     totalItemsCount = GetTotalStackCountSize([offer.Items]);
-                    boughtAmount = offer.SellResults[0].Amount.Value;
+                    boughtAmount = firstSellResult.Amount.Value;
                 }
 
                 var ratingToAdd = offer.SummaryCost / totalItemsCount * boughtAmount;
                 IncreaseProfileRagfairRating(_profileHelper.GetFullProfile(sessionId), ratingToAdd.Value);
 
                 CompleteOffer(sessionId, offer, boughtAmount);
-                offer.SellResults.Splice(0, 1); // Remove the sell result object now its been processed
+                offer.SellResults.Remove(firstSellResult);// Remove the sell result object now its been processed
             }
+        }
 
         return true;
     }
@@ -688,8 +691,17 @@ public class RagfairOfferHelper(
     protected void DeleteOfferById(string sessionId, string offerId)
     {
         var profileRagfairInfo = _profileHelper.GetPmcProfile(sessionId).RagfairInfo;
-        var index = profileRagfairInfo.Offers.FindIndex(o => o.Id == offerId);
-        profileRagfairInfo.Offers.Splice(index, 1);
+        var offerIndex = profileRagfairInfo.Offers.FindIndex(o => o.Id == offerId);
+        if (offerIndex == -1)
+        {
+            _logger.Warning($"Unable to find offer: {offerId} in profile: {sessionId}, unable to delete");
+        }
+
+        if (offerIndex >= 0)
+        {
+            profileRagfairInfo.Offers.Splice(offerIndex, 1);
+        }
+        
 
         // Also delete from ragfair
         _ragfairOfferService.RemoveOfferById(offerId);
