@@ -600,8 +600,10 @@ public class RagfairOfferHelper(
             return true;
         }
 
-        foreach (var offer in profileOffers)
+        // Index backwards as CompleteOffer() can delete offer object
+        for (var index = profileOffers.Count - 1; index >= 0; index--)
         {
+            var offer = profileOffers[index];
             var firstSellResult = offer.SellResults?.FirstOrDefault();
             if (offer.SellResults?.Count > 0 && timestamp >= offer.SellResults[0].SellTime)
             {
@@ -620,8 +622,10 @@ public class RagfairOfferHelper(
                 var ratingToAdd = offer.SummaryCost / totalItemsCount * boughtAmount;
                 IncreaseProfileRagfairRating(_profileHelper.GetFullProfile(sessionId), ratingToAdd.Value);
 
+                offer.SellResults.Remove(firstSellResult); // Remove the sell result object now it has been processed
+
+                // Can delete offer object, must run last
                 CompleteOffer(sessionId, offer, boughtAmount);
-                offer.SellResults.Remove(firstSellResult);// Remove the sell result object now its been processed
             }
         }
 
@@ -716,12 +720,13 @@ public class RagfairOfferHelper(
      */
     public ItemEventRouterResponse CompleteOffer(string offerOwnerSessionId, RagfairOffer offer, int boughtAmount)
     {
-        var itemTpl = offer.Items[0].Template;
+        var rootItem = offer.Items.FirstOrDefault();
+        var itemTpl = rootItem.Template;
         var paymentItemsToSendToPlayer = new List<Item>();
-        var offerStackCount = offer.Items[0].Upd.StackObjectsCount;
+        var offerStackCount = rootItem.Upd.StackObjectsCount;
         var sellerProfile = _profileHelper.GetPmcProfile(offerOwnerSessionId);
 
-        // Pack or ALL items of a multi-offer were bought - remove entire ofer
+        // Pack or ALL items of a multi-offer were bought - remove entire offer
         if (offer.SellInOnePiece.GetValueOrDefault(false) || boughtAmount == offerStackCount)
         {
             DeleteOfferById(offerOwnerSessionId, offer.Id);
