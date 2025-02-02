@@ -450,7 +450,7 @@ public class RagfairController
         var typeOfOffer = GetOfferType(offerRequest);
         if (typeOfOffer == FleaOfferType.UNKNOWN)
         {
-            return _httpResponseUtil.AppendErrorToOutput(output, "Unknown offer type, cannot list item on flea");
+            return _httpResponseUtil.AppendErrorToOutput(output, $"Unknown offer type: {typeOfOffer}, cannot list item on flea");
         }
 
         switch (typeOfOffer)
@@ -463,7 +463,7 @@ public class RagfairController
                 return CreatePackOffer(sessionID, offerRequest, fullProfile, output);
             case FleaOfferType.UNKNOWN:
             default:
-                throw new ArgumentOutOfRangeException();
+                return _httpResponseUtil.AppendErrorToOutput(output, $"Unknown offer type: {typeOfOffer}, cannot list item on flea");
         }
     }
 
