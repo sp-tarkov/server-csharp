@@ -791,9 +791,12 @@ public class LocationLootGenerator(
             // Spawn point has no items after filtering, skip
             if (spawnPoint.Template.Items is null || spawnPoint.Template.Items.Count == 0)
             {
-                _logger.Warning(
-                    _localisationService.GetText("location-spawnpoint_missing_items", spawnPoint.Template.Id)
-                );
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug(
+                        _localisationService.GetText("location-spawnpoint_missing_items", spawnPoint.Template.Id)
+                    );
+                }
 
                 continue;
             }
