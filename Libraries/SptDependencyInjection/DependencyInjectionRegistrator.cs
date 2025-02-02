@@ -19,10 +19,11 @@ public static class DependencyInjectionRegistrator
     public static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
     {
         var groupedTypes = types.SelectMany(
-                registerableType =>
+                t =>
                 {
-                    var attributes = (Injectable[])Attribute.GetCustomAttributes(registerableType, typeof(Injectable));
-                    var registerableComponentsResult = new List<RegisterableType>();
+                    var attributes = (Injectable[])Attribute.GetCustomAttributes(t, typeof(Injectable));
+                    var registerableType = t;
+                    var registerableComponents = new List<RegisterableType>();
                     foreach (var attribute in attributes)
                     {
                         // if we have a type override this takes priority
@@ -36,10 +37,10 @@ public static class DependencyInjectionRegistrator
                             registerableType = registerableType.GetInterfaces()[0];
                         }
 
-                        registerableComponentsResult.Add(new RegisterableType(registerableType, registerableType, attribute));
+                        registerableComponents.Add(new RegisterableType(registerableType, t, attribute));
                     }
 
-                    return registerableComponentsResult;
+                    return registerableComponents;
                 }
             )
             .GroupBy(t => t.RegisterableInterface.FullName);
