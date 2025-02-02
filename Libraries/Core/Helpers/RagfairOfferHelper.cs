@@ -860,18 +860,19 @@ public class RagfairOfferHelper(
 
         if (searchRequest.QuantityTo > 0 && offerRootItem.Upd.StackObjectsCount > searchRequest.QuantityTo)
         {
-            // too many items to offer
+            // Too many items to offer
             return false;
         }
 
         if (searchRequest.OnlyFunctional.GetValueOrDefault(false) && !IsItemFunctional(offerRootItem, offer))
         {
-            // don't include non-functional items
+            // Don't include non-functional items
             return false;
         }
 
         if (offer.Items.Count == 1)
         {
+            // Counts quality % using the offer items current durability compared to its possible max, not current max
             // Single item
             if (
                 IsConditionItem(offerRootItem) &&
