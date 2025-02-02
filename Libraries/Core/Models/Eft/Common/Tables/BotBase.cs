@@ -413,14 +413,8 @@ public record Victim
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
     public string? Location { get; set; }
-    [JsonPropertyName("GInterface186.ProfileId")]
-    public string? UnusedProfileId { get; set; }
-    [JsonPropertyName("GInterface186.Nickname")]
-    public string? UnusedName { get; set; }
-    [JsonPropertyName("GInterface186.Side")]
-    public string? UnusedSide { get; set; }
-    [JsonPropertyName("GInterface186.PrestigeLevel")]
-    public int? UnusedPrestige { get; set; }
+    [JsonExtensionData] 
+    public Dictionary<string, object> OtherProperties { get; set; }
 }
 
 public record SessionCounters
@@ -457,14 +451,8 @@ public record Aggressor
     public string? Category { get; set; }
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
-    [JsonPropertyName("GInterface186.ProfileId")]
-    public string? UnusedProfileId { get; set; }
-    [JsonPropertyName("GInterface186.Nickname")]
-    public string? UnusedName { get; set; }
-    [JsonPropertyName("GInterface186.Side")]
-    public string? UnusedSide { get; set; }
-    [JsonPropertyName("GInterface186.PrestigeLevel")]
-    public int? UnusedPrestige { get; set; }
+    [JsonExtensionData] 
+    public Dictionary<string, object> OtherProperties { get; set; }
 }
 
 public record DamageHistory
