@@ -332,7 +332,7 @@ public class LocationLootGenerator(
         var mapping = new Dictionary<string, ContainerGroupCount>();
         foreach (var groupKvP in staticContainerGroupData.ContainersGroups)
         {
-            if (!staticContainerGroupData.ContainersGroups.TryGetValue(groupKvP.Key, out var groupData))
+            if (staticContainerGroupData.ContainersGroups.TryGetValue(groupKvP.Key, out var groupData))
             {
                 mapping[groupKvP.Key] = new ContainerGroupCount
                 {
