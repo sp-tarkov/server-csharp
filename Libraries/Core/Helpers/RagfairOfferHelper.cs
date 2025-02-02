@@ -852,13 +852,13 @@ public class RagfairOfferHelper(
             return false;
         }
 
-        if (searchRequest.QuantityFrom > 0 && searchRequest.QuantityFrom >= offerRootItem.Upd.StackObjectsCount)
+        if (searchRequest.QuantityFrom > 0 && offerRootItem.Upd.StackObjectsCount < searchRequest.QuantityFrom)
         {
             // too little items to offer
             return false;
         }
 
-        if (searchRequest.QuantityTo > 0 && searchRequest.QuantityTo <= offerRootItem.Upd.StackObjectsCount)
+        if (searchRequest.QuantityTo > 0 && offerRootItem.Upd.StackObjectsCount > searchRequest.QuantityTo)
         {
             // too many items to offer
             return false;
