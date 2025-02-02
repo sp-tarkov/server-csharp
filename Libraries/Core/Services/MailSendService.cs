@@ -415,7 +415,7 @@ public class MailSendService(
         {
             message.Items = itemsToSendToPlayer;
             message.HasRewards = true;
-            message.MaxStorageTime = maxStorageTimeSeconds;
+            message.MaxStorageTime = maxStorageTimeSeconds ?? 172800;
             message.RewardCollected = false;
         }
     }

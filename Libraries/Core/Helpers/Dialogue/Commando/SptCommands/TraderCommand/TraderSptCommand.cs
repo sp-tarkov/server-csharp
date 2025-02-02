@@ -12,7 +12,8 @@ public class TraderSptCommand(
     ISptLogger<TraderSptCommand> _logger,
     MailSendService _mailSendService) : ISptCommand
 {
-    protected Regex _commandRegex = new("""/^spt trader(?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0 - 9]+)$/""");
+    protected Regex _commandRegex = new(@"^spt trader (?<trader>[\w]+) (?<command>rep|spend) (?<quantity>(?!0+)[0-9]+)$"
+    );
 
     public string GetCommand()
     {

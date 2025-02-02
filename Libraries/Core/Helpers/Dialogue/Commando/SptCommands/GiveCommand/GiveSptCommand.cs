@@ -27,7 +27,7 @@ public class GiveSptCommand(
 ) : ISptCommand
 {
     protected Dictionary<string, SavedCommand> _savedCommand = new();
-    private static readonly Regex _commandRegex = new("""/^spt give(((([a - z]{ 2,5}) )?"(.+)"|\w+) )?([0 - 9]+)$/""");
+    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
     private const double _acceptableConfidence = 0.9d;
 
     // Exception for flares

@@ -33,8 +33,8 @@ public class ProfileSptCommand(
     * spt profile skill metabolism 10
     */
     // TODO: Fix this shit as Valens doesn't know Regex.
-     protected Regex _commandRegex = new("""^spt profile (?<command>level|skill)((?<=.*skill) (?<skill>[\w]+)){0,1} (?<quantity>(?!0+)[0-9]+)$/""");
-    protected Regex _examineRegex = new ("""/^spt profile (?<command>examine)/""");
+    protected Regex _commandRegex = new(@"^spt profile (?<command>level|skill)((?<=.*skill) (?<skill>[\w]+))? (?<quantity>(?!0+)[0-9]+)$");
+    protected Regex _examineRegex = new (@"^spt profile (?<command>examine)");
     //
     protected SavedCommand _savedCommand = null;
     
@@ -85,7 +85,7 @@ public class ProfileSptCommand(
                  break;
              case "skill": {
                  var enumSkill = Enum.GetValues(typeof(SkillTypes)).Cast<SkillTypes>().FirstOrDefault(
-                     (t) => t.ToString() == skill);
+                     (t) => t.ToString().ToLower() == skill);
         
                  if (enumSkill == null) {
                      _mailSendService.SendUserMessageToPlayer(

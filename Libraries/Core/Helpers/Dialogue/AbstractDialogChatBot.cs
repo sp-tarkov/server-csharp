@@ -81,7 +81,7 @@ public abstract class AbstractDialogChatBot(
                                 _mailSendService.SendUserMessageToPlayer(
                                     sessionId,
                                     GetChatBot(),
-                                    $"Subcommand {subCommand}:\\n{chatCommand.GetCommandHelp(subCommand)}",
+                                    $"Subcommand {subCommand}:\n{chatCommand.GetCommandHelp(subCommand)}",
                                     [],
                                     null
                                 );
