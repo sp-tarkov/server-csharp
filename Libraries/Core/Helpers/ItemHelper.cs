@@ -513,7 +513,7 @@ public class ItemHelper(
      * @param skipArmorItemsWithoutDurability Skip over armor items without durability
      * @returns % quality modifier between 0 and 1
      */
-    public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool? skipArmorItemsWithoutDurability = null)
+    public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool skipArmorItemsWithoutDurability = false)
     {
         if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
         {
@@ -550,7 +550,7 @@ public class ItemHelper(
      * @param skipArmorItemsWithoutDurability return -1 for armor items that have max durability of 0
      * @returns Number between 0 and 1
      */
-    public double GetItemQualityModifier(Item item, bool? skipArmorItemsWithoutDurability = null)
+    public double GetItemQualityModifier(Item item, bool skipArmorItemsWithoutDurability = false)
     {
         // Default to 100%
         var result = 1d;
@@ -564,7 +564,7 @@ public class ItemHelper(
             return 1;
         }
 
-        if (skipArmorItemsWithoutDurability.GetValueOrDefault(false)
+        if (skipArmorItemsWithoutDurability
             && IsOfBaseclass(item.Template, BaseClasses.ARMOR)
             && itemDetails?.Properties?.MaxDurability == 0
            )
