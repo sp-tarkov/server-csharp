@@ -283,11 +283,13 @@ public class PostDbLoadService(
         }
     }
 
+    
+    // TODO: CWX Change the way we get Maps
     protected void AdjustLocationBotValues()
     {
         var mapsDb = _databaseService.GetLocations().GetDictionary();
         foreach (var (key, cap) in _botConfig.MaxBotCap) {
-            if (!mapsDb.TryGetValue(key, out var map))
+            if (!mapsDb.TryGetValue(_databaseService.GetLocations().GetMappedKey(key), out var map))
             {
                 continue;
             }

@@ -81,10 +81,15 @@ public record Locations
         return _locationDictionaryCache;
     }
 
+    public string GetMappedKey(string key)
+    {
+        return _locationMappings.TryGetValue(key, out var value) ? value : key;
+    }
+    
     private Dictionary<string, string> _locationMappings = new()
     {
         { "factory4_day", "Factory4Day" },
-        { "bigmap", "bigmap" },
+        { "bigmap", "Bigmap" },
         { "develop", "Develop" },
         { "factory4_night", "Factory4Night" },
         { "hideout", "Hideout" },
