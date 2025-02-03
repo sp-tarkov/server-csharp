@@ -5,6 +5,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
 using Core.Models.Eft.Prestige;
 using Core.Models.Eft.Profile;
+using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
@@ -121,23 +122,26 @@ public class PrestigeController(
         // Flag profile as having achieved this prestige level
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
 
-        // Copy transferred items
-        foreach (var transferRequest in request)
+        if (request is not null)
         {
-            var item = prePrestigePmc.Inventory.Items.FirstOrDefault((item) => item.Id == transferRequest.Id);
-            var addItemRequest = new AddItemDirectRequest
+            // Copy transferred items
+            foreach (var transferRequest in request)
             {
-                ItemWithModsToAdd = [item],
-                FoundInRaid = item.Upd?.SpawnedInSession,
-                UseSortingTable = false,
-                Callback = null,
-            };
-            _inventoryHelper.AddItemToStash(
-                sessionId,
-                addItemRequest,
-                newProfile.CharacterData.PmcData,
-                _eventOutputHolder.GetOutput(sessionId)
-            );
+                var item = prePrestigePmc.Inventory.Items.FirstOrDefault((item) => item.Id == transferRequest.Id);
+                var addItemRequest = new AddItemDirectRequest
+                {
+                    ItemWithModsToAdd = [item],
+                    FoundInRaid = item.Upd?.SpawnedInSession,
+                    UseSortingTable = false,
+                    Callback = null,
+                };
+                _inventoryHelper.AddItemToStash(
+                    sessionId,
+                    addItemRequest,
+                    newProfile.CharacterData.PmcData,
+                    _eventOutputHolder.GetOutput(sessionId)
+                );
+            }
         }
 
         // Add "Prestigious" achievement
@@ -152,6 +156,49 @@ public class PrestigeController(
 
     private void AddPrestigeRewardsToProfile(string sessionId, SptProfile newProfile, IEnumerable<Reward> rewards)
     {
-        _logger.Error("NOT IMPLEMENTED AddPrestigeRewardsToProfile()");
+        foreach (var reward in rewards) {
+            switch (reward.Type) {
+                case RewardType.CustomizationDirect: {
+                    _profileHelper.AddHideoutCustomisationUnlock(newProfile, reward, CustomisationSource.PRESTIGE);
+                    break;
+                }
+                case RewardType.Skill:
+                    if (Enum.TryParse(reward.Target, out SkillTypes result))
+                    {
+                        _profileHelper.AddSkillPointsToPlayer(
+                            newProfile.CharacterData.PmcData,
+                            result,
+                            (double)reward.Value
+                        );
+                    }
+                    else
+                    {
+                        _logger.Error($"Unable to parse reward Target to Enum: {reward.Target}");
+                    }
+                    break;
+                case RewardType.Item: {
+                    AddItemDirectRequest addItemRequest = new AddItemDirectRequest {
+                        ItemWithModsToAdd = reward.Items,
+                        FoundInRaid = reward.Items.FirstOrDefault()?.Upd?.SpawnedInSession,
+                        UseSortingTable = false,
+                        Callback = null,
+                    };
+                    _inventoryHelper.AddItemToStash(
+                        sessionId,
+                        addItemRequest,
+                        newProfile.CharacterData.PmcData,
+                        _eventOutputHolder.GetOutput(sessionId)
+                    );
+                    break;
+                }
+                // case "ExtraDailyQuest": {
+                //     // todo
+                //     break;
+                // }
+                default:
+                    _logger.Error($"Unhandled prestige reward type: {reward.Type}");
+                    break;
+            }
+        }
     }
 }
