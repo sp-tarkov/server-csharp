@@ -33,7 +33,8 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.ObtainPrestige(url, info as List<ObtainPrestigeRequest>, sessionID))
+                ) => _presetCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID)
+                , typeof(ObtainPrestigeRequestList))
         ]
     )
     {
