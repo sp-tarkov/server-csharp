@@ -98,7 +98,7 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool isSameItems(List<Item> item1, List<Item> item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string> compareUpdProperties = null)
     {
         if (item1.Count() != item2.Count)
         {
@@ -113,7 +113,7 @@ public class ItemHelper(
                 return false;
             }
 
-            if (!this.isSameItem(itemOf1, itemOf2, compareUpdProperties))
+            if (!this.IsSameItem(itemOf1, itemOf2, compareUpdProperties))
             {
                 return false;
             }
@@ -130,7 +130,7 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool isSameItem(Item item1, Item item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItem(Item item1, Item item2, HashSet<string> compareUpdProperties = null)
     {
         if (item1.Template != item2.Template)
         {

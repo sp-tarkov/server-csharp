@@ -405,7 +405,7 @@ public class FenceService(
                     existingFenceAssorts.Items,
                     existingRootItem.Id
                 );
-                if (itemHelper.isSameItems(itemWithChildren, existingFullItemTree, fenceItemUpdCompareProperties))
+                if (itemHelper.IsSameItems(itemWithChildren, existingFullItemTree, fenceItemUpdCompareProperties))
                 {
                     // Guard against a missing stack count
                     if (existingRootItem.Upd?.StackObjectsCount == null)
