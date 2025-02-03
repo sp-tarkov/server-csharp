@@ -133,9 +133,10 @@ public class ProfileSptCommand(
                      SlotId = "main",
                  },
              ],
-             null,
+             999999,
              [profileChangeEvent]
          );
+
          return request.DialogId;
     }
 
