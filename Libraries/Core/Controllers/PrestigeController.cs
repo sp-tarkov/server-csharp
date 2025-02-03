@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -12,6 +13,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Extensions;
 
 
 namespace Core.Controllers;
@@ -168,7 +170,7 @@ public class PrestigeController(
                         _profileHelper.AddSkillPointsToPlayer(
                             newProfile.CharacterData.PmcData,
                             result,
-                            (double)reward.Value
+                            ((JsonElement)reward.Value).ToObject<double>()
                         );
                     }
                     else

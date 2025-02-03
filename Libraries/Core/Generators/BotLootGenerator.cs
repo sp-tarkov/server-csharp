@@ -551,7 +551,7 @@ public class BotLootGenerator(
                     if(_logger.IsLogEnabled(LogLevel.Debug))
                     {
                         _logger.Debug(
-                            $"Failed placing item: {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} " +
+                            $"Failed placing item: {itemToAddTemplate.Id} - {itemToAddTemplate.Name}: {i} of: {totalItemCount} items into: {botRole} " +
                             $"containers: {string.Join(",", equipmentSlots)}. Tried: {fitItemIntoContainerAttempts} " +
                             $"times, reason: {itemAddedResult}, skipping"
                         );
