@@ -246,7 +246,7 @@ public class BotController(
             }
             catch (Exception e)
             {
-                _logger.Error($"Failed to generate bot #{i + 1}: {e.Message}");
+                _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message}");
             }
         }
 
