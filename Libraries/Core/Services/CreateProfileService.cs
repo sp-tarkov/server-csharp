@@ -92,7 +92,6 @@ public class CreateProfileService(
             InraidData = new(),
             InsuranceList = [],
             TraderPurchases = new(),
-            PlayerAchievements = new(),
             FriendProfileIds = [],
             CustomisationUnlocks = []
         };

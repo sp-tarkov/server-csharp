@@ -40,10 +40,6 @@ public record SptProfile
     [JsonPropertyName("traderPurchases")]
     public Dictionary<string, Dictionary<string, TraderPurchaseData>?>? TraderPurchases { get; set; }
 
-    /** Achievements earned by player */
-    [JsonPropertyName("achievements")]
-    public Dictionary<string, long>? PlayerAchievements { get; set; }
-
     /** List of friend profile IDs */
     [JsonPropertyName("friends")]
     public List<string>? FriendProfileIds { get; set; }

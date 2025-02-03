@@ -54,6 +54,27 @@ public class PrestigeController(
         string sessionId,
         ObtainPrestigeRequestList request)
     {
+        // Going to prestige 1
+        
+        // transfer
+        // 5% of skills should be transfered over
+        // 5% of mastering should be transfered over
+        // earned achievements should be transfered over
+        // profile stats should be transfered over
+        // prestige progress should be transfered over
+        
+        // reset
+        // trader standing
+        // task progress
+        // character level
+        // stash
+        // hideout progress
+        
+        // going to prestige 2
+        // most likely the same, but wait for dump of new beginnings quest
+        
+        
+        // Clone existing profile, create a new one
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;
         var createRequest = new ProfileCreateRequestData
@@ -75,13 +96,12 @@ public class PrestigeController(
         // Get freshly reset profile ready for editing
         var newProfile = _profileHelper.GetFullProfile(sessionId);
 
-        // Skill copy
-        // TODO - Find what skills should be prestiged over
+        // Copy skills to new profile
         var commonSkillsToCopy = prePrestigePmc.Skills.Common;
         foreach (var skillToCopy in commonSkillsToCopy)
         {
-            // Set progress to max level 20
-            skillToCopy.Progress = Math.Min(skillToCopy.Progress.Value, 2000);
+            // Set progress 5% of what it was
+            skillToCopy.Progress = skillToCopy.Progress.Value * 0.05;
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault((skill) => skill.Id == skillToCopy.Id);
             if (existingSkill is not null)
             {
@@ -92,12 +112,13 @@ public class PrestigeController(
                 newProfile.CharacterData.PmcData.Skills.Common.Add(skillToCopy);
             }
         }
-
+        
+        // Copy mastering to new profile
         var masteringSkillsToCopy = prePrestigePmc.Skills.Mastering;
         foreach (var skillToCopy in masteringSkillsToCopy)
         {
-            // Set progress to max level 20
-            skillToCopy.Progress = Math.Min(skillToCopy.Progress.Value, 2000);
+            // Set progress 5% of what it was
+            skillToCopy.Progress = skillToCopy.Progress.Value * 0.05;
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(
                 (skill) => skill.Id == skillToCopy.Id
             );
@@ -110,20 +131,32 @@ public class PrestigeController(
                 newProfile.CharacterData.PmcData.Skills.Mastering.Add(skillToCopy);
             }
         }
+        
+        // Add existing completed achievements and new one for prestige
+        newProfile.CharacterData.PmcData.Achievements = prePrestigeProfileClone.CharacterData.PmcData.Achievements; // this *should* only contain completed ones
 
+        // Add "Prestigious" achievement
+        if (!newProfile.CharacterData.PmcData.Achievements.ContainsKey("676091c0f457869a94017a23"))
+        {
+            newProfile.CharacterData.PmcData.Achievements.Add("676091c0f457869a94017a23", _timeUtil.GetTimeStamp());
+        }
+        // TODO: is there one for second prestige
+
+        // Add existing Stats to profile
+        newProfile.CharacterData.PmcData.Stats = prePrestigePmc.Stats;
+        
         // Assumes Prestige data is in descending order
         var indexOfPrestigeObtained = (int)Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
         var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
         var prestigeRewards = _databaseService.GetTemplates()
             .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
             .SelectMany((prestige) => prestige.Rewards);
-
-
+        
         AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
 
         // Flag profile as having achieved this prestige level
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
-        newProfile.CharacterData.PmcData.Info.PrestigeLevel = indexOfPrestigeObtained;
+        newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
 
         if (request is not null)
         {
@@ -146,13 +179,7 @@ public class PrestigeController(
                 );
             }
         }
-
-        // Add "Prestigious" achievement
-        if (!newProfile.PlayerAchievements.ContainsKey("676091c0f457869a94017a23"))
-        {
-            newProfile.PlayerAchievements.Add("676091c0f457869a94017a23", _timeUtil.GetTimeStamp());
-        }
-
+        
         // Force save of above changes to disk
         _saveServer.SaveProfile(sessionId);
     }
