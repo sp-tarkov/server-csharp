@@ -113,7 +113,7 @@ public class ItemHelper(
                 return false;
             }
 
-            if (!this.IsSameItem(itemOf1, itemOf2, compareUpdProperties))
+            if (!IsSameItem(itemOf1, itemOf2, compareUpdProperties))
             {
                 return false;
             }
@@ -130,29 +130,130 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool IsSameItem(Item item1, Item item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItem(Item item1, Item item2, HashSet<string>? compareUpdProperties = null)
     {
+        // Different tpl == different item
         if (item1.Template != item2.Template)
         {
             return false;
         }
 
-        var props = typeof(Upd).GetProperties();
-        if (compareUpdProperties is not null)
+        // Both lack upd object + same tpl = same
+        if (item1.Upd is null && item2.Upd is null)
         {
-            return compareUpdProperties.ToArray()
-                .All(
-                    (p) =>
-                    {
-                        var item1p = props.FirstOrDefault(prop => prop.Name.ToLower() == p.ToLower()).GetValue(item1.Upd);
-                        var item2p = props.FirstOrDefault(prop => prop.Name.ToLower() == p.ToLower()).GetValue(item2.Upd);
-                        ;
-                        return _compareUtil.RecursiveCompare(item1p, item2p);
-                    }
-                ); // TODO: please refactor this is you know how
+            return true;
         }
 
-        return _compareUtil.RecursiveCompare(item1.Upd, item2.Upd);
+        // item1 lacks upd, item2 has one
+        if (item1.Upd is null && item2.Upd is not null)
+        {
+            return false;
+        }
+
+        // item1 has upd, item2 lacks one
+        if (item1.Upd is not null && item2.Upd is null)
+        {
+            return false;
+        }
+
+        // Key
+        if (compareUpdProperties is null || compareUpdProperties.Contains("Key"))
+        {
+            if (item1.Upd?.Key?.NumberOfUsages != item2.Upd?.Key?.NumberOfUsages)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("Buff"))
+        {
+            // Buffed armor/weapon
+            if (item1.Upd?.Buff.Value != item2.Upd?.Buff.Value
+                && item1.Upd?.Buff.BuffType != item2.Upd?.Buff.BuffType)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("CultistAmulet"))
+        {
+            // Amulet
+            if (item1.Upd?.CultistAmulet?.NumberOfUsages != item2.Upd?.CultistAmulet?.NumberOfUsages)
+            {
+                return false;
+            }
+        }
+
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("Dogtag"))
+        {
+            if (item1.Upd.Dogtag.ProfileId != item2.Upd.Dogtag.ProfileId)
+            {
+                return false;
+            }
+        }
+
+
+
+        // Faceshield
+        if (compareUpdProperties is null || compareUpdProperties.Contains("FaceShield"))
+        {
+            if (item1.Upd?.FaceShield?.Hits != item2.Upd?.FaceShield?.Hits)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("Foldable"))
+        {
+            if (item1.Upd?.Foldable?.Folded.GetValueOrDefault(false) !=
+                item2.Upd?.Foldable?.Folded.GetValueOrDefault(false))
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("FoodDrink"))
+        {
+            if (item1.Upd?.FoodDrink?.HpPercent != item2.Upd?.FoodDrink?.HpPercent)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("MedKit"))
+        {
+            if (item1.Upd.MedKit.HpResource != item2.Upd.MedKit.HpResource)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("RecodableComponent"))
+        {
+            if (item1.Upd?.RecodableComponent?.IsEncoded != item2.Upd?.RecodableComponent?.IsEncoded)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("RepairKit"))
+        {
+            if (item1.Upd?.RepairKit?.Resource != item2.Upd?.RepairKit?.Resource)
+            {
+                return false;
+            }
+        }
+
+        if (compareUpdProperties is null || compareUpdProperties.Contains("Resource"))
+        {
+            if (item1.Upd?.Resource?.UnitsConsumed != item2.Upd?.Resource?.UnitsConsumed)
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
