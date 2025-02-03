@@ -168,7 +168,7 @@ public class RepeatableQuestGenerator(
         // we use any also if the random condition is not met in case only "any" was in the pool
         var locationKey = "any";
         if (locations.Contains("any") &&
-            (eliminationConfig.SpecificLocationProbability < rand.Next() || locations.Count <= 1)
+            (eliminationConfig.SpecificLocationProbability < rand.NextDouble() || locations.Count <= 1)
            )
         {
             locationKey = "any";
@@ -201,7 +201,7 @@ public class RepeatableQuestGenerator(
         // draw the target body part and calculate the difficulty factor
         var bodyPartsToClient = new List<string>();
         var bodyPartDifficulty = 0d;
-        if (eliminationConfig.BodyPartProbability > rand.Next())
+        if (eliminationConfig.BodyPartProbability > rand.NextDouble())
         {
             // if we add a bodyPart condition, we draw randomly one or two parts
             // each bodyPart of the BODYPARTS ProbabilityObjectArray includes the string(s) which need to be presented to the client in ProbabilityObjectArray.data
@@ -220,7 +220,7 @@ public class RepeatableQuestGenerator(
         }
 
         // Draw a distance condition
-        int? distance = -1;
+        int? distance = null;
         var distanceDifficulty = 0;
         var isDistanceRequirementAllowed = !eliminationConfig.DistLocationBlacklist.Contains(locationKey);
 
@@ -249,20 +249,19 @@ public class RepeatableQuestGenerator(
             isDistanceRequirementAllowed = isDistanceRequirementAllowed && allowedSpawns.Count() > 0;
         }
 
-        if (eliminationConfig.DistanceProbability > rand.Next() && isDistanceRequirementAllowed)
+        if (eliminationConfig.DistanceProbability > rand.NextDouble() && isDistanceRequirementAllowed)
         {
             // Random distance with lower values more likely; simple distribution for starters...
-            distance = (int)Math.Floor(
-                (decimal)(Math.Abs(rand.Next(0, 1) - rand.Next(0, 1)) *
-                          (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
-                          eliminationConfig.MinDistance)
-            );
+            distance = (int)Math.Floor(Math.Abs(rand.NextDouble() - rand.NextDouble()) *
+                                        (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
+                                        eliminationConfig.MinDistance ?? 0);
+            
             distance = (int)Math.Ceiling((decimal)(distance / 5)) * 5;
             distanceDifficulty = (int)(maxDistDifficulty * distance / eliminationConfig.MaxDistance);
         }
 
         string? allowedWeaponsCategory = null;
-        if (eliminationConfig.WeaponCategoryRequirementProbability > rand.Next())
+        if (eliminationConfig.WeaponCategoryRequirementProbability > rand.NextDouble())
         {
             // Filter out close range weapons from far distance requirement
             if (distance > 50)
@@ -296,7 +295,7 @@ public class RepeatableQuestGenerator(
 
         // Only allow a specific weapon requirement if a weapon category was not chosen
         string? allowedWeapon = null;
-        if (allowedWeaponsCategory is not null && eliminationConfig.WeaponRequirementProbability > rand.Next())
+        if (allowedWeaponsCategory is not null && eliminationConfig.WeaponRequirementProbability > rand.NextDouble())
         {
             var weaponRequirement = weaponRequirementConfig.Draw(1, false);
             var specificAllowedWeaponCategory = weaponRequirementConfig.Data(weaponRequirement[0])[0];
@@ -349,7 +348,7 @@ public class RepeatableQuestGenerator(
             GenerateEliminationCondition(
                 targetKey,
                 bodyPartsToClient,
-                distance.Value,
+                distance,
                 allowedWeapon,
                 allowedWeaponsCategory
             )
