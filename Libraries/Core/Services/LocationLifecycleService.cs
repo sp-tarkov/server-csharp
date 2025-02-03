@@ -175,7 +175,7 @@ public class LocationLifecycleService
 
         AdjustExtracts(request.PlayerSide, request.Location, result.LocationLoot);
 
-        // Clear bot cache ready for next raid after this
+        // Clear bot cache ready for bot generation call that occurs after this
         _botGenerationCacheService.ClearStoredBots();
         _botNameService.ClearNameCache();
 
