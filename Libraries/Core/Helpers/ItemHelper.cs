@@ -156,98 +156,33 @@ public class ItemHelper(
             return false;
         }
 
-        // Key
-        if (compareUpdProperties is null || compareUpdProperties.Contains("Key"))
+        // key = Upd property Type as string, value = comparison function that returns bool
+        var comparers = new Dictionary<string, Func<Upd, Upd, bool>>
         {
-            if (item1.Upd?.Key?.NumberOfUsages != item2.Upd?.Key?.NumberOfUsages)
+            { "Key", (upd1, upd2) => upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages },
+            { "Buff", (upd1, upd2) => upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType },
+            { "CultistAmulet", (upd1, upd2) => upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages },
+            { "Dogtag", (upd1, upd2) => upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId },
+            { "FaceShield", (upd1, upd2) => upd1.FaceShield?.Hits == upd2.FaceShield?.Hits },
+            { "Foldable", (upd1, upd2) => upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false) },
+            { "FoodDrink", (upd1, upd2) => upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent },
+            { "MedKit", (upd1, upd2) => upd1.MedKit?.HpResource == upd2.MedKit?.HpResource },
+            { "RecodableComponent", (upd1, upd2) => upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded },
+            { "RepairKit", (upd1, upd2) => upd1.RepairKit?.Resource == upd2.RepairKit?.Resource },
+            { "Resource", (upd1, upd2) => upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed }
+        };
+
+        // Choose above keys or passed in keys to compare items with
+        var valuesToCompare = compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
+        foreach (var propertyName in valuesToCompare)
+        {
+            if (!comparers.TryGetValue(propertyName, out var comparer))
             {
-                return false;
+                // Key not found, skip
+                continue;
             }
-        }
 
-        if (compareUpdProperties is null || compareUpdProperties.Contains("Buff"))
-        {
-            // Buffed armor/weapon
-            if (item1.Upd?.Buff.Value != item2.Upd?.Buff.Value
-                && item1.Upd?.Buff.BuffType != item2.Upd?.Buff.BuffType)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("CultistAmulet"))
-        {
-            // Amulet
-            if (item1.Upd?.CultistAmulet?.NumberOfUsages != item2.Upd?.CultistAmulet?.NumberOfUsages)
-            {
-                return false;
-            }
-        }
-
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("Dogtag"))
-        {
-            if (item1.Upd.Dogtag.ProfileId != item2.Upd.Dogtag.ProfileId)
-            {
-                return false;
-            }
-        }
-
-
-
-        // Faceshield
-        if (compareUpdProperties is null || compareUpdProperties.Contains("FaceShield"))
-        {
-            if (item1.Upd?.FaceShield?.Hits != item2.Upd?.FaceShield?.Hits)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("Foldable"))
-        {
-            if (item1.Upd?.Foldable?.Folded.GetValueOrDefault(false) !=
-                item2.Upd?.Foldable?.Folded.GetValueOrDefault(false))
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("FoodDrink"))
-        {
-            if (item1.Upd?.FoodDrink?.HpPercent != item2.Upd?.FoodDrink?.HpPercent)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("MedKit"))
-        {
-            if (item1.Upd.MedKit.HpResource != item2.Upd.MedKit.HpResource)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("RecodableComponent"))
-        {
-            if (item1.Upd?.RecodableComponent?.IsEncoded != item2.Upd?.RecodableComponent?.IsEncoded)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("RepairKit"))
-        {
-            if (item1.Upd?.RepairKit?.Resource != item2.Upd?.RepairKit?.Resource)
-            {
-                return false;
-            }
-        }
-
-        if (compareUpdProperties is null || compareUpdProperties.Contains("Resource"))
-        {
-            if (item1.Upd?.Resource?.UnitsConsumed != item2.Upd?.Resource?.UnitsConsumed)
+            if (!comparer(item1.Upd, item2.Upd))
             {
                 return false;
             }

@@ -244,8 +244,9 @@ public record UpdFoodDrink
 
 public record UpdKey
 {
+    // Checked in client
     [JsonPropertyName("NumberOfUsages")]
-    public double? NumberOfUsages { get; set; }
+    public int? NumberOfUsages { get; set; }
 }
 
 public record UpdResource

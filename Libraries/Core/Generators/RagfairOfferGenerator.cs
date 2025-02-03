@@ -703,7 +703,7 @@ public class RagfairOfferGenerator(
 
         if (rootItem.Upd?.Key != null && itemDetails.Properties.MaximumNumberOfUsage > 1) {
             // Randomize key uses
-            rootItem.Upd.Key.NumberOfUsages = Math.Round((double) itemDetails.Properties.MaximumNumberOfUsage * (1 - maxMultiplier));
+            rootItem.Upd.Key.NumberOfUsages = (int?)Math.Round(itemDetails.Properties.MaximumNumberOfUsage.Value * (1 - maxMultiplier));
             return;
         }
 
