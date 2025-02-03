@@ -23,7 +23,6 @@ public class GiveSptCommand(
     MailSendService _mailSendService,
     LocaleService _localeService,
     ICloner _cloner
-
 ) : ISptCommand
 {
     protected Dictionary<string, SavedCommand> _savedCommand = new();
@@ -53,11 +52,13 @@ public class GiveSptCommand(
 
     public string PerformAction(UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
-        if (!_commandRegex.IsMatch(request.Text)) {
+        if (!_commandRegex.IsMatch(request.Text))
+        {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
-                "Invalid use of give command. Use 'help' for more information.");
+                "Invalid use of give command. Use 'help' for more information."
+            );
             return request.DialogId;
         }
 
@@ -70,8 +71,10 @@ public class GiveSptCommand(
         Dictionary<string, string>? localizedGlobal = null;
 
         // This is a reply to a give request previously made pending a reply
-        if (string.IsNullOrEmpty(result.Groups[1].Value)) {
-            if (!_savedCommand.ContainsKey(sessionId)) {
+        if (string.IsNullOrEmpty(result.Groups[1].Value))
+        {
+            if (!_savedCommand.ContainsKey(sessionId))
+            {
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
@@ -79,44 +82,59 @@ public class GiveSptCommand(
                 );
                 return request.DialogId;
             }
+
             _savedCommand.TryGetValue(sessionId, out var savedCommand);
-            var locationSixValue = +int.Parse( result.Groups[6].Value);
-            if (locationSixValue > savedCommand.PotentialItemNames.Count) {
+            var locationSixValue = +int.Parse(result.Groups[6].Value);
+            if (locationSixValue > savedCommand.PotentialItemNames.Count)
+            {
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
-                    "Invalid selection. Outside of bounds! Use 'help' for more information.");
+                    "Invalid selection. Outside of bounds! Use 'help' for more information."
+                );
                 return request.DialogId;
             }
+
             item = savedCommand.PotentialItemNames[locationSixValue - 1];
             quantity = savedCommand.Quantity;
             locale = savedCommand.Locale;
             isItemName = true;
             _savedCommand.Remove(sessionId);
-        } else {
+        }
+        else
+        {
             // A new give request was entered, we need to ignore the old saved command
-            if (_savedCommand.ContainsKey(sessionId)) {
+            if (_savedCommand.ContainsKey(sessionId))
+            {
                 _savedCommand.Remove(sessionId);
             }
+
             isItemName = result.Groups[5].Value != null;
             item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;
             quantity = +int.Parse(result.Groups[6].Value);
-            if (quantity <= 0) {
+            if (quantity <= 0)
+            {
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
                     commandHandler,
-                    "Invalid quantity! Must be 1 or higher. Use 'help' for more information.");
+                    "Invalid quantity! Must be 1 or higher. Use 'help' for more information."
+                );
                 return request.DialogId;
             }
 
-            if (isItemName) {
-                try {
+            if (isItemName)
+            {
+                try
+                {
                     locale = result.Groups[4].Value ?? _localeService.GetDesiredGameLocale() ?? "en";
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        $"An error occurred while trying to use localized text. Locale will be defaulted to 'en'. {ex.Message}");
+                        $"An error occurred while trying to use localized text. Locale will be defaulted to 'en'. {ex.Message}"
+                    );
 
                     _logger.Warning(ex.Message);
                     locale = "en";
@@ -126,8 +144,11 @@ public class GiveSptCommand(
                 var allAllowedItemNames = _itemHelper
                     .GetItems()
                     .Where(IsItemAllowed)
-                    .Select(i => localizedGlobal
-                        .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)?.ToLower())
+                    .Select(
+                        i => localizedGlobal
+                            .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
+                            ?.ToLower()
+                    )
                     .Where(i => !string.IsNullOrEmpty(i));
 
                 var closestItemsMatchedByName = allAllowedItemNames
@@ -137,28 +158,35 @@ public class GiveSptCommand(
                             Match = StringSimilarity.Match(item, i, 2, true),
                             ItemName = i
                         }
-                    ).ToList();
-                
+                    )
+                    .ToList();
+
                 closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
 
-                if (closestItemsMatchedByName[0].Match >= _acceptableConfidence) {
+                if (closestItemsMatchedByName[0].Match >= _acceptableConfidence)
+                {
                     item = closestItemsMatchedByName[0].ItemName;
-                } else {
+                }
+                else
+                {
                     var i = 1;
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
                     var itemList = slicedItems
-                        .Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})");
+                        .Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d),2})");
                     _savedCommand.Add(
                         sessionId,
                         new SavedCommand(
                             quantity,
                             slicedItems.Select(item => item.ItemName).ToList(),
-                            locale));
+                            locale
+                        )
+                    );
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one.");
+                        $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one."
+                    );
 
                     return request.DialogId;
                 }
@@ -170,58 +198,79 @@ public class GiveSptCommand(
         // item is just the tplId.
         var tplId = isItemName
             ? _itemHelper
-                  .GetItems()
-                  .Where(IsItemAllowed)
-                  .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item).Id
+                .GetItems()
+                .Where(IsItemAllowed)
+                .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item)
+                .Id
             : item;
 
         var checkedItem = _itemHelper.GetItem(tplId);
-        if (!checkedItem.Key) {
+        if (!checkedItem.Key)
+        {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 commandHandler,
-                "That item could not be found. Please refine your request and try again.");
+                "That item could not be found. Please refine your request and try again."
+            );
             return request.DialogId;
         }
 
         List<Item> itemsToSend = [];
         var preset = _presetHelper.GetDefaultPreset(checkedItem.Value.Id);
-        if (preset is not null && !_excludedPresetItems.Contains(checkedItem.Value.Id)) {
-            for (var i = 0; i < quantity; i++) {
+        if (preset is not null && !_excludedPresetItems.Contains(checkedItem.Value.Id))
+        {
+            for (var i = 0; i < quantity; i++)
+            {
                 var items = _cloner.Clone(preset.Items);
                 items = _itemHelper.ReplaceIDs(items);
                 itemsToSend.AddRange(items);
             }
-        } else if (_itemHelper.IsOfBaseclass(checkedItem.Value.Id, BaseClasses.AMMO_BOX)) {
-            for (var i = 0; i < quantity; i++) {
+        }
+        else if (_itemHelper.IsOfBaseclass(checkedItem.Value.Id, BaseClasses.AMMO_BOX))
+        {
+            for (var i = 0; i < quantity; i++)
+            {
                 List<Item> ammoBoxArray = [];
-                ammoBoxArray.Add( new Item{ Id = _hashUtil.Generate(), Template = checkedItem.Value.Id });
+                ammoBoxArray.Add(new Item { Id = _hashUtil.Generate(), Template = checkedItem.Value.Id });
                 // DO NOT generate the ammo box cartridges, the mail service does it for us! :)
                 // _itemHelper.addCartridgesToAmmoBox(ammoBoxArray, checkedItem[1]);
                 itemsToSend.AddRange(ammoBoxArray);
             }
-        } else {
-            if (checkedItem.Value.Properties.StackMaxSize == 1) {
-                for (var i = 0; i < quantity; i++) {
-                    itemsToSend.Add( new Item{
-                        Id = _hashUtil.Generate(),
-                        Template = checkedItem.Value.Id,
-                        Upd = _itemHelper.generateUpdForItem(checkedItem.Value) });
-                }
-            } else {
-                var itemToSend = new Item{
+        }
+        else
+        {
+            if (checkedItem.Value.Properties.StackMaxSize == 1)
+            {
+                for (var i = 0; i < quantity; i++)
+                    itemsToSend.Add(
+                        new Item
+                        {
+                            Id = _hashUtil.Generate(),
+                            Template = checkedItem.Value.Id,
+                            Upd = _itemHelper.generateUpdForItem(checkedItem.Value)
+                        }
+                    );
+            }
+            else
+            {
+                var itemToSend = new Item
+                {
                     Id = _hashUtil.Generate(),
                     Template = checkedItem.Value.Id,
-                    Upd = _itemHelper.generateUpdForItem(checkedItem.Value),
+                    Upd = _itemHelper.generateUpdForItem(checkedItem.Value)
                 };
                 itemToSend.Upd.StackObjectsCount = quantity;
-                try {
+                try
+                {
                     itemsToSend.AddRange(_itemHelper.SplitStack(itemToSend));
-                } catch {
+                }
+                catch
+                {
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        "Too many items requested. Please lower the amount and try again.");
+                        "Too many items requested. Please lower the amount and try again."
+                    );
 
                     return request.DialogId;
                 }
@@ -237,13 +286,13 @@ public class GiveSptCommand(
     }
 
     /// <summary>
-    /// Return the desired locale, falls back to english if it cannot be found
+    ///     Return the desired locale, falls back to english if it cannot be found
     /// </summary>
     /// <param name="desiredLocale">Locale code, e.g. "fr" for french</param>
     /// <returns></returns>
     protected Dictionary<string, string> GetGlobalsLocale(string desiredLocale)
     {
-        return _databaseService.GetLocales().Global.TryGetValue(desiredLocale, out var locale) 
+        return _databaseService.GetLocales().Global.TryGetValue(desiredLocale, out var locale)
             ? locale.Value
             : _databaseService.GetLocales().Global["en"].Value;
     }
