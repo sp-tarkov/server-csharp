@@ -26,15 +26,11 @@ public class ProfileSptCommand(
      * spt profile level 20
      * spt profile skill metabolism 10
      */
-    // TODO: Fix this shit as Valens doesn't know Regex.
     protected Regex _commandRegex = new(
         @"^spt profile (?<command>level|skill)((?<=.*skill) (?<skill>[\w]+))? (?<quantity>(?!0+)[0-9]+)$"
     );
 
     protected Regex _examineRegex = new(@"^spt profile (?<command>examine)");
-
-    //
-    protected SavedCommand _savedCommand = null;
 
     public string GetCommand()
     {
