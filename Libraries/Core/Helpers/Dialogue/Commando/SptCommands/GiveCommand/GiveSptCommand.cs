@@ -70,7 +70,7 @@ public class GiveSptCommand(
         Dictionary<string, string>? localizedGlobal = null;
 
         // This is a reply to a give request previously made pending a reply
-        if (result.Groups[1].Value == null) {
+        if (string.IsNullOrEmpty(result.Groups[1].Value)) {
             if (!_savedCommand.ContainsKey(sessionId)) {
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
@@ -231,10 +231,16 @@ public class GiveSptCommand(
         // Flag the items as FiR
         _itemHelper.SetFoundInRaid(itemsToSend);
 
-        _mailSendService.SendSystemMessageToPlayer(sessionId, "SPT GIVE", itemsToSend);
+        _mailSendService.SendSystemMessageToPlayer(sessionId, $"SPT GIVE DELIVERY: {item}", itemsToSend);
+
         return request.DialogId;
     }
 
+    /// <summary>
+    /// Return the desired locale, falls back to english if it cannot be found
+    /// </summary>
+    /// <param name="desiredLocale">Locale code, e.g. "fr" for french</param>
+    /// <returns></returns>
     protected Dictionary<string, string> GetGlobalsLocale(string desiredLocale)
     {
         return _databaseService.GetLocales().Global.TryGetValue(desiredLocale, out var locale) 
