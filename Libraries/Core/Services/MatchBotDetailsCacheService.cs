@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
@@ -10,7 +11,7 @@ public class MatchBotDetailsCacheService(
     LocalisationService _localisationService
 )
 {
-    protected Dictionary<string, BotBase> _botDetailsCache = new();
+    protected ConcurrentDictionary<string, BotBase> _botDetailsCache = new();
 
     public void CacheBot(BotBase botToCache)
     {
