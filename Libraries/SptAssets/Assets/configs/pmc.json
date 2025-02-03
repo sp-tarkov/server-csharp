@@ -762,8 +762,8 @@
     "convertIntoPmcChance": {
         "default": {
             "assault": {
-                "min": 25,
-                "max": 35
+                "min": 15,
+                "max": 23
             },
             "cursedassault": {
                 "min": 0,
@@ -806,6 +806,12 @@
             "pmcbot": {
                 "min": 0,
                 "max": 0
+            }
+        },
+        "lighthouse": {
+            "exusec": {
+                "min": 1,
+                "max": 1
             }
         }
     },
