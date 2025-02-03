@@ -807,7 +807,7 @@ public class RagfairOfferHelper(
         }
 
         // Used to replace tokens in sold message sent to player
-        var messageKey = $"{itemTpl}Name";
+        var messageKey = $"{itemTpl} Name";
         var hasKey = globalLocales.TryGetValue(messageKey, out var value);
         
         var tplVars = new SystemData {
