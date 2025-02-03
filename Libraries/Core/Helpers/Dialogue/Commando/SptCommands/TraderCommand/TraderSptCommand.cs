@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using Core.Helpers.Dialog.Commando.SptCommands;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
@@ -9,7 +10,7 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialog.Commando.SptCommands.TraderCommand;
+namespace Core.Helpers.Dialogue.Commando.SptCommands.TraderCommand;
 
 [Injectable]
 public class TraderSptCommand(
