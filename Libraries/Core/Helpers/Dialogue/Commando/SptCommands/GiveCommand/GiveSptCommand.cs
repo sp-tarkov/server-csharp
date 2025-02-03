@@ -134,13 +134,12 @@ public class GiveSptCommand(
                     .Select(
                         i => new
                         {
-                            Match = StringSimilarity.Match(item.ToLower(), i.ToLower()),
+                            Match = StringSimilarity.Match(item, i, 2, true),
                             ItemName = i
                         }
                     ).ToList();
-                    
-                    
-                    closestItemsMatchedByName.Sort((a1, a2) => (int)a2.Match - (int)a1.Match); // We need to find a similar system to string-similarity-js
+                
+                closestItemsMatchedByName.Sort((a1, a2) => a2.Match.CompareTo(a1.Match));
 
                 if (closestItemsMatchedByName[0].Match >= _acceptableConfidence) {
                     item = closestItemsMatchedByName[0].ItemName;
@@ -149,7 +148,7 @@ public class GiveSptCommand(
                     var slicedItems = closestItemsMatchedByName.Slice(0, 10);
                     // max 10 item names and map them
                     var itemList = slicedItems
-                        .Select(match => $"{i++}. {match.ItemName} (conf: ${Math.Round(match.Match * 100), 2})");
+                        .Select(match => $"{i++}. {match.ItemName} (conf: {Math.Round(match.Match * 100d), 2})");
                     _savedCommand.Add(
                         sessionId,
                         new SavedCommand(
@@ -159,7 +158,7 @@ public class GiveSptCommand(
                     _mailSendService.SendUserMessageToPlayer(
                         sessionId,
                         commandHandler,
-                        $"Could not find exact match. Closest matches are:\n\n{itemList}\n\nUse 'spt give [number]' to select one.");
+                        $"Could not find exact match. Closest are:\n{string.Join("\n", itemList)}\n\nUse 'spt give [above number]' to select one.");
 
                     return request.DialogId;
                 }
@@ -172,7 +171,7 @@ public class GiveSptCommand(
         var tplId = isItemName
             ? _itemHelper
                   .GetItems()
-                  .Where(i => IsItemAllowed(i))
+                  .Where(IsItemAllowed)
                   .FirstOrDefault(i => (localizedGlobal[$"{i?.Id} Name"]?.ToLower() ?? i.Properties.Name) == item).Id
             : item;
 
@@ -258,7 +257,8 @@ public class GiveSptCommand(
                    templateItem.Id,
                    [
                        BaseClasses.HIDEOUT_AREA_CONTAINER, BaseClasses.LOOT_CONTAINER,
-                       BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.MOB_CONTAINER
+                       BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.MOB_CONTAINER,
+                       BaseClasses.BUILT_IN_INSERTS
                    ]
                );
     }

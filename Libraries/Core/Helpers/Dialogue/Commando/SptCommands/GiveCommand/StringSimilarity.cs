@@ -1,4 +1,6 @@
-﻿namespace Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
+namespace Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 
 public static class StringSimilarity
 {
@@ -25,13 +27,14 @@ public static class StringSimilarity
         for (var j = 0; j < str2.Length - (substringLength - 1); j++) {
             var substr2 = str2.Substring(j, substringLength);
             var count = map.GetValueOrDefault(substr2, 0);
-            if (count > 0) {
-                map.Add(substr2, count - 1);
+            if (count > 0)
+            {
+                map[substr2] = count - 1;
                 match++;
             }
         }
 
-        return match * 2D / (str1.Length + str2.Length - ((substringLength - 1D) * 2D));
+        return  match * 2d / (str1.Length + str2.Length - ((substringLength - 1d) * 2d));
     }
     
 }
