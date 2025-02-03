@@ -647,7 +647,7 @@ public class ProfileHelper(
         var customisationTemplateDb = _databaseService.GetTemplates().Customization;
         var matchingCustomisation = customisationTemplateDb.GetValueOrDefault(reward.Target, null);
 
-        if (matchingCustomisation is null)
+        if (matchingCustomisation is not null)
         {
             var rewardToStore = new CustomisationStorage
             {
