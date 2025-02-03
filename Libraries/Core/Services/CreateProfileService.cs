@@ -395,9 +395,9 @@ public class CreateProfileService(
     private string? GetGameEdition(SptProfile profile)
     {
         var edition = profile.CharacterData?.PmcData?.Info?.GameVersion;
-        if (edition is null)
+        if (edition is not null)
         {
-            return null;
+            return edition;
         }
 
         // Edge case - profile not created yet, fall back to what launcher has set
