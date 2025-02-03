@@ -98,7 +98,7 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool isSameItems(List<Item> item1, List<Item> item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string> compareUpdProperties = null)
     {
         if (item1.Count() != item2.Count)
         {
@@ -113,7 +113,7 @@ public class ItemHelper(
                 return false;
             }
 
-            if (!this.isSameItem(itemOf1, itemOf2, compareUpdProperties))
+            if (!IsSameItem(itemOf1, itemOf2, compareUpdProperties))
             {
                 return false;
             }
@@ -130,29 +130,65 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool isSameItem(Item item1, Item item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItem(Item item1, Item item2, HashSet<string>? compareUpdProperties = null)
     {
+        // Different tpl == different item
         if (item1.Template != item2.Template)
         {
             return false;
         }
 
-        var props = typeof(Upd).GetProperties();
-        if (compareUpdProperties is not null)
+        // Both lack upd object + same tpl = same
+        if (item1.Upd is null && item2.Upd is null)
         {
-            return compareUpdProperties.ToArray()
-                .All(
-                    (p) =>
-                    {
-                        var item1p = props.FirstOrDefault(prop => prop.Name.ToLower() == p.ToLower()).GetValue(item1.Upd);
-                        var item2p = props.FirstOrDefault(prop => prop.Name.ToLower() == p.ToLower()).GetValue(item2.Upd);
-                        ;
-                        return _compareUtil.RecursiveCompare(item1p, item2p);
-                    }
-                ); // TODO: please refactor this is you know how
+            return true;
         }
 
-        return _compareUtil.RecursiveCompare(item1.Upd, item2.Upd);
+        // item1 lacks upd, item2 has one
+        if (item1.Upd is null && item2.Upd is not null)
+        {
+            return false;
+        }
+
+        // item1 has upd, item2 lacks one
+        if (item1.Upd is not null && item2.Upd is null)
+        {
+            return false;
+        }
+
+        // key = Upd property Type as string, value = comparison function that returns bool
+        var comparers = new Dictionary<string, Func<Upd, Upd, bool>>
+        {
+            { "Key", (upd1, upd2) => upd1.Key?.NumberOfUsages == upd2.Key?.NumberOfUsages },
+            { "Buff", (upd1, upd2) => upd1.Buff?.Value == upd2.Buff?.Value && upd1.Buff?.BuffType == upd2.Buff?.BuffType },
+            { "CultistAmulet", (upd1, upd2) => upd1.CultistAmulet?.NumberOfUsages == upd2.CultistAmulet?.NumberOfUsages },
+            { "Dogtag", (upd1, upd2) => upd1.Dogtag?.ProfileId == upd2.Dogtag?.ProfileId },
+            { "FaceShield", (upd1, upd2) => upd1.FaceShield?.Hits == upd2.FaceShield?.Hits },
+            { "Foldable", (upd1, upd2) => upd1.Foldable?.Folded.GetValueOrDefault(false) == upd2.Foldable?.Folded.GetValueOrDefault(false) },
+            { "FoodDrink", (upd1, upd2) => upd1.FoodDrink?.HpPercent == upd2.FoodDrink?.HpPercent },
+            { "MedKit", (upd1, upd2) => upd1.MedKit?.HpResource == upd2.MedKit?.HpResource },
+            { "RecodableComponent", (upd1, upd2) => upd1.RecodableComponent?.IsEncoded == upd2.RecodableComponent?.IsEncoded },
+            { "RepairKit", (upd1, upd2) => upd1.RepairKit?.Resource == upd2.RepairKit?.Resource },
+            { "Resource", (upd1, upd2) => upd1.Resource?.UnitsConsumed == upd2.Resource?.UnitsConsumed }
+        };
+
+        // Choose above keys or passed in keys to compare items with
+        var valuesToCompare = compareUpdProperties?.Count > 0 ? compareUpdProperties : comparers.Keys.ToHashSet();
+        foreach (var propertyName in valuesToCompare)
+        {
+            if (!comparers.TryGetValue(propertyName, out var comparer))
+            {
+                // Key not found, skip
+                continue;
+            }
+
+            if (!comparer(item1.Upd, item2.Upd))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**

@@ -1,8 +1,14 @@
 using System.Text.Json.Serialization;
+using Core.Models.Utils;
 
 namespace Core.Models.Eft.Prestige
 {
-    public record ObtainPrestigeRequest
+    public class ObtainPrestigeRequestList : List<ObtainPrestigeRequest>, IRequestData
+    {
+        
+    }
+    
+    public record ObtainPrestigeRequest : IRequestData
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
@@ -21,5 +27,8 @@ namespace Core.Models.Eft.Prestige
 
         [JsonPropertyName("z")]
         public int Z { get; set; }
+        
+        [JsonPropertyName("r")]
+        public string R { get; set; }
     }
 }

@@ -52,7 +52,7 @@ public class PrestigeController(
     /// <returns></returns>
     public void ObtainPrestige(
         string sessionId,
-        List<ObtainPrestigeRequest> request)
+        ObtainPrestigeRequestList request)
     {
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;
@@ -123,7 +123,7 @@ public class PrestigeController(
 
         // Flag profile as having achieved this prestige level
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
-        newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
+        newProfile.CharacterData.PmcData.Info.PrestigeLevel = indexOfPrestigeObtained;
 
         if (request is not null)
         {

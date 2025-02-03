@@ -31,7 +31,7 @@ public class PrestigeCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string ObtainPrestige(string url, List<ObtainPrestigeRequest> info, string sessionID)
+    public string ObtainPrestige(string url, ObtainPrestigeRequestList info, string sessionID)
     {
         _prestigeController.ObtainPrestige(sessionID, info);
 
