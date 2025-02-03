@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -78,10 +78,10 @@ public class ConfigServer
             }
 
         /** TODO: deal with this:
-        this.logger.info(`Commit hash: ${
+        this.logger.info(`Commit hash: {
             globalThis.G_COMMIT || "DEBUG"
         }`);
-        this.logger.info(`Build date: ${
+        this.logger.info(`Build date: {
             globalThis.G_BUILDTIME || "DEBUG"
         }`);
         **/

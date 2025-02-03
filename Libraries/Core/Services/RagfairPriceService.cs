@@ -381,7 +381,7 @@ public class RagfairPriceService(
         )
         {
             // var itemDetails = this.itemHelper.getItem(itemTpl);
-            // this.logger.debug(`item below handbook price ${itemDetails[1]._name} handbook: ${itemHandbookPrice} flea: ${itemPrice} ${priceDifferencePercent}%`);
+            // this.logger.debug(`item below handbook price {itemDetails[1]._name} handbook: {itemHandbookPrice} flea: ${itemPrice} {priceDifferencePercent}%`);
             return Math.Round(itemHandbookPrice.Value * offerAdjustmentSettings.HandbookPriceMultiplier);
         }
 
@@ -486,8 +486,8 @@ public class RagfairPriceService(
         {
             _logger.Debug(
                 nonDefaultPresets.Count == 1
-                    ? $"Item Id: ${weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
-                    : $"Item Id: ${weapon.Template} has no default encyclopedia entry, choosing first preset(${nonDefaultPresets[0].Name}) of ${nonDefaultPresets.Count}"
+                    ? $"Item Id: {weapon.Template} has no default encyclopedia entry but only one preset: ({nonDefaultPresets[0].Name}), choosing preset: ({nonDefaultPresets[0].Name})"
+                    : $"Item Id: {weapon.Template} has no default encyclopedia entry, choosing first preset({nonDefaultPresets[0].Name}) of {nonDefaultPresets.Count}"
             );
         }
 

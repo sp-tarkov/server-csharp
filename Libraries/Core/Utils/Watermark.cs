@@ -128,7 +128,7 @@ public class Watermark {
         var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
         var versionTag = /*ProgramStatics.DEBUG ? */
             $"{sptVersion} - BLEEDINGEDGE { /*ProgramStatics.COMMIT?.slice(0, 6) ?? */""}";
-            //: `${sptVersion} - ${ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
+            //: `{sptVersion} - {ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
 
         return $"{sptConfig.ProjectName} {versionTag}";
     }

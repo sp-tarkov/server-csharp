@@ -348,7 +348,7 @@ public class BotGeneratorHelper(
         );
         if (blockingItem is not null)
         {
-            // this.logger.warning(`1 incompatibility found between - ${itemToEquip[1]._name} and ${blockingItem._name} - ${equipmentSlot}`);
+            // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
 
             return new()
             {
@@ -361,7 +361,7 @@ public class BotGeneratorHelper(
         blockingItem = templateItems.FirstOrDefault(x => x?.Properties?.ConflictingItems?.Contains(tplToCheck) ?? false);
         if (blockingItem is not null)
         {
-            // this.logger.warning(`2 incompatibility found between - ${itemToEquip[1]._name} and ${blockingItem._props.Name} - ${equipmentSlot}`);
+            // this.logger.warning(`2 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._props.Name} - {equipmentSlot}`);
             return new ChooseRandomCompatibleModResult
             {
                 Incompatible = true,
@@ -439,7 +439,7 @@ public class BotGeneratorHelper(
         var blockingInventoryItem = itemsEquipped.FirstOrDefault((x) => itemToEquip.Properties.ConflictingItems?.Contains(x.Template) ?? false);
         if (blockingInventoryItem is not null)
         {
-            // this.logger.warning(`3 incompatibility found between - ${itemToEquip[1]._name} and ${blockingInventoryItem._tpl} - ${equipmentSlot}`)
+            // this.logger.warning(`3 incompatibility found between - {itemToEquip[1]._name} and {blockingInventoryItem._tpl} - {equipmentSlot}`)
             return new ChooseRandomCompatibleModResult
             {
                 Incompatible = true,
