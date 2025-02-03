@@ -123,6 +123,7 @@ public class PrestigeController(
 
         // Flag profile as having achieved this prestige level
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
+        newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
 
         if (request is not null)
         {
