@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography;
 using SptCommon.Annotations;
@@ -92,7 +92,7 @@ public class HashUtil
                 return Convert.ToHexString(sha1HashData).Replace("-", string.Empty);
         }
 
-        throw new NotImplementedException("Provided hash algorithm is not supported.");
+        throw new NotImplementedException($"Provided hash algorithm: {algorithm} is not supported.");
     }
 
     /// <summary>
