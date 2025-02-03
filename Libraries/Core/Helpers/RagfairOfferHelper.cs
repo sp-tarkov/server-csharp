@@ -705,7 +705,7 @@ public class RagfairOfferHelper(
         {
             profileRagfairInfo.Offers.Splice(offerIndex, 1);
         }
-        
+
 
         // Also delete from ragfair
         _ragfairOfferService.RemoveOfferById(offerId);
@@ -740,16 +740,19 @@ public class RagfairOfferHelper(
         }
 
         // Assemble payment to send to seller now offer was purchased
-        foreach (var requirement in offer.Requirements) {
+        foreach (var requirement in offer.Requirements)
+        {
             // Create an item template item
-            var requestedItem = new Item{
+            var requestedItem = new Item
+            {
                 Id = _hashUtil.Generate(),
                 Template = requirement.Template,
-                Upd = new Upd{ StackObjectsCount = requirement.Count * boughtAmount },
+                Upd = new Upd { StackObjectsCount = requirement.Count * boughtAmount },
             };
 
             var stacks = _itemHelper.SplitStack(requestedItem);
-            foreach (var item in stacks) {
+            foreach (var item in stacks)
+            {
                 var outItems = new List<Item> { item };
 
                 // TODO - is this code used?, may have been when adding barters to flea was still possible for player
@@ -766,12 +769,14 @@ public class RagfairOfferHelper(
             }
         }
 
-        var ragfairDetails = new MessageContentRagfair{
+        var ragfairDetails = new MessageContentRagfair
+        {
             OfferId = offer.Id,
             // pack-offers NEED to be the full item count,
             // otherwise it only removes 1 from the pack, leaving phantom offer on client ui
             Count = offer.SellInOnePiece.GetValueOrDefault(false) ? offerStackCount.Value : boughtAmount,
-            HandbookId = itemTpl };
+            HandbookId = itemTpl
+        };
 
         _mailSendService.SendDirectNpcMessageToPlayer(
             offerOwnerSessionId,
@@ -781,11 +786,12 @@ public class RagfairOfferHelper(
             paymentItemsToSendToPlayer,
             _timeUtil.GetHoursAsSeconds((int)_questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile).Value),
             null,
-            ragfairDetails);
+            ragfairDetails
+        );
 
-    // Adjust sellers sell sum values
-    sellerProfile.RagfairInfo.SellSum ??= 0;
-    sellerProfile.RagfairInfo.SellSum += offer.SummaryCost;
+        // Adjust sellers sell sum values
+        sellerProfile.RagfairInfo.SellSum ??= 0;
+        sellerProfile.RagfairInfo.SellSum += offer.SummaryCost;
 
         return _eventOutputHolder.GetOutput(offerOwnerSessionId);
     }
@@ -803,19 +809,21 @@ public class RagfairOfferHelper(
         if (!globalLocales.TryGetValue(_goodSoldTemplate, out var soldMessageLocaleGuid))
         {
             _logger.Error(
-                _localisationService.GetText("ragfair-unable_to_find_locale_by_key", _goodSoldTemplate));
+                _localisationService.GetText("ragfair-unable_to_find_locale_by_key", _goodSoldTemplate)
+            );
         }
 
         // Used to replace tokens in sold message sent to player
         var messageKey = $"{itemTpl} Name";
         var hasKey = globalLocales.TryGetValue(messageKey, out var value);
-        
-        var tplVars = new SystemData {
+
+        var tplVars = new SystemData
+        {
             SoldItem = hasKey ? value : itemTpl,
             BuyerNickname = _botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit),
             ItemCount = boughtAmount,
         };
-        
+
         // Node searches for anything inside {property}: e.g.: "Your {soldItem} {itemCount} items were bought by {buyerNickname}."
         // each part the takes the inside "Key" and gets it from the tplVars object
         // 'Your Kalashnikov AKS-74U 5.45x39 assault rifle 1 items were bought by HB.'
