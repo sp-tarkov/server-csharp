@@ -30,7 +30,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         MathUtil mathUtil,
         ICloner cloner,
         ICollection<ProbabilityObject<K, V>>? items = null
-    ) : base(items)
+    ) : base(items ?? [])
     {
         _mathUtil = mathUtil;
         _cloner = cloner;
