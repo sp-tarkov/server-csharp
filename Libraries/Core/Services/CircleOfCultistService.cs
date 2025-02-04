@@ -338,6 +338,10 @@ public class CircleOfCultistService(
                 var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
                 _itemHelper.RemapRootItemId(presetAndMods);
 
+                // Set item as FiR
+                presetAndMods[0].Upd ??= new Upd();
+                presetAndMods[0].Upd.SpawnedInSession = true;
+
                 rewardItemCount++;
                 totalRewardCost += (int)_itemHelper.GetItemPrice(randomItemTplFromPool);
                 rewards.Add(presetAndMods);
@@ -429,6 +433,10 @@ public class CircleOfCultistService(
                 // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
                 var presetAndMods = _itemHelper.ReplaceIDs(defaultPreset.Items);
                 _itemHelper.RemapRootItemId(presetAndMods);
+
+                // Set item as FiR
+                presetAndMods[0].Upd ??= new Upd();
+                presetAndMods[0].Upd.SpawnedInSession = true;
 
                 rewards.Add(presetAndMods);
 
