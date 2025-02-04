@@ -144,13 +144,13 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
      * Draw random element of the ProbabilityObject N times to return an array of N keys.
      * Drawing can be with or without replacement
      * @param count The number of times we want to draw
-     * @param replacement Draw with or without replacement from the input dict (true = dont remove after drawing)
+     * @param removeAfterDraw Draw with or without replacement from the input dict (true = dont remove after drawing)
      * @param lockList list keys which shall be replaced even if drawing without replacement
      * @returns Array consisting of N random keys for this ProbabilityObjectArray
      */
-    public List<K> Draw(int count = 1, bool replacement = true, List<K>? lockList = null)
+    public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
     {
-        lockList ??= [];
+        neverRemoveWhitelist ??= [];
         if (Count == 0)
         {
             return [];
@@ -169,12 +169,12 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
         var probCumsum = CumulativeProbability(totals.probArray);
 
         var drawnKeys = new List<K>();
-        for (var i = 0; i < count; i++)
+        for (var i = 0; i < drawCount; i++)
         {
             var rand = Random.Shared.NextDouble();
             var randomIndex = (int)probCumsum.FindIndex((x) => x > rand);
             // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
-            if (replacement || lockList.Contains(totals.keyArray[randomIndex]))
+            if (removeAfterDraw || neverRemoveWhitelist.Contains(totals.keyArray[randomIndex]))
             {
                 // Add random item from possible value into return array
                 drawnKeys.Add(totals.keyArray[randomIndex]);
