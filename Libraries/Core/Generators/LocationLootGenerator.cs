@@ -307,7 +307,7 @@ public class LocationLootGenerator(
 
         // Create probability array with all possible container ids in this group and their relative probability of spawning
         var containerDistribution =
-            new ProbabilityObjectArray<ProbabilityObject<string, double>, string, double>(_mathUtil, _cloner, []);
+            new ProbabilityObjectArray<ProbabilityObject<string, double>, string, double>(_mathUtil, _cloner);
         foreach (var x in containerIds)
         {
             var value = containerData.ContainerIdsWithProbability[x];
@@ -556,7 +556,7 @@ public class LocationLootGenerator(
     {
         // Create probability array to calcualte the total count of lootable items inside container
         var itemCountArray =
-            new ProbabilityObjectArray<ProbabilityObject<int, float?>, int, float?>(_mathUtil, _cloner, []);
+            new ProbabilityObjectArray<ProbabilityObject<int, float?>, int, float?>(_mathUtil, _cloner);
         var countDistribution = staticLootDist[containerTypeId]?.ItemCountDistribution;
         if (countDistribution is null)
         {
@@ -600,7 +600,7 @@ public class LocationLootGenerator(
         var seasonalItemTplBlacklist = _seasonalEventService.GetInactiveSeasonalEventItems();
 
         var itemDistribution =
-            new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner, []);
+            new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner);
 
         var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
         if (itemContainerDistribution is null)
