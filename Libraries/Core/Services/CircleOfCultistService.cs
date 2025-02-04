@@ -339,8 +339,7 @@ public class CircleOfCultistService(
                 _itemHelper.RemapRootItemId(presetAndMods);
 
                 // Set item as FiR
-                presetAndMods[0].Upd ??= new Upd();
-                presetAndMods[0].Upd.SpawnedInSession = true;
+                _itemHelper.SetFoundInRaid(presetAndMods);
 
                 rewardItemCount++;
                 totalRewardCost += (int)_itemHelper.GetItemPrice(randomItemTplFromPool);
@@ -435,8 +434,7 @@ public class CircleOfCultistService(
                 _itemHelper.RemapRootItemId(presetAndMods);
 
                 // Set item as FiR
-                presetAndMods[0].Upd ??= new Upd();
-                presetAndMods[0].Upd.SpawnedInSession = true;
+                _itemHelper.SetFoundInRaid(presetAndMods);
 
                 rewards.Add(presetAndMods);
 
