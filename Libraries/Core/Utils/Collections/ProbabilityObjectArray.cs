@@ -21,7 +21,7 @@ namespace Core.Utils.Collections;
 /// <typeparam name="T"></typeparam>
 /// <typeparam name="K"></typeparam>
 /// <typeparam name="V"></typeparam>
-public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObject<K, V>
+public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
     private readonly MathUtil _mathUtil;
     private readonly ICloner _cloner;
@@ -29,8 +29,8 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
     public ProbabilityObjectArray(
         MathUtil mathUtil,
         ICloner cloner,
-        ICollection<T>? items = null
-    ) : base(items ?? [])
+        ICollection<ProbabilityObject<K, V>>? items = null
+    ) : base(items)
     {
         _mathUtil = mathUtil;
         _cloner = cloner;
@@ -55,9 +55,9 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
     /// </summary>
     /// <param name="predicate"></param>
     /// <returns>Filtered results</returns>
-    public ProbabilityObjectArray<T, K, V> Filter(Predicate<ProbabilityObject<K, V>> predicate)
+    public ProbabilityObjectArray<K, V> Filter(Predicate<ProbabilityObject<K, V>> predicate)
     {
-        var result = new ProbabilityObjectArray<T, K, V>(_mathUtil, _cloner, new List<T>());
+        var result = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, new List<ProbabilityObject<K, V>>());
         foreach (var probabilityObject in this)
             if (predicate.Invoke(probabilityObject))
             {
@@ -71,13 +71,13 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
     /// Deep clone this ProbabilityObjectArray
     /// </summary>
     /// <returns>Deep Copy of ProbabilityObjectArray</returns>
-    public ProbabilityObjectArray<T, K, V> Clone()
+    public ProbabilityObjectArray<K, V> Clone()
     {
         var clone = _cloner.Clone(this);
-        var probabilityObjects = new ProbabilityObjectArray<T, K, V>(
+        var probabilityObjects = new ProbabilityObjectArray<K, V>(
             _mathUtil,
             _cloner,
-            new List<T>()
+            new List<ProbabilityObject<K, V>>()
         );
         probabilityObjects.AddRange(clone);
 
@@ -89,9 +89,9 @@ public class ProbabilityObjectArray<T, K, V> : List<T> where T : ProbabilityObje
     /// </summary>
     /// <param name="key">The key of the element to drop</param>
     /// <returns>ProbabilityObjectArray without the dropped element</returns>
-    public ProbabilityObjectArray<T, K, V> Drop(K key)
+    public ProbabilityObjectArray<K, V> Drop(K key)
     {
-        return (ProbabilityObjectArray<T, K, V>)this.Where((r) => !r.Key?.Equals(key) ?? false);
+        return (ProbabilityObjectArray<K, V>)this.Where((r) => !r.Key?.Equals(key) ?? false);
     }
 
     /// <summary>

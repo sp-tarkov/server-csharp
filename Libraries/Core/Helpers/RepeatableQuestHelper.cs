@@ -2,16 +2,13 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Utils;
 using Core.Utils.Cloners;
-using Core.Utils.Collections;
 using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class RepeatableQuestHelper(
-    ISptLogger<RepeatableQuestHelper> _logger,
-    ICloner _cloner,
-    MathUtil _mathUtil
+    ISptLogger<RepeatableQuestHelper> _logger
 )
 {
     /// <summary>
@@ -25,15 +22,5 @@ public class RepeatableQuestHelper(
         return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(
             x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
         );
-    }
-
-    public ProbabilityObjectArray<T, K, V>
-        ProbabilityObjectArray<T, K, V>(
-            List<T>? configArrayInput
-        ) where T : ProbabilityObject<K, V>
-    {
-        var configArray = _cloner.Clone(configArrayInput);
-        var probabilityArray = new ProbabilityObjectArray<T, K, V>(_mathUtil, _cloner, configArray);
-        return probabilityArray;
     }
 }

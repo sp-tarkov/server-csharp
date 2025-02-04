@@ -307,7 +307,7 @@ public class LocationLootGenerator(
 
         // Create probability array with all possible container ids in this group and their relative probability of spawning
         var containerDistribution =
-            new ProbabilityObjectArray<ProbabilityObject<string, double>, string, double>(_mathUtil, _cloner);
+            new ProbabilityObjectArray<string, double>(_mathUtil, _cloner);
         foreach (var x in containerIds)
         {
             var value = containerData.ContainerIdsWithProbability[x];
@@ -556,7 +556,7 @@ public class LocationLootGenerator(
     {
         // Create probability array to calcualte the total count of lootable items inside container
         var itemCountArray =
-            new ProbabilityObjectArray<ProbabilityObject<int, float?>, int, float?>(_mathUtil, _cloner);
+            new ProbabilityObjectArray<int, float?>(_mathUtil, _cloner);
         var countDistribution = staticLootDist[containerTypeId]?.ItemCountDistribution;
         if (countDistribution is null)
         {
@@ -593,14 +593,15 @@ public class LocationLootGenerator(
     /// <param name="containerTypeId">Container to get possible loot for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
     /// <returns>ProbabilityObjectArray of item tpls + probabilty</returns>
-    protected ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?> GetPossibleLootItemsForContainer(string containerTypeId,
-        Dictionary<string, StaticLootDetails> staticLootDist) // TODO: Type Fuckery, return type was ProbabilityObjectArray<string, number>
+    protected ProbabilityObjectArray<string, float?> GetPossibleLootItemsForContainer(
+        string containerTypeId,
+        Dictionary<string, StaticLootDetails> staticLootDist)
     {
         var seasonalEventActive = _seasonalEventService.SeasonalEventEnabled();
         var seasonalItemTplBlacklist = _seasonalEventService.GetInactiveSeasonalEventItems();
 
         var itemDistribution =
-            new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner);
+            new ProbabilityObjectArray<string, float?>(_mathUtil, _cloner);
 
         var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
         if (itemContainerDistribution is null)
@@ -689,7 +690,7 @@ public class LocationLootGenerator(
         List<Spawnpoint> guaranteedLoosePoints = [];
 
         var blacklistedSpawnpoints = _locationConfig.LooseLootBlacklist.GetValueOrDefault(locationName);
-        var spawnpointArray = new ProbabilityObjectArray<ProbabilityObject<string, Spawnpoint>, string, Spawnpoint>(_mathUtil, _cloner, []);
+        var spawnpointArray = new ProbabilityObjectArray<string, Spawnpoint>(_mathUtil, _cloner);
 
         foreach (var spawnpoint in allDynamicSpawnpoints)
         {
@@ -805,7 +806,7 @@ public class LocationLootGenerator(
             var validItemIds = spawnPoint.Template.Items.Select((item) => item.Id).ToList();
 
             // Construct container to hold above filtered items, letting us pick an item for the spot
-            var itemArray = new ProbabilityObjectArray<ProbabilityObject<string, double?>, string, double?>(_mathUtil, _cloner, []);
+            var itemArray = new ProbabilityObjectArray<string, double?>(_mathUtil, _cloner);
             foreach (var itemDist in spawnPoint.ItemDistribution)
             {
                 if (!validItemIds.Contains(itemDist.ComposedKey.Key))
@@ -875,7 +876,7 @@ public class LocationLootGenerator(
                 }
 
                 // Create probability array of all spawn positions for this spawn id
-                var spawnpointArray = new ProbabilityObjectArray<ProbabilityObject<string, Spawnpoint>, string, Spawnpoint>(_mathUtil, _cloner, []);
+                var spawnpointArray = new ProbabilityObjectArray<string, Spawnpoint>(_mathUtil, _cloner);
                 foreach (var si in items)
                 {
                     // use locationId as template.Id is the same across all items

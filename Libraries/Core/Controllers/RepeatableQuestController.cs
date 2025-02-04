@@ -15,6 +15,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using Core.Utils.Collections;
 using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
@@ -24,7 +25,7 @@ namespace Core.Controllers;
 public class RepeatableQuestController(
     ISptLogger<RepeatableQuestChangeRequest> _logger,
     TimeUtil _timeUtil,
-    HashUtil _hashUtil,
+    MathUtil _mathUtil,
     RandomUtil _randomUtil,
     HttpResponseUtil _httpResponseUtil,
     ProfileHelper _profileHelper,
@@ -571,15 +572,14 @@ public class RepeatableQuestController(
         questPool.Pool.Pickup.Locations[ELocationName.any] = ["any"];
 
         var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel.Value, repeatableConfig);
-        var targetsConfig =
-            _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
+        var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(_mathUtil, _cloner, eliminationConfig.Targets);
 
         // Populate Elimination quest targets and their locations
         foreach (var targetKvP in targetsConfig)
             // Target is boss
             if (targetKvP.Data.IsBoss.GetValueOrDefault(false))
             {
-                questPool.Pool.Elimination.Targets[targetKvP.Key] = new TargetLocation { Locations = ["any"] };
+                questPool.Pool.Elimination.Targets.Add(targetKvP.Key, new TargetLocation { Locations = ["any"] });
             }
             else
             {

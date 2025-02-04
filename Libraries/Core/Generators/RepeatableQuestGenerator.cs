@@ -13,7 +13,6 @@ using Core.Utils.Collections;
 using Core.Utils.Json;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
-using BodyPart = Core.Models.Spt.Config.BodyPart;
 
 namespace Core.Generators;
 
@@ -100,18 +99,10 @@ public class RepeatableQuestGenerator(
 
         var eliminationConfig = _repeatableQuestHelper.GetEliminationConfigByPmcLevel(pmcLevel, repeatableConfig);
         var locationsConfig = repeatableConfig.Locations;
-        var targetsConfig =
-            _repeatableQuestHelper.ProbabilityObjectArray<Target, string, BossInfo>(eliminationConfig.Targets);
-        var bodyPartsConfig =
-            _repeatableQuestHelper.ProbabilityObjectArray<BodyPart, string, List<string>>(eliminationConfig.BodyParts);
-        var weaponCategoryRequirementConfig =
-            _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(
-                eliminationConfig.WeaponCategoryRequirements
-            );
-        var weaponRequirementConfig =
-            _repeatableQuestHelper.ProbabilityObjectArray<WeaponRequirement, string, List<string>>(
-                eliminationConfig.WeaponRequirements
-            );
+        var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(_mathUtil, _cloner, eliminationConfig.Targets);
+        var bodyPartsConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.BodyParts);
+        var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.WeaponCategoryRequirements);
+        var weaponRequirementConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.WeaponRequirements);
 
         // the difficulty of the quest varies in difficulty depending on the condition
         // possible conditions are
@@ -209,11 +200,11 @@ public class RepeatableQuestGenerator(
             bodyPartsToClient = [];
             var bodyParts = bodyPartsConfig.Draw(_randomUtil.RandInt(1, 3), false);
             double probability = 0;
-            foreach (var bi in bodyParts)
+            foreach (var bodyPart in bodyParts)
             {
                 // more than one part lead to an "OR" condition hence more parts reduce the difficulty
-                probability += bodyPartsConfig.Probability(bi).Value;
-                foreach (var biClient in bodyPartsConfig.Data(bi)) bodyPartsToClient.Add(biClient);
+                probability += bodyPartsConfig.Probability(bodyPart).Value;
+                bodyPartsToClient.Add(bodyPart);
             }
 
             bodyPartDifficulty = 1 / probability;
@@ -268,7 +259,7 @@ public class RepeatableQuestGenerator(
             {
                 List<string> weaponTypes = ["Shotgun", "Pistol"];
                 weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<WeaponRequirement, string, List<string>>)weaponCategoryRequirementConfig
+                    (ProbabilityObjectArray<string, List<string>>)weaponCategoryRequirementConfig
                         .Where(
                             category => weaponTypes
                                 .Contains(category.Key)
@@ -279,7 +270,7 @@ public class RepeatableQuestGenerator(
                 List<string> weaponTypes = ["MarksmanRifle", "DMR"];
                 // Filter out far range weapons from close distance requirement
                 weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<WeaponRequirement, string, List<string>>)weaponCategoryRequirementConfig
+                    (ProbabilityObjectArray<string, List<string>>)weaponCategoryRequirementConfig
                         .Where(
                             category => weaponTypes
                                 .Contains(category.Key)
@@ -298,8 +289,8 @@ public class RepeatableQuestGenerator(
         if (allowedWeaponsCategory is not null && eliminationConfig.WeaponRequirementProbability > rand.NextDouble())
         {
             var weaponRequirement = weaponRequirementConfig.Draw(1, false);
-            var specificAllowedWeaponCategory = weaponRequirementConfig.Data(weaponRequirement[0])[0];
-            var allowedWeapons = _itemHelper.GetItemTplsOfBaseType(specificAllowedWeaponCategory);
+            var specificAllowedWeaponCategory = weaponRequirementConfig.Data(weaponRequirement[0]);
+            var allowedWeapons = _itemHelper.GetItemTplsOfBaseType(specificAllowedWeaponCategory[0]);
             allowedWeapon = _randomUtil.GetArrayValue(allowedWeapons);
         }
 
@@ -377,7 +368,7 @@ public class RepeatableQuestGenerator(
      */
     protected int GetEliminationKillCount(
         string targetKey,
-        ProbabilityObjectArray<Target, string, BossInfo> targetsConfig,
+        ProbabilityObjectArray<string, BossInfo> targetsConfig,
         EliminationConfig eliminationConfig)
     {
         if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))

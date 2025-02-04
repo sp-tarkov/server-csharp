@@ -1646,7 +1646,7 @@ public class ItemHelper(
             return null;
         }
 
-        var ammoArray = new ProbabilityObjectArray<ProbabilityObject<string, float?>, string, float?>(_mathUtil, _cloner, []);
+        var ammoArray = new ProbabilityObjectArray<string, float?>(_mathUtil, _cloner);
         foreach (var icd in ammos) {
             // Whitelist exists and tpl not inside it, skip
             // Fixes 9x18mm kedr issues

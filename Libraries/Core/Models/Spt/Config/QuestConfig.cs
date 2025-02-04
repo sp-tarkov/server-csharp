@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Collections;
@@ -285,13 +285,13 @@ public record EliminationConfig : BaseQuestConfig
     public MinMax? LevelRange { get; set; }
 
     [JsonPropertyName("targets")]
-    public List<Target>? Targets { get; set; }
+    public List<ProbabilityObject<string, BossInfo>>? Targets { get; set; }
 
     [JsonPropertyName("bodyPartProb")]
     public double? BodyPartProbability { get; set; }
 
     [JsonPropertyName("bodyParts")]
-    public List<BodyPart>? BodyParts { get; set; }
+    public List<ProbabilityObject<string, List<string>>>? BodyParts { get; set; }
 
     [JsonPropertyName("specificLocationProb")]
     public double? SpecificLocationProbability { get; set; }
@@ -330,23 +330,19 @@ public record EliminationConfig : BaseQuestConfig
     public double? WeaponCategoryRequirementProbability { get; set; }
 
     [JsonPropertyName("weaponCategoryRequirements")]
-    public List<WeaponRequirement>? WeaponCategoryRequirements { get; set; }
+    public List<ProbabilityObject<string, List<string>>>? WeaponCategoryRequirements { get; set; }
 
     [JsonPropertyName("weaponRequirementProb")]
     public double? WeaponRequirementProbability { get; set; }
 
     [JsonPropertyName("weaponRequirements")]
-    public List<WeaponRequirement>? WeaponRequirements { get; set; }
+    public List<ProbabilityObject<string, List<string>>>? WeaponRequirements { get; set; }
 }
 
 public record BaseQuestConfig
 {
     [JsonPropertyName("possibleSkillRewards")]
     public List<string>? PossibleSkillRewards { get; set; }
-}
-
-public class Target : ProbabilityObject<string, BossInfo>
-{
 }
 
 public record BossInfo
@@ -356,12 +352,4 @@ public record BossInfo
 
     [JsonPropertyName("isPmc")]
     public bool? IsPmc { get; set; }
-}
-
-public class BodyPart : ProbabilityObject<string, List<string>>
-{
-}
-
-public class WeaponRequirement : ProbabilityObject<string, List<string>>
-{
 }

@@ -471,7 +471,7 @@ public class InsuranceController(
         var countOfAttachmentsToRemove = GetAttachmentCountToRemove(weightedAttachmentByPrice, traderId);
 
         // Create prob array and add all attachments with rouble price as the weight
-        var attachmentsProbabilityArray = new ProbabilityObjectArray<ProbabilityObject<string, double?>, string, double?>(_mathUtil, _cloner);
+        var attachmentsProbabilityArray = new ProbabilityObjectArray<string, double?>(_mathUtil, _cloner);
         foreach (var attachmentTpl in weightedAttachmentByPrice)
         {
             attachmentsProbabilityArray.Add(
