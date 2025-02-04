@@ -329,9 +329,9 @@ public class RepeatableQuestGenerator(
         // Only add specific location condition if specific map selected
         if (locationKey != "any")
         {
-            Enum.TryParse(typeof(ELocationName), locationKey, true, out var locationId);
+            var locationId = Enum.Parse<ELocationName>(locationKey);
             availableForFinishCondition.Counter.Conditions.Add(
-                GenerateEliminationLocation(locationsConfig[(ELocationName)locationId])
+                GenerateEliminationLocation(locationsConfig[locationId])
             );
         }
 
@@ -580,13 +580,13 @@ public class RepeatableQuestGenerator(
         var usedItemIndexes = new HashSet<int>();
         for (var i = 0; i < distinctItemsToRetrieveCount; i++)
         {
-            var chosenItemIndex = _randomUtil.RandInt(itemSelection.Count());
+            var chosenItemIndex = _randomUtil.RandInt(itemSelection.Count);
             var found = false;
 
             for (var j = 0; j < _maxRandomNumberAttempts; j++)
                 if (usedItemIndexes.Contains(chosenItemIndex))
                 {
-                    chosenItemIndex = _randomUtil.RandInt(itemSelection.Count());
+                    chosenItemIndex = _randomUtil.RandInt(itemSelection.Count);
                 }
                 else
                 {
@@ -613,8 +613,8 @@ public class RepeatableQuestGenerator(
 
             var itemSelected = itemSelection[chosenItemIndex];
             var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Id).Value;
-            var minValue = (double)completionConfig.MinimumRequestedAmount.Value;
-            var maxValue = (double)completionConfig.MaximumRequestedAmount.Value;
+            var minValue = completionConfig.MinimumRequestedAmount.Value;
+            var maxValue = completionConfig.MaximumRequestedAmount.Value;
             if (_itemHelper.IsOfBaseclass(itemSelected.Id, BaseClasses.AMMO))
             {
                 // Prevent multiple ammo requirements from being picked
@@ -634,13 +634,13 @@ public class RepeatableQuestGenerator(
             var value = minValue;
 
             // Get the value range within budget
-            var x = Math.Floor(roublesBudget / itemUnitPrice);
+            var x = (int)Math.Floor(roublesBudget / itemUnitPrice);
             maxValue = Math.Min(maxValue, x);
             if (maxValue > minValue)
             {
                 // If it doesn't blow the budget we have for the request, draw a random amount of the selected
                 // Item type to be requested
-                value = _randomUtil.RandInt((int)minValue, (int)maxValue + 1);
+                value = _randomUtil.RandInt(minValue, maxValue + 1);
             }
 
             roublesBudget -= value * itemUnitPrice;
