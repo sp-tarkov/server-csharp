@@ -288,7 +288,7 @@ namespace Core.Helpers
                 _itemHelper.AddUpdObjectToItem(rewardItem);
 
                 // Reward items are granted Found in Raid status
-                rewardItem.Upd.SpawnedInSession = true;
+                _itemHelper.SetFoundInRaid(rewardItem);
 
                 // Is root item, fix stacks
                 if (rewardItem.Id == reward.Target)

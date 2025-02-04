@@ -366,10 +366,11 @@ public class CircleOfCultistService(
                     Upd = new Upd
                     {
                         StackObjectsCount = stackSize,
-                        SpawnedInSession = true,
                     },
                 },
             ];
+
+            _itemHelper.SetFoundInRaid(rewardItem);
 
             // Edge case - item is ammo container and needs cartridges added
             if (_itemHelper.IsOfBaseclass(randomItemTplFromPool, BaseClasses.AMMO_BOX))
@@ -454,10 +455,11 @@ public class CircleOfCultistService(
                     Upd = new Upd
                     {
                         StackObjectsCount = stackSize,
-                        SpawnedInSession = true,
                     },
                 },
             ];
+
+            _itemHelper.SetFoundInRaid(rewardItem);
 
             // Edge case - item is ammo container and needs cartridges added
             if (_itemHelper.IsOfBaseclass(rewardTpl, BaseClasses.AMMO_BOX))

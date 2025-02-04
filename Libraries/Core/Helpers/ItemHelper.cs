@@ -1128,15 +1128,35 @@ public class ItemHelper(
     /// Modifies passed in items
     /// </summary>
     /// <param name="items">The list of items to mark as FiR</param>
-    public void SetFoundInRaid(List<Item> items)
+    /// <param name="excludeCurrency">Skip adding FiR status to currency items</param>
+    public void SetFoundInRaid(List<Item> items, bool excludeCurrency = true)
     {
         foreach (var item in items)
         {
-            if (item.Upd == null)
-                item.Upd = new();
-
+            if (excludeCurrency && IsOfBaseclass(item.Template, BaseClasses.MONEY))
+            {
+                continue;
+            }
+            item.Upd ??= new();
             item.Upd.SpawnedInSession = true;
         }
+    }
+
+    /// <summary>
+    /// Mark the passed in list of items as found in raid.
+    /// Modifies passed in items
+    /// </summary>
+    /// <param name="item">The list of items to mark as FiR</param>
+    /// <param name="excludeCurrency">Skip adding FiR status to currency items</param>
+    public void SetFoundInRaid(Item item, bool excludeCurrency = true)
+    {
+        if (excludeCurrency && IsOfBaseclass(item.Template, BaseClasses.MONEY))
+        {
+            return;
+        }
+
+        item.Upd ??= new();
+        item.Upd.SpawnedInSession = true;
     }
 
     /// <summary>
