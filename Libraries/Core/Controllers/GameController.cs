@@ -297,78 +297,94 @@ public class GameController(
         var currentTimeStamp = _timeUtil.GetTimeStamp();
         var diffSeconds = currentTimeStamp - healthLastUpdated;
 
-        // Last update is in past
-        if (healthLastUpdated < currentTimeStamp)
+        // Update just occurred
+        if (healthLastUpdated >= currentTimeStamp)
         {
-            // Base values
-            double energyRegenPerHour = 60;
-            double hydrationRegenPerHour = 60;
-            var hpRegenPerHour = 456.6;
-
-            // Set new values, whatever is smallest
-            energyRegenPerHour += pmcProfile.Bonuses!
-                .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
-
-            hydrationRegenPerHour += pmcProfile.Bonuses!
-                .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
-
-            hpRegenPerHour += pmcProfile.Bonuses!
-                .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
-
-            // Player has energy deficit
-            if (Math.Abs(pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum ?? 1) <= _deviation)
-            {
-                // Set new value, whatever is smallest
-                pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
-                if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum) pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
-            }
-
-            // Player has hydration deficit
-            if (Math.Abs(pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum ?? 1) <= _deviation)
-            {
-                pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
-                if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
-                    pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
-            }
-
-            // Check all body parts
-            foreach (var bodyPart in pmcProfile.Health!.BodyParts!
-                         .Select(bodyPartKvP => bodyPartKvP.Value))
-            {
-                // Check part hp
-                if (bodyPart.Health!.Current < bodyPart.Health.Maximum) bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
-
-                if (bodyPart.Health.Current > bodyPart.Health.Maximum) bodyPart.Health.Current = bodyPart.Health.Maximum;
-
-
-                if (bodyPart.Effects is null || bodyPart.Effects.Count == 0) continue;
-
-                // Look for effects
-                foreach (var effectKvP in bodyPart.Effects)
-                {
-                    // remove effects below 1, .e.g. bleeds at -1
-                    if (effectKvP.Value.Time < 1)
-                    {
-                        // More than 30 mins has passed
-                        if (diffSeconds > 1800) bodyPart.Effects.Remove(effectKvP.Key);
-
-                        continue;
-                    }
-
-                    // Decrement effect time value by difference between current time and time health was last updated
-                    effectKvP.Value.Time -= diffSeconds;
-                    if (effectKvP.Value.Time < 1)
-                        // Effect time was sub 1, set floor it can be
-                        effectKvP.Value.Time = 1;
-                }
-            }
-
-            // Update both values as they've both been updated
-            pmcProfile.Health.UpdateTime = currentTimeStamp;
+            return;
         }
+
+        // Base values
+        double energyRegenPerHour = 60;
+        double hydrationRegenPerHour = 60;
+        var hpRegenPerHour = 456.6;
+
+        // Set new values, whatever is smallest
+        energyRegenPerHour += pmcProfile.Bonuses!
+            .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
+            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+
+        hydrationRegenPerHour += pmcProfile.Bonuses!
+            .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
+            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+
+        hpRegenPerHour += pmcProfile.Bonuses!
+            .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
+            .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+
+        // Player has energy deficit
+        if (Math.Abs(pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum ?? 1) <= _deviation)
+        {
+            // Set new value, whatever is smallest
+            pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
+            if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum)
+            {
+                pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
+            }
+        }
+
+        // Player has hydration deficit
+        if (Math.Abs(pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum ?? 1) <= _deviation)
+        {
+            pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
+            if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
+            {
+                pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
+            }
+        }
+
+        // Check all body parts
+        foreach (var bodyPart in pmcProfile.Health!.BodyParts!
+                     .Select(bodyPartKvP => bodyPartKvP.Value))
+        {
+            // Check part hp
+            if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
+            {
+                bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
+            }
+
+            if (bodyPart.Health.Current > bodyPart.Health.Maximum)
+            {
+                bodyPart.Health.Current = bodyPart.Health.Maximum;
+            }
+
+
+            if (bodyPart.Effects is null || bodyPart.Effects.Count == 0)
+            {
+                continue;
+            }
+
+            // Look for effects
+            foreach (var effectKvP in bodyPart.Effects)
+            {
+                // remove effects below 1, .e.g. bleeds at -1
+                if (effectKvP.Value.Time < 1)
+                {
+                    // More than 30 minutes has passed
+                    if (diffSeconds > 1800) bodyPart.Effects.Remove(effectKvP.Key);
+
+                    continue;
+                }
+
+                // Decrement effect time value by difference between current time and time health was last updated
+                effectKvP.Value.Time -= diffSeconds;
+                if (effectKvP.Value.Time < 1)
+                    // Effect time was sub 1, set floor it can be
+                    effectKvP.Value.Time = 1;
+            }
+        }
+
+        // Update both values as they've both been updated
+        pmcProfile.Health.UpdateTime = currentTimeStamp;
     }
 
     /// <summary>
