@@ -14,6 +14,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
@@ -365,7 +366,10 @@ public class LocationLifecycleService
         // Quest status?
         // stats/eft/aggressor - weird values (EFT.IProfileDataContainer.Nickname)
 
-        _logger.Debug($"Raid: {request.ServerId} outcome: {request.Results.Result}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Raid: {request.ServerId} outcome: {request.Results.Result}");
+        }
 
         // Reset flea interval time to out-of-raid value
         _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.OutOfRaid;
