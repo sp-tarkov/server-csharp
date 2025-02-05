@@ -31,6 +31,8 @@ public class PrestigeController(
     ICloner _cloner
 )
 {
+    protected double _prestigePercentage = 0.05;
+    
     /// <summary>
     /// Handle /client/prestige/list
     /// </summary>
@@ -96,8 +98,7 @@ public class PrestigeController(
                 .Customization.FirstOrDefault(
                     (customisation) => customisation.Value.Name == prePrestigePmc.Info.Voice
                 )
-                .Value.Id,
-            SptForcePrestigeLevel = prePrestigeProfileClone.CharacterData.PmcData.Info.PrestigeLevel.GetValueOrDefault(0) + 1 // Current + 1
+                .Value.Id
         };
 
         // Reset profile
@@ -105,13 +106,17 @@ public class PrestigeController(
 
         // Get freshly reset profile ready for editing
         var newProfile = _profileHelper.GetFullProfile(sessionId);
-
+        
+        // set this here so we can use the prestigeLevel for further calcs
+        newProfile.CharacterData.PmcData.Info.PrestigeLevel = prePrestigePmc.Info.PrestigeLevel ?? 0;
+        newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
+        
         // Copy skills to new profile
         var commonSkillsToCopy = prePrestigePmc.Skills.Common;
         foreach (var skillToCopy in commonSkillsToCopy)
         {
-            // Set progress 5% of what it was
-            skillToCopy.Progress = skillToCopy.Progress.Value * 0.05;
+            // Set progress 5% of what it was * prestige level to get 5% or 10% for prestige 1 or 2 respectivly
+            skillToCopy.Progress = (skillToCopy.Progress.Value * _prestigePercentage) * newProfile.CharacterData.PmcData.Info.PrestigeLevel;
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault((skill) => skill.Id == skillToCopy.Id);
             if (existingSkill is not null)
                 existingSkill.Progress = skillToCopy.Progress;
@@ -123,8 +128,8 @@ public class PrestigeController(
         var masteringSkillsToCopy = prePrestigePmc.Skills.Mastering;
         foreach (var skillToCopy in masteringSkillsToCopy)
         {
-            // Set progress 5% of what it was
-            skillToCopy.Progress = skillToCopy.Progress.Value * 0.05;
+            // Set progress 5% of what it was * prestige level to get 5% or 10% for prestige 1 or 2 respectivly
+            skillToCopy.Progress = (skillToCopy.Progress.Value * _prestigePercentage) * newProfile.CharacterData.PmcData.Info.PrestigeLevel;
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Mastering.FirstOrDefault(
                 (skill) => skill.Id == skillToCopy.Id
             );
@@ -146,18 +151,15 @@ public class PrestigeController(
         newProfile.CharacterData.PmcData.Stats = prePrestigePmc.Stats;
 
         // Assumes Prestige data is in descending order
-        var indexOfPrestigeObtained = (int)Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
+        var indexOfPrestigeObtained = newProfile.CharacterData.PmcData.Info.PrestigeLevel ?? 0; // Index starts at 0
         var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
-        var prestigeRewards = _databaseService.GetTemplates()
-            .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
-            .SelectMany((prestige) => prestige.Rewards);
+        var prestigeRewards = currentPrestigeData.Rewards;
 
         AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
 
         // Flag profile as having achieved this prestige level
         newProfile.CharacterData.PmcData.Prestige[currentPrestigeData.Id] = _timeUtil.GetTimeStamp();
-        newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
-
+        
         if (request is not null)
             // Copy transferred items
             foreach (var transferRequest in request)
@@ -219,10 +221,12 @@ public class PrestigeController(
                     );
                     break;
                 }
-                // case "ExtraDailyQuest": {
-                //     // todo
-                //     break;
-                // }
+                case RewardType.ExtraDailyQuest: 
+                {
+                    _logger.Warning("AddPrestigeRewardsToProfile: Implement RewardType.ExtraDailyQuest");
+                    _logger.Warning("Does this also add the additional weekly");
+                    break;
+                }
                 default:
                     _logger.Error($"Unhandled prestige reward type: {reward.Type}");
                     break;
