@@ -47,45 +47,40 @@ public class PrestigeController(
     }
 
     /// <summary>
-    /// Handle /client/prestige/obtain
+    /// <para>Handle /client/prestige/obtain</para>
+    /// Going to Prestige 1 grants the below
+    /// <list type="bullet">
+    /// <item>5% of skills should be transfered over</item>
+    /// <item>5% of mastering should be transfered over</item>
+    /// <item>Earned achievements should be transfered over</item>
+    /// <item>Profile stats should be transfered over</item>
+    /// <item>Prestige progress should be transfered over</item>
+    /// <item>Items and rewards for Prestige 1</item>
+    /// </list>
+    /// Going to Prestige 2 grants the below
+    /// <list type="bullet">
+    /// <item>10% of skills should be transfered over</item>
+    /// <item>10% of mastering should be transfered over</item>
+    /// <item>Earned achievements should be transfered over</item>
+    /// <item>Profile stats should be transfered over</item>
+    /// <item>Prestige progress should be transfered over</item>
+    /// <item>Items and rewards for Prestige 2</item>
+    /// <item>Keeping additional dailies and weeklies from prestige 1</item>
+    /// </list>
+    /// Each time reseting the below
+    /// <list type="bullet">
+    /// <item>Trader standing</item>
+    /// <item>Task progress</item>
+    /// <item>Character level</item>
+    /// <item>Stash</item>
+    /// <item>Hideout progress</item>
+    /// </list>
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <param name="request"></param>
     /// <returns></returns>
     public void ObtainPrestige(
         string sessionId,
         ObtainPrestigeRequestList request)
     {
-        // Going to prestige 1
-
-        // transfer
-        // 5% of skills should be transfered over
-        // 5% of mastering should be transfered over
-        // earned achievements should be transfered over
-        // profile stats should be transfered over
-        // prestige progress should be transfered over
-
-        // reset
-        // trader standing
-        // task progress
-        // character level
-        // stash
-        // hideout progress
-
-        // going to prestige 2
-        // 10% of skills should be transfered over
-        // 10% of mastering should be transfered over
-        // earned achievements should be transfered over
-        // profile stats should be transfered over
-        // prestige progress should be transfered over
-
-        // reset
-        // trader standing
-        // task progress
-        // character level
-        // stash
-        // hideout progress
-        
         // Clone existing profile, create a new one
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;
