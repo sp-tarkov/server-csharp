@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Libraries\Core\Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
@@ -19,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptCommon", "SptCommon\SptCommon.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptAssets", "Libraries\SptAssets\SptAssets.csproj", "{4B973AC0-0C60-4853-9AF7-7CB69127473E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideoutCraftQuestIdGenerator", "Tools\HideoutCraftQuestIdGenerator\HideoutCraftQuestIdGenerator.csproj", "{C24B1FEB-F8AC-434E-998D-5DA4D1687295}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,15 +63,20 @@ Global
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{AC8643DC-8779-4B4A-BBDA-2D4CC466F765} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF} = {587959C2-5AFA-4B77-B327-566610F9A289}
-		{AC8643DC-8779-4B4A-BBDA-2D4CC466F765} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
+		{C24B1FEB-F8AC-434E-998D-5DA4D1687295} = {587959C2-5AFA-4B77-B327-566610F9A289}
 	EndGlobalSection
 EndGlobal

@@ -6,6 +6,7 @@ using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
+using Core.Utils;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
 using Path = System.IO.Path;
@@ -18,7 +19,7 @@ public class ItemTplGenerator(
     DatabaseServer _databaseServer,
     LocaleService _localeService,
     ItemHelper _itemHelper,
-    // @inject("FileSystemSync") protected fileSystemSync: FileSystemSync,
+    FileUtil _fileUtil,
     IEnumerable<OnLoad> _onLoadComponents
 )
 {
@@ -30,7 +31,7 @@ public class ItemTplGenerator(
     public async Task Run()
     {
         itemOverrides = ItemOverrides.ItemOverridesDictionary;
-        // Load all of the onload components, this gives us access to most of SPTs injections
+        // Load all onload components, this gives us access to most of SPTs injections
         foreach (var onLoad in _onLoadComponents)
         {
             if (onLoad is HttpCallbacks)
@@ -563,6 +564,7 @@ public class ItemTplGenerator(
         }
 
         // TODO: enable once we dont get any more errors
+        throw new NotImplementedException();
         // this.fileSystemSync.write(outputPath, enumFileData);
     }
 }
