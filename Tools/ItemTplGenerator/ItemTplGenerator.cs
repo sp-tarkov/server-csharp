@@ -83,17 +83,14 @@ public class ItemTplGenerator(
             var itemPrefix = GetItemPrefix(item);
             var itemName = GetItemName(item);
             var itemSuffix = GetItemSuffix(item);
-            
+
             // Handle the case where the item starts with the parent category name. Avoids things like 'POCKETS_POCKETS'
             if (itemName.Length > itemParentName.Length &&
                 itemParentName == itemName.Substring(1, itemParentName.Length) &&
                 itemPrefix == "")
             {
                 itemName = itemName.Substring(itemParentName.Length + 1);
-                if (itemName.Length > 0 && itemName[0] != '_')
-                {
-                    itemName = $"_{itemName}";
-                }
+                if (itemName.Length > 0 && itemName[0] != '_') itemName = $"_{itemName}";
             }
 
             // Handle the case where the item ends with the parent category name. Avoids things like 'KEY_DORM_ROOM_103_KEY'
@@ -102,10 +99,7 @@ public class ItemTplGenerator(
             {
                 itemName = itemName.Substring(0, itemName.Length - itemParentName.Length);
 
-                if (itemName.Substring(itemName.Length - 1) == "_")
-                {
-                    itemName = itemName.Substring(0, itemName.Length - 1);
-                }
+                if (itemName.Substring(itemName.Length - 1) == "_") itemName = itemName.Substring(0, itemName.Length - 1);
             }
 
             var itemKey = $"{itemParentName}{itemPrefix}{itemName}{itemSuffix}";
@@ -139,17 +133,13 @@ public class ItemTplGenerator(
 
                     // If we still collide, log an error
                     if (itemsObject.ContainsKey(itemKey))
-                    {
                         _logger.Error(
                             $"After rename, itemsObject already contains {itemKey}  {itemsObject[itemKey]} => {item.Id}"
                         );
-                    }
                 }
                 else
                 {
-                    var val = itemsObject.ContainsKey(itemKey) ? 
-                        itemsObject[itemKey] : 
-                        itemKey;
+                    var val = itemsObject.ContainsKey(itemKey) ? itemsObject[itemKey] : itemKey;
                     _logger.Error($"New itemOverride entry required: itemsObject already contains {itemKey}  {val} => {item.Id}");
                     continue;
                 }
@@ -175,27 +165,19 @@ public class ItemTplGenerator(
         var weaponsObject = new Dictionary<string, string>();
         foreach (var kv /*[itemId, item]*/ in items)
         {
-            if (!_itemHelper.IsOfBaseclass(kv.Key, BaseClasses.WEAPON))
-            {
-                continue;
-            }
+            if (!_itemHelper.IsOfBaseclass(kv.Key, BaseClasses.WEAPON)) continue;
 
             var caliber = CleanCaliber(kv.Value.Properties.AmmoCaliber.ToUpper());
             var weaponShortName = _localeService.GetLocaleDb()[$"{kv.Key} ShortName"]?.ToUpper();
 
             // Special case for the weird duplicated grenade launcher
-            if (kv.Key == "639c3fbbd0446708ee622ee9")
-            {
-                weaponShortName = "FN40GL_2";
-            }
+            if (kv.Key == "639c3fbbd0446708ee622ee9") weaponShortName = "FN40GL_2";
 
             // Include any bracketed suffixes that exist, handles the case of colored gun variants
             var weaponFullName = _localeService.GetLocaleDb()[$"{kv.Key} Name"]?.ToUpper();
             if (weaponFullName.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) &&
                 !weaponShortName.EndsWith(itemNameBracketSuffix.Groups[1].Value))
-            {
                 weaponShortName += $"_{itemNameBracketSuffix.Groups[1].Value}";
-            }
 
             var parentName = GetParentName(kv.Value);
 
@@ -236,62 +218,29 @@ public class ItemTplGenerator(
 
     private string GetParentName(TemplateItem item)
     {
-        if (item.Properties?.QuestItem is true)
-        {
-            return "QUEST";
-        }
+        if (item.Properties?.QuestItem is true) return "QUEST";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.BARTER_ITEM))
-        {
-            return "BARTER";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.BARTER_ITEM)) return "BARTER";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.THROW_WEAPON))
-        {
-            return "GRENADE";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.THROW_WEAPON)) return "GRENADE";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.STIMULATOR))
-        {
-            return "STIM";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.STIMULATOR)) return "STIM";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
-        {
-            return "MAGAZINE";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE)) return "MAGAZINE";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.KEY_MECHANICAL))
-        {
-            return "KEY";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.KEY_MECHANICAL)) return "KEY";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MOB_CONTAINER))
-        {
-            return "SECURE";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MOB_CONTAINER)) return "SECURE";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.SIMPLE_CONTAINER))
-        {
-            return "CONTAINER";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.SIMPLE_CONTAINER)) return "CONTAINER";
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.PORTABLE_RANGE_FINDER))
-        {
-            return "RANGEFINDER";
-        }
+        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.PORTABLE_RANGE_FINDER)) return "RANGEFINDER";
 
         // Why are flares grenade launcher...?
-        if (item.Name.StartsWith("weapon_rsp30"))
-        {
-            return "FLARE";
-        }
+        if (item.Name.StartsWith("weapon_rsp30")) return "FLARE";
 
         // This is a special case for the signal pistol, I'm not adding it as a Grenade Launcher
-        if (item.Id == "620109578d82e67e7911abf2")
-        {
-            return "SIGNALPISTOL";
-        }
+        if (item.Id == "620109578d82e67e7911abf2") return "SIGNALPISTOL";
 
         var parentId = item.Parent;
         return items[parentId].Name.ToUpper();
@@ -301,15 +250,9 @@ public class ItemTplGenerator(
     {
         var shrapnelId = "5943d9c186f7745a13413ac9";
 
-        if (item.Type != "Item")
-        {
-            return false;
-        }
+        if (item.Type != "Item") return false;
 
-        if (item.Prototype == shrapnelId)
-        {
-            return false;
-        }
+        if (item.Prototype == shrapnelId) return false;
 
         return true;
     }
@@ -325,25 +268,15 @@ public class ItemTplGenerator(
 
         // Prefix ammo with its caliber
         if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO))
-        {
             prefix = GetAmmoPrefix(item);
-        }
         // Prefix ammo boxes with their caliber
         else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO_BOX))
-        {
             prefix = GetAmmoBoxPrefix(item);
-        }
         // Prefix magazines with their caliber
-        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
-        {
-            prefix = GetMagazinePrefix(item);
-        }
+        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE)) prefix = GetMagazinePrefix(item);
 
         // Make sure there's an underscore separator
-        if (prefix.Length > 0 && prefix[0] != '_')
-        {
-            prefix = $"_{prefix}";
-        }
+        if (prefix.Length > 0 && prefix[0] != '_') prefix = $"_{prefix}";
 
         return prefix;
     }
@@ -354,26 +287,15 @@ public class ItemTplGenerator(
 
         // Add mag size for magazines
         if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
-        {
             suffix = $"{item.Properties?.Cartridges?[0].MaxCount?.ToString()}RND";
-        }
         // Add pack size for ammo boxes
-        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO_BOX))
-        {
-            suffix = $"{item.Properties.StackSlots[0]?.MaxCount.ToString()}RND";
-        }
+        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO_BOX)) suffix = $"{item.Properties.StackSlots[0]?.MaxCount.ToString()}RND";
 
         // Add "DAMAGED" for damaged items
-        if (item.Name.ToLower().Contains("damaged"))
-        {
-            suffix += "_DAMAGED";
-        }
+        if (item.Name.ToLower().Contains("damaged")) suffix += "_DAMAGED";
 
         // Make sure there's an underscore separator
-        if (suffix.Length > 0 && suffix[0] != '_')
-        {
-            suffix = $"_{suffix}";
-        }
+        if (suffix.Length > 0 && suffix[0] != '_') suffix = $"_{suffix}";
 
         return suffix;
     }
@@ -457,15 +379,10 @@ public class ItemTplGenerator(
 
         // Fall back in the event we couldn't find a name
         if (string.IsNullOrEmpty(itemName))
-        {
             if (localeDb.TryGetValue($"{item.Id} Name", out itemName))
                 itemName = itemName.ToUpper();
-        }
 
-        if (string.IsNullOrEmpty(itemName))
-        {
-            itemName = item.Name?.ToUpper() ?? null;
-        }
+        if (string.IsNullOrEmpty(itemName)) itemName = item.Name?.ToUpper() ?? null;
 
         if (string.IsNullOrEmpty(itemName))
         {
@@ -486,9 +403,7 @@ public class ItemTplGenerator(
 
         // Add grid size for lootable containers
         if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.LOOT_CONTAINER))
-        {
             return $"{item.Properties.Grids[0]?.Props.CellsH}X{item.Properties.Grids[0]?.Props.CellsV}";
-        }
 
         // Add ammo caliber to conflicting weapons
         if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON))
@@ -496,31 +411,19 @@ public class ItemTplGenerator(
             var caliber = CleanCaliber(item.Properties.AmmoCaliber.ToUpper());
 
             // If the item has a bracketed section at the end of its name, include that
-            if (itemName?.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) ?? false)
-            {
-                return $"{caliber}_{itemNameBracketSuffix.Groups[1].Value}";
-            }
+            if (itemName?.RegexMatch(@"\((.+?)\)$", out var itemNameBracketSuffix) ?? false) return $"{caliber}_{itemNameBracketSuffix.Groups[1].Value}";
 
             return caliber;
         }
 
         // Make sure we have a full name
-        if (string.IsNullOrEmpty(itemName))
-        {
-            return "";
-        }
+        if (string.IsNullOrEmpty(itemName)) return "";
 
         // If the item has a bracketed section at the end of its name, use that
-        if (itemName.RegexMatch(@"\((.+?)\)$", out var itemNameBracker))
-        {
-            return itemNameBracker.Groups[1].Value;
-        }
+        if (itemName.RegexMatch(@"\((.+?)\)$", out var itemNameBracker)) return itemNameBracker.Groups[1].Value;
 
         // If the item has a number at the end of its name, use that
-        if (itemName.RegexMatch("#([0-9]+)$", out var itemNameNumberSuffix))
-        {
-            return itemNameNumberSuffix.Groups[1].Value;
-        }
+        if (itemName.RegexMatch("#([0-9]+)$", out var itemNameNumberSuffix)) return itemNameNumberSuffix.Groups[1].Value;
 
         return "";
     }
@@ -529,21 +432,14 @@ public class ItemTplGenerator(
     {
         // First generate a mapping of the original enum values to names
         var originalEnumValues = new Dictionary<string, string>();
-        foreach (var field in originalEnum.GetFields())
-        {
-            originalEnumValues.Add(field.GetValue(null)!.ToString()!, field.Name);
-        }
+        foreach (var field in originalEnum.GetFields()) originalEnumValues.Add(field.GetValue(null)!.ToString()!, field.Name);
 
         // Loop through our new data, and find any where the given ID's name doesn't match the original enum
         foreach (var kv in data)
-        {
             if (originalEnumValues.ContainsKey(kv.Value) && originalEnumValues[kv.Value] != kv.Key)
-            {
                 _logger.Warning(
                     $"Enum {enumName} key has changed for {kv.Value}, {originalEnumValues[kv.Value]} => {kv.Key}"
                 );
-            }
-        }
     }
 
     private void WriteEnumsToFile(string outputPath, Dictionary<string, Dictionary<string, string>> enumEntries)
@@ -555,10 +451,7 @@ public class ItemTplGenerator(
         {
             enumFileData += $"\npublic static class {enumName}\n{{\n";
 
-            foreach (var (key, value) in data)
-            {
-                enumFileData += $"    {key} = \"{value}\";\n";
-            }
+            foreach (var (key, value) in data) enumFileData += $"    {key} = \"{value}\";\n";
 
             enumFileData += "}\n";
         }

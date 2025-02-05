@@ -160,34 +160,45 @@ public record Info
 
     ///Experience the bot has gained
     public int? Experience { get; set; }
+
     public List<Ban>? Bans { get; set; }
     public bool? BannedState { get; set; }
     public long? BannedUntil { get; set; }
     public bool? IsStreamerModeAvailable { get; set; }
+
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int? RegistrationDate { get; set; }
+
     public string? GameVersion { get; set; }
     public MemberCategory? MemberCategory { get; set; }
     public MemberCategory? SelectedMemberCategory { get; set; }
+
     [JsonPropertyName("lockedMoveCommands")]
     public bool? LockedMoveCommands { get; set; }
+
     public double? SavageLockTime { get; set; }
     public long? LastTimePlayedAsSavage { get; set; }
     public BotInfoSettings? Settings { get; set; }
     public List<object>? NeedWipeOptions { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("lastCompletedWipe")]
     public LastCompleted? LastCompletedWipe { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("lastWipeTimestamp")]
     public LastCompleted? LastWipeTimestamp { get; set; }
+
     public double? AccountType { get; set; }
     public long? NicknameChangeDate { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("lastCompletedEvent")]
     public LastCompleted? LastCompletedEvent { get; set; }
+
     [JsonPropertyName("isMigratedSkills")]
     public bool? IsMigratedSkills { get; set; }
+
     public double? GroupId { get; set; }
     public double? TeamId { get; set; }
     public bool? HasCoopExtension { get; set; }
@@ -246,6 +257,7 @@ public record BotBaseHealth
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     [JsonPropertyName("BodyParts")]
     public Dictionary<string, BodyPartHealth>? BodyParts { get; set; }
+
     public double? UpdateTime { get; set; }
     public bool? Immortal { get; set; }
 }
@@ -345,7 +357,6 @@ public record BaseSkill
 
 public record Common : BaseSkill
 {
-
 }
 
 public record Mastering : BaseSkill
@@ -371,6 +382,7 @@ public record EftStats
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public Aggressor? Aggressor { get; set; }
+
     public List<DroppedItem>? DroppedItems { get; set; }
     public List<FoundInRaidItem>? FoundInRaidItems { get; set; }
     public DamageHistory? DamageHistory { get; set; }
@@ -378,6 +390,7 @@ public record EftStats
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public LastPlayerState? LastPlayerState { get; set; }
+
     public long? TotalInGameTime { get; set; }
     public string? SurvivorClass { get; set; }
 
@@ -413,7 +426,8 @@ public record Victim
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
     public string? Location { get; set; }
-    [JsonExtensionData] 
+
+    [JsonExtensionData]
     public Dictionary<string, object> OtherProperties { get; set; }
 }
 
@@ -436,13 +450,16 @@ public record CounterKeyValue
 public record Aggressor
 {
     public double? PrestigeLevel { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? AccountId { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? ProfileId { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? MainProfileNickname { get; set; }
+
     public string? Name { get; set; }
     public string? Side { get; set; }
     public string? BodyPart { get; set; }
@@ -451,7 +468,8 @@ public record Aggressor
     public string? Category { get; set; }
     public string? ColliderType { get; set; }
     public string? Role { get; set; }
-    [JsonExtensionData] 
+
+    [JsonExtensionData]
     public Dictionary<string, object> OtherProperties { get; set; }
 }
 
@@ -484,8 +502,10 @@ public record DamageStats
     public double? Amount { get; set; }
     public string? Type { get; set; }
     public string? SourceId { get; set; }
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public string? OverDamageFrom { get; set; }
+
     public bool? Blunt { get; set; }
     public double? ImpactsCount { get; set; }
 }
@@ -542,14 +562,16 @@ public record Hideout
     public Dictionary<string, Production?>? Production { get; set; }
     public List<BotHideoutArea>? Areas { get; set; }
     public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
-    
+
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     public HideoutCounters? HideoutCounters { get; set; }
+
     public double? Seed { get; set; }
     public Dictionary<string, string>? MannequinPoses { get; set; }
 
     [JsonPropertyName("sptUpdateLastRunTimestamp")]
     public long? SptUpdateLastRunTimestamp { get; set; }
+
     public Dictionary<string, string>? Customization { get; set; }
 }
 
@@ -624,7 +646,7 @@ public record Production // use this instead of productive and scavcase
     // Craft is cultist circle sacrifice
     [JsonPropertyName("sptIsCultistCircle")]
     public bool? SptIsCultistCircle { get; set; }
-    
+
     public string? RecipeId { get; set; }
 }
 

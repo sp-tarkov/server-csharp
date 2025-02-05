@@ -74,10 +74,7 @@ public class BotHelper(
         var friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
 
         // Null guard
-        if (difficultySettings.Mind[friendlyBotTypesKey] is null)
-        {
-            difficultySettings.Mind[friendlyBotTypesKey] = new List<string>();
-        }
+        if (difficultySettings.Mind[friendlyBotTypesKey] is null) difficultySettings.Mind[friendlyBotTypesKey] = new List<string>();
 
         ((List<string>)difficultySettings.Mind[friendlyBotTypesKey]).Add(typeToAdd);
     }
@@ -92,25 +89,15 @@ public class BotHelper(
         var revengePropKey = "REVENGE_BOT_TYPES";
 
         // Nothing to add
-        if (typesToAdd is null)
-        {
-            return;
-        }
+        if (typesToAdd is null) return;
 
         // Null guard
-        if (difficultySettings.Mind[revengePropKey] is null)
-        {
-            difficultySettings.Mind[revengePropKey] = new List<string>();
-        }
+        if (difficultySettings.Mind[revengePropKey] is null) difficultySettings.Mind[revengePropKey] = new List<string>();
 
         var revengeArray = (List<string>)difficultySettings.Mind[revengePropKey];
         foreach (var botTypeToAdd in typesToAdd)
-        {
             if (!revengeArray.Contains(botTypeToAdd))
-            {
                 revengeArray.Add(botTypeToAdd);
-            }
-        }
     }
 
     public bool RollChanceToBePmc(MinMax botConvertMinMax)
@@ -121,10 +108,7 @@ public class BotHelper(
     protected Dictionary<string, MinMax> GetPmcConversionValuesForLocation(string location)
     {
         var result = _pmcConfig.ConvertIntoPmcChance[location.ToLower()];
-        if (result is null)
-        {
-            _pmcConfig.ConvertIntoPmcChance = new();
-        }
+        if (result is null) _pmcConfig.ConvertIntoPmcChance = new Dictionary<string, Dictionary<string, MinMax>>();
 
         return result;
     }
@@ -151,10 +135,7 @@ public class BotHelper(
     public RandomisationDetails GetBotRandomizationDetails(int botLevel, EquipmentFilters botEquipConfig)
     {
         // No randomisation details found, skip
-        if (botEquipConfig is null || botEquipConfig.Randomisation is null)
-        {
-            return null;
-        }
+        if (botEquipConfig is null || botEquipConfig.Randomisation is null) return null;
 
         return botEquipConfig.Randomisation.FirstOrDefault(
             (randDetails) => botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
@@ -203,7 +184,7 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string side = null)
     {
-        var randomType = (side is not null) ? side : (_randomUtil.GetInt(0, 1) == 0) ? "usec" : "bear";
+        var randomType = side is not null ? side : _randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear";
         var allNames = _databaseService.GetBots().Types[randomType.ToLower()].FirstNames;
         var filteredNames = allNames.Where((name) => name.Length <= maxLength);
         if (filteredNames.Count() == 0)

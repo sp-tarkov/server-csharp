@@ -10,7 +10,7 @@ public record Reward
 
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public RewardType? Type { get; set; }
@@ -50,11 +50,11 @@ public record Reward
     /** Game editions blacklisted from getting reward */
     [JsonPropertyName("notAvailableInGameEditions")]
     public List<string>? NotAvailableInGameEditions { get; set; }
-    
+
     // This is always Null atm in the achievements.json
     [JsonPropertyName("illustrationConfig")]
     public object? IllustrationConfig { get; set; }
-    
+
     [JsonPropertyName("isHidden")]
     public bool? IsHidden { get; set; }
 }

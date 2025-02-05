@@ -109,12 +109,8 @@ public class SptHttpListener : IHttpListener
                 }
 
                 if (!requestIsCompressed)
-                {
                     if (_logger.IsLogEnabled(LogLevel.Debug))
-                    {
                         _logger.Debug(value);
-                    }
-                }
 
                 var response = GetResponse(sessionId, req, value);
                 SendResponse(sessionId, req, resp, value, response);
@@ -145,20 +141,14 @@ public class SptHttpListener : IHttpListener
         string output
     )
     {
-        if (body == null)
-        {
-            body = new object();
-        }
+        if (body == null) body = new object();
         var bodyInfo = _jsonUtil.Serialize(body);
 
         if (IsDebugRequest(req))
         {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Response: {output}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Response: {output}");
 
             LogRequest(req, output);
             return;
@@ -167,14 +157,10 @@ public class SptHttpListener : IHttpListener
         // Not debug, minority of requests need a serializer to do the job (IMAGE/BUNDLE/NOTIFY)
         var serialiser = _serializers.FirstOrDefault((x) => x.CanHandle(output));
         if (serialiser != null)
-        {
             serialiser.Serialize(sessionID, req, resp, bodyInfo);
-        }
         else
-        {
             // No serializer can handle the request (majority of requests dont), zlib the output and send response back
             SendZlibJson(resp, output, sessionID);
-        }
 
         LogRequest(req, output);
     }
@@ -231,10 +217,7 @@ public class SptHttpListener : IHttpListener
         resp.StatusCode = 200;
         resp.ContentType = "application/json";
         resp.Headers.Append("Set-Cookie", $"PHPSESSID={sessionID}");
-        if (!string.IsNullOrEmpty(output))
-        {
-            resp.Body.WriteAsync(Encoding.UTF8.GetBytes(output)).AsTask().Wait();
-        }
+        if (!string.IsNullOrEmpty(output)) resp.Body.WriteAsync(Encoding.UTF8.GetBytes(output)).AsTask().Wait();
         resp.StartAsync().Wait();
         resp.CompleteAsync().Wait();
     }
@@ -256,9 +239,9 @@ public class SptHttpListener : IHttpListener
         resp.CompleteAsync().Wait();
     }
 
-    record Response(string Method, string jsonData);
+    private record Response(string Method, string jsonData);
 
-    record Request(string Method, object output);
+    private record Request(string Method, object output);
 
-    record RequestData(string Url, object Headers, object Data);
+    private record RequestData(string Url, object Headers, object Data);
 }

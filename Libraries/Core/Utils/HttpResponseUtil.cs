@@ -35,10 +35,7 @@ public class HttpResponseUtil
     protected string ClearString(string? s)
     {
         var value = s ?? "";
-        foreach (var regex in _cleanupRegexList)
-        {
-            value = regex.Replace(value, string.Empty);
-        }
+        foreach (var regex in _cleanupRegexList) value = regex.Replace(value, string.Empty);
 
         return value;
     }
@@ -103,18 +100,16 @@ public class HttpResponseUtil
         if (string.IsNullOrEmpty(message))
             message = _localisationService.GetText("http-unknown_error");
         if (output.Warnings?.Count > 0)
-        {
-            output.Warnings.Add(new Warning
-            {
-                Index = output.Warnings?.Count - 1,
-                ErrorMessage = message,
-                Code = errorCode.ToString()
-            });
-        }
+            output.Warnings.Add(
+                new Warning
+                {
+                    Index = output.Warnings?.Count - 1,
+                    ErrorMessage = message,
+                    Code = errorCode.ToString()
+                }
+            );
         else
-        {
             output.Warnings = [new Warning { Index = 0, ErrorMessage = message, Code = errorCode.ToString() }];
-        }
 
         return output;
     }

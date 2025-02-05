@@ -25,7 +25,8 @@ public class InsuranceStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => _insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
-                typeof(GetInsuranceCostRequestData))
+                typeof(GetInsuranceCostRequestData)
+            )
         ]
     )
     {

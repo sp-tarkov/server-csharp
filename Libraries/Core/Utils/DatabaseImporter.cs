@@ -107,7 +107,7 @@ public class DatabaseImporter : OnLoad
             var filePathNoExtension = _fileUtil.StripExtension(fileNameWithNoSPTPath, true);
             if (filePathNoExtension.StartsWith("/") || fileNameWithPath.StartsWith("\\"))
                 filePathNoExtension = $"{filePathNoExtension.Substring(1)}";
-            
+
             var bsgPath = $"/{newBasePath}/{filePathNoExtension}".Replace("\\", "/");
             _imageRouter.AddRoute(bsgPath, fileNameWithPath);
         }
@@ -118,10 +118,7 @@ public class DatabaseImporter : OnLoad
         List<string> result = [];
         result.AddRange(Directory.GetFiles(directoryPath));
 
-        foreach (var subdirectory in Directory.GetDirectories(directoryPath))
-        {
-            result.AddRange(GetAllFilesInDirectory(subdirectory));
-        }
+        foreach (var subdirectory in Directory.GetDirectories(directoryPath)) result.AddRange(GetAllFilesInDirectory(subdirectory));
 
         return result;
     }
@@ -138,11 +135,11 @@ public class DatabaseImporter : OnLoad
             $"{filePath}database/",
             OnReadValidate
         );
-        
+
         // TODO: Fix loading of traders, so their full path is not included as the key
 
         var tempTraders = new Dictionary<string, Trader>();
-        
+
         // temp fix for trader keys
         foreach (var trader in dataToImport.Traders)
         {
@@ -150,7 +147,7 @@ public class DatabaseImporter : OnLoad
             var tempKey = trader.Key.Split("/").Last();
             tempTraders.Add(tempKey, trader.Value);
         }
-        
+
         dataToImport.Traders = tempTraders;
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
@@ -218,13 +215,11 @@ public class DatabaseImporter : OnLoad
                 var filename = _fileUtil.StripExtension(file);
                 var routeKey = $"{routes[i]}{filename}";
                 //var imagePath = $"{filepath}{directories[i]}/{file}";
-                
+
                 var pathOverride = GetImagePathOverride(imagePath);
-                if (!string.IsNullOrEmpty(pathOverride)) {
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
-                    }
+                if (!string.IsNullOrEmpty(pathOverride))
+                {
+                    if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
                     imagePath = pathOverride;
                 }
 

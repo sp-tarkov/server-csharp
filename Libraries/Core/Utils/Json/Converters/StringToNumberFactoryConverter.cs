@@ -31,12 +31,15 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
                     {
                         if (typeToConvert.IsGenericType &&
                             typeToConvert.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        {
                             type = typeToConvert.GenericTypeArguments[0];
-                        }
-                        return (T) type.GetMethods().First(m =>
-                            m.Name == "Parse" && m.GetParameters().Length == 1 &&
-                            m.GetParameters().First().ParameterType == typeof(string)).Invoke(null, [value]);
+                        return (T)type.GetMethods()
+                            .First(
+                                m =>
+                                    m.Name == "Parse" &&
+                                    m.GetParameters().Length == 1 &&
+                                    m.GetParameters().First().ParameterType == typeof(string)
+                            )
+                            .Invoke(null, [value]);
                     }
                     catch (Exception ex)
                     {

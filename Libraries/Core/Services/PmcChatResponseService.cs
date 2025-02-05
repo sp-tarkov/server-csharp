@@ -37,15 +37,13 @@ public class PmcChatResponseService(
      */
     public void SendVictimResponse(string sessionId, List<Victim> pmcVictims, PmcData pmcData)
     {
-        foreach (var victim in pmcVictims) {
-            if (!_randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent))
-            {
-                continue;
-            }
+        foreach (var victim in pmcVictims)
+        {
+            if (!_randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent)) continue;
 
             if (string.IsNullOrEmpty(victim.Name))
             {
-                _logger.Warning($"Victim: { victim.ProfileId} does not have a nickname, skipping pmc response message send");
+                _logger.Warning($"Victim: {victim.ProfileId} does not have a nickname, skipping pmc response message send");
 
                 continue;
             }
@@ -53,13 +51,12 @@ public class PmcChatResponseService(
             var victimDetails = GetVictimDetails(victim);
             var message = ChooseMessage(true, pmcData, victim);
             if (message is not null)
-            {
                 _notificationSendHelper.SendMessageToPlayer(
                     sessionId,
                     victimDetails,
                     message,
-                    MessageType.USER_MESSAGE);
-            }
+                    MessageType.USER_MESSAGE
+                );
         }
     }
 
@@ -71,31 +68,20 @@ public class PmcChatResponseService(
      */
     public void SendKillerResponse(string sessionId, PmcData pmcData, Aggressor killer)
     {
-        if (killer is null)
-        {
-            return;
-        }
+        if (killer is null) return;
 
-        if (!_randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent))
-        {
-            return;
-        }
+        if (!_randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent)) return;
 
         // find bot by name in cache
         var killerDetailsInCache = _matchBotDetailsCacheService.GetBotByNameAndSide(killer.Name, killer.Side);
-        if (killerDetailsInCache is null)
-        {
-            return;
-        }
+        if (killerDetailsInCache is null) return;
 
         // If killer wasn't a PMC, skip
         var pmcTypes = new List<string> { "pmcUSEC", "pmcBEAR" };
-        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role))
-        {
-            return;
-        }
+        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role)) return;
 
-        var killerDetails = new UserDialogInfo {
+        var killerDetails = new UserDialogInfo
+        {
             Id = killerDetailsInCache.Id,
             Aid = _hashUtil.GenerateAccountId(), // TODO: pass correct value
             Info = new UserDialogDetails
@@ -104,15 +90,12 @@ public class PmcChatResponseService(
                 Side = killerDetailsInCache.Info.Side,
                 Level = killerDetailsInCache.Info.Level,
                 MemberCategory = killerDetailsInCache.Info.MemberCategory,
-                SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory,
-            },
+                SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory
+            }
         };
 
         var message = ChooseMessage(false, pmcData);
-        if (message is null)
-        {
-            return;
-        }
+        if (message is null) return;
 
         _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
     }
@@ -139,12 +122,16 @@ public class PmcChatResponseService(
         }
 
         // Choose random response from above list and request it from localisation service
-        var responseText = _localisationService.GetText(_randomUtil.GetArrayValue(possibleResponseLocaleKeys), new {
-            playerName = pmcData.Info.Nickname,
-            playerLevel = pmcData.Info.Level,
-            playerSide = pmcData.Info.Side,
-            victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : "",
-        });
+        var responseText = _localisationService.GetText(
+            _randomUtil.GetArrayValue(possibleResponseLocaleKeys),
+            new
+            {
+                playerName = pmcData.Info.Nickname,
+                playerLevel = pmcData.Info.Level,
+                playerSide = pmcData.Info.Side,
+                victimDeathLocation = victimData is not null ? GetLocationName(victimData.Location) : ""
+            }
+        );
 
         // Give the player a gift code if they were killed and response is 'pity'.
         if (responseType == "pity")
@@ -161,15 +148,9 @@ public class PmcChatResponseService(
             responseText += $"{suffixText}";
         }
 
-        if (StripCapitalisation(isVictim))
-        {
-            responseText = responseText.ToLower();
-        }
+        if (StripCapitalisation(isVictim)) responseText = responseText.ToLower();
 
-        if (AllCaps(isVictim))
-        {
-            responseText = responseText.ToUpper();
-        }
+        if (AllCaps(isVictim)) responseText = responseText.ToUpper();
 
         return responseText;
     }
@@ -252,7 +233,7 @@ public class PmcChatResponseService(
         var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
         var keys = _localisationService.GetKeys();
 
-        return keys.Where((x) => x.StartsWith($"{ keyBase}{ keyType}")).ToList();
+        return keys.Where((x) => x.StartsWith($"{keyBase}{keyType}")).ToList();
     }
 
     /**
@@ -286,7 +267,8 @@ public class PmcChatResponseService(
      */
     protected UserDialogInfo GetVictimDetails(Victim pmcVictim)
     {
-        var categories = new List<MemberCategory>{
+        var categories = new List<MemberCategory>
+        {
             MemberCategory.UniqueId,
             MemberCategory.Default,
             MemberCategory.Default,
@@ -300,16 +282,18 @@ public class PmcChatResponseService(
 
         var chosenCategory = _randomUtil.GetArrayValue(categories);
 
-        return new UserDialogInfo {
+        return new UserDialogInfo
+        {
             Id = pmcVictim.ProfileId,
             Aid = int.Parse(pmcVictim.AccountId),
-            Info = new UserDialogDetails{
+            Info = new UserDialogDetails
+            {
                 Nickname = pmcVictim.Name,
                 Level = pmcVictim.Level,
                 Side = pmcVictim.Side,
                 MemberCategory = chosenCategory,
                 SelectedMemberCategory = chosenCategory
-            },
+            }
         };
     }
 }

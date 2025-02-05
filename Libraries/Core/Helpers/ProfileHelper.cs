@@ -87,10 +87,7 @@ public class ProfileHelper(
     {
         // Remove `loyaltyLevel` from `TradersInfo`, as otherwise it causes the client to not
         // properly calculate the player's `loyaltyLevel`
-        foreach (var trader in clonedProfile.CharacterData.PmcData.TradersInfo.Values)
-        {
-            trader.LoyaltyLevel = null;
-        }
+        foreach (var trader in clonedProfile.CharacterData.PmcData.TradersInfo.Values) trader.LoyaltyLevel = null;
     }
 
     /// <summary>
@@ -160,9 +157,7 @@ public class ProfileHelper(
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
             playerLevel = expTable.Length - 1;
 
-        for (var i = 0; i < playerLevel; i++) {
-            exp += expTable[i].Experience;
-        }
+        for (var i = 0; i < playerLevel; i++) exp += expTable[i].Experience;
 
         return exp;
     }
@@ -182,15 +177,15 @@ public class ProfileHelper(
     /// <returns>Spt</returns>
     public Spt GetDefaultSptDataObject()
     {
-        return new()
+        return new Spt
         {
             Version = _watermark.GetVersionTag(true),
-            Mods = new(),
-            ReceivedGifts = new(),
-            BlacklistedItemTemplates = new(),
-            FreeRepeatableRefreshUsedCount = new(),
-            Migrations = new(),
-            CultistRewards = new()
+            Mods = new List<ModDetails>(),
+            ReceivedGifts = new List<ReceivedGift>(),
+            BlacklistedItemTemplates = new List<string>(),
+            FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
+            Migrations = new Dictionary<string, long>(),
+            CultistRewards = new Dictionary<string, AcceptedCultistReward>()
         };
     }
 
@@ -239,11 +234,11 @@ public class ProfileHelper(
     /// <returns></returns>
     public SearchFriendResponse? GetChatRoomMemberFromPmcProfile(PmcData pmcProfile)
     {
-        return new()
+        return new SearchFriendResponse
         {
             Id = pmcProfile.Id,
             Aid = pmcProfile.Aid,
-            Info = new()
+            Info = new UserDialogDetails
             {
                 Nickname = pmcProfile.Info.Nickname,
                 Side = pmcProfile.Info.Side,
@@ -293,29 +288,30 @@ public class ProfileHelper(
     /// <returns>Default profile Stats object</returns>
     public Stats GetDefaultCounters()
     {
-        return new()
+        return new Stats
         {
-            Eft = new()
+            Eft = new EftStats
             {
-                CarriedQuestItems = new(),
-                DamageHistory = new() { LethalDamagePart = "Head", LethalDamage = null, BodyParts = new() },
-                DroppedItems = new(),
+                CarriedQuestItems = new List<string>(),
+                DamageHistory = new DamageHistory { LethalDamagePart = "Head", LethalDamage = null, BodyParts = new BodyPartsDamageHistory() },
+                DroppedItems = new List<DroppedItem>(),
                 ExperienceBonusMult = 0,
-                FoundInRaidItems = new(),
+                FoundInRaidItems = new List<FoundInRaidItem>(),
                 LastPlayerState = null,
                 LastSessionDate = 0,
-                OverallCounters = new()
+                OverallCounters = new OverallCounters
                 {
                     Items = []
                 },
-                SessionCounters = new(){
+                SessionCounters = new SessionCounters
+                {
                     Items = []
                 },
                 SessionExperienceMult = 0,
                 SurvivorClass = "Unknown",
                 TotalInGameTime = 0,
                 TotalSessionExperience = 0,
-                Victims = new()
+                Victims = new List<Victim>()
             }
         };
     }
@@ -362,7 +358,7 @@ public class ProfileHelper(
     public void FlagGiftReceivedInProfile(string playerId, string giftId, int maxCount)
     {
         var profileToUpdate = GetFullProfile(playerId);
-        profileToUpdate.SptData.ReceivedGifts ??= new();
+        profileToUpdate.SptData.ReceivedGifts ??= new List<ReceivedGift>();
 
         var giftData = profileToUpdate.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftData != null)
@@ -374,7 +370,7 @@ public class ProfileHelper(
 
         // Player has never received gift, make a new object
         profileToUpdate.SptData.ReceivedGifts.Add(
-            new()
+            new ReceivedGift
             {
                 GiftId = giftId,
                 TimestampLastAccepted = _timeUtil.GetTimeStamp(),
@@ -395,10 +391,7 @@ public class ProfileHelper(
         var profile = GetFullProfile(playerId);
         if (profile == null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
             return false;
         }
 
@@ -484,7 +477,7 @@ public class ProfileHelper(
             pointsToAddToSkill *= skillProgressRate;
         }
 
-        if (_inventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out var _))
+        if (_inventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out _))
             pointsToAddToSkill *= _inventoryConfig.SkillGainMultipliers[skill.ToString()];
 
         profileSkill.Progress += pointsToAddToSkill;
@@ -527,9 +520,8 @@ public class ProfileHelper(
         var profile = GetPmcProfile(sessionId);
         var existingBonus = profile?.Bonuses?.FirstOrDefault(b => b.Type == BonusType.StashRows);
         if (existingBonus != null)
-        {
             profile?.Bonuses?.Add(
-                new()
+                new Bonus
                 {
                     Id = _hashUtil.Generate(),
                     Value = rowsToAdd,
@@ -539,11 +531,8 @@ public class ProfileHelper(
                     IsProduction = false
                 }
             );
-        }
         else
-        {
             existingBonus.Value += rowsToAdd;
-        }
     }
 
     /// <summary>
@@ -591,10 +580,7 @@ public class ProfileHelper(
             return;
         }
 
-        foreach (var pocket in pockets)
-        {
-            pocket.Template = newPocketTpl;
-        }
+        foreach (var pocket in pockets) pocket.Template = newPocketTpl;
     }
 
     /// <summary>
@@ -636,7 +622,7 @@ public class ProfileHelper(
     public void AddHideoutCustomisationUnlock(SptProfile fullProfile, Reward reward, string source)
     {
         if (fullProfile?.CustomisationUnlocks == null)
-            fullProfile.CustomisationUnlocks = new();
+            fullProfile.CustomisationUnlocks = new List<CustomisationStorage>();
 
         if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == (string)reward.Target) ?? false)
         {

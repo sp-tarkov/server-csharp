@@ -8,7 +8,6 @@ namespace Core.Models.Eft.Hideout;
 
 public record HideoutUpgradeRequestData : InventoryBaseActionRequestData
 {
-
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
 

@@ -31,8 +31,8 @@ public class BotEquipmentModPoolService
         ItemHelper itemHelper,
         DatabaseService databaseService,
         LocalisationService localisationService,
-    ConfigServer configServer
-        )
+        ConfigServer configServer
+    )
     {
         _logger = logger;
         _itemHelper = itemHelper;
@@ -60,28 +60,33 @@ public class BotEquipmentModPoolService
 
         // Get weapon or gear pool
         var pool = poolType == "weapon" ? _weaponModPool : _gearModPool;
-        foreach (var item in items) {
+        foreach (var item in items)
+        {
             if (item.Properties is null)
             {
-                _logger.Error(_localisationService.GetText("bot-item_missing_props_property", new {
-                    itemTpl = item.Id,
-                    name = item.Name,
-                }));
+                _logger.Error(
+                    _localisationService.GetText(
+                        "bot-item_missing_props_property",
+                        new
+                        {
+                            itemTpl = item.Id,
+                            name = item.Name
+                        }
+                    )
+                );
 
                 continue;
             }
 
             // Skip item without slots
-            if (item.Properties.Slots is null || item.Properties.Slots.Count == 0)
-            {
-                continue;
-            }
+            if (item.Properties.Slots is null || item.Properties.Slots.Count == 0) continue;
 
             // Add base item (weapon/armor) to pool
             pool.TryAdd(item.Id, new ConcurrentDictionary<string, HashSet<string>>());
 
             // iterate over each items mod slots e.g. mod_muzzle
-            foreach (var slot in item.Properties.Slots) {
+            foreach (var slot in item.Properties.Slots)
+            {
                 // Get mods that fit into the current mod slot
                 var itemsThatFit = slot.Props.Filters.FirstOrDefault().Filter;
 
@@ -95,18 +100,14 @@ public class BotEquipmentModPoolService
 
                     // Does tpl exist inside mod_slots hashset
                     if (!SetContainsTpl(itemModPool[slot.Name], itemToAddTpl))
-                    {
                         // Keyed by mod slot
                         AddTplToSet(itemModPool[slot.Name], itemToAddTpl);
-                    }
 
                     var subItemDetails = _itemHelper.GetItem(itemToAddTpl).Value;
                     var hasSubItemsToAdd = (subItemDetails?.Properties?.Slots?.Count ?? 0) > 0;
                     if (hasSubItemsToAdd && !pool.ContainsKey(subItemDetails.Id))
-                    {
                         // Recursive call
                         GeneratePool([subItemDetails], poolType);
-                    }
                 }
             }
         }
@@ -153,10 +154,8 @@ public class BotEquipmentModPoolService
     public HashSet<string> GetCompatibleModsForWeaponSlot(string itemTpl, string slotName)
     {
         if (!_weaponPoolGenerated)
-        {
             // Get every weapon in db and generate mod pool
             GenerateWeaponPool();
-        }
 
         return _weaponModPool[itemTpl][slotName];
     }
@@ -168,10 +167,7 @@ public class BotEquipmentModPoolService
      */
     public ConcurrentDictionary<string, HashSet<string>> GetModsForGearSlot(string itemTpl)
     {
-        if (!_armorPoolGenerated)
-        {
-            GenerateGearPool();
-        }
+        if (!_armorPoolGenerated) GenerateGearPool();
 
         return _gearModPool.TryGetValue(itemTpl, out var value)
             ? value
@@ -185,10 +181,7 @@ public class BotEquipmentModPoolService
      */
     public ConcurrentDictionary<string, HashSet<string>> GetModsForWeaponSlot(string itemTpl)
     {
-        if (!_weaponPoolGenerated)
-        {
-            GenerateWeaponPool();
-        }
+        if (!_weaponPoolGenerated) GenerateWeaponPool();
 
         return _weaponModPool[itemTpl];
     }
@@ -200,7 +193,6 @@ public class BotEquipmentModPoolService
         // Get item from db
         var itemDb = _itemHelper.GetItem(itemTpl).Value;
         if (itemDb.Properties.Slots is not null)
-        {
             // Loop over slots flagged as 'required'
             foreach (var slot in itemDb.Properties.Slots.Where(slot => slot.Required.GetValueOrDefault(false)))
             {
@@ -208,12 +200,8 @@ public class BotEquipmentModPoolService
                 result.Add(slot.Name, []);
 
                 // Add compatible tpls to dicts hashset
-                foreach (var compatibleItemTpl in slot.Props.Filters.FirstOrDefault().Filter)
-                {
-                    result[slot.Name].Add(compatibleItemTpl);
-                }
+                foreach (var compatibleItemTpl in slot.Props.Filters.FirstOrDefault().Filter) result[slot.Name].Add(compatibleItemTpl);
             }
-        }
 
         return result;
     }
@@ -223,8 +211,10 @@ public class BotEquipmentModPoolService
      */
     protected void GenerateWeaponPool()
     {
-        var weapons = _databaseService.GetItems().Values.Where(
-            (item) => item.Type == "Item" && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON));
+        var weapons = _databaseService.GetItems()
+            .Values.Where(
+                (item) => item.Type == "Item" && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON)
+            );
         GeneratePool(weapons, "weapon");
 
         // Flag pool as being complete
@@ -236,14 +226,19 @@ public class BotEquipmentModPoolService
      */
     protected void GenerateGearPool()
     {
-        var gear = _databaseService.GetItems().Values.Where(
-            (item) => item.Type == "Item" 
-                      && _itemHelper.IsOfBaseclasses(item.Id, [
-                                         BaseClasses.ARMORED_EQUIPMENT,
-                                         BaseClasses.VEST,
-                                         BaseClasses.ARMOR,
-                                         BaseClasses.HEADWEAR,
-                                     ]));
+        var gear = _databaseService.GetItems()
+            .Values.Where(
+                (item) => item.Type == "Item" &&
+                          _itemHelper.IsOfBaseclasses(
+                              item.Id,
+                              [
+                                  BaseClasses.ARMORED_EQUIPMENT,
+                                  BaseClasses.VEST,
+                                  BaseClasses.ARMOR,
+                                  BaseClasses.HEADWEAR
+                              ]
+                          )
+            );
         GeneratePool(gear, "gear");
 
         // Flag pool as being complete

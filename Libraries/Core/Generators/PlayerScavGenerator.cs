@@ -2,6 +2,7 @@ using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Notes;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -9,6 +10,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using Core.Utils.Json;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
@@ -53,14 +55,9 @@ public class PlayerScavGenerator(
 
         // use karma level to get correct karmaSettings
         if (!_playerScavConfig.KarmaLevel.TryGetValue(scavKarmaLevel.ToString(), out var playerScavKarmaSettings))
-        {
             _logger.Error(_localisationService.GetText("scav-missing_karma_settings", scavKarmaLevel));
-        }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Generated player scav loadout with karma level {scavKarmaLevel}");
 
         // Edit baseBotNode values
         var baseBotNode = ConstructBotBaseTemplate(playerScavKarmaSettings.BotTypeForLoot);
@@ -81,7 +78,7 @@ public class PlayerScavGenerator(
         scavData.Savage = null;
         scavData.Aid = pmcDataClone.Aid;
         scavData.TradersInfo = pmcDataClone.TradersInfo;
-        scavData.Info.Settings = new();
+        scavData.Info.Settings = new BotInfoSettings();
         scavData.Info.Bans = [];
         scavData.Info.RegistrationDate = pmcDataClone.Info.RegistrationDate;
         scavData.Info.GameVersion = pmcDataClone.Info.GameVersion;
@@ -98,10 +95,10 @@ public class PlayerScavGenerator(
         scavData.Info.Level = GetScavLevel(existingScavDataClone);
         scavData.Info.Experience = GetScavExperience(existingScavDataClone);
         scavData.Quests = existingScavDataClone.Quests ?? [];
-        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new();
-        scavData.Notes = existingScavDataClone.Notes ?? new() { DataNotes = new() };
-        scavData.WishList = existingScavDataClone.WishList ?? new(new(), new());
-        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new();
+        scavData.TaskConditionCounters = existingScavDataClone.TaskConditionCounters ?? new Dictionary<string, TaskConditionCounter>();
+        scavData.Notes = existingScavDataClone.Notes ?? new Notes { DataNotes = new List<Note>() };
+        scavData.WishList = existingScavDataClone.WishList ?? new DictionaryOrList<string, int>(new Dictionary<string, int>(), new List<int>());
+        scavData.Encyclopedia = pmcDataClone.Encyclopedia ?? new Dictionary<string, bool>();
 
         // Add additional items to player scav as loot
         AddAdditionalLootToPlayerScavContainers(
@@ -168,12 +165,8 @@ public class PlayerScavGenerator(
             );
 
             if (result != ItemAddedResult.SUCCESS)
-            {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
                     _logger.Debug($"Unable to add keycard to bot. Reason: {result.ToString()}");
-                }
-            }
         }
     }
 
@@ -232,17 +225,12 @@ public class PlayerScavGenerator(
         foreach (var equipmentKvP in karmaSettings.Modifiers.Equipment)
         {
             // Adjustment value zero, nothing to do
-            if (equipmentKvP.Value == 0)
-            {
-                continue;
-            }
+            if (equipmentKvP.Value == 0) continue;
 
             // Try add new key with value
             if (!baseBotNode.BotChances.EquipmentChances.TryAdd(equipmentKvP.Key, equipmentKvP.Value))
-            {
                 // Unable to add new, update existing
                 baseBotNode.BotChances.EquipmentChances[equipmentKvP.Key] += equipmentKvP.Value;
-            }
         }
 
         // Adjust mod chance values
@@ -255,8 +243,9 @@ public class PlayerScavGenerator(
             {
                 baseBotNode.BotChances.WeaponModsChances.TryAdd(modKvP.Key, 0);
                 baseBotNode.BotChances.WeaponModsChances[modKvP.Key] += value;
-            };
-            
+            }
+
+            ;
         }
 
         // Adjust item spawn quantity values
@@ -271,10 +260,7 @@ public class PlayerScavGenerator(
         foreach (var equipmentBlacklistKvP in karmaSettings.EquipmentBlacklist)
         {
             baseBotNode.BotInventory.Equipment.TryGetValue(equipmentBlacklistKvP.Key, out var equipmentDict);
-            foreach (var itemToRemove in equipmentBlacklistKvP.Value)
-            {
-                equipmentDict.Remove(itemToRemove);
-            }
+            foreach (var itemToRemove in equipmentBlacklistKvP.Value) equipmentDict.Remove(itemToRemove);
         }
     }
 
@@ -288,10 +274,10 @@ public class PlayerScavGenerator(
 
     protected Skills GetDefaultScavSkills()
     {
-        return new()
+        return new Skills
         {
-            Common = new(),
-            Mastering = new(),
+            Common = new List<BaseSkill>(),
+            Mastering = new List<BaseSkill>(),
             Points = 0
         };
     }
@@ -337,14 +323,10 @@ public class PlayerScavGenerator(
         var modifier = 1;
 
         foreach (var bonus in pmcData.Bonuses)
-        {
             if (bonus.Type == BonusType.ScavCooldownTimer)
-            {
                 // Value is negative, so add.
                 // Also note that for scav cooldown, multiple bonuses stack additively.
                 modifier += (int)(bonus?.Value ?? 1) / 100;
-            }
-        }
 
         var fenceInfo = _fenceService.GetFenceInfo(pmcData);
         modifier *= (int)(fenceInfo.SavageCooldownModifier ?? 1);

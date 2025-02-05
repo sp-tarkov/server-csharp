@@ -124,7 +124,7 @@ public class ItemOverrides
             { "6764207f2fa5e32733055c4a", "Dogtag USEC Prestige 1" },
             { "675dc9d37ae1a8792107ca96", "Dogtag BEAR Prestige 1" },
             { "675dcb0545b1a2d108011b2b", "Dogtag BEAR Prestige 2" },
-            { "6764202ae307804338014c1a", "Dogtag USEC Prestige 2" },
+            { "6764202ae307804338014c1a", "Dogtag USEC Prestige 2" }
         }
     );
 }

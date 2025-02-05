@@ -55,7 +55,7 @@ public record PmcConfig : BaseConfig
 
     [JsonPropertyName("_isUsec")]
     public string? IsUsecDescription { get; set; }
-    
+
     /** Percentage chance PMC will be USEC */
     [JsonPropertyName("isUsec")]
     public double IsUsec { get; set; }
@@ -112,10 +112,10 @@ public record PmcConfig : BaseConfig
     /** Should secure container loot from usec.json/bear.json be added to pmc bots secure */
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
     public bool AddSecureContainerLootFromBotConfig { get; set; }
-    
+
     [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
     public int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
-    
+
     [JsonPropertyName("lootItemLimitsRub")]
     public List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
 }

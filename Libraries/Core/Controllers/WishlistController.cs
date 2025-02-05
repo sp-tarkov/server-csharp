@@ -23,10 +23,7 @@ public class WishlistController(
         AddToWishlistRequest request,
         string sessionId)
     {
-        foreach (var item in request.Items)
-        {
-            pmcData.WishList.Dictionary.Add(item.Key, item.Value);
-        }
+        foreach (var item in request.Items) pmcData.WishList.Dictionary.Add(item.Key, item.Value);
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
@@ -43,10 +40,7 @@ public class WishlistController(
         RemoveFromWishlistRequest request,
         string sessionId)
     {
-        foreach (var itemId in request.Items)
-        {
-            pmcData.WishList.Dictionary.Remove(itemId);
-        }
+        foreach (var itemId in request.Items) pmcData.WishList.Dictionary.Remove(itemId);
 
         return _eventOutputHolder.GetOutput(sessionId);
     }

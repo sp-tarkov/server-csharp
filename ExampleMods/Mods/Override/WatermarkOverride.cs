@@ -12,7 +12,12 @@ public class WatermarkOverride(
     ConfigServer _configServer,
     LocalisationService _localisationService,
     WatermarkLocale _watermarkLocale
-) : Watermark(_logger, _configServer, _localisationService, _watermarkLocale) // was testing overriding with primary constructors, works fine from what i can see
+) : Watermark(
+    _logger,
+    _configServer,
+    _localisationService,
+    _watermarkLocale
+) // was testing overriding with primary constructors, works fine from what i can see
 {
     public override void Initialize()
     {

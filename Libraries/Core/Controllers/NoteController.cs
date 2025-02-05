@@ -23,9 +23,9 @@ public class NoteController(
         NoteActionData body,
         string sessionId)
     {
-        Note newNote = new Note { Time = body.Note.Time, Text = body.Note.Text };
+        var newNote = new Note { Time = body.Note.Time, Text = body.Note.Text };
         pmcData.Notes.DataNotes.Add(newNote);
-        
+
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
@@ -41,10 +41,10 @@ public class NoteController(
         NoteActionData body,
         string sessionId)
     {
-        Note noteToEdit = pmcData.Notes.DataNotes[body.Index!.Value];
+        var noteToEdit = pmcData.Notes.DataNotes[body.Index!.Value];
         noteToEdit.Time = body.Note.Time;
         noteToEdit.Text = body.Note.Text;
-        
+
         return _eventOutputHolder.GetOutput(sessionId);
     }
 

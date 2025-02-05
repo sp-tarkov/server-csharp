@@ -11,7 +11,7 @@ public abstract class AbstractFormatter : ITextFormatter
     {
         return $"[{timestamp} {logLevel}][{sourceContext}] {message}";
     }
-    
+
     public void Format(LogEvent logEvent, TextWriter output)
     {
         var newLine = Environment.NewLine;

@@ -43,10 +43,8 @@ public class RaidTimeAdjustmentService(
 
         var mapSettings = GetMapSettings(mapBase.Id);
         if (mapSettings.AdjustWaves)
-        {
             // Make alterations to bot spawn waves now player is simulated spawning later
             AdjustWaves(mapBase, raidAdjustments);
-        }
     }
 
     /// <summary>
@@ -57,9 +55,7 @@ public class RaidTimeAdjustmentService(
     protected void AdjustLootMultipliers(Dictionary<string, double> mapLootMultiplers, double? loosePercent)
     {
         foreach (var location in mapLootMultiplers)
-        {
             mapLootMultiplers[location.Key] = _randomUtil.GetPercentOfValue(mapLootMultiplers[location.Key], loosePercent ?? 1);
-        }
     }
 
     /// <summary>
@@ -96,33 +92,28 @@ public class RaidTimeAdjustmentService(
     public GetRaidTimeResponse GetRaidAdjustments(string sessionId, GetRaidTimeRequest request)
     {
         var globals = _databaseService.GetGlobals();
-        LocationBase mapBase = _databaseService.GetLocation(request.Location.ToLower()).Base;
+        var mapBase = _databaseService.GetLocation(request.Location.ToLower()).Base;
         var baseEscapeTimeMinutes = mapBase.EscapeTimeLimit;
 
         // Prep result object to return
-        GetRaidTimeResponse result = new GetRaidTimeResponse
+        var result = new GetRaidTimeResponse
         {
             RaidTimeMinutes = baseEscapeTimeMinutes,
             ExitChanges = [],
             NewSurviveTimeSeconds = null,
-            OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
+            OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement
         };
 
         // Pmc raid, send default
-        if (request.Side.ToLower() == "pmc")
-        {
-            return result;
-        }
+        if (request.Side.ToLower() == "pmc") return result;
 
         // We're scav adjust values
         var mapSettings = GetMapSettings(request.Location);
 
         // Chance of reducing raid time for scav, not guaranteed
         if (!_randomUtil.GetChance100(mapSettings.ReducedChancePercent))
-        {
             // Send default
             return result;
-        }
 
         // Get the weighted percent to reduce the raid time by
         var chosenRaidReductionPercent = int.Parse(
@@ -139,7 +130,6 @@ public class RaidTimeAdjustmentService(
         var simulatedRaidStartTimeMinutes = baseEscapeTimeMinutes - newRaidTimeMinutes;
 
         if (mapSettings.ReduceLootByPercent)
-        {
             // Store time reduction percent in app context so loot gen can pick it up later
             _applicationContext.AddValue(
                 ContextVariableType.RAID_ADJUSTMENTS,
@@ -147,10 +137,9 @@ public class RaidTimeAdjustmentService(
                 {
                     DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent),
                     StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent),
-                    SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60,
+                    SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60
                 }
             );
-        }
 
         // Update result object with new time
         result.RaidTimeMinutes = newRaidTimeMinutes;
@@ -159,15 +148,12 @@ public class RaidTimeAdjustmentService(
 
         // Calculate how long player needs to be in raid to get a `survived` extract status
         result.NewSurviveTimeSeconds = Math.Max(
-            (result.OriginalSurvivalTimeSeconds - (baseEscapeTimeMinutes - newRaidTimeMinutes) * 60) ?? 0,
+            result.OriginalSurvivalTimeSeconds - (baseEscapeTimeMinutes - newRaidTimeMinutes) * 60 ?? 0,
             0D
         );
 
         var exitAdjustments = GetExitAdjustments(mapBase, newRaidTimeMinutes);
-        if (exitAdjustments is not null)
-        {
-            result.ExitChanges.AddRange(exitAdjustments);
-        }
+        if (exitAdjustments is not null) result.ExitChanges.AddRange(exitAdjustments);
 
         return result;
     }
@@ -199,17 +185,17 @@ public class RaidTimeAdjustmentService(
     {
         List<ExtractChange> result = [];
         // Adjust train exits only
-        foreach (var exit in mapBase.Exits) {
-            if (exit.PassageRequirement != RequirementState.Train) {
-                continue;
-            }
+        foreach (var exit in mapBase.Exits)
+        {
+            if (exit.PassageRequirement != RequirementState.Train) continue;
 
             // Prepare train adjustment object
-            var exitChange = new ExtractChange {
+            var exitChange = new ExtractChange
+            {
                 Name = exit.Name,
                 MinTime = null,
                 MaxTime = null,
-                Chance = null,
+                Chance = null
             };
 
             // At what minute we simulate the player joining the raid
@@ -241,10 +227,13 @@ public class RaidTimeAdjustmentService(
 
             // If raid is after last moment train can leave, assume train has already left, disable extract
             var mostPossibleTimeRemainingAfterDeparture = mapBase.EscapeTimeLimit - earliestPossibleDepartureMinutes;
-            if (newRaidTimeMinutes < mostPossibleTimeRemainingAfterDeparture) {
+            if (newRaidTimeMinutes < mostPossibleTimeRemainingAfterDeparture)
+            {
                 exitChange.Chance = 0;
 
-                _logger.Debug($"Train Exit: {exit.Name} disabled as new raid time {newRaidTimeMinutes} minutes is below {mostPossibleTimeRemainingAfterDeparture} minutes");
+                _logger.Debug(
+                    $"Train Exit: {exit.Name} disabled as new raid time {newRaidTimeMinutes} minutes is below {mostPossibleTimeRemainingAfterDeparture} minutes"
+                );
 
                 result.Add(exitChange);
 
@@ -252,8 +241,8 @@ public class RaidTimeAdjustmentService(
             }
 
             // Reduce extract arrival times. Negative values seem to make extract turn red in game.
-            exitChange.MinTime = Math.Max((exit.MinTime - reductionSeconds) ?? 0, 0);
-            exitChange.MaxTime = Math.Max((exit.MaxTime - reductionSeconds) ?? 0, 0);
+            exitChange.MinTime = Math.Max(exit.MinTime - reductionSeconds ?? 0, 0);
+            exitChange.MaxTime = Math.Max(exit.MaxTime - reductionSeconds ?? 0, 0);
 
             _logger.Debug($"Train appears between: {exitChange.MinTime} and {exitChange.MaxTime} seconds raid time");
 

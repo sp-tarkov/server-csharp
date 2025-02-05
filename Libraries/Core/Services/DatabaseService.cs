@@ -24,7 +24,7 @@ public class DatabaseService(
 )
 {
     protected bool isDataValid = true;
-    
+
     /**
      * @returns assets/database/
      */
@@ -313,10 +313,7 @@ public class DatabaseService(
         if (!isDataValid) _logger.Error(_localisationService.GetText("database-invalid_data"));
 
         start.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
     }
 
     /**

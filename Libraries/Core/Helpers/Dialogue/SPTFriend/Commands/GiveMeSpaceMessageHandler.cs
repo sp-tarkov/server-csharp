@@ -37,7 +37,9 @@ public class GiveMeSpaceMessageHandler(
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _localisationService.GetText("chatbot-cannot_accept_any_more_of_gift"), [], null
+                _localisationService.GetText("chatbot-cannot_accept_any_more_of_gift"),
+                [],
+                null
             );
         }
         else
@@ -47,9 +49,13 @@ public class GiveMeSpaceMessageHandler(
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
-                _randomUtil.GetArrayValue([
-                    _localisationService.GetText("chatbot-added_stash_rows_please_restart"),
-                ]), [], null
+                _randomUtil.GetArrayValue(
+                    [
+                        _localisationService.GetText("chatbot-added_stash_rows_please_restart")
+                    ]
+                ),
+                [],
+                null
             );
 
             _profileHelper.FlagGiftReceivedInProfile(sessionId, stashRowGiftId, maxGiftsToSendCount);

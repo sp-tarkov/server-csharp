@@ -94,10 +94,7 @@ public class ProfileCallbacks(
     public string GetReservedNickname(string url, EmptyRequestData info, string sessionID)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
-        if (fullProfile?.ProfileInfo?.Username is not null)
-        {
-            return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
-        }
+        if (fullProfile?.ProfileInfo?.Username is not null) return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
 
         return _httpResponse.GetBody("SPTarkov");
     }

@@ -66,28 +66,39 @@ public record Locations
     private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
 
     /// <summary>
-    /// Get map locations as a dictionary, keyed by its name e.g. factory4_day
+    /// Get map locations as a dictionary, keyed by its name e.g. Factory4Day
     /// </summary>
     /// <returns></returns>
     public Dictionary<string, Eft.Common.Location> GetDictionary()
     {
         if (_locationDictionaryCache is null)
-        {
-            var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
-            _locationDictionaryCache = classProps
-                .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
-        }
+            HydrateDictionary();
 
         return _locationDictionaryCache;
     }
 
+    /// <summary>
+    /// Convert any type of key to Locations actual Property name.
+    /// "factory4_day" or "Factory4Day" returns "Factory4Day"
+    /// </summary>
+    /// <returns></returns>
     public string GetMappedKey(string key)
     {
         return _locationMappings.TryGetValue(key, out var value) ? value : key;
     }
-    
+
+    private void HydrateDictionary()
+    {
+        var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
+        _locationDictionaryCache = classProps
+            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
+    }
+
+    // sometimes we get the key or value given so save changing logic in each place
+    // have it key both
     private Dictionary<string, string> _locationMappings = new()
     {
+        // EFT
         { "factory4_day", "Factory4Day" },
         { "bigmap", "Bigmap" },
         { "develop", "Develop" },
@@ -105,6 +116,26 @@ public record Locations
         { "town", "Town" },
         { "woods", "Woods" },
         { "sandbox", "Sandbox" },
-        { "sandbox_high", "SandboxHigh" }
+        { "sandbox_high", "SandboxHigh" },
+
+        // SPT
+        { "Factory4Day", "Factory4Day" },
+        { "Bigmap", "Bigmap" },
+        { "Develop", "Develop" },
+        { "Factory4Night", "Factory4Night" },
+        { "Hideout", "Hideout" },
+        { "Interchange", "Interchange" },
+        { "Laboratory", "Laboratory" },
+        { "Lighthouse", "Lighthouse" },
+        { "PrivateArea", "PrivateArea" },
+        { "RezervBase", "RezervBase" },
+        { "Shoreline", "Shoreline" },
+        { "Suburbs", "Suburbs" },
+        { "TarkovStreets", "TarkovStreets" },
+        { "Terminal", "Terminal" },
+        { "Town", "Town" },
+        { "Woods", "Woods" },
+        { "Sandbox", "Sandbox" },
+        { "SandboxHigh", "SandboxHigh" }
     };
 }

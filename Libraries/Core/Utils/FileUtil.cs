@@ -34,10 +34,7 @@ public class FileUtil(
 
     public string StripExtension(string path, bool keepPath = false)
     {
-        if (keepPath)
-        {
-            return path.StartsWith(".") ? path.Split('.')[1] : path.Split('.').First();
-        }
+        if (keepPath) return path.StartsWith(".") ? path.Split('.')[1] : path.Split('.').First();
 
         return Path.GetFileNameWithoutExtension(path);
     }
@@ -97,12 +94,9 @@ public class FileUtil(
     public void CopyFile(string copyFromPath, string destinationFilePath, bool overwrite = false)
     {
         // Check it exists first
-        if (!FileExists(copyFromPath))
-        {
-            _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
-        }
+        if (!FileExists(copyFromPath)) _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
 
-        
+
         // Ensure dir exists
         Directory.CreateDirectory(Path.GetDirectoryName(destinationFilePath));
 

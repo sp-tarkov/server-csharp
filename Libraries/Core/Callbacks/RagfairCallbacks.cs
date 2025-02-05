@@ -21,7 +21,7 @@ public class RagfairCallbacks(
     RagfairTaxService _ragfairTaxService,
     RagfairPriceService _ragfairPriceService,
     ConfigServer _configServer
-    ) : OnLoad, OnUpdate
+) : OnLoad, OnUpdate
 {
     private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
@@ -39,19 +39,21 @@ public class RagfairCallbacks(
 
     public bool OnUpdate(long timeSinceLastRun)
     {
-         if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds) {
+        if (timeSinceLastRun > _ragfairConfig.RunIntervalSeconds)
+        {
             // There is a flag inside this class that only makes it run once.
             _ragfairServer.AddPlayerOffers();
-        
-             // Check player offers and mail payment to player if sold
-             _ragfairController.Update();
-        
-             // Process all offers / expire offers
-             _ragfairServer.Update();
-        
-             return true;
-         }
-         return false;
+
+            // Check player offers and mail payment to player if sold
+            _ragfairController.Update();
+
+            // Process all offers / expire offers
+            _ragfairServer.Update();
+
+            return true;
+        }
+
+        return false;
     }
 
     /// <summary>

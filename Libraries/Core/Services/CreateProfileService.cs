@@ -12,6 +12,7 @@ using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Extensions;
+using Vitality = Core.Models.Eft.Profile.Vitality;
 
 
 namespace Core.Services;
@@ -62,16 +63,13 @@ public class CreateProfileService(
         pmcData.Quests = [];
         pmcData.Hideout.Seed = _timeUtil.GetTimeStamp() + 8 * 60 * 60 * 24 * 365; // 8 years in future why? who knows, we saw it in live
         pmcData.RepeatableQuests = [];
-        pmcData.CarExtractCounts = new();
-        pmcData.CoopExtractCounts = new();
-        pmcData.Achievements = new();
+        pmcData.CarExtractCounts = new Dictionary<string, int>();
+        pmcData.CoopExtractCounts = new Dictionary<string, int>();
+        pmcData.Achievements = new Dictionary<string, long>();
 
         UpdateInventoryEquipmentId(pmcData);
 
-        if (pmcData.UnlockedInfo == null)
-        {
-            pmcData.UnlockedInfo = new UnlockedInfo { UnlockedProductionRecipe = [] };
-        }
+        if (pmcData.UnlockedInfo == null) pmcData.UnlockedInfo = new UnlockedInfo { UnlockedProductionRecipe = [] };
 
         // Add required items to pmc stash
         AddMissingInternalContainersToProfile(pmcData);
@@ -83,15 +81,15 @@ public class CreateProfileService(
         var profileDetails = new SptProfile
         {
             ProfileInfo = account,
-            CharacterData = new Characters { PmcData = pmcData, ScavData = new() },
+            CharacterData = new Characters { PmcData = pmcData, ScavData = new PmcData() },
             Suits = profileTemplate.Suits,
             UserBuildData = profileTemplate.UserBuilds,
             DialogueRecords = profileTemplate.Dialogues,
             SptData = _profileHelper.GetDefaultSptDataObject(),
-            VitalityData = new(),
-            InraidData = new(),
+            VitalityData = new Vitality(),
+            InraidData = new Inraid(),
             InsuranceList = [],
-            TraderPurchases = new(),
+            TraderPurchases = new Dictionary<string, Dictionary<string, TraderPurchaseData>?>(),
             FriendProfileIds = [],
             CustomisationUnlocks = []
         };
@@ -103,9 +101,7 @@ public class CreateProfileService(
         _saveServer.AddProfile(profileDetails);
 
         if (profileTemplate.Trader.SetQuestsAvailableForStart ?? false)
-        {
             _questHelper.AddAllQuestsToProfile(profileDetails.CharacterData.PmcData, [QuestStatusEnum.AvailableForStart]);
-        }
 
         // Profile is flagged as wanting quests set to ready to hand in and collect rewards
         if (profileTemplate.Trader.SetQuestsAvailableForFinish ?? false)
@@ -115,12 +111,12 @@ public class CreateProfileService(
                 [
                     QuestStatusEnum.AvailableForStart,
                     QuestStatusEnum.Started,
-                    QuestStatusEnum.AvailableForFinish,
+                    QuestStatusEnum.AvailableForFinish
                 ]
             );
 
             // Make unused response so applyQuestReward works
-            ItemEventRouterResponse? response = _eventOutputHolder.GetOutput(sessionId);
+            var response = _eventOutputHolder.GetOutput(sessionId);
 
             // Add rewards for starting quests to profile
             GivePlayerStartingQuestRewards(profileDetails, sessionId, response);
@@ -148,15 +144,11 @@ public class CreateProfileService(
     protected void DeleteProfileBySessionId(string sessionID)
     {
         if (_saveServer.GetProfiles().ContainsKey(sessionID))
-        {
             _saveServer.DeleteProfileById(sessionID);
-        }
         else
-        {
             _logger.Warning(
                 _localisationService.GetText("profile-unable_to_find_profile_by_id_cannot_delete", sessionID)
             );
-        }
     }
 
     /**
@@ -176,10 +168,7 @@ public class CreateProfileService(
                 continue;
             }
 
-            if (item.Id == oldEquipmentId)
-            {
-                item.Id = pmcData.Inventory.Equipment;
-            }
+            if (item.Id == oldEquipmentId) item.Id = pmcData.Inventory.Equipment;
         }
     }
 
@@ -189,10 +178,7 @@ public class CreateProfileService(
  */
     protected void ResetAllTradersInProfile(string sessionId)
     {
-        foreach (var traderId in _databaseService.GetTraders().Keys)
-        {
-            _traderHelper.ResetTrader(sessionId, traderId);
-        }
+        foreach (var traderId in _databaseService.GetTraders().Keys) _traderHelper.ResetTrader(sessionId, traderId);
     }
 
     /**
@@ -203,48 +189,40 @@ public class CreateProfileService(
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
-        {
             pmcData.Inventory.Items.Add(
-                new()
+                new Item
                 {
                     Id = pmcData.Inventory.HideoutCustomizationStashId,
-                    Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION,
+                    Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION
                 }
             );
-        }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.SortingTable))
-        {
             pmcData.Inventory.Items.Add(
-                new()
+                new Item
                 {
                     Id = pmcData.Inventory.SortingTable,
-                    Template = ItemTpl.SORTINGTABLE_SORTING_TABLE,
+                    Template = ItemTpl.SORTINGTABLE_SORTING_TABLE
                 }
             );
-        }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestStashItems))
-        {
             pmcData.Inventory.Items.Add(
-                new()
+                new Item
                 {
                     Id = pmcData.Inventory.QuestStashItems,
-                    Template = ItemTpl.STASH_QUESTOFFLINE,
+                    Template = ItemTpl.STASH_QUESTOFFLINE
                 }
             );
-        }
 
         if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestRaidItems))
-        {
             pmcData.Inventory.Items.Add(
-                new()
+                new Item
                 {
                     Id = pmcData.Inventory.QuestRaidItems,
-                    Template = ItemTpl.STASH_QUESTRAID,
+                    Template = ItemTpl.STASH_QUESTRAID
                 }
             );
-        }
     }
 
     /// <summary>
@@ -270,7 +248,7 @@ public class CreateProfileService(
                     {
                         Id = "6746fd09bafff85008048838",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -279,7 +257,7 @@ public class CreateProfileService(
                     {
                         Id = "67471938bafff850080488b7",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -291,7 +269,7 @@ public class CreateProfileService(
                     {
                         Id = "6746fd09bafff85008048838",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -300,7 +278,7 @@ public class CreateProfileService(
                     {
                         Id = "67471938bafff850080488b7",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -309,7 +287,7 @@ public class CreateProfileService(
                     {
                         Id = "67471928d17d6431550563b5",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -318,7 +296,7 @@ public class CreateProfileService(
                     {
                         Id = "6747193f170146228c0d2226",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
 
@@ -328,7 +306,7 @@ public class CreateProfileService(
                     {
                         Id = "666841a02537107dc508b704",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.SUITE,
+                        Type = CustomisationType.SUITE
                     }
                 );
 
@@ -338,7 +316,7 @@ public class CreateProfileService(
                     {
                         Id = "675850ba33627edb710b0592",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.ENVIRONMENT,
+                        Type = CustomisationType.ENVIRONMENT
                     }
                 );
 
@@ -349,43 +327,37 @@ public class CreateProfileService(
         if (pretigeLevel is not null)
         {
             if (pretigeLevel >= 1)
-            {
                 fullProfile.CustomisationUnlocks.Add(
                     new CustomisationStorage
                     {
                         Id = "674dbf593bee1152d407f005",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
-            }
 
             if (pretigeLevel >= 2)
-            {
                 fullProfile.CustomisationUnlocks.Add(
                     new CustomisationStorage
                     {
                         Id = "675dcfea7ae1a8792107ca99",
                         Source = CustomisationSource.DEFAULT,
-                        Type = CustomisationType.DOG_TAG,
+                        Type = CustomisationType.DOG_TAG
                     }
                 );
-            }
         }
 
         // Dev profile additions
         if (fullProfile.ProfileInfo.Edition.ToLower().Contains("developer"))
-        {
             // CyberTark background
             fullProfile.CustomisationUnlocks.Add(
                 new CustomisationStorage
                 {
                     Id = "67585108def253bd97084552",
                     Source = CustomisationSource.DEFAULT,
-                    Type = CustomisationType.ENVIRONMENT,
+                    Type = CustomisationType.ENVIRONMENT
                 }
             );
-        }
     }
 
     /**
@@ -394,10 +366,7 @@ public class CreateProfileService(
     private string? GetGameEdition(SptProfile profile)
     {
         var edition = profile.CharacterData?.PmcData?.Info?.GameVersion;
-        if (edition is not null)
-        {
-            return edition;
-        }
+        if (edition is not null) return edition;
 
         // Edge case - profile not created yet, fall back to what launcher has set
         var launcherEdition = profile.ProfileInfo.Edition;
@@ -436,12 +405,13 @@ public class CreateProfileService(
                 questFromDb.Description
             );
             var itemRewards = _questRewardHelper.ApplyQuestReward(
-                profileDetails.CharacterData.PmcData,
-                quest.QId,
-                QuestStatusEnum.Started,
-                sessionID,
-                response
-            ).ToList();
+                    profileDetails.CharacterData.PmcData,
+                    quest.QId,
+                    QuestStatusEnum.Started,
+                    sessionID,
+                    response
+                )
+                .ToList();
 
 
             _mailSendService.SendLocalisedNpcMessageToPlayer(

@@ -18,7 +18,7 @@ public class TraderCallbacks(
 ) : OnLoad, OnUpdate
 {
     private readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    
+
     public Task OnLoad()
     {
         _traderController.Load();

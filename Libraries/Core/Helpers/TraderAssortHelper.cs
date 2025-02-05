@@ -33,7 +33,7 @@ public class TraderAssortHelper(
 )
 {
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    protected Dictionary<string, Dictionary<string, string>> _mergedQuestAssorts = new Dictionary<string, Dictionary<string, string>>();
+    protected Dictionary<string, Dictionary<string, string>> _mergedQuestAssorts = new();
     protected bool createdMergedQuestAssorts = false;
 
     /// <summary>
@@ -51,16 +51,10 @@ public class TraderAssortHelper(
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile?.CharacterData?.PmcData;
 
-        if (traderId == Traders.FENCE)
-        {
-            return _fenceService.GetFenceAssorts(pmcProfile);
-        }
+        if (traderId == Traders.FENCE) return _fenceService.GetFenceAssorts(pmcProfile);
 
         // Strip assorts player should not see yet
-        if (!showLockedAssorts)
-        {
-            traderClone.Assort = _assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
-        }
+        if (!showLockedAssorts) traderClone.Assort = _assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
 
         ResetBuyRestrictionCurrentValue(traderClone.Assort.Items);
 
@@ -80,9 +74,7 @@ public class TraderAssortHelper(
             if (assortToAdjust is null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
                     _logger.Debug($"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping");
-                }
 
                 continue;
             }
@@ -90,11 +82,9 @@ public class TraderAssortHelper(
             if (assortToAdjust.Upd is null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
                     _logger.Debug(
                         $"Unable to adjust assort {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
                     );
-                }
 
                 continue;
             }
@@ -103,10 +93,10 @@ public class TraderAssortHelper(
         }
 
         // Get rid of quest locked assorts
-        if (!this.createdMergedQuestAssorts)
+        if (!createdMergedQuestAssorts)
         {
             HydrateMergedQuestAssorts();
-            this.createdMergedQuestAssorts = true;
+            createdMergedQuestAssorts = true;
         }
 
         traderClone.Assort = _assortHelper.StripLockedQuestAssort(
@@ -118,10 +108,7 @@ public class TraderAssortHelper(
         );
 
         // Filter out root assorts that are blacklisted for this profile
-        if (fullProfile.SptData.BlacklistedItemTemplates?.Count > 0)
-        {
-            RemoveItemsFromAssort(traderClone.Assort, fullProfile.SptData.BlacklistedItemTemplates);
-        }
+        if (fullProfile.SptData.BlacklistedItemTemplates?.Count > 0) RemoveItemsFromAssort(traderClone.Assort, fullProfile.SptData.BlacklistedItemTemplates);
 
         return traderClone.Assort;
     }
@@ -150,10 +137,7 @@ public class TraderAssortHelper(
         foreach (var assort in assortItems.Where(item => item.SlotId == "hideout"))
         {
             // no value to adjust
-            if (assort.Upd.BuyRestrictionCurrent is null)
-            {
-                continue;
-            }
+            if (assort.Upd.BuyRestrictionCurrent is null) continue;
 
             assort.Upd.BuyRestrictionCurrent = 0;
         }
@@ -171,23 +155,16 @@ public class TraderAssortHelper(
             // Trader has quest assort data
             var trader = traders[traderId.Key];
             if (trader.QuestAssort is not null)
-            {
                 // Started/Success/fail
                 foreach (var questStatus in trader.QuestAssort)
-                {
                     // Each assort to quest id record
-                    foreach (var assortId in trader.QuestAssort[questStatus.Key])
-                    {
-                        // Null guard
-                        if (!_mergedQuestAssorts.TryGetValue(questStatus.Key, out var _))
-                        {
-                            _mergedQuestAssorts.TryAdd(questStatus.Key, new Dictionary<string, string>());
-                        }
+                foreach (var assortId in trader.QuestAssort[questStatus.Key])
+                {
+                    // Null guard
+                    if (!_mergedQuestAssorts.TryGetValue(questStatus.Key, out _)) _mergedQuestAssorts.TryAdd(questStatus.Key, new Dictionary<string, string>());
 
-                        _mergedQuestAssorts[questStatus.Key][assortId.Key] = trader.QuestAssort[questStatus.Key][assortId.Key];
-                    }
+                    _mergedQuestAssorts[questStatus.Key][assortId.Key] = trader.QuestAssort[questStatus.Key][assortId.Key];
                 }
-            }
         }
     }
 

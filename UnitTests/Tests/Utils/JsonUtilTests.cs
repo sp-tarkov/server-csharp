@@ -7,6 +7,7 @@ namespace UnitTests.Tests.Utils;
 public class JsonUtilTests
 {
     protected JsonUtil _jsonUtil = new();
+
     [TestMethod]
     public void SerializeAndDeserialize_WithDictionaryOfETFEnum_ExpectCorrectParsing()
     {

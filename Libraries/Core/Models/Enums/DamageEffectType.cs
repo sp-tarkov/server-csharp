@@ -1,15 +1,14 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum DamageEffectType
 {
-    public enum DamageEffectType
-    {
-        HeavyBleeding,
-        LightBleeding,
-        Fracture,
-        Contusion,
-        Intoxication,
-        LethalIntoxication,
-        RadExposure,
-        Pain,
-        DestroyedPart
-    }
+    HeavyBleeding,
+    LightBleeding,
+    Fracture,
+    Contusion,
+    Intoxication,
+    LethalIntoxication,
+    RadExposure,
+    Pain,
+    DestroyedPart
 }

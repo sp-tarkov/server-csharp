@@ -33,10 +33,7 @@ public class ImageRouter
         var url = _fileUtil.StripExtension(req.Path, true);
 
         // send image
-        if (_imageRouterService.ExistsByKey(url))
-        {
-            _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
-        }
+        if (_imageRouterService.ExistsByKey(url)) _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
     }
 
     public string GetImage()

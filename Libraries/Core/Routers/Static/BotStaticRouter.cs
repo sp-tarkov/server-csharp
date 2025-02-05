@@ -18,14 +18,15 @@ public class BotStaticRouter : StaticRouter
         jsonUtil,
         [
             new RouteAction(
-                "/client/game/bot/generate", 
+                "/client/game/bot/generate",
                 (
-                    url, 
-                    info, 
-                    sessionID, 
+                    url,
+                    info,
+                    sessionID,
                     outout
-                    ) => _botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
-                typeof(GenerateBotsRequestData))
+                ) => _botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
+                typeof(GenerateBotsRequestData)
+            )
         ]
     )
     {

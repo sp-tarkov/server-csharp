@@ -26,11 +26,8 @@ public class ItemFilterService(
     public bool ItemBlacklisted(string tpl)
     {
         if (_itemBlacklistCache.Count == 0)
-        {
-            foreach (var item in _itemConfig.Blacklist) {
+            foreach (var item in _itemConfig.Blacklist)
                 _itemBlacklistCache.Add(item);
-            }
-        }
 
         return _itemBlacklistCache.Contains(tpl);
     }
@@ -97,7 +94,6 @@ public class ItemFilterService(
      */
     public List<string> GetBossItems()
     {
-        
         return _cloner.Clone(_itemConfig.BossItems).ToList();
     }
 
@@ -108,37 +104,26 @@ public class ItemFilterService(
      */
     public bool IsLootableItemBlacklisted(string itemKey)
     {
-        if (!_lootableItemBlacklistCache.Any())
-        {
-            HydrateLootableItemBlacklist();
-        }
+        if (!_lootableItemBlacklistCache.Any()) HydrateLootableItemBlacklist();
 
         return _lootableItemBlacklistCache.Contains(itemKey);
     }
 
     public bool IsItemBlacklisted(string tpl)
     {
-        if (!_itemBlacklistCache.Any())
-        {
-            HydrateBlacklist();
-        }
+        if (!_itemBlacklistCache.Any()) HydrateBlacklist();
 
         return _itemBlacklistCache.Contains(tpl);
     }
 
     protected void HydrateLootableItemBlacklist()
     {
-        foreach (var item in _itemConfig.LootableItemBlacklist)
-        {
-            _lootableItemBlacklistCache.Add(item);
-        }
+        foreach (var item in _itemConfig.LootableItemBlacklist) _lootableItemBlacklistCache.Add(item);
     }
 
     protected void HydrateBlacklist()
     {
-        foreach (var item in _itemConfig.Blacklist) {
-            _itemBlacklistCache.Add(item);
-        }
+        foreach (var item in _itemConfig.Blacklist) _itemBlacklistCache.Add(item);
     }
 
     /**

@@ -42,43 +42,25 @@ public class PostDbLoadService(
         // Kill the startup if not.
         // TODO: We can probably remove this in a couple versions
         _databaseService.ValidateDatabase();
-        if (!_databaseService.IsDatabaseValid())
-        {
-            throw new Exception("Server start failure, database invalid");
-        }
+        if (!_databaseService.IsDatabaseValid()) throw new Exception("Server start failure, database invalid");
 
         AddCustomLooseLootPositions();
 
         AdjustMinReserveRaiderSpawnChance();
 
-        if (_coreConfig.Fixes.FixShotgunDispersion)
-        {
-            FixShotgunDispersions();
-        }
+        if (_coreConfig.Fixes.FixShotgunDispersion) FixShotgunDispersions();
 
-        if (_locationConfig.AddOpenZonesToAllMaps)
-        {
-            _openZoneService.ApplyZoneChangesToAllMaps();
-        }
+        if (_locationConfig.AddOpenZonesToAllMaps) _openZoneService.ApplyZoneChangesToAllMaps();
 
-        if (_locationConfig.AddCustomBotWavesToMaps)
-        {
-            _customLocationWaveService.ApplyWaveChangesToAllMaps();
-        }
+        if (_locationConfig.AddCustomBotWavesToMaps) _customLocationWaveService.ApplyWaveChangesToAllMaps();
 
-        if (_locationConfig.EnableBotTypeLimits)
-        {
-            AdjustMapBotLimits();
-        }
+        if (_locationConfig.EnableBotTypeLimits) AdjustMapBotLimits();
 
         AdjustLooseLootSpawnProbabilities();
 
         AdjustLocationBotValues();
 
-        if (_locationConfig.RogueLighthouseSpawnTimeSettings.Enabled)
-        {
-            FixRoguesSpawningInstantlyOnLighthouse();
-        }
+        if (_locationConfig.RogueLighthouseSpawnTimeSettings.Enabled) FixRoguesSpawningInstantlyOnLighthouse();
 
         AdjustLabsRaiderSpawnRate();
 
@@ -100,10 +82,7 @@ public class PostDbLoadService(
         }
 
         // Flea bsg blacklist is off
-        if (!_ragfairConfig.Dynamic.Blacklist.EnableBsgList)
-        {
-            SetAllDbItemsAsSellableOnFlea();
-        }
+        if (!_ragfairConfig.Dynamic.Blacklist.EnableBsgList) SetAllDbItemsAsSellableOnFlea();
 
         AddMissingTraderBuyRestrictionMaxValue();
 
@@ -119,9 +98,11 @@ public class PostDbLoadService(
     {
         var hideoutCraftDb = _databaseService.GetHideout().Production;
         var craftsToAdd = _hideoutConfig.HideoutCraftsToAdd;
-        foreach (var craftToAdd in craftsToAdd) {
+        foreach (var craftToAdd in craftsToAdd)
+        {
             var clonedCraft = _cloner.Clone(
-                hideoutCraftDb.Recipes.FirstOrDefault((x) => x.Id == craftToAdd.CraftIdToCopy));
+                hideoutCraftDb.Recipes.FirstOrDefault((x) => x.Id == craftToAdd.CraftIdToCopy)
+            );
             clonedCraft.Id = _hashUtil.Generate();
             clonedCraft.Requirements = craftToAdd.Requirements;
             clonedCraft.EndProduct = craftToAdd.CraftOutputTpl;
@@ -136,29 +117,26 @@ public class PostDbLoadService(
         var reserveBase = _databaseService.GetLocation(ELocationName.RezervBase.ToString()).Base;
 
         // Raiders are bosses, get only those from boss spawn array
-        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where((boss) => boss.BossName == "pmcBot")) {
+        foreach (var raiderSpawn in reserveBase.BossLocationSpawn.Where((boss) => boss.BossName == "pmcBot"))
+        {
             var isTriggered = raiderSpawn.TriggerId.Length > 0; // Empty string if not triggered
             var newSpawnChance = isTriggered
                 ? _locationConfig.ReserveRaiderSpawnChanceOverrides.Triggered
                 : _locationConfig.ReserveRaiderSpawnChanceOverrides.NonTriggered;
 
-            if (newSpawnChance == -1)
-            {
-                continue;
-            }
+            if (newSpawnChance == -1) continue;
 
             if (raiderSpawn.BossChance < newSpawnChance)
-            {
                 // Desired chance is bigger than existing, override it
                 raiderSpawn.BossChance = newSpawnChance;
-            }
         }
     }
 
     protected void AddCustomLooseLootPositions()
     {
         var looseLootPositionsToAdd = _lootConfig.LooseLoot;
-        foreach (var (mapId, positionsToAdd) in looseLootPositionsToAdd) {
+        foreach (var (mapId, positionsToAdd) in looseLootPositionsToAdd)
+        {
             if (mapId is null)
             {
                 _logger.Warning(_localisationService.GetText("location-unable_to_add_custom_loot_position", mapId));
@@ -174,10 +152,12 @@ public class PostDbLoadService(
                 continue;
             }
 
-            foreach (var positionToAdd in positionsToAdd) {
+            foreach (var positionToAdd in positionsToAdd)
+            {
                 // Exists already, add new items to existing positions pool
                 var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(
-                    (x) => x.Template.Id == positionToAdd.Template.Id);
+                    (x) => x.Template.Id == positionToAdd.Template.Id
+                );
 
                 if (existingLootPosition is not null)
                 {
@@ -198,35 +178,31 @@ public class PostDbLoadService(
     {
         var itemDb = _databaseService.GetItems();
 
-        var shotguns = new List<string> { Weapons.SHOTGUN_12G_SAIGA_12K, Weapons.SHOTGUN_20G_TOZ_106, Weapons.SHOTGUN_12G_M870};
-        foreach (var shotgunId in shotguns) {
+        var shotguns = new List<string> { Weapons.SHOTGUN_12G_SAIGA_12K, Weapons.SHOTGUN_20G_TOZ_106, Weapons.SHOTGUN_12G_M870 };
+        foreach (var shotgunId in shotguns)
             if (itemDb[shotgunId].Properties.ShotgunDispersion.HasValue)
-            {
                 itemDb[shotgunId].Properties.shotgunDispersion = itemDb[shotgunId].Properties.ShotgunDispersion;
-            }
-        }
     }
 
 // Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
     protected void AdjustMapBotLimits()
     {
         var mapsDb = _databaseService.GetLocations().GetDictionary();
-        if (_locationConfig.BotTypeLimits is null)
-        {
-            return;
-        }
+        if (_locationConfig.BotTypeLimits is null) return;
 
         foreach (var (mapId, limits) in _locationConfig.BotTypeLimits)
         {
             if (!mapsDb.TryGetValue(mapId, out var map))
             {
                 _logger.Warning(
-                    _localisationService.GetText("bot-unable_to_edit_limits_of_unknown_map", mapId));
+                    _localisationService.GetText("bot-unable_to_edit_limits_of_unknown_map", mapId)
+                );
 
                 continue;
             }
 
-            foreach (var botToLimit in limits) {
+            foreach (var botToLimit in limits)
+            {
                 var index = map.Base.MinMaxBots.FindIndex(x => x.WildSpawnType == botToLimit.Type);
                 if (index != -1)
                 {
@@ -238,12 +214,15 @@ public class PostDbLoadService(
                 else
                 {
                     // Bot type not found, add new object
-                    map.Base.MinMaxBots.Add( new MinMaxBot{
-                        // Bot type not found, add new object
-                        WildSpawnType = botToLimit.Type,
-                        Min = botToLimit.Min,
-                        Max = botToLimit.Max,
-                    });
+                    map.Base.MinMaxBots.Add(
+                        new MinMaxBot
+                        {
+                            // Bot type not found, add new object
+                            WildSpawnType = botToLimit.Type,
+                            Min = botToLimit.Min,
+                            Max = botToLimit.Max
+                        }
+                    );
                 }
             }
         }
@@ -251,12 +230,10 @@ public class PostDbLoadService(
 
     protected void AdjustLooseLootSpawnProbabilities()
     {
-        if (_lootConfig.LooseLootSpawnPointAdjustments is null)
-        {
-            return;
-        }
+        if (_lootConfig.LooseLootSpawnPointAdjustments is null) return;
 
-        foreach (var (mapId, mapAdjustments) in _lootConfig.LooseLootSpawnPointAdjustments) {
+        foreach (var (mapId, mapAdjustments) in _lootConfig.LooseLootSpawnPointAdjustments)
+        {
             var mapLooseLootData = _databaseService.GetLocation(mapId).LooseLoot.Value;
             if (mapLooseLootData is null)
             {
@@ -265,15 +242,23 @@ public class PostDbLoadService(
                 continue;
             }
 
-            foreach (var (lootKey, newChanceValue) in mapAdjustments) {
-                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault((spawnPoint) => spawnPoint.Template.Id == lootKey
+            foreach (var (lootKey, newChanceValue) in mapAdjustments)
+            {
+                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(
+                    (spawnPoint) => spawnPoint.Template.Id == lootKey
                 );
                 if (lootPostionToAdjust is null)
                 {
                     _logger.Warning(
-                        _localisationService.GetText("location-unable_to_adjust_loot_position_on_map", new {
-                        lootKey = lootKey,
-                        mapId = mapId }));
+                        _localisationService.GetText(
+                            "location-unable_to_adjust_loot_position_on_map",
+                            new
+                            {
+                                lootKey = lootKey,
+                                mapId = mapId
+                            }
+                        )
+                    );
 
                     continue;
                 }
@@ -283,16 +268,15 @@ public class PostDbLoadService(
         }
     }
 
-    
-    // TODO: CWX Change the way we get Maps
+
     protected void AdjustLocationBotValues()
     {
-        var mapsDb = _databaseService.GetLocations().GetDictionary();
-        foreach (var (key, cap) in _botConfig.MaxBotCap) {
-            if (!mapsDb.TryGetValue(_databaseService.GetLocations().GetMappedKey(key), out var map))
-            {
-                continue;
-            }
+        var mapsDb = _databaseService.GetLocations();
+        var mapsDict = mapsDb.GetDictionary();
+        foreach (var (key, cap) in _botConfig.MaxBotCap)
+        {
+            // Keys given are like this: "factory4_night" use GetMappedKey to change to "Factory4Night" which the dictionary contains
+            if (!mapsDict.TryGetValue(mapsDb.GetMappedKey(key), out var map)) continue;
 
             map.Base.BotMaxPvE = cap;
             map.Base.BotMax = cap;
@@ -308,17 +292,13 @@ public class PostDbLoadService(
         var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
         var lighthouse = _databaseService.GetLocations().Lighthouse?.Base;
         if (lighthouse is null)
-        {
             // Just in case they remove this cursed map
             return;
-        }
 
         // Find Rogues that spawn instantly
         var instantRogueBossSpawns = lighthouse.BossLocationSpawn
             .Where((spawn) => spawn.BossName == "exUsec" && spawn.Time == -1);
-        foreach (var wave in instantRogueBossSpawns) {
-            wave.Time = rogueSpawnDelaySeconds;
-        }
+        foreach (var wave in instantRogueBossSpawns) wave.Time = rogueSpawnDelaySeconds;
     }
 
 // Make non-trigger-spawned raiders spawn earlier + always
@@ -328,9 +308,11 @@ public class PostDbLoadService(
 
         // Find spawns with empty string for triggerId/TriggerName
         var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(
-            (bossSpawn) => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null);
+            (bossSpawn) => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
+        );
 
-        foreach (var boss in nonTriggerLabsBossSpawns) {
+        foreach (var boss in nonTriggerLabsBossSpawns)
+        {
             boss.BossChance = 100;
             boss.Time /= 10;
         }
@@ -338,46 +320,37 @@ public class PostDbLoadService(
 
     protected void AdjustHideoutCraftTimes(int overrideSeconds)
     {
-        if (overrideSeconds == -1)
-        {
-            return;
-        }
+        if (overrideSeconds == -1) return;
 
-        foreach (var craft in _databaseService.GetHideout().Production.Recipes) {
+        foreach (var craft in _databaseService.GetHideout().Production.Recipes)
             // Only adjust crafts ABOVE the override
             craft.ProductionTime = Math.Min(craft.ProductionTime.Value, overrideSeconds);
-        }
     }
 
 // Adjust all hideout craft times to be no higher than the override
     protected void AdjustHideoutBuildTimes(int overrideSeconds)
     {
-        if (overrideSeconds == -1)
-        {
-            return;
-        }
+        if (overrideSeconds == -1) return;
 
-        foreach (var area in _databaseService.GetHideout().Areas) {
-            foreach (var (key, stage) in area.Stages) {
-                // Only adjust crafts ABOVE the override
-                stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);
-            }
-        }
+        foreach (var area in _databaseService.GetHideout().Areas)
+        foreach (var (key, stage) in area.Stages)
+            // Only adjust crafts ABOVE the override
+            stage.ConstructionTime = Math.Min(stage.ConstructionTime.Value, overrideSeconds);
     }
 
     protected void UnlockHideoutLootCrateCrafts()
     {
-        var hideoutLootBoxCraftIds = new List<string>{
-        "66582be04de4820934746cea",
-        "6745925da9c9adf0450d5bca",
-        "67449c79268737ef6908d636" };
+        var hideoutLootBoxCraftIds = new List<string>
+        {
+            "66582be04de4820934746cea",
+            "6745925da9c9adf0450d5bca",
+            "67449c79268737ef6908d636"
+        };
 
-        foreach (var craftId in hideoutLootBoxCraftIds) {
+        foreach (var craftId in hideoutLootBoxCraftIds)
+        {
             var recipe = _databaseService.GetHideout().Production.Recipes.FirstOrDefault((craft) => craft.Id == craftId);
-            if (recipe is not null)
-            {
-                recipe.Locked = false;
-            }
+            if (recipe is not null) recipe.Locked = false;
         }
     }
 
@@ -386,9 +359,7 @@ public class PostDbLoadService(
     {
         // Iterate over all languages (e.g. "en", "fr")
         var locales = _databaseService.GetLocales();
-        foreach (var localeKvP in locales.Global) {
-            locales.Global[localeKvP.Key].Value["61687e2c3e526901fa76baf9"] = "";
-        }
+        foreach (var localeKvP in locales.Global) locales.Global[localeKvP.Key].Value["61687e2c3e526901fa76baf9"] = "";
     }
 
 // Check for any missing assorts inside each traders assort.json data, checking against traders questassort.json
@@ -397,69 +368,69 @@ public class PostDbLoadService(
         var db = _databaseService.GetTables();
         var traders = db.Traders;
         var quests = db.Templates.Quests;
-        foreach (var (traderId, traderData) in traders) {
+        foreach (var (traderId, traderData) in traders)
+        {
             var traderAssorts = traderData?.Assort;
-            if (traderAssorts is null)
-            {
-                continue;
-            }
+            if (traderAssorts is null) continue;
 
             // Merge started/success/fail quest assorts into one dictionary
             var mergedQuestAssorts = new Dictionary<string, string>();
             mergedQuestAssorts.Concat(traderData.QuestAssort["started"])
-            .Concat(traderData.QuestAssort["success"])
-            .Concat(traderData.QuestAssort["fail"]).ToDictionary();
+                .Concat(traderData.QuestAssort["success"])
+                .Concat(traderData.QuestAssort["fail"])
+                .ToDictionary();
 
             // Loop over all assorts for trader
-            foreach (var (assortKey, questKey) in (mergedQuestAssorts)) {
+            foreach (var (assortKey, questKey) in mergedQuestAssorts)
                 // Does assort key exist in trader assort file
                 if (!traderAssorts.LoyalLevelItems.ContainsKey(assortKey))
                 {
                     // Reverse lookup of enum key by value
-                    var messageValues = new {
+                    var messageValues = new
+                    {
                         traderName = traderId,
-                        questName = quests[questKey]?.QuestName ?? "UNKNOWN",
+                        questName = quests[questKey]?.QuestName ?? "UNKNOWN"
                     };
                     _logger.Warning(
                         _localisationService.GetText("assort-missing_quest_assort_unlock", messageValues)
                     );
                 }
-            }
         }
     }
 
     protected void SetAllDbItemsAsSellableOnFlea()
     {
         var dbItems = _databaseService.GetItems().Values.ToList();
-        foreach (var item in dbItems.Where(item => item.Type == "Item" &&
-                                                   !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
-                                                   !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)))
-        {
+        foreach (var item in dbItems.Where(
+                     item => item.Type == "Item" &&
+                             !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
+                             !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
+                 ))
             item.Properties.CanSellOnRagfair = true;
-        }
     }
 
     protected void AddMissingTraderBuyRestrictionMaxValue()
     {
         var restrictions = _databaseService.GetGlobals().Configuration.TradingSettings.BuyRestrictionMaxBonus;
-        restrictions["unheard_edition"] = new BuyRestrictionMaxBonus{ Multiplier = restrictions["edge_of_darkness"].Multiplier,
+        restrictions["unheard_edition"] = new BuyRestrictionMaxBonus
+        {
+            Multiplier = restrictions["edge_of_darkness"].Multiplier
         };
     }
 
     protected void ApplyFleaPriceOverrides()
     {
         var fleaPrices = _databaseService.GetPrices();
-        foreach (var (itemTpl, price) in _ragfairConfig.Dynamic.ItemPriceOverrideRouble) {
-            fleaPrices[itemTpl] = price;
-        }
+        foreach (var (itemTpl, price) in _ragfairConfig.Dynamic.ItemPriceOverrideRouble) fleaPrices[itemTpl] = price;
     }
 
     protected void AddCustomItemPresetsToGlobals()
     {
-        foreach (var presetToAdd in _itemConfig.CustomItemGlobalPresets) {
+        foreach (var presetToAdd in _itemConfig.CustomItemGlobalPresets)
+        {
             if (_databaseService.GetGlobals().ItemPresets.ContainsKey(presetToAdd.Id))
             {
-                _logger.Warning($"Global ItemPreset with Id of: { presetToAdd.Id} already exists, unable to overwrite");
+                _logger.Warning($"Global ItemPreset with Id of: {presetToAdd.Id} already exists, unable to overwrite");
                 continue;
             }
 

@@ -96,7 +96,7 @@ public class DialogueHelper(
     public Dictionary<string, Models.Eft.Profile.Dialogue> GetDialogsForProfile(string sessionId)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
-        return profile.DialogueRecords ?? (profile.DialogueRecords = new());
+        return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
     }
 
     public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(string profileId, string dialogueId)

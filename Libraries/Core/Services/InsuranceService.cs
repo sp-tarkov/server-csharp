@@ -33,7 +33,7 @@ public class InsuranceService(
 )
 {
     protected InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
-    protected Dictionary<string, Dictionary<string, List<Item>>?> _insured = new Dictionary<string, Dictionary<string, List<Item>>?>();
+    protected Dictionary<string, Dictionary<string, List<Item>>?> _insured = new();
 
     /// <summary>
     /// Does player have insurance dictionary exists
@@ -42,7 +42,7 @@ public class InsuranceService(
     /// <returns>True if exists</returns>
     public bool InsuranceDictionaryExists(string sessionId)
     {
-        return _insured.TryGetValue(sessionId, out var _);
+        return _insured.TryGetValue(sessionId, out _);
     }
 
     /// <summary>
@@ -57,10 +57,7 @@ public class InsuranceService(
 
     public void ResetInsurance(string sessionId)
     {
-        if (!_insured.TryAdd(sessionId, new Dictionary<string, List<Item>>()))
-        {
-            _insured[sessionId] = new Dictionary<string, List<Item>>();
-        }
+        if (!_insured.TryAdd(sessionId, new Dictionary<string, List<Item>>())) _insured[sessionId] = new Dictionary<string, List<Item>>();
     }
 
     /// <summary>
@@ -100,11 +97,11 @@ public class InsuranceService(
                 continue;
             }
 
-            SystemData systemData = new SystemData
+            var systemData = new SystemData
             {
                 Date = _timeUtil.GetDateMailFormat(),
                 Time = _timeUtil.GetTimeMailFormat(),
-                Location = mapId,
+                Location = mapId
             };
 
             // Send "i will go look for your stuff" message from trader to player
@@ -130,7 +127,7 @@ public class InsuranceService(
                         SystemData = systemData,
                         MessageType = MessageType.INSURANCE_RETURN,
                         MessageTemplateId = _randomUtil.GetArrayValue(dialogueTemplates["insuranceFound"]),
-                        Items = GetInsurance(sessionID)[trader.Key],
+                        Items = GetInsurance(sessionID)[trader.Key]
                     }
                 );
         }
@@ -151,9 +148,7 @@ public class InsuranceService(
         if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
                 _logger.Debug($"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds");
-            }
             return _timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
         }
 
@@ -177,17 +172,12 @@ public class InsuranceService(
             "SpecialSlot"
         );
         if (hasMarkOfUnheard)
-        {
             // Reduce return time by globals multipler value
             randomisedReturnTimeSeconds *= (int)globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown;
-        }
 
         // EoD has 30% faster returns
         var editionModifier = globals.Configuration.Insurance.EditionSendingMessageTime[pmcData.Info.GameVersion];
-        if (editionModifier is not null)
-        {
-            randomisedReturnTimeSeconds *= (int)editionModifier.Multiplier;
-        }
+        if (editionModifier is not null) randomisedReturnTimeSeconds *= (int)editionModifier.Multiplier;
 
         // Calculate the final return time based on our bonus percent
         var finalReturnTimeSeconds = randomisedReturnTimeSeconds * (1.0 - insuranceReturnTimeBonusPercent);
@@ -197,10 +187,8 @@ public class InsuranceService(
     protected double GetMaxInsuranceStorageTime(TraderBase traderBase)
     {
         if (_insuranceConfig.StorageTimeOverrideSeconds > 0)
-        {
             // Override exists, use instead of traders value
             return _insuranceConfig.StorageTimeOverrideSeconds;
-        }
 
         return _timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);
     }
@@ -212,10 +200,7 @@ public class InsuranceService(
     public void StoreGearLostInRaidToSendLater(string sessionID, List<InsuranceEquipmentPkg> equipmentPkg)
     {
         // Process all insured items lost in-raid
-        foreach (var gear in equipmentPkg)
-        {
-            AddGearToSend(gear);
-        }
+        foreach (var gear in equipmentPkg) AddGearToSend(gear);
     }
 
     /// <summary>
@@ -239,10 +224,7 @@ public class InsuranceService(
                 continue;
             }
 
-            if (ItemCannotBeLostOnDeath(lostItem, pmcProfile.Inventory.Items))
-            {
-                continue;
-            }
+            if (ItemCannotBeLostOnDeath(lostItem, pmcProfile.Inventory.Items)) continue;
 
             // Add insured item + details to return array
             result.Add(
@@ -251,7 +233,7 @@ public class InsuranceService(
                     SessionId = sessionId,
                     ItemToReturnToPlayer = lostItem,
                     PmcData = pmcProfile,
-                    TraderId = insuranceDetails.TId,
+                    TraderId = insuranceDetails.TId
                 }
             );
         }
@@ -267,16 +249,10 @@ public class InsuranceService(
     /// <returns>True if item</returns>
     protected bool ItemCannotBeLostOnDeath(Item lostItem, List<Item> inventoryItems)
     {
-        if (lostItem.SlotId?.ToLower().StartsWith("specialslot") ?? false)
-        {
-            return true;
-        }
+        if (lostItem.SlotId?.ToLower().StartsWith("specialslot") ?? false) return true;
 
         // We check secure container items even tho they are omitted from lostInsuredItems, just in case
-        if (_itemHelper.ItemIsInsideContainer(lostItem, "SecuredContainer", inventoryItems))
-        {
-            return true;
-        }
+        if (_itemHelper.ItemIsInsideContainer(lostItem, "SecuredContainer", inventoryItems)) return true;
 
         return false;
     }
@@ -293,16 +269,10 @@ public class InsuranceService(
         var traderId = gear.TraderId;
 
         // Ensure insurance array is init
-        if (!InsuranceDictionaryExists(sessionId))
-        {
-            ResetInsurance(sessionId);
-        }
+        if (!InsuranceDictionaryExists(sessionId)) ResetInsurance(sessionId);
 
         // init trader insurance array
-        if (!InsuranceTraderArrayExists(sessionId, traderId))
-        {
-            ResetInsuranceTraderArray(sessionId, traderId);
-        }
+        if (!InsuranceTraderArrayExists(sessionId, traderId)) ResetInsuranceTraderArray(sessionId, traderId);
 
         AddInsuranceItemToArray(sessionId, traderId, itemToReturnToPlayer);
 
@@ -318,7 +288,7 @@ public class InsuranceService(
     /// <returns>True if exists</returns>
     protected bool InsuranceTraderArrayExists(string sessionId, string traderId)
     {
-        return this._insured[sessionId][traderId] is not null;
+        return _insured[sessionId][traderId] is not null;
     }
 
     /// <summary>

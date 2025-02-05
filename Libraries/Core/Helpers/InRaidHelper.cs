@@ -28,10 +28,7 @@ public class InRaidHelper(
     /// <param name="profile">Profile to update</param>
     protected void ResetSkillPointsEarnedDuringRaid(PmcData profile)
     {
-        foreach (var skill in profile.Skills.Common)
-        {
-            skill.PointsEarnedDuringSession = 0.0;
-        }
+        foreach (var skill in profile.Skills.Common) skill.PointsEarnedDuringSession = 0.0;
     }
 
     /// <summary>
@@ -75,10 +72,7 @@ public class InRaidHelper(
 
         // Handle Removing of FIR status if player did not survive + not transferring
         // Do after above filtering code to reduce work done
-        if (!isSurvived && !isTransfer && !_inRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd)
-        {
-            RemoveFiRStatusFromCertainItems(postRaidProfile.Inventory.Items);
-        }
+        if (!isSurvived && !isTransfer && !_inRaidConfig.AlwaysKeepFoundInRaidOnRaidEnd) RemoveFiRStatusFromCertainItems(postRaidProfile.Inventory.Items);
 
         // Add items from client profile into server profile
         AddItemsToInventory(postRaidInventoryItems, serverProfile.Inventory.Items);
@@ -102,24 +96,18 @@ public class InRaidHelper(
             item =>
             {
                 // Has upd object + upd.SpawnedInSession property + not a quest item
-                return (
-                    (item.Upd?.SpawnedInSession ?? false) &&
-                    !(dbItems[item.Template].Properties.QuestItem ?? false) &&
-                    !(
-                        _inRaidConfig.KeepFiRSecureContainerOnDeath &&
-                        _itemHelper.ItemIsInsideContainer(item, "SecuredContainer", items)
-                    )
-                );
+                return (item.Upd?.SpawnedInSession ?? false) &&
+                       !(dbItems[item.Template].Properties.QuestItem ?? false) &&
+                       !(
+                           _inRaidConfig.KeepFiRSecureContainerOnDeath &&
+                           _itemHelper.ItemIsInsideContainer(item, "SecuredContainer", items)
+                       );
             }
         );
 
         foreach (var item in itemsToRemovePropertyFrom)
-        {
             if (item.Upd is not null)
-            {
                 item.Upd.SpawnedInSession = false;
-            }
-        }
     }
 
     /// <summary>
@@ -160,10 +148,8 @@ public class InRaidHelper(
         // Get inventory item ids to remove from players profile
         var itemIdsToDeleteFromProfile = GetInventoryItemsLostOnDeath(pmcData).Select(item => item.Id);
         foreach (var itemIdToDelete in itemIdsToDeleteFromProfile)
-        {
             // Items inside containers are handled as part of function
             _inventoryHelper.RemoveItem(pmcData, itemIdToDelete, sessionId);
-        }
 
         // Remove contents of fast panel
         pmcData.Inventory.FastPanel = new Dictionary<string, string>();
@@ -180,27 +166,16 @@ public class InRaidHelper(
         PmcData pmcData,
         string secureContainerSlotId)
     {
-        if (!pmcData.Inventory.Items.Any(item => item.SlotId == secureContainerSlotId))
-        {
-            return;
-        }
+        if (!pmcData.Inventory.Items.Any(item => item.SlotId == secureContainerSlotId)) return;
 
         List<Item> itemsInsideContainer = [];
         foreach (var inventoryItem in pmcData.Inventory.Items.Where(item => item.Upd is not null && item.SlotId != "hideout"))
-        {
             if (_itemHelper.ItemIsInsideContainer(inventoryItem, secureContainerSlotId, pmcData.Inventory.Items))
-            {
                 itemsInsideContainer.Add(inventoryItem);
-            }
-        }
 
         foreach (var item in itemsInsideContainer)
-        {
             if (item.Upd.SpawnedInSession ?? false)
-            {
                 item.Upd.SpawnedInSession = false;
-            }
-        }
     }
 
     /// <summary>
@@ -214,28 +189,27 @@ public class InRaidHelper(
         var equipmentRootId = pmcProfile?.Inventory?.Equipment;
         var questRaidItemContainerId = pmcProfile?.Inventory?.QuestRaidItems;
 
-        return inventoryItems.Where(item => {
-            // Keep items flagged as kept after death
-            if (IsItemKeptAfterDeath(pmcProfile, item)) {
-                return false;
-            }
+        return inventoryItems.Where(
+                item =>
+                {
+                    // Keep items flagged as kept after death
+                    if (IsItemKeptAfterDeath(pmcProfile, item)) return false;
 
-            // Remove normal items or quest raid items
-            if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId) {
-                return true;
-            }
+                    // Remove normal items or quest raid items
+                    if (item.ParentId == equipmentRootId || item.ParentId == questRaidItemContainerId) return true;
 
-            // Pocket items are lost on death
-            // Ensure we dont pick up pocket items from manniquins
-            if (
-                item.SlotId.StartsWith("pocket") &&
-                _inventoryHelper.DoesItemHaveRootId(pmcProfile, item, pmcProfile.Inventory.Equipment)
-            ) {
-                return true;
-            }
+                    // Pocket items are lost on death
+                    // Ensure we dont pick up pocket items from manniquins
+                    if (
+                        item.SlotId.StartsWith("pocket") &&
+                        _inventoryHelper.DoesItemHaveRootId(pmcProfile, item, pmcProfile.Inventory.Equipment)
+                    )
+                        return true;
 
-            return false;
-        }).ToList();
+                    return false;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
@@ -247,36 +221,28 @@ public class InRaidHelper(
     protected bool IsItemKeptAfterDeath(PmcData pmcData, Item itemToCheck)
     {
         // Base inventory items are always kept
-        if (itemToCheck.ParentId is null) {
-            return true;
-        }
+        if (itemToCheck.ParentId is null) return true;
 
         // Is item equipped on player
-        if (itemToCheck.ParentId == pmcData.Inventory.Equipment) {
+        if (itemToCheck.ParentId == pmcData.Inventory.Equipment)
+        {
             // Check slot id against config, true = delete, false = keep, undefined = delete
-            bool discard = _lostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
-            if (discard) {
+            var discard = _lostOnDeathConfig.Equipment.GetByJsonProp<bool>(itemToCheck.SlotId);
+            if (discard)
                 // Lost on death
                 return false;
-            }
 
             return true;
         }
 
         // Should we keep items in pockets on death
-        if (!_lostOnDeathConfig.Equipment.PocketItems && _pocketSlots.Contains(itemToCheck.SlotId)) {
-            return true;
-        }
+        if (!_lostOnDeathConfig.Equipment.PocketItems && _pocketSlots.Contains(itemToCheck.SlotId)) return true;
 
         // Is quest item + quest item not lost on death
-        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !_lostOnDeathConfig.QuestItems) {
-            return true;
-        }
+        if (itemToCheck.ParentId == pmcData.Inventory.QuestRaidItems && !_lostOnDeathConfig.QuestItems) return true;
 
         // special slots are always kept after death
-        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && _lostOnDeathConfig.SpecialSlotItems) {
-            return true;
-        }
+        if ((itemToCheck.SlotId?.Contains("SpecialSlot") ?? false) && _lostOnDeathConfig.SpecialSlotItems) return true;
 
         // All other cases item is lost
         return false;

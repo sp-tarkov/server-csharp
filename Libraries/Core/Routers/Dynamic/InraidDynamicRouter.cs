@@ -24,8 +24,9 @@ public class InraidDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID), 
-                typeof(RegisterPlayerRequestData))
+                ) => _inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
+                typeof(RegisterPlayerRequestData)
+            )
         ]
     )
     {

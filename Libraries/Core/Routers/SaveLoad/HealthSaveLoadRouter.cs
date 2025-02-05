@@ -11,7 +11,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return [new("spt-health", false)];
+        return [new HandledRoute("spt-health", false)];
     }
 
     public override SptProfile HandleLoad(SptProfile profile)
@@ -20,11 +20,11 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
 
         return profile;
     }
-    
+
     public void DefaultVitality(Vitality? vitality)
     {
         vitality ??= new Vitality { Health = null, Energy = 0, Temperature = 0, Hydration = 0 };
-        
+
         vitality.Health = new Dictionary<string, BodyPartHealth>
         {
             {
@@ -32,7 +32,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -42,7 +42,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -52,7 +52,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -62,7 +62,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -72,7 +72,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -82,7 +82,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }
@@ -92,7 +92,7 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
                 {
                     Health = new CurrentMinMax
                     {
-                        Current = 0,
+                        Current = 0
                     },
                     Effects = new Dictionary<string, BodyPartEffectProperties>()
                 }

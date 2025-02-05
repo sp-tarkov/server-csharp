@@ -47,10 +47,7 @@ public class RagfairSortHelper(
         }
 
         // 0=ASC 1=DESC
-        if (direction == 1)
-        {
-            offers.Reverse();
-        }
+        if (direction == 1) offers.Reverse();
 
         return offers;
     }

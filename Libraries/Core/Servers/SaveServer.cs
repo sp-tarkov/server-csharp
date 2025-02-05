@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using SptCommon.Annotations;
 using Core.DI;
+using Core.Models.Eft.Common;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -56,25 +57,16 @@ public class SaveServer(
     public void Load()
     {
         // get files to load
-        if (!_fileUtil.DirectoryExists(profileFilepath))
-        {
-            _fileUtil.CreateDirectory(profileFilepath);
-        }
+        if (!_fileUtil.DirectoryExists(profileFilepath)) _fileUtil.CreateDirectory(profileFilepath);
 
         var files = _fileUtil.GetFiles(profileFilepath).Where((item) => _fileUtil.GetFileExtension(item) == "json");
 
         // load profiles
         var stopwatch = Stopwatch.StartNew();
-        foreach (var file in files)
-        {
-            LoadProfile(_fileUtil.StripExtension(file));
-        }
+        foreach (var file in files) LoadProfile(_fileUtil.StripExtension(file));
 
         stopwatch.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"{files.Count()} Profiles took: {stopwatch.ElapsedMilliseconds}ms to load.");
     }
 
     /**
@@ -86,15 +78,9 @@ public class SaveServer(
         {
             // Save every profile
             var totalTime = 0L;
-            foreach (var sessionID in profiles)
-            {
-                totalTime += SaveProfile(sessionID.Key);
-            }
+            foreach (var sessionID in profiles) totalTime += SaveProfile(sessionID.Key);
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
         }
     }
 
@@ -107,15 +93,9 @@ public class SaveServer(
     {
         lock (_lock)
         {
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                throw new Exception("session id provided was empty, did you restart the server while the game was running?");
-            }
+            if (string.IsNullOrEmpty(sessionId)) throw new Exception("session id provided was empty, did you restart the server while the game was running?");
 
-            if (profiles == null || profiles.Count == 0)
-            {
-                throw new Exception($"no profiles found in saveServer with id: {sessionId}");
-            }
+            if (profiles == null || profiles.Count == 0) throw new Exception($"no profiles found in saveServer with id: {sessionId}");
 
             if (!profiles.TryGetValue(sessionId, out var sptProfile))
                 throw new Exception($"no profile found for sessionId: {sessionId}");
@@ -133,7 +113,10 @@ public class SaveServer(
      * Get all profiles from memory
      * @returns Dictionary of ISptProfile
      */
-    public Dictionary<string, SptProfile> GetProfiles() => profiles;
+    public Dictionary<string, SptProfile> GetProfiles()
+    {
+        return profiles;
+    }
 
     /**
      * Delete a profile by id
@@ -162,17 +145,14 @@ public class SaveServer(
     {
         lock (_lock)
         {
-            if (profiles.ContainsKey(profileInfo.ProfileId))
-            {
-                throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
-            }
+            if (profiles.ContainsKey(profileInfo.ProfileId)) throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
 
             profiles.Add(
                 profileInfo.ProfileId,
                 new SptProfile()
                 {
                     ProfileInfo = profileInfo,
-                    CharacterData = new Characters() { PmcData = new(), ScavData = new() }
+                    CharacterData = new Characters() { PmcData = new PmcData(), ScavData = new PmcData() }
                 }
             );
         }
@@ -202,17 +182,13 @@ public class SaveServer(
             var filename = $"{sessionID}.json";
             var filePath = $"{profileFilepath}{filename}";
             if (_fileUtil.FileExists(filePath))
-            {
                 // File found, store in profiles[]
                 profiles[sessionID] = _jsonUtil.Deserialize<SptProfile>(_fileUtil.ReadFile(filePath));
-            }
 
             // Run callbacks
             foreach (var callback in
                      _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
-            {
                 profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
-            }
         }
     }
 

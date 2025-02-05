@@ -10,53 +10,58 @@ namespace Core.Routers.Dynamic;
 public class BotDynamicRouter : DynamicRouter
 {
     protected static BotCallbacks _botCallbacks;
-    
+
     public BotDynamicRouter(
         JsonUtil jsonUtil,
         BotCallbacks botCallbacks
     ) : base(
         jsonUtil,
         [
-        new RouteAction(
-            "/singleplayer/settings/bot/limit/", 
-            (
-                url, 
-                info, 
-                sessionID, 
-                output
-                ) => _botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID)),
-        new RouteAction(
-            "/singleplayer/settings/bot/difficulty/", 
-            (
-                url, 
-                info, 
-                sessionID, 
-                output
-            ) => _botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID)),
-        new RouteAction(
-            "/singleplayer/settings/bot/difficulties", 
-            (
-                url, 
-                info, 
-                sessionID, 
-                output
-            ) => _botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID)),
-        new RouteAction(
-            "/singleplayer/settings/bot/maxCap", 
-            (
-                url, 
-                info, 
-                sessionID, 
-                output
-            ) => _botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID)),
-        new RouteAction(
-            "/singleplayer/settings/bot/getBotBehaviours/", 
-            (
-                url, 
-                info, 
-                sessionID, 
-                output
-            ) => _botCallbacks.GetBotBehaviours())
+            new RouteAction(
+                "/singleplayer/settings/bot/limit/",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    output
+                ) => _botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID)
+            ),
+            new RouteAction(
+                "/singleplayer/settings/bot/difficulty/",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    output
+                ) => _botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID)
+            ),
+            new RouteAction(
+                "/singleplayer/settings/bot/difficulties",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    output
+                ) => _botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID)
+            ),
+            new RouteAction(
+                "/singleplayer/settings/bot/maxCap",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    output
+                ) => _botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID)
+            ),
+            new RouteAction(
+                "/singleplayer/settings/bot/getBotBehaviours/",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    output
+                ) => _botCallbacks.GetBotBehaviours()
+            )
         ]
     )
     {

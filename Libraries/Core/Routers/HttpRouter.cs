@@ -39,14 +39,10 @@ public class HttpRouter
         var wrapper = new ResponseWrapper("");
 
         var handled = HandleRoute(req, sessionID, wrapper, _staticRouters, false, body, out deserializedObject);
-        if (!handled) {
-            HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body, out deserializedObject);
-        }
+        if (!handled) HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body, out deserializedObject);
 
         // TODO: Temporary hack to change ItemEventRouter response sessionID binding to what client expects
-        if (wrapper.Output?.Contains("\"profileChanges\":{") ?? false) {
-            wrapper.Output = wrapper.Output.Replace(sessionID, sessionID);
-        }
+        if (wrapper.Output?.Contains("\"profileChanges\":{") ?? false) wrapper.Output = wrapper.Output.Replace(sessionID, sessionID);
 
         //var filepath = $"c:\\SharpServer\\{req.Path.ToString().Substring(1).Replace("/", ".")}.json";
         //File.WriteAllText(filepath, wrapper.Output);
@@ -66,28 +62,25 @@ public class HttpRouter
     {
         var url = request.Path.Value;
         deserializedObject = null;
-        
+
         // remove retry from url
-        if (url?.Contains("?retry=") ?? false) {
-            url = url.Split("?retry=")[0];
-        }
+        if (url?.Contains("?retry=") ?? false) url = url.Split("?retry=")[0];
         var matched = false;
         foreach (var route in routers)
-        {
-            if (route.CanHandle(url, dynamic)) {
-                if (dynamic) {
+            if (route.CanHandle(url, dynamic))
+            {
+                if (dynamic)
                     wrapper.Output = (route as DynamicRouter).HandleDynamic(url, body, sessionID, wrapper.Output) as string;
-                } else {
+                else
                     wrapper.Output = (route as StaticRouter).HandleStatic(url, body, sessionID, wrapper.Output) as string;
-                }
                 matched = true;
             }
-        }
+
         return matched;
     }
+
     protected class ResponseWrapper(string? output)
     {
         public string? Output { get; set; } = output;
     }
 }
-

@@ -13,7 +13,8 @@ public class HttpFileUtil
         _httpServerHelper = httpServerHelper;
     }
 
-    public void SendFile(HttpResponse resp,string filePath) {
+    public void SendFile(HttpResponse resp, string filePath)
+    {
         var pathSlice = filePath.Split("/");
         var mimePath = _httpServerHelper.GetMimeText(pathSlice[^1].Split(".")[^1]);
         var type = string.IsNullOrWhiteSpace(mimePath) ? _httpServerHelper.GetMimeText("txt") : mimePath;

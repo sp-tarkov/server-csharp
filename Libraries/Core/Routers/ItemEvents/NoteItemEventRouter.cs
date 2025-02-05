@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -23,23 +24,24 @@ public class NoteItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("AddNote", false),
-            new HandledRoute("EditNote", false),
-            new HandledRoute("DeleteNote", false)
+            new(ItemEventActions.ADD_NOTE, false),
+            new(ItemEventActions.EDIT_NOTE, false),
+            new(ItemEventActions.DELETE_NOTE, false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {
-            case "AddNote":
+            case ItemEventActions.ADD_NOTE:
                 return _noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID);
-            case "EditNote":
+            case ItemEventActions.EDIT_NOTE:
                 return _noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID);
-            case "DeleteNote":
+            case ItemEventActions.DELETE_NOTE:
                 return _noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID);
             default:
                 throw new Exception($"NoteItemEventRouter being used when it cant handle route {url}");

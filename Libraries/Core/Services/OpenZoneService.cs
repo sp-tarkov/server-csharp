@@ -24,10 +24,7 @@ public class OpenZoneService(
     {
         _locationConfig.OpenZones.TryAdd(locationId, []);
 
-        if (!_locationConfig.OpenZones[locationId].Contains(zoneToAdd))
-        {
-            _locationConfig.OpenZones[locationId].Add(zoneToAdd);
-        }
+        if (!_locationConfig.OpenZones[locationId].Contains(zoneToAdd)) _locationConfig.OpenZones[locationId].Add(zoneToAdd);
     }
 
     /// <summary>

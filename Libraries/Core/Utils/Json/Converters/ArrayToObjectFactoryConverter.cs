@@ -18,6 +18,7 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
     private class ArrayToObjectConverter<T> : JsonConverter<T?>
     {
         public override bool HandleNull => true;
+
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             switch (reader.TokenType)

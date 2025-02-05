@@ -142,7 +142,7 @@ public record CoopExtractReward : LootRequest
 {
     [JsonPropertyName("sendGift")]
     public bool SendGift { get; set; }
-    
+
     [JsonPropertyName("useRewarditemBlacklist")]
     public bool UseRewarditemBlacklist { get; set; }
 

@@ -11,7 +11,7 @@ namespace Core.Routers.Static;
 public class QuestStaticRouter : StaticRouter
 {
     protected static QuestCallbacks _questCallbacks;
-    
+
     public QuestStaticRouter(
         JsonUtil jsonUtil,
         QuestCallbacks questCallbacks
@@ -21,20 +21,23 @@ public class QuestStaticRouter : StaticRouter
             new RouteAction(
                 "/client/quest/list",
                 (
-                    url, 
-                    info, 
-                    sessionID, 
+                    url,
+                    info,
+                    sessionID,
                     output
                 ) => _questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
-                typeof(ListQuestsRequestData)),
+                typeof(ListQuestsRequestData)
+            ),
             new RouteAction(
                 "/client/repeatalbeQuests/activityPeriods",
                 (
-                    url, 
-                    info, 
-                    sessionID, 
+                    url,
+                    info,
+                    sessionID,
                     output
-                ) => _questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)),]
+                ) => _questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)
+            )
+        ]
     )
     {
         _questCallbacks = questCallbacks;

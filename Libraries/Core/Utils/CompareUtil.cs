@@ -5,16 +5,17 @@ namespace Core.Utils;
 [Injectable]
 public class CompareUtil
 {
-    private readonly HashSet<string> typesToCheckAgainst = [
-    "string",
-    "number",
-    "boolean",
-    "bigint",
-    "symbol",
-    "undefined",
-    "null",
+    private readonly HashSet<string> typesToCheckAgainst =
+    [
+        "string",
+        "number",
+        "boolean",
+        "bigint",
+        "symbol",
+        "undefined",
+        "null"
     ];
-    
+
     /**
      * This function does an object comparison, equivalent to applying reflections
      * and scanning for all possible properties including arrays.
@@ -54,7 +55,7 @@ public class CompareUtil
         // }
         //
         // return false;
-        
+
         throw new NotImplementedException();
     }
 }

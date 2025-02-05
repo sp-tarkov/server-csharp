@@ -1,14 +1,13 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum ArmorMaterial
 {
-    public enum ArmorMaterial
-    {
-        UHMWPE,
-        Aramid,
-        Combined,
-        Titan,
-        Aluminium,
-        ArmoredSteel,
-        Ceramic,
-        Glass
-    }
+    UHMWPE,
+    Aramid,
+    Combined,
+    Titan,
+    Aluminium,
+    ArmoredSteel,
+    Ceramic,
+    Glass
 }

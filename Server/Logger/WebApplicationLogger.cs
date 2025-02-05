@@ -24,9 +24,7 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     )
     {
         if (textColor != null || backgroundColor != null)
-        {
             _logger.LogInformation(ex, GetColorizedText(data, textColor, backgroundColor));
-        }
         else
             _logger.LogInformation(ex, data);
     }

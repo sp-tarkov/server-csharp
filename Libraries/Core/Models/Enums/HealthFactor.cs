@@ -1,14 +1,13 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum HealthFactor
 {
-    public enum HealthFactor
-    {
-        None,
-        Health,
-        Hydration,
-        Energy,
-        Radiation,
-        Temperature,
-        Poisoning,
-        Effect
-    }
+    None,
+    Health,
+    Hydration,
+    Energy,
+    Radiation,
+    Temperature,
+    Poisoning,
+    Effect
 }

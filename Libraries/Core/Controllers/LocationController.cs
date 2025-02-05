@@ -18,7 +18,6 @@ public class LocationController(
     ICloner _cloner
 )
 {
-
     /// <summary>
     /// Handle client/locations
     /// Get all maps base location properties without loot data
@@ -38,10 +37,7 @@ public class LocationController(
             var mapBase = kvp.Value.Base;
             if (mapBase == null)
             {
-                if(_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
                 continue;
             }
 
@@ -65,10 +61,7 @@ public class LocationController(
     /// <returns></returns>
     public GetAirdropLootResponse? GetAirDropLoot(GetAirdropLootRequest? request)
     {
-        if (request?.ContainerId is not null)
-        {
-            return _airdropService.GenerateCustomAirdropLoot(request);
-        }
+        if (request?.ContainerId is not null) return _airdropService.GenerateCustomAirdropLoot(request);
 
         return _airdropService.GenerateAirdropLoot();
     }

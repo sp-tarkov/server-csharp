@@ -11,7 +11,7 @@ public record GetRaidConfigurationRequestData : RaidSettings, IRequestData
 
     [JsonPropertyName("MaxGroupCount")]
     public int? MaxGroupCount { get; set; }
-    
+
     [JsonPropertyName("transitionType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public TransitionType TransitionType { get; set; }

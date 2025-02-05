@@ -1,9 +1,8 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum RepairStrategyType
 {
-    public enum RepairStrategyType
-    {
-        MeleeWeapon,
-        Firearms,
-        Armor
-    }
+    MeleeWeapon,
+    Firearms,
+    Armor
 }

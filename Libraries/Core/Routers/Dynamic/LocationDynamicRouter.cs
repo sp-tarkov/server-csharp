@@ -7,7 +7,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class LocationDynamicRouter : DynamicRouter
 {
-    
     public LocationDynamicRouter(
         JsonUtil jsonUtil
     ) : base(

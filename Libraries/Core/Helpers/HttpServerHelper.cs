@@ -46,7 +46,7 @@ public class HttpServerHelper(ConfigServer configServer)
     }
 
     /** Get websocket url + port */
-    public string GetWebsocketUrl() 
+    public string GetWebsocketUrl()
     {
         return $"ws://{BuildUrl()}";
     }

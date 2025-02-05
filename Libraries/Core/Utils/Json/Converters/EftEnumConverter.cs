@@ -6,7 +6,8 @@ namespace Core.Utils.Json.Converters;
 
 public class EftEnumConverter<T> : JsonConverter<T>
 {
-    private static readonly JsonSerializerOptions _options = new() {Converters = { new JsonStringEnumConverter() }};
+    private static readonly JsonSerializerOptions _options = new() { Converters = { new JsonStringEnumConverter() } };
+
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.PropertyName)
@@ -20,6 +21,7 @@ public class EftEnumConverter<T> : JsonConverter<T>
             var str = reader.GetInt32().ToString();
             return (T)Enum.Parse(typeof(T), str, true);
         }
+
         return default;
     }
 
@@ -61,6 +63,7 @@ public class EftEnumConverter<T> : JsonConverter<T>
             else
                 throw new Exception($"Could not convert enum {value.GetType()} with value {value}");
         }
+
         writer.WritePropertyName(propertyValue.ToString());
     }
 }

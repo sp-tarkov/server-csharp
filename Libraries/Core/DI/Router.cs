@@ -20,10 +20,7 @@ public abstract class Router
 
     protected List<HandledRoute> GetInternalHandledRoutes()
     {
-        if (handledRoutes.Count == 0)
-        {
-            handledRoutes = GetHandledRoutes();
-        }
+        if (handledRoutes.Count == 0) handledRoutes = GetHandledRoutes();
 
         return handledRoutes;
     }
@@ -31,11 +28,9 @@ public abstract class Router
     public bool CanHandle(string url, bool partialMatch = false)
     {
         if (partialMatch)
-        {
             return GetInternalHandledRoutes()
                 .Where((r) => r.dynamic)
                 .Any((r) => url.Contains(r.route));
-        }
 
         return GetInternalHandledRoutes()
             .Where((r) => !r.dynamic)
@@ -59,10 +54,7 @@ public abstract class StaticRouter : Router
         var action = _actions.Single(route => route.url == url);
         var type = action.bodyType;
         IRequestData? info = null;
-        if (type != null && !string.IsNullOrEmpty(body))
-        {
-            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
-        }
+        if (type != null && !string.IsNullOrEmpty(body)) info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         return action.action(url, info, sessionID, output);
     }
 
@@ -88,10 +80,7 @@ public abstract class DynamicRouter : Router
         var action = actions.First(r => url.Contains(r.url));
         var type = action.bodyType;
         IRequestData? info = null;
-        if (type != null && !string.IsNullOrEmpty(body))
-        {
-            info = (IRequestData?)_jsonUtil.Deserialize(body, type);
-        }
+        if (type != null && !string.IsNullOrEmpty(body)) info = (IRequestData?)_jsonUtil.Deserialize(body, type);
         return action.action(url, info, sessionID, output);
     }
 

@@ -9,12 +9,12 @@ public class TraderAssortService(
     TraderHelper _traderHelper)
 {
     protected readonly Dictionary<string, TraderAssort> _pristineTraderAssorts = new();
-    
+
     public TraderAssort? GetPristineTraderAssort(string traderId)
     {
         return _traderHelper.GetTraderAssortsByTraderId(traderId);
         _pristineTraderAssorts.TryGetValue(traderId, out var result);
-        
+
         return result;
     }
 

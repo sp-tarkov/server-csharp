@@ -25,10 +25,7 @@ public class ApplicationContext
         lock (variablesLock)
         {
             var values = new List<ContextVariable>();
-            if (variables.TryGetValue(type, out var savedValues))
-            {
-                values.AddRange(savedValues);
-            }
+            if (variables.TryGetValue(type, out var savedValues)) values.AddRange(savedValues);
 
             return values;
         }

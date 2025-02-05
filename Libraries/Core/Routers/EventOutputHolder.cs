@@ -35,11 +35,8 @@ public class EventOutputHolder
 
     public ItemEventRouterResponse GetOutput(string sessionId)
     {
-        var resultFound = _outputStore.TryGetValue(sessionId, out ItemEventRouterResponse? result);
-        if (resultFound)
-        {
-            return result;
-        }
+        var resultFound = _outputStore.TryGetValue(sessionId, out var result);
+        if (resultFound) return result;
 
         // Nothing found, reset to default
         ResetOutput(sessionId);
@@ -52,11 +49,8 @@ public class EventOutputHolder
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
-        if (_outputStore.ContainsKey(sessionId))
-        {
-            _outputStore.Remove(sessionId);
-        }
-        
+        if (_outputStore.ContainsKey(sessionId)) _outputStore.Remove(sessionId);
+
         _outputStore.Add(
             sessionId,
             new ItemEventRouterResponse
@@ -90,8 +84,8 @@ public class EventOutputHolder
 
     public void UpdateOutputProperties(string sessionId)
     {
-        PmcData pmcData = _profileHelper.GetPmcProfile(sessionId);
-        ProfileChange profileChanges = _outputStore[sessionId].ProfileChanges[sessionId];
+        var pmcData = _profileHelper.GetPmcProfile(sessionId);
+        var profileChanges = _outputStore[sessionId].ProfileChanges[sessionId];
 
         profileChanges.Experience = pmcData.Info.Experience;
         profileChanges.Health = _cloner.Clone(pmcData.Health);
@@ -116,7 +110,6 @@ public class EventOutputHolder
     private void CleanUpCompleteCraftsInProfile(Dictionary<string, Production>? productions)
     {
         foreach (var production in productions)
-        {
             if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 // Water collector / Bitcoin etc
@@ -129,7 +122,6 @@ public class EventOutputHolder
                 // Normal completed craft, delete
                 productions.Remove(production.Key);
             }
-        }
     }
 
     private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
@@ -139,15 +131,9 @@ public class EventOutputHolder
             var improvement = pmcData.Hideout.Improvements[improvementKey.Key];
 
             // Skip completed
-            if (improvement.Completed ?? false)
-            {
-                continue;
-            }
+            if (improvement.Completed ?? false) continue;
 
-            if (improvement.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp())
-            {
-                improvement.Completed = true;
-            }
+            if (improvement.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()) improvement.Completed = true;
         }
 
         return pmcData.Hideout.Improvements;
@@ -158,22 +144,14 @@ public class EventOutputHolder
         foreach (var production in productions)
         {
             if (production.Value is null)
-            {
                 // Could be cancelled production, skip item to save processing
                 continue;
-            }
 
             // Complete and is Continuous e.g. water collector
-            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
-            {
-                continue;
-            }
+            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false)) continue;
 
             // Skip completed
-            if (!production.Value.InProgress ?? false)
-            {
-                continue;
-            }
+            if (!production.Value.InProgress ?? false) continue;
 
             // Client informed of craft, remove from data returned
             Dictionary<string, bool>? storageForSessionId = null;
@@ -192,10 +170,7 @@ public class EventOutputHolder
             }
 
             // Flag started craft as having been seen by client so it won't happen subsequent times
-            if (production.Value.Progress > 0 && !storageForSessionId.ContainsKey(production.Key))
-            {
-                storageForSessionId.TryAdd(production.Key, true);
-            }
+            if (production.Value.Progress > 0 && !storageForSessionId.ContainsKey(production.Key)) storageForSessionId.TryAdd(production.Key, true);
         }
 
         // Return undefined if there's no crafts to send to client to match live behaviour
@@ -204,7 +179,7 @@ public class EventOutputHolder
 
     private void ResetMoneyTransferLimit(MoneyTransferLimits limit)
     {
-        if (limit.NextResetTime < this._timeUtil.GetTimeStamp())
+        if (limit.NextResetTime < _timeUtil.GetTimeStamp())
         {
             limit.NextResetTime += limit.ResetInterval;
             limit.RemainingLimit = limit.TotalLimit;
@@ -221,7 +196,7 @@ public class EventOutputHolder
                 Disabled = trader.Value.Disabled,
                 Loyalty = trader.Value.LoyaltyLevel,
                 Standing = trader.Value.Standing,
-                Unlocked = trader.Value.Unlocked,
+                Unlocked = trader.Value.Unlocked
             }
         );
     }

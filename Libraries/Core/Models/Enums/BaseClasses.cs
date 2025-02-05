@@ -113,4 +113,3 @@ public record BaseClasses
     public static string COMB_MUZZLE_DEVICE = "550aa4dd4bdc2dc9348b4569 ";
     public static string HIDEOUT_AREA_CONTAINER = "63da6da4784a55176c018dba";
 }
-

@@ -23,29 +23,20 @@ public class ContainerHelper
         var limitX = containerX - minVolume;
 
         // Every x+y slot taken up in container, exit
-        if (container2D.All((x) => x.All((y) =>y == 1)))
-        {
-            return new FindSlotResult(false);
-        }
+        if (container2D.All((x) => x.All((y) => y == 1))) return new FindSlotResult(false);
 
         // Down = y
         for (var y = 0; y < limitY; y++)
         {
-            
             if (container2D[y].All((x) => x == 1))
-            {
                 // Every item in row is full, skip row
                 continue;
-            }
 
             // Try each slot on the row (across = x)
             for (var x = 0; x < limitX; x++)
             {
                 var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
-                if (foundSlot)
-                {
-                    return new FindSlotResult(true, x, y, rotation);
-                }
+                if (foundSlot) return new FindSlotResult(true, x, y, rotation);
 
                 // Failed to find slot, rotate item and try again
                 if (!foundSlot && ItemBiggerThan1X1(itemWidth, itemHeight))
@@ -118,10 +109,7 @@ public class ContainerHelper
                 }
             }
 
-            if (!foundSlot)
-            {
-                break;
-            }
+            if (!foundSlot) break;
         }
 
         return foundSlot;
@@ -149,20 +137,12 @@ public class ContainerHelper
         var itemHeight = rotate ? itemW : itemH;
 
         for (var tmpY = y; tmpY < y + itemHeight; tmpY++)
-        {
-            for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
-            {
-                if (container2D[tmpY][tmpX] == 0)
-                {
-                    // Flag slot as used
-                    container2D[tmpY][tmpX] = 1;
-                }
-                else
-                {
-                    throw new Exception($"Slot at({ x }, { y}) is already filled. Cannot fit a { itemW} by { itemH} item");
-                }
-            }
-        }
+        for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
+            if (container2D[tmpY][tmpX] == 0)
+                // Flag slot as used
+                container2D[tmpY][tmpX] = 1;
+            else
+                throw new Exception($"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item");
     }
 }
 
@@ -187,13 +167,13 @@ public class FindSlotResult
 
     [JsonPropertyName("success")]
     public bool? Success { get; set; }
-    
+
     [JsonPropertyName("x")]
     public int? X { get; set; }
-    
+
     [JsonPropertyName("y")]
     public int? Y { get; set; }
-    
+
     [JsonPropertyName("rotation")]
     public bool? Rotation { get; set; }
 }

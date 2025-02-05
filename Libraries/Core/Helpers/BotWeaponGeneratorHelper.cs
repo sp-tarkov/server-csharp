@@ -113,11 +113,11 @@ public class BotWeaponGeneratorHelper(
             equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets];
 
         var ammoItems = _itemHelper.SplitStack(
-            new()
+            new Item
             {
                 Id = _hashUtil.Generate(),
                 Template = ammoTpl,
-                Upd = new() { StackObjectsCount = cartridgeCount },
+                Upd = new Upd { StackObjectsCount = cartridgeCount }
             }
         );
 
@@ -136,10 +136,8 @@ public class BotWeaponGeneratorHelper(
                 _logger.Debug($"Unable to add ammo: {ammoItem.Template} to bot inventory, {result.ToString()}");
 
                 if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
-                {
                     // If there's no space for 1 stack or no containers to hold item, there's no space for the others
                     break;
-                }
             }
         }
     }

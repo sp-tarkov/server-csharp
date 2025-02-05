@@ -51,10 +51,7 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug("Importing configs...");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("Importing configs...");
 
         // Get all filepaths
         var filepath = "./assets/configs/";

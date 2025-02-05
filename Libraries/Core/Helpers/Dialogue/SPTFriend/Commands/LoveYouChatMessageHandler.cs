@@ -27,12 +27,14 @@ public class LoveYouChatMessageHandler(
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue([
-                "That's quite forward but i love you too in a purely chatbot-human way",
-                "I love you too buddy :3!",
-                "uwu",
-                $"love you too {sender?.Info?.Nickname}",
-            ]),
+            _randomUtil.GetArrayValue(
+                [
+                    "That's quite forward but i love you too in a purely chatbot-human way",
+                    "I love you too buddy :3!",
+                    "uwu",
+                    $"love you too {sender?.Info?.Nickname}"
+                ]
+            ),
             [],
             null
         );

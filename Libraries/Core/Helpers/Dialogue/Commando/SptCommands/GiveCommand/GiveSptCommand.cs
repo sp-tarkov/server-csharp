@@ -104,10 +104,7 @@ public class GiveSptCommand(
         else
         {
             // A new give request was entered, we need to ignore the old saved command
-            if (_savedCommand.ContainsKey(sessionId))
-            {
-                _savedCommand.Remove(sessionId);
-            }
+            if (_savedCommand.ContainsKey(sessionId)) _savedCommand.Remove(sessionId);
 
             isItemName = result.Groups[5].Value != null;
             item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;

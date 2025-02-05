@@ -13,6 +13,7 @@ public class SptCommandoCommands : IChatCommand
 {
     protected List<ISptCommand> _sptCommands;
     protected LocalisationService _localisationService;
+
     public SptCommandoCommands(
         ConfigServer configServer,
         LocalisationService localisationService,
@@ -33,14 +34,13 @@ public class SptCommandoCommands : IChatCommand
 
     public void RegisterSptCommandoCommand(ISptCommand command)
     {
-        if (_sptCommands.Any((c) => c.GetCommand() == command.GetCommand())) {
+        if (_sptCommands.Any((c) => c.GetCommand() == command.GetCommand()))
             throw new Exception(
                 _localisationService.GetText(
                     "chat-unable_to_register_command_already_registered",
                     command.GetCommand()
                 )
             );
-        }
         _sptCommands.Add(command);
     }
 

@@ -25,7 +25,8 @@ public class ItemEventStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => _itemEventCallbacks.HandleEvents(url, info as ItemEventRouterRequest, sessionID),
-                typeof(ItemEventRouterRequest))
+                typeof(ItemEventRouterRequest)
+            )
         ]
     )
     {

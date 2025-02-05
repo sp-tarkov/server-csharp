@@ -1,10 +1,9 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum EventType
 {
-    public enum EventType
-    {
-        None,
-        Halloween,
-        Christmas,
-        HalloweenIllumination
-    }
+    None,
+    Halloween,
+    Christmas,
+    HalloweenIllumination
 }

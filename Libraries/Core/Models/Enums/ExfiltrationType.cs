@@ -1,9 +1,8 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum ExfiltrationType
 {
-    public enum ExfiltrationType
-    {
-        Individual,
-        SharedTimer,
-        Manual
-    }
+    Individual,
+    SharedTimer,
+    Manual
 }

@@ -96,15 +96,9 @@ public class BotEquipmentFilterService
         Dictionary<string, double> equipmentChanges,
         Dictionary<string, double> baseValues)
     {
-        if (equipmentChanges is null)
-        {
-            return;
-        }
+        if (equipmentChanges is null) return;
 
-        foreach (var itemKey in equipmentChanges)
-        {
-            baseValues[itemKey.Key] = equipmentChanges[itemKey.Key];
-        }
+        foreach (var itemKey in equipmentChanges) baseValues[itemKey.Key] = equipmentChanges[itemKey.Key];
     }
 
     /// <summary>
@@ -116,10 +110,7 @@ public class BotEquipmentFilterService
         Dictionary<string, GenerationData> generationChanges,
         Generation baseBotGeneration)
     {
-        if (generationChanges is null)
-        {
-            return;
-        }
+        if (generationChanges is null) return;
 
         foreach (var itemKey in generationChanges)
         {
@@ -147,10 +138,7 @@ public class BotEquipmentFilterService
     {
         var botEquipmentSettings = _botConfig.Equipment[botEquipmentRole];
 
-        if (botEquipmentSettings is null)
-        {
-            return null;
-        }
+        if (botEquipmentSettings is null) return null;
 
         return botEquipmentSettings.WeaponSightWhitelist;
     }
@@ -195,7 +183,7 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? [] ).FirstOrDefault(
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(
             x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
         );
     }
@@ -232,48 +220,32 @@ public class BotEquipmentFilterService
 
                 // Skip equipment slot if whitelist doesn't exist / is empty
                 var whitelistEquipmentForSlot = whitelist.Equipment[equipmentSlotKey.Key.ToString()];
-                if (whitelistEquipmentForSlot is null || whitelistEquipmentForSlot.Count == 0)
-                {
-                    continue;
-                }
+                if (whitelistEquipmentForSlot is null || whitelistEquipmentForSlot.Count == 0) continue;
 
                 // Filter equipment slot items to just items in whitelist
                 baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key] = new Dictionary<string, double>();
                 foreach (var dict in botEquipment)
-                {
                     if (whitelistEquipmentForSlot.Contains(dict.Key))
-                    {
                         baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key][dict.Key] = botEquipment[dict.Key];
-                    }
-                }
             }
 
             return;
         }
 
         if (blacklist is not null)
-        {
             foreach (var equipmentSlotKvP in baseBotNode.BotInventory.Equipment)
             {
                 var botEquipment = baseBotNode.BotInventory.Equipment[equipmentSlotKvP.Key];
 
                 // Skip equipment slot if blacklist doesn't exist / is empty
-                if (!blacklist.Equipment.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist))
-                {
-                    continue;
-                }
+                if (!blacklist.Equipment.TryGetValue(equipmentSlotKvP.Key.ToString(), out var equipmentSlotBlacklist)) continue;
 
                 // Filter equipment slot items to just items not in blacklist
                 equipmentSlotKvP.Value.Clear();
                 foreach (var dict in botEquipment)
-                {
                     if (!equipmentSlotBlacklist.Contains(dict.Key))
-                    {
                         equipmentSlotKvP.Value[dict.Key] = botEquipment[dict.Key];
-                    }
-                }
             }
-        }
     }
 
     /// <summary>
@@ -292,50 +264,38 @@ public class BotEquipmentFilterService
         if (whitelist is not null)
         {
             // Loop over each caliber + cartridges of that type
-            foreach ( var (caliber, cartridges) in baseBotNode.BotInventory.Ammo) {
-
-                if(!whitelist.Cartridge.TryGetValue(caliber, out var matchingWhitelist))
-                {
+            foreach (var (caliber, cartridges) in baseBotNode.BotInventory.Ammo)
+            {
+                if (!whitelist.Cartridge.TryGetValue(caliber, out var matchingWhitelist))
                     // No cartridge whitelist, move to next cartridge
                     continue;
-                }
 
                 // Loop over each cartridge + weight
                 // Clear all cartridges ready for whitelist to be added
                 foreach (var ammoKvP in cartridges)
-                {
                     // Cartridge not on whitelist
                     if (!matchingWhitelist.Contains(ammoKvP.Key))
-                    {
                         // Remove
                         cartridges.Remove(ammoKvP.Key);
-                    }
-                }
             }
 
             return;
         }
 
         if (blacklist is not null)
-        {
-            foreach ( var ammoCaliberKvP  in baseBotNode.BotInventory.Ammo) {
-                var botAmmo  = baseBotNode.BotInventory.Ammo[ammoCaliberKvP.Key];
+            foreach (var ammoCaliberKvP in baseBotNode.BotInventory.Ammo)
+            {
+                var botAmmo = baseBotNode.BotInventory.Ammo[ammoCaliberKvP.Key];
 
                 // Skip cartridge slot if blacklist doesn't exist / is empty
                 blacklist.Cartridge.TryGetValue(ammoCaliberKvP.Key, out List<string> cartridgeCaliberBlacklist);
-                if (cartridgeCaliberBlacklist is null || cartridgeCaliberBlacklist.Count == 0)
-                {
-                    continue;
-                }
+                if (cartridgeCaliberBlacklist is null || cartridgeCaliberBlacklist.Count == 0) continue;
 
                 // Filter cartridge slot items to just items not in blacklist
                 foreach (var blacklistedTpl in cartridgeCaliberBlacklist
                              .Where(blacklistedTpl => ammoCaliberKvP.Value.ContainsKey(blacklistedTpl)))
-                {
                     ammoCaliberKvP.Value.Remove(blacklistedTpl);
-                }
             }
-        }
     }
 
     /// <summary>
@@ -349,30 +309,20 @@ public class BotEquipmentFilterService
         bool showEditWarnings = true)
     {
         //TODO, bad typing by key with method below due to, EquipmentSlots
-        if (weightingAdjustments is null)
-        {
-            return;
-        }
+        if (weightingAdjustments is null) return;
 
         if (weightingAdjustments.Add?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
                 var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
+                foreach (var itemToAddKvP in poolAdjustmentKvP.Value) locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
             }
-        }
 
         if (weightingAdjustments.Edit?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
                 var locationToUpdate = botItemPool[Enum.Parse<EquipmentSlots>(poolAdjustmentKvP.Key)];
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                {
                     // Only make change if item exists as we're editing, not adding
                     if (locationToUpdate[itemToEditKvP.Key] != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
@@ -381,16 +331,10 @@ public class BotEquipmentFilterService
                     else
                     {
                         if (showEditWarnings)
-                        {
                             if (_logger.IsLogEnabled(LogLevel.Debug))
-                            {
                                 _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
                     }
-                }
             }
-        }
     }
 
     /// <summary>
@@ -404,30 +348,20 @@ public class BotEquipmentFilterService
         Dictionary<string, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
-        if (weightingAdjustments is null)
-        {
-            return;
-        }
+        if (weightingAdjustments is null) return;
 
         if (weightingAdjustments.Add?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
                 var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
+                foreach (var itemToAddKvP in poolAdjustmentKvP.Value) locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
             }
-        }
 
         if (weightingAdjustments.Edit?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
                 var locationToUpdate = botItemPool[poolAdjustmentKvP.Key];
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                {
                     // Only make change if item exists as we're editing, not adding
                     if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate[itemToEditKvP.Key] == 0)
                     {
@@ -436,16 +370,10 @@ public class BotEquipmentFilterService
                     else
                     {
                         if (showEditWarnings)
-                        {
                             if (_logger.IsLogEnabled(LogLevel.Debug))
-                            {
                                 _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
                     }
-                }
             }
-        }
     }
 
     /// <summary>
@@ -458,30 +386,20 @@ public class BotEquipmentFilterService
         Appearance botItemPool,
         bool showEditWarnings = true)
     {
-        if (weightingAdjustments is null)
-        {
-            return;
-        }
+        if (weightingAdjustments is null) return;
 
         if (weightingAdjustments.Add?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Add)
             {
                 var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<string, double>>(poolAdjustmentKvP.Key);
-                foreach (var itemToAddKvP in poolAdjustmentKvP.Value)
-                {
-                    locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
-                }
+                foreach (var itemToAddKvP in poolAdjustmentKvP.Value) locationToUpdate[itemToAddKvP.Key] = itemToAddKvP.Value;
             }
-        }
 
         if (weightingAdjustments.Edit?.Count > 0)
-        {
             foreach (var poolAdjustmentKvP in weightingAdjustments.Edit)
             {
                 var locationToUpdate = botItemPool.GetByJsonProp<Dictionary<string, double>>(poolAdjustmentKvP.Key);
                 foreach (var itemToEditKvP in poolAdjustmentKvP.Value)
-                {
                     // Only make change if item exists as we're editing, not adding
                     if (locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) != null || locationToUpdate.GetValueOrDefault(itemToEditKvP.Key) == 0)
                     {
@@ -490,15 +408,9 @@ public class BotEquipmentFilterService
                     else
                     {
                         if (showEditWarnings)
-                        {
                             if (_logger.IsLogEnabled(LogLevel.Debug))
-                            {
                                 _logger.Debug($"Tried to edit a non - existent item for slot: {poolAdjustmentKvP} {itemToEditKvP}");
-                            }
-                        }
                     }
-                }
             }
-        }
     }
 }

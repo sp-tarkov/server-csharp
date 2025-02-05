@@ -58,7 +58,7 @@ public class TradeController(
         if (request.Type == "buy_from_trader")
         {
             var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
-            ProcessBuyTradeRequestData buyData = (ProcessBuyTradeRequestData)request;
+            var buyData = (ProcessBuyTradeRequestData)request;
             _tradeHelper.buyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
             return output;
@@ -67,7 +67,7 @@ public class TradeController(
         // Selling
         if (request.Type == "sell_to_trader")
         {
-            ProcessSellTradeRequestData sellData = (ProcessSellTradeRequestData)request;
+            var sellData = (ProcessSellTradeRequestData)request;
             _tradeHelper.sellItem(pmcData, pmcData, sellData, sessionID, output);
 
             return output;
@@ -97,13 +97,11 @@ public class TradeController(
         {
             var fleaOffer = _ragfairServer.GetOffer(offer.Id);
             if (fleaOffer is null)
-            {
                 return _httpResponseUtil.AppendErrorToOutput(
                     output,
                     $"Offer with ID {offer.Id} not found",
                     BackendErrorCodes.OfferNotFound
                 );
-            }
 
             if (offer.Count == 0)
             {
@@ -115,19 +113,12 @@ public class TradeController(
             }
 
             if (_ragfairOfferHelper.OfferIsFromTrader(fleaOffer))
-            {
                 BuyTraderItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
-            }
             else
-            {
                 BuyPmcItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
-            }
 
             // Exit loop early if problem found
-            if (output.Warnings?.Count > 0)
-            {
-                return output;
-            }
+            if (output.Warnings?.Count > 0) return output;
         }
 
         return output;
@@ -152,17 +143,14 @@ public class TradeController(
         if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
         {
             var errorMessage = $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug(errorMessage);
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(errorMessage);
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
 
             return;
         }
 
-        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData
+        var buyData = new ProcessBuyTradeRequestData
         {
             Action = "TradingConfirm",
             Type = "buy_from_ragfair",
@@ -170,7 +158,7 @@ public class TradeController(
             ItemId = fleaOffer.Root,
             Count = requestOffer.Count,
             SchemeId = 0,
-            SchemeItems = requestOffer.Items,
+            SchemeItems = requestOffer.Items
         };
 
         _tradeHelper.buyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
@@ -191,7 +179,7 @@ public class TradeController(
         OfferRequest requestOffer,
         ItemEventRouterResponse output)
     {
-        ProcessBuyTradeRequestData buyData = new ProcessBuyTradeRequestData
+        var buyData = new ProcessBuyTradeRequestData
         {
             Action = "TradingConfirm",
             Type = "buy_from_ragfair",
@@ -199,15 +187,12 @@ public class TradeController(
             ItemId = fleaOffer.Id, // Store ragfair offerId in buyRequestData.item_id
             Count = requestOffer.Count,
             SchemeId = 0,
-            SchemeItems = requestOffer.Items,
+            SchemeItems = requestOffer.Items
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
         _tradeHelper.buyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
-        if (output.Warnings?.Count > 0)
-        {
-            return;
-        }
+        if (output.Warnings?.Count > 0) return;
 
         // resolve when a profile buy another profile's offer
         var offerOwnerId = fleaOffer.User?.Id;
@@ -237,17 +222,12 @@ public class TradeController(
         string? offerOwnerId)
     {
         // No ownerid, not player offer
-        if (offerOwnerId is null)
-        {
-            return false;
-        }
+        if (offerOwnerId is null) return false;
 
         var offerCreatorProfile = _profileHelper.GetPmcProfile(offerOwnerId);
         if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
-        {
             // No profile or no offers
             return false;
-        }
 
         // Does offer id exist in profile
         return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
@@ -296,17 +276,14 @@ public class TradeController(
         int roublesToSend,
         string trader)
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
 
         // Create single currency item with all currency on it
-        Item rootCurrencyReward = new Item
+        var rootCurrencyReward = new Item
         {
             Id = _hashUtil.Generate(),
             Template = Money.ROUBLES,
-            Upd = new Upd { StackObjectsCount = roublesToSend },
+            Upd = new Upd { StackObjectsCount = roublesToSend }
         };
 
         // Ensure money is properly split to follow its max stack size limit
@@ -317,7 +294,7 @@ public class TradeController(
             sessionId,
             _traderHelper.GetTraderById(trader).ToString(),
             MessageType.MESSAGE_WITH_ITEMS,
-            _randomUtil.GetArrayValue((_databaseService.GetTrader(trader).Dialogue.TryGetValue("SoldItems", out var items)) ? items : new List<string>()),
+            _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("SoldItems", out var items) ? items : new List<string>()),
             curencyReward.SelectMany(x => x).ToList(),
             _timeUtil.GetHoursAsSeconds(72)
         );
@@ -344,10 +321,8 @@ public class TradeController(
         {
             var itemDetails = _itemHelper.GetItem(itemToSell.Template);
             if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
-            {
                 // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
                 continue;
-            }
 
             // Get price of item multiplied by how many are in stack
             totalPrice += (int)((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));

@@ -11,7 +11,7 @@ namespace Core.Controllers;
 public class RepairController(
     EventOutputHolder _eventOutputHolder,
     RepairService _repairService
-    )
+)
 {
     /// <summary>
     /// Handle TraderRepair event
@@ -29,7 +29,8 @@ public class RepairController(
         var output = _eventOutputHolder.GetOutput(sessionID);
 
         // find the item to repair
-        foreach (var repairItem in body.RepairItems) {
+        foreach (var repairItem in body.RepairItems)
+        {
             var repairDetails = _repairService.RepairItemByTrader(sessionID, pmcData, repairItem, body.TId);
 
             _repairService.PayForRepair(
@@ -38,12 +39,10 @@ public class RepairController(
                 repairItem.Id,
                 repairDetails.RepairCost.Value,
                 body.TId,
-                output);
+                output
+            );
 
-            if (output.Warnings?.Count > 0)
-            {
-                return output;
-            }
+            if (output.Warnings?.Count > 0) return output;
 
             // Add repaired item to output object
             output.ProfileChanges[sessionID].Items.ChangedItems.Add(repairDetails.RepairedItem);

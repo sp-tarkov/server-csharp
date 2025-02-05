@@ -41,44 +41,28 @@ public class WeightedRandomHelper(
     /// <returns>Dictionary with item and index</returns>
     public WeightedRandomResult<T> WeightedRandom<T>(List<T> items, List<double> weights)
     {
-        if (items.Count == 0)
-        {
-            _logger.Error("Items must not be empty");
-        }
+        if (items.Count == 0) _logger.Error("Items must not be empty");
 
-        if (weights.Count == 0)
-        {
-            _logger.Error("Item weights must not be empty");
-        }
+        if (weights.Count == 0) _logger.Error("Item weights must not be empty");
 
-        if (items.Count != weights.Count)
-        {
-            _logger.Error("Items and weight inputs must be of the same length");
-        }
+        if (items.Count != weights.Count) _logger.Error("Items and weight inputs must be of the same length");
 
         // Preparing the cumulative weights list.
         List<int> cumulativeWeights = [];
-        for (var i = 0; i < weights.Count; i++)
-        {
-            cumulativeWeights.Add((int)(weights[i]) + (i > 0 ? (cumulativeWeights[i - 1]) : 0));
-        }
+        for (var i = 0; i < weights.Count; i++) cumulativeWeights.Add((int)weights[i] + (i > 0 ? cumulativeWeights[i - 1] : 0));
 
         // Getting the random number in a range of [0...sum(weights)]
-        int maxCumulativeWeight = cumulativeWeights[cumulativeWeights.Count - 1];
-        double randomNumber = maxCumulativeWeight * new Random().NextDouble();
+        var maxCumulativeWeight = cumulativeWeights[cumulativeWeights.Count - 1];
+        var randomNumber = maxCumulativeWeight * new Random().NextDouble();
 
         // Picking the random item based on its weight.
-        for (int itemIndex = 0; itemIndex < items.Count; itemIndex++)
-        {
+        for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)
             if (cumulativeWeights[itemIndex] >= randomNumber)
-            {
                 return new WeightedRandomResult<T>()
                 {
                     Item = items[itemIndex],
-                    Index = itemIndex,
+                    Index = itemIndex
                 };
-            }
-        }
 
         throw new InvalidOperationException("No item was picked.");
     }
@@ -90,10 +74,7 @@ public class WeightedRandomHelper(
     public void ReduceWeightValues(Dictionary<string, double> weightedDict)
     {
         // No values, nothing to reduce
-        if (weightedDict.Count == 0)
-        {
-            return;
-        }
+        if (weightedDict.Count == 0) return;
 
         // Only one value, set to 1 and exit
         if (weightedDict.Count == 1)
@@ -108,14 +89,9 @@ public class WeightedRandomHelper(
         var commonDivisor = CommonDivisor(weights);
 
         // No point in dividing by  1
-        if (commonDivisor == 1)
-        {
-            return;
-        }
+        if (commonDivisor == 1) return;
 
-        foreach (var kvp in weightedDict) {
-            weightedDict[kvp.Key] /= commonDivisor;
-        }
+        foreach (var kvp in weightedDict) weightedDict[kvp.Key] /= commonDivisor;
     }
 
     /**
@@ -124,10 +100,7 @@ public class WeightedRandomHelper(
     protected double CommonDivisor(List<double> numbers)
     {
         var result = numbers[0];
-        for (var i = 1; i < numbers.Count; i++)
-        {
-            result = Gcd(result, numbers[i]);
-        }
+        for (var i = 1; i < numbers.Count; i++) result = Gcd(result, numbers[i]);
 
         return result;
     }
@@ -142,6 +115,7 @@ public class WeightedRandomHelper(
             y = x % y;
             x = temp;
         }
+
         return x;
     }
 }

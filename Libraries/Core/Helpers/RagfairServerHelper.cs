@@ -31,7 +31,7 @@ public class RagfairServerHelper(
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
     protected QuestConfig questConfig = configServer.GetConfig<QuestConfig>();
     protected static string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
-    
+
     /**
      * Is item valid / on blacklist / quest item
      * @param itemDetails
@@ -42,21 +42,16 @@ public class RagfairServerHelper(
         var blacklistConfig = ragfairConfig.Dynamic.Blacklist;
 
         // Skip invalid items
-        if (!itemDetails.Key) {
-            return false;
-        }
+        if (!itemDetails.Key) return false;
 
-        if (!itemHelper.IsValidItem(itemDetails.Value.Id)) {
-            return false;
-        }
+        if (!itemHelper.IsValidItem(itemDetails.Value.Id)) return false;
 
         // Skip bsg blacklisted items
-        if (blacklistConfig.EnableBsgList && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false)) {
-            return false;
-        }
+        if (blacklistConfig.EnableBsgList && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false)) return false;
 
         // Skip custom blacklisted items and flag as unsellable by players
-        if (IsItemOnCustomFleaBlacklist(itemDetails.Value.Id)) {
+        if (IsItemOnCustomFleaBlacklist(itemDetails.Value.Id))
+        {
             itemDetails.Value.Properties.CanSellOnRagfair = false;
 
             return false;
@@ -66,23 +61,19 @@ public class RagfairServerHelper(
         if (
             blacklistConfig.EnableCustomItemCategoryList &&
             IsItemCategoryOnCustomFleaBlacklist(itemDetails.Value.Parent)
-        ) {
+        )
             return false;
-        }
 
         // Skip quest items
-        if (blacklistConfig.EnableQuestList && itemHelper.IsQuestItem(itemDetails.Value.Id)) {
-            return false;
-        }
+        if (blacklistConfig.EnableQuestList && itemHelper.IsQuestItem(itemDetails.Value.Id)) return false;
 
         // Don't include damaged ammo packs
         if (
             ragfairConfig.Dynamic.Blacklist.DamagedAmmoPacks &&
             itemDetails.Value.Parent == BaseClasses.AMMO_BOX &&
             itemDetails.Value.Name.Contains("_damaged")
-        ) {
+        )
             return false;
-        }
 
         return true;
     }
@@ -102,7 +93,8 @@ public class RagfairServerHelper(
      * @param parentId Parent Id to check is blacklisted
      * @returns true if blacklisted
      */
-    protected bool IsItemCategoryOnCustomFleaBlacklist(string itemParentId) {
+    protected bool IsItemCategoryOnCustomFleaBlacklist(string itemParentId)
+    {
         return ragfairConfig.Dynamic.Blacklist.CustomItemCategoryList.Contains(itemParentId);
     }
 
@@ -111,7 +103,8 @@ public class RagfairServerHelper(
      * @param traderId
      * @returns True if id was a trader
      */
-    public bool IsTrader(string traderId) {
+    public bool IsTrader(string traderId)
+    {
         return databaseService.GetTraders().ContainsKey(traderId);
     }
 
@@ -126,9 +119,9 @@ public class RagfairServerHelper(
             sessionID,
             traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
             MessageType.MESSAGE_WITH_ITEMS,
-            RagfairServerHelper.goodsReturnedTemplate,
+            goodsReturnedTemplate,
             returnedItems,
-            timeUtil.GetHoursAsSeconds((int) databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
+            timeUtil.GetHoursAsSeconds((int)databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
         );
     }
 
@@ -138,31 +131,25 @@ public class RagfairServerHelper(
 
         // Lookup item details - check if item not found
         var itemDetails = itemHelper.GetItem(tplId);
-        if (!itemDetails.Key) {
+        if (!itemDetails.Key)
             throw new Exception(
                 localisationService.GetText(
                     "ragfair-item_not_in_db_unable_to_generate_dynamic_stack_count",
                     tplId
                 )
             );
-        }
 
         // Item Types to return one of
         if (isWeaponPreset ||
             itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
-        )
-        {
+           )
             return 1;
-        }
 
         // Get max possible stack count
         var maxStackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;
 
         // non-stackable - use different values to calculate stack size
-        if (maxStackSize == 1)
-        {
-            return (int)randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
-        }
+        if (maxStackSize == 1) return (int)randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
 
         // Get a % to get of stack size
         var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min.Value, config.StackablePercent.Max.Value);
@@ -180,13 +167,11 @@ public class RagfairServerHelper(
         var currencies = ragfairConfig.Dynamic.Currencies;
         var bias = new List<string>();
 
-        foreach (var item in currencies.Keys) {
-            for (var i = 0; i < currencies[item]; i++) {
+        foreach (var item in currencies.Keys)
+            for (var i = 0; i < currencies[item]; i++)
                 bias.Add(item);
-            }
-        }
 
-        var index = Math.Min((int)Math.Floor((randomUtil.RandNum(0, 1, 14) * bias.Count)), 99);
+        var index = Math.Min((int)Math.Floor(randomUtil.RandNum(0, 1, 14) * bias.Count), 99);
 
         return bias[index];
     }
@@ -210,12 +195,13 @@ public class RagfairServerHelper(
     public List<Item> GetPresetItemsByTpl(Item item)
     {
         var presets = new List<Item>();
-        foreach (var itemId in databaseService.GetGlobals().ItemPresets.Keys) {
-            if (databaseService.GetGlobals().ItemPresets[itemId].Items[0].Template == item.Template) {
+        foreach (var itemId in databaseService.GetGlobals().ItemPresets.Keys)
+            if (databaseService.GetGlobals().ItemPresets[itemId].Items[0].Template == item.Template)
+            {
                 var presetItems = cloner.Clone(databaseService.GetGlobals().ItemPresets[itemId].Items);
                 presets.AddRange(itemHelper.ReparentItemAndChildren(item, presetItems));
             }
-        }
+
         return presets;
     }
 }

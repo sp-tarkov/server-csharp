@@ -149,13 +149,9 @@ public class DataCallbacks(
     {
         var localeId = url.Replace("/client/menu/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Menu?[localeId] 
-                     ?? locales.Menu?.FirstOrDefault(m => m.Key == "en").Value;
+        var result = locales.Menu?[localeId] ?? locales.Menu?.FirstOrDefault(m => m.Key == "en").Value;
 
-        if (result == null)
-        {
-            throw new Exception($"Unable to determine locale for request with {localeId}");
-        }
+        if (result == null) throw new Exception($"Unable to determine locale for request with {localeId}");
 
         return _httpResponseUtil.GetBody(result);
     }
@@ -171,8 +167,7 @@ public class DataCallbacks(
     {
         var localeId = url.Replace("/client/locale/", "");
         var locales = _databaseService.GetLocales();
-        var result = locales.Global?[localeId].Value 
-                     ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value.Value;
+        var result = locales.Global?[localeId].Value ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value.Value;
 
         return _httpResponseUtil.GetUnclearedBody(result);
     }

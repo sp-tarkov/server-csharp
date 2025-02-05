@@ -7,7 +7,7 @@ public record SendSurveyOpinionRequest : IRequestData
 {
     [JsonPropertyName("resultJson")]
     public string? ResultJson { get; set; }
-    
+
     [JsonPropertyName("surveyId")]
     public int? SurveyId { get; set; }
 

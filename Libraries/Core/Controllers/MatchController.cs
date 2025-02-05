@@ -50,7 +50,7 @@ public class MatchController(
     /// <returns></returns>
     public ProfileStatusResponse JoinMatch(MatchGroupStartGameRequest info, string sessionId)
     {
-        ProfileStatusResponse output = new ProfileStatusResponse
+        var output = new ProfileStatusResponse
         {
             MaxPveCountExceeded = false,
             // get list of players joining into the match
@@ -105,11 +105,9 @@ public class MatchController(
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
         if (!_pmcConfig.UseDifficultyOverride)
-        {
             _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(
                 request.WavesSettings.BotDifficulty.ToString()
             );
-        }
     }
 
     /// <summary>
@@ -120,10 +118,7 @@ public class MatchController(
     private string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
     {
         // Edge case medium - must be altered
-        if (botDifficulty.ToLower() == "medium")
-        {
-            return "normal";
-        }
+        if (botDifficulty.ToLower() == "medium") return "normal";
 
         return botDifficulty;
     }

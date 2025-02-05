@@ -28,14 +28,9 @@ public static class DependencyInjectionRegistrator
                     {
                         // if we have a type override this takes priority
                         if (attribute.InjectableTypeOverride != null)
-                        {
                             registerableType = attribute.InjectableTypeOverride;
-                        }
                         // if this class only has 1 interface we register it on that interface
-                        else if (registerableType.GetInterfaces().Length == 1)
-                        {
-                            registerableType = registerableType.GetInterfaces()[0];
-                        }
+                        else if (registerableType.GetInterfaces().Length == 1) registerableType = registerableType.GetInterfaces()[0];
 
                         registerableComponents.Add(new RegisterableType(registerableType, t, attribute));
                     }
@@ -46,20 +41,16 @@ public static class DependencyInjectionRegistrator
             .GroupBy(t => t.RegisterableInterface.FullName);
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
-        {
-            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
-            {
-                if (valueTuple.TypeToRegister.IsGenericType)
-                    RegisterGenericComponents(builderServices, valueTuple);
-                else
-                    RegisterComponent(
-                        builderServices,
-                        valueTuple.InjectableAttribute.InjectionType,
-                        valueTuple.RegisterableInterface,
-                        valueTuple.TypeToRegister
-                    );
-            }
-        }
+        foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
+            if (valueTuple.TypeToRegister.IsGenericType)
+                RegisterGenericComponents(builderServices, valueTuple);
+            else
+                RegisterComponent(
+                    builderServices,
+                    valueTuple.InjectableAttribute.InjectionType,
+                    valueTuple.RegisterableInterface,
+                    valueTuple.TypeToRegister
+                );
     }
 
     private static List<Type>? _allLoadedTypes;
@@ -85,22 +76,20 @@ public static class DependencyInjectionRegistrator
             if (constructorInfos.Count == 0) return;
 
             foreach (var matchedConstructor in constructorInfos)
+            foreach (var parameterInfo in matchedConstructor.GetParameters()
+                         .Where(
+                             p => p.ParameterType.IsGenericType &&
+                                  p.ParameterType.GetGenericTypeDefinition().FullName == typeName
+                         ))
             {
-                foreach (var parameterInfo in matchedConstructor.GetParameters()
-                             .Where(
-                                 p => p.ParameterType.IsGenericType &&
-                                      p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                             ))
-                {
-                    var parameters = parameterInfo.ParameterType.GetGenericArguments();
-                    var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
-                    RegisterComponent(
-                        builderServices,
-                        valueTuple.InjectableAttribute.InjectionType,
-                        parameterInfo.ParameterType,
-                        typedGeneric
-                    );
-                }
+                var parameters = parameterInfo.ParameterType.GetGenericArguments();
+                var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
+                RegisterComponent(
+                    builderServices,
+                    valueTuple.InjectableAttribute.InjectionType,
+                    parameterInfo.ParameterType,
+                    typedGeneric
+                );
             }
         }
         catch (Exception e)
@@ -150,7 +139,7 @@ public static class DependencyInjectionRegistrator
         );
     }
 
-    class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
+    private class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
     {
         public Type RegisterableInterface { get; } = registerableInterface;
         public Type TypeToRegister { get; } = typeToRegister;

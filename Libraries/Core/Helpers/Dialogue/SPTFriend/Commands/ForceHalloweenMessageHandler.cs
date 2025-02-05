@@ -5,40 +5,39 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SPTFriend.Commands
+namespace Core.Helpers.Dialogue.SPTFriend.Commands;
+
+[Injectable]
+public class ForceHalloweenMessageHandler(
+    LocalisationService _localisationService,
+    MailSendService _mailSendService,
+    RandomUtil _randomUtil,
+    SeasonalEventService _seasonalEventService) : IChatMessageHandler
 {
-    [Injectable]
-    public class ForceHalloweenMessageHandler(
-        LocalisationService _localisationService,
-        MailSendService _mailSendService,
-        RandomUtil _randomUtil,
-        SeasonalEventService _seasonalEventService) : IChatMessageHandler
+    public int GetPriority()
     {
-        public int GetPriority()
-        {
-            return 99;
-        }
+        return 99;
+    }
 
-        public bool CanHandle(string message)
-        {
-            return message.ToLower() == "veryspooky";
-        }
+    public bool CanHandle(string message)
+    {
+        return message.ToLower() == "veryspooky";
+    }
 
-        public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
-        {
-            var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Halloween);
-            if (enableEventResult)
-            {
-                _mailSendService.SendUserMessageToPlayer(
-                    sessionId,
-                    sptFriendUser,
-                    _randomUtil.GetArrayValue([
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    {
+        var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Halloween);
+        if (enableEventResult)
+            _mailSendService.SendUserMessageToPlayer(
+                sessionId,
+                sptFriendUser,
+                _randomUtil.GetArrayValue(
+                    [
                         _localisationService.GetText("chatbot-forced_event_enabled", SeasonalEventType.Halloween)
-                    ]),
-                    [],
-                    null
-                );
-            }
-        }
+                    ]
+                ),
+                [],
+                null
+            );
     }
 }

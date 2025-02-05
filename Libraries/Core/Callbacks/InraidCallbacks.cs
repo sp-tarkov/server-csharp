@@ -10,7 +10,7 @@ namespace Core.Callbacks;
 public class InraidCallbacks(
     InRaidController _inRaidController,
     HttpResponseUtil _httpResponseUtil
-    )
+)
 {
     /// <summary>
     /// Handle client/location/getLocalloot

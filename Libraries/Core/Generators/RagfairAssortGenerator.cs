@@ -32,7 +32,7 @@ public class RagfairAssortGenerator(
         BaseClasses.INVENTORY,
         BaseClasses.STATIONARY_CONTAINER,
         BaseClasses.POCKETS,
-        BaseClasses.BUILT_IN_INSERTS,
+        BaseClasses.BUILT_IN_INSERTS
     ];
 
     /**
@@ -42,10 +42,7 @@ public class RagfairAssortGenerator(
      */
     public List<List<Item>> GetAssortItems()
     {
-        if (!AssortsAreGenerated())
-        {
-            generatedAssortItems = GenerateRagfairAssortItems();
-        }
+        if (!AssortsAreGenerated()) generatedAssortItems = GenerateRagfairAssortItems();
 
         return generatedAssortItems;
     }
@@ -95,10 +92,7 @@ public class RagfairAssortGenerator(
 
         foreach (var item in dbItemsClone)
         {
-            if (!itemHelper.IsValidItem(item.Id, ragfairItemInvalidBaseTypes))
-            {
-                continue;
-            }
+            if (!itemHelper.IsValidItem(item.Id, ragfairItemInvalidBaseTypes)) continue;
 
             // Skip seasonal items when not in-season
             if (
@@ -106,15 +100,11 @@ public class RagfairAssortGenerator(
                 !seasonalEventActive &&
                 seasonalItemTplBlacklist.Contains(item.Id)
             )
-            {
                 continue;
-            }
 
             if (processedArmorItems.Contains(item.Id))
-            {
                 // Already processed
                 continue;
-            }
 
             var ragfairAssort = CreateRagfairAssortRootItem(
                 item.Id,

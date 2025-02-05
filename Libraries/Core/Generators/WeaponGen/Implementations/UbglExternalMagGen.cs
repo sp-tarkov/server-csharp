@@ -7,7 +7,6 @@ namespace Core.Generators.WeaponGen.Implementations;
 [Injectable]
 public class UbglExternalMagGen(
     BotWeaponGeneratorHelper _botWeaponGeneratorHelper
-    
 ) : InventoryMagGen, IInventoryMagGen
 {
     public int GetPriority()

@@ -95,9 +95,6 @@ public class RaidWeatherService(
 
         // Check data exists for current time
         var result = _weatherForecast.Where((weather) => weather.Timestamp >= _timeUtil.GetTimeStamp());
-        if (!result.Any())
-        {
-            GenerateWeather(currentSeason);
-        }
+        if (!result.Any()) GenerateWeather(currentSeason);
     }
 }

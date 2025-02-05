@@ -1,10 +1,9 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum ReloadMode
 {
-    public enum ReloadMode
-    {
-        ExternalMagazine,
-        InternalMagazine,
-        OnlyBarrel,
-        ExternalMagazineWithInternalReloadSupport
-    }
+    ExternalMagazine,
+    InternalMagazine,
+    OnlyBarrel,
+    ExternalMagazineWithInternalReloadSupport
 }

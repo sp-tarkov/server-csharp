@@ -52,12 +52,8 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
     public override void Write(Utf8JsonWriter writer, ListOrT<T> value, JsonSerializerOptions options)
     {
         if (value.IsItem)
-        {
             JsonSerializer.Serialize(writer, value.Item, options);
-        }
         else
-        {
             JsonSerializer.Serialize(writer, value.List, options);
-        }
     }
 }

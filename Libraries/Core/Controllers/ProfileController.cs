@@ -51,19 +51,15 @@ public class ProfileController(
     public MiniProfile GetMiniProfile(string sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
-        if (profile?.CharacterData == null)
-        {
-            throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
-        }
+        if (profile?.CharacterData == null) throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
 
         var pmc = profile.CharacterData.PmcData;
         var maxLvl = _profileHelper.GetMaxLevel();
 
         // Player hasn't completed profile creation process, send defaults
         var currlvl = pmc?.Info?.Level.GetValueOrDefault(1);
-        var xpToNextLevel = _profileHelper.GetExperience(((currlvl ?? 1) + 1));
+        var xpToNextLevel = _profileHelper.GetExperience((currlvl ?? 1) + 1);
         if (pmc?.Info?.Level == null)
-        {
             return new MiniProfile
             {
                 Username = profile.ProfileInfo?.Username ?? "",
@@ -77,9 +73,8 @@ public class ProfileController(
                 MaxLevel = maxLvl,
                 Edition = profile.ProfileInfo?.Edition ?? "",
                 ProfileId = profile.ProfileInfo?.ProfileId ?? "",
-                SptData = _profileHelper.GetDefaultSptDataObject(),
+                SptData = _profileHelper.GetDefaultSptDataObject()
             };
-        }
 
         return new MiniProfile
         {
@@ -87,14 +82,14 @@ public class ProfileController(
             Nickname = pmc.Info.Nickname,
             HasPassword = profile.ProfileInfo.Password != "",
             Side = pmc.Info.Side,
-            CurrentLevel = (int)(pmc.Info.Level),
-            CurrentExperience = (pmc.Info.Experience ?? 0),
+            CurrentLevel = (int)pmc.Info.Level,
+            CurrentExperience = pmc.Info.Experience ?? 0,
             PreviousExperience = currlvl == 0 ? 0 : _profileHelper.GetExperience((int)currlvl),
             NextLevel = xpToNextLevel,
             MaxLevel = maxLvl,
             Edition = profile.ProfileInfo?.Edition ?? "",
             ProfileId = profile.ProfileInfo?.ProfileId ?? "",
-            SptData = profile.SptData,
+            SptData = profile.SptData
         };
     }
 
@@ -133,15 +128,9 @@ public class ProfileController(
      */
     public string ValidateNickname(ValidateNicknameRequestData info, string sessionID)
     {
-        if (info.Nickname.Length < 3)
-        {
-            return "tooshort";
-        }
+        if (info.Nickname.Length < 3) return "tooshort";
 
-        if (_profileHelper.IsNicknameTaken(info, sessionID))
-        {
-            return "taken";
-        }
+        if (_profileHelper.IsNicknameTaken(info, sessionID)) return "taken";
 
         return "OK";
     }
@@ -188,10 +177,7 @@ public class ProfileController(
         {
             var pmcProfile = profile?.CharacterData?.PmcData;
 
-            if (!pmcProfile?.Info?.LowerNickname?.Contains(info.Nickname.ToLower()) ?? false)
-            {
-                continue;
-            }
+            if (!pmcProfile?.Info?.LowerNickname?.Contains(info.Nickname.ToLower()) ?? false) continue;
 
             result.Add(_profileHelper.GetChatRoomMemberFromPmcProfile(pmcProfile));
         }
@@ -210,8 +196,8 @@ public class ProfileController(
             MaxPveCountExceeded = false,
             Profiles =
             [
-                new() { ProfileId = account.ScavengerId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 },
-                new() { ProfileId = account.ProfileId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 },
+                new ProfileStatusData { ProfileId = account.ScavengerId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 },
+                new ProfileStatusData { ProfileId = account.ProfileId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 }
             ]
         };
 
@@ -261,7 +247,7 @@ public class ProfileController(
                 MemberCategory = profileToViewPmc.Info.MemberCategory as int?,
                 BannedState = profileToViewPmc.Info.BannedState,
                 BannedUntil = profileToViewPmc.Info.BannedUntil,
-                RegistrationDate = profileToViewPmc.Info.RegistrationDate,
+                RegistrationDate = profileToViewPmc.Info.RegistrationDate
             },
             Customization =
             {
@@ -269,13 +255,13 @@ public class ProfileController(
                 Body = profileToViewPmc.Customization.Body,
                 Feet = profileToViewPmc.Customization.Feet,
                 Hands = profileToViewPmc.Customization.Hands,
-                Dogtag = profileToViewPmc.Customization.DogTag,
+                Dogtag = profileToViewPmc.Customization.DogTag
             },
             Skills = profileToViewPmc.Skills,
             Equipment =
             {
                 Id = profileToViewPmc.Inventory.Equipment,
-                Items = profileToViewPmc.Inventory.Items,
+                Items = profileToViewPmc.Inventory.Items
             },
             Achievements = profileToViewPmc.Achievements,
             FavoriteItems = _profileHelper.GetOtherProfileFavorites(profileToViewPmc),
@@ -284,15 +270,15 @@ public class ProfileController(
                 Eft =
                 {
                     TotalInGameTime = profileToViewPmc.Stats.Eft.TotalInGameTime,
-                    OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters,
-                },
+                    OverAllCounters = profileToViewPmc.Stats.Eft.OverallCounters
+                }
             },
             ScavStats =
             {
                 Eft =
                 {
                     TotalInGameTime = profileToViewScav.Stats.Eft.TotalInGameTime,
-                    OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters,
+                    OverAllCounters = profileToViewScav.Stats.Eft.OverallCounters
                 }
             },
             Hideout = profileToViewPmc.Hideout,
@@ -308,20 +294,11 @@ public class ProfileController(
     public bool SetChosenProfileIcon(string sessionId, GetProfileSettingsRequest request)
     {
         var profileToUpdate = _profileHelper.GetPmcProfile(sessionId);
-        if (profileToUpdate == null)
-        {
-            return false;
-        }
+        if (profileToUpdate == null) return false;
 
-        if (request.MemberCategory != null)
-        {
-            profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
-        }
+        if (request.MemberCategory != null) profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
 
-        if (request.SquadInviteRestriction != null)
-        {
-            profileToUpdate.Info.SquadInviteRestriction = request.SquadInviteRestriction;
-        }
+        if (request.SquadInviteRestriction != null) profileToUpdate.Info.SquadInviteRestriction = request.SquadInviteRestriction;
 
         return true;
     }

@@ -83,9 +83,7 @@ public class InventoryController(
             // Item is moving into or out of place of fame dog tag slot
             if (moveRequest.To?.Container != null &&
                 (moveRequest.To.Container.StartsWith("dogtag") || originalLocationSlotId.StartsWith("dogtag")))
-            {
                 _hideoutHelper.ApplyPlaceOfFameDogtagBonus(pmcData);
-            }
         }
         else
         {
@@ -155,7 +153,7 @@ public class InventoryController(
                     _logger.Success($"Set trader {mailEvent.Entity}: Standing to: {mailEvent.Value}");
                     break;
                 case ProfileChangeEventType.ProfileLevel:
-                    pmcData.Info.Experience = (int) mailEvent.Value.Value;
+                    pmcData.Info.Experience = (int)mailEvent.Value.Value;
                     // Will calculate level below
                     _traderHelper.ValidateTraderStandingsAndPlayerLevelForProfile(sessionId);
                     _logger.Success($"Set profile xp to: {mailEvent.Value}");
@@ -347,23 +345,16 @@ public class InventoryController(
             inventoryItem.ParentId = change.ParentId;
             inventoryItem.SlotId = change.SlotId;
             if (change.Location is not null)
-            {
                 inventoryItem.Location = change.Location;
-            }
             else
-            {
                 inventoryItem.Location = null;
-            }
         }
     }
 
     public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData body,
         string sessionId)
     {
-        foreach (var id in body.Ids)
-        {
-            pmcData.Encyclopedia[id] = true;
-        }
+        foreach (var id in body.Ids) pmcData.Encyclopedia[id] = true;
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
@@ -373,7 +364,6 @@ public class InventoryController(
     {
         string? itemId = null;
         if (request.FromOwner is not null)
-        {
             try
             {
                 itemId = GetExaminedItemTpl(request, sessionId);
@@ -382,25 +372,17 @@ public class InventoryController(
             {
                 _logger.Error(_localisationService.GetText("inventory-examine_item_does_not_exist", request.Item));
             }
-        }
 
         if (itemId is null)
-        {
             // item template
             if (_databaseService.GetItems().ContainsKey(request.Item))
-            {
                 itemId = request.Item;
-            }
-        }
 
         if (itemId is null)
         {
             // Player inventory
             var target = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
-            if (target is not null)
-            {
-                itemId = target.Template;
-            }
+            if (target is not null) itemId = target.Template;
         }
 
         if (itemId is not null)
@@ -415,29 +397,22 @@ public class InventoryController(
         if (_presetHelper.IsPreset(request.Item)) return _presetHelper.GetBaseItemTpl(request.Item);
 
         if (request.FromOwner.Id == Traders.FENCE)
-        {
             // Get tpl from fence assorts
             return _fenceService.GetRawFenceAssorts().Items.FirstOrDefault(x => x.Id == request.Item)?.Template;
-        }
 
         if (request.FromOwner.Type == "Trader")
-        {
             // Not fence
             // get tpl from trader assort
             return _databaseService
                 .GetTrader(request.FromOwner.Id)
                 .Assort.Items.FirstOrDefault(item => item.Id == request.Item)
                 ?.Template;
-        }
 
         if (request.FromOwner.Type == "RagFair")
         {
             // Try to get tplId from items.json first
             var item = _itemHelper.GetItem(request.Item);
-            if (item.Key)
-            {
-                return item.Value.Id;
-            }
+            if (item.Key) return item.Value.Id;
 
             // Try alternate way of getting offer if first approach fails
             var offer = _ragfairOfferService.GetOfferByOfferId(request.Item) ??
@@ -445,20 +420,14 @@ public class InventoryController(
 
             // Try find examine item inside offer items array
             var matchingItem = offer.Items.FirstOrDefault(offerItem => offerItem.Id == request.Item);
-            if (matchingItem is not null)
-            {
-                return matchingItem.Template;
-            }
+            if (matchingItem is not null) return matchingItem.Template;
 
             // Unable to find item in database or ragfair
             _logger.Warning(_localisationService.GetText("inventory-unable_to_find_item", request.Item));
         }
-        
+
         // get hideout item
-        if (request.FromOwner.Type == "HideoutProduction")
-        {
-            return request.Item;
-        }
+        if (request.FromOwner.Type == "HideoutProduction") return request.Item;
 
         if (request.FromOwner.Type == "Mail")
         {
@@ -472,10 +441,7 @@ public class InventoryController(
             // get the Id given and get the Template ID from that
             var item = message.Items.Data.FirstOrDefault(item => item.Id == request.Item);
 
-            if (item is not null)
-            {
-                return item.Template;
-            }
+            if (item is not null) return item.Template;
         }
 
         _logger.Error($"Unable to get item with id: {request.Item}");
@@ -559,10 +525,7 @@ public class InventoryController(
         var playerData = pmcData;
 
         // We may be folding data on scav profile, get that profile instead
-        if (request.FromOwner?.Type == "Profile" && request.FromOwner.Id != playerData.Id)
-        {
-            playerData = _profileHelper.GetScavProfile(sessionId);
-        }
+        if (request.FromOwner?.Type == "Profile" && request.FromOwner.Id != playerData.Id) playerData = _profileHelper.GetScavProfile(sessionId);
 
         var itemToFold = playerData.Inventory.Items.FirstOrDefault(item => item?.Id == request.Item);
         if (itemToFold is null)
@@ -592,10 +555,7 @@ public class InventoryController(
     {
         // During post-raid scav transfer, the swap may be in the scav inventory
         var playerData = pmcData;
-        if (request.FromOwner?.Type == "Profile" && request.FromOwner.Id != playerData.Id)
-        {
-            playerData = _profileHelper.GetScavProfile(sessionId);
-        }
+        if (request.FromOwner?.Type == "Profile" && request.FromOwner.Id != playerData.Id) playerData = _profileHelper.GetScavProfile(sessionId);
 
         var itemOne = playerData.Inventory.Items.FirstOrDefault(x => x.Id == request.Item);
         if (itemOne is null)
@@ -631,24 +591,16 @@ public class InventoryController(
 
         // Request object has location data, add it in, otherwise remove existing location from object
         if (request.To.Location is not null)
-        {
             itemOne.Location = request.To.Location;
-        }
         else
-        {
             itemOne.Location = null;
-        }
 
         itemTwo.ParentId = request.To2.Id;
         itemTwo.SlotId = request.To2.Container;
         if (request.To2.Location is not null)
-        {
             itemTwo.Location = request.To2.Location;
-        }
         else
-        {
             itemTwo.Location = null;
-        }
 
         // Client already informed of inventory locations, nothing for us to do
         return _eventOutputHolder.GetOutput(sessionId);
@@ -696,15 +648,11 @@ public class InventoryController(
 
         var sourceStackCount = sourceItem.Upd.StackObjectsCount;
         if (sourceStackCount > request.Count)
-        {
             // Source items stack count greater than new desired count
             sourceItem.Upd.StackObjectsCount = sourceStackCount - request.Count;
-        }
         else
-        {
             // Moving a full stack onto a smaller stack
             sourceItem.Upd.StackObjectsCount = sourceStackCount - 1;
-        }
 
         destinationItem.Upd ??= new Upd { StackObjectsCount = 1 };
 
@@ -743,27 +691,19 @@ public class InventoryController(
         }
 
         if (destinationItem.Upd?.StackObjectsCount is null)
-        {
             // No stackcount on destination, add one
             destinationItem.Upd = new Upd { StackObjectsCount = 1 };
-        }
 
         if (sourceItem.Upd is null)
-        {
             sourceItem.Upd = new Upd { StackObjectsCount = 1 };
-        }
         else if (sourceItem.Upd.StackObjectsCount is null)
-        {
             // Items pulled out of raid can have no stack count if the stack should be 1
             sourceItem.Upd.StackObjectsCount = 1;
-        }
 
         // Remove FiR status from destination stack when source stack has no FiR but destination does
         if (!sourceItem.Upd.SpawnedInSession.GetValueOrDefault(false) &&
             destinationItem.Upd.SpawnedInSession.GetValueOrDefault(false))
-        {
             destinationItem.Upd.SpawnedInSession = false;
-        }
 
         destinationItem.Upd.StackObjectsCount +=
             sourceItem.Upd.StackObjectsCount; // Add source stackcount to destination

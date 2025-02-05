@@ -59,7 +59,7 @@ public class MailSendService(
                     new
                     {
                         messageType = messageType,
-                        sessionId = sessionId,
+                        sessionId = sessionId
                     }
                 )
             );
@@ -81,7 +81,7 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = (long?)(maxStorageTimeSeconds);
+            details.ItemsMaxStorageLifetimeSeconds = (long?)maxStorageTimeSeconds;
         }
 
         if (systemData is not null)
@@ -121,7 +121,7 @@ public class MailSendService(
                     new
                     {
                         messageType = messageType,
-                        sessionId = sessionId,
+                        sessionId = sessionId
                     }
                 )
             );
@@ -136,7 +136,7 @@ public class MailSendService(
             DialogType = MessageType.NPC_TRADER,
             Trader = trader,
             TemplateId = messageLocaleId,
-            Items = new()
+            Items = new List<Item>()
         };
 
         // add items to message
@@ -145,13 +145,9 @@ public class MailSendService(
         {
             details.Items.AddRange(items);
             if (maxStorageTimeSeconds is not null && maxStorageTimeSeconds > 0)
-            {
                 details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
-            }
             else
-            {
                 details.ItemsMaxStorageLifetimeSeconds = 172800;
-            }
         }
 
         if (systemData is not null)
@@ -182,7 +178,7 @@ public class MailSendService(
             RecipientId = sessionId,
             Sender = MessageType.SYSTEM_MESSAGE,
             MessageText = message,
-            Items = new()
+            Items = new List<Item>()
         };
 
         // add items to message
@@ -213,7 +209,7 @@ public class MailSendService(
             RecipientId = sessionId,
             Sender = MessageType.SYSTEM_MESSAGE,
             TemplateId = messageLocaleId,
-            Items = new()
+            Items = new List<Item>()
         };
 
         // add items to message
@@ -251,7 +247,7 @@ public class MailSendService(
             Sender = MessageType.USER_MESSAGE,
             SenderDetails = senderDetails,
             MessageText = message,
-            Items = new()
+            Items = new List<Item>()
         };
 
         // add items to message
@@ -285,10 +281,7 @@ public class MailSendService(
         var itemsToSendToPlayer = ProcessItemsBeforeAddingToMail(senderDialog.Type, messageDetails);
 
         // If there's items to send to player, flag dialog as containing attachments
-        if ((itemsToSendToPlayer.Data?.Count ?? 0) > 0)
-        {
-            senderDialog.AttachmentsNew += 1;
-        }
+        if ((itemsToSendToPlayer.Data?.Count ?? 0) > 0) senderDialog.AttachmentsNew += 1;
 
         // Store reward items inside message and set appropriate flags inside message
         AddRewardItemsToMessage(message, itemsToSendToPlayer, messageDetails.ItemsMaxStorageLifetimeSeconds);
@@ -303,7 +296,7 @@ public class MailSendService(
         // Offer Sold notifications are now separate from the main notification
         if (_messageTypes.Contains(senderDialog.Type ?? MessageType.SYSTEM_MESSAGE) &&
             messageDetails?.RagfairDetails is not null
-        )
+           )
         {
             var offerSoldMessage = _notifierHelper.CreateRagfairOfferSoldNotification(
                 message,
@@ -329,7 +322,7 @@ public class MailSendService(
         }
 
         dialogWithNpc.Messages.Add(
-            new()
+            new Message
             {
                 Id = _hashUtil.Generate(),
                 DateTime = _timeUtil.GetTimeStamp(),
@@ -350,22 +343,19 @@ public class MailSendService(
             UserId = dialogId,
             MessageType = messageDetails.DialogType,
             DateTime = _timeUtil.GetTimeStamp(),
-            Text = (messageDetails.TemplateId is not null) ? "" : messageDetails.MessageText,
+            Text = messageDetails.TemplateId is not null ? "" : messageDetails.MessageText,
             TemplateId = messageDetails.TemplateId,
             HasRewards = false,
             RewardCollected = false,
             SystemData = messageDetails.SystemData is not null ? messageDetails.SystemData : null,
-            ProfileChangeEvents = (messageDetails.ProfileChangeEvents?.Count == 0) ? messageDetails.ProfileChangeEvents : null
+            ProfileChangeEvents = messageDetails.ProfileChangeEvents?.Count == 0 ? messageDetails.ProfileChangeEvents : null
         };
 
         // Handle replyTo
         if (messageDetails.ReplyTo is not null)
         {
             var replyMessage = GetMessageToReplyTo(messageDetails.RecipientId, messageDetails.ReplyTo, dialogId);
-            if (replyMessage is not null)
-            {
-                message.ReplyTo = replyMessage;
-            }
+            if (replyMessage is not null) message.ReplyTo = replyMessage;
         }
 
         return message;
@@ -388,10 +378,7 @@ public class MailSendService(
         }
 
         var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message => message.Id == replyToId);
-        if (messageToReplyTo is null)
-        {
-            return null;
-        }
+        if (messageToReplyTo is null) return null;
 
         return new ReplyTo
         {
@@ -436,7 +423,7 @@ public class MailSendService(
                     new
                     {
                         traderId = messageDetails.Trader,
-                        sender = messageDetails.Sender,
+                        sender = messageDetails.Sender
                     }
                 );
 
@@ -448,9 +435,9 @@ public class MailSendService(
                 parentItem.ParentId = _hashUtil.Generate();
 
             // Prep return object
-            itemsToSendToPlayer = new()
+            itemsToSendToPlayer = new MessageItems
             {
-                Stash = parentItem.ParentId, Data = new()
+                Stash = parentItem.ParentId, Data = new List<Item>()
             };
 
             // Ensure Ids are unique and cont collide with items in player inventory later
@@ -468,7 +455,7 @@ public class MailSendService(
                             new
                             {
                                 tpl = reward.Template,
-                                type = dialogType,
+                                type = dialogType
                             }
                         )
                     );
@@ -557,16 +544,12 @@ public class MailSendService(
     private Dialogue GetDialog(SendMessageDetails messageDetails)
     {
         var senderId = GetMessageSenderIdByType(messageDetails);
-        if (senderId is null)
-        {
-            throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
-        }
+        if (senderId is null) throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
 
         var dialogsInProfile = _dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
 
         // Does dialog exist
         if (!dialogsInProfile.ContainsKey(senderId))
-        {
             // Doesn't exist, create
             dialogsInProfile[senderId] = new Dialogue
             {
@@ -577,7 +560,6 @@ public class MailSendService(
                 New = 0,
                 AttachmentsNew = 0
             };
-        }
 
         return dialogsInProfile[senderId];
     }
@@ -593,7 +575,7 @@ public class MailSendService(
             return _systemSenderId;
 
         if (messageDetails.Sender == MessageType.NPC_TRADER || messageDetails.DialogType == MessageType.NPC_TRADER)
-            return (messageDetails.Trader is not null) ? _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader) : null;
+            return messageDetails.Trader is not null ? _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader) : null;
 
         if (messageDetails.Sender == MessageType.USER_MESSAGE)
             return messageDetails.SenderDetails?.Id;

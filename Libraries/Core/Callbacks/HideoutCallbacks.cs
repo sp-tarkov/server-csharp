@@ -14,7 +14,7 @@ namespace Core.Callbacks;
 public class HideoutCallbacks(
     HideoutController _hideoutController,
     ConfigServer _configServer
-    ) : OnUpdate
+) : OnUpdate
 {
     private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
@@ -23,7 +23,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse Upgrade(PmcData pmcData, HideoutUpgradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-         _hideoutController.StartUpgrade(pmcData, request, sessionID, output);
+        _hideoutController.StartUpgrade(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -33,7 +33,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse UpgradeComplete(PmcData pmcData, HideoutUpgradeCompleteRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-         _hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
+        _hideoutController.UpgradeComplete(pmcData, request, sessionID, output);
 
         return output;
     }
@@ -43,7 +43,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData request, string sessionID)
     {
-         return _hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
+        return _hideoutController.PutItemsInAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -51,7 +51,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, string sessionID)
     {
-         return _hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
+        return _hideoutController.TakeItemsFromAreaSlots(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -59,7 +59,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, string sessionID)
     {
-         return _hideoutController.ToggleArea(pmcData, request, sessionID);
+        return _hideoutController.ToggleArea(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -67,7 +67,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData request, string sessionID)
     {
-         return _hideoutController.SingleProductionStart(pmcData, request, sessionID);
+        return _hideoutController.SingleProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -75,7 +75,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, string sessionID)
     {
-         return _hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
+        return _hideoutController.ScavCaseProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData request, string sessionID)
     {
-         return _hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
+        return _hideoutController.ContinuousProductionStart(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, string sessionID)
     {
-         return _hideoutController.TakeProduction(pmcData, request, sessionID);
+        return _hideoutController.TakeProduction(pmcData, request, sessionID);
     }
 
     /// <summary>
@@ -99,7 +99,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse HandleQTEEvent(PmcData pmcData, HandleQTEEventRequestData request, string sessionID, ItemEventRouterResponse output)
     {
-         _hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
+        _hideoutController.HandleQTEEventOutcome(sessionID, pmcData, request, output);
 
         return output;
     }
@@ -107,9 +107,10 @@ public class HideoutCallbacks(
     /// <summary>
     /// Handle client/game/profile/items/moving - RecordShootingRangePoints
     /// </summary>
-    public ItemEventRouterResponse RecordShootingRangePoints(PmcData pmcData, RecordShootingRangePoints request, string sessionID, ItemEventRouterResponse output)
+    public ItemEventRouterResponse RecordShootingRangePoints(PmcData pmcData, RecordShootingRangePoints request, string sessionID,
+        ItemEventRouterResponse output)
     {
-         _hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
+        _hideoutController.RecordShootingRangePoints(sessionID, pmcData, request);
 
         return output;
     }
@@ -119,7 +120,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse ImproveArea(PmcData pmcData, HideoutImproveAreaRequestData request, string sessionID)
     {
-         return _hideoutController.ImproveArea(sessionID, pmcData, request);
+        return _hideoutController.ImproveArea(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -127,7 +128,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse CancelProduction(PmcData pmcData, HideoutCancelProductionRequestData request, string sessionID)
     {
-         return _hideoutController.CancelProduction(sessionID, pmcData, request);
+        return _hideoutController.CancelProduction(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -135,7 +136,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse CicleOfCultistProductionStart(PmcData pmcData, HideoutCircleOfCultistProductionStartRequestData request, string sessionID)
     {
-         return _hideoutController.CicleOfCultistProductionStart(sessionID, pmcData, request);
+        return _hideoutController.CicleOfCultistProductionStart(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -143,7 +144,7 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse HideoutDeleteProductionCommand(PmcData pmcData, HideoutDeleteProductionRequestData request, string sessionID)
     {
-         return _hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
+        return _hideoutController.HideoutDeleteProductionCommand(sessionID, pmcData, request);
     }
 
     /// <summary>
@@ -151,13 +152,14 @@ public class HideoutCallbacks(
     /// </summary>
     public ItemEventRouterResponse HideoutCustomizationApplyCommand(PmcData pmcData, HideoutCustomizationApplyRequestData request, string sessionID)
     {
-         return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
+        return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
     }
 
     /**
      * Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
      */
-    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId) {
+    public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId)
+    {
         return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
     }
 

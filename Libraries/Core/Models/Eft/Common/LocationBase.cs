@@ -242,7 +242,7 @@ public record LocationBase
 
     [JsonPropertyName("SpawnPointParams")]
     public List<SpawnPointParam>? SpawnPointParams { get; set; }
-    
+
     [JsonPropertyName("areas")]
     public Dictionary<string, Area>? Areas { get; set; }
 
@@ -280,7 +280,7 @@ public record LocationBase
 
     [JsonPropertyName("ForceOnlineRaidInPVE")]
     public bool? ForceOnlineRaidInPVE { get; set; }
-    
+
     [JsonPropertyName("ExitZones")]
     public string? ExitZones { get; set; }
 
@@ -772,10 +772,10 @@ public record Exit
 
     [JsonPropertyName("Name")]
     public string? Name { get; set; }
-    
+
     [JsonPropertyName("_Name")]
     public string? _Name { get; set; }
-    
+
     [JsonPropertyName("_name")]
     public string? _NameLower { get; set; }
 
@@ -929,19 +929,19 @@ public record Area
 {
     [JsonPropertyName("center")]
     public XYZ? Center { get; set; }
-    
+
     [JsonPropertyName("infiltrationZone")]
     public string? InfiltrationZone { get; set; }
-    
+
     [JsonPropertyName("orientation")]
     public double? Orientation { get; set; }
-    
+
     [JsonPropertyName("position")]
     public XYZ? Position { get; set; }
-    
+
     [JsonPropertyName("sides")]
     public List<string>? Sides { get; set; }
-    
+
     [JsonPropertyName("size")]
     public XYZ? Size { get; set; }
 }

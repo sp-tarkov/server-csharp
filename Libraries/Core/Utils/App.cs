@@ -12,7 +12,7 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class App
 {
-    protected Dictionary<string, long> _onUpdateLastRun = new Dictionary<string, long>();
+    protected Dictionary<string, long> _onUpdateLastRun = new();
     protected Timer _timer;
     protected CoreConfig _coreConfig;
 
@@ -69,31 +69,22 @@ public class App
 
             // _logger.Debug($"RAM: {(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)}GB");
 
-            if (ProgramStatics.BUILD_TIME() is not null)
-            {
-                _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
-            }
+            if (ProgramStatics.BUILD_TIME() is not null) _logger.Debug($"Date: {ProgramStatics.BUILD_TIME()}");
 
-            if (ProgramStatics.COMMIT() is not null)
-            {
-                _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
-            }
+            if (ProgramStatics.COMMIT() is not null) _logger.Debug($"Commit: {ProgramStatics.COMMIT()}");
         }
 
         foreach (var onLoad in _onLoad)
             await onLoad.OnLoad();
 
         _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
-        
+
         _logger.Success(GetRandomisedStartMessage());
     }
 
     protected string GetRandomisedStartMessage()
     {
-        if (_randomUtil.GetInt(1, 1000) > 999)
-        {
-            return _localisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
-        }
+        if (_randomUtil.GetInt(1, 1000) > 999) return _localisationService.GetRandomTextThatMatchesPartialKey("server_start_meme_");
 
         return _localisationService.GetText("server_start_success");
     }
@@ -131,12 +122,8 @@ public class App
                     const int warnTime = 20 * 60;
 
                     if (secondsSinceLastRun % warnTime == 0)
-                    {
                         if (_logger.IsLogEnabled(LogLevel.Debug))
-                        {
                             _logger.Debug(_localisationService.GetText("route_onupdate_no_response", updateable.GetRoute()));
-                        }
-                    }
                 }
             }
         }

@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,21 +26,22 @@ public class HealthItemEventRouter : ItemEventRouterDefinition
     {
         return
         [
-            new HandledRoute("Eat", false),
-            new HandledRoute("Heal", false),
-            new HandledRoute("RestoreHealth", false)
+            new HandledRoute(ItemEventActions.EAT, false),
+            new HandledRoute(ItemEventActions.HEAL, false),
+            new HandledRoute(ItemEventActions.RESTORE_HEALTH, false)
         ];
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {
-            case "Eat":
+            case ItemEventActions.EAT:
                 return _healthCallbacks.OffraidEat(pmcData, body as OffraidEatRequestData, sessionID);
-            case "Heal":
+            case ItemEventActions.HEAL:
                 return _healthCallbacks.OffraidHeal(pmcData, body as OffraidHealRequestData, sessionID);
-            case "RestoreHealth":
+            case ItemEventActions.RESTORE_HEALTH:
                 return _healthCallbacks.HealthTreatment(pmcData, body as HealthTreatmentRequestData, sessionID);
             default:
                 throw new Exception($"HealthItemEventRouter being used when it cant handle route {url}");

@@ -1,12 +1,11 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum PlayerSideMask
 {
-    public enum PlayerSideMask
-    {
-        None,
-        Usec,
-        Bear,
-        Savage,
-        Pmc,
-        All
-    }
+    None,
+    Usec,
+    Bear,
+    Savage,
+    Pmc,
+    All
 }

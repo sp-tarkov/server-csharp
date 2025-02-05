@@ -9,17 +9,16 @@ namespace UnitTests.Tests;
 public class Test
 {
     private Templates? _templates;
-    
+
     [TestInitialize]
     public void Setup()
     {
-
         var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()), new JsonUtil());
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;
     }
-    
+
     [TestMethod]
     public void TestMethod1()
     {

@@ -15,6 +15,7 @@ public class I18nService
     private string _setLocale;
 
     private Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
+
     // TODO: try convert to primary ctor
     public I18nService(
         FileUtil fileUtil,
@@ -41,11 +42,13 @@ public class I18nService
         if (files.Count == 0)
             throw new Exception($"Localisation files in directory {_directory} not found.");
         foreach (var file in files)
-            _loadedLocales.Add(_fileUtil.StripExtension(file),
+            _loadedLocales.Add(
+                _fileUtil.StripExtension(file),
                 new LazyLoad<Dictionary<string, string>>(
                     () => _jsonUtil.Deserialize<Dictionary<string, string>>(_fileUtil.ReadFile(file)) ??
                           new Dictionary<string, string>()
-                ));
+                )
+            );
 
         if (!_loadedLocales.ContainsKey(_defaultLocale))
             throw new Exception($"The default locale '{_defaultLocale}' does not exist on the loaded locales.");
@@ -65,7 +68,8 @@ public class I18nService
                 var foundFallbackLocale = fallback.First().Value;
                 if (!_loadedLocales.ContainsKey(foundFallbackLocale))
                     throw new Exception(
-                        $"Locale '{locale}' was not defined, and the found fallback locale did not match any of the loaded locales.");
+                        $"Locale '{locale}' was not defined, and the found fallback locale did not match any of the loaded locales."
+                    );
                 _setLocale = foundFallbackLocale;
             }
 
@@ -95,11 +99,8 @@ public class I18nService
     public string GetLocalised(string key, object? args)
     {
         var rawLocalizedString = GetLocalised(key);
-        if (args == null)
-        {
-            return rawLocalizedString;
-        }
-        
+        if (args == null) return rawLocalizedString;
+
         var typeToCheck = args.GetType();
         var typeProps = typeToCheck.GetProperties();
 
@@ -107,10 +108,9 @@ public class I18nService
         {
             var localizedName = $"{{{{{propertyInfo.GetJsonName()}}}}}";
             if (rawLocalizedString.Contains(localizedName))
-            {
                 rawLocalizedString = rawLocalizedString.Replace(localizedName, propertyInfo.GetValue(args)?.ToString() ?? string.Empty);
-            }
         }
+
         return rawLocalizedString;
     }
 

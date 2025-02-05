@@ -74,11 +74,11 @@ public class TimeUtil
     /// <returns>Unix epoch for the start of day of the calculated date</returns>
     public long GetStartOfDayTimeStamp(long? timestamp)
     {
-        DateTime now = timestamp.HasValue 
+        var now = timestamp.HasValue
             ? DateTimeOffset.FromUnixTimeMilliseconds(timestamp.Value).DateTime
             : GetDateTimeNow();
-    
-        DateTime startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+
+        var startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
         return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();
     }
 
@@ -137,11 +137,11 @@ public class TimeUtil
     /// <returns>Time stamp of the next hour in unix time seconds</returns>
     public long GetTimeStampOfNextHour()
     {
-        DateTime now = DateTime.UtcNow;
-        TimeSpan timeUntilNextHour = TimeSpan.FromMinutes(60 - now.Minute)
+        var now = DateTime.UtcNow;
+        var timeUntilNextHour = TimeSpan.FromMinutes(60 - now.Minute)
             .Subtract(TimeSpan.FromSeconds(now.Second))
             .Subtract(TimeSpan.FromMilliseconds(now.Millisecond));
-        
+
         var time = ((DateTimeOffset)now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
 
         return time;
@@ -154,19 +154,16 @@ public class TimeUtil
     /// <returns>Timestamp</returns>
     public long GetTodayMidnightTimeStamp()
     {
-        DateTime now = DateTime.UtcNow;
-        int hours = now.Hour;
-        int minutes = now.Minute;
-    
+        var now = DateTime.UtcNow;
+        var hours = now.Hour;
+        var minutes = now.Minute;
+
         // If minutes greater than 0, subtract 1 hour
-        if (hours > 0 && minutes > 0)
-        {
-            hours--;
-        }
-    
+        if (hours > 0 && minutes > 0) hours--;
+
         // Create a new DateTime with the last full hour, 0 minutes, and 0 seconds
-        DateTime lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
-    
+        var lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
+
         return ((DateTimeOffset)lastFullHour).ToUnixTimeMilliseconds();
     }
 
@@ -189,7 +186,7 @@ public class TimeUtil
     {
         return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).DateTime;
     }
-    
+
     /// <summary>
     /// Takes a date and gets difference between Epoch time and time provided resulting in a timestamp (date defaults to utcnow)
     /// This attempts to mimic gettime() in js

@@ -90,7 +90,9 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
                     case ItemEventActions.SELL_TO_TRADER:
                         return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
                     default:
-                        throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
+                        throw new Exception(
+                            $"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled."
+                        );
                 }
             }
             case ItemEventActions.RAGFAIR_BUY_OFFER:
@@ -165,7 +167,9 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.PIN_LOCK:
                 return JsonSerializer.Deserialize<PinOrLockItemRequest>(jsonText);
             default:
-                throw new Exception($"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled.");
+                throw new Exception(
+                    $"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled."
+                );
         }
     }
 

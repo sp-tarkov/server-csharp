@@ -122,13 +122,13 @@ public record Quest
     /// </summary>
     [JsonPropertyName("sptStatus")]
     public QuestStatusEnum? SptStatus { get; set; }
-    
+
     [JsonPropertyName("questStatus")]
     public QuestStatus? QuestStatus { get; set; }
-    
+
     [JsonPropertyName("changeCost")]
     public List<object> ChangeCost { get; set; }
-    
+
     [JsonPropertyName("changeStandingCost")]
     public double ChangeStandingCost { get; set; }
 }
@@ -140,25 +140,25 @@ public record QuestStatus
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("uid")]
     public string? Uid { get; set; }
-    
+
     [JsonPropertyName("qid")]
     public string? QId { get; set; }
-    
+
     [JsonPropertyName("startTime")]
     public double? StartTime { get; set; }
-    
+
     [JsonPropertyName("status")]
     public QuestStatusEnum? Status { get; set; }
-    
+
     [JsonPropertyName("statusTimers")]
     public Dictionary<QuestStatusEnum, double>? StatusTimers { get; set; }
-    
+
     [JsonPropertyName("completedConditions")]
     public List<string>? CompletedConditions { get; set; }
-    
+
     [JsonPropertyName("availableAfter")]
     public double? AvailableAfter { get; set; }
 }
@@ -276,46 +276,45 @@ public record QuestCondition
 
     [JsonPropertyName("areaType")]
     public HideoutAreas? AreaType { get; set; }
-    
+
     [JsonPropertyName("baseAccuracy")]
     public ValueCompare? BaseAccuracy { get; set; }
-    
+
     [JsonPropertyName("containsItems")]
     public List<string>? ContainsItems { get; set; }
-    
+
     [JsonPropertyName("durability")]
     public ValueCompare? Durability { get; set; }
-    
+
     [JsonPropertyName("effectiveDistance")]
     public ValueCompare? EffectiveDistance { get; set; }
-    
+
     [JsonPropertyName("emptyTacticalSlot")]
     public ValueCompare? EmptyTacticalSlot { get; set; }
-    
+
     [JsonPropertyName("ergonomics")]
     public ValueCompare? Ergonomics { get; set; }
-    
+
     [JsonPropertyName("height")]
     public ValueCompare? Height { get; set; }
-    
+
     [JsonPropertyName("hasItemFromCategory")]
     public List<string>? HasItemFromCategory { get; set; }
-    
+
     [JsonPropertyName("magazineCapacity")]
     public ValueCompare? MagazineCapacity { get; set; }
-    
+
     [JsonPropertyName("muzzleVelocity")]
     public ValueCompare? MuzzleVelocity { get; set; }
-    
+
     [JsonPropertyName("recoil")]
     public ValueCompare? Recoil { get; set; }
-    
+
     [JsonPropertyName("weight")]
     public ValueCompare? Weight { get; set; }
-    
+
     [JsonPropertyName("width")]
     public ValueCompare? Width { get; set; }
-    
 }
 
 public record QuestConditionCounter
@@ -403,19 +402,18 @@ public record QuestConditionCounterCondition
 
     [JsonPropertyName("resetOnSessionEnd")]
     public bool? ResetOnSessionEnd { get; set; }
-    
+
     [JsonPropertyName("bodyPartsWithEffects")]
     public List<EnemyHealthEffect>? BodyPartsWithEffects { get; set; }
-    
+
     [JsonPropertyName("IncludeNotEquippedItems")]
     public bool? IncludeNotEquippedItems { get; set; }
-    
+
     [JsonPropertyName("equipmentExclusive")]
     public List<List<string>>? EquipmentExclusive { get; set; }
-    
+
     [JsonPropertyName("zoneIds")]
     public List<string>? Zones { get; set; }
-    
 }
 
 public record EnemyHealthEffect

@@ -60,7 +60,7 @@ public class TradeHelper(
 
         if (buyRequestData.TransactionId.ToLower() == "ragfair")
         {
-            buyCallback = (buyCount =>
+            buyCallback = buyCount =>
             {
                 var allOffers = _ragfairServer.GetOffers();
 
@@ -82,7 +82,7 @@ public class TradeHelper(
                     );
 
                     // Decrement trader item count
-                    PurchaseDetails itemPurchaseDetails = new PurchaseDetails
+                    var itemPurchaseDetails = new PurchaseDetails
                     {
                         Items =
                         [
@@ -96,8 +96,8 @@ public class TradeHelper(
                     };
                     _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDetails, itemPurchased);
                 }
-            });
-            
+            };
+
             // buyCallback = BuyCallback1;
             // Get raw offer from ragfair, clone to prevent altering offer itself
             var allOffers = _ragfairServer.GetOffers();
@@ -106,7 +106,7 @@ public class TradeHelper(
         }
         else if (buyRequestData.TransactionId == Traders.FENCE)
         {
-            buyCallback = (buyCount =>
+            buyCallback = buyCount =>
             {
                 // Update assort/flea item values
                 var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
@@ -116,16 +116,13 @@ public class TradeHelper(
                 itemPurchased.Upd.StackObjectsCount -= buyCount;
 
                 _fenceService.AmendOrRemoveFenceOffer(buyRequestData.ItemId, buyCount);
-            });
+            };
 
             var fenceItems = _fenceService.GetRawFenceAssorts().Items;
             var rootItemIndex = fenceItems.FindIndex(item => item.Id == buyRequestData.ItemId);
             if (rootItemIndex == -1)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Tried to buy item {buyRequestData.ItemId} from fence that no longer exists");
                 var message = _localisationService.GetText("ragfair-offer_no_longer_exists");
                 _httpResponseUtil.AppendErrorToOutput(output, message);
 
@@ -136,7 +133,7 @@ public class TradeHelper(
         }
         else
         {
-            buyCallback = (buyCount =>
+            buyCallback = buyCount =>
             {
                 // Update assort/flea item values
                 var traderAssorts = _traderHelper.GetTraderAssortsByTraderId(buyRequestData.TransactionId).Items;
@@ -145,7 +142,6 @@ public class TradeHelper(
                 // Ensure purchase does not exceed trader item limit
                 var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);
                 if (assortHasBuyRestrictions)
-                {
                     // Will throw error if check fails
                     CheckPurchaseIsWithinTraderItemLimit(
                         sessionID,
@@ -155,15 +151,12 @@ public class TradeHelper(
                         buyRequestData.ItemId,
                         buyCount
                     );
-                }
 
                 // Check if trader has enough stock
                 if (itemPurchased.Upd.StackObjectsCount < buyCount)
-                {
                     throw new Exception(
                         $"Unable to purchase {buyCount} items, this would exceed the remaining stock left {itemPurchased.Upd.StackObjectsCount} from the traders assort: {buyRequestData.TransactionId} this refresh"
                     );
-                }
 
                 // Decrement trader item count
                 itemPurchased.Upd.StackObjectsCount -= buyCount;
@@ -185,17 +178,14 @@ public class TradeHelper(
 
                     _traderHelper.AddTraderPurchasesToPlayerProfile(sessionID, itemPurchaseDat, itemPurchased);
                 }
-            });
-            
+            };
+
             // Get all trader assort items
             var traderItems = _traderAssortHelper.GetAssort(sessionID, buyRequestData.TransactionId).Items;
 
             // Get item + children for purchase
             var relevantItems = _itemHelper.FindAndReturnChildrenAsItems(traderItems, buyRequestData.ItemId);
-            if (relevantItems.Count == 0)
-            {
-                _logger.Error($"Purchased trader: {buyRequestData.TransactionId} offer: {buyRequestData.ItemId} has no items");
-            }
+            if (relevantItems.Count == 0) _logger.Error($"Purchased trader: {buyRequestData.TransactionId} offer: {buyRequestData.ItemId} has no items");
 
             offerItems.AddRange(relevantItems);
         }
@@ -217,10 +207,7 @@ public class TradeHelper(
 
             // Prevent any collisions
             _itemHelper.RemapRootItemId(offerClone);
-            if (offerClone.Count > 1)
-            {
-                _itemHelper.ReparentItemAndChildren(offerClone.FirstOrDefault(), offerClone);
-            }
+            if (offerClone.Count > 1) _itemHelper.ReparentItemAndChildren(offerClone.FirstOrDefault(), offerClone);
 
             itemsToSendToPlayer.Add(offerClone);
 
@@ -229,7 +216,7 @@ public class TradeHelper(
         }
 
         // Construct request
-        AddItemsDirectRequest request = new AddItemsDirectRequest
+        var request = new AddItemsDirectRequest
         {
             ItemsWithModsToAdd = itemsToSendToPlayer,
             FoundInRaid = foundInRaid,
@@ -239,10 +226,7 @@ public class TradeHelper(
 
         // Add items + their children to stash
         _inventoryHelper.AddItemsToStash(sessionID, request, pmcData, output);
-        if (output.Warnings?.Count > 0)
-        {
-            return;
-        }
+        if (output.Warnings?.Count > 0) return;
 
         /// Pay for purchase
         _paymentService.PayMoney(pmcData, buyRequestData, sessionID, output);
@@ -252,7 +236,7 @@ public class TradeHelper(
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.UnknownTradingError);
         }
     }
-    
+
     /// <summary>
     /// Sell item to trader
     /// </summary>
@@ -273,10 +257,8 @@ public class TradeHelper(
         // Try to reduce perf hit as this is expensive to do every sale
         // MUST OCCUR PRIOR TO ITEMS BEING REMOVED FROM INVENTORY
         if (sellRequest.TransactionId == Traders.RAGMAN)
-        {
             // Edge case, `Circulate` quest needs to track when certain items are sold to him
             IncrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
-        }
 
         var pattern = @"\s+";
 
@@ -296,18 +278,13 @@ public class TradeHelper(
                 return;
             }
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Selling: id: {matchingItemInInventory.Id} tpl: {matchingItemInInventory.Template}");
 
             if (sellRequest.TransactionId == Traders.FENCE)
-            {
                 _fenceService.AddItemsToFenceAssort(
                     profileWithItemsToSell.Inventory.Items,
                     matchingItemInInventory
                 );
-            }
 
             // Remove item from inventory + any child items it has
             _inventoryHelper.RemoveItem(profileWithItemsToSell, itemToBeRemoved.Id, sessionID, output);
@@ -329,10 +306,7 @@ public class TradeHelper(
         );
 
         // Player not on Circulate quest ,exit
-        if (activeCirculateQuest is null)
-        {
-            return;
-        }
+        if (activeCirculateQuest is null) return;
 
         // Find related task condition
         var taskCondition = profileToReceiveMoney.TaskConditionCounters.Values.FirstOrDefault(
@@ -349,7 +323,7 @@ public class TradeHelper(
 
         // Condition exists in profile
         var circulateQuestDb = _databaseService.GetQuests();
-        if (!circulateQuestDb.TryGetValue(circulateQuestId, out var _))
+        if (!circulateQuestDb.TryGetValue(circulateQuestId, out _))
         {
             _logger.Error($"Unable to find quest: {circulateQuestId} in db, skipping");
 
@@ -386,10 +360,7 @@ public class TradeHelper(
             }
 
             // Is sold item on the increment list
-            if (itemsTplsThatIncrement.List.Contains(itemDetails.Template))
-            {
-                taskCondition.Value += itemSoldToTrader.Count;
-            }
+            if (itemsTplsThatIncrement.List.Contains(itemDetails.Template)) taskCondition.Value += itemSoldToTrader.Count;
         }
     }
 
@@ -420,12 +391,10 @@ public class TradeHelper(
             (double)assortBeingPurchased.Upd?.BuyRestrictionMax,
             pmcData.Info.GameVersion
         );
-        if (((traderPurchaseData?.PurchaseCount ?? 0) + count) > traderItemPurchaseLimit)
-        {
+        if ((traderPurchaseData?.PurchaseCount ?? 0) + count > traderItemPurchaseLimit)
             throw new Exception(
                 $"Unable to purchase: {count} items, this would exceed your purchase limit of {traderItemPurchaseLimit} from the trader: {traderId} assort: {assortId} this refresh"
             );
-        }
     }
 }
 

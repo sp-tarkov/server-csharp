@@ -9,7 +9,7 @@ public class InraidSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return [new("spt-inraid", false)];
+        return [new HandledRoute("spt-inraid", false)];
     }
 
     public override SptProfile HandleLoad(SptProfile profile)

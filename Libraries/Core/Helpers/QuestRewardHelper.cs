@@ -75,7 +75,8 @@ public class QuestRewardHelper(
             fullProfile,
             profileData,
             questId,
-            questResponse);
+            questResponse
+        );
     }
 
     /**
@@ -89,7 +90,6 @@ public class QuestRewardHelper(
         // May be a repeatable quest
         var quest = _databaseService.GetQuests()[questId];
         if (quest == null)
-        {
             // Check daily/weekly objects
             foreach (var repeatableQuest in pmcData.RepeatableQuests)
             {
@@ -97,7 +97,6 @@ public class QuestRewardHelper(
                 if (quest != null)
                     break;
             }
-        }
 
         return quest;
     }
@@ -120,8 +119,8 @@ public class QuestRewardHelper(
 
         // 5100 becomes 0.51, add 1 to it, 1.51
         // We multiply the money reward bonuses by the hideout management skill multipler, giving the new result
-        var hideoutManagementBonusMultiplier = (hideoutManagementSkill != null)
-            ? (1 + hideoutManagementSkill.Progress / 1000)
+        var hideoutManagementBonusMultiplier = hideoutManagementSkill != null
+            ? 1 + hideoutManagementSkill.Progress / 1000
             : 1;
 
         // e.g 15% * 1.4
@@ -142,7 +141,7 @@ public class QuestRewardHelper(
                           .GetProperties()
                           .FirstOrDefault(p => p.Name == questStatus.ToString())
                           .GetValue(quest.Rewards) ??
-                      new();
+                      new List<Reward>();
         var currencyRewards = rewards.Where(
             r =>
                 r.Type.ToString() == "Item" &&

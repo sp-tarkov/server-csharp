@@ -23,14 +23,14 @@ public static class Program
         builder.Host.UseSerilog();
 
         builder.Configuration.AddJsonFile("appsettings.json", true, true);
-        
+
         CreateAndRegisterLogger(builder, out var registeredLogger);
 
         ProgramStatics.Initialize();
 
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
         DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, assemblies);
-        ILogger logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
+        var logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {
             var serviceProvider = builder.Services.BuildServiceProvider();
@@ -40,16 +40,13 @@ public static class Program
 
             // Initialize PreSptMods
             var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadMod>();
-            foreach (var preSptLoadMod in preSptLoadMods)
-            {
-                preSptLoadMod.PreSptLoad();
-            }
+            foreach (var preSptLoadMod in preSptLoadMods) preSptLoadMod.PreSptLoad();
             var appContext = serviceProvider.GetService<ApplicationContext>();
             // Add the Loaded Mod Assemblies for later
             appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
             // This is the builder that will get use by the HttpServer to start up the web application
             appContext?.AddValue(ContextVariableType.APP_BUILDER, builder);
-            
+
             // Get the Built app and run it
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
@@ -68,15 +65,15 @@ public static class Program
             // throw ex;
         }
     }
-    
+
     public static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)
     {
         builder.Logging.ClearProviders();
         logger = new LoggerConfiguration()
             .ReadFrom.Configuration(builder.Configuration)
-        # if DEBUG
+# if DEBUG
             .MinimumLevel.Debug()
-        # endif
+# endif
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
             .Enrich.FromLogContext()
             .Enrich.WithThreadId()

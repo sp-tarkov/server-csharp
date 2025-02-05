@@ -71,18 +71,15 @@ public class BackupService
 
     /**
      * Initializes the backup process.
-     * 
+     *
      * This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
      * up old backups if the number exceeds the configured maximum.
-     * 
+     *
      * @returns A promise that resolves when the backup process is complete.
      */
     public void Init()
     {
-        if (!IsEnabled())
-        {
-            return;
-        }
+        if (!IsEnabled()) return;
 
         var targetDir = GenerateBackupTargetDir();
 
@@ -100,10 +97,7 @@ public class BackupService
 
         if (currentProfilePaths.Count == 0)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug("No profiles to backup");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("No profiles to backup");
 
             return;
         }
@@ -126,10 +120,7 @@ public class BackupService
             // Write a copy of active mods.
             _fileUtil.WriteFile(Path.Combine(targetDir, "activeMods.json"), _jsonUtil.Serialize(_activeServerMods));
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Profile backup created in: {targetDir}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Profile backup created in: {targetDir}");
         }
         catch (Exception ex)
         {
@@ -142,20 +133,14 @@ public class BackupService
 
     /**
      * Check to see if the backup service is enabled via the config.
-     * 
+     *
      * @returns True if enabled, false otherwise.
      */
     protected bool IsEnabled()
     {
-        if (_backupConfig.Enabled)
-        {
-            return true;
-        }
+        if (_backupConfig.Enabled) return true;
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug("Profile backups disabled");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("Profile backups disabled");
 
         return false;
     }
@@ -163,7 +148,7 @@ public class BackupService
     /**
      * Generates the target directory path for the backup. The directory path is constructed using the `directory` from
      * the configuration and the current backup date.
-     * 
+     *
      * @returns The target directory path for the backup.
      */
     protected string GenerateBackupTargetDir()
@@ -174,7 +159,7 @@ public class BackupService
 
     /**
      * Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
-     * 
+     *
      * @returns The formatted backup date string.
      */
     protected string GenerateBackupDate()
@@ -186,10 +171,10 @@ public class BackupService
 
     /**
      * Cleans up old backups in the backup directory.
-     * 
+     *
      * This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
      * the configured maximum, it deletes the oldest backups.
-     * 
+     *
      * @returns A promise that resolves when the cleanup is complete.
      */
     protected void CleanBackups()
@@ -213,10 +198,7 @@ public class BackupService
         foreach (var backupPath in backupPaths)
         {
             var date = ExtractDateFromFolderName(backupPath);
-            if (!date.HasValue)
-            {
-                continue;
-            }
+            if (!date.HasValue) continue;
 
             result.Add(date.Value.ToFileTimeUtc(), backupPath);
         }
@@ -226,7 +208,7 @@ public class BackupService
 
     /**
      * Retrieves and sorts the backup file paths from the specified directory.
-     * 
+     *
      * @param dir - The directory to search for backup files.
      * @returns A promise that resolves to a List of sorted backup file paths.
      */
@@ -240,7 +222,7 @@ public class BackupService
 
     /**
      * Compares two backup folder names based on their extracted dates.
-     * 
+     *
      * @param a - The name of the first backup folder.
      * @param b - The name of the second backup folder.
      * @returns The difference in time between the two dates in milliseconds, or `null` if either date is invalid.
@@ -250,17 +232,14 @@ public class BackupService
         var dateA = ExtractDateFromFolderName(a);
         var dateB = ExtractDateFromFolderName(b);
 
-        if (!dateA.HasValue || !dateB.HasValue)
-        {
-            return 0; // Skip comparison if either date is invalid.
-        }
+        if (!dateA.HasValue || !dateB.HasValue) return 0; // Skip comparison if either date is invalid.
 
         return (int)(dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
     }
 
     /**
      * Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
-     * 
+     *
      * @param folderName - The name of the folder from which to extract the date.
      * @returns A DateTime object if the folder name is in the correct format, otherwise null.
      */
@@ -286,7 +265,7 @@ public class BackupService
 
     /**
      * Removes excess backups from the backup directory.
-     * 
+     *
      * @param backups - A List of backup file names to be removed.
      * @returns A promise that resolves when all specified backups have been removed.
      */
@@ -297,16 +276,13 @@ public class BackupService
         {
             _fileUtil.DeleteDirectory(Path.Combine(pathToDelete), true);
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Deleted old backup: {pathToDelete}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Deleted old backup: {pathToDelete}");
         }
     }
 
     /**
      * Get a List of active server mod details.
-     * 
+     *
      * @returns A List of mod names.
      */
     protected List<string> GetActiveServerMods()

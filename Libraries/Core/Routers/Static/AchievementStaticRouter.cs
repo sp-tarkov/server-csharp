@@ -24,7 +24,8 @@ public class AchievementStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _achievementCallbacks?.GetAchievements(url, info as EmptyRequestData, sessionID)),
+                ) => _achievementCallbacks?.GetAchievements(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/achievement/statistic",
                 (
@@ -32,7 +33,8 @@ public class AchievementStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _achievementCallbacks?.Statistic(url, info as EmptyRequestData, sessionID)),
+                ) => _achievementCallbacks?.Statistic(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

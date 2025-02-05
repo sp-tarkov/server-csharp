@@ -41,7 +41,7 @@ public class DialogueCallbacks(
     {
         var chatServer = new List<ChatServer>
         {
-            new ChatServer
+            new()
             {
                 Id = _hashUtil.Generate(),
                 RegistrationId = 20,
@@ -51,7 +51,7 @@ public class DialogueCallbacks(
                 VersionId = "bgkidft87ddd",
                 Ip = "",
                 Port = 0,
-                Chats = [ new Chat { Id = "0", Members = 0 } ],
+                Chats = [new Chat { Id = "0", Members = 0 }]
             }
         };
 

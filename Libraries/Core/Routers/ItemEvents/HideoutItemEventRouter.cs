@@ -44,9 +44,11 @@ public class HideoutItemEventRouter : ItemEventRouterDefinition
         ];
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case HideoutEventActions.HIDEOUT_UPGRADE:
                 return _hideoutCallbacks.Upgrade(pmcData, body as HideoutUpgradeRequestData, sessionID, output);
             case HideoutEventActions.HIDEOUT_UPGRADE_COMPLETE:

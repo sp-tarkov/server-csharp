@@ -36,15 +36,9 @@ public class RagfairServer(
         foreach (var traderId in traders)
         {
             // Edge case - skip generating fence offers
-            if (traderId == Traders.FENCE)
-            {
-                continue;
-            }
+            if (traderId == Traders.FENCE) continue;
 
-            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
-            {
-                _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
-            }
+            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId)) _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
         }
 
         // Regenerate expired offers when over threshold limit

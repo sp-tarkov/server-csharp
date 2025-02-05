@@ -2,7 +2,6 @@ namespace Core.Utils.Callbacks;
 
 public static class TimeoutCallback
 {
-   
     public static Task RunInTimespan(Action action, TimeSpan timeSpan)
     {
         return Task.Factory.StartNew(

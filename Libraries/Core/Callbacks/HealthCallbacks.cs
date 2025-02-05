@@ -13,9 +13,8 @@ public class HealthCallbacks(
     HttpResponseUtil _httpResponseUtil,
     ProfileHelper _profileHelper,
     HealthController _healthController
-    )
+)
 {
-
     /// <summary>
     /// Custom spt server request found in modules/QTEPatch.cs
     /// </summary>

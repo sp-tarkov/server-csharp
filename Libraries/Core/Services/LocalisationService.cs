@@ -12,7 +12,9 @@ public class LocalisationService
     protected RandomUtil _randomUtil;
     protected DatabaseServer _databaseServer;
     protected LocaleService _localeService;
+
     protected I18nService _i18nService;
+
     // TODO: turn into primary ctor
     public LocalisationService(
         ISptLogger<LocalisationService> logger,
@@ -45,7 +47,7 @@ public class LocalisationService
             : _i18nService.GetLocalised(key, args);
     }
 
-    public string GetText<T>(string key, T value) where T :IConvertible?
+    public string GetText<T>(string key, T value) where T : IConvertible?
     {
         return _i18nService.GetLocalised(key, value);
     }

@@ -41,7 +41,7 @@ public class InventoryHelper(
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     // Item types to ignore inside `GetSizeByInventoryItemHash`
-    List<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
+    private List<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -147,17 +147,15 @@ public class InventoryHelper(
         }
 
         // Add item + mods to output and profile inventory
-        
+
         output.ProfileChanges[sessionId]
             .Items.NewItems.AddRange(itemWithModsToAddClone);
         pmcData.Inventory.Items.AddRange(itemWithModsToAddClone);
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
             _logger.Debug(
                 $"Added {itemWithModsToAddClone[0].Upd?.StackObjectsCount ?? 1} item: {itemWithModsToAddClone[0].Template} with: {itemWithModsToAddClone.Count - 1} mods to inventory"
             );
-        }
     }
 
     /// <summary>
@@ -452,7 +450,6 @@ public class InventoryHelper(
         if (itemAndChildrenToRemove.Count == 0)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
                 _logger.Debug(
                     _localisationService.GetText(
                         "inventory-unable_to_remove_item_id_not_found",
@@ -463,7 +460,6 @@ public class InventoryHelper(
                         }
                     )
                 );
-            }
 
             return;
         }
@@ -472,10 +468,7 @@ public class InventoryHelper(
         var insuredItems = profile.InsuredItems;
 
         // We have output object, inform client of root item deletion, not children
-        if (output is not null)
-        {
-            output.ProfileChanges[sessionId].Items.DeletedItems.Add( new Item{ Id = itemId });
-        }
+        if (output is not null) output.ProfileChanges[sessionId].Items.DeletedItems.Add(new Item { Id = itemId });
 
         foreach (var item in itemAndChildrenToRemove)
         {
@@ -780,14 +773,10 @@ public class InventoryHelper(
         {
             ItemLocation? itemLocation;
             if (item.Location is JsonElement)
-            {
                 itemLocation = ((JsonElement)item.Location).ToObject<ItemLocation>();
-            }
             else
-            {
                 itemLocation = (ItemLocation)item.Location;
-            }
-            
+
             if (itemLocation is null)
             {
                 // item has no location property
@@ -1081,11 +1070,9 @@ public class InventoryHelper(
         }
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
             _logger.Debug(
                 $"{moveRequest.Action} item: {moveRequest.Item} from slotid: {matchingInventoryItem.SlotId} to container: {moveRequest.To.Container}"
             );
-        }
 
         // Don't move shells from camora to cartridges (happens when loading shells into mts-255 revolver shotgun)
         if (matchingInventoryItem.SlotId?.Contains("camora_") is null && moveRequest.To.Container == "cartridges")
