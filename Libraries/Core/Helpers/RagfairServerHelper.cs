@@ -28,9 +28,9 @@ public class RagfairServerHelper(
     ICloner cloner
 )
 {
-    protected static string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
-    protected QuestConfig questConfig = configServer.GetConfig<QuestConfig>();
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected QuestConfig questConfig = configServer.GetConfig<QuestConfig>();
+    protected static string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
 
     /**
      * Is item valid / on blacklist / quest item

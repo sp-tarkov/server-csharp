@@ -8,8 +8,8 @@ namespace Core.Routers;
 public class ImageRouter
 {
     protected FileUtil _fileUtil;
-    protected HttpFileUtil _httpFileUtil;
     protected ImageRouterService _imageRouterService;
+    protected HttpFileUtil _httpFileUtil;
 
     public ImageRouter(
         FileUtil fileUtil,

@@ -12,8 +12,8 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class CustomizationItemEventRouter : ItemEventRouterDefinition
 {
-    protected CustomizationCallbacks _customizationCallbacks;
     protected ISptLogger<CustomizationItemEventRouter> _logger;
+    protected CustomizationCallbacks _customizationCallbacks;
 
     public CustomizationItemEventRouter
     (

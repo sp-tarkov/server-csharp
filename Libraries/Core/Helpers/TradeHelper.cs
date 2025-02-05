@@ -36,8 +36,8 @@ public class TradeHelper(
     ICloner _cloner
 )
 {
-    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     /// Buy item from flea or trader

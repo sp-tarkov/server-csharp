@@ -33,13 +33,14 @@ public class HideoutHelper(
     ICloner _cloner
 )
 {
+    protected HideoutConfig hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+
     public const string BitcoinFarm = "5d5c205bd582a50d042a3c0e";
     public const string CultistCircleCraftId = "66827062405f392b203a44cf";
     public const string BitcoinProductionId = "5d5c205bd582a50d042a3c0e";
     public const string WaterCollector = "5d5589c1f934db045e6c5492";
     public const int MaxSkillPoint = 5000;
     protected List<string> _idCheck = [BitcoinFarm, CultistCircleCraftId];
-    protected HideoutConfig hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     /// Add production to profiles' Hideout.Production array

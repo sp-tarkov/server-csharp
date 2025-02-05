@@ -21,8 +21,8 @@ public class BotLootCacheService(
     ICloner _cloner
 )
 {
-    protected object _lock = new();
     protected Dictionary<string, BotLootCache> _lootCache = new();
+    protected object _lock = new();
 
     /// <summary>
     /// Remove cached bot loot data

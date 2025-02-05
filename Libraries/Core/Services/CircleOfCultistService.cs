@@ -39,8 +39,8 @@ public class CircleOfCultistService(
     ConfigServer _configServer
 )
 {
-    protected const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
     protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    protected const string CircleOfCultistSlotId = "CircleOfCultistsGrid1";
 
     /// <summary>
     /// Start a sacrifice event

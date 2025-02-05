@@ -22,13 +22,14 @@ public class SptWebSocketConnectionHandler(
     IEnumerable<ISptWebSocketMessageHandler> _messageHandlers
 ) : IWebSocketConnectionHandler
 {
-    protected WsPing _defaultNotification = new();
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
-    protected Lock _lockObject = new();
-    protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
-    protected Dictionary<string, Timer> _socketAliveTimers = new();
 
     protected Dictionary<string, WebSocket> _sockets = new();
+    protected Dictionary<string, Timer> _socketAliveTimers = new();
+    protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
+    protected Lock _lockObject = new();
+
+    protected WsPing _defaultNotification = new();
 
     public string GetHookUrl()
     {
@@ -83,6 +84,22 @@ public class SptWebSocketConnectionHandler(
         );
     }
 
+    private void TimedTask(WebSocket ws, string sessionID)
+    {
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
+
+        if (ws.State == WebSocketState.Open)
+        {
+            var sendTask = ws.SendAsync(
+                Encoding.UTF8.GetBytes(_jsonUtil.Serialize(_defaultNotification)),
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None
+            );
+            sendTask.Wait();
+        }
+    }
+
     public void SendMessage(string sessionID, WsNotificationEvent output)
     {
         try
@@ -108,27 +125,6 @@ public class SptWebSocketConnectionHandler(
         catch (Exception err)
         {
             _logger.Error(_localisationService.GetText("websocket-message_send_failed_with_error", err));
-        }
-    }
-
-    public bool IsWebSocketConnected(string sessionID)
-    {
-        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
-    }
-
-    private void TimedTask(WebSocket ws, string sessionID)
-    {
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
-
-        if (ws.State == WebSocketState.Open)
-        {
-            var sendTask = ws.SendAsync(
-                Encoding.UTF8.GetBytes(_jsonUtil.Serialize(_defaultNotification)),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None
-            );
-            sendTask.Wait();
         }
     }
 
@@ -174,6 +170,11 @@ public class SptWebSocketConnectionHandler(
             {
                 readBytes.Clear();
             }
+    }
+
+    public bool IsWebSocketConnected(string sessionID)
+    {
+        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
     }
 
     public WebSocket GetSessionWebSocket(string sessionID)

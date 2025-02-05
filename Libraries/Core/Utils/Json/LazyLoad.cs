@@ -2,11 +2,11 @@
 
 public class LazyLoad<T>(Func<T> deserialize)
 {
-    private static readonly TimeSpan _autoCleanerTimeout = TimeSpan.FromSeconds(30);
-    private bool _isLoaded;
     private T? _result;
+    private bool _isLoaded;
 
     private Timer? autoCleanerTimeout;
+    private static readonly TimeSpan _autoCleanerTimeout = TimeSpan.FromSeconds(30);
 
     public T? Value
     {

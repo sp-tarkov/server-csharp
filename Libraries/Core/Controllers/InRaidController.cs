@@ -16,8 +16,8 @@ public class InRaidController(
     ConfigServer _configServer
 )
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     /// Save locationId to active profiles in-raid object AND app context

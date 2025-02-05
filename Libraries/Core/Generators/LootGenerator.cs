@@ -241,6 +241,12 @@ public class LootGenerator(
         return new ItemRewardPoolResults { ItemPool = items, Blacklist = itemBlacklist };
     }
 
+    public record ItemRewardPoolResults
+    {
+        public List<TemplateItem> ItemPool { get; set; }
+        public HashSet<string> Blacklist { get; set; }
+    }
+
     /// <summary>
     /// Filter armor items by their front plates protection level - top if it's a helmet
     /// </summary>
@@ -647,12 +653,6 @@ public class LootGenerator(
                     (item) => item.Id
                 )
         );
-    }
-
-    public record ItemRewardPoolResults
-    {
-        public List<TemplateItem> ItemPool { get; set; }
-        public HashSet<string> Blacklist { get; set; }
     }
 }
 

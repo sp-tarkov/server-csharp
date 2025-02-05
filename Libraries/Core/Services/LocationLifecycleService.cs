@@ -20,39 +20,39 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class LocationLifecycleService
 {
+    private readonly ISptLogger<LocationLifecycleService> _logger;
+    private readonly RewardHelper _rewardHelper;
+    private readonly ConfigServer _configServer;
+    private readonly TimeUtil _timeUtil;
+    private readonly DatabaseService _databaseService;
+    private readonly ProfileHelper _profileHelper;
+    private readonly HashUtil _hashUtil;
     private readonly ApplicationContext _applicationContext;
     private readonly BotGenerationCacheService _botGenerationCacheService;
-    private readonly BotLootCacheService _botLootCacheService;
     private readonly BotNameService _botNameService;
+    private readonly PmcConfig _pmcConfig;
     private readonly ICloner _cloner;
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
-    private readonly HashUtil _hashUtil;
-    private readonly HealthHelper _healthHelper;
-    private readonly HideoutConfig _hideoutConfig;
-    private readonly InRaidConfig _inRaidConfig;
-    private readonly InRaidHelper _inRaidHelper;
-    private readonly InsuranceService _insuranceService;
-    private readonly LocalisationService _localisationService;
     private readonly LocationConfig _locationConfig;
+    private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
     private readonly LocationLootGenerator _locationLootGenerator;
-    private readonly ISptLogger<LocationLifecycleService> _logger;
+    private readonly LocalisationService _localisationService;
+    private readonly BotLootCacheService _botLootCacheService;
+    private readonly RagfairConfig _ragfairConfig;
+    private readonly HideoutConfig _hideoutConfig;
+    private readonly TraderConfig _traderConfig;
     private readonly LootGenerator _lootGenerator;
     private readonly MailSendService _mailSendService;
-    private readonly MatchBotDetailsCacheService _matchBotDetailsCacheService;
-    private readonly PlayerScavGenerator _playerScavGenerator;
-    private readonly PmcChatResponseService _pmcChatResponseService;
-    private readonly PmcConfig _pmcConfig;
-    private readonly ProfileHelper _profileHelper;
-    private readonly QuestHelper _questHelper;
-    private readonly RagfairConfig _ragfairConfig;
-    private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
-    private readonly RandomUtil _randomUtil;
-    private readonly RewardHelper _rewardHelper;
-    private readonly SaveServer _saveServer;
-    private readonly TimeUtil _timeUtil;
-    private readonly TraderConfig _traderConfig;
     private readonly TraderHelper _traderHelper;
+    private readonly RandomUtil _randomUtil;
+    private readonly InRaidConfig _inRaidConfig;
+    private readonly InRaidHelper _inRaidHelper;
+    private readonly PlayerScavGenerator _playerScavGenerator;
+    private readonly SaveServer _saveServer;
+    private readonly HealthHelper _healthHelper;
+    private readonly PmcChatResponseService _pmcChatResponseService;
+    private readonly QuestHelper _questHelper;
+    private readonly InsuranceService _insuranceService;
+    private readonly MatchBotDetailsCacheService _matchBotDetailsCacheService;
 
     public LocationLifecycleService(
         ISptLogger<LocationLifecycleService> logger,

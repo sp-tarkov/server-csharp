@@ -34,11 +34,11 @@ public class BotWeaponGenerator(
     IEnumerable<IInventoryMagGen> inventoryMagGenComponents
 )
 {
-    protected const string _modMagazineSlotId = "mod_magazine";
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected IEnumerable<IInventoryMagGen> _inventoryMagGenComponents = MagGenSetUp(inventoryMagGenComponents);
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
+    protected const string _modMagazineSlotId = "mod_magazine";
 
     private static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {

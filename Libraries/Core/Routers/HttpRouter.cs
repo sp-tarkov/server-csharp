@@ -6,8 +6,8 @@ namespace Core.Routers;
 [Injectable]
 public class HttpRouter
 {
-    protected IEnumerable<DynamicRouter> _dynamicRoutes;
     protected IEnumerable<StaticRouter> _staticRouters;
+    protected IEnumerable<DynamicRouter> _dynamicRoutes;
 
     public HttpRouter(
         IEnumerable<StaticRouter> staticRouters,

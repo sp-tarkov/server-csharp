@@ -71,9 +71,19 @@ public class PrestigeController(
         // hideout progress
 
         // going to prestige 2
-        // most likely the same, but wait for dump of new beginnings quest
+        // 10% of skills should be transfered over
+        // 10% of mastering should be transfered over
+        // earned achievements should be transfered over
+        // profile stats should be transfered over
+        // prestige progress should be transfered over
 
-
+        // reset
+        // trader standing
+        // task progress
+        // character level
+        // stash
+        // hideout progress
+        
         // Clone existing profile, create a new one
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;

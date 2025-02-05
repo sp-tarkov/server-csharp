@@ -25,32 +25,32 @@ namespace Core.Controllers;
 [Injectable]
 public class RagfairController
 {
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly JsonUtil _jsonUtil;
-    private readonly LocalisationService _localisationService;
     private readonly ISptLogger<RagfairController> _logger;
-    private readonly PaymentHelper _paymentHelper;
-    private readonly PaymentService _paymentService;
+    private readonly TimeUtil _timeUtil;
+    private readonly JsonUtil _jsonUtil;
+    private readonly HttpResponseUtil _httpResponseUtil;
+    private readonly EventOutputHolder _eventOutputHolder;
+    private readonly RagfairServer _ragfairServer;
+    private readonly ItemHelper _itemHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly RagfairSellHelper _ragfairSellHelper;
+    private readonly HandbookHelper _handbookHelper;
     private readonly ProfileHelper _profileHelper;
+    private readonly PaymentHelper _paymentHelper;
+    private readonly RagfairHelper _ragfairHelper;
+    private readonly RagfairSortHelper _ragfairSortHelper;
+    private readonly RagfairOfferHelper _ragfairOfferHelper;
+    private readonly TraderHelper _traderHelper;
+    private readonly DatabaseService _databaseService;
+    private readonly LocalisationService _localisationService;
+    private readonly RagfairTaxService _ragfairTaxService;
+    private readonly RagfairOfferService _ragfairOfferService;
+    private readonly PaymentService _paymentService;
+    private readonly RagfairPriceService _ragfairPriceService;
+    private readonly RagfairOfferGenerator _ragfairOfferGenerator;
+    private readonly ConfigServer _configServer;
 
     private readonly RagfairConfig _ragfairConfig;
-    private readonly RagfairHelper _ragfairHelper;
-    private readonly RagfairOfferGenerator _ragfairOfferGenerator;
-    private readonly RagfairOfferHelper _ragfairOfferHelper;
-    private readonly RagfairOfferService _ragfairOfferService;
-    private readonly RagfairPriceService _ragfairPriceService;
-    private readonly RagfairSellHelper _ragfairSellHelper;
-    private readonly RagfairServer _ragfairServer;
-    private readonly RagfairSortHelper _ragfairSortHelper;
-    private readonly RagfairTaxService _ragfairTaxService;
-    private readonly TimeUtil _timeUtil;
-    private readonly TraderHelper _traderHelper;
 
     public RagfairController(
         ISptLogger<RagfairController> logger,
@@ -879,6 +879,12 @@ public class RagfairController
         return new GetItemsToListOnFleaFromInventoryResult { Items = itemsToReturn, ErrorMessage = errorMessage };
     }
 
+    public record GetItemsToListOnFleaFromInventoryResult
+    {
+        public List<List<Item>>? Items { get; set; }
+        public string? ErrorMessage { get; set; }
+    }
+
     public ItemEventRouterResponse RemoveOffer(RemoveOfferRequestData removeRequest, string sessionId)
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
@@ -1021,11 +1027,5 @@ public class RagfairController
         var offerToReturn = offers.FirstOrDefault((offer) => offer.InternalId == request.Id);
 
         return offerToReturn;
-    }
-
-    public record GetItemsToListOnFleaFromInventoryResult
-    {
-        public List<List<Item>>? Items { get; set; }
-        public string? ErrorMessage { get; set; }
     }
 }

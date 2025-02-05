@@ -12,20 +12,20 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class App
 {
-    protected readonly RandomUtil _randomUtil;
-    protected ConfigServer _configServer;
-    protected CoreConfig _coreConfig;
-    protected DatabaseService _databaseService;
-    protected EncodingUtil _encodingUtil;
-    protected HttpServer _httpServer;
-    protected LocalisationService _localisationService;
-
-    protected ISptLogger<App> _logger;
-    protected IEnumerable<OnLoad> _onLoad;
-    protected IEnumerable<OnUpdate> _onUpdate;
     protected Dictionary<string, long> _onUpdateLastRun = new();
     protected Timer _timer;
+    protected CoreConfig _coreConfig;
+
+    protected ISptLogger<App> _logger;
     protected TimeUtil _timeUtil;
+    protected readonly RandomUtil _randomUtil;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
+    protected EncodingUtil _encodingUtil;
+    protected HttpServer _httpServer;
+    protected DatabaseService _databaseService;
+    protected IEnumerable<OnLoad> _onLoad;
+    protected IEnumerable<OnUpdate> _onUpdate;
 
     public App(
         ISptLogger<App> logger,

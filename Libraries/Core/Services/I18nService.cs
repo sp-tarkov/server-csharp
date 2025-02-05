@@ -6,15 +6,15 @@ namespace Core.Services;
 
 public class I18nService
 {
+    private List<string> _locales;
+    private Dictionary<string, string> _fallbacks;
     private string _defaultLocale;
     private string _directory;
-    private Dictionary<string, string> _fallbacks;
-    private FileUtil _fileUtil;
     private JsonUtil _jsonUtil;
+    private FileUtil _fileUtil;
+    private string _setLocale;
 
     private Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
-    private List<string> _locales;
-    private string _setLocale;
 
     // TODO: try convert to primary ctor
     public I18nService(

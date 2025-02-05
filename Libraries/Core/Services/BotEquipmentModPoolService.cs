@@ -12,18 +12,19 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentModPoolService
 {
-    private readonly Lock _lock = new();
-    protected bool _armorPoolGenerated;
-    protected BotConfig _botConfig;
-    protected ConfigServer _configServer;
-    protected DatabaseService _databaseService;
-    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _gearModPool;
-    protected ItemHelper _itemHelper;
-    protected LocalisationService _localisationService;
     protected ISptLogger<BotEquipmentModPoolService> _logger;
-    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _weaponModPool;
+    protected ItemHelper _itemHelper;
+    protected DatabaseService _databaseService;
+    protected LocalisationService _localisationService;
+    protected ConfigServer _configServer;
 
     protected bool _weaponPoolGenerated;
+    protected bool _armorPoolGenerated;
+    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _weaponModPool;
+    protected ConcurrentDictionary<string, ConcurrentDictionary<string, HashSet<string>>> _gearModPool;
+    protected BotConfig _botConfig;
+
+    private readonly Lock _lock = new();
 
     public BotEquipmentModPoolService(
         ISptLogger<BotEquipmentModPoolService> logger,

@@ -5,53 +5,6 @@ namespace Core.Models.Spt.Server;
 
 public record Locations
 {
-    private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
-
-    // sometimes we get the key or value given so save changing logic in each place
-    // have it key both
-    private Dictionary<string, string> _locationMappings = new()
-    {
-        // EFT
-        { "factory4_day", "Factory4Day" },
-        { "bigmap", "Bigmap" },
-        { "develop", "Develop" },
-        { "factory4_night", "Factory4Night" },
-        { "hideout", "Hideout" },
-        { "interchange", "Interchange" },
-        { "laboratory", "Laboratory" },
-        { "lighthouse", "Lighthouse" },
-        { "privatearea", "PrivateArea" },
-        { "rezervbase", "RezervBase" },
-        { "shoreline", "Shoreline" },
-        { "suburbs", "Suburbs" },
-        { "tarkovstreets", "TarkovStreets" },
-        { "terminal", "Terminal" },
-        { "town", "Town" },
-        { "woods", "Woods" },
-        { "sandbox", "Sandbox" },
-        { "sandbox_high", "SandboxHigh" },
-
-        // SPT
-        { "Factory4Day", "Factory4Day" },
-        { "Bigmap", "Bigmap" },
-        { "Develop", "Develop" },
-        { "Factory4Night", "Factory4Night" },
-        { "Hideout", "Hideout" },
-        { "Interchange", "Interchange" },
-        { "Laboratory", "Laboratory" },
-        { "Lighthouse", "Lighthouse" },
-        { "PrivateArea", "PrivateArea" },
-        { "RezervBase", "RezervBase" },
-        { "Shoreline", "Shoreline" },
-        { "Suburbs", "Suburbs" },
-        { "TarkovStreets", "TarkovStreets" },
-        { "Terminal", "Terminal" },
-        { "Town", "Town" },
-        { "Woods", "Woods" },
-        { "Sandbox", "Sandbox" },
-        { "SandboxHigh", "SandboxHigh" }
-    };
-
     [JsonPropertyName("bigmap")]
     public Eft.Common.Location? Bigmap { get; set; }
 
@@ -110,6 +63,8 @@ public record Locations
     [JsonPropertyName("base")]
     public LocationsBase? Base { get; set; }
 
+    private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
+
     /// <summary>
     /// Get map locations as a dictionary, keyed by its name e.g. Factory4Day
     /// </summary>
@@ -138,4 +93,49 @@ public record Locations
         _locationDictionaryCache = classProps
             .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
     }
+
+    // sometimes we get the key or value given so save changing logic in each place
+    // have it key both
+    private Dictionary<string, string> _locationMappings = new()
+    {
+        // EFT
+        { "factory4_day", "Factory4Day" },
+        { "bigmap", "Bigmap" },
+        { "develop", "Develop" },
+        { "factory4_night", "Factory4Night" },
+        { "hideout", "Hideout" },
+        { "interchange", "Interchange" },
+        { "laboratory", "Laboratory" },
+        { "lighthouse", "Lighthouse" },
+        { "privatearea", "PrivateArea" },
+        { "rezervbase", "RezervBase" },
+        { "shoreline", "Shoreline" },
+        { "suburbs", "Suburbs" },
+        { "tarkovstreets", "TarkovStreets" },
+        { "terminal", "Terminal" },
+        { "town", "Town" },
+        { "woods", "Woods" },
+        { "sandbox", "Sandbox" },
+        { "sandbox_high", "SandboxHigh" },
+
+        // SPT
+        { "Factory4Day", "Factory4Day" },
+        { "Bigmap", "Bigmap" },
+        { "Develop", "Develop" },
+        { "Factory4Night", "Factory4Night" },
+        { "Hideout", "Hideout" },
+        { "Interchange", "Interchange" },
+        { "Laboratory", "Laboratory" },
+        { "Lighthouse", "Lighthouse" },
+        { "PrivateArea", "PrivateArea" },
+        { "RezervBase", "RezervBase" },
+        { "Shoreline", "Shoreline" },
+        { "Suburbs", "Suburbs" },
+        { "TarkovStreets", "TarkovStreets" },
+        { "Terminal", "Terminal" },
+        { "Town", "Town" },
+        { "Woods", "Woods" },
+        { "Sandbox", "Sandbox" },
+        { "SandboxHigh", "SandboxHigh" }
+    };
 }

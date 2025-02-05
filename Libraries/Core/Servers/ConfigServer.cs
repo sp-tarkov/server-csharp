@@ -10,11 +10,11 @@ namespace Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
-    protected FileUtil _fileUtil;
-    protected JsonUtil _jsonUtil;
     protected ISptLogger<ConfigServer> _logger;
+    protected JsonUtil _jsonUtil;
+    protected FileUtil _fileUtil;
     protected Dictionary<string, object> configs = new();
+    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,

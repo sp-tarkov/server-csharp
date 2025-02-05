@@ -11,17 +11,8 @@ namespace Core.Utils;
 [Injectable]
 public class HttpResponseUtil
 {
-    protected readonly JsonUtil _jsonUtil;
     protected readonly LocalisationService _localisationService;
-
-    protected ImmutableList<Regex> _cleanupRegexList =
-    [
-        new("[\\b]"),
-        new("[\\f]"),
-        new("[\\n]"),
-        new("[\\r]"),
-        new("[\\t]")
-    ];
+    protected readonly JsonUtil _jsonUtil;
 
     public HttpResponseUtil(
         JsonUtil jsonUtil,
@@ -31,6 +22,15 @@ public class HttpResponseUtil
         _localisationService = localisationService;
         _jsonUtil = jsonUtil;
     }
+
+    protected ImmutableList<Regex> _cleanupRegexList =
+    [
+        new("[\\b]"),
+        new("[\\f]"),
+        new("[\\n]"),
+        new("[\\r]"),
+        new("[\\t]")
+    ];
 
     protected string ClearString(string? s)
     {

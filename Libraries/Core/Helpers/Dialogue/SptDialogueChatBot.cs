@@ -24,6 +24,14 @@ public class SptDialogueChatBot(
 {
     protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
 
+    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
+    {
+        var chatMessageHandlers = components.ToList();
+        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
+
+        return chatMessageHandlers;
+    }
+
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
 
@@ -70,14 +78,6 @@ public class SptDialogueChatBot(
         );
 
         return request.DialogId;
-    }
-
-    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
-    {
-        var chatMessageHandlers = components.ToList();
-        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
-
-        return chatMessageHandlers;
     }
 
     private string GetUnrecognizedCommandMessage()

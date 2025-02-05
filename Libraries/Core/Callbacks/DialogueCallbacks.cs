@@ -18,17 +18,6 @@ public class DialogueCallbacks(
 )
     : OnUpdate
 {
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        _dialogueController.Update();
-        return true;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-dialogue";
-    }
-
     /// <summary>
     /// Handle client/friend/list
     /// </summary>
@@ -325,5 +314,16 @@ public class DialogueCallbacks(
     public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
+    }
+
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        _dialogueController.Update();
+        return true;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-dialogue";
     }
 }

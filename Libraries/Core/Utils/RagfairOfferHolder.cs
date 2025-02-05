@@ -13,13 +13,13 @@ public class RagfairOfferHolder(
     HashUtil hashUtil,
     ConfigServer configServer)
 {
-    protected int _maxOffersPerTemplate = (int)configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected Dictionary<string, RagfairOffer> _offersById = new();
     protected object _offersByIdLock = new();
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTemplate = new();
     protected object _offersByTemplateLock = new();
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTrader = new();
     protected object _offersByTraderLock = new();
+    protected int _maxOffersPerTemplate = (int)configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
 
     public RagfairOffer? GetOfferById(string id)
     {

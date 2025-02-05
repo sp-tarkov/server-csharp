@@ -38,8 +38,8 @@ public class QuestHelper(
     ICloner _cloner
 )
 {
-    protected List<QuestStatusEnum> _newlyQuestCheck = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected List<QuestStatusEnum> _newlyQuestCheck = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
 
     /// <summary>
     /// Get status of a quest in player profile by its id

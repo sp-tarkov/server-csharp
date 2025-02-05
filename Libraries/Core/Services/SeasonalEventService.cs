@@ -24,7 +24,15 @@ public class SeasonalEventService(
     ConfigServer _configServer
 )
 {
+    protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+
+    private List<SeasonalEvent> _currentlyActiveEvents = [];
     private bool _christmasEventActive = false;
+    private bool _halloweenEventActive = false;
 
     protected IReadOnlyList<string> _christmasEventItems =
     [
@@ -53,9 +61,6 @@ public class SeasonalEventService(
         ItemTpl.FACECOVER_AYBOLIT_MASK
     ];
 
-    private List<SeasonalEvent> _currentlyActiveEvents = [];
-    private bool _halloweenEventActive = false;
-
     protected IReadOnlyList<string> _halloweenEventItems =
     [
         ItemTpl.FACECOVER_SPOOKY_SKULL_MASK,
@@ -70,12 +75,6 @@ public class SeasonalEventService(
         ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_BRAWLER,
         ItemTpl.FACECOVER_HOCKEY_PLAYER_MASK_QUIET
     ];
-
-    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
-    protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
-    protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
-    protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
     /// Get an array of christmas items found in bots inventories as loot

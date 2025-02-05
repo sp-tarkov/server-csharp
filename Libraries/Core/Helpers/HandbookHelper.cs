@@ -15,9 +15,9 @@ public class HandbookHelper(
     ICloner _cloner
 )
 {
-    protected LookupCollection _handbookPriceCache = new();
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
     protected bool _lookupCacheGenerated = false;
+    protected LookupCollection _handbookPriceCache = new();
 
     /// <summary>
     /// Create an in-memory cache of all items with associated handbook price in handbookPriceCache class
@@ -180,24 +180,24 @@ public class HandbookHelper(
 
 public class LookupItem<T, I>
 {
+    public Dictionary<string, T> ById { get; set; }
+    public Dictionary<string, List<I>> ByParent { get; set; }
+
     public LookupItem()
     {
         ById = new Dictionary<string, T>();
         ByParent = new Dictionary<string, List<I>>();
     }
-
-    public Dictionary<string, T> ById { get; set; }
-    public Dictionary<string, List<I>> ByParent { get; set; }
 }
 
 public class LookupCollection
 {
+    public LookupItem<double, string> Items { get; set; }
+    public LookupItem<string, string> Categories { get; set; }
+
     public LookupCollection()
     {
         Items = new LookupItem<double, string>();
         Categories = new LookupItem<string, string>();
     }
-
-    public LookupItem<double, string> Items { get; set; }
-    public LookupItem<string, string> Categories { get; set; }
 }

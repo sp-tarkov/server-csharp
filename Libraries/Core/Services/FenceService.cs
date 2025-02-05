@@ -28,14 +28,19 @@ public class FenceService(
     ICloner _cloner
 )
 {
-    /** Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts() */
-    protected FenceAssortGenerationValues desiredAssortCounts;
+    protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
+
+    /** Time when some items in assort will be replaced  */
+    protected long nextPartialRefreshTimestamp;
 
     /** Main assorts you see at all rep levels */
     protected TraderAssort? fenceAssort = null;
 
     /** Assorts shown on a separate tab when you max out fence rep */
     protected TraderAssort? fenceDiscountAssort = null;
+
+    /** Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts() */
+    protected FenceAssortGenerationValues desiredAssortCounts;
 
     protected HashSet<string> fenceItemUpdCompareProperties =
     [
@@ -49,11 +54,6 @@ public class FenceService(
         "Dogtag",
         "RepairKit"
     ];
-
-    /** Time when some items in assort will be replaced  */
-    protected long nextPartialRefreshTimestamp;
-
-    protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
 
     /**
@@ -1367,7 +1367,8 @@ public class FenceService(
     {
         var itemTypeCounts = new Dictionary<string, (int current, int max)>();
 
-        foreach (var x in limits.Keys) itemTypeCounts[x] = new ValueTuple<int, int> { current = 0, max = limits[x] };
+        foreach (var x in limits.Keys)
+            itemTypeCounts[x] = new(0, limits[x]);
 
         return itemTypeCounts;
     }

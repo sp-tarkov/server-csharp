@@ -46,6 +46,7 @@ public class HideoutController(
     ConfigServer _configServer
 )
 {
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     public const string NameTaskConditionCountersCraftingId = "673f5d6fdd6ed700c703afdc";
 
     protected List<HideoutAreas> _hideoutAreas =
@@ -55,8 +56,6 @@ public class HideoutController(
         HideoutAreas.GENERATOR,
         HideoutAreas.BITCOIN_FARM
     ];
-
-    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     public void StartUpgrade(PmcData pmcData, HideoutUpgradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {

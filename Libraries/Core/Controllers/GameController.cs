@@ -44,12 +44,12 @@ public class GameController(
     ICloner _cloner
 )
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-    protected double _deviation = 0.0001;
-    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected double _deviation = 0.0001;
 
     /// <summary>
     /// Handle client/game/start

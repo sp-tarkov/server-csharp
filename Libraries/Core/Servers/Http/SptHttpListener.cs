@@ -21,16 +21,14 @@ public class SptHttpListener : IHttpListener
     // We want to read 1KB at a time, for most request this is already big enough
     private const int BodyReadBufferSize = 1024 * 1;
 
-    private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
-    protected readonly HttpResponseUtil _httpResponseUtil;
-    protected readonly JsonUtil _jsonUtil;
-    protected readonly LocalisationService _localisationService;
-    protected readonly ISptLogger<SptHttpListener> _logger;
-    protected readonly ISptLogger<RequestLogger> _requestLogger;
-
 
     protected readonly HttpRouter _router;
     protected readonly IEnumerable<ISerializer> _serializers;
+    protected readonly ISptLogger<SptHttpListener> _logger;
+    protected readonly ISptLogger<RequestLogger> _requestLogger;
+    protected readonly HttpResponseUtil _httpResponseUtil;
+    protected readonly LocalisationService _localisationService;
+    protected readonly JsonUtil _jsonUtil;
 
     public SptHttpListener(
         HttpRouter httpRouter,
@@ -50,6 +48,8 @@ public class SptHttpListener : IHttpListener
         _localisationService = localisationService;
         _jsonUtil = jsonUtil;
     }
+
+    private static readonly ImmutableHashSet<string> SupportedMethods = ["GET", "PUT", "POST"];
 
     public bool CanHandle(string _, HttpRequest req)
     {

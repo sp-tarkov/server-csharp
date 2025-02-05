@@ -14,22 +14,22 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.Database)]
 public class DatabaseImporter : OnLoad
 {
-    protected ConfigServer _configServer;
-
-    protected DatabaseServer _databaseServer;
-    protected EncodingUtil _encodingUtil;
-    protected FileUtil _fileUtil;
-    protected HashUtil _hashUtil;
-
-    protected ImageRouter _imageRouter;
-    protected ImporterUtil _importerUtil;
-    protected LocalisationService _localisationService;
+    private object hashedFile;
+    private ValidationResult valid = ValidationResult.UNDEFINED;
+    private string filepath;
+    private HttpConfig httpConfig;
 
     protected ISptLogger<DatabaseImporter> _logger;
-    private string filepath;
-    private object hashedFile;
-    private HttpConfig httpConfig;
-    private ValidationResult valid = ValidationResult.UNDEFINED;
+    protected LocalisationService _localisationService;
+
+    protected DatabaseServer _databaseServer;
+
+    protected ImageRouter _imageRouter;
+    protected EncodingUtil _encodingUtil;
+    protected HashUtil _hashUtil;
+    protected ImporterUtil _importerUtil;
+    protected ConfigServer _configServer;
+    protected FileUtil _fileUtil;
 
     public DatabaseImporter(
         ISptLogger<DatabaseImporter> logger,
@@ -54,6 +54,15 @@ public class DatabaseImporter : OnLoad
         _fileUtil = fileUtil;
         _imageRouter = imageRouter;
         httpConfig = _configServer.GetConfig<HttpConfig>();
+    }
+
+    /**
+     * Get path to spt data
+     * @returns path to data
+     */
+    public string GetSptDataPath()
+    {
+        return "./Assets/";
     }
 
     public async Task OnLoad()
@@ -86,20 +95,6 @@ public class DatabaseImporter : OnLoad
 
         var imageFilePath = $"{filepath}images/";
         CreateRouteMapping(imageFilePath, "files");
-    }
-
-    public string GetRoute()
-    {
-        return "spt-database";
-    }
-
-    /**
-     * Get path to spt data
-     * @returns path to data
-     */
-    public string GetSptDataPath()
-    {
-        return "./Assets/";
     }
 
     private void CreateRouteMapping(string directory, string newBasePath)
@@ -166,6 +161,11 @@ public class DatabaseImporter : OnLoad
         //if (ProgramStatics.COMPILED && hashedFile && !ValidateFile(fileWithPath, data)) {
         //    this.valid = ValidationResult.FAILED;
         //}
+    }
+
+    public string GetRoute()
+    {
+        return "spt-database";
     }
 
     protected bool ValidateFile(string filePathAndName, object fileData)

@@ -31,8 +31,8 @@ public class RepeatableQuestGenerator(
     ICloner _cloner
 )
 {
-    protected int _maxRandomNumberAttempts = 6;
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
+    protected int _maxRandomNumberAttempts = 6;
 
     /// <summary>
     ///     This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see

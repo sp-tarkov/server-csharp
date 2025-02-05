@@ -27,10 +27,10 @@ public class RagfairOfferService(
     RagfairOfferHolder ragfairOfferHolder
 )
 {
+    protected bool playerOffersLoaded;
+
     /** Offer id + offer object */
     protected Dictionary<string, RagfairOffer> expiredOffers = new();
-
-    protected bool playerOffersLoaded;
 
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 

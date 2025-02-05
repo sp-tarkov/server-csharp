@@ -12,8 +12,8 @@ namespace Core.Utils;
 public class WatermarkLocale
 {
     protected List<string> description;
-    protected List<string> modding;
     protected List<string> warning;
+    protected List<string> modding;
 
     public WatermarkLocale(LocalisationService localisationService)
     {
@@ -65,14 +65,14 @@ public class WatermarkLocale
 [Injectable]
 public class Watermark
 {
-    protected ConfigServer _configServer;
-    protected LocalisationService _localisationService;
-
-    protected ISptLogger<Watermark> _logger;
-    protected WatermarkLocale _watermarkLocale;
     protected CoreConfig sptConfig;
     protected List<string> text = [];
     protected string versionLabel = "";
+
+    protected ISptLogger<Watermark> _logger;
+    protected ConfigServer _configServer;
+    protected LocalisationService _localisationService;
+    protected WatermarkLocale _watermarkLocale;
 
     public Watermark(
         ISptLogger<Watermark> logger,

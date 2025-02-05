@@ -2,8 +2,6 @@ namespace Server.Logger;
 
 public class ConsoleFormatter : AbstractFormatter
 {
-    public static ConsoleFormatter Default { get; } = new();
-
     protected override string ProcessText(string text)
     {
         return text;
@@ -13,4 +11,6 @@ public class ConsoleFormatter : AbstractFormatter
     {
         return message;
     }
+
+    public static ConsoleFormatter Default { get; } = new();
 }

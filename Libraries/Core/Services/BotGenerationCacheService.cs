@@ -11,9 +11,9 @@ public class BotGenerationCacheService(
     LocalisationService _localisationService
 )
 {
+    protected Dictionary<string, List<BotBase>> _storedBots = new();
     protected Queue<BotBase> _activeBotsInRaid = [];
     protected object _lock = new();
-    protected Dictionary<string, List<BotBase>> _storedBots = new();
 
 
     /**

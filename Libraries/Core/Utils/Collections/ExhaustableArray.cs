@@ -4,9 +4,9 @@ namespace Core.Utils.Collections;
 
 public record ExhaustableArray<T> : IExhaustableArray<T>
 {
-    private ICloner _cloner;
-    private RandomUtil _randomUtil;
     private LinkedList<T>? pool;
+    private RandomUtil _randomUtil;
+    private ICloner _cloner;
 
     public ExhaustableArray(
         T[]? itemPool,

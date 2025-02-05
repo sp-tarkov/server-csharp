@@ -8,9 +8,9 @@ namespace Core.Helpers;
 [Injectable]
 public class PaymentHelper(ConfigServer _configServer)
 {
-    protected bool _addedCustomMoney;
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     protected List<string> _moneyTpls = [Money.DOLLARS, Money.EUROS, Money.ROUBLES, Money.GP];
+    protected bool _addedCustomMoney;
 
     /// <summary>
     /// Is the passed in tpl money (also checks custom currencies in inventoryConfig.customMoneyTpls)

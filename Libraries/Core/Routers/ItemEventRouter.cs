@@ -13,14 +13,14 @@ namespace Core.Routers;
 [Injectable]
 public class ItemEventRouter
 {
-    protected ICloner _cloner;
-    protected EventOutputHolder _eventOutputHolder;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected List<ItemEventRouterDefinition> _itemEventRouters;
-    protected JsonUtil _jsonUtil;
-    protected LocalisationService _localisationService;
     protected ISptLogger<ItemEventRouter> _logger;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected JsonUtil _jsonUtil;
     protected ProfileHelper _profileHelper;
+    protected LocalisationService _localisationService;
+    protected EventOutputHolder _eventOutputHolder;
+    protected List<ItemEventRouterDefinition> _itemEventRouters;
+    protected ICloner _cloner;
 
     public ItemEventRouter(
         ISptLogger<ItemEventRouter> logger,

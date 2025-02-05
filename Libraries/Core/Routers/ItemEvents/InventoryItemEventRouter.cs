@@ -14,8 +14,8 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class InventoryItemEventRouter : ItemEventRouterDefinition
 {
-    protected HideoutCallbacks _hideoutCallbacks;
     protected InventoryCallbacks _inventoryCallbacks;
+    protected HideoutCallbacks _hideoutCallbacks;
 
     public InventoryItemEventRouter
     (

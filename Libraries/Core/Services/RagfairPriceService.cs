@@ -25,8 +25,8 @@ public class RagfairPriceService(
     ConfigServer _configServer
 )
 {
-    private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
     protected Dictionary<string, double>? _staticPrices;
+    private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     /// Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries

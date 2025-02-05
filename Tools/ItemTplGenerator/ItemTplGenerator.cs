@@ -22,10 +22,10 @@ public class ItemTplGenerator(
     IEnumerable<OnLoad> _onLoadComponents
 )
 {
-    private HashSet<string> collidedEnumKeys = [];
     private string enumDir;
-    private IDictionary<string, string> itemOverrides;
     private Dictionary<string, TemplateItem> items;
+    private IDictionary<string, string> itemOverrides;
+    private HashSet<string> collidedEnumKeys = [];
 
     public async Task Run()
     {

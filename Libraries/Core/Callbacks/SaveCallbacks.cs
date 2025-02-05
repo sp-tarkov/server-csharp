@@ -23,11 +23,6 @@ public class SaveCallbacks(
         _saveServer.Load();
     }
 
-    public string GetRoute()
-    {
-        return "spt-save";
-    }
-
     public bool OnUpdate(long secondsSinceLastRun)
     {
         if (secondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
@@ -37,5 +32,10 @@ public class SaveCallbacks(
         }
 
         return false;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-save";
     }
 }

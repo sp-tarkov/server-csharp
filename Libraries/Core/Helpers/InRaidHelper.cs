@@ -18,8 +18,8 @@ public class InRaidHelper(
     DatabaseService _databaseService
 )
 {
-    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected LostOnDeathConfig _lostOnDeathConfig = _configServer.GetConfig<LostOnDeathConfig>();
+    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected List<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
 
     /// <summary>

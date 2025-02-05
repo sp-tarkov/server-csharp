@@ -25,8 +25,9 @@ public class GiveSptCommand(
     ICloner _cloner
 ) : ISptCommand
 {
-    private const double _acceptableConfidence = 0.9d;
+    protected Dictionary<string, SavedCommand> _savedCommand = new();
     private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
+    private const double _acceptableConfidence = 0.9d;
 
     // Exception for flares
     protected readonly HashSet<string> _excludedPresetItems =
@@ -35,8 +36,6 @@ public class GiveSptCommand(
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW
     ];
-
-    protected Dictionary<string, SavedCommand> _savedCommand = new();
 
     public string GetCommand()
     {

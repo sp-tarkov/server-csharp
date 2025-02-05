@@ -28,7 +28,6 @@ public class ProfileFixerService(
     InventoryHelper _inventoryHelper
 )
 {
-    protected List<string> _areas = ["hideout", "main"];
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     /// <summary>
@@ -436,6 +435,8 @@ public class ProfileFixerService(
 
         foreach (var skill in skills.Where(skill => skill.Progress > 5100)) skill.Progress = 5100;
     }
+
+    protected List<string> _areas = ["hideout", "main"];
 
     /**
      * Checks profile inventory for items that do not exist inside the items db

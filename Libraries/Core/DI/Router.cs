@@ -66,8 +66,8 @@ public abstract class StaticRouter : Router
 
 public abstract class DynamicRouter : Router
 {
-    private readonly JsonUtil _jsonUtil;
     private readonly List<RouteAction> actions;
+    private readonly JsonUtil _jsonUtil;
 
     public DynamicRouter(JsonUtil jsonUtil, List<RouteAction> routes) : base()
     {

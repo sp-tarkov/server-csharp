@@ -13,8 +13,8 @@ public class ModHashCacheService(
     FileUtil _fileUtil
 )
 {
-    protected readonly string _modCachePath = "./user/cache/modCache.json";
     protected readonly Dictionary<string, string> _modHashes = new();
+    protected readonly string _modCachePath = "./user/cache/modCache.json";
 
     public string? GetStoredValue(string key)
     {

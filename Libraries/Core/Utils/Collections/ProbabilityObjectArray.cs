@@ -23,8 +23,8 @@ namespace Core.Utils.Collections;
 /// <typeparam name="V"></typeparam>
 public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
-    private readonly ICloner _cloner;
     private readonly MathUtil _mathUtil;
+    private readonly ICloner _cloner;
 
     public ProbabilityObjectArray(
         MathUtil mathUtil,

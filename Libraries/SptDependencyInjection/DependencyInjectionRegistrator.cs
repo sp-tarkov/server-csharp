@@ -6,9 +6,6 @@ namespace SptDependencyInjection;
 
 public static class DependencyInjectionRegistrator
 {
-    private static List<Type>? _allLoadedTypes;
-    private static List<ConstructorInfo>? _allConstructors;
-
     public static void RegisterModOverrideComponents(IServiceCollection builderServices, List<Assembly> assemblies)
     {
         // We get all the services from this assembly first, since mods will override them later
@@ -55,6 +52,9 @@ public static class DependencyInjectionRegistrator
                     valueTuple.TypeToRegister
                 );
     }
+
+    private static List<Type>? _allLoadedTypes;
+    private static List<ConstructorInfo>? _allConstructors;
 
     private static void RegisterGenericComponents(IServiceCollection builderServices, RegisterableType valueTuple)
     {

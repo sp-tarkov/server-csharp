@@ -13,8 +13,8 @@ public class BundleHashCacheService(
     FileUtil _fileUtil
 )
 {
-    protected readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
     protected Dictionary<string, string> _bundleHashes = new();
+    protected readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
 
     public string GetStoredValue(string key)
     {

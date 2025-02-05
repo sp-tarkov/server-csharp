@@ -10,17 +10,17 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BackupService
 {
-    protected const string _profileDir = "./user/profiles";
+    protected ISptLogger<BackupService> _logger;
+    protected JsonUtil _jsonUtil;
+    protected TimeUtil _timeUtil;
+    protected FileUtil _fileUtil;
+    protected BackupConfig _backupConfig;
 
     protected readonly List<string> _activeServerMods;
-    protected BackupConfig _backupConfig;
+    protected const string _profileDir = "./user/profiles";
 
     // Runs Init() every x minutes
     protected Timer _backupIntervalTimer;
-    protected FileUtil _fileUtil;
-    protected JsonUtil _jsonUtil;
-    protected ISptLogger<BackupService> _logger;
-    protected TimeUtil _timeUtil;
 
     public BackupService(
         ISptLogger<BackupService> _logger,

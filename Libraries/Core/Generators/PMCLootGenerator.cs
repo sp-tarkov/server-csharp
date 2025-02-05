@@ -12,19 +12,19 @@ namespace Core.Generators;
 [Injectable]
 public class PMCLootGenerator
 {
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
-    private readonly ItemFilterService _itemFilterService;
-    private readonly ItemHelper _itemHelper;
     private readonly ISptLogger<PMCLootGenerator> _logger;
-    private readonly PmcConfig _pmcConfig;
+    private readonly DatabaseService _databaseService;
+    private readonly ItemHelper _itemHelper;
+    private readonly ItemFilterService _itemFilterService;
     private readonly RagfairPriceService _ragfairPriceService;
     private readonly SeasonalEventService _seasonalEventService;
     private readonly WeightedRandomHelper _weightedRandomHelper;
+    private readonly ConfigServer _configServer;
 
     private Dictionary<string, double>? _backpackLootPool;
     private Dictionary<string, double>? _pocketLootPool;
     private Dictionary<string, double>? _vestLootPool;
+    private readonly PmcConfig _pmcConfig;
 
     public PMCLootGenerator(
         ISptLogger<PMCLootGenerator> logger,

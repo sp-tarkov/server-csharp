@@ -27,7 +27,6 @@ public class ProfileHelper(
     ConfigServer _configServer
 )
 {
-    protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -557,6 +556,8 @@ public class ProfileHelper(
         var currentTimestamp = _timeUtil.GetTimeStamp();
         return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime) ?? false;
     }
+
+    protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)
     {

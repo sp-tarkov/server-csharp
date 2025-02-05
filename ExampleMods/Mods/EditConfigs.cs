@@ -8,14 +8,14 @@ namespace ExampleMods.Mods;
 [Injectable]
 public class EditConfigs
 {
-    private readonly AirdropConfig _airdropConfig;
-    private readonly BotConfig _botConfig;
     private readonly ConfigServer _configServer;
+    private readonly BotConfig _botConfig;
     private readonly HideoutConfig _hideoutConfig;
-    private readonly PmcChatResponse _pmcChatResponseConfig;
-    private readonly PmcConfig _pmcConfig;
-    private readonly QuestConfig _questConfig;
     private readonly WeatherConfig _weatherConfig;
+    private readonly AirdropConfig _airdropConfig;
+    private readonly PmcChatResponse _pmcChatResponseConfig;
+    private readonly QuestConfig _questConfig;
+    private readonly PmcConfig _pmcConfig;
 
     // We access configs via ConfigServer
     public EditConfigs(

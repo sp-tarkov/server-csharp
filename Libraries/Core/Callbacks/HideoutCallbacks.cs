@@ -18,22 +18,6 @@ public class HideoutCallbacks(
 {
     private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
-        {
-            _hideoutController.Update();
-            return true;
-        }
-
-        return false;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-hideout";
-    }
-
     /// <summary>
     /// Handle HideoutUpgrade event
     /// </summary>
@@ -177,5 +161,21 @@ public class HideoutCallbacks(
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId)
     {
         return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);
+    }
+
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        if (timeSinceLastRun > _hideoutConfig.RunIntervalSeconds)
+        {
+            _hideoutController.Update();
+            return true;
+        }
+
+        return false;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-hideout";
     }
 }

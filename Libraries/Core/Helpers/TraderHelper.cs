@@ -30,9 +30,9 @@ public class TraderHelper(
     ConfigServer _configServer
 )
 {
-    protected List<string> _gameVersions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
-    protected Dictionary<string, int?> _highestTraderPriceItems = new();
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected Dictionary<string, int?> _highestTraderPriceItems = new();
+    protected List<string> _gameVersions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
 
 
     /// <summary>

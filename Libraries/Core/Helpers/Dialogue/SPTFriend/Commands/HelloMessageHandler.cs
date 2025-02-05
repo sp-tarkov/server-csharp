@@ -16,42 +16,6 @@ public class HelloMessageHandler(
     protected List<string> _listOfMessages = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
 
-    public int GetPriority()
-    {
-        return 100;
-    }
-
-    public bool CanHandle(string message)
-    {
-        return _listOfMessages.Contains(message, StringComparer.OrdinalIgnoreCase);
-    }
-
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
-    {
-        _mailSendService.SendUserMessageToPlayer(
-            sessionId,
-            sptFriendUser,
-            _randomUtil.GetArrayValue(
-                [
-                    "Howdy",
-                    "Hi",
-                    "Greetings",
-                    "Hello",
-                    "Bonjor",
-                    "Yo",
-                    "Sup",
-                    "Heyyyyy",
-                    "Hey there",
-                    "OH its you",
-                    $"Hello {sender?.Info?.Nickname}"
-                ]
-            ),
-            [],
-            null
-        );
-    }
-
-
     public string GetCommand()
     {
         return "hello";
@@ -91,5 +55,41 @@ public class HelloMessageHandler(
         );
 
         return request.DialogId;
+    }
+
+
+    public int GetPriority()
+    {
+        return 100;
+    }
+
+    public bool CanHandle(string message)
+    {
+        return _listOfMessages.Contains(message, StringComparer.OrdinalIgnoreCase);
+    }
+
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    {
+        _mailSendService.SendUserMessageToPlayer(
+            sessionId,
+            sptFriendUser,
+            _randomUtil.GetArrayValue(
+                [
+                    "Howdy",
+                    "Hi",
+                    "Greetings",
+                    "Hello",
+                    "Bonjor",
+                    "Yo",
+                    "Sup",
+                    "Heyyyyy",
+                    "Hey there",
+                    "OH its you",
+                    $"Hello {sender?.Info?.Nickname}"
+                ]
+            ),
+            [],
+            null
+        );
     }
 }

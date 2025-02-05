@@ -14,11 +14,12 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentFilterService
 {
-    protected BotConfig _botConfig;
-    protected Dictionary<string, EquipmentFilters?> _botEquipmentConfig;
-    protected BotHelper _botHelper;
     protected ISptLogger<BotEquipmentFilterService> _logger;
     protected ProfileHelper _profileHelper;
+    protected BotHelper _botHelper;
+
+    protected BotConfig _botConfig;
+    protected Dictionary<string, EquipmentFilters?> _botEquipmentConfig;
 
     public BotEquipmentFilterService(
         ISptLogger<BotEquipmentFilterService> logger,

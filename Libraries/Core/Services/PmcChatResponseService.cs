@@ -26,8 +26,8 @@ public class PmcChatResponseService(
     MatchBotDetailsCacheService _matchBotDetailsCacheService,
     ConfigServer _configServer)
 {
-    protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
     protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
+    protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
 
     /**
      * For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative

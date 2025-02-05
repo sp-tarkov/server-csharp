@@ -22,12 +22,13 @@ public class SaveServer(
     ConfigServer _configServer
 )
 {
-    // onLoad = require("../bindings/SaveLoad");
-    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
-    private Lock _lock = new();
     protected string profileFilepath = "user/profiles/";
 
     protected Dictionary<string, SptProfile> profiles = new();
+    private Lock _lock = new();
+
+    // onLoad = require("../bindings/SaveLoad");
+    protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
     protected Dictionary<string, string> saveMd5 = new();
 
     /**

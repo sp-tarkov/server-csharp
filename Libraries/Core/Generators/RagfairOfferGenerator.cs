@@ -43,14 +43,13 @@ public class RagfairOfferGenerator(
     ICloner cloner
 )
 {
-    protected List<TplWithFleaPrice>? allowedFleaPriceItemsForBarter;
+    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
     protected BotConfig botConfig = configServer.GetConfig<BotConfig>();
+    protected List<TplWithFleaPrice>? allowedFleaPriceItemsForBarter;
 
     /** Internal counter to ensure each offer created has a unique value for its intId property */
     protected int offerCounter = 0;
-
-    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
     /**
      * Create a flea offer and store it in the Ragfair server offers array

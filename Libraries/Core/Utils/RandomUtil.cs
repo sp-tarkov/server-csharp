@@ -10,16 +10,15 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 {
+    public readonly Random Random = new();
     private const int DecimalPointRandomPrecision = 6;
+    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
 
     /// <summary>
     /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
     /// integer + fractional parts) to about 15–17 significant digits. 15 is a safe upper bound, so we'll use that.
     /// </summary>
     public const int MaxSignificantDigits = 15;
-
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
-    public readonly Random Random = new();
 
     /// <summary>
     /// Generates a random integer between the specified minimum and maximum values, inclusive.

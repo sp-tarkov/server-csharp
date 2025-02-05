@@ -32,8 +32,8 @@ public class TraderAssortHelper(
     ICloner _cloner
 )
 {
-    protected Dictionary<string, Dictionary<string, string>> _mergedQuestAssorts = new();
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected Dictionary<string, Dictionary<string, string>> _mergedQuestAssorts = new();
     protected bool createdMergedQuestAssorts = false;
 
     /// <summary>

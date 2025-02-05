@@ -12,13 +12,13 @@ namespace Core.Routers;
 [Injectable]
 public class EventOutputHolder
 {
-    protected Dictionary<string, Dictionary<string, bool>> _clientActiveSessionStorage = new();
-    protected ICloner _cloner;
     protected ISptLogger<EventOutputHolder> _logger;
-
-    protected Dictionary<string, ItemEventRouterResponse> _outputStore = new();
     protected ProfileHelper _profileHelper;
     protected TimeUtil _timeUtil;
+    protected ICloner _cloner;
+
+    protected Dictionary<string, ItemEventRouterResponse> _outputStore = new();
+    protected Dictionary<string, Dictionary<string, bool>> _clientActiveSessionStorage = new();
 
     public EventOutputHolder(
         ISptLogger<EventOutputHolder> logger,
