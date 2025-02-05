@@ -65,7 +65,6 @@ public class PrestigeController(
     /// <item>Profile stats should be transfered over</item>
     /// <item>Prestige progress should be transfered over</item>
     /// <item>Items and rewards for Prestige 2</item>
-    /// <item>Keeping additional dailies and weeklies from prestige 1</item>
     /// </list>
     /// Each time reseting the below
     /// <list type="bullet">
