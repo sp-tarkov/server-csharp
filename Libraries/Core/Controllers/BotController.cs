@@ -52,10 +52,7 @@ public class BotController(
             .First(p => p.Name.ToLower() == (typeInLower == "assaultgroup" ? "assault" : typeInLower))
             .GetValue(_botConfig.PresetBatch);
 
-        if (value != null)
-        {
-            return value;
-        }
+        if (value != null) return value;
 
         _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
         return 30;
@@ -70,18 +67,12 @@ public class BotController(
     {
         var difficulty = diffLevel.ToLower();
 
-        if (!(raidConfig != null || ignoreRaidSettings))
-        {
-            _logger.Error(_localisationService.GetText("bot-missing_application_context", "RAID_CONFIGURATION"));
-        }
+        if (!(raidConfig != null || ignoreRaidSettings)) _logger.Error(_localisationService.GetText("bot-missing_application_context", "RAID_CONFIGURATION"));
 
         // Check value chosen in pre-raid difficulty dropdown
         // If value is not 'asonline', change requested difficulty to be what was chosen in dropdown
         var botDifficultyDropDownValue = raidConfig?.WavesSettings?.BotDifficulty?.ToString().ToLower() ?? "asonline";
-        if (botDifficultyDropDownValue != "asonline")
-        {
-            difficulty = _botDifficultyHelper.ConvertBotDifficultyDropdownToBotDifficulty(botDifficultyDropDownValue);
-        }
+        if (botDifficultyDropDownValue != "asonline") difficulty = _botDifficultyHelper.ConvertBotDifficultyDropdownToBotDifficulty(botDifficultyDropDownValue);
 
         var botDb = _databaseService.GetBots();
         return _botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
@@ -96,10 +87,7 @@ public class BotController(
         var botTypes = Enum.GetValues<WildSpawnType>().Select(item => item.ToString()).ToList();
         foreach (var botType in botTypes)
         {
-            if (botTypesDb is null)
-            {
-                continue;
-            }
+            if (botTypesDb is null) continue;
 
             // If bot is usec/bear, swap to different name
             var botTypeLower = _botHelper.IsBotPmc(botType)
@@ -113,10 +101,7 @@ public class BotController(
             {
                 // No bot of this type found, copy details from assault
                 result[botTypeLower] = result["assault"];
-                if(_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
                 continue;
             }
 
@@ -131,10 +116,7 @@ public class BotController(
             foreach (var (difficultyName, _) in botDetails.BotDifficulty)
             {
                 // Bot doesn't exist in result, add
-                if (!result.ContainsKey(botNameKey))
-                {
-                    result.TryAdd(botNameKey, new Dictionary<string, DifficultyCategories>());
-                }
+                if (!result.ContainsKey(botNameKey)) result.TryAdd(botNameKey, new Dictionary<string, DifficultyCategories>());
 
                 // Store all difficulty values in dict keyed by difficulty type e.g. easy/normal/impossible
                 result[botNameKey].Add(difficultyName, GetBotDifficulty(botNameKey, difficultyName, null, true));
@@ -147,7 +129,7 @@ public class BotController(
     public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
-        
+
         // Use this opportunity to create and cache bots for later retrieval
         var multipleBotTypesRequested = info.Conditions?.Count > 1;
         return multipleBotTypesRequested
@@ -166,7 +148,6 @@ public class BotController(
         var tasks = new List<Task>();
         // Map conditions to promises for bot generation
         foreach (var condition in request.Conditions ?? [])
-        {
             tasks.Add(
                 Task.Factory.StartNew(
                     () =>
@@ -185,14 +166,10 @@ public class BotController(
                     }
                 )
             );
-        }
-        
+
         Task.WaitAll(tasks.ToArray());
         stopwatch.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
 
         return [];
     }
@@ -220,24 +197,17 @@ public class BotController(
 
         if (botCacheCount >= botGenerationDetails.BotCountToGenerate)
         {
-            if(_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
             return;
         }
 
         // We're below desired count, add bots to cache
         var botsToGenerate = botGenerationDetails.BotCountToGenerate - botCacheCount;
         var progressWriter = new ProgressWriter(botGenerationDetails.BotCountToGenerate.GetValueOrDefault(30));
-        
-        if(_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
-        }
+
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
 
         for (var i = 0; i < botsToGenerate; i++)
-        {
             try
             {
                 var detailsClone = _cloner.Clone(botGenerationDetails);
@@ -248,15 +218,12 @@ public class BotController(
             {
                 _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message}");
             }
-        }
 
-        if(_logger.IsLogEnabled(LogLevel.Debug))
-        {
+        if (_logger.IsLogEnabled(LogLevel.Debug))
             _logger.Debug(
                 $"Generated {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
                 $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty}bots"
             );
-        }
     }
 
     private List<BotBase> ReturnSingleBotFromCache(string sessionId, GenerateBotsRequestData request)
@@ -271,7 +238,7 @@ public class BotController(
         {
             Role = requestedBot?.Role,
             Limit = 5,
-            Difficulty = requestedBot?.Difficulty,
+            Difficulty = requestedBot?.Difficulty
         };
         var botGenerationDetails = GetBotGenerationDetailsForWave(
             condition,
@@ -321,13 +288,9 @@ public class BotController(
         {
             var bossConvertPercent = bossConvertMinMax.GetByJsonProp<MinMax>(requestedBot?.Role?.ToLower() ?? string.Empty);
             if (bossConvertPercent is not null)
-            {
                 // Roll a percentage check if we should convert scav to boss
                 if (_randomUtil.GetChance100(_randomUtil.GetDouble(bossConvertPercent.Min!.Value, bossConvertPercent.Max!.Value)))
-                {
                     UpdateBotGenerationDetailsToRandomBoss(botGenerationDetails, bossesToConvertToWeights);
-                }
-            }
         }
 
         // Create a compound key to store bots in cache against
@@ -341,14 +304,12 @@ public class BotController(
         {
             // No bot in cache, generate new and store in cache
             GenerateSingleBotAndStoreInCache(botGenerationDetails, sessionId, cacheKey);
-            
-            if(_logger.IsLogEnabled(LogLevel.Debug))
-            {
+
+            if (_logger.IsLogEnabled(LogLevel.Debug))
                 _logger.Debug(
                     $"Generated {botGenerationDetails.BotCountToGenerate} " +
                     $"{botGenerationDetails.Role} ({botGenerationDetails.EventRole ?? ""}) {botGenerationDetails.BotDifficulty} bots"
                 );
-            }
         }
 
         var desiredBot = _botGenerationCacheService.GetBot(cacheKey);
@@ -400,10 +361,7 @@ public class BotController(
             .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
             ?.GetValue<GetRaidConfigurationRequestData>();
 
-        if (raidSettings is null)
-        {
-            _logger.Warning(_localisationService.GetText("bot-unable_to_load_raid_settings_from_appcontext"));
-        }
+        if (raidSettings is null) _logger.Warning(_localisationService.GetText("bot-unable_to_load_raid_settings_from_appcontext"));
 
         return raidSettings;
     }
@@ -432,9 +390,9 @@ public class BotController(
             BotRelativeLevelDeltaMin = _pmcConfig.BotRelativeLevelDeltaMin,
             BotCountToGenerate = botCountToGenerate,
             BotDifficulty = condition.Difficulty,
-            LocationSpecificPmcLevelOverride = this.GetPmcLevelRangeForMap(raidSettings?.Location), // Min/max levels for PMCs to generate within
+            LocationSpecificPmcLevelOverride = GetPmcLevelRangeForMap(raidSettings?.Location), // Min/max levels for PMCs to generate within
             IsPlayerScav = false,
-            AllPmcsHaveSameNameAsPlayer = allPmcsHaveSameNameAsPlayer,
+            AllPmcsHaveSameNameAsPlayer = allPmcsHaveSameNameAsPlayer
         };
     }
 
@@ -442,11 +400,9 @@ public class BotController(
     {
         var botCap = _botConfig.MaxBotCap.FirstOrDefault(x => x.Key.ToLower() == location.ToLower());
         if (location == "default")
-        {
             _logger.Warning(
                 _localisationService.GetText("bot-no_bot_cap_found_for_location", location.ToLower())
             );
-        }
 
         return botCap.Value;
     }
@@ -457,7 +413,7 @@ public class BotController(
         {
             PmcType = _pmcConfig.PmcType,
             Assault = _botConfig.AssaultBrainType,
-            PlayerScav = _botConfig.PlayerScavBrainType,
+            PlayerScav = _botConfig.PlayerScavBrainType
         };
     }
 }
@@ -465,11 +421,11 @@ public class BotController(
 public record AiBotBrainTypes
 {
     [JsonPropertyName("pmc")]
-    public Dictionary<string,Dictionary<string,Dictionary<string,double>>> PmcType { get; set; }
-    
+    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType { get; set; }
+
     [JsonPropertyName("assault")]
-    public Dictionary<string,Dictionary<string,int>> Assault { get; set; }
-    
+    public Dictionary<string, Dictionary<string, int>> Assault { get; set; }
+
     [JsonPropertyName("playerScav")]
-    public Dictionary<string,Dictionary<string,int>> PlayerScav { get; set; }
+    public Dictionary<string, Dictionary<string, int>> PlayerScav { get; set; }
 }

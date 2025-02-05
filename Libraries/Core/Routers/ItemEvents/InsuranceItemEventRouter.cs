@@ -23,13 +23,14 @@ public class InsuranceItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("Insure", false)
+            new("Insure", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {

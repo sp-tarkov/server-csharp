@@ -12,8 +12,8 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class CustomizationItemEventRouter : ItemEventRouterDefinition
 {
-    protected ISptLogger<CustomizationItemEventRouter> _logger;
     protected CustomizationCallbacks _customizationCallbacks;
+    protected ISptLogger<CustomizationItemEventRouter> _logger;
 
     public CustomizationItemEventRouter
     (
@@ -27,14 +27,15 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("CustomizationBuy", false),
-            new HandledRoute("CustomizationSet", false)
+            new("CustomizationBuy", false),
+            new("CustomizationSet", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {

@@ -140,7 +140,7 @@ public record Dynamic
 
     [JsonPropertyName("_currencies")]
     public string? CurrenciesDescription { get; set; }
-    
+
     [JsonPropertyName("currencies")]
     /** Percentages to sell offers in each currency */
     public Dictionary<string, double> Currencies { get; set; }
@@ -358,7 +358,7 @@ public record UnreasonableModPrices
     /// </summary>
     [JsonPropertyName("newPriceHandbookMultiplier")]
     public int NewPriceHandbookMultiplier { get; set; }
-    
+
     [JsonPropertyName("itemType")]
     public string ItemType { get; set; }
 }
@@ -397,7 +397,7 @@ public record TieredFlea
 
     [JsonPropertyName("ammoTplUnlocks")]
     public Dictionary<string, int>? AmmoTplUnlocks { get; set; }
-    
+
     [JsonPropertyName("ammoTiersEnabled")]
     public bool AmmoTiersEnabled { get; set; }
 }

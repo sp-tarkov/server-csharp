@@ -11,7 +11,7 @@ namespace Core.Routers.Static;
 public class NotifierStaticRouter : StaticRouter
 {
     protected static NotifierCallbacks _notifierCallbacks;
-    
+
     public NotifierStaticRouter(
         JsonUtil jsonUtil,
         NotifierCallbacks notifierCallbacks
@@ -21,20 +21,22 @@ public class NotifierStaticRouter : StaticRouter
             new RouteAction(
                 "/client/notifier/channel/create",
                 (
-                    url, 
-                    info, 
-                    sessionID, 
+                    url,
+                    info,
+                    sessionID,
                     output
-                ) => _notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)),
+                ) => _notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/game/profile/select",
                 (
-                    url, 
-                    info, 
-                    sessionID, 
+                    url,
+                    info,
+                    sessionID,
                     output
                 ) => _notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID),
-                typeof(UIDRequestData)),
+                typeof(UIDRequestData)
+            )
         ]
     )
     {

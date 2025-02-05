@@ -18,6 +18,17 @@ public class DialogueCallbacks(
 )
     : OnUpdate
 {
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        _dialogueController.Update();
+        return true;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-dialogue";
+    }
+
     /// <summary>
     /// Handle client/friend/list
     /// </summary>
@@ -41,7 +52,7 @@ public class DialogueCallbacks(
     {
         var chatServer = new List<ChatServer>
         {
-            new ChatServer
+            new()
             {
                 Id = _hashUtil.Generate(),
                 RegistrationId = 20,
@@ -51,7 +62,7 @@ public class DialogueCallbacks(
                 VersionId = "bgkidft87ddd",
                 Ip = "",
                 Port = 0,
-                Chats = [ new Chat { Id = "0", Members = 0 } ],
+                Chats = [new Chat { Id = "0", Members = 0 }]
             }
         };
 
@@ -314,16 +325,5 @@ public class DialogueCallbacks(
     public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
-    }
-
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        _dialogueController.Update();
-        return true;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-dialogue";
     }
 }

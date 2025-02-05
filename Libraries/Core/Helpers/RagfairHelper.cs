@@ -23,7 +23,7 @@ public class RagfairHelper(
 )
 {
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    
+
     /**
      * Gets currency TAG from TPL
      * @param {string} currency
@@ -31,7 +31,8 @@ public class RagfairHelper(
      */
     public string GetCurrencyTag(string currency)
     {
-        switch (currency) {
+        switch (currency)
+        {
             case Money.EUROS:
                 return "EUR";
             case Money.DOLLARS:
@@ -50,25 +51,24 @@ public class RagfairHelper(
         var result = new List<string>();
 
         // Case: weapon builds
-        if (request.BuildCount > 0) {
-            return request.BuildItems.Keys.ToList();
-        }
+        if (request.BuildCount > 0) return request.BuildItems.Keys.ToList();
 
         // Case: search
-        if (!string.IsNullOrEmpty(request.LinkedSearchId)) {
+        if (!string.IsNullOrEmpty(request.LinkedSearchId))
+        {
             var data = ragfairLinkedItemService.GetLinkedItems(request.LinkedSearchId);
             result = data == null ? [] : [..data];
         }
 
         // Case: category
-        if (!string.IsNullOrEmpty(request.HandbookId)) {
+        if (!string.IsNullOrEmpty(request.HandbookId))
+        {
             var handbook = GetCategoryList(request.HandbookId);
 
-            if (result.Count != null && result.Count > 0) {
+            if (result.Count != null && result.Count > 0)
                 result = utilityHelper.ArrayIntersect(result, handbook);
-            } else {
+            else
                 result = handbook;
-            }
         }
 
         return result;
@@ -78,11 +78,9 @@ public class RagfairHelper(
     {
         var result = new Dictionary<string, TraderAssort>();
 
-        foreach (var traderID in databaseService.GetTraders().Keys) {
-            if (ragfairConfig.Traders.ContainsKey(traderID)) {
+        foreach (var traderID in databaseService.GetTraders().Keys)
+            if (ragfairConfig.Traders.ContainsKey(traderID))
                 result[traderID] = traderAssortHelper.GetAssort(sessionID, traderID, true);
-            }
-        }
 
         return result;
     }
@@ -92,24 +90,22 @@ public class RagfairHelper(
         var result = new List<string>();
 
         // if its "mods" great-parent category, do double recursive loop
-        if (handbookId == "5b5f71a686f77447ed5636ab") {
-            foreach (var categ in handbookHelper.ChildrenCategories(handbookId)) {
-                foreach (var subcateg in handbookHelper.ChildrenCategories(categ)) {
-                    result = [..result, ..handbookHelper.TemplatesWithParent(subcateg)];
-                }
-            }
+        if (handbookId == "5b5f71a686f77447ed5636ab")
+        {
+            foreach (var categ in handbookHelper.ChildrenCategories(handbookId))
+            foreach (var subcateg in handbookHelper.ChildrenCategories(categ))
+                result = [..result, ..handbookHelper.TemplatesWithParent(subcateg)];
 
             return result;
         }
 
         // item is in any other category
-        if (handbookHelper.IsCategory(handbookId)) {
+        if (handbookHelper.IsCategory(handbookId))
+        {
             // list all item of the category
             result = handbookHelper.TemplatesWithParent(handbookId);
 
-            foreach (var categ in handbookHelper.ChildrenCategories(handbookId)) {
-                result = [..result, ..handbookHelper.TemplatesWithParent(categ)];
-            }
+            foreach (var categ in handbookHelper.ChildrenCategories(handbookId)) result = [..result, ..handbookHelper.TemplatesWithParent(categ)];
 
             return result;
         }
@@ -128,19 +124,26 @@ public class RagfairHelper(
         var list = new List<Item>();
         Item rootItem = null;
 
-        foreach (var item in items) {
+        foreach (var item in items)
+        {
             var itemFixed = itemHelper.FixItemStackCount(item);
 
             var isChild = items.Any(it => it.Id == itemFixed.ParentId);
-            if (!isChild) {
-                if (rootItem == null) {
+            if (!isChild)
+            {
+                if (rootItem == null)
+                {
                     rootItem = cloner.Clone(itemFixed);
                     rootItem.Upd.OriginalStackObjectsCount = rootItem.Upd.StackObjectsCount;
-                } else {
+                }
+                else
+                {
                     rootItem.Upd.StackObjectsCount += itemFixed.Upd.StackObjectsCount;
                     list.Add(itemFixed);
                 }
-            } else {
+            }
+            else
+            {
                 list.Add(itemFixed);
             }
         }

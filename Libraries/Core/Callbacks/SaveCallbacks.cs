@@ -12,7 +12,7 @@ public class SaveCallbacks(
     SaveServer _saveServer,
     ConfigServer _configServer,
     BackupService _backupService
-    )
+)
     : OnLoad, OnUpdate
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
@@ -21,6 +21,11 @@ public class SaveCallbacks(
     {
         _backupService.StartBackupSystem();
         _saveServer.Load();
+    }
+
+    public string GetRoute()
+    {
+        return "spt-save";
     }
 
     public bool OnUpdate(long secondsSinceLastRun)
@@ -32,10 +37,5 @@ public class SaveCallbacks(
         }
 
         return false;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-save";
     }
 }

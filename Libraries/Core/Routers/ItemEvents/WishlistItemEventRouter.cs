@@ -23,15 +23,16 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("AddToWishList", false),
-            new HandledRoute("RemoveFromWishList", false),
-            new HandledRoute("ChangeWishlistItemCategory", false)
+            new("AddToWishList", false),
+            new("RemoveFromWishList", false),
+            new("ChangeWishlistItemCategory", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {

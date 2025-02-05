@@ -24,7 +24,7 @@ public class MapMarkerService(
         var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault((i) => i?.Id == request?.Item);
 
         // add marker to map item
-        mapItem.Upd.Map = mapItem?.Upd?.Map ?? new() { Markers = new() };
+        mapItem.Upd.Map = mapItem?.Upd?.Map ?? new UpdMap { Markers = new List<MapMarker>() };
 
         // Update request note with text, then add to maps upd
         request.MapMarker.Note = SanitiseMapMarkerText(request.MapMarker.Note);
@@ -72,7 +72,7 @@ public class MapMarkerService(
             _logger.Warning($"No marker found for item {request.Item}");
             return null;
         }
-        
+
         request.MapMarker.Note = SanitiseMapMarkerText(request.MapMarker.Note);
         mapItem.Upd.Map.Markers.Remove(markerToRemove);
         mapItem.Upd.Map.Markers.Add(request.MapMarker);

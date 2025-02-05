@@ -24,16 +24,8 @@ public class SptDialogueChatBot(
 {
     protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
 
-    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
-    {
-        var chatMessageHandlers = components.ToList();
-        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
-
-        return chatMessageHandlers;
-    }
-
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-    
+
 
     public UserDialogInfo GetChatBot()
     {
@@ -57,12 +49,9 @@ public class SptDialogueChatBot(
         var sender = _profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
 
-        if (request.Text?.ToLower() == "help")
-        {
-            return SendPlayerHelpMessage(sessionId, request);
-        }
+        if (request.Text?.ToLower() == "help") return SendPlayerHelpMessage(sessionId, request);
 
-        
+
         var handler = _chatMessageHandlers.FirstOrDefault((v) => v.CanHandle(request.Text));
         if (handler is not null)
         {
@@ -70,7 +59,7 @@ public class SptDialogueChatBot(
 
             return request.DialogId;
         }
-            
+
 
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
@@ -81,6 +70,14 @@ public class SptDialogueChatBot(
         );
 
         return request.DialogId;
+    }
+
+    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
+    {
+        var chatMessageHandlers = components.ToList();
+        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
+
+        return chatMessageHandlers;
     }
 
     private string GetUnrecognizedCommandMessage()
@@ -115,7 +112,6 @@ public class SptDialogueChatBot(
                         () =>
                         {
                             foreach (var subCommand in chatCommand.GetCommands())
-                            {
                                 _mailSendService.SendUserMessageToPlayer(
                                     sessionId,
                                     GetChatBot(),
@@ -123,7 +119,6 @@ public class SptDialogueChatBot(
                                     [],
                                     null
                                 );
-                            }
                         },
                         TimeSpan.FromSeconds(1)
                     );

@@ -107,10 +107,7 @@ public class QuestController(
             acceptedQuest.QuestId,
             sessionID
         );
-        if (newlyAccessibleQuests.Count > 0)
-        {
-            acceptQuestResponse.ProfileChanges[sessionID].Quests.AddRange(newlyAccessibleQuests);
-        }
+        if (newlyAccessibleQuests.Count > 0) acceptQuestResponse.ProfileChanges[sessionID].Quests.AddRange(newlyAccessibleQuests);
 
         return acceptQuestResponse;
     }
@@ -120,11 +117,9 @@ public class QuestController(
         foreach (var condition in questConditions)
         {
             if (pmcData.TaskConditionCounters.TryGetValue(condition.Id, out var counter))
-            {
                 _logger.Error(
                     $"Unable to add new task condition counter: {condition.ConditionType} for qeust: {questId} to profile: {pmcData.SessionId} as it already exists:"
                 );
-            }
 
             switch (condition.ConditionType)
             {
@@ -134,7 +129,7 @@ public class QuestController(
                         Id = condition.Id,
                         SourceId = questId,
                         Type = condition.ConditionType,
-                        Value = 0,
+                        Value = 0
                     };
                     break;
             }
@@ -186,10 +181,7 @@ public class QuestController(
             var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == acceptedQuest.QuestId);
             if (matchingQuest is not null)
             {
-                if(_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
                 matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
 
                 return matchingQuest;
@@ -217,7 +209,6 @@ public class QuestController(
         // Decrement number of items handed in
         QuestCondition? handoverRequirements = null;
         foreach (var condition in quest.Conditions.AvailableForFinish)
-        {
             if (condition.Id == handoverQuestRequest.ConditionId && handoverQuestTypes.Contains(condition.ConditionType))
             {
                 handedInCount = int.Parse(condition.Value.ToString());
@@ -249,19 +240,14 @@ public class QuestController(
                     break;
                 }
             }
-        }
 
-        if (isItemHandoverQuest && handedInCount == 0)
-        {
-            return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
-        }
+        if (isItemHandoverQuest && handedInCount == 0) return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
 
         var totalItemCountToRemove = 0d;
         foreach (var itemHandover in handoverQuestRequest.Items)
         {
             var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
             if (!(matchingItemInProfile is not null && handoverRequirements.Target.List.Contains(matchingItemInProfile.Template)))
-            {
                 // Item handed in by player doesnt match what was requested
                 return ShowQuestItemHandoverMatchError(
                     handoverQuestRequest,
@@ -269,7 +255,6 @@ public class QuestController(
                     handoverRequirements,
                     output
                 );
-            }
 
             // Remove the right quantity of given items
             var itemCountToRemove = Math.Min(itemHandover.Count ?? 0, handedInCount - totalItemCountToRemove);
@@ -284,10 +269,7 @@ public class QuestController(
                     sessionID,
                     output
                 );
-                if (totalItemCountToRemove == handedInCount)
-                {
-                    break;
-                }
+                if (totalItemCountToRemove == handedInCount) break;
             }
             else
             {
@@ -306,13 +288,12 @@ public class QuestController(
 
                 // Important: loop backward when removing items from the array we're looping on
                 while (index-- > 0)
-                {
                     if (toRemove.Contains(pmcData.Inventory.Items[index].Id))
                     {
                         var removedItem = _cloner.Clone(pmcData.Inventory.Items[index]);
                         pmcData.Inventory.Items.RemoveAt(index);
-                        // Remove the item
 
+                        // Remove the item
                         // If the removed item has a numeric `location` property, re-calculate all the child
                         // element `location` properties of the parent so they are sequential, while retaining order
                         if (removedItem.Location.GetType() == typeof(int))
@@ -324,15 +305,11 @@ public class QuestController(
                             childItems.RemoveAt(0); // Remove the parent
 
                             // Sort by the current `location` and update
-                            childItems.Sort((a, b) => (((int)a.Location) > ((int)b.Location) ? 1 : -1));
+                            childItems.Sort((a, b) => (int)a.Location > (int)b.Location ? 1 : -1);
 
-                            for (int i = 0; i < childItems.Count; i++)
-                            {
-                                childItems[i].Location = i;
-                            }
+                            for (var i = 0; i < childItems.Count; i++) childItems[i].Location = i;
                         }
                     }
-                }
             }
         }
 
@@ -370,7 +347,7 @@ public class QuestController(
             {
                 questId = handoverQuestRequest.QuestId,
                 handedInTpl = itemHandedOver?.Template ?? "UNKNOWN",
-                requiredTpl = handoverRequirements.Target.List.FirstOrDefault(),
+                requiredTpl = handoverRequirements.Target.List.FirstOrDefault()
             }
         );
         _logger.Error(errorMessage);
@@ -392,7 +369,7 @@ public class QuestController(
             Id = conditionId,
             SourceId = questId,
             Type = "HandoverItem",
-            Value = counterValue,
+            Value = counterValue
         };
     }
 

@@ -1,10 +1,9 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum ItemDropSoundType
 {
-    public enum ItemDropSoundType
-    {
-        None,
-        Pistol,
-        SubMachineGun,
-        Rifle
-    }
+    None,
+    Pistol,
+    SubMachineGun,
+    Rifle
 }

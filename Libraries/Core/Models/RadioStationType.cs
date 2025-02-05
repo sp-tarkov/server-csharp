@@ -1,17 +1,16 @@
-namespace Core.Models
+namespace Core.Models;
+
+public enum RadioStationType
 {
-    public enum RadioStationType
-    {
-        None,
-        Christmas,
-        RunddansEvent,
-        HipHop,
-        Acoustic,
-        EDM,
-        Rock,
-        LoFi,
-        Metal,
-        Punk,
-        Pop
-    }
+    None,
+    Christmas,
+    RunddansEvent,
+    HipHop,
+    Acoustic,
+    EDM,
+    Rock,
+    LoFi,
+    Metal,
+    Punk,
+    Pop
 }

@@ -1,5 +1,6 @@
 using SptCommon.Annotations;
 using Core.Helpers;
+using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Dialog;
@@ -66,34 +67,25 @@ public class GiftService(
     public GiftSentResult SendGiftToPlayer(string playerId, string giftId)
     {
         var giftData = GetGiftById(giftId);
-        if (giftData is null)
-        {
-            return GiftSentResult.FAILED_GIFT_DOESNT_EXIST;
-        }
+        if (giftData is null) return GiftSentResult.FAILED_GIFT_DOESNT_EXIST;
 
         var maxGiftsToSendCount = giftData.MaxToSendPlayer ?? 1;
 
         if (_profileHelper.PlayerHasRecievedMaxNumberOfGift(playerId, giftId, maxGiftsToSendCount))
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Player already received gift: {giftId}");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Player already received gift: {giftId}");
 
             return GiftSentResult.FAILED_GIFT_ALREADY_RECEIVED;
         }
 
         if (giftData.Items?.Count > 0 && giftData.CollectionTimeHours is not null)
-        {
             _logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
-        }
 
         // Handle system messsages
         if (giftData.Sender == GiftSenderType.System)
         {
             // Has a localisable text id to send to player
             if (giftData.LocaleTextId is not null)
-            {
                 _mailSendService.SendLocalisedSystemMessageToPlayer(
                     playerId,
                     giftData.LocaleTextId,
@@ -101,9 +93,7 @@ public class GiftService(
                     giftData.ProfileChangeEvents,
                     _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1)
                 );
-            }
             else
-            {
                 _mailSendService.SendSystemMessageToPlayer(
                     playerId,
                     giftData.MessageText,
@@ -111,7 +101,6 @@ public class GiftService(
                     _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 1),
                     giftData.ProfileChangeEvents
                 );
-            }
         }
         // Handle user messages
         else if (giftData.Sender == GiftSenderType.User)
@@ -127,7 +116,6 @@ public class GiftService(
         else if (giftData.Sender == GiftSenderType.Trader)
         {
             if (giftData.LocaleTextId is not null)
-            {
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     playerId,
                     giftData.Trader,
@@ -138,9 +126,7 @@ public class GiftService(
                     null,
                     null
                 );
-            }
             else
-            {
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     playerId,
                     giftData.Trader,
@@ -151,7 +137,6 @@ public class GiftService(
                     null,
                     null
                 );
-            }
         }
         else
         {
@@ -161,21 +146,18 @@ public class GiftService(
             {
                 RecipientId = playerId,
                 Sender = GetMessageType(giftData),
-                SenderDetails = new()
+                SenderDetails = new UserDialogInfo
                 {
                     Id = GetSenderId(giftData),
                     Aid = 1234567, // TODO - pass proper aid value
-                    Info = null,
+                    Info = null
                 },
                 MessageText = giftData.MessageText,
                 Items = giftData.Items,
-                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0),
+                ItemsMaxStorageLifetimeSeconds = _timeUtil.GetHoursAsSeconds(giftData.CollectionTimeHours ?? 0)
             };
 
-            if (giftData.Trader is not null)
-            {
-                details.Trader = giftData.Trader;
-            }
+            if (giftData.Trader is not null) details.Trader = giftData.Trader;
 
             _mailSendService.SendMessageToPlayer(details);
         }
@@ -192,15 +174,9 @@ public class GiftService(
      */
     private string? GetSenderId(Gift giftData)
     {
-        if (giftData.Sender == GiftSenderType.Trader)
-        {
-            return Enum.GetName(typeof(GiftSenderType), giftData.Sender);
-        }
+        if (giftData.Sender == GiftSenderType.Trader) return Enum.GetName(typeof(GiftSenderType), giftData.Sender);
 
-        if (giftData.Sender == GiftSenderType.User)
-        {
-            return giftData.Sender.ToString();
-        }
+        if (giftData.Sender == GiftSenderType.User) return giftData.Sender.ToString();
 
         return null;
     }
@@ -241,12 +217,8 @@ public class GiftService(
         };
 
         if (giftId is not null)
-        {
             if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, 1))
-            {
                 SendGiftToPlayer(sessionId, giftId);
-            }
-        }
     }
 
     /**
@@ -257,9 +229,6 @@ public class GiftService(
      */
     public void SendGiftWithSilentReceivedCheck(string giftId, string? sessionId, int giftCount)
     {
-        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, giftCount))
-        {
-            SendGiftToPlayer(sessionId, giftId);
-        }
+        if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, giftCount)) SendGiftToPlayer(sessionId, giftId);
     }
 }

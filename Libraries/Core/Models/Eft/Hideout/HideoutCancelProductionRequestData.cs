@@ -7,7 +7,7 @@ public record HideoutCancelProductionRequestData : BaseInteractionRequestData
 {
     [JsonPropertyName("recipeId")]
     public string? RecipeId { get; set; }
-    
+
     [JsonPropertyName("timestamp")]
     public long? Timestamp { get; set; }
 }

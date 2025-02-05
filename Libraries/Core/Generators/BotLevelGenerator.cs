@@ -27,30 +27,21 @@ public class BotLevelGenerator(
     /// <returns>IRandomisedBotLevelResult object</returns>
     public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
-        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
-        {
-            return new RandomisedBotLevelResult { Exp = 0, Level = 1 };
-        }
+        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false)) return new RandomisedBotLevelResult { Exp = 0, Level = 1 };
 
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
 
         // Get random level based on the exp table.
-        int exp = 0;
+        var exp = 0;
         var level = int.Parse(
             ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
                 .ToString()
         ); // TODO - nasty double to string to int conversion
-        for (var i = 0; i < level; i++)
-        {
-            exp += expTable[i].Experience.Value;
-        }
+        for (var i = 0; i < level; i++) exp += expTable[i].Experience.Value;
 
         // Sprinkle in some random exp within the level, unless we are at max level.
-        if (level < expTable.Length - 1)
-        {
-            exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
-        }
+        if (level < expTable.Length - 1) exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
 
         return new RandomisedBotLevelResult { Level = level, Exp = exp };
     }

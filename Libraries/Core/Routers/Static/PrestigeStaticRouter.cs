@@ -25,7 +25,8 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)),
+                ) => _presetCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/prestige/obtain",
                 (
@@ -33,8 +34,9 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID)
-                , typeof(ObtainPrestigeRequestList))
+                ) => _presetCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
+                typeof(ObtainPrestigeRequestList)
+            )
         ]
     )
     {

@@ -6,7 +6,6 @@ namespace Core.Models.Eft.Hideout;
 
 public record HideoutCustomizationApplyRequestData : InventoryBaseActionRequestData
 {
-
     /// <summary>
     /// Id of the newly picked item to apply to hideout
     /// </summary>

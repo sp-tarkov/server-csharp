@@ -13,15 +13,14 @@ public class RagfairOfferHolder(
     HashUtil hashUtil,
     ConfigServer configServer)
 {
-    
+    protected int _maxOffersPerTemplate = (int)configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected Dictionary<string, RagfairOffer> _offersById = new();
     protected object _offersByIdLock = new();
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTemplate = new();
     protected object _offersByTemplateLock = new();
     protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTrader = new();
     protected object _offersByTraderLock = new();
-    protected int _maxOffersPerTemplate = (int) configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
-    
+
     public RagfairOffer? GetOfferById(string id)
     {
         lock (_offersByIdLock)
@@ -42,10 +41,7 @@ public class RagfairOfferHolder(
     {
         lock (_offersByTraderLock)
         {
-            if (_offersByTrader.ContainsKey(traderId))
-            {
-                return _offersByTrader[traderId].Values.ToList();
-            }
+            if (_offersByTrader.ContainsKey(traderId)) return _offersByTrader[traderId].Values.ToList();
         }
 
         return null;
@@ -55,10 +51,7 @@ public class RagfairOfferHolder(
     {
         lock (_offersByIdLock)
         {
-            if (_offersById.Count > 0)
-            {
-                return _offersById.Values.ToList();
-            }
+            if (_offersById.Count > 0) return _offersById.Values.ToList();
         }
 
         return [];
@@ -77,7 +70,7 @@ public class RagfairOfferHolder(
             // keep generating IDs until we get a new one
             while (_offersById.ContainsKey(offer.Id))
                 offer.Id = hashUtil.Generate();
-            
+
             var offerId = offer.Id;
             var itemTpl = offer.Items.FirstOrDefault().Template;
             // If its an NPC PMC offer AND we have already reached the maximum amount of possible offers
@@ -85,10 +78,8 @@ public class RagfairOfferHolder(
             if (!(ragfairServerHelper.IsTrader(trader) || profileHelper.IsPlayer(trader)) &&
                 (GetOffersByTemplate(itemTpl)?.Count ?? 0) >= _maxOffersPerTemplate
                )
-            {
                 return;
-            }
-            
+
             _offersById.Add(offerId, offer);
             AddOfferByTrader(trader, offer);
             AddOfferByTemplates(itemTpl, offer);
@@ -115,19 +106,13 @@ public class RagfairOfferHolder(
                         // the user ID from the cached offers after they dont have anything else
                         // on the flea placed. We regenerate the ID for the NPC users, making it
                         // continuously grow otherwise
-                        if (_offersByTrader[offer.User.Id].Count == 0)
-                        {
-                            _offersByTrader.Remove(offer.User.Id);
-                        }
+                        if (_offersByTrader[offer.User.Id].Count == 0) _offersByTrader.Remove(offer.User.Id);
                     }
                 }
 
                 lock (_offersByTemplateLock)
                 {
-                    if (_offersByTemplate.ContainsKey(offer.Items.FirstOrDefault().Template))
-                    {
-                        _offersByTemplate[offer.Items[0].Template].Remove(offer.Id);
-                    }
+                    if (_offersByTemplate.ContainsKey(offer.Items.FirstOrDefault().Template)) _offersByTemplate[offer.Items[0].Template].Remove(offer.Id);
                 }
             }
         }
@@ -142,10 +127,7 @@ public class RagfairOfferHolder(
     {
         lock (_offersByTraderLock)
         {
-            if (_offersByTrader.ContainsKey(traderId))
-            {
-                RemoveOffers(_offersByTrader[traderId].Values.ToList());
-            }
+            if (_offersByTrader.ContainsKey(traderId)) RemoveOffers(_offersByTrader[traderId].Values.ToList());
         }
     }
 
@@ -193,10 +175,7 @@ public class RagfairOfferHolder(
 
     protected bool IsStale(RagfairOffer? offer, long time)
     {
-        if (offer is null)
-        {
-            return false;
-        }
+        if (offer is null) return false;
 
         return offer.EndTime < time || (offer.Items.FirstOrDefault().Upd?.StackObjectsCount ?? 0) < 1;
     }

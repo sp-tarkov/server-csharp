@@ -16,9 +16,7 @@ public class SecureContainerHelper(ItemHelper _itemHelper)
         var secureContainer = items.First((x) => x.SlotId == "SecuredContainer");
 
         // No container found, drop out
-        if (secureContainer is null) {
-            return [];
-        }
+        if (secureContainer is null) return [];
 
         var itemsInSecureContainer = _itemHelper.FindAndReturnChildrenByItems(items, secureContainer.Id);
 

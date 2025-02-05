@@ -23,15 +23,16 @@ public class NoteItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("AddNote", false),
-            new HandledRoute("EditNote", false),
-            new HandledRoute("DeleteNote", false)
+            new("AddNote", false),
+            new("EditNote", false),
+            new("DeleteNote", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
         switch (url)
         {

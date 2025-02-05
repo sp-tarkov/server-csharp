@@ -22,17 +22,23 @@ public class SptWebSocketConnectionHandler(
     IEnumerable<ISptWebSocketMessageHandler> _messageHandlers
 ) : IWebSocketConnectionHandler
 {
+    protected WsPing _defaultNotification = new();
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
+    protected Lock _lockObject = new();
+    protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
+    protected Dictionary<string, Timer> _socketAliveTimers = new();
 
     protected Dictionary<string, WebSocket> _sockets = new();
-    protected Dictionary<string, Timer> _socketAliveTimers = new();
-    protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
-    protected Lock _lockObject = new();
 
-    protected WsPing _defaultNotification = new();
+    public string GetHookUrl()
+    {
+        return "/notifierServer/getwebsocket/";
+    }
 
-    public string GetHookUrl() => "/notifierServer/getwebsocket/";
-    public string GetSocketId() => "SPT WebSocket Handler";
+    public string GetSocketId()
+    {
+        return "SPT WebSocket Handler";
+    }
 
     public Task OnConnection(WebSocket ws, HttpContext context)
     {
@@ -50,15 +56,12 @@ public class SptWebSocketConnectionHandler(
 
                 lock (_lockObject)
                 {
-                    _receiveTasks.Add(sessionID, new());
+                    _receiveTasks.Add(sessionID, new CancellationTokenSource());
                     var cancelToken = _receiveTasks[sessionID].Token;
                     Task.Factory.StartNew(_ => ReceiveTask(sessionID, ws, cancelToken), null, cancelToken);
                 }
 
-                while (ws.State == WebSocketState.Open)
-                {
-                    Thread.Sleep(1000);
-                }
+                while (ws.State == WebSocketState.Open) Thread.Sleep(1000);
 
                 // Once the websocket dies, we dispose of it
                 //_logger.Debug(_localisationService.GetText("websocket-socket_lost_deleting_handle"));
@@ -70,6 +73,7 @@ public class SptWebSocketConnectionHandler(
                         timer.Change(Timeout.Infinite, Timeout.Infinite);
                         _socketAliveTimers.Remove(sessionID);
                     }
+
                     if (_sockets.ContainsKey(sessionID))
                         _sockets.Remove(sessionID);
                     if (_receiveTasks.TryGetValue(sessionID, out var receiveTask))
@@ -77,25 +81,6 @@ public class SptWebSocketConnectionHandler(
                 }
             }
         );
-    }
-
-    private void TimedTask(WebSocket ws, string sessionID)
-    {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
-        }
-
-        if (ws.State == WebSocketState.Open)
-        {
-            var sendTask = ws.SendAsync(
-                Encoding.UTF8.GetBytes(_jsonUtil.Serialize(_defaultNotification)),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None
-            );
-            sendTask.Wait();
-        }
     }
 
     public void SendMessage(string sessionID, WsNotificationEvent output)
@@ -113,17 +98,11 @@ public class SptWebSocketConnectionHandler(
                     CancellationToken.None
                 );
                 sendTask.Wait();
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(_localisationService.GetText("websocket-message_sent"));
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(_localisationService.GetText("websocket-message_sent"));
             }
             else
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(_localisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(_localisationService.GetText("websocket-not_ready_message_not_sent", sessionID));
             }
         }
         catch (Exception err)
@@ -132,11 +111,31 @@ public class SptWebSocketConnectionHandler(
         }
     }
 
+    public bool IsWebSocketConnected(string sessionID)
+    {
+        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
+    }
+
+    private void TimedTask(WebSocket ws, string sessionID)
+    {
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
+
+        if (ws.State == WebSocketState.Open)
+        {
+            var sendTask = ws.SendAsync(
+                Encoding.UTF8.GetBytes(_jsonUtil.Serialize(_defaultNotification)),
+                WebSocketMessageType.Text,
+                true,
+                CancellationToken.None
+            );
+            sendTask.Wait();
+        }
+    }
+
     private void ReceiveTask(string sessionID, WebSocket ws, CancellationToken cancelToken)
     {
         List<byte> readBytes = new();
         while (ws.State == WebSocketState.Open)
-        {
             try
             {
                 if (cancelToken.IsCancellationRequested)
@@ -151,16 +150,13 @@ public class SptWebSocketConnectionHandler(
                     isEndOfMessage = readTask.Result.EndOfMessage;
                 }
 
-                foreach (var sptWebSocketMessageHandler in _messageHandlers)
-                {
-                    sptWebSocketMessageHandler.OnSptMessage(sessionID, ws, readBytes.ToArray()).Wait();
-                }
+                foreach (var sptWebSocketMessageHandler in _messageHandlers) sptWebSocketMessageHandler.OnSptMessage(sessionID, ws, readBytes.ToArray()).Wait();
             }
             catch (OperationCanceledException _)
             {
                 _logger.Info("WebSocket disconnecting, receive task finalized...");
             }
-            catch(Exception _)
+            catch (Exception _)
             {
                 lock (_lockObject)
                 {
@@ -171,19 +167,13 @@ public class SptWebSocketConnectionHandler(
                     var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
                     _logger.Info($"[ws] player: {playerInfoText} has disconnected");
                 }
-                
+
                 ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed connection", CancellationToken.None);
             }
             finally
             {
                 readBytes.Clear();
             }
-        }
-    }
-
-    public bool IsWebSocketConnected(string sessionID)
-    {
-        return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
     }
 
     public WebSocket GetSessionWebSocket(string sessionID)

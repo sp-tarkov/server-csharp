@@ -44,13 +44,13 @@ public record HideoutItem
 {
     [JsonPropertyName("id")]
     public string? Id { get; set; }
-    
+
     [JsonPropertyName("_tpl")]
     public string? Template { get; set; }
-    
+
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
-    
+
     [JsonPropertyName("count")]
     public double? Count { get; set; }
 
@@ -60,7 +60,7 @@ public record HideoutItem
         {
             Id = Id,
             Template = Template,
-            Upd = Upd,
+            Upd = Upd
         };
     }
 }
@@ -184,7 +184,7 @@ public record UpdFaceShield
 {
     [JsonPropertyName("Hits")]
     public int? Hits { get; set; }
-    
+
     [JsonPropertyName("HitSeed")]
     public int? HitSeed { get; set; }
 }
@@ -220,7 +220,7 @@ public record UpdSight
 
     [JsonPropertyName("SelectedScope")]
     public int? SelectedScope { get; set; }
-    
+
     public double? ScopeZoomValue { get; set; }
 }
 

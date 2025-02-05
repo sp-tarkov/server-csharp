@@ -14,10 +14,7 @@ public class PostDBModLoader(
     public async Task OnLoad()
     {
         _logger.Info("Loading PostDBLoadMod...");
-        foreach (var postDbLoadMod in _postDbLoadMods)
-        {
-            postDbLoadMod.PostDBLoad();
-        }
+        foreach (var postDbLoadMod in _postDbLoadMods) postDbLoadMod.PostDBLoad();
 
         _logger.Info("Finished loading PostDBLoadMod...");
     }

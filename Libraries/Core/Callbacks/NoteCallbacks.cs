@@ -9,7 +9,6 @@ namespace Core.Callbacks;
 [Injectable]
 public class NoteCallbacks(NoteController _noteController)
 {
-
     /// <summary>
     /// Handle AddNote event
     /// </summary>

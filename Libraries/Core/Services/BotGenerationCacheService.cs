@@ -9,13 +9,13 @@ namespace Core.Services;
 public class BotGenerationCacheService(
     ISptLogger<BotGenerationCacheService> _logger,
     LocalisationService _localisationService
-    )
+)
 {
-    protected Dictionary<string, List<BotBase>> _storedBots = new();
     protected Queue<BotBase> _activeBotsInRaid = [];
     protected object _lock = new();
-    
-    
+    protected Dictionary<string, List<BotBase>> _storedBots = new();
+
+
     /**
      * Store list of bots in cache, shuffle results before storage
      * @param botsToStore Bots we want to store in the cache
@@ -25,12 +25,8 @@ public class BotGenerationCacheService(
         lock (_lock)
         {
             foreach (var bot in botsToStore)
-            {
                 if (!_storedBots.TryAdd(key, [bot]))
-                {
                     _storedBots[key].Add(bot);
-                }
-            }
         }
     }
 
@@ -45,9 +41,7 @@ public class BotGenerationCacheService(
         lock (_lock)
         {
             if (_storedBots.TryGetValue(key, out var bots))
-            {
                 if (bots.Count > 0)
-                {
                     try
                     {
                         return bots.PopLast();
@@ -56,8 +50,6 @@ public class BotGenerationCacheService(
                     {
                         _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
                     }
-                }
-            }
         }
 
         _logger.Error(_localisationService.GetText("bot-no_bot_type_in_cache", key));

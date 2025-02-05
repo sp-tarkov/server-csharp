@@ -21,8 +21,8 @@ public class BotNameService(
 )
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected HashSet<string> _usedNameCache = new HashSet<string>();
     protected object _lock = new();
+    protected HashSet<string> _usedNameCache = new();
 
     /// <summary>
     /// Clear out any entries in Name Set
@@ -56,17 +56,14 @@ public class BotNameService(
         while (attempts <= 5)
         {
             // Get bot name with leading/trailing whitespace removed
-            var name = (isPmc.GetValueOrDefault(false)) // Explicit handling of PMCs, all other bots will get "first_name last_name"
+            var name = isPmc.GetValueOrDefault(false) // Explicit handling of PMCs, all other bots will get "first_name last_name"
                 ? _botHelper.GetPmcNicknameOfMaxLength(_botConfig.BotNameLengthLimit, botGenerationDetails.Side)
                 : $"{_randomUtil.GetArrayValue(botJsonTemplate.FirstNames)} {(botJsonTemplate.LastNames.Count > 0 ? _randomUtil.GetArrayValue(botJsonTemplate.LastNames) : "")}";
 
             name = name.Trim();
 
             // Config is set to add role to end of bot name
-            if (showTypeInNickname)
-            {
-                name += $" {botRole}";
-            }
+            if (showTypeInNickname) name += $" {botRole}";
 
             // Replace pmc bot names with player name + prefix
             if (botGenerationDetails.IsPmc.GetValueOrDefault(false) && botGenerationDetails.AllPmcsHaveSameNameAsPlayer.GetValueOrDefault(false))
@@ -77,7 +74,6 @@ public class BotNameService(
 
             // Is this a role that must be unique
             if (roleShouldBeUnique.GetValueOrDefault(false))
-            {
                 // Check name in cache
                 if (CacheContainsName(name))
                 {
@@ -87,9 +83,7 @@ public class BotNameService(
                         // 5 attempts to generate a name, pool probably isn't big enough
                         var genericName = $"{botGenerationDetails.Side} {_randomUtil.GetInt(100000, 999999)}";
                         if (_logger.IsLogEnabled(LogLevel.Debug))
-                        {
                             _logger.Debug($"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}");
-                        }
 
                         return genericName;
                     }
@@ -99,7 +93,6 @@ public class BotNameService(
                     // Try again
                     continue;
                 }
-            }
 
             // Add bot name to cache to prevent being used again
             AddNameToCache(name);

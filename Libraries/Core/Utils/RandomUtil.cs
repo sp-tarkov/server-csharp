@@ -10,15 +10,16 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 {
-    public readonly Random Random = new();
     private const int DecimalPointRandomPrecision = 6;
-    private static readonly int DecimalPointRandomPrecisionMultiplier = (int) Math.Pow(10, DecimalPointRandomPrecision);
 
     /// <summary>
     /// The IEEE-754 standard for double-precision floating-point numbers limits the number of digits (including both
     /// integer + fractional parts) to about 15–17 significant digits. 15 is a safe upper bound, so we'll use that.
     /// </summary>
     public const int MaxSignificantDigits = 15;
+
+    private static readonly int DecimalPointRandomPrecisionMultiplier = (int)Math.Pow(10, DecimalPointRandomPrecision);
+    public readonly Random Random = new();
 
     /// <summary>
     /// Generates a random integer between the specified minimum and maximum values, inclusive.
@@ -30,14 +31,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     public int GetInt(int min, int max = int.MaxValue, bool exclusive = false)
     {
         // Prevents a potential integer overflow.
-        if (exclusive && max == int.MaxValue)
-        {
-            max -= 1;
-        }
+        if (exclusive && max == int.MaxValue) max -= 1;
 
         return max > min ? Random.Next(min, exclusive ? max : max + 1) : min;
     }
-    
+
     /// <summary>
     /// Generates a random floating-point number within the specified range ~15-17 digits (8 bytes).
     /// </summary>
@@ -46,8 +44,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// <returns>A random floating-point number between `min` (inclusive) and `max` (exclusive).</returns>
     public double GetDouble(double min, double max)
     {
-        var realMin = (long) (min * DecimalPointRandomPrecisionMultiplier);
-        var realMax = (long) (max * DecimalPointRandomPrecisionMultiplier);
+        var realMin = (long)(min * DecimalPointRandomPrecisionMultiplier);
+        var realMax = (long)(max * DecimalPointRandomPrecisionMultiplier);
 
         return Math.Round(
             Random.NextInt64(realMin, realMax) / (double)DecimalPointRandomPrecisionMultiplier,
@@ -224,13 +222,13 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         // Determine the range
         var min = Math.Min(val1, val2);
         var max = Math.Max(val1, val2);
-        
-        var realPrecision = (long) Math.Pow(10, precision);
-        
-        var minInt = (long) (min * realPrecision);
-        var maxInt = (long) (max * realPrecision);
-        
-        return Math.Round(Random.NextInt64(minInt, maxInt) / (double) realPrecision, precision);
+
+        var realPrecision = (long)Math.Pow(10, precision);
+
+        var minInt = (long)(min * realPrecision);
+        var maxInt = (long)(max * realPrecision);
+
+        return Math.Round(Random.NextInt64(minInt, maxInt) / (double)realPrecision, precision);
     }
 
     /// <summary>
@@ -250,10 +248,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         {
             list = _cloner.Clone(originalList);
             // Adjust drawCount to avoid drawing more elements than available
-            if (drawCount > list.Count)
-            {
-                drawCount = list.Count;
-            }
+            if (drawCount > list.Count) drawCount = list.Count;
         }
 
         var results = new List<T>();
@@ -261,13 +256,9 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         {
             var randomIndex = RandInt(list.Count);
             if (replacement)
-            {
                 results.Add(list[randomIndex]);
-            }
             else
-            {
                 results.Add(list.Splice(randomIndex, 1)[0]);
-            }
         }
 
         return results;
@@ -325,10 +316,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             return -1;
         }
 
-        if (min == max)
-        {
-            return min;
-        }
+        if (min == max) return min;
 
         if (shift > max - min)
         {
@@ -339,7 +327,8 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
              * Shifting even further drops the success chance very rapidly - so we want to warn against that
              **/
             _logger.Warning(
-                "Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact");
+                "Bias shift for random number generation is greater than the range of available numbers. This will have a severe performance impact"
+            );
             _logger.Warning($"min-> {min}; max-> {max}; shift-> {shift}");
         }
 
@@ -364,10 +353,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     private double GetGaussianRandom(double n)
     {
         var rand = 0d;
-        for (var i = 0; i < n; i += 1)
-        {
-            rand += GetSecureRandomNumber();
-        }
+        for (var i = 0; i < n; i += 1) rand += GetSecureRandomNumber();
 
         return rand / n;
     }
@@ -421,6 +407,7 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
             preciseNum *= 10M;
             factor++;
         }
+
         return factor;
     }
 

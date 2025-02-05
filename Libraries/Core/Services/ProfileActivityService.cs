@@ -35,7 +35,7 @@ public class ProfileActivityService(
         var currentTimestamp = _timeUtil.GetTimeStamp();
         var result = new List<string>();
 
-        foreach (var activity in profileActivityTimestamps ?? new())
+        foreach (var activity in profileActivityTimestamps ?? new Dictionary<string, long>())
         {
             var lastActivityTimestamp = activity.Value;
             if (lastActivityTimestamp == null)

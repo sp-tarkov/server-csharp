@@ -5,5 +5,4 @@ namespace Core.Helpers;
 [Injectable]
 public class GameEventHelper
 {
-    
 }

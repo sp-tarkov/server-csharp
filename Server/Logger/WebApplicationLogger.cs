@@ -24,29 +24,9 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     )
     {
         if (textColor != null || backgroundColor != null)
-        {
             _logger.LogInformation(ex, GetColorizedText(data, textColor, backgroundColor));
-        }
         else
             _logger.LogInformation(ex, data);
-    }
-
-    private string GetColorizedText(
-        string data,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
-    )
-    {
-        var colorString = string.Empty;
-        if (textColor != null)
-            colorString += ((int)textColor.Value).ToString();
-
-        if (backgroundColor != null)
-            colorString += string.IsNullOrEmpty(colorString)
-                ? ((int)backgroundColor.Value).ToString()
-                : $";{((int)backgroundColor.Value).ToString()}";
-
-        return $"\x1b[{colorString}m{data}\x1b[0m";
     }
 
     public void Success(string data, Exception? ex = null)
@@ -88,6 +68,24 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     public bool IsLogEnabled(LogLevel level)
     {
         return _logger.IsEnabled(ConvertLogLevel(level));
+    }
+
+    private string GetColorizedText(
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null
+    )
+    {
+        var colorString = string.Empty;
+        if (textColor != null)
+            colorString += ((int)textColor.Value).ToString();
+
+        if (backgroundColor != null)
+            colorString += string.IsNullOrEmpty(colorString)
+                ? ((int)backgroundColor.Value).ToString()
+                : $";{((int)backgroundColor.Value).ToString()}";
+
+        return $"\x1b[{colorString}m{data}\x1b[0m";
     }
 
     protected Microsoft.Extensions.Logging.LogLevel ConvertLogLevel(LogLevel level)

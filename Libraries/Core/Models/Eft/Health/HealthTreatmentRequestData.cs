@@ -7,7 +7,6 @@ namespace Core.Models.Eft.Health;
 
 public record HealthTreatmentRequestData : InventoryBaseActionRequestData
 {
-
     [JsonPropertyName("trader")]
     public string? Trader { get; set; }
 
@@ -62,6 +61,7 @@ public record BodyParts
 public record BodyPartEffects
 {
     public double Health { get; set; }
+
     /** Effects in array to be removed */
     public List<string> Effects { get; set; }
 }

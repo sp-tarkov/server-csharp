@@ -19,9 +19,10 @@ public static class StringExtensions
                 RegexCache[regexString] = regex;
             }
         }
+
         return regex.Replace(source, newValue);
     }
-    
+
     public static bool RegexMatch(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, out Match? matchedString)
     {
         Regex regex;

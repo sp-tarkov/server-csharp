@@ -16,9 +16,8 @@ public class ClientLogCallbacks(
     ConfigServer _configServer,
     LocalisationService _localisationService
     // ModLoadOrder _modLoadOrder // TODO: needs implementing
-    )
+)
 {
-
     /// <summary>
     /// Handle /singleplayer/log
     /// </summary>
@@ -39,11 +38,11 @@ public class ClientLogCallbacks(
     public string ReleaseNotes()
     {
         var data = _configServer.GetConfig<CoreConfig>().Release;
-        
+
         data.BetaDisclaimerText = ProgramStatics.MODS()
-            ? _localisationService.GetText("release-beta-disclaimer-mods-enabled") 
+            ? _localisationService.GetText("release-beta-disclaimer-mods-enabled")
             : _localisationService.GetText("release-beta-disclaimer");
-        
+
         data.BetaDisclaimerAcceptText = _localisationService.GetText("release-beta-disclaimer-accept");
         data.ServerModsLoadedText = _localisationService.GetText("release-server-mods-loaded");
         data.ServerModsLoadedDebugText = _localisationService.GetText("release-server-mods-debug-message");
@@ -55,7 +54,7 @@ public class ClientLogCallbacks(
         data.IsBeta = ProgramStatics.ENTRY_TYPE() == EntryType.BLEEDING_EDGE || ProgramStatics.ENTRY_TYPE() == EntryType.BLEEDING_EDGE_MODS;
         data.IsModdable = ProgramStatics.MODS();
         data.IsModded = false; // TODO
-        
+
         return _httpResponseUtil.NoBody(data);
     }
 

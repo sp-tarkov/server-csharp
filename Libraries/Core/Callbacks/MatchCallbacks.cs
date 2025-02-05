@@ -108,7 +108,7 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(new List<GroupCharacter>() { new GroupCharacter() });
+        return _httpResponseUtil.GetBody(new List<GroupCharacter>() { new() });
     }
 
     /// <summary>

@@ -24,7 +24,8 @@ public class BundleDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID))
+                ) => _bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

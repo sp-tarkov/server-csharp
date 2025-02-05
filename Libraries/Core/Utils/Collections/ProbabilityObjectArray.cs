@@ -23,8 +23,8 @@ namespace Core.Utils.Collections;
 /// <typeparam name="V"></typeparam>
 public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
-    private readonly MathUtil _mathUtil;
     private readonly ICloner _cloner;
+    private readonly MathUtil _mathUtil;
 
     public ProbabilityObjectArray(
         MathUtil mathUtil,
@@ -60,9 +60,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         var result = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, new List<ProbabilityObject<K, V>>());
         foreach (var probabilityObject in this)
             if (predicate.Invoke(probabilityObject))
-            {
                 result.Add(probabilityObject);
-            }
 
         return result;
     }
@@ -157,10 +155,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
     {
         neverRemoveWhitelist ??= [];
-        if (Count == 0)
-        {
-            return [];
-        }
+        if (Count == 0) return [];
 
         var totals = this.Aggregate(
             new { probArray = new List<double>(), keyArray = new List<K>() },
@@ -195,10 +190,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
                 drawnKeys.Add(key);
                 probCumsum = CumulativeProbability(totals.probArray);
                 // If we draw without replacement and the ProbabilityObjectArray is exhausted we need to break
-                if (totals.keyArray.Count < 1)
-                {
-                    break;
-                }
+                if (totals.keyArray.Count < 1) break;
             }
         }
 

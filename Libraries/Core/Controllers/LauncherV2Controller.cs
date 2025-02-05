@@ -58,7 +58,7 @@ public class LauncherV2Controller(
             var casterPropertyValue = propertyValue as ProfileSides;
             result[templatesProperty.GetJsonName()] = _localisationService.GetText(casterPropertyValue?.DescriptionLocaleKey!);
         }
-        
+
         return result;
     }
 
@@ -82,12 +82,8 @@ public class LauncherV2Controller(
     public bool Register(RegisterData info)
     {
         foreach (var session in _saveServer.GetProfiles())
-        {
             if (info.Username == _saveServer.GetProfile(session.Key).ProfileInfo!.Username)
-            {
                 return false;
-            }
-        }
 
         CreateAccount(info);
         return true;
@@ -104,7 +100,7 @@ public class LauncherV2Controller(
 
         if (sessionId is null)
             return false;
-        
+
         _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Password;
         return true;
     }
@@ -117,7 +113,7 @@ public class LauncherV2Controller(
     public bool Remove(LoginRequestData info)
     {
         var sessionId = GetSessionId(info);
-        
+
         return sessionId is not null && _saveServer.RemoveProfile(sessionId);
     }
 
@@ -169,22 +165,22 @@ public class LauncherV2Controller(
             IsWiped = true,
             Edition = info.Edition
         };
-        
+
         _saveServer.CreateProfile(newProfileDetails);
-        
+
         _saveServer.LoadProfile(profileId);
         _saveServer.SaveProfile(profileId);
-        
+
         return profileId;
     }
-    
+
     protected string GenerateProfileId()
     {
         var timestamp = _timeUtil.GetTimeStamp();
 
         return FormatID(timestamp, timestamp * _randomUtil.GetInt(1, 1000000));
     }
-    
+
     protected string FormatID(long timeStamp, long counter)
     {
         var timeStampStr = Convert.ToString(timeStamp, 16).PadLeft(8, '0');
@@ -196,13 +192,8 @@ public class LauncherV2Controller(
     protected string? GetSessionId(LoginRequestData info)
     {
         foreach (var profile in _saveServer.GetProfiles())
-        {
-            if (info.Username == profile.Value.ProfileInfo!.Username 
-                && info.Password == profile.Value.ProfileInfo.Password)
-            {
+            if (info.Username == profile.Value.ProfileInfo!.Username && info.Password == profile.Value.ProfileInfo.Password)
                 return profile.Key;
-            }
-        }
 
         return null;
     }

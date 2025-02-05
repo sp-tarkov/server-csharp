@@ -56,7 +56,6 @@ public record HideoutCraftToAdd
 
     [JsonPropertyName("craftOutputTpl")]
     public string CraftOutputTpl { get; set; }
-
 }
 
 public record CultistCircleSettings

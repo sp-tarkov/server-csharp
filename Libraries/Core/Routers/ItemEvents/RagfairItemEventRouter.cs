@@ -23,17 +23,19 @@ public class RagfairItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("RagFairAddOffer", false),
-            new HandledRoute("RagFairRemoveOffer", false),
-            new HandledRoute("RagFairRenewOffer", false),
+            new("RagFairAddOffer", false),
+            new("RagFairRemoveOffer", false),
+            new("RagFairRenewOffer", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case "RagFairAddOffer":
                 return _ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID);
             case "RagFairRemoveOffer":

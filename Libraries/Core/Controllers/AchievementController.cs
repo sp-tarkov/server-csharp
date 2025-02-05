@@ -23,11 +23,10 @@ public class AchievementController(
         var stats = new Dictionary<string, int>();
 
         foreach (var achievement in achievements)
-        {
-            if (achievement.Id != null) stats.Add(achievement.Id, 0);
-        }
+            if (achievement.Id != null)
+                stats.Add(achievement.Id, 0);
 
-        return new()
+        return new CompletedAchievementsResponse
         {
             Elements = stats
         };

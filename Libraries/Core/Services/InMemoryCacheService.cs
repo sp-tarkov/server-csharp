@@ -23,10 +23,7 @@ public class InMemoryCacheService(
     // Stored data
     public T? GetDataByKey<T>(string key)
     {
-        if (_cacheData.ContainsKey(key))
-        {
-            return (T)_cacheData[key];
-        }
+        if (_cacheData.ContainsKey(key)) return (T)_cacheData[key];
 
         return default;
     }

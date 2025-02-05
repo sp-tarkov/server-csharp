@@ -16,8 +16,8 @@ public class InRaidController(
     ConfigServer _configServer
 )
 {
-    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
 
     /// <summary>
     /// Save locationId to active profiles in-raid object AND app context
@@ -43,9 +43,7 @@ public class InRaidController(
         // If equipment match overwrite existing data from update to date raid data for scavenger screen to work correctly.
         // otherwise Scav inventory will be overwritten and break scav regeneration, breaking profile.
         if (serverScavProfile.Inventory.Equipment == offRaidProfileData.Inventory.Equipment)
-        {
             serverScavProfile.Inventory.Items = offRaidProfileData.Inventory.Items;
-        }
     }
 
     /// <summary>

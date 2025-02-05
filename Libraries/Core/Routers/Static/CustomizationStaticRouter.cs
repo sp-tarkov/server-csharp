@@ -24,7 +24,8 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)),
+                ) => _customizationCallbacks.GetCustomisationUnlocks(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/hideout/customization/offer/list",
                 (
@@ -32,7 +33,8 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)),
+                ) => _customizationCallbacks.GetHideoutCustomisation(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/customization/storage",
                 (
@@ -40,7 +42,8 @@ public class CustomizationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)),
+                ) => _customizationCallbacks.GetStorage(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

@@ -8,9 +8,8 @@ namespace Core.Controllers;
 [Injectable]
 public class ClientLogController(
     ISptLogger<ClientLogController> _logger
-    )
+)
 {
-
     /// <summary>
     /// Handle /singleplayer/log
     /// </summary>

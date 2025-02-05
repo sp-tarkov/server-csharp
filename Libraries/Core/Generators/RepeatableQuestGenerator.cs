@@ -31,8 +31,8 @@ public class RepeatableQuestGenerator(
     ICloner _cloner
 )
 {
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
     protected int _maxRandomNumberAttempts = 6;
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see
@@ -101,7 +101,8 @@ public class RepeatableQuestGenerator(
         var locationsConfig = repeatableConfig.Locations;
         var targetsConfig = new ProbabilityObjectArray<string, BossInfo>(_mathUtil, _cloner, eliminationConfig.Targets);
         var bodyPartsConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.BodyParts);
-        var weaponCategoryRequirementConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.WeaponCategoryRequirements);
+        var weaponCategoryRequirementConfig =
+            new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.WeaponCategoryRequirements);
         var weaponRequirementConfig = new ProbabilityObjectArray<string, List<string>>(_mathUtil, _cloner, eliminationConfig.WeaponRequirements);
 
         // the difficulty of the quest varies in difficulty depending on the condition
@@ -178,9 +179,7 @@ public class RepeatableQuestGenerator(
                     .ToList();
                 if (questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations.Count ==
                     0)
-                {
                     questTypePool.Pool.Elimination.Targets.Remove(targetKey);
-                }
             }
             else
             {
@@ -243,10 +242,13 @@ public class RepeatableQuestGenerator(
         if (eliminationConfig.DistanceProbability > rand.NextDouble() && isDistanceRequirementAllowed)
         {
             // Random distance with lower values more likely; simple distribution for starters...
-            distance = (int)Math.Floor(Math.Abs(rand.NextDouble() - rand.NextDouble()) *
-                                        (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
-                                        eliminationConfig.MinDistance ?? 0);
-            
+            distance = (int)Math.Floor(
+                Math.Abs(rand.NextDouble() - rand.NextDouble()) *
+                (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
+                eliminationConfig.MinDistance ??
+                0
+            );
+
             distance = (int)Math.Ceiling((decimal)(distance / 5)) * 5;
             distanceDifficulty = (int)(maxDistDifficulty * distance / eliminationConfig.MaxDistance);
         }
@@ -317,10 +319,7 @@ public class RepeatableQuestGenerator(
         var quest = GenerateRepeatableTemplate("Elimination", traderId, repeatableConfig.Side, sessionId);
 
         // ASSUMPTION: All fence quests are for scavs
-        if (traderId == Traders.FENCE)
-        {
-            quest.Side = "Scav";
-        }
+        if (traderId == Traders.FENCE) quest.Side = "Scav";
 
         var availableForFinishCondition = quest.Conditions.AvailableForFinish[0];
         availableForFinishCondition.Counter.Id = _hashUtil.Generate();
@@ -372,14 +371,10 @@ public class RepeatableQuestGenerator(
         EliminationConfig eliminationConfig)
     {
         if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))
-        {
             return _randomUtil.RandInt(eliminationConfig.MinBossKills.Value, eliminationConfig.MaxBossKills + 1);
-        }
 
         if (targetsConfig.Data(targetKey).IsPmc.GetValueOrDefault(false))
-        {
             return _randomUtil.RandInt(eliminationConfig.MinPmcKills.Value, eliminationConfig.MaxPmcKills + 1);
-        }
 
         return _randomUtil.RandInt(eliminationConfig.MinKills.Value, eliminationConfig.MaxKills + 1);
     }
@@ -448,22 +443,14 @@ public class RepeatableQuestGenerator(
         }
 
         // Has specific body part hit condition
-        if (targetedBodyParts is not null)
-        {
-            killConditionProps.BodyPart = targetedBodyParts;
-        }
+        if (targetedBodyParts is not null) killConditionProps.BodyPart = targetedBodyParts;
 
         // Don't allow distance + melee requirement
         if (distance is not null && allowedWeaponCategory != "5b5f7a0886f77409407a7f96")
-        {
             killConditionProps.Distance = new CounterConditionDistance { CompareMethod = ">=", Value = distance.Value };
-        }
 
         // Has specific weapon requirement
-        if (allowedWeapon is not null)
-        {
-            killConditionProps.Weapon = [allowedWeapon];
-        }
+        if (allowedWeapon is not null) killConditionProps.Weapon = [allowedWeapon];
 
         // Has specific weapon category requirement
         if (allowedWeaponCategory?.Length > 0)
@@ -637,11 +624,9 @@ public class RepeatableQuestGenerator(
             var x = (int)Math.Floor(roublesBudget / itemUnitPrice);
             maxValue = Math.Min(maxValue, x);
             if (maxValue > minValue)
-            {
                 // If it doesn't blow the budget we have for the request, draw a random amount of the selected
                 // Item type to be requested
                 value = _randomUtil.RandInt(minValue, maxValue + 1);
-            }
 
             roublesBudget -= value * itemUnitPrice;
 
@@ -654,10 +639,7 @@ public class RepeatableQuestGenerator(
                 // Reduce the list possible items to fulfill the new budget constraint
                 itemSelection = itemSelection.Where(dbItem => _itemHelper.GetItemPrice(dbItem.Id) < roublesBudget)
                     .ToList();
-                if (!itemSelection.Any())
-                {
-                    break;
-                }
+                if (!itemSelection.Any()) break;
             }
             else
             {
@@ -694,15 +676,10 @@ public class RepeatableQuestGenerator(
             _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.WEAPON) ||
             _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.ARMOR)
         )
-        {
             minDurability = _randomUtil.GetArrayValue([60, 80]);
-        }
 
         // By default all collected items must be FiR, except dog tags
-        if (_itemHelper.IsDogtag(itemTpl))
-        {
-            onlyFoundInRaid = false;
-        }
+        if (_itemHelper.IsDogtag(itemTpl)) onlyFoundInRaid = false;
 
         return new QuestCondition
         {

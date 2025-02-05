@@ -20,10 +20,7 @@ public class NotificationService
 
     public void UpdateMessageOnQueue(string sessionId, List<WsNotificationEvent> value)
     {
-        if (_messageQueue.ContainsKey(sessionId))
-        {
-            _messageQueue[sessionId] = value;
-        }
+        if (_messageQueue.ContainsKey(sessionId)) _messageQueue[sessionId] = value;
     }
 
     public bool Has(string sessionID)
@@ -55,15 +52,9 @@ public class NotificationService
     /// <param name="sessionID"></param>
     public List<WsNotificationEvent> Get(string sessionID)
     {
-        if (sessionID is null)
-        {
-            throw new Exception("sessionID missing");
-        }
+        if (sessionID is null) throw new Exception("sessionID missing");
 
-        if (!_messageQueue.ContainsKey(sessionID))
-        {
-            _messageQueue[sessionID] = [];
-        }
+        if (!_messageQueue.ContainsKey(sessionID)) _messageQueue[sessionID] = [];
 
         return _messageQueue[sessionID];
     }

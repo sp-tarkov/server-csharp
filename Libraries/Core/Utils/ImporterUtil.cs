@@ -12,9 +12,9 @@ public class ImporterUtil
     protected FileUtil _fileUtil;
     protected JsonUtil _jsonUtil;
     protected ISptLogger<ImporterUtil> _logger;
+    protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
-    protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {

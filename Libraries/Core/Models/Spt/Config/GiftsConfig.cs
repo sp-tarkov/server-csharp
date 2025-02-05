@@ -73,8 +73,8 @@ public record Gift
 
     [JsonPropertyName("maxToSendPlayer")]
     public int? MaxToSendPlayer { get; set; }
-    
-    
+
+
     [JsonPropertyName("maxToSendToPlayer")]
     public int? MaxToSendToPlayer { get; set; }
 }

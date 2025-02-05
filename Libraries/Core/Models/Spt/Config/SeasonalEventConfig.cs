@@ -78,59 +78,61 @@ public record SeasonalEvent
 
     [JsonPropertyName("settings")]
     public SeasonalEventSettings? Settings { get; set; }
-    
+
     [JsonPropertyName("setting")]
-    public SeasonalEventSettings? SettingsDoNOTUse { set => Settings = value; }
+    public SeasonalEventSettings? SettingsDoNOTUse
+    {
+        set => Settings = value;
+    }
 }
 
 public record SeasonalEventSettings
 {
     [JsonPropertyName("enableSummoning")]
     public bool? EnableSummoning { get; set; }
-    
+
     [JsonPropertyName("enableHalloweenHideout")]
     public bool? EnableHalloweenHideout { get; set; }
-    
+
     [JsonPropertyName("enableChristmasHideout")]
     public bool? EnableChristmasHideout { get; set; }
-    
+
     [JsonPropertyName("enableSanta")]
     public bool? EnableSanta { get; set; }
-    
+
     [JsonPropertyName("adjustBotAppearances")]
     public bool? AdjustBotAppearances { get; set; }
-    
+
     [JsonPropertyName("addEventGearToBots")]
     public bool? AddEventGearToBots { get; set; }
-    
+
     [JsonPropertyName("addEventLootToBots")]
     public bool? AddEventLootToBots { get; set; }
-    
+
     [JsonPropertyName("removeEntryRequirement")]
     public List<string>? RemoveEntryRequirement { get; set; }
-    
+
     [JsonPropertyName("replaceBotHostility")]
     public bool? ReplaceBotHostility { get; set; }
-    
+
     [JsonPropertyName("forceSeason")]
     public Season? ForceSeason { get; set; }
-    
+
     [JsonPropertyName("zombieSettings")]
     public ZombieSettings? ZombieSettings { get; set; }
-    
+
     [JsonPropertyName("disableBosses")]
     public List<string>? DisableBosses { get; set; }
-    
+
     [JsonPropertyName("disableWaves")]
     public List<string>? DisableWaves { get; set; }
-    
 }
 
 public record ZombieSettings
 {
     [JsonPropertyName("enabled")]
     public bool? Enabled { get; set; }
-    
+
     [JsonPropertyName("mapInfectionAmount")]
     public Dictionary<string, double>? MapInfectionAmount { get; set; }
 

@@ -93,5 +93,4 @@ public class CustomizationProps
 
     [JsonPropertyName("HideGarbage")]
     public bool? HideGarbage { get; set; }
-
 }

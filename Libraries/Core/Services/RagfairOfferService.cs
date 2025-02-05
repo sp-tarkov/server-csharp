@@ -27,10 +27,10 @@ public class RagfairOfferService(
     RagfairOfferHolder ragfairOfferHolder
 )
 {
-    protected bool playerOffersLoaded;
-
     /** Offer id + offer object */
     protected Dictionary<string, RagfairOffer> expiredOffers = new();
+
+    protected bool playerOffersLoaded;
 
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
@@ -142,10 +142,7 @@ public class RagfairOfferService(
         if (offer != null)
         {
             offer.Items[0].Upd.StackObjectsCount -= amount;
-            if (offer.Items[0].Upd.StackObjectsCount <= 0)
-            {
-                ProcessStaleOffer(offer);
-            }
+            if (offer.Items[0].Upd.StackObjectsCount <= 0) ProcessStaleOffer(offer);
         }
     }
 
@@ -183,10 +180,8 @@ public class RagfairOfferService(
                 var pmcData = saveServer.GetProfile(sessionID)?.CharacterData?.PmcData;
 
                 if (pmcData?.RagfairInfo == null || pmcData.RagfairInfo.Offers == null)
-                {
                     // Profile is wiped
                     continue;
-                }
 
                 ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
             }
@@ -198,10 +193,7 @@ public class RagfairOfferService(
     public void ExpireStaleOffers()
     {
         var time = timeUtil.GetTimeStamp();
-        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time))
-        {
-            ProcessStaleOffer(staleOffer);
-        }
+        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time)) ProcessStaleOffer(staleOffer);
     }
 
     /**
@@ -215,17 +207,12 @@ public class RagfairOfferService(
         var isPlayer = profileHelper.IsPlayer(staleOfferUserId.RegexReplace("^pmc", ""));
 
         // Skip trader offers, managed by RagfairServer.update()
-        if (isTrader)
-        {
-            return;
-        }
+        if (isTrader) return;
 
         // Handle dynamic offer
         if (!(isTrader || isPlayer))
-        {
             // Dynamic offer
             AddOfferToExpired(staleOffer);
-        }
 
         // Handle player offer - items need returning/XP adjusting. Checking if offer has actually expired or not.
         if (isPlayer && staleOffer.EndTime <= timeUtil.GetTimeStamp())
@@ -265,9 +252,7 @@ public class RagfairOfferService(
 
         var firstOfferItem = playerOffer.Items[0];
         if (firstOfferItem.Upd.StackObjectsCount > firstOfferItem.Upd.OriginalStackObjectsCount)
-        {
             playerOffer.Items[0].Upd.StackObjectsCount = firstOfferItem.Upd.OriginalStackObjectsCount;
-        }
 
         playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
         // Remove player offer from flea
@@ -279,13 +264,9 @@ public class RagfairOfferService(
         // Need to regenerate Ids to ensure returned item(s) have correct parent values
         var newParentId = hashUtil.Generate();
         foreach (var item in unstackedItems)
-        {
             // Refresh root items' parentIds
             if (item.ParentId == "hideout")
-            {
                 item.ParentId = newParentId;
-            }
-        }
 
         ragfairServerHelper.ReturnItems(profile.SessionId, unstackedItems);
         profile.RagfairInfo.Offers.Splice(offerinProfileIndex, 1);
@@ -311,19 +292,13 @@ public class RagfairOfferService(
         if (totalItemCount <= itemMaxStackSize)
         {
             // Edge case - Ensure items stack count isnt < 1
-            if (items[0]?.Upd?.StackObjectsCount < 1)
-            {
-                items[0].Upd.StackObjectsCount = 1;
-            }
+            if (items[0]?.Upd?.StackObjectsCount < 1) items[0].Upd.StackObjectsCount = 1;
 
             return items;
         }
 
         // Single item with no children e.g. ammo, use existing de-stacking code
-        if (items.Count == 1)
-        {
-            return itemHelper.SplitStack(rootItem);
-        }
+        if (items.Count == 1) return itemHelper.SplitStack(rootItem);
 
         // Item with children, needs special handling
         // Force new item to have stack size of 1
@@ -332,7 +307,7 @@ public class RagfairOfferService(
             var itemAndChildrenClone = cloner.Clone(items);
 
             // Ensure upd object exits
-            itemAndChildrenClone[0].Upd ??= new();
+            itemAndChildrenClone[0].Upd ??= new Upd();
 
             // Force item to be singular
             itemAndChildrenClone[0].Upd.StackObjectsCount = 1;

@@ -8,8 +8,8 @@ namespace Core.Routers;
 public class ImageRouter
 {
     protected FileUtil _fileUtil;
-    protected ImageRouterService _imageRouterService;
     protected HttpFileUtil _httpFileUtil;
+    protected ImageRouterService _imageRouterService;
 
     public ImageRouter(
         FileUtil fileUtil,
@@ -33,10 +33,7 @@ public class ImageRouter
         var url = _fileUtil.StripExtension(req.Path, true);
 
         // send image
-        if (_imageRouterService.ExistsByKey(url))
-        {
-            _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
-        }
+        if (_imageRouterService.ExistsByKey(url)) _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
     }
 
     public string GetImage()

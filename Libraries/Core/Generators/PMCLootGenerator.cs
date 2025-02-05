@@ -12,19 +12,19 @@ namespace Core.Generators;
 [Injectable]
 public class PMCLootGenerator
 {
-    private readonly ISptLogger<PMCLootGenerator> _logger;
+    private readonly ConfigServer _configServer;
     private readonly DatabaseService _databaseService;
-    private readonly ItemHelper _itemHelper;
     private readonly ItemFilterService _itemFilterService;
+    private readonly ItemHelper _itemHelper;
+    private readonly ISptLogger<PMCLootGenerator> _logger;
+    private readonly PmcConfig _pmcConfig;
     private readonly RagfairPriceService _ragfairPriceService;
     private readonly SeasonalEventService _seasonalEventService;
     private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly ConfigServer _configServer;
 
     private Dictionary<string, double>? _backpackLootPool;
     private Dictionary<string, double>? _pocketLootPool;
     private Dictionary<string, double>? _vestLootPool;
-    private readonly PmcConfig _pmcConfig;
 
     public PMCLootGenerator(
         ISptLogger<PMCLootGenerator> logger,
@@ -35,7 +35,7 @@ public class PMCLootGenerator
         SeasonalEventService seasonalEventService,
         WeightedRandomHelper weightedRandomHelper,
         ConfigServer configServer
-        )
+    )
     {
         _logger = logger;
         _databaseService = databaseService;
@@ -78,7 +78,6 @@ public class PMCLootGenerator
             );
 
             foreach (var (tpl, template) in itemsToAdd)
-            {
                 // If pmc has price override, use that. Otherwise, use flea price
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
@@ -90,15 +89,12 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _pocketLootPool[tpl] = price ?? 0;
                 }
-            }
 
             var highestPrice = _pocketLootPool.Max(price => price.Value);
             foreach (var (key, _) in _pocketLootPool)
-            {
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
-                _pocketLootPool[key] = Math.Round((1 / _pocketLootPool[key]) * highestPrice);
-            }
+                _pocketLootPool[key] = Math.Round(1 / _pocketLootPool[key] * highestPrice);
 
             _weightedRandomHelper.ReduceWeightValues(_pocketLootPool);
         }
@@ -109,22 +105,10 @@ public class PMCLootGenerator
     private HashSet<string> GetLootBlacklist()
     {
         var blacklist = new HashSet<string>();
-        foreach (var blacklistedItem in _pmcConfig.PocketLoot.Blacklist)
-        {
-            blacklist.Add(blacklistedItem);
-        }
-        foreach (var blacklistedItem in _pmcConfig.GlobalLootBlacklist)
-        {
-            blacklist.Add(blacklistedItem);
-        }
-        foreach (var blacklistedItem in _itemFilterService.GetBlacklistedItems())
-        {
-            blacklist.Add(blacklistedItem);
-        }
-        foreach (var blacklistedItem in _seasonalEventService.GetInactiveSeasonalEventItems())
-        {
-            blacklist.Add(blacklistedItem);
-        }
+        foreach (var blacklistedItem in _pmcConfig.PocketLoot.Blacklist) blacklist.Add(blacklistedItem);
+        foreach (var blacklistedItem in _pmcConfig.GlobalLootBlacklist) blacklist.Add(blacklistedItem);
+        foreach (var blacklistedItem in _itemFilterService.GetBlacklistedItems()) blacklist.Add(blacklistedItem);
+        foreach (var blacklistedItem in _seasonalEventService.GetInactiveSeasonalEventItems()) blacklist.Add(blacklistedItem);
 
         return blacklist;
     }
@@ -154,10 +138,10 @@ public class PMCLootGenerator
                     _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent) &&
-                    ItemFitsInto2By2Slot(item.Value));
+                    ItemFitsInto2By2Slot(item.Value)
+            );
 
             foreach (var (tpl, template) in itemsToAdd)
-            {
                 // If pmc has price override, use that. Otherwise, use flea price
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
@@ -169,15 +153,12 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _vestLootPool[tpl] = price ?? 0;
                 }
-            }
 
             var highestPrice = _vestLootPool.Max(price => price.Value);
             foreach (var (key, _) in _vestLootPool)
-            {
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
-                _vestLootPool[key] = Math.Round((1 / _vestLootPool[key]) * highestPrice);
-            }
+                _vestLootPool[key] = Math.Round(1 / _vestLootPool[key] * highestPrice);
 
             _weightedRandomHelper.ReduceWeightValues(_vestLootPool);
         }
@@ -234,10 +215,11 @@ public class PMCLootGenerator
                 (item) =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
-                !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent));
+                    !blacklist.Contains(item.Value.Id) &&
+                    !blacklist.Contains(item.Value.Parent)
+            );
 
-            foreach (var (tpl, template) in itemsToAdd) {
+            foreach (var (tpl, template) in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
@@ -249,14 +231,12 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _backpackLootPool[tpl] = price ?? 0;
                 }
-            }
 
             var highestPrice = _backpackLootPool.Max(price => price.Value);
-            foreach (var (key, _) in _backpackLootPool) {
+            foreach (var (key, _) in _backpackLootPool)
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
-                _backpackLootPool[key] = Math.Round((1 / _backpackLootPool[key]) * highestPrice);
-            }
+                _backpackLootPool[key] = Math.Round(1 / _backpackLootPool[key] * highestPrice);
 
             _weightedRandomHelper.ReduceWeightValues(_backpackLootPool);
         }

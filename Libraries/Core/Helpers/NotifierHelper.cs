@@ -7,8 +7,12 @@ namespace Core.Helpers;
 [Injectable(InjectionType.Singleton)]
 public class NotifierHelper(HttpServerHelper _httpServerHelper)
 {
-    protected WsPing ping = new WsPing();
-    public WsNotificationEvent GetDefaultNotification() => ping;
+    protected WsPing ping = new();
+
+    public WsNotificationEvent GetDefaultNotification()
+    {
+        return ping;
+    }
 
     /**
      * Create a new notification that displays the "Your offer was sold!" prompt and removes sold offer from "My Offers" on clientside
@@ -20,7 +24,8 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
         Message dialogueMessage,
         MessageContentRagfair ragfairData)
     {
-        return new WsRagfairOfferSold{
+        return new WsRagfairOfferSold
+        {
             EventType = NotificationEventType.RagfairOfferSold,
             EventIdentifier = dialogueMessage.Id,
             OfferId = ragfairData.OfferId,
@@ -36,11 +41,12 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
      */
     public WsChatMessageReceived CreateNewMessageNotification(Message dialogueMessage)
     {
-        return new WsChatMessageReceived {
+        return new WsChatMessageReceived
+        {
             EventType = NotificationEventType.new_message,
             EventIdentifier = dialogueMessage.Id,
             DialogId = dialogueMessage.UserId,
-            Message = dialogueMessage,
+            Message = dialogueMessage
         };
     }
 

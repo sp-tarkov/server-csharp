@@ -11,5 +11,4 @@ public static class MemberInfoExtensions
             ? (Attribute.GetCustomAttribute(memberInfo, typeof(JsonPropertyNameAttribute)) as JsonPropertyNameAttribute).Name
             : memberInfo.Name;
     }
-    
 }

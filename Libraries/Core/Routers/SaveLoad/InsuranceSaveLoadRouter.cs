@@ -9,7 +9,7 @@ public class InsuranceSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return [new ("spt-insurance", false)];
+        return [new HandledRoute("spt-insurance", false)];
     }
 
     public override SptProfile HandleLoad(SptProfile profile)

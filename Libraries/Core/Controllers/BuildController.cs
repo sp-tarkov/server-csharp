@@ -36,9 +36,7 @@ public class BuildController(
         const string secureContainerSlotId = "SecuredContainer";
         var profile = _profileHelper.GetFullProfile(sessionID);
         if (profile is not null && profile.UserBuildData is null)
-        {
             profile.UserBuildData = new UserBuilds { EquipmentBuilds = [], WeaponBuilds = [], MagazineBuilds = [] };
-        }
 
         // Ensure the secure container in the default presets match what the player has equipped
         var defaultEquipmentPresetsClone = _cloner.Clone(
@@ -52,18 +50,13 @@ public class BuildController(
                 x => x.SlotId == secureContainerSlotId
             );
         if (playerSecureContainer is not null && playerSecureContainer.Template != firstDefaultItemsSecureContainer?.Template)
-        {
             // Default equipment presets' secure container tpl doesn't match players secure container tpl
             foreach (var defaultPreset in defaultEquipmentPresetsClone ?? [])
             {
                 // Find presets secure container
                 var secureContainer = defaultPreset.Items?.FirstOrDefault(item => item.SlotId == secureContainerSlotId);
-                if (secureContainer is not null)
-                {
-                    secureContainer.Template = playerSecureContainer.Template;
-                }
+                if (secureContainer is not null) secureContainer.Template = playerSecureContainer.Template;
             }
-        }
 
         // Clone player build data from profile and append the above defaults onto end
         var userBuildsClone = _cloner.Clone(profile?.UserBuildData);
@@ -87,7 +80,7 @@ public class BuildController(
         body.Root = body.Items.FirstOrDefault().Id;
 
         // Create new object ready to save into profile userbuilds.weaponBuilds
-        WeaponBuild newBuild = new WeaponBuild { Id = body.Id, Name = body.Name, Root = body.Root, Items = body.Items };
+        var newBuild = new WeaponBuild { Id = body.Id, Name = body.Name, Root = body.Root, Items = body.Items };
 
         var profile = _profileHelper.GetFullProfile(sessionId);
 
@@ -124,13 +117,13 @@ public class BuildController(
         // Root ID and the base item ID need to match.
         request.Items = _itemHelper.ReplaceIDs(request.Items, pmcData);
 
-        EquipmentBuild newBuild = new EquipmentBuild
+        var newBuild = new EquipmentBuild
         {
             Id = request.Id,
             Name = request.Name,
             BuildType = EquipmentBuildType.Custom,
             Root = request.Items[0].Id,
-            Items = request.Items,
+            Items = request.Items
         };
 
         var existingBuild = existingSavedEquipmentBuilds.FirstOrDefault(
@@ -167,14 +160,14 @@ public class BuildController(
     /// <param name="request"></param>
     public void CreateMagazineTemplate(string sessionId, SetMagazineRequest request)
     {
-        MagazineBuild result = new MagazineBuild
+        var result = new MagazineBuild
         {
             Id = request.Id,
             Name = request.Name,
             Caliber = request.Caliber,
             TopCount = request.TopCount,
             BottomCount = request.BottomCount,
-            Items = request.Items,
+            Items = request.Items
         };
 
         var profile = _profileHelper.GetFullProfile(sessionId);

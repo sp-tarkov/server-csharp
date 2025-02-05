@@ -9,7 +9,7 @@ public record MatchConfig : BaseConfig
 
     [JsonPropertyName("enabled")]
     public bool Enabled { get; set; }
-    
+
     [JsonPropertyName("randomiseMapContainers")]
     public Dictionary<string, bool> RandomiseMapContainers { get; set; }
 }

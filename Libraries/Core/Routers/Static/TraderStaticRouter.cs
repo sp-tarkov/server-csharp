@@ -14,8 +14,7 @@ public class TraderStaticRouter : StaticRouter
     public TraderStaticRouter(
         JsonUtil jsonUtil,
         TraderCallbacks traderCallbacks
-    ) : base
-    (
+    ) : base(
         jsonUtil,
         [
             new RouteAction(
@@ -25,7 +24,8 @@ public class TraderStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID)),
+                ) => _traderCallbacks.GetTraderSettings(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/singleplayer/moddedTraders",
                 (
@@ -33,7 +33,8 @@ public class TraderStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID))
+                ) => _traderCallbacks.GetModdedTraderData(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

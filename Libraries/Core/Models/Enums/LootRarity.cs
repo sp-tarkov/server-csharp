@@ -1,10 +1,9 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum LootRarity
 {
-    public enum LootRarity
-    {
-        Not_exist = -1,
-        Common,
-        Rare,
-        Superrare
-    }
+    Not_exist = -1,
+    Common,
+    Rare,
+    Superrare
 }

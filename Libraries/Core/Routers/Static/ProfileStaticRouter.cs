@@ -22,7 +22,8 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.CreateProfile(url, info as ProfileCreateRequestData, sessionID),
-                typeof(ProfileCreateRequestData)),
+                typeof(ProfileCreateRequestData)
+            ),
             new RouteAction(
                 "/client/game/profile/list",
                 (
@@ -30,7 +31,8 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID)),
+                ) => profileCallbacks.GetProfileData(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/game/profile/savage/regenerate",
                 (
@@ -38,12 +40,14 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID)),
+                ) => profileCallbacks.RegenerateScav(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/game/profile/voice/change",
                 (url, info, sessionID, output) =>
                     profileCallbacks.ChangeVoice(url, info as ProfileChangeVoiceRequestData, sessionID),
-                typeof(ProfileChangeVoiceRequestData)),
+                typeof(ProfileChangeVoiceRequestData)
+            ),
             new RouteAction(
                 "/client/game/profile/nickname/change",
                 (
@@ -52,7 +56,8 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.ChangeNickname(url, info as ProfileChangeNicknameRequestData, sessionID),
-                typeof(ProfileChangeNicknameRequestData)),
+                typeof(ProfileChangeNicknameRequestData)
+            ),
             new RouteAction(
                 "/client/game/profile/nickname/validate",
                 (
@@ -61,7 +66,8 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.ValidateNickname(url, info as ValidateNicknameRequestData, sessionID),
-                typeof(ValidateNicknameRequestData)),
+                typeof(ValidateNicknameRequestData)
+            ),
             new RouteAction(
                 "/client/game/profile/nickname/reserved",
                 (
@@ -69,7 +75,8 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID)),
+                ) => profileCallbacks.GetReservedNickname(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/profile/status",
                 (
@@ -77,7 +84,8 @@ public class ProfileStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID)),
+                ) => profileCallbacks.GetProfileStatus(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/profile/view",
                 (
@@ -86,7 +94,8 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.GetOtherProfile(url, info as GetOtherProfileRequest, sessionID),
-                typeof(GetOtherProfileRequest)),
+                typeof(GetOtherProfileRequest)
+            ),
             new RouteAction(
                 "/client/profile/settings",
                 (
@@ -95,7 +104,8 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.GetProfileSettings(url, info as GetProfileSettingsRequest, sessionID),
-                typeof(GetProfileSettingsRequest)),
+                typeof(GetProfileSettingsRequest)
+            ),
             new RouteAction(
                 "/client/game/profile/search",
                 (
@@ -104,17 +114,21 @@ public class ProfileStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => profileCallbacks.SearchProfiles(url, info as SearchProfilesRequestData, sessionID),
-                typeof(SearchProfilesRequestData)),
+                typeof(SearchProfilesRequestData)
+            ),
             new RouteAction(
                 "/launcher/profile/info",
                 (url, info, sessionID, output) =>
                     profileCallbacks.GetMiniProfile(url, info as GetMiniProfileRequestData, sessionID),
-                typeof(GetMiniProfileRequestData)),
+                typeof(GetMiniProfileRequestData)
+            ),
             new RouteAction(
                 "/launcher/profiles",
                 (url, info, sessionID, output) =>
-                    profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID)),
-        ])
+                    profileCallbacks.GetAllMiniProfiles(url, info as EmptyRequestData, sessionID)
+            )
+        ]
+    )
     {
     }
 }

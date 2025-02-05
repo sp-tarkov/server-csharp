@@ -37,9 +37,7 @@ public class DialogueController(
     public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
         if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
-        {
             _logger.Error(_localisationService.GetText("dialog-chatbot_id_already_exists", chatBot.GetChatBot().Id));
-        }
 
         _dialogueChatBots.Add(chatBot);
     }
@@ -51,10 +49,7 @@ public class DialogueController(
     public void Update()
     {
         var profiles = _saveServer.GetProfiles();
-        foreach (var kvp in profiles)
-        {
-            RemoveExpiredItemsFromMessages(kvp.Key);
-        }
+        foreach (var kvp in profiles) RemoveExpiredItemsFromMessages(kvp.Key);
     }
 
     /// <summary>
@@ -70,23 +65,19 @@ public class DialogueController(
         // Add any friends the user has after the chatbots
         var profile = _profileHelper.GetFullProfile(sessionId);
         if (profile?.FriendProfileIds is not null)
-        {
             foreach (var friendId in profile.FriendProfileIds)
             {
                 var friendProfile = _profileHelper.GetChatRoomMemberFromSessionId(friendId);
                 if (friendProfile is not null)
-                {
                     friends.Add(
                         new UserDialogInfo
                         {
                             Id = friendProfile.Id,
                             Aid = friendProfile.Aid,
-                            Info = friendProfile.Info,
+                            Info = friendProfile.Info
                         }
                     );
-                }
             }
-        }
 
         return new GetFriendListDataResponse
         {
@@ -105,10 +96,7 @@ public class DialogueController(
         foreach (var bot in _dialogueChatBots)
         {
             var botData = bot.GetChatBot();
-            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id!))
-            {
-                activeBots.Add(botData);
-            }
+            if (chatBotConfig.EnabledBots.ContainsKey(botData.Id!)) activeBots.Add(botData);
         }
 
         return activeBots;
@@ -124,10 +112,7 @@ public class DialogueController(
     public List<DialogueInfo> GenerateDialogueList(string sessionId)
     {
         var data = new List<DialogueInfo>();
-        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
-        {
-            data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
-        }
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId)) data.Add(GetDialogueInfo(dialogueId.Key, sessionId));
 
         return data;
     }
@@ -153,7 +138,7 @@ public class DialogueController(
             New = dialogue?.New,
             AttachmentsNew = dialogue?.AttachmentsNew,
             Pinned = dialogue?.Pinned,
-            Users = GetDialogueUsers(dialogue, dialogue?.Type, sessionId),
+            Users = GetDialogueUsers(dialogue, dialogue?.Type, sessionId)
         };
 
         return result;
@@ -177,7 +162,6 @@ public class DialogueController(
         if (messageType == MessageType.USER_MESSAGE &&
             dialog?.Users is not null &&
             dialog.Users.All(userDialog => userDialog.Id != profile.CharacterData?.PmcData?.SessionId))
-        {
             dialog.Users.Add(
                 new UserDialogInfo
                 {
@@ -189,11 +173,10 @@ public class DialogueController(
                         Nickname = profile.CharacterData?.PmcData?.Info?.Nickname,
                         Side = profile.CharacterData?.PmcData?.Info?.Side,
                         MemberCategory = profile.CharacterData?.PmcData?.Info?.MemberCategory,
-                        SelectedMemberCategory = profile.CharacterData?.PmcData?.Info?.SelectedMemberCategory,
-                    },
+                        SelectedMemberCategory = profile.CharacterData?.PmcData?.Info?.SelectedMemberCategory
+                    }
                 }
             );
-        }
 
         return dialog?.Users!;
     }
@@ -225,7 +208,7 @@ public class DialogueController(
         {
             Messages = dialogue.Messages,
             Profiles = GetProfilesForMail(fullProfile, dialogue.Users),
-            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages!),
+            HasMessagesWithRewards = MessagesHaveUncollectedRewards(dialogue.Messages!)
         };
     }
 
@@ -249,22 +232,16 @@ public class DialogueController(
             Pinned = false,
             Messages = [],
             New = 0,
-            Type = request.Type,
+            Type = request.Type
         };
 
-        if (request.Type != MessageType.USER_MESSAGE)
-        {
-            return profile.DialogueRecords[request.DialogId!];
-        }
+        if (request.Type != MessageType.USER_MESSAGE) return profile.DialogueRecords[request.DialogId!];
 
         var dialogue = profile.DialogueRecords[request.DialogId!];
         dialogue.Users = [];
         var chatBot = _dialogueChatBots.FirstOrDefault(cb => cb.GetChatBot().Id == request.DialogId);
 
-        if (chatBot is null)
-        {
-            return profile.DialogueRecords[request.DialogId!];
-        }
+        if (chatBot is null) return profile.DialogueRecords[request.DialogId!];
 
         dialogue.Users ??= [];
         dialogue.Users.Add(chatBot.GetChatBot());
@@ -282,17 +259,12 @@ public class DialogueController(
     {
         List<UserDialogInfo> result = [];
         if (userDialogs is null)
-        {
             // Nothing to add
             return result;
-        }
 
         result.AddRange(userDialogs);
 
-        if (result.Any(userDialog => userDialog.Id == fullProfile.ProfileInfo?.ProfileId))
-        {
-            return result;
-        }
+        if (result.Any(userDialog => userDialog.Id == fullProfile.ProfileInfo?.ProfileId)) return result;
 
         // Player doesn't exist, add them in before returning
         var pmcProfile = fullProfile.CharacterData?.PmcData;
@@ -307,7 +279,7 @@ public class DialogueController(
                     Side = pmcProfile?.Info?.Side,
                     Level = pmcProfile?.Info?.Level,
                     MemberCategory = pmcProfile?.Info?.MemberCategory,
-                    SelectedMemberCategory = pmcProfile?.Info?.SelectedMemberCategory,
+                    SelectedMemberCategory = pmcProfile?.Info?.SelectedMemberCategory
                 }
             }
         );
@@ -328,12 +300,8 @@ public class DialogueController(
         var newAttachmentCount = 0;
         var activeMessages = GetActiveMessagesFromDialog(sessionId, dialogueId);
         foreach (var message in activeMessages)
-        {
             if (message.HasRewards.GetValueOrDefault(false) && !message.RewardCollected.GetValueOrDefault(false))
-            {
                 newAttachmentCount++;
-            }
-        }
 
         return newAttachmentCount;
     }
@@ -382,7 +350,7 @@ public class DialogueController(
                     new
                     {
                         sessionId,
-                        dialogueId,
+                        dialogueId
                     }
                 )
             );
@@ -410,7 +378,7 @@ public class DialogueController(
                     new
                     {
                         sessionId,
-                        dialogueId,
+                        dialogueId
                     }
                 )
             );
@@ -437,7 +405,7 @@ public class DialogueController(
                     "dialogue-unable_to_find_dialogs_in_profile",
                     new
                     {
-                        sessionId,
+                        sessionId
                     }
                 )
             );
@@ -498,11 +466,13 @@ public class DialogueController(
     {
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
-        return (_dialogueChatBots.FirstOrDefault(cb => 
-                        cb.GetChatBot().Id == request.DialogId)
-                    ?.HandleMessage(sessionId, request) 
-                ?? request.DialogId) 
-               ?? string.Empty;
+        return (_dialogueChatBots.FirstOrDefault(
+                        cb =>
+                            cb.GetChatBot().Id == request.DialogId
+                    )
+                    ?.HandleMessage(sessionId, request) ??
+                request.DialogId) ??
+               string.Empty;
     }
 
     /// <summary>
@@ -521,10 +491,7 @@ public class DialogueController(
     /// <param name="sessionId">Session id</param>
     private void RemoveExpiredItemsFromMessages(string sessionId)
     {
-        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
-        {
-            RemoveExpiredItemsFromMessage(sessionId, dialogueId.Key);
-        }
+        foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId)) RemoveExpiredItemsFromMessage(sessionId, dialogueId.Key);
     }
 
     /// <summary>
@@ -535,18 +502,11 @@ public class DialogueController(
     private void RemoveExpiredItemsFromMessage(string sessionId, string dialogueId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
-        if (!dialogs.TryGetValue(dialogueId, out var dialog))
-        {
-            return;
-        }
+        if (!dialogs.TryGetValue(dialogueId, out var dialog)) return;
 
         foreach (var message in dialog.Messages ?? [])
-        {
             if (MessageHasExpired(message))
-            {
                 message.Items = new MessageItems();
-            }
-        }
     }
 
     /**
@@ -564,30 +524,25 @@ public class DialogueController(
         // To avoid needing to jump between profiles, auto-accept all friend requests
         var friendProfile = _profileHelper.GetFullProfile(request.To);
         if (friendProfile?.CharacterData?.PmcData is null)
-        {
             return new FriendRequestSendResponse
             {
                 Status = BackendErrorCodes.PlayerProfileNotFound,
                 RequestId = "", // Unused in an error state
-                RetryAfter = 600,
+                RetryAfter = 600
             };
-        }
 
         // Only add the profile to the friends list if it doesn't already exist
         var profile = _saveServer.GetProfile(sessionID);
-        if (!profile.FriendProfileIds.Contains(request.To))
-        {
-            profile.FriendProfileIds.Add(request.To);
-        }
+        if (!profile.FriendProfileIds.Contains(request.To)) profile.FriendProfileIds.Add(request.To);
 
         // We need to delay this so that the friend request gets properly added to the clientside list before we accept it
         _ = new Timer(
             _ =>
             {
-                WsFriendsListAccept notification = new WsFriendsListAccept
+                var notification = new WsFriendsListAccept
                 {
                     EventType = NotificationEventType.friendListRequestAccept,
-                    Profile = _profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData),
+                    Profile = _profileHelper.GetChatRoomMemberFromPmcProfile(friendProfile.CharacterData.PmcData)
                 };
                 _notificationSendHelper.SendMessage(sessionID, notification);
             },
@@ -608,9 +563,6 @@ public class DialogueController(
     {
         var profile = _saveServer.GetProfile(sessionID);
         var friendIndex = profile.FriendProfileIds.IndexOf(request.FriendId);
-        if (friendIndex != -1)
-        {
-            profile.FriendProfileIds.RemoveAt(friendIndex);
-        }
+        if (friendIndex != -1) profile.FriendProfileIds.RemoveAt(friendIndex);
     }
 }

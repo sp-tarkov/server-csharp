@@ -28,13 +28,13 @@ public record ItemEventActions
     public const string REMOVE_EQUIPMENT_BUILD = "RemoveEquipmentBuild";
     public const string REDEEM_PROFILE_REWARD = "RedeemProfileReward";
     public const string SET_FAVORITE_ITEMS = "SetFavoriteItems";
-    public const string QUEST_FAIL = "QuestFail"; 
+    public const string QUEST_FAIL = "QuestFail";
     public const string PIN_LOCK = "PinLock";
     public const string ADD_NOTE = "AddNote";
     public const string EDIT_NOTE = "EditNote";
     public const string DELETE_NOTE = "DeleteNote";
     public const string REPEATABLE_QUEST_CHANGE = "RepeatableQuestChange";
-    public const string QUEST_HANDOVER = "QuestHandover"; 
+    public const string QUEST_HANDOVER = "QuestHandover";
     public const string QUEST_COMPLETE = "QuestComplete";
     public const string QUEST_ACCEPT = "QuestAccept";
     public const string RAGFAIR_RENEW_OFFER = "RagFairRenewOffer";

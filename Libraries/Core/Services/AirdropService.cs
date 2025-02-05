@@ -15,8 +15,8 @@ namespace Core.Services;
 
 [Injectable]
 public class AirdropService(
-    ConfigServer configServer, 
-    ISptLogger<AirdropService> _logger, 
+    ConfigServer configServer,
+    ISptLogger<AirdropService> _logger,
     LootGenerator _lootGenerator,
     HashUtil _hashUtil,
     WeightedRandomHelper _weightedRandomHelper,
@@ -28,7 +28,8 @@ public class AirdropService(
 
     public GetAirdropLootResponse GenerateCustomAirdropLoot(GetAirdropLootRequest request)
     {
-        if (!_airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation)) {
+        if (!_airdropConfig.CustomAirdropMapping.TryGetValue(request.ContainerId, out var customAirdropInformation))
+        {
             _logger.Warning(
                 $"Unable to find data for custom airdrop {request.ContainerId}, returning random airdrop instead"
             );
@@ -49,10 +50,7 @@ public class AirdropService(
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
         var airdropType = forcedAirdropType != null ? forcedAirdropType : ChooseAirdropType();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Chose: {airdropType} for airdrop loot");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Chose: {airdropType} for airdrop loot");
 
         // Common/weapon/etc
         var airdropConfig = GetAirdropLootConfigByType(airdropType);
@@ -69,14 +67,15 @@ public class AirdropService(
         crateLoot.Insert(0, airdropCrateItem);
 
         // Reparent loot items to crate we added above
-        foreach (var item in crateLoot) {
-            if (item.Id == airdropCrateItem.Id) {
+        foreach (var item in crateLoot)
+        {
+            if (item.Id == airdropCrateItem.Id)
                 // Crate itself, don't alter
                 continue;
-            }
 
             // no parentId = root item, make item have create as parent
-            if (item.ParentId is null) {
+            if (item.ParentId is null)
+            {
                 item.ParentId = airdropCrateItem.Id;
                 item.SlotId = "main";
             }
@@ -92,17 +91,19 @@ public class AirdropService(
     /// <returns>Item</returns>
     protected Item GetAirdropCrateItem(SptAirdropTypeEnum airdropType)
     {
-        var airdropContainer = new Item {
+        var airdropContainer = new Item
+        {
             Id = _hashUtil.Generate(),
             Template = "", // picked later
             Upd = new Upd()
-        {
+            {
                 SpawnedInSession = true,
-                StackObjectsCount = 1,
-            },
+                StackObjectsCount = 1
+            }
         };
 
-        switch (airdropType) {
+        switch (airdropType)
+        {
             case SptAirdropTypeEnum.foodMedical:
                 airdropContainer.Template = ItemTpl.LOOTCONTAINER_AIRDROP_MEDICAL_CRATE;
                 break;
@@ -145,7 +146,8 @@ public class AirdropService(
     protected AirdropLootRequest GetAirdropLootConfigByType(SptAirdropTypeEnum? airdropType)
     {
         var lootSettingsByType = _airdropConfig.Loot[airdropType.ToString()];
-        if (lootSettingsByType is null) {
+        if (lootSettingsByType is null)
+        {
             _logger.Error(
                 _localisationService.GetText("location-unable_to_find_airdrop_drop_config_of_type", airdropType)
             );
@@ -167,7 +169,8 @@ public class AirdropService(
         itemBlacklist.UnionWith(_itemFilterService.GetBossItems());
         itemBlacklist.UnionWith(itemsMatchingTypeBlacklist);
 
-        return new AirdropLootRequest {
+        return new AirdropLootRequest
+        {
             Icon = lootSettingsByType.Icon,
             WeaponPresetCount = lootSettingsByType.WeaponPresetCount,
             ArmorPresetCount = lootSettingsByType.ArmorPresetCount,
@@ -180,7 +183,7 @@ public class AirdropService(
             ArmorLevelWhitelist = lootSettingsByType.ArmorLevelWhitelist,
             AllowBossItems = lootSettingsByType.AllowBossItems,
             UseForcedLoot = lootSettingsByType.UseForcedLoot,
-            ForcedLoot = lootSettingsByType.ForcedLoot,
+            ForcedLoot = lootSettingsByType.ForcedLoot
         };
     }
 }

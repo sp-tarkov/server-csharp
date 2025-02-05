@@ -53,11 +53,12 @@ public class JsonUtil
             new BaseInteractionRequestDataConverter()
         }
     };
+
     private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
     {
         WriteIndented = true
     };
-    
+
 
     public T? Deserialize<T>(string? json)
     {

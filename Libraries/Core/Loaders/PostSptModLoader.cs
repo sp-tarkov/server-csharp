@@ -15,15 +15,14 @@ public class PostSptModLoader(
 {
     public async Task OnLoad()
     {
-        if (ProgramStatics.MODS()) {
+        if (ProgramStatics.MODS())
+        {
             // await _postSptModLoader.load();
             // TODO: Huh?
         }
+
         _logger.Info("Loading PostSptMods...");
-        foreach (var postSptLoadMod in _postSptLoadMods)
-        {
-            postSptLoadMod.PostSptLoad();
-        }
+        foreach (var postSptLoadMod in _postSptLoadMods) postSptLoadMod.PostSptLoad();
 
         _logger.Info("Finished loading PostSptMods...");
     }

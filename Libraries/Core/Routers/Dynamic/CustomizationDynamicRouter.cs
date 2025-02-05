@@ -24,7 +24,8 @@ public class CustomizationDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID))
+                ) => _customizationCallbacks.GetTraderSuits(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

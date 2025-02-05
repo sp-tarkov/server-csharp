@@ -22,10 +22,7 @@ public class PlayerService(
         {
             accExp += expTable[i].Experience ?? 0;
 
-            if (pmcData.Info.Experience < accExp)
-            {
-                break;
-            }
+            if (pmcData.Info.Experience < accExp) break;
 
             pmcData.Info.Level = i + 1;
         }

@@ -39,14 +39,16 @@ public class QuestConditionHelper
         string questType,
         Func<QuestCondition, List<QuestCondition>>? furtherFilter = null)
     {
-        var filteredQuests = questConditions.Where((c) => {
-            if (c.ConditionType == questType)
-            {
-                // return true or run the passed in function
-                return furtherFilter is null || furtherFilter(c).Any();
-            }
-            return false;
-        }).ToList();
+        var filteredQuests = questConditions.Where(
+                (c) =>
+                {
+                    if (c.ConditionType == questType)
+                        // return true or run the passed in function
+                        return furtherFilter is null || furtherFilter(c).Any();
+                    return false;
+                }
+            )
+            .ToList();
 
         return filteredQuests;
     }

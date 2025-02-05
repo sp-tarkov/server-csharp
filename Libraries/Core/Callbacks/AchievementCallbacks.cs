@@ -6,8 +6,7 @@ using Core.Utils;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(AchievementCallbacks))]
-public class AchievementCallbacks
-(
+public class AchievementCallbacks(
     AchievementController _achievementController,
     HttpResponseUtil _httpResponseUtil
 )

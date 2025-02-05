@@ -25,7 +25,8 @@ public class ClientLogStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => _clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
-                typeof(ClientLogRequest)),
+                typeof(ClientLogRequest)
+            ),
             new RouteAction(
                 "/singleplayer/release",
                 (
@@ -33,7 +34,8 @@ public class ClientLogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _clientLogCallbacks.ReleaseNotes()),
+                ) => _clientLogCallbacks.ReleaseNotes()
+            ),
             new RouteAction(
                 "/singleplayer/enableBSGlogging",
                 (
@@ -41,7 +43,8 @@ public class ClientLogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _clientLogCallbacks.BsgLogging())
+                ) => _clientLogCallbacks.BsgLogging()
+            )
         ]
     )
     {

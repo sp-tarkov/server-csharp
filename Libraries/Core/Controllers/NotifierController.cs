@@ -11,7 +11,7 @@ namespace Core.Controllers;
 public class NotifierController(
     HttpServerHelper _httpServerHelper,
     NotifierHelper _notifierHelper
-    )
+)
 {
     /// <summary>
     /// Resolve an array of session notifications.
@@ -59,9 +59,9 @@ public class NotifierController(
 
         //        _notificationService.UpdateMessageOnQueue(sessionID, []);
         //        resolve(messages);
-            //};
+        //};
 
-            // immediately check
+        // immediately check
         //    checkNotifications();
         //});
     }

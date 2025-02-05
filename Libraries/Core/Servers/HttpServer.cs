@@ -34,10 +34,7 @@ public class HttpServer(
 
         app?.Use((HttpContext req, RequestDelegate _) => { return Task.Factory.StartNew(() => HandleFallback(req)); });
         started = true;
-        if (app is null)
-        {
-            throw new Exception($"Application context is null in HttpServer.Load()");
-        }
+        if (app is null) throw new Exception($"Application context is null in HttpServer.Load()");
 
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }

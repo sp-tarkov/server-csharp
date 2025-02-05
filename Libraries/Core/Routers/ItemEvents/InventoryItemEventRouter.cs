@@ -14,8 +14,8 @@ namespace Core.Routers.ItemEvents;
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class InventoryItemEventRouter : ItemEventRouterDefinition
 {
-    protected InventoryCallbacks _inventoryCallbacks;
     protected HideoutCallbacks _hideoutCallbacks;
+    protected InventoryCallbacks _inventoryCallbacks;
 
     public InventoryItemEventRouter
     (
@@ -29,37 +29,39 @@ public class InventoryItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute(ItemEventActions.MOVE, false),
-            new HandledRoute(ItemEventActions.REMOVE, false),
-            new HandledRoute(ItemEventActions.SPLIT, false),
-            new HandledRoute(ItemEventActions.MERGE, false),
-            new HandledRoute(ItemEventActions.TRANSFER, false),
-            new HandledRoute(ItemEventActions.SWAP, false),
-            new HandledRoute(ItemEventActions.FOLD, false),
-            new HandledRoute(ItemEventActions.TOGGLE, false),
-            new HandledRoute(ItemEventActions.TAG, false),
-            new HandledRoute(ItemEventActions.BIND, false),
-            new HandledRoute(ItemEventActions.UNBIND, false),
-            new HandledRoute(ItemEventActions.EXAMINE, false),
-            new HandledRoute(ItemEventActions.READ_ENCYCLOPEDIA, false),
-            new HandledRoute(ItemEventActions.APPLY_INVENTORY_CHANGES, false),
-            new HandledRoute(ItemEventActions.CREATE_MAP_MARKER, false),
-            new HandledRoute(ItemEventActions.DELETE_MAP_MARKER, false),
-            new HandledRoute(ItemEventActions.EDIT_MAP_MARKER, false),
-            new HandledRoute(ItemEventActions.OPEN_RANDOM_LOOT_CONTAINER, false),
-            new HandledRoute(ItemEventActions.HIDEOUT_QTE_EVENT, false),
-            new HandledRoute(ItemEventActions.REDEEM_PROFILE_REWARD, false),
-            new HandledRoute(ItemEventActions.SET_FAVORITE_ITEMS, false),
-            new HandledRoute(ItemEventActions.QUEST_FAIL, false),
-            new HandledRoute(ItemEventActions.PIN_LOCK, false)
+            new(ItemEventActions.MOVE, false),
+            new(ItemEventActions.REMOVE, false),
+            new(ItemEventActions.SPLIT, false),
+            new(ItemEventActions.MERGE, false),
+            new(ItemEventActions.TRANSFER, false),
+            new(ItemEventActions.SWAP, false),
+            new(ItemEventActions.FOLD, false),
+            new(ItemEventActions.TOGGLE, false),
+            new(ItemEventActions.TAG, false),
+            new(ItemEventActions.BIND, false),
+            new(ItemEventActions.UNBIND, false),
+            new(ItemEventActions.EXAMINE, false),
+            new(ItemEventActions.READ_ENCYCLOPEDIA, false),
+            new(ItemEventActions.APPLY_INVENTORY_CHANGES, false),
+            new(ItemEventActions.CREATE_MAP_MARKER, false),
+            new(ItemEventActions.DELETE_MAP_MARKER, false),
+            new(ItemEventActions.EDIT_MAP_MARKER, false),
+            new(ItemEventActions.OPEN_RANDOM_LOOT_CONTAINER, false),
+            new(ItemEventActions.HIDEOUT_QTE_EVENT, false),
+            new(ItemEventActions.REDEEM_PROFILE_REWARD, false),
+            new(ItemEventActions.SET_FAVORITE_ITEMS, false),
+            new(ItemEventActions.QUEST_FAIL, false),
+            new(ItemEventActions.PIN_LOCK, false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case ItemEventActions.MOVE:
                 return _inventoryCallbacks.MoveItem(pmcData, body as InventoryMoveRequestData, sessionID, output);
             case ItemEventActions.REMOVE:
@@ -105,7 +107,7 @@ public class InventoryItemEventRouter : ItemEventRouterDefinition
             case ItemEventActions.QUEST_FAIL:
                 return _inventoryCallbacks.FailQuest(pmcData, body as FailQuestRequestData, sessionID, output);
             case ItemEventActions.PIN_LOCK:
-                return _inventoryCallbacks.PinOrLock(pmcData, body as  PinOrLockItemRequest, sessionID, output);
+                return _inventoryCallbacks.PinOrLock(pmcData, body as PinOrLockItemRequest, sessionID, output);
             default:
                 throw new Exception($"InventoryItemEventRouter being used when it cant handle route {url}");
         }

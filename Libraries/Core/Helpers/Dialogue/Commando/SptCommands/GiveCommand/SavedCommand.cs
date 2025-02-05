@@ -7,7 +7,6 @@ public class SavedCommand
 {
     public SavedCommand()
     {
-        
     }
 
     public SavedCommand(int quantity, List<string> potentialItemNames, string locale)

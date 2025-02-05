@@ -24,18 +24,20 @@ public class QuestItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("QuestAccept", false),
-            new HandledRoute("QuestComplete", false),
-            new HandledRoute("QuestHandover", false),
-            new HandledRoute("RepeatableQuestChange", false)
+            new("QuestAccept", false),
+            new("QuestComplete", false),
+            new("QuestHandover", false),
+            new("RepeatableQuestChange", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case "QuestAccept":
                 return _questCallbacks.AcceptQuest(pmcData, body as AcceptQuestRequestData, sessionID);
             case "QuestComplete":

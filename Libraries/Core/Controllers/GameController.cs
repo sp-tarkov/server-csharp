@@ -44,12 +44,12 @@ public class GameController(
     ICloner _cloner
 )
 {
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected double _deviation = 0.0001;
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected double _deviation = 0.0001;
 
     /// <summary>
     /// Handle client/game/start
@@ -82,40 +82,25 @@ public class GameController(
             _logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
             return;
         }
-        
+
         fullProfile.SptData ??= new Spt { Version = "Replace_me" };
         fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
         fullProfile.FriendProfileIds ??= [];
-        
-        if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
-        {
-            return;
-        }
-        
+
+        if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value) return;
+
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
         fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
 
-        if (fullProfile.DialogueRecords is not null)
-        {
-            _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
-        }
+        if (fullProfile.DialogueRecords is not null) _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
 
-        if(_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
-        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
-        {
-            _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
-        }
+        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues) _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
 
-        if (pmcProfile.Health is not null)
-        {
-            UpdateProfileHealthValues(pmcProfile);
-        }
+        if (pmcProfile.Health is not null) UpdateProfileHealthValues(pmcProfile);
 
         if (pmcProfile.Inventory is not null)
         {
@@ -143,10 +128,7 @@ public class GameController(
             CheckForAndRemoveUndefinedDialogues(fullProfile);
         }
 
-        if (pmcProfile.Skills?.Common is not null)
-        {
-            WarnOnActiveBotReloadSkill(pmcProfile);
-        }
+        if (pmcProfile.Skills?.Common is not null) WarnOnActiveBotReloadSkill(pmcProfile);
 
         _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
     }
@@ -160,8 +142,9 @@ public class GameController(
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var gameTime = profile?.Stats?.Eft?.OverallCounters?.Items?
-            .FirstOrDefault(c => c.Key!.Contains("LifeTime") 
-                                 && c.Key.Contains("Pmc"))?.Value ?? 0D;
+                           .FirstOrDefault(c => c.Key!.Contains("LifeTime") && c.Key.Contains("Pmc"))
+                           ?.Value ??
+                       0D;
 
         var config = new GameConfigResponse
         {
@@ -173,7 +156,7 @@ public class GameController(
             Aid = profile?.Aid,
             Taxonomy = 6,
             ActiveProfileId = sessionId,
-            Backend = new()
+            Backend = new Backend
             {
                 Lobby = _httpServerHelper.GetBackendUrl(),
                 Trading = _httpServerHelper.GetBackendUrl(),
@@ -185,7 +168,7 @@ public class GameController(
             UtcTime = _timeUtil.GetTimeStamp(),
             TotalInGame = gameTime,
             SessionMode = "pve",
-            PurchasedGames = new()
+            PurchasedGames = new PurchasedGames
             {
                 IsEftPurchased = true,
                 IsArenaPurchased = false
@@ -205,7 +188,7 @@ public class GameController(
         string sessionId,
         GameModeRequestData requestData)
     {
-        return new()
+        return new GameModeResponse
         {
             GameMode = "pve",
             BackendUrl = _httpServerHelper.GetBackendUrl()
@@ -291,7 +274,7 @@ public class GameController(
     /// <returns></returns>
     public SurveyResponseData GetSurvey(string sessionId)
     {
-        return this._coreConfig.Survey;
+        return _coreConfig.Survey;
     }
 
     /// <summary>
@@ -301,10 +284,7 @@ public class GameController(
     private void WarnOnActiveBotReloadSkill(PmcData pmcProfile)
     {
         var botReloadSkill = _profileHelper.GetSkillFromProfile(pmcProfile, SkillTypes.BotReload);
-        if (botReloadSkill?.Progress > 0)
-        {
-            _logger.Warning(_localisationService.GetText("server_start_player_active_botreload_skill"));
-        }
+        if (botReloadSkill?.Progress > 0) _logger.Warning(_localisationService.GetText("server_start_player_active_botreload_skill"));
     }
 
     /// <summary>
@@ -323,40 +303,35 @@ public class GameController(
             // Base values
             double energyRegenPerHour = 60;
             double hydrationRegenPerHour = 60;
-            double hpRegenPerHour = 456.6;
+            var hpRegenPerHour = 456.6;
 
             // Set new values, whatever is smallest
             energyRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.EnergyRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
-            
+                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+
             hydrationRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.HydrationRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
-            
+                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
+
             hpRegenPerHour += pmcProfile.Bonuses!
                 .Where(bonus => bonus.Type == BonusType.HealthRegeneration)
-                .Aggregate(0d, (sum, bonus) => sum + (bonus.Value!.Value));
+                .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
 
             // Player has energy deficit
-            if (Math.Abs((pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum) ?? 1) <= _deviation)
+            if (Math.Abs(pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum ?? 1) <= _deviation)
             {
                 // Set new value, whatever is smallest
                 pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
-                if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum)
-                {
-                    pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
-                }
+                if (pmcProfile.Health.Energy.Current > pmcProfile.Health.Energy.Maximum) pmcProfile.Health.Energy.Current = pmcProfile.Health.Energy.Maximum;
             }
 
             // Player has hydration deficit
-            if (Math.Abs((pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum) ?? 1) <= _deviation)
+            if (Math.Abs(pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum ?? 1) <= _deviation)
             {
                 pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
                 if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
-                {
                     pmcProfile.Health.Hydration.Current = pmcProfile.Health.Hydration.Maximum;
-                }
             }
 
             // Check all body parts
@@ -364,21 +339,12 @@ public class GameController(
                          .Select(bodyPartKvP => bodyPartKvP.Value))
             {
                 // Check part hp
-                if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
-                {
-                    bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
-                }
+                if (bodyPart.Health!.Current < bodyPart.Health.Maximum) bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
 
-                if (bodyPart.Health.Current > bodyPart.Health.Maximum)
-                {
-                    bodyPart.Health.Current = bodyPart.Health.Maximum;
-                }
+                if (bodyPart.Health.Current > bodyPart.Health.Maximum) bodyPart.Health.Current = bodyPart.Health.Maximum;
 
 
-                if (bodyPart.Effects is null || bodyPart.Effects.Count == 0)
-                {
-                    continue;
-                }
+                if (bodyPart.Effects is null || bodyPart.Effects.Count == 0) continue;
 
                 // Look for effects
                 foreach (var effectKvP in bodyPart.Effects)
@@ -387,10 +353,7 @@ public class GameController(
                     if (effectKvP.Value.Time < 1)
                     {
                         // More than 30 mins has passed
-                        if (diffSeconds > 1800)
-                        {
-                            bodyPart.Effects.Remove(effectKvP.Key);
-                        }
+                        if (diffSeconds > 1800) bodyPart.Effects.Remove(effectKvP.Key);
 
                         continue;
                     }
@@ -398,10 +361,8 @@ public class GameController(
                     // Decrement effect time value by difference between current time and time health was last updated
                     effectKvP.Value.Time -= diffSeconds;
                     if (effectKvP.Value.Time < 1)
-                    {
                         // Effect time was sub 1, set floor it can be
                         effectKvP.Value.Time = 1;
-                    }
                 }
             }
 
@@ -421,16 +382,10 @@ public class GameController(
         var currentTimeStamp = _timeUtil.GetTimeStamp();
 
         // One day post-profile creation
-        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
-        {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
-        }
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds) _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
 
         // Two day post-profile creation
-        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
-        {
-            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
-        }
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2) _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
     }
 
     /**
@@ -438,7 +393,7 @@ public class GameController(
      * @param pmcProfile Player profile
      */
     protected void SendMechanicGiftsToNewProfile(PmcData pmcProfile)
-    { 
+    {
         _giftService.SendGiftWithSilentReceivedCheck("MechanicGiftDay1", pmcProfile.SessionId, 1);
     }
 
@@ -495,27 +450,16 @@ public class GameController(
             var bots = _databaseService.GetBots().Types;
 
             // Official names can only be 15 chars in length
-            if (playerName.Length > _botConfig.BotNameLengthLimit)
-            {
-                return;
-            }
+            if (playerName.Length > _botConfig.BotNameLengthLimit) return;
 
             // Skip if player name exists already
             if (bots!.TryGetValue("bear", out var bearBot))
-            {
                 if (bearBot is not null && bearBot.FirstNames!.Any(x => x == playerName))
-                {
                     bearBot.FirstNames!.Add(playerName);
-                }
-            }
 
             if (bots.TryGetValue("bear", out var usecBot))
-            {
                 if (usecBot is not null && usecBot.FirstNames!.Any(x => x == playerName))
-                {
                     usecBot.FirstNames!.Add(playerName);
-                }
-            }
         }
     }
 
@@ -525,10 +469,7 @@ public class GameController(
     /// <param name="fullProfile">Profile to check for dialog in</param>
     private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
-        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out var _))
-        {
-            fullProfile.DialogueRecords.Remove("undefined");
-        }
+        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out _)) fullProfile.DialogueRecords.Remove("undefined");
     }
 
     /// <summary>
@@ -540,7 +481,7 @@ public class GameController(
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug($"Profile made with: {fullProfile.SptData?.Version}");
-            _logger.Debug($"Server version: {(ProgramStatics.SPT_VERSION()) ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
+            _logger.Debug($"Server version: {ProgramStatics.SPT_VERSION() ?? _coreConfig.SptVersion} {ProgramStatics.COMMIT()}");
             _logger.Debug($"Debug enabled: {ProgramStatics.DEBUG()}");
             _logger.Debug($"Mods enabled: {ProgramStatics.MODS()}");
         }

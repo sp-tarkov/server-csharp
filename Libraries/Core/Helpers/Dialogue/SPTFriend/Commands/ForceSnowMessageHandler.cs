@@ -7,38 +7,37 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace Core.Helpers.Dialogue.SPTFriend.Commands
+namespace Core.Helpers.Dialogue.SPTFriend.Commands;
+
+[Injectable]
+public class ForceSnowMessageHandler(
+    LocalisationService _localisationService,
+    MailSendService _mailSendService,
+    RandomUtil _randomUtil,
+    ConfigServer _configServer) : IChatMessageHandler
 {
-    [Injectable]
-    public class ForceSnowMessageHandler(
-        LocalisationService _localisationService,
-        MailSendService _mailSendService,
-        RandomUtil _randomUtil,
-        ConfigServer _configServer) : IChatMessageHandler
+    private WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+
+    public int GetPriority()
     {
-        private WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+        return 99;
+    }
 
-        public int GetPriority()
-        {
-            return 99;
-        }
+    public bool CanHandle(string message)
+    {
+        return message.ToLower() == "itsonlysnowalan";
+    }
 
-        public bool CanHandle(string message)
-        {
-            return message.ToLower() == "itsonlysnowalan";
-        }
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    {
+        _weatherConfig.OverrideSeason = Season.WINTER;
 
-        public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
-        {
-            _weatherConfig.OverrideSeason = Season.WINTER;
-
-            _mailSendService.SendUserMessageToPlayer(
+        _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-                _randomUtil.GetArrayValue([_localisationService.GetText("chatbot-snow_enabled")]),
+            _randomUtil.GetArrayValue([_localisationService.GetText("chatbot-snow_enabled")]),
             [],
             null
-            );
-        }
+        );
     }
 }

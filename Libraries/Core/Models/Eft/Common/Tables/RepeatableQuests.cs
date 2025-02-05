@@ -78,7 +78,7 @@ public record RepeatableTemplates
 
     [JsonPropertyName("Exploration")]
     public RepeatableQuest? Exploration { get; set; }
-    
+
     [JsonPropertyName("Pickup")]
     public RepeatableQuest? Pickup { get; set; }
 }

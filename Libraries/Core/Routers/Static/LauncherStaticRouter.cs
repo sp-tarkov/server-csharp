@@ -15,55 +15,69 @@ public class LauncherStaticRouter : StaticRouter
         [
             new RouteAction(
                 "/launcher/ping",
-                (url, _, sessionID, _) => launcherCallbacks.Ping(url, null, sessionID)),
+                (url, _, sessionID, _) => launcherCallbacks.Ping(url, null, sessionID)
+            ),
             new RouteAction(
                 "/launcher/server/connect",
-                (_, _, _, _) => launcherCallbacks.Connect()),
+                (_, _, _, _) => launcherCallbacks.Connect()
+            ),
             new RouteAction(
                 "/launcher/profile/login",
                 (url, info, sessionID, _) => launcherCallbacks.Login(url, info as LoginRequestData, sessionID),
-                typeof(LoginRequestData)),
+                typeof(LoginRequestData)
+            ),
             new RouteAction(
                 "/launcher/profile/register",
                 (url, info, sessionID, _) => launcherCallbacks.Register(url, info as RegisterData, sessionID),
-                typeof(RegisterData)),
+                typeof(RegisterData)
+            ),
             new RouteAction(
                 "/launcher/profile/get",
                 (url, info, sessionID, _) => launcherCallbacks.Get(url, info as LoginRequestData, sessionID),
-                typeof(LoginRequestData)),
+                typeof(LoginRequestData)
+            ),
             new RouteAction(
                 "/launcher/profile/change/username",
                 (url, info, sessionID, _) =>
                     launcherCallbacks.ChangeUsername(url, info as ChangeRequestData, sessionID),
-                typeof(ChangeRequestData)),
+                typeof(ChangeRequestData)
+            ),
             new RouteAction(
                 "/launcher/profile/change/password",
                 (url, info, sessionID, _) =>
                     launcherCallbacks.ChangePassword(url, info as ChangeRequestData, sessionID),
-                typeof(ChangeRequestData)),
+                typeof(ChangeRequestData)
+            ),
             new RouteAction(
                 "/launcher/profile/change/wipe",
                 (url, info, sessionID, _) => launcherCallbacks.Wipe(url, info as RegisterData, sessionID),
-                typeof(RegisterData)),
+                typeof(RegisterData)
+            ),
             new RouteAction(
                 "/launcher/profile/remove",
                 (url, info, sessionID, _) => launcherCallbacks.RemoveProfile(url, info as RemoveProfileData, sessionID),
-                typeof(RemoveProfileData)),
+                typeof(RemoveProfileData)
+            ),
             new RouteAction(
                 "/launcher/profile/compatibleTarkovVersion",
-                (_, _, _, _) => launcherCallbacks.GetCompatibleTarkovVersion()),
+                (_, _, _, _) => launcherCallbacks.GetCompatibleTarkovVersion()
+            ),
             new RouteAction(
                 "/launcher/server/version",
-                (_, _, _, _) => launcherCallbacks.GetServerVersion()),
+                (_, _, _, _) => launcherCallbacks.GetServerVersion()
+            ),
             new RouteAction(
                 "/launcher/server/loadedServerMods",
-                (_, _, _, _) => launcherCallbacks.GetLoadedServerMods()),
+                (_, _, _, _) => launcherCallbacks.GetLoadedServerMods()
+            ),
             new RouteAction(
                 "/launcher/server/serverModsUsedByProfile",
                 (url, info, sessionID, _) =>
                     launcherCallbacks.GetServerModsProfileUsed(url, info as EmptyRequestData, sessionID),
-                typeof(EmptyRequestData))
-        ])
+                typeof(EmptyRequestData)
+            )
+        ]
+    )
     {
     }
 }

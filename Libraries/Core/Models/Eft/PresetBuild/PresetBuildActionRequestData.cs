@@ -4,7 +4,7 @@ using Core.Models.Utils;
 
 namespace Core.Models.Eft.PresetBuild;
 
-public record PresetBuildActionRequestData  : IRequestData
+public record PresetBuildActionRequestData : IRequestData
 {
     [JsonPropertyName("Action")]
     public string? Action { get; set; }

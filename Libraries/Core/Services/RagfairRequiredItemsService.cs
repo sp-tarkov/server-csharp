@@ -10,7 +10,6 @@ public class RagfairRequiredItemsService(
     RagfairOfferService _ragfairOfferService,
     PaymentHelper _paymentHelper)
 {
-
     protected ConcurrentDictionary<string, List<RagfairOffer>> _requiredItemsCache;
 
     public List<RagfairOffer>? GetRequiredItemsById(string searchId)
@@ -22,20 +21,18 @@ public class RagfairRequiredItemsService(
     public void BuildRequiredItemTable()
     {
         _requiredItemsCache = new ConcurrentDictionary<string, List<RagfairOffer>>();
-        foreach (var offer in _ragfairOfferService.GetOffers()) {
-            foreach (var requirement in offer.Requirements) {
-                if (_paymentHelper.IsMoneyTpl(requirement.Template))
-                {
-                    // This would just be too noisy
-                    continue;
-                }
+        foreach (var offer in _ragfairOfferService.GetOffers())
+        foreach (var requirement in offer.Requirements)
+        {
+            if (_paymentHelper.IsMoneyTpl(requirement.Template))
+                // This would just be too noisy
+                continue;
 
-                // Ensure key is init
-                _requiredItemsCache.TryAdd(requirement.Template, []);
+            // Ensure key is init
+            _requiredItemsCache.TryAdd(requirement.Template, []);
 
-                // Add matching offer
-                _requiredItemsCache.GetValueOrDefault(requirement.Template)?.Add(offer);
-            }
+            // Add matching offer
+            _requiredItemsCache.GetValueOrDefault(requirement.Template)?.Add(offer);
         }
     }
 }

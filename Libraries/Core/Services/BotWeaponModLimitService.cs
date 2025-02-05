@@ -26,9 +26,9 @@ public class BotWeaponModLimitService(
     /// <returns>BotModLimits object</returns>
     public BotModLimits GetWeaponModLimits(string botRole)
     {
-        return new()
+        return new BotModLimits
         {
-            Scope = new() { Count = 0 },
+            Scope = new ItemCount { Count = 0 },
             ScopeMax = _botConfig.Equipment[botRole]?.WeaponModLimits?.ScopeLimit,
             ScopeBaseTypes =
             [
@@ -38,13 +38,13 @@ public class BotWeaponModLimitService(
                 BaseClasses.COMPACT_COLLIMATOR,
                 BaseClasses.SPECIAL_SCOPE
             ],
-            FlashlightLaser = new() { Count = 0 },
+            FlashlightLaser = new ItemCount { Count = 0 },
             FlashlightLaserMax = _botConfig.Equipment[botRole]?.WeaponModLimits?.LightLaserLimit,
             FlashlightLaserBaseTypes =
             [
                 BaseClasses.TACTICAL_COMBO,
                 BaseClasses.FLASHLIGHT,
-                BaseClasses.PORTABLE_RANGE_FINDER,
+                BaseClasses.PORTABLE_RANGE_FINDER
             ]
         };
     }
@@ -80,29 +80,21 @@ public class BotWeaponModLimitService(
                             [
                                 BaseClasses.ASSAULT_SCOPE,
                                 BaseClasses.OPTIC_SCOPE,
-                                BaseClasses.SPECIAL_SCOPE,
+                                BaseClasses.SPECIAL_SCOPE
                             ]
                         )
                 ))
-            {
                 return false;
-            }
 
             return true;
         }
 
         // Mods parent is scope and mod is scope, allow it (adds those mini-sights to the tops of sights)
         var modIsScope = _itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.ScopeBaseTypes);
-        if (_itemHelper.IsOfBaseclasses(modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope)
-        {
-            return false;
-        }
+        if (_itemHelper.IsOfBaseclasses(modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope) return false;
 
         // If mod is a scope , Exit early
-        if (modIsScope)
-        {
-            return WeaponModLimitReached(modTemplate.Id, modLimits.Scope, modLimits.ScopeMax ?? 0, botRole);
-        }
+        if (modIsScope) return WeaponModLimitReached(modTemplate.Id, modLimits.Scope, modLimits.ScopeMax ?? 0, botRole);
 
         // Don't allow multple mounts on a weapon (except when mount is on another mount)
         // Fail when:
@@ -115,21 +107,17 @@ public class BotWeaponModLimitService(
             !_itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any((slot) => slot.Name == "mod_scope")
            )
-        {
             return true;
-        }
 
         // If mod is a light/laser, return if limit reached
         var modIsLightOrLaser = _itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.FlashlightLaserBaseTypes);
         if (modIsLightOrLaser)
-        {
             return WeaponModLimitReached(
                 modTemplate.Id,
                 modLimits.FlashlightLaser,
                 modLimits.FlashlightLaserMax ?? 0,
                 botRole
             );
-        }
 
         // Mod is a mount that can hold only flashlights ad limit is reached (dont want to add empty mounts if limit is reached)
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
@@ -137,9 +125,7 @@ public class BotWeaponModLimitService(
             _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any((slot) => slot.Name == "mod_flashlight")
            )
-        {
             return true;
-        }
 
         return false;
     }
@@ -159,18 +145,13 @@ public class BotWeaponModLimitService(
         string botRole)
     {
         // No value or 0
-        if (maxLimit is null || maxLimit is 0)
-        {
-            return false;
-        }
+        if (maxLimit is null || maxLimit is 0) return false;
 
         // Has mod limit for bot type been reached
         if (currentCount.Count >= maxLimit)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
                 _logger.Debug($"[{botRole}] scope limit reached! tried to add {modTpl} but scope count is {currentCount.Count}");
-            }
             return true;
         }
 

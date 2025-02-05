@@ -23,17 +23,19 @@ public class TradeItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("TradingConfirm", false),
-            new HandledRoute("RagFairBuyOffer", false),
-            new HandledRoute("SellAllFromSavage", false)
+            new("TradingConfirm", false),
+            new("RagFairBuyOffer", false),
+            new("SellAllFromSavage", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case "TradingConfirm":
                 return _tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID);
             case "RagFairBuyOffer":

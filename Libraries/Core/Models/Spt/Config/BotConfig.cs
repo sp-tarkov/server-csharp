@@ -248,7 +248,7 @@ public record PresetBatch
 
     [JsonPropertyName("shooterBTR")]
     public int ShooterBTR { get; set; }
-    
+
     [JsonExtensionData]
     public IDictionary<string, object> AdditionalData { get; set; }
 }
@@ -458,7 +458,7 @@ public record NighttimeChanges
     /// </summary>
     [JsonPropertyName("equipmentModsModifiers")]
     public Dictionary<string, float> EquipmentModsModifiers { get; set; }
-    
+
     [JsonPropertyName("weaponModsModifiers")]
     public Dictionary<string, float> WeaponModsModifiers { get; set; } // TODO: currently not in use anywhere
 }

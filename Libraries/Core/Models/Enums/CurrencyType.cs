@@ -1,10 +1,9 @@
-namespace Core.Models.Enums
+namespace Core.Models.Enums;
+
+public enum CurrencyType
 {
-    public enum CurrencyType
-    {
-        RUB,
-        USD,
-        EUR,
-        GP
-    }
+    RUB,
+    USD,
+    EUR,
+    GP
 }

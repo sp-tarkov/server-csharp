@@ -10,11 +10,11 @@ namespace Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected ISptLogger<ConfigServer> _logger;
-    protected JsonUtil _jsonUtil;
-    protected FileUtil _fileUtil;
-    protected Dictionary<string, object> configs = new();
     protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected FileUtil _fileUtil;
+    protected JsonUtil _jsonUtil;
+    protected ISptLogger<ConfigServer> _logger;
+    protected Dictionary<string, object> configs = new();
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,
@@ -51,10 +51,7 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug("Importing configs...");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("Importing configs...");
 
         // Get all filepaths
         var filepath = "./assets/configs/";

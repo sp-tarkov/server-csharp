@@ -9,20 +9,24 @@ using Server;
 namespace Core.Utils;
 
 [Injectable]
-public class WatermarkLocale {
+public class WatermarkLocale
+{
     protected List<string> description;
-    protected List<string> warning;
     protected List<string> modding;
+    protected List<string> warning;
 
-    public WatermarkLocale(LocalisationService localisationService) {
-        description = [
+    public WatermarkLocale(LocalisationService localisationService)
+    {
+        description =
+        [
             localisationService.GetText("watermark-discord_url"),
             "",
             localisationService.GetText("watermark-free_of_charge"),
             localisationService.GetText("watermark-paid_scammed"),
-            localisationService.GetText("watermark-commercial_use_prohibited"),
+            localisationService.GetText("watermark-commercial_use_prohibited")
         ];
-        warning = [
+        warning =
+        [
             "",
             localisationService.GetText("watermark-testing_build"),
             localisationService.GetText("watermark-no_support"),
@@ -30,38 +34,53 @@ public class WatermarkLocale {
             $"{localisationService.GetText("watermark-report_issues_to")}:",
             localisationService.GetText("watermark-issue_tracker_url"),
             "",
-            localisationService.GetText("watermark-use_at_own_risk"),
+            localisationService.GetText("watermark-use_at_own_risk")
         ];
-        modding = [
+        modding =
+        [
             "",
             localisationService.GetText("watermark-modding_disabled"),
             "",
             localisationService.GetText("watermark-not_an_issue"),
-            localisationService.GetText("watermark-do_not_report"),
+            localisationService.GetText("watermark-do_not_report")
         ];
     }
 
-    public List<string> GetDescription() => description;
-    public List<string> GetWarning() => warning;
-    public List<string> GetModding() => modding;
+    public List<string> GetDescription()
+    {
+        return description;
+    }
+
+    public List<string> GetWarning()
+    {
+        return warning;
+    }
+
+    public List<string> GetModding()
+    {
+        return modding;
+    }
 }
 
 [Injectable]
-public class Watermark {
+public class Watermark
+{
+    protected ConfigServer _configServer;
+    protected LocalisationService _localisationService;
+
+    protected ISptLogger<Watermark> _logger;
+    protected WatermarkLocale _watermarkLocale;
     protected CoreConfig sptConfig;
     protected List<string> text = [];
     protected string versionLabel = "";
 
-    protected ISptLogger<Watermark> _logger;
-    protected ConfigServer _configServer;
-    protected LocalisationService _localisationService;
-    protected WatermarkLocale _watermarkLocale;
     public Watermark(
         ISptLogger<Watermark> logger,
         ConfigServer configServer,
         LocalisationService localisationService,
         WatermarkLocale watermarkLocale
-    ) {
+    )
+    {
         _logger = logger;
         _configServer = configServer;
         _localisationService = localisationService;
@@ -81,20 +100,14 @@ public class Watermark {
         text = [versionLabel];
         text = [..text, ..description];
 
-        
-        if (ProgramStatics.DEBUG()) {
-            text.AddRange(warning);
-        }
-        if (!ProgramStatics.MODS()) {
-            text.AddRange(modding);
-        }
-        
 
-        if (sptConfig.CustomWatermarkLocaleKeys?.Count > 0) {
-            foreach (var key in sptConfig.CustomWatermarkLocaleKeys) {
+        if (ProgramStatics.DEBUG()) text.AddRange(warning);
+        if (!ProgramStatics.MODS()) text.AddRange(modding);
+
+
+        if (sptConfig.CustomWatermarkLocaleKeys?.Count > 0)
+            foreach (var key in sptConfig.CustomWatermarkLocaleKeys)
                 text.AddRange(["", _localisationService.GetText(key)]);
-            }
-        }
 
         SetTitle();
         ResetCursor();
@@ -106,11 +119,13 @@ public class Watermark {
      * @param withEftVersion Include the eft version this spt version was made for
      * @returns string
      */
-    public string GetVersionTag(bool withEftVersion = false) {
+    public string GetVersionTag(bool withEftVersion = false)
+    {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
         var versionTag = /*ProgramStatics.DEBUG*/ $"{sptVersion} - {_localisationService.GetText("bleeding_edge_build")}";
 
-        if (withEftVersion) {
+        if (withEftVersion)
+        {
             var tarkovVersion = sptConfig.CompatibleTarkovVersion.Split(".").Last();
             return $"{versionTag} ({tarkovVersion})";
         }
@@ -128,7 +143,7 @@ public class Watermark {
         var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
         var versionTag = /*ProgramStatics.DEBUG ? */
             $"{sptVersion} - BLEEDINGEDGE { /*ProgramStatics.COMMIT?.slice(0, 6) ?? */""}";
-            //: `{sptVersion} - {ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
+        //: `{sptVersion} - {ProgramStatics.COMMIT?.slice(0, 6) ?? ""}`;
 
         return $"{sptConfig.ProjectName} {versionTag}";
     }
@@ -159,21 +174,18 @@ public class Watermark {
 
         // Create line of - to add top/bottom of watermark
         var line = "";
-        for (var i = 0; i < longestLength; ++i) {
-            line += "─";
-        }
+        for (var i = 0; i < longestLength; ++i) line += "─";
 
         // Opening line
         result.Add($"┌─{line}─┐");
 
         // Add content of watermark to screen
-        foreach (var watermarkText in text) {
+        foreach (var watermarkText in text)
+        {
             var spacingSize = longestLength - watermarkText.Length;
             var textWithRightPadding = watermarkText;
 
-            for (var i = 0; i < spacingSize; ++i) {
-                textWithRightPadding += " ";
-            }
+            for (var i = 0; i < spacingSize; ++i) textWithRightPadding += " ";
 
             result.Add($"│ {textWithRightPadding} │");
         }
@@ -182,8 +194,6 @@ public class Watermark {
         result.Add($"└─{line}─┘");
 
         // Log watermark to screen
-        foreach (var text in result) {
-            _logger.LogWithColor(text, textColor: LogTextColor.Yellow);
-        }
+        foreach (var text in result) _logger.LogWithColor(text, LogTextColor.Yellow);
     }
 }

@@ -33,14 +33,13 @@ public class HideoutHelper(
     ICloner _cloner
 )
 {
-    protected HideoutConfig hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-
     public const string BitcoinFarm = "5d5c205bd582a50d042a3c0e";
     public const string CultistCircleCraftId = "66827062405f392b203a44cf";
     public const string BitcoinProductionId = "5d5c205bd582a50d042a3c0e";
     public const string WaterCollector = "5d5589c1f934db045e6c5492";
     public const int MaxSkillPoint = 5000;
-    protected List<string> _idCheck = [HideoutHelper.BitcoinFarm, HideoutHelper.CultistCircleCraftId];
+    protected List<string> _idCheck = [BitcoinFarm, CultistCircleCraftId];
+    protected HideoutConfig hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
     /// Add production to profiles' Hideout.Production array
@@ -67,10 +66,7 @@ public class HideoutHelper(
         // @Important: Here we need to be very exact:
         // - normal recipe: Production time value is stored in attribute "productionType" with small "p"
         // - scav case recipe: Production time value is stored in attribute "ProductionType" with capital "P"
-        if (pmcData.Hideout?.Production is null)
-        {
-            pmcData.Hideout.Production = new Dictionary<string, Production?>();
-        }
+        if (pmcData.Hideout?.Production is null) pmcData.Hideout.Production = new Dictionary<string, Production?>();
 
         var modifiedProductionTime = GetAdjustedCraftTimeWithSkills(pmcData, body.RecipeId);
 
@@ -99,7 +95,7 @@ public class HideoutHelper(
                     {
                         Id = _hashUtil.Generate(),
                         Template = toolItem.Template,
-                        Upd = toolItem.Upd,
+                        Upd = toolItem.Upd
                     }
                 );
             }
@@ -133,10 +129,7 @@ public class HideoutHelper(
         // @Important: Here we need to be very exact:
         // - normal recipe: Production time value is stored in attribute "productionType" with small "p"
         // - scav case recipe: Production time value is stored in attribute "ProductionType" with capital "P"
-        if (pmcData.Hideout?.Production is null)
-        {
-            pmcData.Hideout.Production = new Dictionary<string, Production?>();
-        }
+        if (pmcData.Hideout?.Production is null) pmcData.Hideout.Production = new Dictionary<string, Production?>();
 
         var modifiedProductionTime = GetAdjustedCraftTimeWithSkills(pmcData, body.RecipeId);
 
@@ -170,7 +163,7 @@ public class HideoutHelper(
             Interrupted = false,
             NeedFuelForAllProductionTime = needFuelForAllProductionTime, // Used when sending to client
             needFuelForAllProductionTime = needFuelForAllProductionTime, // used when stored in production.json
-            SkipTime = 0,
+            SkipTime = 0
         };
     }
 
@@ -189,9 +182,7 @@ public class HideoutHelper(
                 // Find stash item and adjust tpl to new tpl from bonus
                 var stashItem = profileData.Inventory.Items.FirstOrDefault((x) => x.Id == profileData.Inventory.Stash);
                 if (stashItem is null)
-                {
                     _logger.Warning(_localisationService.GetText("hideout-unable_to_apply_stashsize_bonus_no_stash_found", profileData.Inventory.Stash));
-                }
 
                 stashItem.Template = bonus.TemplateId;
 
@@ -211,10 +202,7 @@ public class HideoutHelper(
 
         // Add bonus to player bonuses array in profile
         // EnergyRegeneration, HealthRegeneration, RagfairCommission, ScavCooldownTimer, SkillGroupLevelingBoost, ExperienceRate, QuestMoneyReward etc
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Adding bonus: {bonus.Type} to profile, value: {bonus.Value}");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Adding bonus: {bonus.Type} to profile, value: {bonus.Value}");
         profileData.Bonuses.Add(bonus);
     }
 
@@ -226,7 +214,7 @@ public class HideoutHelper(
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         var hideoutProperties = GetHideoutProperties(pmcData);
-        
+
         pmcData.Hideout.SptUpdateLastRunTimestamp ??= _timeUtil.GetTimeStamp();
 
         UpdateAreasWithResources(sessionID, pmcData, hideoutProperties);
@@ -250,7 +238,7 @@ public class HideoutHelper(
             IsGeneratorOn = pmcData.Hideout.Areas.FirstOrDefault((area) => area.Type == HideoutAreas.GENERATOR)?.Active ?? false,
             WaterCollectorHasFilter = DoesWaterCollectorHaveFilter(
                 pmcData.Hideout.Areas.FirstOrDefault((area) => area.Type == HideoutAreas.WATER_COLLECTOR)
-            ),
+            )
         };
 
         return hideoutProperties;
@@ -260,10 +248,8 @@ public class HideoutHelper(
     {
         // Can put filters in from L3
         if (waterCollector.Level == 3)
-        {
             // Has filter in at least one slot
             return waterCollector.Slots.Any(slot => slot.Items is not null);
-        }
 
         // No Filter
         return false;
@@ -301,10 +287,7 @@ public class HideoutHelper(
             }
 
             // Skip processing (Don't skip continious crafts like bitcoin farm or cultist circle)
-            if (IsCraftComplete(craft))
-            {
-                continue;
-            }
+            if (IsCraftComplete(craft)) continue;
 
             // Special handling required
             if (IsCraftOfType(craft, HideoutAreas.SCAV_CASE))
@@ -366,9 +349,9 @@ public class HideoutHelper(
         switch (hideoutType)
         {
             case HideoutAreas.WATER_COLLECTOR:
-                return craft.RecipeId == HideoutHelper.WaterCollector;
+                return craft.RecipeId == WaterCollector;
             case HideoutAreas.BITCOIN_FARM:
-                return craft.RecipeId == HideoutHelper.BitcoinFarm;
+                return craft.RecipeId == BitcoinFarm;
             case HideoutAreas.SCAV_CASE:
                 return craft.SptIsScavCase ?? false;
             case HideoutAreas.CIRCLE_OF_CULTISTS:
@@ -387,10 +370,8 @@ public class HideoutHelper(
     /// <returns>True when craft is complete</returns>
     protected bool IsCraftComplete(Production craft)
     {
-        return (
-            craft.Progress >= craft.ProductionTime &&
-            !_idCheck.Contains(craft.RecipeId)
-        );
+        return craft.Progress >= craft.ProductionTime &&
+               !_idCheck.Contains(craft.RecipeId);
     }
 
     /// <summary>
@@ -405,10 +386,7 @@ public class HideoutHelper(
         HideoutProperties hideoutProperties)
     {
         var timeElapsed = GetTimeElapsedSinceLastServerTick(pmcData, hideoutProperties.IsGeneratorOn);
-        if (hideoutProperties.WaterCollectorHasFilter)
-        {
-            pmcData.Hideout.Production[productionId].Progress += timeElapsed;
-        }
+        if (hideoutProperties.WaterCollectorHasFilter) pmcData.Hideout.Production[productionId].Progress += timeElapsed;
     }
 
     /// <summary>
@@ -425,10 +403,7 @@ public class HideoutHelper(
         HideoutProperties hideoutProperties)
     {
         // Production is complete, no need to do any calculations
-        if (DoesProgressMatchProductionTime(pmcData, prodId))
-        {
-            return;
-        }
+        if (DoesProgressMatchProductionTime(pmcData, prodId)) return;
 
         // Get seconds since last hideout update + now
         var timeElapsed = GetTimeElapsedSinceLastServerTick(pmcData, hideoutProperties.IsGeneratorOn, recipe);
@@ -440,10 +415,8 @@ public class HideoutHelper(
 
         // Limit progress to total production time if progress is over (dont run for continious crafts))
         if (!(recipe.Continuous ?? false))
-        {
             // If progress is larger than prod time, return ProductionTime, hard cap the vaue
             production.Progress = Math.Min(production.Progress ?? 0, production.ProductionTime ?? 0);
-        }
     }
 
     protected void UpdateCultistCircleCraftProgress(PmcData pmcData, string prodId)
@@ -451,10 +424,7 @@ public class HideoutHelper(
         var production = pmcData.Hideout.Production[prodId];
 
         // Check if we're already complete, skip
-        if (production.AvailableForFinish ?? false)
-        {
-            return;
-        }
+        if (production.AvailableForFinish ?? false) return;
 
         // Get seconds since last hideout update
         var timeElapsedSeconds = _timeUtil.GetTimeStamp() - pmcData.Hideout.SptUpdateLastRunTimestamp;
@@ -465,10 +435,7 @@ public class HideoutHelper(
             production.Progress += timeElapsedSeconds;
 
             // Check if craft is complete
-            if (production.Progress >= production.ProductionTime)
-            {
-                FlagCultistCircleCraftAsComplete(production);
-            }
+            if (production.Progress >= production.ProductionTime) FlagCultistCircleCraftAsComplete(production);
 
             return;
         }
@@ -525,14 +492,10 @@ public class HideoutHelper(
         HideoutProperties hideoutProperties)
     {
         foreach (var area in pmcData.Hideout.Areas)
-        {
             switch (area.Type)
             {
                 case HideoutAreas.GENERATOR:
-                    if (hideoutProperties.IsGeneratorOn)
-                    {
-                        UpdateFuel(area, pmcData, hideoutProperties.IsGeneratorOn);
-                    }
+                    if (hideoutProperties.IsGeneratorOn) UpdateFuel(area, pmcData, hideoutProperties.IsGeneratorOn);
 
                     break;
                 case HideoutAreas.WATER_COLLECTOR:
@@ -540,14 +503,10 @@ public class HideoutHelper(
                     break;
 
                 case HideoutAreas.AIR_FILTERING:
-                    if (hideoutProperties.IsGeneratorOn)
-                    {
-                        UpdateAirFilters(area, pmcData, hideoutProperties.IsGeneratorOn);
-                    }
+                    if (hideoutProperties.IsGeneratorOn) UpdateAirFilters(area, pmcData, hideoutProperties.IsGeneratorOn);
 
                     break;
             }
-        }
     }
 
     /// <summary>
@@ -579,10 +538,7 @@ public class HideoutHelper(
         var combinedBonus = 1.0 - (fuelConsumptionBonusRate + hideoutManagementConsumptionBonusRate);
 
         // Sanity check, never let fuel consumption go negative, otherwise it returns fuel to the player
-        if (combinedBonus < 0)
-        {
-            combinedBonus = 0;
-        }
+        if (combinedBonus < 0) combinedBonus = 0;
 
         fuelUsedSinceLastTick *= combinedBonus;
 
@@ -592,24 +548,18 @@ public class HideoutHelper(
         {
             var generatorSlot = generatorArea.Slots[i];
             if (generatorSlot?.Items is null)
-            {
                 // No item in slot, skip
                 continue;
-            }
 
             var fuelItemInSlot = generatorSlot?.Items[0];
             if (fuelItemInSlot is null)
-            {
                 // No item in slot, skip
                 continue;
-            }
 
             var fuelRemaining = fuelItemInSlot.Upd?.Resource?.Value;
             if (fuelRemaining == 0)
-            {
                 // No fuel left, skip
                 continue;
-            }
 
             // Undefined fuel, fresh fuel item and needs its max fuel amount looked up
             if (fuelRemaining is null)
@@ -626,7 +576,7 @@ public class HideoutHelper(
             }
 
             // Round values to keep accuracy
-            fuelRemaining = Math.Round((fuelRemaining * 10000) ?? 0) / 10000;
+            fuelRemaining = Math.Round(fuelRemaining * 10000 ?? 0) / 10000;
             pointsConsumed = Math.Round(pointsConsumed * 10000) / 10000;
 
             // Fuel consumed / 10 is over 1, add hideout management skill point
@@ -642,10 +592,7 @@ public class HideoutHelper(
                 // Deducted all used fuel from this container, clean up and exit loop
                 fuelItemInSlot.Upd = GetAreaUpdObject(1, fuelRemaining, pointsConsumed, isFuelItemFoundInRaid);
 
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Profile: {pmcData.Id} Generator has: {fuelRemaining} fuel left in slot {i + 1}");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Profile: {pmcData.Id} Generator has: {fuelRemaining} fuel left in slot {i + 1}");
                 hasFuelRemaining = true;
 
                 break; // Break to avoid updating all the fuel tanks
@@ -655,17 +602,11 @@ public class HideoutHelper(
 
             // Ran out of fuel items to deduct fuel from
             fuelUsedSinceLastTick = Math.Abs(fuelRemaining ?? 0);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Profile: {pmcData.Id} Generator ran out of fuel");
-            }
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Profile: {pmcData.Id} Generator ran out of fuel");
         }
 
         // Out of fuel, flag generator as offline
-        if (!hasFuelRemaining)
-        {
-            generatorArea.Active = false;
-        }
+        if (!hasFuelRemaining) generatorArea.Active = false;
     }
 
     protected void UpdateWaterCollector(
@@ -675,18 +616,12 @@ public class HideoutHelper(
         HideoutProperties hideoutProperties)
     {
         // Skip water collector when not level 3 (cant collect until 3)
-        if (area.Level != 3)
-        {
-            return;
-        }
+        if (area.Level != 3) return;
 
-        if (!hideoutProperties.WaterCollectorHasFilter)
-        {
-            return;
-        }
+        if (!hideoutProperties.WaterCollectorHasFilter) return;
 
         // Canister with purified water craft exists
-        var purifiedWaterCraft = pmcData.Hideout.Production[HideoutHelper.WaterCollector];
+        var purifiedWaterCraft = pmcData.Hideout.Production[WaterCollector];
         if (purifiedWaterCraft is not null && purifiedWaterCraft.GetType() == typeof(Production))
         {
             // Update craft time to account for increases in players craft time skill
@@ -702,13 +637,13 @@ public class HideoutHelper(
         {
             // continuousProductionStart()
             // seem to not trigger consistently
-            HideoutSingleProductionStartRequestData recipe = new HideoutSingleProductionStartRequestData
+            var recipe = new HideoutSingleProductionStartRequestData
             {
-                RecipeId = HideoutHelper.WaterCollector,
+                RecipeId = WaterCollector,
                 Action = "HideoutSingleProductionStart",
                 Items = [],
                 Tools = [],
-                Timestamp = _timeUtil.GetTimeStamp(),
+                Timestamp = _timeUtil.GetTimeStamp()
             };
 
             RegisterProduction(pmcData, recipe, sessionId);
@@ -742,8 +677,7 @@ public class HideoutHelper(
         var timeReductionSeconds = 0D;
 
         // Bitcoin farm is excluded from crafting skill cooldown reduction
-        if (recipeId != HideoutHelper.BitcoinFarm)
-        {
+        if (recipeId != BitcoinFarm)
             // Seconds to deduct from crafts total time
             timeReductionSeconds += GetSkillProductionTimeReduction(
                 pmcData,
@@ -751,30 +685,21 @@ public class HideoutHelper(
                 SkillTypes.Crafting,
                 globalSkillsDb.Crafting.ProductionTimeReductionPerLevel ?? 0
             );
-        }
 
         // Some crafts take into account hideout management, e.g. fuel, water/air filters
         if (applyHideoutManagementBonus)
-        {
             timeReductionSeconds += GetSkillProductionTimeReduction(
                 pmcData,
                 recipe.ProductionTime ?? 0,
                 SkillTypes.HideoutManagement,
                 globalSkillsDb.HideoutManagement.ConsumptionReductionPerLevel ?? 0
             );
-        }
 
         var modifiedProductionTime = recipe.ProductionTime - timeReductionSeconds;
-        if (modifiedProductionTime > 0 && _profileHelper.IsDeveloperAccount(pmcData.Id))
-        {
-            modifiedProductionTime = 40;
-        }
+        if (modifiedProductionTime > 0 && _profileHelper.IsDeveloperAccount(pmcData.Id)) modifiedProductionTime = 40;
 
         // Sanity check, don't let anything craft in less than 5 seconds
-        if (modifiedProductionTime < 5)
-        {
-            modifiedProductionTime = 5;
-        }
+        if (modifiedProductionTime < 5) modifiedProductionTime = 5;
 
         return modifiedProductionTime;
     }
@@ -793,7 +718,7 @@ public class HideoutHelper(
         PmcData pmcData)
     {
         var filterDrainRate = GetWaterFilterDrainRate(pmcData);
-        var craftProductionTime = GetTotalProductionTimeSeconds(HideoutHelper.WaterCollector);
+        var craftProductionTime = GetTotalProductionTimeSeconds(WaterCollector);
         var secondsSinceServerTick = GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
 
         filterDrainRate = GetTimeAdjustedWaterFilterDrainRate(
@@ -808,19 +733,14 @@ public class HideoutHelper(
 
         // Check progress against the productions craft time (dont use base time as it doesnt include any time bonuses profile has)
         if (production.Progress > production.ProductionTime)
-        {
             // Craft is complete nothing to do
             return;
-        }
 
         // Check all slots that take water filters until we find one with filter in it
         for (var i = 0; i < waterFilterArea.Slots.Count; i++)
         {
             // No water filter in slot, skip
-            if (waterFilterArea.Slots[i].Items is null)
-            {
-                continue;
-            }
+            if (waterFilterArea.Slots[i].Items is null) continue;
 
             var waterFilterItemInSlot = waterFilterArea.Slots[i].Items[0];
 
@@ -841,7 +761,7 @@ public class HideoutHelper(
             }
 
             // Round to get values to 3dp
-            resourceValue = Math.Round((resourceValue * 1000) ?? 0) / 1000;
+            resourceValue = Math.Round(resourceValue * 1000 ?? 0) / 1000;
             pointsConsumed = Math.Round(pointsConsumed * 1000) / 1000;
 
             // Check units consumed for possible increment of hideout mgmt skill point
@@ -863,10 +783,7 @@ public class HideoutHelper(
                     pointsConsumed,
                     isWaterFilterFoundInRaid
                 );
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug($"Water filter has: {resourceValue} units left in slot {i + 1}");
-                }
+                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Water filter has: {resourceValue} units left in slot {i + 1}");
 
                 break; // Break here to avoid iterating other filters now w're done
             }
@@ -942,15 +859,13 @@ public class HideoutHelper(
     /// <returns>Seconds to produce item</returns>
     protected double GetTotalProductionTimeSeconds(string prodId)
     {
-        return (
-            _databaseService.GetHideout()
-                .Production.Recipes.FirstOrDefault(
-                    (prod) =>
-                        prod.Id == prodId
-                )
-                ?.ProductionTime ??
-            0
-        );
+        return _databaseService.GetHideout()
+                   .Production.Recipes.FirstOrDefault(
+                       (prod) =>
+                           prod.Id == prodId
+                   )
+                   ?.ProductionTime ??
+               0;
     }
 
     /// <summary>
@@ -970,7 +885,7 @@ public class HideoutHelper(
         {
             StackObjectsCount = stackCount,
             Resource = new UpdResource { Value = resourceValue, UnitsConsumed = resourceUnitsConsumed },
-            SpawnedInSession = isFoundInRaid,
+            SpawnedInSession = isFoundInRaid
         };
     }
 
@@ -991,7 +906,6 @@ public class HideoutHelper(
         var pointsConsumed = 0D;
 
         for (var i = 0; i < airFilterArea.Slots.Count; i++)
-        {
             if (airFilterArea.Slots[i].Items is not null)
             {
                 var resourceValue = airFilterArea.Slots[i].Items[0].Upd?.Resource is not null
@@ -1005,11 +919,11 @@ public class HideoutHelper(
                 }
                 else
                 {
-                    pointsConsumed = ((airFilterArea.Slots[i].Items[0].Upd.Resource.UnitsConsumed ?? 0) + filterDrainRate) ?? 0;
+                    pointsConsumed = (airFilterArea.Slots[i].Items[0].Upd.Resource.UnitsConsumed ?? 0) + filterDrainRate ?? 0;
                     resourceValue -= filterDrainRate;
                 }
 
-                resourceValue = Math.Round((resourceValue * 10000) ?? 0) / 10000;
+                resourceValue = Math.Round(resourceValue * 10000 ?? 0) / 10000;
                 pointsConsumed = Math.Round(pointsConsumed * 10000) / 10000;
 
                 // check unit consumed for increment skill point
@@ -1024,12 +938,9 @@ public class HideoutHelper(
                     airFilterArea.Slots[i].Items[0].Upd = new Upd
                     {
                         StackObjectsCount = 1,
-                        Resource = new UpdResource { Value = resourceValue, UnitsConsumed = pointsConsumed },
+                        Resource = new UpdResource { Value = resourceValue, UnitsConsumed = pointsConsumed }
                     };
-                    if (_logger.IsLogEnabled(LogLevel.Debug))
-                    {
-                        _logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
-                    }
+                    if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Air filter: {resourceValue} filter left on slot {i + 1}");
                     break; // Break here to avoid updating all filters
                 }
 
@@ -1037,7 +948,6 @@ public class HideoutHelper(
                 // Update remaining resources to be subtracted
                 filterDrainRate = Math.Abs(resourceValue ?? 0);
             }
-        }
     }
 
     protected void UpdateBitcoinFarm(
@@ -1047,10 +957,7 @@ public class HideoutHelper(
         bool isGeneratorOn)
     {
         var isBtcProd = btcProduction.GetType() == typeof(Production);
-        if (!isBtcProd)
-        {
-            return;
-        }
+        if (!isBtcProd) return;
 
         // The wiki has a wrong formula!
         // Do not change unless you validate it with the Client code files!
@@ -1088,10 +995,8 @@ public class HideoutHelper(
             */
         // Needs power to function
         if (!isGeneratorOn)
-        {
             // Return with no changes
             return;
-        }
 
         var coinSlotCount = GetBTCSlots(pmcData);
 
@@ -1106,7 +1011,7 @@ public class HideoutHelper(
 
         var bitcoinProdData = _databaseService
             .GetHideout()
-            .Production.Recipes.FirstOrDefault((production) => production.Id == HideoutHelper.BitcoinProductionId);
+            .Production.Recipes.FirstOrDefault((production) => production.Id == BitcoinProductionId);
 
         // BSG finally fixed their settings, they now get loaded from the settings and used in the client
         var adjustedCraftTime =
@@ -1116,21 +1021,15 @@ public class HideoutHelper(
         // The progress should be adjusted based on the GPU boost rate, but the target is still the base productionTime
         var timeMultiplier = bitcoinProdData.ProductionTime / adjustedCraftTime;
         var timeElapsedSeconds = GetTimeElapsedSinceLastServerTick(pmcData, isGeneratorOn);
-        btcProduction.Progress += Math.Floor((timeElapsedSeconds * timeMultiplier) ?? 0);
+        btcProduction.Progress += Math.Floor(timeElapsedSeconds * timeMultiplier ?? 0);
 
         while (btcProduction.Progress >= bitcoinProdData.ProductionTime)
-        {
             if (btcProduction.Products.Count < coinSlotCount)
-            {
                 // Has space to add a coin to production rewards
                 AddBtcToProduction(btcProduction, bitcoinProdData.ProductionTime ?? 0);
-            }
             else
-            {
                 // Filled up bitcoin storage
                 btcProduction.Progress = 0;
-            }
-        }
 
         btcProduction.StartTimestamp = _timeUtil.GetTimeStamp();
     }
@@ -1147,7 +1046,7 @@ public class HideoutHelper(
             {
                 Id = _hashUtil.Generate(),
                 Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
-                Upd = new Upd { StackObjectsCount = 1 },
+                Upd = new Upd { StackObjectsCount = 1 }
             }
         );
 
@@ -1170,17 +1069,15 @@ public class HideoutHelper(
         // Reduce time elapsed (and progress) when generator is off
         var timeElapsed = _timeUtil.GetTimeStamp() - pmcData.Hideout.SptUpdateLastRunTimestamp;
 
-        if (recipe is not null) {
+        if (recipe is not null)
+        {
             var hideoutArea = _databaseService.GetHideout().Areas.FirstOrDefault((area) => area.Type == recipe.AreaType);
-            if (!(hideoutArea.NeedsFuel ?? false)) {
+            if (!(hideoutArea.NeedsFuel ?? false))
                 // e.g. Lavatory works at 100% when power is on / off
                 return timeElapsed;
-            }
         }
 
-        if (!isGeneratorOn) {
-            timeElapsed *= (long)_databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel;
-        }
+        if (!isGeneratorOn) timeElapsed *= (long)_databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel;
 
         return timeElapsed;
     }
@@ -1194,7 +1091,7 @@ public class HideoutHelper(
     {
         var bitcoinProductions = _databaseService
             .GetHideout()
-            .Production.Recipes.FirstOrDefault((production) => production.Id == HideoutHelper.BitcoinFarm);
+            .Production.Recipes.FirstOrDefault((production) => production.Id == BitcoinFarm);
         var productionSlots = bitcoinProductions?.ProductionLimitCount ?? 3; // Default to 3 if none found
         var hasManagementSkillSlots = _profileHelper.HasEliteSkillLevel(SkillTypes.HideoutManagement, pmcData);
         var managementSlotsCount = GetEliteSkillAdditionalBitcoinSlotCount() ?? 2;
@@ -1207,7 +1104,8 @@ public class HideoutHelper(
     /// </summary>
     protected double? GetEliteSkillAdditionalBitcoinSlotCount()
     {
-        return _databaseService.GetGlobals().Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm
+        return _databaseService.GetGlobals()
+            .Configuration.SkillsSettings.HideoutManagement.EliteSlots.BitcoinFarm
             .Container;
     }
 
@@ -1220,22 +1118,19 @@ public class HideoutHelper(
     protected double? GetHideoutManagementConsumptionBonus(PmcData pmcData)
     {
         var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
-        if (hideoutManagementSkill is null || hideoutManagementSkill.Progress == 0) {
-            return 0;
-        }
+        if (hideoutManagementSkill is null || hideoutManagementSkill.Progress == 0) return 0;
 
         // If the level is 51 we need to round it at 50 so on elite you dont get 25.5%
         // at level 1 you already get 0.5%, so it goes up until level 50. For some reason the wiki
         // says that it caps at level 51 with 25% but as per dump data that is incorrect apparently
-        var roundedLevel = Math.Floor((hideoutManagementSkill.Progress / 100) ?? 0D);
+        var roundedLevel = Math.Floor(hideoutManagementSkill.Progress / 100 ?? 0D);
         roundedLevel = roundedLevel == 51 ? roundedLevel - 1 : roundedLevel;
 
-        return (
-            (roundedLevel *
-             _databaseService.GetGlobals().Configuration.SkillsSettings.HideoutManagement
-                 .ConsumptionReductionPerLevel) /
-            100
-        );
+        return roundedLevel *
+               _databaseService.GetGlobals()
+                   .Configuration.SkillsSettings.HideoutManagement
+                   .ConsumptionReductionPerLevel /
+               100;
     }
 
     /// <summary>
@@ -1248,17 +1143,15 @@ public class HideoutHelper(
     protected double GetSkillBonusMultipliedBySkillLevel(PmcData pmcData, SkillTypes skill, double valuePerLevel)
     {
         var profileSkill = _profileHelper.GetSkillFromProfile(pmcData, skill);
-        if (profileSkill is null || profileSkill.Progress == 0) {
-            return 0;
-        }
+        if (profileSkill is null || profileSkill.Progress == 0) return 0;
 
         // If the level is 51 we need to round it at 50 so on elite you dont get 25.5%
         // at level 1 you already get 0.5%, so it goes up until level 50. For some reason the wiki
         // says that it caps at level 51 with 25% but as per dump data that is incorrect apparently
-        var roundedLevel = Math.Floor((profileSkill.Progress / 100) ?? 0D);
+        var roundedLevel = Math.Floor(profileSkill.Progress / 100 ?? 0D);
         roundedLevel = roundedLevel == 51 ? roundedLevel - 1 : roundedLevel;
 
-        return (roundedLevel * valuePerLevel) / 100;
+        return roundedLevel * valuePerLevel / 100;
     }
 
     /// <summary>
@@ -1294,8 +1187,9 @@ public class HideoutHelper(
         ItemEventRouterResponse output)
     {
         // Get how many coins were crafted and ready to pick up
-        var craftedCoinCount = pmcData.Hideout.Production[HideoutHelper.BitcoinFarm]?.Products?.Count;
-        if (craftedCoinCount is null) {
+        var craftedCoinCount = pmcData.Hideout.Production[BitcoinFarm]?.Products?.Count;
+        if (craftedCoinCount is null)
+        {
             var errorMsg = _localisationService.GetText("hideout-no_bitcoins_to_collect");
             _logger.Error(errorMsg);
 
@@ -1305,41 +1199,41 @@ public class HideoutHelper(
         }
 
         List<List<Item>> itemsToAdd = [];
-        for (var index = 0; index < craftedCoinCount; index++) {
-            itemsToAdd.Add([new Item
-                {
-                Id = _hashUtil.Generate(),
-                Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
-                Upd = new Upd { StackObjectsCount = 1 },
-                },
-            ]);
-        }
+        for (var index = 0; index < craftedCoinCount; index++)
+            itemsToAdd.Add(
+                [
+                    new Item
+                    {
+                        Id = _hashUtil.Generate(),
+                        Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
+                        Upd = new Upd { StackObjectsCount = 1 }
+                    }
+                ]
+            );
 
         // Create request for what we want to add to stash
-        AddItemsDirectRequest addItemsRequest = new AddItemsDirectRequest {
+        var addItemsRequest = new AddItemsDirectRequest
+        {
             ItemsWithModsToAdd = itemsToAdd,
             FoundInRaid = true,
             UseSortingTable = false,
-            Callback = null,
+            Callback = null
         };
 
         // Add FiR coins to player inventory
         _inventoryHelper.AddItemsToStash(sessionId, addItemsRequest, pmcData, output);
-        if (output.Warnings?.Count > 0) {
-            return;
-        }
+        if (output.Warnings?.Count > 0) return;
 
         // Is at max capacity + we collected all coins - reset production start time
         var coinSlotCount = GetBTCSlots(pmcData);
-        if (pmcData.Hideout.Production[HideoutHelper.BitcoinFarm].Products.Count >= coinSlotCount) {
+        if (pmcData.Hideout.Production[BitcoinFarm].Products.Count >= coinSlotCount)
             // Set start to now
-            pmcData.Hideout.Production[HideoutHelper.BitcoinFarm].StartTimestamp = _timeUtil
+            pmcData.Hideout.Production[BitcoinFarm].StartTimestamp = _timeUtil
                 .GetTimeStamp();
-        }
 
         // Remove crafted coins from production in profile now they've been collected
         // Can only collect all coins, not individially
-        pmcData.Hideout.Production[HideoutHelper.BitcoinFarm].Products = [];
+        pmcData.Hideout.Production[BitcoinFarm].Products = [];
     }
 
     /// <summary>
@@ -1354,16 +1248,10 @@ public class HideoutHelper(
         var wall = profileHideoutAreas.FirstOrDefault((x) => x.Type == HideoutAreas.EMERGENCY_WALL);
 
         // No collector or med station, skip
-        if ((waterCollector is null && medStation is null))
-        {
-            return;
-        }
+        if (waterCollector is null && medStation is null) return;
 
         // If med-station > level 1 AND water collector > level 1 AND wall is level 0
-        if (waterCollector?.Level >= 1 && medStation?.Level >= 1 && wall?.Level <= 0)
-        {
-            wall.Level = 3;
-        }
+        if (waterCollector?.Level >= 1 && medStation?.Level >= 1 && wall?.Level <= 0) wall.Level = 3;
     }
 
     /// <summary>
@@ -1384,16 +1272,11 @@ public class HideoutHelper(
     {
         foreach (var improvementId in profileData.Hideout.Improvements)
         {
-            if (!profileData.Hideout.Improvements.TryGetValue(improvementId.Key, out var improvementDetails))
-            {
-                continue;
-            }
+            if (!profileData.Hideout.Improvements.TryGetValue(improvementId.Key, out var improvementDetails)) continue;
 
             if (improvementDetails.Completed == false && improvementDetails.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()
                )
-            {
                 improvementDetails.Completed = true;
-            }
         }
     }
 
@@ -1411,9 +1294,10 @@ public class HideoutHelper(
             .Areas.FirstOrDefault((area) => area.Type == HideoutAreas.PLACE_OF_FAME);
 
         // Get SkillGroupLevelingBoost object
-        var combatBoostBonusDb = fameAreaDb.Stages[fameAreaProfile.Level.ToString()].Bonuses.FirstOrDefault(
-            (bonus) => bonus.Type.ToString() == "SkillGroupLevelingBoost"
-        );
+        var combatBoostBonusDb = fameAreaDb.Stages[fameAreaProfile.Level.ToString()]
+            .Bonuses.FirstOrDefault(
+                (bonus) => bonus.Type.ToString() == "SkillGroupLevelingBoost"
+            );
 
         // Get SkillGroupLevelingBoost object in profile
         var combatBonusProfile = pmcData.Bonuses.FirstOrDefault((bonus) => bonus.Id == combatBoostBonusDb.Id);
@@ -1425,10 +1309,10 @@ public class HideoutHelper(
         var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
         var hideoutManagementSkillBonusPercent = 1 + hideoutManagementSkill.Progress / 10000; // 5100 becomes 0.51, add 1 to it, 1.51
         var bonus =
-        GetDogtagCombatSkillBonusPercent(pmcData, activeDogtags) * hideoutManagementSkillBonusPercent;
+            GetDogtagCombatSkillBonusPercent(pmcData, activeDogtags) * hideoutManagementSkillBonusPercent;
 
         // Update bonus value to above calcualted value
-        combatBonusProfile.Value = Math.Round((bonus ?? 0), 2);
+        combatBonusProfile.Value = Math.Round(bonus ?? 0, 2);
     }
 
     /// <summary>
@@ -1443,16 +1327,13 @@ public class HideoutHelper(
         // Not own dogtag
         // Side = opposite of player
         var result = 0D;
-        foreach (var dogtag in activeDogtags) {
-            if (dogtag.Upd.Dogtag is null) {
-                continue;
-            }
+        foreach (var dogtag in activeDogtags)
+        {
+            if (dogtag.Upd.Dogtag is null) continue;
 
-            if (int.Parse(dogtag.Upd.Dogtag?.AccountId) == pmcData.Aid) {
-                continue;
-            }
+            if (int.Parse(dogtag.Upd.Dogtag?.AccountId) == pmcData.Aid) continue;
 
-            result += (0.01 * dogtag.Upd.Dogtag.Level) ?? 0;
+            result += 0.01 * dogtag.Upd.Dogtag.Level ?? 0;
         }
 
         return result;
@@ -1471,14 +1352,9 @@ public class HideoutHelper(
 
         // Get all bonus Ids that the wall adds
         List<string> bonusIdsToRemove = [];
-        foreach (var bonus in wallBonuses) {
-            bonusIdsToRemove.Add(bonus.Id);
-        }
+        foreach (var bonus in wallBonuses) bonusIdsToRemove.Add(bonus.Id);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Removing: {bonusIdsToRemove.Count} bonuses from profile");
-        }
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Removing: {bonusIdsToRemove.Count} bonuses from profile");
 
         // Remove the wall bonuses from profile by id
         pmcData.Bonuses = pmcData.Bonuses.Where((bonus) => !bonusIdsToRemove.Contains(bonus.Id)).ToList();

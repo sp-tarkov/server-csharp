@@ -18,21 +18,21 @@ public class TraderCallbacks(
 ) : OnLoad, OnUpdate
 {
     private readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    
+
     public Task OnLoad()
     {
         _traderController.Load();
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long _)
-    {
-        return _traderController.Update();
-    }
-
     public string GetRoute()
     {
         return "spt-traders";
+    }
+
+    public bool OnUpdate(long _)
+    {
+        return _traderController.Update();
     }
 
     /// <summary>

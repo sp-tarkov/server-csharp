@@ -54,15 +54,9 @@ public class RagfairTaxService(
         int? offerItemCount,
         bool sellInOnePiece)
     {
-        if (requirementsValue is null)
-        {
-            return 0;
-        }
+        if (requirementsValue is null) return 0;
 
-        if (offerItemCount is null)
-        {
-            return 0;
-        }
+        if (offerItemCount is null) return 0;
 
         var globals = _databaseService.GetGlobals();
 
@@ -77,13 +71,9 @@ public class RagfairTaxService(
         var requirementPriceMult = Math.Log10(requirementsPrice.Value / itemWorth);
 
         if (requirementsPrice >= itemWorth)
-        {
             requirementPriceMult = Math.Pow(requirementPriceMult, 1.08);
-        }
         else
-        {
             itemPriceMult = Math.Pow(itemPriceMult, 1.08);
-        }
 
         itemPriceMult = Math.Pow(4.0, itemPriceMult);
         requirementPriceMult = Math.Pow(4.0, requirementPriceMult);
@@ -118,11 +108,8 @@ public class RagfairTaxService(
         }
 
         var taxValue = Math.Round(discountedTax.Value * itemComissionMult);
-        
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Tax Calculated to be: {taxValue}");
-        }
+
+        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Tax Calculated to be: {taxValue}");
 
         return taxValue;
     }
@@ -163,10 +150,7 @@ public class RagfairTaxService(
 
         var upd = item.Upd ??= new Upd();
 
-        if (upd.Dogtag is not null)
-        {
-            worth *= upd.Dogtag.Level.Value;
-        }
+        if (upd.Dogtag is not null) worth *= upd.Dogtag.Level.Value;
 
         if (itemTemplate.Properties is null)
         {
@@ -176,34 +160,24 @@ public class RagfairTaxService(
         }
 
         if (upd.Key is not null && (itemTemplate.Properties.MaximumNumberOfUsage ?? 0) > 0)
-        {
             worth =
                 worth /
                 (itemTemplate.Properties.MaximumNumberOfUsage ?? 1) *
                 ((itemTemplate.Properties.MaximumNumberOfUsage ?? 1) - upd.Key.NumberOfUsages.Value);
-        }
 
         if (upd.Resource is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
-        {
             worth = (double)(worth * 0.1 +
-                             (worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value));
-        }
+                             worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.Resource.Value);
 
         if (upd.SideEffect is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
-        {
             worth = (double)(worth * 0.1 +
                              worth * 0.9 / (itemTemplate.Properties.MaxResource ?? 1) * upd.SideEffect.Value);
-        }
 
         if (upd.MedKit is not null && (itemTemplate.Properties.MaxHpResource ?? 0) > 0)
-        {
             worth = worth / (itemTemplate.Properties.MaxHpResource ?? 1) * upd.MedKit.HpResource.Value;
-        }
 
         if (upd.FoodDrink is not null && (itemTemplate.Properties.MaxResource ?? 0) > 0)
-        {
             worth = worth / (itemTemplate.Properties.MaxResource ?? 1) * upd.FoodDrink.HpPercent.Value;
-        }
 
         if (upd.Repairable is not null && (itemTemplate.Properties.ArmorClass ?? 0) > 0)
         {

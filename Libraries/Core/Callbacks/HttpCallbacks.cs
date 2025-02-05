@@ -10,9 +10,9 @@ public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicati
 {
     public Task OnLoad()
     {
-        _httpServer.Load( _applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER)?.GetValue<WebApplicationBuilder>());
+        _httpServer.Load(_applicationContext.GetLatestValue(ContextVariableType.APP_BUILDER)?.GetValue<WebApplicationBuilder>());
         _applicationContext.ClearValues(ContextVariableType.APP_BUILDER);
-        
+
         return Task.CompletedTask;
     }
 

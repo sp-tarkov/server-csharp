@@ -26,13 +26,9 @@ public class NotificationSendHelper(
     public void SendMessage(string sessionID, WsNotificationEvent notificationMessage)
     {
         if (_sptWebSocketConnectionHandler.IsWebSocketConnected(sessionID))
-        {
             _sptWebSocketConnectionHandler.SendMessage(sessionID, notificationMessage);
-        }
         else
-        {
             _notificationService.Add(sessionID, notificationMessage);
-        }
     }
 
     /// <summary>
@@ -51,7 +47,8 @@ public class NotificationSendHelper(
         var dialog = GetDialog(sessionId, messageType, senderDetails);
 
         dialog.New += 1;
-        Message message = new Message {
+        var message = new Message
+        {
             Id = _hashUtil.Generate(),
             UserId = dialog.Id,
             MessageType = messageType,
@@ -59,15 +56,16 @@ public class NotificationSendHelper(
             Text = messageText,
             HasRewards = null,
             RewardCollected = null,
-            Items = null,
+            Items = null
         };
         dialog.Messages.Add(message);
 
-        WsChatMessageReceived notification = new WsChatMessageReceived {
+        var notification = new WsChatMessageReceived
+        {
             EventType = NotificationEventType.new_message,
             EventIdentifier = message.Id,
             DialogId = message.UserId,
-            Message = message,
+            Message = message
         };
         SendMessage(sessionId, notification);
     }

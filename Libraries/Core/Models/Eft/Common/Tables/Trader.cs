@@ -205,10 +205,9 @@ public record TraderRepair
     [JsonPropertyName("quality")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? Quality { get; set; }
-    
+
     [JsonPropertyName("price_rate")]
     public double? PriceRate { get; set; }
-
 }
 
 public record TraderAssort

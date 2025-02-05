@@ -24,7 +24,8 @@ public class WeatherStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)),
+                ) => _weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/localGame/weather",
                 (
@@ -32,7 +33,8 @@ public class WeatherStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)),
+                ) => _weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

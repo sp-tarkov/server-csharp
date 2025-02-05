@@ -54,6 +54,12 @@ public record LocaleDetails
 
 public record CreateItemResult
 {
+    public CreateItemResult()
+    {
+        Success = false;
+        Errors = new List<string>();
+    }
+
     [JsonPropertyName("success")]
     public bool? Success { get; set; }
 
@@ -62,12 +68,6 @@ public record CreateItemResult
 
     [JsonPropertyName("errors")]
     public List<string>? Errors { get; set; }
-
-    public CreateItemResult()
-    {
-        Success = false;
-        Errors = new List<string>();
-    }
 }
 
 // TODO: This needs to be reworked with however we do it for this project

@@ -181,7 +181,7 @@ public record StageRequirement
 
     [JsonPropertyName("skillLevel")]
     public int? SkillLevel { get; set; }
-    
+
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }

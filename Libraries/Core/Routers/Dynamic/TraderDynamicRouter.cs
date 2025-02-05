@@ -24,7 +24,8 @@ public class TraderDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)),
+                ) => _traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
+            ),
             new RouteAction(
                 "/client/trading/api/getTraderAssort/",
                 (
@@ -32,7 +33,8 @@ public class TraderDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)),
+                ) => _traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
+            )
         ]
     )
     {

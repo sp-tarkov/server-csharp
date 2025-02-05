@@ -6,11 +6,11 @@ namespace Core.Generators.WeaponGen;
 [Injectable]
 public class InventoryMagGen()
 {
-    private GenerationData _magCounts;
-    private TemplateItem _magazineTemplate;
-    private TemplateItem _weaponTemplate;
     private TemplateItem _ammoTemplate;
+    private TemplateItem _magazineTemplate;
+    private GenerationData _magCounts;
     private BotBaseInventory _pmcInventory;
+    private TemplateItem _weaponTemplate;
 
     public InventoryMagGen
     (

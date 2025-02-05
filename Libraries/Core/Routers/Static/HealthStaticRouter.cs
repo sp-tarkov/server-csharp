@@ -25,7 +25,8 @@ public class HealthStaticRouter : StaticRouter
                     sessionID,
                     output
                 ) => _healthCallbacks.HandleWorkoutEffects(url, info as WorkoutData, sessionID),
-                typeof(WorkoutData)),
+                typeof(WorkoutData)
+            )
         ]
     )
     {

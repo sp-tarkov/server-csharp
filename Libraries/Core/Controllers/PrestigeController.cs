@@ -55,25 +55,25 @@ public class PrestigeController(
         ObtainPrestigeRequestList request)
     {
         // Going to prestige 1
-        
+
         // transfer
         // 5% of skills should be transfered over
         // 5% of mastering should be transfered over
         // earned achievements should be transfered over
         // profile stats should be transfered over
         // prestige progress should be transfered over
-        
+
         // reset
         // trader standing
         // task progress
         // character level
         // stash
         // hideout progress
-        
+
         // going to prestige 2
         // most likely the same, but wait for dump of new beginnings quest
-        
-        
+
+
         // Clone existing profile, create a new one
         var prePrestigeProfileClone = _cloner.Clone(_profileHelper.GetFullProfile(sessionId));
         var prePrestigePmc = prePrestigeProfileClone.CharacterData.PmcData;
@@ -87,7 +87,7 @@ public class PrestigeController(
                     (customisation) => customisation.Value.Name == prePrestigePmc.Info.Voice
                 )
                 .Value.Id,
-            SptForcePrestigeLevel = prePrestigeProfileClone.CharacterData.PmcData.Info.PrestigeLevel.GetValueOrDefault(0) + 1, // Current + 1
+            SptForcePrestigeLevel = prePrestigeProfileClone.CharacterData.PmcData.Info.PrestigeLevel.GetValueOrDefault(0) + 1 // Current + 1
         };
 
         // Reset profile
@@ -104,15 +104,11 @@ public class PrestigeController(
             skillToCopy.Progress = skillToCopy.Progress.Value * 0.05;
             var existingSkill = newProfile.CharacterData.PmcData.Skills.Common.FirstOrDefault((skill) => skill.Id == skillToCopy.Id);
             if (existingSkill is not null)
-            {
                 existingSkill.Progress = skillToCopy.Progress;
-            }
             else
-            {
                 newProfile.CharacterData.PmcData.Skills.Common.Add(skillToCopy);
-            }
         }
-        
+
         // Copy mastering to new profile
         var masteringSkillsToCopy = prePrestigePmc.Skills.Mastering;
         foreach (var skillToCopy in masteringSkillsToCopy)
@@ -123,35 +119,29 @@ public class PrestigeController(
                 (skill) => skill.Id == skillToCopy.Id
             );
             if (existingSkill is not null)
-            {
                 existingSkill.Progress = skillToCopy.Progress;
-            }
             else
-            {
                 newProfile.CharacterData.PmcData.Skills.Mastering.Add(skillToCopy);
-            }
         }
-        
+
         // Add existing completed achievements and new one for prestige
         newProfile.CharacterData.PmcData.Achievements = prePrestigeProfileClone.CharacterData.PmcData.Achievements; // this *should* only contain completed ones
 
         // Add "Prestigious" achievement
         if (!newProfile.CharacterData.PmcData.Achievements.ContainsKey("676091c0f457869a94017a23"))
-        {
             newProfile.CharacterData.PmcData.Achievements.Add("676091c0f457869a94017a23", _timeUtil.GetTimeStamp());
-        }
         // TODO: is there one for second prestige
 
         // Add existing Stats to profile
         newProfile.CharacterData.PmcData.Stats = prePrestigePmc.Stats;
-        
+
         // Assumes Prestige data is in descending order
         var indexOfPrestigeObtained = (int)Math.Min(createRequest.SptForcePrestigeLevel.Value - 1, 1); // Index starts at 0
         var currentPrestigeData = _databaseService.GetTemplates().Prestige.Elements[indexOfPrestigeObtained];
         var prestigeRewards = _databaseService.GetTemplates()
             .Prestige.Elements.Slice(0, indexOfPrestigeObtained + 1)
             .SelectMany((prestige) => prestige.Rewards);
-        
+
         AddPrestigeRewardsToProfile(sessionId, newProfile, prestigeRewards);
 
         // Flag profile as having achieved this prestige level
@@ -159,7 +149,6 @@ public class PrestigeController(
         newProfile.CharacterData.PmcData.Info.PrestigeLevel++;
 
         if (request is not null)
-        {
             // Copy transferred items
             foreach (var transferRequest in request)
             {
@@ -169,7 +158,7 @@ public class PrestigeController(
                     ItemWithModsToAdd = [item],
                     FoundInRaid = item.Upd?.SpawnedInSession,
                     UseSortingTable = false,
-                    Callback = null,
+                    Callback = null
                 };
                 _inventoryHelper.AddItemToStash(
                     sessionId,
@@ -178,40 +167,39 @@ public class PrestigeController(
                     _eventOutputHolder.GetOutput(sessionId)
                 );
             }
-        }
-        
+
         // Force save of above changes to disk
         _saveServer.SaveProfile(sessionId);
     }
 
     private void AddPrestigeRewardsToProfile(string sessionId, SptProfile newProfile, IEnumerable<Reward> rewards)
     {
-        foreach (var reward in rewards) {
-            switch (reward.Type) {
-                case RewardType.CustomizationDirect: {
+        foreach (var reward in rewards)
+            switch (reward.Type)
+            {
+                case RewardType.CustomizationDirect:
+                {
                     _profileHelper.AddHideoutCustomisationUnlock(newProfile, reward, CustomisationSource.PRESTIGE);
                     break;
                 }
                 case RewardType.Skill:
                     if (Enum.TryParse(reward.Target, out SkillTypes result))
-                    {
                         _profileHelper.AddSkillPointsToPlayer(
                             newProfile.CharacterData.PmcData,
                             result,
                             ((JsonElement)reward.Value).ToObject<double>()
                         );
-                    }
                     else
-                    {
                         _logger.Error($"Unable to parse reward Target to Enum: {reward.Target}");
-                    }
                     break;
-                case RewardType.Item: {
-                    AddItemDirectRequest addItemRequest = new AddItemDirectRequest {
+                case RewardType.Item:
+                {
+                    var addItemRequest = new AddItemDirectRequest
+                    {
                         ItemWithModsToAdd = reward.Items,
                         FoundInRaid = reward.Items.FirstOrDefault()?.Upd?.SpawnedInSession,
                         UseSortingTable = false,
-                        Callback = null,
+                        Callback = null
                     };
                     _inventoryHelper.AddItemToStash(
                         sessionId,
@@ -229,6 +217,5 @@ public class PrestigeController(
                     _logger.Error($"Unhandled prestige reward type: {reward.Type}");
                     break;
             }
-        }
     }
 }

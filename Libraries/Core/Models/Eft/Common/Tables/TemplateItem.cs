@@ -184,10 +184,10 @@ public record Props
 
     [JsonPropertyName("MetascoreGroup")]
     public string? MetaScoreGroup { get; set; }
-    
+
     [JsonPropertyName("NpcCompressorSendLevel")]
     public double? NpcCompressorSendLevel { get; set; }
-    
+
     [JsonPropertyName("ObservedPlayerCompressorSendLevel")]
     public double? ObservedPlayerCompressorSendLevel { get; set; }
 
@@ -680,7 +680,7 @@ public record Props
 
     [JsonPropertyName("ShotgunDispersion")]
     public double? ShotgunDispersion { get; set; }
-    
+
     [JsonPropertyName("shotgunDispersion")]
     public double? shotgunDispersion { get; set; }
 
@@ -906,10 +906,10 @@ public record Props
 
     [JsonPropertyName("CompressorGain")]
     public double? CompressorGain { get; set; }
-    
+
     [JsonPropertyName("EQBand1Frequency")]
     public double? EQBand1Frequency { get; set; }
-    
+
     [JsonPropertyName("EQBand1Gain")]
     public double? EQBand1Gain { get; set; }
 
@@ -1322,7 +1322,7 @@ public record Props
 
     [JsonPropertyName("ExplDelay")]
     public double? ExplDelay { get; set; }
-    
+
     [JsonPropertyName("explDelay")]
     public double? explDelay { get; set; }
 
@@ -1403,13 +1403,13 @@ public record Props
 
     [JsonPropertyName("TradersDiscountPVE")]
     public double? TradersDiscountPVE { get; set; }
-    
+
     [JsonPropertyName("AvailableAsDefault")]
     public bool? AvailableAsDefault { get; set; }
-    
+
     [JsonPropertyName("ProfileVersions")]
     public List<string>? ProfileVersions { get; set; }
-    
+
     [JsonPropertyName("Side")]
     public List<string>? Side { get; set; }
 
@@ -1631,10 +1631,10 @@ public record SlotFilter
 
     [JsonPropertyName("AnimationIndex")]
     public double? AnimationIndex { get; set; }
-    
+
     [JsonPropertyName("MaxStackCount")]
     public double? MaxStackCount { get; set; }
-    
+
     [JsonPropertyName("bluntDamageReduceFromSoftArmor")]
     public bool? BluntDamageReduceFromSoftArmor { get; set; }
 }
@@ -1721,7 +1721,7 @@ public record EffectsHealthProps
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
-    
+
     [JsonPropertyName("delay")]
     public double? Delay { get; set; }
 
@@ -1757,7 +1757,7 @@ public record EffectDamageProps
 {
     [JsonPropertyName("value")]
     public double? Value { get; set; }
-    
+
     [JsonPropertyName("delay")]
     public double? Delay { get; set; }
 

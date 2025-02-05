@@ -62,10 +62,10 @@ public record TemplateSide
 
     [JsonPropertyName("trader")]
     public ProfileTraderTemplate? Trader { get; set; }
-    
+
     [JsonPropertyName("equipmentBuilds")]
     public object? EquipmentBuilds { get; set; }
-    
+
     [JsonPropertyName("weaponbuilds")]
     public object? WeaponBuilds { get; set; }
 }

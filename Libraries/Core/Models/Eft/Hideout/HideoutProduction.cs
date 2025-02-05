@@ -87,7 +87,7 @@ public record Requirement
 
     [JsonPropertyName("gameVersions")]
     public List<string>? GameVersions { get; set; }
-    
+
     [JsonPropertyName("type")]
     public string? Type { get; set; }
 }

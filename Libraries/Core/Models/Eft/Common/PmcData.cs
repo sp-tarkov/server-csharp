@@ -9,9 +9,9 @@ public record PmcData : BotBase
     [JsonPropertyName("Prestige")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, long>? Prestige { get; set; }
-    
+
     public Dictionary<string, double>? CheckedMagazines { get; set; }
-    
+
     public object CheckedChambers { get; set; }
 }
 

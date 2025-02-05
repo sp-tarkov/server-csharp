@@ -409,13 +409,13 @@ public record Vitality
 {
     [JsonPropertyName("Hydration")]
     public double? Hydration { get; set; }
-    
+
     [JsonPropertyName("Energy")]
     public double? Energy { get; set; }
-    
+
     [JsonPropertyName("Temperature")]
     public double? Temperature { get; set; }
-    
+
     [JsonPropertyName("Health")] // This now does health and effects to each bodypart
     public Dictionary<string, BodyPartHealth>? Health { get; set; }
 }

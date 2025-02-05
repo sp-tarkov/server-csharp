@@ -25,9 +25,8 @@ public class GiveSptCommand(
     ICloner _cloner
 ) : ISptCommand
 {
-    protected Dictionary<string, SavedCommand> _savedCommand = new();
-    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
     private const double _acceptableConfidence = 0.9d;
+    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
     protected readonly HashSet<string> _excludedPresetItems =
@@ -36,6 +35,8 @@ public class GiveSptCommand(
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW
     ];
+
+    protected Dictionary<string, SavedCommand> _savedCommand = new();
 
     public string GetCommand()
     {
@@ -104,10 +105,7 @@ public class GiveSptCommand(
         else
         {
             // A new give request was entered, we need to ignore the old saved command
-            if (_savedCommand.ContainsKey(sessionId))
-            {
-                _savedCommand.Remove(sessionId);
-            }
+            if (_savedCommand.ContainsKey(sessionId)) _savedCommand.Remove(sessionId);
 
             isItemName = result.Groups[5].Value != null;
             item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;

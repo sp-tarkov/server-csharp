@@ -18,10 +18,25 @@ public class InsuranceCallbacks(
     InsuranceService _insuranceService,
     HttpResponseUtil _httpResponseUtil,
     ConfigServer _configServer
-    )
+)
     : OnUpdate
 {
     private InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
+
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
+            // _insuranceController.ProcessReturn();
+            // TODO: InsuranceController is not implemented rn
+            return true;
+
+        return false;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-insurance";
+    }
 
     /// <summary>
     /// Handle client/insurance/items/list/cost
@@ -32,7 +47,7 @@ public class InsuranceCallbacks(
     /// <returns></returns>
     public string GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
     {
-         return _httpResponseUtil.GetBody(_insuranceController.Cost(info, sessionID));
+        return _httpResponseUtil.GetBody(_insuranceController.Cost(info, sessionID));
     }
 
     /// <summary>
@@ -45,22 +60,5 @@ public class InsuranceCallbacks(
     public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {
         return _insuranceController.Insure(pmcData, info, sessionID);
-    }
-
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
-        {
-            // _insuranceController.ProcessReturn();
-            // TODO: InsuranceController is not implemented rn
-            return true;
-        }
-
-        return false;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-insurance";
     }
 }

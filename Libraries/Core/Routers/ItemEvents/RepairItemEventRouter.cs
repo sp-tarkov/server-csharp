@@ -23,16 +23,18 @@ public class RepairItemEventRouter : ItemEventRouterDefinition
 
     protected override List<HandledRoute> GetHandledRoutes()
     {
-        return new()
+        return new List<HandledRoute>
         {
-            new HandledRoute("Repair", false),
-            new HandledRoute("TraderRepair", false)
+            new("Repair", false),
+            new("TraderRepair", false)
         };
     }
 
-    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID, ItemEventRouterResponse output)
+    public override ItemEventRouterResponse HandleItemEvent(string url, PmcData pmcData, BaseInteractionRequestData body, string sessionID,
+        ItemEventRouterResponse output)
     {
-        switch (url) {
+        switch (url)
+        {
             case "Repair":
                 return _repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID);
             case "TraderRepair":

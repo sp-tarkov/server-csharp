@@ -82,10 +82,10 @@ public record RepairKit
 
     [JsonPropertyName("weapon")]
     public BonusSettings Weapon { get; set; }
-    
+
     [JsonPropertyName("vest")]
     public BonusSettings Vest { get; set; }
-    
+
     [JsonPropertyName("headwear")]
     public BonusSettings Headwear { get; set; }
 }
