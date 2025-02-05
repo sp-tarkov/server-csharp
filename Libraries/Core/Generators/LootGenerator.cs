@@ -264,7 +264,7 @@ public class LootGenerator(
             var armorDetails = _itemHelper.GetItem(armorItem.Template).Value;
             var armorClass = armorDetails.Properties.ArmorClass;
 
-            return options.ArmorLevelWhitelist.Contains((int)armorClass.Value);
+            return options.ArmorLevelWhitelist.Contains(armorClass.Value);
         }
 
         return false;
@@ -341,11 +341,11 @@ public class LootGenerator(
 
         if (options.ItemStackLimits.TryGetValue(item.Id, out var itemLimits))
         {
-            min = itemLimits.Min;
+            min = (int?)itemLimits.Min;
             max = (int?)itemLimits.Max;
         }
 
-        return _randomUtil.GetInt((int)(min ?? 1), max ?? 1);
+        return _randomUtil.GetInt((min ?? 1), max ?? 1);
     }
 
     /// <summary>

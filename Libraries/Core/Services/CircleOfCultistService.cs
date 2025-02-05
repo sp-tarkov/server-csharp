@@ -176,7 +176,7 @@ public class CircleOfCultistService(
     protected CircleCraftDetails GetCircleCraftingInfo(
         double rewardAmountRoubles,
         CultistCircleSettings circleConfig,
-        DirectRewardSettings directRewardSettings = null
+        DirectRewardSettings? directRewardSettings = null
     )
     {
         var result = new CircleCraftDetails
@@ -580,7 +580,7 @@ public class CircleOfCultistService(
             var settings = _hideoutConfig.CultistCircle.CurrencyRewards[itemTpl];
 
             // What % of the pool remaining should be rewarded as chosen currency
-            var percentOfPoolToUse = _randomUtil.GetInt((int)settings.Min, (int)settings.Max);
+            var percentOfPoolToUse = _randomUtil.GetDouble(settings.Min.Value, settings.Max.Value);
 
             // Rouble amount of pool we want to reward as currency
             var roubleAmountToFill = _randomUtil.GetPercentOfValue(percentOfPoolToUse, rewardPoolRemaining);
@@ -602,7 +602,7 @@ public class CircleOfCultistService(
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Profile of player who will be getting the rewards</param>
-    /// <param name="rewardType">Do we return bonus items (hideout/task items)</param>
+    /// <param name="craftingInfo">Do we return bonus items (hideout/task items)</param>
     /// <param name="cultistCircleConfig">Circle config</param>
     /// <returns>Array of tpls</returns>
     protected List<string> GetCultistCircleRewardPool(

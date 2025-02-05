@@ -31,7 +31,7 @@ public class TraderHelper(
 )
 {
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    protected Dictionary<string, int?> _highestTraderPriceItems = new();
+    protected Dictionary<string, double> _highestTraderPriceItems = new();
     protected List<string> _gameVersions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
 
 
@@ -449,9 +449,7 @@ public class TraderHelper(
     /// <returns>highest rouble cost for item</returns>
     public double GetHighestTraderPriceRouble(string tpl)
     {
-        if (_highestTraderPriceItems is not null) return (double)_highestTraderPriceItems[tpl];
-
-        if (_highestTraderPriceItems is null) _highestTraderPriceItems = new Dictionary<string, int?>();
+        if (_highestTraderPriceItems is not null) return _highestTraderPriceItems[tpl];
 
         // Init dict and fill
         foreach (var traderName in Traders.TradersDictionary)
@@ -463,7 +461,7 @@ public class TraderHelper(
             var traderAssorts = _databaseService.GetTrader(traderName.Value).Assort;
             if (traderAssorts is null) continue;
 
-            // Get all item assorts that have parentid of hideout (base item and not a mod of other item)
+            // Get all item assorts that have parentId of hideout (base item and not a mod of other item)
             foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
             {
                 // Get barter scheme (contains cost of item)
@@ -475,11 +473,14 @@ public class TraderHelper(
                     : _handbookHelper.InRUB(barterScheme.Count ?? 1, barterScheme.Template);
 
                 // Existing price smaller in dict than current iteration, overwrite
-                if ((_highestTraderPriceItems[item.Template] ?? 0) < roubleAmount) _highestTraderPriceItems[item.Template] = (int)roubleAmount;
+                if (_highestTraderPriceItems[item.Template] < roubleAmount)
+                {
+                    _highestTraderPriceItems[item.Template] = roubleAmount.Value;
+                }
             }
         }
 
-        return (double)_highestTraderPriceItems[tpl];
+        return _highestTraderPriceItems[tpl];
     }
 
     /// <summary>
@@ -489,14 +490,14 @@ public class TraderHelper(
     /// <returns>Rouble price</returns>
     public double GetHighestSellToTraderPrice(string tpl)
     {
-        // Find highest trader price for item
+        // Find largest trader price for item
         var highestPrice = 1; // Default price
         foreach (var trader in Traders.TradersDictionary)
         {
             // Get trader and check buy category allows tpl
             var traderBase = _databaseService.GetTrader(trader.Value).Base;
 
-            // Skip traders that dont sell
+            // Skip traders that don't sell
             if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category)) continue;
 
             // Get loyalty level details player has achieved with this trader

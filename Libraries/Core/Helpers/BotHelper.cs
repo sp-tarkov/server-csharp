@@ -102,7 +102,7 @@ public class BotHelper(
 
     public bool RollChanceToBePmc(MinMax botConvertMinMax)
     {
-        return _randomUtil.GetChance100(_randomUtil.GetInt((int)botConvertMinMax.Min, (int)botConvertMinMax.Max));
+        return _randomUtil.GetChance100(_randomUtil.GetDouble(botConvertMinMax.Min.Value, botConvertMinMax.Max.Value));
     }
 
     protected Dictionary<string, MinMax> GetPmcConversionValuesForLocation(string location)

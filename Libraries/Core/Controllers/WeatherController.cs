@@ -53,9 +53,9 @@ public class WeatherController(
     /// <returns></returns>
     public GetLocalWeatherResponseData GenerateLocal(string sessionId)
     {
-        var result = new GetLocalWeatherResponseData()
+        var result = new GetLocalWeatherResponseData
         {
-            Season = (int)_seasonalEventService.GetActiveWeatherSeason(),
+            Season = _seasonalEventService.GetActiveWeatherSeason(),
             Weather = []
         };
 

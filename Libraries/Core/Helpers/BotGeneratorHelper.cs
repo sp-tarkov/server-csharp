@@ -174,9 +174,9 @@ public class BotGeneratorHelper(
 
         if (_randomUtil.GetChance100(randomizationValues.ChanceMaxResourcePercent)) return maxResource;
 
-        return _randomUtil.GetInt(
-            (int)_randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
-            (int)maxResource
+        return _randomUtil.GetDouble(
+            _randomUtil.GetPercentOfValue(randomizationValues.ResourcePercent, maxResource, 0),
+            maxResource
         );
     }
 

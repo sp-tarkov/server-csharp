@@ -81,7 +81,7 @@ public class MailSendService(
         if (items?.Count > 0)
         {
             details.Items.AddRange(items);
-            details.ItemsMaxStorageLifetimeSeconds = (long?)maxStorageTimeSeconds;
+            details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
         }
 
         if (systemData is not null)

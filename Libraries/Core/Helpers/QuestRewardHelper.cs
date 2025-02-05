@@ -152,7 +152,7 @@ public class QuestRewardHelper(
             // Add % bonus to existing StackObjectsCount
             var rewardItem = reward.Items[0];
             var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + bonusPercent / 100));
-            rewardItem.Upd.StackObjectsCount = (int)newCurrencyAmount;
+            rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
             reward.Value = newCurrencyAmount;
         }
 

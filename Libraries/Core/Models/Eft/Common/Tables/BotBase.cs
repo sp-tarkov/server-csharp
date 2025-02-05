@@ -154,11 +154,14 @@ public record Info
     public string? LowerNickname { get; set; }
     public string? Side { get; set; }
     public bool? SquadInviteRestriction { get; set; }
+
+    // Confirmed in client
     public int? PrestigeLevel { get; set; }
     public string? Voice { get; set; }
     public int? Level { get; set; }
 
-    ///Experience the bot has gained
+    //Experience the bot has gained
+    // Confirmed in client
     public int? Experience { get; set; }
 
     public List<Ban>? Bans { get; set; }
@@ -166,6 +169,7 @@ public record Info
     public long? BannedUntil { get; set; }
     public bool? IsStreamerModeAvailable { get; set; }
 
+    // Confirmed in client
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public int? RegistrationDate { get; set; }
 

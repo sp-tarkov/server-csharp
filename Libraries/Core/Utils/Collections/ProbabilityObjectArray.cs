@@ -173,7 +173,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         for (var i = 0; i < drawCount; i++)
         {
             var rand = Random.Shared.NextDouble();
-            var randomIndex = (int)probCumsum.FindIndex((x) => x > rand);
+            var randomIndex = probCumsum.FindIndex((x) => x > rand);
             // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
             if (removeAfterDraw || neverRemoveWhitelist.Contains(totals.keyArray[randomIndex]))
             {

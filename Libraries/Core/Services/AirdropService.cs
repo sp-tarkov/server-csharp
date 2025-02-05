@@ -95,7 +95,7 @@ public class AirdropService(
         {
             Id = _hashUtil.Generate(),
             Template = "", // picked later
-            Upd = new Upd()
+            Upd = new Upd
             {
                 SpawnedInSession = true,
                 StackObjectsCount = 1
