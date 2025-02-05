@@ -217,8 +217,7 @@ public class PrestigeController(
                 }
                 case RewardType.ExtraDailyQuest: 
                 {
-                    _logger.Warning("AddPrestigeRewardsToProfile: Implement RewardType.ExtraDailyQuest");
-                    _logger.Warning("Does this also add the additional weekly");
+                    _logger.Info("additional quests will be added when generating repeatables");
                     break;
                 }
                 default:

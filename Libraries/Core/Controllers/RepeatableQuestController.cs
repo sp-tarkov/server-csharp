@@ -370,8 +370,7 @@ public class RepeatableQuestController(
 
             // Nullguard
             fullProfile.SptData.FreeRepeatableRefreshUsedCount ??= new Dictionary<string, int>();
-
-
+            
             // Reset players free quest count for this repeatable sub-type as we're generating new repeatables for this group (daily/weekly)
             fullProfile.SptData.FreeRepeatableRefreshUsedCount[repeatableTypeLower] = 0;
 
@@ -638,7 +637,13 @@ public class RepeatableQuestController(
                 .EliteBonusSettings
                 .RepeatableQuestExtraCount
                 .GetValueOrDefault(0);
-
+        
+        // Prestige level 2 gives additional daily and weekly
+        // do the logic for all other than "daily_savage"
+        // use bigger than or equal incase modders add more
+        if (repeatableConfig.Name.ToLower() != "daily_savage" && pmcData.Info.PrestigeLevel >= 2)
+            questCount++;
+        
         return questCount;
     }
 }
