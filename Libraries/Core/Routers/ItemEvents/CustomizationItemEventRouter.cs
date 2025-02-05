@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Customization;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Enums;
 using Core.Models.Utils;
 
 namespace Core.Routers.ItemEvents;
@@ -29,8 +30,8 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("CustomizationBuy", false),
-            new("CustomizationSet", false)
+            new(ItemEventActions.CUSTOMIZATION_BUY, false),
+            new(ItemEventActions.CUSTOMIZATION_SET, false)
         };
     }
 
@@ -39,9 +40,9 @@ public class CustomizationItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "CustomizationBuy":
+            case ItemEventActions.CUSTOMIZATION_BUY:
                 return _customizationCallbacks.BuyCustomisation(pmcData, body as BuyClothingRequestData, sessionID);
-            case "CustomizationSet":
+            case ItemEventActions.CUSTOMIZATION_SET:
                 return _customizationCallbacks.SetCustomisation(pmcData, body as CustomizationSetRequest, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");

@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,9 +26,9 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("AddToWishList", false),
-            new("RemoveFromWishList", false),
-            new("ChangeWishlistItemCategory", false)
+            new(ItemEventActions.ADD_TO_WISHLIST, false),
+            new(ItemEventActions.REMOVE_FROM_WISHLIST, false),
+            new(ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY, false)
         };
     }
 
@@ -36,11 +37,11 @@ public class WishlistItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "AddToWishList":
+            case ItemEventActions.ADD_TO_WISHLIST:
                 return _wishlistCallbacks.AddToWishlist(pmcData, body as AddToWishlistRequest, sessionID);
-            case "RemoveFromWishList":
+            case ItemEventActions.REMOVE_FROM_WISHLIST:
                 return _wishlistCallbacks.RemoveFromWishlist(pmcData, body as RemoveFromWishlistRequest, sessionID);
-            case "ChangeWishlistItemCategory":
+            case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
                 return _wishlistCallbacks.ChangeWishlistItemCategory(pmcData, body as ChangeWishlistItemCategoryRequest, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");

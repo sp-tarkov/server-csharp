@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,9 +26,9 @@ public class RagfairItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("RagFairAddOffer", false),
-            new("RagFairRemoveOffer", false),
-            new("RagFairRenewOffer", false)
+            new(ItemEventActions.RAGFAIR_ADD_OFFER, false),
+            new(ItemEventActions.RAGFAIR_REMOVE_OFFER, false),
+            new(ItemEventActions.RAGFAIR_RENEW_OFFER, false)
         };
     }
 
@@ -36,11 +37,11 @@ public class RagfairItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "RagFairAddOffer":
+            case ItemEventActions.RAGFAIR_ADD_OFFER:
                 return _ragfairCallbacks.AddOffer(pmcData, body as AddOfferRequestData, sessionID);
-            case "RagFairRemoveOffer":
+            case ItemEventActions.RAGFAIR_REMOVE_OFFER:
                 return _ragfairCallbacks.RemoveOffer(pmcData, body as RemoveOfferRequestData, sessionID);
-            case "RagFairRenewOffer":
+            case ItemEventActions.RAGFAIR_RENEW_OFFER:
                 return _ragfairCallbacks.ExtendOffer(pmcData, body as ExtendOfferRequestData, sessionID);
             default:
                 throw new Exception($"CustomizationItemEventRouter being used when it cant handle route {url}");

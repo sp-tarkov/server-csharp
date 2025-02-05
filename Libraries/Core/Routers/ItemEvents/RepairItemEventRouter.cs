@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,8 +26,8 @@ public class RepairItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("Repair", false),
-            new("TraderRepair", false)
+            new(ItemEventActions.REPAIR, false),
+            new(ItemEventActions.TRADER_REPAIR, false)
         };
     }
 
@@ -35,9 +36,9 @@ public class RepairItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "Repair":
+            case ItemEventActions.REPAIR:
                 return _repairCallbacks.Repair(pmcData, body as RepairActionDataRequest, sessionID);
-            case "TraderRepair":
+            case ItemEventActions.TRADER_REPAIR:
                 return _repairCallbacks.TraderRepair(pmcData, body as TraderRepairActionDataRequest, sessionID);
             default:
                 throw new Exception($"RepairItemEventRouter being used when it cant handle route {url}");

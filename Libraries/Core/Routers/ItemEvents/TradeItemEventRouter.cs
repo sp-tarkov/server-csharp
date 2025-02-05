@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Trade;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,9 +26,9 @@ public class TradeItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("TradingConfirm", false),
-            new("RagFairBuyOffer", false),
-            new("SellAllFromSavage", false)
+            new(ItemEventActions.TRADING_CONFIRM, false),
+            new(ItemEventActions.RAGFAIR_BUY_OFFER, false),
+            new(ItemEventActions.SELL_ALL_FROM_SAVAGE, false)
         };
     }
 
@@ -36,11 +37,11 @@ public class TradeItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "TradingConfirm":
+            case ItemEventActions.TRADING_CONFIRM:
                 return _tradeCallbacks.ProcessTrade(pmcData, body as ProcessBaseTradeRequestData, sessionID);
-            case "RagFairBuyOffer":
+            case ItemEventActions.RAGFAIR_BUY_OFFER:
                 return _tradeCallbacks.ProcessRagfairTrade(pmcData, body as ProcessRagfairTradeRequestData, sessionID);
-            case "SellAllFromSavage":
+            case ItemEventActions.SELL_ALL_FROM_SAVAGE:
                 return _tradeCallbacks.SellAllFromSavage(pmcData, body as SellScavItemsToFenceRequestData, sessionID);
             default:
                 throw new Exception($"TradeItemEventRouter being used when it cant handle route {url}");

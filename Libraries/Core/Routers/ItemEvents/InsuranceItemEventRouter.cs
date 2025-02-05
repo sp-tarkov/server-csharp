@@ -5,6 +5,7 @@ using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Insurance;
 using Core.Models.Eft.ItemEvent;
+using Core.Models.Enums;
 
 namespace Core.Routers.ItemEvents;
 
@@ -25,7 +26,7 @@ public class InsuranceItemEventRouter : ItemEventRouterDefinition
     {
         return new List<HandledRoute>
         {
-            new("Insure", false)
+            new(ItemEventActions.INSURE, false)
         };
     }
 
@@ -34,7 +35,7 @@ public class InsuranceItemEventRouter : ItemEventRouterDefinition
     {
         switch (url)
         {
-            case "Insure":
+            case ItemEventActions.INSURE:
                 return _insuranceCallbacks.Insure(pmcData, body as InsureRequestData, sessionID);
             default:
                 throw new Exception($"InsuranceItemEventRouter being used when it cant handle route {url}");
