@@ -182,7 +182,6 @@ public class SptHttpListener : IHttpListener
      */
     protected void LogRequest(HttpRequest req, string output)
     {
-        // TODO: when do we want to log these?
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             var log = new Response(req.Method, output);
@@ -204,7 +203,6 @@ public class SptHttpListener : IHttpListener
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
             // Parse quest info into object
-
             var log = new Request(req.Method, new RequestData(req.Path, req.Headers, deserializedObject));
             _requestLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
         }
