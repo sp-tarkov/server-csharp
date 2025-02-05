@@ -82,7 +82,7 @@ public class PaymentService(
         }
 
         // Track the total amount of all currencies.
-        var totalCurrencyAmount = 0;
+        var totalCurrencyAmount = 0d;
 
         // Loop through each type of currency involved in the trade.
         foreach (var currencyTpl in currencyAmounts)
@@ -90,10 +90,10 @@ public class PaymentService(
             if (currencyTpl.Value <= 0) continue;
 
             var currencyAmount = currencyTpl.Value;
-            totalCurrencyAmount += (int)currencyAmount;
+            totalCurrencyAmount += currencyAmount.Value;
 
             // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
-            AddPaymentToOutput(pmcData, currencyTpl.Key, (int)currencyAmount, sessionID, output);
+            AddPaymentToOutput(pmcData, currencyTpl.Key, currencyAmount.Value, sessionID, output);
 
             // If there are warnings, exit early.
             if (output.Warnings?.Count > 0) return;
@@ -255,8 +255,8 @@ public class PaymentService(
         foreach (var moneyStack in moneyItemsInInventory) moneyStack.Upd ??= new Upd { StackObjectsCount = 1 };
 
         var amountAvailable = moneyItemsInInventory.Aggregate(
-            0,
-            (accumulator, item) => (int)(accumulator + item.Upd.StackObjectsCount)
+            0d,
+            (accumulator, item) => (accumulator + item.Upd.StackObjectsCount.Value)
         );
 
         // If no money in inventory or amount is not enough we return false
@@ -264,7 +264,7 @@ public class PaymentService(
         {
             _logger.Error(
                 _localisationService.GetText(
-                    "payment-not_enough_money_to_complete_transation",
+                    "payment-not_enough_money_to_complete_transation", // Typo, needs locale updated if fixed
                     new
                     {
                         amountToPay = amountToPay,
@@ -274,7 +274,7 @@ public class PaymentService(
             );
             _httpResponseUtil.AppendErrorToOutput(
                 output,
-                _localisationService.GetText("payment-not_enough_money_to_complete_transation_short", amountToPay),
+                _localisationService.GetText("payment-not_enough_money_to_complete_transation_short", amountToPay), // Typo, needs locale updated if fixed
                 BackendErrorCodes.UnknownTradingError
             );
 

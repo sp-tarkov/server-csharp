@@ -63,7 +63,7 @@ public class BotWeaponGeneratorHelper(
     /// <returns>Numerical value of magazine count</returns>
     public int GetRandomizedMagazineCount(GenerationData magCounts)
     {
-        return (int)_weightedRandomHelper.GetWeightedValue<double>(magCounts.Weights);
+        return (int)_weightedRandomHelper.GetWeightedValue(magCounts.Weights);
     }
 
     /// <summary>

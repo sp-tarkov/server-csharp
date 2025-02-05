@@ -121,7 +121,7 @@ public class TraderPurchasePersisterService(
                 var purchaseDetails = purchaseKvP.Value;
                 var resetTimeForItem =
                     purchaseDetails.PurchaseTimestamp +
-                    _randomUtil.GetInt((int)traderUpdateDetails.Seconds.Min, (int)traderUpdateDetails.Seconds.Max);
+                    _randomUtil.GetDouble(traderUpdateDetails.Seconds.Min.Value, traderUpdateDetails.Seconds.Max.Value);
                 if (resetTimeForItem < _timeUtil.GetTimeStamp())
                 {
                     // Item was purchased far enough in past a trader refresh would have occured, remove purchase record from profile

@@ -117,8 +117,8 @@ public class RepeatableQuestRewardGenerator(
             {
                 rewards.Success.Add(chosenWeapon.Value.Key);
 
-                // Subtract price of preset from item budget so we dont give player too much stuff
-                itemRewardBudget -= (int)chosenWeapon.Value.Value;
+                // Subtract price of preset from item budget so we don't give player too much stuff
+                itemRewardBudget -= chosenWeapon.Value.Value;
                 rewardIndex++;
             }
         }
@@ -293,9 +293,7 @@ public class RepeatableQuestRewardGenerator(
         return Math.Floor(
             effectiveDifficulty *
             _mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) *
-            _randomUtil.GetDouble((double)(1 - rewardSpreadConfig), (double)(1 + rewardSpreadConfig)) ??
-            0
-        );
+            _randomUtil.GetDouble((1d - rewardSpreadConfig.Value), 1d + rewardSpreadConfig.Value) ?? 0);
     }
 
     private Dictionary<TemplateItem, int> GetRewardableItemsFromPoolWithinBudget(List<TemplateItem> itemPool,

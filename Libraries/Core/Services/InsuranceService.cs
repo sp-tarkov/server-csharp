@@ -1,4 +1,4 @@
-﻿using Core.Helpers;
+using Core.Helpers;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -162,7 +162,7 @@ public class InsuranceService(
 
         var traderMinReturnAsSeconds = trader.Insurance.MinReturnHour * TimeUtil.OneHourAsSeconds;
         var traderMaxReturnAsSeconds = trader.Insurance.MaxReturnHour * TimeUtil.OneHourAsSeconds;
-        var randomisedReturnTimeSeconds = _randomUtil.GetInt((int)traderMinReturnAsSeconds, (int)traderMaxReturnAsSeconds);
+        var randomisedReturnTimeSeconds = _randomUtil.GetDouble(traderMinReturnAsSeconds.Value, traderMaxReturnAsSeconds.Value);
 
         // Check for Mark of The Unheard in players special slots (only slot item can fit)
         var globals = _databaseService.GetGlobals();
@@ -173,14 +173,14 @@ public class InsuranceService(
         );
         if (hasMarkOfUnheard)
             // Reduce return time by globals multipler value
-            randomisedReturnTimeSeconds *= (int)globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown;
+            randomisedReturnTimeSeconds *= globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown.Value;
 
         // EoD has 30% faster returns
         var editionModifier = globals.Configuration.Insurance.EditionSendingMessageTime[pmcData.Info.GameVersion];
-        if (editionModifier is not null) randomisedReturnTimeSeconds *= (int)editionModifier.Multiplier;
+        if (editionModifier is not null) randomisedReturnTimeSeconds *= editionModifier.Multiplier.Value;
 
         // Calculate the final return time based on our bonus percent
-        var finalReturnTimeSeconds = randomisedReturnTimeSeconds * (1.0 - insuranceReturnTimeBonusPercent);
+        var finalReturnTimeSeconds = randomisedReturnTimeSeconds * (1d - insuranceReturnTimeBonusPercent);
         return _timeUtil.GetTimeStamp() + finalReturnTimeSeconds;
     }
 

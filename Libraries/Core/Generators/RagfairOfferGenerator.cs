@@ -138,7 +138,7 @@ public class RagfairOfferGenerator(
             User = CreateUserDataForFleaOffer(userID, isTrader),
             Root = items[0].Id,
             Items = itemsClone,
-            ItemsCost = Math.Round((double)handbookHelper.GetTemplatePrice(items[0].Template)), // Handbook price
+            ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(items[0].Template)), // Handbook price
             Requirements = offerRequirements,
             RequirementsCost = Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
@@ -316,8 +316,7 @@ public class RagfairOfferGenerator(
             return (long)databaseService.GetTrader(userID).Base.NextResupply;
 
         // Generated fake-player offer
-        return (long)Math.Round(
-            (double)(time + randomUtil.GetInt((int)ragfairConfig.Dynamic.EndTimeSeconds.Min, (int)ragfairConfig.Dynamic.EndTimeSeconds.Max))
+        return (long)Math.Round(time + randomUtil.GetDouble(ragfairConfig.Dynamic.EndTimeSeconds.Min.Value, ragfairConfig.Dynamic.EndTimeSeconds.Max.Value)
         );
     }
 
@@ -374,9 +373,9 @@ public class RagfairOfferGenerator(
         // Limit to 1 offer when processing expired - like-for-like replacement
         var offerCount = isExpiredOffer
             ? 1
-            : randomUtil.GetInt((int)config.OfferItemCount.Min, (int)config.OfferItemCount.Max);
+            : randomUtil.GetDouble(config.OfferItemCount.Min.Value, config.OfferItemCount.Max.Value);
 
-        /* TODO: ???????
+        /* //TODO: ???????
         if (ProgramStatics.DEBUG && !ProgramStatics.COMPILED) {
             offerCount = 2;
         }

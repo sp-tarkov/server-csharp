@@ -1119,10 +1119,10 @@ public record Props
     public string? RepairType { get; set; }
 
     [JsonPropertyName("StackMinRandom")]
-    public double? StackMinRandom { get; set; }
+    public int? StackMinRandom { get; set; }
 
     [JsonPropertyName("StackMaxRandom")]
-    public double? StackMaxRandom { get; set; }
+    public int? StackMaxRandom { get; set; }
 
     [JsonPropertyName("ammoType")]
     public string? AmmoType { get; set; }

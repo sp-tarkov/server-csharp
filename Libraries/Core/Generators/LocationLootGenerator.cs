@@ -422,8 +422,8 @@ public class LocationLootGenerator(
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
             var itemSize = GetItemSize(items);
-            var width = (int)itemSize.Width;
-            var height = (int)itemSize.Height;
+            var width = itemSize.Width;
+            var height = itemSize.Height;
 
             // look for open slot to put chosen item into
             var result = _containerHelper.FindSlotForItem(containerMap, width, height);
@@ -555,7 +555,7 @@ public class LocationLootGenerator(
     /// </summary>
     /// <param name="containerTypeId">Container to get possible loot for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
-    /// <returns>ProbabilityObjectArray of item tpls + probabilty</returns>
+    /// <returns>ProbabilityObjectArray of item tpls + probability</returns>
     protected ProbabilityObjectArray<string, float?> GetPossibleLootItemsForContainer(
         string containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist)
@@ -899,7 +899,7 @@ public class LocationLootGenerator(
             var stackCount =
                 itemTemplate.Properties.StackMaxSize == 1
                     ? 1
-                    : _randomUtil.GetInt((int)itemTemplate.Properties.StackMinRandom, (int)itemTemplate.Properties.StackMaxRandom);
+                    : _randomUtil.GetInt(itemTemplate.Properties.StackMinRandom.Value, itemTemplate.Properties.StackMaxRandom.Value);
 
             itemWithMods.Add(
                 new Item
@@ -997,7 +997,7 @@ public class LocationLootGenerator(
             // Edge case - some ammos e.g. flares or M406 grenades shouldn't be stacked
             var stackCount = itemTemplate.Properties.StackMaxSize == 1
                 ? 1
-                : _randomUtil.GetInt((int)itemTemplate.Properties.StackMinRandom, (int)itemTemplate.Properties.StackMaxRandom);
+                : _randomUtil.GetInt(itemTemplate.Properties.StackMinRandom.Value, itemTemplate.Properties.StackMaxRandom.Value);
 
             rootItem.Upd = new Upd { StackObjectsCount = stackCount };
         }

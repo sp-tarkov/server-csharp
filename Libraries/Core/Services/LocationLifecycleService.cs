@@ -530,6 +530,8 @@ public class LocationLifecycleService
         _traderHelper.LevelUp(fenceId, pmcData);
         pmcData.TradersInfo[fenceId].LoyaltyLevel = Math.Max((int)pmcData.TradersInfo[fenceId].LoyaltyLevel, 1);
 
+        _logger.Debug($"COOP extract: {extractName} used");
+
         // Copy updated fence rep values into scav profile to ensure consistency
         var scavData = _profileHelper.GetScavProfile(sessionId);
         scavData.TradersInfo[fenceId].Standing = pmcData.TradersInfo[fenceId].Standing;
@@ -1004,7 +1006,7 @@ public class LocationLifecycleService
             MessageType.BTR_ITEMS_DELIVERY,
             messageId,
             items,
-            (int)messageStoreTime
+            messageStoreTime
         );
     }
 

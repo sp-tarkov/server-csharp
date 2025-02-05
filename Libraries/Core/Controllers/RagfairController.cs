@@ -176,7 +176,7 @@ public class RagfairController
         if (searchRequest.BuildCount == 0)
         {
             var start = searchRequest.Page * searchRequest.Limit;
-            var end = (int)Math.Min((double)((searchRequest.Page + 1) * searchRequest.Limit), result.Offers.Count);
+            var end = Math.Min((searchRequest.Page.Value + 1) * searchRequest.Limit.Value, result.Offers.Count);
             result.Offers = result.Offers.Slice(start.Value, end - start.Value);
         }
 

@@ -1168,17 +1168,17 @@ public class ItemHelper(
             // Calculating child ExtraSize
             if (itemTemplate.Properties.ExtraSizeForceAdd ?? false)
             {
-                forcedUp += (int)itemTemplate.Properties.ExtraSizeUp;
-                forcedDown += (int)itemTemplate.Properties.ExtraSizeDown;
-                forcedLeft += (int)itemTemplate.Properties.ExtraSizeLeft;
-                forcedRight += (int)itemTemplate.Properties.ExtraSizeRight;
+                forcedUp += itemTemplate.Properties.ExtraSizeUp.Value;
+                forcedDown += itemTemplate.Properties.ExtraSizeDown.Value;
+                forcedLeft += itemTemplate.Properties.ExtraSizeLeft.Value;
+                forcedRight += itemTemplate.Properties.ExtraSizeRight.Value;
             }
             else
             {
-                sizeUp = sizeUp < itemTemplate.Properties.ExtraSizeUp ? (int)itemTemplate.Properties.ExtraSizeUp : sizeUp;
-                sizeDown = sizeDown < itemTemplate.Properties.ExtraSizeDown ? (int)itemTemplate.Properties.ExtraSizeDown : sizeDown;
-                sizeLeft = sizeLeft < itemTemplate.Properties.ExtraSizeLeft ? (int)itemTemplate.Properties.ExtraSizeLeft : sizeLeft;
-                sizeRight = sizeRight < itemTemplate.Properties.ExtraSizeRight ? (int)itemTemplate.Properties.ExtraSizeRight : sizeRight;
+                sizeUp = sizeUp < itemTemplate.Properties.ExtraSizeUp ? itemTemplate.Properties.ExtraSizeUp.Value : sizeUp;
+                sizeDown = sizeDown < itemTemplate.Properties.ExtraSizeDown ? itemTemplate.Properties.ExtraSizeDown.Value : sizeDown;
+                sizeLeft = sizeLeft < itemTemplate.Properties.ExtraSizeLeft ? itemTemplate.Properties.ExtraSizeLeft.Value : sizeLeft;
+                sizeRight = sizeRight < itemTemplate.Properties.ExtraSizeRight ? itemTemplate.Properties.ExtraSizeRight.Value : sizeRight;
             }
         }
 
@@ -1379,11 +1379,11 @@ public class ItemHelper(
             (int)magazineCartridgeMaxCount
         );
 
-        if (magazineWithChildCartridges.Count() > 1) _logger.Warning($"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues");
+        if (magazineWithChildCartridges.Count > 1) _logger.Warning($"Magazine {magTemplate.Name} already has cartridges defined,  this may cause issues");
 
         // Loop over cartridge count and add stacks to magazine
-        double? currentStoredCartridgeCount = 0;
-        var location = 0;
+        int currentStoredCartridgeCount = 0;
+        int location = 0;
         while (currentStoredCartridgeCount < desiredStackCount)
         {
             // Get stack size of cartridges
@@ -1392,7 +1392,7 @@ public class ItemHelper(
 
             // Ensure we don't go over the max stackCount size
             var remainingSpace = desiredStackCount - currentStoredCartridgeCount;
-            if (cartridgeCountToAdd > remainingSpace) cartridgeCountToAdd = (int)remainingSpace;
+            if (cartridgeCountToAdd > remainingSpace) cartridgeCountToAdd = remainingSpace;
 
             // Add cartridge item object into items array
             magazineWithChildCartridges.Add(
@@ -1405,7 +1405,7 @@ public class ItemHelper(
                 )
             );
 
-            currentStoredCartridgeCount += cartridgeCountToAdd;
+            currentStoredCartridgeCount += cartridgeCountToAdd.Value;
             location++;
         }
 
@@ -1797,8 +1797,8 @@ public class ItemHelper(
         return ammoItemTemplate.Properties?.StackMaxSize == 1
             ? 1
             : _randomUtil.GetInt(
-                (int?)ammoItemTemplate.Properties?.StackMinRandom ?? 1,
-                Math.Min((int?)ammoItemTemplate.Properties?.StackMaxRandom ?? 1, maxLimit)
+                ammoItemTemplate.Properties?.StackMinRandom ?? 1,
+                Math.Min(ammoItemTemplate.Properties?.StackMaxRandom ?? 1, maxLimit)
             );
     }
 

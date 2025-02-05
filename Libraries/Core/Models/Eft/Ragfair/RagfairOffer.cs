@@ -59,6 +59,7 @@ public record RagfairOffer
     [JsonPropertyName("buyRestrictionMax")]
     public int? BuyRestrictionMax { get; set; }
 
+    // Confirmed in client
     [JsonPropertyName("buyRestrictionCurrent")]
     public int? BuyRestrictionCurrent { get; set; }
 

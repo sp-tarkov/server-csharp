@@ -483,7 +483,10 @@ public class HideoutController(
             _inventoryHelper.RemoveItemByCount(pmcData, itemToDelete.Id, requiredCount, sessionID, output);
 
             // Tools don't have a count
-            if (requirement.Type != "Tool") requirement.Count -= (int)itemToDelete.Count;
+            if (requirement.Type != "Tool")
+            {
+                requirement.Count -= (int)itemToDelete.Count;
+            }
         }
 
         return output;
@@ -731,7 +734,7 @@ public class HideoutController(
         if (hoursCrafting / _hideoutConfig.HoursForSkillCrafting >= 1)
         {
             // Spent enough time crafting to get a bonus xp multiplier
-            var multiplierCrafting = Math.Floor((double)hoursCrafting / _hideoutConfig.HoursForSkillCrafting);
+            var multiplierCrafting = Math.Floor(hoursCrafting.Value / _hideoutConfig.HoursForSkillCrafting);
             craftingExpAmount += (int)(1 * multiplierCrafting);
             hoursCrafting -= _hideoutConfig.HoursForSkillCrafting * multiplierCrafting;
         }

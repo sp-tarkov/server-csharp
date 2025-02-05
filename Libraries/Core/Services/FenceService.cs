@@ -157,9 +157,9 @@ public class FenceService(
         // We may need to find an alternative to nodes: delete root.location;
         root.Location = null;
 
-        var createAssort = new CreateFenceAssortsResult()
+        var createAssort = new CreateFenceAssortsResult
             { SptItems = [], BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(), LoyalLevelItems = new Dictionary<string, int>() };
-        createAssort.BarterScheme[root.Id] = [[new BarterScheme() { Count = cost, Template = Money.ROUBLES }]];
+        createAssort.BarterScheme[root.Id] = [[new BarterScheme { Count = cost, Template = Money.ROUBLES }]];
         createAssort.SptItems.Add(clonedItems);
         createAssort.LoyalLevelItems[root.Id] = 1;
 
@@ -470,7 +470,7 @@ public class FenceService(
         var stackSize = rootItemToAdjust.Upd?.StackObjectsCount ?? 1;
 
         // Get a random count of the chosen item to remove if its > 1
-        var itemCountToRemove = randomUtil.GetInt(1, (int)stackSize);
+        var itemCountToRemove = randomUtil.GetDouble(1, stackSize);
 
         // Check if we're removing all or just part of the item
         var isEntireStackToBeRemoved = Math.Abs(itemCountToRemove - stackSize) < 0.1;
@@ -571,10 +571,10 @@ public class FenceService(
      */
     protected void CreateInitialFenceAssortGenerationValues()
     {
-        var result = new FenceAssortGenerationValues()
+        var result = new FenceAssortGenerationValues
         {
-            Normal = new GenerationAssortValues() { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 },
-            Discount = new GenerationAssortValues() { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 }
+            Normal = new GenerationAssortValues { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 },
+            Discount = new GenerationAssortValues { Item = 0, WeaponPreset = 0, EquipmentPreset = 0 }
         };
 
         result.Normal.Item = traderConfig.Fence.AssortSize;
@@ -610,7 +610,7 @@ public class FenceService(
      */
     protected TraderAssort CreateFenceAssortSkeleton()
     {
-        return new TraderAssort()
+        return new TraderAssort
         {
             Items = [],
             BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(),
@@ -626,7 +626,7 @@ public class FenceService(
      */
     protected CreateFenceAssortsResult CreateAssorts(GenerationAssortValues itemCounts, int loyaltyLevel)
     {
-        var result = new CreateFenceAssortsResult()
+        var result = new CreateFenceAssortsResult
             { SptItems = [], BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(), LoyalLevelItems = new Dictionary<string, int>() };
 
         var baseFenceAssortClone = _cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
@@ -960,7 +960,7 @@ public class FenceService(
                 assorts.BarterScheme[presetWithChildrenClone[0].Id] =
                 [
                     [
-                        new BarterScheme()
+                        new BarterScheme
                         {
                             Template = Money.ROUBLES,
                             Count = Math.Round(itemPrice)
@@ -1017,7 +1017,7 @@ public class FenceService(
             assorts.BarterScheme[presetWithChildrenClone[0].Id] =
             [
                 [
-                    new BarterScheme()
+                    new BarterScheme
                     {
                         Template = Money.ROUBLES,
                         Count = Math.Round(itemPrice)
@@ -1079,7 +1079,7 @@ public class FenceService(
             itemHelper.AddUpdObjectToItem(modItemToAdjust);
 
             if (modItemToAdjust.Upd.Repairable == null)
-                modItemToAdjust.Upd.Repairable = new UpdRepairable()
+                modItemToAdjust.Upd.Repairable = new UpdRepairable
                 {
                     Durability = modItemDbDetails.Properties.MaxDurability,
                     MaxDurability = modItemDbDetails.Properties.MaxDurability
@@ -1094,7 +1094,7 @@ public class FenceService(
                 modItemToAdjust.SlotId == "mod_equipment_000" &&
                 modItemToAdjust.Upd.Repairable.Durability < modItemDbDetails.Properties.MaxDurability)
                 // Is damaged
-                modItemToAdjust.Upd.FaceShield = new UpdFaceShield() { Hits = randomUtil.GetInt(1, 3) };
+                modItemToAdjust.Upd.FaceShield = new UpdFaceShield { Hits = randomUtil.GetInt(1, 3) };
         }
     }
 
@@ -1181,8 +1181,8 @@ public class FenceService(
             return itemDbDetails.Properties.StackMaxSize == 1
                 ? 1
                 : randomUtil.GetInt(
-                    (int)itemDbDetails.Properties.StackMinRandom,
-                    (int)itemDbDetails.Properties.StackMaxRandom
+                    itemDbDetails.Properties.StackMinRandom.Value,
+                    itemDbDetails.Properties.StackMaxRandom.Value
                 );
         }
 
@@ -1258,7 +1258,7 @@ public class FenceService(
 
         // Randomise hp resource of med items
         if (itemDetails.Properties.MaxHpResource != null && (itemDetails.Properties.MaxHpResource ?? 0) > 0)
-            itemToAdjust.Upd.MedKit = new UpdMedKit()
+            itemToAdjust.Upd.MedKit = new UpdMedKit
                 { HpResource = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxHpResource) };
 
         // Randomise armor durability
@@ -1273,7 +1273,7 @@ public class FenceService(
                 itemDetails,
                 traderConfig.Fence.ArmorMaxDurabilityPercentMinMax
             );
-            itemToAdjust.Upd.Repairable = new UpdRepairable()
+            itemToAdjust.Upd.Repairable = new UpdRepairable
                 { Durability = values.Durability, MaxDurability = values.MaxDurability };
 
             return;
@@ -1285,12 +1285,12 @@ public class FenceService(
             var weaponDurabilityLimits = traderConfig.Fence.WeaponDurabilityPercentMinMax;
             var maxDuraMin = weaponDurabilityLimits.Max.Min / 100 * itemDetails.Properties.MaxDurability;
             var maxDuraMax = weaponDurabilityLimits.Max.Max / 100 * itemDetails.Properties.MaxDurability;
-            var chosenMaxDurability = randomUtil.GetInt((int)maxDuraMin, (int)maxDuraMax);
+            var chosenMaxDurability = randomUtil.GetDouble(maxDuraMin.Value, maxDuraMax.Value);
 
             var currentDuraMin = weaponDurabilityLimits.Current.Min / 100 * itemDetails.Properties.MaxDurability;
             var currentDuraMax = weaponDurabilityLimits.Current.Max / 100 * itemDetails.Properties.MaxDurability;
             var currentDurability = Math.Min(
-                randomUtil.GetInt((int)currentDuraMin, (int)currentDuraMax),
+                randomUtil.GetDouble(currentDuraMin.Value, currentDuraMax.Value),
                 chosenMaxDurability
             );
 
@@ -1304,7 +1304,7 @@ public class FenceService(
         {
             itemToAdjust.Upd.RepairKit = new UpdRepairKit
             {
-                Resource = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxRepairResource)
+                Resource = randomUtil.GetDouble(1, itemDetails.Properties.MaxRepairResource.Value)
             };
 
             return;
@@ -1316,7 +1316,7 @@ public class FenceService(
         {
             itemToAdjust.Upd.Key = new UpdKey
             {
-                NumberOfUsages = randomUtil.GetInt(0, (int)itemDetails.Properties.MaximumNumberOfUsage - 1)
+                NumberOfUsages = randomUtil.GetInt(0, itemDetails.Properties.MaximumNumberOfUsage.Value - 1)
             };
 
             return;
@@ -1326,7 +1326,7 @@ public class FenceService(
         if ((itemDetails.Properties.MaxResource ?? 0) > 0)
         {
             var resourceMax = itemDetails.Properties.MaxResource;
-            var resourceCurrent = randomUtil.GetInt(1, (int)itemDetails.Properties.MaxResource);
+            var resourceCurrent = randomUtil.GetInt(1, itemDetails.Properties.MaxResource.Value);
 
             itemToAdjust.Upd.Resource = new UpdResource
                 { Value = resourceMax - resourceCurrent, UnitsConsumed = resourceCurrent };
@@ -1334,9 +1334,9 @@ public class FenceService(
     }
 
     /**
-     * Generate a randomised current and max durabiltiy value for an armor item
+     * Generate a randomised current and max durability value for an armor item
      * @param itemDetails Item to create values for
-     * @param equipmentDurabilityLimits Max durabiltiy percent min/max values
+     * @param equipmentDurabilityLimits Max durability percent min/max values
      * @returns Durability + MaxDurability values
      */
     protected UpdRepairable GetRandomisedArmorDurabilityValues(
@@ -1346,16 +1346,16 @@ public class FenceService(
     {
         var maxDuraMin = equipmentDurabilityLimits.Max.Min / 100 * itemDetails.Properties.MaxDurability;
         var maxDuraMax = equipmentDurabilityLimits.Max.Max / 100 * itemDetails.Properties.MaxDurability;
-        var chosenMaxDurability = randomUtil.GetInt((int)maxDuraMin, (int)maxDuraMax);
+        var chosenMaxDurability = randomUtil.GetDouble(maxDuraMin.Value, maxDuraMax.Value);
 
         var currentDuraMin = equipmentDurabilityLimits.Current.Min / 100 * itemDetails.Properties.MaxDurability;
         var currentDuraMax = equipmentDurabilityLimits.Current.Max / 100 * itemDetails.Properties.MaxDurability;
         var chosenCurrentDurability = Math.Min(
-            randomUtil.GetInt((int)currentDuraMin, (int)currentDuraMax),
+            randomUtil.GetDouble(currentDuraMin.Value, currentDuraMax.Value),
             chosenMaxDurability
         );
 
-        return new UpdRepairable() { Durability = chosenCurrentDurability, MaxDurability = chosenMaxDurability };
+        return new UpdRepairable { Durability = chosenCurrentDurability, MaxDurability = chosenMaxDurability };
     }
 
     /**
@@ -1380,8 +1380,8 @@ public class FenceService(
     public long GetNextFenceUpdateTimestamp()
     {
         var time = timeUtil.GetTimeStamp();
-        var UpdateSeconds = GetFenceRefreshTime();
-        return time + UpdateSeconds;
+        var updateSeconds = GetFenceRefreshTime();
+        return time + updateSeconds;
     }
 
     /**
