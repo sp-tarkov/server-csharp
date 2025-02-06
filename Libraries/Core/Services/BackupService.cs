@@ -23,19 +23,19 @@ public class BackupService
     protected Timer _backupIntervalTimer;
 
     public BackupService(
-        ISptLogger<BackupService> _logger,
-        JsonUtil _jsonUtil,
-        TimeUtil _timeUtil,
-        ConfigServer _configServer,
-        FileUtil _fileUtil)
+        ISptLogger<BackupService> logger,
+        JsonUtil jsonUtil,
+        TimeUtil timeUtil,
+        ConfigServer configServer,
+        FileUtil fileUtil)
     {
-        this._logger = _logger;
-        this._jsonUtil = _jsonUtil;
-        this._timeUtil = _timeUtil;
-        this._fileUtil = _fileUtil;
+        _logger = logger;
+        _jsonUtil = jsonUtil;
+        _timeUtil = timeUtil;
+        _fileUtil = fileUtil;
 
         _activeServerMods = GetActiveServerMods();
-        _backupConfig = _configServer.GetConfig<BackupConfig>();
+        _backupConfig = configServer.GetConfig<BackupConfig>();
     }
 
     /**
