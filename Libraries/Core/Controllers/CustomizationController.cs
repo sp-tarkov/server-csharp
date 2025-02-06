@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Core.Helpers;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
@@ -14,8 +13,6 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
-using SptCommon.Extensions;
-using Location = Core.Models.Eft.Inventory.Location;
 
 namespace Core.Controllers;
 
@@ -31,8 +28,8 @@ public class CustomizationController(
     PaymentService _paymentService
 )
 {
-    protected string _lowerParentClothingId = "5cd944d01388ce000a659df9";
-    protected string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
+    protected const string _lowerParentClothingId = "5cd944d01388ce000a659df9";
+    protected const string _upperParentClothingId = "5cd944ca1388ce03a44dc2a4";
 
     /// <summary>
     ///     Get purchasable clothing items from trader that match players side (usec/bear)

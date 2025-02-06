@@ -22,7 +22,7 @@ public class SaveServer(
     ConfigServer _configServer
 )
 {
-    protected string profileFilepath = "user/profiles/";
+    protected const string profileFilepath = "user/profiles/";
 
     protected Dictionary<string, SptProfile> profiles = new();
     private Lock _lock = new();

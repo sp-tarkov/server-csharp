@@ -14,7 +14,7 @@ public class ConfigServer
     protected JsonUtil _jsonUtil;
     protected FileUtil _fileUtil;
     protected Dictionary<string, object> configs = new();
-    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected static readonly string[] acceptableFileExtensions = ["json", "jsonc"];
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,

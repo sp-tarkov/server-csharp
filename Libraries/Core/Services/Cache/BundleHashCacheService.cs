@@ -14,7 +14,7 @@ public class BundleHashCacheService(
 )
 {
     protected Dictionary<string, string> _bundleHashes = new();
-    protected readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
+    protected static readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
 
     public string GetStoredValue(string key)
     {

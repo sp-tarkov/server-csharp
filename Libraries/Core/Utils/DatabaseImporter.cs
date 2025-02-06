@@ -18,6 +18,7 @@ public class DatabaseImporter : OnLoad
     private ValidationResult valid = ValidationResult.UNDEFINED;
     private string filepath;
     private HttpConfig httpConfig;
+    private const string _sptDataPath = "./Assets/";
 
     protected ISptLogger<DatabaseImporter> _logger;
     protected LocalisationService _localisationService;
@@ -62,7 +63,7 @@ public class DatabaseImporter : OnLoad
      */
     public string GetSptDataPath()
     {
-        return "./Assets/";
+        return _sptDataPath;
     }
 
     public async Task OnLoad()

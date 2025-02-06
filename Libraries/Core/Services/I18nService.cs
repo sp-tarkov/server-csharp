@@ -8,8 +8,8 @@ public class I18nService
 {
     private List<string> _locales;
     private Dictionary<string, string> _fallbacks;
-    private string _defaultLocale;
-    private string _directory;
+    private readonly string _defaultLocale;
+    private readonly string _directory;
     private JsonUtil _jsonUtil;
     private FileUtil _fileUtil;
     private string _setLocale;
