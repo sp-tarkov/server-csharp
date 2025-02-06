@@ -9,8 +9,13 @@ public record RagfairOffer
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults { get; set; }
 
+    private string? _id;
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get => _id;
+        set => _id = string.Intern(value);
+    }
 
     [JsonPropertyName("items")]
     public List<Item>? Items { get; set; }
@@ -18,8 +23,13 @@ public record RagfairOffer
     [JsonPropertyName("requirements")]
     public List<OfferRequirement>? Requirements { get; set; }
 
+    private string? _root;
     [JsonPropertyName("root")]
-    public string? Root { get; set; }
+    public string? Root
+    {
+        get => _root;
+        set => _root = string.Intern(value);
+    }
 
     [JsonPropertyName("intId")]
     public int? InternalId { get; set; }
@@ -69,8 +79,13 @@ public record RagfairOffer
 
 public record OfferRequirement
 {
+    private string? _tpl;
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    public string? Template
+    {
+        get => _tpl;
+        set => _tpl = string.Intern(value);
+    }
 
     [JsonPropertyName("count")]
     public double? Count { get; set; }
@@ -87,8 +102,13 @@ public record OfferRequirement
 
 public record RagfairOfferUser
 {
+    private string? _id;
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get => _id;
+        set => _id = string.Intern(value);
+    }
 
     [JsonPropertyName("nickname")]
     public string? Nickname { get; set; }

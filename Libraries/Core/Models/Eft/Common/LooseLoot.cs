@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Eft.Common;
@@ -53,8 +53,13 @@ public record SpawnpointTemplate
     [JsonPropertyName("GroupPositions")]
     public List<GroupPosition>? GroupPositions { get; set; }
 
+    private string? _root;
     [JsonPropertyName("Root")]
-    public string? Root { get; set; }
+    public string? Root
+    {
+        get => _root;
+        set => _root = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("Items")]
     public List<Item>? Items { get; set; }
@@ -62,8 +67,13 @@ public record SpawnpointTemplate
 
 public record GroupPosition
 {
+    private string? _name;
     [JsonPropertyName("Name")]
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get => _name;
+        set => _name = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("Weight")]
     public double? Weight { get; set; }

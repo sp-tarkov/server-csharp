@@ -6,17 +6,37 @@ namespace Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
+    private string? _id;
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get => _id;
+        set => _id = string.Intern(value);
+    }
 
+    private string? _name;
     [JsonPropertyName("_name")]
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get => _name;
+        set => _name = string.Intern(value);
+    }
 
+    private string? _parent;
     [JsonPropertyName("_parent")]
-    public string? Parent { get; set; }
+    public string? Parent
+    {
+        get => _parent;
+        set => _parent = string.Intern(value);
+    }
 
+    private string? _type;
     [JsonPropertyName("_type")]
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get => _type;
+        set => _type = string.Intern(value);
+    }
 
     [JsonPropertyName("_props")]
     public Props? Properties { get; set; }
@@ -182,8 +202,13 @@ public record Props
     [JsonPropertyName("MergesWithChildren")]
     public bool? MergesWithChildren { get; set; }
 
+    private string? _metascoreGroup;
     [JsonPropertyName("MetascoreGroup")]
-    public string? MetaScoreGroup { get; set; }
+    public string? MetascoreGroup
+    {
+        get => _metascoreGroup;
+        set => _metascoreGroup = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("NpcCompressorSendLevel")]
     public double? NpcCompressorSendLevel { get; set; }
@@ -203,8 +228,13 @@ public record Props
     [JsonPropertyName("Unlootable")]
     public bool? Unlootable { get; set; }
 
+    private string? _unlootableFromSlot;
     [JsonPropertyName("UnlootableFromSlot")]
-    public string? UnlootableFromSlot { get; set; }
+    public string? UnlootableFromSlot
+    {
+        get => _unlootableFromSlot;
+        set => _unlootableFromSlot = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("UnlootableFromSide")]
     public List<PlayerSideMask>? UnlootableFromSide { get; set; }
@@ -223,8 +253,13 @@ public record Props
     [JsonPropertyName("RagFairCommissionModifier")]
     public double? RagFairCommissionModifier { get; set; }
 
+    private string? _rarityPvE;
     [JsonPropertyName("RarityPvE")]
-    public string? RarityPvE { get; set; }
+    public string? RarityPvE
+    {
+        get => _rarityPvE;
+        set => _rarityPvE = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("IsAlwaysAvailableForInsurance")]
     public bool? IsAlwaysAvailableForInsurance { get; set; }
@@ -1575,8 +1610,13 @@ public record GridFilter
 
 public record Slot
 {
+    private string? _name;
     [JsonPropertyName("_name")]
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get => _name;
+        set => _name = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
@@ -1596,8 +1636,13 @@ public record Slot
     [JsonPropertyName("_mergeSlotWithChildren")]
     public bool? MergeSlotWithChildren { get; set; }
 
+    private string? _proto;
     [JsonPropertyName("_proto")]
-    public string? Proto { get; set; }
+    public string? Proto
+    {
+        get => _proto;
+        set => _proto = value == null ? null : string.Intern(value);
+    }
 }
 
 public record SlotProps

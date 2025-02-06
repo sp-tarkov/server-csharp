@@ -9,15 +9,30 @@ public record Item
     [JsonPropertyName("_id")]
     public string? Id { get; set; }
 
-    // MongoId
+    private string? _tpl;
     [JsonPropertyName("_tpl")]
-    public string? Template { get; set; }
+    // MongoId
+    public string? Template
+    {
+        get => _tpl;
+        set => _tpl = string.Intern(value);
+    }
 
+    private string? _parentId;
     [JsonPropertyName("parentId")]
-    public string? ParentId { get; set; }
+    public string? ParentId
+    {
+        get => _parentId;
+        set => _parentId = value == null ? null : string.Intern(value);
+    }
 
+    private string? _SlotId;
     [JsonPropertyName("slotId")]
-    public string? SlotId { get; set; }
+    public string? SlotId
+    {
+        get => _SlotId;
+        set => _SlotId = value == null ? null : string.Intern(value);
+    }
 
     [JsonPropertyName("location")]
     public object? Location { get; set; } // TODO: Can be IItemLocation or number
@@ -27,17 +42,6 @@ public record Item
 
     [JsonPropertyName("upd")]
     public Upd? Upd { get; set; }
-
-    public HideoutItem ConvertToHideoutItem(Item item, double? count = null)
-    {
-        return new HideoutItem()
-        {
-            Id = item.Id,
-            Template = item.Template,
-            Upd = item.Upd,
-            Count = count
-        };
-    }
 }
 
 public record HideoutItem

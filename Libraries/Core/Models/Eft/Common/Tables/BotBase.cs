@@ -152,12 +152,25 @@ public record Info
     public string? Nickname { get; set; }
     public string? MainProfileNickname { get; set; }
     public string? LowerNickname { get; set; }
-    public string? Side { get; set; }
+
+    private string? _side;
+    public string? Side
+    {
+        get => _side;
+        set => _side = string.Intern(value);
+    }
+
     public bool? SquadInviteRestriction { get; set; }
 
     // Confirmed in client
     public int? PrestigeLevel { get; set; }
-    public string? Voice { get; set; }
+
+    private string? _voice;
+    public string? Voice
+    {
+        get => _voice;
+        set => _voice = value == null ? null : string.Intern(value);
+    }
     public int? Level { get; set; }
 
     //Experience the bot has gained
@@ -212,8 +225,19 @@ public record Info
 
 public record BotInfoSettings
 {
-    public string? Role { get; set; }
-    public string? BotDifficulty { get; set; }
+    private string? _role;
+    public string? Role
+    {
+        get => _role;
+        set => _role = value == null ? null : string.Intern(value);
+    }
+
+    private string? _botDifficulty;
+    public string? BotDifficulty
+    {
+        get => _botDifficulty;
+        set => _botDifficulty = value == null ? null : string.Intern(value);
+    }
 
     // Experience given for being killed
     public int? Experience { get; set; }
@@ -244,11 +268,40 @@ public enum BanType
 
 public record Customization
 {
-    public string? Head { get; set; }
-    public string? Body { get; set; }
-    public string? Feet { get; set; }
-    public string? Hands { get; set; }
-    public string? DogTag { get; set; }
+    private string? _head;
+    public string? Head
+    {
+        get => _head;
+        set => _head = value == null ? null : string.Intern(value);
+    }
+
+    private string? _body;
+    public string? Body
+    {
+        get => _body;
+        set => _body = value == null ? null : string.Intern(value);
+    }
+
+    private string? _feet;
+    public string? Feet
+    {
+        get => _feet;
+        set => _feet = value == null ? null : string.Intern(value);
+    }
+
+    private string? _hands;
+    public string? Hands
+    {
+        get => _hands;
+        set => _hands = value == null ? null : string.Intern(value);
+    }
+
+    private string? _dogtag;
+    public string? DogTag
+    {
+        get => _dogtag;
+        set => _dogtag = value == null ? null : string.Intern(value);
+    }
 }
 
 public record BotBaseHealth
