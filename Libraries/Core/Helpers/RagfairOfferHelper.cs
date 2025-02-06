@@ -44,7 +44,7 @@ public class RagfairOfferHelper(
 {
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected static string _goodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
+    protected const string _goodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
 
     /// <summary>
     ///     Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see
