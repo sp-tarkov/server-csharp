@@ -1004,106 +1004,7 @@ public class LocationLootGenerator(
         // No spawn point, use default template
         else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.WEAPON))
         {
-            List<Item> children = [];
-            var defaultPreset = _cloner.Clone(_presetHelper.GetDefaultPreset(chosenTpl));
-            if (defaultPreset?.Items is not null)
-            {
-                try
-                {
-                    children = _itemHelper.ReparentItemAndChildren(defaultPreset.Items[0], defaultPreset.Items);
-                }
-                catch (Exception e)
-                {
-                    // this item already broke it once without being reproducible tpl = "5839a40f24597726f856b511"; AKS-74UB Default
-                    // 5ea03f7400685063ec28bfa8 // ppsh default
-                    // 5ba26383d4351e00334c93d9 //mp7_devgru
-                    _logger.Error(
-                        _localisationService.GetText(
-                            "location-preset_not_found",
-                            new
-                            {
-                                tpl = chosenTpl,
-                                defaultId = defaultPreset.Id,
-                                defaultName = defaultPreset.Name,
-                                parentId
-                            }
-                        )
-                    );
-
-                    throw;
-                }
-            }
-            else
-            {
-                // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesn't have any default presets and kills this code below as it has no chidren to reparent
-                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
-            }
-
-            rootItem = items[0];
-            if (rootItem is null)
-            {
-                _logger.Error(
-                    _localisationService.GetText(
-                        "location-missing_root_item",
-                        new
-                        {
-                            tpl = chosenTpl,
-                            parentId
-                        }
-                    )
-                );
-
-                throw new Exception(_localisationService.GetText("location-critical_error_see_log"));
-            }
-
-            try
-            {
-                if (children?.Count > 0) items = _itemHelper.ReparentItemAndChildren(rootItem, children);
-            }
-            catch (Exception e)
-            {
-                _logger.Error(
-                    _localisationService.GetText(
-                        "location-unable_to_reparent_item",
-                        new
-                        {
-                            tpl = chosenTpl,
-                            parentId = parentId
-                        }
-                    )
-                );
-
-                throw;
-            }
-
-            // Here we should use generalized BotGenerators functions e.g. fillExistingMagazines in the future since
-            // it can handle revolver ammo (it's not restructured to be used here yet.)
-            // General: Make a WeaponController for Ragfair preset stuff and the generating weapons and ammo stuff from
-            // BotGenerator
-            var magazine = items.FirstOrDefault(item => item.SlotId == "mod_magazine");
-            // some weapon presets come without magazine; only fill the mag if it exists
-            if (magazine is not null)
-            {
-                var magTemplate = _itemHelper.GetItem(magazine.Template).Value;
-                var weaponTemplate = _itemHelper.GetItem(chosenTpl).Value;
-
-                // Create array with just magazine
-                var defaultWeapon = _itemHelper.GetItem(rootItem.Template).Value;
-                List<Item> magazineWithCartridges = [magazine];
-                _itemHelper.FillMagazineWithRandomCartridge(
-                    magazineWithCartridges,
-                    magTemplate,
-                    staticAmmoDist,
-                    weaponTemplate.Properties.AmmoCaliber,
-                    0.25,
-                    defaultWeapon.Properties.DefAmmo,
-                    defaultWeapon
-                );
-
-                // Replace existing magazine with above array
-                items.Remove(magazine);
-                items.AddRange(magazineWithCartridges);
-            }
+            rootItem = CreateWeaponItems(chosenTpl, staticAmmoDist, parentId, ref items);
 
             var size = _itemHelper.GetItemSize(items, rootItem.Id);
             width = size.Width;
@@ -1119,45 +1020,165 @@ public class LocationLootGenerator(
             if (_randomUtil.GetChance100(_locationConfig.MagazineLootHasAmmoChancePercent))
             {
                 // Create array with just magazine
-                List<Item> magazineWithCartridges = [rootItem];
-                _itemHelper.FillMagazineWithRandomCartridge(
-                    magazineWithCartridges,
-                    itemTemplate,
-                    staticAmmoDist,
-                    null,
-                    _locationConfig.MinFillStaticMagazinePercent / 100
-                );
-
-                // Replace existing magazine with above array
-                items.Remove(rootItem);
-                items.AddRange(magazineWithCartridges);
+                GenerateStaticMagazineItem(staticAmmoDist, rootItem, itemTemplate, items);
             }
         }
         else if (_itemHelper.ArmorItemCanHoldMods(chosenTpl))
         {
-            var defaultPreset = _presetHelper.GetDefaultPreset(chosenTpl);
-            if (defaultPreset is not null)
-            {
-                List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
-                _itemHelper.RemapRootItemId(presetAndMods);
-
-                // Use original items parentId otherwise item doesnt get added to container correctly
-                presetAndMods[0].ParentId = rootItem.ParentId;
-                items = presetAndMods;
-            }
-            else
-            {
-                // We make base item above, at start of function, no need to do it here
-                if ((itemTemplate.Properties.Slots?.Count ?? 0) > 0)
-                    items = _itemHelper.AddChildSlotItems(
-                        items,
-                        itemTemplate,
-                        _locationConfig.EquipmentLootSettings.ModSpawnChancePercent
-                    );
-            }
+            items = GetArmorItems(chosenTpl, rootItem, items, itemTemplate);
         }
 
         return new ContainerItem { Items = items, Width = width, Height = height };
+    }
+
+    private List<Item> GetArmorItems(string chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
+    {
+        var defaultPreset = _presetHelper.GetDefaultPreset(chosenTpl);
+        if (defaultPreset is not null)
+        {
+            var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
+            _itemHelper.RemapRootItemId(presetAndMods);
+
+            // Use original items parentId otherwise item doesn't get added to container correctly
+            presetAndMods[0].ParentId = rootItem.ParentId;
+            items = presetAndMods;
+        }
+        else
+        {
+            // We make base item in calling method, no need to do it here
+            if ((armorDbTemplate.Properties.Slots?.Count ?? 0) > 0)
+                items = _itemHelper.AddChildSlotItems(
+                    items,
+                    armorDbTemplate,
+                    _locationConfig.EquipmentLootSettings.ModSpawnChancePercent
+                );
+        }
+
+        return items;
+    }
+
+    private Item? CreateWeaponItems(string chosenTpl, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string? parentId, ref List<Item> items)
+    {
+        Item? rootItem;
+        List<Item> children = [];
+        var defaultPreset = _cloner.Clone(_presetHelper.GetDefaultPreset(chosenTpl));
+        if (defaultPreset?.Items is not null)
+        {
+            try
+            {
+                children = _itemHelper.ReparentItemAndChildren(defaultPreset.Items[0], defaultPreset.Items);
+            }
+            catch (Exception e)
+            {
+                // this item already broke it once without being reproducible tpl = "5839a40f24597726f856b511"; AKS-74UB Default
+                // 5ea03f7400685063ec28bfa8 // ppsh default
+                // 5ba26383d4351e00334c93d9 //mp7_devgru
+                _logger.Error(
+                    _localisationService.GetText(
+                        "location-preset_not_found",
+                        new
+                        {
+                            tpl = chosenTpl,
+                            defaultId = defaultPreset.Id,
+                            defaultName = defaultPreset.Name,
+                            parentId
+                        }
+                    )
+                );
+
+                throw;
+            }
+        }
+        else
+        {
+            // RSP30 (62178be9d0050232da3485d9/624c0b3340357b5f566e8766/6217726288ed9f0845317459) doesn't have any default presets and kills this code below as it has no chidren to reparent
+            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"createStaticLootItem() No preset found for weapon: {chosenTpl}");
+        }
+
+        rootItem = items[0];
+        if (rootItem is null)
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "location-missing_root_item",
+                    new
+                    {
+                        tpl = chosenTpl,
+                        parentId
+                    }
+                )
+            );
+
+            throw new Exception(_localisationService.GetText("location-critical_error_see_log"));
+        }
+
+        try
+        {
+            if (children?.Count > 0) items = _itemHelper.ReparentItemAndChildren(rootItem, children);
+        }
+        catch (Exception e)
+        {
+            _logger.Error(
+                _localisationService.GetText(
+                    "location-unable_to_reparent_item",
+                    new
+                    {
+                        tpl = chosenTpl,
+                        parentId = parentId
+                    }
+                )
+            );
+
+            throw;
+        }
+
+        // Here we should use generalized BotGenerators functions e.g. fillExistingMagazines in the future since
+        // it can handle revolver ammo (it's not restructured to be used here yet.)
+        // General: Make a WeaponController for Ragfair preset stuff and the generating weapons and ammo stuff from
+        // BotGenerator
+        var magazine = items.FirstOrDefault(item => item.SlotId == "mod_magazine");
+        // some weapon presets come without magazine; only fill the mag if it exists
+        if (magazine is not null)
+        {
+            var magTemplate = _itemHelper.GetItem(magazine.Template).Value;
+            var weaponTemplate = _itemHelper.GetItem(chosenTpl).Value;
+
+            // Create array with just magazine
+            var defaultWeapon = _itemHelper.GetItem(rootItem.Template).Value;
+            List<Item> magazineWithCartridges = [magazine];
+            _itemHelper.FillMagazineWithRandomCartridge(
+                magazineWithCartridges,
+                magTemplate,
+                staticAmmoDist,
+                weaponTemplate.Properties.AmmoCaliber,
+                0.25,
+                defaultWeapon.Properties.DefAmmo,
+                defaultWeapon
+            );
+
+            // Replace existing magazine with above array
+            items.Remove(magazine);
+            items.AddRange(magazineWithCartridges);
+        }
+
+        return rootItem;
+    }
+
+    private void GenerateStaticMagazineItem(Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, Item? rootItem, TemplateItem itemTemplate,
+        List<Item> items)
+    {
+        List<Item> magazineWithCartridges = [rootItem];
+        _itemHelper.FillMagazineWithRandomCartridge(
+            magazineWithCartridges,
+            itemTemplate,
+            staticAmmoDist,
+            null,
+            _locationConfig.MinFillStaticMagazinePercent / 100
+        );
+
+        // Replace existing magazine with above array
+        items.Remove(rootItem);
+        items.AddRange(magazineWithCartridges);
     }
 }
 
