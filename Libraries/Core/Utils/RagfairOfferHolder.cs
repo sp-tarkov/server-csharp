@@ -15,9 +15,9 @@ public class RagfairOfferHolder(
 {
     protected Dictionary<string, RagfairOffer> _offersById = new();
     protected object _offersByIdLock = new();
-    protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTemplate = new();
+    protected Dictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected object _offersByTemplateLock = new();
-    protected Dictionary<string, Dictionary<string, RagfairOffer>> _offersByTrader = new();
+    protected Dictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
     protected object _offersByTraderLock = new();
     protected int _maxOffersPerTemplate = (int)configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
 
@@ -33,18 +33,34 @@ public class RagfairOfferHolder(
     {
         lock (_offersByTemplateLock)
         {
-            return _offersByTemplate.TryGetValue(templateId, out var value) ? value.Values.ToList() : null;
+            // Get the offerIds we want to return
+            if (!_offersByTemplate.TryGetValue(templateId, out var offerIds))
+            {
+                return null;
+            }
+
+            var result = _offersById
+                .Where(x => offerIds.Contains(x.Key))
+                .Select(x => x.Value).ToList();
+
+            return result;
         }
     }
 
-    public List<RagfairOffer> GetOffersByTrader(string traderId)
+    public List<RagfairOffer>? GetOffersByTrader(string traderId)
     {
         lock (_offersByTraderLock)
         {
-            if (_offersByTrader.ContainsKey(traderId)) return _offersByTrader[traderId].Values.ToList();
-        }
+            if (!_offersByTrader.TryGetValue(traderId, out var offerIds))
+            {
+                return null;
+            }
 
-        return null;
+            var result = _offersById
+                .Where(x => offerIds.Contains(x.Key))
+                .Select(x => x.Value).ToList();
+            return result;
+        }
     }
 
     public List<RagfairOffer> GetOffers()
@@ -66,22 +82,28 @@ public class RagfairOfferHolder(
     {
         lock (_offersByIdLock)
         {
-            var trader = offer.User.Id;
-            // keep generating IDs until we get a new one
+            var sellerId = offer.User.Id;
+            // Keep generating IDs until we get a unique one
             while (_offersById.ContainsKey(offer.Id))
+            {
                 offer.Id = hashUtil.Generate();
+            }
 
             var offerId = offer.Id;
             var itemTpl = offer.Items.FirstOrDefault().Template;
-            // If its an NPC PMC offer AND we have already reached the maximum amount of possible offers
-            // for this template, just dont add in more
-            if (!(ragfairServerHelper.IsTrader(trader) || profileHelper.IsPlayer(trader)) &&
-                (GetOffersByTemplate(itemTpl)?.Count ?? 0) >= _maxOffersPerTemplate
+            // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
+            // for this template, just don't add in more
+            _offersByTemplate.TryGetValue(itemTpl, out var offers);
+            if (!(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId))
+                && offers?.Count >= _maxOffersPerTemplate
                )
+            {
                 return;
+            }
 
             _offersById.Add(offerId, offer);
-            AddOfferByTrader(trader, offer);
+
+            AddOfferByTrader(sellerId, offer);
             AddOfferByTemplates(itemTpl, offer);
         }
     }
@@ -112,22 +134,31 @@ public class RagfairOfferHolder(
 
                 lock (_offersByTemplateLock)
                 {
-                    if (_offersByTemplate.ContainsKey(offer.Items.FirstOrDefault().Template)) _offersByTemplate[offer.Items[0].Template].Remove(offer.Id);
+                    var firstItem = offer.Items.FirstOrDefault();
+                    if (_offersByTemplate.ContainsKey(firstItem.Template))
+                    {
+                        _offersByTemplate[firstItem.Template].Remove(offer.Id);
+                    }
                 }
             }
         }
-    }
-
-    public void RemoveOffers(List<RagfairOffer> offers)
-    {
-        foreach (var offer in offers) RemoveOffer(offer);
     }
 
     public void RemoveAllOffersByTrader(string traderId)
     {
         lock (_offersByTraderLock)
         {
-            if (_offersByTrader.ContainsKey(traderId)) RemoveOffers(_offersByTrader[traderId].Values.ToList());
+            if (_offersByTrader.ContainsKey(traderId))
+            {
+                var offerIdsToRemove = _offersByTrader[traderId];
+                foreach (var offerId in offerIdsToRemove)
+                {
+                    _offersById.Remove(offerId);
+                }
+
+                // Clear out linking table
+                _offersByTrader[traderId].Clear();
+            }
         }
     }
 
@@ -146,13 +177,11 @@ public class RagfairOfferHolder(
         {
             if (_offersByTemplate.ContainsKey(template))
             {
-                _offersByTemplate[template].Add(offer.Id, offer);
+                _offersByTemplate[template].Add(offer.Id);
             }
             else
             {
-                var valueMapped = new Dictionary<string, RagfairOffer>();
-                valueMapped.Add(offer.Id, offer);
-                _offersByTemplate.Add(template, valueMapped);
+                _offersByTemplate.Add(template, [offer.Id]);
             }
         }
     }
@@ -163,12 +192,11 @@ public class RagfairOfferHolder(
         {
             if (_offersByTrader.ContainsKey(trader))
             {
-                _offersByTrader[trader].Add(offer.Id, offer);
+                _offersByTrader[trader].Add(offer.Id);
             }
             else
             {
-                var valueMapped = new Dictionary<string, RagfairOffer> { { offer.Id, offer } };
-                _offersByTrader.Add(trader, valueMapped);
+                _offersByTrader.Add(trader, [offer.Id]);
             }
         }
     }
