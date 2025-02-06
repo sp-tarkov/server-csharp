@@ -1,4 +1,4 @@
-﻿using SptCommon.Annotations;
+using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -128,9 +128,10 @@ public class AssortHelper(
 
         if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && lisToUse is not null && flea)
         {
-            foreach (var barterSchemes in lisToUse)
-            foreach (var barterScheme in barterSchemes)
+            foreach (var barterScheme in lisToUse.SelectMany(barterSchemes => barterSchemes))
+            {
                 barterScheme.SptQuestLocked = true;
+            }
 
             return assort;
         }
@@ -138,10 +139,10 @@ public class AssortHelper(
         assort.BarterScheme.Remove(itemID);
         assort.LoyalLevelItems.Remove(itemID);
 
-        foreach (var i in idsToRemove)
-        foreach (var a in assort.Items.ToList())
-            if (a.Id == i)
-                assort.Items.Remove(a);
+        foreach (var item in idsToRemove.SelectMany(i => assort.Items.ToList().Where(a => a.Id == i)))
+        {
+            assort.Items.Remove(item);
+        }
 
         return assort;
     }
