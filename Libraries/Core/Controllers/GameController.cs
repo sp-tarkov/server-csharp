@@ -343,13 +343,27 @@ public class GameController(
         }
 
         // Check all body parts
+        DecreaseBodyPartEffectTimes(pmcProfile, hpRegenPerHour, diffSeconds.Value);
+
+        // Update both values as they've both been updated
+        pmcProfile.Health.UpdateTime = currentTimeStamp;
+    }
+
+    /// <summary>
+    /// Check for and update any timers on effect found on body parts
+    /// </summary>
+    /// <param name="pmcProfile">Player</param>
+    /// <param name="hpRegenPerHour"></param>
+    /// <param name="diffSeconds"></param>
+    protected void DecreaseBodyPartEffectTimes(PmcData pmcProfile, double hpRegenPerHour, double diffSeconds)
+    {
         foreach (var bodyPart in pmcProfile.Health!.BodyParts!
                      .Select(bodyPartKvP => bodyPartKvP.Value))
         {
             // Check part hp
             if (bodyPart.Health!.Current < bodyPart.Health.Maximum)
             {
-                bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds!.Value / 3600));
+                bodyPart.Health.Current += Math.Round(hpRegenPerHour * (diffSeconds / 3600));
             }
 
             if (bodyPart.Health.Current > bodyPart.Health.Maximum)
@@ -382,9 +396,6 @@ public class GameController(
                     effectKvP.Value.Time = 1;
             }
         }
-
-        // Update both values as they've both been updated
-        pmcProfile.Health.UpdateTime = currentTimeStamp;
     }
 
     /// <summary>
