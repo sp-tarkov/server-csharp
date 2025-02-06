@@ -50,8 +50,7 @@ public class InsuranceCallbacks(
     public bool OnUpdate(long timeSinceLastRun)
     {
         if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
-            // _insuranceController.ProcessReturn();
-            // TODO: InsuranceController is not implemented rn
+            _insuranceController.ProcessReturn();
             return true;
 
         return false;
