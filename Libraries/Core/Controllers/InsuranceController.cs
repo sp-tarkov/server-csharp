@@ -245,55 +245,57 @@ public class InsuranceController(
                 continue;
             }
 
-            // Check if this is an attachment currently attached to its parent.
-            if (_itemHelper.IsAttachmentAttached(insuredItem))
+            // Not attached to parent, skip
+            if (!_itemHelper.IsAttachmentAttached(insuredItem))
             {
-                // Make sure the template for the item exists.
-                if (!_itemHelper.GetItem(insuredItem.Template).Key)
-                {
-                    _logger.Warning(
-                        _localisationService.GetText(
-                            "insurance-unable_to_find_attachment_in_db",
-                            new
-                            {
-                                insuredItemId = insuredItem.Id,
-                                insuredItemTpl = insuredItem.Template
-                            }
-                        )
-                    );
+                continue;
+            }
 
-                    continue;
-                }
+            // Make sure the template for the item exists.
+            if (!_itemHelper.GetItem(insuredItem.Template).Key)
+            {
+                _logger.Warning(
+                    _localisationService.GetText(
+                        "insurance-unable_to_find_attachment_in_db",
+                        new
+                        {
+                            insuredItemId = insuredItem.Id,
+                            insuredItemTpl = insuredItem.Template
+                        }
+                    )
+                );
 
-                // Get the main parent of this attachment. (e.g., The gun that this suppressor is attached to.)
-                var mainParent = _itemHelper.GetAttachmentMainParent(insuredItem.Id, itemsMap);
-                if (mainParent is null)
-                {
-                    // Odd. The parent couldn't be found. Skip this attachment and warn.
-                    _logger.Warning(
-                        _localisationService.GetText(
-                            "insurance-unable_to_find_main_parent_for_attachment",
-                            new
-                            {
-                                insuredItemId = insuredItem.Id,
-                                insuredItemTpl = insuredItem.Template,
-                                parentId = insuredItem.ParentId
-                            }
-                        )
-                    );
+                continue;
+            }
 
-                    continue;
-                }
+            // Get the main parent of this attachment. (e.g., The gun that this suppressor is attached to.)
+            var mainParent = _itemHelper.GetAttachmentMainParent(insuredItem.Id, itemsMap);
+            if (mainParent is null)
+            {
+                // Odd. The parent couldn't be found. Skip this attachment and warn.
+                _logger.Warning(
+                    _localisationService.GetText(
+                        "insurance-unable_to_find_main_parent_for_attachment",
+                        new
+                        {
+                            insuredItemId = insuredItem.Id,
+                            insuredItemTpl = insuredItem.Template,
+                            parentId = insuredItem.ParentId
+                        }
+                    )
+                );
 
-                // Update (or add to) the main-parent to attachments map.
-                if (mainParentToAttachmentsMap.ContainsKey(mainParent.Id))
-                {
-                    if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id, out var parent)) parent.Add(insuredItem);
-                }
-                else
-                {
-                    mainParentToAttachmentsMap.TryAdd(mainParent.Id, [insuredItem]);
-                }
+                continue;
+            }
+
+            // Update (or add to) the main-parent to attachments map.
+            if (mainParentToAttachmentsMap.ContainsKey(mainParent.Id))
+            {
+                if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id, out var parent)) parent.Add(insuredItem);
+            }
+            else
+            {
+                mainParentToAttachmentsMap.TryAdd(mainParent.Id, [insuredItem]);
             }
         }
 
