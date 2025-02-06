@@ -451,13 +451,11 @@ public class ItemTplGenerator(
         {
             enumFileData += $"\npublic static class {enumName}\n{{\n";
 
-            foreach (var (key, value) in data) enumFileData += $"    {key} = \"{value}\";\n";
+            foreach (var (key, value) in data) enumFileData += $"    public const string {key} = \"{value}\";\n";
 
             enumFileData += "}\n";
         }
 
-        // TODO: enable once we dont get any more errors
-        throw new NotImplementedException();
-        // this.fileSystemSync.write(outputPath, enumFileData);
+        _fileUtil.WriteFile(outputPath, enumFileData);
     }
 }
