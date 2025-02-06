@@ -1,25 +1,28 @@
 using SptCommon.Annotations;
 using Core.Models.Eft.Hideout;
 using Core.Models.Enums;
+using Core.Models.External;
 using Core.Models.Utils;
 using Core.Services;
 
 namespace ExampleMods.Mods;
 
 [Injectable]
-public class EditDatabaseValues
+public class EditDatabaseValues : IPostDBLoadMod
 {
     private readonly DatabaseService _databaseService;
-
+    private readonly ISptLogger<EditDatabaseValues> _logger;
+    
     public EditDatabaseValues(
-        DatabaseService databaseService)
+        DatabaseService databaseService,
+        ISptLogger<EditDatabaseValues> logger
+    )
     {
         _databaseService = databaseService;
-
-        Run();
+        _logger = logger;
     }
 
-    public void Run()
+    public void PostDBLoad()
     {
         // When SPT starts, it stores all the data found in (SPT_Data\Server\database) in memory
         // We can use the '_databaseService' we injected to access this data, this includes files from EFT and SPT
@@ -38,6 +41,8 @@ public class EditDatabaseValues
 
         // Lets edit Customs
         EditCustoms();
+        
+        _logger.Success("Finished Editing Database");
     }
 
     private void EditGlobals()
@@ -47,7 +52,6 @@ public class EditDatabaseValues
 
         // Let's edit the scav cooldown to be 1 second
         globals.Configuration.SavagePlayCooldown = 1;
-
 
         // Now lets try editing the ragfair unlock level, lets get the ragfair settings first
         var ragfairSettings = globals.Configuration.RagFair;
