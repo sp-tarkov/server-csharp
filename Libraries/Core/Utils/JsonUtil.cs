@@ -60,21 +60,47 @@ public class JsonUtil
     };
 
 
+    /// <summary>
+    /// Convert JSON into an object
+    /// </summary>
+    /// <typeparam name="T">The type of the object to deserialize to</typeparam>
+    /// <param name="json">The JSON string to deserialize</param>
+    /// <returns>Deserialized object or null</returns>
     public T? Deserialize<T>(string? json)
     {
         return string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize<T>(json, jsonSerializerOptionsNoIndent);
     }
 
+    /// <summary>
+    /// Convert JSON into an object
+    /// </summary>
+    /// <param name="json">The JSON string to deserialize</param>
+    /// <param name="type">The type of the object to deserialize to</param>
+    /// <returns></returns>
     public object? Deserialize(string? json, Type type)
     {
         return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
     }
 
+    /// <summary>
+    /// Convert an object into JSON
+    /// </summary>
+    /// <typeparam name="T">Type of the object being serialised</typeparam>
+    /// <param name="obj">Object to serialise</param>
+    /// <param name="indented">Should JSON be indented</param>
+    /// <returns>Serialised object as JSON, or null</returns>
     public string? Serialize<T>(T? obj, bool indented = false)
     {
         return obj == null ? null : JsonSerializer.Serialize(obj, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
     }
 
+    /// <summary>
+    /// Convert an object into JSON
+    /// </summary>
+    /// <param name="obj">Object to serialise</param>
+    /// <param name="type">Type of object being serialsied</param>
+    /// <param name="indented">Should JSON be indented</param>
+    /// <returns></returns>
     public string? Serialize(object? obj, Type type, bool indented = false)
     {
         return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
