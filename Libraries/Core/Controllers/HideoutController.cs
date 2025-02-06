@@ -663,48 +663,10 @@ public class HideoutController(
         var rewardIsPreset = _presetHelper.HasPreset(recipe.EndProduct);
         if (rewardIsPreset)
         {
-            var defaultPreset = _presetHelper.GetDefaultPreset(recipe.EndProduct);
-
-            // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-            List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
-
-            _itemHelper.RemapRootItemId(presetAndMods);
-
-            // Store preset items in array
-            itemAndChildrenToSendToPlayer = [presetAndMods];
+            itemAndChildrenToSendToPlayer = HandlePresetReward(recipe);
         }
 
-        var rewardIsStackable = _itemHelper.IsItemTplStackable(recipe.EndProduct);
-        if (rewardIsStackable ?? false)
-        {
-            // Create root item
-            var rewardToAdd = new Item
-            {
-                Id = _hashUtil.Generate(),
-                Template = recipe.EndProduct,
-                Upd = new Upd { StackObjectsCount = recipe.Count }
-            };
-
-            // Split item into separate items with acceptable stack sizes
-            var splitReward = _itemHelper.SplitStackIntoSeparateItems(rewardToAdd);
-            itemAndChildrenToSendToPlayer.AddRange(splitReward);
-        }
-        else
-        {
-            // Not stackable, may have to send send multiple of reward
-
-            // Add the first reward item to array when not a preset (first preset added above earlier)
-            if (!rewardIsPreset) itemAndChildrenToSendToPlayer.Add([new Item { Id = _hashUtil.Generate(), Template = recipe.EndProduct }]);
-
-            // Add multiple of item if recipe requests it
-            // Start index at one so we ignore first item in array
-            var countOfItemsToReward = recipe.Count;
-            for (var index = 1; index < countOfItemsToReward; index++)
-            {
-                var itemAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(itemAndChildrenToSendToPlayer.FirstOrDefault()));
-                itemAndChildrenToSendToPlayer.AddRange([itemAndMods]);
-            }
-        }
+        HandleStackableState(recipe, itemAndChildrenToSendToPlayer, rewardIsPreset);
 
         // Recipe has an `isEncoded` requirement for reward(s), Add `RecodableComponent` property
         if (recipe.IsEncoded ?? false)
@@ -808,20 +770,74 @@ public class HideoutController(
         counterHoursCrafting.Value = hoursCrafting;
 
         // Continuous crafts have special handling in EventOutputHolder.updateOutputProperties()
-        pmcData.Hideout.Production[prodId].SptIsComplete = true;
-        pmcData.Hideout.Production[prodId].SptIsContinuous = recipe.Continuous;
+        hideoutProduction.SptIsComplete = true;
+        hideoutProduction.SptIsContinuous = recipe.Continuous;
 
-        // Continious recipies need the craft time refreshed as it gets created once on initial craft and stays the same regardless of what
+        // Continuous recipes need the craft time refreshed as it gets created once on initial craft and stays the same regardless of what
         // production.json is set to
-        if (recipe.Continuous ?? false)
-            pmcData.Hideout.Production[prodId].ProductionTime = _hideoutHelper.GetAdjustedCraftTimeWithSkills(
+        if (recipe.Continuous.GetValueOrDefault(false))
+            hideoutProduction.ProductionTime = _hideoutHelper.GetAdjustedCraftTimeWithSkills(
                 pmcData,
                 recipe.Id,
                 true
             );
 
-        // Flag normal (non continious) crafts as complete
-        if (!recipe.Continuous ?? false) pmcData.Hideout.Production[prodId].InProgress = false;
+        // Flag normal (not continuous) crafts as complete
+        if (!recipe.Continuous ?? false)
+        {
+            hideoutProduction.InProgress = false;
+        }
+    }
+
+    protected void HandleStackableState(HideoutProduction recipe, List<List<Item>> itemAndChildrenToSendToPlayer, bool rewardIsPreset)
+    {
+        var rewardIsStackable = _itemHelper.IsItemTplStackable(recipe.EndProduct);
+        if (rewardIsStackable.GetValueOrDefault(false))
+        {
+            // Create root item
+            var rewardToAdd = new Item
+            {
+                Id = _hashUtil.Generate(),
+                Template = recipe.EndProduct,
+                Upd = new Upd { StackObjectsCount = recipe.Count }
+            };
+
+            // Split item into separate items with acceptable stack sizes
+            var splitReward = _itemHelper.SplitStackIntoSeparateItems(rewardToAdd);
+            itemAndChildrenToSendToPlayer.AddRange(splitReward);
+
+            return;
+        }
+
+        // Not stackable, may have to send multiple of reward
+
+        // Add the first reward item to array when not a preset (first preset added above earlier)
+        if (!rewardIsPreset)
+        {
+            itemAndChildrenToSendToPlayer.Add([new Item { Id = _hashUtil.Generate(), Template = recipe.EndProduct }]);
+        }
+
+        // Add multiple of item if recipe requests it
+        // Start index at one so we ignore first item in array
+        var countOfItemsToReward = recipe.Count;
+        for (var index = 1; index < countOfItemsToReward; index++)
+        {
+            var itemAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(itemAndChildrenToSendToPlayer.FirstOrDefault()));
+            itemAndChildrenToSendToPlayer.AddRange([itemAndMods]);
+        }
+    }
+
+    protected List<List<Item>> HandlePresetReward(HideoutProduction recipe)
+    {
+        var defaultPreset = _presetHelper.GetDefaultPreset(recipe.EndProduct);
+
+        // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
+        List<Item> presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
+
+        _itemHelper.RemapRootItemId(presetAndMods);
+
+        // Store preset items in array
+        return [presetAndMods];
     }
 
     private TaskConditionCounter GetHoursCraftingTaskConditionCounter(PmcData pmcData, HideoutProduction recipe)
