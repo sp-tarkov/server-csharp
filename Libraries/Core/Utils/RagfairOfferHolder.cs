@@ -1,16 +1,20 @@
 using Core.Helpers;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
 using Core.Servers;
+using Core.Services;
 using SptCommon.Annotations;
 
 namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
+    ISptLogger<RagfairOfferHolder> _logger,
     RagfairServerHelper ragfairServerHelper,
     ProfileHelper profileHelper,
     HashUtil hashUtil,
+    LocalisationService _localisationService,
     ConfigServer configServer)
 {
     protected Dictionary<string, RagfairOffer> _offersById = new();
@@ -112,33 +116,36 @@ public class RagfairOfferHolder(
      * Purge offer from offer cache
      * @param offer Offer to remove
      */
-    public void RemoveOffer(RagfairOffer offer)
+    public void RemoveOffer(string offerId)
     {
         lock (_offersByIdLock)
         {
-            if (_offersById.ContainsKey(offer.Id))
+            if (!_offersById.TryGetValue(offerId, out var offer))
             {
-                _offersById.Remove(offer.Id);
-                lock (_offersByTraderLock)
-                {
-                    if (_offersByTrader.ContainsKey(offer.User.Id))
-                    {
-                        _offersByTrader[offer.User.Id].Remove(offer.Id);
-                        // This was causing a memory leak, we need to make sure that we remove
-                        // the user ID from the cached offers after they dont have anything else
-                        // on the flea placed. We regenerate the ID for the NPC users, making it
-                        // continuously grow otherwise
-                        if (_offersByTrader[offer.User.Id].Count == 0) _offersByTrader.Remove(offer.User.Id);
-                    }
-                }
+                _logger.Warning(_localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+                return;
+            }
 
-                lock (_offersByTemplateLock)
+            _offersById.Remove(offer.Id);
+            lock (_offersByTraderLock)
+            {
+                if (_offersByTrader.ContainsKey(offer.User.Id))
                 {
-                    var firstItem = offer.Items.FirstOrDefault();
-                    if (_offersByTemplate.ContainsKey(firstItem.Template))
-                    {
-                        _offersByTemplate[firstItem.Template].Remove(offer.Id);
-                    }
+                    _offersByTrader[offer.User.Id].Remove(offer.Id);
+                    // This was causing a memory leak, we need to make sure that we remove
+                    // the user ID from the cached offers after they dont have anything else
+                    // on the flea placed. We regenerate the ID for the NPC users, making it
+                    // continuously grow otherwise
+                    if (_offersByTrader[offer.User.Id].Count == 0) _offersByTrader.Remove(offer.User.Id);
+                }
+            }
+
+            lock (_offersByTemplateLock)
+            {
+                var firstItem = offer.Items.FirstOrDefault();
+                if (_offersByTemplate.ContainsKey(firstItem.Template))
+                {
+                    _offersByTemplate[firstItem.Template].Remove(offer.Id);
                 }
             }
         }

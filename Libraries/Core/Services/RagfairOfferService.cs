@@ -22,17 +22,12 @@ public class RagfairOfferService(
     ItemHelper itemHelper,
     ProfileHelper profileHelper,
     LocalisationService localisationService,
-    ConfigServer configServer,
     ICloner cloner,
     RagfairOfferHolder ragfairOfferHolder
 )
 {
-    protected bool playerOffersLoaded;
-
-    /** Offer id + offer object */
-    protected Dictionary<string, RagfairOffer> expiredOffers = new();
-
-    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected bool _playerOffersLoaded;
+    protected HashSet<string> _expiredOfferIds = new();
 
     /**
      * Get all offers
@@ -60,7 +55,7 @@ public class RagfairOfferService(
 
     public void AddOfferToExpired(RagfairOffer staleOffer)
     {
-        expiredOffers[staleOffer.Id] = staleOffer;
+        _expiredOfferIds.Add(staleOffer.Id);
     }
 
     /**
@@ -69,7 +64,7 @@ public class RagfairOfferService(
      */
     public int GetExpiredOfferCount()
     {
-        return expiredOffers.Keys.Count;
+        return _expiredOfferIds.Count;
     }
 
     /**
@@ -81,16 +76,17 @@ public class RagfairOfferService(
         // list of lists of item+children
         var expiredItems = new List<List<Item>>();
 
-        foreach (var expiredOfferKvP in expiredOffers)
+        foreach (var expiredOfferId in _expiredOfferIds)
         {
-            if (expiredOfferKvP.Value?.Items is null)
+            var offer = ragfairOfferHolder.GetOfferById(expiredOfferId);
+            if (offer?.Items is null)
             {
-                logger.Error($"Unable to process expired offer: {expiredOfferKvP.Key}, it has no items");
+                logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
 
                 continue;
             }
 
-            expiredItems.Add(expiredOfferKvP.Value.Items);
+            expiredItems.Add(offer.Items);
         }
 
         return expiredItems;
@@ -101,7 +97,7 @@ public class RagfairOfferService(
      */
     public void ResetExpiredOffers()
     {
-        expiredOffers.Clear();
+        _expiredOfferIds.Clear();
     }
 
     /**
@@ -120,15 +116,7 @@ public class RagfairOfferService(
      */
     public void RemoveOfferById(string offerId)
     {
-        var offer = ragfairOfferHolder.GetOfferById(offerId);
-        if (offer is null)
-        {
-            logger.Warning(localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
-
-            return;
-        }
-
-        ragfairOfferHolder.RemoveOffer(offer);
+        ragfairOfferHolder.RemoveOffer(offerId);
     }
 
     /**
@@ -173,7 +161,7 @@ public class RagfairOfferService(
 
     public void AddPlayerOffers()
     {
-        if (!playerOffersLoaded)
+        if (!_playerOffersLoaded)
         {
             foreach (var sessionID in saveServer.GetProfiles().Keys)
             {
@@ -186,7 +174,7 @@ public class RagfairOfferService(
                 ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
             }
 
-            playerOffersLoaded = true;
+            _playerOffersLoaded = true;
         }
     }
 
@@ -256,7 +244,7 @@ public class RagfairOfferService(
 
         playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
         // Remove player offer from flea
-        ragfairOfferHolder.RemoveOffer(playerOffer);
+        ragfairOfferHolder.RemoveOffer(playerOffer.Id);
 
         // Send failed offer items to player in mail
         var unstackedItems = UnstackOfferItems(playerOffer.Items);
