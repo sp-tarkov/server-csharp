@@ -47,8 +47,10 @@ public class TraderController(
         var traders = _databaseService.GetTraders();
         foreach (var trader in traders)
         {
-            if (trader.Key == "ragfair" || trader.Key == Traders.LIGHTHOUSEKEEPER)
+            if (trader.Key is "ragfair" or Traders.LIGHTHOUSEKEEPER)
+            {
                 continue;
+            }
 
             if (trader.Key == Traders.FENCE)
             {
@@ -57,15 +59,11 @@ public class TraderController(
                 continue;
             }
 
-            // Adjust price by traderPriceMultipler config property
+            // Adjust price by traderPriceMultiplier config property
             if (_traderConfig.TraderPriceMultipler != 1)
-                foreach (var kvp in trader.Value?.Assort?.BarterScheme)
-                {
-                    var barterSchemeItem = kvp.Value[0][0];
-
-                    if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem?.Template))
-                        barterSchemeItem.Count += Math.Round(barterSchemeItem?.Count * _traderConfig?.TraderPriceMultipler ?? 0D, 2);
-                }
+            {
+                AdjustTraderItemPrices(trader, _traderConfig.TraderPriceMultipler);
+            }
 
             // Create dict of pristine trader assorts on server start
             if (_traderAssortService.GetPristineTraderAssort(trader.Key) == null)
@@ -79,6 +77,22 @@ public class TraderController(
             // Set to next hour on clock or current time + 60 mins
             trader.Value.Base.NextResupply =
                 traderResetStartsWithServer ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : (int)nextHourTimestamp;
+        }
+    }
+
+    protected void AdjustTraderItemPrices(KeyValuePair<string, Trader> trader, double multiplier)
+    {
+        foreach (var kvp in trader.Value?.Assort?.BarterScheme)
+        {
+            var barterSchemeItem = kvp.Value[0][0];
+
+            if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
+            {
+                barterSchemeItem.Count += Math.Round(
+                    barterSchemeItem?.Count * multiplier ?? 0D,
+                    2
+                );
+            }
         }
     }
 
