@@ -3,7 +3,6 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
-using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
@@ -22,7 +21,7 @@ public class RagfairHelper(
     ICloner cloner
 )
 {
-    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
+    protected RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /**
      * Gets currency TAG from TPL
@@ -46,7 +45,7 @@ public class RagfairHelper(
         }
     }
 
-    public List<string> FilterCategories(string sessionID, SearchRequestData request)
+    public List<string> FilterCategories(string sessionId, SearchRequestData request)
     {
         var result = new List<string>();
 
@@ -74,13 +73,14 @@ public class RagfairHelper(
         return result;
     }
 
-    public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionID)
+    public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
     {
         var result = new Dictionary<string, TraderAssort>();
-
-        foreach (var traderID in databaseService.GetTraders().Keys)
-            if (ragfairConfig.Traders.ContainsKey(traderID))
-                result[traderID] = traderAssortHelper.GetAssort(sessionID, traderID, true);
+        foreach (var traderId in databaseService.GetTraders().Keys
+                     .Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
+        {
+            result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);
+        }
 
         return result;
     }
@@ -92,9 +92,13 @@ public class RagfairHelper(
         // if its "mods" great-parent category, do double recursive loop
         if (handbookId == "5b5f71a686f77447ed5636ab")
         {
-            foreach (var categ in handbookHelper.ChildrenCategories(handbookId))
-            foreach (var subcateg in handbookHelper.ChildrenCategories(categ))
-                result = [..result, ..handbookHelper.TemplatesWithParent(subcateg)];
+            foreach (var category in handbookHelper.ChildrenCategories(handbookId))
+            {
+                foreach (var subCategory in handbookHelper.ChildrenCategories(category))
+                {
+                    result = [..result, ..handbookHelper.TemplatesWithParent(subCategory)];
+                }
+            }
 
             return result;
         }
@@ -105,13 +109,13 @@ public class RagfairHelper(
             // list all item of the category
             result = handbookHelper.TemplatesWithParent(handbookId);
 
-            foreach (var categ in handbookHelper.ChildrenCategories(handbookId)) result = [..result, ..handbookHelper.TemplatesWithParent(categ)];
-
-            return result;
+            return handbookHelper.ChildrenCategories(handbookId)
+                .Aggregate(result, (current, category) => [..current, ..handbookHelper.TemplatesWithParent(category)]);
         }
 
-        // its a specific item searched
+        // It's a specific item searched
         result.Add(handbookId);
+
         return result;
     }
 
