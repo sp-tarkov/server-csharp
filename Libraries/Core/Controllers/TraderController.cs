@@ -45,17 +45,18 @@ public class TraderController(
         var traderResetStartsWithServer = _traderConfig.TradersResetFromServerStart;
 
         var traders = _databaseService.GetTraders();
-        foreach (var trader in traders)
+        foreach (var (traderId, trader) in traders)
         {
-            if (trader.Key is "ragfair" or Traders.LIGHTHOUSEKEEPER)
+            if (traderId is "ragfair" or Traders.LIGHTHOUSEKEEPER)
             {
                 continue;
             }
 
-            if (trader.Key == Traders.FENCE)
+            if (traderId == Traders.FENCE)
             {
                 _fenceBaseAssortGenerator.GenerateFenceBaseAssorts();
                 _fenceService.GenerateFenceAssorts();
+
                 continue;
             }
 
@@ -66,26 +67,25 @@ public class TraderController(
             }
 
             // Create dict of pristine trader assorts on server start
-            if (_traderAssortService.GetPristineTraderAssort(trader.Key) == null)
+            if (_traderAssortService.GetPristineTraderAssort(traderId) == null)
             {
-                var assortsClone = _cloner.Clone(trader.Value.Assort);
-                _traderAssortService.SetPristineTraderAssort(trader.Key, assortsClone);
+                var assortsClone = _cloner.Clone(trader.Assort);
+                _traderAssortService.SetPristineTraderAssort(traderId, assortsClone);
             }
 
-            _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(trader.Key);
+            _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);
 
-            // Set to next hour on clock or current time + 60 mins
-            trader.Value.Base.NextResupply =
-                traderResetStartsWithServer ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Value.Base.Id) : (int)nextHourTimestamp;
+            // Set to next hour on clock or current time + 60 minutes
+            trader.Base.NextResupply =
+                traderResetStartsWithServer ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id) : (int)nextHourTimestamp;
         }
     }
 
-    protected void AdjustTraderItemPrices(KeyValuePair<string, Trader> trader, double multiplier)
+    protected void AdjustTraderItemPrices(Trader trader, double multiplier)
     {
-        foreach (var kvp in trader.Value?.Assort?.BarterScheme)
+        foreach (var kvp in trader.Assort?.BarterScheme)
         {
             var barterSchemeItem = kvp.Value[0][0];
-
             if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
             {
                 barterSchemeItem.Count += Math.Round(
