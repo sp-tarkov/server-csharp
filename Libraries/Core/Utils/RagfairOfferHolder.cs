@@ -60,10 +60,9 @@ public class RagfairOfferHolder(
                 return null;
             }
 
-            var result = _offersById
-                .Where(x => offerIds.Contains(x.Key))
-                .Select(x => x.Value).ToList();
-            return result;
+            return offerIds.Select(offerId => _offersById.GetValueOrDefault(offerId))
+                .Where(offer => offer != null)
+                .ToList();
         }
     }
 
@@ -94,11 +93,12 @@ public class RagfairOfferHolder(
             }
 
             var offerId = offer.Id;
-            var itemTpl = offer.Items.FirstOrDefault().Template;
+            var itemTpl = offer.Items?.FirstOrDefault()?.Template;
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
-            _offersByTemplate.TryGetValue(itemTpl, out var offers);
-            if (!(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId))
+            if (itemTpl != null
+                && !(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId))
+                && _offersByTemplate.TryGetValue(itemTpl, out var offers)
                 && offers?.Count >= _maxOffersPerTemplate
                )
             {
