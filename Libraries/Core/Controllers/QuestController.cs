@@ -208,47 +208,55 @@ public class QuestController(
 
         // Decrement number of items handed in
         QuestCondition? handoverRequirements = null;
-        foreach (var condition in quest.Conditions.AvailableForFinish)
-            if (condition.Id == handoverQuestRequest.ConditionId && handoverQuestTypes.Contains(condition.ConditionType))
+        foreach (var condition in quest.Conditions.AvailableForFinish.Where(condition => condition.Id == handoverQuestRequest.ConditionId))
+        {
+            // Not a handover quest type, skip
+            if (!handoverQuestTypes.Contains(condition.ConditionType))
             {
-                handedInCount = int.Parse(condition.Value.ToString());
-                isItemHandoverQuest = condition.ConditionType == handoverQuestTypes.FirstOrDefault();
-                handoverRequirements = condition;
-
-                if (pmcData.TaskConditionCounters.TryGetValue("ConditionId", out var counter))
-                {
-                    handedInCount -= (int)(counter.Value ?? 0);
-
-                    if (handedInCount <= 0)
-                    {
-                        _logger.Error(
-                            _localisationService.GetText(
-                                "repeatable-quest_handover_failed_condition_already_satisfied",
-                                new
-                                {
-                                    questId = handoverQuestRequest.QuestId,
-                                    conditionId = handoverQuestRequest.ConditionId,
-                                    profileCounter = counter.Value,
-                                    value = handedInCount
-                                }
-                            )
-                        );
-
-                        return output;
-                    }
-
-                    break;
-                }
+                continue;
             }
 
-        if (isItemHandoverQuest && handedInCount == 0) return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
+            handedInCount = int.Parse(condition.Value.ToString());
+            isItemHandoverQuest = condition.ConditionType == handoverQuestTypes.FirstOrDefault();
+            handoverRequirements = condition;
+
+            if (pmcData.TaskConditionCounters.TryGetValue("ConditionId", out var counter))
+            {
+                handedInCount -= (int)(counter.Value ?? 0);
+
+                if (handedInCount <= 0)
+                {
+                    _logger.Error(
+                        _localisationService.GetText(
+                            "repeatable-quest_handover_failed_condition_already_satisfied",
+                            new
+                            {
+                                questId = handoverQuestRequest.QuestId,
+                                conditionId = handoverQuestRequest.ConditionId,
+                                profileCounter = counter.Value,
+                                value = handedInCount
+                            }
+                        )
+                    );
+
+                    return output;
+                }
+
+                break;
+            }
+        }
+
+        if (isItemHandoverQuest && handedInCount == 0)
+        {
+            return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
+        }
 
         var totalItemCountToRemove = 0d;
         foreach (var itemHandover in handoverQuestRequest.Items)
         {
             var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
             if (!(matchingItemInProfile is not null && handoverRequirements.Target.List.Contains(matchingItemInProfile.Template)))
-                // Item handed in by player doesnt match what was requested
+                // Item handed in by player doesn't match what was requested
                 return ShowQuestItemHandoverMatchError(
                     handoverQuestRequest,
                     matchingItemInProfile,
@@ -259,17 +267,22 @@ public class QuestController(
             // Remove the right quantity of given items
             var itemCountToRemove = Math.Min(itemHandover.Count ?? 0, handedInCount - totalItemCountToRemove);
             totalItemCountToRemove += itemCountToRemove;
-            if (itemHandover.Count - itemCountToRemove > 0)
+            if ((itemHandover.Count - itemCountToRemove) > 0)
             {
                 // Remove single item with no children
                 _questHelper.ChangeItemStack(
                     pmcData,
                     itemHandover.Id,
-                    (int)(itemHandover.Count - itemCountToRemove ?? 0),
+                    (int)(itemHandover.Count - itemCountToRemove),
                     sessionID,
                     output
                 );
-                if (totalItemCountToRemove == handedInCount) break;
+
+                // Complete
+                if (totalItemCountToRemove == handedInCount)
+                {
+                    break;
+                }
             }
             else
             {
