@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices.JavaScript;
 using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -16,21 +15,17 @@ public class RagfairServerHelper(
     ISptLogger<RagfairServerHelper> logger,
     RandomUtil randomUtil,
     TimeUtil timeUtil,
-    SaveServer saveServer,
     DatabaseService databaseService,
-    ProfileHelper profileHelper,
     ItemHelper itemHelper,
     TraderHelper traderHelper,
     MailSendService mailSendService,
     LocalisationService localisationService,
-    ItemFilterService itemFilterService,
     ConfigServer configServer,
     ICloner cloner
 )
 {
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected QuestConfig questConfig = configServer.GetConfig<QuestConfig>();
-    protected static string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
+    protected const string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
 
     /**
      * Is item valid / on blacklist / quest item
@@ -81,7 +76,7 @@ public class RagfairServerHelper(
     /**
      * Is supplied item tpl on the ragfair custom blacklist from configs/ragfair.json/dynamic
      * @param itemTemplateId Item tpl to check is blacklisted
-     * @returns True if its blacklsited
+     * @returns True if its blacklisted
      */
     protected bool IsItemOnCustomFleaBlacklist(string itemTemplateId)
     {
