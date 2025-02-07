@@ -30,7 +30,6 @@ public class RagfairServer(
 
     public void Update()
     {
-        _ragfairOfferService.ExpireStaleOffers();
         // Generate trader offers
         var traders = GetUpdateableTraders();
         foreach (var traderId in traders)
@@ -44,11 +43,14 @@ public class RagfairServer(
         // Regenerate expired offers when over threshold limit
         if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
         {
+            // Must occur BEFORE "ExpireStaleOffers"
             var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
             _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
 
-            // Clear out expired offers now we've generated them
-            _ragfairOfferService.ResetExpiredOffers();
+            _ragfairOfferService.ExpireStaleOffers();
+
+            // Clear out expired offers now we've regenerated them
+            _ragfairOfferService.ResetExpiredOfferIds();
         }
 
         _ragfairRequiredItemsService.BuildRequiredItemTable();
