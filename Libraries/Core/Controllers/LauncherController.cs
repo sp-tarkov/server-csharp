@@ -1,3 +1,4 @@
+using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Launcher;
@@ -25,7 +26,8 @@ public class LauncherController(
     ProfileHelper _profileHelper,
     DatabaseService _databaseService,
     LocalisationService _localisationService,
-    ConfigServer _configServer
+    ConfigServer _configServer,
+    ApplicationContext _applicationContext
 )
 {
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
@@ -201,9 +203,15 @@ public class LauncherController(
      */
     public Dictionary<string, PackageJsonData> GetLoadedServerMods()
     {
-        _logger.Error("NOT IMPLEMENTED - _preSptModLoader GetLoadedServerMods()");
-        return new Dictionary<string, PackageJsonData>();
-        // TODO => return this.preSptModLoader.getImportedModDetails();
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
+        var result = new Dictionary<string, PackageJsonData>();
+
+        foreach (var sptMod in mods)
+        {
+            result.Add(sptMod.PackageJson.Name, sptMod.PackageJson);
+        }
+
+        return result;
     }
 
     /**
@@ -213,15 +221,42 @@ public class LauncherController(
      */
     public List<ModDetails> GetServerModsProfileUsed(string sessionId)
     {
-        // var profile = _profileHelper.GetFullProfile(sessionId);
+        var profile = _profileHelper.GetFullProfile(sessionId);
 
-        _logger.Error("NOT IMPLEMENTED - _preSptModLoader GetServerModsProfileUsed()");
-        /* TODO => modding
-        if (profile?.spt?.mods) {
-            return this.preSptModLoader.GetProfileModsGroupedByModName(profile?.spt?.mods);
+        if (profile?.SptData?.Mods is not null) {
+            return getProfileModsGroupedByModName(profile?.SptData?.Mods);
         }
-        */
 
         return [];
+    }
+
+    public List<ModDetails> getProfileModsGroupedByModName(List<ModDetails> profileMods)
+    {
+        // Group all mods used by profile by name
+        var modsGroupedByName = new Dictionary<string, List<ModDetails>>();
+        foreach (var mod in profileMods) {
+            if (!modsGroupedByName.ContainsKey(mod.Name)) {
+                modsGroupedByName[mod.Name] = [];
+            }
+
+            modsGroupedByName[mod.Name].Add(mod);
+        }
+
+        // Find the highest versioned mod and add to results array
+        var result = new List<ModDetails>();
+        foreach (var modName in modsGroupedByName) {
+            var modDatas = modsGroupedByName[modName.Key];
+            var modVersions = modDatas.Select((x) => x.Version);
+            // var highestVersion = MaxSatisfying(modVersions, "*"); ?? TODO: Node used SemVer here
+
+            var chosenVersion = modDatas.FirstOrDefault((x) => x.Name == modName.Key ); // && x.Version == highestVersion
+            if (chosenVersion is null) {
+                continue;
+            }
+
+            result.Add(chosenVersion);
+        }
+
+        return result;
     }
 }
