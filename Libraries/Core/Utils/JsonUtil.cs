@@ -39,7 +39,6 @@ public class JsonUtil
             new EftEnumConverter<MemberCategory>(),
             new EftEnumConverter<PinLockState>(),
             new EftEnumConverter<PlayerSideMask>(),
-            new EftEnumConverter<EquipmentSlots>(),
             new EftEnumConverter<DamageEffectType>(),
             new EftEnumConverter<RepairStrategyType>(),
             new EftEnumConverter<ThrowWeapType>(),
@@ -50,6 +49,8 @@ public class JsonUtil
             new EftEnumConverter<ArmorMaterial>(),
             new EftEnumConverter<RequirementState>(),
             new EftEnumConverter<ExfiltrationType>(),
+            new EftEnumConverter<EquipmentSlots>(),
+            new EftListEnumConverter<EquipmentSlots>(),
             new BaseInteractionRequestDataConverter()
         }
     };
