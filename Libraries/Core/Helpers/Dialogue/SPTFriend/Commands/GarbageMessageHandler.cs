@@ -7,7 +7,7 @@ using SptCommon.Annotations;
 namespace Core.Helpers.Dialogue.SPTFriend.Commands;
 
 [Injectable]
-public class AreYouABotMessageHandler(
+public class GarbageMessageHandler(
     MailSendService _mailSendService,
     RandomUtil _randomUtil) : IChatMessageHandler
 {
@@ -18,17 +18,25 @@ public class AreYouABotMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return message.ToLower() == "are you a bot";
+        return message.ToLower() == "garbage";
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
     {
+        var beforeCollect = GC.GetTotalMemory(false) / 1024 / 1024;
+
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
+
+        var afterCollect = GC.GetTotalMemory(false) / 1024 / 1024;
+
         _mailSendService.SendUserMessageToPlayer(
             sessionId,
             sptFriendUser,
-            _randomUtil.GetArrayValue(["beep boop", "**sad boop**", "probably", "sometimes", "yeah lol"]),
+            $"Before: {beforeCollect}MB, After: {afterCollect}MB",
             [],
             null
         );
+
+        
     }
 }
