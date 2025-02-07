@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Core.Models.Eft.Game;
 
@@ -46,6 +46,9 @@ public record GameConfigResponse
 
     [JsonPropertyName("purchasedGames")]
     public PurchasedGames? PurchasedGames { get; set; }
+
+    [JsonPropertyName("isGameSynced")]
+    public bool? IsGameSynced { get; set; }
 }
 
 public record PurchasedGames

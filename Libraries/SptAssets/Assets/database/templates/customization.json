@@ -11931,7 +11931,9 @@
       "AvailableAsDefault": false,
       "Description": "DefaultBearLowerSuite",
       "Feet": "66043d7ac8949a435906e434",
-      "Game": [],
+      "Game": [
+        "eft"
+      ],
       "Name": "DefaultBearLowerSuite",
       "ProfileVersions": [],
       "ShortName": "DefaultBearLowerSuite",

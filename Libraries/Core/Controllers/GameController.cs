@@ -172,7 +172,8 @@ public class GameController(
             {
                 IsEftPurchased = true,
                 IsArenaPurchased = false
-            }
+            },
+            IsGameSynced = true
         };
 
         return config;
