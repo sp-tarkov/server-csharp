@@ -25,7 +25,7 @@ public record Warning
     public string? ErrorMessage { get; set; }
 
     [JsonPropertyName("code")]
-    public string? Code { get; set; }
+    public BackendErrorCodes? Code { get; set; }
 
     [JsonPropertyName("data")]
     public object? Data { get; set; }

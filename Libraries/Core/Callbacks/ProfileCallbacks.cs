@@ -4,6 +4,7 @@ using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
+using Core.Models.Enums;
 using Core.Utils;
 
 namespace Core.Callbacks;
@@ -67,8 +68,8 @@ public class ProfileCallbacks(
 
         return output switch
         {
-            "taken" => _httpResponse.GetBody<object?>(null, 255, "The nickname is already in use"),
-            "tooshort" => _httpResponse.GetBody<object?>(null, 1, "The nickname is too short"),
+            "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
+            "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
             _ => _httpResponse.GetBody<object>(new { status = 0, nicknamechangedate = _timeUtil.GetTimeStamp() })
         };
     }
@@ -82,8 +83,8 @@ public class ProfileCallbacks(
 
         return output switch
         {
-            "taken" => _httpResponse.GetBody<object?>(null, 255, "225 - "),
-            "tooshort" => _httpResponse.GetBody<object?>(null, 256, "256 - "),
+            "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
+            "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
             _ => _httpResponse.GetBody(new { status = "ok" })
         };
     }

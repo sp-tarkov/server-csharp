@@ -57,26 +57,26 @@ public class HttpResponseUtil
      * @param errmsg
      * @returns
      */
-    public string GetBody<T>(T data, int err = 0, string? errmsg = null, bool sanitize = true)
+    public string GetBody<T>(T data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null, bool sanitize = true)
     {
         return sanitize
             ? ClearString(GetUnclearedBody(data, err, errmsg))
             : GetUnclearedBody(data, err, errmsg);
     }
 
-    public string GetUnclearedBody<T>(T? data, int err = 0, string? errmsg = null)
+    public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
     {
         return _jsonUtil.Serialize(new GetBodyResponseData<T> { Err = err, ErrMsg = errmsg, Data = data });
     }
 
     public string EmptyResponse()
     {
-        return GetBody("", 0, "");
+        return GetBody("", BackendErrorCodes.None, "");
     }
 
     public string NullResponse()
     {
-        return ClearString(GetUnclearedBody<object>(null, 0, null));
+        return ClearString(GetUnclearedBody<object>(null, BackendErrorCodes.None, null));
     }
 
     public string EmptyArrayResponse()
@@ -105,11 +105,11 @@ public class HttpResponseUtil
                 {
                     Index = output.Warnings?.Count - 1,
                     ErrorMessage = message,
-                    Code = errorCode.ToString()
+                    Code = errorCode
                 }
             );
         else
-            output.Warnings = [new Warning { Index = 0, ErrorMessage = message, Code = errorCode.ToString() }];
+            output.Warnings = [new Warning { Index = 0, ErrorMessage = message, Code = errorCode }];
 
         return output;
     }

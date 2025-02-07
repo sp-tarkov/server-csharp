@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Text;
 using SptCommon.Annotations;
 using Core.DI;
+using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Routers;
 using Core.Services;
@@ -197,7 +198,7 @@ public class SptHttpListener : IHttpListener
         {
             _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
             _logger.Info(_jsonUtil.Serialize(deserializedObject));
-            output = _httpResponseUtil.GetBody<object?>(null, 404, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
+            output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
         }
 
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)

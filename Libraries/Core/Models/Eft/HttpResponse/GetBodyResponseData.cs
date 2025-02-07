@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
+using Core.Models.Enums;
 
 namespace Core.Models.Eft.HttpResponse;
 
 public record GetBodyResponseData<T>
 {
     [JsonPropertyName("err")]
-    public int? Err { get; set; }
+    public BackendErrorCodes? Err { get; set; }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("errmsg")]

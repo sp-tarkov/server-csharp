@@ -33,24 +33,17 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
 
         foreach (var warning in warnings)
         {
-            if (!Enum.TryParse(warning.Code, out BackendErrorCodes code))
-                throw new Exception($"Unable to parse [{warning.Code}] to BackendErrorCode.");
-
-            if (!nonCriticalErrorCodes.Contains(code))
+            if (!nonCriticalErrorCodes.Contains(warning.Code ?? BackendErrorCodes.None))
                 return true;
         }
 
         return false;
     }
 
-    public int GetErrorCode(List<Warning> warnings)
+    public BackendErrorCodes GetErrorCode(List<Warning> warnings)
     {
         // Cast int to string to get the error code of 220 for Unknown Error.
-        return int.Parse(
-            (warnings[0].Code is null || warnings[0].Code == "None"
-                ? ((int)BackendErrorCodes.UnknownError).ToString()
-                : warnings.FirstOrDefault()?.Code) ??
-            string.Empty
-        );
+        return warnings.FirstOrDefault()?.Code is null ? BackendErrorCodes.UnknownError : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;
+
     }
 }
