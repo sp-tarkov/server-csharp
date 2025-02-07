@@ -1,0 +1,34 @@
+﻿{
+    "Name": "ChangeMe",
+    "Author": "ChangeMe",
+    "Version": "ChangeMe",
+    "SptVersion": "ChangeMe",
+    "Licence": "ChangeMe",
+    "IsBundleMod": false,
+    "Url": "ChangeMe",
+    "Contributors": [
+        "ChamgeMe"
+    ],
+    "Main": "ChangeMe",
+    "DevDependencies": {
+        "ChangeMe": "ChangeMe"
+    },
+    "Scripts": {
+        "ChangeMe": "ChangeMe"
+    },
+    "Dependencies": {
+        "ChangeMe": "ChangeMe"
+    },
+    "ModDependencies": {
+        "ChangeMe": "ChangeMe"
+    },
+    "LoadAfter": [
+        "ChangeMe"
+    ],
+    "LoadBefore": [
+        "ChangeMe"
+    ],
+    "Incompatibilities": [
+        "ChangeMe"
+    ]
+}

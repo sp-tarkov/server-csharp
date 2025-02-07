@@ -1,5 +1,6 @@
 using System.Runtime;
 using Core.Context;
+using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;
@@ -16,8 +17,8 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        var assemblies = ModDllLoader.LoadAllMods();
-        HarmonyBootstrapper.LoadAllPatches(assemblies);
+        var mods = ModDllLoader.LoadAllMods();
+        // HarmonyBootstrapper.LoadAllPatches(assemblies);
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog();
 
@@ -28,7 +29,7 @@ public static class Program
         ProgramStatics.Initialize();
 
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
-        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, assemblies);
+        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, mods.Select(a => a.Assembly).ToList());
         var logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {
@@ -46,7 +47,7 @@ public static class Program
 
             var appContext = serviceProvider.GetService<ApplicationContext>();
             // Add the Loaded Mod Assemblies for later
-            appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
+            appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, mods);
             // This is the builder that will get use by the HttpServer to start up the web application
             appContext?.AddValue(ContextVariableType.APP_BUILDER, builder);
 
