@@ -53,9 +53,13 @@ public class RagfairOfferService(
         ragfairOfferHolder.AddOffer(offer);
     }
 
-    public void AddOfferToExpired(RagfairOffer staleOffer)
+    /// <summary>
+    /// Add a stale offers id to collection for later use
+    /// </summary>
+    /// <param name="staleOfferId">Id of offer to add to stale collection</param>
+    public void AddOfferIdToExpired(string staleOfferId)
     {
-        _expiredOfferIds.Add(staleOffer.Id);
+        _expiredOfferIds.Add(staleOfferId);
     }
 
     /**
@@ -79,7 +83,7 @@ public class RagfairOfferService(
         foreach (var expiredOfferId in _expiredOfferIds)
         {
             var offer = ragfairOfferHolder.GetOfferById(expiredOfferId);
-            if (offer?.Items is null)
+            if (offer?.Items?.Count == 0)
             {
                 logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
 
@@ -95,7 +99,7 @@ public class RagfairOfferService(
     /**
      * Clear out internal expiredOffers dictionary of all items
      */
-    public void ResetExpiredOffers()
+    public void ResetExpiredOfferIds()
     {
         _expiredOfferIds.Clear();
     }
@@ -129,8 +133,13 @@ public class RagfairOfferService(
         var offer = ragfairOfferHolder.GetOfferById(offerId);
         if (offer != null)
         {
-            offer.Items[0].Upd.StackObjectsCount -= amount;
-            if (offer.Items[0].Upd.StackObjectsCount <= 0) ProcessStaleOffer(offer);
+            var rootItem = offer.Items[0];
+            rootItem.Upd.StackObjectsCount -= amount;
+            if (rootItem.Upd.StackObjectsCount <= 0)
+            {
+                // Reducing stack size has made it 0, offer is now 'stale'
+                ProcessStaleOffer(offer);
+            }
         }
     }
 
@@ -169,7 +178,9 @@ public class RagfairOfferService(
 
                 if (pmcData?.RagfairInfo == null || pmcData.RagfairInfo.Offers == null)
                     // Profile is wiped
+                {
                     continue;
+                }
 
                 ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
             }
@@ -181,7 +192,10 @@ public class RagfairOfferService(
     public void ExpireStaleOffers()
     {
         var time = timeUtil.GetTimeStamp();
-        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time)) ProcessStaleOffer(staleOffer);
+        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time))
+        {
+            ProcessStaleOffer(staleOffer);
+        }
     }
 
     /**
@@ -190,17 +204,24 @@ public class RagfairOfferService(
      */
     protected void ProcessStaleOffer(RagfairOffer staleOffer)
     {
+        var staleOfferId = staleOffer.Id;
         var staleOfferUserId = staleOffer.User.Id;
+
         var isTrader = ragfairServerHelper.IsTrader(staleOfferUserId);
         var isPlayer = profileHelper.IsPlayer(staleOfferUserId.RegexReplace("^pmc", ""));
 
         // Skip trader offers, managed by RagfairServer.update()
-        if (isTrader) return;
+        if (isTrader)
+        {
+            return;
+        }
 
         // Handle dynamic offer
         if (!(isTrader || isPlayer))
             // Dynamic offer
-            AddOfferToExpired(staleOffer);
+        {
+            AddOfferIdToExpired(staleOfferId);
+        }
 
         // Handle player offer - items need returning/XP adjusting. Checking if offer has actually expired or not.
         if (isPlayer && staleOffer.EndTime <= timeUtil.GetTimeStamp())
@@ -210,7 +231,7 @@ public class RagfairOfferService(
         }
 
         // Remove expired existing offer from global offers
-        RemoveOfferById(staleOffer.Id);
+        RemoveOfferById(staleOfferId);
     }
 
     protected void ReturnPlayerOffer(RagfairOffer playerOffer)
@@ -223,7 +244,7 @@ public class RagfairOfferService(
             return;
         }
 
-        var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex((o) => o.Id == playerOffer.Id);
+        var offerinProfileIndex = profile.RagfairInfo.Offers.FindIndex(o => o.Id == playerOffer.Id);
         if (offerinProfileIndex == -1)
         {
             logger.Warning(localisationService.GetText("ragfair-unable_to_find_offer_to_remove", playerOffer.Id));
@@ -240,7 +261,9 @@ public class RagfairOfferService(
 
         var firstOfferItem = playerOffer.Items[0];
         if (firstOfferItem.Upd.StackObjectsCount > firstOfferItem.Upd.OriginalStackObjectsCount)
+        {
             playerOffer.Items[0].Upd.StackObjectsCount = firstOfferItem.Upd.OriginalStackObjectsCount;
+        }
 
         playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
         // Remove player offer from flea
@@ -253,8 +276,12 @@ public class RagfairOfferService(
         var newParentId = hashUtil.Generate();
         foreach (var item in unstackedItems)
             // Refresh root items' parentIds
+        {
             if (item.ParentId == "hideout")
+            {
                 item.ParentId = newParentId;
+            }
+        }
 
         ragfairServerHelper.ReturnItems(profile.SessionId, unstackedItems);
         profile.RagfairInfo.Offers.Splice(offerinProfileIndex, 1);
@@ -280,13 +307,19 @@ public class RagfairOfferService(
         if (totalItemCount <= itemMaxStackSize)
         {
             // Edge case - Ensure items stack count isnt < 1
-            if (items[0]?.Upd?.StackObjectsCount < 1) items[0].Upd.StackObjectsCount = 1;
+            if (items[0]?.Upd?.StackObjectsCount < 1)
+            {
+                items[0].Upd.StackObjectsCount = 1;
+            }
 
             return items;
         }
 
         // Single item with no children e.g. ammo, use existing de-stacking code
-        if (items.Count == 1) return itemHelper.SplitStack(rootItem);
+        if (items.Count == 1)
+        {
+            return itemHelper.SplitStack(rootItem);
+        }
 
         // Item with children, needs special handling
         // Force new item to have stack size of 1

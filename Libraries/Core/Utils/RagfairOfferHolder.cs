@@ -45,7 +45,8 @@ public class RagfairOfferHolder(
 
             var result = _offersById
                 .Where(x => offerIds.Contains(x.Key))
-                .Select(x => x.Value).ToList();
+                .Select(x => x.Value)
+                .ToList();
 
             return result;
         }
@@ -70,7 +71,10 @@ public class RagfairOfferHolder(
     {
         lock (_offersByIdLock)
         {
-            if (_offersById.Count > 0) return _offersById.Values.ToList();
+            if (_offersById.Count > 0)
+            {
+                return _offersById.Values.ToList();
+            }
         }
 
         return [];
@@ -78,7 +82,10 @@ public class RagfairOfferHolder(
 
     public void AddOffers(List<RagfairOffer> offers)
     {
-        foreach (var offer in offers) AddOffer(offer);
+        foreach (var offer in offers)
+        {
+            AddOffer(offer);
+        }
     }
 
     public void AddOffer(RagfairOffer offer)
@@ -87,19 +94,16 @@ public class RagfairOfferHolder(
         {
             var sellerId = offer.User.Id;
             // Keep generating IDs until we get a unique one
-            while (_offersById.ContainsKey(offer.Id))
-            {
-                offer.Id = hashUtil.Generate();
-            }
+            while (_offersById.ContainsKey(offer.Id)) offer.Id = hashUtil.Generate();
 
             var offerId = offer.Id;
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
-            if (itemTpl != null
-                && !(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId))
-                && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-                && offers?.Count >= _maxOffersPerTemplate
+            if (itemTpl != null &&
+                !(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId)) &&
+                _offersByTemplate.TryGetValue(itemTpl, out var offers) &&
+                offers?.Count >= _maxOffersPerTemplate
                )
             {
                 return;
@@ -136,7 +140,10 @@ public class RagfairOfferHolder(
                     // the user ID from the cached offers after they dont have anything else
                     // on the flea placed. We regenerate the ID for the NPC users, making it
                     // continuously grow otherwise
-                    if (_offersByTrader[offer.User.Id].Count == 0) _offersByTrader.Remove(offer.User.Id);
+                    if (_offersByTrader[offer.User.Id].Count == 0)
+                    {
+                        _offersByTrader.Remove(offer.User.Id);
+                    }
                 }
             }
 
@@ -173,9 +180,9 @@ public class RagfairOfferHolder(
      * Get an array of stale offers that are still shown to player
      * @returns RagfairOffer array
      */
-    public List<RagfairOffer> GetStaleOffers(long time)
+    public IEnumerable<RagfairOffer> GetStaleOffers(long time)
     {
-        return GetOffers().Where(o => IsStale(o, time)).ToList();
+        return GetOffers().Where(o => IsStale(o, time));
     }
 
     protected void AddOfferByTemplates(string template, RagfairOffer offer)
@@ -210,7 +217,10 @@ public class RagfairOfferHolder(
 
     protected bool IsStale(RagfairOffer? offer, long time)
     {
-        if (offer is null) return false;
+        if (offer is null)
+        {
+            return false;
+        }
 
         return offer.EndTime < time || (offer.Items.FirstOrDefault().Upd?.StackObjectsCount ?? 0) < 1;
     }
