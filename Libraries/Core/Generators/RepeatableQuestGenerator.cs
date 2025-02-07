@@ -150,13 +150,13 @@ public class RepeatableQuestGenerator(
             return null;
         }
 
-        var targetKey = targetsConfig.Draw()[0];
-        var targetDifficulty = 1 / targetsConfig.Probability(targetKey);
+        var botTypeToEliminate = targetsConfig.Draw()[0];
+        var targetDifficulty = 1 / targetsConfig.Probability(botTypeToEliminate);
 
-        questTypePool.Pool.Elimination.Targets.TryGetValue(targetKey, out var targetLocationPool);
+        questTypePool.Pool.Elimination.Targets.TryGetValue(botTypeToEliminate, out var targetLocationPool);
         var locations = targetLocationPool.Locations;
 
-        // we use any as location if "any" is in the pool and we do not hit the specific location random
+        // we use any as location if "any" is in the pool and we don't hit the specific location random
         // we use any also if the random condition is not met in case only "any" was in the pool
         var locationKey = "any";
         if (locations.Contains("any") &&
@@ -164,22 +164,38 @@ public class RepeatableQuestGenerator(
            )
         {
             locationKey = "any";
-            questTypePool.Pool.Elimination.Targets.Remove(targetKey);
+            questTypePool.Pool.Elimination.Targets.Remove(botTypeToEliminate);
         }
         else
         {
+            // Specific location
             locations = locations.Where(l => l != "any").ToList();
             if (locations.Count > 0)
             {
+                // Get name of location we want elimination to occur on
                 locationKey = _randomUtil.DrawRandomFromList(locations).FirstOrDefault();
-                questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations = locations
-                    .Where(
-                        l => l != locationKey
-                    )
-                    .ToList();
-                if (questTypePool.Pool.Elimination.Targets.GetByJsonProp<TargetLocation>(targetKey).Locations.Count ==
-                    0)
-                    questTypePool.Pool.Elimination.Targets.Remove(targetKey);
+
+                // Get a pool of locations the chosen bot type can be eliminated on
+                if (!questTypePool.Pool.Elimination.Targets.TryGetValue(
+                        botTypeToEliminate,
+                        out var possibleLocationPool
+                    ))
+                {
+                    _logger.Warning($"Bot to kill: {botTypeToEliminate} not found in elimination dict");
+                }
+
+                // Filter locations bot can be killed on to just those not chosen by key
+                possibleLocationPool.Locations = possibleLocationPool.Locations
+                    .Where(location => location != locationKey).ToList();
+
+                // None left after filtering
+                if (possibleLocationPool.Locations.Count == 0)
+                {
+                    // TODO: Why do any of this?!
+                    // Remove chosen bot to eliminate from pool
+                    questTypePool.Pool.Elimination.Targets.Remove(botTypeToEliminate);
+                }
+
             }
             else
             {
@@ -214,7 +230,7 @@ public class RepeatableQuestGenerator(
         var distanceDifficulty = 0;
         var isDistanceRequirementAllowed = !eliminationConfig.DistLocationBlacklist.Contains(locationKey);
 
-        if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))
+        if (targetsConfig.Data(botTypeToEliminate).IsBoss.GetValueOrDefault(false))
         {
             // Get all boss spawn information
             var bossSpawns = _databaseService.GetLocations()
@@ -229,7 +245,7 @@ public class RepeatableQuestGenerator(
                     {
                         x.Id,
                         BossSpawn = x.BossSpawn
-                            .Where(e => e.BossName == targetKey)
+                            .Where(e => e.BossName == botTypeToEliminate)
                     }
                 )
                 .Where(x => x.BossSpawn.Count() > 0);
@@ -297,7 +313,7 @@ public class RepeatableQuestGenerator(
         }
 
         // Draw how many npm kills are required
-        var desiredKillCount = GetEliminationKillCount(targetKey, targetsConfig, eliminationConfig);
+        var desiredKillCount = GetEliminationKillCount(botTypeToEliminate, targetsConfig, eliminationConfig);
         var killDifficulty = desiredKillCount;
 
         // not perfectly happy here; we give difficulty = 1 to the quest reward generation when we have the most difficult mission
@@ -336,7 +352,7 @@ public class RepeatableQuestGenerator(
 
         availableForFinishCondition.Counter.Conditions.Add(
             GenerateEliminationCondition(
-                targetKey,
+                botTypeToEliminate,
                 bodyPartsToClient,
                 distance,
                 allowedWeapon,
