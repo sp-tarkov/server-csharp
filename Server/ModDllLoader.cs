@@ -8,13 +8,6 @@ namespace Server;
 public class ModDllLoader
 {
     private const string ModPath = "./user/mods/";
-    private static ISptLogger<ModDllLoader> _logger;
-
-    public ModDllLoader(ISptLogger<ModDllLoader> logger)
-    {
-        _logger = logger;
-    }
-
 
     public static List<SptMod> LoadAllMods()
     {
@@ -81,6 +74,11 @@ public class ModDllLoader
             }
         }
 
+        if (asmCount == 0 && packCount == 0)
+        {
+            throw new Exception($"No Assembly or package.json found in {Path.GetFullPath(path)}");
+        }
+
         if (packCount == 0)
         {
             throw new Exception($"No package.json found in path: {Path.GetFullPath(path)}");
@@ -93,7 +91,7 @@ public class ModDllLoader
 
         if (result.Assembly is not null && result.PackageJson is not null)
         {
-            Console.WriteLine($"Loaded {result.PackageJson.Name}");
+            Console.WriteLine($"Loaded {result.PackageJson.Name} mod by {result.PackageJson.Author}");
         }
 
         return result;
