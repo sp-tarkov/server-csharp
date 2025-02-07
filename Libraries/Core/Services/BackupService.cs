@@ -1,4 +1,6 @@
+using Core.Context;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Mod;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
@@ -21,18 +23,22 @@ public class BackupService
     protected JsonUtil _jsonUtil;
     protected ISptLogger<BackupService> _logger;
     protected TimeUtil _timeUtil;
+    protected ApplicationContext _applicationContext;
 
     public BackupService(
         ISptLogger<BackupService> logger,
         JsonUtil jsonUtil,
         TimeUtil timeUtil,
         ConfigServer configServer,
-        FileUtil fileUtil)
+        FileUtil fileUtil,
+        ApplicationContext applicationContext
+        )
     {
         _logger = logger;
         _jsonUtil = jsonUtil;
         _timeUtil = timeUtil;
         _fileUtil = fileUtil;
+        _applicationContext = applicationContext;
 
         _activeServerMods = GetActiveServerMods();
         _backupConfig = configServer.GetConfig<BackupConfig>();
@@ -71,10 +77,10 @@ public class BackupService
 
     /**
      * Initializes the backup process.
-     * 
+     *
      * This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
      * up old backups if the number exceeds the configured maximum.
-     * 
+     *
      * @returns A promise that resolves when the backup process is complete.
      */
     public void Init()
@@ -142,7 +148,7 @@ public class BackupService
 
     /**
      * Check to see if the backup service is enabled via the config.
-     * 
+     *
      * @returns True if enabled, false otherwise.
      */
     protected bool IsEnabled()
@@ -163,7 +169,7 @@ public class BackupService
     /**
      * Generates the target directory path for the backup. The directory path is constructed using the `directory` from
      * the configuration and the current backup date.
-     * 
+     *
      * @returns The target directory path for the backup.
      */
     protected string GenerateBackupTargetDir()
@@ -174,7 +180,7 @@ public class BackupService
 
     /**
      * Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
-     * 
+     *
      * @returns The formatted backup date string.
      */
     protected string GenerateBackupDate()
@@ -186,10 +192,10 @@ public class BackupService
 
     /**
      * Cleans up old backups in the backup directory.
-     * 
+     *
      * This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
      * the configured maximum, it deletes the oldest backups.
-     * 
+     *
      * @returns A promise that resolves when the cleanup is complete.
      */
     protected void CleanBackups()
@@ -226,7 +232,7 @@ public class BackupService
 
     /**
      * Retrieves and sorts the backup file paths from the specified directory.
-     * 
+     *
      * @param dir - The directory to search for backup files.
      * @returns A promise that resolves to a List of sorted backup file paths.
      */
@@ -240,7 +246,7 @@ public class BackupService
 
     /**
      * Compares two backup folder names based on their extracted dates.
-     * 
+     *
      * @param a - The name of the first backup folder.
      * @param b - The name of the second backup folder.
      * @returns The difference in time between the two dates in milliseconds, or `null` if either date is invalid.
@@ -260,7 +266,7 @@ public class BackupService
 
     /**
      * Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
-     * 
+     *
      * @param folderName - The name of the folder from which to extract the date.
      * @returns A DateTime object if the folder name is in the correct format, otherwise null.
      */
@@ -286,7 +292,7 @@ public class BackupService
 
     /**
      * Removes excess backups from the backup directory.
-     * 
+     *
      * @param backups - A List of backup file names to be removed.
      * @returns A promise that resolves when all specified backups have been removed.
      */
@@ -306,20 +312,19 @@ public class BackupService
 
     /**
      * Get a List of active server mod details.
-     * 
+     *
      * @returns A List of mod names.
      */
     protected List<string> GetActiveServerMods()
     {
-        _logger.Error("NOT IMPLEMENTED - GetActiveServerMods");
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
         List<string> result = [];
 
-        return result;
+        foreach (var mod in mods)
+        {
+            result.Add($"{mod.PackageJson.Author} - {mod.PackageJson.Version ?? ""}");
+        }
 
-        //var activeMods = _preSptModLoader.getImportedModDetails();
-        //foreach (var activeModKey in activeMods) {
-        //    result.Add($"{ activeModKey} -{ activeMods[activeModKey].author ?? "unknown"} -{ activeMods[activeModKey].version ?? ""}");
-        //}
-        //return result;
+        return result;
     }
 }
