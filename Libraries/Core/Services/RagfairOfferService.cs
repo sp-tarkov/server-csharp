@@ -1,11 +1,12 @@
+using System.Collections.Concurrent;
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 
 namespace Core.Services;
@@ -26,7 +27,7 @@ public class RagfairOfferService(
 )
 {
     protected bool _playerOffersLoaded;
-    protected HashSet<string> _expiredOfferIds = new();
+    protected ConcurrentBag<string> _expiredOfferIds = new();
 
     /**
      * Get all offers
