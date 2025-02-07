@@ -1,6 +1,5 @@
 using System.Runtime;
 using Core.Context;
-using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Servers;

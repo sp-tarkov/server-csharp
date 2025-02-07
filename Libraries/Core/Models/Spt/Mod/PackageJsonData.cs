@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace Core.Models.Spt.Mod;
+﻿namespace Core.Models.Spt.Mod;
 
 public record PackageJsonData
 {

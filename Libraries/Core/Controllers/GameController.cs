@@ -486,14 +486,16 @@ public class GameController(
                 continue;
             }
 
-            fullProfile.SptData.Mods.Add(new ModDetails()
-            {
-                Author = mod.PackageJson.Author,
-                Version = mod.PackageJson.Version,
-                Name = mod.PackageJson.Name,
-                Url = mod.PackageJson.Url,
-                DateAdded = _timeUtil.GetTimeStamp()
-            });
+            fullProfile.SptData.Mods.Add(
+                new ModDetails
+                {
+                    Author = mod.PackageJson.Author,
+                    Version = mod.PackageJson.Version,
+                    Name = mod.PackageJson.Name,
+                    Url = mod.PackageJson.Url,
+                    DateAdded = _timeUtil.GetTimeStamp()
+                }
+            );
         }
     }
 

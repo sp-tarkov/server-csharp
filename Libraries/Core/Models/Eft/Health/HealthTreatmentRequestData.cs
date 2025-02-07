@@ -14,7 +14,7 @@ public record HealthTreatmentRequestData : InventoryBaseActionRequestData
     }
 
     /**
-     * Id of stack to take money from 
+     * Id of stack to take money from
      * Amount of money to take off player for treatment
      */
     [JsonPropertyName("items")]

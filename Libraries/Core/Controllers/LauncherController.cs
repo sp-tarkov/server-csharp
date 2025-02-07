@@ -223,7 +223,8 @@ public class LauncherController(
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
 
-        if (profile?.SptData?.Mods is not null) {
+        if (profile?.SptData?.Mods is not null)
+        {
             return getProfileModsGroupedByModName(profile?.SptData?.Mods);
         }
 
@@ -234,8 +235,10 @@ public class LauncherController(
     {
         // Group all mods used by profile by name
         var modsGroupedByName = new Dictionary<string, List<ModDetails>>();
-        foreach (var mod in profileMods) {
-            if (!modsGroupedByName.ContainsKey(mod.Name)) {
+        foreach (var mod in profileMods)
+        {
+            if (!modsGroupedByName.ContainsKey(mod.Name))
+            {
                 modsGroupedByName[mod.Name] = [];
             }
 
@@ -244,13 +247,15 @@ public class LauncherController(
 
         // Find the highest versioned mod and add to results array
         var result = new List<ModDetails>();
-        foreach (var modName in modsGroupedByName) {
+        foreach (var modName in modsGroupedByName)
+        {
             var modDatas = modsGroupedByName[modName.Key];
-            var modVersions = modDatas.Select((x) => x.Version);
+            var modVersions = modDatas.Select(x => x.Version);
             // var highestVersion = MaxSatisfying(modVersions, "*"); ?? TODO: Node used SemVer here
 
-            var chosenVersion = modDatas.FirstOrDefault((x) => x.Name == modName.Key ); // && x.Version == highestVersion
-            if (chosenVersion is null) {
+            var chosenVersion = modDatas.FirstOrDefault(x => x.Name == modName.Key); // && x.Version == highestVersion
+            if (chosenVersion is null)
+            {
                 continue;
             }
 
