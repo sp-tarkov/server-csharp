@@ -6,8 +6,16 @@ namespace Core.Models.Eft.Ragfair;
 public record ExtendOfferRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("offerId")]
-    public string? OfferId { get; set; }
+    public string? OfferId
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("renewalTime")]
-    public long? RenewalTime { get; set; }
+    public long? RenewalTime
+    {
+        get;
+        set;
+    }
 }

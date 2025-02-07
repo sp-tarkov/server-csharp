@@ -6,7 +6,7 @@ public class ContextVariable(object value, ContextVariableType contextVariableIn
 
     public T GetValue<T>()
     {
-        return (T)value;
+        return (T) value;
     }
 
     public DateTime GetTimestamp()

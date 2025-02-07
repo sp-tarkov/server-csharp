@@ -3,11 +3,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Core.Models;
 using Core.Models.Eft.Common.Tables;
-using SptCommon.Annotations;
 using Core.Models.Eft.Ws;
 using Core.Models.Enums;
 using Core.Models.Spt.Dialog;
 using Core.Utils.Json.Converters;
+using SptCommon.Annotations;
 
 namespace Core.Utils;
 
@@ -62,7 +62,7 @@ public class JsonUtil
 
 
     /// <summary>
-    /// Convert JSON into an object
+    ///     Convert JSON into an object
     /// </summary>
     /// <typeparam name="T">The type of the object to deserialize to</typeparam>
     /// <param name="json">The JSON string to deserialize</param>
@@ -73,7 +73,7 @@ public class JsonUtil
     }
 
     /// <summary>
-    /// Convert JSON into an object
+    ///     Convert JSON into an object
     /// </summary>
     /// <param name="json">The JSON string to deserialize</param>
     /// <param name="type">The type of the object to deserialize to</param>
@@ -84,7 +84,7 @@ public class JsonUtil
     }
 
     /// <summary>
-    /// Convert an object into JSON
+    ///     Convert an object into JSON
     /// </summary>
     /// <typeparam name="T">Type of the object being serialised</typeparam>
     /// <param name="obj">Object to serialise</param>
@@ -96,7 +96,7 @@ public class JsonUtil
     }
 
     /// <summary>
-    /// Convert an object into JSON
+    ///     Convert an object into JSON
     /// </summary>
     /// <param name="obj">Object to serialise</param>
     /// <param name="type">Type of object being serialsied</param>

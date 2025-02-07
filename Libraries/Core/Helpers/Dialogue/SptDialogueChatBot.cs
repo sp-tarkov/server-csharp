@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers.Dialog.Commando;
 using Core.Helpers.Dialogue.SPTFriend.Commands;
 using Core.Models.Eft.Dialog;
@@ -9,6 +8,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Callbacks;
+using SptCommon.Annotations;
 
 namespace Core.Helpers.Dialogue;
 
@@ -23,14 +23,6 @@ public class SptDialogueChatBot(
 ) : IDialogueChatBot
 {
     protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
-
-    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
-    {
-        var chatMessageHandlers = components.ToList();
-        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
-
-        return chatMessageHandlers;
-    }
 
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
@@ -57,10 +49,13 @@ public class SptDialogueChatBot(
         var sender = _profileHelper.GetPmcProfile(sessionId);
         var sptFriendUser = GetChatBot();
 
-        if (request.Text?.ToLower() == "help") return SendPlayerHelpMessage(sessionId, request);
+        if (request.Text?.ToLower() == "help")
+        {
+            return SendPlayerHelpMessage(sessionId, request);
+        }
 
 
-        var handler = _chatMessageHandlers.FirstOrDefault((v) => v.CanHandle(request.Text));
+        var handler = _chatMessageHandlers.FirstOrDefault(v => v.CanHandle(request.Text));
         if (handler is not null)
         {
             handler.Process(sessionId, sptFriendUser, sender);
@@ -78,6 +73,14 @@ public class SptDialogueChatBot(
         );
 
         return request.DialogId;
+    }
+
+    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
+    {
+        var chatMessageHandlers = components.ToList();
+        chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
+
+        return chatMessageHandlers;
     }
 
     private string GetUnrecognizedCommandMessage()
@@ -112,6 +115,7 @@ public class SptDialogueChatBot(
                         () =>
                         {
                             foreach (var subCommand in chatCommand.GetCommands())
+                            {
                                 _mailSendService.SendUserMessageToPlayer(
                                     sessionId,
                                     GetChatBot(),
@@ -119,6 +123,7 @@ public class SptDialogueChatBot(
                                     [],
                                     null
                                 );
+                            }
                         },
                         TimeSpan.FromSeconds(1)
                     );

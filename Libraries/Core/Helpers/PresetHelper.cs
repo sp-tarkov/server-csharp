@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
 using Core.Services;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -13,13 +13,13 @@ public class PresetHelper(
     ICloner _cloner
 )
 {
-    /// <summary>
-    /// Preset cache - key = item tpl, value = preset ids
-    /// </summary>
-    protected Dictionary<string, HashSet<string>> _lookup = new();
-
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
     protected Dictionary<string, Preset>? _defaultWeaponPresets;
+
+    /// <summary>
+    ///     Preset cache - key = item tpl, value = preset ids
+    /// </summary>
+    protected Dictionary<string, HashSet<string>> _lookup = new();
 
     public void HydratePresetStore(Dictionary<string, HashSet<string>> input)
     {
@@ -81,7 +81,10 @@ public class PresetHelper(
     public bool IsPreset(string id)
     {
         if (string.IsNullOrEmpty(id))
+        {
             return false;
+        }
+
         return _databaseService.GetGlobals().ItemPresets.ContainsKey(id);
     }
 
@@ -113,12 +116,18 @@ public class PresetHelper(
 
     public List<Preset> GetPresets(string templateId)
     {
-        if (!HasPreset(templateId)) return [];
+        if (!HasPreset(templateId))
+        {
+            return [];
+        }
 
         List<Preset> presets = [];
         var ids = _lookup[templateId];
 
-        foreach (var id in ids) presets.Add(GetPreset(id));
+        foreach (var id in ids)
+        {
+            presets.Add(GetPreset(id));
+        }
 
         return presets;
     }
@@ -130,13 +139,20 @@ public class PresetHelper(
      */
     public Preset? GetDefaultPreset(string templateId)
     {
-        if (!HasPreset(templateId)) return null;
+        if (!HasPreset(templateId))
+        {
+            return null;
+        }
 
         var allPresets = GetPresets(templateId);
 
         foreach (var preset in allPresets)
+        {
             if (preset.Encyclopedia is not null)
+            {
                 return preset;
+            }
+        }
 
         return allPresets[0];
     }
@@ -148,8 +164,12 @@ public class PresetHelper(
             var preset = GetPreset(presetId);
 
             foreach (var item in preset.Items)
+            {
                 if (preset.Parent == item.Id)
+                {
                     return item.Template;
+                }
+            }
         }
 
         return "";
@@ -166,7 +186,7 @@ public class PresetHelper(
         var defaultPreset = GetDefaultPreset(tpl);
 
         // Bundle up tpls we want price for
-        var tpls = defaultPreset is not null ? defaultPreset.Items.Select((item) => item.Template) : [tpl];
+        var tpls = defaultPreset is not null ? defaultPreset.Items.Select(item => item.Template) : [tpl];
 
         // Get price of tpls
         return _itemHelper.GetItemAndChildrenPrice(tpls.ToList());

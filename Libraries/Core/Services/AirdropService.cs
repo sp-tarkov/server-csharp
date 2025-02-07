@@ -1,14 +1,14 @@
-using SptCommon.Annotations;
+using Core.Generators;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Location;
 using Core.Models.Enums;
-using Core.Models.Spt.Services;
-using Core.Servers;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Services;
 using Core.Models.Utils;
-using Core.Generators;
+using Core.Servers;
 using Core.Utils;
-using Core.Helpers;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
@@ -41,16 +41,19 @@ public class AirdropService(
     }
 
     /// <summary>
-    /// Handle client/location/getAirdropLoot
-    /// Get loot for an airdrop container
-    /// Generates it randomly based on config/airdrop.json values
+    ///     Handle client/location/getAirdropLoot
+    ///     Get loot for an airdrop container
+    ///     Generates it randomly based on config/airdrop.json values
     /// </summary>
     /// <param name="forcedAirdropType">OPTIONAL - Desired airdrop type, randomised when not provided</param>
     /// <returns>List of LootItem objects</returns>
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
         var airdropType = forcedAirdropType != null ? forcedAirdropType : ChooseAirdropType();
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Chose: {airdropType} for airdrop loot");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Chose: {airdropType} for airdrop loot");
+        }
 
         // Common/weapon/etc
         var airdropConfig = GetAirdropLootConfigByType(airdropType);
@@ -61,7 +64,7 @@ public class AirdropService(
             : _lootGenerator.CreateRandomLoot(airdropConfig);
 
         // Create airdrop crate and add to result in first spot
-        var airdropCrateItem = GetAirdropCrateItem((SptAirdropTypeEnum)airdropType);
+        var airdropCrateItem = GetAirdropCrateItem((SptAirdropTypeEnum) airdropType);
 
         // Add crate to front of list
         crateLoot.Insert(0, airdropCrateItem);
@@ -71,7 +74,9 @@ public class AirdropService(
         {
             if (item.Id == airdropCrateItem.Id)
                 // Crate itself, don't alter
+            {
                 continue;
+            }
 
             // no parentId = root item, make item have create as parent
             if (item.ParentId is null)
@@ -81,11 +86,15 @@ public class AirdropService(
             }
         }
 
-        return new GetAirdropLootResponse { Icon = airdropConfig.Icon, Container = crateLoot };
+        return new GetAirdropLootResponse
+        {
+            Icon = airdropConfig.Icon,
+            Container = crateLoot
+        };
     }
 
     /// <summary>
-    /// Create a container create item based on passed in airdrop type
+    ///     Create a container create item based on passed in airdrop type
     /// </summary>
     /// <param name="airdropType">What type of container: weapon/common etc</param>
     /// <returns>Item</returns>
@@ -128,7 +137,7 @@ public class AirdropService(
     }
 
     /// <summary>
-    /// Randomly pick a type of airdrop loot using weighted values from config
+    ///     Randomly pick a type of airdrop loot using weighted values from config
     /// </summary>
     /// <returns>airdrop type value</returns>
     protected SptAirdropTypeEnum ChooseAirdropType()
@@ -139,7 +148,7 @@ public class AirdropService(
     }
 
     /// <summary>
-    /// Get the configuration for a specific type of airdrop
+    ///     Get the configuration for a specific type of airdrop
     /// </summary>
     /// <param name="airdropType">Type of airdrop to get settings for</param>
     /// <returns>LootRequest</returns>

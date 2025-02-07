@@ -5,7 +5,7 @@ namespace ItemTplGenerator;
 public class ItemOverrides
 {
     public static readonly ReadOnlyDictionary<string, string> ItemOverridesDictionary = new(
-        new Dictionary<string, string>()
+        new Dictionary<string, string>
         {
             // Stashes
             { "5963866b86f7747bfa1c4462", "QuestOffline" },

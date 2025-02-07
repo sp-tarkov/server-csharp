@@ -8,6 +8,6 @@ public interface IChatMessageHandler
     // Lower = More priority
     int GetPriority();
 
-    public abstract bool CanHandle(string message);
-    public abstract void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender);
+    public bool CanHandle(string message);
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender);
 }

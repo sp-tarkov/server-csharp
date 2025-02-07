@@ -5,5 +5,9 @@ namespace Core.Models.Eft.Ragfair;
 public record SendRagfairReportRequestData
 {
     [JsonPropertyName("offerId")]
-    public int? OfferId { get; set; }
+    public int? OfferId
+    {
+        get;
+        set;
+    }
 }

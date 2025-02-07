@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Quests;
 public record ListQuestsRequestData : IRequestData
 {
     [JsonPropertyName("completed")]
-    public bool? Completed { get; set; }
+    public bool? Completed
+    {
+        get;
+        set;
+    }
 }

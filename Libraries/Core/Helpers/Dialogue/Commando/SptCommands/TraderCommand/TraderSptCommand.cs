@@ -75,15 +75,15 @@ public class TraderSptCommand(
                 profileChangeEventType = ProfileChangeEventType.TraderSalesSum;
                 break;
             default:
-            {
-                _mailSendService.SendUserMessageToPlayer(
-                    sessionId,
-                    commandHandler,
-                    "Invalid use of trader command, ProfileChangeEventType was not found. Use 'help' for more information."
-                );
+                {
+                    _mailSendService.SendUserMessageToPlayer(
+                        sessionId,
+                        commandHandler,
+                        "Invalid use of trader command, ProfileChangeEventType was not found. Use 'help' for more information."
+                    );
 
-                return request.DialogId;
-            }
+                    return request.DialogId;
+                }
         }
 
         _mailSendService.SendSystemMessageToPlayer(
@@ -94,7 +94,10 @@ public class TraderSptCommand(
                 {
                     Id = _hashUtil.Generate(),
                     Template = Money.ROUBLES,
-                    Upd = new Upd { StackObjectsCount = 1 },
+                    Upd = new Upd
+                    {
+                        StackObjectsCount = 1
+                    },
                     ParentId = _hashUtil.Generate(),
                     SlotId = "main"
                 }

@@ -47,18 +47,21 @@ public class InsuranceController(
 
     /**
      * Process insurance items of all profiles prior to being given back to the player through the mail service.
-     *
+     * 
      * @returns void
      */
     public void ProcessReturn()
     {
         // Process each installed profile.
-        foreach (var sessionId in _saveServer.GetProfiles()) ProcessReturnByProfile(sessionId.Key);
+        foreach (var sessionId in _saveServer.GetProfiles())
+        {
+            ProcessReturnByProfile(sessionId.Key);
+        }
     }
 
     /**
      * Process insurance items of a single profile prior to being given back to the player through the mail service.
-     *
+     * 
      * @returns void
      */
     public void ProcessReturnByProfile(string sessionId)
@@ -67,14 +70,17 @@ public class InsuranceController(
         var insuranceDetails = FilterInsuredItems(sessionId);
 
         // Skip profile if no insured items to process
-        if (insuranceDetails.Count == 0) return;
+        if (insuranceDetails.Count == 0)
+        {
+            return;
+        }
 
         ProcessInsuredItems(insuranceDetails, sessionId);
     }
 
     /**
      * Get all insured items that are ready to be processed in a specific profile.
-     *
+     * 
      * @param sessionID Session ID of the profile to check.
      * @param time The time to check ready status against. Current time by default.
      * @returns All insured items that are ready to be processed.
@@ -86,15 +92,19 @@ public class InsuranceController(
 
         var profileInsuranceDetails = _saveServer.GetProfile(sessionId).InsuranceList;
         if (profileInsuranceDetails.Count > 0)
+        {
             if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Found {profileInsuranceDetails.Count} insurance packages in profile {sessionId}");
+            }
+        }
 
         return profileInsuranceDetails.Where(insured => insuranceTime >= insured.ScheduledTime).ToList();
     }
 
     /**
      * This method orchestrates the processing of insured items in a profile.
-     *
+     * 
      * @param insuranceDetails The insured items to process.
      * @param sessionID The session ID that should receive the processed items.
      * @returns void
@@ -102,9 +112,11 @@ public class InsuranceController(
     protected void ProcessInsuredItems(List<Insurance> insuranceDetails, string sessionId)
     {
         if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug(
                 $"Processing {insuranceDetails.Count} insurance packages, which includes a total of: {CountAllInsuranceItems(insuranceDetails)} items, in profile: {sessionId}"
             );
+        }
 
         // Iterate over each of the insurance packages.
         foreach (var insured in insuranceDetails)
@@ -147,7 +159,7 @@ public class InsuranceController(
 
     /**
      * Remove an insurance package from a profile using the package's system data information.
-     *
+     * 
      * @param sessionID The session ID of the profile to remove the package from.
      * @param index The array index of the insurance package to remove.
      * @returns void
@@ -164,12 +176,15 @@ public class InsuranceController(
             )
             .ToList();
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Removed processed insurance package. Remaining packages: {profile.InsuranceList.Count}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Removed processed insurance package. Remaining packages: {profile.InsuranceList.Count}");
+        }
     }
 
     /**
      * Finds the items that should be deleted based on the given Insurance object.
-     *
+     * 
      * @param rootItemParentID - The ID that should be assigned to all "hideout"/root items.
      * @param insured - The insurance object containing the items to evaluate for deletion.
      * @returns A Set containing the IDs of items that should be deleted.
@@ -189,7 +204,10 @@ public class InsuranceController(
         );
 
         // Process all items that are not attached, attachments; those are handled separately, by value.
-        if (hasRegularItems) ProcessRegularItems(insured, toDelete, parentAttachmentsMap);
+        if (hasRegularItems)
+        {
+            ProcessRegularItems(insured, toDelete, parentAttachmentsMap);
+        }
 
         // Process attached, attachments, by value, only if there are any.
         if (parentAttachmentsMap.Count > 0)
@@ -203,8 +221,12 @@ public class InsuranceController(
 
         // Log the number of items marked for deletion, if any
         if (!toDelete.Any())
+        {
             if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Marked {toDelete.Count} items for deletion from insurance.");
+            }
+        }
 
         return toDelete;
     }
@@ -213,7 +235,7 @@ public class InsuranceController(
      * Initialize a Map object that holds main-parents to all of their attachments. Note that "main-parent" in this
      * context refers to the parent item that an attachment is attached to. For example, a suppressor attached to a gun,
      * not the backpack that the gun is located in (the gun's parent).
-     *
+     * 
      * @param rootItemParentID - The ID that should be assigned to all "hideout"/root items.
      * @param insured - The insurance object containing the items to evaluate.
      * @param itemsMap - A Map object for quick item look-up by item ID.
@@ -291,7 +313,10 @@ public class InsuranceController(
             // Update (or add to) the main-parent to attachments map.
             if (mainParentToAttachmentsMap.ContainsKey(mainParent.Id))
             {
-                if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id, out var parent)) parent.Add(insuredItem);
+                if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id, out var parent))
+                {
+                    parent.Add(insuredItem);
+                }
             }
             else
             {
@@ -305,7 +330,7 @@ public class InsuranceController(
     /**
      * Remove attachments that can not be moddable in-raid from the parentAttachmentsMap. If no moddable attachments
      * remain, the parent is removed from the map as well.
-     *
+     * 
      * @param parentAttachmentsMap - A Map object containing parent item IDs to arrays of their attachment items.
      * @param itemsMap - A Map object for quick item look-up by item ID.
      * @returns A Map object containing parent item IDs to arrays of their attachment items which are not moddable in-raid.
@@ -327,14 +352,24 @@ public class InsuranceController(
                 // attachment on the main-parent. For example, if the attachment is a stock, we need to check to see if
                 // it's moddable in the upper receiver (attachment/parent), which is attached to the gun (main-parent).
                 if (attachment.ParentId is not null)
+                {
                     if (itemsMap.TryGetValue(attachment.ParentId, out var directParentItem))
+                    {
                         attachmentParentItem = directParentItem;
+                    }
+                }
 
-                if (_itemHelper.IsRaidModdable(attachment, attachmentParentItem) ?? false) moddableAttachments.Add(attachment);
+                if (_itemHelper.IsRaidModdable(attachment, attachmentParentItem) ?? false)
+                {
+                    moddableAttachments.Add(attachment);
+                }
             }
 
             // If any moddable attachments remain, add them to the updated map.
-            if (moddableAttachments.Count > 0) updatedMap.TryAdd(map.Key, moddableAttachments);
+            if (moddableAttachments.Count > 0)
+            {
+                updatedMap.TryAdd(map.Key, moddableAttachments);
+            }
         }
 
         return updatedMap;
@@ -344,7 +379,7 @@ public class InsuranceController(
      * Process "regular" insurance items. Any insured item that is not an attached, attachment is considered a "regular"
      * item. This method iterates over them, preforming item deletion rolls to see if they should be deleted. If so,
      * they (and their attached, attachments, if any) are marked for deletion in the toDelete Set.
-     *
+     * 
      * @param insured The insurance object containing the items to evaluate.
      * @param toDelete A Set to keep track of items marked for deletion.
      * @param parentAttachmentsMap A Map object containing parent item IDs to arrays of their attachment items.
@@ -355,7 +390,10 @@ public class InsuranceController(
         foreach (var insuredItem in insured.Items)
         {
             // Skip if the item is an attachment. These are handled separately.
-            if (_itemHelper.IsAttachmentAttached(insuredItem)) continue;
+            if (_itemHelper.IsAttachmentAttached(insuredItem))
+            {
+                continue;
+            }
 
             // Roll for item deletion
             var itemRoll = RollForDelete(insured.TraderId, insuredItem);
@@ -371,7 +409,10 @@ public class InsuranceController(
                         insured.Items,
                         insuredItem.Id
                     );
-                    foreach (var item in itemAndChildren) toDelete.Add(item.Id);
+                    foreach (var item in itemAndChildren)
+                    {
+                        toDelete.Add(item.Id);
+                    }
 
                     // Remove the parent (and its children) from the parentAttachmentsMap.
                     parentAttachmentsMap.Remove(insuredItem.Id);
@@ -387,7 +428,7 @@ public class InsuranceController(
 
     /**
      * Process parent items and their attachments, updating the toDelete Set accordingly.
-     *
+     * 
      * @param mainParentToAttachmentsMap A Map object containing parent item IDs to arrays of their attachment items.
      * @param itemsMap A Map object for quick item look-up by item ID.
      * @param traderId The trader ID from the Insurance object.
@@ -400,12 +441,18 @@ public class InsuranceController(
         {
             // Skip processing if parentId is already marked for deletion, as all attachments for that parent will
             // already be marked for deletion as well.
-            if (toDelete.Contains(parentObj.Key)) continue;
+            if (toDelete.Contains(parentObj.Key))
+            {
+                continue;
+            }
 
             // Log the parent item's name.
             itemsMap.TryGetValue(parentObj.Key, out var parentItem);
             var parentName = _itemHelper.GetItemName(parentItem.Template);
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Processing attachments of parent {parentName}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Processing attachments of parent {parentName}");
+            }
 
             // Process the attachments for this individual parent item.
             ProcessAttachmentByParent(parentObj.Value, insuredTraderId, toDelete);
@@ -417,7 +464,7 @@ public class InsuranceController(
      * their maximum price. For each attachment, a roll is made to determine if a deletion should be made. Once the
      * number of deletions has been counted, the attachments are added to the toDelete Set, starting with the most
      * valuable attachments first.
-     *
+     * 
      * @param attachments The array of attachment items to sort, filter, and roll.
      * @param traderId The ID of the trader to that has ensured these items.
      * @param toDelete The array that accumulates the IDs of the items to be deleted.
@@ -434,17 +481,25 @@ public class InsuranceController(
         // Create prob array and add all attachments with rouble price as the weight
         var attachmentsProbabilityArray = new ProbabilityObjectArray<string, double?>(_mathUtil, _cloner);
         foreach (var attachmentTpl in weightedAttachmentByPrice)
+        {
             attachmentsProbabilityArray.Add(
                 new ProbabilityObject<string, double?>(attachmentTpl.Key, attachmentTpl.Value, null)
             );
+        }
 
         // Draw x attachments from weighted array to remove from parent, remove from pool after being picked
-        var attachmentIdsToRemove = attachmentsProbabilityArray.Draw((int)countOfAttachmentsToRemove, false);
-        foreach (var attachmentId in attachmentIdsToRemove) toDelete.Add(attachmentId);
+        var attachmentIdsToRemove = attachmentsProbabilityArray.Draw((int) countOfAttachmentsToRemove, false);
+        foreach (var attachmentId in attachmentIdsToRemove)
+        {
+            toDelete.Add(attachmentId);
+        }
 
         LogAttachmentsBeingRemoved(attachmentIdsToRemove, attachments, weightedAttachmentByPrice);
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Number of attachments to be deleted: {attachmentIdsToRemove.Count}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Number of attachments to be deleted: {attachmentIdsToRemove.Count}");
+        }
     }
 
     private void LogAttachmentsBeingRemoved(List<string> attachmentIdsToRemove, List<Item> attachments, Dictionary<string, double> attachmentPrices)
@@ -453,10 +508,13 @@ public class InsuranceController(
         foreach (var attachmentId in attachmentIdsToRemove)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug(
-                    $"Attachment {index} Id: {attachmentId} Tpl: {attachments.FirstOrDefault((x) => x.Id == attachmentId)?.Template} - " +
+                    $"Attachment {index} Id: {attachmentId} Tpl: {attachments.FirstOrDefault(x => x.Id == attachmentId)?.Template} - " +
                     $"Price: {attachmentPrices[attachmentId]}"
                 );
+            }
+
             index++;
         }
     }
@@ -469,7 +527,10 @@ public class InsuranceController(
         foreach (var attachment in attachments)
         {
             var price = _ragfairPriceService.GetDynamicItemPrice(attachment.Template, Money.ROUBLES);
-            if (price is not null) result[attachment.Id] = Math.Round(price ?? 0);
+            if (price is not null)
+            {
+                result[attachment.Id] = Math.Round(price ?? 0);
+            }
         }
 
         _weightedRandomHelper.ReduceWeightValues(result);
@@ -481,7 +542,10 @@ public class InsuranceController(
     {
         var removeCount = 0;
 
-        if (_randomUtil.GetChance100(_insuranceConfig.ChanceNoAttachmentsTakenPercent)) return removeCount;
+        if (_randomUtil.GetChance100(_insuranceConfig.ChanceNoAttachmentsTakenPercent))
+        {
+            return removeCount;
+        }
 
         // Get attachments count above or equal to price set in config
         return weightedAttachmentByPrice
@@ -496,7 +560,7 @@ public class InsuranceController(
 
     /**
      * Handle sending the insurance message to the user that potentially contains the valid insurance items.
-     *
+     * 
      * @param sessionID The session ID that should receive the insurance message.
      * @param insurance The context of insurance to use.
      * @returns void
@@ -511,11 +575,17 @@ public class InsuranceController(
         if (IsMapLabsAndInsuranceDisabled(insurance))
             // Trader has labs-specific messages
             // Wipe out returnable items
+        {
             HandleLabsInsurance(traderDialogMessages, insurance);
+        }
         else if (insurance.Items?.Count == 0)
             // Not labs and no items to return
+        {
             if (traderDialogMessages.TryGetValue("insuranceFailed", out var insuranceFailedTemplates))
+            {
                 insurance.MessageTemplateId = _randomUtil.GetArrayValue(insuranceFailedTemplates);
+            }
+        }
 
         // Send the insurance message
         _mailSendService.SendLocalisedNpcMessageToPlayer(
@@ -556,7 +626,10 @@ public class InsuranceController(
     private bool? RollForDelete(string traderId, Item? insuredItem = null)
     {
         var trader = _traderHelper.GetTraderById(traderId);
-        if (trader is null) return null;
+        if (trader is null)
+        {
+            return null;
+        }
 
         const int maxRoll = 9999;
         const int conversionFactor = 100;
@@ -569,7 +642,9 @@ public class InsuranceController(
         var itemName = insuredItem is not null ? $"{_itemHelper.GetItemName(insuredItem.Template)}" : "";
         var status = roll ? "Delete" : "Keep";
         if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
             _logger.Debug($"Rolling {itemName} with {trader} - Return {traderReturnChance}% - Roll: {returnChance} - Status: {status}");
+        }
 
         return roll;
     }
@@ -577,7 +652,7 @@ public class InsuranceController(
     /**
      * Handle Insure event
      * Add insurance to an item
-     *
+     * 
      * @param pmcData Player profile
      * @param body Insurance request
      * @param sessionID Session id
@@ -594,6 +669,7 @@ public class InsuranceController(
 
         // Get price of all items being insured, add to 'itemsToPay'
         foreach (var key in body.Items)
+        {
             itemsToPay.Add(
                 new IdWithCount
                 {
@@ -605,6 +681,7 @@ public class InsuranceController(
                     )
                 }
             );
+        }
 
         var options = new ProcessBuyTradeRequestData
         {
@@ -619,15 +696,27 @@ public class InsuranceController(
 
         // pay for the item insurance
         _paymentService.PayMoney(pmcData, options, sessionId, output);
-        if (output.Warnings?.Count > 0) return output;
+        if (output.Warnings?.Count > 0)
+        {
+            return output;
+        }
 
         // add items to InsuredItems list once money has been paid
         pmcData.InsuredItems ??= [];
         foreach (var key in body.Items)
         {
-            pmcData.InsuredItems.Add(new InsuredItem { TId = body.TransactionId, ItemId = inventoryItemsHash[key].Id });
+            pmcData.InsuredItems.Add(
+                new InsuredItem
+                {
+                    TId = body.TransactionId,
+                    ItemId = inventoryItemsHash[key].Id
+                }
+            );
             // If Item is Helmet or Body Armour -> Handle insurance of soft inserts
-            if (_itemHelper.ArmorItemHasRemovableOrSoftInsertSlots(inventoryItemsHash[key].Template)) InsureSoftInserts(inventoryItemsHash[key], pmcData, body);
+            if (_itemHelper.ArmorItemHasRemovableOrSoftInsertSlots(inventoryItemsHash[key].Template))
+            {
+                InsureSoftInserts(inventoryItemsHash[key], pmcData, body);
+            }
         }
 
         _profileHelper.AddSkillPointsToPlayer(pmcData, SkillTypes.Charisma, itemsToInsureCount * 0.01);
@@ -651,16 +740,25 @@ public class InsuranceController(
 
         foreach (var softInsertSlot in softInsertSlots)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"SoftInsertSlots: {softInsertSlot.SlotId}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"SoftInsertSlots: {softInsertSlot.SlotId}");
+            }
 
-            pmcData.InsuredItems.Add(new InsuredItem { TId = body.TransactionId, ItemId = softInsertSlot.Id });
+            pmcData.InsuredItems.Add(
+                new InsuredItem
+                {
+                    TId = body.TransactionId,
+                    ItemId = softInsertSlot.Id
+                }
+            );
         }
     }
 
     /**
      * Handle client/insurance/items/list/cost
      * Calculate insurance cost
-     *
+     * 
      * @param request request object
      * @param sessionID session id
      * @returns IGetInsuranceCostResponseData object to send to client
@@ -683,7 +781,11 @@ public class InsuranceController(
                 // Ensure hash has item in it
                 if (!inventoryItemsHash.ContainsKey(itemId))
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Item with id: {itemId} missing from player inventory, skipping");
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"Item with id: {itemId} missing from player inventory, skipping");
+                    }
+
                     continue;
                 }
 

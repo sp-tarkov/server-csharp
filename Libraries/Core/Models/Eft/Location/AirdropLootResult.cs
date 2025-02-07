@@ -6,8 +6,16 @@ namespace Core.Models.Eft.Location;
 public record AirdropLootResult
 {
     [JsonPropertyName("dropType")]
-    public string? DropType { get; set; }
+    public string? DropType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("loot")]
-    public List<LootItem>? Loot { get; set; }
+    public List<LootItem>? Loot
+    {
+        get;
+        set;
+    }
 }

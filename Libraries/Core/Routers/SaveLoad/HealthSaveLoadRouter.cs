@@ -1,13 +1,12 @@
-using SptCommon.Annotations;
 using Core.DI;
-using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
+using SptCommon.Annotations;
 
 namespace Core.Routers.SaveLoad;
 
 [Injectable(InjectableTypeOverride = typeof(SaveLoadRouter))]
-public class HealthSaveLoadRouter() : SaveLoadRouter
+public class HealthSaveLoadRouter : SaveLoadRouter
 {
     protected override List<HandledRoute> GetHandledRoutes()
     {
@@ -23,7 +22,13 @@ public class HealthSaveLoadRouter() : SaveLoadRouter
 
     public void DefaultVitality(Vitality? vitality)
     {
-        vitality ??= new Vitality { Health = null, Energy = 0, Temperature = 0, Hydration = 0 };
+        vitality ??= new Vitality
+        {
+            Health = null,
+            Energy = 0,
+            Temperature = 0,
+            Hydration = 0
+        };
 
         vitality.Health = new Dictionary<string, BodyPartHealth>
         {

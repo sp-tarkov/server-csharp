@@ -6,11 +6,23 @@ namespace Core.Models.Spt.Fence;
 public record CreateFenceAssortsResult
 {
     [JsonPropertyName("sptItems")]
-    public List<List<Item>>? SptItems { get; set; }
+    public List<List<Item>>? SptItems
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("barter_scheme")]
-    public Dictionary<string, List<List<BarterScheme>>>? BarterScheme { get; set; }
+    public Dictionary<string, List<List<BarterScheme>>>? BarterScheme
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("loyal_level_items")]
-    public Dictionary<string, int>? LoyalLevelItems { get; set; }
+    public Dictionary<string, int>? LoyalLevelItems
+    {
+        get;
+        set;
+    }
 }

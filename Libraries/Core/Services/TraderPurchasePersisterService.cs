@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -30,9 +30,15 @@ public class TraderPurchasePersisterService(
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
 
-        if (profile.TraderPurchases is null) return null;
+        if (profile.TraderPurchases is null)
+        {
+            return null;
+        }
 
-        if (profile.TraderPurchases.ContainsKey(traderId)) return profile.TraderPurchases[traderId];
+        if (profile.TraderPurchases.ContainsKey(traderId))
+        {
+            return profile.TraderPurchases[traderId];
+        }
 
         return null;
     }
@@ -51,13 +57,22 @@ public class TraderPurchasePersisterService(
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
 
-        if (profile.TraderPurchases is null) return null;
+        if (profile.TraderPurchases is null)
+        {
+            return null;
+        }
 
-        if (!profile.TraderPurchases.TryGetValue(traderId, out _)) profile.TraderPurchases.TryAdd(traderId, new Dictionary<string, TraderPurchaseData>());
+        if (!profile.TraderPurchases.TryGetValue(traderId, out _))
+        {
+            profile.TraderPurchases.TryAdd(traderId, new Dictionary<string, TraderPurchaseData>());
+        }
 
         var traderPurchases = profile.TraderPurchases[traderId];
 
-        if (!traderPurchases.TryGetValue(assortId, out _)) traderPurchases.TryAdd(assortId, new TraderPurchaseData());
+        if (!traderPurchases.TryGetValue(assortId, out _))
+        {
+            traderPurchases.TryAdd(assortId, new TraderPurchaseData());
+        }
 
         return traderPurchases[assortId];
     }
@@ -73,10 +88,16 @@ public class TraderPurchasePersisterService(
         foreach (var profile in profiles)
         {
             // Skip if no purchases
-            if (profile.Value.TraderPurchases is null) continue;
+            if (profile.Value.TraderPurchases is null)
+            {
+                continue;
+            }
 
             // Skip if no trader-speicifc purchases
-            if (!profile.Value.TraderPurchases.TryGetValue(traderId, out _)) continue;
+            if (!profile.Value.TraderPurchases.TryGetValue(traderId, out _))
+            {
+                continue;
+            }
 
             profile.Value.TraderPurchases[traderId] = new Dictionary<string, TraderPurchaseData>();
         }
@@ -97,11 +118,14 @@ public class TraderPurchasePersisterService(
 
             // Skip if no purchases or no trader-specific purchases
             var purchasesFromTrader = profile.TraderPurchases?.GetValueOrDefault(traderId, null);
-            if (purchasesFromTrader is null) continue;
+            if (purchasesFromTrader is null)
+            {
+                continue;
+            }
 
             foreach (var purchaseKvP in purchasesFromTrader)
             {
-                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
+                var traderUpdateDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
                 if (traderUpdateDetails is null)
                 {
                     _logger.Error(
@@ -110,7 +134,7 @@ public class TraderPurchasePersisterService(
                             new
                             {
                                 profileId = profile.ProfileInfo.ProfileId,
-                                traderId = traderId
+                                traderId
                             }
                         )
                     );

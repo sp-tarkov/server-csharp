@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -12,6 +11,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -51,7 +51,10 @@ public class ProfileController(
     public MiniProfile GetMiniProfile(string sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
-        if (profile?.CharacterData == null) throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
+        if (profile?.CharacterData == null)
+        {
+            throw new Exception($"Unable to find character data for id: {sessionID}. Profile may be corrupt");
+        }
 
         var pmc = profile.CharacterData.PmcData;
         var maxLvl = _profileHelper.GetMaxLevel();
@@ -60,6 +63,7 @@ public class ProfileController(
         var currlvl = pmc?.Info?.Level.GetValueOrDefault(1);
         var xpToNextLevel = _profileHelper.GetExperience((currlvl ?? 1) + 1);
         if (pmc?.Info?.Level == null)
+        {
             return new MiniProfile
             {
                 Username = profile.ProfileInfo?.Username ?? "",
@@ -75,6 +79,7 @@ public class ProfileController(
                 ProfileId = profile.ProfileInfo?.ProfileId ?? "",
                 SptData = _profileHelper.GetDefaultSptDataObject()
             };
+        }
 
         return new MiniProfile
         {
@@ -128,9 +133,15 @@ public class ProfileController(
      */
     public string ValidateNickname(ValidateNicknameRequestData info, string sessionID)
     {
-        if (info.Nickname.Length < 3) return "tooshort";
+        if (info.Nickname.Length < 3)
+        {
+            return "tooshort";
+        }
 
-        if (_profileHelper.IsNicknameTaken(info, sessionID)) return "taken";
+        if (_profileHelper.IsNicknameTaken(info, sessionID))
+        {
+            return "taken";
+        }
 
         return "OK";
     }
@@ -141,7 +152,13 @@ public class ProfileController(
      */
     public string ChangeNickname(ProfileChangeNicknameRequestData info, string sessionID)
     {
-        var output = ValidateNickname(new ValidateNicknameRequestData() { Nickname = info.Nickname }, sessionID);
+        var output = ValidateNickname(
+            new ValidateNicknameRequestData
+            {
+                Nickname = info.Nickname
+            },
+            sessionID
+        );
 
         if (output == "OK")
         {
@@ -177,7 +194,10 @@ public class ProfileController(
         {
             var pmcProfile = profile?.CharacterData?.PmcData;
 
-            if (!pmcProfile?.Info?.LowerNickname?.Contains(info.Nickname.ToLower()) ?? false) continue;
+            if (!pmcProfile?.Info?.LowerNickname?.Contains(info.Nickname.ToLower()) ?? false)
+            {
+                continue;
+            }
 
             result.Add(_profileHelper.GetChatRoomMemberFromPmcProfile(pmcProfile));
         }
@@ -191,13 +211,29 @@ public class ProfileController(
     public GetProfileStatusResponseData GetProfileStatus(string sessionId)
     {
         var account = _saveServer.GetProfile(sessionId).ProfileInfo;
-        var response = new GetProfileStatusResponseData()
+        var response = new GetProfileStatusResponseData
         {
             MaxPveCountExceeded = false,
             Profiles =
             [
-                new ProfileStatusData { ProfileId = account.ScavengerId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 },
-                new ProfileStatusData { ProfileId = account.ProfileId, ProfileToken = null, Status = "Free", Sid = "", Ip = "", Port = 0 }
+                new ProfileStatusData
+                {
+                    ProfileId = account.ScavengerId,
+                    ProfileToken = null,
+                    Status = "Free",
+                    Sid = "",
+                    Ip = "",
+                    Port = 0
+                },
+                new ProfileStatusData
+                {
+                    ProfileId = account.ProfileId,
+                    ProfileToken = null,
+                    Status = "Free",
+                    Sid = "",
+                    Ip = "",
+                    Port = 0
+                }
             ]
         };
 
@@ -243,7 +279,7 @@ public class ProfileController(
             {
                 Nickname = profileToViewPmc.Info.Nickname,
                 Side = profileToViewPmc.Info.Side,
-                Experience = profileToViewPmc.Info.Experience as int?,
+                Experience = profileToViewPmc.Info.Experience,
                 MemberCategory = profileToViewPmc.Info.MemberCategory as int?,
                 BannedState = profileToViewPmc.Info.BannedState,
                 BannedUntil = profileToViewPmc.Info.BannedUntil,
@@ -294,11 +330,20 @@ public class ProfileController(
     public bool SetChosenProfileIcon(string sessionId, GetProfileSettingsRequest request)
     {
         var profileToUpdate = _profileHelper.GetPmcProfile(sessionId);
-        if (profileToUpdate == null) return false;
+        if (profileToUpdate == null)
+        {
+            return false;
+        }
 
-        if (request.MemberCategory != null) profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
+        if (request.MemberCategory != null)
+        {
+            profileToUpdate.Info.SelectedMemberCategory = request.MemberCategory as MemberCategory?;
+        }
 
-        if (request.SquadInviteRestriction != null) profileToUpdate.Info.SquadInviteRestriction = request.SquadInviteRestriction;
+        if (request.SquadInviteRestriction != null)
+        {
+            profileToUpdate.Info.SquadInviteRestriction = request.SquadInviteRestriction;
+        }
 
         return true;
     }

@@ -1,19 +1,19 @@
-using Core.Utils;
-using SptCommon.Annotations;
 using Core.Models.Utils;
 using Core.Servers;
+using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class LocalisationService
 {
-    protected ISptLogger<LocalisationService> _logger;
-    protected RandomUtil _randomUtil;
     protected DatabaseServer _databaseServer;
-    protected LocaleService _localeService;
 
     protected I18nService _i18nService;
+    protected LocaleService _localeService;
+    protected ISptLogger<LocalisationService> _logger;
+    protected RandomUtil _randomUtil;
 
     // TODO: turn into primary ctor
     public LocalisationService(

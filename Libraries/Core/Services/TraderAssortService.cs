@@ -1,6 +1,6 @@
-using SptCommon.Annotations;
-using Core.Models.Eft.Common.Tables;
 using Core.Helpers;
+using Core.Models.Eft.Common.Tables;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -19,7 +19,7 @@ public class TraderAssortService(
     }
 
     /// <summary>
-    /// Store trader assorts inside a class property
+    ///     Store trader assorts inside a class property
     /// </summary>
     /// <param name="traderId">Trader id to store assorts against</param>
     /// <param name="assort">Assorts to store</param>

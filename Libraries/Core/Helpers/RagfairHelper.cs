@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
@@ -6,6 +5,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -50,7 +50,10 @@ public class RagfairHelper(
         var result = new List<string>();
 
         // Case: weapon builds
-        if (request.BuildCount > 0) return request.BuildItems.Keys.ToList();
+        if (request.BuildCount > 0)
+        {
+            return request.BuildItems.Keys.ToList();
+        }
 
         // Case: search
         if (!string.IsNullOrEmpty(request.LinkedSearchId))
@@ -65,9 +68,13 @@ public class RagfairHelper(
             var handbook = GetCategoryList(request.HandbookId);
 
             if (result.Count != null && result.Count > 0)
+            {
                 result = utilityHelper.ArrayIntersect(result, handbook);
+            }
             else
+            {
                 result = handbook;
+            }
         }
 
         return result;
@@ -76,7 +83,8 @@ public class RagfairHelper(
     public Dictionary<string, TraderAssort> GetDisplayableAssorts(string sessionId)
     {
         var result = new Dictionary<string, TraderAssort>();
-        foreach (var traderId in databaseService.GetTraders().Keys
+        foreach (var traderId in databaseService.GetTraders()
+                     .Keys
                      .Where(traderId => _ragfairConfig.Traders.ContainsKey(traderId)))
         {
             result[traderId] = traderAssortHelper.GetAssort(sessionId, traderId, true);

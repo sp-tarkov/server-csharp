@@ -1,5 +1,4 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Insurance;
@@ -8,6 +7,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -21,10 +21,26 @@ public class InsuranceCallbacks(
 )
     : OnUpdate
 {
-    private InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
+    private readonly InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
+
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
+        {
+            _insuranceController.ProcessReturn();
+            return true;
+        }
+
+        return false;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-insurance";
+    }
 
     /// <summary>
-    /// Handle client/insurance/items/list/cost
+    ///     Handle client/insurance/items/list/cost
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -36,7 +52,7 @@ public class InsuranceCallbacks(
     }
 
     /// <summary>
-    /// Handle Insure event
+    ///     Handle Insure event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -45,19 +61,5 @@ public class InsuranceCallbacks(
     public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {
         return _insuranceController.Insure(pmcData, info, sessionID);
-    }
-
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        if (timeSinceLastRun > Math.Max(_insuranceConfig.RunIntervalSeconds, 1))
-            _insuranceController.ProcessReturn();
-            return true;
-
-        return false;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-insurance";
     }
 }

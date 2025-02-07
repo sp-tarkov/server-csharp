@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Dialog;
 public record PinDialogRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
-    public string? DialogId { get; set; }
+    public string? DialogId
+    {
+        get;
+        set;
+    }
 }

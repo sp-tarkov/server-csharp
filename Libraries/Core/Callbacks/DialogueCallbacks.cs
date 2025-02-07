@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Dialog;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -18,8 +18,19 @@ public class DialogueCallbacks(
 )
     : OnUpdate
 {
+    public bool OnUpdate(long timeSinceLastRun)
+    {
+        _dialogueController.Update();
+        return true;
+    }
+
+    public string GetRoute()
+    {
+        return "spt-dialogue";
+    }
+
     /// <summary>
-    /// Handle client/friend/list
+    ///     Handle client/friend/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -31,7 +42,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/chatServer/list
+    ///     Handle client/chatServer/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -51,7 +62,14 @@ public class DialogueCallbacks(
                 VersionId = "bgkidft87ddd",
                 Ip = "",
                 Port = 0,
-                Chats = [new Chat { Id = "0", Members = 0 }]
+                Chats =
+                [
+                    new Chat
+                    {
+                        Id = "0",
+                        Members = 0
+                    }
+                ]
             }
         };
 
@@ -59,7 +77,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/list
+    ///     Handle client/mail/dialog/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -71,7 +89,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/view
+    ///     Handle client/mail/dialog/view
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -83,7 +101,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/info
+    ///     Handle client/mail/dialog/info
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -95,7 +113,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/remove
+    ///     Handle client/mail/dialog/remove
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -108,7 +126,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/pin
+    ///     Handle client/mail/dialog/pin
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -121,7 +139,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/unpin
+    ///     Handle client/mail/dialog/unpin
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -134,7 +152,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/read
+    ///     Handle client/mail/dialog/read
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -147,7 +165,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/dialog/getAllAttachments
+    ///     Handle client/mail/dialog/getAllAttachments
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -159,7 +177,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/mail/msg/send
+    ///     Handle client/mail/msg/send
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -171,7 +189,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/list/outbox
+    ///     Handle client/friend/request/list/outbox
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -183,7 +201,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/list/inbox
+    ///     Handle client/friend/request/list/inbox
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -195,7 +213,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/send
+    ///     Handle client/friend/request/send
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -207,7 +225,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/accept-all
+    ///     Handle client/friend/request/accept-all
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -219,7 +237,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/accept
+    ///     Handle client/friend/request/accept
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -231,7 +249,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/decline
+    ///     Handle client/friend/request/decline
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -243,7 +261,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/request/cancel
+    ///     Handle client/friend/request/cancel
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -255,7 +273,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/delete
+    ///     Handle client/friend/delete
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -268,7 +286,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/ignore/set
+    ///     Handle client/friend/ignore/set
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -280,7 +298,7 @@ public class DialogueCallbacks(
     }
 
     /// <summary>
-    /// Handle client/friend/ignore/remove
+    ///     Handle client/friend/ignore/remove
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -314,16 +332,5 @@ public class DialogueCallbacks(
     public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
-    }
-
-    public bool OnUpdate(long timeSinceLastRun)
-    {
-        _dialogueController.Update();
-        return true;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-dialogue";
     }
 }

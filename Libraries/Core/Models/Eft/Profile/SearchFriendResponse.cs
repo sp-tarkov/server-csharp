@@ -3,16 +3,28 @@ using System.Text.Json.Serialization;
 namespace Core.Models.Eft.Profile;
 
 /// <summary>
-/// Identical to `UserDialogInfo`
+///     Identical to `UserDialogInfo`
 /// </summary>
 public record SearchFriendResponse
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("aid")]
-    public int? Aid { get; set; }
+    public int? Aid
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Info")]
-    public UserDialogDetails? Info { get; set; }
+    public UserDialogDetails? Info
+    {
+        get;
+        set;
+    }
 }

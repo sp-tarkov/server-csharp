@@ -1,16 +1,16 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Eft.Common.Tables;
+﻿using Core.Models.Eft.Common.Tables;
+using SptCommon.Annotations;
 
 namespace Core.Generators.WeaponGen;
 
 [Injectable]
 public class InventoryMagGen()
 {
-    private GenerationData _magCounts;
-    private TemplateItem _magazineTemplate;
-    private TemplateItem _weaponTemplate;
-    private TemplateItem _ammoTemplate;
-    private BotBaseInventory _pmcInventory;
+    private readonly TemplateItem _ammoTemplate;
+    private readonly TemplateItem _magazineTemplate;
+    private readonly GenerationData _magCounts;
+    private readonly BotBaseInventory _pmcInventory;
+    private readonly TemplateItem _weaponTemplate;
 
     public InventoryMagGen
     (

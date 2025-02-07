@@ -6,20 +6,26 @@ namespace Core.Utils.Json.Converters;
 
 public class EftEnumConverter<T> : JsonConverter<T>
 {
-    private static readonly JsonSerializerOptions _options = new() { Converters = { new JsonStringEnumConverter() } };
+    private static readonly JsonSerializerOptions _options = new()
+    {
+        Converters =
+        {
+            new JsonStringEnumConverter()
+        }
+    };
 
     public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         if (reader.TokenType == JsonTokenType.String || reader.TokenType == JsonTokenType.PropertyName)
         {
             var str = reader.GetString();
-            return (T)Enum.Parse(typeof(T), str, true);
+            return (T) Enum.Parse(typeof(T), str, true);
         }
 
         if (reader.TokenType == JsonTokenType.Number)
         {
             var str = reader.GetInt32().ToString();
-            return (T)Enum.Parse(typeof(T), str, true);
+            return (T) Enum.Parse(typeof(T), str, true);
         }
 
         return default;
@@ -34,11 +40,17 @@ public class EftEnumConverter<T> : JsonConverter<T>
         else
         {
             if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
+            {
                 JsonSerializer.Serialize(writer, Convert.ToInt32(value), _options);
+            }
             else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
+            {
                 JsonSerializer.Serialize(writer, Convert.ToByte(value), _options);
+            }
             else
+            {
                 throw new Exception($"Could not convert enum {value.GetType()} with value {value}");
+            }
         }
     }
 
@@ -57,11 +69,17 @@ public class EftEnumConverter<T> : JsonConverter<T>
         else
         {
             if (typeof(T).GetFields().Any(f => f.FieldType == typeof(int)))
+            {
                 propertyValue = Convert.ToInt32(value);
+            }
             else if (typeof(T).GetFields().Any(f => f.FieldType == typeof(byte)))
+            {
                 propertyValue = Convert.ToByte(value);
+            }
             else
+            {
                 throw new Exception($"Could not convert enum {value.GetType()} with value {value}");
+            }
         }
 
         writer.WritePropertyName(propertyValue.ToString());

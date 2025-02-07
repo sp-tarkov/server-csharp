@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
@@ -8,7 +7,7 @@ using Core.Models.Spt.Weather;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
-
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -26,7 +25,7 @@ public class WeatherController(
 
 
     /// <summary>
-    /// Handle client/weather
+    ///     Handle client/weather
     /// </summary>
     /// <returns></returns>
     public WeatherData Generate()
@@ -47,7 +46,7 @@ public class WeatherController(
     }
 
     /// <summary>
-    /// Handle client/localGame/weather
+    ///     Handle client/localGame/weather
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>

@@ -5,5 +5,9 @@ namespace Core.Models.Eft.Ws;
 public record WsGroupId : WsNotificationEvent
 {
     [JsonPropertyName("groupId")]
-    public string? GroupId { get; set; }
+    public string? GroupId
+    {
+        get;
+        set;
+    }
 }

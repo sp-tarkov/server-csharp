@@ -1,8 +1,8 @@
 ﻿using System.Net.WebSockets;
-using SptCommon.Annotations;
 using Core.Models.Utils;
 using Core.Servers.Ws;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Servers;
 
@@ -34,7 +34,10 @@ public class WebSocketServer(
         foreach (var wsh in socketHandlers)
         {
             wsh.OnConnection(webSocket, context).Wait();
-            if (webSocket.State == WebSocketState.Open) _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+            if (webSocket.State == WebSocketState.Open)
+            {
+                _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+            }
         }
 
         return Task.CompletedTask;

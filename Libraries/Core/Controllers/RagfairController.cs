@@ -22,32 +22,32 @@ namespace Core.Controllers;
 [Injectable]
 public class RagfairController
 {
-    private readonly ISptLogger<RagfairController> _logger;
-    private readonly TimeUtil _timeUtil;
-    private readonly JsonUtil _jsonUtil;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly RagfairServer _ragfairServer;
-    private readonly ItemHelper _itemHelper;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly RagfairSellHelper _ragfairSellHelper;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly ProfileHelper _profileHelper;
-    private readonly PaymentHelper _paymentHelper;
-    private readonly RagfairHelper _ragfairHelper;
-    private readonly RagfairSortHelper _ragfairSortHelper;
-    private readonly RagfairOfferHelper _ragfairOfferHelper;
-    private readonly TraderHelper _traderHelper;
-    private readonly DatabaseService _databaseService;
-    private readonly LocalisationService _localisationService;
-    private readonly RagfairTaxService _ragfairTaxService;
-    private readonly RagfairOfferService _ragfairOfferService;
-    private readonly PaymentService _paymentService;
-    private readonly RagfairPriceService _ragfairPriceService;
-    private readonly RagfairOfferGenerator _ragfairOfferGenerator;
     private readonly ConfigServer _configServer;
+    private readonly DatabaseService _databaseService;
+    private readonly EventOutputHolder _eventOutputHolder;
+    private readonly HandbookHelper _handbookHelper;
+    private readonly HttpResponseUtil _httpResponseUtil;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly ItemHelper _itemHelper;
+    private readonly JsonUtil _jsonUtil;
+    private readonly LocalisationService _localisationService;
+    private readonly ISptLogger<RagfairController> _logger;
+    private readonly PaymentHelper _paymentHelper;
+    private readonly PaymentService _paymentService;
+    private readonly ProfileHelper _profileHelper;
 
     private readonly RagfairConfig _ragfairConfig;
+    private readonly RagfairHelper _ragfairHelper;
+    private readonly RagfairOfferGenerator _ragfairOfferGenerator;
+    private readonly RagfairOfferHelper _ragfairOfferHelper;
+    private readonly RagfairOfferService _ragfairOfferService;
+    private readonly RagfairPriceService _ragfairPriceService;
+    private readonly RagfairSellHelper _ragfairSellHelper;
+    private readonly RagfairServer _ragfairServer;
+    private readonly RagfairSortHelper _ragfairSortHelper;
+    private readonly RagfairTaxService _ragfairTaxService;
+    private readonly TimeUtil _timeUtil;
+    private readonly TraderHelper _traderHelper;
 
     public RagfairController(
         ISptLogger<RagfairController> logger,
@@ -252,7 +252,7 @@ public class RagfairController
         // Get specific assort purchase data and set current purchase buy value
         traderPurchases.TryGetValue(assortId, out var assortTraderPurchaseData);
 
-        offer.BuyRestrictionCurrent = (int?)assortTraderPurchaseData?.PurchaseCount ?? 0;
+        offer.BuyRestrictionCurrent = (int?) assortTraderPurchaseData?.PurchaseCount ?? 0;
         offer.BuyRestrictionMax = offerRootItem.Upd.BuyRestrictionMax;
     }
 
@@ -374,7 +374,12 @@ public class RagfairController
             // Get the average offer price, excluding barter offers
             var average = GetAveragePriceFromOffers(offers, minMax, ignoreTraderOffers);
 
-            return new GetItemPriceResult { Avg = Math.Round(average), Min = minMax.Min, Max = minMax.Max };
+            return new GetItemPriceResult
+            {
+                Avg = Math.Round(average),
+                Min = minMax.Min,
+                Max = minMax.Max
+            };
         }
 
         // No offers listed, get price from live ragfair price list prices.json
@@ -385,7 +390,12 @@ public class RagfairController
             tplPrice = _handbookHelper.GetTemplatePrice(getPriceRequest.TemplateId);
         }
 
-        return new GetItemPriceResult { Avg = tplPrice, Min = tplPrice, Max = tplPrice };
+        return new GetItemPriceResult
+        {
+            Avg = tplPrice,
+            Min = tplPrice,
+            Max = tplPrice
+        };
     }
 
     private double GetAveragePriceFromOffers(List<RagfairOffer> offers, MinMax minMax, bool ignoreTraderOffers)
@@ -582,7 +592,12 @@ public class RagfairController
 
         // Average offer price for single item (or whole weapon)
         var averages =
-            GetItemMinAvgMaxFleaPriceValues(new GetMarketPriceRequestData { TemplateId = offer.Items[0].Template });
+            GetItemMinAvgMaxFleaPriceValues(
+                new GetMarketPriceRequestData
+                {
+                    TemplateId = offer.Items[0].Template
+                }
+            );
         var averageOfferPrice = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
@@ -608,7 +623,7 @@ public class RagfairController
         );
 
         // Create array of sell times for items listed
-        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
+        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int) stackCountTotal);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -618,7 +633,7 @@ public class RagfairController
                 newRootOfferItem,
                 pmcData,
                 playerListedPriceInRub,
-                (int)stackCountTotal,
+                (int) stackCountTotal,
                 offerRequest,
                 output
             );
@@ -688,7 +703,10 @@ public class RagfairController
 
         // Single price for an item
         var averages = GetItemMinAvgMaxFleaPriceValues(
-            new GetMarketPriceRequestData { TemplateId = firstListingAndChidren[0].Template }
+            new GetMarketPriceRequestData
+            {
+                TemplateId = firstListingAndChidren[0].Template
+            }
         );
         var singleItemPrice = averages.Avg;
 
@@ -715,7 +733,7 @@ public class RagfairController
         );
 
         // Create array of sell times for items listed + sell all at once as its a pack
-        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal, true);
+        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int) stackCountTotal, true);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -725,7 +743,7 @@ public class RagfairController
                 newRootOfferItem,
                 pmcData,
                 playerListedPriceInRub,
-                (int)stackCountTotal,
+                (int) stackCountTotal,
                 offerRequest,
                 output
             );
@@ -789,7 +807,12 @@ public class RagfairController
 
         // Average offer price for single item (or whole weapon)
         var averages =
-            GetItemMinAvgMaxFleaPriceValues(new GetMarketPriceRequestData { TemplateId = rootItem.Template });
+            GetItemMinAvgMaxFleaPriceValues(
+                new GetMarketPriceRequestData
+                {
+                    TemplateId = rootItem.Template
+                }
+            );
         var averageOfferPriceSingleItem = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
@@ -807,7 +830,7 @@ public class RagfairController
             playerListedPriceInRub,
             qualityMultiplier
         );
-        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int)stackCountTotal);
+        offer.SellResults = _ragfairSellHelper.RollForSale(sellChancePercent, (int) stackCountTotal);
 
         // Subtract flea market fee from stash
         if (_ragfairConfig.Sell.Fees)
@@ -817,7 +840,7 @@ public class RagfairController
                 rootItem,
                 pmcData,
                 playerListedPriceInRub,
-                (int)stackCountTotal,
+                (int) stackCountTotal,
                 offerRequest,
                 output
             );
@@ -972,12 +995,18 @@ public class RagfairController
             {
                 errorMessage = _localisationService.GetText(
                     "ragfair-unable_to_find_item_in_inventory",
-                    new { id = itemId }
+                    new
+                    {
+                        id = itemId
+                    }
                 );
                 _logger.Error(errorMessage);
 
                 return new GetItemsToListOnFleaFromInventoryResult
-                    { Items = itemsToReturn, ErrorMessage = errorMessage };
+                {
+                    Items = itemsToReturn,
+                    ErrorMessage = errorMessage
+                };
             }
 
             item = _itemHelper.FixItemStackCount(item);
@@ -989,16 +1018,17 @@ public class RagfairController
             errorMessage = _localisationService.GetText("ragfair-unable_to_find_requested_items_in_inventory");
             _logger.Error(errorMessage);
 
-            return new GetItemsToListOnFleaFromInventoryResult { ErrorMessage = errorMessage };
+            return new GetItemsToListOnFleaFromInventoryResult
+            {
+                ErrorMessage = errorMessage
+            };
         }
 
-        return new GetItemsToListOnFleaFromInventoryResult { Items = itemsToReturn, ErrorMessage = errorMessage };
-    }
-
-    public record GetItemsToListOnFleaFromInventoryResult
-    {
-        public List<List<Item>>? Items { get; set; }
-        public string? ErrorMessage { get; set; }
+        return new GetItemsToListOnFleaFromInventoryResult
+        {
+            Items = itemsToReturn,
+            ErrorMessage = errorMessage
+        };
     }
 
     public ItemEventRouterResponse RemoveOffer(RemoveOfferRequestData removeRequest, string sessionId)
@@ -1046,7 +1076,7 @@ public class RagfairController
         {
             // `expireSeconds` Default is 71 seconds
             var newEndTime = _ragfairConfig.Sell.ExpireSeconds + _timeUtil.GetTimeStamp();
-            playerProfileOffers[playerOfferIndex].EndTime = (long?)Math.Round((double)newEndTime);
+            playerProfileOffers[playerOfferIndex].EndTime = (long?) Math.Round((double) newEndTime);
         }
 
         return output;
@@ -1087,7 +1117,7 @@ public class RagfairController
             var sellInOncePiece = playerOffer.SellInOnePiece.GetValueOrDefault(false);
             if (!sellInOncePiece)
             {
-                count = (int)playerOffer.Items.Sum(offerItem => offerItem.Upd?.StackObjectsCount ?? 0);
+                count = (int) playerOffer.Items.Sum(offerItem => offerItem.Upd?.StackObjectsCount ?? 0);
             }
 
             var tax = _ragfairTaxService.CalculateTax(
@@ -1110,7 +1140,7 @@ public class RagfairController
         }
 
         // Add extra time to offer
-        playerOffers[playerOfferIndex].EndTime += (long?)Math.Round((decimal)secondsToAdd);
+        playerOffers[playerOfferIndex].EndTime += (long?) Math.Round((decimal) secondsToAdd);
 
         return output;
     }
@@ -1127,7 +1157,14 @@ public class RagfairController
         {
             TransactionId = "ragfair",
             Action = "TradingConfirm",
-            SchemeItems = [new IdWithCount { Id = _paymentHelper.GetCurrency(currency), Count = Math.Round(value) }],
+            SchemeItems =
+            [
+                new IdWithCount
+                {
+                    Id = _paymentHelper.GetCurrency(currency),
+                    Count = Math.Round(value)
+                }
+            ],
             Type = "",
             ItemId = "",
             Count = 0,
@@ -1151,5 +1188,20 @@ public class RagfairController
         var offerToReturn = offers.FirstOrDefault(offer => offer.InternalId == request.Id);
 
         return offerToReturn;
+    }
+
+    public record GetItemsToListOnFleaFromInventoryResult
+    {
+        public List<List<Item>>? Items
+        {
+            get;
+            set;
+        }
+
+        public string? ErrorMessage
+        {
+            get;
+            set;
+        }
     }
 }

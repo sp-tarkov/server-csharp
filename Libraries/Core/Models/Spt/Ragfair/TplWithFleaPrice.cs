@@ -5,9 +5,17 @@ namespace Core.Models.Spt.Ragfair;
 public record TplWithFleaPrice
 {
     [JsonPropertyName("tpl")]
-    public string? Tpl { get; set; }
+    public string? Tpl
+    {
+        get;
+        set;
+    }
 
     // Roubles
     [JsonPropertyName("price")]
-    public double? Price { get; set; }
+    public double? Price
+    {
+        get;
+        set;
+    }
 }

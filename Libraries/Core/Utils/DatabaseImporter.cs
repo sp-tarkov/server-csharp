@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.DI;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
@@ -7,6 +6,7 @@ using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Utils;
@@ -14,23 +14,23 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.Database)]
 public class DatabaseImporter : OnLoad
 {
-    private object hashedFile;
-    private ValidationResult valid = ValidationResult.UNDEFINED;
-    private string filepath;
-    private HttpConfig httpConfig;
     private const string _sptDataPath = "./Assets/";
-
-    protected ISptLogger<DatabaseImporter> _logger;
-    protected LocalisationService _localisationService;
+    private readonly HttpConfig httpConfig;
+    private readonly ValidationResult valid = ValidationResult.UNDEFINED;
+    protected ConfigServer _configServer;
 
     protected DatabaseServer _databaseServer;
+    protected EncodingUtil _encodingUtil;
+    protected FileUtil _fileUtil;
+    protected HashUtil _hashUtil;
 
     protected ImageRouter _imageRouter;
-    protected EncodingUtil _encodingUtil;
-    protected HashUtil _hashUtil;
     protected ImporterUtil _importerUtil;
-    protected ConfigServer _configServer;
-    protected FileUtil _fileUtil;
+    protected LocalisationService _localisationService;
+
+    protected ISptLogger<DatabaseImporter> _logger;
+    private string filepath;
+    private object hashedFile;
 
     public DatabaseImporter(
         ISptLogger<DatabaseImporter> logger,
@@ -55,15 +55,6 @@ public class DatabaseImporter : OnLoad
         _fileUtil = fileUtil;
         _imageRouter = imageRouter;
         httpConfig = _configServer.GetConfig<HttpConfig>();
-    }
-
-    /**
-     * Get path to spt data
-     * @returns path to data
-     */
-    public string GetSptDataPath()
-    {
-        return _sptDataPath;
     }
 
     public async Task OnLoad()
@@ -98,6 +89,20 @@ public class DatabaseImporter : OnLoad
         CreateRouteMapping(imageFilePath, "files");
     }
 
+    public string GetRoute()
+    {
+        return "spt-database";
+    }
+
+    /**
+     * Get path to spt data
+     * @returns path to data
+     */
+    public string GetSptDataPath()
+    {
+        return _sptDataPath;
+    }
+
     private void CreateRouteMapping(string directory, string newBasePath)
     {
         var directoryContent = GetAllFilesInDirectory(directory);
@@ -107,7 +112,9 @@ public class DatabaseImporter : OnLoad
             var fileNameWithNoSPTPath = fileNameWithPath.Replace(directory, "");
             var filePathNoExtension = _fileUtil.StripExtension(fileNameWithNoSPTPath, true);
             if (filePathNoExtension.StartsWith("/") || fileNameWithPath.StartsWith("\\"))
+            {
                 filePathNoExtension = $"{filePathNoExtension.Substring(1)}";
+            }
 
             var bsgPath = $"/{newBasePath}/{filePathNoExtension}".Replace("\\", "/");
             _imageRouter.AddRoute(bsgPath, fileNameWithPath);
@@ -119,7 +126,10 @@ public class DatabaseImporter : OnLoad
         List<string> result = [];
         result.AddRange(Directory.GetFiles(directoryPath));
 
-        foreach (var subdirectory in Directory.GetDirectories(directoryPath)) result.AddRange(GetAllFilesInDirectory(subdirectory));
+        foreach (var subdirectory in Directory.GetDirectories(directoryPath))
+        {
+            result.AddRange(GetAllFilesInDirectory(subdirectory));
+        }
 
         return result;
     }
@@ -162,11 +172,6 @@ public class DatabaseImporter : OnLoad
         //if (ProgramStatics.COMPILED && hashedFile && !ValidateFile(fileWithPath, data)) {
         //    this.valid = ValidationResult.FAILED;
         //}
-    }
-
-    public string GetRoute()
-    {
-        return "spt-database";
     }
 
     protected bool ValidateFile(string filePathAndName, object fileData)
@@ -220,7 +225,11 @@ public class DatabaseImporter : OnLoad
                 var pathOverride = GetImagePathOverride(imagePath);
                 if (!string.IsNullOrEmpty(pathOverride))
                 {
-                    if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug($"overrode route: {routeKey} endpoint: {imagePath} with {pathOverride}");
+                    }
+
                     imagePath = pathOverride;
                 }
 
@@ -240,7 +249,10 @@ public class DatabaseImporter : OnLoad
     protected string? GetImagePathOverride(string imagePath)
     {
         if (httpConfig.ServerImagePathOverride.TryGetValue(imagePath, out var value))
+        {
             return value;
+        }
+
         return null;
     }
 }

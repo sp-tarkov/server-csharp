@@ -2,10 +2,10 @@ namespace Core.Utils;
 
 public class ProgressWriter
 {
-    protected int _total;
-    protected int? _maxBarLength;
-    protected string? _barFillChar;
     protected string? _barEmptyChar;
+    protected string? _barFillChar;
+    protected int? _maxBarLength;
+    protected int _total;
 
     public ProgressWriter(int total, int maxBarLength, string barFillChar, string barEmptyChar)
     {

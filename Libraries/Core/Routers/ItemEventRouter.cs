@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.DI;
 using Core.Helpers;
 using Core.Models.Eft.ItemEvent;
@@ -6,6 +5,7 @@ using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Routers;
@@ -13,14 +13,14 @@ namespace Core.Routers;
 [Injectable]
 public class ItemEventRouter
 {
-    protected ISptLogger<ItemEventRouter> _logger;
-    protected HttpResponseUtil _httpResponseUtil;
-    protected JsonUtil _jsonUtil;
-    protected ProfileHelper _profileHelper;
-    protected LocalisationService _localisationService;
-    protected EventOutputHolder _eventOutputHolder;
-    protected List<ItemEventRouterDefinition> _itemEventRouters;
     protected ICloner _cloner;
+    protected EventOutputHolder _eventOutputHolder;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected List<ItemEventRouterDefinition> _itemEventRouters;
+    protected JsonUtil _jsonUtil;
+    protected LocalisationService _localisationService;
+    protected ISptLogger<ItemEventRouter> _logger;
+    protected ProfileHelper _profileHelper;
 
     public ItemEventRouter(
         ISptLogger<ItemEventRouter> logger,
@@ -51,7 +51,7 @@ public class ItemEventRouter
         {
             var pmcData = _profileHelper.GetPmcProfile(sessionID);
 
-            var eventRouter = _itemEventRouters.FirstOrDefault((r) => r.CanHandle(body.Action));
+            var eventRouter = _itemEventRouters.FirstOrDefault(r => r.CanHandle(body.Action));
             if (eventRouter is null)
             {
                 _logger.Error(_localisationService.GetText("event-unhandled_event", body.Action));
@@ -60,9 +60,16 @@ public class ItemEventRouter
                 continue;
             }
 
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"event: {body.Action}");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"event: {body.Action}");
+            }
+
             eventRouter.HandleItemEvent(body.Action, pmcData, body, sessionID, output);
-            if (output.Warnings?.Count > 0) break;
+            if (output.Warnings?.Count > 0)
+            {
+                break;
+            }
         }
 
         _eventOutputHolder.UpdateOutputProperties(sessionID);

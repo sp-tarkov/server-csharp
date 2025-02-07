@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -23,7 +23,7 @@ public class BotWeaponGeneratorHelper(
     private readonly List<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
 
     /// <summary>
-    /// Get a randomized number of bullets for a specific magazine
+    ///     Get a randomized number of bullets for a specific magazine
     /// </summary>
     /// <param name="magCounts">Weights of magazines</param>
     /// <param name="magTemplate">Magazine to generate bullet count for</param>
@@ -57,17 +57,17 @@ public class BotWeaponGeneratorHelper(
     }
 
     /// <summary>
-    /// Get a randomized count of magazines
+    ///     Get a randomized count of magazines
     /// </summary>
     /// <param name="magCounts">Min and max value returned value can be between</param>
     /// <returns>Numerical value of magazine count</returns>
     public int GetRandomizedMagazineCount(GenerationData magCounts)
     {
-        return (int)_weightedRandomHelper.GetWeightedValue(magCounts.Weights);
+        return (int) _weightedRandomHelper.GetWeightedValue(magCounts.Weights);
     }
 
     /// <summary>
-    /// Is this magazine cylinder related (revolvers and grenade launchers)
+    ///     Is this magazine cylinder related (revolvers and grenade launchers)
     /// </summary>
     /// <param name="magazineParentName">The name of the magazines parent</param>
     /// <returns>True if it is cylinder related</returns>
@@ -77,7 +77,7 @@ public class BotWeaponGeneratorHelper(
     }
 
     /// <summary>
-    /// Create a magazine using the parameters given
+    ///     Create a magazine using the parameters given
     /// </summary>
     /// <param name="magazineTpl">Tpl of the magazine to create</param>
     /// <param name="ammoTpl">Ammo to add to magazine</param>
@@ -87,7 +87,11 @@ public class BotWeaponGeneratorHelper(
     {
         List<Item> magazine =
         [
-            new() { Id = _hashUtil.Generate(), Template = magazineTpl }
+            new()
+            {
+                Id = _hashUtil.Generate(),
+                Template = magazineTpl
+            }
         ];
 
         _itemHelper.FillMagazineWithCartridge(magazine, magTemplate, ammoTpl, 1);
@@ -96,7 +100,7 @@ public class BotWeaponGeneratorHelper(
     }
 
     /// <summary>
-    /// Add a specific number of cartridges to a bots inventory (defaults to vest and pockets)
+    ///     Add a specific number of cartridges to a bots inventory (defaults to vest and pockets)
     /// </summary>
     /// <param name="ammoTpl">Ammo tpl to add to vest/pockets</param>
     /// <param name="cartridgeCount">Number of cartridges to add to vest/pockets</param>
@@ -110,14 +114,19 @@ public class BotWeaponGeneratorHelper(
     )
     {
         if (equipmentSlotsToAddTo is null)
+        {
             equipmentSlotsToAddTo = [EquipmentSlots.TacticalVest, EquipmentSlots.Pockets];
+        }
 
         var ammoItems = _itemHelper.SplitStack(
             new Item
             {
                 Id = _hashUtil.Generate(),
                 Template = ammoTpl,
-                Upd = new Upd { StackObjectsCount = cartridgeCount }
+                Upd = new Upd
+                {
+                    StackObjectsCount = cartridgeCount
+                }
             }
         );
 
@@ -137,13 +146,15 @@ public class BotWeaponGeneratorHelper(
 
                 if (result == ItemAddedResult.NO_SPACE || result == ItemAddedResult.NO_CONTAINERS)
                     // If there's no space for 1 stack or no containers to hold item, there's no space for the others
+                {
                     break;
+                }
             }
         }
     }
 
     /// <summary>
-    /// Get a weapons default magazine template id
+    ///     Get a weapons default magazine template id
     /// </summary>
     /// <param name="weaponTemplate">Weapon to get default magazine for</param>
     /// <returns>Tpl of magazine</returns>

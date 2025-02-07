@@ -5,8 +5,16 @@ namespace Core.Models.Eft.Inventory;
 public record SetFavoriteItems : InventoryBaseActionRequestData
 {
     [JsonPropertyName("items")]
-    public List<string>? Items { get; set; }
+    public List<string>? Items
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("timestamp")]
-    public long? Timestamp { get; set; }
+    public long? Timestamp
+    {
+        get;
+        set;
+    }
 }

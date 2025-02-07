@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
@@ -10,7 +9,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -35,9 +34,9 @@ public class TraderController(
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
-    /// Runs when onLoad event is fired
-    /// Iterate over traders, ensure a pristine copy of their assorts is stored in traderAssortService
-    /// Store timestamp of next assort refresh in nextResupply property of traders .base object
+    ///     Runs when onLoad event is fired
+    ///     Iterate over traders, ensure a pristine copy of their assorts is stored in traderAssortService
+    ///     Store timestamp of next assort refresh in nextResupply property of traders .base object
     /// </summary>
     public void Load()
     {
@@ -77,7 +76,7 @@ public class TraderController(
 
             // Set to next hour on clock or current time + 60 minutes
             trader.Base.NextResupply =
-                traderResetStartsWithServer ? (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id) : (int)nextHourTimestamp;
+                traderResetStartsWithServer ? (int) _traderHelper.GetNextUpdateTimestamp(trader.Base.Id) : (int) nextHourTimestamp;
         }
     }
 
@@ -97,9 +96,9 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Runs when onUpdate is fired
-    /// If current time is > nextResupply(expire) time of trader, refresh traders assorts and
-    /// Fence is handled slightly differently
+    ///     Runs when onUpdate is fired
+    ///     If current time is > nextResupply(expire) time of trader, refresh traders assorts and
+    ///     Fence is handled slightly differently
     /// </summary>
     /// <returns></returns>
     public bool Update()
@@ -111,10 +110,14 @@ public class TraderController(
                 case Traders.LIGHTHOUSEKEEPER:
                     continue;
                 case Traders.FENCE:
-                {
-                    if (_fenceService.NeedsPartialRefresh()) _fenceService.GenerateFenceAssorts();
-                    continue;
-                }
+                    {
+                        if (_fenceService.NeedsPartialRefresh())
+                        {
+                            _fenceService.GenerateFenceAssorts();
+                        }
+
+                        continue;
+                    }
             }
 
             // Trader needs to be refreshed
@@ -131,7 +134,7 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Handle client/trading/api/traderSettings
+    ///     Handle client/trading/api/traderSettings
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>Return a list of all traders</returns>
@@ -143,7 +146,10 @@ public class TraderController(
         {
             traders.Add(_traderHelper.GetTrader(traderId, sessionId));
 
-            if (pmcData?.Info != null) _traderHelper.LevelUp(traderId, pmcData);
+            if (pmcData?.Info != null)
+            {
+                _traderHelper.LevelUp(traderId, pmcData);
+            }
         }
 
         traders.Sort(SortByTraderId);
@@ -151,7 +157,7 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Order traders by their traderId (Ttid)
+    ///     Order traders by their traderId (Ttid)
     /// </summary>
     /// <param name="traderA">First trader to compare</param>
     /// <param name="traderB">Second trader to compare</param>
@@ -162,7 +168,7 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Handle client/trading/api/getTrader
+    ///     Handle client/trading/api/getTrader
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="traderId"></param>
@@ -173,7 +179,7 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Handle client/trading/api/getTraderAssort
+    ///     Handle client/trading/api/getTraderAssort
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="traderId"></param>
@@ -184,7 +190,7 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Handle client/items/prices/TRADERID
+    ///     Handle client/items/prices/TRADERID
     /// </summary>
     /// <returns></returns>
     public GetItemPricesResponse GetItemPrices(string sessionId, string traderId)
@@ -195,7 +201,7 @@ public class TraderController(
         {
             SupplyNextTime = _traderHelper.GetNextUpdateTimestamp(traderId),
             Prices = handbookPrices,
-            CurrencyCourses = new Dictionary<string, double>()
+            CurrencyCourses = new Dictionary<string, double>
             {
                 { "5449016a4bdc2d6f028b456f", handbookPrices[Money.ROUBLES] },
                 { "569668774bdc2da2298b4568", handbookPrices[Money.EUROS] },

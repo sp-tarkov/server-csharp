@@ -8,7 +8,7 @@ public class TimeUtil
     public const int OneHourAsSeconds = 3600;
 
     /// <summary>
-    /// Formats the time part of a date as a UTC string.
+    ///     Formats the time part of a date as a UTC string.
     /// </summary>
     /// <param name="dateTime">The date to format in UTC.</param>
     /// <returns>The formatted time as 'HH-MM-SS'.</returns>
@@ -22,7 +22,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Formats the date part of a date as a UTC string.
+    ///     Formats the date part of a date as a UTC string.
     /// </summary>
     /// <param name="dateTime">The date to format in UTC.</param>
     /// <returns>The formatted date as 'YYYY-MM-DD'.</returns>
@@ -36,7 +36,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the current date as a formatted UTC string.
+    ///     Gets the current date as a formatted UTC string.
     /// </summary>
     /// <returns>The current date as 'YYYY-MM-DD'.</returns>
     public string GetDate()
@@ -50,7 +50,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the current time as a formatted UTC string.
+    ///     Gets the current time as a formatted UTC string.
     /// </summary>
     /// <returns>The current time as 'HH-MM-SS'.</returns>
     public string GetTime()
@@ -59,7 +59,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the current timestamp in seconds in UTC.
+    ///     Gets the current timestamp in seconds in UTC.
     /// </summary>
     /// <returns>The current timestamp in seconds since the Unix epoch in UTC.</returns>
     public long GetTimeStamp()
@@ -68,7 +68,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the start of day timestamp for the given date
+    ///     Gets the start of day timestamp for the given date
     /// </summary>
     /// <param name="timestamp">datetime to get the time stamp for, if null it uses current date.</param>
     /// <returns>Unix epoch for the start of day of the calculated date</returns>
@@ -79,11 +79,11 @@ public class TimeUtil
             : GetDateTimeNow();
 
         var startOfDay = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
-        return ((DateTimeOffset)startOfDay).ToUnixTimeMilliseconds();
+        return ((DateTimeOffset) startOfDay).ToUnixTimeMilliseconds();
     }
 
     /// <summary>
-    /// Get timestamp of today + passed in day count
+    ///     Get timestamp of today + passed in day count
     /// </summary>
     /// <param name="daysFromNow">Days from now</param>
     /// <returns></returns>
@@ -93,7 +93,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Get timestamp of today + passed in hour count
+    ///     Get timestamp of today + passed in hour count
     /// </summary>
     /// <param name="hoursFromNow"></param>
     /// <returns></returns>
@@ -103,7 +103,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the current time in UTC in a format suitable for mail in EFT.
+    ///     Gets the current time in UTC in a format suitable for mail in EFT.
     /// </summary>
     /// <returns>The current time as 'HH:MM' in UTC.</returns>
     /// GetTimeMailFormat
@@ -113,7 +113,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the current date in UTC in a format suitable for emails in EFT.
+    ///     Gets the current date in UTC in a format suitable for emails in EFT.
     /// </summary>
     /// <returns>The current date as 'DD.MM.YYYY' in UTC.</returns>
     public string GetDateMailFormat()
@@ -122,7 +122,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Converts a number of hours into seconds.
+    ///     Converts a number of hours into seconds.
     /// </summary>
     /// <param name="hours">The number of hours to convert.</param>
     /// <returns>The equivalent number of seconds.</returns>
@@ -132,7 +132,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Gets the time stamp of the start of the next hour in UTC
+    ///     Gets the time stamp of the start of the next hour in UTC
     /// </summary>
     /// <returns>Time stamp of the next hour in unix time seconds</returns>
     public long GetTimeStampOfNextHour()
@@ -142,14 +142,14 @@ public class TimeUtil
             .Subtract(TimeSpan.FromSeconds(now.Second))
             .Subtract(TimeSpan.FromMilliseconds(now.Millisecond));
 
-        var time = ((DateTimeOffset)now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
+        var time = ((DateTimeOffset) now.Add(timeUntilNextHour)).ToUnixTimeSeconds();
 
         return time;
     }
 
     /// <summary>
-    /// Returns the current days timestamp at 00:00
-    /// e.g. current time: 13th March 14:22 will return 13th March 00:00
+    ///     Returns the current days timestamp at 00:00
+    ///     e.g. current time: 13th March 14:22 will return 13th March 00:00
     /// </summary>
     /// <returns>Timestamp</returns>
     public long GetTodayMidnightTimeStamp()
@@ -159,16 +159,19 @@ public class TimeUtil
         var minutes = now.Minute;
 
         // If minutes greater than 0, subtract 1 hour
-        if (hours > 0 && minutes > 0) hours--;
+        if (hours > 0 && minutes > 0)
+        {
+            hours--;
+        }
 
         // Create a new DateTime with the last full hour, 0 minutes, and 0 seconds
         var lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
 
-        return ((DateTimeOffset)lastFullHour).ToUnixTimeMilliseconds();
+        return ((DateTimeOffset) lastFullHour).ToUnixTimeMilliseconds();
     }
 
     /// <summary>
-    /// Pads a number with a leading zero if it is less than 10.
+    ///     Pads a number with a leading zero if it is less than 10.
     /// </summary>
     /// <param name="number">The number to pad.</param>
     /// <returns>The padded number as a string.</returns>
@@ -178,7 +181,7 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Takes a timestamp and converts to its date with Epoch
+    ///     Takes a timestamp and converts to its date with Epoch
     /// </summary>
     /// <param name="timeStamp"></param>
     /// <returns></returns>
@@ -188,15 +191,15 @@ public class TimeUtil
     }
 
     /// <summary>
-    /// Takes a date and gets difference between Epoch time and time provided resulting in a timestamp (date defaults to utcnow)
-    /// This attempts to mimic gettime() in js
+    ///     Takes a date and gets difference between Epoch time and time provided resulting in a timestamp (date defaults to utcnow)
+    ///     This attempts to mimic gettime() in js
     /// </summary>
     /// <param name="date"></param>
     /// <returns></returns>
     public long GetTimeStampFromEpoch(DateTime? date = null)
     {
         var dateToCompare = date ?? DateTime.UtcNow;
-        return (long)(dateToCompare - DateTime.UnixEpoch).TotalMilliseconds;
+        return (long) (dateToCompare - DateTime.UnixEpoch).TotalMilliseconds;
     }
 
     public int GetSecondsAsMilliseconds(int seconds)

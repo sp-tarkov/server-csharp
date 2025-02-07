@@ -1,11 +1,11 @@
-using SptCommon.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
-using Core.Helpers;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
@@ -21,11 +21,11 @@ public class BotNameService(
 )
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected HashSet<string> _usedNameCache = new();
     protected object _lock = new();
+    protected HashSet<string> _usedNameCache = new();
 
     /// <summary>
-    /// Clear out any entries in Name Set
+    ///     Clear out any entries in Name Set
     /// </summary>
     public void ClearNameCache()
     {
@@ -33,7 +33,7 @@ public class BotNameService(
     }
 
     /// <summary>
-    /// Create a unique bot nickname
+    ///     Create a unique bot nickname
     /// </summary>
     /// <param name="botJsonTemplate">bot JSON data from db</param>
     /// <param name="botGenerationDetails"></param>
@@ -63,7 +63,10 @@ public class BotNameService(
             name = name.Trim();
 
             // Config is set to add role to end of bot name
-            if (showTypeInNickname) name += $" {botRole}";
+            if (showTypeInNickname)
+            {
+                name += $" {botRole}";
+            }
 
             // Replace pmc bot names with player name + prefix
             if (botGenerationDetails.IsPmc.GetValueOrDefault(false) && botGenerationDetails.AllPmcsHaveSameNameAsPlayer.GetValueOrDefault(false))
@@ -75,6 +78,7 @@ public class BotNameService(
             // Is this a role that must be unique
             if (roleShouldBeUnique.GetValueOrDefault(false))
                 // Check name in cache
+            {
                 if (CacheContainsName(name))
                 {
                     // Not unique
@@ -83,7 +87,9 @@ public class BotNameService(
                         // 5 attempts to generate a name, pool probably isn't big enough
                         var genericName = $"{botGenerationDetails.Side} {_randomUtil.GetInt(100000, 999999)}";
                         if (_logger.IsLogEnabled(LogLevel.Debug))
+                        {
                             _logger.Debug($"Failed to find unique name for: {botRole} {botGenerationDetails.Side} after 5 attempts, using: {genericName}");
+                        }
 
                         return genericName;
                     }
@@ -93,6 +99,7 @@ public class BotNameService(
                     // Try again
                     continue;
                 }
+            }
 
             // Add bot name to cache to prevent being used again
             AddNameToCache(name);
@@ -121,7 +128,7 @@ public class BotNameService(
     }
 
     /// <summary>
-    /// Add random PMC name to bots MainProfileNickname property
+    ///     Add random PMC name to bots MainProfileNickname property
     /// </summary>
     /// <param name="bot">Bot to update</param>
     public void AddRandomPmcNameToBotMainProfileNicknameProperty(BotBase bot)
@@ -132,7 +139,7 @@ public class BotNameService(
     }
 
     /// <summary>
-    /// Choose a random PMC name from bear or usec bot jsons
+    ///     Choose a random PMC name from bear or usec bot jsons
     /// </summary>
     /// <returns>PMC name as string</returns>
     protected string GetRandomPmcName()

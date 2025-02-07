@@ -1,14 +1,14 @@
 using System.Text.RegularExpressions;
-using SptCommon.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
+using Core.Models.Enums;
+using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using Core.Helpers;
-using Core.Models.Enums;
-using Core.Models.Spt.Config;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -26,8 +26,8 @@ public class PmcChatResponseService(
     MatchBotDetailsCacheService _matchBotDetailsCacheService,
     ConfigServer _configServer)
 {
-    protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
+    protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
 
     /**
      * For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
@@ -39,7 +39,10 @@ public class PmcChatResponseService(
     {
         foreach (var victim in pmcVictims)
         {
-            if (!_randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent)) continue;
+            if (!_randomUtil.GetChance100(_pmcResponsesConfig.Victim.ResponseChancePercent))
+            {
+                continue;
+            }
 
             if (string.IsNullOrEmpty(victim.Name))
             {
@@ -51,12 +54,14 @@ public class PmcChatResponseService(
             var victimDetails = GetVictimDetails(victim);
             var message = ChooseMessage(true, pmcData, victim);
             if (message is not null)
+            {
                 _notificationSendHelper.SendMessageToPlayer(
                     sessionId,
                     victimDetails,
                     message,
                     MessageType.USER_MESSAGE
                 );
+            }
         }
     }
 
@@ -68,17 +73,33 @@ public class PmcChatResponseService(
      */
     public void SendKillerResponse(string sessionId, PmcData pmcData, Aggressor killer)
     {
-        if (killer is null) return;
+        if (killer is null)
+        {
+            return;
+        }
 
-        if (!_randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent)) return;
+        if (!_randomUtil.GetChance100(_pmcResponsesConfig.Killer.ResponseChancePercent))
+        {
+            return;
+        }
 
         // find bot by name in cache
         var killerDetailsInCache = _matchBotDetailsCacheService.GetBotByNameAndSide(killer.Name, killer.Side);
-        if (killerDetailsInCache is null) return;
+        if (killerDetailsInCache is null)
+        {
+            return;
+        }
 
         // If killer wasn't a PMC, skip
-        var pmcTypes = new List<string> { "pmcUSEC", "pmcBEAR" };
-        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role)) return;
+        var pmcTypes = new List<string>
+        {
+            "pmcUSEC",
+            "pmcBEAR"
+        };
+        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role))
+        {
+            return;
+        }
 
         var killerDetails = new UserDialogInfo
         {
@@ -95,7 +116,10 @@ public class PmcChatResponseService(
         };
 
         var message = ChooseMessage(false, pmcData);
-        if (message is null) return;
+        if (message is null)
+        {
+            return;
+        }
 
         _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
     }
@@ -148,9 +172,15 @@ public class PmcChatResponseService(
             responseText += $"{suffixText}";
         }
 
-        if (StripCapitalisation(isVictim)) responseText = responseText.ToLower();
+        if (StripCapitalisation(isVictim))
+        {
+            responseText = responseText.ToLower();
+        }
 
-        if (AllCaps(isVictim)) responseText = responseText.ToUpper();
+        if (AllCaps(isVictim))
+        {
+            responseText = responseText.ToUpper();
+        }
 
         return responseText;
     }
@@ -233,7 +263,7 @@ public class PmcChatResponseService(
         var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
         var keys = _localisationService.GetKeys();
 
-        return keys.Where((x) => x.StartsWith($"{keyBase}{keyType}")).ToList();
+        return keys.Where(x => x.StartsWith($"{keyBase}{keyType}")).ToList();
     }
 
     /**
@@ -244,7 +274,7 @@ public class PmcChatResponseService(
     {
         var keys = _localisationService.GetKeys();
 
-        return keys.Where((x) => x.StartsWith("pmcresponse-suffix")).ToList();
+        return keys.Where(x => x.StartsWith("pmcresponse-suffix")).ToList();
     }
 
     /**

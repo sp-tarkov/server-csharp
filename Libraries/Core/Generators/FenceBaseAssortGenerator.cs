@@ -1,5 +1,4 @@
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
@@ -8,6 +7,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
@@ -40,29 +40,47 @@ public class FenceBaseAssortGenerator(
         foreach (var rootItemDb in itemHelper.GetItems().Where(IsValidFenceItem))
         {
             // Skip blacklisted items
-            if (itemFilterService.IsItemBlacklisted(rootItemDb.Id)) continue;
+            if (itemFilterService.IsItemBlacklisted(rootItemDb.Id))
+            {
+                continue;
+            }
 
             // Skip reward item blacklist
-            if (itemFilterService.IsItemRewardBlacklisted(rootItemDb.Id)) continue;
+            if (itemFilterService.IsItemRewardBlacklisted(rootItemDb.Id))
+            {
+                continue;
+            }
 
             // Invalid
-            if (!itemHelper.IsValidItem(rootItemDb.Id)) continue;
+            if (!itemHelper.IsValidItem(rootItemDb.Id))
+            {
+                continue;
+            }
 
             // Item base type blacklisted
             if (traderConfig.Fence.Blacklist.Count > 0)
+            {
                 if (traderConfig.Fence.Blacklist.Contains(rootItemDb.Id) ||
                     itemHelper.IsOfBaseclasses(rootItemDb.Id, traderConfig.Fence.Blacklist)
                    )
+                {
                     continue;
+                }
+            }
 
             // Only allow rigs with no slots (carrier rigs)
             if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.VEST) &&
                 (rootItemDb.Properties?.Slots?.Count ?? 0) > 0
                )
+            {
                 continue;
+            }
 
             // Skip seasonal event items when not in seasonal event
-            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(rootItemDb.Id)) continue;
+            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(rootItemDb.Id))
+            {
+                continue;
+            }
 
             // Create item object in array
             var itemWithChildrenToAdd = new List<Item>
@@ -73,19 +91,30 @@ public class FenceBaseAssortGenerator(
                     Template = rootItemDb.Id,
                     ParentId = "hideout",
                     SlotId = "hideout",
-                    Upd = new Upd { StackObjectsCount = 9999999 }
+                    Upd = new Upd
+                    {
+                        StackObjectsCount = 9999999
+                    }
                 }
             };
 
             // Ensure ammo is not above penetration limit value
             if (itemHelper.IsOfBaseclasses(rootItemDb.Id, [BaseClasses.AMMO_BOX, BaseClasses.AMMO]))
+            {
                 if (IsAmmoAbovePenetrationLimit(rootItemDb))
+                {
                     continue;
+                }
+            }
 
             if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
                 // Only add cartridges to box if box has no children
+            {
                 if (itemWithChildrenToAdd.Count == 1)
+                {
                     itemHelper.AddCartridgesToAmmoBox(itemWithChildrenToAdd, rootItemDb);
+                }
+            }
 
             // Ensure IDs are unique
             itemHelper.RemapRootItemId(itemWithChildrenToAdd);
@@ -96,9 +125,9 @@ public class FenceBaseAssortGenerator(
             }
 
             // Create barter scheme (price)
-            var barterSchemeToAdd = new BarterScheme()
+            var barterSchemeToAdd = new BarterScheme
             {
-                Count = Math.Round((double)fenceService.GetItemPrice(rootItemDb.Id, itemWithChildrenToAdd)),
+                Count = Math.Round((double) fenceService.GetItemPrice(rootItemDb.Id, itemWithChildrenToAdd)),
                 Template = Money.ROUBLES
             };
 
@@ -117,7 +146,10 @@ public class FenceBaseAssortGenerator(
         foreach (var defaultPreset in defaultPresets)
         {
             // Skip presets we've already added
-            if (baseFenceAssort.Items.Any((item) => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id)) continue;
+            if (baseFenceAssort.Items.Any(item => item.Upd != null && item.Upd.SptPresetId == defaultPreset.Id))
+            {
+                continue;
+            }
 
             // Construct preset + mods
             var itemAndChildren = itemHelper.ReplaceIDs(_cloner.Clone(defaultPreset.Items));
@@ -132,7 +164,7 @@ public class FenceBaseAssortGenerator(
                 {
                     mod.ParentId = "hideout";
                     mod.SlotId = "hideout";
-                    mod.Upd = new Upd()
+                    mod.Upd = new Upd
                     {
                         StackObjectsCount = 1,
                         SptPresetId =
@@ -209,7 +241,10 @@ public class FenceBaseAssortGenerator(
         }
 
         // Plain old ammo, get its pen property
-        if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO)) return rootItemDb.Properties.PenetrationPower;
+        if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO))
+        {
+            return rootItemDb.Properties.PenetrationPower;
+        }
 
         // Not an ammobox or ammo
         return null;
@@ -224,12 +259,16 @@ public class FenceBaseAssortGenerator(
     {
         // Armor has no mods, make no additions
         var hasMods = itemDbDetails.Properties.Slots.Count > 0;
-        if (!hasMods) return;
+        if (!hasMods)
+        {
+            return;
+        }
 
         // Check for and add required soft inserts to armors
-        var requiredSlots = itemDbDetails.Properties.Slots.Where((slot) => slot.Required ?? false).ToList();
+        var requiredSlots = itemDbDetails.Properties.Slots.Where(slot => slot.Required ?? false).ToList();
         var hasRequiredSlots = requiredSlots.Count > 0;
         if (hasRequiredSlots)
+        {
             foreach (var requiredSlot in requiredSlots)
             {
                 var modItemDbDetails = itemHelper.GetItem(requiredSlot.Props.Filters[0].Plate).Value;
@@ -237,7 +276,9 @@ public class FenceBaseAssortGenerator(
                     requiredSlot.Props.Filters[0].Plate; // `Plate` property appears to be the 'default' item for slot
                 if (string.IsNullOrEmpty(plateTpl))
                     // Some bsg plate properties are empty, skip mod
+                {
                     continue;
+                }
 
                 var mod = new Item
                 {
@@ -257,21 +298,25 @@ public class FenceBaseAssortGenerator(
 
                 armor.Add(mod);
             }
+        }
 
         // Check for and add plate items
-        var plateSlots = itemDbDetails.Properties.Slots.Where((slot) => itemHelper.IsRemovablePlateSlot(slot.Name))
+        var plateSlots = itemDbDetails.Properties.Slots.Where(slot => itemHelper.IsRemovablePlateSlot(slot.Name))
             .ToList();
         if (plateSlots.Count > 0)
+        {
             foreach (var plateSlot in plateSlots)
             {
                 var plateTpl = plateSlot.Props.Filters[0].Plate;
                 if (string.IsNullOrEmpty(plateTpl))
                     // Bsg data lacks a default plate, skip adding mod
+                {
                     continue;
+                }
 
                 var modItemDbDetails = itemHelper.GetItem(plateTpl).Value;
                 armor.Add(
-                    new Item()
+                    new Item
                     {
                         Id = hashUtil.Generate(),
                         Template = plateSlot.Props.Filters[0].Plate, // `Plate` property appears to be the 'default' item for slot
@@ -288,6 +333,7 @@ public class FenceBaseAssortGenerator(
                     }
                 );
             }
+        }
     }
 
     /**

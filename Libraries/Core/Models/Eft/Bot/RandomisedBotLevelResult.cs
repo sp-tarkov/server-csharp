@@ -5,8 +5,16 @@ namespace Core.Models.Eft.Bot;
 public record RandomisedBotLevelResult
 {
     [JsonPropertyName("level")]
-    public int? Level { get; set; }
+    public int? Level
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("exp")]
-    public int? Exp { get; set; }
+    public int? Exp
+    {
+        get;
+        set;
+    }
 }

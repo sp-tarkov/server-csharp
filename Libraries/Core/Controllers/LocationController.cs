@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Location;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
@@ -19,8 +19,8 @@ public class LocationController(
 )
 {
     /// <summary>
-    /// Handle client/locations
-    /// Get all maps base location properties without loot data
+    ///     Handle client/locations
+    ///     Get all maps base location properties without loot data
     /// </summary>
     /// <param name="sessionId">Players Id</param>
     /// <returns>LocationsGenerateAllResponse</returns>
@@ -37,7 +37,11 @@ public class LocationController(
             var mapBase = kvp.Value.Base;
             if (mapBase == null)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Map: {kvp} has no base json file, skipping generation");
+                }
+
                 continue;
             }
 
@@ -55,13 +59,16 @@ public class LocationController(
     }
 
     /// <summary>
-    /// Handle client/airdrop/loot
+    ///     Handle client/airdrop/loot
     /// </summary>
     /// <param name="request"></param>
     /// <returns></returns>
     public GetAirdropLootResponse GetAirDropLoot(GetAirdropLootRequest? request)
     {
-        if (request?.ContainerId is not null) return _airdropService.GenerateCustomAirdropLoot(request);
+        if (request?.ContainerId is not null)
+        {
+            return _airdropService.GenerateCustomAirdropLoot(request);
+        }
 
         return _airdropService.GenerateAirdropLoot();
     }

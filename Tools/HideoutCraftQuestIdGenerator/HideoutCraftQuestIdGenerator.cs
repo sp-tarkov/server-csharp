@@ -1,4 +1,3 @@
-using Core.Callbacks;
 using Core.DI;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
@@ -24,9 +23,6 @@ public class HideoutCraftQuestIdGenerator(
     IEnumerable<OnLoad> _onLoadComponents
 )
 {
-    private readonly List<QuestProductionOutput> _questProductionOutputList = [];
-    private readonly Dictionary<string, string> _questProductionMap = new();
-
     private readonly HashSet<string> _blacklistedProductions =
     [
         "6617cdb6b24b0ea24505f618", // Old event quest production "Radio Repeater" alt recipe
@@ -41,6 +37,9 @@ public class HideoutCraftQuestIdGenerator(
         // KEY = PRODUCTION, VALUE = QUEST
         { "63a571802116d261d2336cd1", "625d6ffaf7308432be1d44c5" } // Network Provider - Part 2
     };
+
+    private readonly Dictionary<string, string> _questProductionMap = new();
+    private readonly List<QuestProductionOutput> _questProductionOutputList = [];
 
     public async Task Run()
     {
@@ -129,7 +128,8 @@ public class HideoutCraftQuestIdGenerator(
             if (_forcedQuestToProductionAssociations.TryGetValue(production.Id, out var associatedQuestIdToComplete))
             {
                 // Found one, move to next production
-                _logger.Success($"FORCED - Updated: {production.Id} {production.EndProduct} ({_itemHelper.GetItemName(production.EndProduct)}) with quantity: {production.Count} to target quest: {associatedQuestIdToComplete}"
+                _logger.Success(
+                    $"FORCED - Updated: {production.Id} {production.EndProduct} ({_itemHelper.GetItemName(production.EndProduct)}) with quantity: {production.Count} to target quest: {associatedQuestIdToComplete}"
                 );
                 questCompleteRequirements[0].QuestId = associatedQuestIdToComplete;
 
@@ -214,7 +214,21 @@ public class HideoutCraftQuestIdGenerator(
 
 public class QuestProductionOutput
 {
-    public string QuestId { get; set; }
-    public string ItemTemplate { get; set; }
-    public double Quantity { get; set; }
+    public string QuestId
+    {
+        get;
+        set;
+    }
+
+    public string ItemTemplate
+    {
+        get;
+        set;
+    }
+
+    public double Quantity
+    {
+        get;
+        set;
+    }
 }

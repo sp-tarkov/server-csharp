@@ -1,18 +1,18 @@
-﻿using SptCommon.Annotations;
-using Core.Helpers.Dialog.Commando.SptCommands;
+﻿using Core.Helpers.Dialog.Commando.SptCommands;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Helpers.Dialog.Commando;
 
 [Injectable]
 public class SptCommandoCommands : IChatCommand
 {
-    protected List<ISptCommand> _sptCommands;
     protected LocalisationService _localisationService;
+    protected List<ISptCommand> _sptCommands;
 
     public SptCommandoCommands(
         ConfigServer configServer,
@@ -30,18 +30,6 @@ public class SptCommandoCommands : IChatCommand
             var giveCommand = _sptCommands.FirstOrDefault(x => x.GetCommand().ToLower() == "give");
             _sptCommands.Remove(giveCommand);
         }
-    }
-
-    public void RegisterSptCommandoCommand(ISptCommand command)
-    {
-        if (_sptCommands.Any((c) => c.GetCommand() == command.GetCommand()))
-            throw new Exception(
-                _localisationService.GetText(
-                    "chat-unable_to_register_command_already_registered",
-                    command.GetCommand()
-                )
-            );
-        _sptCommands.Add(command);
     }
 
     public string GetCommandPrefix()
@@ -62,7 +50,22 @@ public class SptCommandoCommands : IChatCommand
     public string Handle(string command, UserDialogInfo commandHandler, string sessionId, SendMessageRequest request)
     {
         return _sptCommands
-            .First((c) => c.GetCommand() == command)
+            .First(c => c.GetCommand() == command)
             .PerformAction(commandHandler, sessionId, request);
+    }
+
+    public void RegisterSptCommandoCommand(ISptCommand command)
+    {
+        if (_sptCommands.Any(c => c.GetCommand() == command.GetCommand()))
+        {
+            throw new Exception(
+                _localisationService.GetText(
+                    "chat-unable_to_register_command_already_registered",
+                    command.GetCommand()
+                )
+            );
+        }
+
+        _sptCommands.Add(command);
     }
 }

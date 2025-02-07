@@ -1,6 +1,6 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.DI;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 

@@ -1,5 +1,4 @@
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
@@ -10,6 +9,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using Insurance = Core.Models.Eft.Profile.Insurance;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
@@ -36,7 +36,7 @@ public class InsuranceService(
     protected Dictionary<string, Dictionary<string, List<Item>>?> _insured = new();
 
     /// <summary>
-    /// Does player have insurance dictionary exists
+    ///     Does player have insurance dictionary exists
     /// </summary>
     /// <param name="sessionId">Player id</param>
     /// <returns>True if exists</returns>
@@ -46,7 +46,7 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Get all insured items by all traders for a profile
+    ///     Get all insured items by all traders for a profile
     /// </summary>
     /// <param name="sessionId">Profile id (session id)</param>
     /// <returns>Item list</returns>
@@ -57,12 +57,15 @@ public class InsuranceService(
 
     public void ResetInsurance(string sessionId)
     {
-        if (!_insured.TryAdd(sessionId, new Dictionary<string, List<Item>>())) _insured[sessionId] = new Dictionary<string, List<Item>>();
+        if (!_insured.TryAdd(sessionId, new Dictionary<string, List<Item>>()))
+        {
+            _insured[sessionId] = new Dictionary<string, List<Item>>();
+        }
     }
 
     /// <summary>
-    /// Sends 'I will go look for your stuff' trader message +
-    /// Store lost insurance items inside profile for later retrieval
+    ///     Sends 'I will go look for your stuff' trader message +
+    ///     Store lost insurance items inside profile for later retrieval
     /// </summary>
     /// <param name="pmcData">Profile to send insured items to</param>
     /// <param name="sessionID">SessionId of current player</param>
@@ -111,7 +114,7 @@ public class InsuranceService(
                 MessageType.NPC_TRADER,
                 _randomUtil.GetArrayValue(dialogueTemplates["insuranceStart"] ?? ["INSURANCE START MESSAGE MISSING"]),
                 null,
-                _timeUtil.GetHoursAsSeconds((int)globals.Configuration?.Insurance?.MaxStorageTimeInHour),
+                _timeUtil.GetHoursAsSeconds((int) globals.Configuration?.Insurance?.MaxStorageTimeInHour),
                 systemData
             );
 
@@ -121,9 +124,9 @@ public class InsuranceService(
                 .InsuranceList.Add(
                     new Insurance
                     {
-                        ScheduledTime = (int)GetInsuranceReturnTimestamp(pmcData, traderBase),
+                        ScheduledTime = (int) GetInsuranceReturnTimestamp(pmcData, traderBase),
                         TraderId = trader.ToString(),
-                        MaxStorageTime = (int)GetMaxInsuranceStorageTime(traderBase),
+                        MaxStorageTime = (int) GetMaxInsuranceStorageTime(traderBase),
                         SystemData = systemData,
                         MessageType = MessageType.INSURANCE_RETURN,
                         MessageTemplateId = _randomUtil.GetArrayValue(dialogueTemplates["insuranceFound"]),
@@ -136,8 +139,8 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Get a timestamp of when insurance items should be sent to player based on trader used to insure
-    /// Apply insurance return bonus if found in profile
+    ///     Get a timestamp of when insurance items should be sent to player based on trader used to insure
+    ///     Apply insurance return bonus if found in profile
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="trader">Trader base used to insure items</param>
@@ -148,7 +151,10 @@ public class InsuranceService(
         if (_insuranceConfig.ReturnTimeOverrideSeconds > 0)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
                 _logger.Debug($"Insurance override used: returning in {_insuranceConfig.ReturnTimeOverrideSeconds} seconds");
+            }
+
             return _timeUtil.GetTimeStamp() + _insuranceConfig.ReturnTimeOverrideSeconds;
         }
 
@@ -173,11 +179,16 @@ public class InsuranceService(
         );
         if (hasMarkOfUnheard)
             // Reduce return time by globals multipler value
+        {
             randomisedReturnTimeSeconds *= globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown.Value;
+        }
 
         // EoD has 30% faster returns
         var editionModifier = globals.Configuration.Insurance.EditionSendingMessageTime[pmcData.Info.GameVersion];
-        if (editionModifier is not null) randomisedReturnTimeSeconds *= editionModifier.Multiplier.Value;
+        if (editionModifier is not null)
+        {
+            randomisedReturnTimeSeconds *= editionModifier.Multiplier.Value;
+        }
 
         // Calculate the final return time based on our bonus percent
         var finalReturnTimeSeconds = randomisedReturnTimeSeconds * (1d - insuranceReturnTimeBonusPercent);
@@ -188,23 +199,28 @@ public class InsuranceService(
     {
         if (_insuranceConfig.StorageTimeOverrideSeconds > 0)
             // Override exists, use instead of traders value
+        {
             return _insuranceConfig.StorageTimeOverrideSeconds;
+        }
 
-        return _timeUtil.GetHoursAsSeconds((int)traderBase.Insurance.MaxStorageTime);
+        return _timeUtil.GetHoursAsSeconds((int) traderBase.Insurance.MaxStorageTime);
     }
 
     /// <summary>
-    /// Store lost gear post-raid inside profile, ready for later code to pick it up and mail it
+    ///     Store lost gear post-raid inside profile, ready for later code to pick it up and mail it
     /// </summary>
     /// <param name="equipmentPkg">Gear to store - generated by GetGearLostInRaid()</param>
     public void StoreGearLostInRaidToSendLater(string sessionID, List<InsuranceEquipmentPkg> equipmentPkg)
     {
         // Process all insured items lost in-raid
-        foreach (var gear in equipmentPkg) AddGearToSend(gear);
+        foreach (var gear in equipmentPkg)
+        {
+            AddGearToSend(gear);
+        }
     }
 
     /// <summary>
-    /// For the passed in items, find the trader it was insured against
+    ///     For the passed in items, find the trader it was insured against
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="lostInsuredItems">Insured items lost in a raid</param>
@@ -224,7 +240,10 @@ public class InsuranceService(
                 continue;
             }
 
-            if (ItemCannotBeLostOnDeath(lostItem, pmcProfile.Inventory.Items)) continue;
+            if (ItemCannotBeLostOnDeath(lostItem, pmcProfile.Inventory.Items))
+            {
+                continue;
+            }
 
             // Add insured item + details to return array
             result.Add(
@@ -242,23 +261,29 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Some items should never be returned in insurance but BSG send them in the request
+    ///     Some items should never be returned in insurance but BSG send them in the request
     /// </summary>
     /// <param name="lostItem">Item being returned in insurance</param>
     /// <param name="inventoryItems">Player inventory</param>
     /// <returns>True if item</returns>
     protected bool ItemCannotBeLostOnDeath(Item lostItem, List<Item> inventoryItems)
     {
-        if (lostItem.SlotId?.ToLower().StartsWith("specialslot") ?? false) return true;
+        if (lostItem.SlotId?.ToLower().StartsWith("specialslot") ?? false)
+        {
+            return true;
+        }
 
         // We check secure container items even tho they are omitted from lostInsuredItems, just in case
-        if (_itemHelper.ItemIsInsideContainer(lostItem, "SecuredContainer", inventoryItems)) return true;
+        if (_itemHelper.ItemIsInsideContainer(lostItem, "SecuredContainer", inventoryItems))
+        {
+            return true;
+        }
 
         return false;
     }
 
     /// <summary>
-    /// Add gear item to InsuredItems list in player profile
+    ///     Add gear item to InsuredItems list in player profile
     /// </summary>
     /// <param name="gear">Gear to send</param>
     protected void AddGearToSend(InsuranceEquipmentPkg gear)
@@ -269,19 +294,31 @@ public class InsuranceService(
         var traderId = gear.TraderId;
 
         // Ensure insurance array is init
-        if (!InsuranceDictionaryExists(sessionId)) ResetInsurance(sessionId);
+        if (!InsuranceDictionaryExists(sessionId))
+        {
+            ResetInsurance(sessionId);
+        }
 
         // init trader insurance array
-        if (!InsuranceTraderArrayExists(sessionId, traderId)) ResetInsuranceTraderArray(sessionId, traderId);
+        if (!InsuranceTraderArrayExists(sessionId, traderId))
+        {
+            ResetInsuranceTraderArray(sessionId, traderId);
+        }
 
         AddInsuranceItemToArray(sessionId, traderId, itemToReturnToPlayer);
 
         // Remove item from insured items array as its been processed
-        pmcData.InsuredItems = pmcData.InsuredItems.Where(item => { return item.ItemId != itemToReturnToPlayer.Id; }).ToList();
+        pmcData.InsuredItems = pmcData.InsuredItems.Where(
+                item =>
+                {
+                    return item.ItemId != itemToReturnToPlayer.Id;
+                }
+            )
+            .ToList();
     }
 
     /// <summary>
-    /// Does insurance exist for a player and by trader
+    ///     Does insurance exist for a player and by trader
     /// </summary>
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader items insured with</param>
@@ -292,7 +329,7 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Empty out list holding insured items by sessionid + traderid
+    ///     Empty out list holding insured items by sessionid + traderid
     /// </summary>
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader items insured with</param>
@@ -302,7 +339,7 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Store insured item
+    ///     Store insured item
     /// </summary>
     /// <param name="sessionId">Player id (session id)</param>
     /// <param name="traderId">Trader item insured with</param>
@@ -313,7 +350,7 @@ public class InsuranceService(
     }
 
     /// <summary>
-    /// Get price of insurance * multiplier from config
+    ///     Get price of insurance * multiplier from config
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="inventoryItem">Item to be insured</param>

@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.InRaid;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -16,11 +16,11 @@ public class InRaidController(
     ConfigServer _configServer
 )
 {
-    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
 
     /// <summary>
-    /// Save locationId to active profiles in-raid object AND app context
+    ///     Save locationId to active profiles in-raid object AND app context
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="info">Register player request</param>
@@ -30,9 +30,9 @@ public class InRaidController(
     }
 
     /// <summary>
-    /// Handle raid/profile/scavsave
-    /// Save profile state to disk
-    /// Handles pmc/pscav
+    ///     Handle raid/profile/scavsave
+    ///     Save profile state to disk
+    ///     Handles pmc/pscav
     /// </summary>
     /// <param name="offRaidProfileData"></param>
     /// <param name="sessionId"></param>
@@ -43,11 +43,13 @@ public class InRaidController(
         // If equipment match overwrite existing data from update to date raid data for scavenger screen to work correctly.
         // otherwise Scav inventory will be overwritten and break scav regeneration, breaking profile.
         if (serverScavProfile.Inventory.Equipment == offRaidProfileData.Inventory.Equipment)
+        {
             serverScavProfile.Inventory.Items = offRaidProfileData.Inventory.Items;
+        }
     }
 
     /// <summary>
-    /// Get the inraid config from configs/inraid.json
+    ///     Get the inraid config from configs/inraid.json
     /// </summary>
     public InRaidConfig GetInRaidConfig()
     {
@@ -55,7 +57,6 @@ public class InRaidController(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId"></param>
@@ -66,7 +67,6 @@ public class InRaidController(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId"></param>

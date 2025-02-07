@@ -1,27 +1,18 @@
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
-using SptCommon.Annotations;
 using Core.Models.Eft.HttpResponse;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Utils;
 
 [Injectable]
 public class HttpResponseUtil
 {
-    protected readonly LocalisationService _localisationService;
     protected readonly JsonUtil _jsonUtil;
-
-    public HttpResponseUtil(
-        JsonUtil jsonUtil,
-        LocalisationService localisationService
-    )
-    {
-        _localisationService = localisationService;
-        _jsonUtil = jsonUtil;
-    }
+    protected readonly LocalisationService _localisationService;
 
     protected ImmutableList<Regex> _cleanupRegexList =
     [
@@ -32,10 +23,22 @@ public class HttpResponseUtil
         new("[\\t]")
     ];
 
+    public HttpResponseUtil(
+        JsonUtil jsonUtil,
+        LocalisationService localisationService
+    )
+    {
+        _localisationService = localisationService;
+        _jsonUtil = jsonUtil;
+    }
+
     protected string ClearString(string? s)
     {
         var value = s ?? "";
-        foreach (var regex in _cleanupRegexList) value = regex.Replace(value, string.Empty);
+        foreach (var regex in _cleanupRegexList)
+        {
+            value = regex.Replace(value, string.Empty);
+        }
 
         return value;
     }
@@ -66,7 +69,14 @@ public class HttpResponseUtil
 
     public string GetUnclearedBody<T>(T? data, BackendErrorCodes err = BackendErrorCodes.None, string? errmsg = null)
     {
-        return _jsonUtil.Serialize(new GetBodyResponseData<T> { Err = err, ErrMsg = errmsg, Data = data });
+        return _jsonUtil.Serialize(
+            new GetBodyResponseData<T>
+            {
+                Err = err,
+                ErrMsg = errmsg,
+                Data = data
+            }
+        );
     }
 
     public string EmptyResponse()
@@ -76,7 +86,7 @@ public class HttpResponseUtil
 
     public string NullResponse()
     {
-        return ClearString(GetUnclearedBody<object>(null, BackendErrorCodes.None, null));
+        return ClearString(GetUnclearedBody<object>(null));
     }
 
     public string EmptyArrayResponse()
@@ -98,8 +108,12 @@ public class HttpResponseUtil
     )
     {
         if (string.IsNullOrEmpty(message))
+        {
             message = _localisationService.GetText("http-unknown_error");
+        }
+
         if (output.Warnings?.Count > 0)
+        {
             output.Warnings.Add(
                 new Warning
                 {
@@ -108,8 +122,19 @@ public class HttpResponseUtil
                     Code = errorCode
                 }
             );
+        }
         else
-            output.Warnings = [new Warning { Index = 0, ErrorMessage = message, Code = errorCode }];
+        {
+            output.Warnings =
+            [
+                new Warning
+                {
+                    Index = 0,
+                    ErrorMessage = message,
+                    Code = errorCode
+                }
+            ];
+        }
 
         return output;
     }

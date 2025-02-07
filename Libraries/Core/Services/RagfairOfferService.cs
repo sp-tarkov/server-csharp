@@ -26,8 +26,8 @@ public class RagfairOfferService(
     RagfairOfferHolder ragfairOfferHolder
 )
 {
-    protected bool _playerOffersLoaded;
     protected ConcurrentBag<string> _expiredOfferIds = new();
+    protected bool _playerOffersLoaded;
 
     /**
      * Get all offers
@@ -54,7 +54,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Add a stale offers id to collection for later use
+    ///     Add a stale offers id to collection for later use
     /// </summary>
     /// <param name="staleOfferId">Id of offer to add to stale collection</param>
     public void AddOfferIdToExpired(string staleOfferId)

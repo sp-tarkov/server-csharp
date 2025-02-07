@@ -1,6 +1,6 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Eft.Common;
+﻿using Core.Models.Eft.Common;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -11,7 +11,7 @@ public class BundleCallbacks(
 )
 {
     /// <summary>
-    /// Handle singleplayer/bundles
+    ///     Handle singleplayer/bundles
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

@@ -25,9 +25,8 @@ public class GiveSptCommand(
     ICloner _cloner
 ) : ISptCommand
 {
-    protected Dictionary<string, SavedCommand> _savedCommand = new();
-    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
     private const double _acceptableConfidence = 0.9d;
+    private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
     protected readonly HashSet<string> _excludedPresetItems =
@@ -36,6 +35,8 @@ public class GiveSptCommand(
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_YELLOW
     ];
+
+    protected Dictionary<string, SavedCommand> _savedCommand = new();
 
     public string GetCommand()
     {
@@ -104,7 +105,10 @@ public class GiveSptCommand(
         else
         {
             // A new give request was entered, we need to ignore the old saved command
-            if (_savedCommand.ContainsKey(sessionId)) _savedCommand.Remove(sessionId);
+            if (_savedCommand.ContainsKey(sessionId))
+            {
+                _savedCommand.Remove(sessionId);
+            }
 
             isItemName = result.Groups[5].Value != null;
             item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;
@@ -228,7 +232,13 @@ public class GiveSptCommand(
             for (var i = 0; i < quantity; i++)
             {
                 List<Item> ammoBoxArray = [];
-                ammoBoxArray.Add(new Item { Id = _hashUtil.Generate(), Template = checkedItem.Value.Id });
+                ammoBoxArray.Add(
+                    new Item
+                    {
+                        Id = _hashUtil.Generate(),
+                        Template = checkedItem.Value.Id
+                    }
+                );
                 // DO NOT generate the ammo box cartridges, the mail service does it for us! :)
                 // _itemHelper.addCartridgesToAmmoBox(ammoBoxArray, checkedItem[1]);
                 itemsToSend.AddRange(ammoBoxArray);
@@ -239,6 +249,7 @@ public class GiveSptCommand(
             if (checkedItem.Value.Properties.StackMaxSize == 1)
             {
                 for (var i = 0; i < quantity; i++)
+                {
                     itemsToSend.Add(
                         new Item
                         {
@@ -247,6 +258,7 @@ public class GiveSptCommand(
                             Upd = _itemHelper.generateUpdForItem(checkedItem.Value)
                         }
                     );
+                }
             }
             else
             {

@@ -1,5 +1,3 @@
-using System.Text.Json;
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -13,7 +11,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
-using SptCommon.Extensions;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
@@ -55,7 +53,7 @@ public class QuestController(
 
         // Does quest exist in profile
         // Restarting a failed quest can mean quest exists in profile
-        var existingQuestStatus = pmcData.Quests.FirstOrDefault((x) => x.QId == acceptedQuest.QuestId);
+        var existingQuestStatus = pmcData.Quests.FirstOrDefault(x => x.QId == acceptedQuest.QuestId);
         if (existingQuestStatus is not null)
         {
             // Update existing
@@ -99,7 +97,7 @@ public class QuestController(
             MessageType.QUEST_START,
             messageId,
             startedQuestRewardItems.ToList(),
-            _timeUtil.GetHoursAsSeconds((int)_questHelper.GetMailItemRedeemTimeHoursForProfile(pmcData))
+            _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(pmcData))
         );
 
         // Having accepted new quest, look for newly unlocked quests and inform client of them
@@ -107,7 +105,10 @@ public class QuestController(
             acceptedQuest.QuestId,
             sessionID
         );
-        if (newlyAccessibleQuests.Count > 0) acceptQuestResponse.ProfileChanges[sessionID].Quests.AddRange(newlyAccessibleQuests);
+        if (newlyAccessibleQuests.Count > 0)
+        {
+            acceptQuestResponse.ProfileChanges[sessionID].Quests.AddRange(newlyAccessibleQuests);
+        }
 
         return acceptQuestResponse;
     }
@@ -117,9 +118,11 @@ public class QuestController(
         foreach (var condition in questConditions)
         {
             if (pmcData.TaskConditionCounters.TryGetValue(condition.Id, out var counter))
+            {
                 _logger.Error(
                     $"Unable to add new task condition counter: {condition.ConditionType} for qeust: {questId} to profile: {pmcData.SessionId} as it already exists:"
                 );
+            }
 
             switch (condition.ConditionType)
             {
@@ -181,7 +184,11 @@ public class QuestController(
             var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == acceptedQuest.QuestId);
             if (matchingQuest is not null)
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
+                }
+
                 matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
 
                 return matchingQuest;
@@ -222,7 +229,7 @@ public class QuestController(
 
             if (pmcData.TaskConditionCounters.TryGetValue("ConditionId", out var counter))
             {
-                handedInCount -= (int)(counter.Value ?? 0);
+                handedInCount -= (int) (counter.Value ?? 0);
 
                 if (handedInCount <= 0)
                 {
@@ -257,23 +264,25 @@ public class QuestController(
             var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
             if (!(matchingItemInProfile is not null && handoverRequirements.Target.List.Contains(matchingItemInProfile.Template)))
                 // Item handed in by player doesn't match what was requested
+            {
                 return ShowQuestItemHandoverMatchError(
                     handoverQuestRequest,
                     matchingItemInProfile,
                     handoverRequirements,
                     output
                 );
+            }
 
             // Remove the right quantity of given items
             var itemCountToRemove = Math.Min(itemHandover.Count ?? 0, handedInCount - totalItemCountToRemove);
             totalItemCountToRemove += itemCountToRemove;
-            if ((itemHandover.Count - itemCountToRemove) > 0)
+            if (itemHandover.Count - itemCountToRemove > 0)
             {
                 // Remove single item with no children
                 _questHelper.ChangeItemStack(
                     pmcData,
                     itemHandover.Id,
-                    (int)(itemHandover.Count - itemCountToRemove),
+                    (int) (itemHandover.Count - itemCountToRemove),
                     sessionID,
                     output
                 );
@@ -301,6 +310,7 @@ public class QuestController(
 
                 // Important: loop backward when removing items from the array we're looping on
                 while (index-- > 0)
+                {
                     if (toRemove.Contains(pmcData.Inventory.Items[index].Id))
                     {
                         var removedItem = _cloner.Clone(pmcData.Inventory.Items[index]);
@@ -318,11 +328,15 @@ public class QuestController(
                             childItems.RemoveAt(0); // Remove the parent
 
                             // Sort by the current `location` and update
-                            childItems.Sort((a, b) => (int)a.Location > (int)b.Location ? 1 : -1);
+                            childItems.Sort((a, b) => (int) a.Location > (int) b.Location ? 1 : -1);
 
-                            for (var i = 0; i < childItems.Count; i++) childItems[i].Location = i;
+                            for (var i = 0; i < childItems.Count; i++)
+                            {
+                                childItems[i].Location = i;
+                            }
                         }
                     }
+                }
             }
         }
 

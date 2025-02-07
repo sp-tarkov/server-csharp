@@ -16,7 +16,7 @@ public class ForceSummerMessageHandler(
     RandomUtil _randomUtil,
     ConfigServer _configServer) : IChatMessageHandler
 {
-    private WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
+    private readonly WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     public int GetPriority()
     {

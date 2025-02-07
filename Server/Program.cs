@@ -9,7 +9,6 @@ using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Extensions.Logging;
 using SptDependencyInjection;
-using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Server;
 
@@ -40,7 +39,11 @@ public static class Program
 
             // Initialize PreSptMods
             var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadMod>();
-            foreach (var preSptLoadMod in preSptLoadMods) preSptLoadMod.PreSptLoad();
+            foreach (var preSptLoadMod in preSptLoadMods)
+            {
+                preSptLoadMod.PreSptLoad();
+            }
+
             var appContext = serviceProvider.GetService<ApplicationContext>();
             // Add the Loaded Mod Assemblies for later
             appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, assemblies);
@@ -56,7 +59,9 @@ public static class Program
             // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
             // object, which we can use here to start the webapp.
             if (httpConfig != null)
+            {
                 appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+            }
         }
         catch (Exception ex)
         {

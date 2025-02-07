@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
 using Core.Routers;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -14,8 +14,8 @@ public class RepairController(
 )
 {
     /// <summary>
-    /// Handle TraderRepair event
-    /// Repair with trader
+    ///     Handle TraderRepair event
+    ///     Repair with trader
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <param name="body">endpoint request data</param>
@@ -42,7 +42,10 @@ public class RepairController(
                 output
             );
 
-            if (output.Warnings?.Count > 0) return output;
+            if (output.Warnings?.Count > 0)
+            {
+                return output;
+            }
 
             // Add repaired item to output object
             output.ProfileChanges[sessionID].Items.ChangedItems.Add(repairDetails.RepairedItem);
@@ -55,8 +58,8 @@ public class RepairController(
     }
 
     /// <summary>
-    /// Handle Repair event
-    /// Repair with repair kit
+    ///     Handle Repair event
+    ///     Repair with repair kit
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <param name="body">endpoint request data</param>

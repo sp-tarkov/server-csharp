@@ -1,12 +1,11 @@
-﻿using SptCommon.Annotations;
-using Core.Generators;
+﻿using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
-using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -23,7 +22,7 @@ public class RaidWeatherService(
     protected List<Weather> _weatherForecast = [];
 
     /// <summary>
-    /// Generate 24 hours of weather data starting from midnight today
+    ///     Generate 24 hours of weather data starting from midnight today
     /// </summary>
     public void GenerateWeather(Season currentSeason)
     {
@@ -49,7 +48,7 @@ public class RaidWeatherService(
     }
 
     /// <summary>
-    /// Get a time period to increment by, e.g. 15 or 30 minutes as milliseconds
+    ///     Get a time period to increment by, e.g. 15 or 30 minutes as milliseconds
     /// </summary>
     /// <returns>milliseconds</returns>
     protected long GetWeightedWeatherTimePeriodMs()
@@ -64,29 +63,29 @@ public class RaidWeatherService(
     }
 
     /// <summary>
-    /// Find the first matching weather object that applies to the current time
+    ///     Find the first matching weather object that applies to the current time
     /// </summary>
     public Weather GetCurrentWeather()
     {
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Find((weather) => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        return _weatherForecast.Find(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
     }
 
     /// <summary>
-    /// Find all matching weather objects that applies to the current time + future
+    ///     Find all matching weather objects that applies to the current time + future
     /// </summary>
     public IEnumerable<Weather> GetUpcomingWeather()
     {
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         ValidateWeatherDataExists(currentSeason);
 
-        return _weatherForecast.Where((weather) => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        return _weatherForecast.Where(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
     }
 
     /// <summary>
-    /// Ensure future weather data exists
+    ///     Ensure future weather data exists
     /// </summary>
     protected void ValidateWeatherDataExists(Season currentSeason)
     {
@@ -94,7 +93,10 @@ public class RaidWeatherService(
         _weatherForecast.RemoveAll(weather => weather.Timestamp < _timeUtil.GetTimeStamp());
 
         // Check data exists for current time
-        var result = _weatherForecast.Where((weather) => weather.Timestamp >= _timeUtil.GetTimeStamp());
-        if (!result.Any()) GenerateWeather(currentSeason);
+        var result = _weatherForecast.Where(weather => weather.Timestamp >= _timeUtil.GetTimeStamp());
+        if (!result.Any())
+        {
+            GenerateWeather(currentSeason);
+        }
     }
 }

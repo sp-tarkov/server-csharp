@@ -5,14 +5,26 @@ namespace Core.Models.Spt.Config;
 public record BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind { get; set; }
+    public string Kind
+    {
+        get;
+        set;
+    }
 }
 
 public record RunIntervalValues
 {
     [JsonPropertyName("inRaid")]
-    public int InRaid { get; set; }
+    public int InRaid
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("outOfRaid")]
-    public int OutOfRaid { get; set; }
+    public int OutOfRaid
+    {
+        get;
+        set;
+    }
 }

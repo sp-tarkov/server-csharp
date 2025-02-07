@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Models.Logging;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Server;
+using SptCommon.Annotations;
 
 namespace Core.Utils;
 
@@ -12,8 +12,8 @@ namespace Core.Utils;
 public class WatermarkLocale
 {
     protected List<string> description;
-    protected List<string> warning;
     protected List<string> modding;
+    protected List<string> warning;
 
     public WatermarkLocale(LocalisationService localisationService)
     {
@@ -65,14 +65,14 @@ public class WatermarkLocale
 [Injectable]
 public class Watermark
 {
+    protected ConfigServer _configServer;
+    protected LocalisationService _localisationService;
+
+    protected ISptLogger<Watermark> _logger;
+    protected WatermarkLocale _watermarkLocale;
     protected CoreConfig sptConfig;
     protected List<string> text = [];
     protected string versionLabel = "";
-
-    protected ISptLogger<Watermark> _logger;
-    protected ConfigServer _configServer;
-    protected LocalisationService _localisationService;
-    protected WatermarkLocale _watermarkLocale;
 
     public Watermark(
         ISptLogger<Watermark> logger,
@@ -101,13 +101,24 @@ public class Watermark
         text = [..text, ..description];
 
 
-        if (ProgramStatics.DEBUG()) text.AddRange(warning);
-        if (!ProgramStatics.MODS()) text.AddRange(modding);
+        if (ProgramStatics.DEBUG())
+        {
+            text.AddRange(warning);
+        }
+
+        if (!ProgramStatics.MODS())
+        {
+            text.AddRange(modding);
+        }
 
 
         if (sptConfig.CustomWatermarkLocaleKeys?.Count > 0)
+        {
             foreach (var key in sptConfig.CustomWatermarkLocaleKeys)
+            {
                 text.AddRange(["", _localisationService.GetText(key)]);
+            }
+        }
 
         SetTitle();
         ResetCursor();
@@ -148,13 +159,17 @@ public class Watermark
         return $"{sptConfig.ProjectName} {versionTag}";
     }
 
-    /** Set window title */
+    /**
+     * Set window title
+     */
     protected void SetTitle()
     {
         Console.Title = versionLabel;
     }
 
-    /** Reset console cursor to top */
+    /**
+     * Reset console cursor to top
+     */
     protected void ResetCursor()
     {
         /*
@@ -164,7 +179,9 @@ public class Watermark
         */
     }
 
-    /** Draw the watermark */
+    /**
+     * Draw the watermark
+     */
     protected void Draw()
     {
         var result = new List<string>();
@@ -174,7 +191,10 @@ public class Watermark
 
         // Create line of - to add top/bottom of watermark
         var line = "";
-        for (var i = 0; i < longestLength; ++i) line += "─";
+        for (var i = 0; i < longestLength; ++i)
+        {
+            line += "─";
+        }
 
         // Opening line
         result.Add($"┌─{line}─┐");
@@ -185,7 +205,10 @@ public class Watermark
             var spacingSize = longestLength - watermarkText.Length;
             var textWithRightPadding = watermarkText;
 
-            for (var i = 0; i < spacingSize; ++i) textWithRightPadding += " ";
+            for (var i = 0; i < spacingSize; ++i)
+            {
+                textWithRightPadding += " ";
+            }
 
             result.Add($"│ {textWithRightPadding} │");
         }
@@ -194,6 +217,9 @@ public class Watermark
         result.Add($"└─{line}─┘");
 
         // Log watermark to screen
-        foreach (var text in result) _logger.LogWithColor(text, LogTextColor.Yellow);
+        foreach (var text in result)
+        {
+            _logger.LogWithColor(text, LogTextColor.Yellow);
+        }
     }
 }

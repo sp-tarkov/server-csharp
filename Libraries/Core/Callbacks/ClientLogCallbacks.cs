@@ -1,11 +1,11 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Logging;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Server;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -19,7 +19,7 @@ public class ClientLogCallbacks(
 )
 {
     /// <summary>
-    /// Handle /singleplayer/log
+    ///     Handle /singleplayer/log
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -32,7 +32,7 @@ public class ClientLogCallbacks(
     }
 
     /// <summary>
-    /// Handle /singleplayer/release
+    ///     Handle /singleplayer/release
     /// </summary>
     /// <returns></returns>
     public string ReleaseNotes()
@@ -59,7 +59,7 @@ public class ClientLogCallbacks(
     }
 
     /// <summary>
-    /// Handle /singleplayer/enableBSGlogging
+    ///     Handle /singleplayer/enableBSGlogging
     /// </summary>
     /// <returns></returns>
     public string BsgLogging()

@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -15,7 +15,7 @@ public class QuestCallbacks(
 )
 {
     /// <summary>
-    /// Handle RepeatableQuestChange event
+    ///     Handle RepeatableQuestChange event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -27,7 +27,7 @@ public class QuestCallbacks(
     }
 
     /// <summary>
-    /// Handle QuestAccept event
+    ///     Handle QuestAccept event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -36,13 +36,15 @@ public class QuestCallbacks(
     public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData info, string sessionID)
     {
         if (info.Type == "repeatable")
+        {
             return _questController.AcceptRepeatableQuest(pmcData, info, sessionID);
+        }
 
         return _questController.AcceptQuest(pmcData, info, sessionID);
     }
 
     /// <summary>
-    /// Handle QuestComplete event
+    ///     Handle QuestComplete event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -54,7 +56,7 @@ public class QuestCallbacks(
     }
 
     /// <summary>
-    /// Handle QuestHandover event
+    ///     Handle QuestHandover event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -66,7 +68,7 @@ public class QuestCallbacks(
     }
 
     /// <summary>
-    /// Handle client/quest/list
+    ///     Handle client/quest/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -78,7 +80,7 @@ public class QuestCallbacks(
     }
 
     /// <summary>
-    /// Handle client/repeatalbeQuests/activityPeriods
+    ///     Handle client/repeatalbeQuests/activityPeriods
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

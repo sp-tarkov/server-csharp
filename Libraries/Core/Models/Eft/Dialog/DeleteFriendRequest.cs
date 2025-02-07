@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Dialog;
 public record DeleteFriendRequest : IRequestData
 {
     [JsonPropertyName("friend_id")]
-    public string? FriendId { get; set; }
+    public string? FriendId
+    {
+        get;
+        set;
+    }
 }

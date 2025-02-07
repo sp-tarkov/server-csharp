@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -9,6 +8,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
@@ -30,14 +30,14 @@ public class TraderHelper(
     ConfigServer _configServer
 )
 {
-    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-    protected Dictionary<string, double> _highestTraderPriceItems = new();
     protected List<string> _gameVersions = [GameEditions.EDGE_OF_DARKNESS, GameEditions.UNHEARD];
+    protected Dictionary<string, double> _highestTraderPriceItems = new();
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
 
     /// <summary>
-    /// Get a trader base object, update profile to reflect players current standing in profile
-    /// when trader not found in profile
+    ///     Get a trader base object, update profile to reflect players current standing in profile
+    ///     when trader not found in profile
     /// </summary>
     /// <param name="traderID">Traders Id to get</param>
     /// <param name="sessionID">Players id</param>
@@ -45,14 +45,18 @@ public class TraderHelper(
     public TraderBase? GetTrader(string traderID, string sessionID)
     {
         if (traderID == "ragfair")
+        {
             return new TraderBase
             {
                 Currency = CurrencyType.RUB
             };
+        }
 
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         if (pmcData == null)
+        {
             throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_with_id", sessionID));
+        }
 
         // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
         if (pmcData?.TradersInfo != null && (pmcData?.TradersInfo?.ContainsKey(traderID) ?? false))
@@ -64,13 +68,15 @@ public class TraderHelper(
 
         var traderBase = _databaseService.GetTrader(traderID).Base;
         if (traderBase == null)
+        {
             _logger.Error(_localisationService.GetText("trader-unable_to_find_trader_by_id", traderID));
+        }
 
         return traderBase;
     }
 
     /// <summary>
-    /// Get all assort data for a particular trader
+    ///     Get all assort data for a particular trader
     /// </summary>
     /// <param name="traderId">Trader to get assorts for</param>
     /// <returns>TraderAssort</returns>
@@ -82,7 +88,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Retrieve the Item from a traders assort data by its id
+    ///     Retrieve the Item from a traders assort data by its id
     /// </summary>
     /// <param name="traderId">Trader to get assorts for</param>
     /// <param name="assortId">Id of assort to find</param>
@@ -92,7 +98,10 @@ public class TraderHelper(
         var traderAssorts = GetTraderAssortsByTraderId(traderId);
         if (traderAssorts is null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"No assorts on trader: {traderId} found");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"No assorts on trader: {traderId} found");
+            }
 
             return null;
         }
@@ -101,7 +110,10 @@ public class TraderHelper(
         var purchasedAssort = traderAssorts.Items.FirstOrDefault(item => item.Id == assortId);
         if (purchasedAssort is null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"No assort {assortId} on trader: {traderId} found");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"No assort {assortId} on trader: {traderId} found");
+            }
 
             return null;
         }
@@ -110,8 +122,8 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Reset a profiles trader data back to its initial state as seen by a level 1 player
-    /// Does NOT take into account different profile levels
+    ///     Reset a profiles trader data back to its initial state as seen by a level 1 player
+    ///     Does NOT take into account different profile levels
     /// </summary>
     /// <param name="sessionID">session id of player</param>
     /// <param name="traderID">trader id to reset</param>
@@ -121,7 +133,10 @@ public class TraderHelper(
         var trader = _databaseService.GetTrader(traderID);
 
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
-        if (fullProfile is null) throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID));
+        if (fullProfile is null)
+        {
+            throw new Exception(_localisationService.GetText("trader-unable_to_find_profile_by_id", sessionID));
+        }
 
         var pmcData = fullProfile.CharacterData.PmcData;
         var rawProfileTemplate = profiles.GetByJsonProp<ProfileSides>(fullProfile.ProfileInfo.Edition)
@@ -138,11 +153,17 @@ public class TraderHelper(
             Unlocked = trader.Base.UnlockedByDefault
         };
 
-        if (!pmcData.TradersInfo.TryAdd(traderID, newTraderData)) pmcData.TradersInfo[traderID] = newTraderData;
+        if (!pmcData.TradersInfo.TryAdd(traderID, newTraderData))
+        {
+            pmcData.TradersInfo[traderID] = newTraderData;
+        }
 
 
         // Check if trader should be locked by default
-        if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false) pmcData.TradersInfo[traderID].Unlocked = true;
+        if (rawProfileTemplate.LockedByDefaultOverride?.Contains(traderID) ?? false)
+        {
+            pmcData.TradersInfo[traderID].Unlocked = true;
+        }
 
         if (rawProfileTemplate.PurchaseAllClothingByDefaultForTrader?.Contains(traderID) ?? false)
         {
@@ -150,10 +171,12 @@ public class TraderHelper(
             var clothing = _databaseService.GetTrader(traderID).Suits;
             if (clothing?.Count > 0)
                 // Force suit ids into profile
+            {
                 AddSuitsToProfile(
                     fullProfile,
                     clothing.Select(suit => suit.SuiteId).ToList()
                 );
+            }
         }
 
         if ((rawProfileTemplate.FleaBlockedDays ?? 0) > 0)
@@ -161,8 +184,11 @@ public class TraderHelper(
             var newBanDateTime = _timeUtil.GetTimeStampFromNowDays(rawProfileTemplate.FleaBlockedDays ?? 0);
             var existingBan = pmcData.Info.Bans.FirstOrDefault(ban => ban.BanType == BanType.RAGFAIR);
             if (existingBan is not null)
+            {
                 existingBan.DateTime = newBanDateTime;
+            }
             else
+            {
                 pmcData.Info.Bans.Add(
                     new Ban
                     {
@@ -170,13 +196,17 @@ public class TraderHelper(
                         DateTime = newBanDateTime
                     }
                 );
+            }
         }
 
-        if (traderID == Traders.JAEGER) pmcData.TradersInfo[traderID].Unlocked = rawProfileTemplate.JaegerUnlocked;
+        if (traderID == Traders.JAEGER)
+        {
+            pmcData.TradersInfo[traderID].Unlocked = rawProfileTemplate.JaegerUnlocked;
+        }
     }
 
     /// <summary>
-    /// Get the starting standing of a trader based on the current profiles type (e.g. EoD, Standard etc)
+    ///     Get the starting standing of a trader based on the current profiles type (e.g. EoD, Standard etc)
     /// </summary>
     /// <param name="traderId">Trader id to get standing for</param>
     /// <param name="rawProfileTemplate">Raw profile from profiles.json to look up standing from</param>
@@ -186,7 +216,10 @@ public class TraderHelper(
         if (rawProfileTemplate.InitialStanding.TryGetValue(traderId, out var standing))
         {
             // Edge case for Lightkeeper, 0 standing means seeing `Make Amends - Buyout` quest
-            if (traderId == Traders.LIGHTHOUSEKEEPER && standing == 0) return 0.01;
+            if (traderId == Traders.LIGHTHOUSEKEEPER && standing == 0)
+            {
+                return 0.01;
+            }
 
             return standing;
         }
@@ -195,22 +228,29 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Add a list of suit ids to a profiles suit list, no duplicates
+    ///     Add a list of suit ids to a profiles suit list, no duplicates
     /// </summary>
     /// <param name="fullProfile">Profile to add to</param>
     /// <param name="suitIds">Suit Ids to add</param>
     protected void AddSuitsToProfile(SptProfile fullProfile, List<string> suitIds)
     {
-        if (fullProfile.Suits is null) fullProfile.Suits = [];
+        if (fullProfile.Suits is null)
+        {
+            fullProfile.Suits = [];
+        }
 
         foreach (var suitId in suitIds)
             // Don't add dupes
+        {
             if (!fullProfile.Suits.Contains(suitId))
+            {
                 fullProfile.Suits.Add(suitId);
+            }
+        }
     }
 
     /// <summary>
-    /// Alter a traders unlocked status
+    ///     Alter a traders unlocked status
     /// </summary>
     /// <param name="traderId">Trader to alter</param>
     /// <param name="status">New status to use</param>
@@ -230,7 +270,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Add standing to a trader and level them up if exp goes over level threshold
+    ///     Add standing to a trader and level them up if exp goes over level threshold
     /// </summary>
     /// <param name="sessionId">Session id of player</param>
     /// <param name="traderId">Traders id to add standing to</param>
@@ -245,13 +285,15 @@ public class TraderHelper(
 
         if (traderId == Traders.FENCE)
             // Must add rep to scav profile to ensure consistency
+        {
             fullProfile.CharacterData.ScavData.TradersInfo[traderId].Standing = pmcTraderInfo.Standing;
+        }
 
         LevelUp(traderId, fullProfile.CharacterData.PmcData);
     }
 
     /// <summary>
-    /// Add standing to current standing and clamp value if it goes too low
+    ///     Add standing to current standing and clamp value if it goes too low
     /// </summary>
     /// <param name="currentStanding">current trader standing</param>
     /// <param name="standingToAdd">standing to add to trader standing</param>
@@ -265,19 +307,22 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Iterate over a profile's traders and ensure they have the correct loyalty level for the player.
+    ///     Iterate over a profile's traders and ensure they have the correct loyalty level for the player.
     /// </summary>
     /// <param name="sessionId">Profile to check.</param>
     public void ValidateTraderStandingsAndPlayerLevelForProfile(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
         var traders = _databaseService.GetTraders();
-        foreach (var trader in traders) LevelUp(trader.Key, profile);
+        foreach (var trader in traders)
+        {
+            LevelUp(trader.Key, profile);
+        }
     }
 
     /// <summary>
-    /// Calculate trader's level based on experience amount and increments level if over threshold.
-    /// Also validates and updates player level if not correct based on XP value.
+    ///     Calculate trader's level based on experience amount and increments level if over threshold.
+    ///     Also validates and updates player level if not correct based on XP value.
     /// </summary>
     /// <param name="traderID">Trader to check standing of.</param>
     /// <param name="pmcData">Profile to update trader in.</param>
@@ -295,20 +340,24 @@ public class TraderHelper(
         pmcData.TradersInfo[traderID].Standing = Math.Round(pmcData.TradersInfo[traderID].Standing * 100 ?? 0, 2) / 100;
 
         foreach (var loyaltyLevel in loyaltyLevels)
+        {
             if (loyaltyLevel.MinLevel <= pmcData.Info.Level &&
                 loyaltyLevel.MinSalesSum <= pmcData.TradersInfo[traderID].SalesSum &&
                 loyaltyLevel.MinStanding <= pmcData.TradersInfo[traderID].Standing &&
                 targetLevel < 4
                )
                 // level reached
+            {
                 targetLevel++;
+            }
+        }
 
         // set level
         pmcData.TradersInfo[traderID].LoyaltyLevel = targetLevel;
     }
 
     /// <summary>
-    /// Get the next update timestamp for a trader.
+    ///     Get the next update timestamp for a trader.
     /// </summary>
     /// <param name="traderID">Trader to look up update value for.</param>
     /// <returns>Future timestamp.</returns>
@@ -320,13 +369,13 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Get the reset time between trader assort refreshes in seconds.
+    ///     Get the reset time between trader assort refreshes in seconds.
     /// </summary>
     /// <param name="traderId">Trader to look up.</param>
     /// <returns>Time in seconds.</returns>
     public long? GetTraderUpdateSeconds(string traderId)
     {
-        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault((x) => x.TraderId == traderId);
+        var traderDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
         if (traderDetails is null || traderDetails.Seconds?.Min is null || traderDetails.Seconds.Max is null)
         {
             _logger.Warning(
@@ -334,7 +383,7 @@ public class TraderHelper(
                     "trader-missing_trader_details_using_default_refresh_time",
                     new
                     {
-                        traderId = traderId,
+                        traderId,
                         updateTime = _traderConfig.UpdateTimeDefault
                     }
                 )
@@ -352,7 +401,7 @@ public class TraderHelper(
             return null;
         }
 
-        return _randomUtil.GetInt((int)traderDetails.Seconds.Min, (int)traderDetails.Seconds.Max);
+        return _randomUtil.GetInt((int) traderDetails.Seconds.Min, (int) traderDetails.Seconds.Max);
     }
 
     public TraderLoyaltyLevel GetLoyaltyLevel(string traderID, PmcData pmcData)
@@ -360,17 +409,26 @@ public class TraderHelper(
         var traderBase = _databaseService.GetTrader(traderID).Base;
 
         int? loyaltyLevel = null;
-        if (pmcData.TradersInfo.TryGetValue(traderID, out var traderInfo)) loyaltyLevel = traderInfo.LoyaltyLevel;
+        if (pmcData.TradersInfo.TryGetValue(traderID, out var traderInfo))
+        {
+            loyaltyLevel = traderInfo.LoyaltyLevel;
+        }
 
-        if (loyaltyLevel is null or < 1) loyaltyLevel = 1;
+        if (loyaltyLevel is null or < 1)
+        {
+            loyaltyLevel = 1;
+        }
 
-        if (loyaltyLevel > traderBase.LoyaltyLevels.Count) loyaltyLevel = traderBase.LoyaltyLevels.Count;
+        if (loyaltyLevel > traderBase.LoyaltyLevels.Count)
+        {
+            loyaltyLevel = traderBase.LoyaltyLevels.Count;
+        }
 
         return traderBase.LoyaltyLevels[loyaltyLevel - 1 ?? 1];
     }
 
     /// <summary>
-    /// Store the purchase of an assort from a trader in the player profile
+    ///     Store the purchase of an assort from a trader in the player profile
     /// </summary>
     /// <param name="sessionID">Session id</param>
     /// <param name="newPurchaseDetails">New item assort id + count</param>
@@ -408,20 +466,22 @@ public class TraderHelper(
 
             if (profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount + purchasedItem.Count >
                 GetAccountTypeAdjustedTraderPurchaseLimit(
-                    (double)itemPurchased.Upd.BuyRestrictionMax,
+                    (double) itemPurchased.Upd.BuyRestrictionMax,
                     profile.CharacterData.PmcData.Info.GameVersion
                 )
                )
+            {
                 throw new Exception(
                     _localisationService.GetText(
                         "trader-unable_to_purchase_item_limit_reached",
                         new
                         {
-                            traderId = traderId,
+                            traderId,
                             limit = itemPurchased.Upd.BuyRestrictionMax
                         }
                     )
                 );
+            }
 
             profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseCount += purchasedItem.Count;
             profile.TraderPurchases[traderId][purchasedItem.ItemId].PurchaseTimestamp = currentTime;
@@ -429,37 +489,49 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// EoD and Unheard get a 20% bonus to personal trader limit purchases
+    ///     EoD and Unheard get a 20% bonus to personal trader limit purchases
     /// </summary>
     /// <param name="buyRestrictionMax">Existing value from trader item</param>
     /// <param name="gameVersion">Profiles game version</param>
     /// <returns>buyRestrictionMax value</returns>
     public double GetAccountTypeAdjustedTraderPurchaseLimit(double buyRestrictionMax, string gameVersion)
     {
-        if (_gameVersions.Contains(gameVersion)) return Math.Floor(buyRestrictionMax * 1.2);
+        if (_gameVersions.Contains(gameVersion))
+        {
+            return Math.Floor(buyRestrictionMax * 1.2);
+        }
 
         return buyRestrictionMax;
     }
 
     /// <summary>
-    /// Get the highest rouble price for an item from traders
-    /// UNUSED
+    ///     Get the highest rouble price for an item from traders
+    ///     UNUSED
     /// </summary>
     /// <param name="tpl">Item to look up highest price for</param>
     /// <returns>highest rouble cost for item</returns>
     public double GetHighestTraderPriceRouble(string tpl)
     {
-        if (_highestTraderPriceItems is not null) return _highestTraderPriceItems[tpl];
+        if (_highestTraderPriceItems is not null)
+        {
+            return _highestTraderPriceItems[tpl];
+        }
 
         // Init dict and fill
         foreach (var traderName in Traders.TradersDictionary)
         {
             // Skip some traders
-            if (traderName.Value == Traders.FENCE) continue;
+            if (traderName.Value == Traders.FENCE)
+            {
+                continue;
+            }
 
             // Get assorts for trader, skip trader if no assorts found
             var traderAssorts = _databaseService.GetTrader(traderName.Value).Assort;
-            if (traderAssorts is null) continue;
+            if (traderAssorts is null)
+            {
+                continue;
+            }
 
             // Get all item assorts that have parentId of hideout (base item and not a mod of other item)
             foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
@@ -484,7 +556,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Get the highest price item can be sold to trader for (roubles)
+    ///     Get the highest price item can be sold to trader for (roubles)
     /// </summary>
     /// <param name="tpl">Item to look up best trader sell-to price</param>
     /// <returns>Rouble price</returns>
@@ -498,7 +570,10 @@ public class TraderHelper(
             var traderBase = _databaseService.GetTrader(trader.Value).Base;
 
             // Skip traders that don't sell
-            if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category)) continue;
+            if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
+            {
+                continue;
+            }
 
             // Get loyalty level details player has achieved with this trader
             // Uses lowest loyalty level as this function is used before a player has logged into server
@@ -509,14 +584,17 @@ public class TraderHelper(
             var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice, 0);
 
             // Price from this trader is higher than highest found, update
-            if (priceTraderBuysItemAt > highestPrice) highestPrice = (int)priceTraderBuysItemAt;
+            if (priceTraderBuysItemAt > highestPrice)
+            {
+                highestPrice = (int) priceTraderBuysItemAt;
+            }
         }
 
         return highestPrice;
     }
 
     /// <summary>
-    /// Get a trader enum key by its value
+    ///     Get a trader enum key by its value
     /// </summary>
     /// <param name="traderId">Traders id</param>
     /// <returns>Traders key</returns>
@@ -535,16 +613,13 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Validates that the provided traderEnumValue exists in the Traders enum. If the value is valid, it returns the
-    /// same enum value, effectively serving as a trader ID; otherwise, it logs an error and returns an empty string.
-    /// This method provides a runtime check to prevent undefined behavior when using the enum as a dictionary key.
-    /// 
-    /// For example, instead of this:
-    /// const traderId = Traders[Traders.PRAPOR];
-    /// 
-    /// You can use safely use this:
-    /// const traderId = this.traderHelper.getValidTraderIdByEnumValue(Traders.PRAPOR);
-    /// 
+    ///     Validates that the provided traderEnumValue exists in the Traders enum. If the value is valid, it returns the
+    ///     same enum value, effectively serving as a trader ID; otherwise, it logs an error and returns an empty string.
+    ///     This method provides a runtime check to prevent undefined behavior when using the enum as a dictionary key.
+    ///     For example, instead of this:
+    ///     const traderId = Traders[Traders.PRAPOR];
+    ///     You can use safely use this:
+    ///     const traderId = this.traderHelper.getValidTraderIdByEnumValue(Traders.PRAPOR);
     /// </summary>
     /// <param name="traderEnumValue">The trader enum value to validate</param>
     /// <returns>The validated trader enum value as a string, or an empty string if invalid</returns>
@@ -556,7 +631,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Does the 'Traders' enum has a value that matches the passed in parameter
+    ///     Does the 'Traders' enum has a value that matches the passed in parameter
     /// </summary>
     /// <param name="key">Value to check for</param>
     /// <returns>True, values exists in Traders enum as a value</returns>
@@ -566,7 +641,7 @@ public class TraderHelper(
     }
 
     /// <summary>
-    /// Accepts a trader id
+    ///     Accepts a trader id
     /// </summary>
     /// <param name="traderId">Trader id</param>
     /// <returns>True if Traders enum has the param as a value</returns>

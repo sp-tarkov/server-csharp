@@ -1,6 +1,5 @@
 using Core.Context;
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Game;
 using Core.Models.Enums;
@@ -9,7 +8,7 @@ using Core.Models.Spt.Location;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -26,8 +25,8 @@ public class RaidTimeAdjustmentService(
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
 
     /// <summary>
-    /// Make alterations to the base map data passed in
-    /// Loot multipliers/waves/wave start times
+    ///     Make alterations to the base map data passed in
+    ///     Loot multipliers/waves/wave start times
     /// </summary>
     /// <param name="raidAdjustments">Changes to process on map</param>
     /// <param name="mapBase">Map to adjust</param>
@@ -44,22 +43,26 @@ public class RaidTimeAdjustmentService(
         var mapSettings = GetMapSettings(mapBase.Id);
         if (mapSettings.AdjustWaves)
             // Make alterations to bot spawn waves now player is simulated spawning later
+        {
             AdjustWaves(mapBase, raidAdjustments);
+        }
     }
 
     /// <summary>
-    /// Adjust the loot multiplier values passed in to be a % of their original value
+    ///     Adjust the loot multiplier values passed in to be a % of their original value
     /// </summary>
     /// <param name="mapLootMultiplers">Multipliers to adjust</param>
     /// <param name="loosePercent">Percent to change values to</param>
     protected void AdjustLootMultipliers(Dictionary<string, double> mapLootMultiplers, double? loosePercent)
     {
         foreach (var location in mapLootMultiplers)
+        {
             mapLootMultiplers[location.Key] = _randomUtil.GetPercentOfValue(mapLootMultiplers[location.Key], loosePercent ?? 1);
+        }
     }
 
     /// <summary>
-    /// Adjust bot waves to act as if player spawned later
+    ///     Adjust bot waves to act as if player spawned later
     /// </summary>
     /// <param name="mapBase">Map to adjust</param>
     /// <param name="raidAdjustments">Map adjustments</param>
@@ -74,8 +77,8 @@ public class RaidTimeAdjustmentService(
         foreach (var wave in mapBase.Waves)
         {
             // Dont let time fall below 0
-            wave.TimeMin -= (int)Math.Max(startSeconds, 0);
-            wave.TimeMax -= (int)Math.Max(startSeconds, 0);
+            wave.TimeMin -= (int) Math.Max(startSeconds, 0);
+            wave.TimeMax -= (int) Math.Max(startSeconds, 0);
         }
 
         _logger.Debug(
@@ -84,7 +87,7 @@ public class RaidTimeAdjustmentService(
     }
 
     /// <summary>
-    /// Create a randomised adjustment to the raid based on map data in location.json
+    ///     Create a randomised adjustment to the raid based on map data in location.json
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="request">Raid adjustment request</param>
@@ -105,7 +108,10 @@ public class RaidTimeAdjustmentService(
         };
 
         // Pmc raid, send default
-        if (request.Side.ToLower() == "pmc") return result;
+        if (request.Side.ToLower() == "pmc")
+        {
+            return result;
+        }
 
         // We're scav adjust values
         var mapSettings = GetMapSettings(request.Location);
@@ -113,7 +119,9 @@ public class RaidTimeAdjustmentService(
         // Chance of reducing raid time for scav, not guaranteed
         if (!_randomUtil.GetChance100(mapSettings.ReducedChancePercent))
             // Send default
+        {
             return result;
+        }
 
         // Get the weighted percent to reduce the raid time by
         var chosenRaidReductionPercent = int.Parse(
@@ -131,6 +139,7 @@ public class RaidTimeAdjustmentService(
 
         if (mapSettings.ReduceLootByPercent)
             // Store time reduction percent in app context so loot gen can pick it up later
+        {
             _applicationContext.AddValue(
                 ContextVariableType.RAID_ADJUSTMENTS,
                 new RaidChanges
@@ -140,6 +149,7 @@ public class RaidTimeAdjustmentService(
                     SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60
                 }
             );
+        }
 
         // Update result object with new time
         result.RaidTimeMinutes = newRaidTimeMinutes;
@@ -153,13 +163,16 @@ public class RaidTimeAdjustmentService(
         );
 
         var exitAdjustments = GetExitAdjustments(mapBase, newRaidTimeMinutes);
-        if (exitAdjustments is not null) result.ExitChanges.AddRange(exitAdjustments);
+        if (exitAdjustments is not null)
+        {
+            result.ExitChanges.AddRange(exitAdjustments);
+        }
 
         return result;
     }
 
     /// <summary>
-    /// Get raid start time settings for specific map
+    ///     Get raid start time settings for specific map
     /// </summary>
     /// <param name="location">Map Location e.g. bigmap</param>
     /// <returns>ScavRaidTimeLocationSettings</returns>
@@ -176,7 +189,7 @@ public class RaidTimeAdjustmentService(
     }
 
     /// <summary>
-    /// Adjust exit times to handle scavs entering raids part-way through
+    ///     Adjust exit times to handle scavs entering raids part-way through
     /// </summary>
     /// <param name="mapBase">Map base file player is on</param>
     /// <param name="newRaidTimeMinutes">How long raid is in minutes</param>
@@ -187,7 +200,10 @@ public class RaidTimeAdjustmentService(
         // Adjust train exits only
         foreach (var exit in mapBase.Exits)
         {
-            if (exit.PassageRequirement != RequirementState.Train) continue;
+            if (exit.PassageRequirement != RequirementState.Train)
+            {
+                continue;
+            }
 
             // Prepare train adjustment object
             var exitChange = new ExtractChange

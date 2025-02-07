@@ -1,8 +1,7 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Utils;
 using Core.Services;
-
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -14,7 +13,7 @@ public class PresetController(
 )
 {
     /// <summary>
-    /// Keyed by item tpl, value = collection of preset ids
+    ///     Keyed by item tpl, value = collection of preset ids
     /// </summary>
     public void Initialize()
     {

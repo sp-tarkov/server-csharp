@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -7,14 +6,15 @@ using Core.Models.Eft.Customization;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Routers.ItemEvents;
 
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class CustomizationItemEventRouter : ItemEventRouterDefinition
 {
-    protected ISptLogger<CustomizationItemEventRouter> _logger;
     protected CustomizationCallbacks _customizationCallbacks;
+    protected ISptLogger<CustomizationItemEventRouter> _logger;
 
     public CustomizationItemEventRouter
     (

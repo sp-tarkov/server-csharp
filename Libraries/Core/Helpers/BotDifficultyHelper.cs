@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
 using Core.Models.Spt.Config;
@@ -7,6 +6,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -24,7 +24,7 @@ public class BotDifficultyHelper(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
-    /// Get difficulty settings for desired bot type, if not found use assault bot types
+    ///     Get difficulty settings for desired bot type, if not found use assault bot types
     /// </summary>
     /// <param name="type">bot type to retrieve difficulty of</param>
     /// <param name="desiredDifficulty">difficulty to get settings for (easy/normal etc)</param>
@@ -65,7 +65,7 @@ public class BotDifficultyHelper(
     }
 
     /// <summary>
-    /// Get difficulty settings for a PMC
+    ///     Get difficulty settings for a PMC
     /// </summary>
     /// <param name="type">"usec" / "bear"</param>
     /// <param name="difficulty">what difficulty to retrieve</param>
@@ -83,7 +83,7 @@ public class BotDifficultyHelper(
     }
 
     /// <summary>
-    /// Translate chosen value from pre-raid difficulty dropdown into bot difficulty value
+    ///     Translate chosen value from pre-raid difficulty dropdown into bot difficulty value
     /// </summary>
     /// <param name="dropDownDifficulty">Dropdown difficulty value to convert</param>
     /// <returns>bot difficulty</returns>
@@ -101,7 +101,7 @@ public class BotDifficultyHelper(
     }
 
     /// <summary>
-    /// Choose a random difficulty from - easy/normal/hard/impossible
+    ///     Choose a random difficulty from - easy/normal/hard/impossible
     /// </summary>
     /// <returns>random difficulty</returns>
     public string ChooseRandomDifficulty()

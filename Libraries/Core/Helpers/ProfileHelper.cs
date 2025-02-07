@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
@@ -9,6 +8,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
@@ -27,10 +27,11 @@ public class ProfileHelper(
     ConfigServer _configServer
 )
 {
+    protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
-    /// Remove/reset a completed quest condtion from players profile quest data
+    ///     Remove/reset a completed quest condtion from players profile quest data
     /// </summary>
     /// <param name="sessionID">Session id</param>
     /// <param name="questConditionId">Quest with condition to remove</param>
@@ -42,12 +43,14 @@ public class ProfileHelper(
             var profileQuest = pmcData.Quests.FirstOrDefault(q => q.QId == conditionId);
 
             if (profileQuest != null) // Remove condition
+            {
                 profileQuest.CompletedConditions.Remove(conditionId);
+            }
         }
     }
 
     /// <summary>
-    /// Get all profiles from server
+    ///     Get all profiles from server
     /// </summary>
     /// <returns>Dictionary of profiles</returns>
     public Dictionary<string, SptProfile> GetProfiles()
@@ -56,7 +59,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get the pmc and scav profiles as an array by profile id
+    ///     Get the pmc and scav profiles as an array by profile id
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns>Array of PmcData objects</returns>
@@ -65,7 +68,9 @@ public class ProfileHelper(
         var output = new List<PmcData>();
 
         if (IsWiped(sessionId))
+        {
             return output;
+        }
 
         var FullProfileClone = _cloner.Clone(GetFullProfile(sessionId));
 
@@ -80,18 +85,21 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Sanitize any information from the profile that the client does not expect to receive
+    ///     Sanitize any information from the profile that the client does not expect to receive
     /// </summary>
     /// <param name="clonedProfile">A clone of the full player profile</param>
     protected void SanitizeProfileForClient(SptProfile clonedProfile)
     {
         // Remove `loyaltyLevel` from `TradersInfo`, as otherwise it causes the client to not
         // properly calculate the player's `loyaltyLevel`
-        foreach (var trader in clonedProfile.CharacterData.PmcData.TradersInfo.Values) trader.LoyaltyLevel = null;
+        foreach (var trader in clonedProfile.CharacterData.PmcData.TradersInfo.Values)
+        {
+            trader.LoyaltyLevel = null;
+        }
     }
 
     /// <summary>
-    /// Check if a nickname is used by another profile loaded by the server
+    ///     Check if a nickname is used by another profile loaded by the server
     /// </summary>
     /// <param name="nicknameRequest">nickname request object</param>
     /// <param name="sessionID">Session id</param>
@@ -120,7 +128,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Add experience to a PMC inside the players profile
+    ///     Add experience to a PMC inside the players profile
     /// </summary>
     /// <param name="sessionID">Session id</param>
     /// <param name="experienceToAdd">Experience to add to PMC character</param>
@@ -128,13 +136,17 @@ public class ProfileHelper(
     {
         var pmcData = GetPmcProfile(sessionID);
         if (pmcData != null)
+        {
             pmcData.Info.Experience += experienceToAdd;
+        }
         else
+        {
             _logger.Error($"Profile {sessionID} does not exist");
+        }
     }
 
     /// <summary>
-    /// Iterate all profiles and find matching pmc profile by provided id
+    ///     Iterate all profiles and find matching pmc profile by provided id
     /// </summary>
     /// <param name="pmcId">Profile id to find</param>
     /// <returns>PmcData</returns>
@@ -144,7 +156,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get experience value for given level
+    ///     Get experience value for given level
     /// </summary>
     /// <param name="level">Level to get xp for</param>
     /// <returns>Number of xp points for level</returns>
@@ -155,15 +167,20 @@ public class ProfileHelper(
         int? exp = 0;
 
         if (playerLevel >= expTable.Length) // make sure to not go out of bounds
+        {
             playerLevel = expTable.Length - 1;
+        }
 
-        for (var i = 0; i < playerLevel; i++) exp += expTable[i].Experience;
+        for (var i = 0; i < playerLevel; i++)
+        {
+            exp += expTable[i].Experience;
+        }
 
         return exp;
     }
 
     /// <summary>
-    /// Get the max level a player can be
+    ///     Get the max level a player can be
     /// </summary>
     /// <returns>Max level</returns>
     public int GetMaxLevel()
@@ -172,7 +189,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get default Spt data object
+    ///     Get default Spt data object
     /// </summary>
     /// <returns>Spt</returns>
     public Spt GetDefaultSptDataObject()
@@ -190,7 +207,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get full representation of a players profile json
+    ///     Get full representation of a players profile json
     /// </summary>
     /// <param name="sessionID">Profile id to get</param>
     /// <returns>SptProfile object</returns>
@@ -200,7 +217,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get full representation of a players profile JSON by the account ID, or undefined if not found
+    ///     Get full representation of a players profile JSON by the account ID, or undefined if not found
     /// </summary>
     /// <param name="accountId">Account ID to find</param>
     /// <returns></returns>
@@ -208,13 +225,15 @@ public class ProfileHelper(
     {
         var check = int.TryParse(accountID, out var aid);
         if (!check)
+        {
             _logger.Error($"Account {accountID} does not exist");
+        }
 
         return _saveServer.GetProfiles().FirstOrDefault(p => p.Value?.ProfileInfo?.Aid == aid).Value;
     }
 
     /// <summary>
-    /// Retrieve a ChatRoomMember formatted profile for the given session ID
+    ///     Retrieve a ChatRoomMember formatted profile for the given session ID
     /// </summary>
     /// <param name="sessionID">The session ID to return the profile for</param>
     /// <returns></returns>
@@ -222,13 +241,15 @@ public class ProfileHelper(
     {
         var pmcProfile = GetFullProfile(sessionID)?.CharacterData?.PmcData;
         if (pmcProfile == null)
+        {
             return null;
+        }
 
         return GetChatRoomMemberFromPmcProfile(pmcProfile);
     }
 
     /// <summary>
-    /// Retrieve a ChatRoomMember formatted profile for the given PMC profile data
+    ///     Retrieve a ChatRoomMember formatted profile for the given PMC profile data
     /// </summary>
     /// <param name="pmcProfile">The PMC profile data to format into a ChatRoomMember structure</param>
     /// <returns></returns>
@@ -250,7 +271,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get a PMC profile by its session id
+    ///     Get a PMC profile by its session id
     /// </summary>
     /// <param name="sessionID">Profile id to return</param>
     /// <returns>PmcData object</returns>
@@ -262,7 +283,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Is given user id a player
+    ///     Is given user id a player
     /// </summary>
     /// <param name="userId">Id to validate</param>
     /// <returns>True is a player</returns>
@@ -273,7 +294,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get a full profiles scav-specific sub-profile
+    ///     Get a full profiles scav-specific sub-profile
     /// </summary>
     /// <param name="sessionID">Profiles id</param>
     /// <returns>IPmcData object</returns>
@@ -283,7 +304,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get baseline counter values for a fresh profile
+    ///     Get baseline counter values for a fresh profile
     /// </summary>
     /// <returns>Default profile Stats object</returns>
     public Stats GetDefaultCounters()
@@ -293,7 +314,12 @@ public class ProfileHelper(
             Eft = new EftStats
             {
                 CarriedQuestItems = new List<string>(),
-                DamageHistory = new DamageHistory { LethalDamagePart = "Head", LethalDamage = null, BodyParts = new BodyPartsDamageHistory() },
+                DamageHistory = new DamageHistory
+                {
+                    LethalDamagePart = "Head",
+                    LethalDamage = null,
+                    BodyParts = new BodyPartsDamageHistory()
+                },
                 DroppedItems = new List<DroppedItem>(),
                 ExperienceBonusMult = 0,
                 FoundInRaidItems = new List<FoundInRaidItem>(),
@@ -317,7 +343,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// is this profile flagged for data removal
+    ///     is this profile flagged for data removal
     /// </summary>
     /// <param name="sessionID">Profile id</param>
     /// <returns>True if profile is to be wiped of data/progress</returns>
@@ -328,7 +354,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Iterate over player profile inventory items and find the secure container and remove it
+    ///     Iterate over player profile inventory items and find the secure container and remove it
     /// </summary>
     /// <param name="profile">Profile to remove secure container from</param>
     /// <returns>profile without secure container</returns>
@@ -349,8 +375,8 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Flag a profile as having received a gift
-    /// Store giftid in profile spt object
+    ///     Flag a profile as having received a gift
+    ///     Store giftid in profile spt object
     /// </summary>
     /// <param name="playerId">Player to add gift flag to</param>
     /// <param name="giftId">Gift player received</param>
@@ -380,7 +406,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Check if profile has recieved a gift by id
+    ///     Check if profile has recieved a gift by id
     /// </summary>
     /// <param name="playerId">Player profile to check for gift</param>
     /// <param name="giftId">Gift to check for</param>
@@ -391,22 +417,30 @@ public class ProfileHelper(
         var profile = GetFullProfile(playerId);
         if (profile == null)
         {
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Unable to gift {giftId}, Profile: {playerId} does not exist");
+            }
+
             return false;
         }
 
         if (profile.SptData.ReceivedGifts == null)
+        {
             return false;
+        }
 
         var giftDataFromProfile = profile.SptData.ReceivedGifts.FirstOrDefault(g => g.GiftId == giftId);
         if (giftDataFromProfile == null)
+        {
             return false;
+        }
 
         return giftDataFromProfile.Current >= maxGiftCount;
     }
 
     /// <summary>
-    /// Find Stat in profile counters and increment by one.
+    ///     Find Stat in profile counters and increment by one.
     /// </summary>
     /// <param name="counters">Counters to search for key</param>
     /// <param name="keyToIncrement">Key</param>
@@ -415,11 +449,13 @@ public class ProfileHelper(
     {
         var stat = counters.FirstOrDefault(c => c.Key.Contains(keyToIncrement));
         if (stat != null)
+        {
             stat.Value++;
+        }
     }
 
     /// <summary>
-    /// Check if player has a skill at elite level
+    ///     Check if player has a skill at elite level
     /// </summary>
     /// <param name="skill">Skill to check</param>
     /// <param name="pmcProfile">Profile to find skill in</param>
@@ -428,7 +464,9 @@ public class ProfileHelper(
     {
         var profileSkills = pmcProfile.Skills.Common;
         if (profileSkills == null)
+        {
             return false;
+        }
 
         var profileSkill = profileSkills.FirstOrDefault(s => s.Id == skill.ToString());
         if (profileSkill == null)
@@ -441,7 +479,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Add points to a specific skill in player profile
+    ///     Add points to a specific skill in player profile
     /// </summary>
     /// <param name="pmcProfile">Player profile with skill</param>
     /// <param name="skill">Skill to add points to</param>
@@ -478,7 +516,9 @@ public class ProfileHelper(
         }
 
         if (_inventoryConfig.SkillGainMultipliers.TryGetValue(skill.ToString(), out _))
+        {
             pointsToAddToSkill *= _inventoryConfig.SkillGainMultipliers[skill.ToString()];
+        }
 
         profileSkill.Progress += pointsToAddToSkill;
         profileSkill.Progress = Math.Min(profileSkill?.Progress ?? 0D, 5100); // Prevent skill from ever going above level 51 (5100)
@@ -486,7 +526,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Get a specific common skill from supplied profile
+    ///     Get a specific common skill from supplied profile
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="skill">Skill to look up and return value from</param>
@@ -495,13 +535,15 @@ public class ProfileHelper(
     {
         var skillToReturn = pmcData?.Skills?.Common.FirstOrDefault(s => s.Id == skill.ToString());
         if (skillToReturn == null)
+        {
             _logger.Warning($"Profile {pmcData.SessionId} does not have a skill named: {skill.ToString()}");
+        }
 
         return skillToReturn;
     }
 
     /// <summary>
-    /// Is the provided session id for a developer account
+    ///     Is the provided session id for a developer account
     /// </summary>
     /// <param name="sessionID">Profile id to check</param>
     /// <returns>True if account is developer</returns>
@@ -511,7 +553,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Add stash row bonus to profile or increments rows given count if it already exists
+    ///     Add stash row bonus to profile or increments rows given count if it already exists
     /// </summary>
     /// <param name="sessionId">Profile id to give rows to</param>
     /// <param name="rowsToAdd">How many rows to give profile</param>
@@ -520,6 +562,7 @@ public class ProfileHelper(
         var profile = GetPmcProfile(sessionId);
         var existingBonus = profile?.Bonuses?.FirstOrDefault(b => b.Type == BonusType.StashRows);
         if (existingBonus != null)
+        {
             profile?.Bonuses?.Add(
                 new Bonus
                 {
@@ -531,12 +574,15 @@ public class ProfileHelper(
                     IsProduction = false
                 }
             );
+        }
         else
+        {
             existingBonus.Value += rowsToAdd;
+        }
     }
 
     /// <summary>
-    /// Iterate over all bonuses and sum up all bonuses of desired type in provided profile
+    ///     Iterate over all bonuses and sum up all bonuses of desired type in provided profile
     /// </summary>
     /// <param name="pmcProfile">Player profile</param>
     /// <param name="desiredBonus">Bonus to sum up</param>
@@ -545,10 +591,12 @@ public class ProfileHelper(
     {
         var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
         if (bonuses.Count() == 0)
+        {
             return 0;
+        }
 
         // Sum all bonuses found above
-        return bonuses?.Sum(new Func<Bonus, double>(bonus => bonus?.Value ?? 0)) ?? 0;
+        return bonuses?.Sum(bonus => bonus?.Value ?? 0) ?? 0;
     }
 
     public bool PlayerIsFleaBanned(PmcData pmcProfile)
@@ -557,15 +605,13 @@ public class ProfileHelper(
         return pmcProfile?.Info?.Bans?.Any(b => b.BanType == BanType.RAGFAIR && currentTimestamp < b.DateTime) ?? false;
     }
 
-    protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
-
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)
     {
         return gameEditions.Contains(pmcProfile.Info.GameVersion);
     }
 
     /// <summary>
-    /// Find a profiles "Pockets" item and replace its tpl with passed in value
+    ///     Find a profiles "Pockets" item and replace its tpl with passed in value
     /// </summary>
     /// <param name="pmcProfile">Player profile</param>
     /// <param name="newPocketTpl">New tpl to set profiles Pockets to</param>
@@ -580,11 +626,14 @@ public class ProfileHelper(
             return;
         }
 
-        foreach (var pocket in pockets) pocket.Template = newPocketTpl;
+        foreach (var pocket in pockets)
+        {
+            pocket.Template = newPocketTpl;
+        }
     }
 
     /// <summary>
-    /// Return all quest items current in the supplied profile
+    ///     Return all quest items current in the supplied profile
     /// </summary>
     /// <param name="profile">Profile to get quest items from</param>
     /// <returns>List of item objects</returns>
@@ -594,7 +643,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Return a favorites list in the format expected by the GetOtherProfile call
+    ///     Return a favorites list in the format expected by the GetOtherProfile call
     /// </summary>
     /// <param name="profile"></param>
     /// <returns>A list of Item objects representing the favorited data</returns>
@@ -622,9 +671,11 @@ public class ProfileHelper(
     public void AddHideoutCustomisationUnlock(SptProfile fullProfile, Reward reward, string source)
     {
         if (fullProfile?.CustomisationUnlocks == null)
+        {
             fullProfile.CustomisationUnlocks = new List<CustomisationStorage>();
+        }
 
-        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == (string)reward.Target) ?? false)
+        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == (string) reward.Target) ?? false)
         {
             _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
             return;

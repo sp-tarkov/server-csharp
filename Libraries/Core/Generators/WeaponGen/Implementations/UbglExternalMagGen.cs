@@ -1,6 +1,6 @@
-﻿using SptCommon.Annotations;
-using Core.Helpers;
+﻿using Core.Helpers;
 using Core.Models.Enums;
+using SptCommon.Annotations;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
@@ -27,7 +27,7 @@ public class UbglExternalMagGen(
         );
         _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
-            (int)bulletCount,
+            (int) bulletCount,
             inventoryMagGen.GetPmcInventory(),
             [EquipmentSlots.TacticalVest]
         );

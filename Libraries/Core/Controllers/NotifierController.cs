@@ -1,9 +1,6 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Notifier;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using Core.Services;
-using System.Diagnostics.Tracing;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -14,11 +11,10 @@ public class NotifierController(
 )
 {
     /// <summary>
-    /// Resolve an array of session notifications.
-    ///
-    /// If no notifications are currently queued then intermittently check for new notifications until either
-    /// one or more appear or when a timeout expires.
-    /// If no notifications are available after the timeout, use a default message.
+    ///     Resolve an array of session notifications.
+    ///     If no notifications are currently queued then intermittently check for new notifications until either
+    ///     one or more appear or when a timeout expires.
+    ///     If no notifications are available after the timeout, use a default message.
     /// </summary>
     /// <param name="sessionId"></param>
     public async Task NotifyAsync(string sessionId)
@@ -67,7 +63,7 @@ public class NotifierController(
     }
 
     /// <summary>
-    /// Handle client/notifier/channel/create
+    ///     Handle client/notifier/channel/create
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -84,7 +80,6 @@ public class NotifierController(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>

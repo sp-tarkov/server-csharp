@@ -1,6 +1,5 @@
 using Core.Utils;
 using Core.Utils.Cloners;
-using System.Net.Mail;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;

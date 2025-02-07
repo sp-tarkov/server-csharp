@@ -5,17 +5,37 @@ namespace Core.Models.Eft.Hideout;
 public record HideoutSettingsBase
 {
     [JsonPropertyName("generatorSpeedWithoutFuel")]
-    public double? GeneratorSpeedWithoutFuel { get; set; }
+    public double? GeneratorSpeedWithoutFuel
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("generatorFuelFlowRate")]
-    public double? GeneratorFuelFlowRate { get; set; }
+    public double? GeneratorFuelFlowRate
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("airFilterUnitFlowRate")]
-    public double? AirFilterUnitFlowRate { get; set; }
+    public double? AirFilterUnitFlowRate
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("cultistAmuletBonusPercent")]
-    public double? CultistAmuletBonusPercent { get; set; }
+    public double? CultistAmuletBonusPercent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("gpuBoostRate")]
-    public double? GpuBoostRate { get; set; }
+    public double? GpuBoostRate
+    {
+        get;
+        set;
+    }
 }

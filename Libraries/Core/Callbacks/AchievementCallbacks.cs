@@ -1,7 +1,7 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -12,7 +12,7 @@ public class AchievementCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/achievement/list
+    ///     Handle client/achievement/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -24,7 +24,7 @@ public class AchievementCallbacks(
     }
 
     /// <summary>
-    /// Handle client/achievement/statistic
+    ///     Handle client/achievement/statistic
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

@@ -16,8 +16,8 @@ public class BotCallbacks(
 )
 {
     /// <summary>
-    /// Handle singleplayer/settings/bot/limit
-    /// Is called by client to define each bot roles wave limit
+    ///     Handle singleplayer/settings/bot/limit
+    ///     Is called by client to define each bot roles wave limit
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -31,7 +31,7 @@ public class BotCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/difficulty
+    ///     Handle singleplayer/settings/bot/difficulty
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -43,7 +43,9 @@ public class BotCallbacks(
         var type = splitUrl[^2].ToLower();
         var difficulty = splitUrl[^1];
         if (difficulty == "core")
+        {
             return _httpResponseUtil.NoBody(_botController.GetBotCoreDifficulty());
+        }
 
         var raidConfig = _applicationContext.GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
             ?.GetValue<GetRaidConfigurationRequestData>();
@@ -52,7 +54,7 @@ public class BotCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/difficulties
+    ///     Handle singleplayer/settings/bot/difficulties
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -64,7 +66,7 @@ public class BotCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/bot/generate
+    ///     Handle client/game/bot/generate
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -76,7 +78,7 @@ public class BotCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/maxCap
+    ///     Handle singleplayer/settings/bot/maxCap
     /// </summary>
     /// <returns></returns>
     public string GetBotCap(string url, EmptyRequestData info, string sessionID)
@@ -87,7 +89,7 @@ public class BotCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/getBotBehaviours
+    ///     Handle singleplayer/settings/bot/getBotBehaviours
     /// </summary>
     /// <returns></returns>
     public string GetBotBehaviours()

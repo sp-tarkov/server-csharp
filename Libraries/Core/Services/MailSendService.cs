@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
@@ -8,6 +7,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -58,8 +58,8 @@ public class MailSendService(
                     "mailsend-missing_trader",
                     new
                     {
-                        messageType = messageType,
-                        sessionId = sessionId
+                        messageType,
+                        sessionId
                     }
                 )
             );
@@ -85,10 +85,14 @@ public class MailSendService(
         }
 
         if (systemData is not null)
+        {
             details.SystemData = systemData;
+        }
 
         if (ragfair is not null)
+        {
             details.RagfairDetails = ragfair;
+        }
 
         SendMessageToPlayer(details);
     }
@@ -120,8 +124,8 @@ public class MailSendService(
                     "mailsend-missing_trader",
                     new
                     {
-                        messageType = messageType,
-                        sessionId = sessionId
+                        messageType,
+                        sessionId
                     }
                 )
             );
@@ -145,16 +149,24 @@ public class MailSendService(
         {
             details.Items.AddRange(items);
             if (maxStorageTimeSeconds is not null && maxStorageTimeSeconds > 0)
+            {
                 details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
+            }
             else
+            {
                 details.ItemsMaxStorageLifetimeSeconds = 172800;
+            }
         }
 
         if (systemData is not null)
+        {
             details.SystemData = systemData;
+        }
 
         if (ragfair is not null)
+        {
             details.RagfairDetails = ragfair;
+        }
 
         SendMessageToPlayer(details);
     }
@@ -191,7 +203,9 @@ public class MailSendService(
         }
 
         if ((profileChangeEvents?.Count ?? 0) > 0)
+        {
             details.ProfileChangeEvents = profileChangeEvents;
+        }
 
         SendMessageToPlayer(details);
     }
@@ -220,7 +234,9 @@ public class MailSendService(
         }
 
         if ((profileChangeEvents?.Count ?? 0) > 0)
+        {
             details.ProfileChangeEvents = profileChangeEvents;
+        }
 
         SendMessageToPlayer(details);
     }
@@ -281,13 +297,18 @@ public class MailSendService(
         var itemsToSendToPlayer = ProcessItemsBeforeAddingToMail(senderDialog.Type, messageDetails);
 
         // If there's items to send to player, flag dialog as containing attachments
-        if ((itemsToSendToPlayer.Data?.Count ?? 0) > 0) senderDialog.AttachmentsNew += 1;
+        if ((itemsToSendToPlayer.Data?.Count ?? 0) > 0)
+        {
+            senderDialog.AttachmentsNew += 1;
+        }
 
         // Store reward items inside message and set appropriate flags inside message
         AddRewardItemsToMessage(message, itemsToSendToPlayer, messageDetails.ItemsMaxStorageLifetimeSeconds);
 
         if (messageDetails.ProfileChangeEvents is not null)
+        {
             message.ProfileChangeEvents = messageDetails.ProfileChangeEvents;
+        }
 
         // Add message to dialog
         senderDialog.Messages.Add(message);
@@ -355,18 +376,21 @@ public class MailSendService(
         if (messageDetails.ReplyTo is not null)
         {
             var replyMessage = GetMessageToReplyTo(messageDetails.RecipientId, messageDetails.ReplyTo, dialogId);
-            if (replyMessage is not null) message.ReplyTo = replyMessage;
+            if (replyMessage is not null)
+            {
+                message.ReplyTo = replyMessage;
+            }
         }
 
         return message;
     }
 
     /**
- * @param recipientId The id of the recipient
- * @param replyToId The id of the message to reply to
- * @param dialogueId The id of the dialogue (traderId or profileId)
- * @returns A new instance with data from the found message, otherwise undefined
- */
+     * @param recipientId The id of the recipient
+     * @param replyToId The id of the message to reply to
+     * @param dialogueId The id of the dialogue (traderId or profileId)
+     * @returns A new instance with data from the found message, otherwise undefined
+     */
     protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId)
     {
         var currentDialogue = _dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
@@ -378,7 +402,10 @@ public class MailSendService(
         }
 
         var messageToReplyTo = currentDialogue.Messages?.FirstOrDefault(message => message.Id == replyToId);
-        if (messageToReplyTo is null) return null;
+        if (messageToReplyTo is null)
+        {
+            return null;
+        }
 
         return new ReplyTo
         {
@@ -432,12 +459,15 @@ public class MailSendService(
 
             // No parent id, generate random id and add (doesn't need to be actual parentId from db, only unique)
             if (parentItem?.ParentId is null)
+            {
                 parentItem.ParentId = _hashUtil.Generate();
+            }
 
             // Prep return object
             itemsToSendToPlayer = new MessageItems
             {
-                Stash = parentItem.ParentId, Data = new List<Item>()
+                Stash = parentItem.ParentId,
+                Data = new List<Item>()
             };
 
             // Ensure Ids are unique and cont collide with items in player inventory later
@@ -475,11 +505,14 @@ public class MailSendService(
                 if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     // look for child cartridge objects
-                    var childItems = itemsToSendToPlayer.Data?.Where((x) => x.ParentId == reward.Id);
+                    var childItems = itemsToSendToPlayer.Data?.Where(x => x.ParentId == reward.Id);
                     if (childItems is null || !childItems.Any())
                     {
                         // No cartridges found, generate and add to rewards
-                        var boxAndCartridges = new List<Item> { reward };
+                        var boxAndCartridges = new List<Item>
+                        {
+                            reward
+                        };
                         _itemHelper.AddCartridgesToAmmoBox(boxAndCartridges, itemTemplate);
 
                         // Push box + cartridge children into array
@@ -494,7 +527,9 @@ public class MailSendService(
                 else
                 {
                     if (itemTemplate.Properties.StackSlots is not null)
+                    {
                         _logger.Error(_localisationService.GetText("mail-unable_to_give_gift_not_handled", itemTemplate.Id));
+                    }
 
                     // Item is sanitised and ready to be pushed into holding array
                     itemsToSendToPlayer.Data.Add(reward);
@@ -518,18 +553,24 @@ public class MailSendService(
     {
         // Only one item in reward, return it
         if (items?.Count == 1)
+        {
             return items[0];
+        }
 
         // Find first item with slotId that indicates its a 'base' item
         var item = items.FirstOrDefault(x => _slotNames.Contains(x.SlotId ?? ""));
         if (item is not null)
+        {
             return item;
+        }
 
         // Not a singlular item + no items have a hideout/main slotid
         // Look for first item without parent id
         item = items.FirstOrDefault(x => x.ParentId is null);
         if (item is not null)
+        {
             return item;
+        }
 
         // Just return first item in array
         return items[0];
@@ -544,13 +585,17 @@ public class MailSendService(
     private Dialogue GetDialog(SendMessageDetails messageDetails)
     {
         var senderId = GetMessageSenderIdByType(messageDetails);
-        if (senderId is null) throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
+        if (senderId is null)
+        {
+            throw new Exception(_localisationService.GetText("mail-unable_to_find_message_sender_by_id", messageDetails.Sender));
+        }
 
         var dialogsInProfile = _dialogueHelper.GetDialogsForProfile(messageDetails.RecipientId);
 
         // Does dialog exist
         if (!dialogsInProfile.ContainsKey(senderId))
             // Doesn't exist, create
+        {
             dialogsInProfile[senderId] = new Dialogue
             {
                 Id = senderId,
@@ -560,6 +605,7 @@ public class MailSendService(
                 New = 0,
                 AttachmentsNew = 0
             };
+        }
 
         return dialogsInProfile[senderId];
     }
@@ -572,19 +618,29 @@ public class MailSendService(
     private string? GetMessageSenderIdByType(SendMessageDetails messageDetails)
     {
         if (messageDetails.Sender == MessageType.SYSTEM_MESSAGE)
+        {
             return _systemSenderId;
+        }
 
         if (messageDetails.Sender == MessageType.NPC_TRADER || messageDetails.DialogType == MessageType.NPC_TRADER)
+        {
             return messageDetails.Trader is not null ? _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader) : null;
+        }
 
         if (messageDetails.Sender == MessageType.USER_MESSAGE)
+        {
             return messageDetails.SenderDetails?.Id;
+        }
 
         if (messageDetails.SenderDetails?.Id is not null)
+        {
             return messageDetails.SenderDetails.Id;
+        }
 
         if (messageDetails.Trader is not null)
+        {
             return _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader);
+        }
 
         _logger.Warning($"Unable to handle message of type: {messageDetails.Sender}");
         return null;

@@ -6,8 +6,16 @@ namespace Core.Models.Eft.Game;
 public record GetRaidTimeRequest : IRequestData
 {
     [JsonPropertyName("Side")]
-    public string? Side { get; set; }
+    public string? Side
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Location")]
-    public string? Location { get; set; }
+    public string? Location
+    {
+        get;
+        set;
+    }
 }

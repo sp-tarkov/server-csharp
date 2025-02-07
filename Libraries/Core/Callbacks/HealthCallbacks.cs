@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Health;
 using Core.Models.Eft.ItemEvent;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -16,7 +16,7 @@ public class HealthCallbacks(
 )
 {
     /// <summary>
-    /// Custom spt server request found in modules/QTEPatch.cs
+    ///     Custom spt server request found in modules/QTEPatch.cs
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info">HealthListener.Instance.CurrentHealth class</param>
@@ -29,7 +29,7 @@ public class HealthCallbacks(
     }
 
     /// <summary>
-    /// Handle Eat
+    ///     Handle Eat
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -41,7 +41,7 @@ public class HealthCallbacks(
     }
 
     /// <summary>
-    /// Handle Heal
+    ///     Handle Heal
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -53,7 +53,7 @@ public class HealthCallbacks(
     }
 
     /// <summary>
-    /// Handle RestoreHealth
+    ///     Handle RestoreHealth
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

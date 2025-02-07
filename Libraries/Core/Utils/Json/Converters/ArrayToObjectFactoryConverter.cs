@@ -12,12 +12,18 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter) Activator.CreateInstance(typeof(ArrayToObjectConverter<>).MakeGenericType(typeToConvert));
     }
 
     private class ArrayToObjectConverter<T> : JsonConverter<T?>
     {
-        public override bool HandleNull => true;
+        public override bool HandleNull
+        {
+            get
+            {
+                return true;
+            }
+        }
 
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
@@ -41,9 +47,13 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
             if (value == null)
+            {
                 JsonSerializer.Serialize(writer, new List<object>(), options);
+            }
             else
+            {
                 JsonSerializer.Serialize(writer, value, options);
+            }
         }
     }
 }

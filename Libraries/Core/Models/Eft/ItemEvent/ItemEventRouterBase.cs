@@ -1,169 +1,348 @@
+using System.Text.Json.Serialization;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 
 namespace Core.Models.Eft.ItemEvent;
 
-using System.Text.Json.Serialization;
-
 public record ItemEventRouterBase
 {
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("warnings")]
-    public List<Warning>? Warnings { get; set; }
+    public List<Warning>? Warnings
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("profileChanges")]
-    public Dictionary<string, ProfileChange> ProfileChanges { get; set; }
+    public Dictionary<string, ProfileChange> ProfileChanges
+    {
+        get;
+        set;
+    }
 }
 
 public record Warning
 {
     [JsonPropertyName("index")]
-    public int? Index { get; set; }
+    public int? Index
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("errmsg")]
-    public string? ErrorMessage { get; set; }
+    public string? ErrorMessage
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("code")]
-    public BackendErrorCodes? Code { get; set; }
+    public BackendErrorCodes? Code
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("data")]
-    public object? Data { get; set; }
+    public object? Data
+    {
+        get;
+        set;
+    }
 }
 
 public record ProfileChange
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("experience")]
-    public double? Experience { get; set; }
+    public double? Experience
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("quests")]
-    public List<Quest>? Quests { get; set; }
+    public List<Quest>? Quests
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("ragFairOffers")]
-    public List<RagfairOffer>? RagFairOffers { get; set; }
+    public List<RagfairOffer>? RagFairOffers
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponBuilds")]
-    public List<WeaponBuildChange>? WeaponBuilds { get; set; }
+    public List<WeaponBuildChange>? WeaponBuilds
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("equipmentBuilds")]
-    public List<EquipmentBuildChange>? EquipmentBuilds { get; set; }
+    public List<EquipmentBuildChange>? EquipmentBuilds
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("items")]
-    public ItemChanges? Items { get; set; }
+    public ItemChanges? Items
+    {
+        get;
+        set;
+    }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("production")]
-    public Dictionary<string, Production>? Production { get; set; }
+    public Dictionary<string, Production>? Production
+    {
+        get;
+        set;
+    }
 
-    /** Hideout area improvement id */
+    /**
+     * Hideout area improvement id
+     */
     [JsonPropertyName("improvements")]
-    public Dictionary<string, HideoutImprovement>? Improvements { get; set; }
+    public Dictionary<string, HideoutImprovement>? Improvements
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("skills")]
-    public Skills? Skills { get; set; }
+    public Skills? Skills
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("health")]
-    public BotBaseHealth Health { get; set; }
+    public BotBaseHealth Health
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("traderRelations")]
-    public Dictionary<string, TraderData>? TraderRelations { get; set; }
+    public Dictionary<string, TraderData>? TraderRelations
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("moneyTransferLimitData")]
-    public MoneyTransferLimits? MoneyTransferLimitData { get; set; }
+    public MoneyTransferLimits? MoneyTransferLimitData
+    {
+        get;
+        set;
+    }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("repeatableQuests")]
-    public List<PmcDataRepeatableQuest>? RepeatableQuests { get; set; }
+    public List<PmcDataRepeatableQuest>? RepeatableQuests
+    {
+        get;
+        set;
+    }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("recipeUnlocked")]
-    public Dictionary<string, bool>? RecipeUnlocked { get; set; }
+    public Dictionary<string, bool>? RecipeUnlocked
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("changedHideoutStashes")]
-    public Dictionary<string, HideoutStashItem>? ChangedHideoutStashes { get; set; }
+    public Dictionary<string, HideoutStashItem>? ChangedHideoutStashes
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("questsStatus")]
-    public List<QuestStatus>? QuestsStatus { get; set; }
+    public List<QuestStatus>? QuestsStatus
+    {
+        get;
+        set;
+    }
 }
 
 public record HideoutStashItem
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("tpl")]
-    public string? Template { get; set; }
+    public string? Template
+    {
+        get;
+        set;
+    }
 }
 
 public record WeaponBuildChange
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("root")]
-    public string? Root { get; set; }
+    public string? Root
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("items")]
-    public List<Item>? Items { get; set; }
+    public List<Item>? Items
+    {
+        get;
+        set;
+    }
 }
 
 public record EquipmentBuildChange
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("name")]
-    public string? Name { get; set; }
+    public string? Name
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("root")]
-    public string? Root { get; set; }
+    public string? Root
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("items")]
-    public List<Item>? Items { get; set; }
+    public List<Item>? Items
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("fastpanel")]
-    public List<object>? FastPanel { get; set; }
+    public List<object>? FastPanel
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("buildType")]
-    public EquipmentBuildType? BuildType { get; set; }
+    public EquipmentBuildType? BuildType
+    {
+        get;
+        set;
+    }
 }
 
 public record ItemChanges
 {
     [JsonPropertyName("new")]
-    public List<Item>? NewItems { get; set; }
+    public List<Item>? NewItems
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("change")]
-    public List<Item>? ChangedItems { get; set; }
+    public List<Item>? ChangedItems
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("del")]
-    public List<Item> DeletedItems { get; set; } // Only needs _id property
+    public List<Item> DeletedItems
+    {
+        get;
+        set;
+    } // Only needs _id property
 }
 
-/** Related to TraderInfo */
+/**
+ * Related to TraderInfo
+ */
 public record TraderData
 {
     [JsonPropertyName("salesSum")]
-    public double? SalesSum { get; set; }
+    public double? SalesSum
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("standing")]
-    public double? Standing { get; set; }
+    public double? Standing
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("loyalty")]
-    public double? Loyalty { get; set; }
+    public double? Loyalty
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("unlocked")]
-    public bool? Unlocked { get; set; }
+    public bool? Unlocked
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("disabled")]
-    public bool? Disabled { get; set; }
+    public bool? Disabled
+    {
+        get;
+        set;
+    }
 }

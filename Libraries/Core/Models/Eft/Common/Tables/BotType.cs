@@ -2,77 +2,152 @@ using System.Text.Json.Serialization;
 using Core.Models.Common;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
-using SptCommon.Extensions;
 
 namespace Core.Models.Eft.Common.Tables;
 
 public record BotType
 {
     [JsonPropertyName("appearance")]
-    public Appearance? BotAppearance { get; set; }
+    public Appearance? BotAppearance
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("chances")]
-    public Chances? BotChances { get; set; }
+    public Chances? BotChances
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("difficulty")]
-    public Dictionary<string, DifficultyCategories>? BotDifficulty { get; set; }
+    public Dictionary<string, DifficultyCategories>? BotDifficulty
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("experience")]
-    public Experience? BotExperience { get; set; }
+    public Experience? BotExperience
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("firstName")]
-    public List<string>? FirstNames { get; set; }
+    public List<string>? FirstNames
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("generation")]
-    public Generation? BotGeneration { get; set; }
+    public Generation? BotGeneration
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("health")]
-    public BotTypeHealth? BotHealth { get; set; }
+    public BotTypeHealth? BotHealth
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("inventory")]
-    public BotTypeInventory? BotInventory { get; set; }
+    public BotTypeInventory? BotInventory
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("lastName")]
-    public List<string>? LastNames { get; set; }
+    public List<string>? LastNames
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("skills")]
-    public BotDbSkills? BotSkills { get; set; }
+    public BotDbSkills? BotSkills
+    {
+        get;
+        set;
+    }
 }
 
 public record Appearance
 {
     [JsonPropertyName("body")]
-    public Dictionary<string, double>? Body { get; set; }
+    public Dictionary<string, double>? Body
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("feet")]
-    public Dictionary<string, double>? Feet { get; set; }
+    public Dictionary<string, double>? Feet
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("hands")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double>? Hands { get; set; }
+    public Dictionary<string, double>? Hands
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("head")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double>? Head { get; set; }
+    public Dictionary<string, double>? Head
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("voice")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double>? Voice { get; set; }
+    public Dictionary<string, double>? Voice
+    {
+        get;
+        set;
+    }
 }
 
 public record Chances
 {
     [JsonPropertyName("equipment")]
-    public Dictionary<string, double>? EquipmentChances { get; set; }
+    public Dictionary<string, double>? EquipmentChances
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponMods")]
-    public Dictionary<string, double>? WeaponModsChances { get; set; }
+    public Dictionary<string, double>? WeaponModsChances
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("equipmentMods")]
-    public Dictionary<string, double>? EquipmentModsChances { get; set; }
+    public Dictionary<string, double>? EquipmentModsChances
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("mods")]
-    public Dictionary<string, double>? Mods { get; set; }
+    public Dictionary<string, double>? Mods
+    {
+        get;
+        set;
+    }
 }
 
 /* record removed in favor of Dictionary<string, double>
@@ -243,180 +318,529 @@ public double? ModPistol_Grip { get; set; }
 public record Difficulties
 {
     [JsonPropertyName("easy")]
-    public DifficultyCategories? Easy { get; set; }
+    public DifficultyCategories? Easy
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("normal")]
-    public DifficultyCategories? Normal { get; set; }
+    public DifficultyCategories? Normal
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("hard")]
-    public DifficultyCategories? Hard { get; set; }
+    public DifficultyCategories? Hard
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("impossible")]
-    public DifficultyCategories? Impossible { get; set; }
+    public DifficultyCategories? Impossible
+    {
+        get;
+        set;
+    }
 }
 
 public record DifficultyCategories
 {
-    public Dictionary<string, object>? Aiming { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Boss { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Change { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Core { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Cover { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Grenade { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Hearing { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Lay { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Look { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Mind { get; set; } // TODO: string | number | boolean | string[]
-    public Dictionary<string, object>? Move { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Patrol { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Scattering { get; set; } // TODO: string | number | boolean
-    public Dictionary<string, object>? Shoot { get; set; } // TODO: string | number | boolean
+    public Dictionary<string, object>? Aiming
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Boss
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Change
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Core
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Cover
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Grenade
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Hearing
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Lay
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Look
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Mind
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean | string[]
+
+    public Dictionary<string, object>? Move
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Patrol
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Scattering
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
+
+    public Dictionary<string, object>? Shoot
+    {
+        get;
+        set;
+    } // TODO: string | number | boolean
 }
 
 public record Experience
 {
-    /** key = bot difficulty */
+    /**
+     * key = bot difficulty
+     */
     [JsonPropertyName("aggressorBonus")]
-    public Dictionary<string, double>? AggressorBonus { get; set; }
+    public Dictionary<string, double>? AggressorBonus
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("level")]
-    public MinMax? Level { get; set; }
+    public MinMax? Level
+    {
+        get;
+        set;
+    }
 
-    /** key = bot difficulty */
+    /**
+     * key = bot difficulty
+     */
     [JsonPropertyName("reward")]
-    public Dictionary<string, MinMax>? Reward { get; set; }
+    public Dictionary<string, MinMax>? Reward
+    {
+        get;
+        set;
+    }
 
-    /** key = bot difficulty */
+    /**
+     * key = bot difficulty
+     */
     [JsonPropertyName("standingForKill")]
-    public Dictionary<string, double>? StandingForKill { get; set; }
+    public Dictionary<string, double>? StandingForKill
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("useSimpleAnimator")]
-    public bool? UseSimpleAnimator { get; set; }
+    public bool? UseSimpleAnimator
+    {
+        get;
+        set;
+    }
 }
 
 public record Generation
 {
     [JsonPropertyName("items")]
-    public GenerationWeightingItems? Items { get; set; }
+    public GenerationWeightingItems? Items
+    {
+        get;
+        set;
+    }
 }
 
 public record GenerationData
 {
-    /** key: number of items, value: weighting */
+    /**
+     * key: number of items, value: weighting
+     */
     [JsonPropertyName("weights")]
-    public Dictionary<double, double>? Weights { get; set; }
+    public Dictionary<double, double>? Weights
+    {
+        get;
+        set;
+    }
 
-    /** Array of item tpls */
+    /**
+     * Array of item tpls
+     */
     [JsonPropertyName("whitelist")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, double>? Whitelist { get; set; }
+    public Dictionary<string, double>? Whitelist
+    {
+        get;
+        set;
+    }
 }
 
 public record GenerationWeightingItems
 {
     [JsonPropertyName("grenades")]
-    public GenerationData Grenades { get; set; }
+    public GenerationData Grenades
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("healing")]
-    public GenerationData Healing { get; set; }
+    public GenerationData Healing
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("drugs")]
-    public GenerationData Drugs { get; set; }
+    public GenerationData Drugs
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("food")]
-    public GenerationData Food { get; set; }
+    public GenerationData Food
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("drink")]
-    public GenerationData Drink { get; set; }
+    public GenerationData Drink
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("currency")]
-    public GenerationData Currency { get; set; }
+    public GenerationData Currency
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("stims")]
-    public GenerationData Stims { get; set; }
+    public GenerationData Stims
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("backpackLoot")]
-    public GenerationData BackpackLoot { get; set; }
+    public GenerationData BackpackLoot
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("pocketLoot")]
-    public GenerationData PocketLoot { get; set; }
+    public GenerationData PocketLoot
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("vestLoot")]
-    public GenerationData VestLoot { get; set; }
+    public GenerationData VestLoot
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("magazines")]
-    public GenerationData Magazines { get; set; }
+    public GenerationData Magazines
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("specialItems")]
-    public GenerationData SpecialItems { get; set; }
+    public GenerationData SpecialItems
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("looseLoot")]
-    public GenerationData LooseLoot { get; set; }
+    public GenerationData LooseLoot
+    {
+        get;
+        set;
+    }
 }
 
 public record BotTypeHealth
 {
-    public List<BodyPart>? BodyParts { get; set; }
-    public MinMax? Energy { get; set; }
-    public MinMax? Hydration { get; set; }
-    public MinMax? Temperature { get; set; }
+    public List<BodyPart>? BodyParts
+    {
+        get;
+        set;
+    }
+
+    public MinMax? Energy
+    {
+        get;
+        set;
+    }
+
+    public MinMax? Hydration
+    {
+        get;
+        set;
+    }
+
+    public MinMax? Temperature
+    {
+        get;
+        set;
+    }
 }
 
 public record BodyPart
 {
-    public MinMax? Chest { get; set; }
-    public MinMax? Head { get; set; }
-    public MinMax? LeftArm { get; set; }
-    public MinMax? LeftLeg { get; set; }
-    public MinMax? RightArm { get; set; }
-    public MinMax? RightLeg { get; set; }
-    public MinMax? Stomach { get; set; }
+    public MinMax? Chest
+    {
+        get;
+        set;
+    }
+
+    public MinMax? Head
+    {
+        get;
+        set;
+    }
+
+    public MinMax? LeftArm
+    {
+        get;
+        set;
+    }
+
+    public MinMax? LeftLeg
+    {
+        get;
+        set;
+    }
+
+    public MinMax? RightArm
+    {
+        get;
+        set;
+    }
+
+    public MinMax? RightLeg
+    {
+        get;
+        set;
+    }
+
+    public MinMax? Stomach
+    {
+        get;
+        set;
+    }
 }
 
 public record BotTypeInventory
 {
     [JsonPropertyName("equipment")]
-    public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment { get; set; }
+    public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment
+    {
+        get;
+        set;
+    }
 
-    public GlobalAmmo? Ammo { get; set; }
+    public GlobalAmmo? Ammo
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("items")]
-    public ItemPools? Items { get; set; }
+    public ItemPools? Items
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("mods")]
-    public GlobalMods? Mods { get; set; }
+    public GlobalMods? Mods
+    {
+        get;
+        set;
+    }
 }
 
 public record Equipment
 {
-    public Dictionary<string, double>? ArmBand { get; set; }
-    public Dictionary<string, double>? ArmorVest { get; set; }
-    public Dictionary<string, double>? Backpack { get; set; }
-    public Dictionary<string, double>? Earpiece { get; set; }
-    public Dictionary<string, double>? Eyewear { get; set; }
-    public Dictionary<string, double>? FaceCover { get; set; }
-    public Dictionary<string, double>? FirstPrimaryWeapon { get; set; }
-    public Dictionary<string, double>? Headwear { get; set; }
-    public Dictionary<string, double>? Holster { get; set; }
-    public Dictionary<string, double>? Pockets { get; set; }
-    public Dictionary<string, double>? Scabbard { get; set; }
-    public Dictionary<string, double>? SecondPrimaryWeapon { get; set; }
-    public Dictionary<string, double>? SecuredContainer { get; set; }
-    public Dictionary<string, double>? TacticalVest { get; set; }
+    public Dictionary<string, double>? ArmBand
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? ArmorVest
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Backpack
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Earpiece
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Eyewear
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? FaceCover
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? FirstPrimaryWeapon
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Headwear
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Holster
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Pockets
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Scabbard
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? SecondPrimaryWeapon
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? SecuredContainer
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? TacticalVest
+    {
+        get;
+        set;
+    }
 }
 
 public record ItemPools
 {
-    public Dictionary<string, double>? Backpack { get; set; }
-    public Dictionary<string, double>? Pockets { get; set; }
-    public Dictionary<string, double>? SecuredContainer { get; set; }
-    public Dictionary<string, double>? SpecialLoot { get; set; }
-    public Dictionary<string, double>? TacticalVest { get; set; }
+    public Dictionary<string, double>? Backpack
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? Pockets
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? SecuredContainer
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? SpecialLoot
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, double>? TacticalVest
+    {
+        get;
+        set;
+    }
 }
 
 public record BotDbSkills
 {
-    public Dictionary<string, MinMax>? Common { get; set; }
+    public Dictionary<string, MinMax>? Common
+    {
+        get;
+        set;
+    }
 
-    public Dictionary<string, MinMax>? Mastering { get; set; }
+    public Dictionary<string, MinMax>? Mastering
+    {
+        get;
+        set;
+    }
 }

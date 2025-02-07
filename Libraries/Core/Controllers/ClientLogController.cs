@@ -1,6 +1,6 @@
-using SptCommon.Annotations;
 using Core.Models.Spt.Logging;
 using Core.Models.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
@@ -11,7 +11,7 @@ public class ClientLogController(
 )
 {
     /// <summary>
-    /// Handle /singleplayer/log
+    ///     Handle /singleplayer/log
     /// </summary>
     /// <param name="logRequest"></param>
     public void ClientLog(ClientLogRequest logRequest)

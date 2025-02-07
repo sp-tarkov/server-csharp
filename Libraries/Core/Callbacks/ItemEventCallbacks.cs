@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Routers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -20,21 +20,29 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     }
 
     /// <summary>
-    /// Return true if the passed in list of warnings contains critical issues
+    ///     Return true if the passed in list of warnings contains critical issues
     /// </summary>
     /// <param name="warnings">The list of warnings to check for critical errors</param>
     /// <returns></returns>
     public bool IsCriticalError(List<Warning>? warnings)
     {
-        if (warnings is null) return false;
+        if (warnings is null)
+        {
+            return false;
+        }
 
         // List of non-critical error codes, we return true if any error NOT included is passed in
-        var nonCriticalErrorCodes = new List<BackendErrorCodes> { BackendErrorCodes.NotEnoughSpace };
+        var nonCriticalErrorCodes = new List<BackendErrorCodes>
+        {
+            BackendErrorCodes.NotEnoughSpace
+        };
 
         foreach (var warning in warnings)
         {
             if (!nonCriticalErrorCodes.Contains(warning.Code ?? BackendErrorCodes.None))
+            {
                 return true;
+            }
         }
 
         return false;
@@ -44,6 +52,5 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     {
         // Cast int to string to get the error code of 220 for Unknown Error.
         return warnings.FirstOrDefault()?.Code is null ? BackendErrorCodes.UnknownError : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;
-
     }
 }

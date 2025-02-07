@@ -52,7 +52,10 @@ public class CustomizationController(
             )
             .ToList();
 
-        if (matchingSuits == null) throw new Exception(_localisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
+        if (matchingSuits == null)
+        {
+            throw new Exception(_localisationService.GetText("customisation-unable_to_get_trader_suits", traderId));
+        }
 
         return matchingSuits;
     }
@@ -121,14 +124,21 @@ public class CustomizationController(
     {
         var suits = _saveServer.GetProfile(sessionId).Suits;
 
-        if (suits is null || suits.Count == 0) return false;
+        if (suits is null || suits.Count == 0)
+        {
+            return false;
+        }
+
         return suits.Contains(suitId);
     }
 
     private Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
-        if (foundSuit is null) _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
+        if (foundSuit is null)
+        {
+            _logger.Error(_localisationService.GetText("customisation-unable_to_find_suit_with_id", offerId));
+        }
 
         return foundSuit;
     }
@@ -144,13 +154,23 @@ public class CustomizationController(
         List<PaymentItemForClothing>? itemsToPayForClothingWith,
         ItemEventRouterResponse output)
     {
-        if (itemsToPayForClothingWith is null || itemsToPayForClothingWith.Count == 0) return;
+        if (itemsToPayForClothingWith is null || itemsToPayForClothingWith.Count == 0)
+        {
+            return;
+        }
 
         foreach (var inventoryItemToProcess in itemsToPayForClothingWith)
         {
             var options = new ProcessBuyTradeRequestData
             {
-                SchemeItems = [new IdWithCount { Count = inventoryItemToProcess.Count.Value, Id = inventoryItemToProcess.Id }],
+                SchemeItems =
+                [
+                    new IdWithCount
+                    {
+                        Count = inventoryItemToProcess.Count.Value,
+                        Id = inventoryItemToProcess.Id
+                    }
+                ],
                 TransactionId = Traders.RAGMAN,
                 Action = "BuyCustomization",
                 Type = "",
@@ -173,8 +193,12 @@ public class CustomizationController(
         var result = new List<Suit>();
 
         foreach (var trader in traders)
+        {
             if (trader.Value.Base?.CustomizationSeller is not null && trader.Value.Base.CustomizationSeller.Value)
+            {
                 result.AddRange(GetTraderSuits(trader.Key, sessionId));
+            }
+        }
 
         return result;
     }
@@ -203,7 +227,10 @@ public class CustomizationController(
         var customisationResultsClone = _cloner.Clone(_databaseService.GetTemplates().CustomisationStorage);
 
         var profile = _profileHelper.GetFullProfile(sessionId);
-        if (profile is null) return customisationResultsClone!;
+        if (profile is null)
+        {
+            return customisationResultsClone!;
+        }
 
         customisationResultsClone!.AddRange(profile.CustomisationUnlocks ?? []);
 
@@ -220,6 +247,7 @@ public class CustomizationController(
     public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
         foreach (var customisation in request.Customizations)
+        {
             switch (customisation.Type)
             {
                 case "dogTag":
@@ -232,6 +260,7 @@ public class CustomizationController(
                     _logger.Error($"Unhandled customisation type: {customisation.Type}");
                     break;
             }
+        }
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
@@ -263,6 +292,9 @@ public class CustomizationController(
         }
 
         // Feet
-        if (dbSuit.Parent == _lowerParentClothingId) pmcData.Customization.Feet = dbSuit.Properties.Feet;
+        if (dbSuit.Parent == _lowerParentClothingId)
+        {
+            pmcData.Customization.Feet = dbSuit.Properties.Feet;
+        }
     }
 }

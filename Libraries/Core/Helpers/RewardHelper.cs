@@ -1,5 +1,5 @@
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Profile;
@@ -58,7 +58,10 @@ public class RewardHelper(
         foreach (var reward in rewards)
         {
             // Handle reward availability for different game versions, notAvailableInGameEditions currently not used
-            if (!RewardIsForGameEdition(reward, gameVersion)) continue;
+            if (!RewardIsForGameEdition(reward, gameVersion))
+            {
+                continue;
+            }
 
             switch (reward.Type)
             {
@@ -100,7 +103,7 @@ public class RewardHelper(
                 case RewardType.StashRows:
                     _profileHelper.AddStashRowsBonusToProfile(
                         sessionId,
-                        (int)reward.Value
+                        (int) reward.Value
                     ); // Add specified stash rows from reward - requires client restart
                     break;
                 case RewardType.ProductionScheme:
@@ -119,7 +122,7 @@ public class RewardHelper(
                             new
                             {
                                 rewardType = reward.Type,
-                                questId = questId
+                                questId
                             }
                         )
                     );
@@ -131,21 +134,25 @@ public class RewardHelper(
     }
 
     /**
- * Does the provided reward have a game version requirement to be given and does it match
- * @param reward Reward to check
- * @param gameVersion Version of game to check reward against
- * @returns True if it has requirement, false if it doesnt pass check
- */
+     * Does the provided reward have a game version requirement to be given and does it match
+     * @param reward Reward to check
+     * @param gameVersion Version of game to check reward against
+     * @returns True if it has requirement, false if it doesnt pass check
+     */
     public bool RewardIsForGameEdition(Reward reward, string gameVersion)
     {
         if (reward.AvailableInGameEditions?.Count > 0 && !reward.AvailableInGameEditions.Contains(gameVersion))
             // Reward has edition whitelist and game version isn't in it
+        {
             return false;
+        }
 
         if (reward.NotAvailableInGameEditions?.Count > 0 &&
             reward.NotAvailableInGameEditions.Contains(gameVersion))
             // Reward has edition blacklist and game version is in it
+        {
             return false;
+        }
 
         // No whitelist/blacklist or reward isn't blacklisted/whitelisted
         return true;
@@ -175,7 +182,7 @@ public class RewardHelper(
                     "reward-unable_to_find_matching_hideout_production",
                     new
                     {
-                        questId = questId,
+                        questId,
                         matchCount = matchingProductions.Count
                     }
                 )
@@ -206,15 +213,15 @@ public class RewardHelper(
         var craftingRecipes = _databaseService.GetHideout().Production.Recipes;
 
         // Area that will be used to craft unlocked item
-        var desiredHideoutAreaType = (HideoutAreas)int.Parse(craftUnlockReward.TraderId.ToString());
+        var desiredHideoutAreaType = (HideoutAreas) int.Parse(craftUnlockReward.TraderId.ToString());
 
         var matchingProductions = craftingRecipes.Where(
-                (prod) =>
+                prod =>
                     prod.AreaType == desiredHideoutAreaType &&
                     //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
-                    prod.Requirements.Any((requirement) => requirement.Type == "QuestComplete") &&
+                    prod.Requirements.Any(requirement => requirement.Type == "QuestComplete") &&
                     prod.Requirements.Any(
-                        (requirement) => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
+                        requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
                     ) &&
                     prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
             )
@@ -223,11 +230,13 @@ public class RewardHelper(
         // More/less than single match, above filtering wasn't strict enough
         if (matchingProductions.Count() != 1)
             // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
+        {
             matchingProductions = matchingProductions.Where(
-                    (prod) =>
-                        prod.Requirements.Any((requirement) => requirement.QuestId == questId)
+                    prod =>
+                        prod.Requirements.Any(requirement => requirement.QuestId == questId)
                 )
                 .ToList();
+        }
 
         return matchingProductions;
     }
@@ -242,7 +251,7 @@ public class RewardHelper(
     {
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
         var rewardItems = rewards.SelectMany(
-            (reward) =>
+            reward =>
                 reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
                     ? ProcessReward(reward)
                     : []
@@ -266,9 +275,13 @@ public class RewardHelper(
         // Is armor item that may need inserts / plates
         if (reward.Items.Count == 1 && _itemHelper.ArmorItemCanHoldMods(reward.Items[0].Template))
             // Only process items with slots
+        {
             if (_itemHelper.ItemHasSlots(reward.Items.FirstOrDefault().Template))
                 // Attempt to pull default preset from globals and add child items to reward (clones reward.items)
+            {
                 GenerateArmorRewardChildSlots(reward.Items.FirstOrDefault(), reward);
+            }
+        }
 
         foreach (var rewardItem in reward.Items)
         {
@@ -288,19 +301,26 @@ public class RewardHelper(
                     rewardItem.Upd.StackObjectsCount != null && // Has upd with stackobject count
                     rewardItem.Upd.StackObjectsCount > 1 // More than 1 item in stack
                 )
+                {
                     rewardItem.Upd.StackObjectsCount = 1;
+                }
 
                 targets = _itemHelper.SplitStack(rewardItem);
                 // splitStack created new ids for the new stacks. This would destroy the relation to possible children.
                 // Instead, we reset the id to preserve relations and generate a new id in the downstream loop, where we are also reparenting if required
-                foreach (var target in targets) target.Id = rewardItem.Id;
+                foreach (var target in targets)
+                {
+                    target.Id = rewardItem.Id;
+                }
             }
             else
             {
                 // Is child mod
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
                     // Propigate FiR status into child items
+                {
                     rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
+                }
 
                 mods.Add(rewardItem);
             }
@@ -310,13 +330,19 @@ public class RewardHelper(
         foreach (var target in targets)
         {
             // This has all the original id relations since we reset the id to the original after the splitStack
-            var itemsClone = new List<Item> { _cloner.Clone(target) };
+            var itemsClone = new List<Item>
+            {
+                _cloner.Clone(target)
+            };
             // Here we generate a new id for the root item
             target.Id = _hashUtil.Generate();
 
             // Add cloned mods to root item array
             var clonedMods = _cloner.Clone(mods);
-            foreach (var mod in clonedMods) itemsClone.Add(mod);
+            foreach (var mod in clonedMods)
+            {
+                itemsClone.Add(mod);
+            }
 
             // Re-parent items + generate new ids to ensure valid ids
             var itemsToAdd = _itemHelper.ReparentItemAndChildren(target, itemsClone);
@@ -344,7 +370,7 @@ public class RewardHelper(
             reward.Items = presetAndMods;
 
             // Find root item and set its stack count
-            var rootItem = reward.Items.FirstOrDefault((item) => item.Id == newRootId);
+            var rootItem = reward.Items.FirstOrDefault(item => item.Id == newRootId);
 
             // Remap target id to the new presets root id
             reward.Target = rootItem.Id;
@@ -365,11 +391,11 @@ public class RewardHelper(
     }
 
     /**
-         * Add an achievement to player profile and handle any rewards for the achievement
-         * Triggered from a quest, or another achievement
-         * @param fullProfile Profile to add achievement to
-         * @param achievementId Id of achievement to add
-         */
+     * Add an achievement to player profile and handle any rewards for the achievement
+     * Triggered from a quest, or another achievement
+     * @param fullProfile Profile to add achievement to
+     * @param achievementId Id of achievement to add
+     */
     public void AddAchievementToProfile(SptProfile fullProfile, string achievementId)
     {
         // Add achievement id to profile with timestamp it was unlocked
@@ -378,8 +404,11 @@ public class RewardHelper(
         // Check for any customisation unlocks
         var achievementDataDb = _databaseService
             .GetTemplates()
-            .Achievements.FirstOrDefault((achievement) => achievement.Id == achievementId);
-        if (achievementDataDb is null) return;
+            .Achievements.FirstOrDefault(achievement => achievement.Id == achievementId);
+        if (achievementDataDb is null)
+        {
+            return;
+        }
 
         // Note: At the moment, we don't know the exact quest and achievement data layout for an achievement
         //       that is triggered by a quest, that gives an item, because BSG has only done this once. However

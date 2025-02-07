@@ -1,5 +1,5 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -40,11 +40,14 @@ public class QuestConditionHelper
         Func<QuestCondition, List<QuestCondition>>? furtherFilter = null)
     {
         var filteredQuests = questConditions.Where(
-                (c) =>
+                c =>
                 {
                     if (c.ConditionType == questType)
                         // return true or run the passed in function
+                    {
                         return furtherFilter is null || furtherFilter(c).Any();
+                    }
+
                     return false;
                 }
             )

@@ -1,7 +1,7 @@
 using System.Collections.Concurrent;
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Ragfair;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -26,7 +26,9 @@ public class RagfairRequiredItemsService(
         {
             if (_paymentHelper.IsMoneyTpl(requirement.Template))
                 // This would just be too noisy
+            {
                 continue;
+            }
 
             // Ensure key is init
             _requiredItemsCache.TryAdd(requirement.Template, []);

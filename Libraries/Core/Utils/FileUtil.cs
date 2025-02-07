@@ -12,7 +12,9 @@ public class FileUtil(
         var files = new List<string>(Directory.GetFiles(path));
 
         if (recursive)
+        {
             files.AddRange(Directory.GetDirectories(path).SelectMany(d => GetFiles(d, recursive)));
+        }
 
         return files;
     }
@@ -34,7 +36,10 @@ public class FileUtil(
 
     public string StripExtension(string path, bool keepPath = false)
     {
-        if (keepPath) return path.StartsWith(".") ? path.Split('.')[1] : path.Split('.').First();
+        if (keepPath)
+        {
+            return path.StartsWith(".") ? path.Split('.')[1] : path.Split('.').First();
+        }
 
         return Path.GetFileNameWithoutExtension(path);
     }
@@ -63,7 +68,10 @@ public class FileUtil(
     public void WriteFile(string filePath, string fileContent)
     {
         if (!FileExists(filePath))
+        {
             CreateFile(filePath);
+        }
+
         File.WriteAllText(filePath, fileContent);
     }
 
@@ -86,7 +94,7 @@ public class FileUtil(
     }
 
     /// <summary>
-    /// Copy a file from one path to another
+    ///     Copy a file from one path to another
     /// </summary>
     /// <param name="copyFromPath">Source file to copy from</param>
     /// <param name="destinationFilePath"></param>
@@ -94,7 +102,10 @@ public class FileUtil(
     public void CopyFile(string copyFromPath, string destinationFilePath, bool overwrite = false)
     {
         // Check it exists first
-        if (!FileExists(copyFromPath)) _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
+        if (!FileExists(copyFromPath))
+        {
+            _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
+        }
 
 
         // Ensure dir exists
@@ -105,7 +116,7 @@ public class FileUtil(
     }
 
     /// <summary>
-    /// Delete a directory, must be empty unless 'deleteContent' is set to 'true'
+    ///     Delete a directory, must be empty unless 'deleteContent' is set to 'true'
     /// </summary>
     /// <param name="directory"></param>
     /// <param name="deleteContent"></param>

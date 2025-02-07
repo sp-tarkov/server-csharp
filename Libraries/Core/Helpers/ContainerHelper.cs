@@ -7,7 +7,7 @@ namespace Core.Helpers;
 public class ContainerHelper
 {
     /// <summary>
-    /// Finds a slot for an item in a given 2D container map
+    ///     Finds a slot for an item in a given 2D container map
     /// </summary>
     /// <param name="container2D">List of container with slots filled/free</param>
     /// <param name="itemWidth">Width of item</param>
@@ -23,20 +23,28 @@ public class ContainerHelper
         var limitX = containerX - minVolume;
 
         // Every x+y slot taken up in container, exit
-        if (container2D.All((x) => x.All((y) => y == 1))) return new FindSlotResult(false);
+        if (container2D.All(x => x.All(y => y == 1)))
+        {
+            return new FindSlotResult(false);
+        }
 
         // Down = y
         for (var y = 0; y < limitY; y++)
         {
-            if (container2D[y].All((x) => x == 1))
+            if (container2D[y].All(x => x == 1))
                 // Every item in row is full, skip row
+            {
                 continue;
+            }
 
             // Try each slot on the row (across = x)
             for (var x = 0; x < limitX; x++)
             {
                 var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
-                if (foundSlot) return new FindSlotResult(true, x, y, rotation);
+                if (foundSlot)
+                {
+                    return new FindSlotResult(true, x, y, rotation);
+                }
 
                 // Failed to find slot, rotate item and try again
                 if (!foundSlot && ItemBiggerThan1X1(itemWidth, itemHeight))
@@ -64,7 +72,7 @@ public class ContainerHelper
     }
 
     /// <summary>
-    /// Find a slot inside a container an item can be placed in
+    ///     Find a slot inside a container an item can be placed in
     /// </summary>
     /// <param name="container2D">Container to find space in</param>
     /// <param name="containerX">Container x size</param>
@@ -109,14 +117,17 @@ public class ContainerHelper
                 }
             }
 
-            if (!foundSlot) break;
+            if (!foundSlot)
+            {
+                break;
+            }
         }
 
         return foundSlot;
     }
 
     /// <summary>
-    /// Find a free slot for an item to be placed at
+    ///     Find a free slot for an item to be placed at
     /// </summary>
     /// <param name="container2D">Container to place item in</param>
     /// <param name="x">Container x size</param>
@@ -138,11 +149,17 @@ public class ContainerHelper
 
         for (var tmpY = y; tmpY < y + itemHeight; tmpY++)
         for (var tmpX = x; tmpX < x + itemWidth; tmpX++)
+        {
             if (container2D[tmpY][tmpX] == 0)
                 // Flag slot as used
+            {
                 container2D[tmpY][tmpX] = 1;
+            }
             else
+            {
                 throw new Exception($"Slot at({x}, {y}) is already filled. Cannot fit a {itemW} by {itemH} item");
+            }
+        }
     }
 }
 
@@ -166,14 +183,30 @@ public class FindSlotResult
     }
 
     [JsonPropertyName("success")]
-    public bool? Success { get; set; }
+    public bool? Success
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("x")]
-    public int? X { get; set; }
+    public int? X
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("y")]
-    public int? Y { get; set; }
+    public int? Y
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("rotation")]
-    public bool? Rotation { get; set; }
+    public bool? Rotation
+    {
+        get;
+        set;
+    }
 }

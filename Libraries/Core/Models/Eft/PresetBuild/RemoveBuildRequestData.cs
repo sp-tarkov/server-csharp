@@ -6,5 +6,9 @@ namespace Core.Models.Eft.PresetBuild;
 public record RemoveBuildRequestData : IRequestData
 {
     [JsonPropertyName("id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 }

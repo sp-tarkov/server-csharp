@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Inventory;
 public record InventorySortRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("changedItems")]
-    public List<Item>? ChangedItems { get; set; }
+    public List<Item>? ChangedItems
+    {
+        get;
+        set;
+    }
 }

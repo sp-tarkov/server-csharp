@@ -12,7 +12,7 @@ public class StringToObjectFactoryConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(StringToObjectConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter) Activator.CreateInstance(typeof(StringToObjectConverter<>).MakeGenericType(typeToConvert));
     }
 
     public class StringToObjectConverter<T> : JsonConverter<T>
@@ -39,7 +39,10 @@ public class StringToObjectFactoryConverter : JsonConverterFactory
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
             if (value == null)
+            {
                 value = default;
+            }
+
             JsonSerializer.Serialize(writer, value, options);
         }
     }

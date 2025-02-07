@@ -1,5 +1,5 @@
-using SptCommon.Annotations;
 using Core.DI;
+using SptCommon.Annotations;
 
 namespace Core.Routers.Serializers;
 

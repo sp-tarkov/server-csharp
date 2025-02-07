@@ -5,8 +5,16 @@ namespace Core.Models.Eft.Match;
 public record MatchGroupStatusResponse
 {
     [JsonPropertyName("players")]
-    public List<GroupCharacter>? Players { get; set; }
+    public List<GroupCharacter>? Players
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("maxPveCountExceeded")]
-    public bool? MaxPveCountExceeded { get; set; }
+    public bool? MaxPveCountExceeded
+    {
+        get;
+        set;
+    }
 }

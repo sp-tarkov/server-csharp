@@ -2,12 +2,18 @@ namespace Core.Models.Enums;
 
 public enum ModSpawn
 {
-    /** Chosen mod should be the tpl from the default weapon template */
+    /**
+     * Chosen mod should be the tpl from the default weapon template
+     */
     DEFAULT_MOD = 0,
 
-    /** Normal behaviour */
+    /**
+     * Normal behaviour
+     */
     SPAWN = 1,
 
-    /** Item should not be chosen */
+    /**
+     * Item should not be chosen
+     */
     SKIP = 2
 }

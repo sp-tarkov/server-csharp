@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -8,6 +7,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -23,7 +23,7 @@ public class RagfairCallbacks(
     ConfigServer _configServer
 ) : OnLoad, OnUpdate
 {
-    private RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    private readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     public Task OnLoad()
     {
@@ -57,8 +57,8 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle client/ragfair/search
-    /// Handle client/ragfair/find
+    ///     Handle client/ragfair/search
+    ///     Handle client/ragfair/find
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -70,7 +70,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle client/ragfair/itemMarketPrice
+    ///     Handle client/ragfair/itemMarketPrice
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -82,7 +82,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle RagFairAddOffer event
+    ///     Handle RagFairAddOffer event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -94,7 +94,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle RagFairRemoveOffer event
+    ///     Handle RagFairRemoveOffer event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -106,7 +106,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle RagFairRenewOffer event
+    ///     Handle RagFairRenewOffer event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -118,8 +118,8 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle /client/items/prices
-    /// Called when clicking an item to list on flea
+    ///     Handle /client/items/prices
+    ///     Called when clicking an item to list on flea
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -131,7 +131,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle client/reports/ragfair/send
+    ///     Handle client/reports/ragfair/send
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -149,7 +149,7 @@ public class RagfairCallbacks(
     }
 
     /// <summary>
-    /// Handle client/ragfair/offer/findbyid
+    ///     Handle client/ragfair/offer/findbyid
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

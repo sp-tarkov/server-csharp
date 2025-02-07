@@ -67,7 +67,10 @@ public class CustomItemService(
 
         _itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (_itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON)) AddToWeaponShelf(newItemId);
+        if (_itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
+        {
+            AddToWeaponShelf(newItemId);
+        }
 
         result.Success = true;
         result.ItemId = newItemId;
@@ -108,7 +111,10 @@ public class CustomItemService(
 
         _itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (_itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON)) AddToWeaponShelf(newItem.Id);
+        if (_itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
+        {
+            AddToWeaponShelf(newItem.Id);
+        }
 
         result.ItemId = newItemDetails.NewItem.Id;
         result.Success = true;
@@ -135,7 +141,9 @@ public class CustomItemService(
     protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
         foreach (var propKey in overrideProperties.GetAllPropsAsDict())
+        {
             itemClone.Properties.GetAllPropsAsDict()[propKey.Key] = overrideProperties.GetAllPropsAsDict()[propKey.Key];
+        }
     }
 
     /**
@@ -145,7 +153,10 @@ public class CustomItemService(
      */
     protected void AddToItemsDb(string newItemId, TemplateItem itemToAdd)
     {
-        if (!_databaseService.GetItems().TryAdd(newItemId, itemToAdd)) _logger.Warning($"Unable to add: {newItemId} To Database");
+        if (!_databaseService.GetItems().TryAdd(newItemId, itemToAdd))
+        {
+            _logger.Warning($"Unable to add: {newItemId} To Database");
+        }
     }
 
     /**
@@ -158,7 +169,14 @@ public class CustomItemService(
     {
         _databaseService
             .GetTemplates()
-            .Handbook.Items.Add(new HandbookItem { Id = newItemId, ParentId = parentId, Price = priceRoubles });
+            .Handbook.Items.Add(
+                new HandbookItem
+                {
+                    Id = newItemId,
+                    ParentId = parentId,
+                    Price = priceRoubles
+                }
+            );
         // TODO: would we want to keep this the same or get them to send a HandbookItem
     }
 
@@ -168,7 +186,7 @@ public class CustomItemService(
      * e.g.
      * en[0]
      * fr[1]
-     *
+     * 
      * No jp provided, so english will be used as a substitute
      * @param localeDetails key is language, value are the new locale details
      * @param newItemId id of the item being created
@@ -181,7 +199,10 @@ public class CustomItemService(
             // Get locale details passed in, if not provided by caller use first record in newItemDetails.locales
             localeDetails.TryGetValue(shortNameKey.Key, out var newLocaleDetails);
 
-            if (newLocaleDetails is null) newLocaleDetails = localeDetails[localeDetails.Keys.FirstOrDefault()];
+            if (newLocaleDetails is null)
+            {
+                newLocaleDetails = localeDetails[localeDetails.Keys.FirstOrDefault()];
+            }
 
             // Create new record in locale file
             var globals = _databaseService.GetLocales();
@@ -217,7 +238,10 @@ public class CustomItemService(
         foreach (var wallId in wallStashIds)
         {
             var wall = _itemHelper.GetItem(wallId);
-            if (wall.Key) wall.Value.Properties.Grids[0].Props.Filters[0].Filter.Add(newItemId);
+            if (wall.Key)
+            {
+                wall.Value.Properties.Grids[0].Props.Filters[0].Filter.Add(newItemId);
+            }
         }
     }
 
@@ -241,7 +265,10 @@ public class CustomItemService(
 
         // Get all slots weapon has and create a dictionary of them with possible mods that slot into each
         var weaponSlots = weapon.Value.Properties.Slots;
-        foreach (var slot in weaponSlots) baseWeaponModObject[slot.Name] = new HashSet<string>(slot.Props.Filters[0].Filter);
+        foreach (var slot in weaponSlots)
+        {
+            baseWeaponModObject[slot.Name] = new HashSet<string>(slot.Props.Filters[0].Filter);
+        }
 
         // Get PMCs
         var botTypes = _databaseService.GetBots().Types;

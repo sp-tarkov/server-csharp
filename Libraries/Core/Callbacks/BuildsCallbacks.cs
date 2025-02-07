@@ -1,9 +1,9 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Builds;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.PresetBuild;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -14,7 +14,7 @@ public class BuildsCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/builds/list
+    ///     Handle client/builds/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -26,7 +26,7 @@ public class BuildsCallbacks(
     }
 
     /// <summary>
-    /// Handle client/builds/magazine/save
+    ///     Handle client/builds/magazine/save
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -39,7 +39,7 @@ public class BuildsCallbacks(
     }
 
     /// <summary>
-    /// Handle client/builds/weapon/save
+    ///     Handle client/builds/weapon/save
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -52,7 +52,7 @@ public class BuildsCallbacks(
     }
 
     /// <summary>
-    /// Handle client/builds/equipment/save
+    ///     Handle client/builds/equipment/save
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -65,7 +65,7 @@ public class BuildsCallbacks(
     }
 
     /// <summary>
-    /// Handle client/builds/delete
+    ///     Handle client/builds/delete
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

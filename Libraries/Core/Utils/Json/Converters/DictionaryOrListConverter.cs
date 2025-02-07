@@ -12,7 +12,7 @@ public class DictionaryOrListConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(
+        return (JsonConverter) Activator.CreateInstance(
             typeof(DictionaryOrListConverter<,>).MakeGenericType(typeToConvert.GenericTypeArguments[0], typeToConvert.GenericTypeArguments[1])
         );
     }
@@ -46,8 +46,12 @@ public class DictionaryOrListConverter<K, V> : JsonConverter<DictionaryOrList<K,
     public override void Write(Utf8JsonWriter writer, DictionaryOrList<K, V> value, JsonSerializerOptions options)
     {
         if (value.IsList)
+        {
             JsonSerializer.Serialize(writer, value.List, options);
+        }
         else
+        {
             JsonSerializer.Serialize(writer, value.Dictionary, options);
+        }
     }
 }

@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
 using Core.Routers;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -12,7 +12,7 @@ public class WishlistController(
 )
 {
     /// <summary>
-    /// Handle AddToWishList
+    ///     Handle AddToWishList
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>
@@ -23,13 +23,16 @@ public class WishlistController(
         AddToWishlistRequest request,
         string sessionId)
     {
-        foreach (var item in request.Items) pmcData.WishList.Dictionary.Add(item.Key, item.Value);
+        foreach (var item in request.Items)
+        {
+            pmcData.WishList.Dictionary.Add(item.Key, item.Value);
+        }
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
-    /// Handle RemoveFromWishList event
+    ///     Handle RemoveFromWishList event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>
@@ -40,13 +43,16 @@ public class WishlistController(
         RemoveFromWishlistRequest request,
         string sessionId)
     {
-        foreach (var itemId in request.Items) pmcData.WishList.Dictionary.Remove(itemId);
+        foreach (var itemId in request.Items)
+        {
+            pmcData.WishList.Dictionary.Remove(itemId);
+        }
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
-    /// Handle changeWishlistItemCategory event
+    ///     Handle changeWishlistItemCategory event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>

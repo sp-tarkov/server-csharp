@@ -80,21 +80,21 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.CHANGE_WISHLIST_ITEM_CATEGORY:
                 return JsonSerializer.Deserialize<ChangeWishlistItemCategoryRequest>(jsonText);
             case ItemEventActions.TRADING_CONFIRM:
-            {
-                var json = JsonSerializer.Deserialize<ProcessBaseTradeRequestData>(jsonText);
-
-                switch (json.Type)
                 {
-                    case ItemEventActions.BUY_FROM_TRADER:
-                        return JsonSerializer.Deserialize<ProcessBuyTradeRequestData>(jsonText);
-                    case ItemEventActions.SELL_TO_TRADER:
-                        return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
-                    default:
-                        throw new Exception(
-                            $"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled."
-                        );
+                    var json = JsonSerializer.Deserialize<ProcessBaseTradeRequestData>(jsonText);
+
+                    switch (json.Type)
+                    {
+                        case ItemEventActions.BUY_FROM_TRADER:
+                            return JsonSerializer.Deserialize<ProcessBuyTradeRequestData>(jsonText);
+                        case ItemEventActions.SELL_TO_TRADER:
+                            return JsonSerializer.Deserialize<ProcessSellTradeRequestData>(jsonText);
+                        default:
+                            throw new Exception(
+                                $"Unhandled action type {value.Action}, make sure the BaseInteractionRequestDataConverter has the deserialization for this action handled."
+                            );
+                    }
                 }
-            }
             case ItemEventActions.RAGFAIR_BUY_OFFER:
                 return JsonSerializer.Deserialize<ProcessRagfairTradeRequestData>(jsonText);
             case ItemEventActions.SELL_ALL_FROM_SAVAGE:

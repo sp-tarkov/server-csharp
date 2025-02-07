@@ -1,4 +1,3 @@
-using Core.Models.Spt.Server;
 using Core.Models.Spt.Templates;
 using Core.Utils;
 using UnitTests.Mock;

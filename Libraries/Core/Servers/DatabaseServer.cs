@@ -1,5 +1,5 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Spt.Server;
+﻿using Core.Models.Spt.Server;
+using SptCommon.Annotations;
 
 namespace Core.Servers;
 

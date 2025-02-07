@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Prestige;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -13,7 +13,7 @@ public class PrestigeCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/prestige/list
+    ///     Handle client/prestige/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -25,7 +25,7 @@ public class PrestigeCallbacks(
     }
 
     /// <summary>
-    /// Handle client/prestige/obtain
+    ///     Handle client/prestige/obtain
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

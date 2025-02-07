@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Dialog;
 public record GetAllAttachmentsRequestData : IRequestData
 {
     [JsonPropertyName("dialogId")]
-    public string DialogId { get; set; }
+    public string DialogId
+    {
+        get;
+        set;
+    }
 }

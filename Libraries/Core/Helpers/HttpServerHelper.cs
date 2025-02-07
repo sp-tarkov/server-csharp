@@ -1,6 +1,6 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Spt.Config;
+﻿using Core.Models.Spt.Config;
 using Core.Servers;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -45,7 +45,9 @@ public class HttpServerHelper(ConfigServer configServer)
         return $"http://{BuildUrl()}";
     }
 
-    /** Get websocket url + port */
+    /**
+     * Get websocket url + port
+     */
     public string GetWebsocketUrl()
     {
         return $"ws://{BuildUrl()}";

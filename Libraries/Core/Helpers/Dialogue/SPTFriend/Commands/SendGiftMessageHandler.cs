@@ -16,8 +16,8 @@ public class SendGiftMessageHandler(
     GiftService _giftService,
     ConfigServer _configServer) : IChatMessageHandler
 {
-    private CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-    private string commandSent = string.Empty;
+    private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    private readonly string commandSent = string.Empty;
 
     public int GetPriority()
     {
@@ -32,7 +32,10 @@ public class SendGiftMessageHandler(
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
     {
         // Gifts may be disabled via config
-        if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled) return;
+        if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
+        {
+            return;
+        }
 
         var giftSent = _giftService.SendGiftToPlayer(sessionId, commandSent);
         switch (giftSent)

@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Bots;
@@ -8,6 +7,7 @@ using Core.Models.Spt.Templates;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 using Hideout = Core.Models.Spt.Hideout.Hideout;
 using Locations = Core.Models.Spt.Server.Locations;
@@ -39,7 +39,9 @@ public class DatabaseService(
     public Bots GetBots()
     {
         if (_databaseServer.GetTables().Bots == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/bots"));
+        }
 
         return _databaseServer.GetTables().Bots!;
     }
@@ -50,12 +52,14 @@ public class DatabaseService(
     public Globals GetGlobals()
     {
         if (_databaseServer.GetTables().Globals == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/globals.json"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Globals!;
     }
@@ -66,9 +70,11 @@ public class DatabaseService(
     public Hideout GetHideout()
     {
         if (_databaseServer.GetTables().Hideout == null)
+        {
             throw new Exception(
                 _localisationService.GetText("database-data_at_path_missing", "assets/database/hideout")
             );
+        }
 
         return _databaseServer.GetTables().Hideout!;
     }
@@ -79,9 +85,11 @@ public class DatabaseService(
     public LocaleBase GetLocales()
     {
         if (_databaseServer.GetTables().Locales == null)
+        {
             throw new Exception(
                 _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
             );
+        }
 
         return _databaseServer.GetTables().Locales!;
     }
@@ -92,9 +100,11 @@ public class DatabaseService(
     public Locations GetLocations()
     {
         if (_databaseServer.GetTables().Locations == null)
+        {
             throw new Exception(
                 _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
             );
+        }
 
         return _databaseServer.GetTables().Locations!;
     }
@@ -108,7 +118,10 @@ public class DatabaseService(
     {
         var locations = GetLocations();
         var desiredLocation = locations.GetByJsonProp<Location>(locationId.ToLower());
-        if (desiredLocation == null) throw new Exception(_localisationService.GetText("database-no_location_found_with_id", locationId));
+        if (desiredLocation == null)
+        {
+            throw new Exception(_localisationService.GetText("database-no_location_found_with_id", locationId));
+        }
 
         return desiredLocation;
     }
@@ -119,9 +132,11 @@ public class DatabaseService(
     public Match GetMatch()
     {
         if (_databaseServer.GetTables().Match == null)
+        {
             throw new Exception(
                 _localisationService.GetText("database-data_at_path_missing", "assets/database/locales")
             );
+        }
 
         return _databaseServer.GetTables().Match!;
     }
@@ -132,12 +147,14 @@ public class DatabaseService(
     public ServerBase GetServer()
     {
         if (_databaseServer.GetTables().Server == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/server.json"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Server!;
     }
@@ -148,12 +165,14 @@ public class DatabaseService(
     public SettingsBase GetSettings()
     {
         if (_databaseServer.GetTables().Settings == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/settings.json"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Settings!;
     }
@@ -164,12 +183,14 @@ public class DatabaseService(
     public Templates GetTemplates()
     {
         if (_databaseServer.GetTables().Templates == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/templates"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Templates!;
     }
@@ -180,12 +201,14 @@ public class DatabaseService(
     public List<Achievement> GetAchievements()
     {
         if (_databaseServer.GetTables().Templates?.Achievements == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/templates/achievements.json"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Templates?.Achievements!;
     }
@@ -196,12 +219,14 @@ public class DatabaseService(
     public Dictionary<string, CustomizationItem?> GetCustomization()
     {
         if (_databaseServer.GetTables().Templates?.Customization == null)
+        {
             throw new Exception(
                 _localisationService.GetText(
                     "database-data_at_path_missing",
                     "assets/database/templates/customization.json"
                 )
             );
+        }
 
         return _databaseServer.GetTables().Templates?.Customization!;
     }
@@ -212,7 +237,9 @@ public class DatabaseService(
     public HandbookBase GetHandbook()
     {
         if (_databaseServer.GetTables().Templates?.Handbook == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/templates/handbook.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.Handbook!;
     }
@@ -223,7 +250,9 @@ public class DatabaseService(
     public Dictionary<string, TemplateItem> GetItems()
     {
         if (_databaseServer.GetTables().Templates?.Items == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/templates/items.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.Items!;
     }
@@ -234,7 +263,9 @@ public class DatabaseService(
     public Dictionary<string, double> GetPrices()
     {
         if (_databaseServer.GetTables().Templates?.Prices == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/templates/prices.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.Prices!;
     }
@@ -245,7 +276,9 @@ public class DatabaseService(
     public ProfileTemplates GetProfiles()
     {
         if (_databaseServer.GetTables().Templates?.Profiles == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/templates/profiles.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.Profiles!;
     }
@@ -256,7 +289,9 @@ public class DatabaseService(
     public Dictionary<string, Quest> GetQuests()
     {
         if (_databaseServer.GetTables().Templates?.Quests == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/templates/quests.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.Quests!;
     }
@@ -267,7 +302,9 @@ public class DatabaseService(
     public Dictionary<string, Trader> GetTraders()
     {
         if (_databaseServer.GetTables().Traders == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/traders"));
+        }
 
         return _databaseServer.GetTables().Traders!;
     }
@@ -281,7 +318,9 @@ public class DatabaseService(
     {
         var traders = GetTraders();
         if (!traders.TryGetValue(traderId, out var desiredTrader))
+        {
             throw new Exception(_localisationService.GetText("database-no_trader_found_with_id", traderId));
+        }
 
         return desiredTrader;
     }
@@ -292,7 +331,9 @@ public class DatabaseService(
     public LocationServices GetLocationServices()
     {
         if (_databaseServer.GetTables().Templates?.LocationServices == null)
+        {
             throw new Exception(_localisationService.GetText("database-data_at_path_missing", "assets/database/locationServices.json"));
+        }
 
         return _databaseServer.GetTables().Templates?.LocationServices!;
     }
@@ -310,10 +351,16 @@ public class DatabaseService(
             ValidateTable(GetItems(), "item") &&
             ValidateTable(GetCustomization(), "customization");
 
-        if (!isDataValid) _logger.Error(_localisationService.GetText("database-invalid_data"));
+        if (!isDataValid)
+        {
+            _logger.Error(_localisationService.GetText("database-invalid_data"));
+        }
 
         start.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
+        }
     }
 
     /**
@@ -325,11 +372,13 @@ public class DatabaseService(
     private bool ValidateTable<T>(Dictionary<string, T> table, string tableType)
     {
         foreach (var keyValuePair in table)
+        {
             if (!_hashUtil.IsValidMongoId(keyValuePair.Key))
             {
                 _logger.Error($"Invalid {tableType} ID: '{keyValuePair.Key}'");
                 return false;
             }
+        }
 
         return true;
     }

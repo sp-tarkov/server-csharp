@@ -1,5 +1,5 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Ws;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -20,7 +20,10 @@ public class NotificationService
 
     public void UpdateMessageOnQueue(string sessionId, List<WsNotificationEvent> value)
     {
-        if (_messageQueue.ContainsKey(sessionId)) _messageQueue[sessionId] = value;
+        if (_messageQueue.ContainsKey(sessionId))
+        {
+            _messageQueue[sessionId] = value;
+        }
     }
 
     public bool Has(string sessionID)
@@ -29,7 +32,7 @@ public class NotificationService
     }
 
     /// <summary>
-    /// Pop first message from queue.
+    ///     Pop first message from queue.
     /// </summary>
     public WsNotificationEvent Pop(string sessionID)
     {
@@ -39,7 +42,7 @@ public class NotificationService
     }
 
     /// <summary>
-    /// Add message to queue
+    ///     Add message to queue
     /// </summary>
     public void Add(string sessionID, WsNotificationEvent message)
     {
@@ -47,14 +50,20 @@ public class NotificationService
     }
 
     /// <summary>
-    /// Get message queue for session
+    ///     Get message queue for session
     /// </summary>
     /// <param name="sessionID"></param>
     public List<WsNotificationEvent> Get(string sessionID)
     {
-        if (sessionID is null) throw new Exception("sessionID missing");
+        if (sessionID is null)
+        {
+            throw new Exception("sessionID missing");
+        }
 
-        if (!_messageQueue.ContainsKey(sessionID)) _messageQueue[sessionID] = [];
+        if (!_messageQueue.ContainsKey(sessionID))
+        {
+            _messageQueue[sessionID] = [];
+        }
 
         return _messageQueue[sessionID];
     }

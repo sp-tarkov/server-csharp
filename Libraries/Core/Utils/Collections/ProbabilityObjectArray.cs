@@ -1,30 +1,29 @@
-using Core.Utils.Cloners;
 using System.Text.Json.Serialization;
+using Core.Utils.Cloners;
 
 namespace Core.Utils.Collections;
 
 /// <summary>
-/// Array of ProbabilityObjectArray which allow to randomly draw of the contained objects
-/// based on the relative probability of each of its elements.
-/// The probabilities of the contained element is not required to be normalized.
-///
-/// Example:
-///   po = new ProbabilityObjectArray(
-///          new ProbabilityObject("a", 5),
-///          new ProbabilityObject("b", 1),
-///          new ProbabilityObject("c", 1)
-///   );
-///   res = po.draw(10000);
-///   // count the elements which should be distributed according to the relative probabilities
-///   res.filter(x => x==="b").reduce((sum, x) => sum + 1 , 0)
+///     Array of ProbabilityObjectArray which allow to randomly draw of the contained objects
+///     based on the relative probability of each of its elements.
+///     The probabilities of the contained element is not required to be normalized.
+///     Example:
+///     po = new ProbabilityObjectArray(
+///     new ProbabilityObject("a", 5),
+///     new ProbabilityObject("b", 1),
+///     new ProbabilityObject("c", 1)
+///     );
+///     res = po.draw(10000);
+///     // count the elements which should be distributed according to the relative probabilities
+///     res.filter(x => x==="b").reduce((sum, x) => sum + 1 , 0)
 /// </summary>
 /// <typeparam name="T"></typeparam>
 /// <typeparam name="K"></typeparam>
 /// <typeparam name="V"></typeparam>
 public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 {
-    private readonly MathUtil _mathUtil;
     private readonly ICloner _cloner;
+    private readonly MathUtil _mathUtil;
 
     public ProbabilityObjectArray(
         MathUtil mathUtil,
@@ -37,7 +36,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Calculates the normalized cumulative probability of the ProbabilityObjectArray's elements normalized to 1
+    ///     Calculates the normalized cumulative probability of the ProbabilityObjectArray's elements normalized to 1
     /// </summary>
     /// <param name="probValues">The relative probability values of which to calculate the normalized cumulative sum</param>
     /// <returns>Cumulative Sum normalized to 1</returns>
@@ -51,7 +50,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Filter What is inside ProbabilityObjectArray
+    ///     Filter What is inside ProbabilityObjectArray
     /// </summary>
     /// <param name="predicate"></param>
     /// <returns>Filtered results</returns>
@@ -59,14 +58,18 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     {
         var result = new ProbabilityObjectArray<K, V>(_mathUtil, _cloner, new List<ProbabilityObject<K, V>>());
         foreach (var probabilityObject in this)
+        {
             if (predicate.Invoke(probabilityObject))
+            {
                 result.Add(probabilityObject);
+            }
+        }
 
         return result;
     }
 
     /// <summary>
-    /// Deep clone this ProbabilityObjectArray
+    ///     Deep clone this ProbabilityObjectArray
     /// </summary>
     /// <returns>Deep Copy of ProbabilityObjectArray</returns>
     public ProbabilityObjectArray<K, V> Clone()
@@ -83,17 +86,17 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Drop an element from the ProbabilityObjectArray
+    ///     Drop an element from the ProbabilityObjectArray
     /// </summary>
     /// <param name="key">The key of the element to drop</param>
     /// <returns>ProbabilityObjectArray without the dropped element</returns>
     public ProbabilityObjectArray<K, V> Drop(K key)
     {
-        return (ProbabilityObjectArray<K, V>)this.Where((r) => !r.Key?.Equals(key) ?? false);
+        return (ProbabilityObjectArray<K, V>) this.Where(r => !r.Key?.Equals(key) ?? false);
     }
 
     /// <summary>
-    /// Return the data field of an element of the ProbabilityObjectArray
+    ///     Return the data field of an element of the ProbabilityObjectArray
     /// </summary>
     /// <param name="key">The key of the element whose data shall be retrieved</param>
     /// <returns>Stored data object</returns>
@@ -104,11 +107,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Get the relative probability of an element by its key
-    /// 
-    /// Example:
-    ///  po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
-    ///  po.maxProbability() // returns 5
+    ///     Get the relative probability of an element by its key
+    ///     Example:
+    ///     po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
+    ///     po.maxProbability() // returns 5
     /// </summary>
     /// <param name="key">Key of element whose relative probability shall be retrieved</param>
     /// <returns>The relative probability</returns>
@@ -120,11 +122,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 
     /**
      * Get the maximum relative probability out of a ProbabilityObjectArray
-     *
+     * 
      * Example:
-     *  po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
-     *  po.maxProbability() // returns 5
-     *
+     * po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
+     * po.maxProbability() // returns 5
+     * 
      * @return      {number}                                                the maximum value of all relative probabilities in this ProbabilityObjectArray
      */
     public double MaxProbability()
@@ -133,10 +135,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     }
 
     /// <summary>
-    /// Get the minimum relative probability out of a ProbabilityObjectArray
-    ///  * Example:
-    ///  po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
-    ///  po.minProbability() // returns 1
+    ///     Get the minimum relative probability out of a ProbabilityObjectArray
+    ///     * Example:
+    ///     po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
+    ///     po.minProbability() // returns 1
     /// </summary>
     /// <returns>the minimum value of all relative probabilities in this ProbabilityObjectArray</returns>
     public double MinProbability()
@@ -155,10 +157,17 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
     public List<K> Draw(int drawCount = 1, bool removeAfterDraw = true, List<K>? neverRemoveWhitelist = null)
     {
         neverRemoveWhitelist ??= [];
-        if (Count == 0) return [];
+        if (Count == 0)
+        {
+            return [];
+        }
 
         var totals = this.Aggregate(
-            new { probArray = new List<double>(), keyArray = new List<K>() },
+            new
+            {
+                probArray = new List<double>(),
+                keyArray = new List<K>()
+            },
             (acc, x) =>
             {
                 acc.probArray.Add(x.RelativeProbability.Value);
@@ -173,7 +182,7 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
         for (var i = 0; i < drawCount; i++)
         {
             var rand = Random.Shared.NextDouble();
-            var randomIndex = probCumsum.FindIndex((x) => x > rand);
+            var randomIndex = probCumsum.FindIndex(x => x > rand);
             // We cannot put Math.random() directly in the findIndex because then it draws anew for each of its iteration
             if (removeAfterDraw || neverRemoveWhitelist.Contains(totals.keyArray[randomIndex]))
             {
@@ -190,7 +199,10 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
                 drawnKeys.Add(key);
                 probCumsum = CumulativeProbability(totals.probArray);
                 // If we draw without replacement and the ProbabilityObjectArray is exhausted we need to break
-                if (totals.keyArray.Count < 1) break;
+                if (totals.keyArray.Count < 1)
+                {
+                    break;
+                }
             }
         }
 
@@ -199,8 +211,8 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 }
 
 /// <summary>
-/// A ProbabilityObject which is use as an element to the ProbabilityObjectArray array
-/// It contains a key, the relative probability as well as optional data.
+///     A ProbabilityObject which is use as an element to the ProbabilityObjectArray array
+///     It contains a key, the relative probability as well as optional data.
 /// </summary>
 /// <typeparam name="K"></typeparam>
 /// <typeparam name="V"></typeparam>
@@ -211,11 +223,11 @@ public class ProbabilityObject<K, V>
     }
 
     /**
- * constructor for the ProbabilityObject
- * @param       {string}                        key                         The key of the element
- * @param       {number}                        relativeProbability         The relative probability of this element
- * @param       {any}                           data                        Optional data attached to the element
- */
+     * constructor for the ProbabilityObject
+     * @param       {string}                        key                         The key of the element
+     * @param       {number}                        relativeProbability         The relative probability of this element
+     * @param       {any}                           data                        Optional data attached to the element
+     */
     public ProbabilityObject(K key, double? relativeProbability, V? data)
     {
         Key = key;
@@ -224,14 +236,26 @@ public class ProbabilityObject<K, V>
     }
 
     [JsonPropertyName("key")]
-    public K? Key { get; set; }
+    public K? Key
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Weighting of key compared to other ProbabilityObjects
+    ///     Weighting of key compared to other ProbabilityObjects
     /// </summary>
     [JsonPropertyName("relativeProbability")]
-    public double? RelativeProbability { get; set; }
+    public double? RelativeProbability
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("data")]
-    public V? Data { get; set; }
+    public V? Data
+    {
+        get;
+        set;
+    }
 }

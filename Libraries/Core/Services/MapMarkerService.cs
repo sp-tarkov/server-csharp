@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
 using Core.Models.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -13,7 +13,7 @@ public class MapMarkerService(
 )
 {
     /// <summary>
-    /// Add note to a map item in player inventory
+    ///     Add note to a map item in player inventory
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Add marker request</param>
@@ -21,10 +21,14 @@ public class MapMarkerService(
     public Item CreateMarkerOnMap(PmcData pmcData, InventoryCreateMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault((i) => i?.Id == request?.Item);
+        var mapItem = pmcData?.Inventory?.Items?.FirstOrDefault(i => i?.Id == request?.Item);
 
         // add marker to map item
-        mapItem.Upd.Map = mapItem?.Upd?.Map ?? new UpdMap { Markers = new List<MapMarker>() };
+        mapItem.Upd.Map = mapItem?.Upd?.Map ??
+                          new UpdMap
+                          {
+                              Markers = new List<MapMarker>()
+                          };
 
         // Update request note with text, then add to maps upd
         request.MapMarker.Note = SanitiseMapMarkerText(request.MapMarker.Note);
@@ -34,7 +38,7 @@ public class MapMarkerService(
     }
 
     /// <summary>
-    /// Delete a map marker
+    ///     Delete a map marker
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Delete marker request</param>
@@ -42,17 +46,23 @@ public class MapMarkerService(
     public Item DeleteMarkerFromMap(PmcData pmcData, InventoryDeleteMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == request.Item);
+        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
 
         // remove marker
-        var markers = mapItem.Upd.Map.Markers.Where((marker) => { return marker.X != request.X && marker.Y != request.Y; }).ToList();
+        var markers = mapItem.Upd.Map.Markers.Where(
+                marker =>
+                {
+                    return marker.X != request.X && marker.Y != request.Y;
+                }
+            )
+            .ToList();
         mapItem.Upd.Map.Markers = markers;
 
         return mapItem;
     }
 
     /// <summary>
-    /// Edit an existing map marker
+    ///     Edit an existing map marker
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Edit marker request</param>
@@ -60,7 +70,7 @@ public class MapMarkerService(
     public Item? EditMarkerOnMap(PmcData pmcData, InventoryEditMarkerRequestData request)
     {
         // Get map from inventory
-        var mapItem = pmcData.Inventory.Items.FirstOrDefault((item) => item.Id == request.Item);
+        var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
 
         // edit marker
         // the only thing that is consistent between the old and edit is the X and Y
@@ -81,7 +91,7 @@ public class MapMarkerService(
     }
 
     /// <summary>
-    /// Strip out characters from note string that are not: letter/numbers/unicode/spaces
+    ///     Strip out characters from note string that are not: letter/numbers/unicode/spaces
     /// </summary>
     /// <param name="mapNoteText">Marker text to sanitise</param>
     /// <returns>Sanitised map marker text</returns>

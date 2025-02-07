@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -6,19 +5,20 @@ using Core.Models.Eft.ItemEvent;
 using Core.Models.Utils;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Routers;
 
 [Injectable]
 public class EventOutputHolder
 {
-    protected ISptLogger<EventOutputHolder> _logger;
-    protected ProfileHelper _profileHelper;
-    protected TimeUtil _timeUtil;
+    protected Dictionary<string, Dictionary<string, bool>> _clientActiveSessionStorage = new();
     protected ICloner _cloner;
+    protected ISptLogger<EventOutputHolder> _logger;
 
     protected Dictionary<string, ItemEventRouterResponse> _outputStore = new();
-    protected Dictionary<string, Dictionary<string, bool>> _clientActiveSessionStorage = new();
+    protected ProfileHelper _profileHelper;
+    protected TimeUtil _timeUtil;
 
     public EventOutputHolder(
         ISptLogger<EventOutputHolder> logger,
@@ -36,7 +36,10 @@ public class EventOutputHolder
     public ItemEventRouterResponse GetOutput(string sessionId)
     {
         var resultFound = _outputStore.TryGetValue(sessionId, out var result);
-        if (resultFound) return result;
+        if (resultFound)
+        {
+            return result;
+        }
 
         // Nothing found, reset to default
         ResetOutput(sessionId);
@@ -49,13 +52,16 @@ public class EventOutputHolder
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
-        if (_outputStore.ContainsKey(sessionId)) _outputStore.Remove(sessionId);
+        if (_outputStore.ContainsKey(sessionId))
+        {
+            _outputStore.Remove(sessionId);
+        }
 
         _outputStore.Add(
             sessionId,
             new ItemEventRouterResponse
             {
-                ProfileChanges = new Dictionary<string, ProfileChange>()
+                ProfileChanges = new Dictionary<string, ProfileChange>
                 {
                     {
                         sessionId, new ProfileChange
@@ -66,13 +72,22 @@ public class EventOutputHolder
                             RagFairOffers = [],
                             WeaponBuilds = [],
                             EquipmentBuilds = [],
-                            Items = new ItemChanges { NewItems = [], ChangedItems = [], DeletedItems = [] },
+                            Items = new ItemChanges
+                            {
+                                NewItems = [],
+                                ChangedItems = [],
+                                DeletedItems = []
+                            },
                             Production = new Dictionary<string, Production>(),
                             Improvements = new Dictionary<string, HideoutImprovement>(),
-                            Skills = new Skills { Common = [], Mastering = [], Points = 0 },
+                            Skills = new Skills
+                            {
+                                Common = [],
+                                Mastering = [],
+                                Points = 0
+                            },
                             Health = _cloner.Clone(pmcProfile.Health),
                             TraderRelations = new Dictionary<string, TraderData>(),
-                            RecipeUnlocked = { },
                             QuestsStatus = []
                         }
                     }
@@ -110,6 +125,7 @@ public class EventOutputHolder
     private void CleanUpCompleteCraftsInProfile(Dictionary<string, Production>? productions)
     {
         foreach (var production in productions)
+        {
             if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 // Water collector / Bitcoin etc
@@ -122,6 +138,7 @@ public class EventOutputHolder
                 // Normal completed craft, delete
                 productions.Remove(production.Key);
             }
+        }
     }
 
     private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
@@ -131,9 +148,15 @@ public class EventOutputHolder
             var improvement = pmcData.Hideout.Improvements[improvementKey.Key];
 
             // Skip completed
-            if (improvement.Completed ?? false) continue;
+            if (improvement.Completed ?? false)
+            {
+                continue;
+            }
 
-            if (improvement.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp()) improvement.Completed = true;
+            if (improvement.ImproveCompleteTimestamp < _timeUtil.GetTimeStamp())
+            {
+                improvement.Completed = true;
+            }
         }
 
         return pmcData.Hideout.Improvements;
@@ -145,13 +168,21 @@ public class EventOutputHolder
         {
             if (production.Value is null)
                 // Could be cancelled production, skip item to save processing
+            {
                 continue;
+            }
 
             // Complete and is Continuous e.g. water collector
-            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false)) continue;
+            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
+            {
+                continue;
+            }
 
             // Skip completed
-            if (!production.Value.InProgress ?? false) continue;
+            if (!production.Value.InProgress ?? false)
+            {
+                continue;
+            }
 
             // Client informed of craft, remove from data returned
             Dictionary<string, bool>? storageForSessionId = null;
@@ -170,7 +201,10 @@ public class EventOutputHolder
             }
 
             // Flag started craft as having been seen by client so it won't happen subsequent times
-            if (production.Value.Progress > 0 && !storageForSessionId.ContainsKey(production.Key)) storageForSessionId.TryAdd(production.Key, true);
+            if (production.Value.Progress > 0 && !storageForSessionId.ContainsKey(production.Key))
+            {
+                storageForSessionId.TryAdd(production.Key, true);
+            }
         }
 
         // Return undefined if there's no crafts to send to client to match live behaviour

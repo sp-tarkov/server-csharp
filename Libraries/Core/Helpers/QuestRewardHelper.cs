@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.ItemEvent;
@@ -9,8 +8,8 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
-
 
 namespace Core.Helpers;
 
@@ -65,7 +64,9 @@ public class QuestRewardHelper(
 
         var questMoneyRewardBonusMultiplier = GetQuestMoneyRewardBonusMultiplier(pmcProfile);
         if (questMoneyRewardBonusMultiplier > 0) // money = money + (money * intelCenterBonus / 100)
+        {
             questDetails = ApplyMoneyBoost(questDetails, questMoneyRewardBonusMultiplier, state);
+        }
 
         // e.g. 'Success' or 'AvailableForFinish'
         var rewards = questDetails.Rewards.GetByJsonProp<List<Reward>>(state.ToString());
@@ -91,18 +92,22 @@ public class QuestRewardHelper(
         var quest = _databaseService.GetQuests()[questId];
         if (quest == null)
             // Check daily/weekly objects
+        {
             foreach (var repeatableQuest in pmcData.RepeatableQuests)
             {
                 quest = repeatableQuest.ActiveQuests.FirstOrDefault(r => r.Id == questId);
                 if (quest != null)
+                {
                     break;
+                }
             }
+        }
 
         return quest;
     }
 
     /// <summary>
-    /// Get players money reward bonus from profile
+    ///     Get players money reward bonus from profile
     /// </summary>
     /// <param name="pmcData">player profile</param>
     /// <returns>bonus as a percent</returns>
@@ -137,7 +142,7 @@ public class QuestRewardHelper(
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
         var clonedQuest = _cloner.Clone(quest);
-        var rewards = (List<Reward>)clonedQuest.Rewards.GetType()
+        var rewards = (List<Reward>) clonedQuest.Rewards.GetType()
                           .GetProperties()
                           .FirstOrDefault(p => p.Name == questStatus.ToString())
                           .GetValue(quest.Rewards) ??

@@ -23,7 +23,7 @@ public static class ObjectExtensions
     }
 
     /// <summary>
-    /// CARE WHEN USING THIS, THIS IS TO GET PROP ON A TYPE
+    ///     CARE WHEN USING THIS, THIS IS TO GET PROP ON A TYPE
     /// </summary>
     /// <param name="obj"></param>
     /// <param name="key"></param>
@@ -32,7 +32,10 @@ public static class ObjectExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static bool ContainsJsonProp<T>(this object? obj, T key)
     {
-        if (obj == null) throw new ArgumentNullException(nameof(obj));
+        if (obj == null)
+        {
+            throw new ArgumentNullException(nameof(obj));
+        }
 
         return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
     }
@@ -43,8 +46,11 @@ public static class ObjectExtensions
         ArgumentNullException.ThrowIfNull(toLower);
 
         if (!TryGetCachedProperty(obj.GetType(), toLower, out var cachedProperty))
+        {
             return default;
-        return (T?)cachedProperty.GetValue(obj);
+        }
+
+        return (T?) cachedProperty.GetValue(obj);
     }
 
     public static List<object> GetAllPropValuesAsList(this object? obj)
@@ -54,7 +60,10 @@ public static class ObjectExtensions
         var list = obj.GetType().GetProperties();
         var result = new List<object>();
 
-        foreach (var prop in list) result.Add(prop.GetValue(obj));
+        foreach (var prop in list)
+        {
+            result.Add(prop.GetValue(obj));
+        }
 
         return result;
     }

@@ -1,8 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Trade;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -10,7 +10,7 @@ namespace Core.Callbacks;
 public class TradeCallbacks(TradeController _tradeController)
 {
     /// <summary>
-    /// Handle client/game/profile/items/moving TradingConfirm event
+    ///     Handle client/game/profile/items/moving TradingConfirm event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -22,7 +22,7 @@ public class TradeCallbacks(TradeController _tradeController)
     }
 
     /// <summary>
-    /// Handle RagFairBuyOffer event
+    ///     Handle RagFairBuyOffer event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -34,7 +34,7 @@ public class TradeCallbacks(TradeController _tradeController)
     }
 
     /// <summary>
-    /// Handle SellAllFromSavage event
+    ///     Handle SellAllFromSavage event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

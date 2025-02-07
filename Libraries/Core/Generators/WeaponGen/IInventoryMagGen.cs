@@ -2,7 +2,7 @@
 
 public interface IInventoryMagGen
 {
-    public abstract int GetPriority();
-    public abstract bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen);
-    public abstract void Process(InventoryMagGen inventoryMagGen);
+    public int GetPriority();
+    public bool CanHandleInventoryMagGen(InventoryMagGen inventoryMagGen);
+    public void Process(InventoryMagGen inventoryMagGen);
 }

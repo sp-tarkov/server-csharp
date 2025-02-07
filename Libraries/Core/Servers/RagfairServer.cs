@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Generators;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Servers;
 
@@ -35,9 +35,15 @@ public class RagfairServer(
         foreach (var traderId in traders)
         {
             // Edge case - skip generating fence offers
-            if (traderId == Traders.FENCE) continue;
+            if (traderId == Traders.FENCE)
+            {
+                continue;
+            }
 
-            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId)) _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
+            if (_ragfairOfferService.TraderOffersNeedRefreshing(traderId))
+            {
+                _ragfairOfferGenerator.GenerateFleaOffersForTrader(traderId);
+            }
         }
 
         // Regenerate expired offers when over threshold limit
@@ -57,9 +63,9 @@ public class RagfairServer(
     }
 
     /**
- * Get traders who need to be periodically refreshed
- * @returns string array of traders
- */
+     * Get traders who need to be periodically refreshed
+     * @returns string array of traders
+     */
     public List<string> GetUpdateableTraders()
     {
         return _ragfairConfig.Traders.Keys.ToList();
@@ -75,13 +81,13 @@ public class RagfairServer(
     }
 
     /**
- * Disable/Hide an offer from flea
- * @param offerId
- */
+     * Disable/Hide an offer from flea
+     * @param offerId
+     */
     public void HideOffer(string offerId)
     {
         var offers = _ragfairOfferService.GetOffers();
-        var offer = offers.FirstOrDefault((x) => x.Id == offerId);
+        var offer = offers.FirstOrDefault(x => x.Id == offerId);
 
         if (offer is null)
         {

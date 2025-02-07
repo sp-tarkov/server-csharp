@@ -7,120 +7,258 @@ namespace Core.Models.Eft.Hideout;
 public record HideoutProductionData
 {
     [JsonPropertyName("recipes")]
-    public List<HideoutProduction>? Recipes { get; set; }
+    public List<HideoutProduction>? Recipes
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("scavRecipes")]
-    public List<ScavRecipe>? ScavRecipes { get; set; }
+    public List<ScavRecipe>? ScavRecipes
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("cultistRecipes")]
-    public List<CultistRecipe>? CultistRecipes { get; set; }
+    public List<CultistRecipe>? CultistRecipes
+    {
+        get;
+        set;
+    }
 }
 
 public record HideoutProduction
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("areaType")]
-    public HideoutAreas? AreaType { get; set; }
+    public HideoutAreas? AreaType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("requirements")]
-    public List<Requirement>? Requirements { get; set; }
+    public List<Requirement>? Requirements
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("productionTime")]
-    public double? ProductionTime { get; set; }
+    public double? ProductionTime
+    {
+        get;
+        set;
+    }
 
-    /** Tpl of item being crafted */
+    /**
+     * Tpl of item being crafted
+     */
     [JsonPropertyName("endProduct")]
-    public string? EndProduct { get; set; }
+    public string? EndProduct
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isEncoded")]
-    public bool? IsEncoded { get; set; }
+    public bool? IsEncoded
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("locked")]
-    public bool? Locked { get; set; }
+    public bool? Locked
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("needFuelForAllProductionTime")]
-    public bool? NeedFuelForAllProductionTime { get; set; }
+    public bool? NeedFuelForAllProductionTime
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("continuous")]
-    public bool? Continuous { get; set; }
+    public bool? Continuous
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public int? Count
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("productionLimitCount")]
-    public int? ProductionLimitCount { get; set; }
+    public int? ProductionLimitCount
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isCodeProduction")]
-    public bool? IsCodeProduction { get; set; }
+    public bool? IsCodeProduction
+    {
+        get;
+        set;
+    }
 }
 
 public record Requirement
 {
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public string? TemplateId
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("count")]
-    public int? Count { get; set; }
+    public int? Count
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isEncoded")]
-    public bool? IsEncoded { get; set; }
+    public bool? IsEncoded
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isFunctional")]
-    public bool? IsFunctional { get; set; }
+    public bool? IsFunctional
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("areaType")]
-    public int? AreaType { get; set; }
+    public int? AreaType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("requiredLevel")]
-    public int? RequiredLevel { get; set; }
+    public int? RequiredLevel
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("resource")]
-    public int? Resource { get; set; }
+    public int? Resource
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("questId")]
-    public string? QuestId { get; set; }
+    public string? QuestId
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isSpawnedInSession")]
-    public bool? IsSpawnedInSession { get; set; }
+    public bool? IsSpawnedInSession
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("gameVersions")]
-    public List<string>? GameVersions { get; set; }
+    public List<string>? GameVersions
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("type")]
-    public string? Type { get; set; }
+    public string? Type
+    {
+        get;
+        set;
+    }
 }
 
 public record ScavRecipe
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("requirements")]
-    public List<Requirement>? Requirements { get; set; }
+    public List<Requirement>? Requirements
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("productionTime")]
-    public double? ProductionTime { get; set; }
+    public double? ProductionTime
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("endProducts")]
-    public EndProducts? EndProducts { get; set; }
+    public EndProducts? EndProducts
+    {
+        get;
+        set;
+    }
 }
 
 public record EndProducts
 {
     [JsonPropertyName("Common")]
-    public MinMax? Common { get; set; }
+    public MinMax? Common
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Rare")]
-    public MinMax? Rare { get; set; }
+    public MinMax? Rare
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Superrare")]
-    public MinMax? Superrare { get; set; }
+    public MinMax? Superrare
+    {
+        get;
+        set;
+    }
 }
 
 public record CultistRecipe
 {
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 }

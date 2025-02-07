@@ -1,6 +1,5 @@
 using System.Text.RegularExpressions;
 using Core.Helpers.Dialog.Commando.SptCommands;
-using Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
@@ -83,41 +82,41 @@ public class ProfileSptCommand(
                 profileChangeEvent = HandleLevelCommand(quantity);
                 break;
             case "skill":
-            {
-                var enumSkill = Enum.GetValues(typeof(SkillTypes))
-                    .Cast<SkillTypes>()
-                    .FirstOrDefault(
-                        t => t.ToString().ToLower() == skill
-                    );
-
-                if (enumSkill == null)
                 {
-                    _mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        commandHandler,
-                        "Invalid use of profile command, the skill was not found. Use 'help' for more information."
-                    );
-                    return request.DialogId;
-                }
+                    var enumSkill = Enum.GetValues(typeof(SkillTypes))
+                        .Cast<SkillTypes>()
+                        .FirstOrDefault(
+                            t => t.ToString().ToLower() == skill
+                        );
 
-                if (quantity is < 0 or > 51)
-                {
-                    _mailSendService.SendUserMessageToPlayer(
-                        sessionId,
-                        commandHandler,
-                        "Invalid use of profile command, the skill level was outside bounds: 1 to 51. Use 'help' for more information."
-                    );
-                    return request.DialogId;
-                }
+                    if (enumSkill == null)
+                    {
+                        _mailSendService.SendUserMessageToPlayer(
+                            sessionId,
+                            commandHandler,
+                            "Invalid use of profile command, the skill was not found. Use 'help' for more information."
+                        );
+                        return request.DialogId;
+                    }
 
-                profileChangeEvent = HandleSkillCommand(enumSkill, quantity);
-                break;
-            }
+                    if (quantity is < 0 or > 51)
+                    {
+                        _mailSendService.SendUserMessageToPlayer(
+                            sessionId,
+                            commandHandler,
+                            "Invalid use of profile command, the skill level was outside bounds: 1 to 51. Use 'help' for more information."
+                        );
+                        return request.DialogId;
+                    }
+
+                    profileChangeEvent = HandleSkillCommand(enumSkill, quantity);
+                    break;
+                }
             case "examine":
-            {
-                profileChangeEvent = HandleExamineCommand();
-                break;
-            }
+                {
+                    profileChangeEvent = HandleExamineCommand();
+                    break;
+                }
             default:
                 _mailSendService.SendUserMessageToPlayer(
                     sessionId,
@@ -135,7 +134,10 @@ public class ProfileSptCommand(
                 {
                     Id = _hashUtil.Generate(),
                     Template = Money.ROUBLES,
-                    Upd = new Upd { StackObjectsCount = 1 },
+                    Upd = new Upd
+                    {
+                        StackObjectsCount = 1
+                    },
                     ParentId = _hashUtil.Generate(),
                     SlotId = "main"
                 }

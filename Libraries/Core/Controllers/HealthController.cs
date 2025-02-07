@@ -12,7 +12,6 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
-using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;
 
 namespace Core.Controllers;
 
@@ -63,18 +62,24 @@ public class HealthController(
         {
             // Get max healing from db
             var maxhp = _itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
-            healingItemToUse.Upd.MedKit = new UpdMedKit { HpResource = maxhp - request.Count }; // Subtract amout used from max
+            healingItemToUse.Upd.MedKit = new UpdMedKit
+            {
+                HpResource = maxhp - request.Count
+            }; // Subtract amout used from max
             // request.count appears to take into account healing effects removed, e.g. bleeds
             // Salewa heals limb for 20 and fixes light bleed = (20+45 = 65)
         }
 
         // Resource in medkit is spent, delete it
-        if (healingItemToUse.Upd.MedKit.HpResource <= 0) _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+        if (healingItemToUse.Upd.MedKit.HpResource <= 0)
+        {
+            _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+        }
 
         var healingItemDbDetails = _itemHelper.GetItem(healingItemToUse.Template);
 
         var healItemEffectDetails = healingItemDbDetails.Value.Properties.EffectsDamage;
-        var bodyPartToHeal = pmcData.Health.BodyParts.GetValueOrDefault(request.Part.ToString());
+        var bodyPartToHeal = pmcData.Health.BodyParts.GetValueOrDefault(request.Part);
         if (bodyPartToHeal is null)
         {
             _logger.Warning($"Player: {sessionID} Tried to heal a non-existent body part: {request.Part}");
@@ -96,10 +101,12 @@ public class HealthController(
                 // Check if healing item removes the effect on limb
                 if (!healItemEffectDetails.TryGetValue(Enum.Parse<DamageEffectType>(effectKey), out var matchingEffectFromHealingItem))
                     // Healing item doesn't have matching effect, it doesn't remove the effect
+                {
                     continue;
+                }
 
                 // Adjust limb heal amount based on if its fixing an effect (request.count is TOTAL cost of hp resource on heal item, NOT amount to heal limb)
-                amountToHealLimb -= (int)(matchingEffectFromHealingItem.Cost ?? 0);
+                amountToHealLimb -= (int) (matchingEffectFromHealingItem.Cost ?? 0);
                 bodyPartToHeal.Effects.Remove(effectKey);
             }
         }
@@ -108,7 +115,10 @@ public class HealthController(
         bodyPartToHeal.Health.Current += amountToHealLimb;
 
         // Ensure we've not healed beyond the limbs max hp
-        if (bodyPartToHeal.Health.Current > bodyPartToHeal.Health.Maximum) bodyPartToHeal.Health.Current = bodyPartToHeal.Health.Maximum;
+        if (bodyPartToHeal.Health.Current > bodyPartToHeal.Health.Maximum)
+        {
+            bodyPartToHeal.Health.Current = bodyPartToHeal.Health.Maximum;
+        }
 
         return output;
     }
@@ -132,10 +142,12 @@ public class HealthController(
         var itemToConsume = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         if (itemToConsume is null)
             // Item not found, very bad
+        {
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
                 _localisationService.GetText("health-unable_to_find_item_to_consume", request.Item)
             );
+        }
 
         var consumedItemMaxResource = _itemHelper.GetItem(itemToConsume.Template).Value.Properties.MaxResource;
         if (consumedItemMaxResource > 1)
@@ -144,15 +156,25 @@ public class HealthController(
             _itemHelper.AddUpdObjectToItem(itemToConsume);
 
             if (itemToConsume.Upd.FoodDrink is null)
-                itemToConsume.Upd.FoodDrink = new UpdFoodDrink { HpPercent = consumedItemMaxResource - request.Count };
+            {
+                itemToConsume.Upd.FoodDrink = new UpdFoodDrink
+                {
+                    HpPercent = consumedItemMaxResource - request.Count
+                };
+            }
             else
+            {
                 itemToConsume.Upd.FoodDrink.HpPercent -= request.Count;
+            }
 
             resourceLeft = itemToConsume.Upd.FoodDrink.HpPercent.Value;
         }
 
         // Remove item from inventory if resource has dropped below threshold
-        if (consumedItemMaxResource == 1 || resourceLeft < 1) _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+        if (consumedItemMaxResource == 1 || resourceLeft < 1)
+        {
+            _inventoryHelper.RemoveItem(pmcData, request.Item, sessionID, output);
+        }
 
         // Check what effect eating item has and handle
         var foodItemDbDetails = _itemHelper.GetItem(itemToConsume.Template).Value;
@@ -160,6 +182,7 @@ public class HealthController(
         var foodIsSingleUse = foodItemDbDetails.Properties.MaxResource == 1;
 
         foreach (var (key, effectProps) in foodItemEffectDetails)
+        {
             switch (key)
             {
                 case HealthFactor.Hydration:
@@ -173,6 +196,7 @@ public class HealthController(
                     _logger.Warning($"Unhandled effect after consuming: {itemToConsume.Template}, {key}");
                     break;
             }
+        }
 
         return output;
     }
@@ -182,9 +206,13 @@ public class HealthController(
     {
         if (foodIsSingleUse)
             // Apply whole value from passed in parameter
+        {
             bodyValue.Current += consumptionDetails.Value;
+        }
         else
+        {
             bodyValue.Current += request.Count;
+        }
 
         // Ensure current never goes over max
         if (bodyValue.Current > bodyValue.Maximum)
@@ -195,7 +223,10 @@ public class HealthController(
         }
 
         // Same as above but for the lower bound
-        if (bodyValue.Current < 0) bodyValue.Current = 0;
+        if (bodyValue.Current < 0)
+        {
+            bodyValue.Current = 0;
+        }
     }
 
     /// <summary>
@@ -224,27 +255,38 @@ public class HealthController(
         };
 
         _paymentService.PayMoney(pmcData, payMoneyRequest, sessionID, output);
-        if (output.Warnings.Count > 0) return output;
+        if (output.Warnings.Count > 0)
+        {
+            return output;
+        }
 
         foreach (var bodyPartKvP in healthTreatmentRequest.Difference.BodyParts.GetAllPropsAsDict())
         {
             // Get body part from request + from pmc profile
-            var partRequest = (BodyPartEffects)bodyPartKvP.Value;
+            var partRequest = (BodyPartEffects) bodyPartKvP.Value;
             var profilePart = pmcData.Health.BodyParts[bodyPartKvP.Key];
 
             // Bodypart healing is chosen when part request hp is above 0
             if (partRequest.Health > 0)
                 // Heal bodypart
+            {
                 profilePart.Health.Current = profilePart.Health.Maximum;
+            }
 
             // Check for effects to remove
             if (partRequest.Effects?.Count > 0)
             {
                 // Found some, loop over them and remove from pmc profile
-                foreach (var effect in partRequest.Effects) pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Remove(effect);
+                foreach (var effect in partRequest.Effects)
+                {
+                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Remove(effect);
+                }
 
                 // Remove empty effect object
-                if (pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Count == 0) pmcData.Health.BodyParts[bodyPartKvP.Key].Effects = null;
+                if (pmcData.Health.BodyParts[bodyPartKvP.Key].Effects.Count == 0)
+                {
+                    pmcData.Health.BodyParts[bodyPartKvP.Key].Effects = null;
+                }
             }
         }
 

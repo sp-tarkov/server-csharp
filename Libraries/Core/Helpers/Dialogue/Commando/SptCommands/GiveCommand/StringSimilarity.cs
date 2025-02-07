@@ -1,5 +1,3 @@
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 
 public static class StringSimilarity
@@ -16,7 +14,9 @@ public static class StringSimilarity
         }
 
         if (str1.Length < substringLength || str2.Length < substringLength)
+        {
             return 0;
+        }
 
         var map = new Dictionary<string, int>();
         for (var i = 0; i < str1.Length - (substringLength - 1); i++)

@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -15,7 +15,7 @@ public class DataCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/settings
+    ///     Handle client/settings
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -28,7 +28,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/globals
+    ///     Handle client/globals
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -43,7 +43,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/items
+    ///     Handle client/items
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -55,7 +55,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/handbook/templates
+    ///     Handle client/handbook/templates
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -67,7 +67,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/customization
+    ///     Handle client/customization
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -79,7 +79,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/account/customization
+    ///     Handle client/account/customization
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -91,7 +91,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/hideout/settings
+    ///     Handle client/hideout/settings
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -103,7 +103,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/hideout/areas
+    ///     Handle client/hideout/areas
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -115,7 +115,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/hideout/production/recipes
+    ///     Handle client/hideout/production/recipes
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -127,7 +127,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/languages
+    ///     Handle client/languages
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -139,7 +139,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/menu/locale
+    ///     Handle client/menu/locale
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -151,13 +151,16 @@ public class DataCallbacks(
         var locales = _databaseService.GetLocales();
         var result = locales.Menu?[localeId] ?? locales.Menu?.FirstOrDefault(m => m.Key == "en").Value;
 
-        if (result == null) throw new Exception($"Unable to determine locale for request with {localeId}");
+        if (result == null)
+        {
+            throw new Exception($"Unable to determine locale for request with {localeId}");
+        }
 
         return _httpResponseUtil.GetBody(result);
     }
 
     /// <summary>
-    /// Handle client/locale
+    ///     Handle client/locale
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -173,7 +176,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/hideout/qte/list
+    ///     Handle client/hideout/qte/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -185,7 +188,7 @@ public class DataCallbacks(
     }
 
     /// <summary>
-    /// Handle client/items/prices/
+    ///     Handle client/items/prices/
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

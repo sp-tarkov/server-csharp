@@ -15,7 +15,7 @@ public class DictionaryOfListOrTConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(
+        return (JsonConverter) Activator.CreateInstance(
             typeof(DictionaryOfListOrTConverter<,>).MakeGenericType(
                 typeToConvert.GenericTypeArguments[0],
                 typeToConvert.GenericTypeArguments[1].GenericTypeArguments[0]
@@ -33,13 +33,11 @@ public class DictionaryOfListOrTConverter<T, K> : JsonConverter<Dictionary<T, Li
             reader.Read();
             return default;
         }
-        else
+
+        using (var jsonDocument = JsonDocument.ParseValue(ref reader))
         {
-            using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-            {
-                var jsonText = jsonDocument.RootElement.GetRawText();
-                return JsonSerializer.Deserialize<Dictionary<T, ListOrT<K>>>(jsonText, options);
-            }
+            var jsonText = jsonDocument.RootElement.GetRawText();
+            return JsonSerializer.Deserialize<Dictionary<T, ListOrT<K>>>(jsonText, options);
         }
     }
 

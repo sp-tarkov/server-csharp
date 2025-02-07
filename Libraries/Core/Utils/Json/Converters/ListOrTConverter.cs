@@ -12,7 +12,7 @@ public class ListOrTConverterFactory : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(ListOrTConverter<>).MakeGenericType(typeToConvert.GenericTypeArguments[0]));
+        return (JsonConverter) Activator.CreateInstance(typeof(ListOrTConverter<>).MakeGenericType(typeToConvert.GenericTypeArguments[0]));
     }
 }
 
@@ -52,8 +52,12 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
     public override void Write(Utf8JsonWriter writer, ListOrT<T> value, JsonSerializerOptions options)
     {
         if (value.IsItem)
+        {
             JsonSerializer.Serialize(writer, value.Item, options);
+        }
         else
+        {
             JsonSerializer.Serialize(writer, value.List, options);
+        }
     }
 }

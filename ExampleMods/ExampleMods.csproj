@@ -1,29 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <OutputType>Library</OutputType>
-    </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Libraries\Core\Core.csproj">
-            <Private>false</Private>
-            <CopyLocal>false</CopyLocal>
-            <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-        </ProjectReference>
-        <ProjectReference Include="..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj">
-            <Private>false</Private>
-            <CopyLocal>false</CopyLocal>
-            <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-        </ProjectReference>
-        <ProjectReference Include="..\SptCommon\SptCommon.csproj">
-            <Private>false</Private>
-            <CopyLocal>false</CopyLocal>
-            <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
-        </ProjectReference>
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libraries\Core\Core.csproj">
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj">
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+    <ProjectReference Include="..\SptCommon\SptCommon.csproj">
+      <Private>false</Private>
+      <CopyLocal>false</CopyLocal>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+    </ProjectReference>
+  </ItemGroup>
 
 </Project>

@@ -1,7 +1,7 @@
-﻿using SptCommon.Annotations;
-using Core.Callbacks;
+﻿using Core.Callbacks;
 using Core.DI;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Routers.Dynamic;
 

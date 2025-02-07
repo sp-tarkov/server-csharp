@@ -10,23 +10,47 @@ public class ObtainPrestigeRequestList : List<ObtainPrestigeRequest>, IRequestDa
 public record ObtainPrestigeRequest : IRequestData
 {
     [JsonPropertyName("id")]
-    public string Id { get; set; }
+    public string Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("location")]
-    public Location Location { get; set; }
+    public Location Location
+    {
+        get;
+        set;
+    }
 }
 
 public record Location
 {
     [JsonPropertyName("x")]
-    public int X { get; set; }
+    public int X
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("y")]
-    public int Y { get; set; }
+    public int Y
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("z")]
-    public int Z { get; set; }
+    public int Z
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("r")]
-    public string R { get; set; }
+    public string R
+    {
+        get;
+        set;
+    }
 }

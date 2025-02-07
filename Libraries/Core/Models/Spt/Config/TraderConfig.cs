@@ -7,174 +7,388 @@ namespace Core.Models.Spt.Config;
 public record TraderConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind { get; set; } = "spt-trader";
+    public string Kind
+    {
+        get;
+        set;
+    } = "spt-trader";
 
     [JsonPropertyName("updateTime")]
-    public List<UpdateTime> UpdateTime { get; set; }
+    public List<UpdateTime> UpdateTime
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("updateTimeDefault")]
-    public int UpdateTimeDefault { get; set; }
+    public int UpdateTimeDefault
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("purchasesAreFoundInRaid")]
-    public bool PurchasesAreFoundInRaid { get; set; }
+    public bool PurchasesAreFoundInRaid
+    {
+        get;
+        set;
+    }
 
-    /** Should trader reset times be set based on server start time (false = bsg time - on the hour) */
+    /**
+     * Should trader reset times be set based on server start time (false = bsg time - on the hour)
+     */
     [JsonPropertyName("tradersResetFromServerStart")]
-    public bool TradersResetFromServerStart { get; set; }
+    public bool TradersResetFromServerStart
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("traderPriceMultipler")]
-    public double TraderPriceMultipler { get; set; }
+    public double TraderPriceMultipler
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("fence")]
-    public FenceConfig Fence { get; set; }
+    public FenceConfig Fence
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("moddedTraders")]
-    public ModdedTraders ModdedTraders { get; set; }
+    public ModdedTraders ModdedTraders
+    {
+        get;
+        set;
+    }
 }
 
 public record UpdateTime
 {
     [JsonPropertyName("_name")]
-    public string Name { get; set; }
+    public string Name
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("traderId")]
-    public string TraderId { get; set; }
+    public string TraderId
+    {
+        get;
+        set;
+    }
 
-    /** Seconds between trader resets */
+    /**
+     * Seconds between trader resets
+     */
     [JsonPropertyName("seconds")]
-    public MinMax Seconds { get; set; }
+    public MinMax Seconds
+    {
+        get;
+        set;
+    }
 }
 
 public record FenceConfig
 {
     [JsonPropertyName("discountOptions")]
-    public DiscountOptions DiscountOptions { get; set; }
+    public DiscountOptions DiscountOptions
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("partialRefreshTimeSeconds")]
-    public int PartialRefreshTimeSeconds { get; set; }
+    public int PartialRefreshTimeSeconds
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("partialRefreshChangePercent")]
-    public double PartialRefreshChangePercent { get; set; }
+    public double PartialRefreshChangePercent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("assortSize")]
-    public int AssortSize { get; set; }
+    public int AssortSize
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMax WeaponPresetMinMax { get; set; }
+    public MinMax WeaponPresetMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMax EquipmentPresetMinMax { get; set; }
+    public MinMax EquipmentPresetMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("itemPriceMult")]
-    public double ItemPriceMult { get; set; }
+    public double ItemPriceMult
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("presetPriceMult")]
-    public double PresetPriceMult { get; set; }
+    public double PresetPriceMult
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("armorMaxDurabilityPercentMinMax")]
-    public ItemDurabilityCurrentMax ArmorMaxDurabilityPercentMinMax { get; set; }
+    public ItemDurabilityCurrentMax ArmorMaxDurabilityPercentMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponDurabilityPercentMinMax")]
-    public ItemDurabilityCurrentMax WeaponDurabilityPercentMinMax { get; set; }
+    public ItemDurabilityCurrentMax WeaponDurabilityPercentMinMax
+    {
+        get;
+        set;
+    }
 
-    /** Keyed to plate protection level */
+    /**
+     * Keyed to plate protection level
+     */
     [JsonPropertyName("chancePlateExistsInArmorPercent")]
-    public Dictionary<string, double> ChancePlateExistsInArmorPercent { get; set; }
+    public Dictionary<string, double> ChancePlateExistsInArmorPercent
+    {
+        get;
+        set;
+    }
 
-    /** Key: item tpl */
+    /**
+     * Key: item tpl
+     */
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
-    public Dictionary<string, MinMax?> ItemStackSizeOverrideMinMax { get; set; }
+    public Dictionary<string, MinMax?> ItemStackSizeOverrideMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("itemTypeLimits")]
-    public Dictionary<string, int> ItemTypeLimits { get; set; }
+    public Dictionary<string, int> ItemTypeLimits
+    {
+        get;
+        set;
+    }
 
-    /** Prevent duplicate offers of items of specific categories by parentId */
+    /**
+     * Prevent duplicate offers of items of specific categories by parentId
+     */
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
-    public List<string> PreventDuplicateOffersOfCategory { get; set; }
+    public List<string> PreventDuplicateOffersOfCategory
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("regenerateAssortsOnRefresh")]
-    public bool RegenerateAssortsOnRefresh { get; set; }
+    public bool RegenerateAssortsOnRefresh
+    {
+        get;
+        set;
+    }
 
-    /** Max rouble price before item is not listed on flea */
+    /**
+     * Max rouble price before item is not listed on flea
+     */
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
-    public Dictionary<string, double?> ItemCategoryRoublePriceLimit { get; set; }
+    public Dictionary<string, double?> ItemCategoryRoublePriceLimit
+    {
+        get;
+        set;
+    }
 
-    /** Each slotid with % to be removed prior to listing on fence */
+    /**
+     * Each slotid with % to be removed prior to listing on fence
+     */
     [JsonPropertyName("presetSlotsToRemoveChancePercent")]
-    public Dictionary<string, double?> PresetSlotsToRemoveChancePercent { get; set; }
+    public Dictionary<string, double?> PresetSlotsToRemoveChancePercent
+    {
+        get;
+        set;
+    }
 
-    /** Block seasonal items from appearing when season is inactive */
+    /**
+     * Block seasonal items from appearing when season is inactive
+     */
     [JsonPropertyName("blacklistSeasonalItems")]
-    public bool BlacklistSeasonalItems { get; set; }
+    public bool BlacklistSeasonalItems
+    {
+        get;
+        set;
+    }
 
-    /** Max pen value allowed to be listed on flea - affects ammo + ammo boxes */
+    /**
+     * Max pen value allowed to be listed on flea - affects ammo + ammo boxes
+     */
     [JsonPropertyName("ammoMaxPenLimit")]
-    public double AmmoMaxPenLimit { get; set; }
+    public double AmmoMaxPenLimit
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("blacklist")]
-    public List<string> Blacklist { get; set; }
+    public List<string> Blacklist
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("coopExtractGift")]
-    public CoopExtractReward CoopExtractGift { get; set; }
+    public CoopExtractReward CoopExtractGift
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("btrDeliveryExpireHours")]
-    public int BtrDeliveryExpireHours { get; set; }
+    public int BtrDeliveryExpireHours
+    {
+        get;
+        set;
+    }
 
-    /** Smallest value player rep with fence can fall to */
+    /**
+     * Smallest value player rep with fence can fall to
+     */
     [JsonPropertyName("playerRepMin")]
-    public double PlayerRepMin { get; set; }
+    public double PlayerRepMin
+    {
+        get;
+        set;
+    }
 
-    /** Highest value player rep with fence can climb to */
+    /**
+     * Highest value player rep with fence can climb to
+     */
     [JsonPropertyName("playerRepMax")]
-    public double PlayerRepMax { get; set; }
+    public double PlayerRepMax
+    {
+        get;
+        set;
+    }
 }
 
 public record ItemDurabilityCurrentMax
 {
     [JsonPropertyName("current")]
-    public MinMax Current { get; set; }
+    public MinMax Current
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("max")]
-    public MinMax Max { get; set; }
+    public MinMax Max
+    {
+        get;
+        set;
+    }
 }
 
 public record CoopExtractReward : LootRequest
 {
     [JsonPropertyName("sendGift")]
-    public bool SendGift { get; set; }
+    public bool SendGift
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("useRewarditemBlacklist")]
-    public bool UseRewarditemBlacklist { get; set; }
+    public bool UseRewarditemBlacklist
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("messageLocaleIds")]
-    public List<string> MessageLocaleIds { get; set; }
+    public List<string> MessageLocaleIds
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("giftExpiryHours")]
-    public int GiftExpiryHours { get; set; }
+    public int GiftExpiryHours
+    {
+        get;
+        set;
+    }
 }
 
 public record DiscountOptions
 {
     [JsonPropertyName("assortSize")]
-    public int AssortSize { get; set; }
+    public int AssortSize
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("itemPriceMult")]
-    public double ItemPriceMult { get; set; }
+    public double ItemPriceMult
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("presetPriceMult")]
-    public double PresetPriceMult { get; set; }
+    public double PresetPriceMult
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMax WeaponPresetMinMax { get; set; }
+    public MinMax WeaponPresetMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMax EquipmentPresetMinMax { get; set; }
+    public MinMax EquipmentPresetMinMax
+    {
+        get;
+        set;
+    }
 }
 
-/** Custom trader data needed client side for things such as the clothing service */
+/**
+ * Custom trader data needed client side for things such as the clothing service
+ */
 public record ModdedTraders
 {
-    /** Trader Ids to enable the clothing service for */
+    /**
+     * Trader Ids to enable the clothing service for
+     */
     [JsonPropertyName("clothingService")]
-    public List<string> ClothingService { get; set; }
+    public List<string> ClothingService
+    {
+        get;
+        set;
+    }
 }

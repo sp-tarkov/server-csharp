@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Spt.Config;
-using Core.Servers;
 using Core.Models.Utils;
+using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
@@ -20,7 +20,7 @@ public class RagfairSellHelper(
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
-    /// Get the percent chance to sell an item based on its average listed price vs player chosen listing price
+    ///     Get the percent chance to sell an item based on its average listed price vs player chosen listing price
     /// </summary>
     /// <param name="averageOfferPriceRub">Price of average offer in roubles</param>
     /// <param name="playerListedPriceRub">Price player listed item for in roubles</param>
@@ -41,16 +41,22 @@ public class RagfairSellHelper(
         var sellChance = Math.Round(baseSellChancePercent * sellModifier * Math.Pow(sellModifier, 3) + 10); // Power of 3
 
         // Adjust sell chance if below config value
-        if (sellChance < sellConfig.MinSellChancePercent) sellChance = sellConfig.MinSellChancePercent;
+        if (sellChance < sellConfig.MinSellChancePercent)
+        {
+            sellChance = sellConfig.MinSellChancePercent;
+        }
 
         // Adjust sell chance if above config value
-        if (sellChance > sellConfig.MaxSellChancePercent) sellChance = sellConfig.MaxSellChancePercent;
+        if (sellChance > sellConfig.MaxSellChancePercent)
+        {
+            sellChance = sellConfig.MaxSellChancePercent;
+        }
 
         return sellChance;
     }
 
     /// <summary>
-    /// Get list of item count and sell time (empty list = no sell)
+    ///     Get list of item count and sell time (empty list = no sell)
     /// </summary>
     /// <param name="sellChancePercent">chance item will sell</param>
     /// <param name="itemSellCount">count of items to sell</param>
@@ -63,7 +69,7 @@ public class RagfairSellHelper(
         // Get a time in future to stop simulating sell chances at
         var endTime =
             startTimestamp +
-            _timeUtil.GetHoursAsSeconds((int)_databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour.Value);
+            _timeUtil.GetHoursAsSeconds((int) _databaseService.GetGlobals().Configuration.RagFair.OfferDurationTimeInHour.Value);
 
         var sellTimestamp = startTimestamp;
         var remainingCount = itemSellCount;
@@ -77,10 +83,16 @@ public class RagfairSellHelper(
             _logger.Warning($"Sell chance was not a number: {sellChancePercent}, defaulting to {_ragfairConfig.Sell.Chance.Base}%");
         }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Rolling to sell: {itemSellCount}items(chance: {effectiveSellChance}%)");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Rolling to sell: {itemSellCount}items(chance: {effectiveSellChance}%)");
+        }
 
         // No point rolling for a sale on a 0% chance item, exit early
-        if (effectiveSellChance == 0) return result;
+        if (effectiveSellChance == 0)
+        {
+            return result;
+        }
 
         while (remainingCount > 0 && sellTimestamp < endTime)
         {
@@ -92,22 +104,40 @@ public class RagfairSellHelper(
                 var weighting = (100 - effectiveSellChance) / 100;
                 var maximumTime = weighting * _ragfairConfig.Sell.Time.Max * 60;
                 var minimumTime = _ragfairConfig.Sell.Time.Min * 60;
-                if (maximumTime < minimumTime) maximumTime = minimumTime + 5;
+                if (maximumTime < minimumTime)
+                {
+                    maximumTime = minimumTime + 5;
+                }
+
                 // Sell time will be random between min/max
                 var random = new Random();
                 var newSellTime = Math.Floor(random.NextDouble() * (maximumTime.Value - minimumTime.Value) + minimumTime.Value);
                 if (newSellTime == 0)
                     // Ensure all sales don't occur the same exact time
+                {
                     newSellTime += 1;
-                sellTimestamp += (long)newSellTime;
-                result.Add(new SellResult { SellTime = sellTimestamp, Amount = boughtAmount });
+                }
+
+                sellTimestamp += (long) newSellTime;
+                result.Add(
+                    new SellResult
+                    {
+                        SellTime = sellTimestamp,
+                        Amount = boughtAmount
+                    }
+                );
 
                 if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Offer will sell at: {_timeUtil.GetDateTimeFromTimeStamp(sellTimestamp).ToLocalTime().ToString()}, bought: {boughtAmount}");
+                }
             }
             else
             {
-                if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Offer rolled not to sell, item count: {boughtAmount}");
+                }
             }
 
             remainingCount -= boughtAmount;

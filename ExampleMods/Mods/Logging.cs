@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Core.Models.External;
-using SptCommon.Annotations;
 using Core.Models.Logging;
 using Core.Models.Utils;
+using SptCommon.Annotations;
 
 namespace ExampleMods.Mods;
 
@@ -23,7 +18,7 @@ public class Logging : IPostSptLoadMod
         // Save the logger we're injecting into a private variable that is scoped to this class (only this class has access to it)
         _logger = logger;
     }
-    
+
     public void PostSptLoad()
     {
         // We can access the logger to assigned in the constructor here

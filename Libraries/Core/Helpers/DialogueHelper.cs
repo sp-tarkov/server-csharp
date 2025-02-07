@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Profile;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -21,7 +21,7 @@ public class DialogueHelper(
 )
 {
     /// <summary>
-    /// Get the preview contents of the last message in a dialogue.
+    ///     Get the preview contents of the last message in a dialogue.
     /// </summary>
     /// <param name="dialogue"></param>
     /// <returns>MessagePreview</returns>
@@ -38,16 +38,20 @@ public class DialogueHelper(
         };
 
         if (message?.Text is not null)
+        {
             result.Text = message.Text;
+        }
 
         if (message?.SystemData is not null)
+        {
             result.SystemData = message?.SystemData;
+        }
 
         return result;
     }
 
     /// <summary>
-    /// Get the item contents for a particular message.
+    ///     Get the item contents for a particular message.
     /// </summary>
     /// <param name="messageID"></param>
     /// <param name="sessionID"></param>
@@ -61,18 +65,24 @@ public class DialogueHelper(
         {
             var message = dialogueData[dialogue.Key].Messages.FirstOrDefault(x => x.Id == messageID);
             if (message is null)
+            {
                 continue;
+            }
 
             if (message.Id == messageID)
             {
                 var attachmentsNew = fullProfile.DialogueRecords[dialogue.Key].AttachmentsNew;
                 if (attachmentsNew > 0)
+                {
                     fullProfile.DialogueRecords[dialogue.Key].AttachmentsNew = attachmentsNew - 1;
+                }
 
                 // Check reward count when item being moved isn't in reward list
                 // If count is 0, it means after this move occurs the reward array will be empty and all rewards collected
                 if (message.Items.Data is null)
+                {
                     message.Items.Data = [];
+                }
 
                 var rewardItems = message.Items.Data?.Where(x => x.Id != itemId);
                 if (rewardItems.Count() == 0)
@@ -89,7 +99,7 @@ public class DialogueHelper(
     }
 
     /// <summary>
-    /// Get the dialogs dictionary for a profile, create if doesn't exist
+    ///     Get the dialogs dictionary for a profile, create if doesn't exist
     /// </summary>
     /// <param name="sessionId">Session/player id</param>
     /// <returns>Dialog dictionary</returns>
@@ -107,7 +117,9 @@ public class DialogueHelper(
         foreach (var dialogue in dialogues.Values)
         {
             if (dialogue.Id == dialogueId)
+            {
                 returnDialogue = dialogue;
+            }
 
             break;
         }

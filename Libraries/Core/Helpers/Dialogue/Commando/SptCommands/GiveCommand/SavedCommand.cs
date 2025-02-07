@@ -16,7 +16,21 @@ public class SavedCommand
         Locale = locale;
     }
 
-    public int Quantity { get; set; }
-    public List<string> PotentialItemNames { get; set; }
-    public string Locale { get; set; }
+    public int Quantity
+    {
+        get;
+        set;
+    }
+
+    public List<string> PotentialItemNames
+    {
+        get;
+        set;
+    }
+
+    public string Locale
+    {
+        get;
+        set;
+    }
 }

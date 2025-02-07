@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -10,7 +10,7 @@ namespace Core.Callbacks;
 public class NoteCallbacks(NoteController _noteController)
 {
     /// <summary>
-    /// Handle AddNote event
+    ///     Handle AddNote event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -22,7 +22,7 @@ public class NoteCallbacks(NoteController _noteController)
     }
 
     /// <summary>
-    /// Handle EditNote event
+    ///     Handle EditNote event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -34,7 +34,7 @@ public class NoteCallbacks(NoteController _noteController)
     }
 
     /// <summary>
-    /// Handle DeleteNote event
+    ///     Handle DeleteNote event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

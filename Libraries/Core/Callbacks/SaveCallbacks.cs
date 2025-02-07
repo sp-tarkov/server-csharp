@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.DI;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -23,6 +23,11 @@ public class SaveCallbacks(
         _saveServer.Load();
     }
 
+    public string GetRoute()
+    {
+        return "spt-save";
+    }
+
     public bool OnUpdate(long secondsSinceLastRun)
     {
         if (secondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
@@ -32,10 +37,5 @@ public class SaveCallbacks(
         }
 
         return false;
-    }
-
-    public string GetRoute()
-    {
-        return "spt-save";
     }
 }

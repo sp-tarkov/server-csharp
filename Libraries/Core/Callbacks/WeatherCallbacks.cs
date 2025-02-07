@@ -1,7 +1,7 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -12,7 +12,7 @@ public class WeatherCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/weather
+    ///     Handle client/weather
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -24,7 +24,7 @@ public class WeatherCallbacks(
     }
 
     /// <summary>
-    /// Handle client/localGame/weather
+    ///     Handle client/localGame/weather
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

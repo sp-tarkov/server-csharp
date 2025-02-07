@@ -17,13 +17,13 @@ public class RagfairOfferHolder(
     LocalisationService _localisationService,
     ConfigServer configServer)
 {
+    protected int _maxOffersPerTemplate = (int) configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected Dictionary<string, RagfairOffer> _offersById = new();
     protected object _offersByIdLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected object _offersByTemplateLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
     protected object _offersByTraderLock = new();
-    protected int _maxOffersPerTemplate = (int)configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
 
     public RagfairOffer? GetOfferById(string id)
     {
@@ -94,7 +94,10 @@ public class RagfairOfferHolder(
         {
             var sellerId = offer.User.Id;
             // Keep generating IDs until we get a unique one
-            while (_offersById.ContainsKey(offer.Id)) offer.Id = hashUtil.Generate();
+            while (_offersById.ContainsKey(offer.Id))
+            {
+                offer.Id = hashUtil.Generate();
+            }
 
             var offerId = offer.Id;
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;

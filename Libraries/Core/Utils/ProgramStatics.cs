@@ -101,8 +101,27 @@ public class BuildInfo
         buildTime = 0;
     }
 
-    public EntryType? entryType { get; set; }
-    public string? sptVersion { get; set; }
-    public string? commit { get; set; }
-    public double? buildTime { get; set; }
+    public EntryType? entryType
+    {
+        get;
+        set;
+    }
+
+    public string? sptVersion
+    {
+        get;
+        set;
+    }
+
+    public string? commit
+    {
+        get;
+        set;
+    }
+
+    public double? buildTime
+    {
+        get;
+        set;
+    }
 }

@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Servers;
@@ -10,11 +10,11 @@ namespace Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected ISptLogger<ConfigServer> _logger;
-    protected JsonUtil _jsonUtil;
-    protected FileUtil _fileUtil;
-    protected Dictionary<string, object> configs = new();
     protected static readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected FileUtil _fileUtil;
+    protected JsonUtil _jsonUtil;
+    protected ISptLogger<ConfigServer> _logger;
+    protected Dictionary<string, object> configs = new();
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,
@@ -31,7 +31,10 @@ public class ConfigServer
     public T GetConfig<T>() where T : BaseConfig
     {
         var configKey = GetConfigKey(typeof(T));
-        if (!configs.ContainsKey(configKey.GetValue())) throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
+        if (!configs.ContainsKey(configKey.GetValue()))
+        {
+            throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
+        }
 
         return configs[configKey.GetValue()] as T;
     }
@@ -40,7 +43,10 @@ public class ConfigServer
     {
         var configEnumerable = Enum.GetValues<ConfigTypes>().Where(e => e.GetConfigType() == type);
         if (!configEnumerable.Any())
+        {
             throw new Exception($"Config of type {type.Name} is not mapped to any ConfigTypes");
+        }
+
         return configEnumerable.First();
     }
 
@@ -51,7 +57,10 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("Importing configs...");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug("Importing configs...");
+        }
 
         // Get all filepaths
         var filepath = "./assets/configs/";
@@ -59,6 +68,7 @@ public class ConfigServer
 
         // Add file content to result
         foreach (var file in files)
+        {
             if (acceptableFileExtensions.Contains(_fileUtil.GetFileExtension(file)))
             {
                 var fileContent = _fileUtil.ReadFile(file);
@@ -73,6 +83,7 @@ public class ConfigServer
 
                 configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
             }
+        }
 
         /** TODO: deal with this:
         this.logger.info(`Commit hash: {

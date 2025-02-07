@@ -1,11 +1,11 @@
 using Core.Context;
-using SptCommon.Annotations;
 using Core.Models.Eft.Match;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using static Core.Services.MatchLocationService;
 
 namespace Core.Controllers;
@@ -25,7 +25,6 @@ public class MatchController(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
-    /// 
     /// </summary>
     /// <returns></returns>
     public bool GetEnabled()
@@ -34,7 +33,7 @@ public class MatchController(
     }
 
     /// <summary>
-    /// Handle client/match/group/delete
+    ///     Handle client/match/group/delete
     /// </summary>
     /// <param name="info"></param>
     public void DeleteGroup(DeleteGroupRequest info) // TODO: info is `any` in the node server
@@ -43,7 +42,7 @@ public class MatchController(
     }
 
     /// <summary>
-    /// Handle match/group/start_game
+    ///     Handle match/group/start_game
     /// </summary>
     /// <param name="info"></param>
     /// <param name="sessionId"></param>
@@ -78,13 +77,13 @@ public class MatchController(
     }
 
     /// <summary>
-    /// Handle client/match/group/status
+    ///     Handle client/match/group/status
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
     public MatchGroupStatusResponse GetGroupStatus(MatchGroupStatusRequest info)
     {
-        return new MatchGroupStatusResponse()
+        return new MatchGroupStatusResponse
         {
             Players = [],
             MaxPveCountExceeded = false
@@ -92,7 +91,7 @@ public class MatchController(
     }
 
     /// <summary>
-    /// Handle /client/raid/configuration
+    ///     Handle /client/raid/configuration
     /// </summary>
     /// <param name="request"></param>
     /// <param name="sessionId"></param>
@@ -105,26 +104,31 @@ public class MatchController(
 
         // Set pmcs to difficulty set in pre-raid screen if override in bot config isnt enabled
         if (!_pmcConfig.UseDifficultyOverride)
+        {
             _pmcConfig.Difficulty = ConvertDifficultyDropdownIntoBotDifficulty(
                 request.WavesSettings.BotDifficulty.ToString()
             );
+        }
     }
 
     /// <summary>
-    /// Convert a difficulty value from pre-raid screen to a bot difficulty
+    ///     Convert a difficulty value from pre-raid screen to a bot difficulty
     /// </summary>
     /// <param name="botDifficulty">dropdown difficulty value</param>
     /// <returns>bot difficulty</returns>
     private string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
     {
         // Edge case medium - must be altered
-        if (botDifficulty.ToLower() == "medium") return "normal";
+        if (botDifficulty.ToLower() == "medium")
+        {
+            return "normal";
+        }
 
         return botDifficulty;
     }
 
     /// <summary>
-    /// Handle client/match/local/start
+    ///     Handle client/match/local/start
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
@@ -135,7 +139,7 @@ public class MatchController(
     }
 
     /// <summary>
-    /// Handle client/match/local/end
+    ///     Handle client/match/local/end
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="request"></param>

@@ -8,11 +8,23 @@ public record PmcData : BotBase
 {
     [JsonPropertyName("Prestige")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, long>? Prestige { get; set; }
+    public Dictionary<string, long>? Prestige
+    {
+        get;
+        set;
+    }
 
-    public Dictionary<string, double>? CheckedMagazines { get; set; }
+    public Dictionary<string, double>? CheckedMagazines
+    {
+        get;
+        set;
+    }
 
-    public object CheckedChambers { get; set; }
+    public object CheckedChambers
+    {
+        get;
+        set;
+    }
 }
 
 public record PostRaidPmcData : PmcData
@@ -22,9 +34,19 @@ public record PostRaidPmcData : PmcData
 public record PostRaidStats
 {
     [JsonPropertyName("Eft")]
-    public EftStats? Eft { get; set; }
+    public EftStats? Eft
+    {
+        get;
+        set;
+    }
 
-    /** Only found in profile we get from client post raid */
+    /**
+     * Only found in profile we get from client post raid
+     */
     [JsonPropertyName("Arena")]
-    public EftStats? Arena { get; set; }
+    public EftStats? Arena
+    {
+        get;
+        set;
+    }
 }

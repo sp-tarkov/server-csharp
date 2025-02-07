@@ -1,4 +1,5 @@
 // This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe
+
 public static class ItemTpl
 {
     public const string AMMO_127X108_B32 = "5cde8864d7f00c0010373be1";

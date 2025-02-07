@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -6,6 +5,7 @@ using Core.Models.Eft.Launcher;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -23,7 +23,12 @@ public class ProfileCallbacks(
     public string CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
         var id = _profileController.CreateProfile(info, sessionID);
-        return _httpResponse.GetBody(new CreateProfileResponse { UserId = id });
+        return _httpResponse.GetBody(
+            new CreateProfileResponse
+            {
+                UserId = id
+            }
+        );
     }
 
     /**
@@ -46,7 +51,12 @@ public class ProfileCallbacks(
      */
     public string RegenerateScav(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponse.GetBody(new List<PmcData> { _profileController.GeneratePlayerScav(sessionID) });
+        return _httpResponse.GetBody(
+            new List<PmcData>
+            {
+                _profileController.GeneratePlayerScav(sessionID)
+            }
+        );
     }
 
     /**
@@ -70,7 +80,13 @@ public class ProfileCallbacks(
         {
             "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
             "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
-            _ => _httpResponse.GetBody<object>(new { status = 0, nicknamechangedate = _timeUtil.GetTimeStamp() })
+            _ => _httpResponse.GetBody<object>(
+                new
+                {
+                    status = 0,
+                    nicknamechangedate = _timeUtil.GetTimeStamp()
+                }
+            )
         };
     }
 
@@ -85,7 +101,12 @@ public class ProfileCallbacks(
         {
             "taken" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotUnique, "The nickname is already in use"),
             "tooshort" => _httpResponse.GetBody<object?>(null, BackendErrorCodes.NicknameNotValid, "The nickname is too short"),
-            _ => _httpResponse.GetBody(new { status = "ok" })
+            _ => _httpResponse.GetBody(
+                new
+                {
+                    status = "ok"
+                }
+            )
         };
     }
 
@@ -95,7 +116,10 @@ public class ProfileCallbacks(
     public string GetReservedNickname(string url, EmptyRequestData info, string sessionID)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
-        if (fullProfile?.ProfileInfo?.Username is not null) return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
+        if (fullProfile?.ProfileInfo?.Username is not null)
+        {
+            return _httpResponse.GetBody(fullProfile?.ProfileInfo?.Username);
+        }
 
         return _httpResponse.GetBody("SPTarkov");
     }

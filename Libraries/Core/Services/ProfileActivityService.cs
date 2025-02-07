@@ -1,5 +1,5 @@
-﻿using SptCommon.Annotations;
-using Core.Utils;
+﻿using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Services;
 
@@ -8,7 +8,7 @@ public class ProfileActivityService(
     TimeUtil _timeUtil
 )
 {
-    private Dictionary<string, long> profileActivityTimestamps = new();
+    private readonly Dictionary<string, long> profileActivityTimestamps = new();
 
     /**
      * Was the requested profile active in the last requested minutes
@@ -20,7 +20,9 @@ public class ProfileActivityService(
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
         if (!profileActivityTimestamps.TryGetValue(sessionId, out var storedActivityTimestamp))
+        {
             return false;
+        }
 
         return currentTimestamp - storedActivityTimestamp < minutes * 60;
     }
@@ -39,11 +41,15 @@ public class ProfileActivityService(
         {
             var lastActivityTimestamp = activity.Value;
             if (lastActivityTimestamp == null)
+            {
                 continue;
+            }
 
             // Profile was active in last x minutes, add to return list
             if (currentTimestamp - lastActivityTimestamp < minutes * 60)
+            {
                 result.Add(activity.Key);
+            }
         }
 
         return result;

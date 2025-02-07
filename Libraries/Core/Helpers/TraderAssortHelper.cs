@@ -1,5 +1,4 @@
 using Core.Generators;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
@@ -8,6 +7,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Helpers;
@@ -32,14 +32,14 @@ public class TraderAssortHelper(
     ICloner _cloner
 )
 {
-    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
     protected Dictionary<string, Dictionary<string, string>> _mergedQuestAssorts = new();
-    protected bool createdMergedQuestAssorts = false;
+    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
+    protected bool createdMergedQuestAssorts;
 
     /// <summary>
-    /// Get a traders assorts
-    /// Can be used for returning ragfair / fence assorts
-    /// Filter out assorts not unlocked due to level OR quest completion
+    ///     Get a traders assorts
+    ///     Can be used for returning ragfair / fence assorts
+    ///     Filter out assorts not unlocked due to level OR quest completion
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <param name="traderId">traders id</param>
@@ -51,10 +51,16 @@ public class TraderAssortHelper(
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
         var pmcProfile = fullProfile?.CharacterData?.PmcData;
 
-        if (traderId == Traders.FENCE) return _fenceService.GetFenceAssorts(pmcProfile);
+        if (traderId == Traders.FENCE)
+        {
+            return _fenceService.GetFenceAssorts(pmcProfile);
+        }
 
         // Strip assorts player should not see yet
-        if (!showLockedAssorts) traderClone.Assort = _assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
+        if (!showLockedAssorts)
+        {
+            traderClone.Assort = _assortHelper.StripLockedLoyaltyAssort(pmcProfile, traderId, traderClone.Assort);
+        }
 
         ResetBuyRestrictionCurrentValue(traderClone.Assort.Items);
 
@@ -74,7 +80,9 @@ public class TraderAssortHelper(
             if (assortToAdjust is null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug($"Cannot find trader: {traderClone.Base.Nickname} assort: {assortId} to adjust BuyRestrictionCurrent value, skipping");
+                }
 
                 continue;
             }
@@ -82,14 +90,16 @@ public class TraderAssortHelper(
             if (assortToAdjust.Upd is null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug(
                         $"Unable to adjust assort {assortToAdjust.Id} item: {assortToAdjust.Template} BuyRestrictionCurrent value, assort has a null upd object"
                     );
+                }
 
                 continue;
             }
 
-            assortToAdjust.Upd.BuyRestrictionCurrent = (int)(assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
+            assortToAdjust.Upd.BuyRestrictionCurrent = (int) (assortPurchasesfromTrader[assortId.Key].PurchaseCount ?? 0);
         }
 
         // Get rid of quest locked assorts
@@ -108,13 +118,16 @@ public class TraderAssortHelper(
         );
 
         // Filter out root assorts that are blacklisted for this profile
-        if (fullProfile.SptData.BlacklistedItemTemplates?.Count > 0) RemoveItemsFromAssort(traderClone.Assort, fullProfile.SptData.BlacklistedItemTemplates);
+        if (fullProfile.SptData.BlacklistedItemTemplates?.Count > 0)
+        {
+            RemoveItemsFromAssort(traderClone.Assort, fullProfile.SptData.BlacklistedItemTemplates);
+        }
 
         return traderClone.Assort;
     }
 
     /// <summary>
-    /// Given the blacklist provided, remove root items from assort
+    ///     Given the blacklist provided, remove root items from assort
     /// </summary>
     /// <param name="assortToFilter">Trader assort to modify</param>
     /// <param name="itemsTplsToRemove">Item TPLs the assort should not have</param>
@@ -128,7 +141,7 @@ public class TraderAssortHelper(
     }
 
     /// <summary>
-    /// Reset every traders root item `BuyRestrictionCurrent` property to 0
+    ///     Reset every traders root item `BuyRestrictionCurrent` property to 0
     /// </summary>
     /// <param name="assortItems">Items to adjust</param>
     protected void ResetBuyRestrictionCurrentValue(List<Item> assortItems)
@@ -137,14 +150,17 @@ public class TraderAssortHelper(
         foreach (var assort in assortItems.Where(item => item.SlotId == "hideout"))
         {
             // no value to adjust
-            if (assort.Upd.BuyRestrictionCurrent is null) continue;
+            if (assort.Upd.BuyRestrictionCurrent is null)
+            {
+                continue;
+            }
 
             assort.Upd.BuyRestrictionCurrent = 0;
         }
     }
 
     /// <summary>
-    /// Create a dict of all assort id = quest id mappings used to work out what items should be shown to player based on the quests they've started/completed/failed
+    ///     Create a dict of all assort id = quest id mappings used to work out what items should be shown to player based on the quests they've started/completed/failed
     /// </summary>
     protected void HydrateMergedQuestAssorts()
     {
@@ -156,21 +172,26 @@ public class TraderAssortHelper(
             var trader = traders[traderId.Key];
             if (trader.QuestAssort is not null)
                 // Started/Success/fail
+            {
                 foreach (var questStatus in trader.QuestAssort)
                     // Each assort to quest id record
                 foreach (var assortId in trader.QuestAssort[questStatus.Key])
                 {
                     // Null guard
-                    if (!_mergedQuestAssorts.TryGetValue(questStatus.Key, out _)) _mergedQuestAssorts.TryAdd(questStatus.Key, new Dictionary<string, string>());
+                    if (!_mergedQuestAssorts.TryGetValue(questStatus.Key, out _))
+                    {
+                        _mergedQuestAssorts.TryAdd(questStatus.Key, new Dictionary<string, string>());
+                    }
 
                     _mergedQuestAssorts[questStatus.Key][assortId.Key] = trader.QuestAssort[questStatus.Key][assortId.Key];
                 }
+            }
         }
     }
 
     /// <summary>
-    /// Reset a traders assorts and move nextResupply value to future
-    /// Flag trader as needing a flea offer reset to be picked up by flea update() function
+    ///     Reset a traders assorts and move nextResupply value to future
+    ///     Flag trader as needing a flea offer reset to be picked up by flea update() function
     /// </summary>
     /// <param name="trader">trader details to alter</param>
     public void ResetExpiredTrader(Trader trader)
@@ -178,14 +199,14 @@ public class TraderAssortHelper(
         trader.Assort.Items = GetPristineTraderAssorts(trader.Base.Id);
 
         // Update resupply value to next timestamp
-        trader.Base.NextResupply = (int)_traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
+        trader.Base.NextResupply = (int) _traderHelper.GetNextUpdateTimestamp(trader.Base.Id);
 
         // Flag a refresh is needed so ragfair update() will pick it up
         trader.Base.RefreshTraderRagfairOffers = true;
     }
 
     /// <summary>
-    /// Does the supplied trader need its assorts refreshed
+    ///     Does the supplied trader need its assorts refreshed
     /// </summary>
     /// <param name="traderID">Trader to check</param>
     /// <returns>true they need refreshing</returns>
@@ -198,7 +219,7 @@ public class TraderAssortHelper(
     }
 
     /// <summary>
-    /// Get an array of pristine trader items prior to any alteration by player (as they were on server start)
+    ///     Get an array of pristine trader items prior to any alteration by player (as they were on server start)
     /// </summary>
     /// <param name="traderId">trader id</param>
     /// <returns>array of Items</returns>

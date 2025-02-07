@@ -1,5 +1,4 @@
 using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Inventory;
@@ -10,6 +9,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
@@ -51,7 +51,7 @@ public class PaymentService(
         foreach (var itemRequest in request.SchemeItems)
         {
             // Find the corresponding item in the player's inventory.
-            var item = pmcData.Inventory.Items.FirstOrDefault((i) => i.Id == itemRequest.Id);
+            var item = pmcData.Inventory.Items.FirstOrDefault(i => i.Id == itemRequest.Id);
             if (item is not null)
             {
                 if (!_paymentHelper.IsMoneyTpl(item.Template))
@@ -60,7 +60,7 @@ public class PaymentService(
                     _inventoryHelper.RemoveItemByCount(
                         pmcData,
                         item.Id,
-                        (int)itemRequest.Count,
+                        (int) itemRequest.Count,
                         sessionID,
                         output
                     );
@@ -87,7 +87,10 @@ public class PaymentService(
         // Loop through each type of currency involved in the trade.
         foreach (var currencyTpl in currencyAmounts)
         {
-            if (currencyTpl.Value <= 0) continue;
+            if (currencyTpl.Value <= 0)
+            {
+                continue;
+            }
 
             var currencyAmount = currencyTpl.Value;
             totalCurrencyAmount += currencyAmount.Value;
@@ -96,7 +99,10 @@ public class PaymentService(
             AddPaymentToOutput(pmcData, currencyTpl.Key, currencyAmount.Value, sessionID, output);
 
             // If there are warnings, exit early.
-            if (output.Warnings?.Count > 0) return;
+            if (output.Warnings?.Count > 0)
+            {
+                return;
+            }
 
             if (payToTrader)
             {
@@ -125,15 +131,24 @@ public class PaymentService(
             pmcData.TradersInfo[request.TransactionId].SalesSum += costOfPurchaseInCurrency;
         }
 
-        if (payToTrader) _traderHelper.LevelUp(request.TransactionId, pmcData);
+        if (payToTrader)
+        {
+            _traderHelper.LevelUp(request.TransactionId, pmcData);
+        }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug("Item(s) taken. Status OK.");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug("Item(s) taken. Status OK.");
+        }
     }
 
     private double? GetTraderItemHandbookPriceRouble(string? traderAssortId, string traderId)
     {
         var purchasedAssortItem = _traderHelper.GetTraderAssortItemByAssortId(traderId, traderAssortId);
-        if (purchasedAssortItem is null) return 1;
+        if (purchasedAssortItem is null)
+        {
+            return 1;
+        }
 
         var assortItemPriceRouble = _handbookHelper.GetTemplatePrice(purchasedAssortItem.Template);
         if (assortItemPriceRouble == 0)
@@ -172,10 +187,16 @@ public class PaymentService(
         foreach (var item in pmcData.Inventory.Items)
         {
             // Item is not currency
-            if (item.Template != currencyTpl) continue;
+            if (item.Template != currencyTpl)
+            {
+                continue;
+            }
 
             // Item is not in the stash
-            if (!_inventoryHelper.IsItemInStash(pmcData, item)) continue;
+            if (!_inventoryHelper.IsItemInStash(pmcData, item))
+            {
+                continue;
+            }
 
             // Found currency item
             if (item.Upd.StackObjectsCount < currencyMaxStackSize)
@@ -183,7 +204,7 @@ public class PaymentService(
                 if (item.Upd.StackObjectsCount + calcAmount > currencyMaxStackSize)
                 {
                     // calculate difference
-                    calcAmount -= (int)(currencyMaxStackSize - item.Upd.StackObjectsCount ?? 0);
+                    calcAmount -= (int) (currencyMaxStackSize - item.Upd.StackObjectsCount ?? 0);
                     item.Upd.StackObjectsCount = currencyMaxStackSize;
                 }
                 else
@@ -195,7 +216,10 @@ public class PaymentService(
                 // Inform client of change to items StackObjectsCount
                 output.ProfileChanges[sessionID].Items.ChangedItems.Add(item);
 
-                if (skipSendingMoneyToStash) break;
+                if (skipSendingMoneyToStash)
+                {
+                    break;
+                }
             }
         }
 
@@ -204,7 +228,10 @@ public class PaymentService(
         {
             Id = _hashUtil.Generate(),
             Template = currencyTpl,
-            Upd = new Upd { StackObjectsCount = Math.Round((double)calcAmount) }
+            Upd = new Upd
+            {
+                StackObjectsCount = Math.Round((double) calcAmount)
+            }
         };
 
         // Ensure money is properly split to follow its max stack size limit
@@ -252,11 +279,17 @@ public class PaymentService(
         );
 
         //Ensure all money items found have a upd
-        foreach (var moneyStack in moneyItemsInInventory) moneyStack.Upd ??= new Upd { StackObjectsCount = 1 };
+        foreach (var moneyStack in moneyItemsInInventory)
+        {
+            moneyStack.Upd ??= new Upd
+            {
+                StackObjectsCount = 1
+            };
+        }
 
         var amountAvailable = moneyItemsInInventory.Aggregate(
             0d,
-            (accumulator, item) => (accumulator + item.Upd.StackObjectsCount.Value)
+            (accumulator, item) => accumulator + item.Upd.StackObjectsCount.Value
         );
 
         // If no money in inventory or amount is not enough we return false
@@ -267,8 +300,8 @@ public class PaymentService(
                     "payment-not_enough_money_to_complete_transation", // Typo, needs locale updated if fixed
                     new
                     {
-                        amountToPay = amountToPay,
-                        amountAvailable = amountAvailable
+                        amountToPay,
+                        amountAvailable
                     }
                 )
             );
@@ -297,7 +330,10 @@ public class PaymentService(
                 output.ProfileChanges[sessionID].Items.ChangedItems.Add(profileMoneyItem);
             }
 
-            if (leftToPay == 0) break;
+            if (leftToPay == 0)
+            {
+                break;
+            }
         }
     }
 
@@ -312,7 +348,10 @@ public class PaymentService(
     protected List<Item> GetSortedMoneyItemsInInventory(PmcData pmcData, string currencyTpl, string playerStashId)
     {
         var moneyItemsInInventory = _itemHelper.FindBarterItems("tpl", pmcData.Inventory.Items, currencyTpl);
-        if (moneyItemsInInventory.Count == 0) _logger.Debug($"No {currencyTpl} money items found in inventory");
+        if (moneyItemsInInventory.Count == 0)
+        {
+            _logger.Debug($"No {currencyTpl} money items found in inventory");
+        }
 
         // Prioritise items in stash to top of array
         moneyItemsInInventory.Sort((a, b) => PrioritiseStashSort(a, b, pmcData.Inventory.Items, playerStashId));
@@ -332,10 +371,16 @@ public class PaymentService(
     protected int PrioritiseStashSort(Item a, Item b, List<Item> inventoryItems, string playerStashId)
     {
         // a in root of stash, prioritise
-        if (a.ParentId == playerStashId && b.ParentId != playerStashId) return -1;
+        if (a.ParentId == playerStashId && b.ParentId != playerStashId)
+        {
+            return -1;
+        }
 
         // b in root stash, prioritise
-        if (a.ParentId != playerStashId && b.ParentId == playerStashId) return 1;
+        if (a.ParentId != playerStashId && b.ParentId == playerStashId)
+        {
+            return 1;
+        }
 
         // both in containers
         if (a.SlotId == "main" && b.SlotId == "main")
@@ -345,32 +390,42 @@ public class PaymentService(
             var bInStash = IsInStash(b.ParentId, inventoryItems, playerStashId);
 
             // a in stash in container, prioritise
-            if (aInStash && !bInStash) return -1;
+            if (aInStash && !bInStash)
+            {
+                return -1;
+            }
 
             // b in stash in container, prioritise
-            if (!aInStash && bInStash) return 1;
+            if (!aInStash && bInStash)
+            {
+                return 1;
+            }
 
             // Both in stash in containers
             if (aInStash && bInStash)
             {
                 // Containers where taking money from would inconvinence player
                 var deprioritisedContainers = _inventoryConfig.DeprioritisedMoneyContainers;
-                var aImmediateParent = inventoryItems.FirstOrDefault((item) => item.Id == a.ParentId);
-                var bImmediateParent = inventoryItems.FirstOrDefault((item) => item.Id == b.ParentId);
+                var aImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == a.ParentId);
+                var bImmediateParent = inventoryItems.FirstOrDefault(item => item.Id == b.ParentId);
 
                 // A is not a deprioritised container, B is
                 if (
                     !deprioritisedContainers.Contains(aImmediateParent.Template) &&
                     deprioritisedContainers.Contains(bImmediateParent.Template)
                 )
+                {
                     return -1;
+                }
 
                 // B is not a deprioritised container, A is
                 if (
                     deprioritisedContainers.Contains(aImmediateParent.Template) &&
                     !deprioritisedContainers.Contains(bImmediateParent.Template)
                 )
+                {
                     return 1;
+                }
             }
         }
 
@@ -387,13 +442,19 @@ public class PaymentService(
      */
     protected bool IsInStash(string itemId, List<Item> inventoryItems, string playerStashId)
     {
-        var itemParent = inventoryItems.FirstOrDefault((item) => item.Id == itemId);
+        var itemParent = inventoryItems.FirstOrDefault(item => item.Id == itemId);
 
         if (itemParent is not null)
         {
-            if (itemParent.SlotId == "hideout") return true;
+            if (itemParent.SlotId == "hideout")
+            {
+                return true;
+            }
 
-            if (itemParent.Id == playerStashId) return true;
+            if (itemParent.Id == playerStashId)
+            {
+                return true;
+            }
 
             return IsInStash(itemParent.ParentId, inventoryItems, playerStashId);
         }

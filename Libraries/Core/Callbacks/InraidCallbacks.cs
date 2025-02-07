@@ -1,8 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.InRaid;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -13,8 +13,8 @@ public class InraidCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/location/getLocalloot
-    /// Store active map in profile + applicationContext
+    ///     Handle client/location/getLocalloot
+    ///     Store active map in profile + applicationContext
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info">register player request</param>
@@ -27,7 +27,7 @@ public class InraidCallbacks(
     }
 
     /// <summary>
-    /// Handle raid/profile/scavsave
+    ///     Handle raid/profile/scavsave
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info">Save progress request</param>
@@ -40,7 +40,7 @@ public class InraidCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/raid/menu
+    ///     Handle singleplayer/settings/raid/menu
     /// </summary>
     /// <returns>JSON as string</returns>
     public string GetRaidMenuSettings()

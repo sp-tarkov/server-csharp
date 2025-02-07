@@ -1,6 +1,6 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Utils;
+﻿using Core.Models.Utils;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -11,13 +11,13 @@ public class ProbabilityHelper(
 )
 {
     /// <summary>
-    /// Chance to roll a number out of 100
+    ///     Chance to roll a number out of 100
     /// </summary>
     /// <param name="chance">Percentage chance roll should success</param>
     /// <param name="scale">scale of chance to allow support of numbers > 1-100</param>
     /// <returns>true if success</returns>
     public bool RollChance(double chance, double scale = 1)
     {
-        return _randomUtil.GetInt(1, (int)(100 * scale)) / (1 * scale) <= chance;
+        return _randomUtil.GetInt(1, (int) (100 * scale)) / (1 * scale) <= chance;
     }
 }

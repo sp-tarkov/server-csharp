@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Match;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 using static Core.Services.MatchLocationService;
 
 namespace Core.Callbacks;
@@ -16,7 +16,7 @@ public class MatchCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/match/updatePing
+    ///     Handle client/match/updatePing
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -28,7 +28,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/exit
+    ///     Handle client/match/exit
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -40,7 +40,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/exit_from_menu
+    ///     Handle client/match/group/exit_from_menu
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -52,7 +52,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/current
+    ///     Handle client/match/group/current
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -60,11 +60,16 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string GroupCurrent(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(new MatchGroupCurrentResponse { Squad = [] });
+        return _httpResponseUtil.GetBody(
+            new MatchGroupCurrentResponse
+            {
+                Squad = []
+            }
+        );
     }
 
     /// <summary>
-    /// Handle client/match/group/looking/start
+    ///     Handle client/match/group/looking/start
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -76,7 +81,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/looking/stop
+    ///     Handle client/match/group/looking/stop
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -88,7 +93,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/invite/send
+    ///     Handle client/match/group/invite/send
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -100,7 +105,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/invite/accept
+    ///     Handle client/match/group/invite/accept
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -108,11 +113,16 @@ public class MatchCallbacks(
     /// <returns></returns>
     public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(new List<GroupCharacter>() { new() });
+        return _httpResponseUtil.GetBody(
+            new List<GroupCharacter>
+            {
+                new()
+            }
+        );
     }
 
     /// <summary>
-    /// Handle client/match/group/invite/decline
+    ///     Handle client/match/group/invite/decline
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -124,7 +134,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/invite/cancel
+    ///     Handle client/match/group/invite/cancel
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -136,7 +146,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/transfer
+    ///     Handle client/match/group/transfer
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -148,7 +158,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/invite/cancel-all
+    ///     Handle client/match/group/invite/cancel-all
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -160,7 +170,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/putMetrics
+    ///     Handle client/putMetrics
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -172,7 +182,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/analytics/event-disconnect
+    ///     Handle client/analytics/event-disconnect
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -184,7 +194,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/available
+    ///     Handle client/match/available
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -196,7 +206,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle match/group/start_game
+    ///     Handle match/group/start_game
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -208,7 +218,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/getMetricsConfig
+    ///     Handle client/getMetricsConfig
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -220,8 +230,8 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Called periodically while in a group
-    /// Handle client/match/group/status
+    ///     Called periodically while in a group
+    ///     Handle client/match/group/status
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -233,7 +243,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/delete
+    ///     Handle client/match/group/delete
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -246,7 +256,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/leave
+    ///     Handle client/match/group/leave
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -258,7 +268,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/player/remove
+    ///     Handle client/match/group/player/remove
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -270,7 +280,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/local/start
+    ///     Handle client/match/local/start
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -282,7 +292,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/local/end
+    ///     Handle client/match/local/end
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -295,7 +305,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/raid/configuration
+    ///     Handle client/raid/configuration
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -308,7 +318,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/raid/configuration-by-profile
+    ///     Handle client/raid/configuration-by-profile
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -320,7 +330,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/raid/ready
+    ///     Handle client/match/group/raid/ready
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -332,7 +342,7 @@ public class MatchCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/raid/not-ready
+    ///     Handle client/match/group/raid/not-ready
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

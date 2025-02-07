@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Ws;
 public record WsFriendsListAccept : WsNotificationEvent
 {
     [JsonPropertyName("profile")]
-    public SearchFriendResponse? Profile { get; set; }
+    public SearchFriendResponse? Profile
+    {
+        get;
+        set;
+    }
 }

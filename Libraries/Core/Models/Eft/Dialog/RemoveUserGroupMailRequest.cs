@@ -6,8 +6,16 @@ namespace Core.Models.Eft.Dialog;
 public record RemoveUserGroupMailRequest : IRequestData
 {
     [JsonPropertyName("dialogId")]
-    public string? DialogId { get; set; }
+    public string? DialogId
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("uid")]
-    public string? Uid { get; set; }
+    public string? Uid
+    {
+        get;
+        set;
+    }
 }

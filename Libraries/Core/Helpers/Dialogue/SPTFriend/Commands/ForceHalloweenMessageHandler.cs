@@ -28,6 +28,7 @@ public class ForceHalloweenMessageHandler(
     {
         var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Halloween);
         if (enableEventResult)
+        {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
@@ -39,5 +40,6 @@ public class ForceHalloweenMessageHandler(
                 [],
                 null
             );
+        }
     }
 }

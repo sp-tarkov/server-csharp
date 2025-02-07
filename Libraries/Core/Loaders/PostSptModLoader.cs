@@ -1,9 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.DI;
+﻿using Core.DI;
 using Core.Models.External;
 using Core.Models.Utils;
 using Server;
-
+using SptCommon.Annotations;
 
 namespace Core.Loaders;
 
@@ -22,7 +21,10 @@ public class PostSptModLoader(
         }
 
         _logger.Info("Loading PostSptMods...");
-        foreach (var postSptLoadMod in _postSptLoadMods) postSptLoadMod.PostSptLoad();
+        foreach (var postSptLoadMod in _postSptLoadMods)
+        {
+            postSptLoadMod.PostSptLoad();
+        }
 
         _logger.Info("Finished loading PostSptMods...");
     }

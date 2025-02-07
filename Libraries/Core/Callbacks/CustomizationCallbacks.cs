@@ -1,10 +1,10 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Customization;
 using Core.Models.Eft.ItemEvent;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -16,7 +16,7 @@ public class CustomizationCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/trading/customization/storage
+    ///     Handle client/trading/customization/storage
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -28,7 +28,7 @@ public class CustomizationCallbacks(
     }
 
     /// <summary>
-    /// Handle client/trading/customization
+    ///     Handle client/trading/customization
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -43,7 +43,7 @@ public class CustomizationCallbacks(
     }
 
     /// <summary>
-    /// Handle CustomizationBuy event
+    ///     Handle CustomizationBuy event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -55,7 +55,7 @@ public class CustomizationCallbacks(
     }
 
     /// <summary>
-    /// Handle client/hideout/customization/offer/list
+    ///     Handle client/hideout/customization/offer/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -67,7 +67,7 @@ public class CustomizationCallbacks(
     }
 
     /// <summary>
-    /// Handle client/customization/storage
+    ///     Handle client/customization/storage
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -79,7 +79,7 @@ public class CustomizationCallbacks(
     }
 
     /// <summary>
-    /// Handle CustomizationSet
+    ///     Handle CustomizationSet
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

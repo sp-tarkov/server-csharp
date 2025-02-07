@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Quests;
 public record RepeatableQuestChangeRequest : InventoryBaseActionRequestData
 {
     [JsonPropertyName("qid")]
-    public string? QuestId { get; set; }
+    public string? QuestId
+    {
+        get;
+        set;
+    }
 }

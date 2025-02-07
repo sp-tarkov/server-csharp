@@ -1,7 +1,7 @@
-using SptCommon.Annotations;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Profile;
+using SptCommon.Annotations;
 
 namespace Core.Routers.SaveLoad;
 
@@ -16,7 +16,13 @@ public class ProfileSaveLoadRouter : SaveLoadRouter
     public override SptProfile HandleLoad(SptProfile profile)
     {
         if (profile.CharacterData == null)
-            profile.CharacterData = new Characters { PmcData = new PmcData(), ScavData = new PmcData() };
+        {
+            profile.CharacterData = new Characters
+            {
+                PmcData = new PmcData(),
+                ScavData = new PmcData()
+            };
+        }
 
         return profile;
     }

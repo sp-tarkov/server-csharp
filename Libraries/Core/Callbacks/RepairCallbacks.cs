@@ -1,8 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Repair;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -10,8 +10,8 @@ namespace Core.Callbacks;
 public class RepairCallbacks(RepairController _repairController)
 {
     /// <summary>
-    /// Handle TraderRepair event
-    /// use trader to repair item
+    ///     Handle TraderRepair event
+    ///     use trader to repair item
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -23,8 +23,8 @@ public class RepairCallbacks(RepairController _repairController)
     }
 
     /// <summary>
-    /// Handle Repair event
-    /// Use repair kit to repair item
+    ///     Handle Repair event
+    ///     Use repair kit to repair item
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

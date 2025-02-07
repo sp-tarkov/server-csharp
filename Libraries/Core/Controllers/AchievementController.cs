@@ -1,6 +1,6 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -23,8 +23,12 @@ public class AchievementController(
         var stats = new Dictionary<string, int>();
 
         foreach (var achievement in achievements)
+        {
             if (achievement.Id != null)
+            {
                 stats.Add(achievement.Id, 0);
+            }
+        }
 
         return new CompletedAchievementsResponse
         {

@@ -1,7 +1,7 @@
-using SptCommon.Annotations;
 using Core.Context;
 using Core.DI;
 using Core.Servers;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 

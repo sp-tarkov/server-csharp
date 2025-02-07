@@ -1,8 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Location;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -13,7 +13,7 @@ public class LocationCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/locations
+    ///     Handle client/locations
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -25,7 +25,7 @@ public class LocationCallbacks(
     }
 
     /// <summary>
-    /// Handle client/airdrop/loot
+    ///     Handle client/airdrop/loot
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

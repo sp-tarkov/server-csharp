@@ -1,8 +1,8 @@
 using System.Linq.Expressions;
 using System.Reflection;
-using SptCommon.Annotations;
 using Core.Models.Utils;
 using Core.Utils.Json;
+using SptCommon.Annotations;
 
 namespace Core.Utils;
 
@@ -12,9 +12,9 @@ public class ImporterUtil
     protected FileUtil _fileUtil;
     protected JsonUtil _jsonUtil;
     protected ISptLogger<ImporterUtil> _logger;
+    protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
-    protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
@@ -30,13 +30,14 @@ public class ImporterUtil
     )
     {
         return LoadRecursiveAsync(filepath, typeof(T), onReadCallback, onObjectDeserialized)
-            .ContinueWith(res => (T)res.Result);
+            .ContinueWith(res => (T) res.Result);
     }
 
     /**
      * Load files into js objects recursively (asynchronous)
      * @param filepath Path to folder with files
-     * @returns Promise<T> return T type associated with this class
+     * @returns Promise
+     * <T> return T type associated with this class
      */
     protected Task<object> LoadRecursiveAsync(
         string filepath,
@@ -56,15 +57,25 @@ public class ImporterUtil
         // add file content to result
         foreach (var file in files)
         {
-            if (_fileUtil.GetFileExtension(file) != "json") continue;
-            if (filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower())) continue;
+            if (_fileUtil.GetFileExtension(file) != "json")
+            {
+                continue;
+            }
+
+            if (filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower()))
+            {
+                continue;
+            }
+
             tasks.Add(
                 Task.Factory.StartNew(
                     () =>
                     {
                         var fileData = _fileUtil.ReadFile(file);
                         if (onReadCallback != null)
+                        {
                             onReadCallback(file, fileData);
+                        }
 
                         var setMethod = GetSetMethod(
                             _fileUtil.StripExtension(file).ToLower(),
@@ -94,7 +105,8 @@ public class ImporterUtil
                                                     Expression.Constant(_jsonUtil),
                                                     "Deserialize",
                                                     [],
-                                                    [Expression.Constant(fileData), Expression.Constant(propertyType.GetGenericArguments()[0])]
+                                                    Expression.Constant(fileData),
+                                                    Expression.Constant(propertyType.GetGenericArguments()[0])
                                                 ),
                                                 propertyType.GetGenericArguments()[0]
                                             )
@@ -109,7 +121,9 @@ public class ImporterUtil
                             }
 
                             if (onObjectDeserialized != null)
+                            {
                                 onObjectDeserialized(file, fileDeserialized);
+                            }
 
                             lock (dictionaryLock)
                             {
@@ -133,7 +147,11 @@ public class ImporterUtil
         // deep tree search
         foreach (var directory in directories)
         {
-            if (directoriesToIgnore.Contains(directory)) continue;
+            if (directoriesToIgnore.Contains(directory))
+            {
+                continue;
+            }
+
             tasks.Add(
                 Task.Factory.StartNew(
                     () =>
@@ -158,7 +176,7 @@ public class ImporterUtil
         // return the result of all async fetch
         return Task.WhenAll(tasks)
             .ContinueWith(
-                (t) =>
+                t =>
                 {
                     if (t.IsCanceled || t.IsFaulted)
                     {
@@ -176,7 +194,10 @@ public class ImporterUtil
                 t =>
                 {
                     if (t.IsFaulted || t.IsCanceled)
+                    {
                         throw t.Exception!;
+                    }
+
                     return result;
                 }
             );
@@ -204,9 +225,12 @@ public class ImporterUtil
                         )
                 );
             if (matchedProperty == null)
+            {
                 throw new Exception(
                     $"Unable to find property '{_fileUtil.StripExtension(propertyName)}' for type '{type.Name}'"
                 );
+            }
+
             propertyType = matchedProperty.PropertyType;
             setMethod = matchedProperty.GetSetMethod();
         }

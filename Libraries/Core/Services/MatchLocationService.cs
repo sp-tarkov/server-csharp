@@ -9,7 +9,7 @@ public class MatchLocationService
     protected Dictionary<string, MatchGroup> _locations = new();
 
     /// <summary>
-    /// DisbandRaidGroup
+    ///     DisbandRaidGroup
     /// </summary>
     /// <param name="request"></param>
     public void DeleteGroup(DeleteGroupRequest request)
@@ -30,12 +30,20 @@ public class MatchLocationService
     public class MatchGroup
     {
         [JsonPropertyName("groups")]
-        public List<string> Groups { get; set; }
+        public List<string> Groups
+        {
+            get;
+            set;
+        }
     }
 
     public class DeleteGroupRequest
     {
         [JsonPropertyName("groupId")]
-        public string GroupId { get; set; }
+        public string GroupId
+        {
+            get;
+            set;
+        }
     }
 }

@@ -14,7 +14,9 @@ public class ApplicationContext
         lock (variablesLock)
         {
             if (variables.TryGetValue(type, out var savedValues))
+            {
                 return savedValues.Last!.Value;
+            }
         }
 
         return null;
@@ -25,7 +27,10 @@ public class ApplicationContext
         lock (variablesLock)
         {
             var values = new List<ContextVariable>();
-            if (variables.TryGetValue(type, out var savedValues)) values.AddRange(savedValues);
+            if (variables.TryGetValue(type, out var savedValues))
+            {
+                values.AddRange(savedValues);
+            }
 
             return values;
         }
@@ -42,7 +47,9 @@ public class ApplicationContext
             }
 
             if (savedValues.Count >= MaxSavedValues)
+            {
                 savedValues.RemoveFirst();
+            }
 
             savedValues.AddLast(new ContextVariable(value, type));
         }

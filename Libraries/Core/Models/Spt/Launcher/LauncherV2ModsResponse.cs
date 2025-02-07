@@ -5,5 +5,9 @@ namespace Core.Models.Spt.Launcher;
 
 public class LauncherV2ModsResponse : IRequestData
 {
-    public required Dictionary<string, PackageJsonData> Response { get; set; }
+    public required Dictionary<string, PackageJsonData> Response
+    {
+        get;
+        set;
+    }
 }

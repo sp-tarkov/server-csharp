@@ -1,30 +1,30 @@
-using SptCommon.Annotations;
+using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
-using Core.Models.Utils;
-using Core.Helpers;
-using Core.Services;
-using Core.Servers;
 using Core.Models.Spt.Config;
+using Core.Models.Utils;
+using Core.Servers;
+using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
 [Injectable]
 public class PMCLootGenerator
 {
-    private readonly ISptLogger<PMCLootGenerator> _logger;
+    private readonly ConfigServer _configServer;
     private readonly DatabaseService _databaseService;
-    private readonly ItemHelper _itemHelper;
     private readonly ItemFilterService _itemFilterService;
+    private readonly ItemHelper _itemHelper;
+    private readonly ISptLogger<PMCLootGenerator> _logger;
+    private readonly PmcConfig _pmcConfig;
     private readonly RagfairPriceService _ragfairPriceService;
     private readonly SeasonalEventService _seasonalEventService;
     private readonly WeightedRandomHelper _weightedRandomHelper;
-    private readonly ConfigServer _configServer;
 
     private Dictionary<string, double>? _backpackLootPool;
     private Dictionary<string, double>? _pocketLootPool;
     private Dictionary<string, double>? _vestLootPool;
-    private readonly PmcConfig _pmcConfig;
 
     public PMCLootGenerator(
         ISptLogger<PMCLootGenerator> logger,
@@ -50,7 +50,7 @@ public class PMCLootGenerator
     }
 
     /// <summary>
-    /// Create a List of loot items a PMC can have in their pockets
+    ///     Create a List of loot items a PMC can have in their pockets
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
@@ -69,7 +69,7 @@ public class PMCLootGenerator
             var blacklist = GetLootBlacklist();
 
             var itemsToAdd = items.Where(
-                (item) =>
+                item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
@@ -79,6 +79,7 @@ public class PMCLootGenerator
 
             foreach (var (tpl, template) in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
+            {
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
                     _pocketLootPool[tpl] = pmcPriceOverrides[tpl];
@@ -89,12 +90,15 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _pocketLootPool[tpl] = price ?? 0;
                 }
+            }
 
             var highestPrice = _pocketLootPool.Max(price => price.Value);
             foreach (var (key, _) in _pocketLootPool)
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
+            {
                 _pocketLootPool[key] = Math.Round(1 / _pocketLootPool[key] * highestPrice);
+            }
 
             _weightedRandomHelper.ReduceWeightValues(_pocketLootPool);
         }
@@ -105,16 +109,31 @@ public class PMCLootGenerator
     private HashSet<string> GetLootBlacklist()
     {
         var blacklist = new HashSet<string>();
-        foreach (var blacklistedItem in _pmcConfig.PocketLoot.Blacklist) blacklist.Add(blacklistedItem);
-        foreach (var blacklistedItem in _pmcConfig.GlobalLootBlacklist) blacklist.Add(blacklistedItem);
-        foreach (var blacklistedItem in _itemFilterService.GetBlacklistedItems()) blacklist.Add(blacklistedItem);
-        foreach (var blacklistedItem in _seasonalEventService.GetInactiveSeasonalEventItems()) blacklist.Add(blacklistedItem);
+        foreach (var blacklistedItem in _pmcConfig.PocketLoot.Blacklist)
+        {
+            blacklist.Add(blacklistedItem);
+        }
+
+        foreach (var blacklistedItem in _pmcConfig.GlobalLootBlacklist)
+        {
+            blacklist.Add(blacklistedItem);
+        }
+
+        foreach (var blacklistedItem in _itemFilterService.GetBlacklistedItems())
+        {
+            blacklist.Add(blacklistedItem);
+        }
+
+        foreach (var blacklistedItem in _seasonalEventService.GetInactiveSeasonalEventItems())
+        {
+            blacklist.Add(blacklistedItem);
+        }
 
         return blacklist;
     }
 
     /// <summary>
-    /// Create a List of loot items a PMC can have in their vests
+    ///     Create a List of loot items a PMC can have in their vests
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
@@ -133,7 +152,7 @@ public class PMCLootGenerator
             var blacklist = GetLootBlacklist();
 
             var itemsToAdd = items.Where(
-                (item) =>
+                item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
@@ -143,6 +162,7 @@ public class PMCLootGenerator
 
             foreach (var (tpl, template) in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
+            {
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
                     _vestLootPool[tpl] = pmcPriceOverrides[tpl];
@@ -153,12 +173,15 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _vestLootPool[tpl] = price ?? 0;
                 }
+            }
 
             var highestPrice = _vestLootPool.Max(price => price.Value);
             foreach (var (key, _) in _vestLootPool)
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
+            {
                 _vestLootPool[key] = Math.Round(1 / _vestLootPool[key] * highestPrice);
+            }
 
             _weightedRandomHelper.ReduceWeightValues(_vestLootPool);
         }
@@ -167,8 +190,8 @@ public class PMCLootGenerator
     }
 
     /// <summary>
-    /// Check if item has a width/height that lets it fit into a 2x2 slot
-    /// 1x1 / 1x2 / 2x1 / 2x2
+    ///     Check if item has a width/height that lets it fit into a 2x2 slot
+    ///     1x1 / 1x2 / 2x1 / 2x2
     /// </summary>
     /// <param name="item">Item to check size of</param>
     /// <returns>true if it fits</returns>
@@ -178,8 +201,8 @@ public class PMCLootGenerator
     }
 
     /// <summary>
-    /// Check if item has a width/height that lets it fit into a 1x2 slot
-    /// 1x1 / 1x2 / 2x1
+    ///     Check if item has a width/height that lets it fit into a 1x2 slot
+    ///     1x1 / 1x2 / 2x1
     /// </summary>
     /// <param name="item">Item to check size of</param>
     /// <returns>true if it fits</returns>
@@ -193,7 +216,7 @@ public class PMCLootGenerator
     }
 
     /// <summary>
-    /// Create a List of loot items a PMC can have in their backpack
+    ///     Create a List of loot items a PMC can have in their backpack
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
@@ -212,7 +235,7 @@ public class PMCLootGenerator
             var blacklist = GetLootBlacklist();
 
             var itemsToAdd = items.Where(
-                (item) =>
+                item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
@@ -221,6 +244,7 @@ public class PMCLootGenerator
 
             foreach (var (tpl, template) in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
+            {
                 if (pmcPriceOverrides.ContainsKey(tpl))
                 {
                     _backpackLootPool[tpl] = pmcPriceOverrides[tpl];
@@ -231,12 +255,15 @@ public class PMCLootGenerator
                     var price = _ragfairPriceService.GetDynamicItemPrice(tpl, Money.ROUBLES);
                     _backpackLootPool[tpl] = price ?? 0;
                 }
+            }
 
             var highestPrice = _backpackLootPool.Max(price => price.Value);
             foreach (var (key, _) in _backpackLootPool)
                 // Invert price so cheapest has a larger weight
                 // Times by highest price so most expensive item has weight of 1
+            {
                 _backpackLootPool[key] = Math.Round(1 / _backpackLootPool[key] * highestPrice);
+            }
 
             _weightedRandomHelper.ReduceWeightValues(_backpackLootPool);
         }

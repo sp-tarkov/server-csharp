@@ -1,7 +1,7 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Enums;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -47,7 +47,10 @@ public class RagfairSortHelper(
         }
 
         // 0=ASC 1=DESC
-        if (direction == 1) offers.Reverse();
+        if (direction == 1)
+        {
+            offers.Reverse();
+        }
 
         return offers;
     }
@@ -67,7 +70,7 @@ public class RagfairSortHelper(
 
     protected int SortOffersByRating(RagfairOffer a, RagfairOffer b)
     {
-        return (int)(a.User.Rating.Value - b.User.Rating.Value);
+        return (int) (a.User.Rating.Value - b.User.Rating.Value);
     }
 
     protected int SortOffersByName(RagfairOffer a, RagfairOffer b)
@@ -90,11 +93,11 @@ public class RagfairSortHelper(
      */
     protected int SortOffersByPrice(RagfairOffer a, RagfairOffer b)
     {
-        return (int)(a.RequirementsCost.Value - b.RequirementsCost.Value);
+        return (int) (a.RequirementsCost.Value - b.RequirementsCost.Value);
     }
 
     protected int SortOffersByExpiry(RagfairOffer a, RagfairOffer b)
     {
-        return (int)(a.EndTime - b.EndTime);
+        return (int) (a.EndTime - b.EndTime);
     }
 }

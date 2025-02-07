@@ -1,7 +1,7 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Enums;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Generators.WeaponGen.Implementations;
 
@@ -27,16 +27,20 @@ public class BarrelInvetoryMagGen(
         double? randomisedAmmoStackSize;
         if (inventoryMagGen.GetAmmoTemplate().Properties.StackMaxRandom == 1)
             // Doesn't stack
+        {
             randomisedAmmoStackSize = _randomUtil.GetInt(3, 6);
+        }
         else
+        {
             randomisedAmmoStackSize = _randomUtil.GetInt(
                 inventoryMagGen.GetAmmoTemplate().Properties.StackMinRandom.Value,
                 inventoryMagGen.GetAmmoTemplate().Properties.StackMaxRandom.Value
             );
+        }
 
         _botWeaponGeneratorHelper.AddAmmoIntoEquipmentSlots(
             inventoryMagGen.GetAmmoTemplate().Id,
-            (int)randomisedAmmoStackSize,
+            (int) randomisedAmmoStackSize,
             inventoryMagGen.GetPmcInventory(),
             null
         );

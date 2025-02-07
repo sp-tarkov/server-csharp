@@ -1,11 +1,11 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -31,7 +31,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/version/validate
+    ///     Handle client/game/version/validate
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -43,7 +43,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/start
+    ///     Handle client/game/start
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -53,12 +53,17 @@ public class GameCallbacks(
     {
         var startTimestampSec = _timeUtil.GetTimeStamp();
         _gameController.GameStart(url, info, sessionID, startTimestampSec);
-        return _httpResponseUtil.GetBody(new GameStartResponse() { UtcTime = startTimestampSec });
+        return _httpResponseUtil.GetBody(
+            new GameStartResponse
+            {
+                UtcTime = startTimestampSec
+            }
+        );
     }
 
     /// <summary>
-    /// Handle client/game/logout
-    /// Save profiles on game close
+    ///     Handle client/game/logout
+    ///     Save profiles on game close
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -67,11 +72,16 @@ public class GameCallbacks(
     public string GameLogout(string url, EmptyRequestData info, string sessionID)
     {
         _saveServer.Save();
-        return _httpResponseUtil.GetBody(new GameLogoutResponseData() { Status = "ok" });
+        return _httpResponseUtil.GetBody(
+            new GameLogoutResponseData
+            {
+                Status = "ok"
+            }
+        );
     }
 
     /// <summary>
-    /// Handle client/game/config
+    ///     Handle client/game/config
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -83,7 +93,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/mode
+    ///     Handle client/game/mode
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -95,7 +105,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/server/list
+    ///     Handle client/server/list
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -107,7 +117,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/match/group/current
+    ///     Handle client/match/group/current
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -119,7 +129,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/checkVersion
+    ///     Handle client/checkVersion
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -131,7 +141,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/keepalive
+    ///     Handle client/game/keepalive
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -143,7 +153,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/version
+    ///     Handle singleplayer/settings/version
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -152,11 +162,16 @@ public class GameCallbacks(
     public string GetVersion(string url, EmptyRequestData info, string sessionID)
     {
         // change to be a proper type
-        return _httpResponseUtil.NoBody(new { Version = _watermark.GetInGameVersionLabel() });
+        return _httpResponseUtil.NoBody(
+            new
+            {
+                Version = _watermark.GetInGameVersionLabel()
+            }
+        );
     }
 
     /// <summary>
-    /// Handle /client/report/send & /client/reports/lobby/send
+    ///     Handle /client/report/send & /client/reports/lobby/send
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -168,7 +183,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/getRaidTime
+    ///     Handle singleplayer/settings/getRaidTime
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -180,7 +195,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle /client/survey
+    ///     Handle /client/survey
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -192,7 +207,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/survey/view
+    ///     Handle client/survey/view
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -204,7 +219,7 @@ public class GameCallbacks(
     }
 
     /// <summary>
-    /// Handle client/survey/opinion
+    ///     Handle client/survey/opinion
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

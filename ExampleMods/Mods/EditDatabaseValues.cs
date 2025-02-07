@@ -1,9 +1,8 @@
-using SptCommon.Annotations;
-using Core.Models.Eft.Hideout;
 using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Utils;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace ExampleMods.Mods;
 
@@ -12,7 +11,7 @@ public class EditDatabaseValues : IPostDBLoadMod
 {
     private readonly DatabaseService _databaseService;
     private readonly ISptLogger<EditDatabaseValues> _logger;
-    
+
     public EditDatabaseValues(
         DatabaseService databaseService,
         ISptLogger<EditDatabaseValues> logger
@@ -41,7 +40,7 @@ public class EditDatabaseValues : IPostDBLoadMod
 
         // Lets edit Customs
         EditCustoms();
-        
+
         _logger.Success("Finished Editing Database");
     }
 
@@ -64,7 +63,10 @@ public class EditDatabaseValues : IPostDBLoadMod
         // The max is stored in a list, different flea ratings give different offer amounts
 
         // We loop over all the settings, setting all of them to be 20
-        foreach (var offerCountSettings in ragfairSettings.MaxActiveOfferCount) offerCountSettings.Count = 20;
+        foreach (var offerCountSettings in ragfairSettings.MaxActiveOfferCount)
+        {
+            offerCountSettings.Count = 20;
+        }
     }
 
     private void EditBtr()

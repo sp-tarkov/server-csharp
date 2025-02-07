@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Weather;
 using Core.Models.Enums;
@@ -6,6 +5,7 @@ using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
@@ -104,7 +104,10 @@ public class WeatherGenerator(
     protected SeasonalValues GetWeatherValuesBySeason(Season currentSeason)
     {
         var result = _weatherConfig.Weather.SeasonValues.TryGetValue(currentSeason.ToString(), out var value);
-        if (!result) return _weatherConfig.Weather.SeasonValues["default"];
+        if (!result)
+        {
+            return _weatherConfig.Weather.SeasonValues["default"];
+        }
 
         return value!;
     }

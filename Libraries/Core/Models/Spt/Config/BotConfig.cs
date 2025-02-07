@@ -8,553 +8,1098 @@ namespace Core.Models.Spt.Config;
 public record BotConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind { get; set; } = "spt-bot";
+    public string Kind
+    {
+        get;
+        set;
+    } = "spt-bot";
 
-    /** How many variants of each bot should be generated on raid start */
+    /**
+     * How many variants of each bot should be generated on raid start
+     */
     [JsonPropertyName("presetBatch")]
-    public Dictionary<string, int>? PresetBatch { get; set; }
+    public Dictionary<string, int>? PresetBatch
+    {
+        get;
+        set;
+    }
 
-    /** Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to */
+    /**
+     * Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to
+     */
     [JsonPropertyName("botsToNotAddPMCsAsEnemiesTo")]
-    public List<string> BotsToNotAddPMCsAsEnemiesTo { get; set; }
+    public List<string> BotsToNotAddPMCsAsEnemiesTo
+    {
+        get;
+        set;
+    }
 
-    /** What bot types should be classified as bosses */
+    /**
+     * What bot types should be classified as bosses
+     */
     [JsonPropertyName("bosses")]
-    public List<string> Bosses { get; set; }
+    public List<string> Bosses
+    {
+        get;
+        set;
+    }
 
-    /** Control weapon/armor durability min/max values for each bot type */
+    /**
+     * Control weapon/armor durability min/max values for each bot type
+     */
     [JsonPropertyName("durability")]
-    public BotDurability Durability { get; set; }
+    public BotDurability Durability
+    {
+        get;
+        set;
+    }
 
-    /** Controls the percentage values of randomization item resources */
+    /**
+     * Controls the percentage values of randomization item resources
+     */
     [JsonPropertyName("lootItemResourceRandomization")]
-    public Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization { get; set; }
+    public Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization
+    {
+        get;
+        set;
+    }
 
-    /** Control what bots are added to a bots revenge list key: bottype, value: bottypes to revenge on seeing their death */
+    /**
+     * Control what bots are added to a bots revenge list key: bottype, value: bottypes to revenge on seeing their death
+     */
     [JsonPropertyName("revenge")]
-    public Dictionary<string, List<string>> Revenge { get; set; }
+    public Dictionary<string, List<string>> Revenge
+    {
+        get;
+        set;
+    }
 
-    /** Control how many items are allowed to spawn on a bot
-     * key: bottype, value: <key: itemTpl: value: max item count> */
+    /**
+     * Control how many items are allowed to spawn on a bot
+     * key: bottype, value:
+     * <key: itemTpl: value: max item count>
+     */
     [JsonPropertyName("itemSpawnLimits")]
-    public Dictionary<string, Dictionary<string, double>> ItemSpawnLimits { get; set; }
+    public Dictionary<string, Dictionary<string, double>> ItemSpawnLimits
+    {
+        get;
+        set;
+    }
 
-    /** Blacklist/whitelist items on a bot */
+    /**
+     * Blacklist/whitelist items on a bot
+     */
     [JsonPropertyName("equipment")]
-    public Dictionary<string, EquipmentFilters?> Equipment { get; set; }
+    public Dictionary<string, EquipmentFilters?> Equipment
+    {
+        get;
+        set;
+    }
 
-    /** Show a bots botType value after their name */
+    /**
+     * Show a bots botType value after their name
+     */
     [JsonPropertyName("showTypeInNickname")]
-    public bool ShowTypeInNickname { get; set; }
+    public bool ShowTypeInNickname
+    {
+        get;
+        set;
+    }
 
-    /** What ai brain should a normal scav use per map */
+    /**
+     * What ai brain should a normal scav use per map
+     */
     [JsonPropertyName("assaultBrainType")]
-    public Dictionary<string, Dictionary<string, int>> AssaultBrainType { get; set; }
+    public Dictionary<string, Dictionary<string, int>> AssaultBrainType
+    {
+        get;
+        set;
+    }
 
-    /** What ai brain should a player scav use per map */
+    /**
+     * What ai brain should a player scav use per map
+     */
     [JsonPropertyName("playerScavBrainType")]
-    public Dictionary<string, Dictionary<string, int>> PlayerScavBrainType { get; set; }
+    public Dictionary<string, Dictionary<string, int>> PlayerScavBrainType
+    {
+        get;
+        set;
+    }
 
-    /** Max number of bots that can be spawned in a raid at any one time */
+    /**
+     * Max number of bots that can be spawned in a raid at any one time
+     */
     [JsonPropertyName("maxBotCap")]
-    public Dictionary<string, int> MaxBotCap { get; set; }
+    public Dictionary<string, int> MaxBotCap
+    {
+        get;
+        set;
+    }
 
-    /** Chance scav has fake pscav name e.g. Scav name (player name) */
+    /**
+     * Chance scav has fake pscav name e.g. Scav name (player name)
+     */
     [JsonPropertyName("chanceAssaultScavHasPlayerScavName")]
-    public int ChanceAssaultScavHasPlayerScavName { get; set; }
+    public int ChanceAssaultScavHasPlayerScavName
+    {
+        get;
+        set;
+    }
 
-    /** How many stacks of secret ammo should a bot have in its bot secure container */
+    /**
+     * How many stacks of secret ammo should a bot have in its bot secure container
+     */
     [JsonPropertyName("secureContainerAmmoStackCount")]
-    public int SecureContainerAmmoStackCount { get; set; }
+    public int SecureContainerAmmoStackCount
+    {
+        get;
+        set;
+    }
 
-    /** Bot roles in this array will be given a dog tag on generation */
+    /**
+     * Bot roles in this array will be given a dog tag on generation
+     */
     [JsonPropertyName("botRolesWithDogTags")]
-    public List<string> BotRolesWithDogTags { get; set; }
+    public List<string> BotRolesWithDogTags
+    {
+        get;
+        set;
+    }
 
-    /** Settings to control the items that get added into wallets on bots */
+    /**
+     * Settings to control the items that get added into wallets on bots
+     */
     [JsonPropertyName("walletLoot")]
-    public WalletLootSettings WalletLoot { get; set; }
+    public WalletLootSettings WalletLoot
+    {
+        get;
+        set;
+    }
 
-    /** Currency weights, Keyed by botrole / currency */
+    /**
+     * Currency weights, Keyed by botrole / currency
+     */
     [JsonPropertyName("currencyStackSize")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize { get; set; }
+    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize
+    {
+        get;
+        set;
+    }
 
-    /** Tpls for low profile gas blocks */
+    /**
+     * Tpls for low profile gas blocks
+     */
     [JsonPropertyName("lowProfileGasBlockTpls")]
-    public List<string> LowProfileGasBlockTpls { get; set; }
+    public List<string> LowProfileGasBlockTpls
+    {
+        get;
+        set;
+    }
 
-    /** What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/ */
+    /**
+     * What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/
+     */
     [JsonPropertyName("disableLootOnBotTypes")]
-    public List<string> DisableLootOnBotTypes { get; set; }
+    public List<string> DisableLootOnBotTypes
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("assaultToBossConversion")]
-    public AssaultToBossConversion AssaultToBossConversion { get; set; }
+    public AssaultToBossConversion AssaultToBossConversion
+    {
+        get;
+        set;
+    }
 
-    /** Max length a bots name can be */
+    /**
+     * Max length a bots name can be
+     */
     [JsonPropertyName("botNameLengthLimit")]
-    public int BotNameLengthLimit { get; set; }
+    public int BotNameLengthLimit
+    {
+        get;
+        set;
+    }
 
-    /** Bot roles that must have a unique name when generated vs other bots in raid */
+    /**
+     * Bot roles that must have a unique name when generated vs other bots in raid
+     */
     [JsonPropertyName("botRolesThatMustHaveUniqueName")]
-    public List<string> BotRolesThatMustHaveUniqueName { get; set; }
+    public List<string> BotRolesThatMustHaveUniqueName
+    {
+        get;
+        set;
+    }
 }
 
 public record AssaultToBossConversion
 {
     [JsonPropertyName("bossConvertEnabled")]
-    public bool BossConvertEnabled { get; set; }
+    public bool BossConvertEnabled
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossesToConvertToWeights")]
-    public Dictionary<string, double> BossesToConvertToWeights { get; set; }
+    public Dictionary<string, double> BossesToConvertToWeights
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossConvertMinMax")]
-    public Dictionary<string, MinMax> BossConvertMinMax { get; set; }
+    public Dictionary<string, MinMax> BossConvertMinMax
+    {
+        get;
+        set;
+    }
 }
 
-/** Number of bots to generate and store in cache on raid start per bot type */
+/**
+ * Number of bots to generate and store in cache on raid start per bot type
+ */
 public record PresetBatch
 {
     [JsonPropertyName("assault")]
-    public int Assault { get; set; }
+    public int Assault
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossBully")]
-    public int BossBully { get; set; }
+    public int BossBully
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossGluhar")]
-    public int BossGluhar { get; set; }
+    public int BossGluhar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossKilla")]
-    public int BossKilla { get; set; }
+    public int BossKilla
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossKojaniy")]
-    public int BossKojaniy { get; set; }
+    public int BossKojaniy
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossSanitar")]
-    public int BossSanitar { get; set; }
+    public int BossSanitar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossTagilla")]
-    public int BossTagilla { get; set; }
+    public int BossTagilla
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossKnight")]
-    public int BossKnight { get; set; }
+    public int BossKnight
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossZryachiy")]
-    public int BossZryachiy { get; set; }
+    public int BossZryachiy
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossKolontay")]
-    public int BossKolontay { get; set; }
+    public int BossKolontay
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossPartisan")]
-    public int BossPartisan { get; set; }
+    public int BossPartisan
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossTest")]
-    public int BossTest { get; set; }
+    public int BossTest
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("cursedAssault")]
-    public int CursedAssault { get; set; }
+    public int CursedAssault
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBully")]
-    public int FollowerBully { get; set; }
+    public int FollowerBully
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerGluharAssault")]
-    public int FollowerGluharAssault { get; set; }
+    public int FollowerGluharAssault
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerGluharScout")]
-    public int FollowerGluharScout { get; set; }
+    public int FollowerGluharScout
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerGluharSecurity")]
-    public int FollowerGluharSecurity { get; set; }
+    public int FollowerGluharSecurity
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerGluharSnipe")]
-    public int FollowerGluharSnipe { get; set; }
+    public int FollowerGluharSnipe
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerKojaniy")]
-    public int FollowerKojaniy { get; set; }
+    public int FollowerKojaniy
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerSanitar")]
-    public int FollowerSanitar { get; set; }
+    public int FollowerSanitar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerTagilla")]
-    public int FollowerTagilla { get; set; }
+    public int FollowerTagilla
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBirdEye")]
-    public int FollowerBirdEye { get; set; }
+    public int FollowerBirdEye
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBigPipe")]
-    public int FollowerBigPipe { get; set; }
+    public int FollowerBigPipe
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerTest")]
-    public int FollowerTest { get; set; }
+    public int FollowerTest
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBoar")]
-    public int FollowerBoar { get; set; }
+    public int FollowerBoar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBoarClose1")]
-    public int FollowerBoarClose1 { get; set; }
+    public int FollowerBoarClose1
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerBoarClose2")]
-    public int FollowerBoarClose2 { get; set; }
+    public int FollowerBoarClose2
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerZryachiy")]
-    public int FollowerZryachiy { get; set; }
+    public int FollowerZryachiy
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerKolontayAssault")]
-    public int FollowerKolontayAssault { get; set; }
+    public int FollowerKolontayAssault
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("followerKolontaySecurity")]
-    public int FollowerKolontaySecurity { get; set; }
+    public int FollowerKolontaySecurity
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("marksman")]
-    public int Marksman { get; set; }
+    public int Marksman
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("pmcBot")]
-    public int PmcBot { get; set; }
+    public int PmcBot
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("sectantPriest")]
-    public int SectantPriest { get; set; }
+    public int SectantPriest
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("sectantWarrior")]
-    public int SectantWarrior { get; set; }
+    public int SectantWarrior
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("gifter")]
-    public int Gifter { get; set; }
+    public int Gifter
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("test")]
-    public int Test { get; set; }
+    public int Test
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("exUsec")]
-    public int ExUsec { get; set; }
+    public int ExUsec
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("arenaFighterEvent")]
-    public int ArenaFighterEvent { get; set; }
+    public int ArenaFighterEvent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("arenaFighter")]
-    public int ArenaFighter { get; set; }
+    public int ArenaFighter
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("crazyAssaultEvent")]
-    public int CrazyAssaultEvent { get; set; }
+    public int CrazyAssaultEvent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossBoar")]
-    public int BossBoar { get; set; }
+    public int BossBoar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bossBoarSniper")]
-    public int BossBoarSniper { get; set; }
+    public int BossBoarSniper
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("pmcUSEC")]
-    public int PmcUSEC { get; set; }
+    public int PmcUSEC
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("pmcBEAR")]
-    public int PmcBEAR { get; set; }
+    public int PmcBEAR
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("shooterBTR")]
-    public int ShooterBTR { get; set; }
+    public int ShooterBTR
+    {
+        get;
+        set;
+    }
 
     [JsonExtensionData]
-    public IDictionary<string, object> AdditionalData { get; set; }
+    public IDictionary<string, object> AdditionalData
+    {
+        get;
+        set;
+    }
 }
 
 public record WalletLootSettings
 {
     /// <summary>
-    /// Chance wallets have loot in them
+    ///     Chance wallets have loot in them
     /// </summary>
     [JsonPropertyName("chancePercent")]
-    public float ChancePercent { get; set; }
+    public float ChancePercent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("itemCount")]
-    public MinMax ItemCount { get; set; }
+    public MinMax ItemCount
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("stackSizeWeight")]
-    public Dictionary<string, double> StackSizeWeight { get; set; }
+    public Dictionary<string, double> StackSizeWeight
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("currencyWeight")]
-    public Dictionary<string, double> CurrencyWeight { get; set; }
+    public Dictionary<string, double> CurrencyWeight
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// What wallets will have money in them
+    ///     What wallets will have money in them
     /// </summary>
     [JsonPropertyName("walletTplPool")]
-    public List<string> WalletTplPool { get; set; }
+    public List<string> WalletTplPool
+    {
+        get;
+        set;
+    }
 }
 
 public record EquipmentFilters
 {
     /// <summary>
-    /// Limits for mod types per weapon .e.g. scopes
+    ///     Limits for mod types per weapon .e.g. scopes
     /// </summary>
     [JsonPropertyName("weaponModLimits")]
-    public ModLimits WeaponModLimits { get; set; }
+    public ModLimits WeaponModLimits
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Whitelist for weapon sight types allowed per gun
+    ///     Whitelist for weapon sight types allowed per gun
     /// </summary>
     [JsonPropertyName("weaponSightWhitelist")]
-    public Dictionary<string, List<string>> WeaponSightWhitelist { get; set; }
+    public Dictionary<string, List<string>> WeaponSightWhitelist
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance face shield is down/active
+    ///     Chance face shield is down/active
     /// </summary>
     [JsonPropertyName("faceShieldIsActiveChancePercent")]
-    public double? FaceShieldIsActiveChancePercent { get; set; }
+    public double? FaceShieldIsActiveChancePercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance gun flashlight is active during the day
+    ///     Chance gun flashlight is active during the day
     /// </summary>
     [JsonPropertyName("lightIsActiveDayChancePercent")]
-    public double? LightIsActiveDayChancePercent { get; set; }
+    public double? LightIsActiveDayChancePercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance gun flashlight is active during the night
+    ///     Chance gun flashlight is active during the night
     /// </summary>
     [JsonPropertyName("lightIsActiveNightChancePercent")]
-    public double? LightIsActiveNightChancePercent { get; set; }
+    public double? LightIsActiveNightChancePercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance gun laser is active during the day
+    ///     Chance gun laser is active during the day
     /// </summary>
     [JsonPropertyName("laserIsActiveChancePercent")]
-    public double? LaserIsActiveChancePercent { get; set; }
+    public double? LaserIsActiveChancePercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance NODS are down/active during the day
+    ///     Chance NODS are down/active during the day
     /// </summary>
     [JsonPropertyName("nvgIsActiveChanceDayPercent")]
-    public double? NvgIsActiveChanceDayPercent { get; set; }
+    public double? NvgIsActiveChanceDayPercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance NODS are down/active during the night
+    ///     Chance NODS are down/active during the night
     /// </summary>
     [JsonPropertyName("nvgIsActiveChanceNightPercent")]
-    public double? NvgIsActiveChanceNightPercent { get; set; }
+    public double? NvgIsActiveChanceNightPercent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("forceOnlyArmoredRigWhenNoArmor")]
-    public bool? ForceOnlyArmoredRigWhenNoArmor { get; set; }
+    public bool? ForceOnlyArmoredRigWhenNoArmor
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Should plates be filtered by level
+    ///     Should plates be filtered by level
     /// </summary>
     [JsonPropertyName("filterPlatesByLevel")]
-    public bool? FilterPlatesByLevel { get; set; }
+    public bool? FilterPlatesByLevel
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// What additional slot ids should be seen as required when choosing a mod to add to a weapon
+    ///     What additional slot ids should be seen as required when choosing a mod to add to a weapon
     /// </summary>
     [JsonPropertyName("weaponSlotIdsToMakeRequired")]
-    public List<string>? WeaponSlotIdsToMakeRequired { get; set; }
+    public List<string>? WeaponSlotIdsToMakeRequired
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Adjust weighting/chances of items on bot by level of bot
+    ///     Adjust weighting/chances of items on bot by level of bot
     /// </summary>
     [JsonPropertyName("randomisation")]
-    public List<RandomisationDetails> Randomisation { get; set; }
+    public List<RandomisationDetails> Randomisation
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Blacklist equipment by level of bot
+    ///     Blacklist equipment by level of bot
     /// </summary>
     [JsonPropertyName("blacklist")]
-    public List<EquipmentFilterDetails> Blacklist { get; set; }
+    public List<EquipmentFilterDetails> Blacklist
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Whitelist equipment by level of bot
+    ///     Whitelist equipment by level of bot
     /// </summary>
     [JsonPropertyName("whitelist")]
-    public List<EquipmentFilterDetails> Whitelist { get; set; }
+    public List<EquipmentFilterDetails> Whitelist
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Adjust equipment/ammo
+    ///     Adjust equipment/ammo
     /// </summary>
     [JsonPropertyName("weightingAdjustmentsByBotLevel")]
-    public List<WeightingAdjustmentDetails> WeightingAdjustmentsByBotLevel { get; set; }
+    public List<WeightingAdjustmentDetails> WeightingAdjustmentsByBotLevel
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Same as weightingAdjustments but based on player level instead of bot level
+    ///     Same as weightingAdjustments but based on player level instead of bot level
     /// </summary>
     [JsonPropertyName("weightingAdjustmentsByPlayerLevel")]
-    public List<WeightingAdjustmentDetails>? WeightingAdjustmentsByPlayerLevel { get; set; }
+    public List<WeightingAdjustmentDetails>? WeightingAdjustmentsByPlayerLevel
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Should the stock mod be forced to spawn on bot
+    ///     Should the stock mod be forced to spawn on bot
     /// </summary>
     [JsonPropertyName("forceStock")]
-    public bool? ForceStock { get; set; }
+    public bool? ForceStock
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("armorPlateWeighting")]
-    public List<ArmorPlateWeights>? ArmorPlateWeighting { get; set; }
+    public List<ArmorPlateWeights>? ArmorPlateWeighting
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("forceRigWhenNoVest")]
-    public bool? ForceRigWhenNoVest { get; set; }
+    public bool? ForceRigWhenNoVest
+    {
+        get;
+        set;
+    }
 }
 
 public record ModLimits
 {
     /// <summary>
-    /// How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
+    ///     How many scopes are allowed on a weapon - hard coded to work with OPTIC_SCOPE, ASSAULT_SCOPE, COLLIMATOR, COMPACT_COLLIMATOR
     /// </summary>
     [JsonPropertyName("scopeLimit")]
-    public int? ScopeLimit { get; set; }
+    public int? ScopeLimit
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// How many lasers or lights are allowed on a weapon - hard coded to work with TACTICAL_COMBO, and FLASHLIGHT
+    ///     How many lasers or lights are allowed on a weapon - hard coded to work with TACTICAL_COMBO, and FLASHLIGHT
     /// </summary>
     [JsonPropertyName("lightLaserLimit")]
-    public int? LightLaserLimit { get; set; }
+    public int? LightLaserLimit
+    {
+        get;
+        set;
+    }
 }
 
 public record RandomisationDetails
 {
     /// <summary>
-    /// Between what levels do these randomisation setting apply to
+    ///     Between what levels do these randomisation setting apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMax LevelRange { get; set; }
+    public MinMax LevelRange
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("generation")]
-    public Dictionary<string, GenerationData>? Generation { get; set; }
+    public Dictionary<string, GenerationData>? Generation
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Mod slots that should be fully randomised -ignores mods from bottype.json and instead creates a pool using items.json
+    ///     Mod slots that should be fully randomised -ignores mods from bottype.json and instead creates a pool using items.json
     /// </summary>
     [JsonPropertyName("randomisedWeaponModSlots")]
-    public List<string>? RandomisedWeaponModSlots { get; set; }
+    public List<string>? RandomisedWeaponModSlots
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Armor slots that should be randomised e.g. 'Headwear, Armband'
+    ///     Armor slots that should be randomised e.g. 'Headwear, Armband'
     /// </summary>
     [JsonPropertyName("randomisedArmorSlots")]
-    public List<string>? RandomisedArmorSlots { get; set; }
+    public List<string>? RandomisedArmorSlots
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Equipment chances
+    ///     Equipment chances
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, double>? Equipment { get; set; }
+    public Dictionary<string, double>? Equipment
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Weapon mod chances
+    ///     Weapon mod chances
     /// </summary>
     [JsonPropertyName("weaponMods")]
-    public Dictionary<string, double>? WeaponMods { get; set; }
+    public Dictionary<string, double>? WeaponMods
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Equipment mod chances
+    ///     Equipment mod chances
     /// </summary>
     [JsonPropertyName("equipmentMods")]
-    public Dictionary<string, double>? EquipmentMods { get; set; }
+    public Dictionary<string, double>? EquipmentMods
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("nighttimeChanges")]
-    public NighttimeChanges? NighttimeChanges { get; set; }
+    public NighttimeChanges? NighttimeChanges
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key = weapon tpl, value = min size of magazine allowed
+    ///     Key = weapon tpl, value = min size of magazine allowed
     /// </summary>
     [JsonPropertyName("minimumMagazineSize")]
-    public Dictionary<string, double>? MinimumMagazineSize { get; set; }
+    public Dictionary<string, double>? MinimumMagazineSize
+    {
+        get;
+        set;
+    }
 }
 
 public record NighttimeChanges
 {
     /// <summary>
-    /// Applies changes to values stored in equipmentMods
+    ///     Applies changes to values stored in equipmentMods
     /// </summary>
     [JsonPropertyName("equipmentModsModifiers")]
-    public Dictionary<string, float> EquipmentModsModifiers { get; set; }
+    public Dictionary<string, float> EquipmentModsModifiers
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("weaponModsModifiers")]
-    public Dictionary<string, float> WeaponModsModifiers { get; set; } // TODO: currently not in use anywhere
+    public Dictionary<string, float> WeaponModsModifiers
+    {
+        get;
+        set;
+    } // TODO: currently not in use anywhere
 }
 
 public record EquipmentFilterDetails
 {
     /// <summary>
-    /// Between what levels do these equipment filter setting apply to
+    ///     Between what levels do these equipment filter setting apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMax LevelRange { get; set; }
+    public MinMax LevelRange
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: mod slot name e.g. mod_magazine, value: item tpls
+    ///     Key: mod slot name e.g. mod_magazine, value: item tpls
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, List<string>>? Equipment { get; set; }
+    public Dictionary<string, List<string>>? Equipment
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
+    ///     Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
     /// </summary>
     [JsonPropertyName("gear")]
-    public Dictionary<EquipmentSlots, List<string>>? Gear { get; set; }
+    public Dictionary<EquipmentSlots, List<string>>? Gear
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: cartridge type e.g. Caliber23x75, value: item tpls
+    ///     Key: cartridge type e.g. Caliber23x75, value: item tpls
     /// </summary>
     [JsonPropertyName("cartridge")]
-    public Dictionary<string, List<string>>? Cartridge { get; set; }
+    public Dictionary<string, List<string>>? Cartridge
+    {
+        get;
+        set;
+    }
 }
 
 public record WeightingAdjustmentDetails
 {
     /// <summary>
-    /// Between what levels do these weight settings apply to
+    ///     Between what levels do these weight settings apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMax LevelRange { get; set; }
+    public MinMax LevelRange
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: ammo type e.g. Caliber556x45NATO, value: item tpl + weight
+    ///     Key: ammo type e.g. Caliber556x45NATO, value: item tpl + weight
     /// </summary>
     [JsonPropertyName("ammo")]
-    public AdjustmentDetails? Ammo { get; set; }
+    public AdjustmentDetails? Ammo
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: equipment slot e.g. TacticalVest, value: item tpl + weight
+    ///     Key: equipment slot e.g. TacticalVest, value: item tpl + weight
     /// </summary>
     [JsonPropertyName("equipment")]
-    public AdjustmentDetails? Equipment { get; set; }
+    public AdjustmentDetails? Equipment
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Key: clothing slot e.g. feet, value: item tpl + weight
+    ///     Key: clothing slot e.g. feet, value: item tpl + weight
     /// </summary>
     [JsonPropertyName("clothing")]
-    public AdjustmentDetails? Clothing { get; set; }
+    public AdjustmentDetails? Clothing
+    {
+        get;
+        set;
+    }
 }
 
 public record AdjustmentDetails
 {
     [JsonPropertyName("add")]
-    public Dictionary<string, Dictionary<string, float>> Add { get; set; }
+    public Dictionary<string, Dictionary<string, float>> Add
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("edit")]
-    public Dictionary<string, Dictionary<string, float>> Edit { get; set; }
+    public Dictionary<string, Dictionary<string, float>> Edit
+    {
+        get;
+        set;
+    }
 }
 
 public class ArmorPlateWeights
 {
     [JsonPropertyName("levelRange")]
-    public MinMax LevelRange { get; set; }
+    public MinMax LevelRange
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("values")]
-    public Dictionary<string, Dictionary<string, double>> Values { get; set; }
+    public Dictionary<string, Dictionary<string, double>> Values
+    {
+        get;
+        set;
+    }
 }
 
 public record RandomisedResourceDetails
 {
     [JsonPropertyName("food")]
-    public RandomisedResourceValues Food { get; set; }
+    public RandomisedResourceValues Food
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("meds")]
-    public RandomisedResourceValues Meds { get; set; }
+    public RandomisedResourceValues Meds
+    {
+        get;
+        set;
+    }
 }
 
 public record RandomisedResourceValues
 {
     /// <summary>
-    /// Minimum percent of item to randomized between min and max resource
+    ///     Minimum percent of item to randomized between min and max resource
     /// </summary>
     [JsonPropertyName("resourcePercent")]
-    public float ResourcePercent { get; set; }
+    public float ResourcePercent
+    {
+        get;
+        set;
+    }
 
     /// <summary>
-    /// Chance for randomization to not occur
+    ///     Chance for randomization to not occur
     /// </summary>
     [JsonPropertyName("chanceMaxResourcePercent")]
-    public float ChanceMaxResourcePercent { get; set; }
+    public float ChanceMaxResourcePercent
+    {
+        get;
+        set;
+    }
 }

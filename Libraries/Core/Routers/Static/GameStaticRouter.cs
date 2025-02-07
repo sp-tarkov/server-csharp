@@ -1,10 +1,10 @@
-﻿using SptCommon.Annotations;
-using Core.Callbacks;
+﻿using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Game;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Routers.Static;
 

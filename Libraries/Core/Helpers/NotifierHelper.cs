@@ -1,6 +1,6 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Profile;
 using Core.Models.Eft.Ws;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -30,7 +30,7 @@ public class NotifierHelper(HttpServerHelper _httpServerHelper)
             EventIdentifier = dialogueMessage.Id,
             OfferId = ragfairData.OfferId,
             HandbookId = ragfairData.HandbookId,
-            Count = (int)ragfairData.Count
+            Count = (int) ragfairData.Count
         };
     }
 

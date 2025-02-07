@@ -5,5 +5,9 @@ namespace Core.Models.Spt.Launcher;
 
 public class LauncherV2ProfilesResponse : IRequestData
 {
-    public required List<MiniProfile> Response { get; set; }
+    public required List<MiniProfile> Response
+    {
+        get;
+        set;
+    }
 }

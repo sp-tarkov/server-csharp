@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
@@ -12,6 +11,7 @@ using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
@@ -41,7 +41,7 @@ public class TradeController(
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
-    /// Handle TradingConfirm event
+    ///     Handle TradingConfirm event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>
@@ -58,7 +58,7 @@ public class TradeController(
         if (request.Type == "buy_from_trader")
         {
             var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
-            var buyData = (ProcessBuyTradeRequestData)request;
+            var buyData = (ProcessBuyTradeRequestData) request;
             _tradeHelper.buyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
             return output;
@@ -67,7 +67,7 @@ public class TradeController(
         // Selling
         if (request.Type == "sell_to_trader")
         {
-            var sellData = (ProcessSellTradeRequestData)request;
+            var sellData = (ProcessSellTradeRequestData) request;
             _tradeHelper.sellItem(pmcData, pmcData, sellData, sessionID, output);
 
             return output;
@@ -80,7 +80,7 @@ public class TradeController(
     }
 
     /// <summary>
-    /// Handle RagFairBuyOffer event
+    ///     Handle RagFairBuyOffer event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>
@@ -97,11 +97,13 @@ public class TradeController(
         {
             var fleaOffer = _ragfairServer.GetOffer(offer.Id);
             if (fleaOffer is null)
+            {
                 return _httpResponseUtil.AppendErrorToOutput(
                     output,
                     $"Offer with ID {offer.Id} not found",
                     BackendErrorCodes.OfferNotFound
                 );
+            }
 
             if (offer.Count == 0)
             {
@@ -113,19 +115,26 @@ public class TradeController(
             }
 
             if (_ragfairOfferHelper.OfferIsFromTrader(fleaOffer))
+            {
                 BuyTraderItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
+            }
             else
+            {
                 BuyPmcItemFromRagfair(sessionID, pmcData, fleaOffer, offer, output);
+            }
 
             // Exit loop early if problem found
-            if (output.Warnings?.Count > 0) return output;
+            if (output.Warnings?.Count > 0)
+            {
+                return output;
+            }
         }
 
         return output;
     }
 
     /// <summary>
-    /// Buy an item off the flea sold by a trader
+    ///     Buy an item off the flea sold by a trader
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
@@ -143,7 +152,10 @@ public class TradeController(
         if (PlayerLacksTraderLoyaltyLevelToBuyOffer(fleaOffer, pmcData))
         {
             var errorMessage = $"Unable to buy item: {fleaOffer.Items[0].Template} from trader: {fleaOffer.User.Id} as loyalty level too low, skipping";
-            if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug(errorMessage);
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(errorMessage);
+            }
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage, BackendErrorCodes.RagfairUnavailable);
 
@@ -165,7 +177,7 @@ public class TradeController(
     }
 
     /// <summary>
-    /// Buy an item off the flea sold by a PMC
+    ///     Buy an item off the flea sold by a PMC
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
@@ -192,7 +204,10 @@ public class TradeController(
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
         _tradeHelper.buyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
-        if (output.Warnings?.Count > 0) return;
+        if (output.Warnings?.Count > 0)
+        {
+            return;
+        }
 
         // resolve when a profile buy another profile's offer
         var offerOwnerId = fleaOffer.User?.Id;
@@ -212,7 +227,7 @@ public class TradeController(
     }
 
     /// <summary>
-    /// Is the provided offerid and ownerid from a player made offer
+    ///     Is the provided offerid and ownerid from a player made offer
     /// </summary>
     /// <param name="offerId">id of the offer</param>
     /// <param name="offerOwnerId">Owner id</param>
@@ -222,19 +237,24 @@ public class TradeController(
         string? offerOwnerId)
     {
         // No ownerid, not player offer
-        if (offerOwnerId is null) return false;
+        if (offerOwnerId is null)
+        {
+            return false;
+        }
 
         var offerCreatorProfile = _profileHelper.GetPmcProfile(offerOwnerId);
         if (offerCreatorProfile is null || offerCreatorProfile.RagfairInfo.Offers?.Count == 0)
             // No profile or no offers
+        {
             return false;
+        }
 
         // Does offer id exist in profile
         return offerCreatorProfile.RagfairInfo.Offers.Any(offer => offer.Id == offerId);
     }
 
     /// <summary>
-    /// Does Player have necessary trader loyalty to purchase flea offer
+    ///     Does Player have necessary trader loyalty to purchase flea offer
     /// </summary>
     /// <param name="fleaOffer">Flea offer being bought</param>
     /// <param name="pmcData">Player profile</param>
@@ -247,7 +267,7 @@ public class TradeController(
     }
 
     /// <summary>
-    /// Handle SellAllFromSavage event
+    ///     Handle SellAllFromSavage event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="request"></param>
@@ -260,13 +280,13 @@ public class TradeController(
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
-        MailMoneyToPlayer(sessionId, (int)request.TotalValue, Traders.FENCE);
+        MailMoneyToPlayer(sessionId, (int) request.TotalValue, Traders.FENCE);
 
         return output;
     }
 
     /// <summary>
-    /// Send the specified rouble total to player as mail
+    ///     Send the specified rouble total to player as mail
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="roublesToSend">amount of roubles to send</param>
@@ -276,14 +296,20 @@ public class TradeController(
         int roublesToSend,
         string trader)
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Selling scav items to fence for {roublesToSend} roubles");
+        }
 
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item
         {
             Id = _hashUtil.Generate(),
             Template = Money.ROUBLES,
-            Upd = new Upd { StackObjectsCount = roublesToSend }
+            Upd = new Upd
+            {
+                StackObjectsCount = roublesToSend
+            }
         };
 
         // Ensure money is properly split to follow its max stack size limit
@@ -301,7 +327,7 @@ public class TradeController(
     }
 
     /// <summary>
-    /// Looks up an items children and gets total handbook price for them
+    ///     Looks up an items children and gets total handbook price for them
     /// </summary>
     /// <param name="parentItemId">parent item that has children we want to sum price of</param>
     /// <param name="items">All items (parent + children)</param>
@@ -322,10 +348,12 @@ public class TradeController(
             var itemDetails = _itemHelper.GetItem(itemToSell.Template);
             if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
                 // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
+            {
                 continue;
+            }
 
             // Get price of item multiplied by how many are in stack
-            totalPrice += (int)((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));
+            totalPrice += (int) ((handbookPrices[itemToSell.Template] ?? 0) * (itemToSell.Upd?.StackObjectsCount ?? 1));
         }
 
         return totalPrice;

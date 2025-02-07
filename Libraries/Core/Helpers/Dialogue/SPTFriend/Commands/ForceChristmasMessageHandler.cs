@@ -28,6 +28,7 @@ public class ForceChristmasMessageHandler(
     {
         var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Christmas);
         if (enableEventResult)
+        {
             _mailSendService.SendUserMessageToPlayer(
                 sessionId,
                 sptFriendUser,
@@ -39,5 +40,6 @@ public class ForceChristmasMessageHandler(
                 [],
                 null
             );
+        }
     }
 }

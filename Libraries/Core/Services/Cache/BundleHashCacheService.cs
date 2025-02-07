@@ -13,8 +13,8 @@ public class BundleHashCacheService(
     FileUtil _fileUtil
 )
 {
-    protected Dictionary<string, string> _bundleHashes = new();
     protected static readonly string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
+    protected Dictionary<string, string> _bundleHashes = new();
 
     public string GetStoredValue(string key)
     {
@@ -29,7 +29,10 @@ public class BundleHashCacheService(
 
         _fileUtil.WriteFile(_bundleHashCachePath, _jsonUtil.Serialize(_bundleHashes));
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Bundle {key} hash stored in {_bundleHashCachePath}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Bundle {key} hash stored in {_bundleHashCachePath}");
+        }
     }
 
     public bool MatchWithStoredHash(string bundlePath, string hash)

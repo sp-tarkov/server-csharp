@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Common;
 using Core.Models.Eft.Bot;
 using Core.Models.Eft.Common.Tables;
@@ -6,7 +5,7 @@ using Core.Models.Spt.Bots;
 using Core.Models.Utils;
 using Core.Services;
 using Core.Utils;
-
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
@@ -19,7 +18,7 @@ public class BotLevelGenerator(
 )
 {
     /// <summary>
-    /// Return a randomised bot level and exp value
+    ///     Return a randomised bot level and exp value
     /// </summary>
     /// <param name="levelDetails">Min and max of level for bot</param>
     /// <param name="botGenerationDetails">Details to help generate a bot</param>
@@ -27,7 +26,14 @@ public class BotLevelGenerator(
     /// <returns>IRandomisedBotLevelResult object</returns>
     public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
-        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false)) return new RandomisedBotLevelResult { Exp = 0, Level = 1 };
+        if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
+        {
+            return new RandomisedBotLevelResult
+            {
+                Exp = 0,
+                Level = 1
+            };
+        }
 
         var expTable = _databaseService.GetGlobals().Configuration.Exp.Level.ExperienceTable;
         var botLevelRange = GetRelativePmcBotLevelRange(botGenerationDetails, levelDetails, expTable.Length);
@@ -38,12 +44,22 @@ public class BotLevelGenerator(
             ChooseBotLevel(botLevelRange.Min.Value, botLevelRange.Max.Value, 1, 1.15)
                 .ToString()
         ); // TODO - nasty double to string to int conversion
-        for (var i = 0; i < level; i++) exp += expTable[i].Experience.Value;
+        for (var i = 0; i < level; i++)
+        {
+            exp += expTable[i].Experience.Value;
+        }
 
         // Sprinkle in some random exp within the level, unless we are at max level.
-        if (level < expTable.Length - 1) exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
+        if (level < expTable.Length - 1)
+        {
+            exp += _randomUtil.GetInt(0, expTable[level].Experience.Value - 1);
+        }
 
-        return new RandomisedBotLevelResult { Level = level, Exp = exp };
+        return new RandomisedBotLevelResult
+        {
+            Level = level,
+            Exp = exp
+        };
     }
 
     public double ChooseBotLevel(double min, double max, int shift, double number)
@@ -52,7 +68,7 @@ public class BotLevelGenerator(
     }
 
     /// <summary>
-    /// Return the min and max level a PMC can be
+    ///     Return the min and max level a PMC can be
     /// </summary>
     /// <param name="botGenerationDetails">Details to help generate a bot</param>
     /// <param name="levelDetails"></param>

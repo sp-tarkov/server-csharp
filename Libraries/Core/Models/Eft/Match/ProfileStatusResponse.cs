@@ -5,8 +5,16 @@ namespace Core.Models.Eft.Match;
 public record ProfileStatusResponse
 {
     [JsonPropertyName("maxPveCountExceeded")]
-    public bool? MaxPveCountExceeded { get; set; }
+    public bool? MaxPveCountExceeded
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("profiles")]
-    public List<SessionStatus>? Profiles { get; set; }
+    public List<SessionStatus>? Profiles
+    {
+        get;
+        set;
+    }
 }

@@ -6,8 +6,16 @@ public record WsNotificationEvent
 {
     [JsonPropertyName("type")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public NotificationEventType? EventType { get; set; }
+    public NotificationEventType? EventType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("eventId")]
-    public string? EventIdentifier { get; set; }
+    public string? EventIdentifier
+    {
+        get;
+        set;
+    }
 }

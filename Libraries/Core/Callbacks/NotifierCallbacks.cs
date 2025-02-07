@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Request;
 using Core.Models.Eft.Notifier;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -14,7 +14,7 @@ public class NotifierCallbacks(
 )
 {
     /// <summary>
-    /// Handle client/notifier/channel/create
+    ///     Handle client/notifier/channel/create
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -26,7 +26,7 @@ public class NotifierCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/profile/select
+    ///     Handle client/game/profile/select
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -34,11 +34,15 @@ public class NotifierCallbacks(
     /// <returns></returns>
     public string SelectProfile(string url, UIDRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(new SelectProfileResponse { Status = "ok" });
+        return _httpResponseUtil.GetBody(
+            new SelectProfileResponse
+            {
+                Status = "ok"
+            }
+        );
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

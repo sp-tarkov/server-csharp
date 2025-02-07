@@ -1,5 +1,4 @@
 ﻿using Core.Helpers;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
@@ -8,6 +7,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Generators;
 
@@ -42,7 +42,10 @@ public class RagfairAssortGenerator(
      */
     public List<List<Item>> GetAssortItems()
     {
-        if (!AssortsAreGenerated()) generatedAssortItems = GenerateRagfairAssortItems();
+        if (!AssortsAreGenerated())
+        {
+            generatedAssortItems = GenerateRagfairAssortItems();
+        }
 
         return generatedAssortItems;
     }
@@ -65,7 +68,7 @@ public class RagfairAssortGenerator(
         List<List<Item>> results = [];
 
         /** Get cloned items from db */
-        var dbItemsClone = itemHelper.GetItems().Where((item) => item.Type != "Node");
+        var dbItemsClone = itemHelper.GetItems().Where(item => item.Type != "Node");
 
         /** Store processed preset tpls so we dont add them when procesing non-preset items */
         List<string> processedArmorItems = [];
@@ -84,15 +87,22 @@ public class RagfairAssortGenerator(
 
             presetAndMods[0].ParentId = "hideout";
             presetAndMods[0].SlotId = "hideout";
-            presetAndMods[0].Upd = new Upd()
-                { StackObjectsCount = 99999999, UnlimitedCount = true, SptPresetId = preset.Id };
+            presetAndMods[0].Upd = new Upd
+            {
+                StackObjectsCount = 99999999,
+                UnlimitedCount = true,
+                SptPresetId = preset.Id
+            };
 
             results.Add(presetAndMods);
         }
 
         foreach (var item in dbItemsClone)
         {
-            if (!itemHelper.IsValidItem(item.Id, ragfairItemInvalidBaseTypes)) continue;
+            if (!itemHelper.IsValidItem(item.Id, ragfairItemInvalidBaseTypes))
+            {
+                continue;
+            }
 
             // Skip seasonal items when not in-season
             if (
@@ -100,11 +110,15 @@ public class RagfairAssortGenerator(
                 !seasonalEventActive &&
                 seasonalItemTplBlacklist.Contains(item.Id)
             )
+            {
                 continue;
+            }
 
             if (processedArmorItems.Contains(item.Id))
                 // Already processed
+            {
                 continue;
+            }
 
             var ragfairAssort = CreateRagfairAssortRootItem(
                 item.Id,
@@ -138,14 +152,21 @@ public class RagfairAssortGenerator(
     protected Item CreateRagfairAssortRootItem(string tplId, string? id = null)
     {
         if (string.IsNullOrEmpty(id))
+        {
             id = hashUtil.Generate();
-        return new Item()
+        }
+
+        return new Item
         {
             Id = id,
             Template = tplId,
             ParentId = "hideout",
             SlotId = "hideout",
-            Upd = new Upd() { StackObjectsCount = 99999999, UnlimitedCount = true }
+            Upd = new Upd
+            {
+                StackObjectsCount = 99999999,
+                UnlimitedCount = true
+            }
         };
     }
 }

@@ -1,9 +1,9 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -17,7 +17,7 @@ public class DurabilityLimitsHelper(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
-    /// Get max durability for a weapon based on bot role
+    ///     Get max durability for a weapon based on bot role
     /// </summary>
     /// <param name="itemTemplate">UNUSED - Item to get durability for</param>
     /// <param name="botRole">Role of bot to get max durability for</param>
@@ -30,7 +30,7 @@ public class DurabilityLimitsHelper(
     }
 
     /// <summary>
-    /// Get max durability value for armor based on bot role
+    ///     Get max durability value for armor based on bot role
     /// </summary>
     /// <param name="itemTemplate">Item to get max durability for</param>
     /// <param name="botRole">Role of bot to get max durability for</param>
@@ -38,19 +38,31 @@ public class DurabilityLimitsHelper(
     public double GetRandomizedMaxArmorDurability(TemplateItem? itemTemplate, string? botRole = null)
     {
         var itemMaxDurability = itemTemplate.Properties.MaxDurability.Value;
-        if (botRole is null) return itemMaxDurability;
+        if (botRole is null)
+        {
+            return itemMaxDurability;
+        }
 
-        if (_botHelper.IsBotPmc(botRole)) return GenerateMaxPmcArmorDurability(itemMaxDurability);
+        if (_botHelper.IsBotPmc(botRole))
+        {
+            return GenerateMaxPmcArmorDurability(itemMaxDurability);
+        }
 
-        if (_botHelper.IsBotBoss(botRole)) return itemMaxDurability;
+        if (_botHelper.IsBotBoss(botRole))
+        {
+            return itemMaxDurability;
+        }
 
-        if (_botHelper.IsBotFollower(botRole)) return itemMaxDurability;
+        if (_botHelper.IsBotFollower(botRole))
+        {
+            return itemMaxDurability;
+        }
 
         return itemMaxDurability;
     }
 
     /// <summary>
-    /// Get randomised current weapon durability by bot role
+    ///     Get randomised current weapon durability by bot role
     /// </summary>
     /// <param name="itemTemplate">Unused - Item to get current durability of</param>
     /// <param name="botRole">Role of bot to get current durability for</param>
@@ -64,21 +76,36 @@ public class DurabilityLimitsHelper(
     }
 
     /// <summary>
-    /// Convert a botrole into a durability role used for looking up durability values with
+    ///     Convert a botrole into a durability role used for looking up durability values with
     /// </summary>
     /// <param name="botRole">Role to convert</param>
     /// <returns></returns>
     private string GetDurabilityRole(string? botRole)
     {
-        if (botRole is null) return "default";
+        if (botRole is null)
+        {
+            return "default";
+        }
 
-        if (_botHelper.IsBotPmc(botRole)) return "pmc";
+        if (_botHelper.IsBotPmc(botRole))
+        {
+            return "pmc";
+        }
 
-        if (_botHelper.IsBotBoss(botRole)) return "boss";
+        if (_botHelper.IsBotBoss(botRole))
+        {
+            return "boss";
+        }
 
-        if (_botHelper.IsBotFollower(botRole)) return "follower";
+        if (_botHelper.IsBotFollower(botRole))
+        {
+            return "follower";
+        }
 
-        if (_botHelper.IsBotZombie(botRole)) return "zombie";
+        if (_botHelper.IsBotZombie(botRole))
+        {
+            return "zombie";
+        }
 
         var roleExistsInConfig = _botConfig.Durability.BotDurabilities.ContainsKey(botRole);
         if (!roleExistsInConfig)
@@ -92,7 +119,7 @@ public class DurabilityLimitsHelper(
     }
 
     /// <summary>
-    /// Get randomised current armor durability by bot role
+    ///     Get randomised current armor durability by bot role
     /// </summary>
     /// <param name="itemTemplate">Unused - Item to get current durability of</param>
     /// <param name="botRole">Role of bot to get current durability for</param>
@@ -124,9 +151,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetLowestMaxWeaponFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Weapon.LowestMax;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Weapon.LowestMax;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Weapon.LowestMax;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.LowestMax;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability);
         return durability.Weapon.LowestMax;
@@ -134,9 +167,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetHighestMaxWeaponDurabilityFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Weapon.HighestMax;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Weapon.HighestMax;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Weapon.HighestMax;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.HighestMax;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var durability);
         return durability.Weapon.HighestMax;
@@ -172,9 +211,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetMinWeaponDeltaFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Weapon.MinDelta;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Weapon.MinDelta;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Weapon.MinDelta;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.MinDelta;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
@@ -183,9 +228,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetMaxWeaponDeltaFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Weapon.MaxDelta;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Weapon.MaxDelta;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Weapon.MaxDelta;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.MaxDelta;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
@@ -194,9 +245,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetMinArmorDeltaFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Armor.MinDelta;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Armor.MinDelta;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Armor.MinDelta;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MinDelta;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
@@ -205,9 +262,15 @@ public class DurabilityLimitsHelper(
 
     protected int GetMaxArmorDeltaFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Armor.MaxDelta;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Armor.MaxDelta;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Armor.MaxDelta;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MaxDelta;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
@@ -216,9 +279,15 @@ public class DurabilityLimitsHelper(
 
     protected double GetMinArmorLimitPercentFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Armor.MinLimitPercent;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Armor.MinLimitPercent;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Armor.MinLimitPercent;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Armor.MinLimitPercent;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 
@@ -227,9 +296,15 @@ public class DurabilityLimitsHelper(
 
     protected double GetMinWeaponLimitPercentFromConfig(string? botRole = null)
     {
-        if (botRole is null or "default") return _botConfig.Durability.Default.Weapon.MinLimitPercent;
+        if (botRole is null or "default")
+        {
+            return _botConfig.Durability.Default.Weapon.MinLimitPercent;
+        }
 
-        if (botRole == "pmc") return _botConfig.Durability.Pmc.Weapon.MinLimitPercent;
+        if (botRole == "pmc")
+        {
+            return _botConfig.Durability.Pmc.Weapon.MinLimitPercent;
+        }
 
         _botConfig.Durability.BotDurabilities.TryGetValue(botRole, out var value);
 

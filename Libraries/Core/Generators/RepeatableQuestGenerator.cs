@@ -12,7 +12,6 @@ using Core.Utils.Cloners;
 using Core.Utils.Collections;
 using Core.Utils.Json;
 using SptCommon.Annotations;
-using SptCommon.Extensions;
 
 namespace Core.Generators;
 
@@ -31,8 +30,8 @@ public class RepeatableQuestGenerator(
     ICloner _cloner
 )
 {
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
     protected int _maxRandomNumberAttempts = 6;
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
     ///     This method is called by /GetClientRepeatableQuests/ and creates one element of quest type format (see
@@ -186,7 +185,8 @@ public class RepeatableQuestGenerator(
 
                 // Filter locations bot can be killed on to just those not chosen by key
                 possibleLocationPool.Locations = possibleLocationPool.Locations
-                    .Where(location => location != locationKey).ToList();
+                    .Where(location => location != locationKey)
+                    .ToList();
 
                 // None left after filtering
                 if (possibleLocationPool.Locations.Count == 0)
@@ -195,7 +195,6 @@ public class RepeatableQuestGenerator(
                     // Remove chosen bot to eliminate from pool
                     questTypePool.Pool.Elimination.Targets.Remove(botTypeToEliminate);
                 }
-
             }
             else
             {
@@ -237,7 +236,13 @@ public class RepeatableQuestGenerator(
                 .GetDictionary()
                 .Select(x => x.Value)
                 .Where(x => x.Base?.Id != null)
-                .Select(x => new { x.Base.Id, BossSpawn = x.Base.BossLocationSpawn });
+                .Select(
+                    x => new
+                    {
+                        x.Base.Id,
+                        BossSpawn = x.Base.BossLocationSpawn
+                    }
+                );
             // filter for the current boss to spawn on map
             var thisBossSpawns = bossSpawns
                 .Select(
@@ -258,15 +263,15 @@ public class RepeatableQuestGenerator(
         if (eliminationConfig.DistanceProbability > rand.NextDouble() && isDistanceRequirementAllowed)
         {
             // Random distance with lower values more likely; simple distribution for starters...
-            distance = (int)Math.Floor(
+            distance = (int) Math.Floor(
                 Math.Abs(rand.NextDouble() - rand.NextDouble()) *
                 (1 + eliminationConfig.MaxDistance - eliminationConfig.MinDistance) +
                 eliminationConfig.MinDistance ??
                 0
             );
 
-            distance = (int)Math.Ceiling((decimal)(distance / 5)) * 5;
-            distanceDifficulty = (int)(maxDistDifficulty * distance / eliminationConfig.MaxDistance);
+            distance = (int) Math.Ceiling((decimal) (distance / 5)) * 5;
+            distanceDifficulty = (int) (maxDistDifficulty * distance / eliminationConfig.MaxDistance);
         }
 
         string? allowedWeaponsCategory = null;
@@ -277,7 +282,7 @@ public class RepeatableQuestGenerator(
             {
                 List<string> weaponTypeBlacklist = ["Shotgun", "Pistol"];
                 weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>)weaponCategoryRequirementConfig
+                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
                         .Where(
                             category => weaponTypeBlacklist
                                 .Contains(category.Key)
@@ -288,7 +293,7 @@ public class RepeatableQuestGenerator(
                 List<string> weaponTypeBlacklist = ["MarksmanRifle", "DMR"];
                 // Filter out far range weapons from close distance requirement
                 weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>)weaponCategoryRequirementConfig
+                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
                         .Where(
                             category => weaponTypeBlacklist
                                 .Contains(category.Key)
@@ -335,7 +340,10 @@ public class RepeatableQuestGenerator(
         var quest = GenerateRepeatableTemplate("Elimination", traderId, repeatableConfig.Side, sessionId);
 
         // ASSUMPTION: All fence quests are for scavs
-        if (traderId == Traders.FENCE) quest.Side = "Scav";
+        if (traderId == Traders.FENCE)
+        {
+            quest.Side = "Scav";
+        }
 
         var availableForFinishCondition = quest.Conditions.AvailableForFinish[0];
         availableForFinishCondition.Counter.Id = _hashUtil.Generate();
@@ -387,10 +395,14 @@ public class RepeatableQuestGenerator(
         EliminationConfig eliminationConfig)
     {
         if (targetsConfig.Data(targetKey).IsBoss.GetValueOrDefault(false))
+        {
             return _randomUtil.RandInt(eliminationConfig.MinBossKills.Value, eliminationConfig.MaxBossKills + 1);
+        }
 
         if (targetsConfig.Data(targetKey).IsPmc.GetValueOrDefault(false))
+        {
             return _randomUtil.RandInt(eliminationConfig.MinPmcKills.Value, eliminationConfig.MaxPmcKills + 1);
+        }
 
         return _randomUtil.RandInt(eliminationConfig.MinKills.Value, eliminationConfig.MaxKills + 1);
     }
@@ -448,7 +460,11 @@ public class RepeatableQuestGenerator(
             Value = 1,
             ResetOnSessionEnd = false,
             EnemyHealthEffects = [],
-            Daytime = new DaytimeCounter { From = 0, To = 0 },
+            Daytime = new DaytimeCounter
+            {
+                From = 0,
+                To = 0
+            },
             ConditionType = "Kills"
         };
 
@@ -459,14 +475,26 @@ public class RepeatableQuestGenerator(
         }
 
         // Has specific body part hit condition
-        if (targetedBodyParts is not null) killConditionProps.BodyPart = targetedBodyParts;
+        if (targetedBodyParts is not null)
+        {
+            killConditionProps.BodyPart = targetedBodyParts;
+        }
 
         // Don't allow distance + melee requirement
         if (distance is not null && allowedWeaponCategory != "5b5f7a0886f77409407a7f96")
-            killConditionProps.Distance = new CounterConditionDistance { CompareMethod = ">=", Value = distance.Value };
+        {
+            killConditionProps.Distance = new CounterConditionDistance
+            {
+                CompareMethod = ">=",
+                Value = distance.Value
+            };
+        }
 
         // Has specific weapon requirement
-        if (allowedWeapon is not null) killConditionProps.Weapon = [allowedWeapon];
+        if (allowedWeapon is not null)
+        {
+            killConditionProps.Weapon = [allowedWeapon];
+        }
 
         // Has specific weapon category requirement
         if (allowedWeaponCategory?.Length > 0)
@@ -510,7 +538,7 @@ public class RepeatableQuestGenerator(
         // Be fair, don't var the items be more expensive than the reward
         var multi = _randomUtil.GetDouble(0.5, 1);
         var roublesBudget = Math.Floor(
-            (double)(_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi)
+            (double) (_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi)
         );
         roublesBudget = Math.Max(roublesBudget, 5000d);
         var itemSelection = possibleItemsToRetrievePool.Where(
@@ -587,6 +615,7 @@ public class RepeatableQuestGenerator(
             var found = false;
 
             for (var j = 0; j < _maxRandomNumberAttempts; j++)
+            {
                 if (usedItemIndexes.Contains(chosenItemIndex))
                 {
                     chosenItemIndex = _randomUtil.RandInt(itemSelection.Count);
@@ -596,6 +625,7 @@ public class RepeatableQuestGenerator(
                     found = true;
                     break;
                 }
+            }
 
             if (!found)
             {
@@ -604,7 +634,8 @@ public class RepeatableQuestGenerator(
                         "repeatable-no_reward_item_found_in_price_range",
                         new
                         {
-                            minPrice = 0, roublesBudget
+                            minPrice = 0,
+                            roublesBudget
                         }
                     )
                 );
@@ -637,12 +668,14 @@ public class RepeatableQuestGenerator(
             var value = minValue;
 
             // Get the value range within budget
-            var x = (int)Math.Floor(roublesBudget / itemUnitPrice);
+            var x = (int) Math.Floor(roublesBudget / itemUnitPrice);
             maxValue = Math.Min(maxValue, x);
             if (maxValue > minValue)
                 // If it doesn't blow the budget we have for the request, draw a random amount of the selected
                 // Item type to be requested
+            {
                 value = _randomUtil.RandInt(minValue, maxValue + 1);
+            }
 
             roublesBudget -= value * itemUnitPrice;
 
@@ -655,7 +688,10 @@ public class RepeatableQuestGenerator(
                 // Reduce the list possible items to fulfill the new budget constraint
                 itemSelection = itemSelection.Where(dbItem => _itemHelper.GetItemPrice(dbItem.Id) < roublesBudget)
                     .ToList();
-                if (!itemSelection.Any()) break;
+                if (!itemSelection.Any())
+                {
+                    break;
+                }
             }
             else
             {
@@ -692,10 +728,15 @@ public class RepeatableQuestGenerator(
             _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.WEAPON) ||
             _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.ARMOR)
         )
+        {
             minDurability = _randomUtil.GetArrayValue([60, 80]);
+        }
 
         // By default all collected items must be FiR, except dog tags
-        if (_itemHelper.IsDogtag(itemTpl)) onlyFoundInRaid = false;
+        if (_itemHelper.IsDogtag(itemTpl))
+        {
+            onlyFoundInRaid = false;
+        }
 
         return new QuestCondition
         {

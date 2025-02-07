@@ -1,6 +1,6 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Security.Cryptography;
 using SptCommon.Annotations;
 
 namespace Core.Utils;
@@ -8,9 +8,8 @@ namespace Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class HashUtil
 {
-    protected Regex MongoIdRegex = new("^[a-fA-F0-9]{24}$");
-
     protected RandomUtil _randomUtil;
+    protected Regex MongoIdRegex = new("^[a-fA-F0-9]{24}$");
 
     public HashUtil(RandomUtil randomUtil)
     {
@@ -18,7 +17,7 @@ public class HashUtil
     }
 
     /// <summary>
-    /// Create a 24 character MongoId
+    ///     Create a 24 character MongoId
     /// </summary>
     /// <returns>24 character objectId</returns>
     public string Generate()
@@ -26,7 +25,7 @@ public class HashUtil
         var objectId = new byte[12];
 
         // Time stamp (4 bytes)
-        var timestamp = BitConverter.GetBytes((int)DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        var timestamp = BitConverter.GetBytes((int) DateTimeOffset.UtcNow.ToUnixTimeSeconds());
         // Convert to big-endian
         Array.Reverse(timestamp);
         Array.Copy(timestamp, 0, objectId, 0, 4);
@@ -46,7 +45,7 @@ public class HashUtil
     }
 
     /// <summary>
-    /// is the passed in string a valid mongo id
+    ///     is the passed in string a valid mongo id
     /// </summary>
     /// <param name="stringToCheck">String to check</param>
     /// <returns>True when string is a valid mongo id</returns>
@@ -73,12 +72,13 @@ public class HashUtil
     }
 
     /// <summary>
-    /// Create a hash for the data parameter
+    ///     Create a hash for the data parameter
     /// </summary>
     /// <param name="algorithm">algorithm to use to hash</param>
     /// <param name="data">data to be hashed</param>
     /// <returns>hash value</returns>
-    /// <exception cref="NotImplementedException">thrown if the provided algorithm is not implemented</exception>>
+    /// <exception cref="NotImplementedException">thrown if the provided algorithm is not implemented</exception>
+    /// >
     public string GenerateHashForData(HashingAlgorithm algorithm, string data)
     {
         switch (algorithm)
@@ -96,7 +96,7 @@ public class HashUtil
     }
 
     /// <summary>
-    /// Generates an account ID for a profile
+    ///     Generates an account ID for a profile
     /// </summary>
     /// <returns>Generated account ID</returns>
     public int GenerateAccountId()

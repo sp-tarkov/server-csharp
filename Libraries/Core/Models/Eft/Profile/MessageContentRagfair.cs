@@ -5,11 +5,23 @@ namespace Core.Models.Eft.Profile;
 public record MessageContentRagfair
 {
     [JsonPropertyName("offerId")]
-    public string? OfferId { get; set; }
+    public string? OfferId
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public double? Count
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("handbookId")]
-    public string? HandbookId { get; set; }
+    public string? HandbookId
+    {
+        get;
+        set;
+    }
 }

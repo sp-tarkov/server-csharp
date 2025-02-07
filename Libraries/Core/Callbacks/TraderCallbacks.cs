@@ -1,10 +1,10 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.DI;
 using Core.Models.Eft.Common;
 using Core.Models.Spt.Config;
 using Core.Servers;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -25,18 +25,18 @@ public class TraderCallbacks(
         return Task.CompletedTask;
     }
 
-    public bool OnUpdate(long _)
-    {
-        return _traderController.Update();
-    }
-
     public string GetRoute()
     {
         return "spt-traders";
     }
 
+    public bool OnUpdate(long _)
+    {
+        return _traderController.Update();
+    }
+
     /// <summary>
-    /// Handle client/trading/api/traderSettings
+    ///     Handle client/trading/api/traderSettings
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -48,7 +48,7 @@ public class TraderCallbacks(
     }
 
     /// <summary>
-    /// Handle client/trading/api/getTrader
+    ///     Handle client/trading/api/getTrader
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -61,7 +61,7 @@ public class TraderCallbacks(
     }
 
     /// <summary>
-    /// Handle client/trading/api/getTraderAssort
+    ///     Handle client/trading/api/getTraderAssort
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -74,7 +74,7 @@ public class TraderCallbacks(
     }
 
     /// <summary>
-    /// Handle /singleplayer/moddedTraders
+    ///     Handle /singleplayer/moddedTraders
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>

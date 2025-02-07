@@ -6,32 +6,64 @@ namespace Core.Models.Eft.Profile;
 public record UserDialogInfo
 {
     /// <summary>
-    /// _id
+    ///     _id
     /// </summary>
     [JsonPropertyName("_id")]
-    public string? Id { get; set; }
+    public string? Id
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("aid")]
-    public int? Aid { get; set; }
+    public int? Aid
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Info")]
-    public UserDialogDetails? Info { get; set; }
+    public UserDialogDetails? Info
+    {
+        get;
+        set;
+    }
 }
 
 public record UserDialogDetails
 {
     [JsonPropertyName("Nickname")]
-    public string? Nickname { get; set; }
+    public string? Nickname
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Side")]
-    public string? Side { get; set; }
+    public string? Side
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("Level")]
-    public double? Level { get; set; }
+    public double? Level
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("MemberCategory")]
-    public MemberCategory? MemberCategory { get; set; }
+    public MemberCategory? MemberCategory
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("SelectedMemberCategory")]
-    public MemberCategory? SelectedMemberCategory { get; set; }
+    public MemberCategory? SelectedMemberCategory
+    {
+        get;
+        set;
+    }
 }

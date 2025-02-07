@@ -1,8 +1,8 @@
-﻿using SptCommon.Annotations;
-using Core.Controllers;
+﻿using Core.Controllers;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Wishlist;
+using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
@@ -10,7 +10,7 @@ namespace Core.Callbacks;
 public class WishlistCallbacks(WishlistController _wishlistController)
 {
     /// <summary>
-    /// Handle AddToWishList event
+    ///     Handle AddToWishList event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -22,7 +22,7 @@ public class WishlistCallbacks(WishlistController _wishlistController)
     }
 
     /// <summary>
-    /// Handle RemoveFromWishList event
+    ///     Handle RemoveFromWishList event
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>
@@ -34,7 +34,7 @@ public class WishlistCallbacks(WishlistController _wishlistController)
     }
 
     /// <summary>
-    /// Handle ChangeWishlistItemCategory
+    ///     Handle ChangeWishlistItemCategory
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="info"></param>

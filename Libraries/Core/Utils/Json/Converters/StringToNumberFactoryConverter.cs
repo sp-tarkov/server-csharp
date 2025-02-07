@@ -13,7 +13,7 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
     {
-        return (JsonConverter)Activator.CreateInstance(typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert));
+        return (JsonConverter) Activator.CreateInstance(typeof(StringToNumberConverter<>).MakeGenericType(typeToConvert));
     }
 
     private class StringToNumberConverter<T> : JsonConverter<T>
@@ -25,14 +25,20 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
                 case JsonTokenType.String:
                     var value = reader.GetString();
                     if (string.IsNullOrWhiteSpace(value))
+                    {
                         return default;
+                    }
+
                     var type = typeToConvert;
                     try
                     {
                         if (typeToConvert.IsGenericType &&
                             typeToConvert.GetGenericTypeDefinition() == typeof(Nullable<>))
+                        {
                             type = typeToConvert.GenericTypeArguments[0];
-                        return (T)type.GetMethods()
+                        }
+
+                        return (T) type.GetMethods()
                             .First(
                                 m =>
                                     m.Name == "Parse" &&
@@ -63,7 +69,10 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
             if (value == null)
+            {
                 value = default;
+            }
+
             JsonSerializer.Serialize(writer, value, options);
         }
     }

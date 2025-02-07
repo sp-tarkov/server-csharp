@@ -6,5 +6,9 @@ namespace Core.Models.Eft.Ragfair;
 public record GetMarketPriceRequestData : IRequestData
 {
     [JsonPropertyName("templateId")]
-    public string? TemplateId { get; set; }
+    public string? TemplateId
+    {
+        get;
+        set;
+    }
 }

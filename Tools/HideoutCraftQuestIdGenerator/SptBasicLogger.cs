@@ -9,11 +9,12 @@ namespace HideoutCraftQuestIdGenerator;
 public class SptBasicLogger<T> : ISptLogger<T>
 {
     private readonly string categoryName;
+
     public SptBasicLogger()
     {
         categoryName = typeof(T).Name;
     }
-    
+
     public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null,
         Exception? ex = null)
     {

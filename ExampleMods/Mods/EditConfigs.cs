@@ -1,25 +1,25 @@
-using SptCommon.Annotations;
 using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
+using SptCommon.Annotations;
 
 namespace ExampleMods.Mods;
 
 [Injectable]
 public class EditConfigs : IPostDBLoadMod
 {
-    private readonly ConfigServer _configServer;
-    private readonly BotConfig _botConfig;
-    private readonly HideoutConfig _hideoutConfig;
-    private readonly WeatherConfig _weatherConfig;
     private readonly AirdropConfig _airdropConfig;
-    private readonly PmcChatResponse _pmcChatResponseConfig;
-    private readonly QuestConfig _questConfig;
-    private readonly PmcConfig _pmcConfig;
+    private readonly BotConfig _botConfig;
+    private readonly ConfigServer _configServer;
+    private readonly HideoutConfig _hideoutConfig;
 
     private readonly ISptLogger<EditConfigs> _logger;
+    private readonly PmcChatResponse _pmcChatResponseConfig;
+    private readonly PmcConfig _pmcConfig;
+    private readonly QuestConfig _questConfig;
+    private readonly WeatherConfig _weatherConfig;
 
     // We access configs via ConfigServer
     public EditConfigs(
@@ -39,7 +39,7 @@ public class EditConfigs : IPostDBLoadMod
         _questConfig = _configServer.GetConfig<QuestConfig>();
         _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
-    
+
     public void PostDBLoad()
     {
         // Let's edit the weather config to make the season winter
@@ -76,7 +76,7 @@ public class EditConfigs : IPostDBLoadMod
         var assaultConversionSettings = factory4DayConversionSettings["assault"];
         assaultConversionSettings.Min = 100;
         assaultConversionSettings.Max = 100;
-        
+
         _logger.Success("Finished Editing Configs");
     }
 }

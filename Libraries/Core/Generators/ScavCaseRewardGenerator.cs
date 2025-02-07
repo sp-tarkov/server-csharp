@@ -1,9 +1,7 @@
 using Core.Helpers;
 using Core.Models.Common;
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Hideout;
-using Core.Models.Eft.ItemEvent;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Hideout;
@@ -12,6 +10,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 
 namespace Core.Generators;
@@ -31,12 +30,12 @@ public class ScavCaseRewardGenerator(
     ICloner _cloner
 )
 {
-    protected ScavCaseConfig _scavCaseConfig = _configServer.GetConfig<ScavCaseConfig>();
-    protected List<TemplateItem> _dbItemsCache = [];
     protected List<TemplateItem> _dbAmmoItemsCache = [];
+    protected List<TemplateItem> _dbItemsCache = [];
+    protected ScavCaseConfig _scavCaseConfig = _configServer.GetConfig<ScavCaseConfig>();
 
     /// <summary>
-    /// Create an array of rewards that will be given to the player upon completing their scav case build
+    ///     Create an array of rewards that will be given to the player upon completing their scav case build
     /// </summary>
     /// <param name="recipeId">recipe of the scav case craft</param>
     /// <returns>Product array</returns>
@@ -83,8 +82,8 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Get all db items that are not blacklisted in scavcase config or global blacklist
-    /// Store in class field
+    ///     Get all db items that are not blacklisted in scavcase config or global blacklist
+    ///     Store in class field
     /// </summary>
     protected void CacheDbItems()
     {
@@ -93,16 +92,26 @@ public class ScavCaseRewardGenerator(
         // Get an array of seasonal items that should not be shown right now as seasonal event is not active
         var inactiveSeasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
         if (!_dbItemsCache.Any())
+        {
             _dbItemsCache = _databaseService.GetItems()
                 .Values.Where(
                     item =>
                     {
                         // Base "Item" item has no parent, ignore it
-                        if (item.Parent == "") return false;
+                        if (item.Parent == "")
+                        {
+                            return false;
+                        }
 
-                        if (item.Type == "Node") return false;
+                        if (item.Type == "Node")
+                        {
+                            return false;
+                        }
 
-                        if (item.Properties.QuestItem ?? false) return false;
+                        if (item.Properties.QuestItem ?? false)
+                        {
+                            return false;
+                        }
 
                         // Skip item if item id is on blacklist
                         if (
@@ -110,62 +119,102 @@ public class ScavCaseRewardGenerator(
                             _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
                             _itemFilterService.IsItemBlacklisted(item.Id)
                         )
+                        {
                             return false;
+                        }
 
                         // Globally reward-blacklisted
-                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id)) return false;
+                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        {
+                            return false;
+                        }
 
-                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id)) return false;
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        {
+                            return false;
+                        }
 
                         // Skip item if parent id is blacklisted
-                        if (_itemHelper.IsOfBaseclasses(item.Id, _scavCaseConfig.RewardItemParentBlacklist)) return false;
+                        if (_itemHelper.IsOfBaseclasses(item.Id, _scavCaseConfig.RewardItemParentBlacklist))
+                        {
+                            return false;
+                        }
 
-                        if (inactiveSeasonalItems.Contains(item.Id)) return false;
+                        if (inactiveSeasonalItems.Contains(item.Id))
+                        {
+                            return false;
+                        }
 
                         return true;
                     }
                 )
                 .ToList();
+        }
 
         if (!_dbAmmoItemsCache.Any())
+        {
             _dbAmmoItemsCache = _databaseService.GetItems()
                 .Values.Where(
                     item =>
                     {
                         // Base "Item" item has no parent, ignore it
-                        if (item.Parent == "") return false;
+                        if (item.Parent == "")
+                        {
+                            return false;
+                        }
 
-                        if (item.Type != "Item") return false;
+                        if (item.Type != "Item")
+                        {
+                            return false;
+                        }
 
                         // Not ammo, skip
-                        if (!_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO)) return false;
+                        if (!_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO))
+                        {
+                            return false;
+                        }
 
                         // Skip item if item id is on blacklist
                         if (
                             _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
                             _itemFilterService.IsItemBlacklisted(item.Id)
                         )
+                        {
                             return false;
+                        }
 
                         // Globally reward-blacklisted
-                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id)) return false;
+                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        {
+                            return false;
+                        }
 
-                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id)) return false;
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        {
+                            return false;
+                        }
 
                         // Skip seasonal items
-                        if (inactiveSeasonalItems.Contains(item.Id)) return false;
+                        if (inactiveSeasonalItems.Contains(item.Id))
+                        {
+                            return false;
+                        }
 
                         // Skip ammo that doesn't stack as high as value in config
-                        if (item.Properties.StackMaxSize < _scavCaseConfig.AmmoRewards.MinStackSize) return false;
+                        if (item.Properties.StackMaxSize < _scavCaseConfig.AmmoRewards.MinStackSize)
+                        {
+                            return false;
+                        }
 
                         return true;
                     }
                 )
                 .ToList();
+        }
     }
 
     /// <summary>
-    /// Pick a number of items to be rewards, the count is defined by the values in `itemFilters` param
+    ///     Pick a number of items to be rewards, the count is defined by the values in `itemFilters` param
     /// </summary>
     /// <param name="items">item pool to pick rewards from</param>
     /// <param name="itemFilters">how the rewards should be filtered down (by item count)</param>
@@ -179,30 +228,38 @@ public class ScavCaseRewardGenerator(
 
         var rewardWasMoney = false;
         var rewardWasAmmo = false;
-        var randomCount = _randomUtil.GetInt((int)itemFilters.MinCount, (int)itemFilters.MaxCount);
+        var randomCount = _randomUtil.GetInt((int) itemFilters.MinCount, (int) itemFilters.MaxCount);
         for (var i = 0; i < randomCount; i++)
+        {
             if (RewardShouldBeMoney() && !rewardWasMoney)
             {
                 // Only allow one reward to be money
                 result.Add(GetRandomMoney());
-                if (!_scavCaseConfig.AllowMultipleMoneyRewardsPerRarity) rewardWasMoney = true;
+                if (!_scavCaseConfig.AllowMultipleMoneyRewardsPerRarity)
+                {
+                    rewardWasMoney = true;
+                }
             }
             else if (RewardShouldBeAmmo() && !rewardWasAmmo)
             {
                 // Only allow one reward to be ammo
                 result.Add(GetRandomAmmo(rarity));
-                if (!_scavCaseConfig.AllowMultipleAmmoRewardsPerRarity) rewardWasAmmo = true;
+                if (!_scavCaseConfig.AllowMultipleAmmoRewardsPerRarity)
+                {
+                    rewardWasAmmo = true;
+                }
             }
             else
             {
                 result.Add(_randomUtil.GetArrayValue(items));
             }
+        }
 
         return result;
     }
 
     /// <summary>
-    /// Choose if money should be a reward based on the moneyRewardChancePercent config chance in scavCaseConfig
+    ///     Choose if money should be a reward based on the moneyRewardChancePercent config chance in scavCaseConfig
     /// </summary>
     /// <returns>true if reward should be money</returns>
     protected bool RewardShouldBeMoney()
@@ -211,7 +268,7 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Choose if ammo should be a reward based on the ammoRewardChancePercent config chance in scavCaseConfig
+    ///     Choose if ammo should be a reward based on the ammoRewardChancePercent config chance in scavCaseConfig
     /// </summary>
     /// <returns>true if reward should be ammo</returns>
     protected bool RewardShouldBeAmmo()
@@ -220,7 +277,7 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Choose from rouble/dollar/euro at random
+    ///     Choose from rouble/dollar/euro at random
     /// </summary>
     protected TemplateItem GetRandomMoney()
     {
@@ -235,7 +292,7 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Get a random ammo from items.json that is not in the ammo blacklist AND inside the price range defined in scavcase.json config
+    ///     Get a random ammo from items.json that is not in the ammo blacklist AND inside the price range defined in scavcase.json config
     /// </summary>
     /// <param name="rarity">The rarity this ammo reward is for</param>
     /// <returns>random ammo item from items.json</returns>
@@ -250,21 +307,26 @@ public class ScavCaseRewardGenerator(
                     handbookPrice >= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Min &&
                     handbookPrice <= _scavCaseConfig.AmmoRewards.AmmoRewardValueRangeRub[rarity].Max
                 )
+                {
                     return true;
+                }
 
                 return false;
             }
         );
 
-        if (!possibleAmmoPool.Any()) _logger.Warning("Unable to get a list of ammo that matches desired criteria for scav case reward");
+        if (!possibleAmmoPool.Any())
+        {
+            _logger.Warning("Unable to get a list of ammo that matches desired criteria for scav case reward");
+        }
 
         // Get a random ammo and return it
         return _randomUtil.GetArrayValue(possibleAmmoPool);
     }
 
     /// <summary>
-    /// Take all the rewards picked create the Product object array ready to return to calling code
-    /// Also add a stack count to ammo and money
+    ///     Take all the rewards picked create the Product object array ready to return to calling code
+    ///     Also add a stack count to ammo and money
     /// </summary>
     /// <param name="rewardItems">items to convert</param>
     /// <returns>Product array</returns>
@@ -274,7 +336,15 @@ public class ScavCaseRewardGenerator(
         List<List<Item>> result = [];
         foreach (var rewardItemDb in rewardItems)
         {
-            List<Item> resultItem = [new() { Id = _hashUtil.Generate(), Template = rewardItemDb.Id, Upd = null }];
+            List<Item> resultItem =
+            [
+                new()
+                {
+                    Id = _hashUtil.Generate(),
+                    Template = rewardItemDb.Id,
+                    Upd = null
+                }
+            ];
             var rootItem = resultItem.FirstOrDefault();
 
             if (_itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.AMMO_BOX))
@@ -303,7 +373,10 @@ public class ScavCaseRewardGenerator(
             }
             else if (_itemHelper.IsOfBaseclasses(rewardItemDb.Id, [BaseClasses.AMMO, BaseClasses.MONEY]))
             {
-                rootItem.Upd = new Upd { StackObjectsCount = GetRandomAmountRewardForScavCase(rewardItemDb, rarity) };
+                rootItem.Upd = new Upd
+                {
+                    StackObjectsCount = GetRandomAmountRewardForScavCase(rewardItemDb, rarity)
+                };
             }
 
             result.Add(resultItem);
@@ -325,7 +398,10 @@ public class ScavCaseRewardGenerator(
                 item =>
                 {
                     var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(item.Id);
-                    if (handbookPrice >= itemFilters.MinPriceRub && handbookPrice <= itemFilters.MaxPriceRub) return true;
+                    if (handbookPrice >= itemFilters.MinPriceRub && handbookPrice <= itemFilters.MaxPriceRub)
+                    {
+                        return true;
+                    }
 
                     return false;
                 }
@@ -334,7 +410,7 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Gathers the reward min and max count params for each reward quality level from config and scavcase.json into a single object
+    ///     Gathers the reward min and max count params for each reward quality level from config and scavcase.json into a single object
     /// </summary>
     /// <param name="scavCaseDetails">production.json/scavRecipes object</param>
     /// <returns>ScavCaseRewardCountsAndPrices object</returns>
@@ -368,7 +444,7 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    /// Randomises the size of ammo and money stacks
+    ///     Randomises the size of ammo and money stacks
     /// </summary>
     /// <param name="itemToCalculate">ammo or money item</param>
     /// <param name="rarity">rarity (common/rare/superrare)</param>
@@ -377,31 +453,35 @@ public class ScavCaseRewardGenerator(
     {
         var amountToGive = 1;
         if (itemToCalculate.Parent == BaseClasses.AMMO)
+        {
             amountToGive = _randomUtil.GetInt(
                 _scavCaseConfig.AmmoRewards.MinStackSize,
                 itemToCalculate.Properties.StackMaxSize ?? 0
             );
+        }
         else if (itemToCalculate.Parent == BaseClasses.MONEY)
+        {
             amountToGive = itemToCalculate.Id switch
             {
                 Money.ROUBLES => _randomUtil.GetInt(
-                    (int)_scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int)_scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Max
                 ),
                 Money.EUROS => _randomUtil.GetInt(
-                    (int)_scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int)_scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Max
                 ),
                 Money.DOLLARS => _randomUtil.GetInt(
-                    (int)_scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int)_scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Max
                 ),
                 Money.GP => _randomUtil.GetInt(
-                    (int)_scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int)_scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Max
                 ),
                 _ => amountToGive
             };
+        }
 
         return amountToGive;
     }

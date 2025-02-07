@@ -1,10 +1,9 @@
-﻿using SptCommon.Annotations;
-using Core.Models.Enums;
+﻿using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
-
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -18,7 +17,7 @@ public class WeatherHelper(
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
-    /// Get the current in-raid time - does not include an accurate date, only time
+    ///     Get the current in-raid time - does not include an accurate date, only time
     /// </summary>
     /// <param name="currentDate">(new Date())</param>
     /// <returns>Date object of current in-raid time</returns>
@@ -39,7 +38,7 @@ public class WeatherHelper(
     }
 
     /// <summary>
-    /// Is the current raid at nighttime
+    ///     Is the current raid at nighttime
     /// </summary>
     /// <param name="timeVariant">PASS OR CURR (from raid settings)</param>
     /// <returns>True when nighttime</returns>
@@ -49,7 +48,9 @@ public class WeatherHelper(
 
         // getInRaidTime() provides left side value, if player chose right side, set ahead 12 hrs
         if (timeVariant == DateTimeEnum.PAST)
+        {
             time.AddHours(12);
+        }
 
         // Night if after 9pm or before 5am
         return time.Hour > 21 || time.Hour < 5;

@@ -6,137 +6,291 @@ namespace Core.Models.Eft.Ragfair;
 
 public record RagfairOffer
 {
-    [JsonPropertyName("sellResult")]
-    public List<SellResult>? SellResults { get; set; }
-
     private string? _id;
+
+    private string? _root;
+
+    [JsonPropertyName("sellResult")]
+    public List<SellResult>? SellResults
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("_id")]
     public string? Id
     {
-        get => _id;
-        set => _id = string.Intern(value);
+        get
+        {
+            return _id;
+        }
+        set
+        {
+            _id = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("items")]
-    public List<Item>? Items { get; set; }
+    public List<Item>? Items
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("requirements")]
-    public List<OfferRequirement>? Requirements { get; set; }
+    public List<OfferRequirement>? Requirements
+    {
+        get;
+        set;
+    }
 
-    private string? _root;
     [JsonPropertyName("root")]
     public string? Root
     {
-        get => _root;
-        set => _root = string.Intern(value);
+        get
+        {
+            return _root;
+        }
+        set
+        {
+            _root = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("intId")]
-    public int? InternalId { get; set; }
+    public int? InternalId
+    {
+        get;
+        set;
+    }
 
-    /** Handbook price */
+    /**
+     * Handbook price
+     */
     [JsonPropertyName("itemsCost")]
-    public double? ItemsCost { get; set; }
+    public double? ItemsCost
+    {
+        get;
+        set;
+    }
 
-    /** Rouble price per item */
+    /**
+     * Rouble price per item
+     */
     [JsonPropertyName("requirementsCost")]
-    public double? RequirementsCost { get; set; }
+    public double? RequirementsCost
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("startTime")]
-    public long? StartTime { get; set; }
+    public long? StartTime
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("endTime")]
-    public long? EndTime { get; set; }
+    public long? EndTime
+    {
+        get;
+        set;
+    }
 
-    /** True when offer is sold as pack */
+    /**
+     * True when offer is sold as pack
+     */
     [JsonPropertyName("sellInOnePiece")]
-    public bool? SellInOnePiece { get; set; }
+    public bool? SellInOnePiece
+    {
+        get;
+        set;
+    }
 
-    /** Rouble price - same as requirementsCost */
+    /**
+     * Rouble price - same as requirementsCost
+     */
     [JsonPropertyName("summaryCost")]
-    public double? SummaryCost { get; set; }
+    public double? SummaryCost
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("user")]
-    public RagfairOfferUser? User { get; set; }
+    public RagfairOfferUser? User
+    {
+        get;
+        set;
+    }
 
-    /** Trader only */
+    /**
+     * Trader only
+     */
     [JsonPropertyName("unlimitedCount")]
-    public bool? UnlimitedCount { get; set; }
+    public bool? UnlimitedCount
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("loyaltyLevel")]
-    public int? LoyaltyLevel { get; set; }
+    public int? LoyaltyLevel
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("buyRestrictionMax")]
-    public int? BuyRestrictionMax { get; set; }
+    public int? BuyRestrictionMax
+    {
+        get;
+        set;
+    }
 
     // Confirmed in client
     [JsonPropertyName("buyRestrictionCurrent")]
-    public int? BuyRestrictionCurrent { get; set; }
+    public int? BuyRestrictionCurrent
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("locked")]
-    public bool? Locked { get; set; }
+    public bool? Locked
+    {
+        get;
+        set;
+    }
 }
 
 public record OfferRequirement
 {
     private string? _tpl;
+
     [JsonPropertyName("_tpl")]
     public string? Template
     {
-        get => _tpl;
-        set => _tpl = string.Intern(value);
+        get
+        {
+            return _tpl;
+        }
+        set
+        {
+            _tpl = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("count")]
-    public double? Count { get; set; }
+    public double? Count
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("onlyFunctional")]
-    public bool? OnlyFunctional { get; set; }
+    public bool? OnlyFunctional
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("level")]
-    public int? Level { get; set; }
+    public int? Level
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("side")]
-    public DogtagExchangeSide? Side { get; set; }
+    public DogtagExchangeSide? Side
+    {
+        get;
+        set;
+    }
 }
 
 public record RagfairOfferUser
 {
     private string? _id;
+
     [JsonPropertyName("id")]
     public string? Id
     {
-        get => _id;
-        set => _id = string.Intern(value);
+        get
+        {
+            return _id;
+        }
+        set
+        {
+            _id = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("nickname")]
-    public string? Nickname { get; set; }
+    public string? Nickname
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("rating")]
-    public double? Rating { get; set; }
+    public double? Rating
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("memberType")]
-    public MemberCategory? MemberType { get; set; }
+    public MemberCategory? MemberType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("selectedMemberCategory")]
-    public MemberCategory? SelectedMemberCategory { get; set; }
+    public MemberCategory? SelectedMemberCategory
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("avatar")]
-    public string? Avatar { get; set; }
+    public string? Avatar
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("isRatingGrowing")]
-    public bool? IsRatingGrowing { get; set; }
+    public bool? IsRatingGrowing
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("aid")]
-    public int? Aid { get; set; }
+    public int? Aid
+    {
+        get;
+        set;
+    }
 }
 
 public record SellResult
 {
     [JsonPropertyName("sellTime")]
-    public long? SellTime { get; set; }
+    public long? SellTime
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("amount")]
-    public int? Amount { get; set; }
+    public int? Amount
+    {
+        get;
+        set;
+    }
 }

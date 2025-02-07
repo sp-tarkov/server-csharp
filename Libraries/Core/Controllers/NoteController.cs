@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Notes;
 using Core.Routers;
+using SptCommon.Annotations;
 
 namespace Core.Controllers;
 
@@ -12,7 +12,6 @@ public class NoteController(
 )
 {
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="body"></param>
@@ -23,14 +22,17 @@ public class NoteController(
         NoteActionData body,
         string sessionId)
     {
-        var newNote = new Note { Time = body.Note.Time, Text = body.Note.Text };
+        var newNote = new Note
+        {
+            Time = body.Note.Time,
+            Text = body.Note.Text
+        };
         pmcData.Notes.DataNotes.Add(newNote);
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="body"></param>
@@ -49,7 +51,6 @@ public class NoteController(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="pmcData"></param>
     /// <param name="body"></param>

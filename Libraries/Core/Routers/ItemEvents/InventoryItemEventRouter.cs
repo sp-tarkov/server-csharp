@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -8,14 +7,15 @@ using Core.Models.Eft.Inventory;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Eft.Quests;
 using Core.Models.Enums;
+using SptCommon.Annotations;
 
 namespace Core.Routers.ItemEvents;
 
 [Injectable(InjectableTypeOverride = typeof(ItemEventRouterDefinition))]
 public class InventoryItemEventRouter : ItemEventRouterDefinition
 {
-    protected InventoryCallbacks _inventoryCallbacks;
     protected HideoutCallbacks _hideoutCallbacks;
+    protected InventoryCallbacks _inventoryCallbacks;
 
     public InventoryItemEventRouter
     (

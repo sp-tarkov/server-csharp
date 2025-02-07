@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -13,6 +12,7 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using Core.Utils.Json;
 using Server;
+using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 
@@ -44,15 +44,15 @@ public class GameController(
     ICloner _cloner
 )
 {
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    protected double _deviation = 0.0001;
+    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    protected HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected double _deviation = 0.0001;
 
     /// <summary>
-    /// Handle client/game/start
+    ///     Handle client/game/start
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
@@ -83,24 +83,42 @@ public class GameController(
             return;
         }
 
-        fullProfile.SptData ??= new Spt { Version = "Replace_me" };
+        fullProfile.SptData ??= new Spt
+        {
+            Version = "Replace_me"
+        };
         fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
         fullProfile.FriendProfileIds ??= [];
 
-        if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value) return;
+        if (fullProfile.ProfileInfo?.IsWiped is not null && fullProfile.ProfileInfo.IsWiped.Value)
+        {
+            return;
+        }
 
         fullProfile.CharacterData!.PmcData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
         fullProfile.CharacterData.ScavData!.WishList ??= new DictionaryOrList<string, int>(new Dictionary<string, int>(), []);
 
-        if (fullProfile.DialogueRecords is not null) _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+        if (fullProfile.DialogueRecords is not null)
+        {
+            _profileFixerService.CheckForAndFixDialogueAttachments(fullProfile);
+        }
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Started game with session {sessionId} {fullProfile.ProfileInfo?.Username}");
+        }
 
         var pmcProfile = fullProfile.CharacterData.PmcData;
 
-        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues) _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+        if (_coreConfig.Fixes.FixProfileBreakingInventoryItemIssues)
+        {
+            _profileFixerService.FixProfileBreakingInventoryItemIssues(pmcProfile);
+        }
 
-        if (pmcProfile.Health is not null) UpdateProfileHealthValues(pmcProfile);
+        if (pmcProfile.Health is not null)
+        {
+            UpdateProfileHealthValues(pmcProfile);
+        }
 
         if (pmcProfile.Inventory is not null)
         {
@@ -128,13 +146,16 @@ public class GameController(
             CheckForAndRemoveUndefinedDialogues(fullProfile);
         }
 
-        if (pmcProfile.Skills?.Common is not null) WarnOnActiveBotReloadSkill(pmcProfile);
+        if (pmcProfile.Skills?.Common is not null)
+        {
+            WarnOnActiveBotReloadSkill(pmcProfile);
+        }
 
         _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
     }
 
     /// <summary>
-    /// Handle client/game/config
+    ///     Handle client/game/config
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -180,7 +201,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Handle client/game/mode
+    ///     Handle client/game/mode
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="requestData"></param>
@@ -197,7 +218,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Handle client/server/list
+    ///     Handle client/server/list
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -214,7 +235,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Handle client/match/group/current
+    ///     Handle client/match/group/current
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -228,7 +249,7 @@ public class GameController(
 
 
     /// <summary>
-    /// Handle client/checkVersion
+    ///     Handle client/checkVersion
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -242,18 +263,22 @@ public class GameController(
     }
 
     /// <summary>
-    /// Handle client/game/keepalive
+    ///     Handle client/game/keepalive
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
     public GameKeepAliveResponse GetKeepAlive(string sessionId)
     {
         _profileActivityService.SetActivityTimestamp(sessionId);
-        return new GameKeepAliveResponse { Message = "OK", UtcTime = _timeUtil.GetTimeStamp() };
+        return new GameKeepAliveResponse
+        {
+            Message = "OK",
+            UtcTime = _timeUtil.GetTimeStamp()
+        };
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/getRaidTime
+    ///     Handle singleplayer/settings/getRaidTime
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
@@ -269,7 +294,6 @@ public class GameController(
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="sessionId"></param>
     /// <returns></returns>
@@ -279,17 +303,20 @@ public class GameController(
     }
 
     /// <summary>
-    /// Players set botReload to a high value and don't expect the crazy fast reload speeds, give them a warn about it
+    ///     Players set botReload to a high value and don't expect the crazy fast reload speeds, give them a warn about it
     /// </summary>
     /// <param name="pmcProfile">Player profile</param>
     private void WarnOnActiveBotReloadSkill(PmcData pmcProfile)
     {
         var botReloadSkill = _profileHelper.GetSkillFromProfile(pmcProfile, SkillTypes.BotReload);
-        if (botReloadSkill?.Progress > 0) _logger.Warning(_localisationService.GetText("server_start_player_active_botreload_skill"));
+        if (botReloadSkill?.Progress > 0)
+        {
+            _logger.Warning(_localisationService.GetText("server_start_player_active_botreload_skill"));
+        }
     }
 
     /// <summary>
-    /// When player logs in, iterate over all active effects and reduce timer
+    ///     When player logs in, iterate over all active effects and reduce timer
     /// </summary>
     /// <param name="pmcProfile">Profile to adjust values for</param>
     private void UpdateProfileHealthValues(PmcData pmcProfile)
@@ -351,7 +378,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Check for and update any timers on effect found on body parts
+    ///     Check for and update any timers on effect found on body parts
     /// </summary>
     /// <param name="pmcProfile">Player</param>
     /// <param name="hpRegenPerHour"></param>
@@ -385,7 +412,10 @@ public class GameController(
                 if (effectKvP.Value.Time < 1)
                 {
                     // More than 30 minutes has passed
-                    if (diffSeconds > 1800) bodyPart.Effects.Remove(effectKvP.Key);
+                    if (diffSeconds > 1800)
+                    {
+                        bodyPart.Effects.Remove(effectKvP.Key);
+                    }
 
                     continue;
                 }
@@ -394,13 +424,15 @@ public class GameController(
                 effectKvP.Value.Time -= diffSeconds;
                 if (effectKvP.Value.Time < 1)
                     // Effect time was sub 1, set floor it can be
+                {
                     effectKvP.Value.Time = 1;
+                }
             }
         }
     }
 
     /// <summary>
-    /// Send starting gifts to profile after x days
+    ///     Send starting gifts to profile after x days
     /// </summary>
     /// <param name="pmcProfile">Profile to add gifts to</param>
     private void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
@@ -410,10 +442,16 @@ public class GameController(
         var currentTimeStamp = _timeUtil.GetTimeStamp();
 
         // One day post-profile creation
-        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds) _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 1);
+        }
 
         // Two day post-profile creation
-        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2) _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
+        if (currentTimeStamp > timeStampProfileCreated + oneDaySeconds * 2)
+        {
+            _giftService.SendPraporStartingGift(pmcProfile.SessionId!, 2);
+        }
     }
 
     /**
@@ -426,7 +464,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Get a list of installed mods and save their details to the profile being used
+    ///     Get a list of installed mods and save their details to the profile being used
     /// </summary>
     /// <param name="fullProfile">Profile to add mod details to</param>
     private void SaveActiveModsToProfile(SptProfile fullProfile)
@@ -467,7 +505,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Add the logged in players name to PMC name pool
+    ///     Add the logged in players name to PMC name pool
     /// </summary>
     /// <param name="pmcProfile">Profile of player to get name from</param>
     private void AddPlayerToPmcNames(PmcData pmcProfile)
@@ -478,30 +516,43 @@ public class GameController(
             var bots = _databaseService.GetBots().Types;
 
             // Official names can only be 15 chars in length
-            if (playerName.Length > _botConfig.BotNameLengthLimit) return;
+            if (playerName.Length > _botConfig.BotNameLengthLimit)
+            {
+                return;
+            }
 
             // Skip if player name exists already
             if (bots!.TryGetValue("bear", out var bearBot))
+            {
                 if (bearBot is not null && bearBot.FirstNames!.Any(x => x == playerName))
+                {
                     bearBot.FirstNames!.Add(playerName);
+                }
+            }
 
             if (bots.TryGetValue("bear", out var usecBot))
+            {
                 if (usecBot is not null && usecBot.FirstNames!.Any(x => x == playerName))
+                {
                     usecBot.FirstNames!.Add(playerName);
+                }
+            }
         }
     }
 
     /// <summary>
-    /// Check for a dialog with the key 'undefined', and remove it
+    ///     Check for a dialog with the key 'undefined', and remove it
     /// </summary>
     /// <param name="fullProfile">Profile to check for dialog in</param>
     private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
-        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out _)) fullProfile.DialogueRecords.Remove("undefined");
+        if (fullProfile.DialogueRecords!.TryGetValue("undefined", out _))
+        {
+            fullProfile.DialogueRecords.Remove("undefined");
+        }
     }
 
     /// <summary>
-    /// 
     /// </summary>
     /// <param name="fullProfile"></param>
     private void LogProfileDetails(SptProfile fullProfile)

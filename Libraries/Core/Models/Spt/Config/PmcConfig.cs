@@ -8,179 +8,411 @@ namespace Core.Models.Spt.Config;
 public record PmcConfig : BaseConfig
 {
     [JsonPropertyName("kind")]
-    public string Kind { get; set; } = "spt-pmc";
+    public string Kind
+    {
+        get;
+        set;
+    } = "spt-pmc";
 
-    /** What game version should the PMC have */
+    /**
+     * What game version should the PMC have
+     */
     [JsonPropertyName("gameVersionWeight")]
-    public Dictionary<string, double> GameVersionWeight { get; set; }
+    public Dictionary<string, double> GameVersionWeight
+    {
+        get;
+        set;
+    }
 
-    /** What account type should the PMC have */
+    /**
+     * What account type should the PMC have
+     */
     [JsonPropertyName("accountTypeWeight")]
-    public Dictionary<MemberCategory, double> AccountTypeWeight { get; set; }
+    public Dictionary<MemberCategory, double> AccountTypeWeight
+    {
+        get;
+        set;
+    }
 
-    /** Global whitelist/blacklist of vest loot for PMCs */
+    /**
+     * Global whitelist/blacklist of vest loot for PMCs
+     */
     [JsonPropertyName("vestLoot")]
-    public SlotLootSettings VestLoot { get; set; }
+    public SlotLootSettings VestLoot
+    {
+        get;
+        set;
+    }
 
-    /** Global whitelist/blacklist of pocket loot for PMCs */
+    /**
+     * Global whitelist/blacklist of pocket loot for PMCs
+     */
     [JsonPropertyName("pocketLoot")]
-    public SlotLootSettings PocketLoot { get; set; }
+    public SlotLootSettings PocketLoot
+    {
+        get;
+        set;
+    }
 
-    /** Global whitelist/blacklist of backpack loot for PMCs */
+    /**
+     * Global whitelist/blacklist of backpack loot for PMCs
+     */
     [JsonPropertyName("backpackLoot")]
-    public SlotLootSettings BackpackLoot { get; set; }
+    public SlotLootSettings BackpackLoot
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("globalLootBlacklist")]
-    public List<string> GlobalLootBlacklist { get; set; }
+    public List<string> GlobalLootBlacklist
+    {
+        get;
+        set;
+    }
 
-    /** Use difficulty defined in config/bot.json/difficulty instead of chosen difficulty dropdown value */
+    /**
+     * Use difficulty defined in config/bot.json/difficulty instead of chosen difficulty dropdown value
+     */
     [JsonPropertyName("useDifficultyOverride")]
-    public bool UseDifficultyOverride { get; set; }
+    public bool UseDifficultyOverride
+    {
+        get;
+        set;
+    }
 
-    /** Difficulty override e.g. "AsOnline/Hard" */
+    /**
+     * Difficulty override e.g. "AsOnline/Hard"
+     */
     [JsonPropertyName("difficulty")]
-    public string Difficulty { get; set; }
+    public string Difficulty
+    {
+        get;
+        set;
+    }
 
-    /** Chance out of 100 to have a complete gun in backpack */
+    /**
+     * Chance out of 100 to have a complete gun in backpack
+     */
     [JsonPropertyName("looseWeaponInBackpackChancePercent")]
-    public double LooseWeaponInBackpackChancePercent { get; set; }
+    public double LooseWeaponInBackpackChancePercent
+    {
+        get;
+        set;
+    }
 
-    /** Chance out of 100 to have an enhancement applied to PMC weapon */
+    /**
+     * Chance out of 100 to have an enhancement applied to PMC weapon
+     */
     [JsonPropertyName("weaponHasEnhancementChancePercent")]
-    public double WeaponHasEnhancementChancePercent { get; set; }
+    public double WeaponHasEnhancementChancePercent
+    {
+        get;
+        set;
+    }
 
-    /** MinMax count of weapons to have in backpack */
+    /**
+     * MinMax count of weapons to have in backpack
+     */
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
-    public MinMax LooseWeaponInBackpackLootMinMax { get; set; }
+    public MinMax LooseWeaponInBackpackLootMinMax
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("_isUsec")]
-    public string? IsUsecDescription { get; set; }
+    public string? IsUsecDescription
+    {
+        get;
+        set;
+    }
 
-    /** Percentage chance PMC will be USEC */
+    /**
+     * Percentage chance PMC will be USEC
+     */
     [JsonPropertyName("isUsec")]
-    public double IsUsec { get; set; }
+    public double IsUsec
+    {
+        get;
+        set;
+    }
 
-    /** WildSpawnType enum value USEC PMCs use */
+    /**
+     * WildSpawnType enum value USEC PMCs use
+     */
     [JsonPropertyName("usecType")]
-    public string UsecType { get; set; }
+    public string UsecType
+    {
+        get;
+        set;
+    }
 
-    /** WildSpawnType enum value BEAR PMCs use */
+    /**
+     * WildSpawnType enum value BEAR PMCs use
+     */
     [JsonPropertyName("bearType")]
-    public string BearType { get; set; }
+    public string BearType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("_pmcType")]
-    public string? PmcTypeDescription { get; set; }
+    public string? PmcTypeDescription
+    {
+        get;
+        set;
+    }
 
-    /** What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear */
+    /**
+     * What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
+     */
     [JsonPropertyName("pmcType")]
-    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType { get; set; }
+    public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("maxBackpackLootTotalRub")]
-    public List<MinMaxLootValue> MaxBackpackLootTotalRub { get; set; }
+    public List<MinMaxLootValue> MaxBackpackLootTotalRub
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("maxPocketLootTotalRub")]
-    public int MaxPocketLootTotalRub { get; set; }
+    public int MaxPocketLootTotalRub
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("maxVestLootTotalRub")]
-    public int MaxVestLootTotalRub { get; set; }
+    public int MaxVestLootTotalRub
+    {
+        get;
+        set;
+    }
 
-    /** Percentage chance a bot from a wave is converted into a PMC, first key = map, second key = bot wildspawn type (assault/exusec), value: min+max chance to be converted */
+    /**
+     * Percentage chance a bot from a wave is converted into a PMC, first key = map, second key = bot wildspawn type (assault/exusec), value: min+max chance to be converted
+     */
     [JsonPropertyName("convertIntoPmcChance")]
-    public Dictionary<string, Dictionary<string, MinMax>> ConvertIntoPmcChance { get; set; }
+    public Dictionary<string, Dictionary<string, MinMax>> ConvertIntoPmcChance
+    {
+        get;
+        set;
+    }
 
-    /** How many levels above player level can a PMC be */
+    /**
+     * How many levels above player level can a PMC be
+     */
     [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public double BotRelativeLevelDeltaMax { get; set; }
+    public double BotRelativeLevelDeltaMax
+    {
+        get;
+        set;
+    }
 
-    /** How many levels below player level can a PMC be */
+    /**
+     * How many levels below player level can a PMC be
+     */
     [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public double BotRelativeLevelDeltaMin { get; set; }
+    public double BotRelativeLevelDeltaMin
+    {
+        get;
+        set;
+    }
 
-    /** Force a number of healing items into PMCs secure container to ensure they can heal */
+    /**
+     * Force a number of healing items into PMCs secure container to ensure they can heal
+     */
     [JsonPropertyName("forceHealingItemsIntoSecure")]
-    public bool ForceHealingItemsIntoSecure { get; set; }
+    public bool ForceHealingItemsIntoSecure
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("hostilitySettings")]
-    public Dictionary<string, HostilitySettings> HostilitySettings { get; set; }
+    public Dictionary<string, HostilitySettings> HostilitySettings
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("allPMCsHavePlayerNameWithRandomPrefixChance")]
-    public double AllPMCsHavePlayerNameWithRandomPrefixChance { get; set; }
+    public double AllPMCsHavePlayerNameWithRandomPrefixChance
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public Dictionary<string, MinMax> LocationSpecificPmcLevelOverride { get; set; }
+    public Dictionary<string, MinMax> LocationSpecificPmcLevelOverride
+    {
+        get;
+        set;
+    }
 
-    /** Should secure container loot from usec.json/bear.json be added to pmc bots secure */
+    /**
+     * Should secure container loot from usec.json/bear.json be added to pmc bots secure
+     */
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
-    public bool AddSecureContainerLootFromBotConfig { get; set; }
+    public bool AddSecureContainerLootFromBotConfig
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("addPrefixToSameNamePMCAsPlayerChance")]
-    public int? AddPrefixToSameNamePMCAsPlayerChance { get; set; }
+    public int? AddPrefixToSameNamePMCAsPlayerChance
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("lootItemLimitsRub")]
-    public List<MinMaxLootItemValue>? LootItemLimitsRub { get; set; }
+    public List<MinMaxLootItemValue>? LootItemLimitsRub
+    {
+        get;
+        set;
+    }
 }
 
 public record HostilitySettings
 {
-    /** Bot roles that are 100% an enemy */
+    /**
+     * Bot roles that are 100% an enemy
+     */
     [JsonPropertyName("additionalEnemyTypes")]
-    public List<string>? AdditionalEnemyTypes { get; set; }
+    public List<string>? AdditionalEnemyTypes
+    {
+        get;
+        set;
+    }
 
-    /** Objects that determine the % chance another bot type is an enemy */
+    /**
+     * Objects that determine the % chance another bot type is an enemy
+     */
     [JsonPropertyName("chancedEnemies")]
-    public List<ChancedEnemy>? ChancedEnemies { get; set; }
+    public List<ChancedEnemy>? ChancedEnemies
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bearEnemyChance")]
-    public double? BearEnemyChance { get; set; }
+    public double? BearEnemyChance
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("usecEnemyChance")]
-    public double? UsecEnemyChance { get; set; }
+    public double? UsecEnemyChance
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("savageEnemyChance")]
-    public double? SavageEnemyChance { get; set; }
+    public double? SavageEnemyChance
+    {
+        get;
+        set;
+    }
 
-    /** Bot roles that are 100% a friendly */
+    /**
+     * Bot roles that are 100% a friendly
+     */
     [JsonPropertyName("additionalFriendlyTypes")]
-    public List<string>? AdditionalFriendlyTypes { get; set; }
+    public List<string>? AdditionalFriendlyTypes
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("savagePlayerBehaviour")]
-    public string? SavagePlayerBehaviour { get; set; }
+    public string? SavagePlayerBehaviour
+    {
+        get;
+        set;
+    }
 }
 
 public record PmcTypes
 {
     [JsonPropertyName("usec")]
-    public string Usec { get; set; }
+    public string Usec
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("bear")]
-    public string Bear { get; set; }
+    public string Bear
+    {
+        get;
+        set;
+    }
 }
 
 public record SlotLootSettings
 {
-    /** Item Type whitelist */
+    /**
+     * Item Type whitelist
+     */
     [JsonPropertyName("whitelist")]
-    public List<string> Whitelist { get; set; }
+    public List<string> Whitelist
+    {
+        get;
+        set;
+    }
 
-    /** Item tpl blacklist */
+    /**
+     * Item tpl blacklist
+     */
     [JsonPropertyName("blacklist")]
-    public List<string> Blacklist { get; set; }
+    public List<string> Blacklist
+    {
+        get;
+        set;
+    }
 }
 
 public record MinMaxLootValue : MinMax
 {
     [JsonPropertyName("value")]
-    public double Value { get; set; }
+    public double Value
+    {
+        get;
+        set;
+    }
 }
 
 public record MinMaxLootItemValue : MinMax
 {
     [JsonPropertyName("backpack")]
-    public MinMax Backpack { get; set; }
+    public MinMax Backpack
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("pocket")]
-    public MinMax Pocket { get; set; }
+    public MinMax Pocket
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("vest")]
-    public MinMax Vest { get; set; }
+    public MinMax Vest
+    {
+        get;
+        set;
+    }
 }

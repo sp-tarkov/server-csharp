@@ -75,13 +75,17 @@ public class CustomLocationWaveService(
             {
                 if (locationBase.BossLocationSpawn.Any(x => x.SptId == bossWave.SptId))
                     // Already exists, skip
+                {
                     continue;
+                }
 
                 locationBase.BossLocationSpawn.Add(bossWave);
                 if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
                     _logger.Debug(
                         $"Added custom boss wave to {mapKvP.Key} of type {bossWave.BossName}, time: {bossWave.Time}, chance: {bossWave.BossChance}, zone: {(string.IsNullOrEmpty(bossWave.BossZone) ? "Global" : bossWave.BossZone)}"
                     );
+                }
             }
         }
 
@@ -99,7 +103,9 @@ public class CustomLocationWaveService(
             {
                 if (locationBase.Waves.Any(x => x.SptId == normalWave.SptId))
                     // Already exists, skip
+                {
                     continue;
+                }
 
                 normalWave.Number = locationBase.Waves.Count;
                 locationBase.Waves.Add(normalWave);

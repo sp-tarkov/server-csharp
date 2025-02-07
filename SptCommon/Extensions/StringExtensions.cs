@@ -37,7 +37,10 @@ public static class StringExtensions
 
         matchedString = null;
         if (!regex.IsMatch(source))
+        {
             return false;
+        }
+
         matchedString = regex.Match(source);
         return true;
     }

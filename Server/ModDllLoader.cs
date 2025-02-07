@@ -9,7 +9,10 @@ public class ModDllLoader
     public static List<Assembly> LoadAllMods()
     {
         if (!Directory.Exists(ModPath))
+        {
             Directory.CreateDirectory(ModPath);
+        }
+
         var mods = new List<Assembly>();
         foreach (var file in Directory.GetFiles(ModPath, "*.dll", SearchOption.AllDirectories))
         {

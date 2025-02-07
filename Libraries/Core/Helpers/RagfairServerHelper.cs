@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
@@ -7,6 +6,7 @@ using Core.Servers;
 using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
@@ -24,8 +24,8 @@ public class RagfairServerHelper(
     ICloner cloner
 )
 {
-    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
     protected const string goodsReturnedTemplate = "5bdabfe486f7743e1665df6e 0"; // Your item was not sold
+    protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /**
      * Is item valid / on blacklist / quest item
@@ -37,12 +37,21 @@ public class RagfairServerHelper(
         var blacklistConfig = ragfairConfig.Dynamic.Blacklist;
 
         // Skip invalid items
-        if (!itemDetails.Key) return false;
+        if (!itemDetails.Key)
+        {
+            return false;
+        }
 
-        if (!itemHelper.IsValidItem(itemDetails.Value.Id)) return false;
+        if (!itemHelper.IsValidItem(itemDetails.Value.Id))
+        {
+            return false;
+        }
 
         // Skip bsg blacklisted items
-        if (blacklistConfig.EnableBsgList && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false)) return false;
+        if (blacklistConfig.EnableBsgList && !(itemDetails.Value?.Properties?.CanSellOnRagfair ?? false))
+        {
+            return false;
+        }
 
         // Skip custom blacklisted items and flag as unsellable by players
         if (IsItemOnCustomFleaBlacklist(itemDetails.Value.Id))
@@ -57,10 +66,15 @@ public class RagfairServerHelper(
             blacklistConfig.EnableCustomItemCategoryList &&
             IsItemCategoryOnCustomFleaBlacklist(itemDetails.Value.Parent)
         )
+        {
             return false;
+        }
 
         // Skip quest items
-        if (blacklistConfig.EnableQuestList && itemHelper.IsQuestItem(itemDetails.Value.Id)) return false;
+        if (blacklistConfig.EnableQuestList && itemHelper.IsQuestItem(itemDetails.Value.Id))
+        {
+            return false;
+        }
 
         // Don't include damaged ammo packs
         if (
@@ -68,7 +82,9 @@ public class RagfairServerHelper(
             itemDetails.Value.Parent == BaseClasses.AMMO_BOX &&
             itemDetails.Value.Name.Contains("_damaged")
         )
+        {
             return false;
+        }
 
         return true;
     }
@@ -116,7 +132,7 @@ public class RagfairServerHelper(
             MessageType.MESSAGE_WITH_ITEMS,
             goodsReturnedTemplate,
             returnedItems,
-            timeUtil.GetHoursAsSeconds((int)databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
+            timeUtil.GetHoursAsSeconds((int) databaseService.GetGlobals().Configuration.RagFair.YourOfferDidNotSellMaxStorageTimeInHour)
         );
     }
 
@@ -127,30 +143,37 @@ public class RagfairServerHelper(
         // Lookup item details - check if item not found
         var itemDetails = itemHelper.GetItem(tplId);
         if (!itemDetails.Key)
+        {
             throw new Exception(
                 localisationService.GetText(
                     "ragfair-item_not_in_db_unable_to_generate_dynamic_stack_count",
                     tplId
                 )
             );
+        }
 
         // Item Types to return one of
         if (isWeaponPreset ||
             itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
            )
+        {
             return 1;
+        }
 
         // Get max possible stack count
         var maxStackSize = itemDetails.Value?.Properties?.StackMaxSize ?? 1;
 
         // non-stackable - use different values to calculate stack size
-        if (maxStackSize == 1) return (int)randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
+        if (maxStackSize == 1)
+        {
+            return (int) randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
+        }
 
         // Get a % to get of stack size
         var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min.Value, config.StackablePercent.Max.Value);
 
         // Min value to return should be no less than 1
-        return Math.Max((int)randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);
+        return Math.Max((int) randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);
     }
 
     /**
@@ -163,10 +186,14 @@ public class RagfairServerHelper(
         var bias = new List<string>();
 
         foreach (var item in currencies.Keys)
+        {
             for (var i = 0; i < currencies[item]; i++)
+            {
                 bias.Add(item);
+            }
+        }
 
-        var index = Math.Min((int)Math.Floor(randomUtil.RandNum(0, 1, 14) * bias.Count), 99);
+        var index = Math.Min((int) Math.Floor(randomUtil.RandNum(0, 1, 14) * bias.Count), 99);
 
         return bias[index];
     }
@@ -191,11 +218,13 @@ public class RagfairServerHelper(
     {
         var presets = new List<Item>();
         foreach (var itemId in databaseService.GetGlobals().ItemPresets.Keys)
+        {
             if (databaseService.GetGlobals().ItemPresets[itemId].Items[0].Template == item.Template)
             {
                 var presetItems = cloner.Clone(databaseService.GetGlobals().ItemPresets[itemId].Items);
                 presets.AddRange(itemHelper.ReparentItemAndChildren(item, presetItems));
             }
+        }
 
         return presets;
     }

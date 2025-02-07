@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
 using Core.Callbacks;
 using Core.DI;
 using Core.Models.Eft.ItemEvent;
 using Core.Utils;
+using SptCommon.Annotations;
 
 namespace Core.Routers.Static;
 

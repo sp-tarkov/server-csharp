@@ -13,8 +13,8 @@ public class ModHashCacheService(
     FileUtil _fileUtil
 )
 {
-    protected readonly Dictionary<string, string> _modHashes = new();
     protected readonly string _modCachePath = "./user/cache/modCache.json";
+    protected readonly Dictionary<string, string> _modHashes = new();
 
     public string? GetStoredValue(string key)
     {
@@ -29,7 +29,10 @@ public class ModHashCacheService(
 
         _fileUtil.WriteFile(_modCachePath, _jsonUtil.Serialize(_modHashes));
 
-        if (_logger.IsLogEnabled(LogLevel.Debug)) _logger.Debug($"Mod {key} hash stored in: {_modCachePath}");
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Mod {key} hash stored in: {_modCachePath}");
+        }
     }
 
     public bool MatchWithStoredHash(string modName, string hash)

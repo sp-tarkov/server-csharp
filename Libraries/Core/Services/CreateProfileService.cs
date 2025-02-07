@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -11,6 +10,7 @@ using Core.Routers;
 using Core.Servers;
 using Core.Utils;
 using Core.Utils.Cloners;
+using SptCommon.Annotations;
 using SptCommon.Extensions;
 using Vitality = Core.Models.Eft.Profile.Vitality;
 
@@ -54,7 +54,7 @@ public class CreateProfileService(
         pmcData.SessionId = sessionId;
         pmcData.Info.Nickname = request.Nickname;
         pmcData.Info.LowerNickname = request.Nickname.ToLower();
-        pmcData.Info.RegistrationDate = (int)_timeUtil.GetTimeStamp();
+        pmcData.Info.RegistrationDate = (int) _timeUtil.GetTimeStamp();
         pmcData.Info.Voice = _databaseService.GetCustomization()[request.VoiceId].Name;
         pmcData.Stats = _profileHelper.GetDefaultCounters();
         pmcData.Info.NeedWipeOptions = [];
@@ -69,7 +69,13 @@ public class CreateProfileService(
 
         UpdateInventoryEquipmentId(pmcData);
 
-        if (pmcData.UnlockedInfo == null) pmcData.UnlockedInfo = new UnlockedInfo { UnlockedProductionRecipe = [] };
+        if (pmcData.UnlockedInfo == null)
+        {
+            pmcData.UnlockedInfo = new UnlockedInfo
+            {
+                UnlockedProductionRecipe = []
+            };
+        }
 
         // Add required items to pmc stash
         AddMissingInternalContainersToProfile(pmcData);
@@ -81,7 +87,11 @@ public class CreateProfileService(
         var profileDetails = new SptProfile
         {
             ProfileInfo = account,
-            CharacterData = new Characters { PmcData = pmcData, ScavData = new PmcData() },
+            CharacterData = new Characters
+            {
+                PmcData = pmcData,
+                ScavData = new PmcData()
+            },
             Suits = profileTemplate.Suits,
             UserBuildData = profileTemplate.UserBuilds,
             DialogueRecords = profileTemplate.Dialogues,
@@ -101,7 +111,9 @@ public class CreateProfileService(
         _saveServer.AddProfile(profileDetails);
 
         if (profileTemplate.Trader.SetQuestsAvailableForStart ?? false)
+        {
             _questHelper.AddAllQuestsToProfile(profileDetails.CharacterData.PmcData, [QuestStatusEnum.AvailableForStart]);
+        }
 
         // Profile is flagged as wanting quests set to ready to hand in and collect rewards
         if (profileTemplate.Trader.SetQuestsAvailableForFinish ?? false)
@@ -138,23 +150,27 @@ public class CreateProfileService(
     }
 
     /**
- * Delete a profile
- * @param sessionID Id of profile to delete
- */
+     * Delete a profile
+     * @param sessionID Id of profile to delete
+     */
     protected void DeleteProfileBySessionId(string sessionID)
     {
         if (_saveServer.GetProfiles().ContainsKey(sessionID))
+        {
             _saveServer.DeleteProfileById(sessionID);
+        }
         else
+        {
             _logger.Warning(
                 _localisationService.GetText("profile-unable_to_find_profile_by_id_cannot_delete", sessionID)
             );
+        }
     }
 
     /**
- * make profiles pmcData.Inventory.equipment unique
- * @param pmcData Profile to update
- */
+     * make profiles pmcData.Inventory.equipment unique
+     * @param pmcData Profile to update
+     */
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
     {
         var oldEquipmentId = pmcData.Inventory.Equipment;
@@ -168,17 +184,23 @@ public class CreateProfileService(
                 continue;
             }
 
-            if (item.Id == oldEquipmentId) item.Id = pmcData.Inventory.Equipment;
+            if (item.Id == oldEquipmentId)
+            {
+                item.Id = pmcData.Inventory.Equipment;
+            }
         }
     }
 
     /**
- * For each trader reset their state to what a level 1 player would see
- * @param sessionId Session id of profile to reset
- */
+     * For each trader reset their state to what a level 1 player would see
+     * @param sessionId Session id of profile to reset
+     */
     protected void ResetAllTradersInProfile(string sessionId)
     {
-        foreach (var traderId in _databaseService.GetTraders().Keys) _traderHelper.ResetTrader(sessionId, traderId);
+        foreach (var traderId in _databaseService.GetTraders().Keys)
+        {
+            _traderHelper.ResetTrader(sessionId, traderId);
+        }
     }
 
     /**
@@ -188,7 +210,8 @@ public class CreateProfileService(
      */
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
-        if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
+        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
+        {
             pmcData.Inventory.Items.Add(
                 new Item
                 {
@@ -196,8 +219,10 @@ public class CreateProfileService(
                     Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION
                 }
             );
+        }
 
-        if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.SortingTable))
+        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.SortingTable))
+        {
             pmcData.Inventory.Items.Add(
                 new Item
                 {
@@ -205,8 +230,10 @@ public class CreateProfileService(
                     Template = ItemTpl.SORTINGTABLE_SORTING_TABLE
                 }
             );
+        }
 
-        if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestStashItems))
+        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestStashItems))
+        {
             pmcData.Inventory.Items.Add(
                 new Item
                 {
@@ -214,8 +241,10 @@ public class CreateProfileService(
                     Template = ItemTpl.STASH_QUESTOFFLINE
                 }
             );
+        }
 
-        if (!pmcData.Inventory.Items.Any((item) => item.Id == pmcData.Inventory.QuestRaidItems))
+        if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.QuestRaidItems))
+        {
             pmcData.Inventory.Items.Add(
                 new Item
                 {
@@ -223,10 +252,11 @@ public class CreateProfileService(
                     Template = ItemTpl.STASH_QUESTRAID
                 }
             );
+        }
     }
 
     /// <summary>
-    /// Add customisations to game profiles based on game edition
+    ///     Add customisations to game profiles based on game edition
     /// </summary>
     /// <param name="fullProfile">Profile to add customisations to</param>
     public void AddCustomisationUnlocksToProfile(SptProfile fullProfile)
@@ -327,6 +357,7 @@ public class CreateProfileService(
         if (pretigeLevel is not null)
         {
             if (pretigeLevel >= 1)
+            {
                 fullProfile.CustomisationUnlocks.Add(
                     new CustomisationStorage
                     {
@@ -335,8 +366,10 @@ public class CreateProfileService(
                         Type = CustomisationType.DOG_TAG
                     }
                 );
+            }
 
             if (pretigeLevel >= 2)
+            {
                 fullProfile.CustomisationUnlocks.Add(
                     new CustomisationStorage
                     {
@@ -345,11 +378,13 @@ public class CreateProfileService(
                         Type = CustomisationType.DOG_TAG
                     }
                 );
+            }
         }
 
         // Dev profile additions
         if (fullProfile.ProfileInfo.Edition.ToLower().Contains("developer"))
             // CyberTark background
+        {
             fullProfile.CustomisationUnlocks.Add(
                 new CustomisationStorage
                 {
@@ -358,6 +393,7 @@ public class CreateProfileService(
                     Type = CustomisationType.ENVIRONMENT
                 }
             );
+        }
     }
 
     /**
@@ -366,7 +402,10 @@ public class CreateProfileService(
     private string? GetGameEdition(SptProfile profile)
     {
         var edition = profile.CharacterData?.PmcData?.Info?.GameVersion;
-        if (edition is not null) return edition;
+        if (edition is not null)
+        {
+            return edition;
+        }
 
         // Edge case - profile not created yet, fall back to what launcher has set
         var launcherEdition = profile.ProfileInfo.Edition;

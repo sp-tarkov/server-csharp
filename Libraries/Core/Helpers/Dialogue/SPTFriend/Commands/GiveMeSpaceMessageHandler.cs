@@ -16,7 +16,7 @@ public class GiveMeSpaceMessageHandler(
     RandomUtil _randomUtil,
     ConfigServer _configServer) : IChatMessageHandler
 {
-    private CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
+    private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     public int GetPriority()
     {

@@ -1,4 +1,3 @@
-using SptCommon.Annotations;
 using Core.Helpers.Dialog.Commando;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
@@ -6,6 +5,7 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace Core.Helpers.Dialogue;
 
