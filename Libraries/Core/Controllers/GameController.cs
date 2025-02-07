@@ -5,6 +5,7 @@ using Core.Models.Eft.Game;
 using Core.Models.Eft.Profile;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
+using Core.Models.Spt.Mod;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services;
@@ -469,39 +470,31 @@ public class GameController(
     /// <param name="fullProfile">Profile to add mod details to</param>
     private void SaveActiveModsToProfile(SptProfile fullProfile)
     {
-        // Add empty mod array if undefined
         fullProfile.SptData!.Mods ??= [];
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
 
-        // Get active mods
-        _logger.Error("NOT IMPLEMENTED - _preSptModLoader SaveActiveModsToProfile()");
-        //var activeMods = _preSptModLoader.GetImportedModDetails(); // TODO: IMPLEMENT _preSptModLoader
-        // var activeMods = new Dictionary<string, ModDetails>();
-        // foreach (var modKvP in activeMods)
-        // {
-        //     var modDetails = modKvP.Value;
-        //     if (
-        //         fullProfile.SptData.Mods.Any(
-        //             (mod) =>
-        //                 mod.Author == modDetails.Author &&
-        //                 mod.Name == modDetails.Name &&
-        //                 mod.Version == modDetails.Version
-        //         ))
-        //     {
-        //         // Exists already, skip
-        //         continue;
-        //     }
-        //
-        //     fullProfile.SptData.Mods.Add(
-        //         new ModDetails
-        //         {
-        //             Author = modDetails.Author,
-        //             DateAdded = _timeUtil.GetTimeStamp(),
-        //             Name = modDetails.Name,
-        //             Version = modDetails.Version,
-        //             Url = modDetails.Url,
-        //         }
-        //     );
-        // }
+        foreach (var mod in mods)
+        {
+            if (
+                fullProfile.SptData.Mods.Any(
+                    m =>
+                        m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name
+                )
+            )
+            {
+                // exists already, skip
+                continue;
+            }
+
+            fullProfile.SptData.Mods.Add(new ModDetails()
+            {
+                Author = mod.PackageJson.Author,
+                Version = mod.PackageJson.Version,
+                Name = mod.PackageJson.Name,
+                Url = mod.PackageJson.Url,
+                DateAdded = _timeUtil.GetTimeStamp()
+            });
+        }
     }
 
     /// <summary>
