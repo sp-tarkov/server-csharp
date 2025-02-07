@@ -193,6 +193,13 @@
             "startTimestamp": 1341615600000,
             "endTimestamp": "",
             "yearly": false
+        },
+        "675031e1f300496cc4104450": {
+            "name": "Hide in Plain Sight",
+            "season": "christmas",
+            "startTimestamp": 1701388800000,
+            "endTimestamp": 1703980800000,
+            "yearly": true  
         }
     },
     "repeatableQuests": [
