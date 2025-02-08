@@ -6,7 +6,7 @@
     "LoadAfter": [],
     "IncompatibileMods": [],
     "Url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
-    "IsBundleMod": false,
+    "IsBundleMod": true,
     "Author": "SPT",
     "Contributors": [],
     "Licence": "MIT"
