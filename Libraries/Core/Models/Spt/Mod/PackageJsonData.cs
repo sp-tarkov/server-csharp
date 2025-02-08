@@ -62,18 +62,6 @@ public record PackageJsonData
         set;
     }
 
-    public Dictionary<string, string>? Scripts
-    {
-        get;
-        set;
-    }
-
-    public Dictionary<string, string>? DevDependencies
-    {
-        get;
-        set;
-    }
-
     public string? Licence
     {
         get;
