@@ -1,5 +1,5 @@
 {
-    "Name": "6ReplaceMethod",
+    "Name": "6OverrideMethod",
     "Version": "1.0.0",
     "SptVersion": "~4.0",
     "LoadBefore": [],

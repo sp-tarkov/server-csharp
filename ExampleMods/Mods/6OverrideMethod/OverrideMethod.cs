@@ -7,9 +7,9 @@ using SptCommon.Annotations;
 namespace ExampleMods.Mods._6ReplaceMethod
 {
     [Injectable(InjectableTypeOverride = typeof(Watermark))]
-    public class ReplaceMethod: Watermark
+    public class OverrideMethod: Watermark
     {
-        public ReplaceMethod(
+        public OverrideMethod(
             ISptLogger<Watermark> logger, // The logger needs to use the same type as the overriden type (in this case, Watermark)
             ConfigServer configServer,
             LocalisationService localisationService,
