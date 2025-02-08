@@ -11,9 +11,9 @@ namespace ExampleMods.Mods._7UseMultipleClasses
         private readonly ISptLogger<UseMultipleClasses> _logger;
 
         public UseMultipleClasses(
-            ISptLogger<UseMultipleClasses> _logger)
+            ISptLogger<UseMultipleClasses> logger)
         {
-            this._logger = _logger;
+            this._logger = logger;
         }
 
         public void PostDBLoad()

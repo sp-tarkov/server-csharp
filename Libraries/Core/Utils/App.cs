@@ -21,7 +21,7 @@ public class App
     protected LocalisationService _localisationService;
 
     protected ISptLogger<App> _logger;
-    protected IEnumerable<OnLoad> _onLoad;
+    protected IEnumerable<IOnLoad> _onLoad;
     protected IEnumerable<OnUpdate> _onUpdate;
     protected Dictionary<string, long> _onUpdateLastRun = new();
     protected Timer _timer;
@@ -36,7 +36,7 @@ public class App
         EncodingUtil encodingUtil,
         HttpServer httpServer,
         DatabaseService databaseService,
-        IEnumerable<OnLoad> onLoadComponents,
+        IEnumerable<IOnLoad> onLoadComponents,
         IEnumerable<OnUpdate> onUpdateComponents
     )
     {

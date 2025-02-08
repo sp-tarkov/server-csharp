@@ -4,8 +4,8 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HandbookCallbacks)]
-public class HandbookCallbacks(HandBookController _handBookController) : OnLoad
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.HandbookCallbacks)]
+public class HandbookCallbacks(HandBookController _handBookController) : IOnLoad
 {
     public Task OnLoad()
     {

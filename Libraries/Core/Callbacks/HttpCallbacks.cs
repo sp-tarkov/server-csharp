@@ -5,8 +5,8 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
-public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicationContext) : OnLoad
+[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.HttpCallbacks)]
+public class HttpCallbacks(HttpServer _httpServer, ApplicationContext _applicationContext) : IOnLoad
 {
     public Task OnLoad()
     {

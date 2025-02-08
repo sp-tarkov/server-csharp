@@ -4,8 +4,8 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PresetCallbacks)]
-public class PresetCallbacks(PresetController _presetController) : OnLoad
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.PresetCallbacks)]
+public class PresetCallbacks(PresetController _presetController) : IOnLoad
 {
     public Task OnLoad()
     {

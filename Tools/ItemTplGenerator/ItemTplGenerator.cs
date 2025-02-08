@@ -20,7 +20,7 @@ public class ItemTplGenerator(
     LocaleService _localeService,
     ItemHelper _itemHelper,
     FileUtil _fileUtil,
-    IEnumerable<OnLoad> _onLoadComponents
+    IEnumerable<IOnLoad> _onLoadComponents
 )
 {
     private readonly HashSet<string> collidedEnumKeys = [];

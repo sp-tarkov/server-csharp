@@ -20,7 +20,7 @@ public class HideoutCraftQuestIdGenerator(
     DatabaseServer _databaseServer,
     LocaleService _localeService,
     ItemHelper _itemHelper,
-    IEnumerable<OnLoad> _onLoadComponents
+    IEnumerable<IOnLoad> _onLoadComponents
 )
 {
     private readonly HashSet<string> _blacklistedProductions =

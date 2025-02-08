@@ -6,11 +6,11 @@ using SptCommon.Annotations;
 
 namespace Core.Loaders;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PostSptModLoader)]
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.PostSptModLoader)]
 public class PostSptModLoader(
     ISptLogger<PostSptModLoader> _logger,
     IEnumerable<IPostSptLoadMod> _postSptLoadMods
-) : OnLoad
+) : IOnLoad
 {
     public async Task OnLoad()
     {

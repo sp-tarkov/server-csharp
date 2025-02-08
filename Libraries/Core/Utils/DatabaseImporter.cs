@@ -11,8 +11,8 @@ using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Utils;
 
-[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.Database)]
-public class DatabaseImporter : OnLoad
+[Injectable(InjectionType.Singleton, InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.Database)]
+public class DatabaseImporter : IOnLoad
 {
     private const string _sptDataPath = "./Assets/";
     private readonly HttpConfig httpConfig;

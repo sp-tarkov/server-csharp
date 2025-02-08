@@ -9,7 +9,7 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.GameCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.GameCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(GameCallbacks))]
 public class GameCallbacks(
     HttpResponseUtil _httpResponseUtil,
@@ -17,7 +17,7 @@ public class GameCallbacks(
     SaveServer _saveServer,
     GameController _gameController,
     TimeUtil _timeUtil
-) : OnLoad
+) : IOnLoad
 {
     public Task OnLoad()
     {

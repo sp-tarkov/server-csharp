@@ -6,14 +6,14 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.SaveCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.SaveCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.SaveCallbacks)]
 public class SaveCallbacks(
     SaveServer _saveServer,
     ConfigServer _configServer,
     BackupService _backupService
 )
-    : OnLoad, OnUpdate
+    : IOnLoad, OnUpdate
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 

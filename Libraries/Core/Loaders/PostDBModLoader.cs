@@ -5,11 +5,11 @@ using SptCommon.Annotations;
 
 namespace Core.Loaders;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.PostDBModLoader)]
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.PostDBModLoader)]
 public class PostDBModLoader(
     ISptLogger<PostDBModLoader> _logger,
     IEnumerable<IPostDBLoadMod> _postDbLoadMods
-) : OnLoad
+) : IOnLoad
 {
     public async Task OnLoad()
     {

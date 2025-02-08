@@ -10,17 +10,12 @@ namespace ExampleMods.Mods._6ReplaceMethod
     public class ReplaceMethod: Watermark
     {
         public ReplaceMethod(
-            ISptLogger<Watermark> logger,
+            ISptLogger<Watermark> logger, // The logger needs to use the same type as the overriden type (in this case, Watermark)
             ConfigServer configServer,
             LocalisationService localisationService,
             WatermarkLocale watermarkLocale)
-            : base(logger, configServer, localisationService, watermarkLocale)
-        {
-            _configServer = configServer;
-            _localisationService = localisationService;
-            _watermarkLocale = watermarkLocale;
-            _logger = logger;
-        }
+            : base(logger, configServer, localisationService, watermarkLocale) // You must provide the parameters the overridden type requires
+        { }
 
         public override void Initialize()
         {

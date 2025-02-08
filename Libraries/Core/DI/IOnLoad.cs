@@ -1,6 +1,6 @@
 namespace Core.DI;
 
-public interface OnLoad
+public interface IOnLoad
 {
     Task OnLoad();
     string GetRoute();

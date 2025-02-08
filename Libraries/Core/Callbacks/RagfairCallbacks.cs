@@ -11,7 +11,7 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.RagfairCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.RagfairCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(RagfairCallbacks))]
 public class RagfairCallbacks(
@@ -21,7 +21,7 @@ public class RagfairCallbacks(
     RagfairTaxService _ragfairTaxService,
     RagfairPriceService _ragfairPriceService,
     ConfigServer _configServer
-) : OnLoad, OnUpdate
+) : IOnLoad, OnUpdate
 {
     private readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
