@@ -26,4 +26,8 @@
     </ProjectReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Mods\12Bundle\bundles\assets\" />
+  </ItemGroup>
+
 </Project>

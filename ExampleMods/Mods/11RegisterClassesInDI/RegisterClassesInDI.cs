@@ -5,13 +5,13 @@ using SptCommon.Annotations;
 namespace ExampleMods.Mods._11RegisterClassesInDI;
 
 [Injectable]
-public class RegisterClassesInDI : IPostDBLoadMod // Run after db has loaded
+public class Bundle : IPostDBLoadMod // Run after db has loaded
 {
     private readonly SingletonClassExample _singletonClassExample;
     private readonly TransientClassExample _transientClassExample;
 
     // We inject 2 classes (singleton and transient) we've made below
-    public RegisterClassesInDI(
+    public Bundle(
         SingletonClassExample singletonClassExample,
         TransientClassExample transientClassExample)
     {
