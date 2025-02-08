@@ -19,7 +19,7 @@ namespace Core.Loaders
             get;
         }
 
-        public long Crc
+        public string Crc
         {
             get;
         }
@@ -32,7 +32,7 @@ namespace Core.Loaders
         public BundleInfo(
             string modPath,
             IBundleManifestEntry bundle,
-            long bundleHash)
+            string bundleHash)
         {
             ModPath = modPath;
             Bundle = bundle;
@@ -97,17 +97,18 @@ namespace Core.Loaders
 
             foreach (var bundleManifest in bundleManifestArr)
             {
-                //     modpath.slice(0, -1).replace(/\\/ g, "/");
-                //    var bundleLocalPath = $"{modpath}bundles/${bundleManifest.key}".replace(/\\/g, "/");
+                // TODO: complete
+                var relativeModPath = modPath.Substring(0, -1); //.replace(/\\/g, "/");
+                var bundleLocalPath = Path.Combine(modPath, "bundles", bundleManifest.Key); //.replace(/\\/g, "/");
 
-                //    if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
-                //    {
-                //        _bundleHashCacheService.CalculateAndStoreHash(bundleLocalPath);
-                //    }
+                if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
+                {
+                    _bundleHashCacheService.CalculateAndStoreHash(bundleLocalPath);
+                }
 
-                //    var bundleHash = _bundleHashCacheService.GetStoredValue(bundleLocalPath);
+                var bundleHash = _bundleHashCacheService.GetStoredValue(bundleLocalPath);
 
-                //    AddBundle(bundleManifest.key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
+                AddBundle(bundleManifest.Key, new BundleInfo(relativeModPath, bundleManifest, bundleHash));
             }
         }
 
