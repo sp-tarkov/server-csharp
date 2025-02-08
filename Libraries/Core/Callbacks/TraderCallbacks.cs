@@ -9,13 +9,13 @@ using SptCommon.Annotations;
 namespace Core.Callbacks;
 
 [Injectable(InjectableTypeOverride = typeof(IOnLoad), TypePriority = OnLoadOrder.TraderCallbacks)]
-[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.TraderCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(TraderCallbacks))]
 public class TraderCallbacks(
     HttpResponseUtil _httpResponseUtil,
     TraderController _traderController,
     ConfigServer _configServer
-) : IOnLoad, OnUpdate
+) : IOnLoad, IOnUpdate
 {
     private readonly TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 

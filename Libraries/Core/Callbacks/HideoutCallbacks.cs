@@ -9,12 +9,12 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.HideoutCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(HideoutCallbacks))]
 public class HideoutCallbacks(
     HideoutController _hideoutController,
     ConfigServer _configServer
-) : OnUpdate
+) : IOnUpdate
 {
     private readonly HideoutConfig _hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 

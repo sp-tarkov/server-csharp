@@ -1,5 +1,5 @@
 {
-    "Name": "8AddOnLoad",
+    "Name": "9OnUpdateExample",
     "Version": "1.0.0",
     "SptVersion": "~4.0",
     "LoadBefore": [],

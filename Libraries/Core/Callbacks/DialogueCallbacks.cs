@@ -8,7 +8,7 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.DialogueCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.DialogueCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(DialogueCallbacks))]
 public class DialogueCallbacks(
     HashUtil _hashUtil,
@@ -16,7 +16,7 @@ public class DialogueCallbacks(
     HttpResponseUtil _httpResponseUtil,
     DialogueController _dialogueController
 )
-    : OnUpdate
+    : IOnUpdate
 {
     public bool OnUpdate(long timeSinceLastRun)
     {

@@ -1,6 +1,6 @@
 namespace Core.DI;
 
-public interface OnUpdate
+public interface IOnUpdate
 {
     bool OnUpdate(long timeSinceLastRun);
     string GetRoute();

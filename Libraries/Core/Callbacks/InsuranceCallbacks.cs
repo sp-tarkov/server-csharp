@@ -11,7 +11,7 @@ using SptCommon.Annotations;
 
 namespace Core.Callbacks;
 
-[Injectable(InjectableTypeOverride = typeof(OnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
+[Injectable(InjectableTypeOverride = typeof(IOnUpdate), TypePriority = OnUpdateOrder.InsuranceCallbacks)]
 [Injectable(InjectableTypeOverride = typeof(InsuranceCallbacks))]
 public class InsuranceCallbacks(
     InsuranceController _insuranceController,
@@ -19,7 +19,7 @@ public class InsuranceCallbacks(
     HttpResponseUtil _httpResponseUtil,
     ConfigServer _configServer
 )
-    : OnUpdate
+    : IOnUpdate
 {
     private readonly InsuranceConfig _insuranceConfig = _configServer.GetConfig<InsuranceConfig>();
 
