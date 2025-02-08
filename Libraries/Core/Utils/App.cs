@@ -22,7 +22,7 @@ public class App
 
     protected ISptLogger<App> _logger;
     protected IEnumerable<IOnLoad> _onLoad;
-    protected IEnumerable<OnUpdate> _onUpdate;
+    protected IEnumerable<IOnUpdate> _onUpdate;
     protected Dictionary<string, long> _onUpdateLastRun = new();
     protected Timer _timer;
     protected TimeUtil _timeUtil;
@@ -37,7 +37,7 @@ public class App
         HttpServer httpServer,
         DatabaseService databaseService,
         IEnumerable<IOnLoad> onLoadComponents,
-        IEnumerable<OnUpdate> onUpdateComponents
+        IEnumerable<IOnUpdate> onUpdateComponents
     )
     {
         _logger = logger;
@@ -100,7 +100,7 @@ public class App
         return _localisationService.GetText("server_start_success");
     }
 
-    protected void Update(IEnumerable<OnUpdate> onUpdateComponents)
+    protected void Update(IEnumerable<IOnUpdate> onUpdateComponents)
     {
         try
         {
@@ -155,7 +155,7 @@ public class App
         }
     }
 
-    protected void LogUpdateException(Exception err, OnUpdate updateable)
+    protected void LogUpdateException(Exception err, IOnUpdate updateable)
     {
         _logger.Error(_localisationService.GetText("scheduled_event_failed_to_run", updateable.GetRoute()));
         _logger.Error(err.ToString());
