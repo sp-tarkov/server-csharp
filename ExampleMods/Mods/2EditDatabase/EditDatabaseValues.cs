@@ -4,14 +4,15 @@ using Core.Models.Utils;
 using Core.Services;
 using SptCommon.Annotations;
 
-namespace ExampleMods.Mods;
+namespace ExampleMods.Mods._2EditDatabase;
 
 [Injectable]
-public class EditDatabaseValues : IPostDBLoadMod
+public class EditDatabaseValues : IPostDBLoadMod // Using this interface means our mod will run AFTER the SPT database has finished loading but BEFORE SPT code has run
 {
     private readonly DatabaseService _databaseService;
     private readonly ISptLogger<EditDatabaseValues> _logger;
 
+    // Our constructor
     public EditDatabaseValues(
         DatabaseService databaseService,
         ISptLogger<EditDatabaseValues> logger
@@ -35,7 +36,7 @@ public class EditDatabaseValues : IPostDBLoadMod
         // Let's edit the hideout so it's easier to upgrade the lavatory
         EditHideout();
 
-        // Lets edit the default scav to 
+        // Lets edit the default scav (assault.json) to have different settings
         EditScavSettings();
 
         // Lets edit Customs

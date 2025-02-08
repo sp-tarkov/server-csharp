@@ -23,7 +23,9 @@ public class ModDllLoader
         // load both
         // if either is missing Throw Warning and skip
 
-        var modDirectories = Directory.GetDirectories(ModPath);
+        var modDirectories = GetSortedModDirectories();
+
+        // TODO: Handle package.json 'Dependencies' property
 
         foreach (var modDirectory in modDirectories)
         {
@@ -40,7 +42,13 @@ public class ModDllLoader
         return mods;
     }
 
-    private static SptMod? LoadMod(string path)
+    private static string[] GetSortedModDirectories()
+    {
+        // TODO: add system to read from package.json and order mod paths by their LoadBefore/LoadAfter properties
+        return Directory.GetDirectories(ModPath);
+    }
+
+    private static SptMod LoadMod(string path)
     {
         var result = new SptMod();
         var asmCount = 0;

@@ -4,21 +4,22 @@ using Core.Services;
 using Core.Utils;
 using SptCommon.Annotations;
 
-namespace ExampleMods.Mods.Override;
+namespace ExampleMods.Mods;
 
 [Injectable(InjectableTypeOverride = typeof(Watermark))]
-public class WatermarkOverride(
-    ISptLogger<Watermark> _logger,
-    ConfigServer _configServer,
-    LocalisationService _localisationService,
-    WatermarkLocale _watermarkLocale
-) : Watermark(
-    _logger,
-    _configServer,
-    _localisationService,
-    _watermarkLocale
-) // was testing overriding with primary constructors, works fine from what i can see
+public class WatermarkOverride : Watermark // was testing overriding with primary constructors, works fine from what i can see
 {
+    public WatermarkOverride(ISptLogger<Watermark> logger,
+        ConfigServer configServer,
+        LocalisationService localisationService,
+        WatermarkLocale watermarkLocale)
+        : base(logger,
+        configServer,
+        localisationService,
+        watermarkLocale)
+    {
+    }
+
     public override void Initialize()
     {
         _logger.Success("This is a watermark mod override!");

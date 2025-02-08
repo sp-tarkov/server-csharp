@@ -5,7 +5,7 @@ using Core.Models.Utils;
 using Core.Servers;
 using SptCommon.Annotations;
 
-namespace ExampleMods.Mods;
+namespace ExampleMods.Mods._3EditSptConfig;
 
 [Injectable]
 public class EditConfigs : IPostDBLoadMod
@@ -42,7 +42,7 @@ public class EditConfigs : IPostDBLoadMod
 
     public void PostDBLoad()
     {
-        // Let's edit the weather config to make the season winter
+        // Let's edit the weather config to force the season to winter
         _weatherConfig.OverrideSeason = Season.WINTER;
 
         // Let's edit the hideout config to Make all crafts take 60 seconds
@@ -51,7 +51,7 @@ public class EditConfigs : IPostDBLoadMod
         // Let's edit the hideout config to Make all upgrades take 60 seconds
         _hideoutConfig.OverrideBuildTimeSeconds = 60;
 
-        // Let's edit the airdrop config to Make weapon/armor drops really common
+        // Let's edit the airdrop config to Make weapon/armor drops REALLY common
         _airdropConfig.AirdropTypeWeightings[SptAirdropTypeEnum.weaponArmor] = 999;
 
         // Let's edit the airdrop config to Make weapon/armor drops always have 3 sealed weapon crates
@@ -62,7 +62,7 @@ public class EditConfigs : IPostDBLoadMod
         // Let's make PMCs always mail you when they kill you
         _pmcChatResponseConfig.Killer.ResponseChancePercent = 100;
 
-        // Let's make quest rewards sent to you via mail last for over a week if you have an unheard profile
+        // Let's make quest rewards sent to you via mail last for over a week for unheard profiles
         _questConfig.MailRedeemTimeHours["unheard_edition"] = 168;
 
         // Let's make the interchange bot cap huge
@@ -73,7 +73,11 @@ public class EditConfigs : IPostDBLoadMod
 
         // Let's make the conversion rate of scavs to pmcs 100% on factory day
         var factory4DayConversionSettings = _pmcConfig.ConvertIntoPmcChance["factory4_day"];
+
+        // We get assault bot settings for factory day
         var assaultConversionSettings = factory4DayConversionSettings["assault"];
+
+        // Set min and max to 100%
         assaultConversionSettings.Min = 100;
         assaultConversionSettings.Max = 100;
 

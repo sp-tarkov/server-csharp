@@ -3,14 +3,15 @@ using Core.Models.Logging;
 using Core.Models.Utils;
 using SptCommon.Annotations;
 
-namespace ExampleMods.Mods;
+namespace ExampleMods.Mods._1Logging;
 
 [Injectable]
-public class Logging : IPostSptLoadMod
+public class Logging : IPostSptLoadMod // Using this interface means our mod will run AFTER SPT has finished loading
 {
+    // Our logger we create in the constructor below
     private readonly ISptLogger<Logging> _logger;
 
-    // Constructor - Inject a 'ISptLogger' with your mods Class in the diamond brackets
+    // Constructor - Inject a 'ISptLogger' with your mods Class inside the diamond brackets
     public Logging(
         ISptLogger<Logging> logger
     )
