@@ -1,4 +1,5 @@
 using Core.Models.Eft.Common;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -89,6 +90,8 @@ public class PostDbLoadService(
 
         CloneExistingCraftsAndAddNew();
 
+        RemoveNewBeginningRequirementFromPrestige();
+
         RemovePraporTestMessage();
 
         ValidateQuestAssortUnlocksExist();
@@ -113,6 +116,26 @@ public class PostDbLoadService(
 
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         _raidWeatherService.GenerateWeather(currentSeason);
+    }
+
+    private void RemoveNewBeginningRequirementFromPrestige()
+    {
+        var prestigeDb = _databaseService.GetTemplates().Prestige;
+        var newBeginningQuestId = "6761ff17cdc36bd66102e9d0";
+        foreach (var prestige in prestigeDb.Elements)
+        {
+            var itemToRemove = prestige.Conditions?.FirstOrDefault(cond => cond.Target?.Item == newBeginningQuestId);
+            if (itemToRemove is null)
+            {
+                continue;
+            }
+
+            var indexToRemove = prestige.Conditions.IndexOf(itemToRemove);
+            if (indexToRemove != -1)
+            {
+                prestige.Conditions.RemoveAt(indexToRemove);
+            }
+        }
     }
 
     protected void CloneExistingCraftsAndAddNew()
