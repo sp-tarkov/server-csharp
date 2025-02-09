@@ -225,13 +225,13 @@ public class LauncherController(
 
         if (profile?.SptData?.Mods is not null)
         {
-            return getProfileModsGroupedByModName(profile?.SptData?.Mods);
+            return GetProfileModsGroupedByModName(profile?.SptData?.Mods);
         }
 
         return [];
     }
 
-    public List<ModDetails> getProfileModsGroupedByModName(List<ModDetails> profileMods)
+    public List<ModDetails> GetProfileModsGroupedByModName(List<ModDetails> profileMods)
     {
         // Group all mods used by profile by name
         var modsGroupedByName = new Dictionary<string, List<ModDetails>>();
