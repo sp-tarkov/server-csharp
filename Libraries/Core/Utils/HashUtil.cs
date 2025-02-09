@@ -64,6 +64,7 @@ public class HashUtil
         return GenerateHashForData(HashingAlgorithm.SHA1, data);
     }
 
+    [Obsolete("Use GenerateMd5ForData instead")]
     public string GenerateCrc32ForData(string data)
     {
         // TODO: Could not find a ms way of doing this.

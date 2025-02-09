@@ -43,7 +43,7 @@ public class BundleHashCacheService(
     public bool CalculateAndMatchHash(string bundlePath)
     {
         var fileContents = _fileUtil.ReadFile(bundlePath);
-        var generatedHash = _hashUtil.GenerateCrc32ForData(fileContents);
+        var generatedHash = _hashUtil.GenerateMd5ForData(fileContents);
 
         return MatchWithStoredHash(bundlePath, generatedHash);
     }
@@ -51,7 +51,7 @@ public class BundleHashCacheService(
     public void CalculateAndStoreHash(string bundlePath)
     {
         var fileContents = _fileUtil.ReadFile(bundlePath);
-        var generatedHash = _hashUtil.GenerateCrc32ForData(fileContents);
+        var generatedHash = _hashUtil.GenerateMd5ForData(fileContents);
 
         StoreValue(bundlePath, generatedHash);
     }
