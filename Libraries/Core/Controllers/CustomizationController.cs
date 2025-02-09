@@ -107,7 +107,7 @@ public class CustomizationController(
 
         var profile = _saveServer.GetProfile(sessionId);
 
-        //TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
+        // TODO: Merge with function _profileHelper.addHideoutCustomisationUnlock
         var rewardToStore = new CustomisationStorage
         {
             Id = suitId,

@@ -698,7 +698,7 @@ public class LocationLootGenerator(
 
         // Draw from random distribution
         var desiredSpawnpointCount = Math.Round(
-            GetLooseLootMultiplerForLocation(locationName) *
+            GetLooseLootMultiplierForLocation(locationName) *
             _randomUtil.GetNormallyDistributedRandomNumber(
                 (double) dynamicLootDist.SpawnpointCount.Mean,
                 (double) dynamicLootDist.SpawnpointCount.Std
@@ -1085,16 +1085,6 @@ public class LocationLootGenerator(
             Width = size.Width,
             Height = size.Height
         };
-    }
-
-    private double GetLooseLootMultiplerForLocation(string location)
-    {
-        return _locationConfig.LooseLootMultiplier[location];
-    }
-
-    protected double getStaticLootMultiplerForLocation(string location)
-    {
-        return _locationConfig.StaticLootMultiplier[location];
     }
 
 

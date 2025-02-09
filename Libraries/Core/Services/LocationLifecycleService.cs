@@ -151,7 +151,7 @@ public class LocationLifecycleService
 
         // Only has value when transitioning into map from previous one
         if (request.Transition is not null)
-            // TODO - why doesnt the raid after transit have any transit data?
+            // TODO - why doesn't the raid after transit have any transit data?
         {
             result.Transition = request.Transition;
         }

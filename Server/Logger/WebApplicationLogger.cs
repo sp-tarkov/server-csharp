@@ -64,7 +64,7 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
 
     public void WriteToLogFile(string data)
     {
-        //TODO - implement + turn object into json
+        // TODO: implement + turn object into json
         _logger.LogError("NOT IMPLEMENTED - WriteToLogFile");
     }
 

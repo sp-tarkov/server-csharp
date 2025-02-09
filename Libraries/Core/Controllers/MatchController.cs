@@ -36,7 +36,7 @@ public class MatchController(
     ///     Handle client/match/group/delete
     /// </summary>
     /// <param name="info"></param>
-    public void DeleteGroup(DeleteGroupRequest info) // TODO: info is `any` in the node server
+    public void DeleteGroup(DeleteGroupRequest info)
     {
         _matchLocationService.DeleteGroup(info);
     }

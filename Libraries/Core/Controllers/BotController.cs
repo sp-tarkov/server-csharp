@@ -279,7 +279,7 @@ public class BotController(
             pmcProfile,
             false,
             raidSettings,
-            _botConfig.PresetBatch?.GetByJsonProp<int>(requestedBot?.Role ?? string.Empty),
+            _botConfig.PresetBatch.GetValueOrDefault(requestedBot?.Role, 5),
             _botHelper.IsBotPmc(requestedBot?.Role)
         );
 
@@ -310,7 +310,7 @@ public class BotController(
                 botGenerationDetails.Role = _botHelper.GetRandomizedPmcRole();
                 botGenerationDetails.Side = _botHelper.GetPmcSideByRole(botGenerationDetails.Role);
                 botGenerationDetails.BotDifficulty = GetPmcDifficulty(requestedBot?.Difficulty);
-                botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch?.GetByJsonProp<int>(botGenerationDetails.Role);
+                botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch?.GetValueOrDefault(botGenerationDetails.Role, 5);
             }
         }
 
@@ -320,7 +320,7 @@ public class BotController(
         var bossesToConvertToWeights = _botConfig.AssaultToBossConversion.BossesToConvertToWeights;
         if (bossConvertEnabled && botGenerationDetails.IsPmc is not null && !botGenerationDetails.IsPmc.Value)
         {
-            var bossConvertPercent = bossConvertMinMax.GetByJsonProp<MinMax>(requestedBot?.Role?.ToLower() ?? string.Empty);
+            var bossConvertPercent = bossConvertMinMax.GetValueOrDefault(requestedBot?.Role?.ToLower());
             if (bossConvertPercent is not null)
                 // Roll a percentage check if we should convert scav to boss
             {
@@ -374,7 +374,7 @@ public class BotController(
 
         // Bosses are only ever 'normal'
         botGenerationDetails.BotDifficulty = "normal";
-        botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch?.GetByJsonProp<int>(botGenerationDetails.Role);
+        botGenerationDetails.BotCountToGenerate = _botConfig.PresetBatch?.GetValueOrDefault(botGenerationDetails.Role);
     }
 
     private string? GetPmcDifficulty(string? requestedBotDifficulty)
@@ -391,8 +391,8 @@ public class BotController(
     private MinMax? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
     {
         return _pmcConfig.ConvertIntoPmcChance!.TryGetValue(location?.ToLower() ?? "", out var mapSpecificConversionValues)
-            ? mapSpecificConversionValues.GetByJsonProp<MinMax>(requestedBotRole?.ToLower())
-            : _pmcConfig.ConvertIntoPmcChance.GetValueOrDefault("default")?.GetValueOrDefault(requestedBotRole);
+            ? mapSpecificConversionValues.GetValueOrDefault(requestedBotRole?.ToLower())
+            : _pmcConfig.ConvertIntoPmcChance["default"]?.GetValueOrDefault(requestedBotRole);
     }
 
     private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()

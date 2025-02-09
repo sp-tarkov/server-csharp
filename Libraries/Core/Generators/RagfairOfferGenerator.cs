@@ -419,7 +419,7 @@ public class RagfairOfferGenerator(
             ? 1
             : randomUtil.GetDouble(config.OfferItemCount.Min.Value, config.OfferItemCount.Max.Value);
 
-        /* //TODO: ???????
+        /* // TODO: ???????
         if (ProgramStatics.DEBUG && !ProgramStatics.COMPILED) {
             offerCount = 2;
         }

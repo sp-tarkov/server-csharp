@@ -344,11 +344,11 @@ public class BotEquipmentFilterService
     /// <param name="weightingAdjustments">Weighting change to apply to bot</param>
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
     protected void AdjustWeighting(
-        AdjustmentDetails weightingAdjustments,
+        AdjustmentDetails? weightingAdjustments,
         Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
         bool showEditWarnings = true)
     {
-        //TODO, bad typing by key with method below due to, EquipmentSlots
+        // TODO: bad typing by key with method below due to, EquipmentSlots
         if (weightingAdjustments is null)
         {
             return;

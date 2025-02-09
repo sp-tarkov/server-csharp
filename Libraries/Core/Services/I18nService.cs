@@ -14,9 +14,8 @@ public class I18nService
 
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
     private List<string> _locales;
-    private string _setLocale;
+    private string? _setLocale;
 
-    // TODO: try convert to primary ctor
     public I18nService(
         FileUtil fileUtil,
         JsonUtil jsonUtil,

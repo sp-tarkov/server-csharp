@@ -12,12 +12,12 @@ namespace Core.Services.Mod;
 
 [Injectable]
 public class CustomItemService(
-    ISptLogger<CustomItemService> _logger,
-    HashUtil _hashUtil,
-    DatabaseService _databaseService,
-    ItemHelper _itemHelper,
-    ItemBaseClassService _itemBaseClassService,
-    ICloner _cloner
+    ISptLogger<CustomItemService> logger,
+    HashUtil hashUtil,
+    DatabaseService databaseService,
+    ItemHelper itemHelper,
+    ItemBaseClassService itemBaseClassService,
+    ICloner cloner
 )
 {
     /**
@@ -33,7 +33,7 @@ public class CustomItemService(
     public CreateItemResult CreateItemFromClone(NewItemFromCloneDetails newItemDetails)
     {
         var result = new CreateItemResult();
-        var tables = _databaseService.GetTables();
+        var tables = databaseService.GetTables();
 
         // Generate new id for item if none supplied
         var newItemId = GetOrGenerateIdForItem(newItemDetails.NewId);
@@ -49,7 +49,7 @@ public class CustomItemService(
         }
 
         // Clone existing item
-        var itemClone = _cloner.Clone(tables.Templates.Items[newItemDetails.ItemTplToClone]);
+        var itemClone = cloner.Clone(tables.Templates.Items[newItemDetails.ItemTplToClone]);
 
         // Update id and parentId of item
         itemClone.Id = newItemId;
@@ -65,9 +65,9 @@ public class CustomItemService(
 
         AddToFleaPriceDb(newItemId, newItemDetails.FleaPriceRoubles);
 
-        _itemBaseClassService.HydrateItemBaseClassCache();
+        itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (_itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItemId);
         }
@@ -90,7 +90,7 @@ public class CustomItemService(
     public CreateItemResult CreateItem(NewItemDetails newItemDetails)
     {
         var result = new CreateItemResult();
-        var tables = _databaseService.GetTables();
+        var tables = databaseService.GetTables();
 
         var newItem = newItemDetails.NewItem;
 
@@ -109,9 +109,9 @@ public class CustomItemService(
 
         AddToFleaPriceDb(newItem.Id, newItemDetails.FleaPriceRoubles);
 
-        _itemBaseClassService.HydrateItemBaseClassCache();
+        itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (_itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItem.Id);
         }
@@ -129,7 +129,7 @@ public class CustomItemService(
      */
     protected string GetOrGenerateIdForItem(string newId)
     {
-        return newId == "" ? _hashUtil.Generate() : newId;
+        return newId == "" ? hashUtil.Generate() : newId;
     }
 
     /**
@@ -153,9 +153,9 @@ public class CustomItemService(
      */
     protected void AddToItemsDb(string newItemId, TemplateItem itemToAdd)
     {
-        if (!_databaseService.GetItems().TryAdd(newItemId, itemToAdd))
+        if (!databaseService.GetItems().TryAdd(newItemId, itemToAdd))
         {
-            _logger.Warning($"Unable to add: {newItemId} To Database");
+            logger.Warning($"Unable to add: {newItemId} To Database");
         }
     }
 
@@ -167,7 +167,7 @@ public class CustomItemService(
      */
     protected void AddToHandbookDb(string newItemId, string parentId, double? priceRoubles)
     {
-        _databaseService
+        databaseService
             .GetTemplates()
             .Handbook.Items.Add(
                 new HandbookItem
@@ -182,7 +182,7 @@ public class CustomItemService(
 
     /**
      * Iterate through the passed in locale data and add to each locale in turn
-     * If data is not provided for each langauge eft uses, the first object will be used in its place
+     * If data is not provided for each language EFT uses, the first object will be used in its place
      * e.g.
      * en[0]
      * fr[1]
@@ -193,22 +193,25 @@ public class CustomItemService(
      */
     protected void AddToLocaleDbs(Dictionary<string, LocaleDetails> localeDetails, string newItemId)
     {
-        var languages = _databaseService.GetLocales().Languages;
+        var languages = databaseService.GetLocales().Languages;
         foreach (var shortNameKey in languages)
         {
             // Get locale details passed in, if not provided by caller use first record in newItemDetails.locales
             localeDetails.TryGetValue(shortNameKey.Key, out var newLocaleDetails);
 
-            if (newLocaleDetails is null)
-            {
-                newLocaleDetails = localeDetails[localeDetails.Keys.FirstOrDefault()];
-            }
+            newLocaleDetails ??= localeDetails[localeDetails.Keys.FirstOrDefault()];
 
             // Create new record in locale file
-            var globals = _databaseService.GetLocales();
-            globals.Global[shortNameKey.Key].Value[$"{newItemId} Name"] = newLocaleDetails.Name;
-            globals.Global[shortNameKey.Key].Value[$"{newItemId} ShortName"] = newLocaleDetails.ShortName;
-            globals.Global[shortNameKey.Key].Value[$"{newItemId} Description"] = newLocaleDetails.Description;
+            if (!databaseService.GetLocales().Global.TryGetValue(shortNameKey.Key, out var desiredGlobal))
+            {
+                logger.Error($"Unable to add locale keys to {shortNameKey.Key}");
+
+                return;
+            }
+
+            desiredGlobal.Value[$"{newItemId} Name"] = newLocaleDetails.Name;
+            desiredGlobal.Value[$"{newItemId} ShortName"] = newLocaleDetails.ShortName;
+            desiredGlobal.Value[$"{newItemId} Description"] = newLocaleDetails.Description;
         }
     }
 
@@ -219,7 +222,7 @@ public class CustomItemService(
      */
     protected void AddToFleaPriceDb(string newItemId, double? fleaPriceRoubles)
     {
-        _databaseService.GetTemplates().Prices[newItemId] = fleaPriceRoubles ?? 0;
+        databaseService.GetTemplates().Prices[newItemId] = fleaPriceRoubles ?? 0;
     }
 
     /**
@@ -237,7 +240,7 @@ public class CustomItemService(
         ];
         foreach (var wallId in wallStashIds)
         {
-            var wall = _itemHelper.GetItem(wallId);
+            var wall = itemHelper.GetItem(wallId);
             if (wall.Key)
             {
                 wall.Value.Properties.Grids[0].Props.Filters[0].Filter.Add(newItemId);
@@ -253,32 +256,32 @@ public class CustomItemService(
      */
     public void AddCustomWeaponToPMCs(string weaponTpl, double weaponWeight, string weaponSlot)
     {
-        var weapon = _itemHelper.GetItem(weaponTpl);
+        var weapon = itemHelper.GetItem(weaponTpl);
         if (!weapon.Key)
         {
-            _logger.Warning($"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db");
+            logger.Warning($"Unable to add custom weapon {weaponTpl} to PMCs as it cannot be found in the Item db");
 
             return;
         }
 
-        Dictionary<string, HashSet<string>?> baseWeaponModObject = new Dictionary<string, HashSet<string>?>();
+        var baseWeaponModObject = new Dictionary<string, HashSet<string>?>();
 
         // Get all slots weapon has and create a dictionary of them with possible mods that slot into each
         var weaponSlots = weapon.Value.Properties.Slots;
         foreach (var slot in weaponSlots)
         {
-            baseWeaponModObject[slot.Name] = new HashSet<string>(slot.Props.Filters[0].Filter);
+            baseWeaponModObject[slot.Name] = [..slot.Props.Filters[0].Filter];
         }
 
         // Get PMCs
-        var botTypes = _databaseService.GetBots().Types;
+        var botTypes = databaseService.GetBots().Types;
 
         // Add weapon base+mods into bear/usec data
         botTypes["usec"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;
         botTypes["bear"].BotInventory.Mods[weaponTpl] = baseWeaponModObject;
 
         // Add weapon to array of allowed weapons + weighting to be picked
-        botTypes["usec"].BotInventory.Equipment.GetByJsonProp<Dictionary<string, double>>(weaponSlot)[weaponTpl] = weaponWeight;
-        botTypes["bear"].BotInventory.Equipment.GetByJsonProp<Dictionary<string, double>>(weaponSlot)[weaponTpl] = weaponWeight;
+        botTypes["usec"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
+        botTypes["bear"].BotInventory.Equipment[Enum.Parse<EquipmentSlots>(weaponSlot)][weaponTpl] = weaponWeight;
     }
 }

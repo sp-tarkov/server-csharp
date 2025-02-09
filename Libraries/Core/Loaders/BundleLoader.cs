@@ -89,7 +89,7 @@ namespace Core.Loaders
 
         public void AddBundles(string modPath)
         {
-            //TODO: Implement
+            // TODO: Implement
 
             var modBundlesJson = _fileUtil.ReadFile(Path.Combine(modPath, "bundles.json"));
             var modBundles = _jsonUtil.Deserialize<IBundleManifest>(modBundlesJson);

@@ -148,7 +148,6 @@ public class PrestigeController(
         {
             newProfile.CharacterData.PmcData.Achievements.Add("676091c0f457869a94017a23", _timeUtil.GetTimeStamp());
         }
-        // TODO: is there one for second prestige
 
         // Add existing Stats to profile
         newProfile.CharacterData.PmcData.Stats = prePrestigePmc.Stats;
