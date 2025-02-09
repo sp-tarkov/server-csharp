@@ -51,7 +51,7 @@ public class MockLogger<T> : ISptLogger<T>
         Console.WriteLine(data);
     }
 
-    public void WriteToLogFile(string body)
+    public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
     {
         throw new NotImplementedException();
     }

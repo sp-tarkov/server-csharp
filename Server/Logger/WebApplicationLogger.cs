@@ -2,6 +2,7 @@ using SptCommon.Annotations;
 using Core.Models.Eft.ItemEvent;
 using Core.Models.Logging;
 using Core.Models.Utils;
+using Core.Utils.Logger;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Server.Logger;
@@ -10,10 +11,15 @@ namespace Server.Logger;
 public class SptWebApplicationLogger<T> : ISptLogger<T>
 {
     private ILogger _logger;
+    private static ILogger? _fileLogger;
 
     public SptWebApplicationLogger(ILoggerProvider provider)
     {
         _logger = provider.CreateLogger(typeof(T).FullName ?? "SPT Logger Default Name");
+        if (_fileLogger == null)
+        {
+            _fileLogger = provider.CreateLogger(typeof(FileLogger).FullName ?? "SPT Logger Default Name");
+        }
     }
 
     public void LogWithColor(
@@ -77,10 +83,9 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
         _logger.LogCritical(ex, GetColorizedText(data, LogTextColor.Black, LogBackgroundColor.Red));
     }
 
-    public void WriteToLogFile(string data)
+    public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
     {
-        //TODO - implement + turn object into json
-        _logger.LogError("NOT IMPLEMENTED - WriteToLogFile");
+        _fileLogger?.Log(ConvertLogLevel(level), body);
     }
 
     public bool IsLogEnabled(LogLevel level)

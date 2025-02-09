@@ -12,7 +12,6 @@ using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
 using SptCommon.Extensions;
-using BodyPartHealth = Core.Models.Eft.Common.Tables.BodyPartHealth;
 
 namespace Core.Controllers;
 
