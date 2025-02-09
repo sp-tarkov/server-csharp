@@ -11,8 +11,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class MatchStaticRouter : StaticRouter
 {
-    protected static MatchCallbacks _matchCallbacks;
-
     public MatchStaticRouter(
         JsonUtil jsonUtil,
         MatchCallbacks matchCallbacks
@@ -26,7 +24,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.ServerAvailable(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.ServerAvailable(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/updatePing",
@@ -35,7 +33,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.UpdatePing(url, info as UpdatePingRequestData, sessionID),
+                ) => matchCallbacks.UpdatePing(url, info as UpdatePingRequestData, sessionID),
                 typeof(UpdatePingRequestData)
             ),
             new RouteAction(
@@ -45,7 +43,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
+                ) => matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
                 typeof(MatchGroupStartGameRequest)
             ),
             new RouteAction(
@@ -55,7 +53,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.ExitMatch(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.ExitMatch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/delete",
@@ -64,7 +62,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.DeleteGroup(url, info as DeleteGroupRequest, sessionID)
+                ) => matchCallbacks.DeleteGroup(url, info as DeleteGroupRequest, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/leave",
@@ -73,7 +71,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.LeaveGroup(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.LeaveGroup(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/status",
@@ -82,7 +80,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.GetGroupStatus(url, info as MatchGroupStatusRequest, sessionID),
+                ) => matchCallbacks.GetGroupStatus(url, info as MatchGroupStatusRequest, sessionID),
                 typeof(MatchGroupStatusRequest)
             ),
             new RouteAction(
@@ -92,7 +90,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
+                ) => matchCallbacks.JoinMatch(url, info as MatchGroupStartGameRequest, sessionID),
                 typeof(MatchGroupStartGameRequest)
             ),
             new RouteAction(
@@ -102,7 +100,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.ExitFromMenu(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.ExitFromMenu(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/current",
@@ -111,7 +109,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.GroupCurrent(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.GroupCurrent(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/looking/start",
@@ -120,7 +118,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.StartGroupSearch(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.StartGroupSearch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/looking/stop",
@@ -129,7 +127,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.StopGroupSearch(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.StopGroupSearch(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/invite/send",
@@ -138,7 +136,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.SendGroupInvite(url, info as MatchGroupInviteSendRequest, sessionID),
+                ) => matchCallbacks.SendGroupInvite(url, info as MatchGroupInviteSendRequest, sessionID),
                 typeof(MatchGroupInviteSendRequest)
             ),
             new RouteAction(
@@ -148,7 +146,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.AcceptGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => matchCallbacks.AcceptGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
@@ -158,7 +156,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.DeclineGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => matchCallbacks.DeclineGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
@@ -168,7 +166,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.CancelGroupInvite(url, info as RequestIdRequest, sessionID),
+                ) => matchCallbacks.CancelGroupInvite(url, info as RequestIdRequest, sessionID),
                 typeof(RequestIdRequest)
             ),
             new RouteAction(
@@ -178,7 +176,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.CancelAllGroupInvite(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.CancelAllGroupInvite(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/transfer",
@@ -187,7 +185,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.TransferGroup(url, info as MatchGroupTransferRequest, sessionID),
+                ) => matchCallbacks.TransferGroup(url, info as MatchGroupTransferRequest, sessionID),
                 typeof(MatchGroupTransferRequest)
             ),
             new RouteAction(
@@ -197,7 +195,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.RaidReady(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.RaidReady(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/raid/not-ready",
@@ -206,7 +204,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.NotRaidReady(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.NotRaidReady(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/putMetrics",
@@ -215,7 +213,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.PutMetrics(url, info as PutMetricsRequestData, sessionID),
+                ) => matchCallbacks.PutMetrics(url, info as PutMetricsRequestData, sessionID),
                 typeof(PutMetricsRequestData)
             ),
             new RouteAction(
@@ -225,7 +223,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.EventDisconnect(url, info as PutMetricsRequestData, sessionID),
+                ) => matchCallbacks.EventDisconnect(url, info as PutMetricsRequestData, sessionID),
                 typeof(PutMetricsRequestData)
             ),
             new RouteAction(
@@ -235,7 +233,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.GetMetrics(url, info as EmptyRequestData, sessionID)
+                ) => matchCallbacks.GetMetrics(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/raid/configuration",
@@ -244,7 +242,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.GetRaidConfiguration(url, info as GetRaidConfigurationRequestData, sessionID),
+                ) => matchCallbacks.GetRaidConfiguration(url, info as GetRaidConfigurationRequestData, sessionID),
                 typeof(GetRaidConfigurationRequestData)
             ),
             new RouteAction(
@@ -254,7 +252,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.GetConfigurationByProfile(url, info as GetRaidConfigurationRequestData, sessionID),
+                ) => matchCallbacks.GetConfigurationByProfile(url, info as GetRaidConfigurationRequestData, sessionID),
                 typeof(GetRaidConfigurationRequestData)
             ),
             new RouteAction(
@@ -264,7 +262,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.RemovePlayerFromGroup(url, info as MatchGroupPlayerRemoveRequest, sessionID),
+                ) => matchCallbacks.RemovePlayerFromGroup(url, info as MatchGroupPlayerRemoveRequest, sessionID),
                 typeof(MatchGroupPlayerRemoveRequest)
             ),
             new RouteAction(
@@ -274,7 +272,7 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.StartLocalRaid(url, info as StartLocalRaidRequestData, sessionID),
+                ) => matchCallbacks.StartLocalRaid(url, info as StartLocalRaidRequestData, sessionID),
                 typeof(StartLocalRaidRequestData)
             ),
             new RouteAction(
@@ -284,12 +282,11 @@ public class MatchStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _matchCallbacks.EndLocalRaid(url, info as EndLocalRaidRequestData, sessionID),
+                ) => matchCallbacks.EndLocalRaid(url, info as EndLocalRaidRequestData, sessionID),
                 typeof(EndLocalRaidRequestData)
             )
         ]
     )
     {
-        _matchCallbacks = matchCallbacks;
     }
 }

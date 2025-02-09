@@ -9,8 +9,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class BotDynamicRouter : DynamicRouter
 {
-    protected static BotCallbacks _botCallbacks;
-
     public BotDynamicRouter(
         JsonUtil jsonUtil,
         BotCallbacks botCallbacks
@@ -24,7 +22,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID)
+                ) => botCallbacks.GetBotLimit(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/settings/bot/difficulty/",
@@ -33,7 +31,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID)
+                ) => botCallbacks.GetBotDifficulty(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/settings/bot/difficulties",
@@ -42,7 +40,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID)
+                ) => botCallbacks.GetAllBotDifficulties(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/settings/bot/maxCap",
@@ -51,7 +49,7 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID)
+                ) => botCallbacks.GetBotCap(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/settings/bot/getBotBehaviours/",
@@ -60,11 +58,10 @@ public class BotDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _botCallbacks.GetBotBehaviours()
+                ) => botCallbacks.GetBotBehaviours()
             )
         ]
     )
     {
-        _botCallbacks = botCallbacks;
     }
 }

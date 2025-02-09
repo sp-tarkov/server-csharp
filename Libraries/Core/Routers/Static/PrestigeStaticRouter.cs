@@ -10,8 +10,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class PrestigeStaticRouter : StaticRouter
 {
-    protected static PrestigeCallbacks _presetCallbacks;
-
     public PrestigeStaticRouter(
         JsonUtil jsonUtil,
         PrestigeCallbacks prestigeCallbacks
@@ -25,7 +23,7 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
+                ) => prestigeCallbacks.GetPrestige(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/prestige/obtain",
@@ -34,12 +32,11 @@ public class PrestigeStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _presetCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
+                ) => prestigeCallbacks.ObtainPrestige(url, info as ObtainPrestigeRequestList, sessionID),
                 typeof(ObtainPrestigeRequestList)
             )
         ]
     )
     {
-        _presetCallbacks = prestigeCallbacks;
     }
 }

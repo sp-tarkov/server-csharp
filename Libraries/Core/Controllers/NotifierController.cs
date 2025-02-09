@@ -1,5 +1,7 @@
 using Core.Helpers;
 using Core.Models.Eft.Notifier;
+using Core.Models.Eft.Ws;
+using Core.Services;
 using SptCommon.Annotations;
 
 namespace Core.Controllers;
@@ -7,9 +9,13 @@ namespace Core.Controllers;
 [Injectable]
 public class NotifierController(
     HttpServerHelper _httpServerHelper,
-    NotifierHelper _notifierHelper
+    NotifierHelper _notifierHelper,
+    NotificationService notificationService
 )
 {
+    protected const int PollInterval = 300;
+    protected const int Timeout = 15000;
+
     /// <summary>
     ///     Resolve an array of session notifications.
     ///     If no notifications are currently queued then intermittently check for new notifications until either
@@ -17,49 +23,30 @@ public class NotifierController(
     ///     If no notifications are available after the timeout, use a default message.
     /// </summary>
     /// <param name="sessionId"></param>
-    public async Task NotifyAsync(string sessionId)
+    public Task<List<WsNotificationEvent>> NotifyAsync(string sessionId)
     {
-        // TODO: Finish implementation of the NotifyAsync method
-        //
-        //return new Promise((resolve) => {
-        //    // keep track of our timeout
-        //    let counter = 0;
+        return Task.Factory.StartNew(() => {
+            // keep track of our timeout
+            var counter = 0;
 
-        //    /**
-        //     * Check for notifications, resolve if any, otherwise poll
-        //     *  intermittently for a period of time.
-        //     */
-        //    var checkNotifications = () => {
-        //        /**
-        //         * If there are no pending messages we should either check again later
-        //         *  or timeout now with a default response.
-        //         */
-        //        if (!_notificationService.Has(sessionID)) {
-        //            // have we exceeded timeout? if so reply with default ping message
-        //            if (counter > _timeout) {
-        //                return resolve([_notifierHelper.getDefaultNotification()]);
-        //            }
+            while (counter < Timeout)
+            {
+                if (!notificationService.Has(sessionId))
+                {
+                    counter += PollInterval;
+                    Thread.Sleep(PollInterval);
+                }
+                else
+                {
+                    var messages = notificationService.Get(sessionId);
 
-        //            // check again
-        //            setTimeout(checkNotifications, _pollInterval);
+                    notificationService.UpdateMessageOnQueue(sessionId, []);
+                    return messages;
+                }
+            }
 
-        //            // update our timeout counter
-        //            counter += _pollInterval;
-        //            return;
-        //        }
-
-        //        /**
-        //         * Maintaining array reference is not necessary, so we can just copy and reinitialize
-        //         */
-        //        var messages = _notificationService.Get(sessionID);
-
-        //        _notificationService.UpdateMessageOnQueue(sessionID, []);
-        //        resolve(messages);
-        //};
-
-        // immediately check
-        //    checkNotifications();
-        //});
+            return [_notifierHelper.GetDefaultNotification()];
+        });
     }
 
     /// <summary>

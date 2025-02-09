@@ -10,8 +10,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class QuestStaticRouter : StaticRouter
 {
-    protected static QuestCallbacks _questCallbacks;
-
     public QuestStaticRouter(
         JsonUtil jsonUtil,
         QuestCallbacks questCallbacks
@@ -25,7 +23,7 @@ public class QuestStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
+                ) => questCallbacks.ListQuests(url, info as ListQuestsRequestData, sessionID),
                 typeof(ListQuestsRequestData)
             ),
             new RouteAction(
@@ -35,11 +33,10 @@ public class QuestStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)
+                ) => questCallbacks.ActivityPeriods(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _questCallbacks = questCallbacks;
     }
 }

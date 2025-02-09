@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class BotStaticRouter : StaticRouter
 {
-    protected static BotCallbacks _botCallbacks;
-
     public BotStaticRouter(
         JsonUtil jsonUtil,
         BotCallbacks botCallbacks
@@ -24,12 +22,11 @@ public class BotStaticRouter : StaticRouter
                     info,
                     sessionID,
                     outout
-                ) => _botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
+                ) => botCallbacks.GenerateBots(url, info as GenerateBotsRequestData, sessionID),
                 typeof(GenerateBotsRequestData)
             )
         ]
     )
     {
-        _botCallbacks = botCallbacks;
     }
 }

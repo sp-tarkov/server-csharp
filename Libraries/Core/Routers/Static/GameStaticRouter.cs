@@ -11,8 +11,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class GameStaticRouter : StaticRouter
 {
-    protected static GameCallbacks _gameCallbacks;
-
     public GameStaticRouter(
         JsonUtil jsonUtil,
         GameCallbacks gameCallbacks
@@ -26,7 +24,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetGameConfig(url, info as GameEmptyCrcRequestData, sessionID),
+                ) => gameCallbacks.GetGameConfig(url, info as GameEmptyCrcRequestData, sessionID),
                 typeof(GameEmptyCrcRequestData)
             ),
             new RouteAction(
@@ -36,7 +34,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetGameMode(url, info as GameModeRequestData, sessionID),
+                ) => gameCallbacks.GetGameMode(url, info as GameModeRequestData, sessionID),
                 typeof(GameModeRequestData)
             ),
             new RouteAction(
@@ -46,7 +44,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetServer(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GetServer(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/match/group/current",
@@ -55,7 +53,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetCurrentGroup(url, info as EmptyRequestData, sessionID),
+                ) => gameCallbacks.GetCurrentGroup(url, info as EmptyRequestData, sessionID),
                 typeof(GameModeRequestData)
             ),
             new RouteAction(
@@ -65,7 +63,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.VersionValidate(url, info as VersionValidateRequestData, sessionID),
+                ) => gameCallbacks.VersionValidate(url, info as VersionValidateRequestData, sessionID),
                 typeof(VersionValidateRequestData)
             ),
             new RouteAction(
@@ -75,7 +73,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GameStart(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GameStart(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/game/logout",
@@ -84,7 +82,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GameLogout(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GameLogout(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/checkVersion",
@@ -93,7 +91,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.ValidateGameVersion(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.ValidateGameVersion(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/game/keepalive",
@@ -102,7 +100,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GameKeepalive(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GameKeepalive(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/singleplayer/settings/version",
@@ -111,7 +109,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetVersion(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GetVersion(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/reports/lobby/send",
@@ -120,7 +118,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.ReportNickname(url, info as UIDRequestData, sessionID),
+                ) => gameCallbacks.ReportNickname(url, info as UIDRequestData, sessionID),
                 typeof(UIDRequestData)
             ),
             new RouteAction(
@@ -130,7 +128,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.ReportNickname(url, info as UIDRequestData, sessionID),
+                ) => gameCallbacks.ReportNickname(url, info as UIDRequestData, sessionID),
                 typeof(GameModeRequestData)
             ),
             new RouteAction(
@@ -140,7 +138,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetRaidTime(url, info as GetRaidTimeRequest, sessionID),
+                ) => gameCallbacks.GetRaidTime(url, info as GetRaidTimeRequest, sessionID),
                 typeof(GetRaidTimeRequest)
             ),
             new RouteAction(
@@ -150,7 +148,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetSurvey(url, info as EmptyRequestData, sessionID)
+                ) => gameCallbacks.GetSurvey(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/survey/view",
@@ -159,7 +157,7 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.GetSurveyView(url, info as SendSurveyOpinionRequest, sessionID),
+                ) => gameCallbacks.GetSurveyView(url, info as SendSurveyOpinionRequest, sessionID),
                 typeof(SendSurveyOpinionRequest)
             ),
             new RouteAction(
@@ -169,12 +167,11 @@ public class GameStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _gameCallbacks.SendSurveyOpinion(url, info as SendSurveyOpinionRequest, sessionID),
+                ) => gameCallbacks.SendSurveyOpinion(url, info as SendSurveyOpinionRequest, sessionID),
                 typeof(SendSurveyOpinionRequest)
             )
         ]
     )
     {
-        _gameCallbacks = gameCallbacks;
     }
 }

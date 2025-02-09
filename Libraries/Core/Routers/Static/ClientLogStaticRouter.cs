@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class ClientLogStaticRouter : StaticRouter
 {
-    protected static ClientLogCallbacks _clientLogCallbacks;
-
     public ClientLogStaticRouter(
         JsonUtil jsonUtil,
         ClientLogCallbacks clientLogCallbacks
@@ -24,7 +22,7 @@ public class ClientLogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
+                ) => clientLogCallbacks.ClientLog(url, info as ClientLogRequest, sessionID),
                 typeof(ClientLogRequest)
             ),
             new RouteAction(
@@ -34,7 +32,7 @@ public class ClientLogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _clientLogCallbacks.ReleaseNotes()
+                ) => clientLogCallbacks.ReleaseNotes()
             ),
             new RouteAction(
                 "/singleplayer/enableBSGlogging",
@@ -43,11 +41,10 @@ public class ClientLogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _clientLogCallbacks.BsgLogging()
+                ) => clientLogCallbacks.BsgLogging()
             )
         ]
     )
     {
-        _clientLogCallbacks = clientLogCallbacks;
     }
 }

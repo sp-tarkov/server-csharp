@@ -9,7 +9,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class DataDynamicRouter : DynamicRouter
 {
-    protected static DataCallbacks _dataCallbacks;
 
     public DataDynamicRouter(
         JsonUtil jsonUtil,
@@ -24,7 +23,7 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetLocalesMenu(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/locale/",
@@ -33,7 +32,7 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetLocalesGlobal(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/items/prices/",
@@ -42,11 +41,10 @@ public class DataDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetItemPrices(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _dataCallbacks = dataCallbacks;
     }
 }

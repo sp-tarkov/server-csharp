@@ -10,8 +10,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class RagfairStaticRouter : StaticRouter
 {
-    protected static RagfairCallbacks _ragfairCallbacks;
-
     public RagfairStaticRouter(
         JsonUtil jsonUtil,
         RagfairCallbacks ragfairCallbacks
@@ -25,7 +23,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
                 typeof(SearchRequestData)
             ),
             new RouteAction(
@@ -35,7 +33,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
+                ) => ragfairCallbacks.Search(url, info as SearchRequestData, sessionID),
                 typeof(SearchRequestData)
             ),
             new RouteAction(
@@ -45,7 +43,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID),
+                ) => ragfairCallbacks.GetMarketPrice(url, info as GetMarketPriceRequestData, sessionID),
                 typeof(GetMarketPriceRequestData)
             ),
             new RouteAction(
@@ -55,7 +53,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID),
+                ) => ragfairCallbacks.StorePlayerOfferTaxAmount(url, info as StorePlayerOfferTaxAmountRequestData, sessionID),
                 typeof(StorePlayerOfferTaxAmountRequestData)
             ),
             new RouteAction(
@@ -65,7 +63,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID),
+                ) => ragfairCallbacks.SendReport(url, info as SendRagfairReportRequestData, sessionID),
                 typeof(SendRagfairReportRequestData)
             ),
             new RouteAction(
@@ -75,7 +73,7 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID)
+                ) => ragfairCallbacks.GetFleaPrices(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/ragfair/offer/findbyid",
@@ -84,12 +82,11 @@ public class RagfairStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID),
+                ) => ragfairCallbacks.GetFleaOfferById(url, info as GetRagfairOfferByIdRequest, sessionID),
                 typeof(GetRagfairOfferByIdRequest)
             )
         ]
     )
     {
-        _ragfairCallbacks = ragfairCallbacks;
     }
 }

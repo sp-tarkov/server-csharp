@@ -11,8 +11,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class BuildStaticRouter : StaticRouter
 {
-    protected static BuildsCallbacks _buildsCallbacks;
-
     public BuildStaticRouter(
         JsonUtil jsonUtil,
         BuildsCallbacks buildsCallbacks
@@ -26,7 +24,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)
+                ) => buildsCallbacks.GetBuilds(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/builds/magazine/save",
@@ -35,7 +33,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID),
+                ) => buildsCallbacks.CreateMagazineTemplate(url, info as SetMagazineRequest, sessionID),
                 typeof(SetMagazineRequest)
             ),
             new RouteAction(
@@ -45,7 +43,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID),
+                ) => buildsCallbacks.SetWeapon(url, info as PresetBuildActionRequestData, sessionID),
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
@@ -55,7 +53,7 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID),
+                ) => buildsCallbacks.SetEquipment(url, info as PresetBuildActionRequestData, sessionID),
                 typeof(PresetBuildActionRequestData)
             ),
             new RouteAction(
@@ -65,12 +63,11 @@ public class BuildStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID),
+                ) => buildsCallbacks.DeleteBuild(url, info as RemoveBuildRequestData, sessionID),
                 typeof(RemoveBuildRequestData)
             )
         ]
     )
     {
-        _buildsCallbacks = buildsCallbacks;
     }
 }

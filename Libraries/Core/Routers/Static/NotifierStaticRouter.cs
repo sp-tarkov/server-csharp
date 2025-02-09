@@ -10,8 +10,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class NotifierStaticRouter : StaticRouter
 {
-    protected static NotifierCallbacks _notifierCallbacks;
-
     public NotifierStaticRouter(
         JsonUtil jsonUtil,
         NotifierCallbacks notifierCallbacks
@@ -25,7 +23,7 @@ public class NotifierStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)
+                ) => notifierCallbacks.CreateNotifierChannel(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/game/profile/select",
@@ -34,12 +32,11 @@ public class NotifierStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID),
+                ) => notifierCallbacks.SelectProfile(url, info as UIDRequestData, sessionID),
                 typeof(UIDRequestData)
             )
         ]
     )
     {
-        _notifierCallbacks = notifierCallbacks;
     }
 }

@@ -9,8 +9,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class InraidDynamicRouter : DynamicRouter
 {
-    protected static InraidCallbacks _inraidCallbacks;
-
     public InraidDynamicRouter(
         JsonUtil jsonUtil,
         InraidCallbacks inraidCallbacks
@@ -24,13 +22,12 @@ public class InraidDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
+                ) => inraidCallbacks.RegisterPlayer(url, info as RegisterPlayerRequestData, sessionID),
                 typeof(RegisterPlayerRequestData)
             )
         ]
     )
     {
-        _inraidCallbacks = inraidCallbacks;
     }
 
     public override string GetTopLevelRoute()

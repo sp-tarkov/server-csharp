@@ -8,8 +8,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class NotifierDynamicRouter : DynamicRouter
 {
-    protected static NotifierCallbacks _notifierCallbacks;
-
     public NotifierDynamicRouter(
         JsonUtil jsonUtil,
         NotifierCallbacks notifierCallbacks
@@ -22,8 +20,8 @@ public class NotifierDynamicRouter : DynamicRouter
                     url,
                     info,
                     sessionID,
-                    output
-                ) => _notifierCallbacks.Notify(url, info, sessionID)
+                    _
+                ) => notifierCallbacks.Notify(url, info, sessionID)
             ),
             new RouteAction(
                 "/notifierServer",
@@ -31,12 +29,29 @@ public class NotifierDynamicRouter : DynamicRouter
                     url,
                     info,
                     sessionID,
-                    output
-                ) => _notifierCallbacks.Notify(url, info, sessionID)
+                    _
+                ) => notifierCallbacks.Notify(url, info, sessionID)
+            ),
+            new RouteAction(
+                "/push/notifier/get/",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    _
+                ) => notifierCallbacks.GetNotifier(url, info, sessionID)
+            ),
+            new RouteAction(
+                "/push/notifier/get/",
+                (
+                    url,
+                    info,
+                    sessionID,
+                    _
+                ) => notifierCallbacks.GetNotifier(url, info, sessionID)
             )
         ]
     )
     {
-        _notifierCallbacks = notifierCallbacks;
     }
 }

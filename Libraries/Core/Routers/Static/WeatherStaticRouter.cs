@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class WeatherStaticRouter : StaticRouter
 {
-    protected static WeatherCallbacks _weatherCallbacks;
-
     public WeatherStaticRouter(
         JsonUtil jsonUtil,
         WeatherCallbacks weatherCallbacks
@@ -24,7 +22,7 @@ public class WeatherStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)
+                ) => weatherCallbacks.GetWeather(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/localGame/weather",
@@ -33,11 +31,10 @@ public class WeatherStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)
+                ) => weatherCallbacks.GetLocalWeather(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _weatherCallbacks = weatherCallbacks;
     }
 }

@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class BundleStaticRouter : StaticRouter
 {
-    protected static BundleCallbacks _bundleCallbacks;
-
     public BundleStaticRouter(
         JsonUtil jsonUtil,
         BundleCallbacks bundleCallbacks
@@ -24,11 +22,10 @@ public class BundleStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
+                ) => bundleCallbacks.GetBundles(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _bundleCallbacks = bundleCallbacks;
     }
 }

@@ -9,8 +9,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class TraderDynamicRouter : DynamicRouter
 {
-    protected static TraderCallbacks _traderCallbacks;
-
     public TraderDynamicRouter(
         JsonUtil jsonUtil,
         TraderCallbacks traderCallbacks
@@ -24,7 +22,7 @@ public class TraderDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
+                ) => traderCallbacks.GetTrader(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/trading/api/getTraderAssort/",
@@ -33,11 +31,10 @@ public class TraderDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
+                ) => traderCallbacks.GetAssort(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _traderCallbacks = traderCallbacks;
     }
 }

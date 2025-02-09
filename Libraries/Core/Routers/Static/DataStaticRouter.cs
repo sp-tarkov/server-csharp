@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class DataStaticRouter : StaticRouter
 {
-    protected static DataCallbacks _dataCallbacks;
-
     public DataStaticRouter(
         JsonUtil jsonUtil,
         DataCallbacks dataCallbacks
@@ -24,7 +22,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetSettings(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/globals",
@@ -33,7 +31,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetGlobals(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/items",
@@ -42,7 +40,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetTemplateItems(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/handbook/templates",
@@ -51,7 +49,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetTemplateHandbook(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/customization",
@@ -60,7 +58,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetTemplateSuits(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/account/customization",
@@ -69,7 +67,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetTemplateCharacter(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/production/recipes",
@@ -78,7 +76,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetHideoutProduction(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/settings",
@@ -87,7 +85,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetHideoutSettings(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/areas",
@@ -96,7 +94,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetHideoutAreas(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/languages",
@@ -105,7 +103,7 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetLocalesLanguages(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/hideout/qte/list",
@@ -114,11 +112,10 @@ public class DataStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID)
+                ) => dataCallbacks.GetQteList(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _dataCallbacks = dataCallbacks;
     }
 }

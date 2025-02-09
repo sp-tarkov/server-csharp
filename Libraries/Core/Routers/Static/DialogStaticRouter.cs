@@ -11,8 +11,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class DialogStaticRouter : StaticRouter
 {
-    protected static DialogueCallbacks _dialogueCallbacks;
-
     public DialogStaticRouter(
         JsonUtil jsonUtil,
         DialogueCallbacks dialogueCallbacks
@@ -26,7 +24,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetChatServerList(url, info as GetChatServerListRequestData, sessionID),
+                ) => dialogueCallbacks.GetChatServerList(url, info as GetChatServerListRequestData, sessionID),
                 typeof(GetChatServerListRequestData)
             ),
             new RouteAction(
@@ -36,7 +34,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetMailDialogList(url, info as GetMailDialogListRequestData, sessionID),
+                ) => dialogueCallbacks.GetMailDialogList(url, info as GetMailDialogListRequestData, sessionID),
                 typeof(GetMailDialogListRequestData)
             ),
             new RouteAction(
@@ -46,7 +44,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetMailDialogView(url, info as GetMailDialogViewRequestData, sessionID),
+                ) => dialogueCallbacks.GetMailDialogView(url, info as GetMailDialogViewRequestData, sessionID),
                 typeof(GetMailDialogViewRequestData)
             ),
             new RouteAction(
@@ -56,7 +54,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetMailDialogInfo(url, info as GetMailDialogInfoRequestData, sessionID),
+                ) => dialogueCallbacks.GetMailDialogInfo(url, info as GetMailDialogInfoRequestData, sessionID),
                 typeof(GetMailDialogInfoRequestData)
             ),
             new RouteAction(
@@ -66,7 +64,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.RemoveDialog(url, info as RemoveDialogRequestData, sessionID),
+                ) => dialogueCallbacks.RemoveDialog(url, info as RemoveDialogRequestData, sessionID),
                 typeof(RemoveDialogRequestData)
             ),
             new RouteAction(
@@ -76,7 +74,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.PinDialog(url, info as PinDialogRequestData, sessionID),
+                ) => dialogueCallbacks.PinDialog(url, info as PinDialogRequestData, sessionID),
                 typeof(PinDialogRequestData)
             ),
             new RouteAction(
@@ -86,7 +84,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.UnpinDialog(url, info as PinDialogRequestData, sessionID),
+                ) => dialogueCallbacks.UnpinDialog(url, info as PinDialogRequestData, sessionID),
                 typeof(PinDialogRequestData)
             ),
             new RouteAction(
@@ -96,7 +94,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.SetRead(url, info as SetDialogReadRequestData, sessionID),
+                ) => dialogueCallbacks.SetRead(url, info as SetDialogReadRequestData, sessionID),
                 typeof(SetDialogReadRequestData)
             ),
             new RouteAction(
@@ -106,7 +104,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetAllAttachments(url, info as GetAllAttachmentsRequestData, sessionID),
+                ) => dialogueCallbacks.GetAllAttachments(url, info as GetAllAttachmentsRequestData, sessionID),
                 typeof(GetAllAttachmentsRequestData)
             ),
             new RouteAction(
@@ -116,7 +114,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.SendMessage(url, info as SendMessageRequest, sessionID),
+                ) => dialogueCallbacks.SendMessage(url, info as SendMessageRequest, sessionID),
                 typeof(SendMessageRequest)
             ),
             new RouteAction(
@@ -126,7 +124,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.ClearMail(url, info as ClearMailMessageRequest, sessionID),
+                ) => dialogueCallbacks.ClearMail(url, info as ClearMailMessageRequest, sessionID),
                 typeof(ClearMailMessageRequest)
             ),
             new RouteAction(
@@ -136,7 +134,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.CreateGroupMail(url, info as CreateGroupMailRequest, sessionID),
+                ) => dialogueCallbacks.CreateGroupMail(url, info as CreateGroupMailRequest, sessionID),
                 typeof(CreateGroupMailRequest)
             ),
             new RouteAction(
@@ -146,7 +144,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.ChangeMailGroupOwner(url, info as ChangeGroupMailOwnerRequest, sessionID),
+                ) => dialogueCallbacks.ChangeMailGroupOwner(url, info as ChangeGroupMailOwnerRequest, sessionID),
                 typeof(ChangeGroupMailOwnerRequest)
             ),
             new RouteAction(
@@ -156,7 +154,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.AddUserToMail(url, info as AddUserGroupMailRequest, sessionID),
+                ) => dialogueCallbacks.AddUserToMail(url, info as AddUserGroupMailRequest, sessionID),
                 typeof(AddUserGroupMailRequest)
             ),
             new RouteAction(
@@ -166,7 +164,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.RemoveUserFromMail(url, info as RemoveUserGroupMailRequest, sessionID),
+                ) => dialogueCallbacks.RemoveUserFromMail(url, info as RemoveUserGroupMailRequest, sessionID),
                 typeof(RemoveUserGroupMailRequest)
             ),
             new RouteAction(
@@ -176,7 +174,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.GetFriendList(url, info as EmptyRequestData, sessionID)
+                ) => dialogueCallbacks.GetFriendList(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/friend/request/list/outbox",
@@ -185,7 +183,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.ListOutbox(url, info as EmptyRequestData, sessionID)
+                ) => dialogueCallbacks.ListOutbox(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/friend/request/list/inbox",
@@ -194,7 +192,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.ListInbox(url, info as EmptyRequestData, sessionID)
+                ) => dialogueCallbacks.ListInbox(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/friend/request/send",
@@ -203,7 +201,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.SendFriendRequest(url, info as FriendRequestData, sessionID),
+                ) => dialogueCallbacks.SendFriendRequest(url, info as FriendRequestData, sessionID),
                 typeof(FriendRequestData)
             ),
             new RouteAction(
@@ -213,7 +211,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.AcceptAllFriendRequests(url, info as EmptyRequestData, sessionID)
+                ) => dialogueCallbacks.AcceptAllFriendRequests(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/friend/request/accept",
@@ -222,7 +220,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.AcceptFriendRequest(url, info as AcceptFriendRequestData, sessionID),
+                ) => dialogueCallbacks.AcceptFriendRequest(url, info as AcceptFriendRequestData, sessionID),
                 typeof(AcceptFriendRequestData)
             ),
             new RouteAction(
@@ -232,7 +230,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.DeclineFriendRequest(url, info as DeclineFriendRequestData, sessionID),
+                ) => dialogueCallbacks.DeclineFriendRequest(url, info as DeclineFriendRequestData, sessionID),
                 typeof(DeclineFriendRequestData)
             ),
             new RouteAction(
@@ -242,7 +240,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.CancelFriendRequest(url, info as CancelFriendRequestData, sessionID),
+                ) => dialogueCallbacks.CancelFriendRequest(url, info as CancelFriendRequestData, sessionID),
                 typeof(CancelFriendRequestData)
             ),
             new RouteAction(
@@ -252,7 +250,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.DeleteFriend(url, info as DeleteFriendRequest, sessionID),
+                ) => dialogueCallbacks.DeleteFriend(url, info as DeleteFriendRequest, sessionID),
                 typeof(DeleteFriendRequest)
             ),
             new RouteAction(
@@ -262,7 +260,7 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.IgnoreFriend(url, info as UIDRequestData, sessionID),
+                ) => dialogueCallbacks.IgnoreFriend(url, info as UIDRequestData, sessionID),
                 typeof(UIDRequestData)
             ),
             new RouteAction(
@@ -272,12 +270,11 @@ public class DialogStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _dialogueCallbacks.UnIgnoreFriend(url, info as UIDRequestData, sessionID),
+                ) => dialogueCallbacks.UnIgnoreFriend(url, info as UIDRequestData, sessionID),
                 typeof(UIDRequestData)
             )
         ]
     )
     {
-        _dialogueCallbacks = dialogueCallbacks;
     }
 }

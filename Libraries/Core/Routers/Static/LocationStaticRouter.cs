@@ -10,8 +10,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class LocationStaticRouter : StaticRouter
 {
-    protected static LocationCallbacks _locationCallbacks;
-
     public LocationStaticRouter(
         JsonUtil jsonUtil,
         LocationCallbacks locationCallbacks
@@ -25,7 +23,7 @@ public class LocationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID)
+                ) => locationCallbacks.GetLocationData(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
                 "/client/airdrop/loot",
@@ -34,12 +32,11 @@ public class LocationStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID),
+                ) => locationCallbacks.GetAirdropLoot(url, info as GetAirdropLootRequest, sessionID),
                 typeof(GetAirdropLootRequest)
             )
         ]
     )
     {
-        _locationCallbacks = locationCallbacks;
     }
 }

@@ -9,8 +9,6 @@ namespace Core.Routers.Static;
 [Injectable(InjectableTypeOverride = typeof(StaticRouter))]
 public class InsuranceStaticRouter : StaticRouter
 {
-    protected static InsuranceCallbacks _insuranceCallbacks;
-
     public InsuranceStaticRouter(
         JsonUtil jsonUtil,
         InsuranceCallbacks insuranceCallbacks
@@ -24,12 +22,11 @@ public class InsuranceStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => _insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
+                ) => insuranceCallbacks.GetInsuranceCost(url, info as GetInsuranceCostRequestData, sessionID),
                 typeof(GetInsuranceCostRequestData)
             )
         ]
     )
     {
-        _insuranceCallbacks = insuranceCallbacks;
     }
 }

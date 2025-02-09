@@ -9,8 +9,6 @@ namespace Core.Routers.Dynamic;
 [Injectable(InjectableTypeOverride = typeof(DynamicRouter))]
 public class BundleDynamicRouter : DynamicRouter
 {
-    protected static BundleCallbacks _bundleCallbacks;
-
     public BundleDynamicRouter(
         JsonUtil jsonUtil,
         BundleCallbacks bundleCallbacks
@@ -24,11 +22,10 @@ public class BundleDynamicRouter : DynamicRouter
                     info,
                     sessionID,
                     output
-                ) => _bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
+                ) => bundleCallbacks.GetBundle(url, info as EmptyRequestData, sessionID)
             )
         ]
     )
     {
-        _bundleCallbacks = bundleCallbacks;
     }
 }
