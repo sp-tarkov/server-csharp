@@ -97,10 +97,11 @@ public class ItemHelper(
      * @param compareUpdProperties Upd properties to compare between the items
      * @returns true if they are the same, false if they aren't
      */
-    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string> compareUpdProperties = null)
+    public bool IsSameItems(List<Item> item1, List<Item> item2, HashSet<string>? compareUpdProperties = null)
     {
-        if (item1.Count() != item2.Count)
+        if (item1.Count != item2.Count)
         {
+            // Items have different mod counts
             return false;
         }
 
