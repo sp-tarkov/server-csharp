@@ -25,7 +25,6 @@ public class ItemHelper(
     ItemFilterService _itemFilterService,
     LocalisationService _localisationService,
     LocaleService _localeService,
-    CompareUtil _compareUtil,
     ICloner _cloner
 )
 {
