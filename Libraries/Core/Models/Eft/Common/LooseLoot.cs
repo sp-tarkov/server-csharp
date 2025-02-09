@@ -221,10 +221,17 @@ public record LooseLootItemDistribution
 
 public record ComposedKey
 {
+    private string? _key;
     [JsonPropertyName("key")]
     public string? Key
     {
-        get;
-        set;
+        get
+        {
+            return _key;
+        }
+        set
+        {
+            _key = string.Intern(value);
+        }
     }
 }

@@ -5,6 +5,8 @@ namespace Core.Models.Eft.Common.Tables;
 
 public record Item
 {
+    private string? _id;
+
     private string? _parentId;
 
     private string? _SlotId;
@@ -15,8 +17,14 @@ public record Item
     [JsonPropertyName("_id")]
     public string? Id
     {
-        get;
-        set;
+        get
+        {
+            return _id;
+        }
+        set
+        {
+            _id = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("_tpl")]
