@@ -51,7 +51,7 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void WriteToLogFile(string body)
+    public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
     {
         Console.WriteLine($"{categoryName}: {body}");
     }
