@@ -102,8 +102,8 @@ public class RagfairSellHelper(
                 // Passed roll check, item will be sold
                 // Weight time to sell towards selling faster based on how cheap the item sold
                 var weighting = (100 - effectiveSellChance) / 100;
-                var maximumTime = weighting * _ragfairConfig.Sell.Time.Max * 60;
-                var minimumTime = _ragfairConfig.Sell.Time.Min * 60;
+                var maximumTime = weighting * _ragfairConfig.Sell.Time.Max * 60d;
+                var minimumTime = _ragfairConfig.Sell.Time.Min * 60d;
                 if (maximumTime < minimumTime)
                 {
                     maximumTime = minimumTime + 5;
@@ -111,7 +111,7 @@ public class RagfairSellHelper(
 
                 // Sell time will be random between min/max
                 var random = new Random();
-                var newSellTime = Math.Floor(random.NextDouble() * (maximumTime.Value - minimumTime.Value) + minimumTime.Value);
+                var newSellTime = Math.Floor(random.NextDouble() * (maximumTime.Value - minimumTime) + minimumTime);
                 if (newSellTime == 0)
                     // Ensure all sales don't occur the same exact time
                 {

@@ -132,14 +132,14 @@ public record SealedAirdropContainerSettings
     }
 
     [JsonPropertyName("weaponModRewardLimits")]
-    public Dictionary<string, MinMaxInt> WeaponModRewardLimits
+    public Dictionary<string, MinMax<int>> WeaponModRewardLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardTypeLimits")]
-    public Dictionary<string, MinMaxInt> RewardTypeLimits
+    public Dictionary<string, MinMax<int>> RewardTypeLimits
     {
         get;
         set;

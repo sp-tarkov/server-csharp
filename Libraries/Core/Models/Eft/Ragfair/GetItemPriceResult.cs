@@ -3,7 +3,7 @@ using Core.Models.Common;
 
 namespace Core.Models.Eft.Ragfair;
 
-public record GetItemPriceResult : MinMaxDouble
+public record GetItemPriceResult : MinMax<double>
 {
     [JsonPropertyName("avg")]
     public double? Avg

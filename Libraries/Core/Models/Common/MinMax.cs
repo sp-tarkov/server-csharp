@@ -2,15 +2,15 @@ using System.Text.Json.Serialization;
 
 namespace Core.Models.Common;
 
-public record MinMaxDouble
+public record MinMax<T>
 {
-    public MinMaxDouble(double min, double max)
+    public MinMax(T min, T max)
     {
         Min = min;
         Max = max;
     }
 
-    public MinMaxDouble()
+    public MinMax()
     {
     }
 
@@ -22,14 +22,14 @@ public record MinMaxDouble
     }
 
     [JsonPropertyName("max")]
-    public double? Max
+    public T Max
     {
         get;
         set;
     }
 
     [JsonPropertyName("min")]
-    public double? Min
+    public T Min
     {
         get;
         set;

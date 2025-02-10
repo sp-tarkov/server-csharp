@@ -78,13 +78,13 @@ public class WeatherGenerator(
         // TODO: Ensure Weather settings match Ts Server GetRandomDouble produces a decimal value way higher than ts server
         var result = new Weather
         {
-            Pressure = GetRandomDouble(weatherValues.Pressure.Min ?? 0, weatherValues.Pressure.Max ?? 0),
+            Pressure = GetRandomDouble(weatherValues.Pressure.Min, weatherValues.Pressure.Max),
             Temperature = 0,
             Fog = GetWeightedFog(weatherValues),
             RainIntensity =
-                rain > 1 ? GetRandomDouble(weatherValues.RainIntensity.Min ?? 0, weatherValues.RainIntensity.Max ?? 0) : 0,
+                rain > 1 ? GetRandomDouble(weatherValues.RainIntensity.Min, weatherValues.RainIntensity.Max) : 0,
             Rain = rain,
-            WindGustiness = GetRandomDouble(weatherValues.WindGustiness.Min ?? 0, weatherValues.WindGustiness.Max ?? 0, 2),
+            WindGustiness = GetRandomDouble(weatherValues.WindGustiness.Min, weatherValues.WindGustiness.Max, 2),
             WindDirection = GetWeightedWindDirection(weatherValues),
             WindSpeed = GetWeightedWindSpeed(weatherValues),
             Cloud = clouds,
@@ -126,7 +126,7 @@ public class WeatherGenerator(
             ? weather.Temp.Night
             : weather.Temp.Day;
 
-        return Math.Round(_randomUtil.GetDouble(minMax.Min ?? 0, minMax.Max ?? 0), 2);
+        return Math.Round(_randomUtil.GetDouble(minMax.Min, minMax.Max), 2);
     }
 
     /**

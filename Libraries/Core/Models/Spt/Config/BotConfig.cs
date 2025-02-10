@@ -251,7 +251,7 @@ public record AssaultToBossConversion
     }
 
     [JsonPropertyName("bossConvertMinMax")]
-    public Dictionary<string, MinMaxDouble> BossConvertMinMax
+    public Dictionary<string, MinMax<double>> BossConvertMinMax
     {
         get;
         set;
@@ -599,7 +599,7 @@ public record WalletLootSettings
     }
 
     [JsonPropertyName("itemCount")]
-    public MinMaxDouble ItemCount
+    public MinMax<int> ItemCount
     {
         get;
         set;
@@ -843,7 +843,7 @@ public record RandomisationDetails
     ///     Between what levels do these randomisation setting apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMaxDouble LevelRange
+    public MinMax<int> LevelRange
     {
         get;
         set;
@@ -950,7 +950,7 @@ public record EquipmentFilterDetails
     ///     Between what levels do these equipment filter setting apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMaxDouble LevelRange
+    public MinMax<int> LevelRange
     {
         get;
         set;
@@ -993,7 +993,7 @@ public record WeightingAdjustmentDetails
     ///     Between what levels do these weight settings apply to
     /// </summary>
     [JsonPropertyName("levelRange")]
-    public MinMaxDouble LevelRange
+    public MinMax<int> LevelRange
     {
         get;
         set;
@@ -1050,7 +1050,7 @@ public record AdjustmentDetails
 public class ArmorPlateWeights
 {
     [JsonPropertyName("levelRange")]
-    public MinMaxDouble LevelRange
+    public MinMax<int> LevelRange
     {
         get;
         set;

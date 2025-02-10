@@ -604,7 +604,7 @@ public class CircleOfCultistService(
             var settings = _hideoutConfig.CultistCircle.CurrencyRewards[itemTpl];
 
             // What % of the pool remaining should be rewarded as chosen currency
-            var percentOfPoolToUse = _randomUtil.GetDouble(settings.Min.Value, settings.Max.Value);
+            var percentOfPoolToUse = _randomUtil.GetDouble(settings.Min, settings.Max);
 
             // Rouble amount of pool we want to reward as currency
             var roubleAmountToFill = _randomUtil.GetPercentOfValue(percentOfPoolToUse, rewardPoolRemaining);

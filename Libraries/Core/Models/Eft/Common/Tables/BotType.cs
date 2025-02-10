@@ -446,7 +446,7 @@ public record Experience
     }
 
     [JsonPropertyName("level")]
-    public MinMaxDouble? Level
+    public MinMax<int>? Level
     {
         get;
         set;
@@ -456,7 +456,7 @@ public record Experience
      * key = bot difficulty
      */
     [JsonPropertyName("reward")]
-    public Dictionary<string, MinMaxDouble>? Reward
+    public Dictionary<string, MinMax<double>>? Reward
     {
         get;
         set;
@@ -616,19 +616,19 @@ public record BotTypeHealth
         set;
     }
 
-    public MinMaxDouble? Energy
+    public MinMax<double>? Energy
     {
         get;
         set;
     }
 
-    public MinMaxDouble? Hydration
+    public MinMax<double>? Hydration
     {
         get;
         set;
     }
 
-    public MinMaxDouble? Temperature
+    public MinMax<double>? Temperature
     {
         get;
         set;
@@ -637,43 +637,43 @@ public record BotTypeHealth
 
 public record BodyPart
 {
-    public MinMaxDouble? Chest
+    public MinMax<double>? Chest
     {
         get;
         set;
     }
 
-    public MinMaxDouble? Head
+    public MinMax<double>? Head
     {
         get;
         set;
     }
 
-    public MinMaxDouble? LeftArm
+    public MinMax<double>? LeftArm
     {
         get;
         set;
     }
 
-    public MinMaxDouble? LeftLeg
+    public MinMax<double>? LeftLeg
     {
         get;
         set;
     }
 
-    public MinMaxDouble? RightArm
+    public MinMax<double>? RightArm
     {
         get;
         set;
     }
 
-    public MinMaxDouble? RightLeg
+    public MinMax<double>? RightLeg
     {
         get;
         set;
     }
 
-    public MinMaxDouble? Stomach
+    public MinMax<double>? Stomach
     {
         get;
         set;
@@ -832,13 +832,13 @@ public record ItemPools
 
 public record BotDbSkills
 {
-    public Dictionary<string, MinMaxDouble>? Common
+    public Dictionary<string, MinMax<double>>? Common
     {
         get;
         set;
     }
 
-    public Dictionary<string, MinMaxDouble>? Mastering
+    public Dictionary<string, MinMax<double>>? Mastering
     {
         get;
         set;

@@ -112,17 +112,17 @@ public class BotHelper(
         }
     }
 
-    public bool RollChanceToBePmc(MinMaxDouble botConvertMinMax)
+    public bool RollChanceToBePmc(MinMax<double> botConvertMinMax)
     {
-        return _randomUtil.GetChance100(_randomUtil.GetDouble(botConvertMinMax.Min.Value, botConvertMinMax.Max.Value));
+        return _randomUtil.GetChance100(_randomUtil.GetDouble(botConvertMinMax.Min, botConvertMinMax.Max));
     }
 
-    protected Dictionary<string, MinMaxDouble> GetPmcConversionValuesForLocation(string location)
+    protected Dictionary<string, MinMax<double>> GetPmcConversionValuesForLocation(string location)
     {
         var result = _pmcConfig.ConvertIntoPmcChance[location.ToLower()];
         if (result is null)
         {
-            _pmcConfig.ConvertIntoPmcChance = new Dictionary<string, Dictionary<string, MinMaxDouble>>();
+            _pmcConfig.ConvertIntoPmcChance = new Dictionary<string, Dictionary<string, MinMax<double>>>();
         }
 
         return result;

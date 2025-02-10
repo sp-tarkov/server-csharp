@@ -232,21 +232,21 @@ public record ScavRecipe
 public record EndProducts
 {
     [JsonPropertyName("Common")]
-    public MinMaxDouble? Common
+    public MinMax<int>? Common
     {
         get;
         set;
     }
 
     [JsonPropertyName("Rare")]
-    public MinMaxDouble? Rare
+    public MinMax<int>? Rare
     {
         get;
         set;
     }
 
     [JsonPropertyName("Superrare")]
-    public MinMaxDouble? Superrare
+    public MinMax<int>? Superrare
     {
         get;
         set;

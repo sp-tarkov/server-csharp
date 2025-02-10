@@ -219,7 +219,7 @@ public record BonusSettings
 public record BonusValues
 {
     [JsonPropertyName("valuesMinMax")]
-    public MinMaxDouble ValuesMinMax
+    public MinMax<double> ValuesMinMax
     {
         get;
         set;
@@ -229,7 +229,7 @@ public record BonusValues
      * What dura is buff active between (min max of current max)
      */
     [JsonPropertyName("activeDurabilityPercentMinMax")]
-    public MinMaxDouble ActiveDurabilityPercentMinMax
+    public MinMax<double> ActiveDurabilityPercentMinMax
     {
         get;
         set;

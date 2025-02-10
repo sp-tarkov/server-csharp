@@ -341,7 +341,7 @@ public record CustomWaves
     }
 }
 
-public record BotTypeLimit : MinMaxDouble
+public record BotTypeLimit : MinMax<int>
 {
     [JsonPropertyName("type")]
     public string Type

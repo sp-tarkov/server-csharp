@@ -166,11 +166,11 @@ public class RagfairServerHelper(
         // non-stackable - use different values to calculate stack size
         if (maxStackSize == 1)
         {
-            return (int) randomUtil.GetDouble(config.NonStackableCount.Min.Value, config.NonStackableCount.Max.Value);
+            return randomUtil.GetInt(config.NonStackableCount.Min, config.NonStackableCount.Max);
         }
 
         // Get a % to get of stack size
-        var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min.Value, config.StackablePercent.Max.Value);
+        var stackPercent = randomUtil.GetDouble(config.StackablePercent.Min, config.StackablePercent.Max);
 
         // Min value to return should be no less than 1
         return Math.Max((int) randomUtil.GetPercentOfValue(stackPercent, maxStackSize, 0), 1);

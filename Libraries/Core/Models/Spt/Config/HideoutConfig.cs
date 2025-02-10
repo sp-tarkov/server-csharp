@@ -127,7 +127,7 @@ public record CultistCircleSettings
     }
 
     [JsonPropertyName("rewardPriceMultiplerMinMax")]
-    public MinMaxDouble RewardPriceMultiplerMinMax
+    public MinMax<double> RewardPriceMultiplerMinMax
     {
         get;
         set;
@@ -211,7 +211,7 @@ public record CultistCircleSettings
     ///     Overrides for reward stack sizes, keyed by item tpl
     /// </summary>
     [JsonPropertyName("directRewardStackSize")]
-    public Dictionary<string, MinMaxDouble> DirectRewardStackSize
+    public Dictionary<string, MinMax<int>> DirectRewardStackSize
     {
         get;
         set;
@@ -238,14 +238,14 @@ public record CultistCircleSettings
     }
 
     [JsonPropertyName("currencyRewards")]
-    public Dictionary<string, MinMaxDouble> CurrencyRewards
+    public Dictionary<string, MinMax<int>> CurrencyRewards
     {
         get;
         set;
     }
 }
 
-public record CraftTimeThreshold : MinMaxDouble
+public record CraftTimeThreshold : MinMax<int>
 {
     [JsonPropertyName("craftTimeSeconds")]
     public int CraftTimeSeconds

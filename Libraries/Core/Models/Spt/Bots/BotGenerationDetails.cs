@@ -39,7 +39,7 @@ public record BotGenerationDetails
     ///     Active players current level
     /// </summary>
     [JsonPropertyName("playerLevel")]
-    public double? PlayerLevel
+    public int? PlayerLevel
     {
         get;
         set;
@@ -56,7 +56,7 @@ public record BotGenerationDetails
     ///     Level specific overrides for PMC level
     /// </summary>
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public MinMaxDouble? LocationSpecificPmcLevelOverride
+    public MinMax<int> LocationSpecificPmcLevelOverride
     {
         get;
         set;
@@ -66,7 +66,7 @@ public record BotGenerationDetails
     ///     Delta of highest level of bot e.g. 50 means 50 levels above player
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public double? BotRelativeLevelDeltaMax
+    public int? BotRelativeLevelDeltaMax
     {
         get;
         set;
@@ -76,7 +76,7 @@ public record BotGenerationDetails
     ///     Delta of lowest level of bot e.g. 50 means 50 levels below player
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public double? BotRelativeLevelDeltaMin
+    public int? BotRelativeLevelDeltaMin
     {
         get;
         set;

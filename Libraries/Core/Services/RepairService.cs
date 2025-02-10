@@ -540,12 +540,12 @@ public class RepairService(
 
         var bonusRarity = bonusRarityName == "Rare" ? itemConfig.Rare : itemConfig.Common;
         var bonusValues = bonusRarity[bonusTypeName].ValuesMinMax;
-        var bonusValue = _randomUtil.GetDouble(bonusValues.Min.Value, bonusValues.Max.Value);
+        var bonusValue = _randomUtil.GetDouble(bonusValues.Min, bonusValues.Max);
 
         var bonusThresholdPercents = bonusRarity[bonusTypeName].ActiveDurabilityPercentMinMax;
         var bonusThresholdPercent = _randomUtil.GetDouble(
-            bonusThresholdPercents.Min.Value,
-            bonusThresholdPercents.Max.Value
+            bonusThresholdPercents.Min,
+            bonusThresholdPercents.Max
         );
 
         item.Upd.Buff = new UpdBuff

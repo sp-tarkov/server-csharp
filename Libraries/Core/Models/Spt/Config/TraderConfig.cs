@@ -86,7 +86,7 @@ public record UpdateTime
      * Seconds between trader resets
      */
     [JsonPropertyName("seconds")]
-    public MinMaxDouble Seconds
+    public MinMax<int> Seconds
     {
         get;
         set;
@@ -124,14 +124,14 @@ public record FenceConfig
     }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMaxDouble WeaponPresetMinMax
+    public MinMax<int> WeaponPresetMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMaxDouble EquipmentPresetMinMax
+    public MinMax<int> EquipmentPresetMinMax
     {
         get;
         set;
@@ -179,7 +179,7 @@ public record FenceConfig
      * Key: item tpl
      */
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
-    public Dictionary<string, MinMaxDouble?> ItemStackSizeOverrideMinMax
+    public Dictionary<string, MinMax<int>?> ItemStackSizeOverrideMinMax
     {
         get;
         set;
@@ -294,14 +294,14 @@ public record FenceConfig
 public record ItemDurabilityCurrentMax
 {
     [JsonPropertyName("current")]
-    public MinMaxDouble Current
+    public MinMax<double> Current
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public MinMaxDouble Max
+    public MinMax<double> Max
     {
         get;
         set;
@@ -363,14 +363,14 @@ public record DiscountOptions
     }
 
     [JsonPropertyName("weaponPresetMinMax")]
-    public MinMaxDouble WeaponPresetMinMax
+    public MinMax<int> WeaponPresetMinMax
     {
         get;
         set;
     }
 
     [JsonPropertyName("equipmentPresetMinMax")]
-    public MinMaxDouble EquipmentPresetMinMax
+    public MinMax<int> EquipmentPresetMinMax
     {
         get;
         set;

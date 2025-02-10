@@ -115,7 +115,7 @@ public record PmcConfig : BaseConfig
      * MinMax count of weapons to have in backpack
      */
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
-    public MinMaxDouble LooseWeaponInBackpackLootMinMax
+    public MinMax<int> LooseWeaponInBackpackLootMinMax
     {
         get;
         set;
@@ -200,7 +200,7 @@ public record PmcConfig : BaseConfig
      * Percentage chance a bot from a wave is converted into a PMC, first key = map, second key = bot wildspawn type (assault/exusec), value: min+max chance to be converted
      */
     [JsonPropertyName("convertIntoPmcChance")]
-    public Dictionary<string, Dictionary<string, MinMaxDouble>> ConvertIntoPmcChance
+    public Dictionary<string, Dictionary<string, MinMax<double>>> ConvertIntoPmcChance
     {
         get;
         set;
@@ -210,7 +210,7 @@ public record PmcConfig : BaseConfig
      * How many levels above player level can a PMC be
      */
     [JsonPropertyName("botRelativeLevelDeltaMax")]
-    public double BotRelativeLevelDeltaMax
+    public int BotRelativeLevelDeltaMax
     {
         get;
         set;
@@ -220,7 +220,7 @@ public record PmcConfig : BaseConfig
      * How many levels below player level can a PMC be
      */
     [JsonPropertyName("botRelativeLevelDeltaMin")]
-    public double BotRelativeLevelDeltaMin
+    public int BotRelativeLevelDeltaMin
     {
         get;
         set;
@@ -251,7 +251,7 @@ public record PmcConfig : BaseConfig
     }
 
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public Dictionary<string, MinMaxDouble> LocationSpecificPmcLevelOverride
+    public Dictionary<string, MinMax<int>> LocationSpecificPmcLevelOverride
     {
         get;
         set;
@@ -383,7 +383,7 @@ public record SlotLootSettings
     }
 }
 
-public record MinMaxLootValue : MinMaxDouble
+public record MinMaxLootValue : MinMax<double>
 {
     [JsonPropertyName("value")]
     public double Value
@@ -393,24 +393,24 @@ public record MinMaxLootValue : MinMaxDouble
     }
 }
 
-public record MinMaxLootItemValue : MinMaxDouble
+public record MinMaxLootItemValue : MinMax<double>
 {
     [JsonPropertyName("backpack")]
-    public MinMaxDouble Backpack
+    public MinMax<double> Backpack
     {
         get;
         set;
     }
 
     [JsonPropertyName("pocket")]
-    public MinMaxDouble Pocket
+    public MinMax<double> Pocket
     {
         get;
         set;
     }
 
     [JsonPropertyName("vest")]
-    public MinMaxDouble Vest
+    public MinMax<double> Vest
     {
         get;
         set;

@@ -870,7 +870,7 @@ public record NonWaveGroupScenario
     }
 }
 
-public record Limit : MinMaxDouble
+public record Limit : MinMax<int>
 {
     [JsonPropertyName("items")]
     public object[] Items
@@ -1383,7 +1383,7 @@ public record ChancedEnemy
     }
 }
 
-public record MinMaxBot : MinMaxDouble
+public record MinMaxBot : MinMax<int>
 {
     [JsonPropertyName("WildSpawnType")]
     public string? WildSpawnType

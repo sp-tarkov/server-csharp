@@ -198,8 +198,8 @@ public class RagfairOfferGenerator(
             MemberType = MemberCategory.Default,
             Nickname = botHelper.GetPmcNicknameOfMaxLength(botConfig.BotNameLengthLimit),
             Rating = randomUtil.GetDouble(
-                (double) ragfairConfig.Dynamic.Rating.Min,
-                (double) ragfairConfig.Dynamic.Rating.Max
+                ragfairConfig.Dynamic.Rating.Min,
+                ragfairConfig.Dynamic.Rating.Max
             ),
             IsRatingGrowing = randomUtil.GetBool(),
             Avatar = null,
@@ -342,7 +342,7 @@ public class RagfairOfferGenerator(
 
         // Generated fake-player offer
         return (long) Math.Round(
-            time + randomUtil.GetDouble(ragfairConfig.Dynamic.EndTimeSeconds.Min.Value, ragfairConfig.Dynamic.EndTimeSeconds.Max.Value)
+            time + randomUtil.GetDouble(ragfairConfig.Dynamic.EndTimeSeconds.Min, ragfairConfig.Dynamic.EndTimeSeconds.Max)
         );
     }
 
@@ -417,7 +417,7 @@ public class RagfairOfferGenerator(
         // Limit to 1 offer when processing expired - like-for-like replacement
         var offerCount = isExpiredOffer
             ? 1
-            : randomUtil.GetDouble(config.OfferItemCount.Min.Value, config.OfferItemCount.Max.Value);
+            : randomUtil.GetDouble(config.OfferItemCount.Min, config.OfferItemCount.Max);
 
         /* // TODO: ???????
         if (ProgramStatics.DEBUG && !ProgramStatics.COMPILED) {

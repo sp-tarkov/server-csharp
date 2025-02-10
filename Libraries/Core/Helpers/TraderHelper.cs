@@ -376,7 +376,7 @@ public class TraderHelper(
     public long? GetTraderUpdateSeconds(string traderId)
     {
         var traderDetails = _traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == traderId);
-        if (traderDetails is null || traderDetails.Seconds?.Min is null || traderDetails.Seconds.Max is null)
+        if (traderDetails?.Seconds?.Min is null || traderDetails.Seconds?.Max is null)
         {
             _logger.Warning(
                 _localisationService.GetText(
@@ -394,7 +394,7 @@ public class TraderHelper(
                     // create temporary entry to prevent logger spam
                     {
                         TraderId = traderId,
-                        Seconds = new MinMaxDouble(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
+                        Seconds = new MinMax<int>(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
                     }
             );
 

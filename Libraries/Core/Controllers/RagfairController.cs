@@ -369,7 +369,7 @@ public class RagfairController
         if (offers.Count > 0)
         {
             // These get calculated while iterating through the list below
-            var minMax = new MinMaxDouble(int.MaxValue, 0);
+            var minMax = new MinMax<double>(int.MaxValue, 0);
 
             // Get the average offer price, excluding barter offers
             var average = GetAveragePriceFromOffers(offers, minMax, ignoreTraderOffers);
@@ -398,7 +398,7 @@ public class RagfairController
         };
     }
 
-    private double GetAveragePriceFromOffers(List<RagfairOffer> offers, MinMaxDouble minMax, bool ignoreTraderOffers)
+    private double GetAveragePriceFromOffers(List<RagfairOffer> offers, MinMax<double> minMax, bool ignoreTraderOffers)
     {
         var sum = 0d;
         var totalOfferCount = 0;
@@ -425,11 +425,11 @@ public class RagfairController
             // Handle min/max calculations based on the per-item price
             if (perItemPrice < minMax.Min)
             {
-                minMax.Min = perItemPrice;
+                minMax.Min = perItemPrice.Value;
             }
             else if (perItemPrice > minMax.Max)
             {
-                minMax.Max = perItemPrice;
+                minMax.Max = perItemPrice.Value;
             }
 
             sum += perItemPrice.Value;

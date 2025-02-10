@@ -146,7 +146,7 @@ public record SeasonalValues
     }
 
     [JsonPropertyName("windGustiness")]
-    public MinMaxDouble? WindGustiness
+    public MinMax<double>? WindGustiness
     {
         get;
         set;
@@ -160,7 +160,7 @@ public record SeasonalValues
     }
 
     [JsonPropertyName("rainIntensity")]
-    public MinMaxDouble? RainIntensity
+    public MinMax<double>? RainIntensity
     {
         get;
         set;
@@ -181,7 +181,7 @@ public record SeasonalValues
     }
 
     [JsonPropertyName("pressure")]
-    public MinMaxDouble? Pressure
+    public MinMax<double>? Pressure
     {
         get;
         set;
@@ -191,14 +191,14 @@ public record SeasonalValues
 public record TempDayNight
 {
     [JsonPropertyName("day")]
-    public MinMaxDouble? Day
+    public MinMax<double>? Day
     {
         get;
         set;
     }
 
     [JsonPropertyName("night")]
-    public MinMaxDouble? Night
+    public MinMax<double>? Night
     {
         get;
         set;

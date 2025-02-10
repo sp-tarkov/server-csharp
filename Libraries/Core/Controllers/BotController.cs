@@ -16,7 +16,6 @@ using Core.Services;
 using Core.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
-using SptCommon.Extensions;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Controllers;
@@ -301,7 +300,7 @@ public class BotController(
         );
         if (convertIntoPmcChanceMinMax is not null && !botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
-            // Bot has % chance to become pmc and isnt one pmc already
+            // Bot has % chance to become pmc and isn't one pmc already
             var convertToPmc = _botHelper.RollChanceToBePmc(convertIntoPmcChanceMinMax);
             if (convertToPmc)
             {
@@ -324,7 +323,7 @@ public class BotController(
             if (bossConvertPercent is not null)
                 // Roll a percentage check if we should convert scav to boss
             {
-                if (_randomUtil.GetChance100(_randomUtil.GetDouble(bossConvertPercent.Min!.Value, bossConvertPercent.Max!.Value)))
+                if (_randomUtil.GetChance100(_randomUtil.GetDouble(bossConvertPercent.Min, bossConvertPercent.Max)))
                 {
                     UpdateBotGenerationDetailsToRandomBoss(botGenerationDetails, bossesToConvertToWeights);
                 }
@@ -388,7 +387,7 @@ public class BotController(
         };
     }
 
-    private MinMaxDouble? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
+    private MinMax<double>? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
     {
         return _pmcConfig.ConvertIntoPmcChance!.TryGetValue(location?.ToLower() ?? "", out var mapSpecificConversionValues)
             ? mapSpecificConversionValues.GetValueOrDefault(requestedBotRole?.ToLower())
@@ -409,7 +408,7 @@ public class BotController(
         return raidSettings;
     }
 
-    private MinMaxDouble? GetPmcLevelRangeForMap(string? location)
+    private MinMax<int> GetPmcLevelRangeForMap(string? location)
     {
         return _pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLower() ?? "", null);
     }

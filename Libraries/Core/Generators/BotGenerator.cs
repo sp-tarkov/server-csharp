@@ -318,7 +318,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">the killed bots difficulty</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Experience for kill</returns>
-    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMaxDouble> experiences, string botDifficulty, string role)
+    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax<double>> experiences, string botDifficulty, string role)
     {
         if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
@@ -327,10 +327,10 @@ public class BotGenerator(
                 _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
             }
 
-            return _randomUtil.GetDouble(experiences["normal"].Min.Value, experiences["normal"].Max.Value);
+            return _randomUtil.GetDouble(experiences["normal"].Min, experiences["normal"].Max);
         }
 
-        return _randomUtil.GetDouble(result.Min.Value, result.Max.Value);
+        return _randomUtil.GetDouble(result.Min, result.Max);
     }
 
     /// <summary>
@@ -510,17 +510,17 @@ public class BotGenerator(
         {
             Hydration = new CurrentMinMax
             {
-                Current = _randomUtil.GetDouble(healthObj.Hydration.Min.Value, healthObj.Hydration.Max.Value),
+                Current = _randomUtil.GetDouble(healthObj.Hydration.Min, healthObj.Hydration.Max),
                 Maximum = healthObj.Hydration.Max
             },
             Energy = new CurrentMinMax
             {
-                Current = _randomUtil.GetDouble(healthObj.Energy.Min.Value, healthObj.Energy.Max.Value),
+                Current = _randomUtil.GetDouble(healthObj.Energy.Min, healthObj.Energy.Max),
                 Maximum = healthObj.Energy.Max
             },
             Temperature = new CurrentMinMax
             {
-                Current = _randomUtil.GetDouble(healthObj.Temperature.Min.Value, healthObj.Temperature.Max.Value),
+                Current = _randomUtil.GetDouble(healthObj.Temperature.Min, healthObj.Temperature.Max),
                 Maximum = healthObj.Temperature.Max
             },
             BodyParts = new Dictionary<string, BodyPartHealth>
@@ -530,8 +530,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.Head.Min.Value, bodyParts.Head.Max.Value),
-                            Maximum = Math.Round(bodyParts.Head.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.Head.Min, bodyParts.Head.Max),
+                            Maximum = (double)Math.Round(bodyParts.Head.Max)
                         }
                     }
                 },
@@ -540,8 +540,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.Chest.Min.Value, bodyParts.Chest.Max.Value),
-                            Maximum = Math.Round(bodyParts.Chest.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.Chest.Min, bodyParts.Chest.Max),
+                            Maximum = (double)Math.Round(bodyParts.Chest.Max)
                         }
                     }
                 },
@@ -550,8 +550,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.Stomach.Min.Value, bodyParts.Stomach.Max.Value),
-                            Maximum = Math.Round(bodyParts.Stomach.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.Stomach.Min, bodyParts.Stomach.Max),
+                            Maximum = Math.Round(bodyParts.Stomach.Max)
                         }
                     }
                 },
@@ -560,8 +560,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.LeftArm.Min.Value, bodyParts.LeftArm.Max.Value),
-                            Maximum = Math.Round(bodyParts.LeftArm.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.LeftArm.Min, bodyParts.LeftArm.Max),
+                            Maximum = Math.Round(bodyParts.LeftArm.Max)
                         }
                     }
                 },
@@ -570,8 +570,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.RightArm.Min.Value, bodyParts.RightArm.Max.Value),
-                            Maximum = Math.Round(bodyParts.RightArm.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.RightArm.Min, bodyParts.RightArm.Max),
+                            Maximum = Math.Round(bodyParts.RightArm.Max)
                         }
                     }
                 },
@@ -580,8 +580,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.LeftLeg.Min.Value, bodyParts.LeftLeg.Max.Value),
-                            Maximum = Math.Round(bodyParts.LeftLeg.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.LeftLeg.Min, bodyParts.LeftLeg.Max),
+                            Maximum = Math.Round(bodyParts.LeftLeg.Max)
                         }
                     }
                 },
@@ -590,8 +590,8 @@ public class BotGenerator(
                     {
                         Health = new CurrentMinMax
                         {
-                            Current = _randomUtil.GetDouble(bodyParts.RightLeg.Min.Value, bodyParts.RightLeg.Max.Value),
-                            Maximum = Math.Round(bodyParts.RightLeg.Max ?? 0)
+                            Current = _randomUtil.GetDouble(bodyParts.RightLeg.Min, bodyParts.RightLeg.Max),
+                            Maximum = Math.Round(bodyParts.RightLeg.Max)
                         }
                     }
                 }
@@ -624,7 +624,7 @@ public class BotGenerator(
 
             foreach (var prop in props)
             {
-                var value = (MinMaxDouble) prop.GetValue(bodyPart);
+                var value = (MinMax<double>) prop.GetValue(bodyPart);
                 hpTotal += value.Max;
             }
 
@@ -662,7 +662,7 @@ public class BotGenerator(
     /// <param name="skills">Skills to randomise</param>
     /// <param name="isCommonSkills">Are the skills 'common' skills</param>
     /// <returns>Skills with randomised progress values as an array</returns>
-    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMaxDouble>? skills, bool isCommonSkills)
+    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax<double>>? skills, bool isCommonSkills)
     {
         if (skills is null)
         {
@@ -683,7 +683,7 @@ public class BotGenerator(
                     var skillToAdd = new BaseSkill
                     {
                         Id = kvp.Key,
-                        Progress = _randomUtil.GetDouble(skill.Min.Value, skill.Max.Value)
+                        Progress = _randomUtil.GetDouble(skill.Min, skill.Max)
                     };
 
                     // Common skills have additional props
