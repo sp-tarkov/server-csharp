@@ -446,7 +446,7 @@ public record Experience
     }
 
     [JsonPropertyName("level")]
-    public MinMax? Level
+    public MinMaxDouble? Level
     {
         get;
         set;
@@ -456,7 +456,7 @@ public record Experience
      * key = bot difficulty
      */
     [JsonPropertyName("reward")]
-    public Dictionary<string, MinMax>? Reward
+    public Dictionary<string, MinMaxDouble>? Reward
     {
         get;
         set;
@@ -616,19 +616,19 @@ public record BotTypeHealth
         set;
     }
 
-    public MinMax? Energy
+    public MinMaxDouble? Energy
     {
         get;
         set;
     }
 
-    public MinMax? Hydration
+    public MinMaxDouble? Hydration
     {
         get;
         set;
     }
 
-    public MinMax? Temperature
+    public MinMaxDouble? Temperature
     {
         get;
         set;
@@ -637,43 +637,43 @@ public record BotTypeHealth
 
 public record BodyPart
 {
-    public MinMax? Chest
+    public MinMaxDouble? Chest
     {
         get;
         set;
     }
 
-    public MinMax? Head
+    public MinMaxDouble? Head
     {
         get;
         set;
     }
 
-    public MinMax? LeftArm
+    public MinMaxDouble? LeftArm
     {
         get;
         set;
     }
 
-    public MinMax? LeftLeg
+    public MinMaxDouble? LeftLeg
     {
         get;
         set;
     }
 
-    public MinMax? RightArm
+    public MinMaxDouble? RightArm
     {
         get;
         set;
     }
 
-    public MinMax? RightLeg
+    public MinMaxDouble? RightLeg
     {
         get;
         set;
     }
 
-    public MinMax? Stomach
+    public MinMaxDouble? Stomach
     {
         get;
         set;
@@ -832,13 +832,13 @@ public record ItemPools
 
 public record BotDbSkills
 {
-    public Dictionary<string, MinMax>? Common
+    public Dictionary<string, MinMaxDouble>? Common
     {
         get;
         set;
     }
 
-    public Dictionary<string, MinMax>? Mastering
+    public Dictionary<string, MinMaxDouble>? Mastering
     {
         get;
         set;

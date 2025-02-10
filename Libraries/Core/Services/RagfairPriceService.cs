@@ -356,7 +356,7 @@ public class RagfairPriceService(
     /// <param name="isPreset">Offer is a preset</param>
     /// <param name="isPack">Offer is a pack</param>
     /// <returns>MinMax values</returns>
-    protected MinMax GetOfferTypeRangeValues(bool isPreset, bool isPack)
+    protected MinMaxDouble GetOfferTypeRangeValues(bool isPreset, bool isPack)
     {
         // Use different min/max values if the item is a preset or pack
         var priceRanges = _ragfairConfig.Dynamic.PriceRanges;
@@ -406,7 +406,7 @@ public class RagfairPriceService(
     /// <param name="existingPrice">price to alter</param>
     /// <param name="rangeValues">min and max to adjust price by</param>
     /// <returns>multiplied price</returns>
-    protected double RandomiseOfferPrice(double existingPrice, MinMax rangeValues)
+    protected double RandomiseOfferPrice(double existingPrice, MinMaxDouble rangeValues)
     {
         // Multiply by 100 to get 2 decimal places of precision
         var multiplier = _randomUtil.GetBiasedRandomNumber(rangeValues.Min.Value * 100, rangeValues.Max.Value * 100, 2, 2);

@@ -464,20 +464,20 @@ public class ScavCaseRewardGenerator(
             amountToGive = itemToCalculate.Id switch
             {
                 Money.ROUBLES => _randomUtil.GetInt(
-                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMaxDouble>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMaxDouble>(rarity).Max
                 ),
                 Money.EUROS => _randomUtil.GetInt(
-                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMaxDouble>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMaxDouble>(rarity).Max
                 ),
                 Money.DOLLARS => _randomUtil.GetInt(
-                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMaxDouble>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMaxDouble>(rarity).Max
                 ),
                 Money.GP => _randomUtil.GetInt(
-                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Min,
-                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax>(rarity).Max
+                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMaxDouble>(rarity).Min,
+                    (int) _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMaxDouble>(rarity).Max
                 ),
                 _ => amountToGive
             };

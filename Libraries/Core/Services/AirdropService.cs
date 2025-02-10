@@ -49,7 +49,7 @@ public class AirdropService(
     /// <returns>List of LootItem objects</returns>
     public GetAirdropLootResponse GenerateAirdropLoot(SptAirdropTypeEnum? forcedAirdropType = null)
     {
-        var airdropType = forcedAirdropType != null ? forcedAirdropType : ChooseAirdropType();
+        var airdropType = forcedAirdropType ?? ChooseAirdropType();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug($"Chose: {airdropType} for airdrop loot");
@@ -64,12 +64,12 @@ public class AirdropService(
             : _lootGenerator.CreateRandomLoot(airdropConfig);
 
         // Create airdrop crate and add to result in first spot
-        var airdropCrateItem = GetAirdropCrateItem((SptAirdropTypeEnum) airdropType);
+        var airdropCrateItem = GetAirdropCrateItem(airdropType);
 
         // Add crate to front of list
         crateLoot.Insert(0, airdropCrateItem);
 
-        // Reparent loot items to crate we added above
+        // Re-parent loot items to crate we added above
         foreach (var item in crateLoot)
         {
             if (item.Id == airdropCrateItem.Id)
@@ -78,7 +78,7 @@ public class AirdropService(
                 continue;
             }
 
-            // no parentId = root item, make item have create as parent
+            // no parentId = root item, make item have crate as parent
             if (item.ParentId is null)
             {
                 item.ParentId = airdropCrateItem.Id;
@@ -103,7 +103,7 @@ public class AirdropService(
         var airdropContainer = new Item
         {
             Id = _hashUtil.Generate(),
-            Template = "", // picked later
+            Template = string.Empty, // Picked later
             Upd = new Upd
             {
                 SpawnedInSession = true,

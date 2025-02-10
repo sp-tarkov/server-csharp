@@ -93,7 +93,7 @@ public record Sell
      * Settings to control how long it takes for a player offer to sell
      */
     [JsonPropertyName("time")]
-    public MinMax Time
+    public MinMaxDouble Time
     {
         get;
         set;
@@ -204,7 +204,7 @@ public record Dynamic
 
     [JsonPropertyName("offerItemCount")]
     /** How many offers should be listed */
-    public MinMax OfferItemCount
+    public MinMaxDouble OfferItemCount
     {
         get;
         set;
@@ -235,7 +235,7 @@ public record Dynamic
     }
 
     [JsonPropertyName("endTimeSeconds")]
-    public MinMax EndTimeSeconds
+    public MinMaxDouble EndTimeSeconds
     {
         get;
         set;
@@ -251,7 +251,7 @@ public record Dynamic
 
     [JsonPropertyName("stackablePercent")]
     /** Size stackable items should be listed for in percent of max stack size */
-    public MinMax StackablePercent
+    public MinMaxDouble StackablePercent
     {
         get;
         set;
@@ -259,7 +259,7 @@ public record Dynamic
 
     [JsonPropertyName("nonStackableCount")]
     /** Items that cannot be stacked can have multiples sold in one offer, what range of values can be listed */
-    public MinMax NonStackableCount
+    public MinMaxDouble NonStackableCount
     {
         get;
         set;
@@ -267,7 +267,7 @@ public record Dynamic
 
     [JsonPropertyName("rating")]
     /** Range of rating offers for items being listed */
-    public MinMax Rating
+    public MinMaxDouble Rating
     {
         get;
         set;
@@ -348,21 +348,21 @@ public record Dynamic
 public record PriceRanges
 {
     [JsonPropertyName("default")]
-    public MinMax Default
+    public MinMaxDouble Default
     {
         get;
         set;
     }
 
     [JsonPropertyName("preset")]
-    public MinMax Preset
+    public MinMaxDouble Preset
     {
         get;
         set;
     }
 
     [JsonPropertyName("pack")]
-    public MinMax Pack
+    public MinMaxDouble Pack
     {
         get;
         set;
@@ -541,14 +541,14 @@ public record Condition
     }
 
     [JsonPropertyName("current")]
-    public MinMax Current
+    public MinMaxDouble Current
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public MinMax Max
+    public MinMaxDouble Max
     {
         get;
         set;

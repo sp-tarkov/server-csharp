@@ -318,7 +318,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">the killed bots difficulty</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Experience for kill</returns>
-    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax> experiences, string botDifficulty, string role)
+    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMaxDouble> experiences, string botDifficulty, string role)
     {
         if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
@@ -624,7 +624,7 @@ public class BotGenerator(
 
             foreach (var prop in props)
             {
-                var value = (MinMax) prop.GetValue(bodyPart);
+                var value = (MinMaxDouble) prop.GetValue(bodyPart);
                 hpTotal += value.Max;
             }
 
@@ -662,7 +662,7 @@ public class BotGenerator(
     /// <param name="skills">Skills to randomise</param>
     /// <param name="isCommonSkills">Are the skills 'common' skills</param>
     /// <returns>Skills with randomised progress values as an array</returns>
-    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMax>? skills, bool isCommonSkills)
+    public List<BaseSkill> GetSkillsWithRandomisedProgressValue(Dictionary<string, MinMaxDouble>? skills, bool isCommonSkills)
     {
         if (skills is null)
         {

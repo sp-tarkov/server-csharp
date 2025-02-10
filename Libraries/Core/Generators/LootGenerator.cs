@@ -41,7 +41,7 @@ public class LootGenerator(
         var itemTypeCounts = InitItemLimitCounter(options.ItemLimits);
 
         // Handle sealed weapon containers
-        var sealedWeaponCrateCount = _randomUtil.GetDouble(
+        var sealedWeaponCrateCount = _randomUtil.GetInt(
             options.WeaponCrateCount.Min.Value,
             options.WeaponCrateCount.Max.Value
         );
@@ -84,7 +84,7 @@ public class LootGenerator(
         // Pool has items we could add as loot, proceed
         if (rewardPoolResults.ItemPool.Count > 0)
         {
-            var randomisedItemCount = _randomUtil.GetDouble(options.ItemCount.Min.Value, options.ItemCount.Max.Value);
+            var randomisedItemCount = _randomUtil.GetInt(options.ItemCount.Min.Value, options.ItemCount.Max.Value);
             for (var index = 0; index < randomisedItemCount; index++)
             {
                 if (!FindAndAddRandomItemToLoot(rewardPoolResults.ItemPool, itemTypeCounts, options, result))
@@ -98,7 +98,7 @@ public class LootGenerator(
         var globalDefaultPresets = _presetHelper.GetDefaultPresets().Values;
 
         // Filter default presets to just weapons
-        var randomisedWeaponPresetCount = _randomUtil.GetDouble(
+        var randomisedWeaponPresetCount = _randomUtil.GetInt(
             options.WeaponPresetCount.Min.Value,
             options.WeaponPresetCount.Max.Value
         );
@@ -131,7 +131,7 @@ public class LootGenerator(
         }
 
         // Filter default presets to just armors and then filter again by protection level
-        var randomisedArmorPresetCount = _randomUtil.GetDouble(
+        var randomisedArmorPresetCount = _randomUtil.GetInt(
             options.ArmorPresetCount.Min.Value,
             options.ArmorPresetCount.Max.Value
         );
@@ -177,7 +177,7 @@ public class LootGenerator(
     /// </summary>
     /// <param name="forcedLootDict">Dictionary of item tpls with minmax values</param>
     /// <returns>Array of Item</returns>
-    public List<Item> CreateForcedLoot(Dictionary<string, MinMax> forcedLootDict)
+    public List<Item> CreateForcedLoot(Dictionary<string, MinMaxInt> forcedLootDict)
     {
         var result = new List<Item>();
 
@@ -186,7 +186,7 @@ public class LootGenerator(
         foreach (var forcedItemKvP in forcedItems)
         {
             var details = forcedLootDict[forcedItemKvP.Key];
-            var randomisedItemCount = _randomUtil.GetDouble(details.Min.Value, details.Max.Value);
+            var randomisedItemCount = _randomUtil.GetInt(details.Min.Value, details.Max.Value);
 
             // Add forced loot item to result
             var newLootItem = new Item
@@ -296,7 +296,7 @@ public class LootGenerator(
     /// </summary>
     /// <param name="limits">limits as defined in config</param>
     /// <returns>record, key: item tplId, value: current/max item count allowed</returns>
-    private Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, double> limits)
+    private Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, int> limits)
     {
         var itemTypeCounts = new Dictionary<string, ItemLimit>();
         foreach (var itemTypeId in limits)
@@ -380,8 +380,8 @@ public class LootGenerator(
 
         if (options.ItemStackLimits.TryGetValue(item.Id, out var itemLimits))
         {
-            min = (int?) itemLimits.Min;
-            max = (int?) itemLimits.Max;
+            min = itemLimits.Min;
+            max = itemLimits.Max;
         }
 
         return _randomUtil.GetInt(min ?? 1, max ?? 1);
@@ -542,8 +542,7 @@ public class LootGenerator(
 
         foreach (var (rewardKey, settings) in containerSettings.RewardTypeLimits)
         {
-            var rewardCount = _randomUtil.GetDouble(settings.Min.Value, settings.Max.Value);
-
+            var rewardCount = _randomUtil.GetInt(settings.Min.Value, settings.Max.Value);
             if (rewardCount == 0)
             {
                 continue;
@@ -552,7 +551,7 @@ public class LootGenerator(
             // Edge case - ammo boxes
             if (rewardKey == BaseClasses.AMMO_BOX)
             {
-                // Get ammoboxes from db
+                // Get ammo boxes from db
                 var ammoBoxesDetails = containerSettings.AmmoBoxWhitelist.Select(
                     tpl =>
                     {
@@ -650,7 +649,7 @@ public class LootGenerator(
 
         foreach (var (rewardKey, settings) in containerSettings.WeaponModRewardLimits)
         {
-            var rewardCount = _randomUtil.GetDouble(settings.Min.Value, settings.Max.Value);
+            var rewardCount = _randomUtil.GetInt(settings.Min.Value, settings.Max.Value);
 
             // Nothing to add, skip reward type
             if (rewardCount == 0)
@@ -775,14 +774,14 @@ public class LootGenerator(
 public class ItemLimit
 {
     [JsonPropertyName("current")]
-    public double Current
+    public int Current
     {
         get;
         set;
     }
 
     [JsonPropertyName("max")]
-    public double Max
+    public int Max
     {
         get;
         set;

@@ -13,7 +13,7 @@ public record ScavCaseConfig : BaseConfig
     } = "spt-scavcase";
 
     [JsonPropertyName("rewardItemValueRangeRub")]
-    public Dictionary<string, MinMax> RewardItemValueRangeRub
+    public Dictionary<string, MinMaxDouble> RewardItemValueRangeRub
     {
         get;
         set;
@@ -110,21 +110,21 @@ public record MoneyRewards
 public record MoneyLevels
 {
     [JsonPropertyName("common")]
-    public MinMax Common
+    public MinMaxDouble Common
     {
         get;
         set;
     }
 
     [JsonPropertyName("rare")]
-    public MinMax Rare
+    public MinMaxDouble Rare
     {
         get;
         set;
     }
 
     [JsonPropertyName("superrare")]
-    public MinMax SuperRare
+    public MinMaxDouble SuperRare
     {
         get;
         set;
@@ -148,7 +148,7 @@ public record AmmoRewards
     }
 
     [JsonPropertyName("ammoRewardValueRangeRub")]
-    public Dictionary<string, MinMax> AmmoRewardValueRangeRub
+    public Dictionary<string, MinMaxDouble> AmmoRewardValueRangeRub
     {
         get;
         set;

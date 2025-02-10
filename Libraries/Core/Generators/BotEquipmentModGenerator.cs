@@ -360,7 +360,7 @@ public class BotEquipmentModGenerator(
         return result;
     }
 
-    private MinMax GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
+    private MinMaxDouble GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
         platePool.Sort(
             (x, y) =>
@@ -379,7 +379,7 @@ public class BotEquipmentModGenerator(
             }
         );
 
-        return new MinMax
+        return new MinMaxDouble
         {
             Min = platePool[0].Properties.ArmorClass,
             Max = platePool[platePool.Count - 1].Properties.ArmorClass

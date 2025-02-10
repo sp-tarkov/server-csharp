@@ -117,7 +117,7 @@ public record AirdropLoot
     ///     Min/max of weapons inside crate
     /// </summary>
     [JsonPropertyName("weaponPresetCount")]
-    public MinMax? WeaponPresetCount
+    public MinMaxInt? WeaponPresetCount
     {
         get;
         set;
@@ -127,7 +127,7 @@ public record AirdropLoot
     ///     Min/max of armors (head/chest/rig) inside crate
     /// </summary>
     [JsonPropertyName("armorPresetCount")]
-    public MinMax? ArmorPresetCount
+    public MinMaxInt? ArmorPresetCount
     {
         get;
         set;
@@ -137,7 +137,7 @@ public record AirdropLoot
     ///     Min/max of items inside crate
     /// </summary>
     [JsonPropertyName("itemCount")]
-    public MinMax ItemCount
+    public MinMaxInt ItemCount
     {
         get;
         set;
@@ -147,7 +147,7 @@ public record AirdropLoot
     ///     Min/max of sealed weapon boxes inside crate
     /// </summary>
     [JsonPropertyName("weaponCrateCount")]
-    public MinMax WeaponCrateCount
+    public MinMaxInt WeaponCrateCount
     {
         get;
         set;
@@ -177,7 +177,7 @@ public record AirdropLoot
     ///     Item type/ item tpls to limit count of inside crate - key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, double> ItemLimits
+    public Dictionary<string, int> ItemLimits
     {
         get;
         set;
@@ -187,7 +187,7 @@ public record AirdropLoot
     ///     Items to limit stack size of key: item tpl value: min/max stack size
     /// </summary>
     [JsonPropertyName("itemStackLimits")]
-    public Dictionary<string, MinMax> ItemStackLimits
+    public Dictionary<string, MinMaxInt> ItemStackLimits
     {
         get;
         set;
@@ -221,7 +221,7 @@ public record AirdropLoot
     }
 
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax>? ForcedLoot
+    public Dictionary<string, MinMaxInt>? ForcedLoot
     {
         get;
         set;

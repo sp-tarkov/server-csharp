@@ -10,7 +10,7 @@ public record LootRequest
     ///     Count of weapons to generate
     /// </summary>
     [JsonPropertyName("weaponPresetCount")]
-    public MinMax? WeaponPresetCount
+    public MinMaxInt? WeaponPresetCount
     {
         get;
         set;
@@ -20,7 +20,7 @@ public record LootRequest
     ///     Count of armor to generate
     /// </summary>
     [JsonPropertyName("armorPresetCount")]
-    public MinMax? ArmorPresetCount
+    public MinMaxInt? ArmorPresetCount
     {
         get;
         set;
@@ -30,7 +30,7 @@ public record LootRequest
     ///     Count of items to generate
     /// </summary>
     [JsonPropertyName("itemCount")]
-    public MinMax? ItemCount
+    public MinMaxInt? ItemCount
     {
         get;
         set;
@@ -40,7 +40,7 @@ public record LootRequest
     ///     Count of sealed weapon crates to generate
     /// </summary>
     [JsonPropertyName("weaponCrateCount")]
-    public MinMax? WeaponCrateCount
+    public MinMaxInt? WeaponCrateCount
     {
         get;
         set;
@@ -70,14 +70,14 @@ public record LootRequest
     ///     key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, double>? ItemLimits
+    public Dictionary<string, int>? ItemLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("itemStackLimits")]
-    public Dictionary<string, MinMax>? ItemStackLimits
+    public Dictionary<string, MinMaxInt>? ItemStackLimits
     {
         get;
         set;
@@ -127,7 +127,7 @@ public record LootRequest
     ///     Item tpls + count of items to force include
     /// </summary>
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax>? ForcedLoot
+    public Dictionary<string, MinMaxInt>? ForcedLoot
     {
         get;
         set;

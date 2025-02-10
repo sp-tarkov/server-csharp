@@ -388,7 +388,7 @@ public class BotController(
         };
     }
 
-    private MinMax? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
+    private MinMaxDouble? GetPmcConversionMinMaxForLocation(string? requestedBotRole, string? location)
     {
         return _pmcConfig.ConvertIntoPmcChance!.TryGetValue(location?.ToLower() ?? "", out var mapSpecificConversionValues)
             ? mapSpecificConversionValues.GetValueOrDefault(requestedBotRole?.ToLower())
@@ -409,7 +409,7 @@ public class BotController(
         return raidSettings;
     }
 
-    private MinMax? GetPmcLevelRangeForMap(string? location)
+    private MinMaxDouble? GetPmcLevelRangeForMap(string? location)
     {
         return _pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLower() ?? "", null);
     }

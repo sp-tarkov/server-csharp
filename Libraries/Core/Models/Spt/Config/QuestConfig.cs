@@ -596,7 +596,7 @@ public record PickupTypeWithMaxCount
 public record EliminationConfig : BaseQuestConfig
 {
     [JsonPropertyName("levelRange")]
-    public MinMax? LevelRange
+    public MinMaxDouble? LevelRange
     {
         get;
         set;

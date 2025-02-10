@@ -56,7 +56,7 @@ public record BotGenerationDetails
     ///     Level specific overrides for PMC level
     /// </summary>
     [JsonPropertyName("locationSpecificPmcLevelOverride")]
-    public MinMax? LocationSpecificPmcLevelOverride
+    public MinMaxDouble? LocationSpecificPmcLevelOverride
     {
         get;
         set;

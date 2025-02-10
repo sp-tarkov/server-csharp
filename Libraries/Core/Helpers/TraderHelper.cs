@@ -394,7 +394,7 @@ public class TraderHelper(
                     // create temporary entry to prevent logger spam
                     {
                         TraderId = traderId,
-                        Seconds = new MinMax(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
+                        Seconds = new MinMaxDouble(_traderConfig.UpdateTimeDefault, _traderConfig.UpdateTimeDefault)
                     }
             );
 

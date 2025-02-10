@@ -47,7 +47,7 @@ public class BotLootCacheService(
         bool isPmc,
         string lootType,
         BotType botJsonTemplate,
-        MinMax? itemPriceMinMax = null)
+        MinMaxDouble? itemPriceMinMax = null)
     {
         lock (_lock)
         {

@@ -24,7 +24,7 @@ public class BotLevelGenerator(
     /// <param name="botGenerationDetails">Details to help generate a bot</param>
     /// <param name="bot">Bot the level is being generated for</param>
     /// <returns>IRandomisedBotLevelResult object</returns>
-    public RandomisedBotLevelResult GenerateBotLevel(MinMax levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
+    public RandomisedBotLevelResult GenerateBotLevel(MinMaxDouble levelDetails, BotGenerationDetails botGenerationDetails, BotBase bot)
     {
         if (!botGenerationDetails.IsPmc.GetValueOrDefault(false))
         {
@@ -74,7 +74,7 @@ public class BotLevelGenerator(
     /// <param name="levelDetails"></param>
     /// <param name="maxAvailableLevel">Max level allowed</param>
     /// <returns>A MinMax of the lowest and highest level to generate the bots</returns>
-    public MinMax GetRelativePmcBotLevelRange(BotGenerationDetails botGenerationDetails, MinMax levelDetails, int maxAvailableLevel)
+    public MinMaxDouble GetRelativePmcBotLevelRange(BotGenerationDetails botGenerationDetails, MinMaxDouble levelDetails, int maxAvailableLevel)
     {
         var levelOverride = botGenerationDetails.LocationSpecificPmcLevelOverride;
 
@@ -105,6 +105,6 @@ public class BotLevelGenerator(
         maxLevel = Math.Min(Math.Max(maxLevel, minPossibleLevel), maxPossibleLevel);
         minLevel = Math.Min(Math.Max(minLevel, minPossibleLevel), maxPossibleLevel);
 
-        return new MinMax(minLevel, maxLevel);
+        return new MinMaxDouble(minLevel, maxLevel);
     }
 }

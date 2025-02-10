@@ -1336,7 +1336,7 @@ public class FenceService(
      */
     protected int GetSingleItemStackCount(TemplateItem itemDbDetails)
     {
-        MinMax? overrideValues;
+        MinMaxDouble? overrideValues;
         if (itemHelper.IsOfBaseclass(itemDbDetails.Id, BaseClasses.AMMO))
         {
             overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
