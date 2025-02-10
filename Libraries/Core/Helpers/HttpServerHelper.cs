@@ -22,9 +22,9 @@ public class HttpServerHelper(ConfigServer configServer)
         { "txt", "text/plain" }
     };
 
-    public string GetMimeText(string key)
+    public string? GetMimeText(string key)
     {
-        return mime[key];
+        return mime.GetValueOrDefault(key);
     }
 
     /**

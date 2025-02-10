@@ -29,7 +29,8 @@ public class BundleSerializer(
             return;
         }
 
-        httpFileUtil.SendFile(resp, $"{bundle.ModPath}/bundles/{bundle.FileName}");
+        var bundlePath = Path.Join(bundle.ModPath, "/bundles/", bundle.FileName);
+        httpFileUtil.SendFile(resp, bundlePath);
     }
 
     public bool CanHandle(string route)

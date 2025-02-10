@@ -7,32 +7,50 @@ using SptCommon.Annotations;
 
 namespace Core.Loaders
 {
+    /*
+    {
+        "ModPath" : "/user/mods/Mod3",
+        "FileName" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
+        "Bundle" : {
+            "key" : "assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle",
+            "dependencyKeys" : [ ]
+        },
+        "Crc" : 1030040371,
+        "Dependencies" : [ ]
+    } */
     public class BundleInfo
     {
         public string? ModPath
         {
             get;
+            set;
         }
 
         public string FileName
         {
             get;
+            set;
         }
 
         public BundleManifestEntry Bundle
         {
             get;
+            set;
         }
 
         public uint Crc
         {
             get;
+            set;
         }
 
         public List<string> Dependencies
         {
             get;
+            set;
         }
+
+        public BundleInfo() {}
 
         public BundleInfo(
             string modPath,
@@ -95,7 +113,8 @@ namespace Core.Loaders
 
         public void AddBundles(string modPath)
         {
-            // modPath should be relative to the server exe - /user/mods/Mod3/
+            // modPath should be relative to the server exe - ./user/mods/Mod3
+            // TODO: make sure the mod is passing a path that is relative from the server exe
 
             var modBundlesJson = _fileUtil.ReadFile(Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json"));
             var modBundles = _jsonUtil.Deserialize<BundleManifest>(modBundlesJson);
@@ -103,9 +122,9 @@ namespace Core.Loaders
 
             foreach (var bundleManifest in bundleManifestArr)
             {
-                var relativeModPath = modPath.Replace('\\', '/'); // /\\/g, "/" - replaces all instances of \\ with /
+                var relativeModPath = modPath.Replace('\\', '/');
 
-                var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key);
+                var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key).Replace('\\', '/');
 
                 if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
                 {
@@ -138,7 +157,8 @@ public record BundleManifest
 public record BundleManifestEntry
 {
     [JsonPropertyName("key")]
-    public string Key {
+    public string Key
+    {
         get;
         set;
     }
@@ -150,3 +170,4 @@ public record BundleManifestEntry
         set;
     }
 }
+

@@ -20,7 +20,5 @@ public class HttpFileUtil
         var type = string.IsNullOrWhiteSpace(mimePath) ? _httpServerHelper.GetMimeText("txt") : mimePath;
         resp.Headers.Append("Content-Type", type);
         resp.SendFileAsync(filePath, CancellationToken.None).Wait();
-        // maybe the above is correct?
-        // await pipeline(fs.createReadStream(filePath), resp);
     }
 }
