@@ -27,7 +27,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "11RegisterClassesInDI", "11
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "12Bundle", "12Bundle\12Bundle.csproj", "{FE769EA8-4F31-4426-90A3-A1EFA8A43D6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "13AddTraderWithAssortJson", "13AddTraderWithAssortJson\13AddTraderWithAssortJson\13AddTraderWithAssortJson.csproj", "{636D5797-E37F-425A-B8DB-E3FBE4573F71}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "13AddTraderWithAssortJson", "13AddTraderWithAssortJson\13AddTraderWithAssortJson.csproj", "{636D5797-E37F-425A-B8DB-E3FBE4573F71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "14AfterDBLoadHook", "14AfterDBLoadHook\14AfterDBLoadHook.csproj", "{B4DDC0E8-99D1-405E-9E01-823523FE642B}"
 EndProject
