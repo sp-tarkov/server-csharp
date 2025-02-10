@@ -82,9 +82,9 @@ namespace Core.Loaders
             return result;
         }
 
-        public BundleInfo GetBundle(string bundleKey)
+        public BundleInfo? GetBundle(string bundleKey)
         {
-            return _cloner.Clone(_bundles[bundleKey]);
+            return _bundles.GetValueOrDefault(bundleKey);
         }
 
         public void AddBundles(string modPath)
