@@ -38,9 +38,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "18.1CustomItemServiceLootBox", "18.1CustomItemServiceLootBox\18.1CustomItemServiceLootBox.csproj", "{B870C285-B435-4C40-89C4-0220D34CB9BE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "20CustomChatBot", "20CustomChatBot\20CustomChatBot.csproj", "{32271491-8CF1-4014-9A8E-E1EA22EA4292}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "13.1AddTraderWithDynamicAssorts", "13.1AddTraderWithDynamicAssorts\13.1AddTraderWithDynamicAssorts.csproj", "{9038FA64-E484-4549-9728-C50F12BBE643}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "21CustomCommandoCommand", "21CustomCommandoCommand\21CustomCommandoCommand.csproj", "{A7D491BC-94C0-4AC9-9190-1FCA05D09B19}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "22CustomSptCommand", "22CustomSptCommand\22CustomSptCommand.csproj", "{7FB8C9B5-CEBF-4E76-9EC3-670EE57B328B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -128,6 +131,10 @@ Global
 		{A7D491BC-94C0-4AC9-9190-1FCA05D09B19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7D491BC-94C0-4AC9-9190-1FCA05D09B19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7D491BC-94C0-4AC9-9190-1FCA05D09B19}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FB8C9B5-CEBF-4E76-9EC3-670EE57B328B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FB8C9B5-CEBF-4E76-9EC3-670EE57B328B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FB8C9B5-CEBF-4E76-9EC3-670EE57B328B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FB8C9B5-CEBF-4E76-9EC3-670EE57B328B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

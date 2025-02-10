@@ -3,9 +3,11 @@ using Core.Models.Eft.Dialog;
 using Core.Models.Eft.Profile;
 using Core.Servers;
 using Core.Services;
+using SptCommon.Annotations;
 
 namespace _21CustomCommandoCommand;
 
+[Injectable]
 public class CustomCommandoCommand : IChatCommand
 {
     private DatabaseServer _databaseServer;
