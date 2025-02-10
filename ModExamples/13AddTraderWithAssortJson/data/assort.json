@@ -1,0 +1,132 @@
+{
+    "items": [
+        {
+            "_name": "milk",
+            "_id": "6751d7d0ac6207409b0823a0",
+            "_tpl": "575146b724597720a27126d5",
+            "parentId": "hideout",
+            "slotId": "hideout",
+            "upd": {
+                "UnlimitedCount": false,
+                "StackObjectsCount": 200,
+                "BuyRestrictionMax": 10,
+                "BuyRestrictionCurrent": 0
+            }
+        },
+        {
+            "_name": "milk barter",
+            "_id": "6751d7d0ac6207409b0823a1",
+            "_tpl": "575146b724597720a27126d5",
+            "parentId": "hideout",
+            "slotId": "hideout",
+            "upd": {
+                "UnlimitedCount": false,
+                "StackObjectsCount": 200,
+                "BuyRestrictionMax": 10,
+                "BuyRestrictionCurrent": 0
+            }
+        },
+        {
+            "_name": "helmet",
+            "_id": "6751d7d0ac6207409b0823a2",
+            "_tpl": "5b40e3f35acfc40016388218",
+            "parentId": "hideout",
+            "slotId": "hideout",
+            "upd": {
+                "UnlimitedCount": false,
+                "StackObjectsCount": 200,
+                "BuyRestrictionMax": 10,
+                "BuyRestrictionCurrent": 0
+            }
+        },
+        {
+            "_name": "HELMET_SOFT_ARMOUR_TOP",
+            "_id": "6751d7d0ac6207409b0823a3",
+            "_tpl": "657f95bff92cd718b701550c",
+            "parentId": "HELMET_ID",
+            "slotId": "Helmet_top"
+        },
+        {
+            "_name": "HELMET_SOFT_ARMOUR_BACK_ID",
+            "_id": "6751d7d0ac6207409b0823a4",
+            "_tpl": "657f9605f4c82973640b2358",
+            "parentId": "HELMET_ID",
+            "slotId": "Helmet_back"
+        },
+        {
+            "_name": "HELMET_ID_BARTER",
+            "_id": "6751d7d0ac6207409b0823a5",
+            "_tpl": "5b40e3f35acfc40016388218",
+            "parentId": "hideout",
+            "slotId": "hideout",
+            "upd": {
+                "UnlimitedCount": false,
+                "StackObjectsCount": 200,
+                "BuyRestrictionMax": 10,
+                "BuyRestrictionCurrent": 0
+            }
+        },
+        {
+            "_name": "HELMET_SOFT_ARMOUR_TOP_ID_BARTER",
+            "_id": "6751d7d0ac6207409b0823a5",
+            "_tpl": "657f95bff92cd718b701550c",
+            "parentId": "HELMET_ID_BARTER",
+            "slotId": "Helmet_top"
+        },
+        {
+            "_name": "HELMET_SOFT_ARMOUR_BACK_ID_BARTER",
+            "_id": "6751d7d0ac6207409b0823a6",
+            "_tpl": "657f9605f4c82973640b2358",
+            "parentId": "HELMET_ID_BARTER",
+            "slotId": "Helmet_back"
+        }
+    ],
+    "barter_scheme": {
+        "6751d7d0ac6207409b0823a0": [
+            [
+                {
+                    "count": 2000,
+                    "_tpl": "5449016a4bdc2d6f028b456f"
+                }
+            ]
+        ],
+        "6751d7d0ac6207409b0823a1": [
+            [
+                {
+                    "count": 3,
+                    "_tpl": "59faff1d86f7746c51718c9c"
+                },
+                {
+                    "count": 1,
+                    "_tpl": "544fb45d4bdc2dee738b4568"
+                }
+            ]
+        ],
+        "6751d7d0ac6207409b0823a2": [
+            [
+                {
+                    "count": 2000,
+                    "_tpl": "5449016a4bdc2d6f028b456f"
+                }
+            ]
+        ],
+        "6751d7d0ac6207409b0823a5": [
+            [
+                {
+                    "count": 3,
+                    "_tpl": "59faff1d86f7746c51718c9c"
+                },
+                {
+                    "count": 1,
+                    "_tpl": "544fb45d4bdc2dee738b4568"
+                }
+            ]
+        ]
+    },
+    "loyal_level_items": {
+        "6751d7d0ac6207409b0823a0": 1,
+        "6751d7d0ac6207409b0823a1": 1,
+        "6751d7d0ac6207409b0823a2": 1,
+        "6751d7d0ac6207409b0823a5": 1
+    }
+}
