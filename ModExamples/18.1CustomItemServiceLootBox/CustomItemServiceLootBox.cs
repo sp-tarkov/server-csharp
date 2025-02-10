@@ -5,9 +5,11 @@ using Core.Models.Spt.Mod;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Services.Mod;
+using SptCommon.Annotations;
 
 namespace _18._1CustomItemServiceLootBox;
 
+[Injectable]
 public class CustomItemServiceLootBox : IPostDBLoadMod, IPostSptLoadMod
 {
     private CustomItemService _customItemService;
