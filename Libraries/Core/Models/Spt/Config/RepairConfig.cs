@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Core.Models.Common;
+using Core.Models.Eft.Common.Tables;
 
 namespace Core.Models.Spt.Config;
 
@@ -229,7 +230,7 @@ public record BonusValues
      * What dura is buff active between (min max of current max)
      */
     [JsonPropertyName("activeDurabilityPercentMinMax")]
-    public MinMax<double> ActiveDurabilityPercentMinMax
+    public MinMax<int> ActiveDurabilityPercentMinMax
     {
         get;
         set;
