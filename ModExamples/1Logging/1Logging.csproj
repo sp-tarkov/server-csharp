@@ -11,12 +11,21 @@
     <ItemGroup>
       <Reference Include="Core">
         <HintPath>..\TempReferences\Core.dll</HintPath>
+        <Private>false</Private>
+        <CopyLocal>false</CopyLocal>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       </Reference>
       <Reference Include="SptCommon">
         <HintPath>..\TempReferences\SptCommon.dll</HintPath>
+        <Private>false</Private>
+        <CopyLocal>false</CopyLocal>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       </Reference>
       <Reference Include="SptDependencyInjection">
         <HintPath>..\TempReferences\SptDependencyInjection.dll</HintPath>
+        <Private>false</Private>
+        <CopyLocal>false</CopyLocal>
+        <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
       </Reference>
     </ItemGroup>
 
