@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <RootNamespace>_11RegisterClassesInDI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- TODO: Change to Nuget Package   -->
+  <ItemGroup>
+    <Reference Include="Core">
+      <HintPath>..\TempReferences\Core.dll</HintPath>
+    </Reference>
+    <Reference Include="SptCommon">
+      <HintPath>..\TempReferences\SptCommon.dll</HintPath>
+    </Reference>
+    <Reference Include="SptDependencyInjection">
+      <HintPath>..\TempReferences\SptDependencyInjection.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+</Project>
