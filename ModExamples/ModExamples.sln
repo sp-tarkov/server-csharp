@@ -47,6 +47,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "22CustomSptCommand", "22Cus
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "23CustomAbstractChatBot", "23CustomAbstractChatBot\23CustomAbstractChatBot.csproj", "{B97A7EE2-04DD-4690-866E-9179F5E01908}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "24Websocket", "24Websocket\24Websocket.csproj", "{94B1B1E4-C47D-4AA7-BA3A-88F3D30439DF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +143,10 @@ Global
 		{B97A7EE2-04DD-4690-866E-9179F5E01908}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B97A7EE2-04DD-4690-866E-9179F5E01908}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B97A7EE2-04DD-4690-866E-9179F5E01908}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94B1B1E4-C47D-4AA7-BA3A-88F3D30439DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94B1B1E4-C47D-4AA7-BA3A-88F3D30439DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94B1B1E4-C47D-4AA7-BA3A-88F3D30439DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94B1B1E4-C47D-4AA7-BA3A-88F3D30439DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
