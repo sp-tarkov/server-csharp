@@ -383,7 +383,7 @@ public record SlotLootSettings
     }
 }
 
-public record MinMaxLootValue : MinMax<double>
+public record MinMaxLootValue : MinMax<int>
 {
     [JsonPropertyName("value")]
     public double Value

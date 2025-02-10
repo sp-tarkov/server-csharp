@@ -456,7 +456,7 @@ public record Experience
      * key = bot difficulty
      */
     [JsonPropertyName("reward")]
-    public Dictionary<string, MinMax<double>>? Reward
+    public Dictionary<string, MinMax<int>>? Reward
     {
         get;
         set;

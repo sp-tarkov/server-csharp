@@ -235,7 +235,7 @@ public class BotGenerator(
 
         bot.Info.Experience = botLevel.Exp;
         bot.Info.Level = botLevel.Level;
-        bot.Info.Settings.Experience = (int) GetExperienceRewardForKillByDifficulty(
+        bot.Info.Settings.Experience = GetExperienceRewardForKillByDifficulty(
             botJsonTemplate.BotExperience.Reward,
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
@@ -318,7 +318,7 @@ public class BotGenerator(
     /// <param name="botDifficulty">the killed bots difficulty</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Experience for kill</returns>
-    public double GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax<double>> experiences, string botDifficulty, string role)
+    public int GetExperienceRewardForKillByDifficulty(Dictionary<string, MinMax<int>> experiences, string botDifficulty, string role)
     {
         if (!experiences.TryGetValue(botDifficulty.ToLower(), out var result))
         {
@@ -327,10 +327,10 @@ public class BotGenerator(
                 _logger.Debug($"Unable to find experience: {botDifficulty} for {role} bot, falling back to `normal`");
             }
 
-            return _randomUtil.GetDouble(experiences["normal"].Min, experiences["normal"].Max);
+            return _randomUtil.GetInt(experiences["normal"].Min, experiences["normal"].Max);
         }
 
-        return _randomUtil.GetDouble(result.Min, result.Max);
+        return _randomUtil.GetInt(result.Min, result.Max);
     }
 
     /// <summary>
