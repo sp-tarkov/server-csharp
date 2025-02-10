@@ -1,6 +1,5 @@
 using System.Text;
 using Core.Servers.Http;
-using Microsoft.AspNetCore.Http;
 using SptCommon.Annotations;
 
 namespace _15HttpListenerExample;
@@ -17,6 +16,7 @@ public class HttpListenerExample : IHttpListener
     {
         resp.StatusCode = 200;
         resp.Body.WriteAsync(Encoding.UTF8.GetBytes("[1] This is the first example of a mod hooking into the HttpServer")).AsTask().Wait();
-        resp.
+        resp.StartAsync().Wait();
+        resp.CompleteAsync().Wait();
     }
 }
