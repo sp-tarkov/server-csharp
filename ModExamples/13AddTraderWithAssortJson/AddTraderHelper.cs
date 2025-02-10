@@ -15,12 +15,12 @@ namespace _13AddTraderWithAssortJson
      * @param refreshTimeSecondsMin How many seconds between trader stock refresh min time
      * @param refreshTimeSecondsMax How many seconds between trader stock refresh max time
      */
-    public void SetTraderUpdateTime(TraderConfig traderConfig, dynamic baseJson, int refreshTimeSecondsMin, int refreshTimeSecondsMax)
+    public void SetTraderUpdateTime(TraderConfig traderConfig, TraderBase baseJson, int refreshTimeSecondsMin, int refreshTimeSecondsMax)
     {
         // Add refresh time in seconds to config
         var traderRefreshRecord = new UpdateTime
         {
-            TraderId = baseJson.id,
+            TraderId = baseJson.Id,
             Seconds = new MinMax<int>(refreshTimeSecondsMin, refreshTimeSecondsMax)
         };
     
@@ -34,7 +34,7 @@ namespace _13AddTraderWithAssortJson
      * @param tables database
      * @param jsonUtil json utility class
      */
-    public void AddTraderToDb(dynamic traderDetailsToAdd, DatabaseTables tables, JsonUtil jsonUtil, object assortJson)
+    public void AddTraderToDb(TraderBase traderDetailsToAdd, DatabaseTables tables, JsonUtil jsonUtil, object assortJson)
     {
         // Create trader data ready to add to database
         var traderDataToAdd = new Trader
@@ -54,7 +54,7 @@ namespace _13AddTraderWithAssortJson
         };
 
         // Add trader to trader table, key is the traders id
-        tables.Traders.Add(traderDetailsToAdd._id, traderDataToAdd);
+        tables.Traders.Add(traderDetailsToAdd.Id, traderDataToAdd);
     }
 
     /**
@@ -67,17 +67,17 @@ namespace _13AddTraderWithAssortJson
      * @param location Location of trader (e.g. "Here in the cat shop")
      * @param description Description of trader
      */
-    public void AddTraderToLocales(dynamic baseJson, DatabaseTables tables, string fullName, string firstName, string nickName, string location, string description)
+    public void AddTraderToLocales(TraderBase baseJson, DatabaseTables tables, string fullName, string firstName, string nickName, string location, string description)
     {
         // For each language, add locale for the new trader
         var locales = tables.Locales.Global;
 
         foreach (var (key, value) in locales) {
-            value.Value[$"{baseJson._id} FullName"] = fullName;
-            value.Value[$"{baseJson._id} FirstName"] = firstName;
-            value.Value[$"{baseJson._id} Nickname"] = nickName;
-            value.Value[$"{baseJson._id} Location"] = location;
-            value.Value[$"{baseJson._id} Description"] = description;
+            value.Value[$"{baseJson.Id} FullName"] = fullName;
+            value.Value[$"{baseJson.Id} FirstName"] = firstName;
+            value.Value[$"{baseJson.Id} Nickname"] = nickName;
+            value.Value[$"{baseJson.Id} Location"] = location;
+            value.Value[$"{baseJson.Id} Description"] = description;
         }
     }
     }
