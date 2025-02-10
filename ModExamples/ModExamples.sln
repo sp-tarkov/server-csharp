@@ -1,5 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113 d17.12
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "1Logging", "1Logging\1Logging.csproj", "{98270ED7-04C7-4F90-91B1-820C672CE123}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2EditDatabase", "2EditDatabase\2EditDatabase.csproj", "{42BF3751-D744-4373-B5CC-704A0CCA0106}"
@@ -23,6 +26,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "11RegisterClassesInDI", "11RegisterClassesInDI\11RegisterClassesInDI.csproj", "{5B705F9E-7F4F-491A-8215-30EE5B5D77B0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "12Bundle", "12Bundle\12Bundle.csproj", "{FE769EA8-4F31-4426-90A3-A1EFA8A43D6E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "13AddTraderWithAssortJson", "13AddTraderWithAssortJson\13AddTraderWithAssortJson\13AddTraderWithAssortJson.csproj", "{636D5797-E37F-425A-B8DB-E3FBE4573F71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -78,5 +83,12 @@ Global
 		{FE769EA8-4F31-4426-90A3-A1EFA8A43D6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE769EA8-4F31-4426-90A3-A1EFA8A43D6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE769EA8-4F31-4426-90A3-A1EFA8A43D6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{636D5797-E37F-425A-B8DB-E3FBE4573F71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{636D5797-E37F-425A-B8DB-E3FBE4573F71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{636D5797-E37F-425A-B8DB-E3FBE4573F71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{636D5797-E37F-425A-B8DB-E3FBE4573F71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal
