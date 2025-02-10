@@ -140,6 +140,11 @@ public class CustomItemService(
      */
     protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
+        if (overrideProperties is null)
+        {
+            return;
+        }
+
         foreach (var propKey in overrideProperties.GetAllPropsAsDict())
         {
             itemClone.Properties.GetAllPropsAsDict()[propKey.Key] = overrideProperties.GetAllPropsAsDict()[propKey.Key];
@@ -186,7 +191,7 @@ public class CustomItemService(
      * e.g.
      * en[0]
      * fr[1]
-     * 
+     *
      * No jp provided, so english will be used as a substitute
      * @param localeDetails key is language, value are the new locale details
      * @param newItemId id of the item being created
