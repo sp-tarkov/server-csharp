@@ -23,7 +23,6 @@ public class SptWebSocketConnectionHandler(
 ) : IWebSocketConnectionHandler
 {
     protected WsPing _defaultNotification = new();
-    protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected Lock _lockObject = new();
     protected Dictionary<string, CancellationTokenSource> _receiveTasks = new();
     protected Dictionary<string, Timer> _socketAliveTimers = new();
@@ -128,25 +127,6 @@ public class SptWebSocketConnectionHandler(
     public bool IsWebSocketConnected(string sessionID)
     {
         return _sockets.TryGetValue(sessionID, out var socket) && socket.State == WebSocketState.Open;
-    }
-
-    private void TimedTask(WebSocket ws, string sessionID)
-    {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug(_localisationService.GetText("websocket-pinging_player", sessionID));
-        }
-
-        if (ws.State == WebSocketState.Open)
-        {
-            var sendTask = ws.SendAsync(
-                Encoding.UTF8.GetBytes(_jsonUtil.Serialize(_defaultNotification)),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None
-            );
-            sendTask.Wait();
-        }
     }
 
     private void ReceiveTask(string sessionID, WebSocket ws, CancellationToken cancelToken)
