@@ -23,9 +23,7 @@ public class SptDialogueChatBot(
 ) : IDialogueChatBot
 {
     protected IEnumerable<IChatMessageHandler> _chatMessageHandlers = ChatMessageHandlerSetup(chatMessageHandlers);
-
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-
 
     public UserDialogInfo GetChatBot()
     {
