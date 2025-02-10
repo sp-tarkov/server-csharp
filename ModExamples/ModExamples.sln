@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "15HttpListenerExample", "15
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "18CustomItemService", "18CustomItemService\18CustomItemService.csproj", "{ADE10F29-58D6-4C13-B217-7C737DFB413A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "18.1CustomItemServiceLootBox", "18.1CustomItemServiceLootBox\18.1CustomItemServiceLootBox.csproj", "{B870C285-B435-4C40-89C4-0220D34CB9BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B870C285-B435-4C40-89C4-0220D34CB9BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B870C285-B435-4C40-89C4-0220D34CB9BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B870C285-B435-4C40-89C4-0220D34CB9BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B870C285-B435-4C40-89C4-0220D34CB9BE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
