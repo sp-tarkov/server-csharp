@@ -1,0 +1,66 @@
+{
+    "_id": "66eeef8b2a166b73d2066a7e",
+    "working": true,
+    "availableInRaid": false,
+    "items_buy": {
+        "category": [
+            "5422acb9af1c889c16000029",
+            "5448e8d04bdc2ddf718b4569"
+        ],
+        "id_list": []
+    },
+    "items_buy_prohibited": {},
+    "customization_seller": false,
+    "name": "Cat",
+    "surname": " ",
+    "nickname": "Maxwell",
+    "location": "Downtown tarkov",
+    "avatar": "/files/trader/avatar/cat.jpg",
+    "balance_rub": 5000000,
+    "balance_dol": 0,
+    "balance_eur": 0,
+    "unlockedByDefault": true,
+    "discount": 0,
+    "discount_end": 0,
+    "buyer_up": true,
+    "currency": "RUB",
+    "nextResupply": 1615141448,
+    "repair": {
+        "availability": false,
+        "quality": "2",
+        "excluded_id_list": [],
+        "excluded_category": [],
+        "currency": "5449016a4bdc2d6f028b456f",
+        "currency_coefficient": 1,
+        "price_rate": 10
+    },
+    "insurance": {
+        "availability": false,
+        "min_payment": 0,
+        "min_return_hour": 0,
+        "max_return_hour": 0,
+        "max_storage_time": 99,
+        "excluded_category": []
+    },
+    "gridHeight": 150,
+    "loyaltyLevels": [{
+            "minLevel": 1,
+            "minSalesSum": 0,
+            "minStanding": 0,
+            "buy_price_coef": 38,
+            "repair_price_coef": 175,
+            "insurance_price_coef": 10,
+            "exchange_price_coef": 0,
+            "heal_price_coef": 0
+        }
+    ],
+    "sell_category": [
+        "575146b724597720a27126d5",
+        "635a758bfefc88a93f021b8a",
+        "55d45d3f4bdc2d972f8b456c",
+        "5b363dd25acfc4001a598fd2",
+        "5d1b36a186f7742523398433",
+        "59e3577886f774176a362503",
+        "5d6e67fba4b9361bc73bc779"
+    ]
+}
