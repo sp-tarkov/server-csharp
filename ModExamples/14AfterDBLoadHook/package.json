@@ -1,0 +1,13 @@
+{
+    "Name": "14AfterDBLoadHook",
+    "Version": "1.0.0",
+    "SptVersion": "~4.0",
+    "LoadBefore": [],
+    "LoadAfter": [],
+    "IncompatibileMods": [],
+    "Url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
+    "IsBundleMod": false,
+    "Author": "SPT",
+    "Contributors": [],
+    "Licence": "MIT"
+}
