@@ -11,7 +11,7 @@ namespace Core.Services
         private readonly JsonUtil _jsonUtil;
         private readonly HashUtil _hashUtil;
         private readonly FileUtil _fileUtil;
-        protected readonly Dictionary<string, string> _bundleHashes;
+        protected readonly Dictionary<string, string> _bundleHashes = new Dictionary<string, string>();
         protected const string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
 
         public BundleHashCacheService(

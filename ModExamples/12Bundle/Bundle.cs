@@ -1,4 +1,5 @@
-﻿using Core.Loaders;
+﻿using System.Reflection;
+using Core.Loaders;
 using Core.Models.External;
 using SptCommon.Annotations;
 
@@ -19,6 +20,7 @@ public class Bundle : IPostDBLoadMod
     public void PostDBLoad()
     {
         var modFolder = Directory.GetCurrentDirectory();
-        _bundleLoader.AddBundles(modFolder);
+        var test = Assembly.GetExecutingAssembly().Location;
+        _bundleLoader.AddBundles(Path.Join(modFolder, "/user/mods/Mod3/"));
     }
 }

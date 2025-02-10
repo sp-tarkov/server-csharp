@@ -14,7 +14,7 @@ namespace Core.Loaders
             get;
         }
 
-        public IBundleManifestEntry Bundle
+        public BundleManifestEntry Bundle
         {
             get;
         }
@@ -31,7 +31,7 @@ namespace Core.Loaders
 
         public BundleInfo(
             string modPath,
-            IBundleManifestEntry bundle,
+            BundleManifestEntry bundle,
             string bundleHash)
         {
             ModPath = modPath;
@@ -92,14 +92,19 @@ namespace Core.Loaders
             // TODO: Implement
 
             var modBundlesJson = _fileUtil.ReadFile(Path.Combine(modPath, "bundles.json"));
-            var modBundles = _jsonUtil.Deserialize<IBundleManifest>(modBundlesJson);
+            var modBundles = _jsonUtil.Deserialize<BundleManifest>(modBundlesJson);
             var bundleManifestArr = modBundles?.Manifest;
 
             foreach (var bundleManifest in bundleManifestArr)
             {
                 // TODO: complete
-                var relativeModPath = modPath.Substring(0, -1); //.replace(/\\/g, "/");
-                var bundleLocalPath = Path.Combine(modPath, "bundles", bundleManifest.Key); //.replace(/\\/g, "/");
+                // we currently get D:\HomeRepos\SPT-CS-Server\Server\bin\Debug\net9.0/user/mods/Mod3
+                // we want /user/mods/Mod3
+                var relativeModPath = modPath.Substring(0, modPath.Length - 1); // /\\/g, "/" - replaces all instances of \\ with /
+
+                // we currently get D:\HomeRepos\SPT-CS-Server\Server\bin\Debug\net9.0/user/mods/Mod3/bundles\assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle
+                // we want /user/mods/Mod3/bundles\assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle
+                var bundleLocalPath = Path.Combine(modPath, "bundles", bundleManifest.Key); // /\\/g, "/" - replaces all instances of \\ with /
 
                 if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
                 {
@@ -123,13 +128,13 @@ namespace Core.Loaders
     }
 }
 
-public interface IBundleManifest
+public record BundleManifest
 {
     [JsonPropertyName("manifest")]
-    public List<IBundleManifestEntry> Manifest { get; set; }
+    public List<BundleManifestEntry> Manifest { get; set; }
 }
 
-public interface IBundleManifestEntry
+public record BundleManifestEntry
 {
     [JsonPropertyName("key")]
     public string Key {
