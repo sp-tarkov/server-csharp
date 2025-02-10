@@ -1,3 +1,4 @@
+using System.IO.Hashing;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -64,12 +65,9 @@ public class HashUtil
         return GenerateHashForData(HashingAlgorithm.SHA1, data);
     }
 
-    [Obsolete("Use GenerateMd5ForData instead")]
-    public string GenerateCrc32ForData(string data)
+    public uint GenerateCrc32ForData(string data)
     {
-        // TODO: Could not find a ms way of doing this.
-        // May need a custom impl to avoid an external lib. - CJ
-        throw new NotImplementedException();
+        return Crc32.HashToUInt32(new ArraySegment<byte>(Encoding.UTF8.GetBytes(data)));
     }
 
     /// <summary>

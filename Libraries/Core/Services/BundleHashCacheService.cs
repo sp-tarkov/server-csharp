@@ -11,8 +11,10 @@ namespace Core.Services
         private readonly JsonUtil _jsonUtil;
         private readonly HashUtil _hashUtil;
         private readonly FileUtil _fileUtil;
-        protected readonly Dictionary<string, string> _bundleHashes = new Dictionary<string, string>();
-        protected const string _bundleHashCachePath = "./user/cache/bundleHashCache.json";
+        protected readonly Dictionary<string, uint> _bundleHashes = new Dictionary<string, uint>();
+        protected const string _bundleHashCachePath = "./user/cache/";
+        protected const string _cacheName = "bundleHashCache.json";
+        private readonly string _currentDirectory = Directory.GetCurrentDirectory();
 
         public BundleHashCacheService(
             ISptLogger<BundleHashCacheService> logger,
@@ -25,44 +27,52 @@ namespace Core.Services
             _hashUtil = hashUtil;
             _fileUtil = fileUtil;
         }
-        public string GetStoredValue(string key)
+
+        public uint GetStoredValue(string key)
         {
             if (!_bundleHashes.TryGetValue(key, out var value))
             {
-                return string.Empty;
+                return 0;
             }
 
             return value;
         }
 
-        public void StoreValue(string bundlePath, string hash)
+        public void StoreValue(string bundlePath, uint hash)
         {
             _bundleHashes.Add(bundlePath, hash);
 
-            _fileUtil.WriteFile(_bundleHashCachePath, _jsonUtil.Serialize(_bundleHashes));
+            if (!Directory.Exists(_bundleHashCachePath))
+            {
+                Directory.CreateDirectory(_bundleHashCachePath);
+            }
+
+            _fileUtil.WriteFile(Path.Join(_bundleHashCachePath, _cacheName), _jsonUtil.Serialize(_bundleHashes));
 
             _logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
         }
 
-        public bool CalculateAndMatchHash(string bundlePath)
+        public bool CalculateAndMatchHash(string relativeBundlePath)
         {
-            return MatchWithStoredHash(bundlePath, CalculateHash(bundlePath));
+            var absolutePath = Path.Join(_currentDirectory, relativeBundlePath);
+            return MatchWithStoredHash(relativeBundlePath, CalculateHash(absolutePath));
         }
 
-        public void CalculateAndStoreHash(string bundlePath)
+        public void CalculateAndStoreHash(string relativeBundlePath)
         {
-            StoreValue(bundlePath, CalculateHash(bundlePath));
+            var absolutePath = Path.Join(_currentDirectory, relativeBundlePath);
+            StoreValue(relativeBundlePath, CalculateHash(absolutePath));
         }
 
-        public string CalculateHash(string bundlePath)
+        public uint CalculateHash(string absoluteBundlePath)
         {
-            var fileData = _fileUtil.ReadFile(bundlePath);
-            return _hashUtil.GenerateMd5ForData(fileData);
+            var fileData = _fileUtil.ReadFile(absoluteBundlePath);
+            return _hashUtil.GenerateCrc32ForData(fileData);
         }
 
-        public bool MatchWithStoredHash(string bundlePath, string hash)
+        public bool MatchWithStoredHash(string relativeBundlePath, uint hash)
         {
-            return GetStoredValue(bundlePath) == hash;
+            return GetStoredValue(relativeBundlePath) == hash;
         }
     }
 }

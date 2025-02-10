@@ -19,8 +19,6 @@ public class Bundle : IPostDBLoadMod
 
     public void PostDBLoad()
     {
-        var modFolder = Directory.GetCurrentDirectory();
-        var test = Assembly.GetExecutingAssembly().Location;
-        _bundleLoader.AddBundles(Path.Join(modFolder, "/user/mods/Mod3/"));
+        _bundleLoader.AddBundles("/user/mods/Mod3");
     }
 }

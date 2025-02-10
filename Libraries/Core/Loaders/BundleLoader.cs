@@ -9,7 +9,12 @@ namespace Core.Loaders
 {
     public class BundleInfo
     {
-        public string ModPath
+        public string? ModPath
+        {
+            get;
+        }
+
+        public string FileName
         {
             get;
         }
@@ -19,7 +24,7 @@ namespace Core.Loaders
             get;
         }
 
-        public string Crc
+        public uint Crc
         {
             get;
         }
@@ -32,9 +37,10 @@ namespace Core.Loaders
         public BundleInfo(
             string modPath,
             BundleManifestEntry bundle,
-            string bundleHash)
+            uint bundleHash)
         {
             ModPath = modPath;
+            FileName = bundle.Key;
             Bundle = bundle;
             Crc = bundleHash;
             Dependencies = bundle?.DependencyKeys ?? [];
@@ -51,7 +57,7 @@ namespace Core.Loaders
         private readonly BundleHashCacheService _bundleHashCacheService;
         private readonly InMemoryCacheService _inMemoryCacheService;
         private readonly ICloner _cloner;
-        private readonly Dictionary<string, BundleInfo> _bundles;
+        private readonly Dictionary<string, BundleInfo> _bundles = new Dictionary<string, BundleInfo>();
 
         public BundleLoader(
             ISptLogger<BundleLoader> logger,
@@ -84,27 +90,22 @@ namespace Core.Loaders
 
         public BundleInfo? GetBundle(string bundleKey)
         {
-            return _bundles.GetValueOrDefault(bundleKey);
+            return _cloner.Clone(_bundles.GetValueOrDefault(bundleKey));
         }
 
         public void AddBundles(string modPath)
         {
-            // TODO: Implement
+            // modPath should be relative to the server exe - /user/mods/Mod3/
 
-            var modBundlesJson = _fileUtil.ReadFile(Path.Combine(modPath, "bundles.json"));
+            var modBundlesJson = _fileUtil.ReadFile(Path.Join(Directory.GetCurrentDirectory(), modPath, "bundles.json"));
             var modBundles = _jsonUtil.Deserialize<BundleManifest>(modBundlesJson);
             var bundleManifestArr = modBundles?.Manifest;
 
             foreach (var bundleManifest in bundleManifestArr)
             {
-                // TODO: complete
-                // we currently get D:\HomeRepos\SPT-CS-Server\Server\bin\Debug\net9.0/user/mods/Mod3
-                // we want /user/mods/Mod3
-                var relativeModPath = modPath.Substring(0, modPath.Length - 1); // /\\/g, "/" - replaces all instances of \\ with /
+                var relativeModPath = modPath.Replace('\\', '/'); // /\\/g, "/" - replaces all instances of \\ with /
 
-                // we currently get D:\HomeRepos\SPT-CS-Server\Server\bin\Debug\net9.0/user/mods/Mod3/bundles\assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle
-                // we want /user/mods/Mod3/bundles\assets/content/weapons/usable_items/item_bottle/textures/client_assets.bundle
-                var bundleLocalPath = Path.Combine(modPath, "bundles", bundleManifest.Key); // /\\/g, "/" - replaces all instances of \\ with /
+                var bundleLocalPath = Path.Join(relativeModPath, "bundles", bundleManifest.Key);
 
                 if (!_bundleHashCacheService.CalculateAndMatchHash(bundleLocalPath))
                 {
