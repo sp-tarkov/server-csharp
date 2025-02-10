@@ -7,6 +7,8 @@ namespace Core.Utils;
 public class FileUtil(
     ISptLogger<FileUtil> _logger)
 {
+    protected const string _modBasePath = "user/mods/";
+
     public List<string> GetFiles(string path, bool recursive = false)
     {
         var files = new List<string>(Directory.GetFiles(path));
@@ -123,5 +125,10 @@ public class FileUtil(
     public void DeleteDirectory(string directory, bool deleteContent = false)
     {
         Directory.Delete(directory, deleteContent);
+    }
+
+    public string GetModPath(string modName)
+    {
+        return Path.Combine(_modBasePath, modName);
     }
 }
