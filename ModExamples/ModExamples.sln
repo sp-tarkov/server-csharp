@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "14AfterDBLoadHook", "14Afte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "15HttpListenerExample", "15HttpListenerExample\15HttpListenerExample.csproj", "{15F2B434-439E-498E-9B85-B7BBC2F4AFA4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "18CustomItemService", "18CustomItemService\18CustomItemService.csproj", "{ADE10F29-58D6-4C13-B217-7C737DFB413A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +101,10 @@ Global
 		{15F2B434-439E-498E-9B85-B7BBC2F4AFA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15F2B434-439E-498E-9B85-B7BBC2F4AFA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{15F2B434-439E-498E-9B85-B7BBC2F4AFA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADE10F29-58D6-4C13-B217-7C737DFB413A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
