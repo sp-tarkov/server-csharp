@@ -1,6 +1,7 @@
-﻿using Core.Models.External;
+﻿using Core.Helpers;
+using System.Reflection;
+using Core.Models.External;
 using Core.Models.Utils;
-using Core.Utils;
 using SptCommon.Annotations;
 
 namespace _4ReadCustomJson5Config
@@ -9,28 +10,24 @@ namespace _4ReadCustomJson5Config
     public class ReadJson5Config: IPreSptLoadMod
     {
         private readonly ISptLogger<ReadJson5Config> _logger;
-        private readonly FileUtil _fileUtil;
-        private readonly JsonUtil _jsonUtil;
+        private readonly ModHelper _modHelper;
 
         public ReadJson5Config(
             ISptLogger<ReadJson5Config> logger,
-            FileUtil fileUtil,
-            JsonUtil jsonUtil)
+            ModHelper modHelper)
         {
             _logger = logger;
-            _fileUtil = fileUtil;
-            _jsonUtil = jsonUtil;
+            _modHelper = modHelper;
         }
 
         public void PreSptLoad()
         {
-            // Read the content of the config file into a string
-            var rawContent = _fileUtil.ReadFile("config.json5");
+            var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
-            // Take the string above and deserialise it into a config file with a type (defined between the diamond brackets)
-            var config = _jsonUtil.Deserialize<ModConfig>(rawContent);
+            // TODO - fix/implement
+            var json5Config = _modHelper.GetFileFromModFolder<ModConfig>(pathToMod, "config.json5");
 
-            _logger.Success($"Read property: 'ExampleProperty' from config with value: {config.ExampleProperty}");
+            _logger.Success($"Read property: 'ExampleProperty' from config with value: {json5Config.ExampleProperty}");
         }
     }
 

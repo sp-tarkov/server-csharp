@@ -1,12 +1,15 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Helpers;
+using System.Reflection;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.External;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Routers;
 using Core.Servers;
 using Core.Services;
-using Core.Utils;
+using Core.Utils.Cloners;
 using SptCommon.Annotations;
+using Path = System.IO.Path;
 
 namespace _13AddTraderWithAssortJson;
 
@@ -14,28 +17,28 @@ namespace _13AddTraderWithAssortJson;
 public class AddTraderWithAssortJson : IPostDBLoadMod
 {
     private readonly ISptLogger<AddTraderWithAssortJson> _logger;
-    private readonly JsonUtil _jsonUtil;
-    private readonly FileUtil _fileUtil;
+    private readonly ModHelper _modHelper;
     private readonly DatabaseService _databaseService;
     private readonly ImageRouter _imageRouter;
     private readonly ConfigServer _configServer;
+    private readonly ICloner _cloner;
     private readonly TraderConfig _traderConfig;
     private readonly RagfairConfig _ragfairConfig;
 
     public AddTraderWithAssortJson(
         ISptLogger<AddTraderWithAssortJson> logger,
-        JsonUtil jsonUtil,
-        FileUtil fileUtil,
+        ModHelper modHelper,
         DatabaseService databaseService,
         ImageRouter imageRouter,
-        ConfigServer configServer)
+        ConfigServer configServer,
+        ICloner cloner)
     {
         _logger = logger;
-        _jsonUtil = jsonUtil;
-        _fileUtil = fileUtil;
+        _modHelper = modHelper;
         _databaseService = databaseService;
         _imageRouter = imageRouter;
         _configServer = configServer;
+        _cloner = cloner;
 
         _traderConfig = _configServer.GetConfig<TraderConfig>();
         _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
@@ -43,17 +46,16 @@ public class AddTraderWithAssortJson : IPostDBLoadMod
 
     public void PostDBLoad()
     {
-        var traderImagePath = "./db/cat.jpg";
-            
-        var baseJson = _fileUtil.ReadFile("./db/base.json");
-        var traderBase = _jsonUtil.Deserialize<TraderBase>(baseJson);
+        var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
-        var assortJson = _fileUtil.ReadFile("./db/assort.json");
-        var assort = _jsonUtil.Deserialize<TraderAssort>(assortJson);
+        var traderImagePath = Path.Combine(pathToMod, "db/cat.jpg");
+        var traderBase = _modHelper.GetFileFromModFolder<TraderBase>(pathToMod, "db/base.json");
+
+        var assort = _modHelper.GetFileFromModFolder<TraderAssort>(pathToMod, "db/assort.json");
 
         // Create helper class and use it to register our traders image/icon + set its stock refresh time
         var addTraderHelper = new AddTraderHelper();
-        _imageRouter.AddRoute(traderBase.Avatar.Replace(".jpg", ""), System.IO.Path.GetFullPath(traderImagePath));
+        _imageRouter.AddRoute(traderBase.Avatar.Replace(".jpg", ""), traderImagePath);
         addTraderHelper.SetTraderUpdateTime(_traderConfig, traderBase, 3600, 4000);
 
         // Add trader to flea market
@@ -72,8 +74,8 @@ public class AddTraderWithAssortJson : IPostDBLoadMod
         addTraderHelper.AddTraderToDb(
             traderBase,
             _databaseService.GetTables(),
-            _jsonUtil,
-            assortJson);
+            _cloner,
+            assort);
 
         addTraderHelper.AddTraderToLocales(
             traderBase,

@@ -3,6 +3,7 @@ using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Server;
 using Core.Utils;
+using Core.Utils.Cloners;
 
 namespace _13AddTraderWithAssortJson
 {
@@ -34,17 +35,13 @@ namespace _13AddTraderWithAssortJson
      * @param tables database
      * @param jsonUtil json utility class
      */
-    public void AddTraderToDb(TraderBase traderDetailsToAdd, DatabaseTables tables, JsonUtil jsonUtil, object assortJson)
+    public void AddTraderToDb(TraderBase traderDetailsToAdd, DatabaseTables tables, ICloner cloner, TraderAssort assortJson)
     {
         // Create trader data ready to add to database
         var traderDataToAdd = new Trader
         {
-            Assort =
-                jsonUtil.Deserialize<TraderAssort>(
-                    jsonUtil.Serialize(assortJson)), // Deserialise/serialise creates a copy of the json
-            Base =
-                jsonUtil.Deserialize<TraderBase>(
-                    jsonUtil.Serialize(traderDetailsToAdd)), // Deserialise/serialise creates a copy of the json
+            Assort = cloner.Clone(assortJson), // Clone the data before saving it so we dont mess up any references
+            Base = cloner.Clone(traderDetailsToAdd),
             QuestAssort = new Dictionary<string, Dictionary<string, string>> // questassort is empty as trader has no assorts unlocked by quests
             {
                 { "Started", new Dictionary<string, string>() },

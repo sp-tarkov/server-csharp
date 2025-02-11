@@ -1,4 +1,6 @@
-﻿using Core.Models.External;
+﻿using System.Reflection;
+using Core.Helpers;
+using Core.Models.External;
 using Core.Models.Utils;
 using Core.Utils;
 using SptCommon.Annotations;
@@ -9,26 +11,23 @@ namespace _5ReadCustomJsonConfig
     public class ReadJsonConfig : IPreSptLoadMod
     {
         private readonly ISptLogger<ReadJsonConfig> _logger;
-        private readonly FileUtil _fileUtil;
-        private readonly JsonUtil _jsonUtil;
+        private readonly ModHelper _modHelper;
 
         public ReadJsonConfig(
             ISptLogger<ReadJsonConfig> logger,
-            FileUtil fileUtil,
-            JsonUtil jsonUtil)
+            ModHelper modHelper)
         {
             _logger = logger;
-            _fileUtil = fileUtil;
-            _jsonUtil = jsonUtil;
+            _modHelper = modHelper;
         }
 
         public void PreSptLoad()
         {
-            // Read the content of the config file into a string
-            var rawContent = _fileUtil.ReadFile("config.json");
+            // This will get us the full path to the mod, e.g. C:\spt\user\mods\5ReadCustomJsonConfig-0.0.1
+            var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
-            // Take the string above and deserialise it into a config file with a type (defined between the diamond brackets)
-            var config = _jsonUtil.Deserialize<ModConfig>(rawContent);
+            // We give the path to the mod folder and the file we want to get, giving us the config, supply the files 'type' between the diamond brackets
+            var config = _modHelper.GetFileFromModFolder<ModConfig>(pathToMod, "config.json");
 
             _logger.Success($"Read property: 'ExampleProperty' from config with value: {config.ExampleProperty}");
         }

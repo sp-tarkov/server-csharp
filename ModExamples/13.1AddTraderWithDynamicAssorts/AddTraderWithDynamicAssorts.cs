@@ -1,4 +1,6 @@
-﻿using Core.Models.Eft.Common.Tables;
+﻿using Core.Helpers;
+using System.Reflection;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.External;
 using Core.Models.Spt.Config;
@@ -7,7 +9,9 @@ using Core.Routers;
 using Core.Servers;
 using Core.Services;
 using Core.Utils;
+using Core.Utils.Cloners;
 using SptCommon.Annotations;
+using Path = System.IO.Path;
 
 namespace _13._1AddTraderWithDynamicAssorts;
 
@@ -15,12 +19,14 @@ namespace _13._1AddTraderWithDynamicAssorts;
 public class AddTraderWithDynamicAssorts : IPostDBLoadMod
 {
     private readonly ISptLogger<AddTraderWithDynamicAssorts> _logger;
+    private readonly ModHelper _modHelper;
     private readonly HashUtil _hashUtil;
     private readonly JsonUtil _jsonUtil;
     private readonly FileUtil _fileUtil;
     private readonly DatabaseService _databaseService;
     private readonly ImageRouter _imageRouter;
     private readonly ConfigServer _configServer;
+    private readonly ICloner _cloner;
     private readonly TraderConfig _traderConfig;
     private readonly RagfairConfig _ragfairConfig;
 
@@ -29,20 +35,24 @@ public class AddTraderWithDynamicAssorts : IPostDBLoadMod
 
     public AddTraderWithDynamicAssorts(
         ISptLogger<AddTraderWithDynamicAssorts> logger,
+        ModHelper modHelper,
         HashUtil hashUtil,
         JsonUtil jsonUtil,
         FileUtil fileUtil,
         DatabaseService databaseService,
         ImageRouter imageRouter,
-        ConfigServer configServer)
+        ConfigServer configServer,
+        ICloner cloner        )
     {
         _logger = logger;
+        _modHelper = modHelper;
         _hashUtil = hashUtil;
         _jsonUtil = jsonUtil;
         _fileUtil = fileUtil;
         _databaseService = databaseService;
         _imageRouter = imageRouter;
         _configServer = configServer;
+        _cloner = cloner;
 
         _traderConfig = _configServer.GetConfig<TraderConfig>();
         _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
@@ -50,15 +60,14 @@ public class AddTraderWithDynamicAssorts : IPostDBLoadMod
 
     public void PostDBLoad()
     {
-        var modPath = _fileUtil.GetModPath(_modName);
-        var traderImagePath = $"{modPath}/db/cat.jpg";
+        var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
-        var baseJson = _fileUtil.ReadFile($"{modPath}/db/base.json");
-        var traderBase = _jsonUtil.Deserialize<TraderBase>(baseJson);
+        var traderImagePath = Path.Combine(pathToMod, "db/cat.jpg");
+        var traderBase = _modHelper.GetFileFromModFolder<TraderBase>(pathToMod, "db/base.json");
 
         // Create helper class and use it to register our traders image/icon + set its stock refresh time
         var addTraderHelper = new AddTraderHelper();
-        _imageRouter.AddRoute(traderBase.Avatar.Replace(".jpg", ""), System.IO.Path.GetFullPath(traderImagePath));
+        _imageRouter.AddRoute(traderBase.Avatar.Replace(".jpg", ""), traderImagePath);
         addTraderHelper.SetTraderUpdateTime(_traderConfig, traderBase, 3600, 4000);
 
         // Add trader to flea market
@@ -70,8 +79,8 @@ public class AddTraderWithDynamicAssorts : IPostDBLoadMod
         addTraderHelper.AddTraderToDb(
             traderBase,
             _databaseService.GetTables(),
-            _jsonUtil,
-            new TraderAssort() {Items = new List<Item>(), BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(), LoyalLevelItems = new Dictionary<string, int>()});
+            _cloner,
+            new TraderAssort {Items = [], BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(), LoyalLevelItems = new Dictionary<string, int>()});
         _logger.Success("added trader base");
         var fluentAssortCreator = new FluentTraderAssortCreator(_logger, _hashUtil);
 
