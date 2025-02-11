@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptDependencyInjection", "L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemTplGenerator", "Tools\ItemTplGenerator\ItemTplGenerator.csproj", "{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptCommon", "SptCommon\SptCommon.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptCommon", "Libraries\SptCommon\SptCommon.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptAssets", "Libraries\SptAssets\SptAssets.csproj", "{4B973AC0-0C60-4853-9AF7-7CB69127473E}"
 EndProject
