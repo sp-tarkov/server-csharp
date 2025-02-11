@@ -32,4 +32,11 @@ public record ProfileCreateRequestData : IRequestData
         get;
         set;
     }
+
+    [JsonPropertyName("sptForcePrestigeLevel")]
+    public int? SptForcePrestigeLevel
+    {
+        get;
+        set;
+    }
 }

@@ -29,7 +29,7 @@ namespace Core.Helpers
             // Read the content of the config file as a string
             var rawContent = _fileUtil.ReadFile(Path.Combine(pathToFile, fileName));
 
-            // Take the string above and deserialise it into a config file with a type (defined between the diamond brackets)
+            // Take the string above and deserialise it into a file with a type (defined between the diamond brackets)
             return _jsonUtil.Deserialize<T>(rawContent);
         }
     }

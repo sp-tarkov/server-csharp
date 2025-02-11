@@ -1,6 +1,7 @@
 using System.Text.Json.Serialization;
 using Core.Models.Eft.Common;
 using Core.Models.Eft.Common.Tables;
+using Core.Models.Eft.Prestige;
 using Core.Models.Enums;
 using Core.Models.Spt.Dialog;
 
@@ -767,6 +768,13 @@ public record Spt
         get;
         set;
     }
+
+    [JsonPropertyName("pendingPrestige")]
+    public PendingPrestige? PendingPrestige
+    {
+        get;
+        set;
+    }
 }
 
 public record AcceptedCultistReward
@@ -787,6 +795,23 @@ public record AcceptedCultistReward
 
     [JsonPropertyName("rewardItems")]
     public List<string>? RewardItems
+    {
+        get;
+        set;
+    }
+}
+
+public record PendingPrestige
+{
+    [JsonPropertyName("prestigeLevel")]
+    public int? PrestigeLevel
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("items")]
+    public ObtainPrestigeRequestList? Items
     {
         get;
         set;

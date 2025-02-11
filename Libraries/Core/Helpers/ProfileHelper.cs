@@ -202,7 +202,8 @@ public class ProfileHelper(
             BlacklistedItemTemplates = new List<string>(),
             FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
             Migrations = new Dictionary<string, long>(),
-            CultistRewards = new Dictionary<string, AcceptedCultistReward>()
+            CultistRewards = new Dictionary<string, AcceptedCultistReward>(),
+            PendingPrestige = null
         };
     }
 

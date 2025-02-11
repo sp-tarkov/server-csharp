@@ -399,7 +399,8 @@ public class RewardHelper(
     public void AddAchievementToProfile(SptProfile fullProfile, string achievementId)
     {
         // Add achievement id to profile with timestamp it was unlocked
-        fullProfile.CharacterData.PmcData.Achievements[achievementId] = _timeUtil.GetTimeStamp();
+        fullProfile.CharacterData.PmcData.Achievements.TryAdd(achievementId, _timeUtil.GetTimeStamp());
+        
 
         // Check for any customisation unlocks
         var achievementDataDb = _databaseService

@@ -29,6 +29,8 @@ public class CreateProfileService(
     TraderHelper _traderHelper,
     QuestHelper _questHelper,
     QuestRewardHelper _questRewardHelper,
+    PrestigeHelper _prestigeHelper,
+    RewardHelper _rewardHelper,
     ProfileFixerService _profileFixerService,
     SaveServer _saveServer,
     EventOutputHolder _eventOutputHolder,
@@ -39,18 +41,18 @@ public class CreateProfileService(
 {
     public string CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
-        var account = _saveServer.GetProfile(sessionId).ProfileInfo;
+        var account = _cloner.Clone(_saveServer.GetProfile(sessionId));
         var profileTemplate = _cloner.Clone(
-            _databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower())
+            _databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.ProfileInfo.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower())
         );
         var pmcData = profileTemplate.Character;
 
         // Delete existing profile
         DeleteProfileBySessionId(sessionId);
         // PMC
-        pmcData.Id = account.ProfileId;
-        pmcData.Aid = account.Aid;
-        pmcData.Savage = account.ScavengerId;
+        pmcData.Id = account.ProfileInfo.ProfileId;
+        pmcData.Aid = account.ProfileInfo.Aid;
+        pmcData.Savage = account.ProfileInfo.ScavengerId;
         pmcData.SessionId = sessionId;
         pmcData.Info.Nickname = request.Nickname;
         pmcData.Info.LowerNickname = request.Nickname.ToLower();
@@ -67,15 +69,33 @@ public class CreateProfileService(
         pmcData.CoopExtractCounts = new Dictionary<string, int>();
         pmcData.Achievements = new Dictionary<string, long>();
 
+        // Process handling if the account has been forced to wipe
+        // BSG keeps both the achievements, prestige level and the total in-game time in a wipe
+        if (account.CharacterData.PmcData.Achievements is not null)
+        {
+            pmcData.Achievements = account.CharacterData.PmcData.Achievements;
+        }
+
+        if (account.CharacterData.PmcData.Prestige is not null)
+        {
+            pmcData.Prestige = account.CharacterData.PmcData.Prestige;
+            pmcData.Info.PrestigeLevel = account.CharacterData.PmcData.Info.PrestigeLevel;
+        }
+
+        if (account.CharacterData?.PmcData?.Stats?.Eft is not null)
+        {
+            if (pmcData.Stats.Eft is not null)
+            {
+                pmcData.Stats.Eft.TotalInGameTime = account.CharacterData.PmcData.Stats.Eft.TotalInGameTime;
+            }
+        }
+
         UpdateInventoryEquipmentId(pmcData);
 
-        if (pmcData.UnlockedInfo == null)
+        pmcData.UnlockedInfo ??= new UnlockedInfo
         {
-            pmcData.UnlockedInfo = new UnlockedInfo
-            {
-                UnlockedProductionRecipe = []
-            };
-        }
+            UnlockedProductionRecipe = []
+        };
 
         // Add required items to pmc stash
         AddMissingInternalContainersToProfile(pmcData);
@@ -86,7 +106,7 @@ public class CreateProfileService(
         // Create profile
         var profileDetails = new SptProfile
         {
-            ProfileInfo = account,
+            ProfileInfo = account.ProfileInfo,
             CharacterData = new Characters
             {
                 PmcData = pmcData,
@@ -107,6 +127,51 @@ public class CreateProfileService(
         AddCustomisationUnlocksToProfile(profileDetails);
 
         _profileFixerService.CheckForAndFixPmcProfileIssues(profileDetails.CharacterData.PmcData);
+
+        if (profileDetails.CharacterData.PmcData.Achievements.Count > 0)
+        {
+            var achievementsDb = _databaseService.GetTemplates().Achievements;
+            var achievementRewardItemsToSend = new List<Item>();
+
+            foreach (var (achievementId, achievement) in profileDetails.CharacterData.PmcData.Achievements) {
+                var rewards = achievementsDb.FirstOrDefault((achievementDb) => achievementDb.Id == achievementId)?.Rewards;
+
+                if (rewards is null)
+                {
+                    continue;
+                }
+
+                achievementRewardItemsToSend.AddRange(_rewardHelper.ApplyRewards(
+                        rewards,
+                        CustomisationSource.ACHIEVEMENT,
+                        profileDetails,
+                        profileDetails.CharacterData.PmcData,
+                        achievementId));
+            }
+
+            if (achievementRewardItemsToSend.Count > 0)
+            {
+                _mailSendService.SendLocalisedSystemMessageToPlayer(
+                    profileDetails.ProfileInfo.ProfileId,
+                    "670547bb5fa0b1a7c30d5836 0",
+                    achievementRewardItemsToSend,
+                    [],
+                    31536000);
+            }
+        }
+
+        // Process handling if the account is forced to prestige, or if the account currently has any pending prestiges
+        if (request.SptForcePrestigeLevel is not null || account.SptData?.PendingPrestige is not null)
+        {
+            var pendingPrestige = account.SptData.PendingPrestige is not null
+                ? account.SptData.PendingPrestige
+                : new PendingPrestige
+                {
+                    PrestigeLevel = request.SptForcePrestigeLevel
+                };
+
+            _prestigeHelper.ProcessPendingPrestige(account, profileDetails, pendingPrestige);
+        }
 
         _saveServer.AddProfile(profileDetails);
 
