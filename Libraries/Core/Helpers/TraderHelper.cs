@@ -59,7 +59,7 @@ public class TraderHelper(
         }
 
         // Profile has traderInfo dict (profile beyond creation stage) but no requested trader in profile
-        if (pmcData?.TradersInfo != null && (pmcData?.TradersInfo?.ContainsKey(traderID) ?? false))
+        if (pmcData?.TradersInfo != null && !(pmcData?.TradersInfo?.ContainsKey(traderID) ?? false))
         {
             // Add trader values to profile
             ResetTrader(sessionID, traderID);
