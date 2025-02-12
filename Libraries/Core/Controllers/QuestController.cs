@@ -391,16 +391,13 @@ public class QuestController(
             return;
         }
 
-        if (!pmcData.TaskConditionCounters.TryAdd(conditionId, new TaskConditionCounter
-            {
-                Id = conditionId,
-                SourceId = questId,
-                Type = "HandoverItem",
-                Value = counterValue
-            }))
+        pmcData.TaskConditionCounters.Add(conditionId, new TaskConditionCounter
         {
-            _logger.Warning($"Unable to add task condition counter for condition {conditionId}");
-        }
+            Id = conditionId,
+            SourceId = questId,
+            Type = "HandoverItem",
+            Value = counterValue
+        });
     }
 
     public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData request, string sessionID, ItemEventRouterResponse output)
