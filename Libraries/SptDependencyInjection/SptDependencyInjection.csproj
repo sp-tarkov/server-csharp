@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\SptCommon\SptCommon.csproj" />
     <ProjectReference Include="..\SptCommon\SptCommon.csproj" />
   </ItemGroup>
 
