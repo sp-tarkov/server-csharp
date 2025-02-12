@@ -7,7 +7,8 @@ using SptCommon.Annotations;
 
 namespace _14AfterDBLoadHook;
 
-[Injectable]
+[Injectable(InjectableTypeOverride = typeof(IPostDBLoadMod))]
+[Injectable(InjectableTypeOverride = typeof(IPostSptLoadMod))]
 public class AfterDBLoadHook : IPostDBLoadMod, IPostSptLoadMod
 {
     private readonly ConfigServer _configServer;
