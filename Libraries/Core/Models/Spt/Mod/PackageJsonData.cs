@@ -2,49 +2,19 @@
 
 public record PackageJsonData
 {
-    public List<string>? Incompatibilities
-    {
-        get;
-        set;
-    }
-
-    public List<string>? LoadBefore
-    {
-        get;
-        set;
-    }
-
-    public List<string>? LoadAfter
-    {
-        get;
-        set;
-    }
-
-    public Dictionary<string, string>? Dependencies
-    {
-        get;
-        set;
-    }
-
-    public Dictionary<string, string>? ModDependencies
-    {
-        get;
-        set;
-    }
-
     public string? Name
     {
         get;
         set;
     }
 
-    public string? Url
+    public string? Author
     {
         get;
         set;
     }
 
-    public string? Author
+    public List<string>? Contributors
     {
         get;
         set;
@@ -62,13 +32,31 @@ public record PackageJsonData
         set;
     }
 
-    public string? Licence
+    public List<string>? LoadBefore
     {
         get;
         set;
     }
 
-    public string? Main
+    public List<string>? LoadAfter
+    {
+        get;
+        set;
+    }
+
+    public List<string>? IncompatibleMods
+    {
+        get;
+        set;
+    }
+
+    public Dictionary<string, string>? Dependencies
+    {
+        get;
+        set;
+    }
+
+    public string? Url
     {
         get;
         set;
@@ -80,7 +68,7 @@ public record PackageJsonData
         set;
     }
 
-    public List<string>? Contributors
+    public string? Licence
     {
         get;
         set;

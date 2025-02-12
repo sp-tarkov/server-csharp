@@ -1,13 +1,14 @@
 {
     "Name": "1Logging",
+	"Author": "SPT",
+    "Contributors": [],
     "Version": "1.0.0",
     "SptVersion": "~4.0",
     "LoadBefore": [],
     "LoadAfter": [],
-    "IncompatibileMods": [],
+    "IncompatibleMods": [],
+	"Dependencies": [],
     "Url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
     "IsBundleMod": false,
-    "Author": "SPT",
-    "Contributors": [],
     "Licence": "MIT"
 }
