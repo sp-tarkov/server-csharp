@@ -21,8 +21,7 @@ public class LocaleService(
      */
     public Dictionary<string, string> GetLocaleDb()
     {
-        var desiredLocale = _databaseServer.GetTables().Locales.Global[GetDesiredGameLocale()];
-        if (desiredLocale != null)
+        if (_databaseServer.GetTables().Locales.Global.TryGetValue(GetDesiredGameLocale(), out var desiredLocale))
         {
             return desiredLocale.Value;
         }
