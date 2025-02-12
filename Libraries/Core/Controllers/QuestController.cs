@@ -319,7 +319,7 @@ public class QuestController(
                         // Remove the item
                         // If the removed item has a numeric `location` property, re-calculate all the child
                         // element `location` properties of the parent so they are sequential, while retaining order
-                        if (removedItem.Location.GetType() == typeof(int))
+                        if (removedItem.Location?.GetType() == typeof(int))
                         {
                             var childItems = _itemHelper.FindAndReturnChildrenAsItems(
                                 pmcData.Inventory.Items,
