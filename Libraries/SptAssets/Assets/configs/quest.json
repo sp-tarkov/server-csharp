@@ -200,6 +200,13 @@
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
             "yearly": true  
+        },
+        "675031f57775aada6b0f96a1": {
+            "name": "Cheer up",
+            "season": "christmas",
+            "startTimestamp": 1701388800000,
+            "endTimestamp": 1703980800000,
+            "yearly": true  
         }
     },
     "repeatableQuests": [
