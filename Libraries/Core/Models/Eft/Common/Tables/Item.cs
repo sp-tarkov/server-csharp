@@ -91,7 +91,7 @@ public record Item
 
 public record HideoutItem
 {
-    [JsonPropertyName("id")]
+    [JsonPropertyName("_id")]
     public string? Id
     {
         get;
