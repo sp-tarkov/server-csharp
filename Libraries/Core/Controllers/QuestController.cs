@@ -384,20 +384,23 @@ public class QuestController(
 
     private void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, double counterValue)
     {
-        if (pmcData.TaskConditionCounters[conditionId] != null)
+        if (pmcData.TaskConditionCounters.GetValueOrDefault(conditionId) != null)
         {
             pmcData.TaskConditionCounters[conditionId].Value += counterValue;
 
             return;
         }
 
-        pmcData.TaskConditionCounters[conditionId] = new TaskConditionCounter
+        if (!pmcData.TaskConditionCounters.TryAdd(conditionId, new TaskConditionCounter
+            {
+                Id = conditionId,
+                SourceId = questId,
+                Type = "HandoverItem",
+                Value = counterValue
+            }))
         {
-            Id = conditionId,
-            SourceId = questId,
-            Type = "HandoverItem",
-            Value = counterValue
-        };
+            _logger.Warning($"Unable to add task condition counter for condition {conditionId}");
+        }
     }
 
     public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData request, string sessionID, ItemEventRouterResponse output)

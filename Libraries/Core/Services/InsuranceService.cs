@@ -325,7 +325,7 @@ public class InsuranceService(
     /// <returns>True if exists</returns>
     protected bool InsuranceTraderArrayExists(string sessionId, string traderId)
     {
-        return _insured[sessionId][traderId] is not null;
+        return _insured[sessionId].GetValueOrDefault(traderId) is not null;
     }
 
     /// <summary>
