@@ -694,7 +694,7 @@ public class ItemHelper(
         // Edge case, durability above max
         if (repairable.Durability > repairable.MaxDurability)
         {
-            _logger.Warning(
+            _logger.Debug(
                 $"Max durability: {repairable.MaxDurability} for item id: {item.Id} was below durability: {repairable.Durability}, adjusting values to match"
             );
             repairable.MaxDurability = repairable.Durability;
