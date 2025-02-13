@@ -34,12 +34,12 @@ public class ImporterUtil
     }
 
     /**
-     * Load files into js objects recursively (asynchronous)
+     * Load files into objects recursively (asynchronous)
      * @param filepath Path to folder with files
      * @returns Promise
      * <T> return T type associated with this class
      */
-    protected Task<object> LoadRecursiveAsync(
+    protected async Task<object> LoadRecursiveAsync(
         string filepath,
         Type loadedType,
         Action<string, string>? onReadCallback = null,
@@ -54,97 +54,18 @@ public class ImporterUtil
         var files = _fileUtil.GetFiles(filepath);
         var directories = _fileUtil.GetDirectories(filepath);
 
-        // add file content to result
+        // Process files
         foreach (var file in files)
         {
-            if (_fileUtil.GetFileExtension(file) != "json")
+            if (_fileUtil.GetFileExtension(file) != "json" || filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower()))
             {
                 continue;
             }
 
-            if (filesToIgnore.Contains(_fileUtil.GetFileNameAndExtension(file).ToLower()))
-            {
-                continue;
-            }
-
-            tasks.Add(
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        var fileData = _fileUtil.ReadFile(file);
-                        if (onReadCallback != null)
-                        {
-                            onReadCallback(file, fileData);
-                        }
-
-                        var setMethod = GetSetMethod(
-                            _fileUtil.StripExtension(file).ToLower(),
-                            loadedType,
-                            out var propertyType,
-                            out var isDictionary
-                        );
-                        try
-                        {
-                            object fileDeserialized = null;
-                            if (propertyType.IsGenericType &&
-                                propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
-                            {
-                                // This expression is create a generic type delegate for lazy loading a LazyLoad type
-                                var expression = Expression.Lambda(
-                                        // this is the expected type of the lambda which is a function of whatever generic type LazyLoad<> is
-                                        typeof(Func<>).MakeGenericType(propertyType.GetGenericArguments()),
-                                        // An expression block will have a return type and then will execute the expression
-                                        Expression.Block(
-                                            // this is the return type
-                                            propertyType.GetGenericArguments()[0],
-                                            // this is the expression
-                                            // This expression casts the result of the Call expression as the generic argument type
-                                            Expression.TypeAs(
-                                                // this expression calls the json util Deserialize method
-                                                Expression.Call(
-                                                    Expression.Constant(_jsonUtil),
-                                                    "Deserialize",
-                                                    [],
-                                                    Expression.Constant(fileData),
-                                                    Expression.Constant(propertyType.GetGenericArguments()[0])
-                                                ),
-                                                propertyType.GetGenericArguments()[0]
-                                            )
-                                        )
-                                    )
-                                    .Compile();
-                                fileDeserialized = Activator.CreateInstance(propertyType, expression);
-                            }
-                            else
-                            {
-                                fileDeserialized = _jsonUtil.Deserialize(fileData, propertyType);
-                            }
-
-                            if (onObjectDeserialized != null)
-                            {
-                                onObjectDeserialized(file, fileDeserialized);
-                            }
-
-                            lock (dictionaryLock)
-                            {
-                                setMethod.Invoke(
-                                    result,
-                                    isDictionary
-                                        ? [_fileUtil.StripExtension(file), fileDeserialized]
-                                        : [fileDeserialized]
-                                );
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            throw new Exception($"Unable to deserialize or set properties for file '{file}'", e);
-                        }
-                    }
-                )
-            );
+            tasks.Add(ProcessFileAsync(file, loadedType, onReadCallback, onObjectDeserialized, result, dictionaryLock));
         }
 
-        // deep tree search
+        // Process directories
         foreach (var directory in directories)
         {
             if (directoriesToIgnore.Contains(directory))
@@ -152,61 +73,122 @@ public class ImporterUtil
                 continue;
             }
 
-            tasks.Add(
-                Task.Factory.StartNew(
-                    () =>
-                    {
-                        var setMethod = GetSetMethod(
-                            directory.Split("/").Last().Replace("_", ""),
-                            loadedType,
-                            out var matchedProperty,
-                            out var isDictionary
-                        );
-                        var loadTask = LoadRecursiveAsync($"{directory}/", matchedProperty);
-                        loadTask.Wait();
-                        lock (dictionaryLock)
-                        {
-                            setMethod.Invoke(result, isDictionary ? [directory, loadTask.Result] : [loadTask.Result]);
-                        }
-                    }
-                )
-            );
+            tasks.Add(ProcessDirectoryAsync(directory, loadedType, result, dictionaryLock));
         }
 
-        // return the result of all async fetch
-        return Task.WhenAll(tasks)
-            .ContinueWith(
-                t =>
-                {
-                    if (t.IsCanceled || t.IsFaulted)
-                    {
-                        var exceptionList = tasks.Where(t => t.IsFaulted || t.IsCanceled)
-                            .Select(t => t.Exception!)
-                            .ToList();
-                        throw new Exception(
-                            "Error processing one or more DatabaseFiles",
-                            new AggregateException(exceptionList)
-                        );
-                    }
-                }
-            )
-            .ContinueWith(
-                t =>
-                {
-                    if (t.IsFaulted || t.IsCanceled)
-                    {
-                        throw t.Exception!;
-                    }
+        // Wait for all tasks to finish
+        await Task.WhenAll(tasks);
 
-                    return result;
-                }
+        return result;
+    }
+
+    private async Task ProcessFileAsync(
+        string file,
+        Type loadedType,
+        Action<string, string>? onReadCallback,
+        Action<string, object>? onObjectDeserialized,
+        object result,
+        object dictionaryLock
+    )
+    {
+        try
+        {
+            var fileData = _fileUtil.ReadFile(file);
+            onReadCallback?.Invoke(file, fileData);
+
+            var setMethod = GetSetMethod(
+                _fileUtil.StripExtension(file).ToLower(),
+                loadedType,
+                out var propertyType,
+                out var isDictionary
             );
+
+            var fileDeserialized = await DeserializeFileAsync(fileData, propertyType);
+
+            onObjectDeserialized?.Invoke(file, fileDeserialized);
+
+            lock (dictionaryLock)
+            {
+                setMethod.Invoke(
+                    result,
+                    isDictionary
+                        ? [_fileUtil.StripExtension(file), fileDeserialized]
+                        : new object[] { fileDeserialized }
+                );
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Unable to deserialize or find properties on file '{file}'", ex);
+        }
+    }
+
+    private async Task ProcessDirectoryAsync(
+        string directory,
+        Type loadedType,
+        object result,
+        object dictionaryLock
+    )
+    {
+        try
+        {
+            var setMethod = GetSetMethod(
+                directory.Split("/").Last().Replace("_", ""),
+                loadedType,
+                out var matchedProperty,
+                out var isDictionary
+            );
+
+            var loadedData = await LoadRecursiveAsync($"{directory}/", matchedProperty);
+
+            lock (dictionaryLock)
+            {
+                setMethod.Invoke(result, isDictionary ? [directory, loadedData] : new object[] { loadedData });
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Error processing directory '{directory}'", ex);
+        }
+    }
+
+    private async Task<object> DeserializeFileAsync(string fileData, Type propertyType)
+    {
+        if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
+        {
+            return CreateLazyLoadDeserialization(fileData, propertyType);
+        }
+
+        return await Task.Run(() => _jsonUtil.Deserialize(fileData, propertyType));
+    }
+
+    private object CreateLazyLoadDeserialization(string fileData, Type propertyType)
+    {
+        var expression = Expression.Lambda(
+            typeof(Func<>).MakeGenericType(propertyType.GetGenericArguments()),
+            Expression.Block(
+                propertyType.GetGenericArguments()[0],
+                Expression.TypeAs(
+                    Expression.Call(
+                        Expression.Constant(_jsonUtil),
+                        "Deserialize",
+                        Type.EmptyTypes,
+                        Expression.Constant(fileData),
+                        Expression.Constant(propertyType.GetGenericArguments()[0])
+                    ),
+                    propertyType.GetGenericArguments()[0]
+                )
+            )
+        ).Compile();
+
+        return Activator.CreateInstance(propertyType, expression);
     }
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
     {
         MethodInfo setMethod;
         isDictionary = false;
+
         if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
         {
             propertyType = type.GetGenericArguments()[1];
@@ -224,6 +206,7 @@ public class ImporterUtil
                             StringComparison.Ordinal
                         )
                 );
+
             if (matchedProperty == null)
             {
                 throw new Exception(
