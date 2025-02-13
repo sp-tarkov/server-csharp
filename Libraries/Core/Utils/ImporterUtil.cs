@@ -16,6 +16,8 @@ public class ImporterUtil
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
+    protected readonly Dictionary<Type, Delegate> lazyLoadDeserializationCache = [];
+
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
         _logger = logger;
@@ -164,24 +166,32 @@ public class ImporterUtil
 
     private object CreateLazyLoadDeserialization(string fileData, Type propertyType)
     {
-        var expression = Expression.Lambda(
-            typeof(Func<>).MakeGenericType(propertyType.GetGenericArguments()),
-            Expression.Block(
-                propertyType.GetGenericArguments()[0],
-                Expression.TypeAs(
-                    Expression.Call(
-                        Expression.Constant(_jsonUtil),
-                        "Deserialize",
-                        Type.EmptyTypes,
-                        Expression.Constant(fileData),
-                        Expression.Constant(propertyType.GetGenericArguments()[0])
-                    ),
-                    propertyType.GetGenericArguments()[0]
-                )
-            )
-        ).Compile();
+        var genericArgument = propertyType.GetGenericArguments()[0];
 
-        return Activator.CreateInstance(propertyType, expression);
+        if (!lazyLoadDeserializationCache.TryGetValue(genericArgument, out var cachedDelegate))
+        {
+            // Create the expression for deserialization
+            var deserializeCall = Expression.Call(
+                Expression.Constant(_jsonUtil),
+                "Deserialize",
+                Type.EmptyTypes,
+                Expression.Constant(fileData),
+                Expression.Constant(genericArgument)
+            );
+
+            var typeAsExpression = Expression.TypeAs(deserializeCall, genericArgument);
+
+            var expression = Expression.Lambda(
+                typeof(Func<>).MakeGenericType(genericArgument),
+                typeAsExpression
+            );
+
+            // Compile the expression and store it in the cache
+            cachedDelegate = expression.Compile();
+            lazyLoadDeserializationCache.Add(genericArgument, cachedDelegate);
+        }
+
+        return Activator.CreateInstance(propertyType, cachedDelegate);
     }
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
