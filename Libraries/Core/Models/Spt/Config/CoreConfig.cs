@@ -340,6 +340,16 @@ public record ServerFeatures
         get;
         set;
     }
+
+    /**
+     * Profile ids to ignore when calculating achievement stats
+     */
+    [JsonPropertyName("achievementProfileIdBlacklist")]
+    public HashSet<string>? AchievementProfileIdBlacklist
+    {
+        get;
+        set;
+    }
 }
 
 public record ChatbotFeatures

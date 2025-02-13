@@ -1,4 +1,7 @@
+using Core.Helpers;
 using Core.Models.Eft.Profile;
+using Core.Models.Spt.Config;
+using Core.Servers;
 using Core.Services;
 using SptCommon.Annotations;
 
@@ -6,33 +9,52 @@ namespace Core.Controllers;
 
 [Injectable]
 public class AchievementController(
-    DatabaseService _databaseService
+    ProfileHelper profileHelper,
+    DatabaseService databaseService,
+    ConfigServer configServer
 )
 {
+    protected CoreConfig coreConfig = configServer.GetConfig<CoreConfig>();
+
     public virtual GetAchievementsResponse GetAchievements(string sessionID)
     {
         return new GetAchievementsResponse
         {
-            Elements = _databaseService.GetAchievements()
+            Elements = databaseService.GetAchievements()
         };
     }
 
-    public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionID)
+    public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionId)
     {
-        var achievements = _databaseService.GetAchievements();
         var stats = new Dictionary<string, int>();
+        var profiles = profileHelper.GetProfiles();
 
-        foreach (var achievement in achievements)
-        {
-            if (achievement.Id != null)
-            {
-                stats.Add(achievement.Id, 0);
+        var achievements = databaseService.GetAchievements();
+        foreach (var achievement in achievements) {
+            var percentage = 0;
+            foreach (var (profileId, profile) in profiles) {
+                if (coreConfig.Features.AchievementProfileIdBlacklist.Contains(profileId))
+                {
+                    continue;
+                }
+
+                if (profile.CharacterData?.PmcData?.Achievements is null)
+                {
+                    continue;
+                }
+
+                if (!profile.CharacterData.PmcData.Achievements.ContainsKey(achievement.Id))
+                {
+                    continue;
+                }
+
+                percentage++;
             }
+
+            percentage = (percentage / profiles.Count) * 100;
+            stats.Add(achievement.Id, percentage);
         }
 
-        return new CompletedAchievementsResponse
-        {
-            Elements = stats
-        };
+        return new CompletedAchievementsResponse{ Elements = stats };
     }
 }
