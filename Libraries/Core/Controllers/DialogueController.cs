@@ -33,7 +33,7 @@ public class DialogueController(
     /// <summary>
     /// </summary>
     /// <param name="chatBot"></param>
-    public void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
+    public virtual void RegisterChatBot(IDialogueChatBot chatBot) // TODO: this is in with the helper types
     {
         if (_dialogueChatBots.Any(cb => cb.GetChatBot().Id == chatBot.GetChatBot().Id))
         {
@@ -61,7 +61,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">session id</param>
     /// <returns>GetFriendListDataResponse</returns>
-    public GetFriendListDataResponse GetFriendList(string sessionId)
+    public virtual GetFriendListDataResponse GetFriendList(string sessionId)
     {
         // Add all chatbots to the friends list
         var friends = GetActiveChatBots();
@@ -120,7 +120,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session Id</param>
     /// <returns>list of dialogs</returns>
-    public List<DialogueInfo> GenerateDialogueList(string sessionId)
+    public virtual List<DialogueInfo> GenerateDialogueList(string sessionId)
     {
         var data = new List<DialogueInfo>();
         foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
@@ -137,7 +137,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog id</param>
     /// <param name="sessionId">Session Id</param>
     /// <returns>DialogueInfo</returns>
-    public DialogueInfo GetDialogueInfo(
+    public virtual DialogueInfo GetDialogueInfo(
         string? dialogueId,
         string sessionId)
     {
@@ -165,7 +165,7 @@ public class DialogueController(
     /// <param name="messageType">What type of message is being sent</param>
     /// <param name="sessionId">Player id</param>
     /// <returns>UserDialogInfo list</returns>
-    public List<UserDialogInfo> GetDialogueUsers(
+    public virtual List<UserDialogInfo> GetDialogueUsers(
         Dialogue? dialog,
         MessageType? messageType,
         string sessionId)
@@ -206,7 +206,7 @@ public class DialogueController(
     /// <param name="request">Get dialog request</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetMailDialogViewResponseData object</returns>
-    public GetMailDialogViewResponseData GenerateDialogueView(
+    public virtual GetMailDialogViewResponseData GenerateDialogueView(
         GetMailDialogViewRequestData request,
         string sessionId)
     {
@@ -369,7 +369,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId">id of the dialog to remove</param>
     /// <param name="sessionId">Player id</param>
-    public void RemoveDialogue(
+    public virtual void RemoveDialogue(
         string? dialogueId,
         string sessionId)
     {
@@ -400,7 +400,7 @@ public class DialogueController(
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
     /// <param name="sessionId"></param>
-    public void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
+    public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
     {
         var dialog = _dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
         if (dialog is null)
@@ -428,7 +428,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueIds">Dialog ids to set as read</param>
     /// <param name="sessionId">Player profile id</param>
-    public void SetRead(List<string>? dialogueIds, string sessionId)
+    public virtual void SetRead(List<string>? dialogueIds, string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         if (dialogs is null || !dialogs.Any())
@@ -460,7 +460,7 @@ public class DialogueController(
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
     /// <param name="sessionId">Session id</param>
     /// <returns>GetAllAttachmentsResponse or null if dialogue doesnt exist</returns>
-    public GetAllAttachmentsResponse GetAllAttachments(string dialogueId, string sessionId)
+    public virtual GetAllAttachmentsResponse GetAllAttachments(string dialogueId, string sessionId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         var dialog = dialogs.TryGetValue(dialogueId, out var dialogInfo);
@@ -493,7 +493,7 @@ public class DialogueController(
     /// <param name="sessionId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public string SendMessage(
+    public virtual string SendMessage(
         string sessionId,
         SendMessageRequest request)
     {
@@ -562,7 +562,7 @@ public class DialogueController(
         return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 
-    public FriendRequestSendResponse SendFriendRequest(string sessionID, FriendRequestData request)
+    public virtual FriendRequestSendResponse SendFriendRequest(string sessionID, FriendRequestData request)
     {
         // To avoid needing to jump between profiles, auto-accept all friend requests
         var friendProfile = _profileHelper.GetFullProfile(request.To);
@@ -607,7 +607,7 @@ public class DialogueController(
         };
     }
 
-    public void DeleteFriend(string sessionID, DeleteFriendRequest request)
+    public virtual void DeleteFriend(string sessionID, DeleteFriendRequest request)
     {
         var profile = _saveServer.GetProfile(sessionID);
         var friendIndex = profile.FriendProfileIds.IndexOf(request.FriendId);

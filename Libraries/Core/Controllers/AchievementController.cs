@@ -9,7 +9,7 @@ public class AchievementController(
     DatabaseService _databaseService
 )
 {
-    public GetAchievementsResponse GetAchievements(string sessionID)
+    public virtual GetAchievementsResponse GetAchievements(string sessionID)
     {
         return new GetAchievementsResponse
         {
@@ -17,7 +17,7 @@ public class AchievementController(
         };
     }
 
-    public CompletedAchievementsResponse GetAchievementStatics(string sessionID)
+    public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionID)
     {
         var achievements = _databaseService.GetAchievements();
         var stats = new Dictionary<string, int>();

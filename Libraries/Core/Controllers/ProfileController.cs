@@ -40,7 +40,7 @@ public class ProfileController(
     /**
      * Handle /launcher/profiles
      */
-    public List<MiniProfile> GetMiniProfiles()
+    public virtual List<MiniProfile> GetMiniProfiles()
     {
         return _saveServer.GetProfiles().Select(kv => GetMiniProfile(kv.Key)).ToList();
     }
@@ -48,7 +48,7 @@ public class ProfileController(
     /**
      * Handle launcher/profile/info
      */
-    public MiniProfile GetMiniProfile(string sessionID)
+    public virtual MiniProfile GetMiniProfile(string sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
         if (profile?.CharacterData == null)
@@ -101,7 +101,7 @@ public class ProfileController(
     /**
      * Handle client/game/profile/list
      */
-    public List<PmcData> GetCompleteProfile(string sessionID)
+    public virtual List<PmcData> GetCompleteProfile(string sessionID)
     {
         return _profileHelper.GetCompleteProfile(sessionID);
     }
@@ -112,7 +112,7 @@ public class ProfileController(
      * @param sessionID Player id
      * @returns Profiles _id value
      */
-    public string CreateProfile(ProfileCreateRequestData request, string sessionID)
+    public virtual string CreateProfile(ProfileCreateRequestData request, string sessionID)
     {
         return _createProfileService.CreateProfile(sessionID, request);
     }
@@ -123,7 +123,7 @@ public class ProfileController(
      * @param sessionID
      * @returns IPmcData object
      */
-    public PmcData GeneratePlayerScav(string sessionID)
+    public virtual PmcData GeneratePlayerScav(string sessionID)
     {
         return _playerScavGenerator.Generate(sessionID);
     }
@@ -131,7 +131,7 @@ public class ProfileController(
     /**
      * Handle client/game/profile/nickname/validate
      */
-    public string ValidateNickname(ValidateNicknameRequestData info, string sessionID)
+    public virtual string ValidateNickname(ValidateNicknameRequestData info, string sessionID)
     {
         if (info.Nickname.Length < 3)
         {
@@ -150,7 +150,7 @@ public class ProfileController(
      * Handle client/game/profile/nickname/change event
      * Client allows player to adjust their profile name
      */
-    public string ChangeNickname(ProfileChangeNicknameRequestData info, string sessionID)
+    public virtual string ChangeNickname(ProfileChangeNicknameRequestData info, string sessionID)
     {
         var output = ValidateNickname(
             new ValidateNicknameRequestData
@@ -174,7 +174,7 @@ public class ProfileController(
     /**
      * Handle client/game/profile/voice/change event
      */
-    public void ChangeVoice(ProfileChangeVoiceRequestData info, string sessionID)
+    public virtual void ChangeVoice(ProfileChangeVoiceRequestData info, string sessionID)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionID);
         pmcData.Info.Voice = info.Voice;
@@ -183,7 +183,7 @@ public class ProfileController(
     /**
      * Handle client/game/profile/search
      */
-    public List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData info, string sessionID)
+    public virtual List<SearchFriendResponse> SearchProfiles(SearchProfilesRequestData info, string sessionID)
     {
         var result = new List<SearchFriendResponse>();
 
@@ -208,7 +208,7 @@ public class ProfileController(
     /**
      * Handle client/profile/status
      */
-    public GetProfileStatusResponseData GetProfileStatus(string sessionId)
+    public virtual GetProfileStatusResponseData GetProfileStatus(string sessionId)
     {
         var account = _saveServer.GetProfile(sessionId).ProfileInfo;
         var response = new GetProfileStatusResponseData
@@ -243,7 +243,7 @@ public class ProfileController(
     /**
      * Handle client/profile/view
      */
-    public GetOtherProfileResponse GetOtherProfile(string sessionId, GetOtherProfileRequest request)
+    public virtual GetOtherProfileResponse GetOtherProfile(string sessionId, GetOtherProfileRequest request)
     {
         // Find the profile by the account ID, fall back to the current player if we can't find the account
         var profileToView = _profileHelper.GetFullProfileByAccountId(request.AccountId);
@@ -327,7 +327,7 @@ public class ProfileController(
     /**
      * Handle client/profile/settings
      */
-    public bool SetChosenProfileIcon(string sessionId, GetProfileSettingsRequest request)
+    public virtual bool SetChosenProfileIcon(string sessionId, GetProfileSettingsRequest request)
     {
         var profileToUpdate = _profileHelper.GetPmcProfile(sessionId);
         if (profileToUpdate == null)

@@ -124,7 +124,7 @@ public class LocationLifecycleService
     /**
      * Handle client/match/local/start
      */
-    public StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
+    public virtual StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
     {
         _logger.Debug($"Starting: {request.Location}");
 
@@ -400,7 +400,7 @@ public class LocationLifecycleService
     /**
      * Handle client/match/local/end
      */
-    public void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
+    public virtual void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
     {
         // Clear bot loot cache
         _botLootCacheService.ClearCache();

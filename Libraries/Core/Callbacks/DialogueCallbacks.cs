@@ -36,7 +36,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetFriendList(string url, EmptyRequestData info, string sessionID)
+    public virtual string GetFriendList(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.GetFriendList(sessionID));
     }
@@ -48,7 +48,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
+    public virtual string GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
     {
         var chatServer = new List<ChatServer>
         {
@@ -83,7 +83,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetMailDialogList(string url, GetMailDialogListRequestData info, string sessionID)
+    public virtual string GetMailDialogList(string url, GetMailDialogListRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueList(sessionID), 0, null, false);
     }
@@ -95,7 +95,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetMailDialogView(string url, GetMailDialogViewRequestData info, string sessionID)
+    public virtual string GetMailDialogView(string url, GetMailDialogViewRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.GenerateDialogueView(info, sessionID), 0, null, false);
     }
@@ -107,7 +107,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetMailDialogInfo(string url, GetMailDialogInfoRequestData info, string sessionID)
+    public virtual string GetMailDialogInfo(string url, GetMailDialogInfoRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.GetDialogueInfo(info.DialogId, sessionID));
     }
@@ -119,7 +119,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string RemoveDialog(string url, RemoveDialogRequestData info, string sessionID)
+    public virtual string RemoveDialog(string url, RemoveDialogRequestData info, string sessionID)
     {
         _dialogueController.RemoveDialogue(info.DialogId, sessionID);
         return _httpResponseUtil.EmptyArrayResponse();
@@ -132,7 +132,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string PinDialog(string url, PinDialogRequestData info, string sessionID)
+    public virtual string PinDialog(string url, PinDialogRequestData info, string sessionID)
     {
         _dialogueController.SetDialoguePin(info.DialogId, true, sessionID);
         return _httpResponseUtil.EmptyArrayResponse();
@@ -145,7 +145,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string UnpinDialog(string url, PinDialogRequestData info, string sessionID)
+    public virtual string UnpinDialog(string url, PinDialogRequestData info, string sessionID)
     {
         _dialogueController.SetDialoguePin(info.DialogId, false, sessionID);
         return _httpResponseUtil.EmptyArrayResponse();
@@ -158,7 +158,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string SetRead(string url, SetDialogReadRequestData info, string sessionID)
+    public virtual string SetRead(string url, SetDialogReadRequestData info, string sessionID)
     {
         _dialogueController.SetRead(info.Dialogs, sessionID);
         return _httpResponseUtil.EmptyArrayResponse();
@@ -171,7 +171,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string GetAllAttachments(string url, GetAllAttachmentsRequestData info, string sessionID)
+    public virtual string GetAllAttachments(string url, GetAllAttachmentsRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.GetAllAttachments(info.DialogId, sessionID));
     }
@@ -183,7 +183,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string SendMessage(string url, SendMessageRequest info, string sessionID)
+    public virtual string SendMessage(string url, SendMessageRequest info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.SendMessage(sessionID, info));
     }
@@ -195,7 +195,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string ListOutbox(string url, EmptyRequestData info, string sessionID)
+    public virtual string ListOutbox(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();
     }
@@ -207,7 +207,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string ListInbox(string url, EmptyRequestData info, string sessionID)
+    public virtual string ListInbox(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();
     }
@@ -219,7 +219,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string SendFriendRequest(string url, FriendRequestData info, string sessionID)
+    public virtual string SendFriendRequest(string url, FriendRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(_dialogueController.SendFriendRequest(sessionID, info));
     }
@@ -231,7 +231,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string AcceptAllFriendRequests(string url, EmptyRequestData info, string sessionID)
+    public virtual string AcceptAllFriendRequests(string url, EmptyRequestData info, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -243,7 +243,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string AcceptFriendRequest(string url, AcceptFriendRequestData info, string sessionID)
+    public virtual string AcceptFriendRequest(string url, AcceptFriendRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -255,7 +255,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string DeclineFriendRequest(string url, DeclineFriendRequestData info, string sessionID)
+    public virtual string DeclineFriendRequest(string url, DeclineFriendRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -267,7 +267,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string CancelFriendRequest(string url, CancelFriendRequestData info, string sessionID)
+    public virtual string CancelFriendRequest(string url, CancelFriendRequestData info, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -279,7 +279,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string DeleteFriend(string url, DeleteFriendRequest info, string sessionID)
+    public virtual string DeleteFriend(string url, DeleteFriendRequest info, string sessionID)
     {
         _dialogueController.DeleteFriend(sessionID, info);
         return _httpResponseUtil.NullResponse();
@@ -292,7 +292,7 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string IgnoreFriend(string url, UIDRequestData info, string sessionID)
+    public virtual string IgnoreFriend(string url, UIDRequestData info, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -304,32 +304,32 @@ public class DialogueCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID"></param>
     /// <returns></returns>
-    public string UnIgnoreFriend(string url, UIDRequestData info, string sessionID)
+    public virtual string UnIgnoreFriend(string url, UIDRequestData info, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
 
-    public string ClearMail(string url, ClearMailMessageRequest info, string sessionID)
+    public virtual string ClearMail(string url, ClearMailMessageRequest info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public string CreateGroupMail(string url, CreateGroupMailRequest info, string sessionID)
+    public virtual string CreateGroupMail(string url, CreateGroupMailRequest info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();
     }
 
-    public string ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest info, string sessionID)
+    public virtual string ChangeMailGroupOwner(string url, ChangeGroupMailOwnerRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
     }
 
-    public string AddUserToMail(string url, AddUserGroupMailRequest info, string sessionID)
+    public virtual string AddUserToMail(string url, AddUserGroupMailRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
     }
 
-    public string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
+    public virtual string RemoveUserFromMail(string url, RemoveUserGroupMailRequest info, string sessionID)
     {
         return "Not Implemented!"; // Not implemented in Node
     }
