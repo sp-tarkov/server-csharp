@@ -13,13 +13,13 @@ public class I18nService
     private readonly JsonUtil _jsonUtil;
 
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
-    private List<string> _locales;
+    private HashSet<string> _locales;
     private string? _setLocale;
 
     public I18nService(
         FileUtil fileUtil,
         JsonUtil jsonUtil,
-        List<string> locales,
+        HashSet<string> locales,
         Dictionary<string, string> fallbacks,
         string defaultLocale,
         string directory
@@ -60,7 +60,7 @@ public class I18nService
         }
     }
 
-    public void SetLocale(string locale)
+    public void SetLocaleByKey(string locale)
     {
         if (_loadedLocales.ContainsKey(locale))
         {
@@ -86,7 +86,7 @@ public class I18nService
         }
     }
 
-    public string GetLocalised(string key)
+    public string GetLocalisedValue(string key)
     {
         if (!_loadedLocales.TryGetValue(_setLocale, out var locales))
         {
@@ -105,12 +105,12 @@ public class I18nService
 
     public string GetLocalised<T>(string key)
     {
-        return GetLocalised(key);
+        return GetLocalisedValue(key);
     }
 
     public string GetLocalised(string key, object? args)
     {
-        var rawLocalizedString = GetLocalised(key);
+        var rawLocalizedString = GetLocalisedValue(key);
         if (args == null)
         {
             return rawLocalizedString;
@@ -133,7 +133,7 @@ public class I18nService
 
     public string GetLocalised<T>(string key, T? value) where T : IConvertible
     {
-        var rawLocalizedString = GetLocalised(key);
+        var rawLocalizedString = GetLocalisedValue(key);
         return rawLocalizedString.Replace("%s", value?.ToString());
     }
 

@@ -32,18 +32,18 @@ public class LocalisationService
         _i18nService = new I18nService(
             fileUtil,
             jsonUtil,
-            localeService.GetServerSupportedLocales(),
+            localeService.GetServerSupportedLocales().ToHashSet(),
             localeService.GetLocaleFallbacks(),
             "en",
             "./Assets/database/locales/server"
         );
-        _i18nService.SetLocale(localeService.GetDesiredServerLocale());
+        _i18nService.SetLocaleByKey(localeService.GetDesiredServerLocale());
     }
 
     public string GetText(string key, object? args = null)
     {
         return args is null
-            ? _i18nService.GetLocalised(key)
+            ? _i18nService.GetLocalisedValue(key)
             : _i18nService.GetLocalised(key, args);
     }
 
