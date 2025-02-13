@@ -17,7 +17,7 @@ public static class Program
     public static void Main(string[] args)
     {
         var mods = ModDllLoader.LoadAllMods();
-        // HarmonyBootstrapper.LoadAllPatches(assemblies);
+        HarmonyBootstrapper.LoadAllPatches(mods.Select(asm => asm.Assembly).ToList());
         var builder = WebApplication.CreateBuilder(args);
         builder.Host.UseSerilog();
 
