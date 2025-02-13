@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
 using Core.Models.Utils;
@@ -16,7 +17,7 @@ public class ImporterUtil
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
 
-    protected readonly Dictionary<Type, Delegate> lazyLoadDeserializationCache = [];
+    protected readonly ConcurrentDictionary<Type, Delegate> lazyLoadDeserializationCache = [];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
@@ -168,6 +169,7 @@ public class ImporterUtil
     {
         var genericArgument = propertyType.GetGenericArguments()[0];
 
+        /*
         if (!lazyLoadDeserializationCache.TryGetValue(genericArgument, out var cachedDelegate))
         {
             // Create the expression for deserialization
@@ -188,10 +190,28 @@ public class ImporterUtil
 
             // Compile the expression and store it in the cache
             cachedDelegate = expression.Compile();
-            lazyLoadDeserializationCache.Add(genericArgument, cachedDelegate);
+            lazyLoadDeserializationCache.TryAdd(genericArgument, cachedDelegate);
         }
+        */
 
-        return Activator.CreateInstance(propertyType, cachedDelegate);
+        var deserializeCall = Expression.Call(
+                Expression.Constant(_jsonUtil),
+                "Deserialize",
+                Type.EmptyTypes,
+                Expression.Constant(fileData),
+                Expression.Constant(genericArgument)
+            );
+
+        var typeAsExpression = Expression.TypeAs(deserializeCall, genericArgument);
+
+        var expression = Expression.Lambda(
+            typeof(Func<>).MakeGenericType(genericArgument),
+            typeAsExpression
+        );
+
+        var expressionDelegate = expression.Compile();
+
+        return Activator.CreateInstance(propertyType, expressionDelegate);
     }
 
     public MethodInfo GetSetMethod(string propertyName, Type type, out Type propertyType, out bool isDictionary)
