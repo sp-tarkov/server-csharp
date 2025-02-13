@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Core.DI;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
@@ -141,6 +142,8 @@ public class DatabaseImporter : IOnLoad
     protected async Task HydrateDatabase(string filePath)
     {
         _logger.Info(_localisationService.GetText("importing_database"));
+        Stopwatch timer = new();
+        timer.Start();
 
         var dataToImport = await _importerUtil.LoadRecursiveAsync<DatabaseTables>(
             $"{filePath}database/",
@@ -159,10 +162,13 @@ public class DatabaseImporter : IOnLoad
             tempTraders.Add(tempKey, trader.Value);
         }
 
+        timer.Stop();
+
         dataToImport.Traders = tempTraders;
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
+        this._logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
     }
 
