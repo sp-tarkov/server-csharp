@@ -437,7 +437,7 @@
                 }
             },
             "allowBossItems": false,
-            "useRewarditemBlacklist": true
+            "useRewardItemBlacklist": true
         },
         "btrDeliveryExpireHours": 240,
         "playerRepMin": -7,

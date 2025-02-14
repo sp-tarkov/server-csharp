@@ -317,8 +317,8 @@ public record CoopExtractReward : LootRequest
         set;
     }
 
-    [JsonPropertyName("useRewarditemBlacklist")]
-    public bool UseRewarditemBlacklist
+    [JsonPropertyName("useRewardItemBlacklist")]
+    public bool UseRewardItemBlacklist
     {
         get;
         set;
