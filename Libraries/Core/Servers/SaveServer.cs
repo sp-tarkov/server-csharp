@@ -1,3 +1,5 @@
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Core.DI;
 using Core.Models.Eft.Common;
@@ -23,13 +25,12 @@ public class SaveServer(
 )
 {
     protected const string profileFilepath = "user/profiles/";
-    private readonly Lock _lock = new();
 
     // onLoad = require("../bindings/SaveLoad");
     protected readonly Dictionary<string, Func<SptProfile, SptProfile>> onBeforeSaveCallbacks = new();
 
-    protected Dictionary<string, SptProfile> profiles = new();
-    protected Dictionary<string, string> saveMd5 = new();
+    protected ConcurrentDictionary<string, SptProfile> profiles = new();
+    protected ConcurrentDictionary<string, string> saveMd5 = new();
 
     /**
      * Add callback to occur prior to saving profile changes
@@ -85,19 +86,16 @@ public class SaveServer(
      */
     public void Save()
     {
-        lock (_lock)
+        // Save every profile
+        var totalTime = 0L;
+        foreach (var sessionID in profiles)
         {
-            // Save every profile
-            var totalTime = 0L;
-            foreach (var sessionID in profiles)
-            {
-                totalTime += SaveProfile(sessionID.Key);
-            }
+            totalTime += SaveProfile(sessionID.Key);
+        }
 
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
-            }
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Saved {profiles.Count} profiles, took: {totalTime}ms");
         }
     }
 
@@ -108,25 +106,22 @@ public class SaveServer(
      */
     public SptProfile GetProfile(string sessionId)
     {
-        lock (_lock)
+        if (string.IsNullOrEmpty(sessionId))
         {
-            if (string.IsNullOrEmpty(sessionId))
-            {
-                throw new Exception("session id provided was empty, did you restart the server while the game was running?");
-            }
-
-            if (profiles == null || profiles.Count == 0)
-            {
-                throw new Exception($"no profiles found in saveServer with id: {sessionId}");
-            }
-
-            if (!profiles.TryGetValue(sessionId, out var sptProfile))
-            {
-                throw new Exception($"no profile found for sessionId: {sessionId}");
-            }
-
-            return sptProfile;
+            throw new Exception("session id provided was empty, did you restart the server while the game was running?");
         }
+
+        if (profiles == null || profiles.Count == 0)
+        {
+            throw new Exception($"no profiles found in saveServer with id: {sessionId}");
+        }
+
+        if (!profiles.TryGetValue(sessionId, out var sptProfile))
+        {
+            throw new Exception($"no profile found for sessionId: {sessionId}");
+        }
+
+        return sptProfile;
     }
 
     public bool ProfileExists(string id)
@@ -140,7 +135,7 @@ public class SaveServer(
      */
     public Dictionary<string, SptProfile> GetProfiles()
     {
-        return profiles;
+        return profiles.ToDictionary();
     }
 
     /**
@@ -150,16 +145,15 @@ public class SaveServer(
      */
     public bool DeleteProfileById(string sessionID)
     {
-        lock (_lock)
+        if (profiles.ContainsKey(sessionID))
         {
-            if (profiles.ContainsKey(sessionID))
+            if (profiles.TryRemove(sessionID, out _))
             {
-                profiles.Remove(sessionID);
                 return true;
             }
-
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -168,26 +162,23 @@ public class SaveServer(
      */
     public void CreateProfile(Info profileInfo)
     {
-        lock (_lock)
+        if (profiles.ContainsKey(profileInfo.ProfileId))
         {
-            if (profiles.ContainsKey(profileInfo.ProfileId))
-            {
-                throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
-            }
-
-            profiles.Add(
-                profileInfo.ProfileId,
-                new SptProfile
-                {
-                    ProfileInfo = profileInfo,
-                    CharacterData = new Characters
-                    {
-                        PmcData = new PmcData(),
-                        ScavData = new PmcData()
-                    }
-                }
-            );
+            throw new Exception($"profile already exists for sessionId: {profileInfo.ProfileId}");
         }
+
+        profiles.TryAdd(
+            profileInfo.ProfileId,
+            new SptProfile
+            {
+                ProfileInfo = profileInfo,
+                CharacterData = new Characters
+                {
+                    PmcData = new PmcData(),
+                    ScavData = new PmcData()
+                }
+            }
+        );
     }
 
     /**
@@ -196,10 +187,7 @@ public class SaveServer(
      */
     public void AddProfile(SptProfile profileDetails)
     {
-        lock (_lock)
-        {
-            profiles.Add(profileDetails.ProfileInfo.ProfileId, profileDetails);
-        }
+        profiles.TryAdd(profileDetails.ProfileInfo.ProfileId, profileDetails);
     }
 
     /**
@@ -209,22 +197,19 @@ public class SaveServer(
      */
     public void LoadProfile(string sessionID)
     {
-        lock (_lock)
+        var filename = $"{sessionID}.json";
+        var filePath = $"{profileFilepath}{filename}";
+        if (_fileUtil.FileExists(filePath))
+        // File found, store in profiles[]
         {
-            var filename = $"{sessionID}.json";
-            var filePath = $"{profileFilepath}{filename}";
-            if (_fileUtil.FileExists(filePath))
-                // File found, store in profiles[]
-            {
-                profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
-            }
+            profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
+        }
 
-            // Run callbacks
-            foreach (var callback in
-                     _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
-            {
-                profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
-            }
+        // Run callbacks
+        foreach (var callback in
+                 _saveLoadRouters) // HealthSaveLoadRouter, InraidSaveLoadRouter, InsuranceSaveLoadRouter, ProfileSaveLoadRouter. THESE SHOULD EXIST IN HERE
+        {
+            profiles[sessionID] = callback.HandleLoad(GetProfile(sessionID));
         }
     }
 
@@ -236,47 +221,44 @@ public class SaveServer(
      */
     public long SaveProfile(string sessionID)
     {
-        lock (_lock)
+        var filePath = $"{profileFilepath}{sessionID}.json";
+
+        // Run pre-save callbacks before we save into json
+        foreach (var callback in onBeforeSaveCallbacks)
         {
-            var filePath = $"{profileFilepath}{sessionID}.json";
-
-            // Run pre-save callbacks before we save into json
-            foreach (var callback in onBeforeSaveCallbacks)
+            var previous = profiles[sessionID];
+            try
             {
-                var previous = profiles[sessionID];
-                try
-                {
-                    profiles[sessionID] = onBeforeSaveCallbacks[callback.Key](profiles[sessionID]);
-                }
-                catch (Exception e)
-                {
-                    _logger.Error(
-                        _localisationService.GetText(
-                            "profile_save_callback_error",
-                            new
-                            {
-                                callback,
-                                error = e
-                            }
-                        )
-                    );
-                    profiles[sessionID] = previous;
-                }
+                profiles[sessionID] = onBeforeSaveCallbacks[callback.Key](profiles[sessionID]);
             }
-
-            var start = Stopwatch.StartNew();
-            var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>().Features.CompressProfile);
-            var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
-            if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
+            catch (Exception e)
             {
-                saveMd5[sessionID] = fmd5;
-                // save profile to disk
-                _fileUtil.WriteFile(filePath, jsonProfile);
+                _logger.Error(
+                    _localisationService.GetText(
+                        "profile_save_callback_error",
+                        new
+                        {
+                            callback,
+                            error = e
+                        }
+                    )
+                );
+                profiles[sessionID] = previous;
             }
-
-            start.Stop();
-            return start.ElapsedMilliseconds;
         }
+
+        var start = Stopwatch.StartNew();
+        var jsonProfile = _jsonUtil.Serialize(profiles[sessionID], !_configServer.GetConfig<CoreConfig>().Features.CompressProfile);
+        var fmd5 = _hashUtil.GenerateMd5ForData(jsonProfile);
+        if (!saveMd5.TryGetValue(sessionID, out var currentMd5) || currentMd5 != fmd5)
+        {
+            saveMd5[sessionID] = fmd5;
+            // save profile to disk
+            _fileUtil.WriteFile(filePath, jsonProfile);
+        }
+
+        start.Stop();
+        return start.ElapsedMilliseconds;
     }
 
     /**
@@ -286,16 +268,13 @@ public class SaveServer(
      */
     public bool RemoveProfile(string sessionID)
     {
-        lock (_lock)
+        var file = $"{profileFilepath}{sessionID}.json";
+        if (profiles.ContainsKey(sessionID))
         {
-            var file = $"{profileFilepath}{sessionID}.json";
-            if (profiles.ContainsKey(sessionID))
-            {
-                profiles.Remove(sessionID);
-                _fileUtil.DeleteFile(file);
-            }
-
-            return !_fileUtil.FileExists(file);
+            profiles.TryRemove(sessionID, out _);
+            _fileUtil.DeleteFile(file);
         }
+
+        return !_fileUtil.FileExists(file);
     }
 }
