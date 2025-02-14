@@ -71,7 +71,7 @@ public class GameCallbacks(
     /// <returns></returns>
     public string GameLogout(string url, EmptyRequestData info, string sessionID)
     {
-        _saveServer.Save();
+        _saveServer.SaveProfile(sessionID);
         return _httpResponseUtil.GetBody(
             new GameLogoutResponseData
             {
