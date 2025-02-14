@@ -87,6 +87,12 @@ public class App
 
         _timer = new Timer(_ => Update(_onUpdate), null, TimeSpan.Zero, TimeSpan.FromMilliseconds(5000));
 
+        if (_httpServer.IsStarted())
+        {
+            _logger.Success(_localisationService.GetText("started_webserver_success", _httpServer.ListeningUrl()));
+            _logger.Success(_localisationService.GetText("websocket-started", _httpServer.ListeningUrl().Replace("http://", "ws://")));
+        }
+
         _logger.Success(GetRandomisedStartMessage());
     }
 

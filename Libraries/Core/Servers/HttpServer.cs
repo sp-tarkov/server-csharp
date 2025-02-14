@@ -135,4 +135,9 @@ public class HttpServer(
     {
         return started;
     }
+
+    public string ListeningUrl()
+    {
+        return $"http://{_httpConfig.Ip}:{_httpConfig.Port}";
+    }
 }
