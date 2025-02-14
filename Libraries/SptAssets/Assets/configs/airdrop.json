@@ -107,7 +107,9 @@
                 }
             },
             "armorLevelWhitelist": [0, 4, 5, 6],
-            "allowBossItems": false
+            "allowBossItems": false,
+            "useRewardItemBlacklist": true,
+            "blockSeasonalItemsOutOfSeason": true
         },
         "weaponArmor": {
             "icon": "Weapon",
@@ -180,7 +182,9 @@
                 }
             },
             "armorLevelWhitelist": [0, 3, 4, 5, 6],
-            "allowBossItems": false
+            "allowBossItems": false,
+            "useRewardItemBlacklist": true,
+            "blockSeasonalItemsOutOfSeason": true
         },
         "foodMedical": {
             "icon": "Medical",
@@ -261,7 +265,9 @@
                 }
             },
             "armorLevelWhitelist": [0],
-            "allowBossItems": false
+            "allowBossItems": false,
+            "useRewardItemBlacklist": true,
+            "blockSeasonalItemsOutOfSeason": true
         },
         "barter": {
             "icon": "Supply",
@@ -343,7 +349,9 @@
                 }
             },
             "armorLevelWhitelist": [0],
-            "allowBossItems": false
+            "allowBossItems": false,
+            "useRewardItemBlacklist": true,
+            "blockSeasonalItemsOutOfSeason": true
         },
         "radar": {
             "icon": "Supply",
@@ -369,6 +377,8 @@
             "itemStackLimits": {},
             "armorLevelWhitelist": [],
             "allowBossItems": false,
+            "useRewardItemBlacklist": true,
+            "blockSeasonalItemsOutOfSeason": true,
             "useForcedLoot": true,
             "forcedLoot": {
                 "66d9f7256916142b3b02276e": { "min": 2, "max": 4 }

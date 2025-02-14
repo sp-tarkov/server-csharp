@@ -192,7 +192,9 @@ public class AirdropService(
             ArmorLevelWhitelist = lootSettingsByType.ArmorLevelWhitelist,
             AllowBossItems = lootSettingsByType.AllowBossItems,
             UseForcedLoot = lootSettingsByType.UseForcedLoot,
-            ForcedLoot = lootSettingsByType.ForcedLoot
+            ForcedLoot = lootSettingsByType.ForcedLoot,
+            UseRewardItemBlacklist = lootSettingsByType.UseRewardItemBlacklist,
+            BlockSeasonalItemsOutOfSeason = lootSettingsByType.BlockSeasonalItemsOutOfSeason
         };
     }
 }

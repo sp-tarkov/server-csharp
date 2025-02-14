@@ -27,6 +27,7 @@ public class LootGenerator(
     LocalisationService _localisationService,
     WeightedRandomHelper _weightedRandomHelper,
     RagfairLinkedItemService _ragfairLinkedItemService,
+    SeasonalEventService _seasonalEventService,
     ICloner _cloner
 )
 {
@@ -78,7 +79,8 @@ public class LootGenerator(
             options.ItemBlacklist,
             options.ItemTypeWhitelist,
             options.UseRewardItemBlacklist.GetValueOrDefault(false),
-            options.AllowBossItems.GetValueOrDefault(false)
+            options.AllowBossItems.GetValueOrDefault(false),
+            options.BlockSeasonalItemsOutOfSeason.GetValueOrDefault(false)
         );
 
         // Pool has items we could add as loot, proceed
@@ -214,10 +216,14 @@ public class LootGenerator(
     /// <param name="itemTypeWhitelist">Only allow these items</param>
     /// <param name="useRewardItemBlacklist">Should item.json reward item config be used</param>
     /// <param name="allowBossItems">Should boss items be allowed in result</param>
+    /// <param name="blockSeasonalItemsOutOfSeason">Prevent seasonal items appearing outside their defined season</param>
     /// <returns>results of filtering + blacklist used</returns>
-    protected ItemRewardPoolResults GetItemRewardPool(List<string> itemTplBlacklist, List<string> itemTypeWhitelist,
+    protected ItemRewardPoolResults GetItemRewardPool(
+        List<string> itemTplBlacklist,
+        List<string> itemTypeWhitelist,
         bool useRewardItemBlacklist,
-        bool allowBossItems)
+        bool allowBossItems,
+        bool blockSeasonalItemsOutOfSeason)
     {
         var itemsDb = _databaseService.GetItems().Values;
         var itemBlacklist = new HashSet<string>();
@@ -243,10 +249,12 @@ public class LootGenerator(
 
         if (!allowBossItems)
         {
-            foreach (var bossItem in _itemFilterService.GetBossItems())
-            {
-                itemBlacklist.Add(bossItem);
-            }
+            itemBlacklist.UnionWith(_itemFilterService.GetBossItems());
+        }
+
+        if (blockSeasonalItemsOutOfSeason)
+        {
+            itemBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
         }
 
         var items = itemsDb.Where(
@@ -748,7 +756,7 @@ public class LootGenerator(
         }
 
         return _randomUtil.GetArrayValue(
-            GetItemRewardPool([], rewardContainerDetails.RewardTypePool, true, true)
+            GetItemRewardPool([], rewardContainerDetails.RewardTypePool, true, true, false)
                 .ItemPool.Select(
                     item => item.Id
                 )

@@ -226,4 +226,18 @@ public record AirdropLoot
         get;
         set;
     }
+
+    [JsonPropertyName("useRewardItemBlacklist")]
+    public bool? UseRewardItemBlacklist
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("blockSeasonalItemsOutOfSeason")]
+    public bool? BlockSeasonalItemsOutOfSeason
+    {
+        get;
+        set;
+    }
 }

@@ -132,6 +132,13 @@ public record LootRequest
         get;
         set;
     }
+
+    [JsonPropertyName("blockSeasonalItemsOutOfSeason")]
+    public bool? BlockSeasonalItemsOutOfSeason
+    {
+        get;
+        set;
+    }
 }
 
 public record AirdropLootRequest : LootRequest
