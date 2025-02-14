@@ -109,4 +109,14 @@ public class LauncherV2Callbacks(
             }
         );
     }
+
+    public object Profile(string? sessionId)
+    {
+        return _httpResponseUtil.NoBody(
+            new LauncherV2ProfileResponse
+            {
+                Response = _launcherV2Controller.GetProfile(sessionId)
+            }
+        );
+    }
 }

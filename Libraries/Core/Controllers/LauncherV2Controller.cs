@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Launcher;
+using Core.Models.Eft.Profile;
 using Core.Models.Spt.Config;
 using Core.Models.Spt.Mod;
 using Core.Models.Utils;
@@ -206,5 +207,10 @@ public class LauncherV2Controller(
         }
 
         return null;
+    }
+
+    public SptProfile GetProfile(string? sessionId)
+    {
+        return _saveServer.GetProfile(sessionId);
     }
 }

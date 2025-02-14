@@ -21,12 +21,12 @@ public class LauncherV2StaticRouter : StaticRouter
                 (url, _, sessionID, _) => launcherV2Callbacks.Types()
             ),
             new RouteAction(
-                "/launcher/v2/Login",
+                "/launcher/v2/login",
                 (url, info, sessionID, _) => launcherV2Callbacks.Login(info as LoginRequestData),
                 typeof(LoginRequestData)
             ),
             new RouteAction(
-                "/launcher/v2/Register",
+                "/launcher/v2/register",
                 (url, info, sessionID, _) => launcherV2Callbacks.Register(info as RegisterData),
                 typeof(RegisterData)
             ),
@@ -36,7 +36,7 @@ public class LauncherV2StaticRouter : StaticRouter
                 typeof(ChangeRequestData)
             ),
             new RouteAction(
-                "/launcher/v2/Remove",
+                "/launcher/v2/remove",
                 (url, info, sessionID, _) => launcherV2Callbacks.Remove(info as LoginRequestData),
                 typeof(LoginRequestData)
             ),
@@ -51,6 +51,10 @@ public class LauncherV2StaticRouter : StaticRouter
             new RouteAction(
                 "/launcher/v2/profiles",
                 (url, _, sessionID, _) => launcherV2Callbacks.Profiles()
+            ),
+            new RouteAction(
+                "/launcher/v2/profile",
+                (url, _, sessionID, _) => launcherV2Callbacks.Profile(sessionID)
             )
         ]
     )
