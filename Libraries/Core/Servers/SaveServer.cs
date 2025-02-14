@@ -216,7 +216,7 @@ public class SaveServer(
             if (_fileUtil.FileExists(filePath))
                 // File found, store in profiles[]
             {
-                profiles[sessionID] = _jsonUtil.Deserialize<SptProfile>(_fileUtil.ReadFile(filePath));
+                profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
             }
 
             // Run callbacks

@@ -28,7 +28,7 @@ public class ImporterUtil
 
     public Task<T> LoadRecursiveAsync<T>(
         string filepath,
-        Action<string, string>? onReadCallback = null,
+        Action<string>? onReadCallback = null,
         Action<string, object>? onObjectDeserialized = null
     )
     {
@@ -45,7 +45,7 @@ public class ImporterUtil
     protected async Task<object> LoadRecursiveAsync(
         string filepath,
         Type loadedType,
-        Action<string, string>? onReadCallback = null,
+        Action<string>? onReadCallback = null,
         Action<string, object>? onObjectDeserialized = null
     )
     {
@@ -88,7 +88,7 @@ public class ImporterUtil
     private async Task ProcessFileAsync(
         string file,
         Type loadedType,
-        Action<string, string>? onReadCallback,
+        Action<string>? onReadCallback,
         Action<string, object>? onObjectDeserialized,
         object result,
         object dictionaryLock
@@ -96,28 +96,31 @@ public class ImporterUtil
     {
         try
         {
-            var fileData = _fileUtil.ReadFile(file);
-            onReadCallback?.Invoke(file, fileData);
-
-            var setMethod = GetSetMethod(
-                _fileUtil.StripExtension(file).ToLower(),
-                loadedType,
-                out var propertyType,
-                out var isDictionary
-            );
-
-            var fileDeserialized = await DeserializeFileAsync(fileData, propertyType);
-
-            onObjectDeserialized?.Invoke(file, fileDeserialized);
-
-            lock (dictionaryLock)
+            using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read))
             {
-                setMethod.Invoke(
-                    result,
-                    isDictionary
-                        ? [_fileUtil.StripExtension(file), fileDeserialized]
-                        : new object[] { fileDeserialized }
+                onReadCallback?.Invoke(file);
+
+                // Get the set method to update the object
+                var setMethod = GetSetMethod(
+                    _fileUtil.StripExtension(file).ToLower(),
+                    loadedType,
+                    out var propertyType,
+                    out var isDictionary
                 );
+
+                var fileDeserialized = await DeserializeFileAsync(fs, file, propertyType);
+
+                onObjectDeserialized?.Invoke(file, fileDeserialized);
+
+                lock (dictionaryLock)
+                {
+                    setMethod.Invoke(
+                        result,
+                        isDictionary
+                            ? [_fileUtil.StripExtension(file), fileDeserialized]
+                            : new object[] { fileDeserialized }
+                    );
+                }
             }
         }
         catch (Exception ex)
@@ -155,50 +158,25 @@ public class ImporterUtil
         }
     }
 
-    private async Task<object> DeserializeFileAsync(string fileData, Type propertyType)
+    private async Task<object> DeserializeFileAsync(FileStream fs, string file, Type propertyType)
     {
         if (propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(LazyLoad<>))
         {
-            return CreateLazyLoadDeserialization(fileData, propertyType);
+            return CreateLazyLoadDeserialization(file, propertyType);
         }
 
-        return await Task.Run(() => _jsonUtil.Deserialize(fileData, propertyType));
+        return await Task.Run(() => _jsonUtil.DeserializeFromFileStream(fs, propertyType));
     }
 
-    private object CreateLazyLoadDeserialization(string fileData, Type propertyType)
+    private object CreateLazyLoadDeserialization(string file, Type propertyType)
     {
         var genericArgument = propertyType.GetGenericArguments()[0];
 
-        /*
-        if (!lazyLoadDeserializationCache.TryGetValue(genericArgument, out var cachedDelegate))
-        {
-            // Create the expression for deserialization
-            var deserializeCall = Expression.Call(
-                Expression.Constant(_jsonUtil),
-                "Deserialize",
-                Type.EmptyTypes,
-                Expression.Constant(fileData),
-                Expression.Constant(genericArgument)
-            );
-
-            var typeAsExpression = Expression.TypeAs(deserializeCall, genericArgument);
-
-            var expression = Expression.Lambda(
-                typeof(Func<>).MakeGenericType(genericArgument),
-                typeAsExpression
-            );
-
-            // Compile the expression and store it in the cache
-            cachedDelegate = expression.Compile();
-            lazyLoadDeserializationCache.TryAdd(genericArgument, cachedDelegate);
-        }
-        */
-
         var deserializeCall = Expression.Call(
                 Expression.Constant(_jsonUtil),
-                "Deserialize",
+                "DeserializeFromFile",
                 Type.EmptyTypes,
-                Expression.Constant(fileData),
+                Expression.Constant(file),
                 Expression.Constant(genericArgument)
             );
 

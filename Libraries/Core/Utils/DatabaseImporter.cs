@@ -172,8 +172,10 @@ public class DatabaseImporter : IOnLoad
         _databaseServer.SetTables(dataToImport);
     }
 
-    protected void OnReadValidate(string fileWithPath, string data)
+    protected void OnReadValidate(string fileWithPath)
     {
+
+
         // Validate files
         //if (ProgramStatics.COMPILED && hashedFile && !ValidateFile(fileWithPath, data)) {
         //    this.valid = ValidationResult.FAILED;

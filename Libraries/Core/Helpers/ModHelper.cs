@@ -30,7 +30,7 @@ namespace Core.Helpers
             var rawContent = _fileUtil.ReadFile(Path.Combine(pathToFile, fileName));
 
             // Take the string above and deserialise it into a file with a type (defined between the diamond brackets)
-            return _jsonUtil.Deserialize<T>(rawContent);
+            return _jsonUtil.DeserializeFromFile<T>(rawContent);
         }
     }
 }

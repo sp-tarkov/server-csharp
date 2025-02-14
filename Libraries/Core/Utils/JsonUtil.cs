@@ -84,6 +84,54 @@ public class JsonUtil
     }
 
     /// <summary>
+    ///     Convert JSON into an object from a file
+    /// </summary>
+    /// <param name="file">The JSON File to read</param>
+    /// <returns></returns>
+    public T? DeserializeFromFile<T>(string file)
+    {
+        if (!File.Exists(file))
+        {
+            return default;
+        }
+
+        using (FileStream fs = new(file, FileMode.Open, FileAccess.Read))
+        {
+            return JsonSerializer.Deserialize<T>(fs, jsonSerializerOptionsNoIndent);
+        }
+    }
+
+    /// <summary>
+    ///     Convert JSON into an object from a file
+    /// </summary>
+    /// <param name="file">The JSON File to read</param>
+    /// <param name="type">The type of the object to deserialize to</param>
+    /// <returns></returns>
+    public object? DeserializeFromFile(string file, Type type)
+    {
+        if (!File.Exists(file))
+        {
+            return default;
+        }
+
+        using (FileStream fs = new(file, FileMode.Open, FileAccess.Read))
+        {
+            return JsonSerializer.Deserialize(fs, type, jsonSerializerOptionsNoIndent);
+        }
+    }
+
+    /// <summary>
+    ///     Convert JSON into an object from a FileStream
+    /// </summary>
+    /// <param name="fs">The file stream to deserialize</param>
+    /// <param name="type">The type of the object to deserialize to</param>
+    /// <returns></returns>
+    public object? DeserializeFromFileStream(FileStream fs, Type type)
+    {
+        return JsonSerializer.Deserialize(fs, type, jsonSerializerOptionsNoIndent);
+    }
+
+    /// <summary>
     ///     Convert an object into JSON
     /// </summary>
     /// <typeparam name="T">Type of the object being serialised</typeparam>

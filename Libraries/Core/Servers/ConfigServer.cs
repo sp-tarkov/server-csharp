@@ -71,9 +71,8 @@ public class ConfigServer
         {
             if (acceptableFileExtensions.Contains(_fileUtil.GetFileExtension(file)))
             {
-                var fileContent = _fileUtil.ReadFile(file);
                 var type = GetConfigTypeByFilename(file);
-                var deserializedContent = _jsonUtil.Deserialize(fileContent, type);
+                var deserializedContent = _jsonUtil.DeserializeFromFile(file, type);
 
                 if (deserializedContent == null)
                 {

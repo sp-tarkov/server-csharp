@@ -48,7 +48,7 @@ public class I18nService
             _loadedLocales.Add(
                 _fileUtil.StripExtension(file),
                 new LazyLoad<Dictionary<string, string>>(
-                    () => _jsonUtil.Deserialize<Dictionary<string, string>>(_fileUtil.ReadFile(file)) ??
+                    () => _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
                           new Dictionary<string, string>()
                 )
             );
