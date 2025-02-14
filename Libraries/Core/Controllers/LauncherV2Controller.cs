@@ -108,7 +108,13 @@ public class LauncherV2Controller(
             return false;
         }
 
-        _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Password;
+        if (!Login(info))
+        {
+            return false;
+        }
+
+        _saveServer.GetProfile(sessionId).ProfileInfo!.Password = info.Change;
+        _saveServer.SaveProfile(sessionId);
         return true;
     }
 
