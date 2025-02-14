@@ -7,7 +7,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public sealed class RandomUtilTests
 {
-    private readonly RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner());
+    private readonly RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil()));
 
     [TestMethod]
     public void GetIntTest()
