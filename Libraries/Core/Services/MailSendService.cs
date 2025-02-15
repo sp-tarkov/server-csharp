@@ -505,7 +505,7 @@ public class MailSendService(
                 if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     // look for child cartridge objects
-                    var childItems = itemsToSendToPlayer.Data?.Where(x => x.ParentId == reward.Id);
+                    var childItems = messageDetails.Items?.Where(x => x.ParentId == reward.Id);
                     if (childItems is null || !childItems.Any())
                     {
                         // No cartridges found, generate and add to rewards
