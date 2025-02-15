@@ -1127,7 +1127,7 @@ public class LocationLifecycleService
             var mappedItems = _insuranceService.MapInsuredItemsToTrader(
                 sessionId,
                 request.LostInsuredItems,
-                request.Results.Profile
+                preRaidPmcProfile
             );
 
             // Is possible to have items in lostInsuredItems but removed before reaching mappedItems

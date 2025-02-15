@@ -41,6 +41,7 @@ public class ProfileFixerService(
         RemoveDanglingTaskConditionCounters(pmcProfile);
         RemoveOrphanedQuests(pmcProfile);
         VerifyQuestProductionUnlocks(pmcProfile);
+        FixOrphanedInsurance(pmcProfile);
 
         if (pmcProfile.Hideout is not null)
         {
@@ -398,6 +399,19 @@ public class ProfileFixerService(
                 _logger.Debug($"Added production: {matchingProductionId} to unlocked production recipes for: {questDetails.QuestName}");
             }
         }
+    }
+
+    /**
+     * Remove any entries from `pmcProfile.InsuredItems` that do not have a corresponding
+     * `pmcProfile.Inventory.items` entry
+     * @param pmcProfile
+     */
+    protected void FixOrphanedInsurance(PmcData pmcProfile) {
+
+        // Check if the player inventory contains this item
+        pmcProfile.InsuredItems = pmcProfile.InsuredItems
+            .Where(insuredItem => pmcProfile.Inventory.Items.Any(item => item.Id == insuredItem.ItemId))
+            .ToList();
     }
 
     /// <summary>
