@@ -382,7 +382,7 @@ public class PlayerScavGenerator(
 
         if (scavData?.Info != null)
         {
-            scavData.Info.SavageLockTime = Math.Round((double) (_timeUtil.GetTimeStamp() / 1000 + scavLockDuration ?? 0));
+            scavData.Info.SavageLockTime = Math.Round((double) (_timeUtil.GetTimeStampFromEpoch() / 1000 + scavLockDuration ?? 0));
         }
 
         return scavData;
