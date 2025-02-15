@@ -92,6 +92,25 @@ public record Item
 public record HideoutItem
 {
     [JsonPropertyName("_id")]
+
+    public string? _Id
+    {
+        get
+        {
+            return Id;
+        }
+        set
+        {
+            if (value == null)
+            {
+                return;
+            }
+
+            Id = value;
+        }
+    }
+
+    [JsonPropertyName("id")]
     public string? Id
     {
         get;
