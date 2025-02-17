@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net.WebSockets;
+﻿using System.Net.WebSockets;
 using Core.Models.Utils;
 using Core.Servers.Ws;
 using SptCommon.Annotations;
@@ -72,6 +71,7 @@ public class WebSocketServer(
             Thread.Sleep(1000);
         }
 
+        // Disconnect has been received, cancel the token and send OnClose to the relevant WebSockets.
         foreach (var wsh in socketHandlers)
         {
             await cts.CancelAsync();
