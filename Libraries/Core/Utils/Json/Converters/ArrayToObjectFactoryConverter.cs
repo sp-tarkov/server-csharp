@@ -34,11 +34,7 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
                     reader.Read();
                     return default;
                 case JsonTokenType.StartObject:
-                    using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-                    {
-                        var jsonText = jsonDocument.RootElement.GetRawText();
-                        return JsonSerializer.Deserialize<T>(jsonText);
-                    }
+                    return JsonSerializer.Deserialize<T>(ref reader, options);
             }
 
             return default;
@@ -48,7 +44,8 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
         {
             if (value == null)
             {
-                JsonSerializer.Serialize(writer, new List<object>(), options);
+                writer.WriteStartArray();
+                writer.WriteEndArray();
             }
             else
             {

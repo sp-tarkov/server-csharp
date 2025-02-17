@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -18,47 +19,47 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
     private class StringToNumberConverter<T> : JsonConverter<T>
     {
+        private static readonly MethodInfo? stringParseMethod;
+
+        static StringToNumberConverter()
+        {
+            // Do reflection only once to get parse
+            var underlyingType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+            stringParseMethod = underlyingType.GetMethod("Parse", [typeof(string)]);
+        }
+
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType == JsonTokenType.String)
+            {
+                var value = reader.GetString();
+
+                if (string.IsNullOrWhiteSpace(value) || value == "__REPLACEME__")
+                {
+                    return default;
+                }
+
+                try
+                {
+                    var underlyingType = Nullable.GetUnderlyingType(typeToConvert) ?? typeToConvert;
+
+                    if (stringParseMethod != null)
+                    {
+                        return (T) stringParseMethod.Invoke(null, [value]);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Failed to parse '{value}' into {typeToConvert.Name}, returning null.");
+                    return default;
+                }             
+            }
+
             switch (reader.TokenType)
             {
-                case JsonTokenType.String:
-                    var value = reader.GetString();
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        return default;
-                    }
-
-                    var type = typeToConvert;
-                    try
-                    {
-                        if (typeToConvert.IsGenericType &&
-                            typeToConvert.GetGenericTypeDefinition() == typeof(Nullable<>))
-                        {
-                            type = typeToConvert.GenericTypeArguments[0];
-                        }
-
-                        return (T) type.GetMethods()
-                            .First(
-                                m =>
-                                    m.Name == "Parse" &&
-                                    m.GetParameters().Length == 1 &&
-                                    m.GetParameters().First().ParameterType == typeof(string)
-                            )
-                            .Invoke(null, [value]);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"Tried to convert {value} into {type.Name} but failed to parse it, null value will be used instead.");
-                    }
-
-                    return default;
                 case JsonTokenType.Number:
-                    using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-                    {
-                        var jsonText = jsonDocument.RootElement.GetRawText().Replace("\"", "");
-                        return JsonSerializer.Deserialize<T>(jsonText);
-                    }
+                    return JsonSerializer.Deserialize<T>(ref reader, options);
+
                 case JsonTokenType.Null:
                     return default;
                 default:
