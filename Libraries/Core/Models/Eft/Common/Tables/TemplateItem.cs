@@ -482,7 +482,7 @@ public record Props
     }
 
     [JsonPropertyName("ConflictingItems")]
-    public List<string>? ConflictingItems
+    public HashSet<string>? ConflictingItems
     {
         get;
         set;
@@ -1509,7 +1509,7 @@ public record Props
     }
 
     [JsonPropertyName("weapFireType")]
-    public List<string>? WeapFireType
+    public HashSet<string>? WeapFireType
     {
         get;
         set;
@@ -3604,7 +3604,7 @@ public record GridProps
 public record GridFilter
 {
     [JsonPropertyName("Filter")]
-    public List<string>? Filter
+    public HashSet<string>? Filter
     {
         get;
         set;
@@ -3755,7 +3755,7 @@ public record SlotFilter
     }
 
     [JsonPropertyName("Filter")]
-    public List<string>? Filter
+    public HashSet<string>? Filter
     {
         get;
         set;

@@ -823,7 +823,7 @@ public class LocationLootGenerator(
             }
 
             // Get an array of allowed IDs after above filtering has occured
-            var validItemIds = spawnPoint.Template.Items.Select(item => item.Id).ToList();
+            var validItemIds = spawnPoint.Template.Items.Select(item => item.Id).ToHashSet();
 
             // Construct container to hold above filtered items, letting us pick an item for the spot
             var itemArray = new ProbabilityObjectArray<string, double?>(_mathUtil, _cloner);

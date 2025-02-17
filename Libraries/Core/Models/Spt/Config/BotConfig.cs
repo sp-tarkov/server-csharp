@@ -160,7 +160,7 @@ public record BotConfig : BaseConfig
      * Bot roles in this array will be given a dog tag on generation
      */
     [JsonPropertyName("botRolesWithDogTags")]
-    public List<string> BotRolesWithDogTags
+    public HashSet<string> BotRolesWithDogTags
     {
         get;
         set;
@@ -190,7 +190,7 @@ public record BotConfig : BaseConfig
      * Tpls for low profile gas blocks
      */
     [JsonPropertyName("lowProfileGasBlockTpls")]
-    public List<string> LowProfileGasBlockTpls
+    public HashSet<string> LowProfileGasBlockTpls
     {
         get;
         set;
@@ -200,7 +200,7 @@ public record BotConfig : BaseConfig
      * What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/
      */
     [JsonPropertyName("disableLootOnBotTypes")]
-    public List<string> DisableLootOnBotTypes
+    public HashSet<string> DisableLootOnBotTypes
     {
         get;
         set;
@@ -220,7 +220,7 @@ public record BotConfig : BaseConfig
      * Bot roles that must have a unique name when generated vs other bots in raid
      */
     [JsonPropertyName("botRolesThatMustHaveUniqueName")]
-    public List<string> BotRolesThatMustHaveUniqueName
+    public HashSet<string> BotRolesThatMustHaveUniqueName
     {
         get;
         set;
@@ -702,7 +702,7 @@ public record EquipmentFilters
     ///     What additional slot ids should be seen as required when choosing a mod to add to a weapon
     /// </summary>
     [JsonPropertyName("weaponSlotIdsToMakeRequired")]
-    public List<string>? WeaponSlotIdsToMakeRequired
+    public HashSet<string>? WeaponSlotIdsToMakeRequired
     {
         get;
         set;
@@ -929,7 +929,7 @@ public record EquipmentFilterDetails
     ///     Key: mod slot name e.g. mod_magazine, value: item tpls
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, List<string>>? Equipment
+    public Dictionary<string, HashSet<string>>? Equipment
     {
         get;
         set;
@@ -939,7 +939,7 @@ public record EquipmentFilterDetails
     ///     Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
     /// </summary>
     [JsonPropertyName("gear")]
-    public Dictionary<EquipmentSlots, List<string>>? Gear
+    public Dictionary<EquipmentSlots, HashSet<string>>? Gear
     {
         get;
         set;
@@ -949,7 +949,7 @@ public record EquipmentFilterDetails
     ///     Key: cartridge type e.g. Caliber23x75, value: item tpls
     /// </summary>
     [JsonPropertyName("cartridge")]
-    public Dictionary<string, List<string>>? Cartridge
+    public Dictionary<string, HashSet<string>>? Cartridge
     {
         get;
         set;

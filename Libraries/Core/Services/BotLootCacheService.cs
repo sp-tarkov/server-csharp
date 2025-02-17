@@ -468,23 +468,6 @@ public class BotLootCacheService(
         }
     }
 
-    /// <summary>
-    ///     Add unique items into combined pool
-    /// </summary>
-    /// <param name="poolToAddTo">Pool of items to add to</param>
-    /// <param name="itemsToAdd">items to add to combined pool if unique</param>
-    protected void AddUniqueItemsToPool(List<TemplateItem> poolToAddTo, List<TemplateItem> itemsToAdd)
-    {
-        if (poolToAddTo.Count() == 0)
-        {
-            poolToAddTo.AddRange(itemsToAdd);
-            return;
-        }
-
-        poolToAddTo.Concat(itemsToAdd);
-        poolToAddTo = poolToAddTo.Distinct().ToList();
-    }
-
     protected void AddItemsToPool(Dictionary<string, double> poolToAddTo, Dictionary<string, double> poolOfItemsToAdd)
     {
         foreach (var tpl in poolOfItemsToAdd)

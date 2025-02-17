@@ -19,7 +19,7 @@ public class BotHelper(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected List<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected HashSet<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
 
     /// <summary>
     ///     Get a template object for the specified botRole from bots.types db
@@ -119,8 +119,8 @@ public class BotHelper(
     /// <returns>True if role is PMC</returns>
     public bool BotRoleIsPmc(string botRole)
     {
-        List<string> ListToCheck = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
-        return ListToCheck.Contains(
+        HashSet<string> listToCheck = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
+        return listToCheck.Contains(
             botRole.ToLower()
         );
     }

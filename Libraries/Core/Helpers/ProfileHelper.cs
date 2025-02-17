@@ -199,7 +199,7 @@ public class ProfileHelper(
             Version = _watermark.GetVersionTag(true),
             Mods = new List<ModDetails>(),
             ReceivedGifts = new List<ReceivedGift>(),
-            BlacklistedItemTemplates = new List<string>(),
+            BlacklistedItemTemplates = new HashSet<string>(),
             FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
             Migrations = new Dictionary<string, long>(),
             CultistRewards = new Dictionary<string, AcceptedCultistReward>(),

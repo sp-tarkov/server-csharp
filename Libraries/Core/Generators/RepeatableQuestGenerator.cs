@@ -556,7 +556,7 @@ public class RepeatableQuestGenerator(
             var itemIdsWhitelisted = itemWhitelist
                 .Where(p => p.MinPlayerLevel <= pmcLevel)
                 .SelectMany(x => x.ItemIds)
-                .ToList(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
+                .ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
             itemSelection = itemSelection.Where(
                     x =>
                     {
@@ -579,7 +579,7 @@ public class RepeatableQuestGenerator(
             var itemIdsBlacklisted = itemBlacklist
                 .Where(p => p.MinPlayerLevel <= pmcLevel)
                 .SelectMany(x => x.ItemIds)
-                .ToList(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
+                .ToHashSet(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
 
             itemSelection = itemSelection.Where(
                     x =>

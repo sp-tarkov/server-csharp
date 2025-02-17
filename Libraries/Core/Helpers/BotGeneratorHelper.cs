@@ -331,7 +331,7 @@ public class BotGeneratorHelper(
     public ChooseRandomCompatibleModResult IsItemIncompatibleWithCurrentItems(List<Item> itemsEquipped, string tplToCheck, string equipmentSlot)
     {
         // Skip slots that have no incompatibilities
-        List<string> slotsToCheck = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+        HashSet<string> slotsToCheck = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
         if (slotsToCheck.Contains(equipmentSlot))
         {
             return new ChooseRandomCompatibleModResult
@@ -530,7 +530,7 @@ public class BotGeneratorHelper(
     /// <param name="containersIdFull"></param>
     /// <returns>ItemAddedResult result object</returns>
     public ItemAddedResult AddItemWithChildrenToEquipmentSlot(
-        List<EquipmentSlots> equipmentSlots,
+        HashSet<EquipmentSlots> equipmentSlots,
         string rootItemId,
         string? rootItemTplId,
         List<Item> itemWithChildren,

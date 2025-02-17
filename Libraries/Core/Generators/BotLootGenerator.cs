@@ -368,9 +368,9 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory"></param>
     /// <returns></returns>
-    private List<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
+    private HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
-        List<EquipmentSlots> result = [EquipmentSlots.Pockets];
+        HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
 
         if ((botInventory.Items ?? []).Any(item => item.SlotId == EquipmentSlots.TacticalVest.ToString()))
         {
@@ -438,7 +438,7 @@ public class BotLootGenerator(
     private void AddLootFromPool
     (
         Dictionary<string, double> pool,
-        List<EquipmentSlots> equipmentSlots,
+        HashSet<EquipmentSlots> equipmentSlots,
         double totalItemCount,
         BotBaseInventory inventoryToAddItemsTo,
         string botRole,

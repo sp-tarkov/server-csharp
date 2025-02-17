@@ -51,7 +51,7 @@ public record LocationConfig : BaseConfig
     ///     Open zones to add to map
     /// </summary>
     [JsonPropertyName("openZones")]
-    public Dictionary<string, List<string>> OpenZones
+    public Dictionary<string, HashSet<string>> OpenZones
     {
         get;
         set;
@@ -61,7 +61,7 @@ public record LocationConfig : BaseConfig
     ///     Key = map id, value = item tpls that should only have one forced loot spawn position
     /// </summary>
     [JsonPropertyName("forcedLootSingleSpawnById")]
-    public Dictionary<string, List<string>> ForcedLootSingleSpawnById
+    public Dictionary<string, HashSet<string>> ForcedLootSingleSpawnById
     {
         get;
         set;
@@ -218,7 +218,7 @@ public record LocationConfig : BaseConfig
     ///     Containers to remove all children from when generating static/loose loot
     /// </summary>
     [JsonPropertyName("tplsToStripChildItemsFrom")]
-    public List<string> TplsToStripChildItemsFrom
+    public HashSet<string> TplsToStripChildItemsFrom
     {
         get;
         set;
@@ -228,7 +228,7 @@ public record LocationConfig : BaseConfig
     ///     Map ids players cannot visit
     /// </summary>
     [JsonPropertyName("nonMaps")]
-    public List<string> NonMaps
+    public HashSet<string> NonMaps
     {
         get;
         set;

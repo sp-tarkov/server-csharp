@@ -189,6 +189,6 @@ public class PresetHelper(
         var tpls = defaultPreset is not null ? defaultPreset.Items.Select(item => item.Template) : [tpl];
 
         // Get price of tpls
-        return _itemHelper.GetItemAndChildrenPrice(tpls.ToList());
+        return _itemHelper.GetItemAndChildrenPrice(tpls);
     }
 }

@@ -322,7 +322,7 @@ public class BotEquipmentFilterService
                 var botAmmo = baseBotNode.BotInventory.Ammo[ammoCaliberKvP.Key];
 
                 // Skip cartridge slot if blacklist doesn't exist / is empty
-                blacklist.Cartridge.TryGetValue(ammoCaliberKvP.Key, out List<string> cartridgeCaliberBlacklist);
+                blacklist.Cartridge.TryGetValue(ammoCaliberKvP.Key, out var cartridgeCaliberBlacklist);
                 if (cartridgeCaliberBlacklist is null || cartridgeCaliberBlacklist.Count == 0)
                 {
                     continue;

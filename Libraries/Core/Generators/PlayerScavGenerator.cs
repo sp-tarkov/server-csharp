@@ -139,7 +139,7 @@ public class PlayerScavGenerator(
     /// <param name="scavData"></param>
     /// <param name="containersToAddTo">Possible slotIds to add loot to</param>
     protected void AddAdditionalLootToPlayerScavContainers(Dictionary<string, double> possibleItemsToAdd, BotBase scavData,
-        List<EquipmentSlots> containersToAddTo)
+        HashSet<EquipmentSlots> containersToAddTo)
     {
         foreach (var tpl in possibleItemsToAdd)
         {

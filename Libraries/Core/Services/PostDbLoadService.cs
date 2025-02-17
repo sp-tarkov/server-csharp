@@ -126,7 +126,7 @@ public class PostDbLoadService(
     private void RemoveNewBeginningRequirementFromPrestige()
     {
         var prestigeDb = _databaseService.GetTemplates().Prestige;
-        var newBeginningQuestId = new List<string>
+        var newBeginningQuestId = new HashSet<string>
         {
             "6761f28a022f60bb320f3e95",
             "6761ff17cdc36bd66102e9d0"

@@ -529,7 +529,7 @@ public class RagfairOfferGenerator(
 
                 // Latest first, to ensure we don't move later items off by 1 each time we remove an item below it
                 var indexesToRemove = offerItemPlatesToRemove.Select(plateItem => itemWithChildren.IndexOf(plateItem))
-                    .ToList();
+                    .ToHashSet();
                 foreach (var index in indexesToRemove.OrderByDescending(x => x))
                 {
                     itemWithChildren.RemoveAt(index);

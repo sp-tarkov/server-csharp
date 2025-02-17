@@ -477,7 +477,7 @@ public class RagfairOfferHelper(
     /// <returns>true if quest locked</returns>
     public bool TraderOfferItemQuestLocked(RagfairOffer offer, Dictionary<string, TraderAssort> traderAssorts)
     {
-        var itemIds = offer.Items.Select(x => x.Id).ToList();
+        var itemIds = offer.Items.Select(x => x.Id).ToHashSet();
         //foreach (var item in offer.Items)
         //{
         //    traderAssorts.TryGetValue(offer.User.Id, out var assorts);
@@ -574,9 +574,9 @@ public class RagfairOfferHelper(
         return false;
     }
 
-    protected List<string> GetLoyaltyLockedOffers(List<RagfairOffer> offers, PmcData pmcProfile)
+    protected HashSet<string> GetLoyaltyLockedOffers(List<RagfairOffer> offers, PmcData pmcProfile)
     {
-        var loyaltyLockedOffers = new List<string>();
+        var loyaltyLockedOffers = new HashSet<string>();
         foreach (var offer in offers.Where(offer => OfferIsFromTrader(offer)))
         {
             if (pmcProfile.TradersInfo.TryGetValue(offer.User.Id, out var traderDetails) &&

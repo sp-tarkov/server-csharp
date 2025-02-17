@@ -62,14 +62,14 @@ public record QuestConfig : BaseConfig
     }
 
     [JsonPropertyName("bearOnlyQuests")]
-    public List<string>? BearOnlyQuests
+    public HashSet<string>? BearOnlyQuests
     {
         get;
         set;
     }
 
     [JsonPropertyName("usecOnlyQuests")]
-    public List<string>? UsecOnlyQuests
+    public HashSet<string>? UsecOnlyQuests
     {
         get;
         set;
@@ -79,7 +79,7 @@ public record QuestConfig : BaseConfig
      * Quests that the keyed game version do not see/access
      */
     [JsonPropertyName("profileBlacklist")]
-    public Dictionary<string, List<string>>? ProfileBlacklist
+    public Dictionary<string, HashSet<string>>? ProfileBlacklist
     {
         get;
         set;
@@ -89,7 +89,7 @@ public record QuestConfig : BaseConfig
      * key=questid, gameversions that can see/access quest
      */
     [JsonPropertyName("profileWhitelist")]
-    public Dictionary<string, List<string>>? ProfileWhitelist
+    public Dictionary<string, HashSet<string>>? ProfileWhitelist
     {
         get;
         set;
@@ -266,7 +266,7 @@ public record RepeatableQuestConfig
      * Item base types to block when generating rewards
      */
     [JsonPropertyName("rewardBaseTypeBlacklist")]
-    public List<string>? RewardBaseTypeBlacklist
+    public HashSet<string>? RewardBaseTypeBlacklist
     {
         get;
         set;
@@ -276,7 +276,7 @@ public record RepeatableQuestConfig
      * Item tplIds to ignore when generating rewards
      */
     [JsonPropertyName("rewardBlacklist")]
-    public List<string>? RewardBlacklist
+    public HashSet<string>? RewardBlacklist
     {
         get;
         set;

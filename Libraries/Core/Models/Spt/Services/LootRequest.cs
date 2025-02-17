@@ -50,7 +50,7 @@ public record LootRequest
     ///     Item tpl blacklist to exclude
     /// </summary>
     [JsonPropertyName("itemBlacklist")]
-    public List<string>? ItemBlacklist
+    public HashSet<string>? ItemBlacklist
     {
         get;
         set;

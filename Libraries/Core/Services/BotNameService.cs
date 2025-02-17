@@ -44,7 +44,7 @@ public class BotNameService(
         BotType botJsonTemplate,
         BotGenerationDetails botGenerationDetails,
         string botRole,
-        List<string>? uniqueRoles = null)
+        HashSet<string>? uniqueRoles = null)
     {
         var isPmc = botGenerationDetails.IsPmc;
 

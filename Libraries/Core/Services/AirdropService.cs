@@ -171,7 +171,7 @@ public class AirdropService(
         var itemsMatchingTypeBlacklist = _itemHelper.GetItems()
             .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
             .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-            .Select(templateItem => templateItem.Id);
+            .Select(templateItem => templateItem.Id).ToHashSet();
         var itemBlacklist = new HashSet<string>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
@@ -185,7 +185,7 @@ public class AirdropService(
             ArmorPresetCount = lootSettingsByType.ArmorPresetCount,
             ItemCount = lootSettingsByType.ItemCount,
             WeaponCrateCount = lootSettingsByType.WeaponCrateCount,
-            ItemBlacklist = itemBlacklist.ToList(),
+            ItemBlacklist = itemBlacklist,
             ItemTypeWhitelist = lootSettingsByType.ItemTypeWhitelist,
             ItemLimits = lootSettingsByType.ItemLimits,
             ItemStackLimits = lootSettingsByType.ItemStackLimits,

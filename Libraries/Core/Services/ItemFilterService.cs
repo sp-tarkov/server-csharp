@@ -27,10 +27,7 @@ public class ItemFilterService(
     {
         if (_itemBlacklistCache.Count == 0)
         {
-            foreach (var item in _itemConfig.Blacklist)
-            {
-                _itemBlacklistCache.Add(item);
-            }
+            _itemBlacklistCache.UnionWith(_itemConfig.Blacklist);
         }
 
         return _itemBlacklistCache.Contains(tpl);
@@ -50,36 +47,36 @@ public class ItemFilterService(
      * Get an array of items that should never be given as a reward to player
      * @returns string array of item tpls
      */
-    public List<string> GetItemRewardBlacklist()
+    public HashSet<string> GetItemRewardBlacklist()
     {
-        return _cloner.Clone(_itemConfig.RewardItemBlacklist).ToList();
+        return _cloner.Clone(_itemConfig.RewardItemBlacklist);
     }
 
     /**
      * Get an array of item types that should never be given as a reward to player
      * @returns string array of item base ids
      */
-    public List<string> GetItemRewardBaseTypeBlacklist()
+    public HashSet<string> GetItemRewardBaseTypeBlacklist()
     {
-        return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist).ToList();
+        return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
     }
 
     /**
      * Return every template id blacklisted in config/item.json
      * @returns string array of blacklisted template ids
      */
-    public List<string> GetBlacklistedItems()
+    public HashSet<string> GetBlacklistedItems()
     {
-        return _cloner.Clone(_itemConfig.Blacklist).ToList();
+        return _cloner.Clone(_itemConfig.Blacklist);
     }
 
     /**
      * Return every template id blacklisted in config/item.json/lootableItemBlacklist
      * @returns string array of blacklisted template ids
      */
-    public List<string> GetBlacklistedLootableItems()
+    public HashSet<string> GetBlacklistedLootableItems()
     {
-        return _cloner.Clone(_itemConfig.LootableItemBlacklist).ToList();
+        return _cloner.Clone(_itemConfig.LootableItemBlacklist);
     }
 
     /**
@@ -96,9 +93,9 @@ public class ItemFilterService(
      * Return boss items in config/item.json
      * @returns string array of boss item template ids
      */
-    public List<string> GetBossItems()
+    public HashSet<string> GetBossItems()
     {
-        return _cloner.Clone(_itemConfig.BossItems).ToList();
+        return _cloner.Clone(_itemConfig.BossItems).ToHashSet();
     }
 
     /**

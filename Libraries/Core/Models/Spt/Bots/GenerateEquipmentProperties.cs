@@ -82,7 +82,7 @@ public record GenerateEquipmentProperties
     ///     OPTIONAL - Do not generate mods for tpls in this array
     /// </summary>
     [JsonPropertyName("generateModsBlacklist")]
-    public List<string>? GenerateModsBlacklist
+    public HashSet<string>? GenerateModsBlacklist
     {
         get;
         set;

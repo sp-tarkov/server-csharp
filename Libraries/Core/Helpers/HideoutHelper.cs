@@ -38,7 +38,7 @@ public class HideoutHelper(
     public const string BitcoinProductionId = "5d5c205bd582a50d042a3c0e";
     public const string WaterCollector = "5d5589c1f934db045e6c5492";
     public const int MaxSkillPoint = 5000;
-    protected List<string> _idCheck = [BitcoinFarm, CultistCircleCraftId];
+    protected HashSet<string> _idCheck = [BitcoinFarm, CultistCircleCraftId];
     protected HideoutConfig hideoutConfig = _configServer.GetConfig<HideoutConfig>();
 
     /// <summary>
@@ -1499,7 +1499,7 @@ public class HideoutHelper(
         var wallBonuses = wallAreaDb.Stages.SelectMany(stage => stage.Value.Bonuses);
 
         // Get all bonus Ids that the wall adds
-        List<string> bonusIdsToRemove = [];
+        HashSet<string> bonusIdsToRemove = [];
         foreach (var bonus in wallBonuses)
         {
             bonusIdsToRemove.Add(bonus.Id);

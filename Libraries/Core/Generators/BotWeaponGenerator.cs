@@ -200,9 +200,8 @@ public class BotWeaponGenerator(
         }
 
         // Add cartridge(s) to gun chamber(s)
-        if (weaponItemTemplate.Properties.Chambers?.Any() ??
-            (false &&
-             weaponItemTemplate.Properties.Chambers[0].Props.Filters[0].Filter.Contains(ammoTpl)))
+        if (weaponItemTemplate.Properties?.Chambers?.Count > 0 &&
+             weaponItemTemplate.Properties.Chambers[0].Props.Filters[0].Filter.Contains(ammoTpl))
         {
             // Guns have variety of possible Chamber ids, patron_in_weapon/patron_in_weapon_000/patron_in_weapon_001
             var chamberSlotNames = weaponItemTemplate.Properties.Chambers.Select(chamberSlot => chamberSlot.Name);
@@ -500,7 +499,7 @@ public class BotWeaponGenerator(
         {
             var id = _hashUtil.Generate();
             _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
-                new List<EquipmentSlots>
+                new HashSet<EquipmentSlots>
                 {
                     EquipmentSlots.SecuredContainer
                 },
@@ -634,7 +633,7 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get cartridges for</param>
     /// <returns>List of cartridge tpls</returns>
-    protected List<string>? GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
+    protected HashSet<string>? GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
         var cartridges = weaponTemplate.Properties?.Chambers.FirstOrDefault()?.Props?.Filters?[0].Filter;
         if (cartridges is not null)
@@ -645,7 +644,7 @@ public class BotWeaponGenerator(
         // Fallback to the magazine if possible, e.g. for revolvers
         //  Grab the magazines template
         var firstMagazine = weaponTemplate.Properties.Slots.FirstOrDefault(slot => slot.Name == "mod_magazine");
-        var magazineTemplate = _itemHelper.GetItem(firstMagazine.Props.Filters?[0].Filter[0]);
+        var magazineTemplate = _itemHelper.GetItem(firstMagazine.Props.Filters?[0].Filter.FirstOrDefault());
         var magProperties = magazineTemplate.Value.Properties;
 
         // Get the first slots array of cartridges
@@ -683,14 +682,11 @@ public class BotWeaponGenerator(
         if (weaponTemplate.Properties.LinkedWeapon is not null)
         {
             var ammoInChamber = _itemHelper.GetItem(
-                weaponTemplate.Properties.Chambers[0].Props.Filters[0].Filter[0]
+                weaponTemplate.Properties.Chambers[0].Props.Filters[0].Filter.FirstOrDefault()
             );
-            if (!ammoInChamber.Key)
-            {
-                return null;
-            }
-
-            return ammoInChamber.Value.Properties.Caliber;
+            return !ammoInChamber.Key
+                ? null
+                : ammoInChamber.Value.Properties.Caliber;
         }
 
         return null;

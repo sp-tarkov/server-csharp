@@ -221,7 +221,7 @@ public class LocationLifecycleService
 
         // Find only scav extracts and overwrite existing exits with them
         var scavExtracts = mapExtracts.Where(extract => extract.Side.ToLower() == "scav").ToList();
-        if (scavExtracts.Count() > 0)
+        if (scavExtracts.Count > 0)
             // Scav extracts found, use them
         {
             locationData.Exits.AddRange(scavExtracts);
@@ -340,12 +340,6 @@ public class LocationLifecycleService
         if (name.ToLower() == "hideout")
         {
             return locationBaseClone;
-        }
-
-        // If new spawn system is enabled, clear the spawn waves to prevent x2 spawns
-        if (locationBaseClone.NewSpawn is true)
-        {
-            locationBaseClone.Waves = [];
         }
 
         // Only requested base data, not loot

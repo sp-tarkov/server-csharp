@@ -219,7 +219,7 @@ public class LootGenerator(
     /// <param name="blockSeasonalItemsOutOfSeason">Prevent seasonal items appearing outside their defined season</param>
     /// <returns>results of filtering + blacklist used</returns>
     protected ItemRewardPoolResults GetItemRewardPool(
-        List<string> itemTplBlacklist,
+        HashSet<string> itemTplBlacklist,
         List<string> itemTypeWhitelist,
         bool useRewardItemBlacklist,
         bool allowBossItems,

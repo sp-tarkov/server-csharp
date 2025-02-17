@@ -131,7 +131,7 @@ public class TraderAssortHelper(
     /// </summary>
     /// <param name="assortToFilter">Trader assort to modify</param>
     /// <param name="itemsTplsToRemove">Item TPLs the assort should not have</param>
-    protected void RemoveItemsFromAssort(TraderAssort assortToFilter, List<string> itemsTplsToRemove)
+    protected void RemoveItemsFromAssort(TraderAssort assortToFilter, HashSet<string> itemsTplsToRemove)
     {
         assortToFilter.Items = assortToFilter.Items.Where(
                 item =>

@@ -91,7 +91,7 @@ public class PmcChatResponseService(
         }
 
         // If killer wasn't a PMC, skip
-        var pmcTypes = new List<string>
+        var pmcTypes = new HashSet<string>
         {
             "pmcUSEC",
             "pmcBEAR"

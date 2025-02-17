@@ -26,7 +26,7 @@ public class SeasonalEventService(
 {
     private bool _christmasEventActive;
 
-    protected IReadOnlyList<string> _christmasEventItems =
+    protected HashSet<string> _christmasEventItems =
     [
         ItemTpl.ARMOR_6B13_M_ASSAULT_ARMOR_CHRISTMAS_EDITION,
         ItemTpl.BACKPACK_SANTAS_BAG,
@@ -57,7 +57,7 @@ public class SeasonalEventService(
     private List<SeasonalEvent> _currentlyActiveEvents = [];
     private bool _halloweenEventActive;
 
-    protected IReadOnlyList<string> _halloweenEventItems =
+    protected HashSet<string> _halloweenEventItems =
     [
         ItemTpl.HEADWEAR_JACKOLANTERN_TACTICAL_PUMPKIN_HELMET,
         ItemTpl.FACECOVER_FACELESS_MASK,
@@ -82,7 +82,7 @@ public class SeasonalEventService(
     ///     Get an array of christmas items found in bots inventories as loot
     /// </summary>
     /// <returns>array</returns>
-    public IEnumerable<string> GetChristmasEventItems()
+    public HashSet<string> GetChristmasEventItems()
     {
         return _christmasEventItems;
     }
@@ -91,7 +91,7 @@ public class SeasonalEventService(
     ///     Get an array of halloween items found in bots inventories as loot
     /// </summary>
     /// <returns>array</returns>
-    public IEnumerable<string> GetHalloweenEventItems()
+    public HashSet<string> GetHalloweenEventItems()
     {
         return _halloweenEventItems;
     }
@@ -131,17 +131,17 @@ public class SeasonalEventService(
     ///     or, if halloween and christmas are inactive, return both sets of items
     /// </summary>
     /// <returns>array of tpl strings</returns>
-    public List<string> GetInactiveSeasonalEventItems()
+    public HashSet<string> GetInactiveSeasonalEventItems()
     {
-        var items = new List<string>();
+        var items = new HashSet<string>();
         if (!ChristmasEventEnabled())
         {
-            items.AddRange(_christmasEventItems);
+            items.UnionWith(_christmasEventItems);
         }
 
         if (!HalloweenEventEnabled())
         {
-            items.AddRange(_halloweenEventItems);
+            items.UnionWith(_halloweenEventItems);
         }
 
         return items;
@@ -350,8 +350,8 @@ public class SeasonalEventService(
     public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
         var christmasItems = GetChristmasEventItems();
-        List<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
-        List<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
+        HashSet<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
+        HashSet<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
 
         // Remove christmas related equipment
         foreach (var equipmentSlotKey in equipmentSlotsToFilter)
@@ -731,9 +731,9 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="locationInfections">Dict of locations with their infection percentage</param>
     /// <returns>List of location ids</returns>
-    protected List<string> GetLocationsWithZombies(Dictionary<string, double> locationInfections)
+    protected HashSet<string> GetLocationsWithZombies(Dictionary<string, double> locationInfections)
     {
-        var result = new List<string>();
+        var result = new HashSet<string>();
 
         // Get only the locations with an infection above 0
         var infectionKeys = locationInfections.Where(
@@ -743,7 +743,7 @@ public class SeasonalEventService(
         // Convert the infected location id into its generic location id
         foreach (var location in infectionKeys)
         {
-            result.AddRange(GetLocationFromInfectedLocation(location.Key));
+            result.UnionWith(GetLocationFromInfectedLocation(location.Key));
         }
 
         return result;
@@ -794,7 +794,7 @@ public class SeasonalEventService(
     /// </summary>
     /// <param name="eventType">Seasonal event, e.g. HALLOWEEN/CHRISTMAS</param>
     /// <param name="mapIdWhitelist">OPTIONAL - Maps to add bosses to</param>
-    protected void AddEventBossesToMaps(string eventType, List<string> mapIdWhitelist = null)
+    protected void AddEventBossesToMaps(string eventType, HashSet<string>? mapIdWhitelist = null)
     {
         if (!_seasonalEventConfig.EventBossSpawns.TryGetValue(eventType.ToLower(), out var botsToAddPerMap))
         {
@@ -992,7 +992,7 @@ public class SeasonalEventService(
     protected void EnableDancingTree()
     {
         var maps = _databaseService.GetLocations();
-        List<string> mapsToCheck = ["hideout", "base", "privatearea"];
+        HashSet<string> mapsToCheck = ["hideout", "base", "privatearea"];
         foreach (var mapKvP in maps.GetDictionary())
         {
             // Skip maps that have no tree

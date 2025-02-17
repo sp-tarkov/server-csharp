@@ -250,7 +250,7 @@ public record FenceConfig
     }
 
     [JsonPropertyName("blacklist")]
-    public List<string> Blacklist
+    public HashSet<string> Blacklist
     {
         get;
         set;

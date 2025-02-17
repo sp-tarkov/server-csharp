@@ -733,9 +733,8 @@ public class InsuranceController(
      */
     public void InsureSoftInserts(Item itemWithSoftInserts, PmcData pmcData, InsureRequestData body)
     {
-        var softInsertIds = _itemHelper.GetSoftInsertSlotIds();
         var softInsertSlots = pmcData.Inventory.Items.Where(
-            item => item.ParentId == itemWithSoftInserts.Id && softInsertIds.Contains(item.SlotId.ToLower())
+            item => item.ParentId == itemWithSoftInserts.Id && _itemHelper.IsSoftInsertId(item.SlotId.ToLower())
         );
 
         foreach (var softInsertSlot in softInsertSlots)

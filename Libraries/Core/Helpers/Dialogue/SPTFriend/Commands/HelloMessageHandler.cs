@@ -12,7 +12,7 @@ public class HelloMessageHandler(
     MailSendService _mailSendService,
     RandomUtil _randomUtil) : IChatMessageHandler
 {
-    protected List<string> _listOfMessages = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
+    protected HashSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
 
     public int GetPriority()
@@ -22,7 +22,7 @@ public class HelloMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return _listOfMessages.Contains(message, StringComparer.OrdinalIgnoreCase);
+        return _listOfGreetings.Contains(message, StringComparer.OrdinalIgnoreCase);
     }
 
     public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)

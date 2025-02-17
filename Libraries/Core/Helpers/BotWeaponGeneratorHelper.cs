@@ -20,7 +20,7 @@ public class BotWeaponGeneratorHelper(
     LocalisationService _localisationService
 )
 {
-    private readonly List<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
+    private readonly HashSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
 
     /// <summary>
     ///     Get a randomized number of bullets for a specific magazine
@@ -35,7 +35,7 @@ public class BotWeaponGeneratorHelper(
         double? chamberBulletCount = 0;
         if (MagazineIsCylinderRelated(parentItem.Name))
         {
-            var firstSlotAmmoTpl = magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter[0];
+            var firstSlotAmmoTpl = magTemplate.Properties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter.FirstOrDefault();
             var ammoMaxStackSize = _itemHelper.GetItem(firstSlotAmmoTpl).Value?.Properties?.StackMaxSize ?? 1;
             chamberBulletCount = ammoMaxStackSize == 1
                 ? 1 // Rotating grenade launcher
@@ -110,7 +110,7 @@ public class BotWeaponGeneratorHelper(
         string ammoTpl,
         int cartridgeCount,
         BotBaseInventory inventory,
-        List<EquipmentSlots> equipmentSlotsToAddTo
+        HashSet<EquipmentSlots> equipmentSlotsToAddTo
     )
     {
         if (equipmentSlotsToAddTo is null)

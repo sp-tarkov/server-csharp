@@ -301,7 +301,7 @@ public record TaskConditionCounter
 public record UnlockedInfo
 {
     [JsonPropertyName("unlockedProductionRecipe")]
-    public List<string>? UnlockedProductionRecipe
+    public HashSet<string>? UnlockedProductionRecipe
     {
         get;
         set;

@@ -250,7 +250,7 @@ public class HideoutController(
 
         // Dont inform client when upgraded area is hall of fame or equipment stand, BSG doesn't inform client this specifc upgrade has occurred
         // will break client if sent
-        List<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
+        HashSet<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
         if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NOTSET))
         {
             AddContainerUpgradeToClientOutput(sessionID, dbHideoutArea.Type, dbHideoutArea, hideoutStage, output);

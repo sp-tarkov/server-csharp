@@ -733,7 +733,7 @@ public record Spt
      * item TPLs blacklisted from being sold on flea for this profile
      */
     [JsonPropertyName("blacklistedItemTpls")]
-    public List<string>? BlacklistedItemTemplates
+    public HashSet<string>? BlacklistedItemTemplates
     {
         get;
         set;

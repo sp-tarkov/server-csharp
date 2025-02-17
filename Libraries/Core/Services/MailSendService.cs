@@ -28,8 +28,8 @@ public class MailSendService(
 )
 {
     private const string _systemSenderId = "59e7125688a45068a6249071";
-    protected List<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
-    protected List<string> _slotNames = ["hideout", "main"];
+    protected HashSet<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
+    protected HashSet<string> _slotNames = ["hideout", "main"];
 
     /**
      * Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale

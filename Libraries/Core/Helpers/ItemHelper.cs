@@ -16,7 +16,6 @@ namespace Core.Helpers;
 public class ItemHelper(
     ISptLogger<ItemHelper> _logger,
     HashUtil _hashUtil,
-    JsonUtil _jsonUtil,
     RandomUtil _randomUtil,
     MathUtil _mathUtil,
     DatabaseService _databaseService,
@@ -28,7 +27,7 @@ public class ItemHelper(
     ICloner _cloner
 )
 {
-    protected List<string> _defaultInvalidBaseTypes =
+    protected HashSet<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -39,7 +38,7 @@ public class ItemHelper(
         BaseClasses.POCKETS
     ];
 
-    protected List<string> _slotsAsStrings =
+    protected HashSet<string> _slotsAsStrings =
     [
         EquipmentSlots.Headwear.ToString(),
         EquipmentSlots.Earpiece.ToString(),
@@ -55,6 +54,38 @@ public class ItemHelper(
         EquipmentSlots.SecondPrimaryWeapon.ToString(),
         EquipmentSlots.Holster.ToString(),
         EquipmentSlots.Scabbard.ToString()
+    ];
+
+    protected HashSet<string> _dogTagTpls =
+    [
+        ItemTpl.BARTER_DOGTAG_BEAR,
+        ItemTpl.BARTER_DOGTAG_BEAR_EOD,
+        ItemTpl.BARTER_DOGTAG_BEAR_TUE,
+        ItemTpl.BARTER_DOGTAG_USEC,
+        ItemTpl.BARTER_DOGTAG_USEC_EOD,
+        ItemTpl.BARTER_DOGTAG_USEC_TUE,
+        ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_1,
+        ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_2,
+        ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_1,
+        ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
+    ];
+
+    protected HashSet<string> _softInsertIds =
+    [
+        "groin",
+        "groin_back",
+        "soft_armor_back",
+        "soft_armor_front",
+        "soft_armor_left",
+        "soft_armor_right",
+        "shoulder_l",
+        "shoulder_r",
+        "collar",
+        "helmet_top",
+        "helmet_back",
+        "helmet_eyes",
+        "helmet_jaw",
+        "helmet_ears"
     ];
 
     /**
@@ -308,7 +339,7 @@ public class ItemHelper(
      * @param tpl the template id / tpl
      * @returns boolean; true for items that may be in player possession and not quest items
      */
-    public bool IsValidItem(string tpl, List<string> invalidBaseTypes = null)
+    public bool IsValidItem(string tpl, ICollection<string>? invalidBaseTypes = null)
     {
         var baseTypes = invalidBaseTypes ?? _defaultInvalidBaseTypes;
         var itemDetails = GetItem(tpl);
@@ -403,8 +434,7 @@ public class ItemHelper(
         }
 
         // Check if item has slots that match soft insert name ids
-        var softInsertIds = GetSoftInsertSlotIds();
-        if (itemDbDetails.Value.Properties.Slots.Any(slot => softInsertIds.Contains(slot.Name.ToLower())))
+        if (itemDbDetails.Value.Properties.Slots.Any(slot => IsSoftInsertId(slot.Name.ToLower())))
         {
             return true;
         }
@@ -414,32 +444,26 @@ public class ItemHelper(
 
     // Get all soft insert slot ids
     // @returns A List of soft insert ids (e.g. soft_armor_back, helmet_top)
-    public List<string> GetSoftInsertSlotIds()
+    public HashSet<string> GetSoftInsertSlotIds()
     {
-        return
-        [
-            "groin",
-            "groin_back",
-            "soft_armor_back",
-            "soft_armor_front",
-            "soft_armor_left",
-            "soft_armor_right",
-            "shoulder_l",
-            "shoulder_r",
-            "collar",
-            "helmet_top",
-            "helmet_back",
-            "helmet_eyes",
-            "helmet_jaw",
-            "helmet_ears"
-        ];
+        return _softInsertIds;
+    }
+
+    /// <summary>
+    /// Does the passed in slot id match a soft insert id
+    /// </summary>
+    /// <param name="slotId">Id to check</param>
+    /// <returns></returns>
+    public bool IsSoftInsertId(string slotId)
+    {
+        return _softInsertIds.Contains(slotId);
     }
 
     // Returns the items total price based on the handbook or as a fallback from the prices.json if the item is not
     // found in the handbook. If the price can't be found at all return 0
     // @param List<string> tpls item tpls to look up the price of
     // @returns Total price in roubles
-    public double GetItemAndChildrenPrice(List<string> tpls)
+    public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(0, (total, tpl) => total + (int) GetItemPrice(tpl).GetValueOrDefault(0));
@@ -817,21 +841,7 @@ public class ItemHelper(
     /// <returns>True if it is a dogtag.</returns>
     public bool IsDogtag(string tpl)
     {
-        List<string> dogTagTpls =
-        [
-            ItemTpl.BARTER_DOGTAG_BEAR,
-            ItemTpl.BARTER_DOGTAG_BEAR_EOD,
-            ItemTpl.BARTER_DOGTAG_BEAR_TUE,
-            ItemTpl.BARTER_DOGTAG_USEC,
-            ItemTpl.BARTER_DOGTAG_USEC_EOD,
-            ItemTpl.BARTER_DOGTAG_USEC_TUE,
-            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_1,
-            ItemTpl.BARTER_DOGTAG_BEAR_PRESTIGE_2,
-            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_1,
-            ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
-        ];
-
-        return dogTagTpls.Contains(tpl);
+        return _dogTagTpls.Contains(tpl);
     }
 
     /// <summary>
@@ -1332,7 +1342,7 @@ public class ItemHelper(
      */
     public bool IsAttachmentAttached(Item item)
     {
-        List<string> check = ["hideout", "main"];
+        HashSet<string> check = ["hideout", "main"];
 
         return !(check.Contains(item.SlotId) || _slotsAsStrings.Contains(item.SlotId) || !int.TryParse(item.SlotId, out _));
     }
@@ -1445,7 +1455,7 @@ public class ItemHelper(
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots[0].MaxCount;
-        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots[0].Props.Filters[0].Filter[0];
+        var cartridgeTpl = ammoBoxDetails.Properties.StackSlots[0].Props.Filters[0].Filter.FirstOrDefault();
         var cartridgeDetails = GetItem(cartridgeTpl);
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
@@ -1496,7 +1506,7 @@ public class ItemHelper(
     public void AddSingleStackCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties?.StackSlots?[0].MaxCount ?? 0;
-        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?[0].Props?.Filters?[0].Filter?[0];
+        var cartridgeTpl = ammoBoxDetails.Properties?.StackSlots?[0].Props?.Filters?[0].Filter?.FirstOrDefault();
         ammoBox.Add(
             CreateCartridges(
                 ammoBox[0].Id,
@@ -1684,7 +1694,7 @@ public class ItemHelper(
     protected string? GetRandomValidCaliber(TemplateItem magTemplate)
     {
         var ammoTpls = magTemplate.Properties.Cartridges[0].Props.Filters[0].Filter;
-        List<string> calibers = ammoTpls
+        var calibers = ammoTpls
             .Where(x => GetItem(x).Key)
             .Select(x => GetItem(x).Value.Properties.Caliber)
             .ToList();
@@ -1704,7 +1714,7 @@ public class ItemHelper(
         string caliber,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
         string? fallbackCartridgeTpl = null,
-        List<string>? cartridgeWhitelist = null
+        ICollection<string>? cartridgeWhitelist = null
     )
     {
         var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
@@ -1832,7 +1842,7 @@ public class ItemHelper(
     )
     {
         var result = itemToAdd;
-        HashSet<string> incompatibleModTpls = new();
+        HashSet<string> incompatibleModTpls = [];
         foreach (var slot in itemToAddTemplate.Properties.Slots)
         {
             // If only required mods is requested, skip non-essential
@@ -1856,7 +1866,7 @@ public class ItemHelper(
             }
 
             var itemPool = slot.Props.Filters[0].Filter ?? [];
-            if (itemPool.Count() == 0)
+            if (itemPool.Count == 0)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -1896,7 +1906,8 @@ public class ItemHelper(
             var modItemDbDetails = GetItem(modItemToAdd.Template).Value;
 
             // Include conflicting items of newly added mod in pool to be used for next mod choice
-            modItemDbDetails.Properties.ConflictingItems.ForEach(item => incompatibleModTpls.Add(item));
+            incompatibleModTpls.UnionWith(modItemDbDetails.Properties.ConflictingItems);
+
         }
 
         return result;
@@ -1908,7 +1919,7 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public string GetCompatibleTplFromArray(List<string> possibleTpls, HashSet<string> incompatibleModTpls)
+    public string? GetCompatibleTplFromArray(HashSet<string> possibleTpls, HashSet<string> incompatibleModTpls)
     {
         if (!possibleTpls.Any())
         {
@@ -1951,7 +1962,7 @@ public class ItemHelper(
 
     // Get a list of slot names that hold removable plates
     // Returns Array of slot ids (e.g. front_plate)
-    public List<string> GetRemovablePlateSlotIds()
+    public HashSet<string> GetRemovablePlateSlotIds()
     {
         return ["front_plate", "back_plate", "left_side_plate", "right_side_plate"];
     }

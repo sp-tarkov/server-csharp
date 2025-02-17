@@ -1376,7 +1376,7 @@ public class FenceService(
     protected void RemoveRandomModsOfItem(List<Item> itemAndMods)
     {
         // Items to be removed from inventory
-        var toDelete = new List<string>();
+        var toDelete = new HashSet<string>();
 
         // Find mods to remove from item that could've been scavenged by other players in-raid
         foreach (var itemMod in itemAndMods)
@@ -1391,7 +1391,7 @@ public class FenceService(
                 }
 
                 // Remove item and its sub-items to prevent orphans
-                toDelete.AddRange(itemHelper.FindAndReturnChildrenByItems(itemAndMods, itemMod.Id));
+                toDelete.UnionWith(itemHelper.FindAndReturnChildrenByItems(itemAndMods, itemMod.Id));
             }
         }
 
@@ -1411,7 +1411,7 @@ public class FenceService(
      * @param itemsBeingDeleted Current list of items on weapon being deleted
      * @returns True if item will be removed
      */
-    protected bool PresetModItemWillBeRemoved(Item weaponMod, List<string> itemsBeingDeleted)
+    protected bool PresetModItemWillBeRemoved(Item weaponMod, HashSet<string> itemsBeingDeleted)
     {
         var slotIdsThatCanFail = traderConfig.Fence.PresetSlotsToRemoveChancePercent;
         if (!slotIdsThatCanFail.TryGetValue(weaponMod.SlotId, out var removalChance) || removalChance == 0.0)

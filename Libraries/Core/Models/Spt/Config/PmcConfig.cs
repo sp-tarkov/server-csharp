@@ -370,7 +370,7 @@ public record SlotLootSettings
      * Item Type whitelist
      */
     [JsonPropertyName("whitelist")]
-    public List<string> Whitelist
+    public HashSet<string> Whitelist
     {
         get;
         set;
@@ -380,7 +380,7 @@ public record SlotLootSettings
      * Item tpl blacklist
      */
     [JsonPropertyName("blacklist")]
-    public List<string> Blacklist
+    public HashSet<string> Blacklist
     {
         get;
         set;

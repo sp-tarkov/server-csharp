@@ -228,7 +228,7 @@ public record Dynamic
 
     [JsonPropertyName("ignoreQualityPriceVarianceBlacklist")]
     /** Tpls that should not use the variable price system when their quality is < 100% (lower dura/uses = lower price) */
-    public List<string> IgnoreQualityPriceVarianceBlacklist
+    public HashSet<string> IgnoreQualityPriceVarianceBlacklist
     {
         get;
         set;
@@ -306,7 +306,7 @@ public record Dynamic
 
     [JsonPropertyName("showAsSingleStack")]
     /** Item tpls that should be forced to sell as a single item */
-    public List<string> ShowAsSingleStack
+    public HashSet<string> ShowAsSingleStack
     {
         get;
         set;
@@ -435,7 +435,7 @@ public record BarterDetails
      * Item Tpls to never be turned into a barter
      */
     [JsonPropertyName("itemTypeBlacklist")]
-    public List<string> ItemTypeBlacklist
+    public HashSet<string> ItemTypeBlacklist
     {
         get;
         set;
@@ -578,7 +578,7 @@ public record RagfairBlacklist
     ///     Custom blacklist for item Tpls
     /// </summary>
     [JsonPropertyName("custom")]
-    public List<string> Custom
+    public HashSet<string> Custom
     {
         get;
         set;
@@ -638,7 +638,7 @@ public record RagfairBlacklist
     ///     Custom category blacklist for parent Ids
     /// </summary>
     [JsonPropertyName("customItemCategoryList")]
-    public List<string> CustomItemCategoryList
+    public HashSet<string> CustomItemCategoryList
     {
         get;
         set;
@@ -661,7 +661,7 @@ public record ArmorPlateBlacklistSettings
     ///     Item slots to NOT remove from items on flea
     /// </summary>
     [JsonPropertyName("ignoreSlots")]
-    public List<string> IgnoreSlots
+    public HashSet<string> IgnoreSlots
     {
         get;
         set;
@@ -724,7 +724,7 @@ public record ArmorSettings
     ///     What slots are to be removed when removeRemovablePlateChance is true
     /// </summary>
     [JsonPropertyName("plateSlotIdToRemovePool")]
-    public List<string> PlateSlotIdToRemovePool
+    public HashSet<string>? PlateSlotIdToRemovePool
     {
         get;
         set;

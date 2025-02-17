@@ -210,7 +210,7 @@ public class HealthHelper(
     protected void TransferPostRaidLimbEffectsToProfile(Dictionary<string, BodyPartHealth> postRaidBodyParts, PmcData profileData)
     {
         // Iterate over each body part
-        List<string> effectsToIgnore = ["Dehydration", "Exhaustion"];
+        HashSet<string> effectsToIgnore = ["Dehydration", "Exhaustion"];
         foreach (var bodyPartId in postRaidBodyParts)
         {
             // Get effects on body part from profile

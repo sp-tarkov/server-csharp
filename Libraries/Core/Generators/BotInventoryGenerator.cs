@@ -40,7 +40,7 @@ public class BotInventoryGenerator(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
-    private readonly List<EquipmentSlots> _excludedEquipmentSlots =
+    private readonly HashSet<EquipmentSlots> _excludedEquipmentSlots =
     [
         EquipmentSlots.Pockets,
         EquipmentSlots.FirstPrimaryWeapon,
@@ -449,7 +449,7 @@ public class BotInventoryGenerator(
     /// <returns>true when item added</returns>
     public bool GenerateEquipment(GenerateEquipmentProperties settings)
     {
-        List<string> slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
+        HashSet<string> slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
         double? spawnChance = slotsToCheck.Contains(settings.RootEquipmentSlot.ToString())
             ? 100
             : settings.SpawnChances.EquipmentChances.GetValueOrDefault(settings.RootEquipmentSlot.ToString());
@@ -589,7 +589,7 @@ public class BotInventoryGenerator(
     /// <param name="itemTpl">Item mod pool is being retrieved and filtered</param>
     /// <param name="equipmentBlacklist">Blacklist to filter mod pool with</param>
     /// <returns>Filtered pool of mods</returns>
-    public Dictionary<string, HashSet<string>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, List<string>> equipmentBlacklist)
+    public Dictionary<string, HashSet<string>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, HashSet<string>> equipmentBlacklist)
     {
         var modPool = _botEquipmentModPoolService.GetModsForGearSlot(itemTpl);
         foreach (var modSlot in modPool)

@@ -227,7 +227,7 @@ public class FenceBaseAssortGenerator(
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
-            var cartridgeTplInBox = rootItemDb.Properties.StackSlots[0].Props.Filters[0].Filter[0];
+            var cartridgeTplInBox = rootItemDb.Properties.StackSlots[0].Props.Filters[0].Filter.FirstOrDefault();
 
             // Look up cartridge tpl in db
             var ammoItemDb = itemHelper.GetItem(cartridgeTplInBox);

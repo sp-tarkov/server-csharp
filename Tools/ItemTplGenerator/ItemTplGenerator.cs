@@ -410,14 +410,14 @@ public class ItemTplGenerator(
 
     private string GetAmmoBoxPrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[0]?.Filter?[0];
+        var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(items[ammoItem]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
-        var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[0]?.Filter?[0];
+        var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
         return GetAmmoPrefix(items[ammoItem]);
     }

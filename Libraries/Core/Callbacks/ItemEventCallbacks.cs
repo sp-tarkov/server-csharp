@@ -32,7 +32,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
         }
 
         // List of non-critical error codes, we return true if any error NOT included is passed in
-        var nonCriticalErrorCodes = new List<BackendErrorCodes>
+        var nonCriticalErrorCodes = new HashSet<BackendErrorCodes>
         {
             BackendErrorCodes.NotEnoughSpace
         };

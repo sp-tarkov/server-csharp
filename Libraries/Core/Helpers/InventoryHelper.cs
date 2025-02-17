@@ -39,7 +39,7 @@ public class InventoryHelper(
 )
 {
     // Item types to ignore inside `GetSizeByInventoryItemHash`
-    private readonly List<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
+    private readonly HashSet<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -1235,7 +1235,7 @@ public class InventoryHelper(
         }
 
         // Reset fast panel value if item was moved to a container other than pocket/rig (cant be used from fastpanel)
-        List<string> slots = ["pockets", "tacticalvest"];
+        HashSet<string> slots = ["pockets", "tacticalvest"];
         var wasMovedToFastPanelAccessibleContainer = slots.Contains(
             itemParent?.SlotId?.ToLower() ?? ""
         );

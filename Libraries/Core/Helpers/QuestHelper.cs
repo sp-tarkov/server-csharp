@@ -38,7 +38,7 @@ public class QuestHelper(
     ICloner _cloner
 )
 {
-    protected List<QuestStatusEnum> _newlyQuestCheck = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
+    protected HashSet<QuestStatusEnum> _newlyQuestCheck = [QuestStatusEnum.Started, QuestStatusEnum.AvailableForFinish];
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
@@ -413,7 +413,7 @@ public class QuestHelper(
                 }
             );
 
-        return GetQuestsWithOnlyLevelRequirementStartCondition(eligibleQuests.ToList());
+        return GetQuestsWithOnlyLevelRequirementStartCondition(eligibleQuests);
     }
 
     /**
@@ -674,7 +674,7 @@ public class QuestHelper(
      * @param quests quests to process
      * @returns quest list without conditions
      */
-    protected List<Quest> GetQuestsWithOnlyLevelRequirementStartCondition(List<Quest> quests)
+    protected List<Quest> GetQuestsWithOnlyLevelRequirementStartCondition(IEnumerable<Quest> quests)
     {
         return quests.Select(GetQuestWithOnlyLevelRequirementStartCondition).ToList();
     }

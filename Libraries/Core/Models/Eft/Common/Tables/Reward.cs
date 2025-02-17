@@ -97,7 +97,7 @@ public record Reward
      * Game editions whitelisted to get reward
      */
     [JsonPropertyName("availableInGameEditions")]
-    public List<string>? AvailableInGameEditions
+    public HashSet<string>? AvailableInGameEditions
     {
         get;
         set;
@@ -107,7 +107,7 @@ public record Reward
      * Game editions blacklisted from getting reward
      */
     [JsonPropertyName("notAvailableInGameEditions")]
-    public List<string>? NotAvailableInGameEditions
+    public HashSet<string>? NotAvailableInGameEditions
     {
         get;
         set;

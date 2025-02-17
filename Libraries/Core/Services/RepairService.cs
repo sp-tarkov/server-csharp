@@ -594,7 +594,7 @@ public class RepairService(
 
         // Skill < level 10 + repairing armor
         if (
-            new List<SkillTypes>
+            new HashSet<SkillTypes>
             {
                 SkillTypes.LightVests,
                 SkillTypes.HeavyVests
@@ -606,7 +606,7 @@ public class RepairService(
         }
 
         var skillSettings = globals.Configuration.SkillsSettings.GetAllPropsAsDict();
-        BuffSettings buffSettings = null;
+        BuffSettings? buffSettings = null;
         switch (itemSkillType)
         {
             case SkillTypes.LightVests:

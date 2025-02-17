@@ -71,7 +71,7 @@ public class RagfairAssortGenerator(
         var dbItemsClone = itemHelper.GetItems().Where(item => item.Type != "Node");
 
         /** Store processed preset tpls so we dont add them when procesing non-preset items */
-        List<string> processedArmorItems = [];
+        HashSet<string> processedArmorItems = [];
         var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
         var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();
 

@@ -103,7 +103,7 @@ public class RagfairLinkedItemService(
         if (cylinderMod != null)
         {
             // Get the first cylinder filter tpl
-            var cylinderTpl = cylinderMod.Props?.Filters?[0].Filter?[0];
+            var cylinderTpl = cylinderMod.Props?.Filters?[0].Filter?.FirstOrDefault();
             if (!string.IsNullOrEmpty(cylinderTpl))
             {
                 // Get db data for cylinder tpl, add found slots info (camora_xxx) to linked items on revolver weapon

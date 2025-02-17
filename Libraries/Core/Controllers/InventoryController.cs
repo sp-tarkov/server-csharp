@@ -261,7 +261,7 @@ public class InventoryController(
 
         var foundInRaid = openedItem.Upd?.SpawnedInSession;
         var rewards = new List<List<Item>>();
-        var unlockedWeaponCrates = new List<string>
+        var unlockedWeaponCrates = new HashSet<string>
         {
             ItemTpl.RANDOMLOOTCONTAINER_ARENA_WEAPONCRATE_VIOLET_OPEN,
             ItemTpl.RANDOMLOOTCONTAINER_ARENA_WEAPONCRATE_BLUE_OPEN,

@@ -335,7 +335,7 @@ public record ServerFeatures
      * Keyed to profile type e.g. "Standard" or "SPT Developer"
      */
     [JsonPropertyName("createNewProfileTypesBlacklist")]
-    public List<string> CreateNewProfileTypesBlacklist
+    public HashSet<string> CreateNewProfileTypesBlacklist
     {
         get;
         set;

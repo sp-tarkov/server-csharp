@@ -60,7 +60,7 @@ public record InventoryConfig : BaseConfig
      * Container Tpls that should be deprioritised when choosing where to take money from for payments
      */
     [JsonPropertyName("deprioritisedMoneyContainers")]
-    public List<string> DeprioritisedMoneyContainers
+    public HashSet<string> DeprioritisedMoneyContainers
     {
         get;
         set;
