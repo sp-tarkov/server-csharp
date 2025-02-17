@@ -17,22 +17,7 @@ public class EftListEnumConverter<T> : JsonConverter<List<T>>
     {
         if (reader.TokenType == JsonTokenType.StartArray)
         {
-            using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-            {
-                var jsonText = jsonDocument.RootElement.GetRawText();
-                jsonText = jsonText.Replace("[", "").Replace("]", "");
-                var list = new List<T>();
-                if (!string.IsNullOrEmpty(jsonText))
-                {
-                    foreach (var str in jsonText.Split(","))
-                    {
-                        var newStr = str.Replace("\r", "").Replace("\n", "").Trim();
-                        list.Add(JsonSerializer.Deserialize<T>(newStr, options));
-                    }
-                }
-
-                return list;
-            }
+            return JsonSerializer.Deserialize<List<T>>(ref reader, _options);
         }
 
         throw new JsonException();

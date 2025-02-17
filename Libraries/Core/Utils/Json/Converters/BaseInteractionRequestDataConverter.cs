@@ -20,10 +20,8 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
 {
     public override BaseInteractionRequestData? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
-        using var jsonDocument = JsonDocument.ParseValue(ref reader);
-        var jsonText = jsonDocument.RootElement.GetRawText();
-        var value = JsonSerializer.Deserialize<BaseInteractionRequestData>(jsonText);
-        return ConvertToCorrectType(value, jsonText);
+        var value = JsonSerializer.Deserialize<BaseInteractionRequestData>(ref reader, options);
+        return ConvertToCorrectType(value, reader.GetString());
     }
 
     private BaseInteractionRequestData? ConvertToCorrectType(BaseInteractionRequestData? value, string jsonText)

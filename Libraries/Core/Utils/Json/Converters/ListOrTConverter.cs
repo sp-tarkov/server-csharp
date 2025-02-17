@@ -24,26 +24,16 @@ public class ListOrTConverter<T> : JsonConverter<ListOrT<T>?>
         {
             case JsonTokenType.String:
             case JsonTokenType.Number:
-                using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-                {
-                    var jsonText = jsonDocument.RootElement.GetRawText();
-                    var value = JsonSerializer.Deserialize<T>(jsonText, options);
-                    return new ListOrT<T>(null, value);
-                }
+                var singleValue = JsonSerializer.Deserialize<T>(ref reader, options);
+                return new ListOrT<T>(null, singleValue);
+
             case JsonTokenType.StartArray:
-                using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-                {
-                    var jsonText = jsonDocument.RootElement.GetRawText();
-                    var list = JsonSerializer.Deserialize<List<T>>(jsonText, options);
-                    return new ListOrT<T>(list, default);
-                }
+                var list = JsonSerializer.Deserialize<List<T>>(ref reader, options);
+                return new ListOrT<T>(list, default);
+
             case JsonTokenType.StartObject:
-                using (var jsonDocument = JsonDocument.ParseValue(ref reader))
-                {
-                    var jsonText = jsonDocument.RootElement.GetRawText();
-                    var obj = JsonSerializer.Deserialize<T>(jsonText, options);
-                    return new ListOrT<T?>(null, obj);
-                }
+                var obj = JsonSerializer.Deserialize<T>(ref reader, options);
+                return new ListOrT<T>(null, obj);
             default:
                 throw new Exception($"Unable to translate object type {reader.TokenType} to ListOrT<T>.");
         }
