@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Utils;
 using SptCommon.Annotations;
@@ -12,8 +13,7 @@ public class BotGenerationCacheService(
 )
 {
     protected Queue<BotBase> _activeBotsInRaid = [];
-    protected object _lock = new();
-    protected Dictionary<string, List<BotBase>> _storedBots = new();
+    protected ConcurrentDictionary<string, List<BotBase>> _storedBots = new();
 
 
     /**
@@ -22,14 +22,11 @@ public class BotGenerationCacheService(
      */
     public void StoreBots(string key, List<BotBase> botsToStore)
     {
-        lock (_lock)
+        foreach (var bot in botsToStore)
         {
-            foreach (var bot in botsToStore)
+            if (!_storedBots.TryAdd(key, [bot]))
             {
-                if (!_storedBots.TryAdd(key, [bot]))
-                {
-                    _storedBots[key].Add(bot);
-                }
+                _storedBots[key].Add(bot);
             }
         }
     }
@@ -42,25 +39,26 @@ public class BotGenerationCacheService(
      */
     public BotBase? GetBot(string key)
     {
-        lock (_lock)
+        if (_storedBots.TryGetValue(key, out var bots))
         {
-            if (_storedBots.TryGetValue(key, out var bots))
+            if (bots.Count > 0)
             {
-                if (bots.Count > 0)
+                try
                 {
-                    try
-                    {
-                        return bots.PopLast();
-                    }
-                    catch (Exception _)
-                    {
-                        _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
-                    }
+                    return bots.PopLast();
+                }
+                catch (Exception _)
+                {
+                    _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
                 }
             }
+
+            _logger.Error(_localisationService.GetText("bot-cache_has_zero_bots_of_requested_type", key));
+
+            return null;
         }
 
-        _logger.Error(_localisationService.GetText("bot-no_bot_type_in_cache", key));
+        _logger.Warning(_localisationService.GetText("bot-no_bot_type_in_cache", key));
         return null;
     }
 
@@ -70,10 +68,7 @@ public class BotGenerationCacheService(
      */
     public void StoreUsedBot(BotBase botToStore)
     {
-        lock (_lock)
-        {
-            _activeBotsInRaid.Enqueue(botToStore);
-        }
+        _activeBotsInRaid.Enqueue(botToStore);
     }
 
     /**
@@ -84,10 +79,7 @@ public class BotGenerationCacheService(
      */
     public BotBase? GetUsedBot(string profileId)
     {
-        lock (_lock)
-        {
-            return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
-        }
+        return _activeBotsInRaid.FirstOrDefault(x => x.Id == profileId);
     }
 
     /**
@@ -95,11 +87,8 @@ public class BotGenerationCacheService(
      */
     public void ClearStoredBots()
     {
-        lock (_lock)
-        {
-            _storedBots.Clear();
-            _activeBotsInRaid = [];
-        }
+        _storedBots.Clear();
+        _activeBotsInRaid = [];
     }
 
     /**
@@ -108,25 +97,16 @@ public class BotGenerationCacheService(
      */
     public bool CacheHasBotWithKey(string key, int size = 0)
     {
-        lock (_lock)
-        {
-            return _storedBots.ContainsKey(key) && _storedBots[key].Count > size;
-        }
+        return _storedBots.ContainsKey(key) && _storedBots[key].Count > size;
     }
 
     public int GetCachedBotCount(string key)
     {
-        lock (_lock)
-        {
-            return _storedBots.TryGetValue(key, out var bot) ? bot.Count : 0;
-        }
+        return _storedBots.TryGetValue(key, out var bot) ? bot.Count : 0;
     }
 
     public string CreateCacheKey(string? role, string? difficulty)
     {
-        lock (_lock)
-        {
-            return $"{role?.ToLower()}{difficulty?.ToLower()}";
-        }
+        return $"{role?.ToLower()}{difficulty?.ToLower()}";
     }
 }
