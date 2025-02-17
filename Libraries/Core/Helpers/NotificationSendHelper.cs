@@ -11,7 +11,7 @@ namespace Core.Helpers;
 
 [Injectable]
 public class NotificationSendHelper(
-    IWebSocketConnectionHandler _sptWebSocketConnectionHandler,
+    SptWebSocketConnectionHandler _sptWebSocketConnectionHandler,
     HashUtil _hashUtil,
     SaveServer _saveServer,
     NotificationService _notificationService,

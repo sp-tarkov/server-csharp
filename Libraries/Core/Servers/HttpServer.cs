@@ -29,12 +29,16 @@ public class HttpServer(
         var app = builder?.Build();
 
         // enable web socket
-        app?.UseWebSockets();
+        app?.UseWebSockets(new WebSocketOptions
+        {
+            // Every minute a heartbeat is sent to keep the connection alive.
+            KeepAliveInterval = TimeSpan.FromSeconds(60)
+        });
 
         app?.Use(
             (HttpContext req, RequestDelegate _) =>
             {
-                return Task.Factory.StartNew(() => HandleFallback(req));
+                return Task.Factory.StartNew(async () => await HandleFallback(req));
             }
         );
         started = true;
@@ -46,11 +50,12 @@ public class HttpServer(
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
 
-    private Task HandleFallback(HttpContext context)
+    private async Task HandleFallback(HttpContext context)
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            return _webSocketServer.OnConnection(context);
+            await _webSocketServer.OnConnection(context);
+            return;
         }
 
         context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
@@ -103,8 +108,6 @@ public class HttpServer(
 
         _httpListeners.SingleOrDefault(l => l.CanHandle(sessionId, context.Request))?.Handle(sessionId, context.Request, context.Response);
         // This http request would be passed through the SPT Router and handled by an ICallback
-
-        return Task.CompletedTask;
     }
 
     private bool? IsLocalRequest(string? remoteAddress)
