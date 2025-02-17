@@ -478,7 +478,7 @@ public record PackDetails
      * item types to allow being a pack
      */
     [JsonPropertyName("itemTypeWhitelist")]
-    public List<string> ItemTypeWhitelist
+    public HashSet<string> ItemTypeWhitelist
     {
         get;
         set;
