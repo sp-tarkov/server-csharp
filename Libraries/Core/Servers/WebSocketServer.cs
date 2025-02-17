@@ -45,7 +45,7 @@ public class WebSocketServer(
         }
 
         // Discard this task, we dont need to await it.
-        _ = Task.Run(async () =>
+        _ = Task.Factory.StartNew(async () =>
         {
             while (!wsToken.IsCancellationRequested)
             {
@@ -64,7 +64,7 @@ public class WebSocketServer(
                     await wsh.OnMessage(messageBuffer.ToArray(), WebSocketMessageType.Text, webSocket, context);
                 }
             }
-        }, wsToken);
+        }, TaskCreationOptions.LongRunning);
 
         while (webSocket.State == WebSocketState.Open)
         {
