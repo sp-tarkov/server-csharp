@@ -24,8 +24,11 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
         static StringToNumberConverter()
         {
             // Do reflection only once to get parse
-            var underlyingType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
-            stringParseMethod = underlyingType.GetMethod("Parse", [typeof(string)]);
+            if (stringParseMethod == null)
+            {
+                var underlyingType = Nullable.GetUnderlyingType(typeof(T)) ?? typeof(T);
+                stringParseMethod = underlyingType.GetMethod("Parse", [typeof(string)]);
+            }
         }
 
         public override T? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
