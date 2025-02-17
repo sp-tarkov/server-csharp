@@ -48,7 +48,7 @@ public class InraidStaticRouter : StaticRouter
                     info,
                     sessionID,
                     output
-                ) => inraidCallbacks.GetBossConvertSettings(url, info as EmptyRequestData, sessionID)
+                ) => inraidCallbacks.GetBossTypes(url, info as EmptyRequestData, sessionID)
             )
         ]
     )

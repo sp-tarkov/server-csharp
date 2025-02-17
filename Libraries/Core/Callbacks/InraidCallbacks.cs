@@ -53,8 +53,8 @@ public class InraidCallbacks(
         return _httpResponseUtil.NoBody(_inRaidController.GetTraitorScavHostileChance(url, sessionID));
     }
 
-    public string GetBossConvertSettings(string url, EmptyRequestData info, string sessionID)
+    public string GetBossTypes(string url, EmptyRequestData info, string sessionID)
     {
-        return _httpResponseUtil.NoBody(_inRaidController.GetBossConvertSettings(url, sessionID));
+        return _httpResponseUtil.NoBody(_inRaidController.GetBossTypes(url, sessionID));
     }
 }

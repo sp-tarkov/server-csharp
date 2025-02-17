@@ -133,6 +133,13 @@ public class BotGenerator(
             _logger.Error($"Unable to retrieve: {botRole} bot template, cannot generate bot of this type");
         }
 
+        // The client expects the Side for PMCs to be Savage
+        if (botRole is "Bear" or "Usec")
+        {
+            // TODO: cleanup later
+            preparedBotBase.Info.Side = "Savage";
+        }
+
         return GenerateBot(sessionId, preparedBotBase, botJsonTemplateClone, botGenerationDetails);
     }
 
@@ -277,7 +284,7 @@ public class BotGenerator(
             botJsonTemplate,
             botRoleLowercase,
             botGenerationDetails.IsPmc.GetValueOrDefault(false),
-            botLevel.Level.Value,
+            bot.Info.Level.Value,
             bot.Info.GameVersion
         );
 

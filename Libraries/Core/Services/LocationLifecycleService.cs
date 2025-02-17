@@ -21,39 +21,40 @@ namespace Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class LocationLifecycleService
 {
-    private readonly ApplicationContext _applicationContext;
-    private readonly BotGenerationCacheService _botGenerationCacheService;
-    private readonly BotLootCacheService _botLootCacheService;
-    private readonly BotNameService _botNameService;
-    private readonly ICloner _cloner;
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
-    private readonly HashUtil _hashUtil;
-    private readonly HealthHelper _healthHelper;
-    private readonly HideoutConfig _hideoutConfig;
-    private readonly InRaidConfig _inRaidConfig;
-    private readonly InRaidHelper _inRaidHelper;
-    private readonly InsuranceService _insuranceService;
-    private readonly LocalisationService _localisationService;
-    private readonly LocationConfig _locationConfig;
-    private readonly LocationLootGenerator _locationLootGenerator;
-    private readonly ISptLogger<LocationLifecycleService> _logger;
-    private readonly LootGenerator _lootGenerator;
-    private readonly MailSendService _mailSendService;
-    private readonly MatchBotDetailsCacheService _matchBotDetailsCacheService;
-    private readonly PlayerScavGenerator _playerScavGenerator;
-    private readonly PmcChatResponseService _pmcChatResponseService;
-    private readonly PmcConfig _pmcConfig;
-    private readonly ProfileHelper _profileHelper;
-    private readonly QuestHelper _questHelper;
-    private readonly RagfairConfig _ragfairConfig;
-    private readonly RaidTimeAdjustmentService _raidTimeAdjustmentService;
-    private readonly RandomUtil _randomUtil;
-    private readonly RewardHelper _rewardHelper;
-    private readonly SaveServer _saveServer;
-    private readonly TimeUtil _timeUtil;
-    private readonly TraderConfig _traderConfig;
-    private readonly TraderHelper _traderHelper;
+    protected ApplicationContext _applicationContext;
+    protected BotGenerationCacheService _botGenerationCacheService;
+    protected BotLootCacheService _botLootCacheService;
+    protected BotNameService _botNameService;
+    protected ICloner _cloner;
+    protected ConfigServer _configServer;
+    protected DatabaseService _databaseService;
+    protected HashUtil _hashUtil;
+    protected HealthHelper _healthHelper;
+    protected HideoutConfig _hideoutConfig;
+    protected InRaidConfig _inRaidConfig;
+    protected InRaidHelper _inRaidHelper;
+    protected InsuranceService _insuranceService;
+    protected LocalisationService _localisationService;
+    protected LocationConfig _locationConfig;
+    protected LocationLootGenerator _locationLootGenerator;
+    protected ISptLogger<LocationLifecycleService> _logger;
+    protected LootGenerator _lootGenerator;
+    protected MailSendService _mailSendService;
+    protected MatchBotDetailsCacheService _matchBotDetailsCacheService;
+    protected PlayerScavGenerator _playerScavGenerator;
+    protected PmcChatResponseService _pmcChatResponseService;
+    protected PmcWaveGenerator _pmcWaveGenerator;
+    protected PmcConfig _pmcConfig;
+    protected ProfileHelper _profileHelper;
+    protected QuestHelper _questHelper;
+    protected RagfairConfig _ragfairConfig;
+    protected RaidTimeAdjustmentService _raidTimeAdjustmentService;
+    protected RandomUtil _randomUtil;
+    protected RewardHelper _rewardHelper;
+    protected SaveServer _saveServer;
+    protected TimeUtil _timeUtil;
+    protected TraderConfig _traderConfig;
+    protected TraderHelper _traderHelper;
 
     public LocationLifecycleService(
         ISptLogger<LocationLifecycleService> logger,
@@ -80,6 +81,7 @@ public class LocationLifecycleService
         SaveServer saveServer,
         HealthHelper healthHelper,
         PmcChatResponseService pmcChatResponseService,
+        PmcWaveGenerator pmcWaveGenerator,
         QuestHelper questHelper,
         InsuranceService insuranceService,
         MatchBotDetailsCacheService matchBotDetailsCacheService
@@ -109,6 +111,7 @@ public class LocationLifecycleService
         _saveServer = saveServer;
         _healthHelper = healthHelper;
         _pmcChatResponseService = pmcChatResponseService;
+        _pmcWaveGenerator = pmcWaveGenerator;
         _questHelper = questHelper;
         _insuranceService = insuranceService;
         _matchBotDetailsCacheService = matchBotDetailsCacheService;
@@ -129,6 +132,10 @@ public class LocationLifecycleService
         _logger.Debug($"Starting: {request.Location}");
 
         var playerProfile = _profileHelper.GetPmcProfile(sessionId);
+
+        // Raid is starting, adjust run times to reduce server load while player is in raid
+        _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.InRaid;
+        _hideoutConfig.RunIntervalSeconds = _hideoutConfig.RunIntervalValues.InRaid;
 
         var result = new StartLocalRaidResponseData
         {
@@ -347,7 +354,10 @@ public class LocationLifecycleService
             return locationBaseClone;
         }
 
-        // Check for a loot multipler adjustment in app context and apply if one is found
+        // Add cusom pmcs to map every time its run
+        _pmcWaveGenerator.ApplyWaveChangesToMap(locationBaseClone);
+
+        // Adjust raid based on whether this is a scav run
         LocationConfig? locationConfigClone = null;
         var raidAdjustments = _applicationContext
             .GetLatestValue(ContextVariableType.RAID_ADJUSTMENTS)
@@ -385,7 +395,7 @@ public class LocationLifecycleService
         _logger.Success(_localisationService.GetText("location-generated_success", name));
 
         // Reset loot multipliers back to original values
-        if (raidAdjustments is not null)
+        if (raidAdjustments is not null && locationConfigClone is not null)
         {
             _logger.Debug("Resetting loot multipliers back to their original values");
             _locationConfig.StaticLootMultiplier = locationConfigClone.StaticLootMultiplier;

@@ -32,17 +32,56 @@ public class RaidTimeAdjustmentService(
     /// <param name="mapBase">Map to adjust</param>
     public void MakeAdjustmentsToMap(RaidChanges raidAdjustments, LocationBase mapBase)
     {
-        _logger.Debug(
-            $"Adjusting dynamic loot multipliers to {raidAdjustments.DynamicLootPercent}% and static loot multipliers to {raidAdjustments.StaticLootPercent}% of original"
-        );
+        if (raidAdjustments.DynamicLootPercent < 100 || raidAdjustments.StaticLootPercent < 100)
+        {
+            _logger.Debug(
+                $"Adjusting dynamic loot multipliers to {raidAdjustments.DynamicLootPercent}% and static loot multipliers to {raidAdjustments.StaticLootPercent}% of original"
+            );
+        }
 
         // Change loot multiplier values before they're used below
-        AdjustLootMultipliers(_locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
-        AdjustLootMultipliers(_locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
+        if (raidAdjustments.DynamicLootPercent < 100)
+        {
+            AdjustLootMultipliers(_locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
+        }
+        if (raidAdjustments.StaticLootPercent < 100)
+        {
+            AdjustLootMultipliers(_locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
+        }
 
+        // Adjust the escape time limit
+        mapBase.EscapeTimeLimit = raidAdjustments.RaidTimeMinutes;
+
+        // Adjust map exits
+        foreach (var exitChange in raidAdjustments.ExitChanges)
+        {
+            var exitToChange = mapBase.Exits.FirstOrDefault(exit => exit.Name == exitChange.Name);
+            if (exitToChange is null)
+            {
+                _logger.Debug($"Exit with Id: { exitChange.Name} not found, skipping");
+
+                return;
+            }
+
+            if (exitChange.Chance is not null)
+            {
+                exitToChange.Chance = exitChange.Chance;
+            }
+
+            if (exitChange.MinTime is not null)
+            {
+                exitToChange.MinTime = exitChange.MinTime;
+            }
+
+            if (exitChange.MaxTime is not null)
+            {
+                exitToChange.MaxTime = exitChange.MaxTime;
+            }
+        }
+
+        // Make alterations to bot spawn waves now player is simulated spawning later
         var mapSettings = GetMapSettings(mapBase.Id);
         if (mapSettings.AdjustWaves)
-            // Make alterations to bot spawn waves now player is simulated spawning later
         {
             AdjustWaves(mapBase, raidAdjustments);
         }
@@ -101,8 +140,6 @@ public class RaidTimeAdjustmentService(
         // Prep result object to return
         var result = new GetRaidTimeResponse
         {
-            RaidTimeMinutes = baseEscapeTimeMinutes,
-            ExitChanges = [],
             NewSurviveTimeSeconds = null,
             OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement
         };
@@ -137,22 +174,25 @@ public class RaidTimeAdjustmentService(
         // Time player spawns into the raid if it was online
         var simulatedRaidStartTimeMinutes = baseEscapeTimeMinutes - newRaidTimeMinutes;
 
-        if (mapSettings.ReduceLootByPercent)
-            // Store time reduction percent in app context so loot gen can pick it up later
-        {
-            _applicationContext.AddValue(
-                ContextVariableType.RAID_ADJUSTMENTS,
-                new RaidChanges
-                {
-                    DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent),
-                    StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent),
-                    SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60
-                }
-            );
-        }
+        // Calculate how long player needs to be in raid to get a `survived` extract status
+        result.NewSurviveTimeSeconds = Math.Max(result.OriginalSurvivalTimeSeconds.Value - (baseEscapeTimeMinutes.Value - newRaidTimeMinutes) * 60, 0);
 
-        // Update result object with new time
-        result.RaidTimeMinutes = newRaidTimeMinutes;
+        // State that we'll pass to loot generation
+        var raidChanges = new RaidChanges {
+            DynamicLootPercent = 100,
+            StaticLootPercent = 100,
+            RaidTimeMinutes = newRaidTimeMinutes,
+            OriginalSurvivalTimeSeconds = result.OriginalSurvivalTimeSeconds,
+            ExitChanges = [],
+            NewSurviveTimeSeconds = result.NewSurviveTimeSeconds,
+            SimulatedRaidStartSeconds = 0 };
+
+        if (mapSettings.ReduceLootByPercent)
+        {
+            raidChanges.DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent);
+            raidChanges.StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent);
+            raidChanges.SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60;
+        }
 
         _logger.Debug($"Reduced: {request.Location} raid time by: {chosenRaidReductionPercent}% to {newRaidTimeMinutes} minutes");
 
@@ -165,8 +205,11 @@ public class RaidTimeAdjustmentService(
         var exitAdjustments = GetExitAdjustments(mapBase, newRaidTimeMinutes);
         if (exitAdjustments is not null)
         {
-            result.ExitChanges.AddRange(exitAdjustments);
+            raidChanges.ExitChanges.AddRange(exitAdjustments);
         }
+
+        // Store state to use in loot generation
+        _applicationContext.AddValue(ContextVariableType.RAID_ADJUSTMENTS, raidChanges);
 
         return result;
     }

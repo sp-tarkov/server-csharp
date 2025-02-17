@@ -197,16 +197,6 @@ public record PmcConfig : BaseConfig
     }
 
     /**
-     * Percentage chance a bot from a wave is converted into a PMC, first key = map, second key = bot wildspawn type (assault/exusec), value: min+max chance to be converted
-     */
-    [JsonPropertyName("convertIntoPmcChance")]
-    public Dictionary<string, Dictionary<string, MinMax<double>>> ConvertIntoPmcChance
-    {
-        get;
-        set;
-    }
-
-    /**
      * How many levels above player level can a PMC be
      */
     [JsonPropertyName("botRelativeLevelDeltaMax")]
@@ -276,6 +266,20 @@ public record PmcConfig : BaseConfig
 
     [JsonPropertyName("lootItemLimitsRub")]
     public List<MinMaxLootItemValue>? LootItemLimitsRub
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("removeExistingPmcWaves")]
+    public bool? RemoveExistingPmcWaves
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("customPmcWaves")]
+    public Dictionary<string, List<BossLocationSpawn>> CustomPmcWaves
     {
         get;
         set;

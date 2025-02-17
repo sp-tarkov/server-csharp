@@ -67,12 +67,13 @@ public class InRaidController(
     }
 
     /// <summary>
+    /// Get all boss role types e.g. bossTagilla
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId"></param>
-    /// <returns></returns>
-    public List<string> GetBossConvertSettings(string url, string sessionId)
+    /// <returns>string array of boss types</returns>
+    public List<string> GetBossTypes(string url, string sessionId)
     {
-        return _botConfig.AssaultToBossConversion.BossesToConvertToWeights.Keys.ToList();
+        return _botConfig.Bosses;
     }
 }

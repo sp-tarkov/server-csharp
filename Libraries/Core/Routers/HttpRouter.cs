@@ -50,8 +50,15 @@ public class HttpRouter
             wrapper.Output = wrapper.Output.Replace(sessionID, sessionID);
         }
 
-        //var filepath = $"c:\\SharpServer\\{req.Path.ToString().Substring(1).Replace("/", ".")}.json";
-        //File.WriteAllText(filepath, wrapper.Output);
+        try
+        {
+            var filepath = $"c:\\SharpServer\\{req.Path.ToString().Substring(1).Replace("/", ".")}.json";
+            File.WriteAllText(filepath, wrapper.Output);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
 
         return wrapper.Output;
     }

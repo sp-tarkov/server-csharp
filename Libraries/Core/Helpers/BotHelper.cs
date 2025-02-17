@@ -39,7 +39,7 @@ public class BotHelper(
     }
 
     /// <summary>
-    ///     Is the passed in bot role a PMC (usec/bear/pmc)
+    ///     Is the passed in bot role a PMC (USEC/Bear/PMC)
     /// </summary>
     /// <param name="botRole">bot role to check</param>
     /// <returns>true if is pmc</returns>
@@ -50,17 +50,17 @@ public class BotHelper(
 
     public bool IsBotBoss(string botRole)
     {
-        return _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
+        return !IsBotFollower(botRole) && _botConfig.Bosses.Any(x => string.Equals(x, botRole, StringComparison.CurrentCultureIgnoreCase));
     }
 
     public bool IsBotFollower(string botRole)
     {
-        return botRole?.ToLower().StartsWith("follower") ?? false;
+        return botRole?.StartsWith("follower", StringComparison.CurrentCultureIgnoreCase) ?? false;
     }
 
     public bool IsBotZombie(string botRole)
     {
-        return botRole?.ToLower().StartsWith("infected") ?? false;
+        return botRole?.StartsWith("infected", StringComparison.CurrentCultureIgnoreCase) ?? false;
     }
 
     /// <summary>
@@ -110,22 +110,6 @@ public class BotHelper(
                 revengeArray.Add(botTypeToAdd);
             }
         }
-    }
-
-    public bool RollChanceToBePmc(MinMax<double> botConvertMinMax)
-    {
-        return _randomUtil.GetChance100(_randomUtil.GetDouble(botConvertMinMax.Min, botConvertMinMax.Max));
-    }
-
-    protected Dictionary<string, MinMax<double>> GetPmcConversionValuesForLocation(string location)
-    {
-        var result = _pmcConfig.ConvertIntoPmcChance[location.ToLower()];
-        if (result is null)
-        {
-            _pmcConfig.ConvertIntoPmcChance = new Dictionary<string, Dictionary<string, MinMax<double>>>();
-        }
-
-        return result;
     }
 
     /// <summary>

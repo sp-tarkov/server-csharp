@@ -206,13 +206,6 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    [JsonPropertyName("assaultToBossConversion")]
-    public AssaultToBossConversion AssaultToBossConversion
-    {
-        get;
-        set;
-    }
-
     /**
      * Max length a bots name can be
      */
@@ -228,30 +221,6 @@ public record BotConfig : BaseConfig
      */
     [JsonPropertyName("botRolesThatMustHaveUniqueName")]
     public List<string> BotRolesThatMustHaveUniqueName
-    {
-        get;
-        set;
-    }
-}
-
-public record AssaultToBossConversion
-{
-    [JsonPropertyName("bossConvertEnabled")]
-    public bool BossConvertEnabled
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("bossesToConvertToWeights")]
-    public Dictionary<string, double> BossesToConvertToWeights
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("bossConvertMinMax")]
-    public Dictionary<string, MinMax<double>> BossConvertMinMax
     {
         get;
         set;

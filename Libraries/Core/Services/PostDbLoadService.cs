@@ -1,5 +1,4 @@
 using Core.Models.Eft.Common;
-using Core.Models.Eft.Common.Tables;
 using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -31,6 +30,7 @@ public class PostDbLoadService(
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
     protected LootConfig _lootConfig = _configServer.GetConfig<LootConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     public void PerformPostDbLoadActions()
     {
@@ -60,6 +60,11 @@ public class PostDbLoadService(
         if (_locationConfig.AddOpenZonesToAllMaps)
         {
             _openZoneService.ApplyZoneChangesToAllMaps();
+        }
+
+        if (_pmcConfig.RemoveExistingPmcWaves.GetValueOrDefault(false))
+        {
+            RemoveExistingPmcWaves();
         }
 
         if (_locationConfig.AddCustomBotWavesToMaps)
@@ -246,7 +251,24 @@ public class PostDbLoadService(
         }
     }
 
-// Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
+    protected void RemoveExistingPmcWaves()
+    {
+        var locations = _databaseService.GetLocations().GetDictionary();
+
+        var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
+        foreach (var locationkvP in locations)
+        {
+            if (locationkvP.Value?.Base?.BossLocationSpawn is null)
+            {
+                continue;
+            }
+
+            locationkvP.Value.Base.BossLocationSpawn = locationkvP.Value.Base.BossLocationSpawn.Where(
+                (bossSpawn) => !pmcTypes.Contains(bossSpawn.BossName)).ToList();
+        }
+    }
+
+    // Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
     protected void AdjustMapBotLimits()
     {
         var mapsDb = _databaseService.GetLocations().GetDictionary();
