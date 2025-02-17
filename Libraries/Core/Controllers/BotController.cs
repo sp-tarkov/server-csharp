@@ -206,7 +206,7 @@ public class BotController(
         stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache");
+            _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
         }
     }
 
@@ -235,22 +235,22 @@ public class BotController(
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Cache already has sufficient {cacheKey} bots: {botCacheCount}");
+                _logger.Debug($"Cache already has sufficient: {cacheKey} bots: {botCacheCount}");
             }
 
             return;
         }
 
         // We're below desired count, add bots to cache
-        var botsToGenerate = botGenerationDetails.BotCountToGenerate - botCacheCount;
+        var botsToGenerateCount = botGenerationDetails.BotCountToGenerate - botCacheCount;
         var progressWriter = new ProgressWriter(botGenerationDetails.BotCountToGenerate.GetValueOrDefault(30));
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Generating {botsToGenerate} bots for cacheKey: {cacheKey}");
+            _logger.Debug($"Generating: {botsToGenerateCount} bots for cacheKey: {cacheKey}");
         }
 
-        for (var i = 0; i < botsToGenerate; i++)
+        for (var i = 0; i < botsToGenerateCount; i++)
         {
             try
             {
@@ -267,8 +267,8 @@ public class BotController(
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
             _logger.Debug(
-                $"Generated {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
-                $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty}bots"
+                $"Generated: {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
+                $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty} bots"
             );
         }
     }
