@@ -62,7 +62,7 @@ public class ItemBaseClassService(
      * @param baseClass base class to check for
      * @returns true if item inherits from base class passed in
      */
-    public bool ItemHasBaseClass(string itemTpl, List<string> baseClasses)
+    public bool ItemHasBaseClass(string itemTpl, ICollection<string> baseClasses)
     {
         if (!_cacheGenerated)
         {

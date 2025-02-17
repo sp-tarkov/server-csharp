@@ -339,7 +339,7 @@ public class ItemHelper(
     // @param string tpl Item to check base classes of
     // @param string[] baseClassTpls base classes to check for
     // @returns true if any supplied base classes match
-    public bool IsOfBaseclasses(string tpl, List<string> baseClassTpls)
+    public bool IsOfBaseclasses(string tpl, ICollection<string> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }
