@@ -85,6 +85,7 @@ public class BotInventoryGenerator(
             botInventory,
             botLevel,
             chosenGameVersion,
+            isPmc,
             raidConfig
         );
 
@@ -178,7 +179,7 @@ public class BotInventoryGenerator(
     /// <param name="chosenGameVersion">Game version for bot, only really applies for PMCs</param>
     /// <param name="raidConfig">RadiConfig</param>
     public void GenerateAndAddEquipmentToBot(string sessionId, BotTypeInventory templateInventory, Chances wornItemChances, string botRole,
-        BotBaseInventory botInventory, int botLevel, string chosenGameVersion, GetRaidConfigurationRequestData raidConfig)
+        BotBaseInventory botInventory, int botLevel, string chosenGameVersion, bool isPmc, GetRaidConfigurationRequestData raidConfig)
     {
         _botConfig.Equipment.TryGetValue(_botGeneratorHelper.GetBotEquipmentRole(botRole), out var botEquipConfig);
         var randomistionDetails = _botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
@@ -244,7 +245,7 @@ public class BotInventoryGenerator(
             {
                 RootEquipmentSlot = EquipmentSlots.Pockets,
                 // Unheard profiles have unique sized pockets
-                RootEquipmentPool = GetPocketPoolByGameEdition(chosenGameVersion, templateInventory),
+                RootEquipmentPool = GetPocketPoolByGameEdition(chosenGameVersion, templateInventory, isPmc),
                 ModPool = templateInventory.Mods,
                 SpawnChances = wornItemChances,
                 BotData = new BotData
@@ -382,9 +383,9 @@ public class BotInventoryGenerator(
         );
     }
 
-    protected Dictionary<string, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory)
+    protected Dictionary<string, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory, bool isPmc)
     {
-        return chosenGameVersion == GameEditions.UNHEARD
+        return chosenGameVersion == GameEditions.UNHEARD && isPmc
             ? new Dictionary<string, double>
             {
                 [ItemTpl.POCKETS_1X4_TUE] = 1
