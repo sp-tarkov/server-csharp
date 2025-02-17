@@ -196,7 +196,7 @@ public class BotController(
                 pmcProfile,
                 allPmcsHaveSameNameAsPlayer,
                 raidSettings,
-                _botConfig.PresetBatch!.GetValueOrDefault(condition.Role, condition.Limit),
+                Math.Max(_botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 1), condition.Limit), // Get largest between value passed in from request vs whats in bot.config
                 _botHelper.IsBotPmc(condition.Role));
 
             // Generate bots for the current condition
