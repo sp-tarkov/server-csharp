@@ -43,20 +43,23 @@ public class BotController(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
-    public int? GetBotPresetGenerationLimit(string type)
+    /**
+     * Return the number of bot load-out varieties to be generated
+     * @param type bot Type we want the load-out gen count for
+     * @returns number of bots to generate
+     */
+    public int GetBotPresetGenerationLimit(string type)
     {
-        var typeInLower = type.ToLower();
-        var value = (int?) typeof(PresetBatch).GetProperties()
-            .First(p => p.Name.ToLower() == (typeInLower == "assaultgroup" ? "assault" : typeInLower))
-            .GetValue(_botConfig.PresetBatch);
 
-        if (value != null)
+        if (!_botConfig.PresetBatch.TryGetValue(type.ToLower(), out var limit))
         {
-            return value;
+            _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
+
+            return 10;
         }
 
-        _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
-        return 30;
+        return limit;
+
     }
 
     public Dictionary<string, object> GetBotCoreDifficulty()
@@ -196,7 +199,7 @@ public class BotController(
                 pmcProfile,
                 allPmcsHaveSameNameAsPlayer,
                 raidSettings,
-                Math.Max(_botConfig.PresetBatch!.GetValueOrDefault(condition.Role, 1), condition.Limit), // Get largest between value passed in from request vs whats in bot.config
+                Math.Max(GetBotPresetGenerationLimit(condition.Role), condition.Limit), // Get largest between value passed in from request vs whats in bot.config
                 _botHelper.IsBotPmc(condition.Role));
 
             // Generate bots for the current condition
