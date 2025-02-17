@@ -77,8 +77,6 @@ public class SptWebSocketConnectionHandler(
             var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
             _logger.Info($"[ws] player: {playerInfoText} has disconnected");
         }
-
-        await ws.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client closed connection", CancellationToken.None);
     }
 
     public void SendMessage(string sessionID, WsNotificationEvent output)
@@ -111,7 +109,8 @@ public class SptWebSocketConnectionHandler(
         }
         catch (Exception err)
         {
-            _logger.Error(_localisationService.GetText("websocket-message_send_failed_with_error", err));
+            _logger.Error(_localisationService.GetText("websocket-message_send_failed_with_error"), err);
+            Console.WriteLine(err);
         }
     }
 

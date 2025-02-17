@@ -1,4 +1,5 @@
-﻿using System.Net.WebSockets;
+﻿using System;
+using System.Net.WebSockets;
 using Core.Models.Utils;
 using Core.Servers.Ws;
 using SptCommon.Annotations;
@@ -23,9 +24,12 @@ public class WebSocketServer(
             .Where(wsh => context.Request.Path.Value.Contains(wsh.GetHookUrl()))
             .ToList();
 
+        var cts = new CancellationTokenSource();
+        var wsToken = cts.Token;
+
         if (socketHandlers.Count == 0)
         {
-            var message = $"Socket connection received for url {context.Request.Path.Value}, but there is not websocket handler configured for it";
+            var message = $"Socket connection received for url {context.Request.Path.Value}, but there is no websocket handler configured for it!";
             await webSocket.CloseAsync(WebSocketCloseStatus.ProtocolError, message, CancellationToken.None);
             return;
         }
@@ -40,36 +44,38 @@ public class WebSocketServer(
             await wsh.OnConnection(webSocket, context);
         }
 
-        var messageBuffer = new byte[1024];
-
-        try
+        // Discard this task, we dont need to await it.
+        _ = Task.Run(async () =>
         {
-            while (webSocket.State == WebSocketState.Open)
+            while (!wsToken.IsCancellationRequested)
             {
-                var receiveResult = await webSocket.ReceiveAsync(new ArraySegment<byte>(messageBuffer), CancellationToken.None);
-
-                if (receiveResult.MessageType == WebSocketMessageType.Text || receiveResult.MessageType == WebSocketMessageType.Binary)
+                var messageBuffer = new byte[1024 * 4];
+                var isEndOfMessage = false;
+                
+                while (!isEndOfMessage)
                 {
-                    foreach (var wsh in socketHandlers)
-                    {
-                        await wsh.OnMessage(messageBuffer.ToArray(), receiveResult.MessageType, webSocket, context);
-                    }
+                    var buffer = new ArraySegment<byte>(messageBuffer);
+                    var readTask = await webSocket.ReceiveAsync(buffer, wsToken);
+                    isEndOfMessage = readTask.EndOfMessage;
                 }
-                else if (receiveResult.MessageType == WebSocketMessageType.Close)
+
+                foreach (var wsh in socketHandlers)
                 {
-                    foreach (var wsh in socketHandlers)
-                    {
-                        await wsh.OnClose(webSocket, context);
-                    }
+                    await wsh.OnMessage(messageBuffer.ToArray(), WebSocketMessageType.Text, webSocket, context);
                 }
             }
+        }, wsToken);
+
+        while (webSocket.State == WebSocketState.Open)
+        {
+            // Keep this thread sleeping unless this status changes.
+            Thread.Sleep(1000);
         }
-        catch (Exception)
+
+        foreach (var wsh in socketHandlers)
         {
-            foreach (var wsh in socketHandlers)
-            {
-                await wsh.OnClose(webSocket, context);
-            }
+            await cts.CancelAsync();
+            await wsh.OnClose(webSocket, context);
         }
     }
 }
