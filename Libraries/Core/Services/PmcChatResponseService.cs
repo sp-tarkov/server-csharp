@@ -108,7 +108,7 @@ public class PmcChatResponseService(
         var killerDetails = new UserDialogInfo
         {
             Id = killerDetailsInCache.Id,
-            Aid = _hashUtil.GenerateAccountId(), // TODO: pass correct value
+            Aid = killerDetailsInCache.Aid,
             Info = new UserDialogDetails
             {
                 Nickname = killerDetailsInCache.Info.Nickname,
