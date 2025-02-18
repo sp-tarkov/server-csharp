@@ -90,7 +90,7 @@ public class App
         if (_httpServer.IsStarted())
         {
             _logger.Success(_localisationService.GetText("started_webserver_success", _httpServer.ListeningUrl()));
-            _logger.Success(_localisationService.GetText("websocket-started", _httpServer.ListeningUrl().Replace("http://", "ws://")));
+            _logger.Success(_localisationService.GetText("websocket-started", _httpServer.ListeningUrl().Replace("https://", "wss://")));
         }
 
         _logger.Success(GetRandomisedStartMessage());
