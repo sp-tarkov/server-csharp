@@ -315,6 +315,15 @@ public class BotController(
 
         // Store bot details in cache so post-raid PMC messages can use data
         _matchBotDetailsCacheService.CacheBot(botToCache);
+
+        // The client expects the Side for PMCs to be `Savage`
+        // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
+        if (botToCache.Info.Side is "Bear" or "Usec")
+        {
+            botToCache.Info.Side = "Savage";
+        }
+
+        _botGenerationCacheService.StoreBots(cacheKey, [botToCache]);
     }
 
     private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()

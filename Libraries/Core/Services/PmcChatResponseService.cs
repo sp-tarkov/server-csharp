@@ -101,6 +101,10 @@ public class PmcChatResponseService(
             return;
         }
 
+        // Because we've cached PMC sides as "Savage" for the client, we need to figure out
+        // what side it really is
+        var side = killerDetailsInCache.Info.Settings.Role == "pmcUSEC" ? "Usec" : "Bear";
+
         var killerDetails = new UserDialogInfo
         {
             Id = killerDetailsInCache.Id,
@@ -108,7 +112,7 @@ public class PmcChatResponseService(
             Info = new UserDialogDetails
             {
                 Nickname = killerDetailsInCache.Info.Nickname,
-                Side = killerDetailsInCache.Info.Side,
+                Side = side,
                 Level = killerDetailsInCache.Info.Level,
                 MemberCategory = killerDetailsInCache.Info.MemberCategory,
                 SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory
