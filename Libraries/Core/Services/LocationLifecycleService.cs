@@ -842,6 +842,9 @@ public class LocationLifecycleService
         // Handle temp, hydration, limb hp/effects
         _healthHelper.UpdateProfileHealthPostRaid(pmcProfile, postRaidProfile.Health, sessionId, isDead);
 
+        // This must occur _BEFORE_ `deleteInventory`, as that method clears insured items
+        HandleInsuredItemLostEvent(sessionId, pmcProfile, request, locationName);
+
         if (isDead)
         {
             if (lostQuestItems.Count > 0)
@@ -879,8 +882,6 @@ public class LocationLifecycleService
         {
             _pmcChatResponseService.SendVictimResponse(sessionId, victims, pmcProfile);
         }
-
-        HandleInsuredItemLostEvent(sessionId, pmcProfile, request, locationName);
     }
 
     protected void CheckForAndFixPickupQuestsAfterDeath(
