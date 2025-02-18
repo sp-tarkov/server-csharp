@@ -204,6 +204,6 @@ public class HttpServer(
 
     public string ListeningUrl()
     {
-        return $"http://{_httpConfig.Ip}:{_httpConfig.Port}";
+        return $"https://{_httpConfig.Ip}:{_httpConfig.Port}";
     }
 }
