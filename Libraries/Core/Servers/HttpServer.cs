@@ -1,8 +1,11 @@
-﻿using Core.Context;
+﻿using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+using Core.Context;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers.Http;
 using Core.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Primitives;
 using SptCommon.Annotations;
 
@@ -19,11 +22,30 @@ public class HttpServer(
 )
 {
     private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
-    private bool started;
+    private bool _started;
 
     public void Load(WebApplicationBuilder? builder)
     {
-        builder?.WebHost.UseKestrel();
+        builder?.WebHost.UseKestrel(
+            options =>
+            {
+                var certFileName = "certificate.pfx";
+                var certificate = LoadCertificate(Path.Combine(Directory.GetCurrentDirectory(), certFileName));
+                if (certificate == null)
+                {
+                    // Generate self-signed certificate
+                    certificate = GenerateSelfSignedCertificate("localhost");
+                    SaveCertificate(certificate, certFileName); // Save cert
+
+                    _logger.Success($"Generated and stored self-signed certificate ({certFileName}) in {Directory.GetCurrentDirectory()}");
+                }
+
+                options.ListenAnyIP(_httpConfig.Port, listenOptions =>
+                {
+                    listenOptions.UseHttps(certificate);
+                });
+            }
+            );
         //builder.Services.AddControllers();
         // At the end
         var app = builder?.Build();
@@ -41,13 +63,54 @@ public class HttpServer(
                 return Task.Factory.StartNew(async () => await HandleFallback(req));
             }
         );
-        started = true;
+        _started = true;
         if (app is null)
         {
             throw new Exception("Application context is null in HttpServer.Load()");
         }
 
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
+    }
+
+    private X509Certificate2? LoadCertificate(string pfxPath)
+    {
+        if (File.Exists(pfxPath))
+        {
+            try
+            {
+                //TODO: use this
+                //return X509CertificateLoader.LoadCertificateFromFile(pfxPath);
+                return new X509Certificate2(pfxPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Error loading certificate from path: {pfxPath} error: {ex.Message}");
+
+                return null;
+            }
+        }
+
+        return null;
+    }
+
+    private X509Certificate2 GenerateSelfSignedCertificate(string subjectName)
+    {
+        using var ecdsa = ECDsa.Create();
+        var request = new CertificateRequest($"CN={subjectName}", ecdsa, HashAlgorithmName.SHA256);
+
+        return request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
+    }
+
+    private void SaveCertificate(X509Certificate2 certificate, string pfxPath)
+    {
+        try
+        {
+            File.WriteAllBytes(pfxPath, certificate.Export(X509ContentType.Pfx));
+        }
+        catch (Exception ex)
+        {
+            _logger.Error($"Error saving certificate: {ex.Message}");
+        }
     }
 
     private async Task HandleFallback(HttpContext context)
@@ -136,7 +199,7 @@ public class HttpServer(
 
     public bool IsStarted()
     {
-        return started;
+        return _started;
     }
 
     public string ListeningUrl()
