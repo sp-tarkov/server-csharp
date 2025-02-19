@@ -33,7 +33,10 @@ public class HttpServer(
         {
             throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
         }
-
+        builder.Services.AddHttpsRedirection(conf =>
+        {
+            conf.HttpsPort = _httpConfig.Port;
+        });
         builder.WebHost.ConfigureKestrel(
             options =>
             {
@@ -48,20 +51,20 @@ public class HttpServer(
                     _logger.Success($"Generated and stored self-signed certificate ({certFileName}) in {AppDomain.CurrentDomain.BaseDirectory}");
                 }
 
-                options.ConfigureHttpsDefaults(listenOptions =>
-                {
-                    listenOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
-                    listenOptions.AllowAnyClientCertificate();
-                });
-
                 options.ListenAnyIP(_httpConfig.Port, listenOptions =>
                 {
-                    listenOptions.UseHttps(certificate);
-                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
+                    listenOptions.UseHttps(opts =>
+                    {
+                        opts.SslProtocols = SslProtocols.Tls12;
+                        opts.AllowAnyClientCertificate();
+                        opts.ServerCertificate = certificate;
+                        opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
+                    });
                 });
             });
 
         var app = builder.Build();
+        app.UseHttpsRedirection();
         if (app is null)
         {
             throw new Exception("WebApplication is null in HttpServer.Load()");
