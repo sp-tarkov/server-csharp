@@ -42,7 +42,7 @@ public class InraidStaticRouter : StaticRouter
                 ) => inraidCallbacks.GetTraitorScavHostileChance(url, info as EmptyRequestData, sessionID)
             ),
             new RouteAction(
-                "/singleplayer/bossconvert",
+                "/singleplayer/bosstypes",
                 (
                     url,
                     info,
