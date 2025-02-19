@@ -232,7 +232,7 @@ public class LootGenerator(
 
         if (useRewardItemBlacklist)
         {
-            var itemsToAdd = _itemFilterService.GetItemRewardBlacklist();
+            var rewardItemBlacklist = _itemFilterService.GetItemRewardBlacklist();
 
             // Get all items that match the blacklisted types and fold into item blacklist
             var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
@@ -240,10 +240,7 @@ public class LootGenerator(
                 .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
                 .Select(templateItem => templateItem.Id);
 
-            // Clear out blacklist
-            itemBlacklist = [];
-            itemBlacklist.UnionWith(itemBlacklist);
-            itemBlacklist.UnionWith(itemsToAdd);
+            itemBlacklist.UnionWith(rewardItemBlacklist);
             itemBlacklist.UnionWith(itemsMatchingTypeBlacklist);
         }
 
