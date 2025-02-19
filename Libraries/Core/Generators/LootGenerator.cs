@@ -227,8 +227,7 @@ public class LootGenerator(
     {
         var itemsDb = _databaseService.GetItems().Values;
         var itemBlacklist = new HashSet<string>();
-        itemBlacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
-        itemBlacklist.UnionWith(itemTplBlacklist);
+        itemBlacklist.UnionWith([.._itemFilterService.GetBlacklistedItems(), ..itemTplBlacklist]);
 
         if (useRewardItemBlacklist)
         {
@@ -240,8 +239,7 @@ public class LootGenerator(
                 .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
                 .Select(templateItem => templateItem.Id);
 
-            itemBlacklist.UnionWith(rewardItemBlacklist);
-            itemBlacklist.UnionWith(itemsMatchingTypeBlacklist);
+            itemBlacklist.UnionWith([..rewardItemBlacklist, ..itemsMatchingTypeBlacklist]);
         }
 
         if (!allowBossItems)
