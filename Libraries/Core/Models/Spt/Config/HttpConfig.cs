@@ -68,4 +68,11 @@ public record HttpConfig : BaseConfig
         get;
         set;
     }
+
+    [JsonPropertyName("certificatePassword")]
+    public string? CertificatePassword
+    {
+        get;
+        set;
+    }
 }

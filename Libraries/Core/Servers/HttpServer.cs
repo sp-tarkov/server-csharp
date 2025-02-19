@@ -5,7 +5,6 @@ using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers.Http;
 using Core.Services;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Primitives;
 using SptCommon.Annotations;
 
@@ -29,15 +28,15 @@ public class HttpServer(
         builder?.WebHost.UseKestrel(
             options =>
             {
-                var certFileName = "certificate.pfx";
-                var certificate = LoadCertificate(Path.Combine(Directory.GetCurrentDirectory(), certFileName));
+                const string certFileName = "certificate.pfx";
+                var certificate = LoadCertificate(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, certFileName, _httpConfig.CertificatePassword));
                 if (certificate == null)
                 {
                     // Generate self-signed certificate
                     certificate = GenerateSelfSignedCertificate("localhost");
                     SaveCertificate(certificate, certFileName); // Save cert
 
-                    _logger.Success($"Generated and stored self-signed certificate ({certFileName}) in {Directory.GetCurrentDirectory()}");
+                    _logger.Success($"Generated and stored self-signed certificate ({certFileName}) in {AppDomain.CurrentDomain.BaseDirectory}");
                 }
 
                 options.ListenAnyIP(_httpConfig.Port, listenOptions =>
@@ -72,7 +71,7 @@ public class HttpServer(
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
 
-    private X509Certificate2? LoadCertificate(string pfxPath)
+    private X509Certificate2? LoadCertificate(string pfxPath, string? certPassword = null)
     {
         if (File.Exists(pfxPath))
         {
@@ -80,7 +79,9 @@ public class HttpServer(
             {
                 //TODO: use this
                 //return X509CertificateLoader.LoadCertificateFromFile(pfxPath);
-                return new X509Certificate2(pfxPath);
+                return string.IsNullOrEmpty(certPassword)
+                    ? new X509Certificate2(pfxPath)
+                    : new X509Certificate2(pfxPath, certPassword);
             }
             catch (Exception ex)
             {
