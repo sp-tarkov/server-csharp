@@ -1,10 +1,14 @@
-﻿using System.Security.Cryptography;
+﻿using System.Net;
+using System.Security.Authentication;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using Core.Context;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers.Http;
 using Core.Services;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Primitives;
 using SptCommon.Annotations;
 
@@ -30,7 +34,7 @@ public class HttpServer(
             throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
         }
 
-        builder.WebHost.UseKestrel(
+        builder.WebHost.ConfigureKestrel(
             options =>
             {
                 const string certFileName = "certificate.pfx";
@@ -44,9 +48,16 @@ public class HttpServer(
                     _logger.Success($"Generated and stored self-signed certificate ({certFileName}) in {AppDomain.CurrentDomain.BaseDirectory}");
                 }
 
+                options.ConfigureHttpsDefaults(listenOptions =>
+                {
+                    listenOptions.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls;
+                    listenOptions.AllowAnyClientCertificate();
+                });
+
                 options.ListenAnyIP(_httpConfig.Port, listenOptions =>
                 {
                     listenOptions.UseHttps(certificate);
+                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2AndHttp3;
                 });
             });
 
@@ -106,10 +117,20 @@ public class HttpServer(
     /// <returns>X509Certificate2</returns>
     private X509Certificate2 GenerateSelfSignedCertificate(string subjectName)
     {
-        using var ecdsa = ECDsa.Create();
-        var request = new CertificateRequest($"CN={subjectName}", ecdsa, HashAlgorithmName.SHA256);
+        var sanBuilder = new SubjectAlternativeNameBuilder();
+        sanBuilder.AddIpAddress(IPAddress.Loopback);
+        sanBuilder.AddIpAddress(IPAddress.IPv6Loopback);
+        sanBuilder.AddIpAddress(new IPAddress(new byte[] { 127, 0, 0, 1 }));
+        sanBuilder.AddDnsName("localhost");
+        sanBuilder.AddDnsName(Environment.MachineName);
 
-        return request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
+        var distinguishedName = new X500DistinguishedName($"CN={subjectName}");
+
+        using var rsa = RSA.Create(2048);
+        var request = new CertificateRequest(distinguishedName, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+        request.CertificateExtensions.Add(sanBuilder.Build());
+
+        return request.CreateSelfSigned(new DateTimeOffset(DateTime.UtcNow.AddDays(-1)), new DateTimeOffset(DateTime.UtcNow.AddDays(3650)));
     }
 
     /// <summary>
