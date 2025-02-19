@@ -18024,7 +18024,7 @@
   "StrengthBuffSprintSpeedInc": "Increases movement and sprint speed by [{0:0%}]",
   "StrengthBuffThrowDistanceInc": "Increases throw distance by [{0:0%}]",
   "StrengthDescription": "Az erő növelésével magasabbra ugorhatsz, gyorsabban futhatsz, nagyobbat üthetsz, messzebbre dobhatsz, és ezen felül, nagyobb súlyt cipelhetsz.",
-  "StrengthLevelingUpDescription": "The Strength skill is improved by sprinting with the overweight status effect, throwing grenades, using melee weapons, and by working out in the Hideout gym.",
+  "StrengthLevelingUpDescription": "The Strength skill is improved by moving around with the overweight status effect, throwing grenades, using melee weapons, and by working out in the Hideout gym.",
   "StressBerserk": "Berserk mód feloldása",
   "StressPainChance": "Reduces pain shock chance by [{0:0%}]",
   "StressResistance": "Stressz-tűrés",
