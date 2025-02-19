@@ -196,11 +196,10 @@ public class HttpServer(
                 {
                     _logger.Info(
                         _localisationService.GetText(
-                            "client_request_ip",
-                            new Dictionary<string, string>
+                            "client_request_ip", new
                             {
-                                { "ip", clientIp },
-                                { "url", context.Request.Path.Value }
+                                ip = clientIp,
+                                url = context.Request.Path.Value
                             }
                         )
                     );
