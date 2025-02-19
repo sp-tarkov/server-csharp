@@ -181,7 +181,7 @@ public class HttpServer(
             ? realIp.Value.First()
             : forwardedFor.HasValue
                 ? forwardedFor.Value.First()!.Split(",")[0].Trim()
-                : context.Connection.RemoteIpAddress!.ToString();
+                : context.Connection.RemoteIpAddress!.ToString().Split(":")[3];
 
         if (_httpConfig.LogRequests)
         {
