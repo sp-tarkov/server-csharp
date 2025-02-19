@@ -25,7 +25,12 @@ public class HttpServer(
 
     public void Load(WebApplicationBuilder? builder)
     {
-        builder?.WebHost.UseKestrel(
+        if (builder is null)
+        {
+            throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
+        }
+
+        builder.WebHost.UseKestrel(
             options =>
             {
                 const string certFileName = "certificate.pfx";
@@ -43,34 +48,34 @@ public class HttpServer(
                 {
                     listenOptions.UseHttps(certificate);
                 });
-            }
-            );
-        //builder.Services.AddControllers();
-        // At the end
-        var app = builder?.Build();
+            });
 
-        // enable web socket
-        app?.UseWebSockets(new WebSocketOptions
+        var app = builder.Build();
+        if (app is null)
+        {
+            throw new Exception("WebApplication is null in HttpServer.Load()");
+        }
+
+        // Enable web socket
+        app.UseWebSockets(new WebSocketOptions
         {
             // Every minute a heartbeat is sent to keep the connection alive.
             KeepAliveInterval = TimeSpan.FromSeconds(60)
         });
 
-        app?.Use(
-            (HttpContext req, RequestDelegate _) =>
-            {
-                return Task.Factory.StartNew(async () => await HandleFallback(req));
-            }
-        );
+        app.MapFallback(HandleFallback);
+
         _started = true;
-        if (app is null)
-        {
-            throw new Exception("Application context is null in HttpServer.Load()");
-        }
 
         _applicationContext.AddValue(ContextVariableType.WEB_APPLICATION, app);
     }
 
+    /// <summary>
+    /// Get a certificate from provided path and return
+    /// </summary>
+    /// <param name="pfxPath">Path to pfx file</param>
+    /// <param name="certPassword">Optional password for certificate</param>
+    /// <returns>X509Certificate2</returns>
     private X509Certificate2? LoadCertificate(string pfxPath, string? certPassword = null)
     {
         if (File.Exists(pfxPath))
@@ -94,6 +99,11 @@ public class HttpServer(
         return null;
     }
 
+    /// <summary>
+    /// Generate and return a self-signed certificate
+    /// </summary>
+    /// <param name="subjectName">e.g. localhost</param>
+    /// <returns>X509Certificate2</returns>
     private X509Certificate2 GenerateSelfSignedCertificate(string subjectName)
     {
         using var ecdsa = ECDsa.Create();
@@ -102,6 +112,11 @@ public class HttpServer(
         return request.CreateSelfSigned(DateTimeOffset.Now, DateTimeOffset.Now.AddYears(1));
     }
 
+    /// <summary>
+    /// Save a certificate as a file to disk
+    /// </summary>
+    /// <param name="certificate">Certificate to save</param>
+    /// <param name="pfxPath">Path to destination</param>
     private void SaveCertificate(X509Certificate2 certificate, string pfxPath)
     {
         try
