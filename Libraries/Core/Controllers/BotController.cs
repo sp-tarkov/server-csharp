@@ -314,7 +314,7 @@ public class BotController(
         _botGenerationCacheService.StoreBots(cacheKey, [botToCache]);
 
         // Store bot details in cache so post-raid PMC messages can use data
-        _matchBotDetailsCacheService.CacheBot(botToCache);
+        _matchBotDetailsCacheService.CacheBot(_cloner.Clone(botToCache));
 
         // The client expects the Side for PMCs to be `Savage`
         // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
