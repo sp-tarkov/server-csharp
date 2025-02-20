@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
+    <PackageReference Include="FastCloner" Version="3.3.2" />
   </ItemGroup>
 
 </Project>

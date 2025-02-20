@@ -1,8 +1,8 @@
-using SptCommon.Annotations;
-
 namespace Core.Utils.Cloners;
 
-[Injectable]
+/**
+ * Disabled as FastCloner library is 15% faster and consumes less memory than Json serialization
+ */
 public class JsonCloner : ICloner
 {
     protected JsonUtil _jsonUtil;

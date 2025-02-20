@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptAssets", "Libraries\SptA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideoutCraftQuestIdGenerator", "Tools\HideoutCraftQuestIdGenerator\HideoutCraftQuestIdGenerator.csproj", "{C24B1FEB-F8AC-434E-998D-5DA4D1687295}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{6884273A-72E9-4035-B5BE-EE101C69F5F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
