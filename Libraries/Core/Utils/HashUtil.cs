@@ -7,40 +7,35 @@ using SptCommon.Annotations;
 namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class HashUtil
+public partial class HashUtil(RandomUtil _randomUtil)
 {
-    protected RandomUtil _randomUtil;
-    protected Regex MongoIdRegex = new("^[a-fA-F0-9]{24}$");
-
-    public HashUtil(RandomUtil randomUtil)
-    {
-        _randomUtil = randomUtil;
-    }
-
     /// <summary>
     ///     Create a 24 character MongoId
     /// </summary>
     /// <returns>24 character objectId</returns>
     public string Generate()
     {
-        var objectId = new byte[12];
+        // Allocate a span directly onto the stack, will dispose whenever we finished running
+        // Span is recommended to work with stackalloc and we can use stackalloc here because we don't do anything with this afterwards
+        Span<byte> objectId = stackalloc byte[12];
 
         // Time stamp (4 bytes)
-        var timestamp = BitConverter.GetBytes((int) DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        var timestamp = (int) DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         // Convert to big-endian
-        Array.Reverse(timestamp);
-        Array.Copy(timestamp, 0, objectId, 0, 4);
+        objectId[0] = (byte) (timestamp >> 24);
+        objectId[1] = (byte) (timestamp >> 16);
+        objectId[2] = (byte) (timestamp >> 8);
+        objectId[3] = (byte) timestamp;
 
         // Random value (5 bytes)
-        var randomValue = new byte[5];
-        _randomUtil.Random.NextBytes(randomValue);
-        Array.Copy(randomValue, 0, objectId, 4, 5);
+        _randomUtil.Random.NextBytes(objectId.Slice(4, 5));
 
         // Incrementing counter (3 bytes)
         // 24-bit counter
-        var counter = BitConverter.GetBytes(_randomUtil.GetInt(0, 16777215));
-        Array.Reverse(counter);
-        Array.Copy(counter, 0, objectId, 9, 3);
+        var counter = _randomUtil.GetInt(0, 16777215);
+        objectId[9] = (byte) (counter >> 16);
+        objectId[10] = (byte) (counter >> 8);
+        objectId[11] = (byte) counter;
 
         return Convert.ToHexStringLower(objectId);
     }
@@ -52,7 +47,7 @@ public class HashUtil
     /// <returns>True when string is a valid mongo id</returns>
     public bool IsValidMongoId(string stringToCheck)
     {
-        return MongoIdRegex.IsMatch(stringToCheck);
+        return MongoIdRegex().IsMatch(stringToCheck);
     }
 
     public string GenerateMd5ForData(string data)
@@ -103,10 +98,11 @@ public class HashUtil
         const int min = 1000000;
         const int max = 1999999;
 
-        var random = new Random();
-
-        return random.Next(min, max + 1);
+        return _randomUtil.Random.Next(min, max + 1);
     }
+
+    [GeneratedRegex("^[a-fA-F0-9]{24}$")]
+    private static partial Regex MongoIdRegex();
 }
 
 public enum HashingAlgorithm
