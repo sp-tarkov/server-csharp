@@ -770,13 +770,14 @@ public class ItemHelper(
      */
     public List<Item> FindAndReturnChildrenAsItems(List<Item> items, string baseItemId, bool modsOnly = false)
     {
-        List<Item> list = [];
+        // Use dictionary to make key lookup faster, convert to list before being returned
+        Dictionary<string, Item> result = [];
         foreach (var childItem in items)
         {
             // Include itself
-            if (childItem.Id == baseItemId)
+            if (childItem.Id.Equals(baseItemId, StringComparison.OrdinalIgnoreCase))
             {
-                list.Insert(0, childItem);
+                result.Add(childItem.Id, childItem);
                 continue;
             }
 
@@ -786,14 +787,17 @@ public class ItemHelper(
                 continue;
             }
 
-            // Items parentid matches root item AND returned items doesnt contain current child
-            if (childItem.ParentId == baseItemId && !list.Any(item => childItem.Id == item.Id))
+            // Items parentId matches root item AND returned items doesn't contain current child
+            if (childItem.ParentId == baseItemId && result.All(item => childItem.Id != item.Key))
             {
-                list.AddRange(FindAndReturnChildrenAsItems(items, childItem.Id));
+                foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
+                {
+                    result.Add(item.Id, item);
+                }
             }
         }
 
-        return list;
+        return result.Values.ToList();
     }
 
     /**
