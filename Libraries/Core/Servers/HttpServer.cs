@@ -1,14 +1,11 @@
 ﻿using System.Net;
 using System.Security.Authentication;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers.Http;
 using Core.Services;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Primitives;
 using SptCommon.Annotations;
@@ -35,19 +32,15 @@ public class HttpServer(
         {
             throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
         }
-        builder.Services.AddHttpsRedirection(conf =>
-        {
-            conf.HttpsPort = _httpConfig.Port;
-        });
+
         builder.WebHost.ConfigureKestrel(
             options =>
             {
-                options.ListenAnyIP(_httpConfig.Port, listenOptions =>
+                options.Listen(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port, listenOptions =>
                 {
                     listenOptions.UseHttps(opts =>
                     {
-                        opts.SslProtocols = SslProtocols.Tls12;
-                        opts.AllowAnyClientCertificate();
+                        opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
                         opts.ServerCertificate = _certificateHelper.LoadOrGenerateCertificatePfx();
                         opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
                     });
@@ -55,7 +48,7 @@ public class HttpServer(
             });
 
         var app = builder.Build();
-        app.UseHttpsRedirection();
+
         if (app is null)
         {
             throw new Exception("WebApplication is null in HttpServer.Load()");
