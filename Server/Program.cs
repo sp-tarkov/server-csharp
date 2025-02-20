@@ -53,7 +53,7 @@ public static class Program
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
 
-            // RUn garbage collection now server is ready to start
+            // Run garbage collection now server is ready to start
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
