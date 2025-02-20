@@ -191,7 +191,8 @@
 				"6723fd51c5924c57ce0ca01f": true
 			}
         },
-        "createNewProfileTypesBlacklist": []
+        "createNewProfileTypesBlacklist": [],
+		"achievementProfileIdBlacklist": []
     },
     "customWatermarkLocaleKeys": []
 }
