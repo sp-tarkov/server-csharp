@@ -101,7 +101,7 @@ public class ItemHelper(
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.Any(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.Any(poolItem => string.Equals(poolItem.Template, item, StringComparison.OrdinalIgnoreCase));
     }
 
     /**
@@ -748,11 +748,11 @@ public class ItemHelper(
     {
         List<string> list = [];
 
-        foreach (var childitem in items)
+        foreach (var childItem in items)
         {
-            if (childitem.ParentId?.Equals(baseItemId, StringComparison.OrdinalIgnoreCase) ?? false)
+            if (string.Equals(childItem.ParentId, baseItemId, StringComparison.OrdinalIgnoreCase))
             {
-                list.AddRange(FindAndReturnChildrenByItems(items, childitem.Id));
+                list.AddRange(FindAndReturnChildrenByItems(items, childItem.Id));
             }
         }
 
@@ -788,7 +788,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if ((childItem.ParentId?.Equals(baseItemId, StringComparison.OrdinalIgnoreCase) ?? false) && result.All(item => childItem.Id != item.Key))
+            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.OrdinalIgnoreCase) && result.All(item => childItem.Id != item.Key))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
@@ -813,7 +813,7 @@ public class ItemHelper(
         foreach (var itemFromAssort in assort)
             // Parent matches desired item + all items in list do not match
         {
-            if ((itemFromAssort.ParentId?.Equals(itemIdToFind, StringComparison.OrdinalIgnoreCase) ?? false) && list.All(item => itemFromAssort.Id != item.Id))
+            if (string.Equals(itemFromAssort.ParentId, itemIdToFind, StringComparison.OrdinalIgnoreCase) && list.All(item => itemFromAssort.Id != item.Id))
             {
                 list.Add(itemFromAssort);
                 list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
@@ -1005,7 +1005,7 @@ public class ItemHelper(
         // Update all parentIds of items attached to base item to use new id
         foreach (var item in itemWithChildren)
         {
-            if (item.ParentId?.Equals(oldId, StringComparison.OrdinalIgnoreCase) ?? false)
+            if (string.Equals(item.ParentId, oldId, StringComparison.OrdinalIgnoreCase))
             {
                 item.ParentId = newId;
             }
@@ -1053,7 +1053,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = inventory.Items.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
+            var childItems = inventory.Items.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1087,7 +1087,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = items.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
+            var childItems = items.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1156,7 +1156,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = originalItems.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
+            var childItems = originalItems.Where(x => string.Equals(x.ParentId, originalId, StringComparison.OrdinalIgnoreCase));
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -2038,7 +2038,7 @@ public class ItemHelper(
             }
 
             // Child with parent of root, update
-            if (item.ParentId?.Equals(rootItemExistingId, StringComparison.OrdinalIgnoreCase) ?? false)
+            if (string.Equals(item.ParentId, rootItemExistingId, StringComparison.OrdinalIgnoreCase))
             {
                 item.ParentId = newId;
             }
