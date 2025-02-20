@@ -63,7 +63,7 @@ public static class Program
             // object, which we can use here to start the webapp.
             if (httpServerHelper != null)
             {
-                appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run(httpServerHelper.GetBackendUrl());
+                appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run();
             }
         }
         catch (Exception ex)

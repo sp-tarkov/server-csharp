@@ -77,6 +77,16 @@ public class FileUtil(
         File.WriteAllText(filePath, fileContent);
     }
 
+    public void WriteFile(string filePath, byte[] fileContent)
+    {
+        if (!FileExists(filePath))
+        {
+            CreateFile(filePath);
+        }
+
+        File.WriteAllBytes(filePath, fileContent);
+    }
+
     private void CreateFile(string filePath)
     {
         var stream = File.Create(filePath);
