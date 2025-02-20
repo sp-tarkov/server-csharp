@@ -172,7 +172,7 @@ public class InsuranceService(
 
         // Check for Mark of The Unheard in players special slots (only slot item can fit)
         var globals = _databaseService.GetGlobals();
-        var hasMarkOfUnheard = _itemHelper.hasItemWithTpl(
+        var hasMarkOfUnheard = _itemHelper.HasItemWithTpl(
             pmcData.Inventory.Items,
             ItemTpl.MARKOFUNKNOWN_MARK_OF_THE_UNHEARD,
             "SpecialSlot"

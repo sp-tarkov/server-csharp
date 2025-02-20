@@ -95,13 +95,13 @@ public class ItemHelper(
      * @param slotId OPTIONAL - slotid of desired item
      * @returns True if pool contains item
      */
-    public bool hasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
+    public bool HasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.Any(poolItem => poolItem.Template == item);
+        return filteredPool.Any(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
     }
 
     /**
@@ -117,7 +117,7 @@ public class ItemHelper(
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.FirstOrDefault(poolItem => poolItem.Template == item);
+        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
     }
 
     /**
@@ -138,7 +138,7 @@ public class ItemHelper(
 
         foreach (var itemOf1 in item1)
         {
-            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template == itemOf1.Template);
+            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template.Equals(itemOf1.Template, StringComparison.OrdinalIgnoreCase));
             if (itemOf2 is null)
             {
                 return false;
@@ -750,7 +750,7 @@ public class ItemHelper(
 
         foreach (var childitem in items)
         {
-            if (childitem.ParentId == baseItemId)
+            if (childitem.ParentId?.Equals(baseItemId, StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 list.AddRange(FindAndReturnChildrenByItems(items, childitem.Id));
             }
@@ -788,7 +788,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (childItem.ParentId == baseItemId && result.All(item => childItem.Id != item.Key))
+            if ((childItem.ParentId?.Equals(baseItemId, StringComparison.OrdinalIgnoreCase) ?? false) && result.All(item => childItem.Id != item.Key))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
@@ -813,7 +813,7 @@ public class ItemHelper(
         foreach (var itemFromAssort in assort)
             // Parent matches desired item + all items in list do not match
         {
-            if (itemFromAssort.ParentId == itemIdToFind && list.All(item => itemFromAssort.Id != item.Id))
+            if ((itemFromAssort.ParentId?.Equals(itemIdToFind, StringComparison.OrdinalIgnoreCase) ?? false) && list.All(item => itemFromAssort.Id != item.Id))
             {
                 list.Add(itemFromAssort);
                 list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();
@@ -971,7 +971,9 @@ public class ItemHelper(
             var filterResult = itemsToSearch.Where(
                 item =>
                 {
-                    return by == "tpl" ? item.Template == barterId : item.Id == barterId;
+                    return by == "tpl"
+                        ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
+                        : item.Id.Equals(barterId, StringComparison.OrdinalIgnoreCase);
                 }
             );
 
@@ -1003,7 +1005,7 @@ public class ItemHelper(
         // Update all parentIds of items attached to base item to use new id
         foreach (var item in itemWithChildren)
         {
-            if (item.ParentId == oldId)
+            if (item.ParentId?.Equals(oldId, StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 item.ParentId = newId;
             }
@@ -1051,7 +1053,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = inventory.Items.Where(x => x.ParentId == originalId);
+            var childItems = inventory.Items.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1085,7 +1087,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = items.Where(x => x.ParentId == originalId);
+            var childItems = items.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1096,7 +1098,7 @@ public class ItemHelper(
     }
 
     /// <summary>
-    ///     Regenerate all GUIDs with new IDs, with the exception of special item types (e.g. quest, sorting table, etc.) This
+    ///     Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.) This
     ///     function will not mutate the original items list, but will return a new list with new GUIDs.
     /// </summary>
     /// <param name="originalItems">Items to adjust the IDs of</param>
@@ -1154,7 +1156,7 @@ public class ItemHelper(
             item.Id = newId;
 
             // Find all children of item and update their parent ids to match
-            var childItems = originalItems.Where(x => x.ParentId == originalId);
+            var childItems = originalItems.Where(x => x.ParentId?.Equals(originalId, StringComparison.OrdinalIgnoreCase) ?? false);
             foreach (var childItem in childItems)
             {
                 childItem.ParentId = newId;
@@ -1390,7 +1392,7 @@ public class ItemHelper(
      */
     public ItemSize GetItemSize(List<Item> items, string rootItemId)
     {
-        var rootTemplate = GetItem(items.Where(x => x.Id == rootItemId).ToList()[0].Template).Value;
+        var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase)).ToList()[0].Template).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
 
@@ -1464,7 +1466,7 @@ public class ItemHelper(
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
         // Exit if ammo already exists in box
-        if (ammoBox.Any(item => item.Template == cartridgeTpl))
+        if (ammoBox.Any(item => item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase)))
         {
             return;
         }
@@ -1532,7 +1534,7 @@ public class ItemHelper(
     public bool ItemIsInsideContainer(Item itemToCheck, string desiredContainerSlotId, List<Item> items)
     {
         // Get items parent
-        var parent = items.FirstOrDefault(item => item.Id == itemToCheck.ParentId);
+        var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId, StringComparison.OrdinalIgnoreCase));
         if (parent is null)
             // No parent, end of line, not inside container
         {
@@ -2028,7 +2030,7 @@ public class ItemHelper(
         foreach (var item in itemWithChildren)
         {
             // Root, update id
-            if (item.Id == rootItemExistingId)
+            if (item.Id.Equals(rootItemExistingId, StringComparison.OrdinalIgnoreCase))
             {
                 item.Id = newId;
 
@@ -2036,7 +2038,7 @@ public class ItemHelper(
             }
 
             // Child with parent of root, update
-            if (item.ParentId == rootItemExistingId)
+            if (item.ParentId?.Equals(rootItemExistingId, StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 item.ParentId = newId;
             }
@@ -2057,7 +2059,7 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Check if the item's parent exists.
-            var parentExists = items.Any(parentItem => parentItem.Id == item.ParentId);
+            var parentExists = items.Any(parentItem => parentItem.Id.Equals(item.ParentId, StringComparison.OrdinalIgnoreCase));
 
             // If the parent does not exist and the item is not already a 'hideout' item, adopt the orphaned item by
             // setting the parent ID to the PMCs inventory equipment ID, the slot ID to 'hideout', and remove the location.
