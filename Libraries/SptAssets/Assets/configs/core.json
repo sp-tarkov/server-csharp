@@ -22,28 +22,28 @@
     "survey": {
         "locale": {
             "en": {
-                "question_1": "How off-topic is general chat on the SPT discord?",
-                "question_1_answer_1": "Not at all",
-                "question_1_answer_2": "A little",
-                "question_1_answer_3": "Sometimes",
-                "question_1_answer_4": "Somewhat often",
-                "question_1_answer_5": "Quite often",
-                "question_1_answer_6": "Most of the time",
-                "question_1_answer_7": "Almost always",
-                "question_1_answer_8": "Always",
-                "question_1_answer_9": "NOT OFF TOPIC ENOUGH",
-                "question_1_answer_10": "I LIVE TO MAKE GENERAL CHAT OFF TOPIC",
-                "question_1_answer_11": "I am posting gifs to general chat as we speak",
-                "question_2": "When you download a mod from the hub do you read the readme/mod description?",
-                "question_2_answer_1": "What's a description",
-                "question_2_answer_2": "I can't read",
-                "question_2_answer_3": "I am illiterate",
-                "question_2_answer_4": "I am too busy making general chat off-topic to read",
-                "question_2_answer_5": "YOU WILL NEVER MAKE ME READ TEXT I WILL ASK IN GENERAL CHAT INSTEAD",
+                "question_1": "An update to a popular mod that makes the game more realistic has been released, which of the following actions on discord will you do?",
+                "question_1_answer_1": "Ignore the changelog",
+                "question_1_answer_2": "Ignore the readme",
+                "question_1_answer_3": "Ask in general chat why the guns dont shoot",
+                "question_1_answer_4": "Argue with general chat when they tell you to read the readme",
+                "question_1_answer_5": "Install as many mods as you can at the same time and get mad when everything breaks",
+                "question_1_answer_6": "Inform general chat of your displeasure and get mad when they laugh at you",
+                "question_1_answer_7": "Tag staff to inform them of your displeasure of a mod you don't like being released",
+                "question_1_answer_8": "DM the author informing them of your displeasure at their mods existence",
+                "question_1_answer_9": "DM the author and inform them you are going to sue them",
+                "question_1_answer_10": "Stalk the author and create dozens of hub accounts to message them",
+                
+				"question_2": "You want to download an older version of SPT but you have been informed old versions cannot be downloaded, what do you do?",
+                "question_2_answer_1": "Get mad",
+                "question_2_answer_2": "Get REAL mad and voice your opinion in every possible chat you can",
+                "question_2_answer_3": "Travel around various discords informing anyone who listens what bad people SPT are",
+                "question_2_answer_4": "Create dozens of alt accounts to DM staff and inform them of your displeasure",
+                "question_2_answer_5": "Ask when the old SPT verison is coming back every day for weeks",
                 "title": "Feedback survey",
                 "time": "About 1 minute",
-                "description": "This is the first SPT survey! Your survey doesn't get sent anywhere, its just for modders to see how it works and maybe make use of.",
-                "farewell": "I told you at the start the survey doesn't get sent anywhere and yet you still completed it, curious."
+                "description": "This was the second SPT survey, what a valuable use of 20 minutes that was.",
+                "farewell": "You knew the first survey didnt do anything yet you still submitted the second one, you're quite an odd one."
             }
         },
         "survey": {
@@ -125,12 +125,6 @@
                             "questionId": 0,
                             "sortIndex": 1,
                             "localeKey": "question_1_answer_10"
-                        },
-                        {
-                            "id": 10,
-                            "questionId": 0,
-                            "sortIndex": 1,
-                            "localeKey": "question_1_answer_11"
                         }
                     ]
                 },
@@ -197,8 +191,7 @@
 				"6723fd51c5924c57ce0ca01f": true
 			}
         },
-        "createNewProfileTypesBlacklist": [],
-		"achievementProfileIdBlacklist": []
+        "createNewProfileTypesBlacklist": []
     },
     "customWatermarkLocaleKeys": []
 }

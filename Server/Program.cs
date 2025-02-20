@@ -1,8 +1,7 @@
 using System.Runtime;
 using Core.Context;
+using Core.Helpers;
 using Core.Models.External;
-using Core.Models.Spt.Config;
-using Core.Servers;
 using Core.Utils;
 using Serilog;
 using Serilog.Events;
@@ -53,14 +52,18 @@ public static class Program
             // Get the Built app and run it
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
+
+            // RUn garbage collection now server is ready to start
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
-            var httpConfig = serviceProvider.GetService<ConfigServer>()?.GetConfig<HttpConfig>();
-            // When we application gets started by the HttpServer it will add into the AppContext the WebApplication
+
+
+            var httpServerHelper = serviceProvider.GetService<HttpServerHelper>();
+            // When the application is started by the HttpServer it will be added into the AppContext of the WebApplication
             // object, which we can use here to start the webapp.
-            if (httpConfig != null)
+            if (httpServerHelper != null)
             {
-                appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run($"http://{httpConfig.Ip}:{httpConfig.Port}");
+                appContext?.GetLatestValue(ContextVariableType.WEB_APPLICATION)?.GetValue<WebApplication>().Run(httpServerHelper.GetBackendUrl());
             }
         }
         catch (Exception ex)

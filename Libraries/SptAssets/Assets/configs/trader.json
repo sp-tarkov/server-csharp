@@ -438,7 +438,7 @@
             },
             "allowBossItems": false,
             "useRewardItemBlacklist": true,
-			"blockSeasonalItemsOutOfSeason": true
+            "blockSeasonalItemsOutOfSeason": true
         },
         "btrDeliveryExpireHours": 240,
         "playerRepMin": -7,

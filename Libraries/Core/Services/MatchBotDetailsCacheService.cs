@@ -21,6 +21,10 @@ public class MatchBotDetailsCacheService(
             return;
         }
 
+        botToCache.Inventory = null;
+        botToCache.Skills = null;
+        botToCache.Stats = null;
+
         var key = $"{botToCache.Info.Nickname.Trim()}{botToCache.Info.Side}";
         _botDetailsCache.TryAdd(key, botToCache);
     }

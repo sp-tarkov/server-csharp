@@ -42,7 +42,7 @@ public class HttpServerHelper(ConfigServer configServer)
      */
     public string GetBackendUrl()
     {
-        return $"http://{BuildUrl()}";
+        return $"https://{BuildUrl()}";
     }
 
     /**
@@ -50,7 +50,7 @@ public class HttpServerHelper(ConfigServer configServer)
      */
     public string GetWebsocketUrl()
     {
-        return $"ws://{BuildUrl()}";
+        return $"wss://{BuildUrl()}";
     }
 
     public void SendTextJson(HttpResponse resp, object output)
