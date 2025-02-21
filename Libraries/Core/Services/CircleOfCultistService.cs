@@ -649,6 +649,7 @@ public class CircleOfCultistService(
         var itemRewardBlacklist = new HashSet<string>();
         itemRewardBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
         itemRewardBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
+        itemRewardBlacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
         itemRewardBlacklist.UnionWith(cultistCircleConfig.RewardItemBlacklist);
         itemRewardBlacklist.UnionWith(itemsMatchingTypeBlacklist);
 
