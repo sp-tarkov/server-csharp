@@ -994,7 +994,7 @@ public class FenceService(
                 return;
             }
 
-            var multipler = current / itemTotalMax;
+            var multiplier = current / itemTotalMax;
 
             // Multiply item cost by desired multiplier
             var basePrice = barterSchemes[itemRoot.Id][0][0].Count;

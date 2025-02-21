@@ -485,8 +485,8 @@ public class ProfileHelper(
     /// <param name="pmcProfile">Player profile with skill</param>
     /// <param name="skill">Skill to add points to</param>
     /// <param name="pointsToAdd">Points to add</param>
-    /// <param name="useSkillProgressRateMultipler">Skills are multiplied by a value in globals, default is off to maintain compatibility with legacy code</param>
-    public void AddSkillPointsToPlayer(PmcData pmcProfile, SkillTypes skill, double? pointsToAdd, bool useSkillProgressRateMultipler = false)
+    /// <param name="useSkillProgressRateMultiplier">Skills are multiplied by a value in globals, default is off to maintain compatibility with legacy code</param>
+    public void AddSkillPointsToPlayer(PmcData pmcProfile, SkillTypes skill, double? pointsToAdd, bool useSkillProgressRateMultiplier = false)
     {
         var pointsToAddToSkill = pointsToAdd;
 
@@ -510,7 +510,7 @@ public class ProfileHelper(
             return;
         }
 
-        if (useSkillProgressRateMultipler)
+        if (useSkillProgressRateMultiplier)
         {
             var skillProgressRate = _databaseService.GetGlobals().Configuration.SkillsSettings.SkillProgressRate;
             pointsToAddToSkill *= skillProgressRate;

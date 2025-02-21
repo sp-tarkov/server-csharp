@@ -123,7 +123,7 @@ public class QuestRewardHelper(
         var hideoutManagementSkill = _profileHelper.GetSkillFromProfile(pmcData, SkillTypes.HideoutManagement);
 
         // 5100 becomes 0.51, add 1 to it, 1.51
-        // We multiply the money reward bonuses by the hideout management skill multipler, giving the new result
+        // We multiply the money reward bonuses by the hideout management skill multiplier, giving the new result
         var hideoutManagementBonusMultiplier = hideoutManagementSkill != null
             ? 1 + hideoutManagementSkill.Progress / 1000
             : 1;

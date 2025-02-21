@@ -45,7 +45,7 @@ public record TraderConfig : BaseConfig
     }
 
     [JsonPropertyName("traderPriceMultipler")]
-    public double TraderPriceMultipler
+    public double TraderPriceMultiplier
     {
         get;
         set;

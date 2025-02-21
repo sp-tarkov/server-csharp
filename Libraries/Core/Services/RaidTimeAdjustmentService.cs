@@ -90,13 +90,13 @@ public class RaidTimeAdjustmentService(
     /// <summary>
     ///     Adjust the loot multiplier values passed in to be a % of their original value
     /// </summary>
-    /// <param name="mapLootMultiplers">Multipliers to adjust</param>
+    /// <param name="mapLootMultipliers">Multipliers to adjust</param>
     /// <param name="loosePercent">Percent to change values to</param>
-    protected void AdjustLootMultipliers(Dictionary<string, double> mapLootMultiplers, double? loosePercent)
+    protected void AdjustLootMultipliers(Dictionary<string, double> mapLootMultipliers, double? loosePercent)
     {
-        foreach (var location in mapLootMultiplers)
+        foreach (var location in mapLootMultipliers)
         {
-            mapLootMultiplers[location.Key] = _randomUtil.GetPercentOfValue(mapLootMultiplers[location.Key], loosePercent ?? 1);
+            mapLootMultipliers[location.Key] = _randomUtil.GetPercentOfValue(mapLootMultipliers[location.Key], loosePercent ?? 1);
         }
     }
 

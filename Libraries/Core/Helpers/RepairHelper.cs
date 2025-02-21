@@ -30,7 +30,7 @@ public class RepairHelper(
     /// <param name="isArmor">Is item being repaired a piece of armor</param>
     /// <param name="amountToRepair">how many unit of durability to repair</param>
     /// <param name="useRepairKit">Is item being repaired with a repair kit</param>
-    /// <param name="traderQualityMultipler">Trader quality value from traders base json</param>
+    /// <param name="traderQualityMultiplier">Trader quality value from traders base json</param>
     /// <param name="applyMaxDurabilityDegradation">should item have max durability reduced</param>
     public void UpdateItemDurability(
         Item itemToRepair,
@@ -38,7 +38,7 @@ public class RepairHelper(
         bool isArmor,
         double amountToRepair,
         bool useRepairKit,
-        double traderQualityMultipler,
+        double traderQualityMultiplier,
         bool applyMaxDurabilityDegradation = true
     )
     {
@@ -82,13 +82,13 @@ public class RepairHelper(
                     itemToRepairDetails.Properties.ArmorMaterial.Value,
                     useRepairKit,
                     itemCurrentMaxDurability ?? 0,
-                    traderQualityMultipler
+                    traderQualityMultiplier
                 )
                 : GetRandomisedWeaponRepairDegradationValue(
                     itemToRepairDetails.Properties,
                     useRepairKit,
                     itemCurrentMaxDurability ?? 0,
-                    traderQualityMultipler
+                    traderQualityMultiplier
                 );
 
             // Apply wear to durability
@@ -114,13 +114,13 @@ public class RepairHelper(
     /// <param name="material">What material is the armor being repaired made of</param>
     /// <param name="isRepairKit">Was a repair kit used</param>
     /// <param name="armorMax">Max amount of durability item can have</param>
-    /// <param name="traderQualityMultipler">Different traders produce different loss values</param>
+    /// <param name="traderQualityMultiplier">Different traders produce different loss values</param>
     /// <returns>Amount to reduce max durability by</returns>
     protected double GetRandomisedArmorRepairDegradationValue(
         ArmorMaterial material,
         bool isRepairKit,
         double armorMax,
-        double traderQualityMultipler
+        double traderQualityMultiplier
     )
     {
         // Degradation value is based on the armor material
@@ -138,7 +138,7 @@ public class RepairHelper(
             : armorMaterialSettings.MaxRepairDegradation;
 
         var duraLossPercent = _randomUtil.GetDouble((double) minMultiplier, (double) maxMultiplier);
-        var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultipler;
+        var duraLossMultipliedByTraderMultiplier = duraLossPercent * armorMax * traderQualityMultiplier;
 
         return Math.Round(duraLossMultipliedByTraderMultiplier, 2);
     }

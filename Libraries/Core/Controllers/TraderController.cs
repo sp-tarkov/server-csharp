@@ -60,9 +60,9 @@ public class TraderController(
             }
 
             // Adjust price by traderPriceMultiplier config property
-            if (_traderConfig.TraderPriceMultipler != 1)
+            if (_traderConfig.TraderPriceMultiplier != 1)
             {
-                AdjustTraderItemPrices(trader, _traderConfig.TraderPriceMultipler);
+                AdjustTraderItemPrices(trader, _traderConfig.TraderPriceMultiplier);
             }
 
             // Create dict of pristine trader assorts on server start

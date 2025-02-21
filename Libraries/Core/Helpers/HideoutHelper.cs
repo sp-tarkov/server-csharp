@@ -919,7 +919,7 @@ public class HideoutHelper(
             SkillTypes.HideoutManagement,
             globalSkillsDb.HideoutManagement.ConsumptionReductionPerLevel ?? 0
         );
-        var craftSkillTimeReductionMultipler = GetSkillBonusMultipliedBySkillLevel(
+        var craftSkillTimeReductionMultiplier = GetSkillBonusMultipliedBySkillLevel(
             pmcData,
             SkillTypes.Crafting,
             globalSkillsDb.Crafting.CraftTimeReductionPerLevel ?? 0
@@ -927,9 +927,9 @@ public class HideoutHelper(
 
         // Never let bonus become 0
         var reductionBonus =
-            hideoutManagementConsumptionBonus + craftSkillTimeReductionMultipler == 0
+            hideoutManagementConsumptionBonus + craftSkillTimeReductionMultiplier == 0
                 ? 1
-                : 1 - (hideoutManagementConsumptionBonus + craftSkillTimeReductionMultipler);
+                : 1 - (hideoutManagementConsumptionBonus + craftSkillTimeReductionMultiplier);
 
         return filterDrainRate * reductionBonus;
     }
@@ -1277,7 +1277,7 @@ public class HideoutHelper(
 
     /// <summary>
     /// </summary>
-    /// <param name="profileData">Player profile</param>
+    /// <param name="pmcData">Player profile</param>
     /// <param name="productionTime">Time to complete hideout craft in seconds</param>
     /// <param name="skill">Skill bonus to get reduction from</param>
     /// <param name="amountPerLevel">Skill bonus amount to apply</param>
@@ -1288,9 +1288,9 @@ public class HideoutHelper(
         SkillTypes skill,
         double amountPerLevel)
     {
-        var skillTimeReductionMultipler = GetSkillBonusMultipliedBySkillLevel(pmcData, skill, amountPerLevel);
+        var skillTimeReductionMultiplier = GetSkillBonusMultipliedBySkillLevel(pmcData, skill, amountPerLevel);
 
-        return productionTime * skillTimeReductionMultipler;
+        return productionTime * skillTimeReductionMultiplier;
     }
 
     /// <summary>

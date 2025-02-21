@@ -127,7 +127,7 @@ public record CultistCircleSettings
     }
 
     [JsonPropertyName("rewardPriceMultiplerMinMax")]
-    public MinMax<double> RewardPriceMultiplerMinMax
+    public MinMax<double> RewardPriceMultiplierMinMax
     {
         get;
         set;

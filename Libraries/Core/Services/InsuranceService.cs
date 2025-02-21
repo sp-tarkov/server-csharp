@@ -178,7 +178,7 @@ public class InsuranceService(
             "SpecialSlot"
         );
         if (hasMarkOfUnheard)
-            // Reduce return time by globals multipler value
+            // Reduce return time by globals multiplier value
         {
             randomisedReturnTimeSeconds *= globals.Configuration.Insurance.CoefOfHavingMarkOfUnknown.Value;
         }

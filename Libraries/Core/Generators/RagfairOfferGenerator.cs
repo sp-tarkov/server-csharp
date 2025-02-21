@@ -830,10 +830,10 @@ public class RagfairOfferGenerator(
     }
 
     /**
-     * Randomise the durabiltiy values for an armors plates and soft inserts
+     * Randomise the durability values for an armors plates and soft inserts
      * @param armorWithMods Armor item with its child mods
-     * @param currentMultiplier Chosen multipler to use for current durability value
-     * @param maxMultiplier Chosen multipler to use for max durability value
+     * @param currentMultiplier Chosen multiplier to use for current durability value
+     * @param maxMultiplier Chosen multiplier to use for max durability value
      */
     protected void RandomiseArmorDurabilityValues(
         List<Item> armorWithMods,
@@ -1024,17 +1024,17 @@ public class RagfairOfferGenerator(
      * Create a random currency-based barter scheme for an array of items
      * @param offerWithChildren Items on offer
      * @param isPackOffer Is the barter scheme being created for a pack offer
-     * @param multipler What to multiply the resulting price by
+     * @param multiplier What to multiply the resulting price by
      * @returns Barter scheme for offer
      */
     protected List<BarterScheme> CreateCurrencyBarterScheme(
         List<Item> offerWithChildren,
         bool isPackOffer,
-        double multipler = 1
+        double multiplier = 1
     )
     {
         var currency = ragfairServerHelper.GetDynamicOfferCurrency();
-        var price = ragfairPriceService.GetDynamicOfferPriceForOffer(offerWithChildren, currency, isPackOffer) * multipler;
+        var price = ragfairPriceService.GetDynamicOfferPriceForOffer(offerWithChildren, currency, isPackOffer) * multiplier;
 
         return
         [
