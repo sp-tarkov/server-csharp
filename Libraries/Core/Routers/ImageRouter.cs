@@ -24,7 +24,7 @@ public class ImageRouter
 
     public void AddRoute(string key, string valueToAdd)
     {
-        _imageRouterService.AddRoute(key, valueToAdd);
+        _imageRouterService.AddRoute(key.ToLower(), valueToAdd);
     }
 
     public void SendImage(string sessionID, HttpRequest req, HttpResponse resp, object body)
@@ -32,10 +32,11 @@ public class ImageRouter
         // remove file extension
         var url = _fileUtil.StripExtension(req.Path, true);
 
-        // send image
-        if (_imageRouterService.ExistsByKey(url))
+        // Send image
+        var urlKeyLower = url.ToLower();
+        if (_imageRouterService.ExistsByKey(urlKeyLower))
         {
-            _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(url));
+            _httpFileUtil.SendFile(resp, _imageRouterService.GetByKey(urlKeyLower));
         }
     }
 
