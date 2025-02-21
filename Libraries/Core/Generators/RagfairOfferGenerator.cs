@@ -121,7 +121,6 @@ public class RagfairOfferGenerator(
         // Clone to avoid modifying original array
         var itemsClone = cloner.Clone(items);
         var rootItem = itemsClone.FirstOrDefault();
-        var itemStackCount = itemsClone[0].Upd?.StackObjectsCount ?? 1;
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
         // On offer refresh don't re-add cartridges to ammo box that already has cartridges
@@ -131,7 +130,7 @@ public class RagfairOfferGenerator(
         }
 
         var roubleListingPrice = Math.Round(ConvertOfferRequirementsIntoRoubles(offerRequirements));
-        var singleItemListingPrice = isPackOffer ? roubleListingPrice / itemStackCount : roubleListingPrice;
+        var singleItemListingPrice = isPackOffer ? roubleListingPrice / quantity : roubleListingPrice;
 
         var offer = new RagfairOffer
         {
@@ -545,14 +544,13 @@ public class RagfairOfferGenerator(
         if (isPackOffer)
         {
             // Set pack size
-            var stackSize = randomUtil.GetInt(
+            desiredStackSize = randomUtil.GetInt(
                 ragfairConfig.Dynamic.Pack.ItemCountMin,
                 ragfairConfig.Dynamic.Pack.ItemCountMax
             );
-            itemWithChildren[0].Upd.StackObjectsCount = stackSize;
 
             // Don't randomise pack items
-            barterScheme = CreateCurrencyBarterScheme(itemWithChildren, isPackOffer, stackSize);
+            barterScheme = CreateCurrencyBarterScheme(itemWithChildren, isPackOffer, desiredStackSize);
         }
         else if (isBarterOffer)
         {
