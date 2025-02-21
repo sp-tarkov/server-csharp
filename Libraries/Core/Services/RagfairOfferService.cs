@@ -128,20 +128,19 @@ public class RagfairOfferService(
      * @param offerId Offer to adjust stack size of
      * @param amount How much to deduct from offers stack size
      */
-    public void RemoveOfferStack(string offerId, int amount)
+    public void ReduceOfferQuantity(string offerId, int amount)
     {
         var offer = ragfairOfferHolder.GetOfferById(offerId);
-        if (offer != null)
+        if (offer == null)
         {
-            offer.Quantity -= amount;
+            return;
+        }
 
-            var rootItem = offer.Items.FirstOrDefault();
-            rootItem.Upd.StackObjectsCount -= amount;
-            if (rootItem.Upd.StackObjectsCount <= 0 || offer.Quantity <= 0)
-            {
-                // Reducing stack size has made it 0, offer is now 'stale'
-                ProcessStaleOffer(offer);
-            }
+        offer.Quantity -= amount;
+        if (offer.Quantity <= 0)
+        {
+            // Reducing Quantity has made it 0 or below, offer is now 'stale'
+            ProcessStaleOffer(offer);
         }
     }
 

@@ -109,9 +109,9 @@ public class RagfairServer(
         return _ragfairOfferService.GetOffers();
     }
 
-    public void RemoveOfferStack(string offerId, int amount)
+    public void ReduceOfferQuantity(string offerId, int amount)
     {
-        _ragfairOfferService.RemoveOfferStack(offerId, amount);
+        _ragfairOfferService.ReduceOfferQuantity(offerId, amount);
     }
 
     public bool DoesOfferExist(string offerId)

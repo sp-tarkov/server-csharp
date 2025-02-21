@@ -162,9 +162,6 @@ public class TradeController(
             return;
         }
 
-        // Reduce flea offer quantity
-        fleaOffer.Quantity -= requestOffer.Count;
-
         // Trigger purchase of item from trader
         var buyData = new ProcessBuyTradeRequestData
         {
@@ -177,6 +174,9 @@ public class TradeController(
             SchemeItems = requestOffer.Items
         };
         _tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
+
+        // Remove/lower offer quantity of item purchased from trader flea offer
+        _ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>
@@ -224,8 +224,8 @@ public class TradeController(
             return;
         }
 
-        // Remove/lower stack count of item purchased from PMC flea offer
-        _ragfairServer.RemoveOfferStack(fleaOffer.Id, requestOffer.Count ?? 0);
+        // Remove/lower offer quantity of item purchased from PMC flea offer
+        _ragfairServer.ReduceOfferQuantity(fleaOffer.Id, requestOffer.Count ?? 0);
     }
 
     /// <summary>

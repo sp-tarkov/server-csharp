@@ -56,6 +56,7 @@ public class RagfairOfferGenerator(
     /// <param name="items">Items in the offer</param>
     /// <param name="barterScheme">Cost of item (currency or barter)</param>
     /// <param name="loyalLevel">Loyalty level needed to buy item</param>
+    /// <param name="quantity">Amount of item being listed</param>
     /// <param name="sellInOnePiece">Flags sellInOnePiece to be true</param>
     /// <returns>RagfairOffer</returns>
     public RagfairOffer CreateAndAddFleaOffer(
@@ -64,10 +65,11 @@ public class RagfairOfferGenerator(
         List<Item> items,
         List<BarterScheme> barterScheme,
         int loyalLevel,
+        int quantity,
         bool sellInOnePiece = false
     )
     {
-        var offer = CreateOffer(userId, time, items, barterScheme, loyalLevel, sellInOnePiece);
+        var offer = CreateOffer(userId, time, items, barterScheme, loyalLevel, quantity, sellInOnePiece);
         ragfairOfferService.AddOffer(offer);
 
         return offer;
@@ -81,6 +83,7 @@ public class RagfairOfferGenerator(
     /// <param name="items">Items in the offer</param>
     /// <param name="barterScheme">Cost of item (currency or barter)</param>
     /// <param name="loyalLevel">Loyalty level needed to buy item</param>
+    /// <param name="quantity">Amount of item being listed</param>
     /// <param name="isPackOffer">Is offer being created flagged as a pack</param>
     /// <returns>RagfairOffer</returns>
     protected RagfairOffer CreateOffer(
@@ -89,6 +92,7 @@ public class RagfairOfferGenerator(
         List<Item> items,
         List<BarterScheme> barterScheme,
         int loyalLevel,
+        int quantity,
         bool isPackOffer = false
     )
     {
@@ -145,7 +149,7 @@ public class RagfairOfferGenerator(
             LoyaltyLevel = loyalLevel,
             SellInOnePiece = isPackOffer,
             Locked = false,
-            Quantity = (int)(rootItem.Upd?.StackObjectsCount ?? 1)
+            Quantity = quantity
         };
 
         offerCounter++;
@@ -495,11 +499,14 @@ public class RagfairOfferGenerator(
         TemplateItem itemToSellDetails
     )
     {
-        // Set stack size to random value
-        itemWithChildren[0].Upd.StackObjectsCount = ragfairServerHelper.CalculateDynamicStackCount(
+        // Get randomised amount to list on flea
+        var desiredStackSize = ragfairServerHelper.CalculateDynamicStackCount(
             itemWithChildren[0].Template,
             isPreset
         );
+
+        // Reset stack count to 1 from whatever it was prior
+        itemWithChildren[0].Upd.StackObjectsCount = 1;
 
         var isBarterOffer = randomUtil.GetChance100(ragfairConfig.Dynamic.Barter.ChancePercent);
         var isPackOffer =
@@ -570,6 +577,7 @@ public class RagfairOfferGenerator(
             itemWithChildren,
             barterScheme,
             1,
+            desiredStackSize,
             isPackOffer // sellAsOnePiece - pack offer
         );
     }
@@ -647,10 +655,10 @@ public class RagfairOfferGenerator(
                 continue;
             }
 
-            var barterSchemeItems = assortsClone.BarterScheme[item.Id][0];
+            var barterSchemeItems = barterScheme[0];
             var loyalLevel = assortsClone.LoyalLevelItems[item.Id];
 
-            var offer = CreateAndAddFleaOffer(traderID, time, items, barterSchemeItems, loyalLevel);
+            var offer = CreateAndAddFleaOffer(traderID, time, items, barterSchemeItems, loyalLevel, (int?)item.Upd.StackObjectsCount ?? 1);
 
             // Refresh complete, reset flag to false
             trader.Base.RefreshTraderRagfairOffers = false;

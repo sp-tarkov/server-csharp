@@ -55,6 +55,7 @@ public class TradeHelper(
 
         if (buyRequestData.TransactionId.ToLower() == "ragfair")
         {
+            // Called when player purchases PMC offer from ragfair
             buyCallback = buyCount =>
             {
                 var allOffers = _ragfairServer.GetOffers();
@@ -62,9 +63,6 @@ public class TradeHelper(
                 // We store ragfair offerId in buyRequestData.item_id
                 var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
                 var itemPurchased = offerWithItem.Items.FirstOrDefault();
-
-                // Update offer quantity
-                offerWithItem.Quantity -= buyCount;
 
                 // Ensure purchase does not exceed trader item limit
                 var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);

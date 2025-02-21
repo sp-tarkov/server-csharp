@@ -734,19 +734,13 @@ public class RagfairOfferHelper(
         var sellerProfile = _profileHelper.GetPmcProfile(offerOwnerSessionId);
 
         // Pack or ALL items of a multi-offer were bought - remove entire offer
-        if (offer.SellInOnePiece.GetValueOrDefault(false) || boughtAmount == offerStackCount)
+        if (offer.SellInOnePiece.GetValueOrDefault(false) || boughtAmount == offer.Quantity)
         {
             DeleteOfferById(offerOwnerSessionId, offer.Id);
         }
         else
         {
-            // Partial purchase
-            var offerRootItem = offer.Items[0];
-
-            // Reduce offer root items stack count
-            offerRootItem.Upd.StackObjectsCount -= boughtAmount;
-
-            // Reduce quantity from offer
+            // Partial purchase, reduce quantity by amount purchased
             offer.Quantity -= boughtAmount;
         }
 
