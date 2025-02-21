@@ -479,6 +479,7 @@ public record TraderAssort
 
 public record BarterScheme
 {
+    // Confirmed in client
     [JsonPropertyName("count")]
     public double? Count
     {

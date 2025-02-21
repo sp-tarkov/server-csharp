@@ -998,7 +998,7 @@ public class FenceService(
 
             // Multiply item cost by desired multiplier
             var basePrice = barterSchemes[itemRoot.Id][0][0].Count;
-            barterSchemes[itemRoot.Id][0][0].Count = Math.Round((double) (basePrice * multipler));
+            barterSchemes[itemRoot.Id][0][0].Count = Math.Round(basePrice.Value * multiplier.Value);
 
             return;
         }

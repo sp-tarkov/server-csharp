@@ -166,11 +166,11 @@ public class HandbookHelper(
     /// <param name="nonRoubleCurrencyCount">Currency count to convert</param>
     /// <param name="currencyTypeFrom">What current currency is</param>
     /// <returns>Count in roubles</returns>
-    public int InRUB(double nonRoubleCurrencyCount, string currencyTypeFrom)
+    public double InRUB(double nonRoubleCurrencyCount, string currencyTypeFrom)
     {
-        return (int) (currencyTypeFrom == Money.ROUBLES
+        return currencyTypeFrom == Money.ROUBLES
             ? nonRoubleCurrencyCount
-            : Math.Round(nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom)));
+            : Math.Round(nonRoubleCurrencyCount * GetTemplatePrice(currencyTypeFrom));
     }
 
     /// <summary>
@@ -179,7 +179,7 @@ public class HandbookHelper(
     /// <param name="roubleCurrencyCount">roubles to convert</param>
     /// <param name="currencyTypeTo">Currency to convert roubles into</param>
     /// <returns>currency count in desired type</returns>
-    public int FromRUB(double roubleCurrencyCount, string currencyTypeTo)
+    public double FromRUB(double roubleCurrencyCount, string currencyTypeTo)
     {
         if (currencyTypeTo == Money.ROUBLES)
         {
@@ -188,7 +188,9 @@ public class HandbookHelper(
 
         // Get price of currency from handbook
         var price = GetTemplatePrice(currencyTypeTo);
-        return (int) (price > 0 ? Math.Max(1, Math.Round(roubleCurrencyCount / price)) : 0);
+        return price > 0
+            ? Math.Max(1, Math.Round(roubleCurrencyCount / price))
+            : 0;
     }
 
     public HandbookCategory GetCategoryById(string handbookId)

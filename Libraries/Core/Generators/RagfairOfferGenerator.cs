@@ -126,7 +126,7 @@ public class RagfairOfferGenerator(
             itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(rootItem.Template).Value);
         }
 
-        var roubleListingPrice = Math.Round((double) ConvertOfferRequirementsIntoRoubles(offerRequirements));
+        var roubleListingPrice = Math.Round(ConvertOfferRequirementsIntoRoubles(offerRequirements));
         var singleItemListingPrice = isPackOffer ? roubleListingPrice / itemStackCount : roubleListingPrice;
 
         var offer = new RagfairOffer
@@ -209,14 +209,14 @@ public class RagfairOfferGenerator(
      * @param offerRequirements barter requirements for offer
      * @returns rouble cost of offer
      */
-    protected int ConvertOfferRequirementsIntoRoubles(List<OfferRequirement> offerRequirements)
+    protected double ConvertOfferRequirementsIntoRoubles(IEnumerable<OfferRequirement> offerRequirements)
     {
-        var roublePrice = 0;
+        var roublePrice = 0d;
         foreach (var requirement in offerRequirements)
         {
-            roublePrice += (int) (paymentHelper.IsMoneyTpl(requirement.Template)
-                ? Math.Round((double) CalculateRoublePrice((int) requirement.Count, requirement.Template))
-                : ragfairPriceService.GetFleaPriceForItem(requirement.Template) * requirement.Count); // get flea price for barter offer items
+            roublePrice += (paymentHelper.IsMoneyTpl(requirement.Template)
+                ? Math.Round(CalculateRoublePrice(requirement.Count.Value, requirement.Template))
+                : ragfairPriceService.GetFleaPriceForItem(requirement.Template) * requirement.Count.Value); // Get flea price for barter offer items
         }
 
         return roublePrice;
@@ -244,7 +244,7 @@ public class RagfairOfferGenerator(
      * @param currencyType Type of currency (euro/dollar/rouble)
      * @returns count of roubles
      */
-    protected int CalculateRoublePrice(int currencyCount, string currencyType)
+    protected double CalculateRoublePrice(double currencyCount, string currencyType)
     {
         if (currencyType == Money.ROUBLES)
         {

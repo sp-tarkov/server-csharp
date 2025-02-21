@@ -300,15 +300,14 @@ public class RagfairPriceService(
         price = RandomiseOfferPrice(price, range);
 
         // Convert to different currency if required.
-        var roublesId = Money.ROUBLES;
-        if (desiredCurrency != roublesId)
+        if (desiredCurrency != Money.ROUBLES)
         {
             price = _handbookHelper.FromRUB(price, desiredCurrency);
         }
 
-        if (price < 1)
+        if (price <= 0)
         {
-            return 1;
+            return 0.1d;
         }
 
         return price;
