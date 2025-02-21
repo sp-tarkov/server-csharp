@@ -133,14 +133,15 @@ public class RagfairOfferGenerator(
         var roubleListingPrice = Math.Round((double) ConvertOfferRequirementsIntoRoubles(offerRequirements));
         var singleItemListingPrice = isPackOffer ? roubleListingPrice / itemStackCount : roubleListingPrice;
 
+        var rootItem = items.FirstOrDefault();
         var offer = new RagfairOffer
         {
             Id = hashUtil.Generate(),
             InternalId = offerCounter,
             User = CreateUserDataForFleaOffer(userID, isTrader),
-            Root = items[0].Id,
+            Root = rootItem.Id,
             Items = itemsClone,
-            ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(items[0].Template)), // Handbook price
+            ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
             Requirements = offerRequirements,
             RequirementsCost = Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
@@ -148,7 +149,8 @@ public class RagfairOfferGenerator(
             EndTime = GetOfferEndTime(userID, time),
             LoyaltyLevel = loyalLevel,
             SellInOnePiece = isPackOffer,
-            Locked = false
+            Locked = false,
+            Quantity = (int)(rootItem.Upd?.StackObjectsCount ?? 1)
         };
 
         offerCounter++;

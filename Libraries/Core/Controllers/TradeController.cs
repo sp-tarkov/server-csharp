@@ -59,7 +59,7 @@ public class TradeController(
         {
             var foundInRaid = _traderConfig.PurchasesAreFoundInRaid;
             var buyData = (ProcessBuyTradeRequestData) request;
-            _tradeHelper.buyItem(pmcData, buyData, sessionID, foundInRaid, output);
+            _tradeHelper.BuyItem(pmcData, buyData, sessionID, foundInRaid, output);
 
             return output;
         }
@@ -139,7 +139,7 @@ public class TradeController(
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="fleaOffer">Offer being purchased</param>
-    /// <param name="offerRequest">request data from client</param>
+    /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
     private void BuyTraderItemFromRagfair(
         string sessionId,
@@ -162,6 +162,10 @@ public class TradeController(
             return;
         }
 
+        // Reduce flea offer quantity
+        fleaOffer.Quantity -= requestOffer.Count;
+
+        // Trigger purchase of item from trader
         var buyData = new ProcessBuyTradeRequestData
         {
             Action = "TradingConfirm",
@@ -172,8 +176,7 @@ public class TradeController(
             SchemeId = 0,
             SchemeItems = requestOffer.Items
         };
-
-        _tradeHelper.buyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
+        _tradeHelper.BuyItem(pmcData, buyData, sessionId, _traderConfig.PurchasesAreFoundInRaid, output);
     }
 
     /// <summary>
@@ -182,7 +185,7 @@ public class TradeController(
     /// <param name="sessionId">Session id</param>
     /// <param name="pmcData">Player profile</param>
     /// <param name="fleaOffer">Offer being purchased</param>
-    /// <param name="offerRequest">request data from client</param>
+    /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
     private void BuyPmcItemFromRagfair(
         string sessionId,
@@ -203,20 +206,19 @@ public class TradeController(
         };
 
         // buyItem() must occur prior to removing the offer stack, otherwise item inside offer doesn't exist for confirmTrading() to use
-        _tradeHelper.buyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
+        _tradeHelper.BuyItem(pmcData, buyData, sessionId, _ragfairConfig.Dynamic.PurchasesAreFoundInRaid, output);
         if (output.Warnings?.Count > 0)
         {
             return;
         }
 
         // resolve when a profile buy another profile's offer
-        var offerOwnerId = fleaOffer.User?.Id;
+        var offerOwnerId = fleaOffer.User.Id;
         var offerBuyCount = requestOffer.Count;
 
-        var isPlayerOffer = IsPlayerOffer(fleaOffer.Id, fleaOffer.User?.Id);
-        if (isPlayerOffer)
+        if (IsPlayerOffer(fleaOffer.Id, fleaOffer.User?.Id))
         {
-            // Complete selling the offer now its been purchased
+            // Complete selling the offer now it has been purchased
             _ragfairOfferHelper.CompleteOffer(offerOwnerId, fleaOffer, offerBuyCount ?? 0);
 
             return;
@@ -227,7 +229,7 @@ public class TradeController(
     }
 
     /// <summary>
-    ///     Is the provided offerid and ownerid from a player made offer
+    ///     Is the provided offerId and ownerId from a player made offer
     /// </summary>
     /// <param name="offerId">id of the offer</param>
     /// <param name="offerOwnerId">Owner id</param>

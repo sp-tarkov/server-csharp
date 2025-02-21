@@ -133,9 +133,11 @@ public class RagfairOfferService(
         var offer = ragfairOfferHolder.GetOfferById(offerId);
         if (offer != null)
         {
-            var rootItem = offer.Items[0];
+            offer.Quantity -= amount;
+
+            var rootItem = offer.Items.FirstOrDefault();
             rootItem.Upd.StackObjectsCount -= amount;
-            if (rootItem.Upd.StackObjectsCount <= 0)
+            if (rootItem.Upd.StackObjectsCount <= 0 || offer.Quantity <= 0)
             {
                 // Reducing stack size has made it 0, offer is now 'stale'
                 ProcessStaleOffer(offer);

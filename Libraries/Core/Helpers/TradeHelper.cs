@@ -21,7 +21,6 @@ namespace Core.Helpers;
 public class TradeHelper(
     ISptLogger<TradeHelper> _logger,
     DatabaseService _databaseService,
-    EventOutputHolder _eventOutputHolder,
     TraderHelper _traderHelper,
     ItemHelper _itemHelper,
     PaymentService _paymentService,
@@ -32,13 +31,9 @@ public class TradeHelper(
     RagfairServer _ragfairServer,
     TraderAssortHelper _traderAssortHelper,
     TraderPurchasePersisterService _traderPurchasePersisterService,
-    ConfigServer _configServer,
     ICloner _cloner
 )
 {
-    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
-    protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
-
     /// <summary>
     ///     Buy item from flea or trader
     /// </summary>
@@ -47,7 +42,7 @@ public class TradeHelper(
     /// <param name="sessionID">Session id</param>
     /// <param name="foundInRaid">Should item be found in raid</param>
     /// <param name="output">Item event router response</param>
-    public void buyItem(
+    public void BuyItem(
         PmcData pmcData,
         ProcessBuyTradeRequestData buyRequestData,
         string sessionID,
@@ -64,9 +59,12 @@ public class TradeHelper(
             {
                 var allOffers = _ragfairServer.GetOffers();
 
-                // We store ragfair offerid in buyRequestData.item_id
+                // We store ragfair offerId in buyRequestData.item_id
                 var offerWithItem = allOffers.FirstOrDefault(x => x.Id == buyRequestData.ItemId);
                 var itemPurchased = offerWithItem.Items.FirstOrDefault();
+
+                // Update offer quantity
+                offerWithItem.Quantity -= buyCount;
 
                 // Ensure purchase does not exceed trader item limit
                 var assortHasBuyRestrictions = _itemHelper.HasBuyRestrictions(itemPurchased);

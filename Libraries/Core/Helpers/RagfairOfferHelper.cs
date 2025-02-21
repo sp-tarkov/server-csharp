@@ -740,10 +740,14 @@ public class RagfairOfferHelper(
         }
         else
         {
+            // Partial purchase
             var offerRootItem = offer.Items[0];
 
             // Reduce offer root items stack count
             offerRootItem.Upd.StackObjectsCount -= boughtAmount;
+
+            // Reduce quantity from offer
+            offer.Quantity -= boughtAmount;
         }
 
         // Assemble payment to send to seller now offer was purchased
