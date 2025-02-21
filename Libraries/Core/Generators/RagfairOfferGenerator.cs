@@ -34,7 +34,6 @@ public class RagfairOfferGenerator(
     RagfairPriceService ragfairPriceService,
     LocalisationService localisationService,
     PaymentHelper paymentHelper,
-    FenceService fenceService,
     ItemHelper itemHelper,
     ConfigServer configServer,
     ICloner cloner
@@ -47,22 +46,20 @@ public class RagfairOfferGenerator(
      * Internal counter to ensure each offer created has a unique value for its intId property
      */
     protected int offerCounter;
-
     protected RagfairConfig ragfairConfig = configServer.GetConfig<RagfairConfig>();
-    protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
-    /**
-     * Create a flea offer and store it in the Ragfair server offers array
-     * @param userID Owner of the offer
-     * @param time Time offer is listed at
-     * @param items Items in the offer
-     * @param barterScheme Cost of item (currency or barter)
-     * @param loyalLevel Loyalty level needed to buy item
-     * @param sellInOnePiece Flags sellInOnePiece to be true
-     * @returns Created flea offer
-     */
+    /// <summary>
+    /// Create a flea offer and store it in the Ragfair server offers array
+    /// </summary>
+    /// <param name="userId">Owner of the offer</param>
+    /// <param name="time">Time offer is listed at</param>
+    /// <param name="items">Items in the offer</param>
+    /// <param name="barterScheme">Cost of item (currency or barter)</param>
+    /// <param name="loyalLevel">Loyalty level needed to buy item</param>
+    /// <param name="sellInOnePiece">Flags sellInOnePiece to be true</param>
+    /// <returns>RagfairOffer</returns>
     public RagfairOffer CreateAndAddFleaOffer(
-        string userID,
+        string userId,
         long time,
         List<Item> items,
         List<BarterScheme> barterScheme,
@@ -70,24 +67,24 @@ public class RagfairOfferGenerator(
         bool sellInOnePiece = false
     )
     {
-        var offer = CreateOffer(userID, time, items, barterScheme, loyalLevel, sellInOnePiece);
+        var offer = CreateOffer(userId, time, items, barterScheme, loyalLevel, sellInOnePiece);
         ragfairOfferService.AddOffer(offer);
 
         return offer;
     }
 
-    /**
-     * Create an offer object ready to send to ragfairOfferService.addOffer()
-     * @param userID Owner of the offer
-     * @param time Time offer is listed at
-     * @param items Items in the offer
-     * @param barterScheme Cost of item (currency or barter)
-     * @param loyalLevel Loyalty level needed to buy item
-     * @param isPackOffer Is offer being created flaged as a pack
-     * @returns IRagfairOffer
-     */
+    /// <summary>
+    /// Create an offer object ready to send to ragfairOfferService.addOffer()
+    /// </summary>
+    /// <param name="userId">Owner of the offer</param>
+    /// <param name="time">Timestamp offer is listed at</param>
+    /// <param name="items">Items in the offer</param>
+    /// <param name="barterScheme">Cost of item (currency or barter)</param>
+    /// <param name="loyalLevel">Loyalty level needed to buy item</param>
+    /// <param name="isPackOffer">Is offer being created flagged as a pack</param>
+    /// <returns>RagfairOffer</returns>
     protected RagfairOffer CreateOffer(
-        string userID,
+        string userId,
         long time,
         List<Item> items,
         List<BarterScheme> barterScheme,
@@ -95,15 +92,13 @@ public class RagfairOfferGenerator(
         bool isPackOffer = false
     )
     {
-        var isTrader = ragfairServerHelper.IsTrader(userID);
-
         var offerRequirements = barterScheme.Select(
                 barter =>
                 {
                     var offerRequirement = new OfferRequirement
                     {
                         Template = barter.Template,
-                        Count = Math.Round((double) barter.Count, 2),
+                        Count = Math.Round(barter.Count.Value, 2),
                         OnlyFunctional = barter.OnlyFunctional ?? false
                     };
 
@@ -121,24 +116,24 @@ public class RagfairOfferGenerator(
 
         // Clone to avoid modifying original array
         var itemsClone = cloner.Clone(items);
+        var rootItem = itemsClone.FirstOrDefault();
         var itemStackCount = itemsClone[0].Upd?.StackObjectsCount ?? 1;
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
         // On offer refresh don't re-add cartridges to ammo box that already has cartridges
         if (itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX) && itemsClone.Count == 1)
         {
-            itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(items[0].Template).Value);
+            itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(rootItem.Template).Value);
         }
 
         var roubleListingPrice = Math.Round((double) ConvertOfferRequirementsIntoRoubles(offerRequirements));
         var singleItemListingPrice = isPackOffer ? roubleListingPrice / itemStackCount : roubleListingPrice;
 
-        var rootItem = items.FirstOrDefault();
         var offer = new RagfairOffer
         {
             Id = hashUtil.Generate(),
             InternalId = offerCounter,
-            User = CreateUserDataForFleaOffer(userID, isTrader),
+            User = CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
             Root = rootItem.Id,
             Items = itemsClone,
             ItemsCost = Math.Round(handbookHelper.GetTemplatePrice(rootItem.Template)), // Handbook price
@@ -146,7 +141,7 @@ public class RagfairOfferGenerator(
             RequirementsCost = Math.Round(singleItemListingPrice),
             SummaryCost = roubleListingPrice,
             StartTime = time,
-            EndTime = GetOfferEndTime(userID, time),
+            EndTime = GetOfferEndTime(userId, time),
             LoyaltyLevel = loyalLevel,
             SellInOnePiece = isPackOffer,
             Locked = false,
@@ -158,28 +153,28 @@ public class RagfairOfferGenerator(
         return offer;
     }
 
-    /**
-     * Create the user object stored inside each flea offer object
-     * @param userID user creating the offer
-     * @param isTrader Is the user creating the offer a trader
-     * @returns IRagfairOfferUser
-     */
-    protected RagfairOfferUser CreateUserDataForFleaOffer(string userID, bool isTrader)
+    /// <summary>
+    /// Create the user object stored inside each flea offer object
+    /// </summary>
+    /// <param name="userId">User creating the offer</param>
+    /// <param name="isTrader">Is the user creating the offer a trader</param>
+    /// <returns>RagfairOfferUser</returns>
+    protected RagfairOfferUser CreateUserDataForFleaOffer(string userId, bool isTrader)
     {
         // Trader offer
         if (isTrader)
         {
             return new RagfairOfferUser
             {
-                Id = userID,
+                Id = userId,
                 MemberType = MemberCategory.Trader
             };
         }
 
-        var isPlayerOffer = profileHelper.IsPlayer(userID);
+        var isPlayerOffer = profileHelper.IsPlayer(userId);
         if (isPlayerOffer)
         {
-            var playerProfile = profileHelper.GetPmcProfile(userID);
+            var playerProfile = profileHelper.GetPmcProfile(userId);
             return new RagfairOfferUser
             {
                 Id = playerProfile.Id,
@@ -193,10 +188,10 @@ public class RagfairOfferGenerator(
             };
         }
 
-        // Fake pmc offer
+        // 'Fake' pmc offer
         return new RagfairOfferUser
         {
-            Id = userID,
+            Id = userId,
             MemberType = MemberCategory.Default,
             Nickname = botHelper.GetPmcNicknameOfMaxLength(botConfig.BotNameLengthLimit),
             Rating = randomUtil.GetDouble(

@@ -31,7 +31,7 @@ public class RagfairOfferService(
 
     /**
      * Get all offers
-     * @returns IRagfairOffer array
+     * @returns RagfairOffer array
      */
     public List<RagfairOffer> GetOffers()
     {

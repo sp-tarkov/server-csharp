@@ -1453,11 +1453,11 @@ public class ItemHelper(
         return _randomUtil.GetArrayValue(cartridges);
     }
 
-    /**
-     * Add cartridges to the ammo box with correct max stack sizes
-     * @param ammoBox Box to add cartridges to
-     * @param ammoBoxDetails Item template from items db
-     */
+    /// <summary>
+    /// Add cartridges to the ammo box with correct max stack sizes
+    /// </summary>
+    /// <param name="ammoBox">Box to add cartridges to</param>
+    /// <param name="ammoBoxDetails">Item template from items db</param>
     public void AddCartridgesToAmmoBox(List<Item> ammoBox, TemplateItem ammoBoxDetails)
     {
         var ammoBoxMaxCartridgeCount = ammoBoxDetails.Properties.StackSlots[0].MaxCount;
