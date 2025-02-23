@@ -84,14 +84,13 @@ public class BotWeaponGenerator(
     /// <returns>Weapon template</returns>
     public string PickWeightedWeaponTemplateFromPool(string equipmentSlot, BotTypeInventory botTemplateInventory)
     {
-        EquipmentSlots key;
-        if (!EquipmentSlots.TryParse(equipmentSlot, out key))
+        if (!Enum.TryParse(equipmentSlot, out EquipmentSlots key))
         {
-            _logger.Error($"Unable to parse equipment slot '{equipmentSlot}'");
+            _logger.Error($"Unable to parse equipment slot: {equipmentSlot}");
         }
 
         var weaponPool = botTemplateInventory.Equipment[key];
-        return _weightedRandomHelper.GetWeightedValue<string>(weaponPool);
+        return _weightedRandomHelper.GetWeightedValue(weaponPool);
     }
 
     /// <summary>
@@ -234,7 +233,7 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponWithModsList">Weapon and mods</param>
     /// <param name="ammoTemplate">Cartridge to add to weapon</param>
-    /// <param name="chamberSlotIdentifiers">Name of slots to create or add ammo to</param>
+    /// <param name="chamberSlotIds">Name of slots to create or add ammo to</param>
     protected void AddCartridgeToChamber(List<Item> weaponWithModsList, string ammoTemplate, List<string> chamberSlotIds)
     {
         foreach (var slotId in chamberSlotIds)
@@ -493,7 +492,7 @@ public class BotWeaponGenerator(
     /// <param name="ammoTpl">Ammo type to add.</param>
     /// <param name="stackSize">Size of the ammo stack to add.</param>
     /// <param name="inventory">Player inventory.</param>
-    protected void AddAmmoToSecureContainer(int stackCount, string ammoTemplate, int stackSize, BotBaseInventory inventory)
+    protected void AddAmmoToSecureContainer(int stackCount, string ammoTpl, int stackSize, BotBaseInventory inventory)
     {
         for (var i = 0; i < stackCount; i++)
         {
@@ -504,13 +503,13 @@ public class BotWeaponGenerator(
                     EquipmentSlots.SecuredContainer
                 },
                 id,
-                ammoTemplate,
+                ammoTpl,
                 new List<Item>
                 {
                     new()
                     {
                         Id = id,
-                        Template = ammoTemplate,
+                        Template = ammoTpl,
                         Upd = new Upd
                         {
                             StackObjectsCount = stackSize
@@ -750,7 +749,7 @@ public class BotWeaponGenerator(
         // Magazine, usually
         var parentItem = _itemHelper.GetItem(magazineTemplate.Parent).Value;
 
-        // the revolver shotgun uses a magazine with chambers, not cartridges ("camora_xxx")
+        // Revolver shotgun (MTs-255-12) uses a magazine with chambers, not cartridges ("camora_xxx")
         // Exchange of the camora ammo is not necessary we could also just check for stackSize > 0 here
         // and remove the else
         if (_botWeaponGeneratorHelper.MagazineIsCylinderRelated(parentItem.Name))
@@ -787,9 +786,9 @@ public class BotWeaponGenerator(
     }
 
     /// <summary>
-    ///     Add cartridge item to weapon item list, if it already exists, update
+    ///     Add cartridges to a weapons magazine
     /// </summary>
-    /// <param name="weaponWithMods">Weapon items list to amend</param>
+    /// <param name="weaponWithMods">Weapon with magazine to amend</param>
     /// <param name="magazine">Magazine item details we're adding cartridges to</param>
     /// <param name="chosenAmmoTpl">Cartridge to put into the magazine</param>
     /// <param name="magazineTemplate">Magazines db template</param>
@@ -799,21 +798,29 @@ public class BotWeaponGenerator(
             m => m.ParentId == magazine.Id && m.SlotId == "cartridges"
         );
         if (magazineCartridgeChildItem is not null)
-            // Delete the existing cartridge object and create fresh below
         {
+            // Delete the existing cartridge object and create fresh below
             weaponWithMods.Remove(magazineCartridgeChildItem);
         }
 
         // Create array with just magazine
         List<Item> magazineWithCartridges = [magazine];
 
-        // Add full cartridge child items to above array
+        // Add cartridges as children to above mag array
         _itemHelper.FillMagazineWithCartridge(magazineWithCartridges, magazineTemplate, chosenAmmoTpl, 1);
 
         // Replace existing magazine with above array of mag + cartridge stacks
-        var index = weaponWithMods.FindIndex(i => i.Id == magazine.Id); // magazineWithCartridges
-        weaponWithMods.RemoveAt(index);
-        weaponWithMods.AddRange(magazineWithCartridges); // this might need to be at the specific index
+        var magazineIndex = weaponWithMods.FindIndex(i => i.Id == magazine.Id); // magazineWithCartridges
+        if (magazineIndex == -1)
+        {
+            _logger.Error($"Unable to add cartridges: {chosenAmmoTpl} to magazine: {magazine.Id} as none found");
+
+            return;
+        }
+        weaponWithMods.RemoveAt(magazineIndex);
+
+        // Insert new mag at same index position original was
+        weaponWithMods.InsertRange(magazineIndex, magazineWithCartridges);
     }
 
     /// <summary>
@@ -827,7 +834,15 @@ public class BotWeaponGenerator(
         // for CylinderMagazine we exchange the ammo in the "camoras".
         // This might not be necessary since we already filled the camoras with a random whitelisted and compatible ammo type,
         // but I'm not sure whether this is also used elsewhere
-        var camoras = weaponMods.Where(x => x.ParentId == magazineId && x.SlotId.StartsWith("camora"));
+        var camoras = weaponMods
+            .Where(x => x.ParentId == magazineId && x.SlotId.StartsWith("camora", StringComparison.Ordinal))
+            .ToList();
+
+        if (camoras.Count == 0)
+        {
+            return;
+        }
+
         foreach (var camora in camoras)
         {
             camora.Template = ammoTpl;
