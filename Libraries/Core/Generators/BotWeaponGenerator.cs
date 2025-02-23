@@ -687,18 +687,26 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get magazine cartridges for</param>
     /// <returns>Hashset of cartridge tpls</returns>
+    /// <exception cref="ArgumentNullException">Thrown when weaponTemplate is null.</exception>
     protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate) {
-        // Get the first magazine's template from the weapon
-        var magazineSlot = weaponTemplate.Properties.Slots.FirstOrDefault((slot) => slot.Name == "mod_magazine");
-        var magazineTemplate = _itemHelper.GetItem(magazineSlot.Props.Filters[0].Filter.FirstOrDefault());
+        ArgumentNullException.ThrowIfNull(weaponTemplate);
 
-        // Get the first slots array of cartridges
-        var cartridges = magazineTemplate.Value.Properties.Slots[0]?.Props?.Filters[0]?.Filter;
-        if (cartridges is null) {
-            // Normal magazines
-            // None found, try the cartridges array
-            cartridges = magazineTemplate.Value.Properties.Cartridges[0]?.Props?.Filters[0]?.Filter;
+        // Get the first magazine's template from the weapon
+        var magazineSlot = weaponTemplate.Properties.Slots?.FirstOrDefault(slot => slot.Name == "mod_magazine");
+        if (magazineSlot is null)
+        {
+            return [];
         }
+
+        var magazineTemplate = _itemHelper.GetItem(magazineSlot.Props?.Filters.FirstOrDefault()?.Filter?.FirstOrDefault());
+        if (!magazineTemplate.Key)
+        {
+            return [];
+        }
+
+        // Try to get cartridges from slots array first, if none found, try Cartridges array
+        var cartridges = magazineTemplate.Value.Properties.Slots[0]?.Props?.Filters.FirstOrDefault()?.Filter
+                         ?? magazineTemplate.Value.Properties.Cartridges[0]?.Props?.Filters.FirstOrDefault()?.Filter;
 
         return cartridges;
     }
