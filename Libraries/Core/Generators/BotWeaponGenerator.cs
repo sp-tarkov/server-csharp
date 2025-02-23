@@ -704,12 +704,12 @@ public class BotWeaponGenerator(
     /// <returns>Caliber as string</returns>
     protected string? GetWeaponCaliber(TemplateItem weaponTemplate)
     {
-        if (weaponTemplate.Properties.Caliber is not null)
+        if (!string.IsNullOrEmpty(weaponTemplate.Properties.Caliber))
         {
             return weaponTemplate.Properties.Caliber;
         }
 
-        if (weaponTemplate.Properties.AmmoCaliber is not null)
+        if (!string.IsNullOrEmpty(weaponTemplate.Properties.AmmoCaliber))
             // 9x18pmm has a typo, should be Caliber9x18PM
         {
             return weaponTemplate.Properties.AmmoCaliber == "Caliber9x18PMM"
@@ -717,7 +717,7 @@ public class BotWeaponGenerator(
                 : weaponTemplate.Properties.AmmoCaliber;
         }
 
-        if (weaponTemplate.Properties.LinkedWeapon is not null)
+        if (!string.IsNullOrEmpty(weaponTemplate.Properties.LinkedWeapon))
         {
             var ammoInChamber = _itemHelper.GetItem(
                 weaponTemplate.Properties.Chambers[0].Props.Filters[0].Filter.FirstOrDefault()
