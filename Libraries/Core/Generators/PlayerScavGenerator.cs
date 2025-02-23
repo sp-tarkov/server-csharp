@@ -308,8 +308,8 @@ public class PlayerScavGenerator(
     {
         return new Skills
         {
-            Common = new List<BaseSkill>(),
-            Mastering = new List<BaseSkill>(),
+            Common = [],
+            Mastering = [],
             Points = 0
         };
     }
@@ -352,37 +352,30 @@ public class PlayerScavGenerator(
     /// </summary>
     /// <param name="scavData">scav profile</param>
     /// <param name="pmcData">pmc profile</param>
-    /// <returns></returns>
+    /// <returns>PmcData</returns>
     protected PmcData SetScavCooldownTimer(PmcData scavData, PmcData pmcData)
     {
-        // Set cooldown time.
-        // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
-        var scavLockDuration = _databaseService.GetGlobals().Configuration.SavagePlayCooldown;
-        var modifier = 1;
-
-        foreach (var bonus in pmcData.Bonuses)
-        {
-            if (bonus.Type == BonusType.ScavCooldownTimer)
-                // Value is negative, so add.
-                // Also note that for scav cooldown, multiple bonuses stack additively.
-            {
-                modifier += (int) (bonus?.Value ?? 1) / 100;
-            }
-        }
+        // Get sum of all scav cooldown reduction timer bonuses
+        var modifier = 1d + pmcData.Bonuses
+            .Where(x => x.Type == BonusType.ScavCooldownTimer)
+            .Sum(bonus => (bonus?.Value ?? 1) / 100);
 
         var fenceInfo = _fenceService.GetFenceInfo(pmcData);
-        modifier *= (int) (fenceInfo.SavageCooldownModifier ?? 1);
-        scavLockDuration *= modifier;
+        modifier *= fenceInfo.SavageCooldownModifier ?? 1d;
+
+        // Make sure to apply ScavCooldownTimer bonus from Hideout if the player has it.
+        var scavLockDuration = _databaseService.GetGlobals().Configuration.SavagePlayCooldown * modifier;
 
         var fullProfile = _profileHelper.GetFullProfile(pmcData?.SessionId);
-        if (fullProfile?.ProfileInfo?.Edition.ToLower().StartsWith(AccountTypes.SPT_DEVELOPER) ?? false)
+        if (fullProfile?.ProfileInfo?.Edition?.StartsWith(AccountTypes.SPT_DEVELOPER, StringComparison.OrdinalIgnoreCase) ?? false)
         {
+            // Force lock duration to 10seconds for dev profiles
             scavLockDuration = 10;
         }
 
         if (scavData?.Info != null)
         {
-            scavData.Info.SavageLockTime = Math.Round((double) (_timeUtil.GetTimeStampFromEpoch() / 1000 + scavLockDuration ?? 0));
+            scavData.Info.SavageLockTime = Math.Round(_timeUtil.GetTimeStampFromEpoch() / 1000 + (scavLockDuration ?? 0));
         }
 
         return scavData;
