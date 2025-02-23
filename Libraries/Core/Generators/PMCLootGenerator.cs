@@ -75,14 +75,14 @@ public class PMCLootGenerator
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent) &&
                     ItemFitsInto1By2Slot(item.Value)
-            );
+            ).Select(x => x.Key);
 
-            foreach (var (tpl, template) in itemsToAdd)
+            foreach (var tpl in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
             {
-                if (pmcPriceOverrides.ContainsKey(tpl))
+                if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
-                    _pocketLootPool[tpl] = pmcPriceOverrides[tpl];
+                    _pocketLootPool.Add(tpl, priceOverride);
                 }
                 else
                 {
@@ -109,25 +109,10 @@ public class PMCLootGenerator
     private HashSet<string> GetLootBlacklist()
     {
         var blacklist = new HashSet<string>();
-        foreach (var blacklistedItem in _pmcConfig.PocketLoot.Blacklist)
-        {
-            blacklist.Add(blacklistedItem);
-        }
-
-        foreach (var blacklistedItem in _pmcConfig.GlobalLootBlacklist)
-        {
-            blacklist.Add(blacklistedItem);
-        }
-
-        foreach (var blacklistedItem in _itemFilterService.GetBlacklistedItems())
-        {
-            blacklist.Add(blacklistedItem);
-        }
-
-        foreach (var blacklistedItem in _seasonalEventService.GetInactiveSeasonalEventItems())
-        {
-            blacklist.Add(blacklistedItem);
-        }
+        blacklist.UnionWith(_pmcConfig.PocketLoot.Blacklist);
+        blacklist.UnionWith(_pmcConfig.GlobalLootBlacklist);
+        blacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
+        blacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
 
         return blacklist;
     }
@@ -158,14 +143,14 @@ public class PMCLootGenerator
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent) &&
                     ItemFitsInto2By2Slot(item.Value)
-            );
+            ).Select(x => x.Key);
 
-            foreach (var (tpl, template) in itemsToAdd)
+            foreach (var tpl in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
             {
-                if (pmcPriceOverrides.ContainsKey(tpl))
+                if (pmcPriceOverrides.TryGetValue(tpl, out var overridePrice))
                 {
-                    _vestLootPool[tpl] = pmcPriceOverrides[tpl];
+                    _vestLootPool.Add(tpl, overridePrice);
                 }
                 else
                 {
@@ -240,14 +225,14 @@ public class PMCLootGenerator
                     _itemHelper.IsValidItem(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Id) &&
                     !blacklist.Contains(item.Value.Parent)
-            );
+            ).Select(x => x.Key);
 
-            foreach (var (tpl, template) in itemsToAdd)
+            foreach (var tpl in itemsToAdd)
                 // If pmc has price override, use that. Otherwise, use flea price
             {
-                if (pmcPriceOverrides.ContainsKey(tpl))
+                if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
-                    _backpackLootPool[tpl] = pmcPriceOverrides[tpl];
+                    _backpackLootPool.Add(tpl, priceOverride);
                 }
                 else
                 {
