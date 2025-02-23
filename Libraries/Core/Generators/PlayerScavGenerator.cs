@@ -279,7 +279,7 @@ public class PlayerScavGenerator(
         var props = baseBotNode.BotGeneration.Items.GetType().GetProperties();
         foreach (var itemLimitKvP in karmaSettings.ItemLimits)
         {
-            var prop = props.FirstOrDefault(x => string.Equals(x.Name, itemLimitKvP.Key, StringComparison.OrdinalIgnoreCase);
+            var prop = props.FirstOrDefault(x => string.Equals(x.Name, itemLimitKvP.Key, StringComparison.OrdinalIgnoreCase));
             prop.SetValue(baseBotNode.BotGeneration.Items, itemLimitKvP.Value);
         }
 
