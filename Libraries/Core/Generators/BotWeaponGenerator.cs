@@ -615,17 +615,40 @@ public class BotWeaponGenerator(
         {
             if (compatibleCartridgesInTemplate.Contains(cartridge.Key))
             {
-                compatibleCartridges[cartridge.Key] = cartridgePoolForWeapon[cartridge.Key];
+                compatibleCartridges[cartridge.Key] = cartridge.Value;
             }
         }
 
+        // No cartridges found, try and get something that's compatible with the gun
         if (!compatibleCartridges.Any())
-            // No compatible cartridges, use default
         {
-            return weaponTemplate.Properties.DefAmmo;
+            // Get cartridges from the weapons first magazine in filters
+            var compatibleCartridgesInMagazine = GetCompatibleCartridgesFromMagazineTemplate(weaponTemplate);
+            if (compatibleCartridgesInMagazine.Count == 0)
+            {
+                // No compatible cartridges found in magazine, use default
+                return weaponTemplate.Properties.DefAmmo;
+            }
+
+            // Get the caliber data from the first compatible round in the magazine
+            var magazineCaliberData = _itemHelper.GetItem(compatibleCartridgesInMagazine.FirstOrDefault()).Value.Properties.Caliber;
+            cartridgePoolForWeapon = cartridgePool[magazineCaliberData];
+
+            foreach (var cartridgeKvP in cartridgePoolForWeapon) {
+                if (compatibleCartridgesInMagazine.Contains(cartridgeKvP.Key))
+                {
+                    compatibleCartridges[cartridgeKvP.Key] = cartridgeKvP.Value;
+                }
+            }
+
+            // Nothing found after also checking magazines, return default ammo
+            if (compatibleCartridges.Count == 0)
+            {
+                return weaponTemplate.Properties.DefAmmo;
+            }
         }
 
-        return _weightedRandomHelper.GetWeightedValue<string>(compatibleCartridges);
+        return _weightedRandomHelper.GetWeightedValue(compatibleCartridges);
     }
 
     /// <summary>
@@ -654,6 +677,27 @@ public class BotWeaponGenerator(
             // None found, try the cartridges array
         {
             cartridges = magProperties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter;
+        }
+
+        return cartridges;
+    }
+
+    /// <summary>
+    /// Get the cartridge ids from a weapon's magazine template that work with the weapon
+    /// </summary>
+    /// <param name="weaponTemplate">Weapon db template to get magazine cartridges for</param>
+    /// <returns>Hashset of cartridge tpls</returns>
+    protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate) {
+        // Get the first magazine's template from the weapon
+        var magazineSlot = weaponTemplate.Properties.Slots.FirstOrDefault((slot) => slot.Name == "mod_magazine");
+        var magazineTemplate = _itemHelper.GetItem(magazineSlot.Props.Filters[0].Filter.FirstOrDefault());
+
+        // Get the first slots array of cartridges
+        var cartridges = magazineTemplate.Value.Properties.Slots[0]?.Props?.Filters[0]?.Filter;
+        if (cartridges is null) {
+            // Normal magazines
+            // None found, try the cartridges array
+            cartridges = magazineTemplate.Value.Properties.Cartridges[0]?.Props?.Filters[0]?.Filter;
         }
 
         return cartridges;
