@@ -920,7 +920,7 @@ public class RagfairController
     private RagfairOffer CreatePlayerOffer(string sessionId, List<Requirement> requirements, List<Item> items,
         bool sellInOnePiece)
     {
-        var loyalLevel = 1;
+        const int loyalLevel = 1;
         var formattedItems = items.Select(
             item =>
             {
@@ -964,22 +964,18 @@ public class RagfairController
      */
     private double CalculateRequirementsPriceInRub(List<Requirement> requirements)
     {
-        var requirementsPriceInRub = 0d;
-        foreach (var item in requirements)
-        {
-            var requestedItemTpl = item.Template;
-
-            if (_paymentHelper.IsMoneyTpl(requestedItemTpl))
+        return requirements.Sum(requirement =>
             {
-                requirementsPriceInRub += _handbookHelper.InRUB(item.Count.Value, requestedItemTpl);
-            }
-            else
-            {
-                requirementsPriceInRub += _itemHelper.GetDynamicItemPrice(requestedItemTpl).Value * item.Count.Value;
-            }
-        }
+                if (string.IsNullOrEmpty(requirement.Template) || !requirement.Count.HasValue || requirement.Count == 0)
+                {
+                    return 0;
+                }
 
-        return requirementsPriceInRub;
+                return _paymentHelper.IsMoneyTpl(requirement.Template)
+                    ? _handbookHelper.InRUB(requirement.Count.Value, requirement.Template)
+                    : _itemHelper.GetDynamicItemPrice(requirement.Template).Value * requirement.Count.Value;
+            }
+        );
     }
 
     private GetItemsToListOnFleaFromInventoryResult GetItemsToListOnFleaFromInventory(PmcData pmcData,
