@@ -54,23 +54,28 @@ public class ScavCaseRewardGenerator(
         var rarePricedItems = GetFilteredItemsByPrice(_dbItemsCache, rewardItemCounts.Rare);
         var superRarePricedItems = GetFilteredItemsByPrice(_dbItemsCache, rewardItemCounts.Superrare);
 
-        // Get randomly picked items from each item collction, the count range of which is defined in hideout/scavcase.json
+        // Get randomly picked items from each item collection, the count range of which is defined in hideout/scavcase.json
         var randomlyPickedCommonRewards = PickRandomRewards(
             commonPricedItems,
             rewardItemCounts.Common,
-            "common"
+            RewardRarity.Common
         );
-        var randomlyPickedRareRewards = PickRandomRewards(rarePricedItems, rewardItemCounts.Rare, "rare");
+
+        var randomlyPickedRareRewards = PickRandomRewards(
+            rarePricedItems,
+            rewardItemCounts.Rare,
+            RewardRarity.Rare);
+
         var randomlyPickedSuperRareRewards = PickRandomRewards(
             superRarePricedItems,
             rewardItemCounts.Superrare,
-            "superrare"
+            RewardRarity.SuperRare
         );
 
         // Add randomised stack sizes to ammo and money rewards
-        var commonRewards = RandomiseContainerItemRewards(randomlyPickedCommonRewards, "common");
-        var rareRewards = RandomiseContainerItemRewards(randomlyPickedRareRewards, "rare");
-        var superRareRewards = RandomiseContainerItemRewards(randomlyPickedSuperRareRewards, "superrare");
+        var commonRewards = RandomiseContainerItemRewards(randomlyPickedCommonRewards, RewardRarity.Common);
+        var rareRewards = RandomiseContainerItemRewards(randomlyPickedRareRewards, RewardRarity.Rare);
+        var superRareRewards = RandomiseContainerItemRewards(randomlyPickedSuperRareRewards, RewardRarity.SuperRare);
 
         var result = new List<List<Item>>();
         result = result.Concat(commonRewards).ToList();
@@ -82,13 +87,11 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    ///     Get all db items that are not blacklisted in scavcase config or global blacklist
-    ///     Store in class field
-    /// </summary>
-    protected void CacheDbItems()
+        ///     Get all db items that are not blacklisted in scavcase config or global blacklist
+        ///     Store in class field
+        /// </summary>
+        protected void CacheDbItems()
     {
-        // TODO: pre-loop and get array of valid items, e.g. non-node/non-blacklisted, then loop over those results for below code
-
         // Get an array of seasonal items that should not be shown right now as seasonal event is not active
         var inactiveSeasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
         if (!_dbItemsCache.Any())
@@ -423,22 +426,22 @@ public class ScavCaseRewardGenerator(
             {
                 MinCount = scavCaseDetails.EndProducts.Common.Min,
                 MaxCount = scavCaseDetails.EndProducts.Common.Max,
-                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub["common"].Min,
-                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub["common"].Max
+                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.Common].Min,
+                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.Common].Max
             },
             Rare = new RewardCountAndPriceDetails
             {
                 MinCount = scavCaseDetails.EndProducts.Rare.Min,
                 MaxCount = scavCaseDetails.EndProducts.Rare.Max,
-                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub["rare"].Min,
-                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub["rare"].Max
+                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.Rare].Min,
+                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.Rare].Max
             },
             Superrare = new RewardCountAndPriceDetails
             {
                 MinCount = scavCaseDetails.EndProducts.Superrare.Min,
                 MaxCount = scavCaseDetails.EndProducts.Superrare.Max,
-                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub["superrare"].Min,
-                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub["superrare"].Max
+                MinPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.SuperRare].Min,
+                MaxPriceRub = _scavCaseConfig.RewardItemValueRangeRub[RewardRarity.SuperRare].Max
             }
         };
     }
@@ -451,38 +454,50 @@ public class ScavCaseRewardGenerator(
     /// <returns>value to set stack count to</returns>
     protected int GetRandomAmountRewardForScavCase(TemplateItem itemToCalculate, string rarity)
     {
-        var amountToGive = 1;
-        if (itemToCalculate.Parent == BaseClasses.AMMO)
+        return itemToCalculate.Parent switch
         {
-            amountToGive = _randomUtil.GetInt(
-                _scavCaseConfig.AmmoRewards.MinStackSize,
-                itemToCalculate.Properties.StackMaxSize ?? 0
-            );
-        }
-        else if (itemToCalculate.Parent == BaseClasses.MONEY)
-        {
-            amountToGive = itemToCalculate.Id switch
-            {
-                Money.ROUBLES => _randomUtil.GetInt(
-                    _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                    _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Max
-                ),
-                Money.EUROS => _randomUtil.GetInt(
-                    _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                    _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Max
-                ),
-                Money.DOLLARS => _randomUtil.GetInt(
-                    _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                    _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Max
-                ),
-                Money.GP => _randomUtil.GetInt(
-                    _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Min,
-                    _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Max
-                ),
-                _ => amountToGive
-            };
-        }
-
-        return amountToGive;
+            BaseClasses.AMMO => GetRandomisedAmmoRewardStackSize(itemToCalculate),
+            BaseClasses.MONEY => GetRandomisedMoneyRewardStackSize(itemToCalculate, rarity),
+            _ => 1
+        };
     }
+
+    protected int GetRandomisedAmmoRewardStackSize(TemplateItem itemToCalculate)
+    {
+        return _randomUtil.GetInt(
+            _scavCaseConfig.AmmoRewards.MinStackSize,
+            itemToCalculate.Properties.StackMaxSize ?? 0
+        );
+    }
+
+    protected int GetRandomisedMoneyRewardStackSize(TemplateItem itemToCalculate, string rarity)
+    {
+        return itemToCalculate.Id switch
+        {
+            Money.ROUBLES => _randomUtil.GetInt(
+                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Max
+            ),
+            Money.EUROS => _randomUtil.GetInt(
+                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.EurCount.GetByJsonProp<MinMax<int>>(rarity).Max
+            ),
+            Money.DOLLARS => _randomUtil.GetInt(
+                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.UsdCount.GetByJsonProp<MinMax<int>>(rarity).Max
+            ),
+            Money.GP => _randomUtil.GetInt(
+                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Min,
+                _scavCaseConfig.MoneyRewards.GpCount.GetByJsonProp<MinMax<int>>(rarity).Max
+            ),
+            _ => 1
+        };
+    }
+}
+
+public record RewardRarity
+{
+    public const string Common = "common";
+    public const string Rare = "rare";
+    public const string SuperRare = "superrare";
 }
