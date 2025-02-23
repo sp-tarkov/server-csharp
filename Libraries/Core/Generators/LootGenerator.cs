@@ -255,7 +255,7 @@ public class LootGenerator(
         var items = itemsDb.Where(
                 item =>
                     !itemBlacklist.Contains(item.Id) &&
-                    item.Type.ToLower() == "item" &&
+                    string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
                     !item.Properties.QuestItem.GetValueOrDefault(false) &&
                     itemTypeWhitelist.Contains(item.Parent)
             )
@@ -279,7 +279,7 @@ public class LootGenerator(
         string[] relevantSlots = ["front_plate", "helmet_top", "soft_armor_front"];
         foreach (var slotId in relevantSlots)
         {
-            var armorItem = armor.Items.FirstOrDefault(item => item?.SlotId?.ToLower() == slotId);
+            var armorItem = armor.Items.FirstOrDefault(item => string.Equals(item?.SlotId, slotId));
             if (armorItem is null)
             {
                 continue;
@@ -602,7 +602,7 @@ public class LootGenerator(
                 .Values.Where(
                     item =>
                         item.Parent == rewardKey &&
-                        item.Type.ToLower() == "item" &&
+                        string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
                         _itemFilterService.IsItemBlacklisted(item.Id) &&
                         !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem(item.Id)) &&
                         item.Properties.QuestItem is null

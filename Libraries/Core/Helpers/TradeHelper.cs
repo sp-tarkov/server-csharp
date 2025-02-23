@@ -53,7 +53,7 @@ public class TradeHelper(
         List<Item> offerItems = [];
         Action<int>? buyCallback;
 
-        if (buyRequestData.TransactionId.ToLower() == "ragfair")
+        if (string.Equals(buyRequestData.TransactionId, "ragfair", StringComparison.OrdinalIgnoreCase))
         {
             // Called when player purchases PMC offer from ragfair
             buyCallback = buyCount =>

@@ -1228,7 +1228,7 @@ public class FenceService(
 
             // Find items mod to apply dura changes to
             var modItemToAdjust =
-                armorItemAndMods.FirstOrDefault(mod => mod.SlotId.ToLower() == requiredSlot.Name.ToLower());
+                armorItemAndMods.FirstOrDefault(mod => string.Equals(mod.SlotId, requiredSlot.Name.ToLower(), StringComparison.OrdinalIgnoreCase));
 
             itemHelper.AddUpdObjectToItem(modItemToAdjust);
 

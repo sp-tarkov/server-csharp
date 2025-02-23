@@ -238,7 +238,7 @@ public class LocationLifecycleService
         {
             var configHostilityChanges = _pmcConfig.HostilitySettings[botId.Key];
             var locationBotHostilityDetails = location.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(
-                botSettings => botSettings.BotRole.ToLower() == botId.Key
+                botSettings => string.Equals(botSettings.BotRole, botId.Key, StringComparison.OrdinalIgnoreCase)
             );
 
             // No matching bot in config, skip

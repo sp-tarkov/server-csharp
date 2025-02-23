@@ -761,7 +761,7 @@ public class BotGenerator(
     public string SetRandomisedGameVersionAndCategory(Info botInfo)
     {
         // Special case
-        if (botInfo.Nickname?.ToLower() == "nikita")
+        if (string.Equals(botInfo.Nickname, "nikita", StringComparison.OrdinalIgnoreCase))
         {
             botInfo.GameVersion = GameEditions.UNHEARD;
             botInfo.MemberCategory = MemberCategory.Developer;
@@ -823,7 +823,7 @@ public class BotGenerator(
     /// <returns>item tpl</returns>
     public string GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
     {
-        if (side.ToLower() == "usec")
+        if (string.Equals(side, "usec", StringComparison.OrdinalIgnoreCase))
         {
             switch (gameVersion)
             {

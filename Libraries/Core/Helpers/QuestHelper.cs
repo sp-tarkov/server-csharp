@@ -457,7 +457,7 @@ public class QuestHelper(
      */
     public bool QuestIsForOtherSide(string playerSide, string questId)
     {
-        var isUsec = playerSide.ToLower() == "usec";
+        var isUsec = string.Equals(playerSide, "usec", StringComparison.OrdinalIgnoreCase);
         if (isUsec && _questConfig.BearOnlyQuests.Contains(questId))
             // Player is usec and quest is bear only, skip
         {
@@ -797,7 +797,7 @@ public class QuestHelper(
         if (
             startedMessageText is null ||
             startedMessageText.Trim() == "" ||
-            startedMessageText.ToLower() == "test" ||
+            string.Equals(startedMessageText, "test", StringComparison.OrdinalIgnoreCase) ||
             startedMessageText.Length == 24
         )
         {

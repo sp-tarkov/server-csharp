@@ -119,7 +119,7 @@ public class MatchController(
     private string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
     {
         // Edge case medium - must be altered
-        if (botDifficulty.ToLower() == "medium")
+        if (string.Equals(botDifficulty, "medium", StringComparison.OrdinalIgnoreCase))
         {
             return "normal";
         }

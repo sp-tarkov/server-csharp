@@ -960,7 +960,7 @@ public class InventoryHelper(
                 fromInventoryItems = scavProfile.Inventory.Items;
                 fromType = "scav";
             }
-            else if (request.FromOwner.Type.ToLower() == "mail")
+            else if (string.Equals(request.FromOwner.Type, "mail", StringComparison.OrdinalIgnoreCase))
             {
                 // Split requests don't use 'use' but 'splitItem' property
                 fromInventoryItems = _dialogueHelper.GetMessageItemContents(request.FromOwner.Id, sessionId, item);

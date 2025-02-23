@@ -160,12 +160,12 @@ public class BotHelper(
     /// <returns>side (usec/bear)</returns>
     public string GetPmcSideByRole(string botRole)
     {
-        if (_pmcConfig.BearType.ToLower() == botRole.ToLower())
+        if (string.Equals(_pmcConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
         {
             return "Bear";
         }
 
-        if (_pmcConfig.UsecType.ToLower() == botRole.ToLower())
+        if (string.Equals(_pmcConfig.UsecType, botRole.ToLower(), StringComparison.OrdinalIgnoreCase))
         {
             return "Usec";
         }

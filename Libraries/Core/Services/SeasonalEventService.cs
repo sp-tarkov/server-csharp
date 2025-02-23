@@ -370,7 +370,7 @@ public class SeasonalEventService(
                 );
             }
 
-            Dictionary<string, double> equipment = botInventory.Equipment[equipmentSlotKey];
+            var equipment = botInventory.Equipment[equipmentSlotKey];
             botInventory.Equipment[equipmentSlotKey] = equipment.Where(i => !_christmasEventItems.Contains(i.Key)).ToDictionary();
         }
 
@@ -378,7 +378,9 @@ public class SeasonalEventService(
         var props = botInventory.Items.GetType().GetProperties();
         foreach (var lootContainerKey in lootContainersToFilter)
         {
-            var prop = (Dictionary<string, double>?) props.FirstOrDefault(p => p.Name.ToLower() == lootContainerKey.ToLower()).GetValue(botInventory.Items);
+            var prop = (Dictionary<string, double>?) props
+                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase))
+                .GetValue(botInventory.Items);
 
             if (prop is null)
             {
@@ -667,7 +669,7 @@ public class SeasonalEventService(
 
         foreach (var chance in zryachiyKvP.Value.BotChances.EquipmentChances)
         {
-            if (chance.Key.ToLower() == "Scabbard")
+            if (string.Equals(chance.Key, "Scabbard", StringComparison.OrdinalIgnoreCase))
             {
                 value.Add(chance.Key, 100);
                 continue;

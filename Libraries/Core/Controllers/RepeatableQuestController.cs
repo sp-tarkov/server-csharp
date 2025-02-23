@@ -703,7 +703,7 @@ public class RepeatableQuestController(
         }
 
         // Add elite bonus to daily quests
-        if (repeatableConfig.Name.ToLower() == "daily" && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData))
+        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData))
             // Elite charisma skill gives extra daily quest(s)
         {
             questCount += _databaseService

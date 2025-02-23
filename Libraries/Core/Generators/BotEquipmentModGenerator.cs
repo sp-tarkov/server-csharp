@@ -406,7 +406,7 @@ public class BotEquipmentModGenerator(
      */
     protected string? GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
     {
-        var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => slot.Name.ToLower() == modSlot);
+        var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => string.Equals(slot.Name, modSlot, StringComparison.OrdinalIgnoreCase));
 
         return relatedItemDbModSlot?.Props.Filters[0].Plate;
     }
@@ -421,7 +421,8 @@ public class BotEquipmentModGenerator(
     {
         var defaultPreset = _presetHelper.GetDefaultPreset(armorItemTpl);
 
-        return defaultPreset?.Items?.FirstOrDefault(item => item.SlotId?.ToLower() == modSlot);
+        return defaultPreset?.Items?.FirstOrDefault(item =>
+            string.Equals(item.SlotId, modSlot, StringComparison.OrdinalIgnoreCase));
     }
 
 
@@ -920,11 +921,11 @@ public class BotEquipmentModGenerator(
             case "patron_in_weapon":
             case "patron_in_weapon_000":
             case "patron_in_weapon_001":
-                return parentTemplate?.Properties?.Chambers?.FirstOrDefault(chamber => chamber.Name.Contains(modSlotLower));
+                return parentTemplate?.Properties?.Chambers?.FirstOrDefault(chamber => chamber.Name.Contains(modSlotLower, StringComparison.OrdinalIgnoreCase));
             case "cartridges":
-                return parentTemplate?.Properties?.Cartridges?.FirstOrDefault(c => c.Name?.ToLower() == modSlotLower);
+                return parentTemplate?.Properties?.Cartridges?.FirstOrDefault(c => string.Equals(c.Name, modSlotLower, StringComparison.OrdinalIgnoreCase));
             default:
-                return parentTemplate?.Properties?.Slots?.FirstOrDefault(s => s.Name?.ToLower() == modSlotLower);
+                return parentTemplate?.Properties?.Slots?.FirstOrDefault(s => string.Equals(s.Name, modSlotLower, StringComparison.OrdinalIgnoreCase));
         }
     }
 
@@ -1372,7 +1373,8 @@ public class BotEquipmentModGenerator(
     public Item? GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
         var matchingPreset = GetMatchingPreset(weaponTemplate, request.ParentTemplate.Id);
-        return matchingPreset?.Items?.FirstOrDefault(item => item?.SlotId?.ToLower() == request.ModSlot.ToLower());
+        return matchingPreset?.Items?.FirstOrDefault(item =>
+            string.Equals(item?.SlotId, request.ModSlot, StringComparison.OrdinalIgnoreCase));
     }
 
     /// <summary>

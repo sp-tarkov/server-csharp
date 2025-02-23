@@ -62,7 +62,7 @@ public class PMCLootGenerator
             _pocketLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.Pockets;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Pockets;
 
             var allowedItemTypeWhitelist = _pmcConfig.PocketLoot.Whitelist;
 
@@ -145,7 +145,7 @@ public class PMCLootGenerator
             _vestLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.TacticalVest;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.TacticalVest;
 
             var allowedItemTypeWhitelist = _pmcConfig.VestLoot.Whitelist;
 
@@ -228,7 +228,7 @@ public class PMCLootGenerator
             _backpackLootPool = new Dictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[botRole.ToLower() == "pmcbear" ? "bear" : "usec"].BotInventory.Items.Backpack;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Backpack;
 
             var allowedItemTypeWhitelist = _pmcConfig.BackpackLoot.Whitelist;
 

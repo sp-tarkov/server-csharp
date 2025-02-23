@@ -1003,7 +1003,10 @@ public class RepeatableQuestGenerator(
         */
 
         // Get template id from config based on side and type of quest
-        var typeIds = side.ToLower() == "pmc" ? _questConfig.QuestTemplateIds.Pmc : _questConfig.QuestTemplateIds.Scav;
+        var typeIds = string.Equals(side, "pmc", StringComparison.OrdinalIgnoreCase)
+            ? _questConfig.QuestTemplateIds.Pmc
+            : _questConfig.QuestTemplateIds.Scav;
+
         var templateId = string.Empty;
         switch (type)
         {

@@ -73,7 +73,7 @@ public class BotDifficultyHelper(
     protected DifficultyCategories GetDifficultySettings(string type, string difficulty)
     {
         var difficultySetting =
-            _pmcConfig.Difficulty.ToLower() == "asonline"
+            string.Equals(_pmcConfig.Difficulty, "asonline", StringComparison.OrdinalIgnoreCase)
                 ? difficulty
                 : _pmcConfig.Difficulty.ToLower();
 
