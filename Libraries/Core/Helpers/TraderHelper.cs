@@ -626,7 +626,8 @@ public class TraderHelper(
     public string GetValidTraderIdByEnumValue(string traderEnumValue)
     {
         var traderId = _databaseService.GetTraders();
-        var id = traderId.FirstOrDefault(x => x.Value.Base.Id == traderEnumValue || x.Value.Base.Nickname.ToLower() == traderEnumValue.ToLower()).Key;
+        var id = traderId.FirstOrDefault(x => x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
+
         return id;
     }
 
