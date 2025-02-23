@@ -1028,7 +1028,14 @@ public class RagfairController
         };
     }
 
-    public ItemEventRouterResponse RemoveOffer(RemoveOfferRequestData removeRequest, string sessionId)
+    /// <summary>
+    /// Flag an offer as being ready for removal - sets expiry for very near future
+    /// Will be picked up by update() once expiry time has passed
+    /// </summary>
+    /// <param name="offerId">Id of offer to remove</param>
+    /// <param name="sessionId">Session id of requesting player</param>
+    /// <returns></returns>
+    public ItemEventRouterResponse FlagOfferForRemoval(string offerId, string sessionId)
     {
         var output = _eventOutputHolder.GetOutput(sessionId);
 
@@ -1042,7 +1049,7 @@ public class RagfairController
                     new
                     {
                         profileId = sessionId,
-                        offerId = removeRequest.OfferId
+                        offerId = offerId
                     }
                 )
             );
@@ -1050,30 +1057,32 @@ public class RagfairController
             pmcData.RagfairInfo.Offers = [];
         }
 
-        var playerOfferIndex = playerProfileOffers.FindIndex(offer => offer.Id == removeRequest.OfferId);
-        if (playerOfferIndex == -1)
+        var playerOffer = playerProfileOffers?.FirstOrDefault(x => x.Id == offerId);
+        if (playerOffer is null)
         {
             _logger.Error(
                 _localisationService.GetText(
                     "ragfair-offer_not_found_in_profile",
                     new
                     {
-                        offerId = removeRequest.OfferId
+                        offerId = offerId
                     }
                 )
             );
+
             return _httpResponseUtil.AppendErrorToOutput(
                 output,
                 _localisationService.GetText("ragfair-offer_not_found_in_profile_short")
             );
         }
 
-        var differenceInSeconds = playerProfileOffers[playerOfferIndex].EndTime - _timeUtil.GetTimeStamp();
+        // Only reduce time to end if time remaining is greater than what we would set it to
+        var differenceInSeconds = playerOffer.EndTime - _timeUtil.GetTimeStamp();
         if (differenceInSeconds > _ragfairConfig.Sell.ExpireSeconds)
         {
             // `expireSeconds` Default is 71 seconds
             var newEndTime = _ragfairConfig.Sell.ExpireSeconds + _timeUtil.GetTimeStamp();
-            playerProfileOffers[playerOfferIndex].EndTime = (long?) Math.Round((double) newEndTime);
+            playerOffer.EndTime = (long?) Math.Round((double) newEndTime);
         }
 
         return output;
