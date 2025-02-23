@@ -85,7 +85,7 @@ public class InsuranceController(
      * @param time The time to check ready status against. Current time by default.
      * @returns All insured items that are ready to be processed.
      */
-    private List<Insurance> FilterInsuredItems(string sessionId, long? time = null)
+    protected List<Insurance> FilterInsuredItems(string sessionId, long? time = null)
     {
         // Use the current time by default.
         var insuranceTime = time ?? _timeUtil.GetTimeStamp();
@@ -152,7 +152,7 @@ public class InsuranceController(
      * @param insurance
      * @returns
      */
-    private double CountAllInsuranceItems(List<Insurance> insuranceDetails)
+    protected double CountAllInsuranceItems(List<Insurance> insuranceDetails)
     {
         return insuranceDetails.Select(ins => ins.Items.Count).Count();
     }
@@ -164,7 +164,7 @@ public class InsuranceController(
      * @param index The array index of the insurance package to remove.
      * @returns void
      */
-    private void RemoveInsurancePackageFromProfile(string sessionId, Insurance insPackage)
+    protected void RemoveInsurancePackageFromProfile(string sessionId, Insurance insPackage)
     {
         var profile = _saveServer.GetProfile(sessionId);
         profile.InsuranceList = profile.InsuranceList.Where(
@@ -189,7 +189,7 @@ public class InsuranceController(
      * @param insured - The insurance object containing the items to evaluate for deletion.
      * @returns A Set containing the IDs of items that should be deleted.
      */
-    private HashSet<string> FindItemsToDelete(string rootItemParentId, Insurance insured)
+    protected HashSet<string> FindItemsToDelete(string rootItemParentId, Insurance insured)
     {
         var toDelete = new HashSet<string>();
 
@@ -241,7 +241,7 @@ public class InsuranceController(
      * @param itemsMap - A Map object for quick item look-up by item ID.
      * @returns A Map object containing parent item IDs to arrays of their attachment items.
      */
-    private Dictionary<string, List<Item>> PopulateParentAttachmentsMap(string rootItemParentID, Insurance insured, Dictionary<string, Item> itemsMap)
+    protected Dictionary<string, List<Item>> PopulateParentAttachmentsMap(string rootItemParentID, Insurance insured, Dictionary<string, Item> itemsMap)
     {
         var mainParentToAttachmentsMap = new Dictionary<string, List<Item>>();
         foreach (var insuredItem in insured.Items)
@@ -335,7 +335,7 @@ public class InsuranceController(
      * @param itemsMap - A Map object for quick item look-up by item ID.
      * @returns A Map object containing parent item IDs to arrays of their attachment items which are not moddable in-raid.
      */
-    private Dictionary<string, List<Item>> RemoveNonModdableAttachments(Dictionary<string, List<Item>> parentAttachmentsMap, Dictionary<string, Item> itemsMap)
+    protected Dictionary<string, List<Item>> RemoveNonModdableAttachments(Dictionary<string, List<Item>> parentAttachmentsMap, Dictionary<string, Item> itemsMap)
     {
         var updatedMap = new Dictionary<string, List<Item>>();
 
@@ -385,7 +385,7 @@ public class InsuranceController(
      * @param parentAttachmentsMap A Map object containing parent item IDs to arrays of their attachment items.
      * @returns void
      */
-    private void ProcessRegularItems(Insurance insured, HashSet<string> toDelete, Dictionary<string, List<Item>> parentAttachmentsMap)
+    protected void ProcessRegularItems(Insurance insured, HashSet<string> toDelete, Dictionary<string, List<Item>> parentAttachmentsMap)
     {
         foreach (var insuredItem in insured.Items)
         {
@@ -434,7 +434,7 @@ public class InsuranceController(
      * @param traderId The trader ID from the Insurance object.
      * @param toDelete A Set object to keep track of items marked for deletion.
      */
-    private void ProcessAttachments(Dictionary<string, List<Item>> mainParentToAttachmentsMap, Dictionary<string, Item> itemsMap, string? insuredTraderId,
+    protected void ProcessAttachments(Dictionary<string, List<Item>> mainParentToAttachmentsMap, Dictionary<string, Item> itemsMap, string? insuredTraderId,
         HashSet<string> toDelete)
     {
         foreach (var parentObj in mainParentToAttachmentsMap)
@@ -470,7 +470,7 @@ public class InsuranceController(
      * @param toDelete The array that accumulates the IDs of the items to be deleted.
      * @returns void
      */
-    private void ProcessAttachmentByParent(List<Item> attachments, string? traderId, HashSet<string> toDelete)
+    protected void ProcessAttachmentByParent(List<Item> attachments, string? traderId, HashSet<string> toDelete)
     {
         // Create dict of item ids + their flea/handbook price (highest is chosen)
         var weightedAttachmentByPrice = WeightAttachmentsByPrice(attachments);
@@ -502,7 +502,7 @@ public class InsuranceController(
         }
     }
 
-    private void LogAttachmentsBeingRemoved(List<string> attachmentIdsToRemove, List<Item> attachments, Dictionary<string, double> attachmentPrices)
+    protected void LogAttachmentsBeingRemoved(List<string> attachmentIdsToRemove, List<Item> attachments, Dictionary<string, double> attachmentPrices)
     {
         var index = 1;
         foreach (var attachmentId in attachmentIdsToRemove)
@@ -519,7 +519,7 @@ public class InsuranceController(
         }
     }
 
-    private Dictionary<string, double> WeightAttachmentsByPrice(List<Item> attachments)
+    protected Dictionary<string, double> WeightAttachmentsByPrice(List<Item> attachments)
     {
         var result = new Dictionary<string, double>();
 
@@ -538,7 +538,7 @@ public class InsuranceController(
         return result;
     }
 
-    private double GetAttachmentCountToRemove(Dictionary<string, double> weightedAttachmentByPrice, string? traderId)
+    protected double GetAttachmentCountToRemove(Dictionary<string, double> weightedAttachmentByPrice, string? traderId)
     {
         var removeCount = 0;
 
@@ -553,7 +553,7 @@ public class InsuranceController(
             .Count(_ => RollForDelete(traderId) ?? false);
     }
 
-    private void RemoveItemsFromInsurance(Insurance insured, HashSet<string> toDelete)
+    protected void RemoveItemsFromInsurance(Insurance insured, HashSet<string> toDelete)
     {
         insured.Items = insured.Items.Where(item => !toDelete.Contains(item.Id)).ToList();
     }
@@ -565,7 +565,7 @@ public class InsuranceController(
      * @param insurance The context of insurance to use.
      * @returns void
      */
-    private void SendMail(string sessionId, Insurance insurance)
+    protected void SendMail(string sessionId, Insurance insurance)
     {
         // If there are no items remaining after the item filtering, the insurance has
         // successfully "failed" to return anything and an appropriate message should be sent to the player.
@@ -599,7 +599,7 @@ public class InsuranceController(
         );
     }
 
-    private bool IsMapLabsAndInsuranceDisabled(Insurance insurance, string labsId = "laboratory")
+    protected bool IsMapLabsAndInsuranceDisabled(Insurance insurance, string labsId = "laboratory")
     {
         return string.Equals(insurance.SystemData?.Location, labsId, StringComparison.OrdinalIgnoreCase) &&
                !(_databaseService.GetLocation(labsId)?.Base?.Insurance.GetValueOrDefault(false) ?? false);
@@ -608,7 +608,7 @@ public class InsuranceController(
     /**
      * Update IInsurance object with new messageTemplateId and wipe out items array data
      */
-    private void HandleLabsInsurance(Dictionary<string, List<string>?>? traderDialogMessages, Insurance insurance)
+    protected void HandleLabsInsurance(Dictionary<string, List<string>?>? traderDialogMessages, Insurance insurance)
     {
         // Use labs specific messages if available, otherwise use default
         var responseMesageIds =
@@ -623,7 +623,7 @@ public class InsuranceController(
     }
 
 
-    private bool? RollForDelete(string traderId, Item? insuredItem = null)
+    protected bool? RollForDelete(string traderId, Item? insuredItem = null)
     {
         var trader = _traderHelper.GetTraderById(traderId);
         if (trader is null)
