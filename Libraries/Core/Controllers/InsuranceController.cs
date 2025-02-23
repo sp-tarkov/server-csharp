@@ -601,7 +601,7 @@ public class InsuranceController(
 
     private bool IsMapLabsAndInsuranceDisabled(Insurance insurance, string labsId = "laboratory")
     {
-        return insurance.SystemData?.Location?.ToLower() == labsId &&
+        return string.Equals(insurance.SystemData?.Location, labsId, StringComparison.OrdinalIgnoreCase) &&
                !(_databaseService.GetLocation(labsId)?.Base?.Insurance.GetValueOrDefault(false) ?? false);
     }
 
