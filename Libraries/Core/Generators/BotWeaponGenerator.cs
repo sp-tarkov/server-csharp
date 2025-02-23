@@ -603,7 +603,7 @@ public class BotWeaponGenerator(
 
         // Get cartridges the weapons first chamber allow
         var compatibleCartridgesInTemplate = GetCompatibleCartridgesFromWeaponTemplate(weaponTemplate);
-        if (compatibleCartridgesInTemplate is null)
+        if (compatibleCartridgesInTemplate.Count == 0)
             // No chamber data found in weapon, send default
         {
             return weaponTemplate.Properties.DefAmmo;
@@ -656,30 +656,17 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get cartridges for</param>
     /// <returns>List of cartridge tpls</returns>
-    protected HashSet<string>? GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
+    protected HashSet<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
-        var cartridges = weaponTemplate.Properties?.Chambers.FirstOrDefault()?.Props?.Filters?[0].Filter;
+        ArgumentNullException.ThrowIfNull(weaponTemplate);
+
+        var cartridges = weaponTemplate.Properties?.Chambers?.FirstOrDefault()?.Props?.Filters?[0].Filter;
         if (cartridges is not null)
         {
             return cartridges;
         }
 
-        // Fallback to the magazine if possible, e.g. for revolvers
-        //  Grab the magazines template
-        var firstMagazine = weaponTemplate.Properties.Slots.FirstOrDefault(slot => slot.Name == "mod_magazine");
-        var magazineTemplate = _itemHelper.GetItem(firstMagazine.Props.Filters?[0].Filter.FirstOrDefault());
-        var magProperties = magazineTemplate.Value.Properties;
-
-        // Get the first slots array of cartridges
-        cartridges = magProperties.Slots.FirstOrDefault()?.Props.Filters?[0].Filter;
-        if (cartridges is null)
-            // Normal magazines
-            // None found, try the cartridges array
-        {
-            cartridges = magProperties.Cartridges.FirstOrDefault()?.Props.Filters[0].Filter;
-        }
-
-        return cartridges;
+        return GetCompatibleCartridgesFromMagazineTemplate(weaponTemplate);
     }
 
     /// <summary>
@@ -708,7 +695,7 @@ public class BotWeaponGenerator(
         var cartridges = magazineTemplate.Value.Properties.Slots[0]?.Props?.Filters.FirstOrDefault()?.Filter
                          ?? magazineTemplate.Value.Properties.Cartridges[0]?.Props?.Filters.FirstOrDefault()?.Filter;
 
-        return cartridges;
+        return cartridges ?? [];
     }
 
     /// <summary>
