@@ -617,8 +617,7 @@ public class BotGeneratorHelper(
                 // Get all root items in found container
                 var existingContainerItems = (inventory.Items ?? []).Where(
                         item => item.ParentId == container.Id && item.SlotId == slotGrid.Name
-                    )
-                    .ToList();
+                    );
 
                 // Get root items in container we can iterate over to find out what space is free
                 var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
@@ -691,17 +690,20 @@ public class BotGeneratorHelper(
     /// <summary>
     ///     Take a list of items and check if they need children + add them
     /// </summary>
-    /// <param name="containerItems"></param>
+    /// <param name="containerRootItems"></param>
     /// <param name="inventoryItems"></param>
     /// <returns></returns>
-    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerItems, List<Item> inventoryItems)
+    protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerRootItems, List<Item> inventoryItems)
     {
         var result = new List<Item>();
-        foreach (var item in containerItems)
+
+        // Filter out all root items before we look for children in below loop
+        var nonRootItems = inventoryItems.Where(item => !string.Equals(item.ParentId,"hideout", StringComparison.Ordinal)).ToList();
+        foreach (var item in containerRootItems)
         {
             // Check item in container for children, store for later insertion into `containerItemsToCheck`
             // (used later when figuring out how much space weapon takes up)
-            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(inventoryItems, item.Id);
+            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(nonRootItems, item.Id);
 
             // Item had children, replace existing data with item + its children 
             result.AddRange(itemWithChildItems);
