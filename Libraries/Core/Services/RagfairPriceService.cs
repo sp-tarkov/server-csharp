@@ -288,7 +288,6 @@ public class RagfairPriceService(
             }
 
             price = AdjustUnreasonablePrice(
-                _databaseService.GetHandbook().Items,
                 value,
                 itemTemplateId,
                 price
@@ -316,25 +315,23 @@ public class RagfairPriceService(
     /// <summary>
     ///     using data from config, adjust an items price to be relative to its handbook price
     /// </summary>
-    /// <param name="handbookPrices">Prices of items in handbook</param>
     /// <param name="unreasonableItemChange">Change object from config</param>
     /// <param name="itemTpl">Item being adjusted</param>
     /// <param name="price">Current price of item</param>
     /// <returns>Adjusted price of item</returns>
     protected double AdjustUnreasonablePrice(
-        List<HandbookItem> handbookPrices,
         UnreasonableModPrices unreasonableItemChange,
         string itemTpl,
         double price)
     {
-        var itemHandbookPrice = handbookPrices.FirstOrDefault(handbookItem => handbookItem.Id == itemTpl);
-        if (itemHandbookPrice is not null)
+        var itemHandbookPrice = _handbookHelper.GetTemplatePrice(itemTpl);
+        if (itemHandbookPrice > 0)
         {
             return price;
         }
 
         // Flea price is over handbook price
-        if (price > itemHandbookPrice.Price * unreasonableItemChange.HandbookPriceOverMultiplier)
+        if (price > itemHandbookPrice * unreasonableItemChange.HandbookPriceOverMultiplier)
         {
             // Skip extreme values
             if (price <= 1)
@@ -343,7 +340,7 @@ public class RagfairPriceService(
             }
 
             // Price is over limit, adjust
-            return itemHandbookPrice.Price.Value * unreasonableItemChange.NewPriceHandbookMultiplier;
+            return itemHandbookPrice * unreasonableItemChange.NewPriceHandbookMultiplier;
         }
 
         return price;
