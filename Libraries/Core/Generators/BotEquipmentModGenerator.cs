@@ -998,7 +998,7 @@ public class BotEquipmentModGenerator(
 
         if (request.ModSlot == "mod_gas_block")
         {
-            if (request.WeaponStats.HasOptic ?? (false && modPool.Count > 1))
+            if ((request.WeaponStats.HasOptic ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to low profile gas blocks when weapon has an optic
                 var onlyLowProfileGasBlocks = modPool.Where(
@@ -1010,7 +1010,7 @@ public class BotEquipmentModGenerator(
                     modPool = onlyLowProfileGasBlocks.ToHashSet();
                 }
             }
-            else if (request.WeaponStats.HasRearIronSight ?? (false && modPool.Count() > 1))
+            else if ((request.WeaponStats.HasRearIronSight ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
                 var onlyHighProfileGasBlocks = modPool.Where(
