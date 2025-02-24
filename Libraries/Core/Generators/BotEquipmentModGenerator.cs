@@ -1136,7 +1136,7 @@ public class BotEquipmentModGenerator(
             {
                 Incompatible = true,
                 Found = false,
-                Reason = $"Unable to add mod to {choiceTypeEnum.ToString()} slot: {modSlotName}. All: {modPool.Count()} had conflicts"
+                Reason = $"Unable to add mod to {choiceTypeEnum.ToString()} slot: {modSlotName}. All: {modPool.Count} had conflicts"
             };
         }
 

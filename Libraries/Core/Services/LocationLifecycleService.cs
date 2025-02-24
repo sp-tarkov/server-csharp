@@ -931,7 +931,7 @@ public class LocationLifecycleService
             // Fail if multiple were found
             if (matchingQuests.Count != 1)
             {
-                _logger.Error($"Unable to fix quest item: {lostItem}, {matchingQuests.Count()} matching quests found, expected 1");
+                _logger.Error($"Unable to fix quest item: {lostItem}, {matchingQuests.Count} matching quests found, expected 1");
 
                 continue;
             }

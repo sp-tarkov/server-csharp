@@ -116,7 +116,7 @@ public class BotWeaponModLimitService(
         // Item being added is a mount but the parent item is NOT a mount (Allows red dot sub-mounts on mounts)
         // Mount has one slot and its for a mod_scope
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
-            modTemplate.Properties.Slots?.Count() == 1 &&
+            modTemplate.Properties.Slots?.Count == 1 &&
             _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
             !_itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_scope")
@@ -137,9 +137,9 @@ public class BotWeaponModLimitService(
             );
         }
 
-        // Mod is a mount that can hold only flashlights ad limit is reached (dont want to add empty mounts if limit is reached)
+        // Mod is a mount that can hold only flashlights ad limit is reached (don't want to add empty mounts if limit is reached)
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
-            modTemplate.Properties.Slots?.Count() == 1 &&
+            modTemplate.Properties.Slots?.Count == 1 &&
             _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_flashlight")
            )

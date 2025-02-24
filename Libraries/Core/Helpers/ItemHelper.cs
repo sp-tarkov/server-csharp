@@ -584,7 +584,7 @@ public class ItemHelper(
     {
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
-            return GetItem(itemTpl).Value.Properties?.Slots?.Count() > 0;
+            return GetItem(itemTpl).Value.Properties?.Slots?.Count > 0;
         }
 
         return false;
@@ -1890,7 +1890,7 @@ public class ItemHelper(
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count()}, skipping"
+                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count}, skipping"
                     );
                 }
 

@@ -228,7 +228,7 @@ public class RewardHelper(
             .ToList();
 
         // More/less than single match, above filtering wasn't strict enough
-        if (matchingProductions.Count() != 1)
+        if (matchingProductions.Count != 1)
             // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
         {
             matchingProductions = matchingProductions.Where(
