@@ -974,7 +974,7 @@ public class RagfairOfferGenerator(
                 itemAndPrice =>
                     itemAndPrice.Price >= desiredItemCostRouble - offerCostVarianceRoubles &&
                     itemAndPrice.Price <= desiredItemCostRouble + offerCostVarianceRoubles &&
-                    itemAndPrice.Tpl != offerItems[0].Template // Don't allow the item being sold to be chosen
+                    !string.Equals(itemAndPrice.Tpl, offerItems[0].Template, StringComparison.OrdinalIgnoreCase)  // Don't allow the item being sold to be chosen
             )
             .ToList();
 
