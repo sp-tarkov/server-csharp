@@ -22,8 +22,6 @@ public class BotGenerator(
     ISptLogger<BotGenerator> _logger,
     HashUtil _hashUtil,
     RandomUtil _randomUtil,
-    TimeUtil _timeUtil,
-    ProfileHelper _profileHelper,
     DatabaseService _databaseService,
     BotInventoryGenerator _botInventoryGenerator,
     BotLevelGenerator _botLevelGenerator,

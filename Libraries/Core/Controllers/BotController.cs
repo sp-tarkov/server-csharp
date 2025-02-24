@@ -27,9 +27,6 @@ public class BotController(
     BotGenerator _botGenerator,
     BotHelper _botHelper,
     BotDifficultyHelper _botDifficultyHelper,
-    WeightedRandomHelper _weightedRandomHelper,
-    BotGenerationCacheService _botGenerationCacheService,
-    // MatchBotDeatilsCacheService _matchBotDeatilsCacheService,
     LocalisationService _localisationService,
     SeasonalEventService _seasonalEventService,
     MatchBotDetailsCacheService _matchBotDetailsCacheService,
@@ -88,6 +85,10 @@ public class BotController(
         return _botDifficultyHelper.GetBotDifficultySettings(type, difficulty, botDb);
     }
 
+    /// <summary>
+    /// Handle singleplayer/settings/bot/difficulties
+    /// </summary>
+    /// <returns></returns>
     public Dictionary<string, Dictionary<string, DifficultyCategories>> GetAllBotDifficulties()
     {
         var result = new Dictionary<string, Dictionary<string, DifficultyCategories>>();
@@ -107,10 +108,8 @@ public class BotController(
                 ? _botHelper.GetPmcSideByRole(botType).ToLower()
                 : botType.ToLower();
 
-            BotType? botDetails = null;
-
             // Get details from db
-            if (!botTypesDb.TryGetValue(botTypeLower, out botDetails))
+            if (!botTypesDb.TryGetValue(botTypeLower, out var botDetails))
             {
                 // No bot of this type found, copy details from assault
                 result[botTypeLower] = result["assault"];
@@ -150,32 +149,13 @@ public class BotController(
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
-        // If we don't have enough bots cached to satisfy this request, populate the cache
-        if (!CacheSatisfiesRequest(info))
-        {
-            GenerateAndCacheBots(info, pmcProfile, sessionId);
-        }
-
-        return ReturnBotsFromCache(info);
+        return GenerateBotWaves(info, pmcProfile, sessionId);
     }
 
-    /**
-    * Return true if the current cache satisfies the passed in bot generation request
-    */
-    public bool CacheSatisfiesRequest(GenerateBotsRequestData info) {
-        return info.Conditions.All((condition) => {
-            // Create the key that would be used for caching this bot type, so we can check how many exist
-            var cacheKey = _botGenerationCacheService.CreateCacheKey(
-                condition.Role,
-                condition.Difficulty
-            );
-
-            return _botGenerationCacheService.GetCachedBotCount(cacheKey) >= condition.Limit;
-        });
-    }
-
-    private void GenerateAndCacheBots(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
+    private List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
     {
+        var result = new List<BotBase>();
+
         var raidSettings = GetMostRecentRaidSettings();
 
         var allPmcsHaveSameNameAsPlayer = _randomUtil.GetChance100(
@@ -187,23 +167,15 @@ public class BotController(
         Task.WaitAll((request.Conditions ?? [])
             .Select(condition => Task.Factory.StartNew(() =>
         {
-            var cacheKey = _botGenerationCacheService.CreateCacheKey(condition.Role, condition.Difficulty);
-
-            if (_botGenerationCacheService.GetCachedBotCount(cacheKey) >= condition.Limit)
-            {
-                return;
-            }
-
-            var botGenerationDetails = GetBotGenerationDetailsForWave(
+            var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
                 condition,
                 pmcProfile,
                 allPmcsHaveSameNameAsPlayer,
                 raidSettings,
-                Math.Max(GetBotPresetGenerationLimit(condition.Role), condition.Limit), // Get largest between value passed in from request vs whats in bot.config
+                Math.Max(GetBotPresetGenerationLimit(condition.Role), condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
                 _botHelper.IsBotPmc(condition.Role));
 
-            // Generate bots for the current condition
-            GenerateWithBotDetails(condition, botGenerationDetails, sessionId);
+            result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
         })).ToArray());
 
         stopwatch.Stop();
@@ -211,12 +183,14 @@ public class BotController(
         {
             _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
         }
+
+        return result;
     }
 
-    private void GenerateWithBotDetails(GenerateCondition condition, BotGenerationDetails botGenerationDetails, string sessionId)
+    private List<BotBase> GenerateBotWave(GenerateCondition condition, BotGenerationDetails botGenerationDetails, string sessionId)
     {
         var isEventBot = condition.Role?.ToLower().Contains("event");
-        if (isEventBot ?? false)
+        if (isEventBot.GetValueOrDefault(false))
         {
             // Add eventRole data + reassign role property to be base type
             botGenerationDetails.EventRole = condition.Role;
@@ -225,41 +199,30 @@ public class BotController(
             );
         }
 
-        // Create a compound key to store bots in cache against
-        var cacheKey = _botGenerationCacheService.CreateCacheKey(
-            botGenerationDetails.EventRole ?? botGenerationDetails.Role,
-            botGenerationDetails.BotDifficulty
-        );
-
-        // Get number of bots we have in cache
-        var botCacheCount = _botGenerationCacheService.GetCachedBotCount(cacheKey);
-
-        if (botCacheCount >= botGenerationDetails.BotCountToGenerate)
-        {
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Cache already has sufficient: {cacheKey} bots: {botCacheCount}");
-            }
-
-            return;
-        }
-
-        // We're below desired count, add bots to cache
-        var botsToGenerateCount = botGenerationDetails.BotCountToGenerate - botCacheCount;
-        var progressWriter = new ProgressWriter(botGenerationDetails.BotCountToGenerate.GetValueOrDefault(30));
-
+        var role = botGenerationDetails.EventRole ?? botGenerationDetails.Role;
+        
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Generating: {botsToGenerateCount} bots for cacheKey: {cacheKey}");
+            _logger.Debug($"Generating wave of: {botGenerationDetails.BotCountToGenerate} bots of type: {role} {botGenerationDetails.BotDifficulty}");
         }
 
-        for (var i = 0; i < botsToGenerateCount; i++)
+        var results = new List<BotBase>();
+        for (var i = 0; i < botGenerationDetails.BotCountToGenerate; i++)
         {
             try
             {
-                var detailsClone = _cloner.Clone(botGenerationDetails);
-                GenerateSingleBotAndStoreInCache(detailsClone, sessionId, cacheKey);
-                progressWriter.Increment();
+                var bot = _botGenerator.PrepareAndGenerateBot(sessionId, _cloner.Clone(botGenerationDetails));
+
+                // The client expects the Side for PMCs to be `Savage`
+                // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
+                if (bot.Info.Side is "Bear" or "Usec")
+                {
+                    bot.Info.Side = "Savage";
+                }
+
+                results.Add(bot);
+                // Store bot details in cache so post-raid PMC messages can use data
+                _matchBotDetailsCacheService.CacheBot(_cloner.Clone(bot));
             }
             catch (Exception e)
             {
@@ -274,56 +237,8 @@ public class BotController(
                 $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty} bots"
             );
         }
-    }
 
-    /// <summary>
-    /// Return requested bots by the given bot generation request
-    /// </summary>
-    /// <param name="request"></param>
-    /// <returns>An array of IBotBase objects as requested by request</returns>
-    private List<BotBase> ReturnBotsFromCache(GenerateBotsRequestData request)
-    {
-        var result = new List<BotBase>();
-
-        // We assume that during request we have enough bots cached to cover requirement
-        foreach (var condition in request.Conditions)
-        {
-            var cacheKey = _botGenerationCacheService.CreateCacheKey(
-                condition.Role,
-                condition.Difficulty
-            );
-
-            // Fetch enough bots to satisfy the request
-            for (var i = 0; i < condition.Limit; i++)
-            {
-                var desiredBot = _botGenerationCacheService.GetBot(cacheKey);
-
-                // Store details for later use post-raid
-                _botGenerationCacheService.StoreUsedBot(desiredBot);
-
-                result.Add(desiredBot);
-            }
-        }
-
-        return result;
-    }
-
-    private void GenerateSingleBotAndStoreInCache(BotGenerationDetails? botGenerationDetails, string sessionId, string cacheKey)
-    {
-        var botToCache = _botGenerator.PrepareAndGenerateBot(sessionId, botGenerationDetails);
-        _botGenerationCacheService.StoreBots(cacheKey, [botToCache]);
-
-        // Store bot details in cache so post-raid PMC messages can use data
-        _matchBotDetailsCacheService.CacheBot(_cloner.Clone(botToCache));
-
-        // The client expects the Side for PMCs to be `Savage`
-        // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
-        if (botToCache.Info.Side is "Bear" or "Usec")
-        {
-            botToCache.Info.Side = "Savage";
-        }
-
-        _botGenerationCacheService.StoreBots(cacheKey, [botToCache]);
+        return results;
     }
 
     private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
