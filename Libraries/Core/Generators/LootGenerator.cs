@@ -608,7 +608,7 @@ public class LootGenerator(
                         item.Properties.QuestItem is null
                 );
 
-            if (rewardItemPool.Count() == 0)
+            if (!rewardItemPool.Any())
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
@@ -664,7 +664,7 @@ public class LootGenerator(
             var relatedItems = linkedItemsToWeapon?.Where(
                 item => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
             );
-            if (relatedItems is null || relatedItems.Count() == 0)
+            if (relatedItems is null || !relatedItems.Any())
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {

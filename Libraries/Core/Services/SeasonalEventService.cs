@@ -412,7 +412,7 @@ public class SeasonalEventService(
 
             // Get non-christmas items
             var nonChristmasTpls = prop.Where(tpl => !christmasItems.Contains(tpl.Key));
-            if (nonChristmasTpls.Count() == 0)
+            if (!nonChristmasTpls.Any())
             {
                 continue;
             }

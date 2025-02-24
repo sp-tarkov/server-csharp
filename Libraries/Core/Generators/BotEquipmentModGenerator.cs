@@ -1005,7 +1005,7 @@ public class BotEquipmentModGenerator(
                     tpl =>
                         _botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
-                if (onlyLowProfileGasBlocks.Count() > 0)
+                if (onlyLowProfileGasBlocks.Any())
                 {
                     modPool = onlyLowProfileGasBlocks.ToHashSet();
                 }
@@ -1016,7 +1016,7 @@ public class BotEquipmentModGenerator(
                 var onlyHighProfileGasBlocks = modPool.Where(
                     tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
-                if (onlyHighProfileGasBlocks.Count() > 0)
+                if (onlyHighProfileGasBlocks.Any())
                 {
                     modPool = onlyHighProfileGasBlocks.ToHashSet();
                 }
@@ -1356,7 +1356,7 @@ public class BotEquipmentModGenerator(
 
                 // Last ditch, use full pool of items minus conflicts
                 var newListOfModsForSlot = parentSlotCompatibleItems.Where(tpl => !request.ConflictingItemTpls.Contains(tpl));
-                if (newListOfModsForSlot.Count() > 0)
+                if (newListOfModsForSlot.Any())
                 {
                     return newListOfModsForSlot.ToHashSet();
                 }
@@ -1781,7 +1781,7 @@ public class BotEquipmentModGenerator(
             // Edge case, what if item is a mount for a scope and not directly a scope?
             // Check item is mount + has child items
             var itemDetails = _itemHelper.GetItem(item).Value;
-            if (_itemHelper.IsOfBaseclass(item, BaseClasses.MOUNT) && itemDetails.Properties.Slots.Count() > 0)
+            if (_itemHelper.IsOfBaseclass(item, BaseClasses.MOUNT) && itemDetails.Properties.Slots.Any())
             {
                 // Check to see if mount has a scope slot (only include primary slot, ignore the rest like the backup sight slots)
                 // Should only find 1 as there's currently no items with a mod_scope AND a mod_scope_000

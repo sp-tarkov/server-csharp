@@ -85,7 +85,7 @@ public class DialogueHelper(
                 }
 
                 var rewardItems = message.Items.Data?.Where(x => x.Id != itemId);
-                if (rewardItems.Count() == 0)
+                if (!rewardItems.Any())
                 {
                     message.RewardCollected = true;
                     message.HasRewards = false;
