@@ -74,28 +74,28 @@ public class InsuranceService(
     {
         // Get insurance items for each trader
         var globals = _databaseService.GetGlobals();
-        foreach (var trader in GetInsurance(sessionID))
+        foreach (var traderKvP in GetInsurance(sessionID))
         {
-            var traderEnum = _traderHelper.GetTraderById(trader.Key);
+            var traderEnum = _traderHelper.GetTraderById(traderKvP.Key);
             if (traderEnum is null)
             {
-                _logger.Error(_localisationService.GetText("insurance-trader_missing_from_enum", trader.Key));
+                _logger.Error(_localisationService.GetText("insurance-trader_missing_from_enum", traderKvP.Key));
 
                 continue;
             }
 
-            var traderBase = _traderHelper.GetTrader(trader.Key, sessionID);
+            var traderBase = _traderHelper.GetTrader(traderKvP.Key, sessionID);
             if (traderBase is null)
             {
-                _logger.Error(_localisationService.GetText("insurance-unable_to_find_trader_by_id", trader.Key));
+                _logger.Error(_localisationService.GetText("insurance-unable_to_find_trader_by_id", traderKvP.Key));
 
                 continue;
             }
 
-            var dialogueTemplates = _databaseService.GetTrader(trader.Key).Dialogue;
+            var dialogueTemplates = _databaseService.GetTrader(traderKvP.Key).Dialogue;
             if (dialogueTemplates is null)
             {
-                _logger.Error(_localisationService.GetText("insurance-trader_lacks_dialogue_property", trader.Key));
+                _logger.Error(_localisationService.GetText("insurance-trader_lacks_dialogue_property", traderKvP.Key));
 
                 continue;
             }
@@ -125,12 +125,12 @@ public class InsuranceService(
                     new Insurance
                     {
                         ScheduledTime = (int) GetInsuranceReturnTimestamp(pmcData, traderBase),
-                        TraderId = trader.ToString(),
+                        TraderId = traderKvP.Key,
                         MaxStorageTime = (int) GetMaxInsuranceStorageTime(traderBase),
                         SystemData = systemData,
                         MessageType = MessageType.INSURANCE_RETURN,
                         MessageTemplateId = _randomUtil.GetArrayValue(dialogueTemplates["insuranceFound"]),
-                        Items = GetInsurance(sessionID)[trader.Key]
+                        Items = GetInsurance(sessionID)[traderKvP.Key]
                     }
                 );
         }
