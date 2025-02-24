@@ -390,10 +390,9 @@ public class BotGeneratorHelper(
         }
 
         // Does an equipped item have a property that blocks the desired item - check for prop "BlocksX" .e.g BlocksEarpiece / BlocksFaceCover
+        var blockingPropertyName = $"blocks{equipmentSlot}";
         var templateItems = equippedItemsDb.ToList();
-        var blockingItem = templateItems.FirstOrDefault(
-            item => item?.Properties?.GetType().GetProperties().FirstOrDefault(x => string.Equals(x.Name.ToLower(), $"blocks{equipmentSlot}", StringComparison.OrdinalIgnoreCase))?.GetValue(item) is not null
-        );
+        var blockingItem = templateItems.FirstOrDefault(item => HasBlockingProperty(item, blockingPropertyName));
         if (blockingItem is not null)
             // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
         {
@@ -502,6 +501,14 @@ public class BotGeneratorHelper(
             Incompatible = false,
             Reason = ""
         };
+    }
+
+    protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
+    {
+        return item?.Properties?.GetType().GetProperties()
+            .FirstOrDefault(x =>x.PropertyType == typeof(bool)
+                                 && x.Name.ToLower() == blockingPropertyName
+                                 && (bool)x.GetValue(item.Properties)) is not null;
     }
 
     /// <summary>
