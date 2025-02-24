@@ -697,15 +697,16 @@ public class BotGeneratorHelper(
     {
         var result = new List<Item>();
 
-        // Filter out all root items before we look for children in below loop
-        var nonRootItems = inventoryItems.Where(item => !string.Equals(item.ParentId,"hideout", StringComparison.Ordinal)).ToList();
-        foreach (var item in containerRootItems)
+        // Filter out all items without location prop, (child items)
+        var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null).ToList();
+        foreach (var rootItem in containerRootItems)
         {
             // Check item in container for children, store for later insertion into `containerItemsToCheck`
             // (used later when figuring out how much space weapon takes up)
-            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(nonRootItems, item.Id);
+            var itemWithChildItems = _itemHelper.FindAndReturnChildrenAsItems(itemsWithoutLocation, rootItem.Id);
 
-            // Item had children, replace existing data with item + its children 
+            // Item had children, replace existing data with item + its children
+            result.Add(rootItem);
             result.AddRange(itemWithChildItems);
         }
 
