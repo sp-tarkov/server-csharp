@@ -188,12 +188,12 @@ public class BotHelper(
     /// <param name="maxLength">Max length of name, inclusive</param>
     /// <param name="side">OPTIONAL - what side PMC to get name from (usec/bear)</param>
     /// <returns>name of PMC</returns>
-    public string GetPmcNicknameOfMaxLength(int maxLength, string side = null)
+    public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var randomType = side is not null ? side : _randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear";
+        var randomType = side ?? (_randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear");
         var allNames = _databaseService.GetBots().Types[randomType.ToLower()].FirstNames;
         var filteredNames = allNames.Where(name => name.Length <= maxLength);
-        if (filteredNames.Count() == 0)
+        if (!filteredNames.Any())
         {
             _logger.Warning(
                 $"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
