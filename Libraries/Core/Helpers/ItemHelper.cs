@@ -775,7 +775,7 @@ public class ItemHelper(
         foreach (var childItem in items)
         {
             // Include itself
-            if (childItem.Id.Equals(baseItemId, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(childItem.Id, baseItemId, StringComparison.Ordinal))
             {
                 result.Add(childItem.Id, childItem);
                 continue;
@@ -788,7 +788,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.OrdinalIgnoreCase) && !result.ContainsKey(childItem.Id))
+            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.Ordinal) && !result.ContainsKey(childItem.Id))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
