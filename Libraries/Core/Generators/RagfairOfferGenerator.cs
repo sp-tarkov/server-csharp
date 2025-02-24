@@ -606,6 +606,8 @@ public class RagfairOfferGenerator(
         }
 
         var blacklist = ragfairConfig.Dynamic.Blacklist;
+        var childAssortItems = assortsClone.Items
+            .Where(x => !string.Equals(x.ParentId, "hideout", StringComparison.Ordinal)).ToList();
         foreach (var item in assortsClone.Items)
         {
             // We only want to process 'base/root' items, no children
@@ -635,7 +637,7 @@ public class RagfairOfferGenerator(
             var isPreset = presetHelper.IsPreset(item.Id);
             var items = isPreset
                 ? ragfairServerHelper.GetPresetItems(item)
-                : [item, ..itemHelper.FindAndReturnChildrenByAssort(item.Id, assortsClone.Items)];
+                : [item, ..itemHelper.FindAndReturnChildrenByAssort(item.Id, childAssortItems)];
 
             if (!assortsClone.BarterScheme.TryGetValue(item.Id, out var barterScheme))
             {
