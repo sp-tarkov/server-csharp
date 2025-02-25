@@ -2,6 +2,7 @@
 using System.Reflection;
 using Core.Models.External;
 using Core.Models.Utils;
+using fastJSON5;
 using SptCommon.Annotations;
 
 namespace _4ReadCustomJson5Config
@@ -24,8 +25,8 @@ namespace _4ReadCustomJson5Config
         {
             var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
-            // TODO - fix/implement
-            var json5Config = _modHelper.GetFileFromModFolder<ModConfig>(pathToMod, "config.json5");
+            // To use JSON5, you will have to find and provide your own JSON5 library to decode it
+            var json5Config = JSON5.ToObject<ModConfig>(_modHelper.GetRawFileData(pathToMod, "config.json5"));
 
             _logger.Success($"Read property: 'ExampleProperty' from config with value: {json5Config.ExampleProperty}");
         }

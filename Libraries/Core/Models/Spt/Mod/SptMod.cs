@@ -5,15 +5,22 @@ namespace Core.Models.Spt.Mod;
 
 public class SptMod
 {
-    [JsonPropertyName("PackageJson")]
+    [JsonPropertyName("directory")]
+    public string Directory
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("packageJson")]
     public PackageJsonData? PackageJson
     {
         get;
         set;
     }
 
-    [JsonPropertyName("Assembly")]
-    public Assembly? Assembly
+    [JsonPropertyName("assemblies")]
+    public List<Assembly>? Assemblies
     {
         get;
         set;

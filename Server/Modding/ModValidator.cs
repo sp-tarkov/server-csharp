@@ -377,9 +377,9 @@ public class ModValidator(
         var modIsCalledUser = modName.ToLower() == "user";
         var modIsCalledSrc = modName.ToLower() == "src";
         var modIsCalledDb = modName.ToLower() == "db";
-        var hasBepinExFolderStructure = fileUtil.DirectoryExists($"{modPath}/plugins");
-        var containsJs = fileUtil.GetFiles(modPath, true, "*.js").Count > 0;
-        var containsTs = fileUtil.GetFiles(modPath, true, "*.ts").Count > 0;
+        var hasBepinExFolderStructure = fileUtil.DirectoryExists($"{mod.Directory}/plugins");
+        var containsJs = fileUtil.GetFiles(mod.Directory, true, "*.js").Count > 0;
+        var containsTs = fileUtil.GetFiles(mod.Directory, true, "*.ts").Count > 0;
 
         if (modIsCalledSrc || modIsCalledDb || modIsCalledUser)
         {

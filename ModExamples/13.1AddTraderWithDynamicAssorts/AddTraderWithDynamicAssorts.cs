@@ -63,7 +63,7 @@ public class AddTraderWithDynamicAssorts : IPostDBLoadMod
         var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
         var traderImagePath = Path.Combine(pathToMod, "db/cat.jpg");
-        var traderBase = _modHelper.GetFileFromModFolder<TraderBase>(pathToMod, "db/base.json");
+        var traderBase = _modHelper.GetJsonDataFromFile<TraderBase>(pathToMod, "db/base.json");
 
         // Create helper class and use it to register our traders image/icon + set its stock refresh time
         var addTraderHelper = new AddTraderHelper();
@@ -112,7 +112,7 @@ public class AddTraderWithDynamicAssorts : IPostDBLoadMod
             .AddLoyaltyLevel(1)
             .Export(tables.Traders[traderBase.Id]);
 
-        // Add mp133 preset as a barter for mayonase 
+        // Add mp133 preset as a barter for mayonase
         fluentAssortCreator
             .CreateComplexAssortItem(tables.Globals.ItemPresets["584148f2245977598f1ad387"].Items) // Weapon preset id comes from globals.json
             .AddStackCount(200)

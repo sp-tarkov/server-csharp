@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text.Json;
 using Core.Models.Spt.Mod;
 
@@ -48,7 +49,11 @@ public class ModDllLoader
     /// <returns>SptMod</returns>
     private static SptMod LoadMod(string path)
     {
-        var result = new SptMod();
+        var result = new SptMod
+        {
+            Directory = path,
+            Assemblies = []
+        };
         var asmCount = 0;
         var packCount = 0;
         foreach (var file in new DirectoryInfo(path).GetFiles()) // only search top level
@@ -69,12 +74,7 @@ public class ModDllLoader
             if (file.Extension.ToLower() == ".dll")
             {
                 asmCount++;
-
-                result.Assembly = Assembly.LoadFile(Path.GetFullPath(file.FullName));
-                if (asmCount > 1)
-                {
-                    throw new Exception($"More than one Assembly found in: {path}");
-                }
+                result.Assemblies.Add(AssemblyLoadContext.Default.LoadFromAssemblyPath(Path.GetFullPath(file.FullName)));
             }
         }
 
@@ -100,7 +100,7 @@ public class ModDllLoader
             throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
         }
 
-        if (result.Assembly is not null && result.PackageJson is not null)
+        if (result.Assemblies is not null && result.PackageJson is not null)
         {
             Console.WriteLine($"Loaded: {result.PackageJson.Name} Version: {result.PackageJson.Version} by: {result.PackageJson.Author}");
         }

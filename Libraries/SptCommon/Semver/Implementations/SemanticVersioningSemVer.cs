@@ -27,7 +27,7 @@ public class SemanticVersioningSemVer : ISemVer
 
     public bool Satisfies(string version, string testVersion)
     {
-        return Range.IsSatisfied(version, testVersion, true);
+        return Range.IsSatisfied(testVersion, version, true);
     }
 
     public bool AnySatisfies(string version, List<string> testVersions)

@@ -31,12 +31,12 @@ public static class Program
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
         // for harmony we use the original list, as some mods may only be bepinex patches only
-        HarmonyBootstrapper.LoadAllPatches(mods.Select(asm => asm.Assembly).ToList());
+        HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
 
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
         // register mod components from the filtered list
-        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.Select(a => a.Assembly).ToList());
+        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
         var logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {

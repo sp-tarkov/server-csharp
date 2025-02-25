@@ -1,14 +1,14 @@
 {
-    "Name": "1Logging",
-	"Author": "SPT",
-    "Contributors": [],
-    "Version": "1.0.0",
-    "SptVersion": "~4.0",
-    "LoadBefore": [],
-    "LoadAfter": [],
-    "IncompatibleMods": [],
-	"Dependencies": [],
-    "Url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
-    "IsBundleMod": false,
-    "Licence": "MIT"
+    "name": "1Logging",
+	"author": "SPT",
+    "contributors": [],
+    "version": "1.0.0",
+    "sptVersion": "~4.0",
+    "loadBefore": [],
+    "loadAfter": [],
+    "incompatibilities": [],
+	"dependencies": [],
+    "url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
+    "isBundleMod": false,
+    "licence": "MIT"
 }

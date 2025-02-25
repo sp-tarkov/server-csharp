@@ -49,9 +49,9 @@ public class AddTraderWithAssortJson : IPostDBLoadMod
         var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
         var traderImagePath = Path.Combine(pathToMod, "db/cat.jpg");
-        var traderBase = _modHelper.GetFileFromModFolder<TraderBase>(pathToMod, "db/base.json");
+        var traderBase = _modHelper.GetJsonDataFromFile<TraderBase>(pathToMod, "db/base.json");
 
-        var assort = _modHelper.GetFileFromModFolder<TraderAssort>(pathToMod, "db/assort.json");
+        var assort = _modHelper.GetJsonDataFromFile<TraderAssort>(pathToMod, "db/assort.json");
 
         // Create helper class and use it to register our traders image/icon + set its stock refresh time
         var addTraderHelper = new AddTraderHelper();

@@ -71,16 +71,6 @@ public class EditConfigs : IPostDBLoadMod
         // Let's disable loot on scavs
         _botConfig.DisableLootOnBotTypes.Add("assault");
 
-        // Let's make the conversion rate of scavs to pmcs 100% on factory day
-        var factory4DayConversionSettings = _pmcConfig.ConvertIntoPmcChance["factory4_day"];
-
-        // We get assault bot settings for factory day
-        var assaultConversionSettings = factory4DayConversionSettings["assault"];
-
-        // Set min and max to 100%
-        assaultConversionSettings.Min = 100;
-        assaultConversionSettings.Max = 100;
-
         _logger.Success("Finished Editing Configs");
     }
 }
