@@ -24,12 +24,9 @@ public class InventoryHelper(
     ISptLogger<InventoryHelper> _logger,
     HashUtil _hashUtil,
     HttpResponseUtil _httpResponseUtil,
-    FenceService _fenceService,
     DialogueHelper _dialogueHelper,
     ContainerHelper _containerHelper,
     DatabaseServer _databaseServer,
-    PaymentHelper _paymentHelper,
-    TraderAssortHelper _traderAssortHelper,
     EventOutputHolder _eventOutputHolder,
     ProfileHelper _profileHelper,
     ItemHelper _itemHelper,
@@ -39,7 +36,13 @@ public class InventoryHelper(
 )
 {
     // Item types to ignore inside `GetSizeByInventoryItemHash`
-    private readonly HashSet<string> _itemBaseTypesToIgnore = [BaseClasses.BACKPACK, BaseClasses.SEARCHABLE_ITEM, BaseClasses.SIMPLE_CONTAINER];
+    private readonly HashSet<string> _itemBaseTypesToIgnore = [
+        BaseClasses.BACKPACK,
+        BaseClasses.VEST,
+        BaseClasses.HEADWEAR,
+        BaseClasses.SEARCHABLE_ITEM,
+        BaseClasses.SIMPLE_CONTAINER,
+        BaseClasses.AMMO_BOX];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -652,38 +655,36 @@ public class InventoryHelper(
     ///     takes into account if item is folded
     /// </summary>
     /// <param name="itemTpl">Items template id</param>
-    /// <param name="itemId">Items id</param>
+    /// <param name="itemID">Items id</param>
     /// <param name="inventoryItemHash">Hashmap of inventory items</param>
     /// <returns>An array representing the [width, height] of the item</returns>
     protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemID, InventoryItemHash inventoryItemHash)
     {
-        var toDo = new List<string>
-        {
-            itemID
-        };
-        var (key, tmpItem) = _itemHelper.GetItem(itemTpl);
+        // Storage for root item and its children, store root item id for now
+        var toDo = new Queue<string>([itemID]);
 
         // Invalid item
-        if (!key)
+        var (isValidItem, itemTemplate) = _itemHelper.GetItem(itemTpl);
+        if (!isValidItem)
         {
             _logger.Error(_localisationService.GetText("inventory-invalid_item_missing_from_db", itemTpl));
         }
 
         // Item found but no _props property
-        if (key && tmpItem.Properties is null)
+        if (isValidItem && itemTemplate.Properties is null)
         {
             _localisationService.GetText(
                 "inventory-item_missing_props_property",
                 new
                 {
                     itemTpl,
-                    itemName = tmpItem?.Name
+                    itemName = itemTemplate?.Name
                 }
             );
         }
 
         // No item object or getItem() returned false
-        if (!key && tmpItem is null)
+        if (!isValidItem && itemTemplate is null)
         {
             // return default size of 1x1
             _logger.Error(_localisationService.GetText("inventory-return_default_size", itemTpl));
@@ -692,97 +693,99 @@ public class InventoryHelper(
         }
 
         var rootItem = inventoryItemHash.ByItemId[itemID];
-        var isFoldable = tmpItem.Properties.Foldable;
-        var foldedSlot = tmpItem.Properties.FoldedSlot;
 
-        var sizeUp = 0;
-        var sizeDown = 0;
-        var sizeLeft = 0;
-        var sizeRight = 0;
+        // Does root item support being folded
+        var rootIsFoldable = itemTemplate.Properties.Foldable.GetValueOrDefault(false);
 
-        var forcedUp = 0;
-        var forcedDown = 0;
-        var forcedLeft = 0;
-        var forcedRight = 0;
-        var outX = tmpItem.Properties.Width;
-        var outY = tmpItem.Properties.Height;
+        // The slot that can be folded on root e.g. "mod_stock"
+        var foldedSlot = itemTemplate.Properties.FoldedSlot;
 
-        var rootIsFolded = rootItem?.Upd?.Foldable?.Folded == true;
+        int sizeUp = 0, sizeDown = 0, sizeLeft = 0, sizeRight = 0;
+        int forcedUp = 0, forcedDown = 0, forcedLeft = 0, forcedRight = 0;
+        var outX = itemTemplate.Properties.Width;
+        var outY = itemTemplate.Properties.Height;
 
-        // The item itself is collapsible
-        if (isFoldable is not null && string.IsNullOrEmpty(foldedSlot) && rootIsFolded)
+        // Is the root item actively folded
+        var rootIsFolded = rootItem?.Upd?.Foldable?.Folded.GetValueOrDefault(false) ?? false;
+
+        // Root is collapsible and has been collapsed
+        if (rootIsFoldable && string.IsNullOrEmpty(foldedSlot) && rootIsFolded)
         {
-            outX -= tmpItem.Properties.SizeReduceRight.Value;
+            // foldedSlot must be empty/null which means the root item itself is folded, not a sub child item...i think
+            outX -= itemTemplate.Properties.SizeReduceRight.Value;
         }
 
         // Calculate size contribution from child items/attachments
-        if (!_itemBaseTypesToIgnore.Contains(tmpItem.Parent))
+        if (!_itemBaseTypesToIgnore.Contains(itemTemplate.Parent))
         {
             while (toDo.Count > 0)
             {
-                if (inventoryItemHash.ByParentId.ContainsKey(toDo[0]))
+                // Lookup parent in `todo` and get all of its children, then loop over them
+                if (inventoryItemHash.ByParentId.TryGetValue(toDo.Peek(), out var children))
                 {
-                    foreach (var item in inventoryItemHash.ByParentId[toDo[0]])
+                    foreach (var childItem in children)
                     {
                         // Filtering child items outside of mod slots, such as those inside containers, without counting their ExtraSize attribute
-                        if (item.SlotId.IndexOf("mod_") < 0)
+                        if (childItem.SlotId.IndexOf("mod_", StringComparison.Ordinal) < 0)
                         {
                             continue;
                         }
 
-                        toDo.Add(item.Id);
+                        // Add child to queue
+                        toDo.Enqueue(childItem.Id);
 
                         // If the barrel is folded the space in the barrel is not counted
-                        var itemResult = _itemHelper.GetItem(item.Template);
-                        if (!itemResult.Key)
+                        var (isValid, template) = _itemHelper.GetItem(childItem.Template);
+                        if (!isValid)
                         {
                             _logger.Error(
                                 _localisationService.GetText(
                                     "inventory-get_item_size_item_not_found_by_tpl",
-                                    item.Template
+                                    childItem.Template
                                 )
                             );
                         }
 
-                        var itm = itemResult.Value;
-                        var childFoldable = itm.Properties.Foldable.GetValueOrDefault(false);
-                        var childFolded = item.Upd?.Foldable is not null && item.Upd.Foldable.Folded == true;
+                        var childIsFoldable = template.Properties.Foldable.GetValueOrDefault(false);
+                        var childIsFolded = childItem.Upd?.Foldable?.Folded.GetValueOrDefault(false) ?? false;
 
-                        if (isFoldable is true && foldedSlot == item.SlotId && (rootIsFolded || childFolded))
+                        if (rootIsFoldable && foldedSlot == childItem.SlotId && (rootIsFolded || childIsFolded))
                         {
                             continue;
                         }
 
-                        if (childFoldable && rootIsFolded && childFolded)
+                        if (childIsFoldable && rootIsFolded && childIsFolded)
                         {
                             continue;
                         }
 
                         // Calculating child ExtraSize
-                        if (itm.Properties.ExtraSizeForceAdd == true)
+                        if (template.Properties.ExtraSizeForceAdd == true)
                         {
-                            forcedUp += itm.Properties.ExtraSizeUp.Value;
-                            forcedDown += itm.Properties.ExtraSizeDown.Value;
-                            forcedLeft += itm.Properties.ExtraSizeLeft.Value;
-                            forcedRight += itm.Properties.ExtraSizeRight.Value;
+                            forcedUp += template.Properties.ExtraSizeUp.Value;
+                            forcedDown += template.Properties.ExtraSizeDown.Value;
+                            forcedLeft += template.Properties.ExtraSizeLeft.Value;
+                            forcedRight += template.Properties.ExtraSizeRight.Value;
                         }
                         else
                         {
-                            sizeUp = sizeUp < itm.Properties.ExtraSizeUp ? itm.Properties.ExtraSizeUp.Value : sizeUp;
-                            sizeDown = sizeDown < itm.Properties.ExtraSizeDown
-                                ? itm.Properties.ExtraSizeDown.Value
+                            sizeUp = sizeUp < template.Properties.ExtraSizeUp
+                                ? template.Properties.ExtraSizeUp.Value
+                                : sizeUp;
+                            sizeDown = sizeDown < template.Properties.ExtraSizeDown
+                                ? template.Properties.ExtraSizeDown.Value
                                 : sizeDown;
-                            sizeLeft = sizeLeft < itm.Properties.ExtraSizeLeft
-                                ? itm.Properties.ExtraSizeLeft.Value
+                            sizeLeft = sizeLeft < template.Properties.ExtraSizeLeft
+                                ? template.Properties.ExtraSizeLeft.Value
                                 : sizeLeft;
-                            sizeRight = sizeRight < itm.Properties.ExtraSizeRight
-                                ? itm.Properties.ExtraSizeRight.Value
+                            sizeRight = sizeRight < template.Properties.ExtraSizeRight
+                                ? template.Properties.ExtraSizeRight.Value
                                 : sizeRight;
                         }
                     }
                 }
 
-                toDo.RemoveAt(0);
+                toDo.Dequeue();
             }
         }
 
@@ -912,7 +915,7 @@ public class InventoryHelper(
         var inventoryItemHash = new InventoryItemHash
         {
             ByItemId = new Dictionary<string, Item>(),
-            ByParentId = new Dictionary<string, List<Item>>()
+            ByParentId = new Dictionary<string, HashSet<Item>>()
         };
         foreach (var item in inventoryItems)
         {
@@ -1365,7 +1368,7 @@ public class InventoryItemHash
     }
 
     [JsonPropertyName("byParentId")]
-    public Dictionary<string, List<Item>> ByParentId
+    public Dictionary<string, HashSet<Item>> ByParentId
     {
         get;
         set;
