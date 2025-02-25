@@ -35,14 +35,6 @@ public class InventoryHelper(
     ICloner _cloner
 )
 {
-    // Item types to ignore inside `GetSizeByInventoryItemHash`
-    private readonly HashSet<string> _itemBaseTypesToIgnore = [
-        BaseClasses.BACKPACK,
-        BaseClasses.VEST,
-        BaseClasses.HEADWEAR,
-        BaseClasses.SEARCHABLE_ITEM,
-        BaseClasses.SIMPLE_CONTAINER,
-        BaseClasses.AMMO_BOX];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -716,7 +708,7 @@ public class InventoryHelper(
         }
 
         // Calculate size contribution from child items/attachments
-        if (!_itemBaseTypesToIgnore.Contains(itemTemplate.Parent))
+        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.WEAPON))
         {
             while (toDo.Count > 0)
             {
