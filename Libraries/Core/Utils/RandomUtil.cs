@@ -435,14 +435,6 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
     public T? GetArrayValue<T>(IEnumerable<T> list)
     {
-        var rand = new Random();
-        try
-        {
-            return list.ElementAt(rand.Next(0, list.Count()));
-        }
-        catch (Exception)
-        {
-            return default;
-        }
+        return GetCollectionValue(list);
     }
 }
