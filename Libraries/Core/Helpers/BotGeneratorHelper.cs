@@ -696,6 +696,11 @@ public class BotGeneratorHelper(
     protected List<Item> GetContainerItemsWithChildren(IEnumerable<Item> containerRootItems, List<Item> inventoryItems)
     {
         var result = new List<Item>();
+        if (!containerRootItems.Any())
+        {
+            // Container has no root items
+            return result;
+        }
 
         // Filter out all items without location prop, (child items)
         var itemsWithoutLocation = inventoryItems.Where(item => item.Location is null).ToList();
