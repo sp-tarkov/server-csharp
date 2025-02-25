@@ -1,13 +1,13 @@
 {
-    "Name": "18.1CustomItemServiceLootBox",
-    "Version": "1.0.0",
-    "SptVersion": "~4.0",
-    "LoadBefore": [],
-    "LoadAfter": [],
+    "name": "18.1CustomItemServiceLootBox",
+    "version": "1.0.0",
+    "sptVersion": "~4.0",
+    "loadBefore": [],
+    "loadAfter": [],
     "IncompatibileMods": [],
-    "Url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
-    "IsBundleMod": false,
-    "Author": "SPT",
-    "Contributors": [],
-    "Licence": "MIT"
+    "url": "https://github.com/sp-tarkov/server-csharp/tree/develop/ExampleMods/Mods",
+    "isBundleMod": false,
+    "author": "SPT",
+    "contributors": [],
+    "licence": "MIT"
 }

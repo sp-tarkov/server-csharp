@@ -24,13 +24,19 @@ namespace Core.Helpers
             return Path.GetDirectoryName(modAssembly.Location);
         }
 
-        public T GetFileFromModFolder<T>(string pathToFile, string fileName)
+        public string GetRawFileData(string pathToFile, string fileName)
+        {
+            // Read the content of the config file as a string
+            return _fileUtil.ReadFile(Path.Combine(pathToFile, fileName));
+        }
+
+        public T GetJsonDataFromFile<T>(string pathToFile, string fileName)
         {
             // Read the content of the config file as a string
             var rawContent = _fileUtil.ReadFile(Path.Combine(pathToFile, fileName));
 
             // Take the string above and deserialise it into a file with a type (defined between the diamond brackets)
-            return _jsonUtil.DeserializeFromFile<T>(rawContent);
+            return _jsonUtil.Deserialize<T>(rawContent);
         }
     }
 }

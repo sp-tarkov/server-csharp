@@ -27,7 +27,7 @@ namespace _5ReadCustomJsonConfig
             var pathToMod = _modHelper.GetAbsolutePathToModFolder(Assembly.GetExecutingAssembly());
 
             // We give the path to the mod folder and the file we want to get, giving us the config, supply the files 'type' between the diamond brackets
-            var config = _modHelper.GetFileFromModFolder<ModConfig>(pathToMod, "config.json");
+            var config = _modHelper.GetJsonDataFromFile<ModConfig>(pathToMod, "config.json");
 
             _logger.Success($"Read property: 'ExampleProperty' from config with value: {config.ExampleProperty}");
         }
