@@ -25,7 +25,7 @@ public class ItemBaseClassService(
         _itemBaseClassesCache = new Dictionary<string, HashSet<string>>();
 
         var items = _databaseService.GetItems();
-        var filteredDbItems = items.Where(x => x.Value.Type == "Item");
+        var filteredDbItems = items.Where(x => string.Equals(x.Value.Type,"Item", StringComparison.OrdinalIgnoreCase));
         foreach (var item in filteredDbItems)
         {
             var itemIdToUpdate = item.Value.Id;
@@ -76,7 +76,7 @@ public class ItemBaseClassService(
             return false;
         }
 
-        // The cache is only generated for item templates with `_type === "Item"`, so return false for any other type,
+        // The cache is only generated for item templates with `_type == "Item"`, so return false for any other type,
         // including item templates that simply don't exist.
         if (!CachedItemIsOfItemType(itemTpl))
         {
@@ -97,9 +97,9 @@ public class ItemBaseClassService(
         HydrateItemBaseClassCache();
 
         // Check for item again, return false if item not found a second time
-        if (_itemBaseClassesCache.ContainsKey(itemTpl))
+        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var value))
         {
-            return _itemBaseClassesCache[itemTpl].Any(baseClasses.Contains);
+            return value.Any(baseClasses.Contains);
         }
 
         _logger.Warning(_localisationService.GetText("baseclass-item_not_found_failed", itemTpl));
@@ -114,7 +114,7 @@ public class ItemBaseClassService(
      */
     private bool CachedItemIsOfItemType(string itemTemplateId)
     {
-        return _databaseService.GetItems()[itemTemplateId]?.Type == "Item";
+        return string.Equals(_databaseService.GetItems()[itemTemplateId]?.Type,"Item", StringComparison.OrdinalIgnoreCase);
     }
 
     /**
