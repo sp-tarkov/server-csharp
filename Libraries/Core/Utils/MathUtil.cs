@@ -24,16 +24,20 @@ public class MathUtil
     /// <returns>cumulative sum of values</returns>
     public List<double> ListCumSum(List<double> values)
     {
-        var cumSumList = new List<double>(values.Count);
-        var sum = 0D;
-
-        foreach (var value in values)
+        if (values.Count == 0)
         {
-            sum += value;
-            cumSumList.Add(sum);
+            return [];
         }
 
-        return cumSumList;
+        var cumSumArray = new double[values.Count];
+        cumSumArray[0] = values[0];
+
+        for (var i = 1; i < values.Count; i++)
+        {
+            cumSumArray[i] = cumSumArray[i - 1] + values[i];
+        }
+
+        return [..cumSumArray];
     }
 
     /// <summary>

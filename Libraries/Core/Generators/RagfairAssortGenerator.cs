@@ -67,10 +67,10 @@ public class RagfairAssortGenerator(
     {
         List<List<Item>> results = [];
 
-        /** Get cloned items from db */
-        var dbItemsClone = itemHelper.GetItems().Where(item => item.Type != "Node");
+        // Get cloned items from db
+        var dbItemsClone = itemHelper.GetItems().Where(item => !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase));
 
-        /** Store processed preset tpls so we dont add them when procesing non-preset items */
+        // Store processed preset tpls so we don't add them when processing non-preset items 
         HashSet<string> processedArmorItems = [];
         var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
         var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();

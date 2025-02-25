@@ -241,7 +241,7 @@ public class LocationLootGenerator(
             }
         }
 
-        _logger.Success($"A total of {staticLootItemCount} static items spawned");
+        _logger.Success($"A total of: {staticLootItemCount} static items spawned");
 
         _logger.Success(
             _localisationService.GetText("location-containers_generated_success", staticContainerCount)
@@ -303,7 +303,7 @@ public class LocationLootGenerator(
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
                 _logger.Debug(
-                    $"Group: {groupId} wants {containerData.ChosenCount} containers but pool only has {containerIds.Count}, add what's available"
+                    $"Group: {groupId} wants: {containerData.ChosenCount} containers but pool only has: {containerIds.Count}, add what's available"
                 );
             }
 
@@ -325,9 +325,10 @@ public class LocationLootGenerator(
     }
 
     /// <summary>
-    ///     Get a mapping of each groupid and the containers in that group + count of containers to spawn on map
+    ///     Get a mapping of each groupId and the containers in that group + count of containers to spawn on map
     /// </summary>
-    /// <param name="containersGroups">Container group values</param>
+    /// <param name="staticContainerGroupData">Container group values</param>
+    /// <param name="staticContainersOnMap"></param>
     /// <returns>dictionary keyed by groupId</returns>
     protected Dictionary<string, ContainerGroupCount> GetGroupIdToContainerMappings(
         StaticContainer staticContainerGroupData,
@@ -337,23 +338,20 @@ public class LocationLootGenerator(
         var mapping = new Dictionary<string, ContainerGroupCount>();
         foreach (var groupKvP in staticContainerGroupData.ContainersGroups)
         {
-            if (staticContainerGroupData.ContainersGroups.TryGetValue(groupKvP.Key, out var groupData))
+            mapping[groupKvP.Key] = new ContainerGroupCount
             {
-                mapping[groupKvP.Key] = new ContainerGroupCount
-                {
-                    ContainerIdsWithProbability = new Dictionary<string, double>(),
-                    ChosenCount = _randomUtil.GetInt(
-                        (int) Math.Round(
-                            groupData.MinContainers.Value *
-                            _locationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
-                        ),
-                        (int) Math.Round(
-                            groupData.MaxContainers.Value *
-                            _locationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
-                        )
+                ContainerIdsWithProbability = new Dictionary<string, double>(),
+                ChosenCount = _randomUtil.GetInt(
+                    (int) Math.Round(
+                        groupKvP.Value.MinContainers.Value *
+                        _locationConfig.ContainerRandomisationSettings.ContainerGroupMinSizeMultiplier
+                    ),
+                    (int) Math.Round(
+                        groupKvP.Value.MaxContainers.Value *
+                        _locationConfig.ContainerRandomisationSettings.ContainerGroupMaxSizeMultiplier
                     )
-                };
-            }
+                )
+            };
         }
 
         // Add an empty group for containers without a group id but still have a < 100% chance to spawn
@@ -678,11 +676,11 @@ public class LocationLootGenerator(
         if (!_seasonalEventService.ChristmasEventEnabled())
         {
             dynamicLootDist.Spawnpoints = dynamicLootDist.Spawnpoints.Where(
-                    point => !point.Template.Id.StartsWith("christmas")
+                    point => !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
                 )
                 .ToList();
             dynamicLootDist.SpawnpointsForced = dynamicLootDist.SpawnpointsForced.Where(
-                    point => !point.Template.Id.StartsWith("christmas")
+                    point => !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
                 )
                 .ToList();
         }

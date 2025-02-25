@@ -185,11 +185,11 @@ public class RagfairServerHelper(
         var currencies = ragfairConfig.Dynamic.Currencies;
         var bias = new List<string>();
 
-        foreach (var item in currencies.Keys)
+        foreach (var currentKvP in currencies)
         {
-            for (var i = 0; i < currencies[item]; i++)
+            for (var i = 0; i < currentKvP.Value; i++)
             {
-                bias.Add(item);
+                bias.Add(currentKvP.Key);
             }
         }
 

@@ -32,7 +32,7 @@ public class HealthController(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Healing request</param>
-    /// <param name="sessionId">Player id</param>
+    /// <param name="sessionID">Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse OffRaidHeal(
         PmcData pmcData,
@@ -61,10 +61,10 @@ public class HealthController(
         else
         {
             // Get max healing from db
-            var maxhp = _itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
+            var maxHp = _itemHelper.GetItem(healingItemToUse.Template).Value.Properties.MaxHpResource;
             healingItemToUse.Upd.MedKit = new UpdMedKit
             {
-                HpResource = maxhp - request.Count
+                HpResource = maxHp - request.Count
             }; // Subtract amout used from max
             // request.count appears to take into account healing effects removed, e.g. bleeds
             // Salewa heals limb for 20 and fixes light bleed = (20+45 = 65)
@@ -87,7 +87,7 @@ public class HealthController(
             return output;
         }
 
-        // Get inital heal amount
+        // Get initial heal amount
         var amountToHealLimb = request.Count;
 
         // Check if healing item removes negative effects
@@ -95,19 +95,18 @@ public class HealthController(
         if (itemRemovesEffects && bodyPartToHeal.Effects is not null)
         {
             // Can remove effects and limb has effects to remove
-            var effectsOnBodyPart = bodyPartToHeal.Effects.Keys;
-            foreach (var effectKey in effectsOnBodyPart)
+            foreach (var effectKvP in bodyPartToHeal.Effects)
             {
                 // Check if healing item removes the effect on limb
-                if (!healItemEffectDetails.TryGetValue(Enum.Parse<DamageEffectType>(effectKey), out var matchingEffectFromHealingItem))
+                if (!healItemEffectDetails.TryGetValue(Enum.Parse<DamageEffectType>(effectKvP.Key), out var matchingEffectFromHealingItem))
                     // Healing item doesn't have matching effect, it doesn't remove the effect
                 {
                     continue;
                 }
 
-                // Adjust limb heal amount based on if its fixing an effect (request.count is TOTAL cost of hp resource on heal item, NOT amount to heal limb)
+                // Adjust limb heal amount based on if it's fixing an effect (request.count is TOTAL cost of hp resource on heal item, NOT amount to heal limb)
                 amountToHealLimb -= (int) (matchingEffectFromHealingItem.Cost ?? 0);
-                bodyPartToHeal.Effects.Remove(effectKey);
+                bodyPartToHeal.Effects.Remove(effectKvP.Key);
             }
         }
 

@@ -232,7 +232,7 @@ public class BotEquipmentModPoolService
     {
         var weapons = _databaseService.GetItems()
             .Values.Where(
-                item => item.Type == "Item" && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON)
+                item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON)
             );
         GeneratePool(weapons, "weapon");
 
@@ -247,7 +247,7 @@ public class BotEquipmentModPoolService
     {
         var gear = _databaseService.GetItems()
             .Values.Where(
-                item => item.Type == "Item" &&
+                item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
                         _itemHelper.IsOfBaseclasses(
                             item.Id,
                             [

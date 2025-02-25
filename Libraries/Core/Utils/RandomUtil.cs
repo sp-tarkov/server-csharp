@@ -1,3 +1,4 @@
+using System;
 using Core.Models.Utils;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
@@ -109,21 +110,21 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
     /// </summary>
     /// <param name="collection">The collection of strings to select a random value from.</param>
     /// <returns>A randomly selected string from the array.</returns>
-    public string GetStringCollectionValue(IEnumerable<string> collection)
-    {
-        return collection.ElementAt(GetInt(0, collection.Count() - 1));
-    }
-
-    /// <summary>
-    ///     Returns a random type T from the provided collection of type T.
-    /// </summary>
-    /// <param name="collection">The collection to get the random element from</param>
-    /// <typeparam name="T">The type of elements in the collection.</typeparam>
-    /// <returns>A random element from the collection.</returns>
-    /// <remarks>This was formerly getArrayValue() in the node server</remarks>
     public T GetCollectionValue<T>(IEnumerable<T> collection)
     {
-        return collection.ElementAt(GetInt(0, collection.Count() - 1));
+        // We can call `count` directly if it's a list
+        if (collection is IList<T> list)
+        {
+            return list[GetInt(0, list.Count - 1)];
+        }
+
+        var count = collection.Count(); // Run query and count elements
+        if (count == 0)
+        {
+            throw new InvalidOperationException("Sequence contains no elements.");
+        }
+
+        return collection.ElementAt(GetInt(0, count - 1));
     }
 
     /// <summary>
@@ -434,14 +435,6 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
 
     public T? GetArrayValue<T>(IEnumerable<T> list)
     {
-        var rand = new Random();
-        try
-        {
-            return list.ElementAt(rand.Next(0, list.Count()));
-        }
-        catch (Exception)
-        {
-            return default;
-        }
+        return GetCollectionValue(list);
     }
 }

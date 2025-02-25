@@ -276,9 +276,9 @@ public class RagfairOfferService(
         // Need to regenerate Ids to ensure returned item(s) have correct parent values
         var newParentId = hashUtil.Generate();
         foreach (var item in unstackedItems)
-            // Refresh root items' parentIds
         {
-            if (item.ParentId == "hideout")
+            // Refresh root items' parentIds
+            if (string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase))
             {
                 item.ParentId = newParentId;
             }

@@ -146,7 +146,7 @@ public class BotWeaponGenerator(
         }
 
         // Add mods to weapon base
-        if (modPool.Keys.Contains(weaponTpl))
+        if (modPool.ContainsKey(weaponTpl))
         {
             // Role to treat bot as e.g. pmc/scav/boss
             var botEquipmentRole = _botGeneratorHelper.GetBotEquipmentRole(botRole);
@@ -579,7 +579,7 @@ public class BotWeaponGenerator(
     protected string GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
     {
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
-        if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Keys.Count == 0)
+        if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Count == 0)
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {

@@ -953,7 +953,7 @@ public class RagfairOfferGenerator(
             false
         );
 
-        // Dont make items under a designated rouble value into barter offers
+        // Don't make items under a designated rouble value into barter offers
         if (priceOfOfferItem < barterConfig.MinRoubleCostToBecomeBarter)
         {
             return CreateCurrencyBarterScheme(offerItems, false);
@@ -969,25 +969,28 @@ public class RagfairOfferGenerator(
         var offerCostVarianceRoubles = desiredItemCostRouble * barterConfig.PriceRangeVariancePercent / 100;
 
         // Dict of items and their flea price (cached on first use)
-        var itemFleaPrices = GetFleaPricesAsArray();
+        List<TplWithFleaPrice> itemFleaPrices = GetFleaPricesAsArray();
 
         // Filter possible barters to items that match the price range + not itself
+        var min = desiredItemCostRouble - offerCostVarianceRoubles;
+        var max = desiredItemCostRouble + offerCostVarianceRoubles;
         var itemsInsidePriceBounds = itemFleaPrices.Where(
-                itemAndPrice =>
-                    itemAndPrice.Price >= desiredItemCostRouble - offerCostVarianceRoubles &&
-                    itemAndPrice.Price <= desiredItemCostRouble + offerCostVarianceRoubles &&
-                    !string.Equals(itemAndPrice.Tpl, offerItems[0].Template, StringComparison.OrdinalIgnoreCase)  // Don't allow the item being sold to be chosen
-            )
-            .ToList();
+            itemAndPrice =>
+                itemAndPrice.Price >= min &&
+                itemAndPrice.Price <= max &&
+                !string.Equals(itemAndPrice.Tpl, offerItems[0].Template,
+                    StringComparison.OrdinalIgnoreCase) // Don't allow the item being sold to be chosen
+        );
+            
 
         // No items on flea have a matching price, fall back to currency
-        if (itemsInsidePriceBounds.Count == 0)
+        if (!itemsInsidePriceBounds.Any())
         {
             return CreateCurrencyBarterScheme(offerItems, false);
         }
 
         // Choose random item from price-filtered flea items
-        var randomItem = randomUtil.GetArrayValue(itemsInsidePriceBounds);
+        var randomItem = randomUtil.GetArrayValue(itemsInsidePriceBounds.ToList());
 
         return
         [

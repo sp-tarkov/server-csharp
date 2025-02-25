@@ -257,8 +257,8 @@ public class ProfileController(
         var profileToViewScav = profileToView.CharacterData.ScavData;
 
         // Get the keys needed to find profiles hideout-related items
-        var hideoutKeys = new List<string>();
-        hideoutKeys.AddRange(profileToViewPmc.Inventory.HideoutAreaStashes.Keys);
+        var hideoutKeys = new HashSet<string>();
+        hideoutKeys.UnionWith(profileToViewPmc.Inventory.HideoutAreaStashes.Keys);
         hideoutKeys.Add(profileToViewPmc.Inventory.HideoutCustomizationStashId);
 
         // Find hideout items e.g. posters

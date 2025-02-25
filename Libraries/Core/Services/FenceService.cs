@@ -760,7 +760,7 @@ public class FenceService(
     {
         var priceLimits = traderConfig.Fence.ItemCategoryRoublePriceLimit;
         var assortRootItems = baseFenceAssortClone.Items
-            .Where(item => item.ParentId == "hideout" && item.Upd?.SptPresetId == null)
+            .Where(item => string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase) && item.Upd?.SptPresetId == null)
             .ToList();
         if (assortRootItems.Count == 0)
         {
@@ -887,7 +887,7 @@ public class FenceService(
             .Where(
                 itemWithChildren => itemWithChildren.FirstOrDefault(
                                         item => item.Template == rootItemBeingAdded.Template &&
-                                                item.ParentId == "hideout"
+                                                string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase)
                                     ) !=
                                     null
             )

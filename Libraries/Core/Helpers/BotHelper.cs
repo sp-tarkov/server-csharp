@@ -199,9 +199,9 @@ public class BotHelper(
                 $"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
             );
 
-            return _randomUtil.GetStringCollectionValue(allNames);
+            return _randomUtil.GetCollectionValue(allNames.ToList());
         }
 
-        return _randomUtil.GetStringCollectionValue(filteredNames);
+        return _randomUtil.GetCollectionValue(filteredNames.ToList());
     }
 }

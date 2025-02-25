@@ -650,14 +650,14 @@ public class BotEquipmentModGenerator(
             }
             else
             {
-                var containsModInPool = request.ModPool.Keys.Contains(modToAddTemplate.Value.Id);
+                var containsModInPool = request.ModPool.ContainsKey(modToAddTemplate.Value.Id);
 
                 // Sometimes randomised slots are missing sub-mods, if so, get values from mod pool service
                 // Check for a randomisable slot + without data in modPool + item being added as additional slots
                 if (isRandomisableSlot && !containsModInPool && modToAddTemplate.Value.Properties.Slots.Any())
                 {
                     var modFromService = _botEquipmentModPoolService.GetModsForWeaponSlot(modToAddTemplate.Value.Id);
-                    if (modFromService?.Keys.Count > 0)
+                    if (modFromService?.Count > 0)
                     {
                         request.ModPool[modToAddTemplate.Value.Id] = modFromService.ToDictionary();
                         containsModInPool = true;
@@ -669,7 +669,7 @@ public class BotEquipmentModGenerator(
                 {
                     // Check for required mods the item we've added needs to be classified as 'valid'
                     var modFromService = _botEquipmentModPoolService.GetRequiredModsForWeaponSlot(modToAddTemplate.Value.Id);
-                    if (modFromService?.Keys.Count > 0)
+                    if (modFromService?.Count > 0)
                     {
                         request.ModPool[modToAddTemplate.Value.Id] = modFromService;
                         containsModInPool = true;
