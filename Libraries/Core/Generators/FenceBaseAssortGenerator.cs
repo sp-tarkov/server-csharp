@@ -343,6 +343,6 @@ public class FenceBaseAssortGenerator(
      */
     protected bool IsValidFenceItem(TemplateItem item)
     {
-        return item.Type == "Item";
+        return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase);
     }
 }

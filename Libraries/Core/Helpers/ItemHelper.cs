@@ -350,7 +350,7 @@ public class ItemHelper(
         }
 
         return !(itemDetails.Value.Properties.QuestItem ?? false) &&
-               itemDetails.Value.Type == "Item" &&
+               string.Equals(itemDetails.Value.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
                baseTypes.All(x => !IsOfBaseclass(tpl, x)) &&
                GetItemPrice(tpl) > 0 &&
                !_itemFilterService.IsItemBlacklisted(tpl);

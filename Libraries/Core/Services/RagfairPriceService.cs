@@ -48,7 +48,7 @@ public class RagfairPriceService(
     public void RefreshStaticPrices()
     {
         _staticPrices = new Dictionary<string, double>();
-        foreach (var item in _databaseService.GetItems().Values.Where(item => item.Type == "Item"))
+        foreach (var item in _databaseService.GetItems().Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
         {
             _staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
         }

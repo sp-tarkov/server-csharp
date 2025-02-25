@@ -521,7 +521,7 @@ public class PostDbLoadService(
     {
         var dbItems = _databaseService.GetItems().Values.ToList();
         foreach (var item in dbItems.Where(
-                     item => item.Type == "Item" &&
+                     item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
                              !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
                              !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
                  ))
