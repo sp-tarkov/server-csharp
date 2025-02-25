@@ -69,8 +69,21 @@ public class ModDllLoader
 
     private static void SortMods(List<SptMod> mods)
     {
+
         // TODO: implement
         Console.WriteLine($"NOT IMPLEMENTED: SortMods");
+    }
+
+    public List<string> SortModsLoadOrder()
+    {
+        // if loadorder.json exists: load it, otherwise generate load order
+        var loadOrderPath = $"{ModPath}loadorder.json";
+        if (File.Exists(loadOrderPath))
+        {
+            return JsonSerializer.Deserialize<List<string>>(File.ReadAllText(loadOrderPath))!;
+        }
+
+        return this.modLoadOrder.getLoadOrder();
     }
 
     /// <summary>
