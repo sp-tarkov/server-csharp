@@ -36,6 +36,7 @@ public class InventoryHelper(
 )
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
+    private readonly HashSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -708,7 +709,7 @@ public class InventoryHelper(
         }
 
         // Calculate size contribution from child items/attachments
-        if (_itemHelper.IsOfBaseclass(itemTpl, BaseClasses.WEAPON))
+        if (_itemHelper.IsOfBaseclasses(itemTpl, _variableSizeItemTypes))
         {
             while (toDo.Count > 0)
             {
