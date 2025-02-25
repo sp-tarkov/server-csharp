@@ -13,7 +13,7 @@ public class ItemBaseClassService(
 )
 {
     private bool _cacheGenerated;
-    private Dictionary<string, List<string>> _itemBaseClassesCache;
+    private Dictionary<string, HashSet<string>> _itemBaseClassesCache;
 
     /**
      * Create cache and store inside ItemBaseClassService
@@ -22,7 +22,7 @@ public class ItemBaseClassService(
     public void HydrateItemBaseClassCache()
     {
         // Clear existing cache
-        _itemBaseClassesCache = new Dictionary<string, List<string>>();
+        _itemBaseClassesCache = new Dictionary<string, HashSet<string>>();
 
         var items = _databaseService.GetItems();
         var filteredDbItems = items.Where(x => x.Value.Type == "Item");
@@ -83,10 +83,9 @@ public class ItemBaseClassService(
             return false;
         }
 
-        // No item in cache
-        if (_itemBaseClassesCache.ContainsKey(itemTpl))
+        if (_itemBaseClassesCache.TryGetValue(itemTpl, out var baseClassList))
         {
-            return _itemBaseClassesCache[itemTpl].Any(baseClasses.Contains);
+            return baseClassList.Overlaps(baseClasses);
         }
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -135,6 +134,6 @@ public class ItemBaseClassService(
             return [];
         }
 
-        return _itemBaseClassesCache[itemTpl];
+        return _itemBaseClassesCache[itemTpl].ToList();
     }
 }

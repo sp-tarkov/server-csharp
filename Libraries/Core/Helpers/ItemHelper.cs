@@ -584,7 +584,7 @@ public class ItemHelper(
     {
         if (_databaseService.GetItems().TryGetValue(itemTpl, out var item))
         {
-            return GetItem(itemTpl).Value.Properties?.Slots?.Count() > 0;
+            return GetItem(itemTpl).Value.Properties?.Slots?.Count > 0;
         }
 
         return false;
@@ -775,7 +775,7 @@ public class ItemHelper(
         foreach (var childItem in items)
         {
             // Include itself
-            if (childItem.Id.Equals(baseItemId, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(childItem.Id, baseItemId, StringComparison.Ordinal))
             {
                 result.Add(childItem.Id, childItem);
                 continue;
@@ -788,7 +788,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.OrdinalIgnoreCase) && !result.ContainsKey(childItem.Id))
+            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.Ordinal) && !result.ContainsKey(childItem.Id))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
@@ -1890,7 +1890,7 @@ public class ItemHelper(
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
                     _logger.Debug(
-                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count()}, skipping"
+                        $"Unable to choose a mod for slot: {slot.Name} on item: {itemToAddTemplate.Id} {itemToAddTemplate.Name}, no compatible tpl found in pool of {itemPool.Count}, skipping"
                     );
                 }
 

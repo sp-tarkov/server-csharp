@@ -44,12 +44,6 @@ public class HttpRouter
             HandleRoute(req, sessionID, wrapper, _dynamicRoutes, true, body, out deserializedObject);
         }
 
-        // TODO: Temporary hack to change ItemEventRouter response sessionID binding to what client expects
-        if (wrapper.Output?.Contains("\"profileChanges\":{") ?? false)
-        {
-            wrapper.Output = wrapper.Output.Replace(sessionID, sessionID);
-        }
-
         return wrapper.Output;
     }
 

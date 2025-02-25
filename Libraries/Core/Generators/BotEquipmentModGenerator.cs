@@ -998,25 +998,25 @@ public class BotEquipmentModGenerator(
 
         if (request.ModSlot == "mod_gas_block")
         {
-            if (request.WeaponStats.HasOptic ?? (false && modPool.Count > 1))
+            if ((request.WeaponStats.HasOptic ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to low profile gas blocks when weapon has an optic
                 var onlyLowProfileGasBlocks = modPool.Where(
                     tpl =>
                         _botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
-                if (onlyLowProfileGasBlocks.Count() > 0)
+                if (onlyLowProfileGasBlocks.Any())
                 {
                     modPool = onlyLowProfileGasBlocks.ToHashSet();
                 }
             }
-            else if (request.WeaponStats.HasRearIronSight ?? (false && modPool.Count() > 1))
+            else if ((request.WeaponStats.HasRearIronSight ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
                 var onlyHighProfileGasBlocks = modPool.Where(
                     tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
-                if (onlyHighProfileGasBlocks.Count() > 0)
+                if (onlyHighProfileGasBlocks.Any())
                 {
                     modPool = onlyHighProfileGasBlocks.ToHashSet();
                 }
@@ -1136,7 +1136,7 @@ public class BotEquipmentModGenerator(
             {
                 Incompatible = true,
                 Found = false,
-                Reason = $"Unable to add mod to {choiceTypeEnum.ToString()} slot: {modSlotName}. All: {modPool.Count()} had conflicts"
+                Reason = $"Unable to add mod to {choiceTypeEnum.ToString()} slot: {modSlotName}. All: {modPool.Count} had conflicts"
             };
         }
 
@@ -1356,7 +1356,7 @@ public class BotEquipmentModGenerator(
 
                 // Last ditch, use full pool of items minus conflicts
                 var newListOfModsForSlot = parentSlotCompatibleItems.Where(tpl => !request.ConflictingItemTpls.Contains(tpl));
-                if (newListOfModsForSlot.Count() > 0)
+                if (newListOfModsForSlot.Any())
                 {
                     return newListOfModsForSlot.ToHashSet();
                 }
@@ -1781,7 +1781,7 @@ public class BotEquipmentModGenerator(
             // Edge case, what if item is a mount for a scope and not directly a scope?
             // Check item is mount + has child items
             var itemDetails = _itemHelper.GetItem(item).Value;
-            if (_itemHelper.IsOfBaseclass(item, BaseClasses.MOUNT) && itemDetails.Properties.Slots.Count() > 0)
+            if (_itemHelper.IsOfBaseclass(item, BaseClasses.MOUNT) && itemDetails.Properties.Slots.Any())
             {
                 // Check to see if mount has a scope slot (only include primary slot, ignore the rest like the backup sight slots)
                 // Should only find 1 as there's currently no items with a mod_scope AND a mod_scope_000

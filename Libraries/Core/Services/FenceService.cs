@@ -777,8 +777,13 @@ public class FenceService(
                 continue;
             }
 
+            // Filter out root items from pool
+            var childItemsAndSingleRoot = baseFenceAssortClone.Items.Where(item =>
+                !string.Equals(item.ParentId, "hideout", StringComparison.Ordinal)
+                || string.Equals(item.Id, chosenBaseAssortRoot.Id, StringComparison.Ordinal)).ToList();
+
             var desiredAssortItemAndChildrenClone = _cloner.Clone(
-                itemHelper.FindAndReturnChildrenAsItems(baseFenceAssortClone.Items, chosenBaseAssortRoot.Id)
+                itemHelper.FindAndReturnChildrenAsItems(childItemsAndSingleRoot, chosenBaseAssortRoot.Id)
             );
 
             var itemDbDetails = itemHelper.GetItem(chosenBaseAssortRoot.Template).Value;

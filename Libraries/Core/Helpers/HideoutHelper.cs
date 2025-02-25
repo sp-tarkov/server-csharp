@@ -242,7 +242,7 @@ public class HideoutHelper(
     protected HideoutProperties GetHideoutProperties(PmcData pmcData)
     {
         var bitcoinFarm = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == HideoutAreas.BITCOIN_FARM);
-        var bitcoinCount = bitcoinFarm?.Slots.Where(slot => slot.Items is not null).Count(); // Get slots with an item property
+        var bitcoinCount = (bitcoinFarm?.Slots).Count(slot => slot.Items is not null); // Get slots with an item property
 
         var hideoutProperties = new HideoutProperties
         {

@@ -591,7 +591,7 @@ public class ProfileHelper(
     public double GetBonusValueFromProfile(PmcData pmcProfile, BonusType desiredBonus)
     {
         var bonuses = pmcProfile?.Bonuses?.Where(b => b.Type == desiredBonus);
-        if (bonuses.Count() == 0)
+        if (!bonuses.Any())
         {
             return 0;
         }
@@ -621,7 +621,7 @@ public class ProfileHelper(
         // Find all pockets in profile, may be multiple as they could have equipment stand
         // (1 pocket for each upgrade level of equipment stand)
         var pockets = pmcProfile.Inventory.Items.Where(i => i.SlotId == "Pockets");
-        if (pockets.Count() == 0)
+        if (!pockets.Any())
         {
             _logger.Error($"Unable to replace profile: {pmcProfile.Id} pocket tpl with: {newPocketTpl} as Pocket item could not be found.");
             return;

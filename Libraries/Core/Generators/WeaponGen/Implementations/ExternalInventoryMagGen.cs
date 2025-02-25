@@ -181,7 +181,7 @@ public class ExternalInventoryMagGen(
 
         // Non-internal magazines that fit into the weapon
         var externalMagazineOnlyPool = magazinePool.Where(x => x.Properties.ReloadMagType != ReloadMode.InternalMagazine);
-        if (externalMagazineOnlyPool is null || externalMagazineOnlyPool?.Count() == 0)
+        if (externalMagazineOnlyPool is null || !externalMagazineOnlyPool.Any())
         {
             return null;
         }

@@ -56,9 +56,9 @@ public class ModDllLoader
         {
             if (sptMod.PackageJson?.Dependencies?.Count > 0)
             {
-                // Has deps, validate they exist
+                // Has dependencies, validate they exist
                 foreach (var dependency in sptMod.PackageJson.Dependencies
-                             .Where(dependency => !mods.Exists(x => x.PackageJson.Name.ToLower() == dependency.Key)))
+                             .Where(dependency => !mods.Exists(x => string.Equals(x.PackageJson?.Name, dependency.Key, StringComparison.OrdinalIgnoreCase))))
                 {
                     // TODO: also check version passes semver check
                     throw new Exception($"Mod: {sptMod.PackageJson.Name} is unable to load as it cannot find another mod it needs: {dependency.Key} version: {dependency.Value}");

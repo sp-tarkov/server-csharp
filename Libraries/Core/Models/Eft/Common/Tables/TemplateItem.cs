@@ -1,3 +1,5 @@
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json.Serialization;
 using Core.Models.Enums;
 using Core.Utils.Json.Converters;
@@ -73,11 +75,18 @@ public record TemplateItem
         set;
     }
 
+    private string _prototype;
     [JsonPropertyName("_proto")]
     public string? Prototype
     {
-        get;
-        set;
+        get
+        {
+            return _prototype;
+        }
+        set
+        {
+            _prototype = string.Intern(value);
+        }
     }
 }
 
@@ -152,11 +161,18 @@ public record Props
         set;
     }
 
+    private string _backgroundColor;
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor
     {
-        get;
-        set;
+        get
+        {
+            return _backgroundColor;
+        }
+        set
+        {
+            _backgroundColor = string.Intern(value);
+        }
     }
 
     // Type confirmed via client
@@ -205,11 +221,18 @@ public record Props
         set;
     }
 
+    private string _itemSound;
     [JsonPropertyName("ItemSound")]
     public string? ItemSound
     {
-        get;
-        set;
+        get
+        {
+            return _itemSound;
+        }
+        set
+        {
+            _itemSound = string.Intern(value);
+        }
     }
 
     [JsonPropertyName("Prefab")] // TODO: TYPE FUCKERY: can be a Prefab object or empty string or a string

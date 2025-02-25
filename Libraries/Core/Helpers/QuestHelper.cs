@@ -737,7 +737,7 @@ public class QuestHelper(
         // Quest found and no repeatable found
         if (quest is not null && matchingRepeatableQuest is null)
         {
-            if (quest.FailMessageText.Trim().Count() > 0)
+            if (quest.FailMessageText.Trim().Any())
             {
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     sessionID,
