@@ -2,7 +2,7 @@ using System.Reflection;
 using System.Text.Json;
 using Core.Models.Spt.Mod;
 
-namespace Server;
+namespace Server.Modding;
 
 public class ModDllLoader
 {
@@ -38,39 +38,7 @@ public class ModDllLoader
             }
         }
 
-        ValidateModDependencies(mods);
-
-        // Sort by mods LoadBefore/LoadAfter collections
-        SortMods(mods);
-
         return mods;
-    }
-
-    /// <summary>
-    /// Ensure all mods have their dependencies
-    /// </summary>
-    /// <param name="mods">Mods to check dependencies of</param>
-    private static void ValidateModDependencies(List<SptMod> mods)
-    {
-        foreach (var sptMod in mods)
-        {
-            if (sptMod.PackageJson?.Dependencies?.Count > 0)
-            {
-                // Has dependencies, validate they exist
-                foreach (var dependency in sptMod.PackageJson.Dependencies
-                             .Where(dependency => !mods.Exists(x => string.Equals(x.PackageJson?.Name, dependency.Key, StringComparison.OrdinalIgnoreCase))))
-                {
-                    // TODO: also check version passes semver check
-                    throw new Exception($"Mod: {sptMod.PackageJson.Name} is unable to load as it cannot find another mod it needs: {dependency.Key} version: {dependency.Value}");
-                }
-            }
-        }
-    }
-
-    private static void SortMods(List<SptMod> mods)
-    {
-        // TODO: implement
-        Console.WriteLine($"NOT IMPLEMENTED: SortMods");
     }
 
     /// <summary>
@@ -123,6 +91,13 @@ public class ModDllLoader
         if (asmCount == 0)
         {
             throw new Exception($"No Assemblies found in path: {Path.GetFullPath(path)}");
+        }
+
+        if (result.PackageJson?.Name == null || result.PackageJson?.Author == null ||
+            result.PackageJson?.Version == null || result.PackageJson?.Licence == null ||
+            result.PackageJson?.SptVersion == null)
+        {
+            throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
         }
 
         if (result.Assembly is not null && result.PackageJson is not null)

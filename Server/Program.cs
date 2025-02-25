@@ -2,11 +2,17 @@ using System.Runtime;
 using Core.Context;
 using Core.Helpers;
 using Core.Models.External;
+using Core.Models.Spt.Mod;
+using Core.Models.Utils;
 using Core.Utils;
 using Serilog;
 using Serilog.Events;
 using Serilog.Exceptions;
 using Serilog.Extensions.Logging;
+using Server.Logger;
+using Server.Modding;
+using SptCommon.Semver;
+using SptCommon.Semver.Implementations;
 using SptDependencyInjection;
 
 namespace Server;
@@ -15,19 +21,22 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        // Search for mod dlls
         var mods = ModDllLoader.LoadAllMods();
-        HarmonyBootstrapper.LoadAllPatches(mods.Select(asm => asm.Assembly).ToList());
-        var builder = WebApplication.CreateBuilder(args);
-        builder.Host.UseSerilog();
-
-        builder.Configuration.AddJsonFile("appsettings.json", true, true);
-
-        CreateAndRegisterLogger(builder, out var registeredLogger);
-
+        // Create web builder and logger
+        var builder = CreateNewHostBuilder(out var registeredLogger, args);
+        // Initialize the program variables TODO: this needs to be implemented properly
         ProgramStatics.Initialize();
 
+        // validate and sort mods, this will also discard any mods that are invalid
+        var sortedLoadedMods = ValidateMods(mods);
+        // for harmony we use the original list, as some mods may only be bepinex patches only
+        HarmonyBootstrapper.LoadAllPatches(mods.Select(asm => asm.Assembly).ToList());
+
+        // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
-        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, mods.Select(a => a.Assembly).ToList());
+        // register mod components from the filtered list
+        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.Select(a => a.Assembly).ToList());
         var logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
         try
         {
@@ -72,6 +81,33 @@ public static class Program
             logger.LogCritical(ex, "Critical exception, stopping server...");
             // throw ex;
         }
+    }
+
+    private static WebApplicationBuilder CreateNewHostBuilder(out Serilog.Core.Logger logger, string[]? args = null)
+    {
+        var builder = WebApplication.CreateBuilder(args);
+        builder.Host.UseSerilog();
+        builder.Configuration.AddJsonFile("appsettings.json", true, true);
+        CreateAndRegisterLogger(builder, out logger);
+        return builder;
+    }
+
+    private static List<SptMod> ValidateMods(List<SptMod> mods)
+    {
+        // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
+        // So we create a disposable web application that we will throw away after getting the mods to load
+        var builder = CreateNewHostBuilder(out _);
+        // register SPT components
+        DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+        // register the mod validator components
+        var provider = builder.Services
+            .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptWebApplicationLogger<ModValidator>))
+            .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
+            .AddSingleton<ModValidator>()
+            .AddSingleton<ModLoadOrder>()
+            .BuildServiceProvider();
+        var modValidator = provider.GetRequiredService<ModValidator>();
+        return modValidator.ValidateAndSort(mods);
     }
 
     public static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)

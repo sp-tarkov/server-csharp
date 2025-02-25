@@ -9,13 +9,13 @@ public class FileUtil(
 {
     protected const string _modBasePath = "user/mods/";
 
-    public List<string> GetFiles(string path, bool recursive = false)
+    public List<string> GetFiles(string path, bool recursive = false, string searchPattern = "*")
     {
-        var files = new List<string>(Directory.GetFiles(path));
+        var files = new List<string>(Directory.GetFiles(path, searchPattern));
 
         if (recursive)
         {
-            files.AddRange(Directory.GetDirectories(path).SelectMany(d => GetFiles(d, recursive)));
+            files.AddRange(Directory.GetDirectories(path).SelectMany(d => GetFiles(d, recursive, searchPattern)));
         }
 
         return files;

@@ -1,7 +1,7 @@
 using System.Reflection;
 using HarmonyLib;
 
-namespace Server;
+namespace Server.Modding;
 
 public class HarmonyBootstrapper
 {
