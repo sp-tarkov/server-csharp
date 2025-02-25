@@ -809,11 +809,11 @@ public class ItemHelper(
     public List<Item> FindAndReturnChildrenByAssort(string itemIdToFind, List<Item> assort)
     {
         List<Item> list = [];
-
         foreach (var itemFromAssort in assort)
-            // Parent matches desired item + all items in list do not match
         {
-            if (string.Equals(itemFromAssort.ParentId, itemIdToFind, StringComparison.OrdinalIgnoreCase) && list.All(item => itemFromAssort.Id != item.Id))
+            // Parent matches desired item + all items in list do not match
+            if (string.Equals(itemFromAssort.ParentId, itemIdToFind, StringComparison.OrdinalIgnoreCase)
+                && list.All(item => !string.Equals(itemFromAssort.Id, item.Id, StringComparison.Ordinal)))
             {
                 list.Add(itemFromAssort);
                 list = list.Concat(FindAndReturnChildrenByAssort(itemFromAssort.Id, assort)).ToList();

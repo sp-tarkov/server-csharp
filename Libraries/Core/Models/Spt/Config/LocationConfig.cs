@@ -506,7 +506,7 @@ public record ContainerRandomisationSettings
      * Some container types don't work when randomised
      */
     [JsonPropertyName("containerTypesToNotRandomise")]
-    public List<string> ContainerTypesToNotRandomise
+    public HashSet<string> ContainerTypesToNotRandomise
     {
         get;
         set;

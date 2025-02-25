@@ -563,13 +563,13 @@ public class TraderHelper(
     public double GetHighestSellToTraderPrice(string tpl)
     {
         // Find largest trader price for item
-        var highestPrice = 1; // Default price
+        var highestPrice = 1d; // Default price
         foreach (var trader in Traders.TradersDictionary)
         {
             // Get trader and check buy category allows tpl
             var traderBase = _databaseService.GetTrader(trader.Value).Base;
 
-            // Skip traders that don't sell
+            // Skip traders that don't sell this category of item
             if (traderBase is null || !_itemHelper.IsOfBaseclasses(tpl, traderBase.ItemsBuy.Category))
             {
                 continue;
@@ -586,7 +586,7 @@ public class TraderHelper(
             // Price from this trader is higher than highest found, update
             if (priceTraderBuysItemAt > highestPrice)
             {
-                highestPrice = (int) priceTraderBuysItemAt;
+                highestPrice = priceTraderBuysItemAt;
             }
         }
 

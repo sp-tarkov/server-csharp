@@ -1152,7 +1152,7 @@ public class LocationLifecycleService
  */
     protected List<Item> GetEquippedGear(List<Item> items)
     {
-        var inventorySlots = new List<string>
+        var inventorySlots = new HashSet<string>
         {
             "FirstPrimaryWeapon",
             "SecondPrimaryWeapon",
@@ -1176,34 +1176,21 @@ public class LocationLifecycleService
             "SpecialSlot3"
         };
 
-        var inventoryItems = new List<Item>();
-
         // Get an array of root player items
-        foreach (var item in items)
-        {
-            if (inventorySlots.Contains(item.SlotId))
-            {
-                inventoryItems.Add(item);
-            }
-        }
+        var inventoryItems = items.Where(item => inventorySlots.Contains(item.SlotId)).ToList();
 
         // Loop through these items and get all of their children
         var newItems = inventoryItems;
         while (newItems.Count > 0)
         {
             var foundItems = new List<Item>();
-
             foreach (var item in newItems)
-                // Find children of this item
-            foreach (var newItem in items)
             {
-                if (newItem.ParentId == item.Id)
-                {
-                    foundItems.Add(newItem);
-                }
+                // Find children of this item
+                foundItems.AddRange(items.Where(newItem => string.Equals(newItem.ParentId, item.Id, StringComparison.Ordinal)));
             }
 
-            // Add these new found items to our list of inventory items
+            // Add these newly found items to our list of inventory items
             inventoryItems.AddRange(inventoryItems);
             inventoryItems.AddRange(foundItems);
 
