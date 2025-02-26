@@ -60,6 +60,7 @@ public class RagfairServer(
             _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
 
             _ragfairOfferService.RemoveExpiredOffers();
+            GC.Collect(GC.MaxGeneration, GCCollectionMode.Optimized, true, true);
         }
 
         _ragfairRequiredItemsService.BuildRequiredItemTable();

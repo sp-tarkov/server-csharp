@@ -362,7 +362,7 @@ public class RagfairOfferGenerator(
         stopwatch.Stop();
         if (logger.IsLogEnabled(LogLevel.Debug))
         {
-            logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts");
+            logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GetRagfairAssorts - {assortItemsToProcess.Count} items");
         }
 
         stopwatch.Restart();

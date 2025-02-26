@@ -10,17 +10,18 @@ public class RagfairRequiredItemsService(
     RagfairOfferService _ragfairOfferService,
     PaymentHelper _paymentHelper)
 {
-    protected ConcurrentDictionary<string, List<RagfairOffer>> _requiredItemsCache;
+    protected ConcurrentDictionary<string, List<RagfairOffer>> _requiredItemsCache = new();
 
     public List<RagfairOffer>? GetRequiredItemsById(string searchId)
     {
         _requiredItemsCache.TryGetValue(searchId, out var list);
+
         return list;
     }
 
     public void BuildRequiredItemTable()
     {
-        _requiredItemsCache = new ConcurrentDictionary<string, List<RagfairOffer>>();
+        _requiredItemsCache.Clear();
         foreach (var offer in _ragfairOfferService.GetOffers())
         foreach (var requirement in offer.Requirements)
         {
