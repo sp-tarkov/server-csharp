@@ -18,6 +18,7 @@ public class RagfairServerHelper(
     DatabaseService databaseService,
     ItemHelper itemHelper,
     TraderHelper traderHelper,
+    WeightedRandomHelper weightedRandomHelper,
     MailSendService mailSendService,
     LocalisationService localisationService,
     ConfigServer configServer,
@@ -182,20 +183,7 @@ public class RagfairServerHelper(
      */
     public string GetDynamicOfferCurrency()
     {
-        var currencies = ragfairConfig.Dynamic.Currencies;
-        var bias = new List<string>();
-
-        foreach (var currentKvP in currencies)
-        {
-            for (var i = 0; i < currentKvP.Value; i++)
-            {
-                bias.Add(currentKvP.Key);
-            }
-        }
-
-        var index = Math.Min((int) Math.Floor(randomUtil.RandNum(0, 1, 14) * bias.Count), 99);
-
-        return bias[index];
+        return weightedRandomHelper.GetWeightedValue(ragfairConfig.Dynamic.Currencies);
     }
 
     /**
