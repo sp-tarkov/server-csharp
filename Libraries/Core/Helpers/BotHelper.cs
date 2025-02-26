@@ -190,18 +190,26 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var randomType = side ?? (_randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear");
-        var allNames = _databaseService.GetBots().Types[randomType.ToLower()].FirstNames;
-        var filteredNames = allNames.Where(name => name.Length <= maxLength);
-        if (!filteredNames.Any())
+        var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear")).ToLowerInvariant();
+        if (!_databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
         {
-            _logger.Warning(
-                $"Unable to filter: {randomType} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
-            );
-
-            return _randomUtil.GetCollectionValue(allNames.ToList());
+            _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: USEC");
+            chosenFaction = "usec";
+            chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
         }
 
-        return _randomUtil.GetCollectionValue(filteredNames.ToList());
+        var eligibleNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
+        if (!eligibleNames.Any())
+        {
+            _logger.Warning(
+                $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
+            );
+
+            // Return a random string from names
+            return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
+        }
+
+        // Return a random string from the filtered names
+        return _randomUtil.GetCollectionValue(eligibleNames);
     }
 }
