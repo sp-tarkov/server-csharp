@@ -653,9 +653,6 @@ public class InventoryHelper(
     /// <returns>An array representing the [width, height] of the item</returns>
     protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemID, InventoryItemHash inventoryItemHash)
     {
-        // Storage for root item and its children, store root item id for now
-        var toDo = new Queue<string>([itemID]);
-
         // Invalid item
         var (isValidItem, itemTemplate) = _itemHelper.GetItem(itemTpl);
         if (!isValidItem)
@@ -711,6 +708,8 @@ public class InventoryHelper(
         // Calculate size contribution from child items/attachments
         if (_itemHelper.IsOfBaseclasses(itemTpl, _variableSizeItemTypes))
         {
+            // Storage for root item and its children, store root item id for now
+            var toDo = new Queue<string>([itemID]);
             while (toDo.Count > 0)
             {
                 // Lookup parent in `todo` and get all of its children, then loop over them
