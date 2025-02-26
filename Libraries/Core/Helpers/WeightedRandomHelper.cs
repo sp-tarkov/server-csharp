@@ -1,12 +1,14 @@
 using Core.Models.Spt.Helper;
 using Core.Models.Utils;
+using Core.Utils;
 using SptCommon.Annotations;
 
 namespace Core.Helpers;
 
 [Injectable]
 public class WeightedRandomHelper(
-    ISptLogger<WeightedRandomHelper> _logger
+    ISptLogger<WeightedRandomHelper> _logger,
+    RandomUtil _randomUtil
 )
 {
     /// <summary>
@@ -59,15 +61,33 @@ public class WeightedRandomHelper(
         }
 
         // Preparing the cumulative weights list.
-        List<int> cumulativeWeights = [];
+        var cumulativeWeights = new double[weights.Count];
+        double sumOfWeights = 0;
         for (var i = 0; i < weights.Count; i++)
         {
-            cumulativeWeights.Add((int) weights[i] + (i > 0 ? cumulativeWeights[i - 1] : 0));
+            if (weights[i] < 0)
+            {
+                _logger.Warning($"Weight at index: {i} is negative ({weights[i]}), skipping");
+                continue;
+            }
+
+            sumOfWeights += weights[i];
+            cumulativeWeights[i] = sumOfWeights;
+        }
+
+        if (sumOfWeights == weights.Count)
+        {
+            // Weights are all the same, early exit
+            var randomIndex = _randomUtil.GetInt(0, items.Count - 1);
+            return new WeightedRandomResult<T>
+            {
+                Item = items[randomIndex],
+                Index = randomIndex
+            };
         }
 
         // Getting the random number in a range of [0...sum(weights)]
-        var maxCumulativeWeight = cumulativeWeights[cumulativeWeights.Count - 1];
-        var randomNumber = maxCumulativeWeight * new Random().NextDouble();
+        var randomNumber = sumOfWeights * _randomUtil.GetDouble(0, 1);
 
         // Picking the random item based on its weight.
         for (var itemIndex = 0; itemIndex < items.Count; itemIndex++)
