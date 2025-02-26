@@ -1,7 +1,7 @@
-using System.Collections.Concurrent;
 using Core.Helpers;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
+using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Servers;
 using Core.Utils;
@@ -23,11 +23,12 @@ public class RagfairOfferService(
     ProfileHelper profileHelper,
     LocalisationService localisationService,
     ICloner cloner,
-    RagfairOfferHolder ragfairOfferHolder
+    RagfairOfferHolder ragfairOfferHolder,
+    ConfigServer configServer
 )
 {
-    protected ConcurrentBag<string> _expiredOfferIds = new();
     protected bool _playerOffersLoaded;
+    protected RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /**
      * Get all offers
@@ -51,57 +52,6 @@ public class RagfairOfferService(
     public void AddOffer(RagfairOffer offer)
     {
         ragfairOfferHolder.AddOffer(offer);
-    }
-
-    /// <summary>
-    ///     Add a stale offers id to collection for later use
-    /// </summary>
-    /// <param name="staleOfferId">Id of offer to add to stale collection</param>
-    public void AddOfferIdToExpired(string staleOfferId)
-    {
-        _expiredOfferIds.Add(staleOfferId);
-    }
-
-    /**
-     * Get total count of current expired offers
-     * @returns Number of expired offers
-     */
-    public int GetExpiredOfferCount()
-    {
-        return _expiredOfferIds.Count;
-    }
-
-    /**
-     * Get an array of arrays of expired offer items + children
-     * @returns Expired offer assorts
-     */
-    public List<List<Item>> GetExpiredOfferAssorts()
-    {
-        // list of lists of item+children
-        var expiredItems = new List<List<Item>>();
-
-        foreach (var expiredOfferId in _expiredOfferIds)
-        {
-            var offer = ragfairOfferHolder.GetOfferById(expiredOfferId);
-            if (offer?.Items?.Count == 0)
-            {
-                logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
-
-                continue;
-            }
-
-            expiredItems.Add(offer.Items);
-        }
-
-        return expiredItems;
-    }
-
-    /**
-     * Clear out internal expiredOffers dictionary of all items
-     */
-    public void ResetExpiredOfferIds()
-    {
-        _expiredOfferIds.Clear();
     }
 
     /**
@@ -139,8 +89,8 @@ public class RagfairOfferService(
         offer.Quantity -= amount;
         if (offer.Quantity <= 0)
         {
-            // Reducing Quantity has made it 0 or below, offer is now 'stale'
-            ProcessStaleOffer(offer);
+            // Reducing Quantity has made it 0 or below, offer is now 'stale' and needs to be flagged as expired so it can be removed/regenerated on the next ragfair update()
+            ragfairOfferHolder.FlagOfferAsExpired(offer.Id);
         }
     }
 
@@ -192,14 +142,17 @@ public class RagfairOfferService(
         _playerOffersLoaded = true;
     }
 
-    public void ExpireStaleOffers()
+    /// <summary>
+    /// Process the expired ids and remove offers
+    /// </summary>
+    public void RemoveExpiredOffers()
     {
-        var time = timeUtil.GetTimeStamp();
-        foreach (var staleOffer in ragfairOfferHolder.GetStaleOffers(time))
-        {
-            ProcessStaleOffer(staleOffer);
-        }
+        ragfairOfferHolder.RemoveExpiredOffers();
+
+        // Clear out expired offer ids now we've regenerated them
+        ragfairOfferHolder.ResetExpiredOfferIds();
     }
+
 
     /**
      * Remove stale offer from flea
@@ -221,9 +174,9 @@ public class RagfairOfferService(
 
         // Handle dynamic offer
         if (!(isTrader || isPlayer))
-            // Dynamic offer
         {
-            AddOfferIdToExpired(staleOfferId);
+            // Not trader/player offer
+            ragfairOfferHolder.FlagOfferAsExpired(staleOfferId);
         }
 
         // Handle player offer - items need returning/XP adjusting. Checking if offer has actually expired or not.
@@ -347,5 +300,10 @@ public class RagfairOfferService(
         }
 
         return result;
+    }
+
+    public bool EnoughExpiredOffersExistToProcess()
+    {
+        return ragfairOfferHolder.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold;
     }
 }

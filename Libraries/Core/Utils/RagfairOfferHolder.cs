@@ -1,4 +1,6 @@
+using System.Collections.Concurrent;
 using Core.Helpers;
+using Core.Models.Eft.Common.Tables;
 using Core.Models.Eft.Ragfair;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -10,20 +12,23 @@ namespace Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
-    ISptLogger<RagfairOfferHolder> _logger,
+    ISptLogger<RagfairOfferHolder> logger,
     RagfairServerHelper ragfairServerHelper,
     ProfileHelper profileHelper,
     HashUtil hashUtil,
-    LocalisationService _localisationService,
+    LocalisationService localisationService,
     ConfigServer configServer)
 {
-    protected int _maxOffersPerTemplate = (int) configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
+    protected int _maxOffersPerTemplate = configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected Dictionary<string, RagfairOffer> _offersById = new();
     protected object _offersByIdLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected object _offersByTemplateLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
     protected object _offersByTraderLock = new();
+
+    // Use dict for the fast key lookup, value is not used
+    protected ConcurrentDictionary<string, string?> _expiredOfferIds = [];
 
     public RagfairOffer? GetOfferById(string id)
     {
@@ -103,8 +108,9 @@ public class RagfairOfferHolder(
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
+            var sellerIsTrader = ragfairServerHelper.IsTrader(sellerId);
             if (itemTpl != null &&
-                !(ragfairServerHelper.IsTrader(sellerId) || profileHelper.IsPlayer(sellerId)) &&
+                !(sellerIsTrader || profileHelper.IsPlayer(sellerId)) &&
                 _offersByTemplate.TryGetValue(itemTpl, out var offers) &&
                 offers?.Count >= _maxOffersPerTemplate
                )
@@ -114,8 +120,12 @@ public class RagfairOfferHolder(
 
             _offersById.Add(offerId, offer);
 
-            AddOfferByTrader(sellerId, offer);
-            AddOfferByTemplates(itemTpl, offer);
+            if (sellerIsTrader)
+            {
+                AddOfferByTrader(sellerId, offer);
+            }
+
+            AddOfferByTemplates(sellerId, offer);
         }
     }
 
@@ -123,29 +133,33 @@ public class RagfairOfferHolder(
      * Purge offer from offer cache
      * @param offer Offer to remove
      */
-    public void RemoveOffer(string offerId)
+    public void RemoveOffer(string offerId, bool checkTraderOffers = true)
     {
         lock (_offersByIdLock)
         {
             if (!_offersById.TryGetValue(offerId, out var offer))
             {
-                _logger.Warning(_localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+                logger.Warning(localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
                 return;
             }
 
             _offersById.Remove(offer.Id);
-            lock (_offersByTraderLock)
+
+            if (checkTraderOffers)
             {
-                if (_offersByTrader.ContainsKey(offer.User.Id))
+                lock (_offersByTraderLock)
                 {
-                    _offersByTrader[offer.User.Id].Remove(offer.Id);
-                    // This was causing a memory leak, we need to make sure that we remove
-                    // the user ID from the cached offers after they dont have anything else
-                    // on the flea placed. We regenerate the ID for the NPC users, making it
-                    // continuously grow otherwise
-                    if (_offersByTrader[offer.User.Id].Count == 0)
+                    if (_offersByTrader.ContainsKey(offer.User.Id))
                     {
-                        _offersByTrader.Remove(offer.User.Id);
+                        _offersByTrader[offer.User.Id].Remove(offer.Id);
+                        // This was causing a memory leak, we need to make sure that we remove
+                        // the user ID from the cached offers after they dont have anything else
+                        // on the flea placed. We regenerate the ID for the NPC users, making it
+                        // continuously grow otherwise
+                        if (_offersByTrader[offer.User.Id].Count == 0)
+                        {
+                            _offersByTrader.Remove(offer.User.Id);
+                        }
                     }
                 }
             }
@@ -165,9 +179,8 @@ public class RagfairOfferHolder(
     {
         lock (_offersByTraderLock)
         {
-            if (_offersByTrader.ContainsKey(traderId))
+            if (_offersByTrader.TryGetValue(traderId, out var offerIdsToRemove))
             {
-                var offerIdsToRemove = _offersByTrader[traderId];
                 foreach (var offerId in offerIdsToRemove)
                 {
                     _offersById.Remove(offerId);
@@ -177,15 +190,6 @@ public class RagfairOfferHolder(
                 _offersByTrader[traderId].Clear();
             }
         }
-    }
-
-    /**
-     * Get an array of stale offers that are still shown to player
-     * @returns RagfairOffer array
-     */
-    public IEnumerable<RagfairOffer> GetStaleOffers(long time)
-    {
-        return GetOffers().Where(o => IsStale(o, time));
     }
 
     protected void AddOfferByTemplates(string template, RagfairOffer offer)
@@ -225,6 +229,92 @@ public class RagfairOfferHolder(
             return false;
         }
 
-        return offer.EndTime < time || (offer.Items.FirstOrDefault().Upd?.StackObjectsCount ?? 0) < 1;
+        return offer.EndTime < time || (offer.Quantity ?? 0) < 1;
+    }
+
+    /// <summary>
+    ///     Add a stale offers id to collection for later use
+    /// </summary>
+    /// <param name="staleOfferId">Id of offer to add to stale collection</param>
+    public void FlagOfferAsExpired(string staleOfferId)
+    {
+        _expiredOfferIds.TryAdd(staleOfferId, null);
+    }
+
+    /// <summary>
+    /// Get total count of current expired offers
+    /// </summary>
+    /// <returns>Number of expired offers</returns>
+    public int GetExpiredOfferCount()
+    {
+        return _expiredOfferIds.Count;
+    }
+
+    /// <summary>
+    /// Get an array of arrays of expired offer items + children
+    /// </summary>
+    /// <returns>Expired offer assorts</returns>
+    public List<List<Item>> GetExpiredOfferItems()
+    {
+        // list of lists of item+children
+        var expiredItems = new List<List<Item>>();
+
+        foreach (var (expiredOfferId, _) in _expiredOfferIds)
+        {
+            var offer = GetOfferById(expiredOfferId);
+            if (offer is null)
+            {
+                logger.Warning($"offerId: {expiredOfferId} was not found !!");
+                continue;
+            }
+            if (offer?.Items?.Count == 0)
+            {
+                logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
+
+                continue;
+            }
+
+            expiredItems.Add(offer.Items);
+        }
+
+        return expiredItems;
+    }
+
+    /**
+     * Clear out internal expiredOffers dictionary of all items
+     */
+    public void ResetExpiredOfferIds()
+    {
+        _expiredOfferIds.Clear();
+    }
+
+    /// <summary>
+    /// Flag offers with an expiry before the passed in timestamp
+    /// </summary>
+    /// <param name="timestamp"></param>
+    public void FlagExpiredOffersAfterDate(long timestamp)
+    {
+            foreach (var offer in GetOffers())
+            {
+                if (_expiredOfferIds.ContainsKey(offer.Id) || ragfairServerHelper.IsTrader(offer.User.Id))
+                {
+                    // Already flagged or trader offer (handled separately), skip
+                    continue;
+                }
+
+                if (IsStale(offer, timestamp))
+                {
+                    _expiredOfferIds.TryAdd(offer.Id, null);
+                }
+            }
+    }
+
+    public void RemoveExpiredOffers()
+    {
+        logger.Warning($"removing {_expiredOfferIds.Count} expired offers");
+        foreach (var (expiredOfferId, _) in _expiredOfferIds)
+        {
+            RemoveOffer(expiredOfferId, false);
+        }
     }
 }

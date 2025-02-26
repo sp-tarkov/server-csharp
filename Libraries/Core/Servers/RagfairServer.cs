@@ -4,6 +4,7 @@ using Core.Models.Enums;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
 using Core.Services;
+using Core.Utils;
 using SptCommon.Annotations;
 
 namespace Core.Servers;
@@ -11,11 +12,13 @@ namespace Core.Servers;
 [Injectable]
 public class RagfairServer(
     ISptLogger<RagfairServer> _logger,
+    TimeUtil timeUtil,
     RagfairOfferService _ragfairOfferService,
     RagfairCategoriesService _ragfairCategoriesService,
     RagfairRequiredItemsService _ragfairRequiredItemsService,
     LocalisationService _localisationService,
     RagfairOfferGenerator _ragfairOfferGenerator,
+    RagfairOfferHolder _ragfairOfferHolder,
     ConfigServer _configServer
 )
 {
@@ -47,16 +50,16 @@ public class RagfairServer(
         }
 
         // Regenerate expired offers when over threshold limit
-        if (_ragfairOfferService.GetExpiredOfferCount() >= _ragfairConfig.Dynamic.ExpiredOfferThreshold)
+        _ragfairOfferHolder.FlagExpiredOffersAfterDate(timeUtil.GetTimeStamp());
+        if (_ragfairOfferService.EnoughExpiredOffersExistToProcess())
         {
-            // Must occur BEFORE "ExpireStaleOffers"
-            var expiredAssortsWithChildren = _ragfairOfferService.GetExpiredOfferAssorts();
+            // Must occur BEFORE "RemoveExpiredOffers"
+            var expiredAssortsWithChildren = _ragfairOfferHolder.GetExpiredOfferItems();
+
+            // Replace the expired offers with new ones
             _ragfairOfferGenerator.GenerateDynamicOffers(expiredAssortsWithChildren);
 
-            _ragfairOfferService.ExpireStaleOffers();
-
-            // Clear out expired offers now we've regenerated them
-            _ragfairOfferService.ResetExpiredOfferIds();
+            _ragfairOfferService.RemoveExpiredOffers();
         }
 
         _ragfairRequiredItemsService.BuildRequiredItemTable();
