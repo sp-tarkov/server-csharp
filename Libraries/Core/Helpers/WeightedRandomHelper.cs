@@ -16,6 +16,11 @@ public class WeightedRandomHelper(
     /// <returns>Chosen item from array</returns>
     public T GetWeightedValue<T>(Dictionary<T, double> values) where T : notnull
     {
+        if (values.Count == 1)
+        {
+            return values.Keys.First();
+        }
+
         var itemKeys = values.Keys.ToList();
         var weights = values.Values.ToList();
 
