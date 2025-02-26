@@ -171,23 +171,25 @@ public class RagfairOfferService(
 
     public void AddPlayerOffers()
     {
-        if (!_playerOffersLoaded)
+        if (_playerOffersLoaded)
         {
-            foreach (var sessionID in saveServer.GetProfiles().Keys)
+            return;
+        }
+
+        foreach (var sessionId in saveServer.GetProfiles().Keys)
+        {
+            var pmcData = saveServer.GetProfile(sessionId)?.CharacterData?.PmcData;
+
+            if (pmcData?.RagfairInfo?.Offers == null)
+                // Profile is wiped
             {
-                var pmcData = saveServer.GetProfile(sessionID)?.CharacterData?.PmcData;
-
-                if (pmcData?.RagfairInfo == null || pmcData.RagfairInfo.Offers == null)
-                    // Profile is wiped
-                {
-                    continue;
-                }
-
-                ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
+                continue;
             }
 
-            _playerOffersLoaded = true;
+            ragfairOfferHolder.AddOffers(pmcData.RagfairInfo.Offers);
         }
+
+        _playerOffersLoaded = true;
     }
 
     public void ExpireStaleOffers()

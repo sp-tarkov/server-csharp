@@ -255,7 +255,7 @@ public class GiveSptCommand(
                         {
                             Id = _hashUtil.Generate(),
                             Template = checkedItem.Value.Id,
-                            Upd = _itemHelper.generateUpdForItem(checkedItem.Value)
+                            Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                         }
                     );
                 }
@@ -266,7 +266,7 @@ public class GiveSptCommand(
                 {
                     Id = _hashUtil.Generate(),
                     Template = checkedItem.Value.Id,
-                    Upd = _itemHelper.generateUpdForItem(checkedItem.Value)
+                    Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                 };
                 itemToSend.Upd.StackObjectsCount = quantity;
                 try
