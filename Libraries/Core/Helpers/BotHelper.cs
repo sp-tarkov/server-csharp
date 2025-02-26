@@ -20,6 +20,7 @@ public class BotHelper(
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected HashSet<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected Dictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
     ///     Get a template object for the specified botRole from bots.types db
@@ -191,25 +192,31 @@ public class BotHelper(
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
         var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear")).ToLowerInvariant();
-        if (!_databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
+        var cacheKey = $"{chosenFaction}{maxLength}";
+        if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
         {
-            _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: USEC");
-            chosenFaction = "usec";
-            chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
+            if (!_databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
+            {
+                _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: USEC");
+                chosenFaction = "usec";
+                chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
+            }
+
+            var matchingNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
+            if (!matchingNames.Any())
+            {
+                _logger.Warning(
+                    $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
+                );
+
+                // Return a random string from names
+                return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
+            }
+
+            _pmcNameCache.TryAdd(cacheKey, matchingNames);
+            eligibleNames = matchingNames;
         }
 
-        var eligibleNames = chosenFactionDetails.FirstNames.Where(name => name.Length <= maxLength).ToList();
-        if (!eligibleNames.Any())
-        {
-            _logger.Warning(
-                $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
-            );
-
-            // Return a random string from names
-            return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
-        }
-
-        // Return a random string from the filtered names
         return _randomUtil.GetCollectionValue(eligibleNames);
     }
 }
