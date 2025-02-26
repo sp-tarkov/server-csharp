@@ -27,7 +27,7 @@ public class ItemHelper(
     ICloner _cloner
 )
 {
-    protected HashSet<string> _defaultInvalidBaseTypes =
+    protected readonly HashSet<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -38,7 +38,7 @@ public class ItemHelper(
         BaseClasses.POCKETS
     ];
 
-    protected HashSet<string> _slotsAsStrings =
+    protected readonly HashSet<string> _slotsAsStrings =
     [
         EquipmentSlots.Headwear.ToString(),
         EquipmentSlots.Earpiece.ToString(),
@@ -56,7 +56,7 @@ public class ItemHelper(
         EquipmentSlots.Scabbard.ToString()
     ];
 
-    protected HashSet<string> _dogTagTpls =
+    protected readonly HashSet<string> _dogTagTpls =
     [
         ItemTpl.BARTER_DOGTAG_BEAR,
         ItemTpl.BARTER_DOGTAG_BEAR_EOD,
@@ -70,7 +70,7 @@ public class ItemHelper(
         ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
     ];
 
-    protected HashSet<string> _softInsertIds =
+    protected readonly HashSet<string> _softInsertIds =
     [
         "groin",
         "groin_back",
@@ -87,6 +87,13 @@ public class ItemHelper(
         "helmet_jaw",
         "helmet_ears"
     ];
+
+    protected readonly HashSet<string> _removablePlateSlotIds =
+    [
+        "front_plate",
+        "back_plate",
+        "left_side_plate",
+        "right_side_plate"];
 
     /**
      * Does the provided pool of items contain the desired item
@@ -111,7 +118,7 @@ public class ItemHelper(
      * @param slotId OPTIONAL - slotid of desired item
      * @returns Item or null
      */
-    public Item getItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
+    public Item GetItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
     {
         // Filter the pool by slotId if provided
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
@@ -227,7 +234,7 @@ public class ItemHelper(
      * @param itemTemplate the item template to generate a Upd for
      * @returns A Upd with all the default properties set
      */
-    public Upd generateUpdForItem(TemplateItem itemTemplate)
+    public Upd GenerateUpdForItem(TemplateItem itemTemplate)
     {
         Upd itemProperties = new();
 
@@ -1960,7 +1967,7 @@ public class ItemHelper(
     ///     Is the provided item._props.Slots._name property a plate slot
     /// </summary>
     /// <param name="slotName">Name of slot (_name) of Items Slot array</param>
-    /// <returns>True if its a slot that holds a removable plate</returns>
+    /// <returns>True if it is a slot that holds a removable plate</returns>
     public bool IsRemovablePlateSlot(string slotName)
     {
         return GetRemovablePlateSlotIds().Contains(slotName.ToLower());
@@ -1970,7 +1977,7 @@ public class ItemHelper(
     // Returns Array of slot ids (e.g. front_plate)
     public HashSet<string> GetRemovablePlateSlotIds()
     {
-        return ["front_plate", "back_plate", "left_side_plate", "right_side_plate"];
+        return _removablePlateSlotIds;
     }
 
     // Generate new unique ids for child items while preserving hierarchy
@@ -2090,22 +2097,24 @@ public class ItemHelper(
     // Returns True when upd object was added
     public bool AddUpdObjectToItem(Item item, string? warningMessageWhenMissing = null)
     {
-        if (item.Upd is null)
+        if (item.Upd is not null)
         {
-            item.Upd = new Upd();
-
-            if (warningMessageWhenMissing is not null)
-            {
-                if (_logger.IsLogEnabled(LogLevel.Debug))
-                {
-                    _logger.Debug(warningMessageWhenMissing);
-                }
-            }
-
-            return true;
+            // Already exists, exit early
+            return false;
         }
 
-        return false;
+        item.Upd = new Upd();
+
+        if (warningMessageWhenMissing is not null)
+        {
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug(warningMessageWhenMissing);
+            }
+        }
+
+        return true;
+
     }
 
     // Return all tpls from Money enum
