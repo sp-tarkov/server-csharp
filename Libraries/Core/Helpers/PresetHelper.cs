@@ -1,5 +1,6 @@
 using Core.Models.Eft.Common;
 using Core.Models.Enums;
+using Core.Models.Spt.Presets;
 using Core.Services;
 using Core.Utils.Cloners;
 using SptCommon.Annotations;
@@ -14,14 +15,14 @@ public class PresetHelper(
 )
 {
     protected Dictionary<string, Preset> _defaultEquipmentPresets;
-    protected Dictionary<string, Preset>? _defaultWeaponPresets;
+    protected Dictionary<string, Preset> _defaultWeaponPresets;
 
     /// <summary>
     ///     Preset cache - key = item tpl, value = preset ids
     /// </summary>
-    protected Dictionary<string, HashSet<string>> _lookup = new();
+    protected Dictionary<string, PresetCacheDetails> _lookup = new();
 
-    public void HydratePresetStore(Dictionary<string, HashSet<string>> input)
+    public void HydratePresetStore(Dictionary<string, PresetCacheDetails> input)
     {
         _lookup = input;
     }
@@ -114,65 +115,73 @@ public class PresetHelper(
         return _cloner.Clone(_databaseService.GetGlobals().ItemPresets.Values.ToList());
     }
 
+    /// <summary>
+    /// Get a clone of a tpls presets
+    /// </summary>
+    /// <param name="templateId">Tpl to get presets for</param>
+    /// <returns>List</returns>
     public List<Preset> GetPresets(string templateId)
     {
-        if (!HasPreset(templateId))
+        // Try adn get preset ids from cache if they exist
+        if(!_lookup.TryGetValue(templateId, out var presetDetailsForTpl))
         {
+            // None found, early exit
             return [];
         }
 
-        List<Preset> presets = [];
-        var ids = _lookup[templateId];
-
-        foreach (var id in ids)
-        {
-            presets.Add(GetPreset(id));
-        }
-
-        return presets;
+        // Use gathered preset ids to get full preset objects, clone and return
+        return _cloner.Clone(presetDetailsForTpl.PresetIds
+            .Select(x => _databaseService.GetGlobals().ItemPresets[x])
+            .ToList());
     }
 
-    /**
-     * Get a cloned default preset for passed in item tpl
-     * @param templateId Item tpl to get preset for
-     * @returns null if no default preset, otherwise Preset
-     */
+    /// <summary>
+    /// Get a cloned default preset for passed in item tpl
+    /// </summary>
+    /// <param name="templateId">Items tpl to get preset for</param>
+    /// <returns>null if no default preset, otherwise Preset</returns>
     public Preset? GetDefaultPreset(string templateId)
     {
-        if (!HasPreset(templateId))
+        // look in main cache for presets for this tpl
+        if (!_lookup.TryGetValue(templateId, out var presetDetails))
         {
             return null;
         }
 
-        var allPresets = GetPresets(templateId);
-
-        foreach (var preset in allPresets)
+        // Use default preset id from above cache to find the weapon/equipment preset
+        if (!_defaultWeaponPresets.TryGetValue(presetDetails.DefaultId, out var defaultPreset))
         {
-            if (preset.Encyclopedia is not null)
+            if (!_defaultEquipmentPresets.TryGetValue(presetDetails.DefaultId, out defaultPreset))
             {
-                return preset;
+                // Default not found in weapon or equipment, return first preset in list
+                return _cloner.Clone(_databaseService.GetGlobals().ItemPresets[presetDetails.PresetIds.First()]);
             }
         }
 
-        return allPresets[0];
+        return _cloner.Clone(defaultPreset);
     }
 
+    /// <summary>
+    /// Get the presets root item tpl
+    /// </summary>
+    /// <param name="presetId">Preset id to look up</param>
+    /// <returns>tpl mongoid</returns>
     public string GetBaseItemTpl(string presetId)
     {
-        if (IsPreset(presetId))
+        if (!_databaseService.GetGlobals().ItemPresets.TryGetValue(presetId, out var preset))
         {
-            var preset = GetPreset(presetId);
-
-            foreach (var item in preset.Items)
-            {
-                if (preset.Parent == item.Id)
-                {
-                    return item.Template;
-                }
-            }
+            // No preset exists
+            return "";
         }
 
-        return "";
+        var rootItem = preset.Items.FirstOrDefault(x => x.Id == preset.Parent);
+        if (rootItem is null)
+        {
+            // Cant find root item
+            return "";
+        }
+
+        return rootItem.Template;
     }
 
     /**

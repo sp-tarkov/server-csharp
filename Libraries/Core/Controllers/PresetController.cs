@@ -1,4 +1,5 @@
 using Core.Helpers;
+using Core.Models.Spt.Presets;
 using Core.Models.Utils;
 using Core.Services;
 using SptCommon.Annotations;
@@ -18,7 +19,7 @@ public class PresetController(
     public void Initialize()
     {
         var presets = _databaseService.GetGlobals().ItemPresets;
-        var result = new Dictionary<string, HashSet<string>>();
+        var result = new Dictionary<string, PresetCacheDetails>();
         foreach (var (presetId, preset) in presets)
         {
             if (presetId != preset.Id)
@@ -30,11 +31,17 @@ public class PresetController(
                 continue;
             }
 
+            // Get root items tpl
             var tpl = preset.Items.FirstOrDefault()?.Template;
-            result.TryAdd(tpl, []);
+            result.TryAdd(tpl, new PresetCacheDetails{PresetIds = [] });
 
-            result.TryGetValue(tpl, out var listToAddTo);
-            listToAddTo.Add(presetId);
+            result.TryGetValue(tpl, out var details);
+            details.PresetIds.Add(presetId);
+            if (preset.Encyclopedia is not null)
+            {
+                // Flag this preset as being the default for the weapon
+                details.DefaultId = preset.Id;
+            }
         }
 
         _presetHelper.HydratePresetStore(result);
