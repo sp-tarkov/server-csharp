@@ -53,6 +53,8 @@ namespace Core.Helpers
                 SaveCertificatePfx(certificate); // Save cert
 
                 _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+                _logger.Success("First-time generation requires server be restarted for it to pick up cert");
+                Environment.Exit(1);
             }
 
             return certificate;
