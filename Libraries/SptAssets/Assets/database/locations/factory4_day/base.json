@@ -4890,7 +4890,6 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4908,7 +4907,6 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4926,7 +4924,6 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4944,7 +4941,6 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4962,7 +4958,6 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
-      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,

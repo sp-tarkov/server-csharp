@@ -34709,6 +34709,21 @@
         "MaxInLobby": 0,
         "MaxInRaid": 5,
         "TemplateId": "5b6d9ce188a4501afc1b2b25"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "67b70e43f753cf9f7a0a07a6"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "67b72271e5673725070b0456"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "67b72c64f753cf9f7a0a07aa"
       }
     ],
     "RunddansSettings": {
