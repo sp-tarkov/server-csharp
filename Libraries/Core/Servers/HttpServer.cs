@@ -61,7 +61,12 @@ public class HttpServer(
             KeepAliveInterval = TimeSpan.FromSeconds(60)
         });
 
-        app.MapFallback(HandleFallback);
+        app?.Use(
+            (HttpContext req, RequestDelegate _) =>
+            {
+                return Task.Factory.StartNew(async () => await HandleFallback(req));
+            }
+        );
 
         _started = true;
 
