@@ -1,26 +1,28 @@
 ﻿using Core.Models.Utils;
-using Core.Utils;
 using SptCommon.Annotations;
 
 namespace Core.Services;
 
-[Injectable]
+[Injectable(InjectionType.Singleton)]
 public class CustomLocaleService(
-    ISptLogger<CustomLocaleService> logger,
-    FileUtil fileUtil,
-    DatabaseService databaseService
+    ISptLogger<CustomLocaleService> logger
 )
 {
+    protected Dictionary<string, Dictionary<string, string>> customServerLocales = new();
+    protected Dictionary<string, Dictionary<string, string>> customClientLocales = new();
+
 
     /// <summary>
     /// Path should link to a folder containing every locale that should be added to the server locales
     /// e.g. en.json for english, fr.json for french
     /// Inside each JSON should be a Dictionary of the locale key and localised text
     /// </summary>
-    /// <param name="pathToServerLocales">A path to a folder that contains locales to add to SPT</param>
-    public void AddServerLocales(string pathToServerLocales)
+    /// <param name="locale">en/fr/de</param>
+    /// <param name="localeKey">locale key to store values against</param>
+    /// <param name="localeValue">Localised string to store</param>
+    public void AddServerLocales(string locale, string localeKey, string localeValue)
     {
-
+        AddToDictionary(locale, localeKey, localeValue, customServerLocales);
     }
 
     /// <summary>
@@ -28,9 +30,46 @@ public class CustomLocaleService(
     /// e.g. en.json for english, fr.json for french
     /// Inside each JSON should be a Dictionary of the locale key and localised text
     /// </summary>
-    /// <param name="pathToGameLocales">A path to a folder that contains locales to add to SPT</param>
-    public void AddGameLocales(string pathToGameLocales)
+    /// <param name="locale">en/fr/de</param>
+    /// <param name="localeKey">locale key to store values against</param>
+    /// <param name="localeValue">Localised string to store</param>
+    public void AddGameLocales(string locale, string localeKey, string localeValue)
     {
+        AddToDictionary(locale, localeKey, localeValue, customClientLocales);
+    }
 
+    protected void AddToDictionary(string locale, string localeKey, string localeValue,
+        Dictionary<string, Dictionary<string, string>> dictionaryToAddTo)
+    {
+        dictionaryToAddTo.TryAdd(locale, new Dictionary<string, string>());
+        if (!dictionaryToAddTo.TryGetValue(locale, out var localeDictToAddTo))
+        {
+            logger.Error($"Unable to get custom locale dictionary keyed by: {locale}");
+
+            return;
+        }
+
+        if (!localeDictToAddTo.TryAdd(localeKey, localeValue))
+        {
+            logger.Error($"Unable to add: {localeKey} {localeValue} to custom locale dictionary: {locale}");
+        }
+    }
+
+    public string? GetServerValue(string locale, string localeKey)
+    {
+        return GetValueFromDictionary(locale, localeKey, customServerLocales);
+    }
+
+    public string? GetClientValue(string locale, string localeKey)
+    {
+        return GetValueFromDictionary(locale, localeKey, customClientLocales);
+    }
+
+    protected string? GetValueFromDictionary(string locale, string localeKey,
+        Dictionary<string, Dictionary<string, string>> dictionaryToGetFrom)
+    {
+        return dictionaryToGetFrom.TryGetValue(locale, out var localeDictToGetFrom)
+            ? localeDictToGetFrom.GetValueOrDefault(localeKey) // Locale exists, look up value or return null
+            : null; // No locale (e.g. en/fr/de) at all
     }
 }

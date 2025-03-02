@@ -11,6 +11,7 @@ public class I18nService
     private readonly Dictionary<string, string> _fallbacks;
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
+    private readonly CustomLocaleService _customLocaleService;
 
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
     private HashSet<string> _locales;
@@ -19,6 +20,7 @@ public class I18nService
     public I18nService(
         FileUtil fileUtil,
         JsonUtil jsonUtil,
+        CustomLocaleService customLocaleService,
         HashSet<string> locales,
         Dictionary<string, string> fallbacks,
         string defaultLocale,
@@ -30,6 +32,7 @@ public class I18nService
         _defaultLocale = defaultLocale;
         _directory = directory;
         _jsonUtil = jsonUtil;
+        _customLocaleService = customLocaleService;
         _fileUtil = fileUtil;
 
         Initialize();
@@ -96,7 +99,11 @@ public class I18nService
         if (!locales.Value.TryGetValue(key, out var value))
         {
             _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
-            defaults.Value.TryGetValue(key, out value);
+            if (!defaults.Value.TryGetValue(key, out value))
+            {
+                value = _customLocaleService.GetClientValue(_defaultLocale, key);
+            }
+
             return value ?? key;
         }
 

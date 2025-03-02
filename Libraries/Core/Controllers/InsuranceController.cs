@@ -59,11 +59,10 @@ public class InsuranceController(
         }
     }
 
-    /**
-     * Process insurance items of a single profile prior to being given back to the player through the mail service.
-     * 
-     * @returns void
-     */
+    /// <summary>
+    /// Process insurance items of a single profile prior to being given back to the player through the mail service
+    /// </summary>
+    /// <param name="sessionId">Player id</param>
     public void ProcessReturnByProfile(string sessionId)
     {
         // Filter out items that don't need to be processed yet.
@@ -157,13 +156,11 @@ public class InsuranceController(
         return insuranceDetails.Select(ins => ins.Items.Count).Count();
     }
 
-    /**
-     * Remove an insurance package from a profile using the package's system data information.
-     * 
-     * @param sessionID The session ID of the profile to remove the package from.
-     * @param index The array index of the insurance package to remove.
-     * @returns void
-     */
+    /// <summary>
+    /// Remove an insurance package from a profile using the package's system data information.
+    /// </summary>
+    /// <param name="sessionId">The session ID of the profile to remove the package from.</param>
+    /// <param name="insPackage">The array index of the insurance package to remove.</param>
     protected void RemoveInsurancePackageFromProfile(string sessionId, Insurance insPackage)
     {
         var profile = _saveServer.GetProfile(sessionId);
