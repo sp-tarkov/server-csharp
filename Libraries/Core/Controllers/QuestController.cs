@@ -113,7 +113,7 @@ public class QuestController(
         return acceptQuestResponse;
     }
 
-    private void AddTaskConditionCountersToProfile(List<QuestCondition>? questConditions, PmcData pmcData, string questId)
+    protected void AddTaskConditionCountersToProfile(List<QuestCondition>? questConditions, PmcData pmcData, string questId)
     {
         foreach (var condition in questConditions)
         {
@@ -177,7 +177,7 @@ public class QuestController(
         return response;
     }
 
-    private RepeatableQuest GetRepeatableQuestFromProfile(PmcData pmcData, AcceptQuestRequestData acceptedQuest)
+    protected RepeatableQuest GetRepeatableQuestFromProfile(PmcData pmcData, AcceptQuestRequestData acceptedQuest)
     {
         foreach (var repeatableQuest in pmcData.RepeatableQuests)
         {
@@ -350,7 +350,7 @@ public class QuestController(
         return output;
     }
 
-    private ItemEventRouterResponse ShowRepeatableQuestInvalidConditionError(HandoverQuestRequestData handoverQuestRequest, ItemEventRouterResponse output)
+    protected ItemEventRouterResponse ShowRepeatableQuestInvalidConditionError(HandoverQuestRequestData handoverQuestRequest, ItemEventRouterResponse output)
     {
         var errorMessage = _localisationService.GetText(
             "repeatable-quest_handover_failed_condition_invalid",
@@ -365,7 +365,7 @@ public class QuestController(
         return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
     }
 
-    private ItemEventRouterResponse ShowQuestItemHandoverMatchError(HandoverQuestRequestData handoverQuestRequest, Item? itemHandedOver,
+    protected ItemEventRouterResponse ShowQuestItemHandoverMatchError(HandoverQuestRequestData handoverQuestRequest, Item? itemHandedOver,
         QuestCondition? handoverRequirements, ItemEventRouterResponse output)
     {
         var errorMessage = _localisationService.GetText(
@@ -382,7 +382,7 @@ public class QuestController(
         return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
     }
 
-    private void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, double counterValue)
+    protected void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, double counterValue)
     {
         if (pmcData.TaskConditionCounters.GetValueOrDefault(conditionId) != null)
         {

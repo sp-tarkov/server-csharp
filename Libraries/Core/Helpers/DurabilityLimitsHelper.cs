@@ -76,11 +76,11 @@ public class DurabilityLimitsHelper(
     }
 
     /// <summary>
-    ///     Convert a botrole into a durability role used for looking up durability values with
+    ///     Convert a bots role into a durability role used for looking up durability values with
     /// </summary>
     /// <param name="botRole">Role to convert</param>
     /// <returns></returns>
-    private string GetDurabilityRole(string? botRole)
+    protected string GetDurabilityRole(string? botRole)
     {
         if (botRole is null)
         {

@@ -18,7 +18,7 @@ public class BuildsCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetBuilds(string url, EmptyRequestData info, string sessionID)
     {
@@ -30,7 +30,7 @@ public class BuildsCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string CreateMagazineTemplate(string url, SetMagazineRequest info, string sessionID)
     {
@@ -43,7 +43,7 @@ public class BuildsCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SetWeapon(string url, PresetBuildActionRequestData info, string sessionID)
     {
@@ -56,7 +56,7 @@ public class BuildsCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SetEquipment(string url, PresetBuildActionRequestData info, string sessionID)
     {
@@ -69,7 +69,7 @@ public class BuildsCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string DeleteBuild(string url, RemoveBuildRequestData info, string sessionID)
     {

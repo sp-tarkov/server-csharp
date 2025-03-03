@@ -50,7 +50,7 @@ public abstract class AbstractDialogChatBot(
         return null;
     }
 
-    private string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    protected string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

@@ -13,9 +13,9 @@ public class NoteController(
 {
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="body"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse AddNote(
         PmcData pmcData,
@@ -34,9 +34,9 @@ public class NoteController(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="body"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse EditNote(
         PmcData pmcData,
@@ -52,9 +52,9 @@ public class NoteController(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="body"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse DeleteNote(
         PmcData pmcData,

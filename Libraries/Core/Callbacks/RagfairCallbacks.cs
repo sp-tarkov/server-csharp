@@ -62,7 +62,7 @@ public class RagfairCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string Search(string url, SearchRequestData info, string sessionID)
     {
@@ -74,7 +74,7 @@ public class RagfairCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetMarketPrice(string url, GetMarketPriceRequestData info, string sessionID)
     {
@@ -84,9 +84,9 @@ public class RagfairCallbacks(
     /// <summary>
     ///     Handle RagFairAddOffer event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse AddOffer(PmcData pmcData, AddOfferRequestData info, string sessionID)
     {
@@ -96,9 +96,9 @@ public class RagfairCallbacks(
     /// <summary>
     ///     Handle RagFairRemoveOffer event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse RemoveOffer(PmcData pmcData, RemoveOfferRequestData info, string sessionID)
     {
@@ -108,9 +108,9 @@ public class RagfairCallbacks(
     /// <summary>
     ///     Handle RagFairRenewOffer event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ExtendOffer(PmcData pmcData, ExtendOfferRequestData info, string sessionID)
     {
@@ -123,7 +123,7 @@ public class RagfairCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetFleaPrices(string url, EmptyRequestData info, string sessionID)
     {
@@ -135,7 +135,7 @@ public class RagfairCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SendReport(string url, SendRagfairReportRequestData info, string sessionID)
     {
@@ -153,7 +153,7 @@ public class RagfairCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
     {

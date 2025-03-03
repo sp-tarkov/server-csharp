@@ -54,7 +54,7 @@ public class DialogueHelper(
     ///     Get the item contents for a particular message.
     /// </summary>
     /// <param name="messageID"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <param name="itemId">Item being moved to inventory</param>
     /// <returns></returns>
     public List<Item> GetMessageItemContents(string messageID, string sessionID, string itemId)

@@ -52,7 +52,7 @@ public class NotificationService
     /// <summary>
     ///     Get message queue for session
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     public List<WsNotificationEvent> Get(string sessionID)
     {
         if (sessionID is null)

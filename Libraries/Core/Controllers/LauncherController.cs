@@ -32,6 +32,10 @@ public class LauncherController(
 {
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public ConnectResponse Connect()
     {
         // Get all possible profile types + filter out any that are blacklisted
@@ -75,11 +79,21 @@ public class LauncherController(
         return result;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="sessionId"></param>
+    /// <returns></returns>
     public Info? Find(string? sessionId)
     {
         return sessionId is not null && _saveServer.GetProfiles().TryGetValue(sessionId, out var profile) ? profile.ProfileInfo : null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public string? Login(LoginRequestData? info)
     {
         foreach (var kvp in _saveServer.GetProfiles())
@@ -94,6 +108,11 @@ public class LauncherController(
         return null;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public string Register(RegisterData info)
     {
         foreach (var kvp in _saveServer.GetProfiles())
@@ -107,6 +126,11 @@ public class LauncherController(
         return CreateAccount(info);
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     protected string CreateAccount(RegisterData info)
     {
         var profileId = GenerateProfileId();
@@ -129,6 +153,10 @@ public class LauncherController(
         return profileId;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     protected string GenerateProfileId()
     {
         var timestamp = _timeUtil.GetTimeStamp();
@@ -136,6 +164,12 @@ public class LauncherController(
         return FormatID(timestamp, timestamp * _randomUtil.GetInt(1, 1000000));
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="timeStamp"></param>
+    /// <param name="counter"></param>
+    /// <returns></returns>
     protected string FormatID(long timeStamp, long counter)
     {
         var timeStampStr = Convert.ToString(timeStamp, 16).PadLeft(8, '0');
@@ -144,6 +178,11 @@ public class LauncherController(
         return timeStampStr.ToLower() + counterStr.ToLower();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public string? ChangeUsername(ChangeRequestData info)
     {
         var sessionID = Login(info);
@@ -156,6 +195,11 @@ public class LauncherController(
         return sessionID;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="info"></param>
+    /// <returns></returns>
     public string? ChangePassword(ChangeRequestData info)
     {
         var sessionID = Login(info);
@@ -192,6 +236,10 @@ public class LauncherController(
         return sessionID;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <returns></returns>
     public string GetCompatibleTarkovVersion()
     {
         return _coreConfig.CompatibleTarkovVersion;
@@ -231,6 +279,11 @@ public class LauncherController(
         return [];
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="profileMods"></param>
+    /// <returns></returns>
     public List<ModDetails> GetProfileModsGroupedByModName(List<ModDetails> profileMods)
     {
         // Group all mods used by profile by name

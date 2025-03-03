@@ -21,7 +21,7 @@ public class BotCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetBotLimit(string url, EmptyRequestData info, string sessionID)
     {
@@ -35,7 +35,7 @@ public class BotCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetBotDifficulty(string url, EmptyRequestData info, string sessionID)
     {
@@ -58,7 +58,7 @@ public class BotCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetAllBotDifficulties(string url, EmptyRequestData info, string sessionID)
     {
@@ -70,7 +70,7 @@ public class BotCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GenerateBots(string url, GenerateBotsRequestData info, string sessionID)
     {

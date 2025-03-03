@@ -106,7 +106,7 @@ public class PMCLootGenerator
         return _pocketLootPool;
     }
 
-    private HashSet<string> GetLootBlacklist()
+    protected HashSet<string> GetLootBlacklist()
     {
         var blacklist = new HashSet<string>();
         blacklist.UnionWith(_pmcConfig.PocketLoot.Blacklist);

@@ -45,7 +45,7 @@ public class MatchController(
     ///     Handle match/group/start_game
     /// </summary>
     /// <param name="info"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ProfileStatusResponse JoinMatch(MatchGroupStartGameRequest info, string sessionId)
     {
@@ -94,7 +94,7 @@ public class MatchController(
     ///     Handle /client/raid/configuration
     /// </summary>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public void ConfigureOfflineRaid(GetRaidConfigurationRequestData request, string sessionId)
     {
         // Store request data for access during bot generation
@@ -116,7 +116,7 @@ public class MatchController(
     /// </summary>
     /// <param name="botDifficulty">dropdown difficulty value</param>
     /// <returns>bot difficulty</returns>
-    private string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
+    protected string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
     {
         // Edge case medium - must be altered
         if (string.Equals(botDifficulty, "medium", StringComparison.OrdinalIgnoreCase))
@@ -130,7 +130,7 @@ public class MatchController(
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
     public StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
@@ -141,7 +141,7 @@ public class MatchController(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     public void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
     {

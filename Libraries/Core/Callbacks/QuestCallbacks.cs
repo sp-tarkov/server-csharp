@@ -17,9 +17,9 @@ public class QuestCallbacks(
     /// <summary>
     ///     Handle RepeatableQuestChange event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest info, string sessionID)
     {
@@ -29,9 +29,9 @@ public class QuestCallbacks(
     /// <summary>
     ///     Handle QuestAccept event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData info, string sessionID)
     {
@@ -46,9 +46,9 @@ public class QuestCallbacks(
     /// <summary>
     ///     Handle QuestComplete event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionID)
     {
@@ -58,9 +58,9 @@ public class QuestCallbacks(
     /// <summary>
     ///     Handle QuestHandover event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData info, string sessionID)
     {
@@ -72,7 +72,7 @@ public class QuestCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ListQuests(string url, ListQuestsRequestData info, string sessionID)
     {
@@ -84,7 +84,7 @@ public class QuestCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ActivityPeriods(string url, EmptyRequestData info, string sessionID)
     {

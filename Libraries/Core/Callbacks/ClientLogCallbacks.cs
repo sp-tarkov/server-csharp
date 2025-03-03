@@ -23,7 +23,7 @@ public class ClientLogCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ClientLog(string url, ClientLogRequest info, string sessionID)
     {

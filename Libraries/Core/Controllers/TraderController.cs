@@ -80,11 +80,16 @@ public class TraderController(
         }
     }
 
+    /// <summary>
+    /// Adjust trader item prices based on config value multiplier
+    /// </summary>
+    /// <param name="trader"></param>
+    /// <param name="multiplier"></param>
     protected void AdjustTraderItemPrices(Trader trader, double multiplier)
     {
         foreach (var kvp in trader.Assort?.BarterScheme)
         {
-            var barterSchemeItem = kvp.Value[0][0];
+            var barterSchemeItem = kvp.Value?.FirstOrDefault()?.FirstOrDefault();
             if (barterSchemeItem != null && _paymentHelper.IsMoneyTpl(barterSchemeItem.Template))
             {
                 barterSchemeItem.Count += Math.Round(
@@ -100,7 +105,7 @@ public class TraderController(
     ///     If current time is > nextResupply(expire) time of trader, refresh traders assorts and
     ///     Fence is handled slightly differently
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True if ran successfully</returns>
     public bool Update()
     {
         foreach (var (traderId, data) in _databaseService.GetTables().Traders)
@@ -157,12 +162,12 @@ public class TraderController(
     }
 
     /// <summary>
-    ///     Order traders by their traderId (Ttid)
+    ///     Order traders by their traderId (tid)
     /// </summary>
     /// <param name="traderA">First trader to compare</param>
     /// <param name="traderB">Second trader to compare</param>
     /// <returns>1,-1 or 0</returns>
-    private int SortByTraderId(TraderBase traderA, TraderBase traderB)
+    protected static int SortByTraderId(TraderBase traderA, TraderBase traderB)
     {
         return string.CompareOrdinal(traderA.Id, traderB.Id);
     }
@@ -170,7 +175,7 @@ public class TraderController(
     /// <summary>
     ///     Handle client/trading/api/getTrader
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="traderId"></param>
     /// <returns></returns>
     public TraderBase GetTrader(string sessionId, string traderId)
@@ -181,7 +186,7 @@ public class TraderController(
     /// <summary>
     ///     Handle client/trading/api/getTraderAssort
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="traderId"></param>
     /// <returns></returns>
     public TraderAssort GetAssort(string sessionId, string traderId)

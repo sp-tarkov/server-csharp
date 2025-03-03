@@ -20,7 +20,7 @@ public class CustomizationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetCustomisationUnlocks(string url, EmptyRequestData info, string sessionID)
     {
@@ -32,7 +32,7 @@ public class CustomizationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTraderSuits(string url, EmptyRequestData info, string sessionID)
     {
@@ -45,9 +45,9 @@ public class CustomizationCallbacks(
     /// <summary>
     ///     Handle CustomizationBuy event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData info, string sessionID)
     {
@@ -59,7 +59,7 @@ public class CustomizationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetHideoutCustomisation(string url, EmptyRequestData info, string sessionID)
     {
@@ -71,7 +71,7 @@ public class CustomizationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetStorage(string url, EmptyRequestData info, string sessionID)
     {
@@ -81,9 +81,9 @@ public class CustomizationCallbacks(
     /// <summary>
     ///     Handle CustomizationSet
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest info, string sessionID)
     {

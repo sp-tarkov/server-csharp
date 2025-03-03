@@ -16,10 +16,10 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle client/game/profile/items/moving Move event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse MoveItem(PmcData pmcData, InventoryMoveRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -31,25 +31,25 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle Remove event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse RemoveItem(PmcData pmcData, InventoryRemoveRequestData info, string sessionID,
         ItemEventRouterResponse output)
     {
-        _inventoryController.RemoveItem(pmcData, info, sessionID, output);
+        _inventoryController.DiscardItem(pmcData, info, sessionID, output);
         return output;
     }
 
     /// <summary>
     ///     Handle Split event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse SplitItem(PmcData pmcData, InventorySplitRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -60,10 +60,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse MergeItem(PmcData pmcData, InventoryMergeRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -74,10 +74,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse TransferItem(PmcData pmcData, InventoryTransferRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -89,9 +89,9 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle Swap
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData info, string sessionID)
     {
@@ -100,9 +100,9 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData info, string sessionID)
     {
@@ -111,9 +111,9 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData info, string sessionID)
     {
@@ -122,9 +122,9 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
     {
@@ -133,10 +133,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse BindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -147,10 +147,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse UnBindItem(PmcData pmcData, InventoryBindRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -161,10 +161,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse ExamineItem(PmcData pmcData, InventoryExamineRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -176,9 +176,9 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle ReadEncyclopedia
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData info,
         string sessionID)
@@ -189,10 +189,10 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle ApplyInventoryChanges
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse SortInventory(PmcData pmcData, InventorySortRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -203,10 +203,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse CreateMapMarker(PmcData pmcData, InventoryCreateMarkerRequestData info,
         string sessionID, ItemEventRouterResponse output)
@@ -217,10 +217,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData info,
         string sessionID, ItemEventRouterResponse output)
@@ -231,10 +231,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -246,10 +246,10 @@ public class InventoryCallbacks(
     /// <summary>
     ///     Handle OpenRandomLootContainer
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData info,
         string sessionID,
@@ -261,10 +261,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -274,11 +274,12 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
+    /// Handle game/profile/items/moving SetFavoriteItems
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse SetFavoriteItem(PmcData pmcData, SetFavoriteItems info, string sessionID,
         ItemEventRouterResponse output)
@@ -291,10 +292,10 @@ public class InventoryCallbacks(
     ///     TODO: MOVE INTO QUEST CODE
     ///     Handle game/profile/items/moving - QuestFail
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData info, string sessionID,
         ItemEventRouterResponse output)
@@ -305,10 +306,10 @@ public class InventoryCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
-    /// <param name="output"></param>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="output">Client response</param>
     /// <returns></returns>
     public ItemEventRouterResponse PinOrLock(PmcData pmcData, PinOrLockItemRequest info, string sessionID,
         ItemEventRouterResponse output)

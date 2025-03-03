@@ -57,7 +57,7 @@ public class GameController(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="startTimeStampMs"></param>
     public void GameStart(string url, EmptyRequestData info, string? sessionId, long startTimeStampMs)
     {
@@ -158,8 +158,8 @@ public class GameController(
     /// <summary>
     ///     Handle client/game/config
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <returns></returns>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>GameConfigResponse</returns>
     public GameConfigResponse GetGameConfig(string sessionId)
     {
         var profile = _profileHelper.GetPmcProfile(sessionId);
@@ -204,7 +204,7 @@ public class GameController(
     /// <summary>
     ///     Handle client/game/mode
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="requestData"></param>
     /// <returns></returns>
     public GameModeResponse GetGameMode(
@@ -221,7 +221,7 @@ public class GameController(
     /// <summary>
     ///     Handle client/server/list
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public List<ServerDetails> GetServer(string sessionId)
     {
@@ -238,7 +238,7 @@ public class GameController(
     /// <summary>
     ///     Handle client/match/group/current
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public CurrentGroupResponse GetCurrentGroup(string sessionId)
     {
@@ -252,7 +252,7 @@ public class GameController(
     /// <summary>
     ///     Handle client/checkVersion
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public CheckVersionResponse GetValidGameVersion(string sessionId)
     {
@@ -266,7 +266,7 @@ public class GameController(
     /// <summary>
     ///     Handle client/game/keepalive
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public GameKeepAliveResponse GetKeepAlive(string sessionId)
     {
@@ -281,7 +281,7 @@ public class GameController(
     /// <summary>
     ///     Handle singleplayer/settings/getRaidTime
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
     public GetRaidTimeResponse GetRaidTime(string sessionId, GetRaidTimeRequest request)
@@ -291,7 +291,7 @@ public class GameController(
 
     /// <summary>
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public SurveyResponseData GetSurvey(string sessionId)
     {
@@ -302,7 +302,7 @@ public class GameController(
     ///     Players set botReload to a high value and don't expect the crazy fast reload speeds, give them a warn about it
     /// </summary>
     /// <param name="pmcProfile">Player profile</param>
-    private void WarnOnActiveBotReloadSkill(PmcData pmcProfile)
+    protected void WarnOnActiveBotReloadSkill(PmcData pmcProfile)
     {
         var botReloadSkill = _profileHelper.GetSkillFromProfile(pmcProfile, SkillTypes.BotReload);
         if (botReloadSkill?.Progress > 0)
@@ -315,7 +315,7 @@ public class GameController(
     ///     When player logs in, iterate over all active effects and reduce timer
     /// </summary>
     /// <param name="pmcProfile">Profile to adjust values for</param>
-    private void UpdateProfileHealthValues(PmcData pmcProfile)
+    protected void UpdateProfileHealthValues(PmcData pmcProfile)
     {
         var healthLastUpdated = pmcProfile.Health?.UpdateTime;
         var currentTimeStamp = _timeUtil.GetTimeStamp();
@@ -431,7 +431,7 @@ public class GameController(
     ///     Send starting gifts to profile after x days
     /// </summary>
     /// <param name="pmcProfile">Profile to add gifts to</param>
-    private void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
+    protected void SendPraporGiftsToNewProfiles(PmcData pmcProfile)
     {
         var timeStampProfileCreated = pmcProfile.Info?.RegistrationDate;
         var oneDaySeconds = _timeUtil.GetHoursAsSeconds(24);
@@ -463,7 +463,7 @@ public class GameController(
     ///     Get a list of installed mods and save their details to the profile being used
     /// </summary>
     /// <param name="fullProfile">Profile to add mod details to</param>
-    private void SaveActiveModsToProfile(SptProfile fullProfile)
+    protected void SaveActiveModsToProfile(SptProfile fullProfile)
     {
         fullProfile.SptData!.Mods ??= [];
         var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
@@ -498,7 +498,7 @@ public class GameController(
     ///     Add the logged in players name to PMC name pool
     /// </summary>
     /// <param name="pmcProfile">Profile of player to get name from</param>
-    private void AddPlayerToPmcNames(PmcData pmcProfile)
+    protected void AddPlayerToPmcNames(PmcData pmcProfile)
     {
         var playerName = pmcProfile.Info?.Nickname;
         if (playerName is not null)
@@ -534,7 +534,7 @@ public class GameController(
     ///     Check for a dialog with the key 'undefined', and remove it
     /// </summary>
     /// <param name="fullProfile">Profile to check for dialog in</param>
-    private void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
+    protected void CheckForAndRemoveUndefinedDialogues(SptProfile fullProfile)
     {
         if (fullProfile.DialogueRecords!.TryGetValue("undefined", out _))
         {
@@ -545,7 +545,7 @@ public class GameController(
     /// <summary>
     /// </summary>
     /// <param name="fullProfile"></param>
-    private void LogProfileDetails(SptProfile fullProfile)
+    protected void LogProfileDetails(SptProfile fullProfile)
     {
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {

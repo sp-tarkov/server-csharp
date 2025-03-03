@@ -120,7 +120,13 @@ public class CustomizationController(
         return output;
     }
 
-    private bool OutfitAlreadyPurchased(object suitId, string sessionId)
+    /// <summary>
+    /// Has an outfit been purchased by a player
+    /// </summary>
+    /// <param name="suitId">clothing id</param>
+    /// <param name="sessionId">Session id of profile to check for clothing in</param>
+    /// <returns>true if already purchased</returns>
+    protected bool OutfitAlreadyPurchased(object suitId, string sessionId)
     {
         var suits = _saveServer.GetProfile(sessionId).Suits;
 
@@ -132,7 +138,13 @@ public class CustomizationController(
         return suits.Contains(suitId);
     }
 
-    private Suit? GetTraderClothingOffer(string sessionId, string? offerId)
+    /// <summary>
+    /// Get clothing offer from trader by suit id
+    /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="offerId"></param>
+    /// <returns>Suit</returns>
+    protected Suit? GetTraderClothingOffer(string sessionId, string? offerId)
     {
         var foundSuit = GetAllTraderSuits(sessionId).FirstOrDefault(s => s.Id == offerId);
         if (foundSuit is null)
@@ -150,7 +162,7 @@ public class CustomizationController(
     /// <param name="pmcData">Player profile</param>
     /// <param name="itemsToPayForClothingWith">Clothing purchased</param>
     /// <param name="output">Client response</param>
-    private void PayForClothingItems(string sessionId, PmcData pmcData,
+    protected void PayForClothingItems(string sessionId, PmcData pmcData,
         List<PaymentItemForClothing>? itemsToPayForClothingWith,
         ItemEventRouterResponse output)
     {
@@ -184,10 +196,11 @@ public class CustomizationController(
     }
 
     /// <summary>
+    /// Get all suits from Traders
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    private List<Suit> GetAllTraderSuits(string sessionId)
+    protected List<Suit> GetAllTraderSuits(string sessionId)
     {
         var traders = _databaseService.GetTraders();
         var result = new List<Suit>();
@@ -206,7 +219,7 @@ public class CustomizationController(
     /// <summary>
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="info"></param>
     /// <returns></returns>
     public HideoutCustomisation GetHideoutCustomisation(string sessionId, EmptyRequestData info)
@@ -217,7 +230,7 @@ public class CustomizationController(
     /// <summary>
     ///     Handle client/customization/storage
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="info"></param>
     /// <returns></returns>
     public List<CustomisationStorage> GetCustomisationStorage(
@@ -240,9 +253,9 @@ public class CustomizationController(
     /// <summary>
     ///     Handle CustomizationSet event
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <returns></returns>
     public ItemEventRouterResponse SetCustomisation(string sessionId, CustomizationSetRequest request, PmcData pmcData)
     {
@@ -270,7 +283,7 @@ public class CustomizationController(
     /// </summary>
     /// <param name="customisation">Suit to apply to profile</param>
     /// <param name="pmcData">Profile to update</param>
-    private void ApplyClothingItemToProfile(CustomizationSetOption customisation, PmcData pmcData)
+    protected void ApplyClothingItemToProfile(CustomizationSetOption customisation, PmcData pmcData)
     {
         var dbSuit = _databaseService.GetCustomization()[customisation.Id!];
 

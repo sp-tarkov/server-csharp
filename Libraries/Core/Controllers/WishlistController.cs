@@ -14,9 +14,9 @@ public class WishlistController(
     /// <summary>
     ///     Handle AddToWishList
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse AddToWishList(
         PmcData pmcData,
@@ -34,9 +34,9 @@ public class WishlistController(
     /// <summary>
     ///     Handle RemoveFromWishList event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse RemoveFromWishList(
         PmcData pmcData,
@@ -54,9 +54,9 @@ public class WishlistController(
     /// <summary>
     ///     Handle changeWishlistItemCategory event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ChangeWishListItemCategory(
         PmcData pmcData,

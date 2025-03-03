@@ -15,7 +15,7 @@ public class BundleCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetBundles(string url, EmptyRequestData info, string sessionID)
     {

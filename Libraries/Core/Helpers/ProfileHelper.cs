@@ -61,7 +61,7 @@ public class ProfileHelper(
     /// <summary>
     ///     Get the pmc and scav profiles as an array by profile id
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns>Array of PmcData objects</returns>
     public List<PmcData> GetCompleteProfile(string sessionId)
     {

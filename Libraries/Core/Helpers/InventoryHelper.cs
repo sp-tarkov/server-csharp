@@ -366,7 +366,7 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                handleContainerPlacementError(ex.Message, output);
+                HandleContainerPlacementError(ex.Message, output);
 
                 return;
             }
@@ -408,7 +408,7 @@ public class InventoryHelper(
             }
             catch (Exception ex)
             {
-                handleContainerPlacementError(ex.Message, output);
+                HandleContainerPlacementError(ex.Message, output);
 
                 return;
             }
@@ -433,7 +433,7 @@ public class InventoryHelper(
         }
     }
 
-    private void handleContainerPlacementError(string errorText, ItemEventRouterResponse output)
+    protected void HandleContainerPlacementError(string errorText, ItemEventRouterResponse output)
     {
         _logger.Error(_localisationService.GetText("inventory-fill_container_failed", errorText));
 
@@ -1290,7 +1290,7 @@ public class InventoryHelper(
         return IsParentInStash(itemToCheck.Id, pmcData);
     }
 
-    private bool IsParentInStash(string itemId, PmcData pmcData)
+    protected static bool IsParentInStash(string itemId, PmcData pmcData)
     {
         // Item not found / has no parent
         var item = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemId);

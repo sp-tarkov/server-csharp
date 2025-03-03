@@ -299,7 +299,7 @@ public class LootGenerator(
     /// </summary>
     /// <param name="limits">limits as defined in config</param>
     /// <returns>record, key: item tplId, value: current/max item count allowed</returns>
-    private Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, int> limits)
+    protected Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, int> limits)
     {
         var itemTypeCounts = new Dictionary<string, ItemLimit>();
         foreach (var itemTypeId in limits)

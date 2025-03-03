@@ -193,7 +193,7 @@ public class BotGeneratorHelper(
     /// <param name="maxResource">Max resource value of medical items</param>
     /// <param name="randomizationValues">Value provided from config</param>
     /// <returns>Randomized value from maxHpResource</returns>
-    private double GetRandomizedResourceValue(double maxResource, RandomisedResourceValues? randomizationValues)
+    protected double GetRandomizedResourceValue(double maxResource, RandomisedResourceValues? randomizationValues)
     {
         if (randomizationValues is null)
         {
@@ -218,7 +218,7 @@ public class BotGeneratorHelper(
     /// <param name="setting">the setting of the weapon attachment/helmet equipment to be activated</param>
     /// <param name="defaultValue">default value for the chance of activation if the botrole or bot equipment role is undefined</param>
     /// <returns>Percent chance to be active</returns>
-    private double? GetBotEquipmentSettingFromConfig(string? botRole, string setting, double defaultValue)
+    protected double? GetBotEquipmentSettingFromConfig(string? botRole, string setting, double defaultValue)
     {
         if (botRole is null)
         {
@@ -273,7 +273,7 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    private UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
+    protected UpdRepairable GenerateWeaponRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
         var maxDurability = _durabilityLimitsHelper.GetRandomizedMaxWeaponDurability(itemTemplate, botRole);
         var currentDurability = _durabilityLimitsHelper.GetRandomizedWeaponDurability(
@@ -295,7 +295,7 @@ public class BotGeneratorHelper(
     /// <param name="itemTemplate">weapon object being generated for</param>
     /// <param name="botRole">type of bot being generated for</param>
     /// <returns>Repairable object</returns>
-    private UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
+    protected UpdRepairable GenerateArmorRepairableProperties(TemplateItem itemTemplate, string? botRole = null)
     {
         double maxDurability;
         double currentDurability;
@@ -724,7 +724,7 @@ public class BotGeneratorHelper(
     /// <param name="slotGrid">Items sub-grid we want to place item inside</param>
     /// <param name="itemTpl">Item tpl being placed</param>
     /// <returns>True if allowed</returns>
-    private bool ItemAllowedInContainer(Grid? slotGrid, string? itemTpl)
+    protected bool ItemAllowedInContainer(Grid? slotGrid, string? itemTpl)
     {
         var propFilters = slotGrid?.Props?.Filters;
         var excludedFilter = propFilters?.FirstOrDefault()?.ExcludedFilter ?? [];

@@ -43,9 +43,9 @@ public class TradeController(
     /// <summary>
     ///     Handle TradingConfirm event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ConfirmTrading(
         PmcData pmcData,
@@ -82,9 +82,9 @@ public class TradeController(
     /// <summary>
     ///     Handle RagFairBuyOffer event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ConfirmRagfairTrading(
         PmcData pmcData,
@@ -141,7 +141,7 @@ public class TradeController(
     /// <param name="fleaOffer">Offer being purchased</param>
     /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
-    private void BuyTraderItemFromRagfair(
+    protected void BuyTraderItemFromRagfair(
         string sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
@@ -187,7 +187,7 @@ public class TradeController(
     /// <param name="fleaOffer">Offer being purchased</param>
     /// <param name="requestOffer">request data from client</param>
     /// <param name="output">Output to send back to client</param>
-    private void BuyPmcItemFromRagfair(
+    protected void BuyPmcItemFromRagfair(
         string sessionId,
         PmcData pmcData,
         RagfairOffer fleaOffer,
@@ -234,11 +234,11 @@ public class TradeController(
     /// <param name="offerId">id of the offer</param>
     /// <param name="offerOwnerId">Owner id</param>
     /// <returns>true if offer was made by a player</returns>
-    private bool IsPlayerOffer(
+    protected bool IsPlayerOffer(
         string offerId,
         string? offerOwnerId)
     {
-        // No ownerid, not player offer
+        // No ownerId, not player offer
         if (offerOwnerId is null)
         {
             return false;
@@ -261,7 +261,7 @@ public class TradeController(
     /// <param name="fleaOffer">Flea offer being bought</param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>True if player can buy offer</returns>
-    private bool PlayerLacksTraderLoyaltyLevelToBuyOffer(
+    protected bool PlayerLacksTraderLoyaltyLevelToBuyOffer(
         RagfairOffer fleaOffer,
         PmcData pmcData)
     {
@@ -271,9 +271,9 @@ public class TradeController(
     /// <summary>
     ///     Handle SellAllFromSavage event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse SellScavItemsToFence(
         PmcData pmcData,
@@ -293,7 +293,7 @@ public class TradeController(
     /// <param name="sessionId">Session id</param>
     /// <param name="roublesToSend">amount of roubles to send</param>
     /// <param name="trader">Trader to sell items to</param>
-    private void MailMoneyToPlayer(
+    protected void MailMoneyToPlayer(
         string sessionId,
         int roublesToSend,
         string trader)
@@ -336,7 +336,7 @@ public class TradeController(
     /// <param name="handbookPrices">Prices of items from handbook</param>
     /// <param name="traderDetails">Trader being sold to, to perform buy category check against</param>
     /// <returns>Rouble price</returns>
-    private int GetPriceOfItemAndChildren(
+    protected int GetPriceOfItemAndChildren(
         string parentItemId,
         List<Item> items,
         Dictionary<string, int?> handbookPrices,

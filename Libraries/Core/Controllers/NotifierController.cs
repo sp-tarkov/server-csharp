@@ -22,7 +22,7 @@ public class NotifierController(
     ///     one or more appear or when a timeout expires.
     ///     If no notifications are available after the timeout, use a default message.
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public Task<List<WsNotificationEvent>> NotifyAsync(string sessionId)
     {
         return Task.Factory.StartNew(() => {
@@ -52,7 +52,7 @@ public class NotifierController(
     /// <summary>
     ///     Handle client/notifier/channel/create
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public NotifierChannel GetChannel(string sessionId)
     {
@@ -68,7 +68,7 @@ public class NotifierController(
 
     /// <summary>
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public string GetServer(string sessionId)
     {

@@ -35,7 +35,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string VersionValidate(string url, VersionValidateRequestData info, string sessionID)
     {
@@ -47,7 +47,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GameStart(string url, EmptyRequestData info, string sessionID)
     {
@@ -67,7 +67,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GameLogout(string url, EmptyRequestData info, string sessionID)
     {
@@ -85,7 +85,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGameConfig(string url, GameEmptyCrcRequestData info, string sessionID)
     {
@@ -97,7 +97,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGameMode(string url, GameModeRequestData info, string sessionID)
     {
@@ -109,7 +109,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetServer(string url, EmptyRequestData info, string sessionID)
     {
@@ -121,7 +121,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetCurrentGroup(string url, EmptyRequestData info, string sessionID)
     {
@@ -133,7 +133,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ValidateGameVersion(string url, EmptyRequestData info, string sessionID)
     {
@@ -145,7 +145,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GameKeepalive(string url, EmptyRequestData info, string sessionID)
     {
@@ -157,7 +157,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetVersion(string url, EmptyRequestData info, string sessionID)
     {
@@ -175,7 +175,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ReportNickname(string url, UIDRequestData info, string sessionID)
     {
@@ -187,7 +187,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetRaidTime(string url, GetRaidTimeRequest info, string sessionID)
     {
@@ -199,7 +199,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetSurvey(string url, EmptyRequestData info, string sessionID)
     {
@@ -211,7 +211,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetSurveyView(string url, SendSurveyOpinionRequest info, string sessionID)
     {
@@ -223,7 +223,7 @@ public class GameCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SendSurveyOpinion(string url, SendSurveyOpinionRequest info, string sessionID)
     {

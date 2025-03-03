@@ -44,7 +44,7 @@ public class InsuranceCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetInsuranceCost(string url, GetInsuranceCostRequestData info, string sessionID)
     {
@@ -54,9 +54,9 @@ public class InsuranceCallbacks(
     /// <summary>
     ///     Handle Insure event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse Insure(PmcData pmcData, InsureRequestData info, string sessionID)
     {

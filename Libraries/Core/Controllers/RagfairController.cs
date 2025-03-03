@@ -22,32 +22,32 @@ namespace Core.Controllers;
 [Injectable]
 public class RagfairController
 {
-    private readonly ConfigServer _configServer;
-    private readonly DatabaseService _databaseService;
-    private readonly EventOutputHolder _eventOutputHolder;
-    private readonly HandbookHelper _handbookHelper;
-    private readonly HttpResponseUtil _httpResponseUtil;
-    private readonly InventoryHelper _inventoryHelper;
-    private readonly ItemHelper _itemHelper;
-    private readonly JsonUtil _jsonUtil;
-    private readonly LocalisationService _localisationService;
-    private readonly ISptLogger<RagfairController> _logger;
-    private readonly PaymentHelper _paymentHelper;
-    private readonly PaymentService _paymentService;
-    private readonly ProfileHelper _profileHelper;
+    protected ConfigServer _configServer;
+    protected DatabaseService _databaseService;
+    protected EventOutputHolder _eventOutputHolder;
+    protected HandbookHelper _handbookHelper;
+    protected HttpResponseUtil _httpResponseUtil;
+    protected InventoryHelper _inventoryHelper;
+    protected ItemHelper _itemHelper;
+    protected JsonUtil _jsonUtil;
+    protected LocalisationService _localisationService;
+    protected ISptLogger<RagfairController> _logger;
+    protected PaymentHelper _paymentHelper;
+    protected PaymentService _paymentService;
+    protected ProfileHelper _profileHelper;
 
-    private readonly RagfairConfig _ragfairConfig;
-    private readonly RagfairHelper _ragfairHelper;
-    private readonly RagfairOfferGenerator _ragfairOfferGenerator;
-    private readonly RagfairOfferHelper _ragfairOfferHelper;
-    private readonly RagfairOfferService _ragfairOfferService;
-    private readonly RagfairPriceService _ragfairPriceService;
-    private readonly RagfairSellHelper _ragfairSellHelper;
-    private readonly RagfairServer _ragfairServer;
-    private readonly RagfairSortHelper _ragfairSortHelper;
-    private readonly RagfairTaxService _ragfairTaxService;
-    private readonly TimeUtil _timeUtil;
-    private readonly TraderHelper _traderHelper;
+    protected RagfairConfig _ragfairConfig;
+    protected RagfairHelper _ragfairHelper;
+    protected RagfairOfferGenerator _ragfairOfferGenerator;
+    protected RagfairOfferHelper _ragfairOfferHelper;
+    protected RagfairOfferService _ragfairOfferService;
+    protected RagfairPriceService _ragfairPriceService;
+    protected RagfairSellHelper _ragfairSellHelper;
+    protected RagfairServer _ragfairServer;
+    protected RagfairSortHelper _ragfairSortHelper;
+    protected RagfairTaxService _ragfairTaxService;
+    protected TimeUtil _timeUtil;
+    protected TraderHelper _traderHelper;
 
     public RagfairController(
         ISptLogger<RagfairController> logger,
@@ -260,7 +260,7 @@ public class RagfairController
      * Add index to all offers passed in (0-indexed)
      * @param offers Offers to add index value to
      */
-    private void AddIndexValueToOffers(List<RagfairOffer> offers)
+    protected void AddIndexValueToOffers(List<RagfairOffer> offers)
     {
         var counter = 0;
 
@@ -276,7 +276,7 @@ public class RagfairController
      * @param offers Ragfair offers to get categories for
      * @returns record with templates + counts
      */
-    private Dictionary<string, int>? GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest,
+    protected Dictionary<string, int> GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest,
         List<RagfairOffer> offers)
     {
         // Linked/required search categories
@@ -311,7 +311,7 @@ public class RagfairController
      * @param info Search request
      * @returns True if it is a 'linked' search type
      */
-    private bool IsLinkedSearch(SearchRequestData searchRequest)
+    protected bool IsLinkedSearch(SearchRequestData searchRequest)
     {
         return !string.IsNullOrEmpty(searchRequest.LinkedSearchId);
     }
@@ -321,7 +321,7 @@ public class RagfairController
      * @param info Search request
      * @returns True if it is a 'required' search type
      */
-    private bool IsRequiredSearch(SearchRequestData searchRequest)
+    protected bool IsRequiredSearch(SearchRequestData searchRequest)
     {
         return !string.IsNullOrEmpty(searchRequest.NeededSearchId);
     }
@@ -334,7 +334,7 @@ public class RagfairController
      * @param pmcProfile Player profile
      * @returns array of offers
      */
-    private List<RagfairOffer> GetOffersForSearchType(SearchRequestData searchRequest, List<string> itemsToAdd,
+    protected List<RagfairOffer> GetOffersForSearchType(SearchRequestData searchRequest, List<string> itemsToAdd,
         Dictionary<string, TraderAssort> traderAssorts,
         PmcData pmcProfile)
     {
@@ -398,7 +398,7 @@ public class RagfairController
         };
     }
 
-    private double GetAveragePriceFromOffers(List<RagfairOffer> offers, MinMax<double> minMax, bool ignoreTraderOffers)
+    protected double GetAveragePriceFromOffers(List<RagfairOffer> offers, MinMax<double> minMax, bool ignoreTraderOffers)
     {
         var sum = 0d;
         var totalOfferCount = 0;
@@ -494,7 +494,7 @@ public class RagfairController
      * @param errorMessage message to show to player when offer is invalid
      * @returns Is offer valid
      */
-    private bool IsValidPlayerOfferRequest(AddOfferRequestData offerRequest, string validationMessage)
+    protected bool IsValidPlayerOfferRequest(AddOfferRequestData offerRequest, string validationMessage)
     {
         if (offerRequest?.Items is null || offerRequest.Items.Count == 0)
         {
@@ -519,7 +519,7 @@ public class RagfairController
      * @param offerRequest Client request
      * @returns FleaOfferType
      */
-    private FleaOfferType GetOfferType(AddOfferRequestData offerRequest)
+    protected FleaOfferType GetOfferType(AddOfferRequestData offerRequest)
     {
         var sellInOncePiece = offerRequest.SellInOnePiece.GetValueOrDefault(false);
 
@@ -554,7 +554,7 @@ public class RagfairController
      * @param output Response to send to client
      * @returns IItemEventRouterResponse
      */
-    private ItemEventRouterResponse CreateMultiOffer(string sessionID, AddOfferRequestData offerRequest,
+    protected ItemEventRouterResponse CreateMultiOffer(string sessionID, AddOfferRequestData offerRequest,
         SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
@@ -666,7 +666,7 @@ public class RagfairController
      * @param output Response to send to client
      * @returns IItemEventRouterResponse
      */
-    private ItemEventRouterResponse CreatePackOffer(string sessionID, AddOfferRequestData offerRequest,
+    protected ItemEventRouterResponse CreatePackOffer(string sessionID, AddOfferRequestData offerRequest,
         SptProfile fullProfile, ItemEventRouterResponse output)
     {
         var pmcData = fullProfile.CharacterData.PmcData;
@@ -775,7 +775,7 @@ public class RagfairController
      * @param output Response to send to client
      * @returns IItemEventRouterResponse
      */
-    private ItemEventRouterResponse CreateSingleOffer(string sessionID, AddOfferRequestData offerRequest,
+    protected ItemEventRouterResponse CreateSingleOffer(string sessionID, AddOfferRequestData offerRequest,
         SptProfile fullProfile,
         ItemEventRouterResponse output)
     {
@@ -874,7 +874,7 @@ public class RagfairController
      * @param output IItemEventRouterResponse
      * @returns True if charging tax to player failed
      */
-    private bool ChargePlayerTaxFee(
+    protected bool ChargePlayerTaxFee(
         string sessionId,
         Item rootItem,
         PmcData pmcData,
@@ -917,7 +917,7 @@ public class RagfairController
         return false;
     }
 
-    private RagfairOffer CreatePlayerOffer(string sessionId, List<Requirement> requirements, List<Item> items,
+    protected RagfairOffer CreatePlayerOffer(string sessionId, List<Requirement> requirements, List<Item> items,
         bool sellInOnePiece)
     {
         const int loyalLevel = 1;
@@ -962,7 +962,7 @@ public class RagfairController
      * @param requirements
      * @returns Rouble price
      */
-    private double CalculateRequirementsPriceInRub(List<Requirement> requirements)
+    protected double CalculateRequirementsPriceInRub(List<Requirement> requirements)
     {
         return requirements.Sum(requirement =>
             {
@@ -978,7 +978,7 @@ public class RagfairController
         );
     }
 
-    private GetItemsToListOnFleaFromInventoryResult GetItemsToListOnFleaFromInventory(PmcData pmcData,
+    protected GetItemsToListOnFleaFromInventoryResult GetItemsToListOnFleaFromInventory(PmcData pmcData,
         List<string> itemIdsFromFleaOfferRequest)
     {
         List<List<Item>> itemsToReturn = [];
@@ -1157,7 +1157,7 @@ public class RagfairController
      * @param value Amount of currency
      * @returns IProcessBuyTradeRequestData
      */
-    private ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, double value)
+    protected ProcessBuyTradeRequestData CreateBuyTradeRequestObject(CurrencyType currency, double value)
     {
         return new ProcessBuyTradeRequestData
         {

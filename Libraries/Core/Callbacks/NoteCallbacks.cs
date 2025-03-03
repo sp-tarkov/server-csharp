@@ -12,9 +12,9 @@ public class NoteCallbacks(NoteController _noteController)
     /// <summary>
     ///     Handle AddNote event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse AddNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
@@ -24,9 +24,9 @@ public class NoteCallbacks(NoteController _noteController)
     /// <summary>
     ///     Handle EditNote event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse EditNote(PmcData pmcData, NoteActionData info, string sessionID)
     {
@@ -36,9 +36,9 @@ public class NoteCallbacks(NoteController _noteController)
     /// <summary>
     ///     Handle DeleteNote event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse DeleteNote(PmcData pmcData, NoteActionData info, string sessionID)
     {

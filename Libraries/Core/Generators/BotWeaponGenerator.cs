@@ -40,7 +40,7 @@ public class BotWeaponGenerator(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected RepairConfig _repairConfig = _configServer.GetConfig<RepairConfig>();
 
-    private static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
+    protected static List<IInventoryMagGen> MagGenSetUp(IEnumerable<IInventoryMagGen> components)
     {
         var inventoryMagGens = components.ToList();
         inventoryMagGens.Sort((a, b) => a.GetPriority() - b.GetPriority());

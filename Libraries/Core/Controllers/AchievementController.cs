@@ -16,6 +16,11 @@ public class AchievementController(
 {
     protected CoreConfig coreConfig = configServer.GetConfig<CoreConfig>();
 
+    /// <summary>
+    /// Get base achievements
+    /// </summary>
+    /// <param name="sessionID">Session/player id</param>
+    /// <returns></returns>
     public virtual GetAchievementsResponse GetAchievements(string sessionID)
     {
         return new GetAchievementsResponse
@@ -24,6 +29,11 @@ public class AchievementController(
         };
     }
 
+    /// <summary>
+    /// Shows % of 'other' players who've completed each achievement
+    /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>CompletedAchievementsResponse</returns>
     public virtual CompletedAchievementsResponse GetAchievementStatics(string sessionId)
     {
         var stats = new Dictionary<string, int>();

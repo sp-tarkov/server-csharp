@@ -20,7 +20,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string UpdatePing(string url, UpdatePingRequestData info, string sessionID)
     {
@@ -32,7 +32,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ExitMatch(string url, EmptyRequestData info, string sessionID)
     {
@@ -44,7 +44,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ExitFromMenu(string url, EmptyRequestData info, string sessionID)
     {
@@ -56,7 +56,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GroupCurrent(string url, EmptyRequestData info, string sessionID)
     {
@@ -73,7 +73,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string StartGroupSearch(string url, EmptyRequestData info, string sessionID)
     {
@@ -85,7 +85,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string StopGroupSearch(string url, EmptyRequestData info, string sessionID)
     {
@@ -97,7 +97,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SendGroupInvite(string url, MatchGroupInviteSendRequest info, string sessionID)
     {
@@ -109,7 +109,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
@@ -126,7 +126,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string DeclineGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
@@ -138,7 +138,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string CancelGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
@@ -150,7 +150,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string TransferGroup(string url, MatchGroupTransferRequest info, string sessionID)
     {
@@ -162,7 +162,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string CancelAllGroupInvite(string url, EmptyRequestData info, string sessionID)
     {
@@ -174,7 +174,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string PutMetrics(string url, PutMetricsRequestData info, string sessionID)
     {
@@ -186,7 +186,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string EventDisconnect(string url, PutMetricsRequestData info, string sessionID)
     {
@@ -198,7 +198,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string ServerAvailable(string url, EmptyRequestData info, string sessionID)
     {
@@ -210,7 +210,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string JoinMatch(string url, MatchGroupStartGameRequest info, string sessionID)
     {
@@ -222,7 +222,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetMetrics(string url, EmptyRequestData info, string sessionID)
     {
@@ -235,7 +235,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGroupStatus(string url, MatchGroupStatusRequest info, string sessionID)
     {
@@ -247,7 +247,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string DeleteGroup(string url, DeleteGroupRequest info, string sessionID)
     {
@@ -260,7 +260,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string LeaveGroup(string url, EmptyRequestData info, string sessionID)
     {
@@ -272,7 +272,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, string sessionID)
     {
@@ -284,7 +284,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string StartLocalRaid(string url, StartLocalRaidRequestData info, string sessionID)
     {
@@ -296,7 +296,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string EndLocalRaid(string url, EndLocalRaidRequestData info, string sessionID)
     {
@@ -309,7 +309,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
@@ -322,7 +322,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetConfigurationByProfile(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
@@ -334,7 +334,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string RaidReady(string url, EmptyRequestData info, string sessionID)
     {
@@ -346,7 +346,7 @@ public class MatchCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string NotRaidReady(string url, EmptyRequestData info, string sessionID)
     {

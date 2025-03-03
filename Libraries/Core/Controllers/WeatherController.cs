@@ -27,7 +27,7 @@ public class WeatherController(
     /// <summary>
     ///     Handle client/weather
     /// </summary>
-    /// <returns></returns>
+    /// <returns>WeatherData</returns>
     public WeatherData Generate()
     {
         var result = new WeatherData
@@ -48,8 +48,8 @@ public class WeatherController(
     /// <summary>
     ///     Handle client/localGame/weather
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <returns></returns>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>GetLocalWeatherResponseData</returns>
     public GetLocalWeatherResponseData GenerateLocal(string sessionId)
     {
         var result = new GetLocalWeatherResponseData

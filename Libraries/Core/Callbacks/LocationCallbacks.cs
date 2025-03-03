@@ -17,7 +17,7 @@ public class LocationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetLocationData(string url, EmptyRequestData info, string sessionID)
     {
@@ -29,7 +29,7 @@ public class LocationCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
     {

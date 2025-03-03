@@ -66,7 +66,7 @@ public class ContainerHelper
         return new FindSlotResult(false);
     }
 
-    private bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
+    protected static bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
     {
         return itemWidth * itemHeight > 1;
     }

@@ -122,7 +122,7 @@ public class RepairService(
     /// <param name="repairedItemId">Repaired item id</param>
     /// <param name="repairCost">Cost to repair item in roubles</param>
     /// <param name="traderId">Id of the trader who repaired the item / who is paid</param>
-    /// <param name="output"></param>
+    /// <param name="output">Client response</param>
     public void PayForRepair(
         string sessionID,
         PmcData pmcData,

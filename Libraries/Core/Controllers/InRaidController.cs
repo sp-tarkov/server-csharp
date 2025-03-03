@@ -35,7 +35,7 @@ public class InRaidController(
     ///     Handles pmc/pscav
     /// </summary>
     /// <param name="offRaidProfileData"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public void SavePostRaidProfileForScav(ScavSaveRequestData offRaidProfileData, string sessionId)
     {
         var serverScavProfile = _profileHelper.GetScavProfile(sessionId);
@@ -57,9 +57,10 @@ public class InRaidController(
     }
 
     /// <summary>
+    /// Get a % chance a scav will be hostile to the player when they're also a scav
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public double GetTraitorScavHostileChance(string url, string sessionId)
     {
@@ -70,7 +71,7 @@ public class InRaidController(
     /// Get all boss role types e.g. bossTagilla
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns>string array of boss types</returns>
     public List<string> GetBossTypes(string url, string sessionId)
     {

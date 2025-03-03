@@ -40,7 +40,7 @@ public class TraderCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTraderSettings(string url, EmptyRequestData info, string sessionID)
     {
@@ -52,7 +52,7 @@ public class TraderCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTrader(string url, EmptyRequestData info, string sessionID)
     {
@@ -65,7 +65,7 @@ public class TraderCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetAssort(string url, EmptyRequestData info, string sessionID)
     {
@@ -78,7 +78,7 @@ public class TraderCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
     {

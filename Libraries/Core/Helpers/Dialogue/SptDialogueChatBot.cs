@@ -73,7 +73,7 @@ public class SptDialogueChatBot(
         return request.DialogId;
     }
 
-    private static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
+    protected static List<IChatMessageHandler> ChatMessageHandlerSetup(IEnumerable<IChatMessageHandler> components)
     {
         var chatMessageHandlers = components.ToList();
         chatMessageHandlers.Sort((a, b) => a.GetPriority() - b.GetPriority());
@@ -81,12 +81,12 @@ public class SptDialogueChatBot(
         return chatMessageHandlers;
     }
 
-    private string GetUnrecognizedCommandMessage()
+    protected string GetUnrecognizedCommandMessage()
     {
         return "Unknown command.";
     }
 
-    private string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
+    protected string? SendPlayerHelpMessage(string sessionId, SendMessageRequest request)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

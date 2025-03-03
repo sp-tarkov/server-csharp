@@ -978,7 +978,7 @@ public class LocationLootGenerator(
         }
     }
 
-    private ContainerItem CreateDynamicLootItem(string? chosenComposedKey, List<Item> items, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
+    protected ContainerItem CreateDynamicLootItem(string? chosenComposedKey, List<Item> items, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
         var chosenItem = items.FirstOrDefault(item => item.Id == chosenComposedKey);
         var chosenTpl = chosenItem?.Template;
@@ -1168,7 +1168,7 @@ public class LocationLootGenerator(
         };
     }
 
-    private List<Item> GetArmorItems(string chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
+    protected List<Item> GetArmorItems(string chosenTpl, Item? rootItem, List<Item> items, TemplateItem armorDbTemplate)
     {
         var defaultPreset = _presetHelper.GetDefaultPreset(chosenTpl);
         if (defaultPreset is not null)
@@ -1196,7 +1196,7 @@ public class LocationLootGenerator(
         return items;
     }
 
-    private Item? CreateWeaponItems(string chosenTpl, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string? parentId, ref List<Item> items)
+    protected Item? CreateWeaponItems(string chosenTpl, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string? parentId, ref List<Item> items)
     {
         Item? rootItem;
         List<Item> children = [];
@@ -1309,7 +1309,7 @@ public class LocationLootGenerator(
         return rootItem;
     }
 
-    private void GenerateStaticMagazineItem(Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, Item? rootItem, TemplateItem itemTemplate,
+    protected void GenerateStaticMagazineItem(Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, Item? rootItem, TemplateItem itemTemplate,
         List<Item> items)
     {
         List<Item> magazineWithCartridges = [rootItem];

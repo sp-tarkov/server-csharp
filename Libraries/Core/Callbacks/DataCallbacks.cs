@@ -19,7 +19,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetSettings(string url, EmptyRequestData info, string sessionID)
     {
@@ -32,7 +32,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGlobals(string url, EmptyRequestData info, string sessionID)
     {
@@ -47,7 +47,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTemplateItems(string url, EmptyRequestData info, string sessionID)
     {
@@ -59,7 +59,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTemplateHandbook(string url, EmptyRequestData info, string sessionID)
     {
@@ -71,7 +71,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTemplateSuits(string url, EmptyRequestData info, string sessionID)
     {
@@ -83,7 +83,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetTemplateCharacter(string url, EmptyRequestData info, string sessionID)
     {
@@ -95,7 +95,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetHideoutSettings(string url, EmptyRequestData info, string sessionID)
     {
@@ -107,7 +107,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetHideoutAreas(string url, EmptyRequestData info, string sessionID)
     {
@@ -119,7 +119,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetHideoutProduction(string url, EmptyRequestData info, string sessionID)
     {
@@ -131,7 +131,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetLocalesLanguages(string url, EmptyRequestData info, string sessionID)
     {
@@ -143,7 +143,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetLocalesMenu(string url, EmptyRequestData info, string sessionID)
     {
@@ -164,7 +164,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetLocalesGlobal(string url, EmptyRequestData info, string sessionID)
     {
@@ -180,7 +180,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetQteList(string url, EmptyRequestData info, string sessionID)
     {
@@ -192,7 +192,7 @@ public class DataCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetItemPrices(string url, EmptyRequestData info, string sessionID)
     {

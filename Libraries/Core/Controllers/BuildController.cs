@@ -29,7 +29,7 @@ public class BuildController(
     /// <summary>
     ///     Handle client/handbook/builds/my/list
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public UserBuilds? GetUserBuilds(string sessionID)
     {
@@ -86,7 +86,7 @@ public class BuildController(
     /// <summary>
     ///     Handle client/builds/weapon/save
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="body"></param>
     public void SaveWeaponBuild(string sessionId, PresetBuildActionRequestData body)
     {
@@ -126,7 +126,7 @@ public class BuildController(
     /// <summary>
     ///     Handle client/builds/equipment/save event
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <param name="request"></param>
     public void SaveEquipmentBuild(string sessionID, PresetBuildActionRequestData request)
     {
@@ -169,7 +169,7 @@ public class BuildController(
     /// <summary>
     ///     Handle client/builds/delete
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     public void RemoveBuild(string sessionId, RemoveBuildRequestData request)
     {
@@ -182,7 +182,7 @@ public class BuildController(
     /// <summary>
     ///     Handle client/builds/magazine/save
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     public void CreateMagazineTemplate(string sessionId, SetMagazineRequest request)
     {
@@ -213,10 +213,12 @@ public class BuildController(
     }
 
     /// <summary>
+    /// Handle client/builds/delete
+    /// Remove build from players profile
     /// </summary>
     /// <param name="idToRemove"></param>
-    /// <param name="sessionId"></param>
-    private void RemovePlayerBuild(string idToRemove, string sessionID)
+    /// <param name="sessionId">Session/Player id</param>
+    protected void RemovePlayerBuild(string idToRemove, string sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
         var weaponBuilds = profile.UserBuildData.WeaponBuilds;

@@ -40,11 +40,11 @@ public class BotController(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
-    /**
-     * Return the number of bot load-out varieties to be generated
-     * @param type bot Type we want the load-out gen count for
-     * @returns number of bots to generate
-     */
+    /// <summary>
+    /// Return the number of bot load-out varieties to be generated
+    /// </summary>
+    /// <param name="type">bot Type we want the load-out gen count for</param>
+    /// <returns>number of bots to generate</returns>
     public int GetBotPresetGenerationLimit(string type)
     {
 
@@ -59,11 +59,25 @@ public class BotController(
 
     }
 
+    /// <summary>
+    /// Handle singleplayer/settings/bot/difficulty
+    /// Get the core.json difficulty settings from database/bots
+    /// </summary>
+    /// <returns></returns>
     public Dictionary<string, object> GetBotCoreDifficulty()
     {
         return _databaseService.GetBots().Core!;
     }
 
+    /// <summary>
+    /// Get bot difficulty settings
+    /// Adjust PMC settings to ensure they engage the correct bot types
+    /// </summary>
+    /// <param name="type">what bot the server is requesting settings for</param>
+    /// <param name="diffLevel">difficulty level server requested settings for</param>
+    /// <param name="raidConfig">OPTIONAL - applicationContext Data stored at start of raid</param>
+    /// <param name="ignoreRaidSettings">OPTIONAL - should raid settings chosen pre-raid be ignored</param>
+    /// <returns>Difficulty object</returns>
     public DifficultyCategories GetBotDifficulty(string type, string diffLevel, GetRaidConfigurationRequestData? raidConfig, bool ignoreRaidSettings = false)
     {
         var difficulty = diffLevel.ToLower();
@@ -145,14 +159,27 @@ public class BotController(
         return result;
     }
 
-    public List<BotBase> Generate(string sessionId, GenerateBotsRequestData info)
+    /// <summary>
+    /// Generate bots for a wave
+    /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="request"></param>
+    /// <returns>List of bots</returns>
+    public List<BotBase> Generate(string sessionId, GenerateBotsRequestData request)
     {
         var pmcProfile = _profileHelper.GetPmcProfile(sessionId);
 
-        return GenerateBotWaves(info, pmcProfile, sessionId);
+        return GenerateBotWaves(request, pmcProfile, sessionId);
     }
 
-    private List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
+    /// <summary>
+    /// Generate bots for passed in wave data
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="pmcProfile">Player generating bots</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>List of generated bots</returns>
+    protected List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
     {
         var result = new List<BotBase>();
 
@@ -187,13 +214,20 @@ public class BotController(
         return result;
     }
 
-    private List<BotBase> GenerateBotWave(GenerateCondition condition, BotGenerationDetails botGenerationDetails, string sessionId)
+    /// <summary>
+    /// Generate bots for a single wave request
+    /// </summary>
+    /// <param name="generateRequest"></param>
+    /// <param name="botGenerationDetails"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns></returns>
+    protected List<BotBase> GenerateBotWave(GenerateCondition generateRequest, BotGenerationDetails botGenerationDetails, string sessionId)
     {
-        var isEventBot = condition.Role?.ToLower().Contains("event");
+        var isEventBot = generateRequest.Role?.ToLower().Contains("event");
         if (isEventBot.GetValueOrDefault(false))
         {
             // Add eventRole data + reassign role property to be base type
-            botGenerationDetails.EventRole = condition.Role;
+            botGenerationDetails.EventRole = generateRequest.Role;
             botGenerationDetails.Role = _seasonalEventService.GetBaseRoleForEventBot(
                 botGenerationDetails.EventRole
             );
@@ -241,7 +275,11 @@ public class BotController(
         return results;
     }
 
-    private GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
+    /// <summary>
+    /// Pull raid settings from Application context
+    /// </summary>
+    /// <returns>GetRaidConfigurationRequestData if it exists</returns>
+    protected GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
     {
         var raidSettings = _applicationContext
             .GetLatestValue(ContextVariableType.RAID_CONFIGURATION)
@@ -255,12 +293,27 @@ public class BotController(
         return raidSettings;
     }
 
-    private MinMax<int> GetPmcLevelRangeForMap(string? location)
+    /// <summary>
+    /// Get min/max level range values for a specific map
+    /// </summary>
+    /// <param name="location">Map name e.g. factory4_day</param>
+    /// <returns>MinMax values</returns>
+    protected MinMax<int> GetPmcLevelRangeForMap(string? location)
     {
         return _pmcConfig.LocationSpecificPmcLevelOverride!.GetValueOrDefault(location?.ToLower() ?? "", null);
     }
 
-    private BotGenerationDetails GetBotGenerationDetailsForWave(
+    /// <summary>
+    /// Create a BotGenerationDetails for the bot generator to use
+    /// </summary>
+    /// <param name="condition">Data from client defining bot type and difficulty</param>
+    /// <param name="pmcProfile">Player who is generating bots</param>
+    /// <param name="allPmcsHaveSameNameAsPlayer">Should all PMCs have same name as player</param>
+    /// <param name="raidSettings">Settings chosen pre-raid by player in client</param>
+    /// <param name="botCountToGenerate">How many bots to generate</param>
+    /// <param name="generateAsPmc">Force bot being generated to be a PMC</param>
+    /// <returns>BotGenerationDetails</returns>
+    protected BotGenerationDetails GetBotGenerationDetailsForWave(
         GenerateCondition condition,
         PmcData? pmcProfile,
         bool allPmcsHaveSameNameAsPlayer,
@@ -285,6 +338,12 @@ public class BotController(
         };
     }
 
+    /// <summary>
+    /// Get the max number of bots allowed on a map
+    /// Looks up location player is entering when getting cap value
+    /// </summary>
+    /// <param name="location">The map location cap was requested for</param>
+    /// <returns>bot cap for map</returns>
     public int GetBotCap(string location)
     {
         var botCap = _botConfig.MaxBotCap.FirstOrDefault(x =>
@@ -299,6 +358,10 @@ public class BotController(
         return botCap.Value;
     }
 
+    /// <summary>
+    /// Get weights for what each bot type should use as a brain - used by client
+    /// </summary>
+    /// <returns></returns>
     public AiBotBrainTypes GetAiBotBrainTypes()
     {
         return new AiBotBrainTypes

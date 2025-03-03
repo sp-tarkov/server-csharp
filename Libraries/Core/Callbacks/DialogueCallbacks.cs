@@ -34,7 +34,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetFriendList(string url, EmptyRequestData info, string sessionID)
     {
@@ -46,7 +46,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetChatServerList(string url, GetChatServerListRequestData info, string sessionID)
     {
@@ -81,7 +81,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetMailDialogList(string url, GetMailDialogListRequestData info, string sessionID)
     {
@@ -93,7 +93,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetMailDialogView(string url, GetMailDialogViewRequestData info, string sessionID)
     {
@@ -105,7 +105,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetMailDialogInfo(string url, GetMailDialogInfoRequestData info, string sessionID)
     {
@@ -117,7 +117,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string RemoveDialog(string url, RemoveDialogRequestData info, string sessionID)
     {
@@ -130,7 +130,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string PinDialog(string url, PinDialogRequestData info, string sessionID)
     {
@@ -143,7 +143,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string UnpinDialog(string url, PinDialogRequestData info, string sessionID)
     {
@@ -156,7 +156,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string SetRead(string url, SetDialogReadRequestData info, string sessionID)
     {
@@ -169,7 +169,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string GetAllAttachments(string url, GetAllAttachmentsRequestData info, string sessionID)
     {
@@ -181,7 +181,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string SendMessage(string url, SendMessageRequest info, string sessionID)
     {
@@ -193,7 +193,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string ListOutbox(string url, EmptyRequestData info, string sessionID)
     {
@@ -205,7 +205,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string ListInbox(string url, EmptyRequestData info, string sessionID)
     {
@@ -217,7 +217,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string SendFriendRequest(string url, FriendRequestData info, string sessionID)
     {
@@ -229,7 +229,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string AcceptAllFriendRequests(string url, EmptyRequestData info, string sessionID)
     {
@@ -241,7 +241,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string AcceptFriendRequest(string url, AcceptFriendRequestData info, string sessionID)
     {
@@ -253,7 +253,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string DeclineFriendRequest(string url, DeclineFriendRequestData info, string sessionID)
     {
@@ -265,7 +265,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string CancelFriendRequest(string url, CancelFriendRequestData info, string sessionID)
     {
@@ -277,7 +277,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string DeleteFriend(string url, DeleteFriendRequest info, string sessionID)
     {
@@ -290,7 +290,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string IgnoreFriend(string url, UIDRequestData info, string sessionID)
     {
@@ -302,7 +302,7 @@ public class DialogueCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public virtual string UnIgnoreFriend(string url, UIDRequestData info, string sessionID)
     {

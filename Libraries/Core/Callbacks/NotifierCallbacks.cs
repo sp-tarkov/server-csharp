@@ -51,7 +51,7 @@ public class NotifierCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string CreateNotifierChannel(string url, EmptyRequestData info, string sessionID)
     {
@@ -63,7 +63,7 @@ public class NotifierCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SelectProfile(string url, UIDRequestData info, string sessionID)
     {
@@ -79,7 +79,7 @@ public class NotifierCallbacks(
     /// </summary>
     /// <param name="url"></param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string Notify(string url, object info, string sessionID)
     {

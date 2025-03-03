@@ -95,7 +95,7 @@ public class DialogueController(
         };
     }
 
-    private List<UserDialogInfo> GetActiveChatBots()
+    protected List<UserDialogInfo> GetActiveChatBots()
     {
         var activeBots = new List<UserDialogInfo>();
 
@@ -234,7 +234,7 @@ public class DialogueController(
     /// <param name="profile">Player profile</param>
     /// <param name="request">get dialog request</param>
     /// <returns>Dialogue</returns>
-    private Dialogue GetDialogByIdFromProfile(
+    protected Dialogue GetDialogByIdFromProfile(
         SptProfile profile,
         GetMailDialogViewRequestData request)
     {
@@ -279,7 +279,7 @@ public class DialogueController(
     /// <param name="fullProfile">Player profile</param>
     /// <param name="userDialogs">The participants of the mail</param>
     /// <returns>UserDialogInfo list</returns>
-    private List<UserDialogInfo> GetProfilesForMail(SptProfile fullProfile, List<UserDialogInfo>? userDialogs)
+    protected List<UserDialogInfo> GetProfilesForMail(SptProfile fullProfile, List<UserDialogInfo>? userDialogs)
     {
         List<UserDialogInfo> result = [];
         if (userDialogs is null)
@@ -322,7 +322,7 @@ public class DialogueController(
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
     /// <returns>Count of messages with attachments</returns>
-    private int GetUnreadMessagesWithAttachmentsCount(
+    protected int GetUnreadMessagesWithAttachmentsCount(
         string sessionId,
         string dialogueId)
     {
@@ -358,7 +358,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="messages">Messages to check</param>
     /// <returns>true if uncollected rewards found</returns>
-    private bool MessagesHaveUncollectedRewards(List<Message> messages)
+    protected bool MessagesHaveUncollectedRewards(List<Message> messages)
     {
         return messages.Any(message => (message.Items?.Data?.Count ?? 0) > 0);
     }
@@ -399,7 +399,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="dialogueId"></param>
     /// <param name="shouldPin"></param>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public virtual void SetDialoguePin(string? dialogueId, bool shouldPin, string sessionId)
     {
         var dialog = _dialogueHelper.GetDialogsForProfile(sessionId).GetValueOrDefault(dialogueId);
@@ -490,7 +490,7 @@ public class DialogueController(
     /// <summary>
     ///     handle client/mail/msg/send
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
     public virtual string SendMessage(
@@ -513,7 +513,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="messages">Messages to parse</param>
     /// <returns>messages with items to collect</returns>
-    private List<Message> GetMessageWithAttachments(List<Message> messages)
+    protected List<Message> GetMessageWithAttachments(List<Message> messages)
     {
         return messages.Where(message => (message.Items?.Data?.Count ?? 0) > 0).ToList();
     }
@@ -522,7 +522,7 @@ public class DialogueController(
     ///     Delete expired items from all messages in player profile. triggers when updating traders.
     /// </summary>
     /// <param name="sessionId">Session id</param>
-    private void RemoveExpiredItemsFromMessages(string sessionId)
+    protected void RemoveExpiredItemsFromMessages(string sessionId)
     {
         foreach (var dialogueId in _dialogueHelper.GetDialogsForProfile(sessionId))
         {
@@ -535,7 +535,7 @@ public class DialogueController(
     /// </summary>
     /// <param name="sessionId">Session id</param>
     /// <param name="dialogueId">Dialog id</param>
-    private void RemoveExpiredItemsFromMessage(string sessionId, string dialogueId)
+    protected void RemoveExpiredItemsFromMessage(string sessionId, string dialogueId)
     {
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
         if (!dialogs.TryGetValue(dialogueId, out var dialog))
@@ -562,6 +562,12 @@ public class DialogueController(
         return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);
     }
 
+    /// <summary>
+    /// Handle client/friend/request/send
+    /// </summary>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="request">Sent friend request</param>
+    /// <returns></returns>
     public virtual FriendRequestSendResponse SendFriendRequest(string sessionID, FriendRequestData request)
     {
         // To avoid needing to jump between profiles, auto-accept all friend requests
@@ -607,6 +613,11 @@ public class DialogueController(
         };
     }
 
+    /// <summary>
+    /// Handle client/friend/delete
+    /// </summary>
+    /// <param name="sessionID">Session/player id</param>
+    /// <param name="request">Sent delete friend request</param>
     public virtual void DeleteFriend(string sessionID, DeleteFriendRequest request)
     {
         var profile = _saveServer.GetProfile(sessionID);

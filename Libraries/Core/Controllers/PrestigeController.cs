@@ -21,7 +21,7 @@ public class PrestigeController(
     /// <summary>
     ///     Handle /client/prestige/list
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="info"></param>
     /// <returns></returns>
     public Prestige GetPrestige(

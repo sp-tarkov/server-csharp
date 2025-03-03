@@ -21,7 +21,7 @@ public class NotificationSendHelper(
     /// <summary>
     ///     Send notification message to the appropriate channel
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <param name="notificationMessage"></param>
     public void SendMessage(string sessionID, WsNotificationEvent notificationMessage)
     {

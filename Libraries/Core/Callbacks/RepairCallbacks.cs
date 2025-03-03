@@ -13,9 +13,9 @@ public class RepairCallbacks(RepairController _repairController)
     ///     Handle TraderRepair event
     ///     use trader to repair item
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse TraderRepair(PmcData pmcData, TraderRepairActionDataRequest info, string sessionID)
     {
@@ -26,9 +26,9 @@ public class RepairCallbacks(RepairController _repairController)
     ///     Handle Repair event
     ///     Use repair kit to repair item
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse Repair(PmcData pmcData, RepairActionDataRequest info, string sessionID)
     {

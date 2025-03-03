@@ -41,6 +41,14 @@ public class InventoryController(
     ICloner _cloner
 )
 {
+    /// <summary>
+    /// Move Item - change location of item with parentId and slotId, transfers items from one profile to another if fromOwner/toOwner is set in the body.
+    /// Otherwise, move is contained within the same profile_f
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="moveRequest">Move request data</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void MoveItem(PmcData pmcData, InventoryMoveRequestData moveRequest, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -85,7 +93,7 @@ public class InventoryController(
 
             // Item is moving into or out of place of fame dog tag slot
             if (moveRequest.To?.Container != null &&
-                (moveRequest.To.Container.StartsWith("dogtag") || originalLocationSlotId.StartsWith("dogtag")))
+                (moveRequest.To.Container.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase) || originalLocationSlotId.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase)))
             {
                 _hideoutHelper.ApplyPlaceOfFameDogtagBonus(pmcData);
             }
@@ -100,7 +108,11 @@ public class InventoryController(
         }
     }
 
-    private void AppendTraderExploitErrorResponse(ItemEventRouterResponse output)
+    /// <summary>
+    /// Get an event router response with inventory trader message
+    /// </summary>
+    /// <param name="output">Item event router response</param>
+    protected void AppendTraderExploitErrorResponse(ItemEventRouterResponse output)
     {
         _httpResponseUtil.AppendErrorToOutput(
             output,
@@ -109,6 +121,14 @@ public class InventoryController(
         );
     }
 
+    /// <summary>
+    /// Handle /client/game/profile/items/moving - PinLock
+    /// Requires no response to client, only server change
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Pin/Lock request data</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void PinOrLock(PmcData pmcData, PinOrLockItemRequest request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -126,6 +146,12 @@ public class InventoryController(
         itemToAdjust.Upd.PinLockState = request.State;
     }
 
+    /// <summary>
+    /// Handle /client/game/profile/items/moving SetFavoriteItems
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public void SetFavoriteItem(PmcData pmcData, SetFavoriteItems request, string sessionId)
     {
         // The client sends the full list of favorite items, so clear the current favorites
@@ -133,6 +159,12 @@ public class InventoryController(
         pmcData.Inventory.FavoriteItems.AddRange(request.Items);
     }
 
+    /// <summary>
+    /// Handle /client/game/profile/items/moving RedeemProfileReward
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
     public void RedeemProfileReward(PmcData pmcData, RedeemProfileRequestData request, string sessionId)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
@@ -217,11 +249,11 @@ public class InventoryController(
         }
     }
 
-    /**
-     * Flag an item as seen in profiles encyclopedia + add inspect xp to profile
-     * @param itemTpls Inspected item tpls
-     * @param fullProfile Profile to add xp to
-     */
+    /// <summary>
+    /// Flag an item as seen in profiles encyclopedia + add inspect xp to profile
+    /// </summary>
+    /// <param name="itemTpls">Inspected item tpls</param>
+    /// <param name="fullProfile">Profile to add xp to</param>
     protected void FlagItemsAsInspectedAndRewardXp(IEnumerable<string> itemTpls, SptProfile fullProfile)
     {
         foreach (var itemTpl in itemTpls)
@@ -251,6 +283,14 @@ public class InventoryController(
         );
     }
 
+    /// <summary>
+    /// Handle OpenRandomLootContainer event
+    /// Handle event fired when a container is unpacked (e.g. halloween pumpkin)
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -317,6 +357,13 @@ public class InventoryController(
         _inventoryHelper.RemoveItem(pmcData, request.Item, sessionId, output);
     }
 
+    /// <summary>
+    /// Edit an existing map marker
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Edit marker request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void EditMapMarker(PmcData pmcData, InventoryEditMarkerRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -326,6 +373,13 @@ public class InventoryController(
         output.ProfileChanges[sessionId].Items.ChangedItems.Add(mapItem);
     }
 
+    /// <summary>
+    /// Delete a map marker
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Delete marker request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void DeleteMapMarker(PmcData pmcData, InventoryDeleteMarkerRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -344,6 +398,13 @@ public class InventoryController(
         output.ProfileChanges[sessionId].Items.ChangedItems.Add(adjustedMapItem);
     }
 
+    /// <summary>
+    /// Add note to a map
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Add marker request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void SortInventory(PmcData pmcData, InventorySortRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -372,10 +433,17 @@ public class InventoryController(
         }
     }
 
-    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData body,
+    /// <summary>
+    /// Flag item as 'seen' by player in profile
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns></returns>
+    public ItemEventRouterResponse ReadEncyclopedia(PmcData pmcData, InventoryReadEncyclopediaRequestData request,
         string sessionId)
     {
-        foreach (var id in body.Ids)
+        foreach (var id in request.Ids)
         {
             pmcData.Encyclopedia[id] = true;
         }
@@ -383,6 +451,13 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
+    /// <summary>
+    /// Handle examining an item
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Examine item request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void ExamineItem(PmcData pmcData, InventoryExamineRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -425,6 +500,12 @@ public class InventoryController(
         }
     }
 
+    /// <summary>
+    /// Get the tplid of an item from the examine request object
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>Item tpl</returns>
     protected string? GetExaminedItemTpl(InventoryExamineRequestData request, string? sessionId)
     {
         if (_presetHelper.IsPreset(request.Item))
@@ -501,6 +582,14 @@ public class InventoryController(
         return null;
     }
 
+    /// <summary>
+    /// Unbind an inventory item from quick access menu at bottom of player screen
+    /// Handle unbind event
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void UnBindItem(PmcData pmcData, InventoryBindRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -510,6 +599,14 @@ public class InventoryController(
         pmcData.Inventory.FastPanel.Remove(request.Index);
     }
 
+    /// <summary>
+    /// Handle bind event
+    /// Bind an inventory item to the quick access menu at bottom of player screen
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="bindRequest"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void BindItem(PmcData pmcData, InventoryBindRequestData bindRequest, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -524,6 +621,13 @@ public class InventoryController(
         pmcData.Inventory.FastPanel[bindRequest.Index] = bindRequest.Item;
     }
 
+    /// <summary>
+    /// Add a tag to an inventory item
+    /// </summary>
+    /// <param name="pmcData">Profile with item to add tag to</param>
+    /// <param name="request"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse TagItem(PmcData pmcData, InventoryTagRequestData request, string sessionId)
     {
         var itemToTag = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
@@ -551,6 +655,13 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
+    /// <summary>
+    /// Toggles "Toggleable" items like night vision goggles and face shields.
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Toggle request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse ToggleItem(PmcData pmcData, InventoryToggleRequestData request, string sessionId)
     {
         // May need to reassign to scav profile
@@ -586,6 +697,13 @@ public class InventoryController(
         };
     }
 
+    /// <summary>
+    /// Handles folding of Weapons
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Fold item request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse FoldItem(PmcData pmcData, InventoryFoldRequestData request, string sessionId)
     {
         // May need to reassign to scav profile
@@ -622,11 +740,15 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
-    /**
-     * Swap Item
-     * its used for "reload" if you have weapon in hands and magazine is somewhere else in rig or backpack in equipment
-     * Also used to swap items using quick selection on character screen
-     */
+    /// <summary>
+    /// Swap Item
+    /// used for "reload" if you have weapon in hands and magazine is somewhere else in rig or backpack in equipment
+    /// Also used to swap items using quick selection on character screen
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Swap item request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse SwapItem(PmcData pmcData, InventorySwapRequestData request, string sessionId)
     {
         // During post-raid scav transfer, the swap may be in the scav inventory
@@ -697,16 +819,15 @@ public class InventoryController(
         return _eventOutputHolder.GetOutput(sessionId);
     }
 
-    /**
-     * TODO: Adds no data to output to send to client, is this by design?
-     * Transfer items from one stack into another while keeping original stack
-     * Used to take items from scav inventory into stash or to insert ammo into mags (shotgun ones) and reloading weapon by clicking "Reload"
-     * @param pmcData Player profile
-     * @param body Transfer request
-     * @param sessionID Session id
-     * @param output Client response
-     * @returns IItemEventRouterResponse
-     */
+    /// <summary>
+    /// TODO: Adds no data to output to send to client, is this by design?
+    /// Transfer items from one stack into another while keeping original stack
+    /// Used to take items from scav inventory into stash or to insert ammo into mags (shotgun ones) and reloading weapon by clicking "Reload"
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Transfer item request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
     public void TransferItem(PmcData pmcData, InventoryTransferRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
@@ -761,17 +882,25 @@ public class InventoryController(
         destinationItem.Upd.StackObjectsCount = destinationStackCount + request.Count;
     }
 
-    public void MergeItem(PmcData pmcData, InventoryMergeRequestData body, string sessionID,
+    /// <summary>
+    /// Fully merge 2 inventory stacks together into one stack (merging where both stacks remain is called 'transfer')
+    /// Deletes item from `body.item` and adding number of stacks into `body.with`
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Merge stacks request</param>
+    /// <param name="sessionID"></param>
+    /// <param name="output">Client response</param>
+    public void MergeItem(PmcData pmcData, InventoryMergeRequestData request, string sessionID,
         ItemEventRouterResponse output)
     {
         // Changes made to result apply to character inventory
-        var inventoryItems = _inventoryHelper.GetOwnerInventoryItems(body, body.Item, sessionID);
+        var inventoryItems = _inventoryHelper.GetOwnerInventoryItems(request, request.Item, sessionID);
 
         // Get source item (can be from player or trader or mail)
-        var sourceItem = inventoryItems.From.FirstOrDefault(x => x.Id == body.Item);
+        var sourceItem = inventoryItems.From.FirstOrDefault(x => x.Id == request.Item);
         if (sourceItem is null)
         {
-            var errorMessage = $"Unable to merge stacks as source item: {body.With} cannot be found";
+            var errorMessage = $"Unable to merge stacks as source item: {request.With} cannot be found";
             _logger.Error(errorMessage);
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
@@ -780,10 +909,10 @@ public class InventoryController(
         }
 
         // Get item being merged into
-        var destinationItem = inventoryItems.To.FirstOrDefault(x => x.Id == body.With);
+        var destinationItem = inventoryItems.To.FirstOrDefault(x => x.Id == request.With);
         if (destinationItem is null)
         {
-            var errorMessage = $"Unable to merge stacks as destination item: {body.With} cannot be found";
+            var errorMessage = $"Unable to merge stacks as destination item: {request.With} cannot be found";
             _logger.Error(errorMessage);
 
             _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
@@ -844,6 +973,13 @@ public class InventoryController(
         inventoryItems.From.RemoveAt(indexOfItemToRemove); // Remove source item from 'from' inventory
     }
 
+    /// <summary>
+    /// Split Item stack - 1 stack into 2
+    /// </summary>
+    /// <param name="pmcData">(unused, getOwnerInventoryItems() gets profile)</param>
+    /// <param name="request">Split stack request</param>
+    /// <param name="sessionID"></param>
+    /// <param name="output">Client response</param>
     public void SplitItem(PmcData pmcData, InventorySplitRequestData request, string sessionID,
         ItemEventRouterResponse output)
     {
@@ -901,7 +1037,15 @@ public class InventoryController(
         );
     }
 
-    public void RemoveItem(PmcData pmcData, InventoryRemoveRequestData request, string sessionId,
+    /// <summary>
+    /// Implements "Discard" functionality from Main menu (Stash etc.)
+    /// Removes item from PMC Profile
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Discard item request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="output">Client response</param>
+    public void DiscardItem(PmcData pmcData, InventoryRemoveRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
         if (request.FromOwner?.Type == "Mail")

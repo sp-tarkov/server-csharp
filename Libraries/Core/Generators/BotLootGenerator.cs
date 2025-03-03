@@ -39,7 +39,7 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns></returns>
-    private ItemSpawnLimitSettings GetItemSpawnLimitsForBot(string botRole)
+    protected ItemSpawnLimitSettings GetItemSpawnLimitsForBot(string botRole)
     {
         var limits = GetItemSpawnLimitsForBotType(botRole);
 
@@ -329,7 +329,7 @@ public class BotLootGenerator(
         }
     }
 
-    private MinMaxLootItemValue? GetSingleItemLootPriceLimits(int botLevel, bool isPmc)
+    protected MinMaxLootItemValue? GetSingleItemLootPriceLimits(int botLevel, bool isPmc)
     {
         // TODO - extend to other bot types
         if (!isPmc)
@@ -351,7 +351,7 @@ public class BotLootGenerator(
     /// <param name="botLevel">Bots level</param>
     /// <param name="isPmc">Is the bot a PMC</param>
     /// <returns>int</returns>
-    private double? GetBackpackRoubleTotalByLevel(int botLevel, bool isPmc)
+    protected double? GetBackpackRoubleTotalByLevel(int botLevel, bool isPmc)
     {
         if (!isPmc)
         {
@@ -368,7 +368,7 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory"></param>
     /// <returns></returns>
-    private HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
+    protected HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
         HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
 
@@ -390,7 +390,7 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="botInventory">Inventory to add items to</param>
     /// <param name="botRole">Role of bot (pmcBEAR/pmcUSEC)</param>
-    private void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole)
+    protected void AddForcedMedicalItemsToPmcSecure(BotBaseInventory botInventory, string botRole)
     {
         // surv12
         AddLootFromPool(
@@ -435,7 +435,7 @@ public class BotLootGenerator(
     /// <param name="containersIdFull"></param>
     /// <param name="totalValueLimitRub">Total value of loot allowed in roubles</param>
     /// <param name="isPmc">Is bot being generated for a pmc</param>
-    private void AddLootFromPool
+    protected void AddLootFromPool
     (
         Dictionary<string, double> pool,
         HashSet<EquipmentSlots> equipmentSlots,
@@ -663,7 +663,7 @@ public class BotLootGenerator(
     /// <summary>
     ///     Add generated weapons to inventory as loot
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="botInventory">Inventory to add preset to</param>
     /// <param name="equipmentSlot">Slot to place the preset in (backpack)</param>
     /// <param name="templateInventory">Bots template, assault.json</param>
@@ -738,7 +738,7 @@ public class BotLootGenerator(
     /// <param name="botRole">Bot type</param>
     /// <param name="itemSpawnLimits"></param>
     /// <returns>true if item has reached spawn limit</returns>
-    private bool ItemHasReachedSpawnLimit(TemplateItem? itemTemplate, string botRole, ItemSpawnLimitSettings? itemSpawnLimits)
+    protected bool ItemHasReachedSpawnLimit(TemplateItem? itemTemplate, string botRole, ItemSpawnLimitSettings? itemSpawnLimits)
     {
         // PMCs and scavs have different sections of bot config for spawn limits
         if (itemSpawnLimits is not null && itemSpawnLimits.GlobalLimits?.Count == 0)

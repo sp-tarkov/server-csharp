@@ -372,7 +372,7 @@ public class BotEquipmentModGenerator(
         return result;
     }
 
-    private MinMax<int> GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
+    protected static MinMax<int> GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
         platePool.Sort(
             (x, y) =>

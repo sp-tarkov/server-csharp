@@ -128,7 +128,7 @@ public class HealthController(
     /// </summary>
     /// <param name="pmcData">Player profile</param>
     /// <param name="request">Eat request</param>
-    /// <param name="sessionId">Session id</param>
+    /// <param name="sessionID">Session id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse OffRaidEat(
         PmcData pmcData,
@@ -200,6 +200,13 @@ public class HealthController(
         return output;
     }
 
+    /// <summary>
+    /// Apply effects to profile from consumable used
+    /// </summary>
+    /// <param name="bodyValue">Hydration/Energy</param>
+    /// <param name="consumptionDetails">Properties of consumed item</param>
+    /// <param name="foodIsSingleUse">Single use item</param>
+    /// <param name="request">Client request</param>
     protected void ApplyEdibleEffect(CurrentMinMax bodyValue, EffectsHealthProps consumptionDetails, bool foodIsSingleUse,
         OffraidEatRequestData request)
     {
@@ -233,8 +240,8 @@ public class HealthController(
     ///     Occurs on post-raid healing page
     /// </summary>
     /// <param name="pmcData">player profile</param>
-    /// <param name="request">Request data from client</param>
-    /// <param name="sessionId">Session id</param>
+    /// <param name="healthTreatmentRequest">Request data from client</param>
+    /// <param name="sessionID">Session id</param>
     /// <returns></returns>
     public ItemEventRouterResponse HealthTreatment(
         PmcData pmcData,
@@ -299,7 +306,7 @@ public class HealthController(
     ///     applies skills from hideout workout.
     /// </summary>
     /// <param name="pmcData">Player profile</param>
-    /// <param name="info">Request data</param>
+    /// <param name="request">Request data</param>
     /// <param name="sessionId">session id</param>
     public void ApplyWorkoutChanges(
         PmcData? pmcData,
