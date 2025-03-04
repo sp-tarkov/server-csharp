@@ -30,21 +30,29 @@ namespace Core.Generators
             this._configServer = _configServer;
             _pmcConfig = _configServer.GetConfig<PmcConfig>();
         }
-
+        /// <summary>
+        /// Add a pmc wave to a map
+        /// </summary>
+        /// <param name="locationId"> e.g. factory4_day, bigmap </param>
+        /// <param name="waveToAdd"> Boss wave to add to map </param>
         public void AddPmcWaveToLocation(string locationId, BossLocationSpawn waveToAdd)
         {
             _pmcConfig.CustomPmcWaves[locationId].Add(waveToAdd);
         }
 
-        /**
-     * Add custom boss and normal waves to maps found in config/location.json to db
-     */
+        /// <summary>
+        /// Add custom boss and normal waves to all maps found in config/location.json to db
+        /// </summary>
         public void ApplyWaveChangesToAllMaps() {
             foreach (var location in _pmcConfig.CustomPmcWaves) {
                 ApplyWaveChangesToMapByName(location.Key);
             }
         }
 
+        /// <summary>
+        /// Add custom boss and normal waves to a map found in config/location.json to db by name
+        /// </summary>
+        /// <param name="name"> e.g. factory4_day, bigmap </param>
         public void ApplyWaveChangesToMapByName(string name) {
             if (!_pmcConfig.CustomPmcWaves.TryGetValue(name, out var pmcWavesToAdd)) {
                 return;
@@ -57,7 +65,10 @@ namespace Core.Generators
 
             location.Base.BossLocationSpawn.AddRange(pmcWavesToAdd);
         }
-
+        /// <summary>
+        /// Add custom boss and normal waves to a map found in config/location.json to db by LocationBase
+        /// </summary>
+        /// <param name="location"> Location Object </param>
         public void ApplyWaveChangesToMap(LocationBase location) {
             if (!_pmcConfig.CustomPmcWaves.TryGetValue(location.Id.ToLower(), out var pmcWavesToAdd))
             {

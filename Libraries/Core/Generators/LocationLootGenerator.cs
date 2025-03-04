@@ -977,7 +977,13 @@ public class LocationLootGenerator(
             }
         }
     }
-
+    /// <summary>
+    /// Create array of item (with child items) and return
+    /// </summary>
+    /// <param name="chosenComposedKey"> Key we want to look up items for </param>
+    /// <param name="items"> Location loot Template </param>
+    /// <param name="staticAmmoDist"> Ammo distributions </param>
+    /// <returns> ContainerItem object </returns>
     protected ContainerItem CreateDynamicLootItem(string? chosenComposedKey, List<Item> items, Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist)
     {
         var chosenItem = items.FirstOrDefault(item => item.Id == chosenComposedKey);

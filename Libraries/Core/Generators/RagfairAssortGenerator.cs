@@ -35,11 +35,11 @@ public class RagfairAssortGenerator(
         BaseClasses.BUILT_IN_INSERTS
     ];
 
-    /**
-     * Get an array of arrays that can be sold on the flea
-     * Each sub array contains item + children (if any)
-     * @returns array of arrays
-     */
+    /// <summary>
+    /// Get a list of lists that can be sold on the flea. <br/>
+    /// Each sub list contains item + children (if any)
+    /// </summary>
+    /// <returns> List with children lists of items </returns>
     public List<List<Item>> GetAssortItems()
     {
         if (!AssortsAreGenerated())
@@ -50,19 +50,19 @@ public class RagfairAssortGenerator(
         return generatedAssortItems;
     }
 
-    /**
-     * Check internal generatedAssortItems array has objects
-     * @returns true if array has objects
-     */
+    /// <summary>
+    /// Check if internal generatedAssortItems list has objects
+    /// </summary>
+    /// <returns> True if array has objects </returns>
     protected bool AssortsAreGenerated()
     {
         return generatedAssortItems.Count > 0;
     }
 
-    /**
-     * Generate an array of arrays (item + children) the flea can sell
-     * @returns array of arrays (item + children)
-     */
+    /// <summary>
+    /// Generate a list of lists (item + children) the flea can sell
+    /// </summary>
+    /// <returns> List of lists (item + children)</returns>
     protected List<List<Item>> GenerateRagfairAssortItems()
     {
         List<List<Item>> results = [];
@@ -70,7 +70,7 @@ public class RagfairAssortGenerator(
         // Get cloned items from db
         var dbItemsClone = itemHelper.GetItems().Where(item => !string.Equals(item.Type, "Node", StringComparison.OrdinalIgnoreCase));
 
-        // Store processed preset tpls so we don't add them when processing non-preset items 
+        // Store processed preset tpls so we don't add them when processing non-preset items
         HashSet<string> processedArmorItems = [];
         var seasonalEventActive = seasonalEventService.SeasonalEventEnabled();
         var seasonalItemTplBlacklist = seasonalEventService.GetInactiveSeasonalEventItems();
@@ -131,11 +131,11 @@ public class RagfairAssortGenerator(
         return results;
     }
 
-    /**
-     * Get presets from globals to add to flea
-     * ragfairConfig.dynamic.showDefaultPresetsOnly decides if its all presets or just defaults
-     * @returns IPreset array
-     */
+    /// <summary>
+    /// Get presets from globals to add to flea. <br/>
+    /// ragfairConfig.dynamic.showDefaultPresetsOnly decides if it's all presets or just defaults
+    /// </summary>
+    /// <returns> List of Preset </returns>
     protected List<Preset> GetPresetsToAdd()
     {
         return ragfairConfig.Dynamic.ShowDefaultPresetsOnly
@@ -143,12 +143,12 @@ public class RagfairAssortGenerator(
             : presetHelper.GetAllPresets();
     }
 
-    /**
-     * Create a base assort item and return it with populated values + 999999 stack count + unlimited count = true
-     * @param tplId tplid to add to item
-     * @param id id to add to item
-     * @returns Hydrated Item object
-     */
+    /// <summary>
+    /// Create a base assort item and return it with populated values + 999999 stack count + unlimited count = true
+    /// </summary>
+    /// <param name="tplId"> tplid to add to item </param>
+    /// <param name="id"> id to add to item </param>
+    /// <returns> Hydrated Item object </returns>
     protected Item CreateRagfairAssortRootItem(string tplId, string? id = null)
     {
         if (string.IsNullOrEmpty(id))

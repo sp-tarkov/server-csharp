@@ -21,11 +21,11 @@ public class WeatherGenerator(
 {
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
-    /**
-     * Get current + raid datetime and format into correct BSG format and return
-     * @param data Weather data
-     * @returns WeatherData
-     */
+    /// <summary>
+    /// Get current + raid datetime and format into correct BSG format.
+    /// </summary>
+    /// <param name="data"> Weather data </param>
+    /// <returns> WeatherData </returns>
     public void CalculateGameTime(WeatherData data)
     {
         var computedDate = _timeUtil.GetDateTimeNow();
@@ -38,12 +38,11 @@ public class WeatherGenerator(
         data.Season = _seasonalEventService.GetActiveWeatherSeason();
     }
 
-    /**
-     * Get server uptime seconds multiplied by a multiplier and add to current time as seconds
-     * Format to BSGs requirements
-     * @param currentDate current date
-     * @returns formatted time
-     */
+    /// <summary>
+    /// Get server uptime seconds multiplied by a multiplier and add to current time as seconds.
+    /// Formatted to BSGs requirements
+    /// </summary>
+    /// <returns>Formatted time as String </returns>
     protected string GetBsgFormattedInRaidTime()
     {
         var clientAcceleratedDate = _weatherHelper.GetInRaidTime();
@@ -51,22 +50,22 @@ public class WeatherGenerator(
         return GetBsgFormattedTime(clientAcceleratedDate);
     }
 
-    /**
-     * Get current time formatted to fit BSGs requirement
-     * @param date date to format into bsg style
-     * @returns Time formatted in BSG format
-     */
+    /// <summary>
+    /// Get current time formatted to fit BSGs requirement
+    /// </summary>
+    /// <param name="date"> Date to format into bsg style </param>
+    /// <returns> Time formatted in BSG format </returns>
     protected string GetBsgFormattedTime(DateTime date)
     {
         return _timeUtil.FormatTime(date).Replace("-", ":").Replace("-", ":");
     }
 
-    /**
-     * Return randomised Weather data with help of config/weather.json
-     * @param currentSeason the currently active season
-     * @param timestamp OPTIONAL what timestamp to generate the weather data at, defaults to now when not supplied
-     * @returns Randomised weather data
-     */
+    /// <summary>
+    /// Return randomised Weather data with help of config/weather.json
+    /// </summary>
+    /// <param name="currentSeason"> The currently active season </param>
+    /// <param name="timestamp"> Optional, what timestamp to generate the weather data at, defaults to now when not supplied </param>
+    /// <returns> Randomised weather data </returns>
     public Weather GenerateWeather(Season currentSeason, long? timestamp = null)
     {
         var weatherValues = GetWeatherValuesBySeason(currentSeason);
@@ -112,12 +111,12 @@ public class WeatherGenerator(
         return value!;
     }
 
-    /**
-     * Choose a temprature for the raid based on time of day
-     * @param currentSeason What season tarkov is currently in
-     * @param inRaidTimestamp What time is the raid running at
-     * @returns Timestamp
-     */
+    /// <summary>
+    /// Choose a temperature for the raid based on time of day
+    /// </summary>
+    /// <param name="weather"> What season Tarkov is currently in </param>
+    /// <param name="inRaidTimestamp"> What time is the raid running at </param>
+    /// <returns> Timestamp </returns>
     protected double GetRaidTemperature(SeasonalValues weather, long inRaidTimestamp)
     {
         // Convert timestamp to date so we can get current hour and check if its day or night
@@ -129,11 +128,11 @@ public class WeatherGenerator(
         return Math.Round(_randomUtil.GetDouble(minMax.Min, minMax.Max), 2);
     }
 
-    /**
-     * Set Weather date/time/timestamp values to now
-     * @param weather Object to update
-     * @param timestamp OPTIONAL, define timestamp used
-     */
+    /// <summary>
+    /// Set Weather date/time/timestamp values to now
+    /// </summary>
+    /// <param name="weather"> Object to update </param>
+    /// <param name="timestamp"> Optional, timestamp used </param>
     protected void SetCurrentDateTime(Weather weather, long? timestamp = null)
     {
         var inRaidTime = _weatherHelper.GetInRaidTime(timestamp);

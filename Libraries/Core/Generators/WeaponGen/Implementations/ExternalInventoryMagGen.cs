@@ -158,7 +158,12 @@ public class ExternalInventoryMagGen(
             }
         }
     }
-
+    /// <summary>
+    /// Get a random compatible external magazine for a weapon, exclude internal magazines from possible pool
+    /// </summary>
+    /// <param name="weaponTpl"> Weapon to get mag for </param>
+    /// <param name="magazineBlacklist"> Blacklisted magazines </param>
+    /// <returns> Item of chosen magazine </returns>
     public TemplateItem? GetRandomExternalMagazineForInternalMagazineGun(string weaponTpl, List<string> magazineBlacklist)
     {
         // The mag Slot data for the weapon

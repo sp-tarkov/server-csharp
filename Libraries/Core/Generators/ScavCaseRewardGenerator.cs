@@ -87,10 +87,10 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-        ///     Get all db items that are not blacklisted in scavcase config or global blacklist
-        ///     Store in class field
-        /// </summary>
-        protected void CacheDbItems()
+    ///     Get all db items that are not blacklisted in scavcase config or global blacklist
+    ///     Store in class field
+    /// </summary>
+    protected void CacheDbItems()
     {
         // Get an array of seasonal items that should not be shown right now as seasonal event is not active
         var inactiveSeasonalItems = _seasonalEventService.GetInactiveSeasonalEventItems();
@@ -328,14 +328,14 @@ public class ScavCaseRewardGenerator(
     }
 
     /// <summary>
-    ///     Take all the rewards picked create the Product object array ready to return to calling code
+    ///     Take all the rewards picked create the Product object array ready to return to calling code.
     ///     Also add a stack count to ammo and money
     /// </summary>
     /// <param name="rewardItems">items to convert</param>
     /// <returns>Product array</returns>
     protected List<List<Item>> RandomiseContainerItemRewards(List<TemplateItem> rewardItems, string rarity)
     {
-        /** Each array is an item + children */
+        // Each array is an item + children
         List<List<Item>> result = [];
         foreach (var rewardItemDb in rewardItems)
         {
@@ -461,7 +461,11 @@ public class ScavCaseRewardGenerator(
             _ => 1
         };
     }
-
+    /// <summary>
+    ///     Randomises the size of ammo stacks
+    /// </summary>
+    /// <param name="itemToCalculate">ammo or money item</param>
+    /// <returns>value to set stack count to</returns>
     protected int GetRandomisedAmmoRewardStackSize(TemplateItem itemToCalculate)
     {
         return _randomUtil.GetInt(
@@ -469,7 +473,12 @@ public class ScavCaseRewardGenerator(
             itemToCalculate.Properties.StackMaxSize ?? 0
         );
     }
-
+    /// <summary>
+    ///     Randomises the size of money stacks
+    /// </summary>
+    /// <param name="itemToCalculate">ammo or money item</param>
+    /// <param name="rarity">rarity (common/rare/superrare)</param>
+    /// <returns>value to set stack count to</returns>
     protected int GetRandomisedMoneyRewardStackSize(TemplateItem itemToCalculate, string rarity)
     {
         return itemToCalculate.Id switch
