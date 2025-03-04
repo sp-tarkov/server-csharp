@@ -424,7 +424,7 @@ public class BotEquipmentModGenerator(
     {
         var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => string.Equals(slot.Name, modSlot, StringComparison.OrdinalIgnoreCase));
 
-        return relatedItemDbModSlot?.Props.Filters[0].Plate;
+        return relatedItemDbModSlot?.Props?.Filters.FirstOrDefault()?.Plate;
     }
 
     /// <summary>
