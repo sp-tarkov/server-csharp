@@ -12,7 +12,6 @@ using Core.Utils;
 using SptCommon.Annotations;
 using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
-
 namespace Core.Generators;
 
 [Injectable]
@@ -383,6 +382,13 @@ public class BotInventoryGenerator(
         );
     }
 
+    /// <summary>
+    /// Get RootEquipmentPool id based on game version
+    /// </summary>
+    /// <param name="chosenGameVersion"></param>
+    /// <param name="templateInventory"></param>
+    /// <param name="isPmc">is bot a PMC</param>
+    /// <returns></returns>
     protected Dictionary<string, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory, bool isPmc)
     {
         return chosenGameVersion == GameEditions.UNHEARD && isPmc

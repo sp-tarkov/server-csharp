@@ -243,7 +243,7 @@ public class BotGenerator(
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
         );
-        bot.Info.Settings.AggressorBonus = GetAgressorBonusByDifficulty(
+        bot.Info.Settings.AggressorBonus = GetAggressorBonusByDifficulty(
             botJsonTemplate.BotExperience.StandingForKill,
             botGenerationDetails.BotDifficulty,
             botGenerationDetails.Role
@@ -334,7 +334,7 @@ public class BotGenerator(
     /// <summary>
     ///     Get the standing value change when player kills a bot
     /// </summary>
-    /// <param name="standingForKill">Dictionary of standing values keyed by bot difficulty</param>
+    /// <param name="standingsForKill">Dictionary of standing values keyed by bot difficulty</param>
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
@@ -351,13 +351,13 @@ public class BotGenerator(
     }
 
     /// <summary>
-    ///     Get the agressor bonus value when player kills a bot
+    ///     Get the aggressor bonus value when player kills a bot
     /// </summary>
-    /// <param name="aggressorBonus">Dictionary of standing values keyed by bot difficulty</param>
+    /// <param name="aggressorBonuses">Dictionary of standing values keyed by bot difficulty</param>
     /// <param name="botDifficulty">Difficulty of bot to look up</param>
     /// <param name="role">Role of bot (optional, used for error logging)</param>
     /// <returns>Standing change value</returns>
-    public double GetAgressorBonusByDifficulty(Dictionary<string, double> aggressorBonuses, string botDifficulty, string role)
+    public double GetAggressorBonusByDifficulty(Dictionary<string, double> aggressorBonuses, string botDifficulty, string role)
     {
         if (!aggressorBonuses.TryGetValue(botDifficulty.ToLower(), out var result))
         {
@@ -400,7 +400,7 @@ public class BotGenerator(
     }
 
     /// <summary>
-    ///     TODO: Complete Summary
+    ///     Unheard PMCs need their pockets expanded
     /// </summary>
     /// <param name="botJsonTemplate">Bot data to adjust</param>
     public void AddAdditionalPocketLootWeightsForUnheardBot(BotType botJsonTemplate)
@@ -471,25 +471,6 @@ public class BotGenerator(
         bot.Customization.Hands = chosenBody.Value?.IsNotRandom ?? false
             ? chosenBody.Value.Hands // Has fixed hands for chosen body, update to match
             : _weightedRandomHelper.GetWeightedValue<string>(appearance.Hands); // Hands can be random, choose any from weighted dict
-    }
-
-    /// <summary>
-    ///     Log the number of PMCs generated to the debug console
-    /// </summary>
-    /// <param name="output">Generated bot array, ready to send to client</param>
-    public void LogPmcGeneratedCount(List<BotBase> output)
-    {
-        var pmcCount = output.Aggregate(
-            0,
-            (acc, cur) =>
-            {
-                return cur.Info.Side is "Bear" or "Usec" ? acc + 1 : acc;
-            }
-        );
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"Generated {output.Count} total bots. Replaced {pmcCount} with PMCs");
-        }
     }
 
     /// <summary>
@@ -602,7 +583,7 @@ public class BotGenerator(
     }
 
     /// <summary>
-    ///     Sum up body parts max hp values, return the bodyPart collection with lowest value
+    ///     Sum up body parts max hp values, return the bodyPart collection with the lowest value
     /// </summary>
     /// <param name="bodies">Body parts to sum up</param>
     /// <returns>Lowest hp collection</returns>
@@ -638,7 +619,7 @@ public class BotGenerator(
     }
 
     /// <summary>
-    ///     Get a bots skills with randomsied progress value between the min and max values
+    ///     Get a bots skills with randomised progress value between the min and max values
     /// </summary>
     /// <param name="botSkills">Skills that should have their progress value randomised</param>
     /// <returns>Skills</returns>
@@ -842,19 +823,6 @@ public class BotGenerator(
                 return ItemTpl.BARTER_DOGTAG_BEAR_TUE;
             default:
                 return ItemTpl.BARTER_DOGTAG_BEAR;
-        }
-    }
-
-    /// <summary>
-    ///     Adjust a PMCs pocket tpl to UHD if necessary, otherwise do nothing
-    /// </summary>
-    /// <param name="bot">Pmc object to adjust</param>
-    public void SetPmcPocketsByGameVersion(BotBase bot)
-    {
-        if (bot.Info.GameVersion == GameEditions.UNHEARD)
-        {
-            var pockets = bot.Inventory.Items.FirstOrDefault(item => item.SlotId == "Pockets");
-            pockets.Template = ItemTpl.POCKETS_1X4_TUE;
         }
     }
 }
