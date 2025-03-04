@@ -980,7 +980,7 @@ public class BotEquipmentModGenerator(
 
         // Ensure there's a pool of mods to pick from
         var modPool = GetModPoolForSlot(request, weaponTemplate);
-        if (modPool is null && !(parentSlot?.Required ?? false))
+        if ((modPool is null || !modPool.Any()) && !(parentSlot?.Required ?? false))
         {
             // Nothing in mod pool + item not required
             if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -1277,7 +1277,7 @@ public class BotEquipmentModGenerator(
     /// <param name="request"></param>
     /// <param name="weaponTemplate">Mods root parent (weapon/equipment)</param>
     /// <returns>Array of mod tpls</returns>
-    public HashSet<string> GetModPoolForSlot(ModToSpawnRequest request, TemplateItem weaponTemplate)
+    public HashSet<string>? GetModPoolForSlot(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
         // Mod is flagged as being default only, try and find it in globals
         if (request.ModSpawnResult == ModSpawn.DEFAULT_MOD)
@@ -1291,7 +1291,12 @@ public class BotEquipmentModGenerator(
         }
 
         // Required mod is not default or randomisable, use existing pool
-        return request.ItemModPool[request.ModSlot];
+        if (request.ItemModPool.TryGetValue(request.ModSlot, out var modsForSlot))
+        {
+            return null;
+        }
+
+        return modsForSlot;
     }
 
     public HashSet<string> GetModPoolForDefaultSlot(ModToSpawnRequest request, TemplateItem weaponTemplate)
