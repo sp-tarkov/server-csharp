@@ -67,9 +67,9 @@ public record GameConfigResponse
         set;
     }
 
-    /**
-     * Total in game time
-     */
+    /// <summary>
+    /// Total in game time
+    /// </summary>
     [JsonPropertyName("totalInGame")]
     public double? TotalInGame
     {

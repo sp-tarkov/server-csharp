@@ -6,9 +6,9 @@ namespace Core.Models.Eft.Common;
 
 public record Location
 {
-    /**
-     * Map meta-data
-     */
+    /// <summary>
+    /// Map meta-data
+    /// </summary>
     [JsonPropertyName("base")]
     public LocationBase? Base
     {
@@ -16,9 +16,9 @@ public record Location
         set;
     }
 
-    /**
-     * Loose loot positions and item weights
-     */
+    /// <summary>
+    /// Loose loot positions and item weights
+    /// </summary>
     [JsonPropertyName("looseLoot")]
     public LazyLoad<LooseLoot>? LooseLoot
     {
@@ -26,9 +26,9 @@ public record Location
         set;
     }
 
-    /**
-     * Static loot item weights
-     */
+    /// <summary>
+    /// Static loot item weights
+    /// </summary>
     [JsonPropertyName("staticLoot")]
     public LazyLoad<Dictionary<string, StaticLootDetails>>? StaticLoot
     {
@@ -36,9 +36,9 @@ public record Location
         set;
     }
 
-    /**
-     * Static container positions and item weights
-     */
+    /// <summary>
+    /// Static container positions and item weights
+    /// </summary>
     [JsonPropertyName("staticContainers")]
     public LazyLoad<StaticContainerDetails>? StaticContainers
     {
@@ -53,9 +53,9 @@ public record Location
         set;
     }
 
-    /**
-     * All possible static containers on map + their assign groupings
-     */
+    /// <summary>
+    /// All possible static containers on map + their assign groupings
+    /// </summary>
     [JsonPropertyName("statics")]
     public StaticContainer? Statics
     {
@@ -63,9 +63,9 @@ public record Location
         set;
     }
 
-    /**
-     * All possible map extracts
-     */
+    /// <summary>
+    /// All possible map extracts
+    /// </summary>
     [JsonPropertyName("allExtracts")]
     public Exit[] AllExtracts
     {

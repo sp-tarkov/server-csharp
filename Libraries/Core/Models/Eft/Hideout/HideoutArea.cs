@@ -131,9 +131,9 @@ public record Stage
         set;
     }
 
-    /**
-     * Containers inventory tpl
-     */
+    /// <summary>
+    /// Containers inventory tpl
+    /// </summary>
     [JsonPropertyName("container")]
     public string? Container
     {

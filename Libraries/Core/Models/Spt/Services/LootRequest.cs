@@ -133,6 +133,9 @@ public record LootRequest
         set;
     }
 
+    /// <summary>
+    /// Should seasonal items appear when it's not the season for them
+    /// </summary>
     [JsonPropertyName("blockSeasonalItemsOutOfSeason")]
     public bool? BlockSeasonalItemsOutOfSeason
     {

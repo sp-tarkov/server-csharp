@@ -11,7 +11,9 @@ public record TplWithFleaPrice
         set;
     }
 
-    // Roubles
+    /// <summary>
+    /// Roubles
+    /// </summary>
     [JsonPropertyName("price")]
     public double? Price
     {

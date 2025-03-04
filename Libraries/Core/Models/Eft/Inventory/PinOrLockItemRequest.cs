@@ -5,9 +5,9 @@ namespace Core.Models.Eft.Inventory;
 
 public record PinOrLockItemRequest : InventoryBaseActionRequestData
 {
-    /**
-     * Id of item being pinned
-     */
+    /// <summary>
+    /// Id of item being pinned
+    /// </summary>
     [JsonPropertyName("Item")]
     public string? Item
     {
@@ -15,9 +15,9 @@ public record PinOrLockItemRequest : InventoryBaseActionRequestData
         set;
     }
 
-    /**
-     * "Pinned"/"Locked"/"Free"
-     */
+    /// <summary>
+    /// "Pinned"/"Locked"/"Free"
+    /// </summary>
     [JsonPropertyName("State")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public PinLockState? State

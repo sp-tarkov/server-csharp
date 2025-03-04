@@ -11,9 +11,9 @@ public record InRaidConfig : BaseConfig
         set;
     } = "spt-inraid";
 
-    /**
-     * Overrides to apply to the pre-raid settings screen
-     */
+    /// <summary>
+    /// Overrides to apply to the pre-raid settings screen
+    /// </summary>
     [JsonPropertyName("raidMenuSettings")]
     public RaidMenuSettings RaidMenuSettings
     {
@@ -21,9 +21,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * What effects should be saved post-raid
-     */
+    /// <summary>
+    /// What effects should be saved post-raid
+    /// </summary>
     [JsonPropertyName("save")]
     public RaidSave Save
     {
@@ -31,9 +31,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Names of car extracts
-     */
+    /// <summary>
+    /// Names of car extracts
+    /// </summary>
     [JsonPropertyName("carExtracts")]
     public List<string> CarExtracts
     {
@@ -41,9 +41,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Names of coop extracts
-     */
+    /// <summary>
+    /// Names of coop extracts
+    /// </summary>
     [JsonPropertyName("coopExtracts")]
     public List<string> CoopExtracts
     {
@@ -51,9 +51,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Fence rep gain from a single car extract
-     */
+    /// <summary>
+    /// Fence rep gain from a single car extract
+    /// </summary>
     [JsonPropertyName("carExtractBaseStandingGain")]
     public double CarExtractBaseStandingGain
     {
@@ -61,9 +61,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Fence rep gain from a single coop extract
-     */
+    /// <summary>
+    /// Fence rep gain from a single coop extract
+    /// </summary>
     [JsonPropertyName("coopExtractBaseStandingGain")]
     public double CoopExtractBaseStandingGain
     {
@@ -71,9 +71,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Fence rep gain when successfully extracting as pscav
-     */
+    /// <summary>
+    /// Fence rep gain when successfully extracting as pscav
+    /// </summary>
     [JsonPropertyName("scavExtractStandingGain")]
     public double ScavExtractStandingGain
     {
@@ -81,9 +81,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * The likelihood of PMC eliminating a minimum of 2 scavs while you engage them as a pscav.
-     */
+    /// <summary>
+    /// The likelihood of PMC eliminating a minimum of 2 scavs while you engage them as a pscav.
+    /// </summary>
     [JsonPropertyName("pmcKillProbabilityForScavGain")]
     public double PmcKillProbabilityForScavGain
     {
@@ -91,9 +91,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * On death should items in your secure keep their Find in raid status regardless of how you finished the raid
-     */
+    /// <summary>
+    /// On death should items in your secure keep their Find in raid status regardless of how you finished the raid
+    /// </summary>
     [JsonPropertyName("keepFiRSecureContainerOnDeath")]
     public bool KeepFiRSecureContainerOnDeath
     {
@@ -101,9 +101,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * If enabled always keep found in raid status on items
-     */
+    /// <summary>
+    /// If enabled always keep found in raid status on items
+    /// </summary>
     [JsonPropertyName("alwaysKeepFoundInRaidOnRaidEnd")]
     public bool AlwaysKeepFoundInRaidOnRaidEnd
     {
@@ -111,9 +111,9 @@ public record InRaidConfig : BaseConfig
         set;
     }
 
-    /**
-     * Percentage chance a player scav hot is hostile to the player when scavving
-     */
+    /// <summary>
+    /// Percentage chance a player scav hot is hostile to the player when scavving
+    /// </summary>
     [JsonPropertyName("playerScavHostileChancePercent")]
     public double PlayerScavHostileChancePercent
     {
@@ -183,9 +183,9 @@ public record RaidMenuSettings
 
 public record RaidSave
 {
-    /**
-     * Should loot gained from raid be saved
-     */
+    /// <summary>
+    /// Should loot gained from raid be saved
+    /// </summary>
     [JsonPropertyName("loot")]
     public bool Loot
     {

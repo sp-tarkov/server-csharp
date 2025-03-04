@@ -4,6 +4,7 @@ namespace Core.Models.Eft.Common.Tables;
 
 public record CustomisationStorage
 {
+    // Customisation.json/itemId
     [JsonPropertyName("id")]
     public string? Id
     {

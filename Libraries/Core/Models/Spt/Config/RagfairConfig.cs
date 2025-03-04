@@ -12,9 +12,9 @@ public record RagfairConfig : BaseConfig
         set;
     } = "spt-ragfair";
 
-    /**
-     * How many seconds should pass before expired offers and processed + player offers checked if sold
-     */
+    /// <summary>
+    /// How many seconds should pass before expired offers and processed + player offers checked if sold
+    /// </summary>
     [JsonPropertyName("runIntervalSeconds")]
     public int RunIntervalSeconds
     {
@@ -22,9 +22,9 @@ public record RagfairConfig : BaseConfig
         set;
     }
 
-    /**
-     * Default values used to hydrate `runIntervalSeconds` with
-     */
+    /// <summary>
+    /// Default values used to hydrate `runIntervalSeconds` with
+    /// </summary>
     [JsonPropertyName("runIntervalValues")]
     public RunIntervalValues RunIntervalValues
     {
@@ -32,9 +32,9 @@ public record RagfairConfig : BaseConfig
         set;
     }
 
-    /**
-     * Player listing settings
-     */
+    /// <summary>
+    /// Player listing settings
+    /// </summary>
     [JsonPropertyName("sell")]
     public Sell Sell
     {
@@ -42,9 +42,9 @@ public record RagfairConfig : BaseConfig
         set;
     }
 
-    /**
-     * Trader ids + should their assorts be listed on flea
-     */
+    /// <summary>
+    /// Trader ids + should their assorts be listed on flea
+    /// </summary>
     [JsonPropertyName("traders")]
     public Dictionary<string, bool> Traders
     {
@@ -69,9 +69,9 @@ public record RagfairConfig : BaseConfig
 
 public record Sell
 {
-    /**
-     * Should a fee be deducted from player when listing an item for sale
-     */
+    /// <summary>
+    /// Should a fee be deducted from player when listing an item for sale
+    /// </summary>
     [JsonPropertyName("fees")]
     public bool Fees
     {
@@ -79,9 +79,9 @@ public record Sell
         set;
     }
 
-    /**
-     * Settings to control chances of offer being sold
-     */
+    /// <summary>
+    /// Settings to control chances of offer being sold
+    /// </summary>
     [JsonPropertyName("chance")]
     public Chance Chance
     {
@@ -89,9 +89,9 @@ public record Sell
         set;
     }
 
-    /**
-     * Settings to control how long it takes for a player offer to sell
-     */
+    /// <summary>
+    /// Settings to control how long it takes for a player offer to sell
+    /// </summary>
     [JsonPropertyName("time")]
     public MinMax<double> Time
     {
@@ -99,9 +99,9 @@ public record Sell
         set;
     }
 
-    /**
-     * Seconds from clicking remove to remove offer from market
-     */
+    /// <summary>
+    /// Seconds from clicking remove to remove offer from market
+    /// </summary>
     [JsonPropertyName("expireSeconds")]
     public int ExpireSeconds
     {
@@ -112,9 +112,9 @@ public record Sell
 
 public record Chance
 {
-    /**
-     * Base chance percent to sell an item
-     */
+    /// <summary>
+    /// Base chance percent to sell an item
+    /// </summary>
     [JsonPropertyName("base")]
     public int Base
     {
@@ -122,9 +122,9 @@ public record Chance
         set;
     }
 
-    /**
-     * Value to multiply the sell chance by
-     */
+    /// <summary>
+    /// Value to multiply the sell chance by
+    /// </summary>
     [JsonPropertyName("sellMultiplier")]
     public double SellMultiplier
     {
@@ -132,9 +132,9 @@ public record Chance
         set;
     }
 
-    /**
-     * Max possible sell chance % for a player listed offer
-     */
+    /// <summary>
+    /// Max possible sell chance % for a player listed offer
+    /// </summary>
     [JsonPropertyName("maxSellChancePercent")]
     public int MaxSellChancePercent
     {
@@ -142,9 +142,9 @@ public record Chance
         set;
     }
 
-    /**
-     * Min possible sell chance % for a player listed offer
-     */
+    /// <summary>
+    /// Min possible sell chance % for a player listed offer
+    /// </summary>
     [JsonPropertyName("minSellChancePercent")]
     public int MinSellChancePercent
     {
@@ -155,24 +155,30 @@ public record Chance
 
 public record Dynamic
 {
+    /// <summary>
+    /// Should a purchased dynamic offers items be flagged as found in raid
+    /// </summary>
     [JsonPropertyName("purchasesAreFoundInRaid")]
-    // Should a purchased dynamic offers items be flagged as found in raid
     public bool PurchasesAreFoundInRaid
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Use the highest trader price for an offer if its greater than the price in templates/prices.json
+    /// </summary>
     [JsonPropertyName("useTraderPriceForOffersIfHigher")]
-    /** Use the highest trader price for an offer if its greater than the price in templates/prices.json */
     public bool UseTraderPriceForOffersIfHigher
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Barter offer specific settings
+    /// </summary>
     [JsonPropertyName("barter")]
-    /** Barter offer specific settings */
     public BarterDetails Barter
     {
         get;
@@ -186,48 +192,60 @@ public record Dynamic
         set;
     }
 
+    /// <summary>
+    /// Dynamic offer price below handbook adjustment values
+    /// </summary>
     [JsonPropertyName("offerAdjustment")]
-    /** Dynamic offer price below handbook adjustment values */
     public OfferAdjustment OfferAdjustment
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// How many offers should expire before an offer regeneration occurs
+    /// </summary>
     [JsonPropertyName("expiredOfferThreshold")]
-    /** How many offers should expire before an offer regeneration occurs */
     public int ExpiredOfferThreshold
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// How many offers should be listed
+    /// </summary>
     [JsonPropertyName("offerItemCount")]
-    /** How many offers should be listed */
     public MinMax<int> OfferItemCount
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// How much should the price of an offer vary by (percent 0.8 = 80%, 1.2 = 120%)
+    /// </summary>
     [JsonPropertyName("priceRanges")]
-    /** How much should the price of an offer vary by (percent 0.8 = 80%, 1.2 = 120%) */
     public PriceRanges PriceRanges
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Should default presets to listed only or should non-standard presets found in globals.json be listed too
+    /// </summary>
     [JsonPropertyName("showDefaultPresetsOnly")]
-    /** Should default presets to listed only or should non-standard presets found in globals.json be listed too */
     public bool ShowDefaultPresetsOnly
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Tpls that should not use the variable price system when their quality is less than 100% (lower dura/uses = lower price)
+    /// </summary>
     [JsonPropertyName("ignoreQualityPriceVarianceBlacklist")]
-    /** Tpls that should not use the variable price system when their quality is < 100% (lower dura/uses = lower price) */
     public HashSet<string> IgnoreQualityPriceVarianceBlacklist
     {
         get;
@@ -241,48 +259,60 @@ public record Dynamic
         set;
     }
 
+    /// <summary>
+    /// Settings to control the durability range of item items listed on flea
+    /// </summary>
     [JsonPropertyName("condition")]
-    /** Settings to control the durability range of item items listed on flea */
     public Dictionary<string, Condition> Condition
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Size stackable items should be listed for in percent of max stack size
+    /// </summary>
     [JsonPropertyName("stackablePercent")]
-    /** Size stackable items should be listed for in percent of max stack size */
     public MinMax<double> StackablePercent
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Items that cannot be stacked can have multiples sold in one offer, what range of values can be listed
+    /// </summary>
     [JsonPropertyName("nonStackableCount")]
-    /** Items that cannot be stacked can have multiples sold in one offer, what range of values can be listed */
     public MinMax<int> NonStackableCount
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Range of rating offers for items being listed
+    /// </summary>
     [JsonPropertyName("rating")]
-    /** Range of rating offers for items being listed */
     public MinMax<double> Rating
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Armor specific flea settings
+    /// </summary>
     [JsonPropertyName("armor")]
-    /** Armor specific flea settings */
     public ArmorSettings Armor
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// A multipler to apply to individual tpls price just prior to item quality adjustment
+    /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
-    /** A multipler to apply to individual tpls price just prior to item quality adjustment */
     public Dictionary<string, double>? ItemPriceMultiplier
     {
         get;
@@ -296,48 +326,60 @@ public record Dynamic
         set;
     }
 
+    /// <summary>
+    /// Percentages to sell offers in each currency
+    /// </summary>
     [JsonPropertyName("currencies")]
-    /** Percentages to sell offers in each currency */
     public Dictionary<string, double> Currencies
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Item tpls that should be forced to sell as a single item
+    /// </summary>
     [JsonPropertyName("showAsSingleStack")]
-    /** Item tpls that should be forced to sell as a single item */
     public HashSet<string> ShowAsSingleStack
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Should christmas/halloween items be removed from flea when not within the seasonal bounds
+    /// </summary>
     [JsonPropertyName("removeSeasonalItemsWhenNotInEvent")]
-    /** Should christmas/halloween items be removed from flea when not within the seasonal bounds */
     public bool RemoveSeasonalItemsWhenNotInEvent
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Flea blacklist settings
+    /// </summary>
     [JsonPropertyName("blacklist")]
-    /** Flea blacklist settings */
     public RagfairBlacklist Blacklist
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Dict of price limits keyed by item type
+    /// </summary>
     [JsonPropertyName("unreasonableModPrices")]
-    /** Dict of price limits keyed by item type */
     public Dictionary<string, UnreasonableModPrices> UnreasonableModPrices
     {
         get;
         set;
     }
 
+    /// <summary>
+    /// Custom rouble prices for items to override values from prices.json
+    /// </summary>
     [JsonPropertyName("itemPriceOverrideRouble")]
-    /** Custom rouble prices for items to override values from prices.json */
     public Dictionary<string, double> ItemPriceOverrideRouble
     {
         get;
@@ -371,9 +413,9 @@ public record PriceRanges
 
 public record BarterDetails
 {
-    /**
-     * Percentage change an offer is listed as a barter
-     */
+    /// <summary>
+    /// Percentage change an offer is listed as a barter
+    /// </summary>
     [JsonPropertyName("chancePercent")]
     public double ChancePercent
     {
@@ -381,9 +423,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * Min number of required items for a barter requirement
-     */
+    /// <summary>
+    /// Min number of required items for a barter requirement
+    /// </summary>
     [JsonPropertyName("itemCountMin")]
     public int ItemCountMin
     {
@@ -391,9 +433,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * Max number of required items for a barter requirement
-     */
+    /// <summary>
+    /// Max number of required items for a barter requirement
+    /// </summary>
     [JsonPropertyName("itemCountMax")]
     public int ItemCountMax
     {
@@ -401,9 +443,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * How much can the total price of requested items vary from the item offered
-     */
+    /// <summary>
+    /// How much can the total price of requested items vary from the item offered
+    /// </summary>
     [JsonPropertyName("priceRangeVariancePercent")]
     public double PriceRangeVariancePercent
     {
@@ -411,9 +453,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * Min rouble price for an offer to be considered for turning into a barter
-     */
+    /// <summary>
+    /// Min rouble price for an offer to be considered for turning into a barter
+    /// </summary>
     [JsonPropertyName("minRoubleCostToBecomeBarter")]
     public double MinRoubleCostToBecomeBarter
     {
@@ -421,9 +463,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * Should barter offers only single stack
-     */
+    /// <summary>
+    /// Should barter offers only single stack
+    /// </summary>
     [JsonPropertyName("makeSingleStackOnly")]
     public bool MakeSingleStackOnly
     {
@@ -431,9 +473,9 @@ public record BarterDetails
         set;
     }
 
-    /**
-     * Item Tpls to never be turned into a barter
-     */
+    /// <summary>
+    /// Item Tpls to never be turned into a barter
+    /// </summary>
     [JsonPropertyName("itemTypeBlacklist")]
     public HashSet<string> ItemTypeBlacklist
     {
@@ -444,9 +486,9 @@ public record BarterDetails
 
 public record PackDetails
 {
-    /**
-     * Percentage change an offer is listed as a pack
-     */
+    /// <summary>
+    /// Percentage change an offer is listed as a pack
+    /// </summary>
     [JsonPropertyName("chancePercent")]
     public double ChancePercent
     {
@@ -454,9 +496,9 @@ public record PackDetails
         set;
     }
 
-    /**
-     * Min number of required items for a pack
-     */
+    /// <summary>
+    /// Min number of required items for a pack
+    /// </summary>
     [JsonPropertyName("itemCountMin")]
     public int ItemCountMin
     {
@@ -464,9 +506,9 @@ public record PackDetails
         set;
     }
 
-    /**
-     * Max number of required items for a pack
-     */
+    /// <summary>
+    /// Max number of required items for a pack
+    /// </summary>
     [JsonPropertyName("itemCountMax")]
     public int ItemCountMax
     {
@@ -474,9 +516,9 @@ public record PackDetails
         set;
     }
 
-    /**
-     * item types to allow being a pack
-     */
+    /// <summary>
+    /// item types to allow being a pack
+    /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
     public HashSet<string> ItemTypeWhitelist
     {

@@ -7,9 +7,9 @@ namespace Core.Models.Eft.Hideout;
 
 public record HideoutImproveAreaRequestData : InventoryBaseActionRequestData
 {
-    /**
-     * Hideout area id from areas.json
-     */
+    /// <summary>
+    /// Hideout area id from areas.json
+    /// </summary>
     [JsonPropertyName("id")]
     public string? AreaId
     {

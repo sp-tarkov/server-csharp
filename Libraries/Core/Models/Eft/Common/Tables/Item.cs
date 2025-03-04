@@ -91,8 +91,10 @@ public record Item
 
 public record HideoutItem
 {
+    /// <summary>
+    /// Hideout inventory id that was used by improvement action
+    /// </summary>
     [JsonPropertyName("_id")]
-
     public string? _Id
     {
         get
@@ -179,9 +181,9 @@ public record ItemLocation
         set;
     }
 
-    /**
-     * SPT property?
-     */
+    /// <summary>
+    /// SPT property?
+    /// </summary>
     [JsonPropertyName("rotation")]
     public object? Rotation
     {
@@ -222,9 +224,9 @@ public record Upd
         set;
     }
 
-    /**
-     * SPT specific property, not made by BSG
-     */
+    /// <summary>
+    /// SPT specific property, not made by BSG
+    /// </summary>
     [JsonPropertyName("sptPresetId")]
     public string? SptPresetId
     {

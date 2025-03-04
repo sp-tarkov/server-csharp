@@ -4,7 +4,9 @@ namespace Core.Models.Eft.Inventory;
 
 public record AddItemRequestData
 {
-    // Trader id
+    /// <summary>
+    /// Trader id
+    /// </summary>
     [JsonPropertyName("tid")]
     public string? TraderId
     {

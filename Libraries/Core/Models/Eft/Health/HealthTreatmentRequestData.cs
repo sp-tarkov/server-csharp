@@ -13,10 +13,10 @@ public record HealthTreatmentRequestData : InventoryBaseActionRequestData
         set;
     }
 
-    /**
-     * Id of stack to take money from
-     * Amount of money to take off player for treatment
-     */
+    /// <summary>
+    /// Id of stack to take money from <br/>
+    /// Amount of money to take off player for treatment
+    /// </summary>
     [JsonPropertyName("items")]
     public List<IdWithCount>? Items
     {
@@ -123,9 +123,9 @@ public record BodyPartEffects
         set;
     }
 
-    /**
-     * Effects in array to be removed
-     */
+    /// <summary>
+    /// Effects in array to be removed
+    /// </summary>
     public List<string> Effects
     {
         get;

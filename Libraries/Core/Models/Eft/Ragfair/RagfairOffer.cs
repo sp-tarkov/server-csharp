@@ -64,9 +64,9 @@ public record RagfairOffer
         set;
     }
 
-    /**
-     * Handbook price
-     */
+    /// <summary>
+    /// Handbook price
+    /// </summary>
     [JsonPropertyName("itemsCost")]
     public double? ItemsCost
     {
@@ -74,9 +74,9 @@ public record RagfairOffer
         set;
     }
 
-    /**
-     * Rouble price per item
-     */
+    /// <summary>
+    /// Rouble price per item
+    /// </summary>
     [JsonPropertyName("requirementsCost")]
     public double? RequirementsCost
     {
@@ -98,9 +98,9 @@ public record RagfairOffer
         set;
     }
 
-    /**
-     * True when offer is sold as pack
-     */
+    /// <summary>
+    /// True when offer is sold as pack
+    /// </summary>
     [JsonPropertyName("sellInOnePiece")]
     public bool? SellInOnePiece
     {
@@ -108,9 +108,9 @@ public record RagfairOffer
         set;
     }
 
-    /**
-     * Rouble price - same as requirementsCost
-     */
+    /// <summary>
+    /// Rouble price - same as requirementsCost
+    /// </summary>
     [JsonPropertyName("summaryCost")]
     public double? SummaryCost
     {
@@ -125,9 +125,9 @@ public record RagfairOffer
         set;
     }
 
-    /**
-     * Trader only
-     */
+    /// <summary>
+    /// Trader only
+    /// </summary>
     [JsonPropertyName("unlimitedCount")]
     public bool? UnlimitedCount
     {

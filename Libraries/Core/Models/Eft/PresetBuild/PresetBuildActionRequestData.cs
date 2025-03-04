@@ -20,9 +20,9 @@ public record PresetBuildActionRequestData : IRequestData
         set;
     }
 
-    /**
-     * name of preset given by player
-     */
+    /// <summary>
+    /// name of preset given by player
+    /// </summary>
     [JsonPropertyName("Name")]
     public string? Name
     {

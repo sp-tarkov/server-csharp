@@ -9758,9 +9758,9 @@ public record Preset
         set;
     }
 
-    /**
-     * Default presets have this property
-     */
+    /// <summary>
+    /// Default presets have this property
+    /// </summary>
     [JsonPropertyName("_encyclopedia")]
     public string? Encyclopedia
     {

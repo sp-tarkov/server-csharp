@@ -33,7 +33,9 @@ public record AddItemTempObject
         set;
     }
 
-    // Container item will be placed in - stash or sorting table
+    /// <summary>
+    /// Container item will be placed in - stash or sorting table
+    /// </summary>
     [JsonPropertyName("containerId")]
     public string? ContainerIdentifier
     {

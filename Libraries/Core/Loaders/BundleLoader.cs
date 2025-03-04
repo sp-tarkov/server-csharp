@@ -94,7 +94,10 @@ namespace Core.Loaders
             _inMemoryCacheService = inMemoryCacheService;
             _cloner = cloner;
         }
-
+         /// <summary>
+         /// Handle singleplayer/bundles
+         /// </summary>
+         /// <returns> List of loaded bundles.</returns>
         public List<BundleInfo> GetBundles()
         {
             var result = new List<BundleInfo>();

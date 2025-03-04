@@ -4,9 +4,9 @@ namespace Core.Models.Common;
 
 public record IdWithCount
 {
-    /**
-     * Id of stack to take money from
-     */
+    /// <summary>
+    /// ID of stack to take money from
+    /// </summary>
     [JsonPropertyName("id")]
     public string? Id
     {
@@ -14,9 +14,9 @@ public record IdWithCount
         set;
     }
 
-    /**
-     * Amount of money to take off player for treatment
-     */
+    /// <summary>
+    /// Amount of money to take off player for treatment
+    /// </summary>
     [JsonPropertyName("count")]
     public double? Count
     {

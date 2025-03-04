@@ -12,9 +12,9 @@ public record LootConfig : BaseConfig
         set;
     } = "spt-loot";
 
-    /**
-     * Spawn positions to add into a map, key=mapid
-     */
+    /// <summary>
+    /// Spawn positions to add into a map, key=mapid
+    /// </summary>
     [JsonPropertyName("looseLoot")]
     public Dictionary<string, Spawnpoint[]> LooseLoot
     {
@@ -22,9 +22,9 @@ public record LootConfig : BaseConfig
         set;
     }
 
-    /**
-     * Loose loot probability adjustments to apply on game start
-     */
+    /// <summary>
+    /// Loose loot probability adjustments to apply on game start
+    /// </summary>
     [JsonPropertyName("looseLootSpawnPointAdjustments")]
     public Dictionary<string, Dictionary<string, double>>? LooseLootSpawnPointAdjustments
     {

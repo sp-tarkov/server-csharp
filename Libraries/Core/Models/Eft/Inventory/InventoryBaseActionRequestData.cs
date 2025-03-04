@@ -59,7 +59,7 @@ public record Container
     {
         get;
         set;
-    } // TODO: types given: ILocation or number
+    } // TODO: types given: ILocation or number - BSG data object shows as location only.
 }
 
 public record Location
