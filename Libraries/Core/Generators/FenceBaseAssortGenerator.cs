@@ -29,9 +29,9 @@ public class FenceBaseAssortGenerator(
 {
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
-    /**
-     * Create base fence assorts dynamically and store in memory
-     */
+    /// <summary>
+    /// Create base fence assorts dynamically and store in memory
+    /// </summary>
     public void GenerateFenceBaseAssorts()
     {
         var blockedSeasonalItems = seasonalEventService.GetInactiveSeasonalEventItems();
@@ -200,11 +200,11 @@ public class FenceBaseAssortGenerator(
         }
     }
 
-    /**
-     * Check ammo in boxes + loose ammos has a penetration value above the configured value in trader.json / ammoMaxPenLimit
-     * @param rootItemDb Ammo box or ammo item from items.db
-     * @returns True if penetration value is above limit set in config
-     */
+    /// <summary>
+    /// Check ammo in boxes + loose ammos has a penetration value above the configured value in trader.json / ammoMaxPenLimit
+    /// </summary>
+    /// <param name="rootItemDb"> Ammo box or ammo item from items.db </param>
+    /// <returns>True if penetration value is above limit set in config</returns>
     protected bool IsAmmoAbovePenetrationLimit(TemplateItem rootItemDb)
     {
         var ammoPenetrationPower = GetAmmoPenetrationPower(rootItemDb);
@@ -217,11 +217,11 @@ public class FenceBaseAssortGenerator(
         return ammoPenetrationPower > traderConfig.Fence.AmmoMaxPenLimit;
     }
 
-    /**
-     * Get the penetration power value of an ammo, works with ammo boxes and raw ammos
-     * @param rootItemDb Ammo box or ammo item from items.db
-     * @returns Penetration power of passed in item, undefined if it doesnt have a power
-     */
+    /// <summary>
+    /// Get the penetration power value of an ammo, works with ammo boxes and raw ammos
+    /// </summary>
+    /// <param name="rootItemDb"> Ammo box or ammo item from items.db </param>
+    /// <returns> Penetration power of passed in item, undefined if it doesnt have a power </returns>
     protected double? GetAmmoPenetrationPower(TemplateItem rootItemDb)
     {
         if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
@@ -250,11 +250,11 @@ public class FenceBaseAssortGenerator(
         return null;
     }
 
-    /**
-     * Add soft inserts + armor plates to an armor
-     * @param armor Armor item array to add mods into
-     * @param itemDbDetails Armor items db template
-     */
+    /// <summary>
+    /// Add soft inserts + armor plates to an armor
+    /// </summary>
+    /// <param name="armor"> Armor item array to add mods into </param>
+    /// <param name="itemDbDetails">Armor items db template</param>
     protected void AddChildrenToArmorModSlots(List<Item> armor, TemplateItem itemDbDetails)
     {
         // Armor has no mods, make no additions
@@ -336,11 +336,11 @@ public class FenceBaseAssortGenerator(
         }
     }
 
-    /**
-     * Check if item is valid for being added to fence assorts
-     * @param item Item to check
-     * @returns true if valid fence item
-     */
+    /// <summary>
+    /// Check if item is valid for being added to fence assorts
+    /// </summary>
+    /// <param name="item"> Item to check </param>
+    /// <returns> True if valid fence item </returns>
     protected bool IsValidFenceItem(TemplateItem item)
     {
         return string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase);

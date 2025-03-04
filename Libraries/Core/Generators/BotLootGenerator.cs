@@ -365,9 +365,10 @@ public class BotLootGenerator(
     }
 
     /// <summary>
+    ///  Get an array of the containers a bot has on them (pockets/backpack/vest)
     /// </summary>
-    /// <param name="botInventory"></param>
-    /// <returns></returns>
+    /// <param name="botInventory">Bot to check</param>
+    /// <returns>Array of available slots</returns>
     protected HashSet<EquipmentSlots> GetAvailableContainersBotCanStoreItemsIn(BotBaseInventory botInventory)
     {
         HashSet<EquipmentSlots> result = [EquipmentSlots.Pockets];
@@ -594,9 +595,10 @@ public class BotLootGenerator(
     }
 
     /// <summary>
+    /// Adds loot to the specified Wallet
     /// </summary>
-    /// <param name="walletId"></param>
-    /// <returns></returns>
+    /// <param name="walletId"> Wallet to add loot to</param>
+    /// <returns>Generated list of currency stacks with the wallet as their parent</returns>
     public List<List<Item>> CreateWalletLoot(string walletId)
     {
         List<List<Item>> result = [];

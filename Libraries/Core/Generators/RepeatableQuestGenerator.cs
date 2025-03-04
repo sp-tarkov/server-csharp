@@ -382,13 +382,13 @@ public class RepeatableQuestGenerator(
         return quest;
     }
 
-    /**
-     * Get a number of kills needed to complete elimination quest
-     * @param targetKey Target type desired e.g. anyPmc/bossBully/Savage
-     * @param targetsConfig Config
-     * @param eliminationConfig Config
-     * @returns Number of AI to kill
-     */
+    /// <summary>
+    /// Get a number of kills needed to complete elimination quest
+    /// </summary>
+    /// <param name="targetKey"> Target type desired e.g. anyPmc/bossBully/Savage </param>
+    /// <param name="targetsConfig"> Config of the target </param>
+    /// <param name="eliminationConfig"> Config of the elimination </param>
+    /// <returns> Number of AI to kill </returns>
     protected int GetEliminationKillCount(
         string targetKey,
         ProbabilityObjectArray<string, BossInfo> targetsConfig,
