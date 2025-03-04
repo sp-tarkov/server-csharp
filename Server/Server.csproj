@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
+    <PackageId>SPT.Server</PackageId>
+    <Authors>SPT Team</Authors>
+    <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,6 +11,7 @@
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
     <Version>4.0.0</Version>
+    <IsPackable>true</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
