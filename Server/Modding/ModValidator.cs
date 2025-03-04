@@ -32,7 +32,7 @@ public class ModValidator(
         {
             ValidateMods(mods);
 
-            modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.PackageJson));
+            var sortedModLoadOrder = modLoadOrder.SetModList(imported.ToDictionary(m => m.Key, m => m.Value.PackageJson));
             var finalList = new List<SptMod>();
             foreach (var orderMod in SortModsLoadOrder())
             {

@@ -7,13 +7,13 @@ public class ModLoadOrder(ICloner cloner)
 {
     protected Dictionary<string, PackageJsonData> mods = new();
     protected Dictionary<string, PackageJsonData> modsAvailable = new();
-    protected HashSet<string> loadOrder = new();
+    protected Dictionary<string, PackageJsonData> loadOrder = new();
 
-    public void SetModList(Dictionary<string, PackageJsonData> mods)
+    public Dictionary<string, PackageJsonData> SetModList(Dictionary<string, PackageJsonData> mods)
     {
         this.mods = mods;
         modsAvailable = cloner.Clone(this.mods);
-        loadOrder = [];
+        loadOrder = new Dictionary<string, PackageJsonData>();
 
         var visited = new HashSet<string>();
 
@@ -30,11 +30,13 @@ public class ModLoadOrder(ICloner cloner)
         {
             GetLoadOrderRecursive(modName, visited);
         }
+
+        return loadOrder;
     }
 
     public List<string> GetLoadOrder()
     {
-        return [..loadOrder];
+        return [..loadOrder.Keys];
     }
 
     public HashSet<string> GetModsOnLoadBefore(string mod)
@@ -102,7 +104,7 @@ public class ModLoadOrder(ICloner cloner)
     protected void GetLoadOrderRecursive(string mod, HashSet<string> visited)
     {
         // Validate package
-        if (loadOrder.Contains(mod))
+        if (loadOrder.ContainsKey(mod))
         {
             return;
         }
@@ -147,6 +149,6 @@ public class ModLoadOrder(ICloner cloner)
         }
 
         visited.Remove(mod);
-        loadOrder.Add(mod);
+        loadOrder.Add(mod, config);
     }
 }

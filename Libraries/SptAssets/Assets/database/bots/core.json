@@ -31,7 +31,7 @@
   "FLARE_POWER": 8.0,
   "MOVE_COEF": 1.2,
   "PRONE_POSE": 0.7,
-  "LOWER_POSE": 0.5,
+  "LOWER_POSE": 1,
   "MAX_POSE": 1.5,
   "FLARE_TIME": 1.5,
   "MAX_REQUESTS__PER_GROUP": 10,

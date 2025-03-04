@@ -156,7 +156,14 @@ public class PostDbLoadService(
             var clonedCraft = _cloner.Clone(
                 hideoutCraftDb.Recipes.FirstOrDefault(x => x.Id == craftToAdd.CraftIdToCopy)
             );
-            clonedCraft.Id = _hashUtil.Generate();
+            if (clonedCraft is null)
+            {
+                _logger.Warning($"Unable to find hideout craft: {craftToAdd.CraftIdToCopy}, skipping");
+
+                continue;
+            }
+
+            clonedCraft.Id = craftToAdd.NewId;
             clonedCraft.Requirements = craftToAdd.Requirements;
             clonedCraft.EndProduct = craftToAdd.CraftOutputTpl;
 

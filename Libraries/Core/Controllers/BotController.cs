@@ -346,8 +346,10 @@ public class BotController(
     /// <returns>bot cap for map</returns>
     public int GetBotCap(string location)
     {
-        var botCap = _botConfig.MaxBotCap.FirstOrDefault(x =>
-            string.Equals(x.Key.ToLower(), location.ToLower(), StringComparison.OrdinalIgnoreCase));
+        if (!_botConfig.MaxBotCap.TryGetValue(location.ToLower(), out var maxCap))
+        {
+            return _botConfig.MaxBotCap["default"];
+        }
         if (location == "default")
         {
             _logger.Warning(
@@ -355,7 +357,7 @@ public class BotController(
             );
         }
 
-        return botCap.Value;
+        return maxCap;
     }
 
     /// <summary>

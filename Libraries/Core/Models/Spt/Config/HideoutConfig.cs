@@ -88,6 +88,12 @@ public record HideoutConfig : BaseConfig
 
 public record HideoutCraftToAdd
 {
+    [JsonPropertyName("newId")]
+    public string NewId
+    {
+        get;
+        set;
+    }
     [JsonPropertyName("requirements")]
     public List<Requirement> Requirements
     {

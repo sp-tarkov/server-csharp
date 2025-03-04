@@ -1605,7 +1605,10 @@ public record Hideout
         set;
     }
 
-    public double? Seed
+    /// <summary>
+    /// 32 char hex value
+    /// </summary>
+    public string? Seed
     {
         get;
         set;

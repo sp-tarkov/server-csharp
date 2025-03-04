@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Core.Generators;
 using Core.Helpers;
 using Core.Models.Eft.Common;
@@ -63,7 +64,7 @@ public class CreateProfileService(
         pmcData.Customization.Head = request.HeadId;
         pmcData.Health.UpdateTime = _timeUtil.GetTimeStamp();
         pmcData.Quests = [];
-        pmcData.Hideout.Seed = _timeUtil.GetTimeStamp() + 8 * 60 * 60 * 24 * 365; // 8 years in future why? who knows, we saw it in live
+        pmcData.Hideout.Seed = Convert.ToHexStringLower(RandomNumberGenerator.GetBytes(16));
         pmcData.RepeatableQuests = [];
         pmcData.CarExtractCounts = new Dictionary<string, int>();
         pmcData.CoopExtractCounts = new Dictionary<string, int>();

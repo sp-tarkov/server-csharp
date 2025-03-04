@@ -9512,6 +9512,13 @@ public record AudioSettings
         set;
     }
 
+    [JsonPropertyName("HeadphonesSettings")]
+    public HeadphoneSettings HeadphonesSettings
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("MetaXRAudioPluginSettings")]
     public MetaXRAudioPluginSettings? MetaXRAudioPluginSettings
     {
@@ -9624,6 +9631,26 @@ public record EnvironmentSettings
     }
 }
 
+public record HeadphoneSettings
+{
+    public double FadeDuration
+    {
+        get;
+        set;
+    }
+
+    public string FadeIn
+    {
+        get;
+        set;
+    }
+
+    public string FadeOut
+    {
+        get;
+        set;
+    }
+}
 public record MetaXRAudioPluginSettings
 {
     public bool? EnabledPluginErrorChecker

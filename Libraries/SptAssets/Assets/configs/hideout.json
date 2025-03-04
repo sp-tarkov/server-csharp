@@ -210,6 +210,7 @@
     },
     "hideoutCraftsToAdd": [
         {
+			"newId": "67c5e55af344981d56050e7d",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "665829424de4820934746ce6",
             "requirements": [
@@ -232,6 +233,7 @@
             ]
         },
         {
+			"newId": "67c5e56ef344981d56050e7e",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "6658291eefd94e2d665b14a4",
             "requirements": [
@@ -254,6 +256,7 @@
             ]
         },
         {
+			"newId": "67c5eb0d533c65affb6732f7",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "665829a6efd94e2d665b14a8",
             "requirements": [
@@ -276,6 +279,7 @@
             ]
         },
         {
+			"newId": "67c5eb17ec157da6c94dea6c",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "665886abdaadd1069736c539",
             "requirements": [
@@ -298,6 +302,7 @@
             ]
         },
         {
+			"newId": "67c5eb28a475f1532525477e",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "6658876e146af22739040fad",
             "requirements": [
@@ -320,6 +325,7 @@
             ]
         },
         {
+			"newId": "67c5eb3036d41e7e85c62f06",
             "craftIdToCopy": "66582be04de4820934746cea",
             "craftOutputTpl": "6658892e6e007c6f33662002",
             "requirements": [

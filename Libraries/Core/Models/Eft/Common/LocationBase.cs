@@ -327,6 +327,20 @@ public record LocationBase
         set;
     }
 
+    [JsonPropertyName("HeatmapCellSize")]
+    public XYZ? HeatmapCellSize
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("HeatmapLayers")]
+    public List<string>? HeatmapLayers
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("IconX")]
     public double? IconX
     {
@@ -1273,6 +1287,90 @@ public record BotLocationModifier
 
     [JsonPropertyName("MinExfiltrationTime")]
     public double? MinExfiltrationTime
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("FogVisibilityDistanceCoef")]
+    public double? FogVisibilityDistanceCoef
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("FogVisibilitySpeedCoef")]
+    public double? FogVisibilitySpeedCoef
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnCheckRadius")]
+    public double? FogVisibLockSpawnCheckRadiusilitySpeedCoef
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnCheckRadiusPvE")]
+    public double? LockSpawnCheckRadiusPvE
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnStartTime")]
+    public double? LockSpawnStartTime
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnStartTimePvE")]
+    public double? LockSpawnStartTimePvE
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnStepTime")]
+    public double? LockSpawnStepTime
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("LockSpawnStepTimePvE")]
+    public double? LockSpawnStepTimePvE
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("NonWaveSpawnBotsLimitPerPlayer")]
+    public double? NonWaveSpawnBotsLimitPerPlayer
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("NonWaveSpawnBotsLimitPerPlayerPvE")]
+    public double? NonWaveSpawnBotsLimitPerPlayerPvE
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("RainVisibilityDistanceCoef")]
+    public double? RainVisibilityDistanceCoef
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("RainVisibilitySpeedCoef")]
+    public double? RainVisibilitySpeedCoef
     {
         get;
         set;

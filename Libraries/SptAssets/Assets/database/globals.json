@@ -27170,6 +27170,11 @@
           }
         ]
       },
+      "HeadphonesSettings": {
+        "FadeDuration": 0.7,
+        "FadeIn": "InverseExponential",
+        "FadeOut": "EaseIn"
+      },
       "MetaXRAudioPluginSettings": {
         "EnabledPluginErrorChecker": true,
         "OutputVolumeCheckCooldown": 0.3

@@ -505,12 +505,24 @@
     "DistToPersueAxemanCoef": 1.1,
     "DistToSleep": 300,
     "DistToSleepPvE": 300,
+    "FogVisibilityDistanceCoef": 0,
+    "FogVisibilitySpeedCoef": 0,
     "GainSight": 1,
     "KhorovodChance": 0,
+    "LockSpawnCheckRadius": 150,
+    "LockSpawnCheckRadiusPvE": 150,
+    "LockSpawnStartTime": 10,
+    "LockSpawnStartTimePvE": 10,
+    "LockSpawnStepTime": 50,
+    "LockSpawnStepTimePvE": 50,
     "MagnetPower": 44,
     "MarksmanAccuratyCoef": 1,
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
+    "NonWaveSpawnBotsLimitPerPlayer": 10,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "RainVisibilityDistanceCoef": 0.35,
+    "RainVisibilitySpeedCoef": 0,
     "Scattering": 1,
     "VisibleDistance": 1
   },
@@ -604,7 +616,7 @@
       ],
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
-      "InfectedLookCoeff": 2,
+      "InfectedLookCoeff": 0.5,
       "MaxCrowdAttackSpawnLimit": 18,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 50,
@@ -623,6 +635,35 @@
   "GlobalContainerChanceModifier": 1,
   "GlobalLootChanceModifier": 0.4,
   "GlobalLootChanceModifierPvE": 0.95,
+  "HeatmapCellSize": {
+    "x": 1,
+    "y": 2,
+    "z": 1
+  },
+  "HeatmapLayers": [
+    "AllCharactersPositions",
+    "AllBotsPositions",
+    "AllRealPlayersPositions",
+    "RealPlayersSavagesPositions",
+    "RealPlayersSavagesDeads",
+    "RealPlayersSavagesDamages",
+    "RealPlayersPmcPositions",
+    "RealPlayersPmcDeads",
+    "RealPlayersPmcDamages",
+    "RealPlayersPmcLaydownPositions",
+    "RealPlayersPmcEquipmentDropPositions",
+    "RealPlayersPmcHealingPositions",
+    "BotsBossPositions",
+    "BotsBossDeads",
+    "BotsBossDamages",
+    "BotsSavagesPositions",
+    "BotsSavagesDeads",
+    "BotsSavagesDamages",
+    "AllCharactersDamageSources",
+    "RealPlayerDamageSources",
+    "BotsDamageSources",
+    "LootPositions"
+  ],
   "IconX": 460,
   "IconY": 660,
   "Id": "Woods",
@@ -742,7 +783,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 70
+          "Radius": 55
         }
       },
       "CorePointId": 0,
@@ -809,7 +850,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "027273fa-04bc-48d1-acfb-74f008bb196c",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 365.905029,
         "y": 13.94,
@@ -1506,7 +1547,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "158e0a94-64fb-4555-afa0-90109713db91",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": -265.82,
         "y": 10.58,
@@ -2205,7 +2246,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "2685c5c9-9bde-40c1-bbc2-3a0f3b024106",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 61.22003,
         "y": 9.033999,
@@ -3418,7 +3459,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "4bef69e6-18dd-4c33-8b74-39eba90908cd",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": -256.58,
         "y": 10.61,
@@ -3843,7 +3884,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "57b4786d-ee61-4c7f-b6ef-94467e39a3cf",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": -260.32,
         "y": 11.27,
@@ -4119,7 +4160,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "5beb21e5-df5f-4db0-b607-202cb7a62ecf",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 59.18402,
         "y": 8.883999,
@@ -4331,7 +4372,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "6767b1b7-da32-4b62-90f0-0d44712a642b",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 370.773,
         "y": 13.9,
@@ -4848,7 +4889,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "76582ea6-095f-494d-83b8-c9335ba3f14f",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 59.8300171,
         "y": 8.794,
@@ -4968,7 +5009,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "794c2ad7-29fa-4faf-8bcf-649c8925444a",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 367.12,
         "y": 13.2439995,
@@ -7253,7 +7294,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "b43bd5a4-aa6c-4dd6-9052-d3359fa6b53c",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": -260.74,
         "y": 10.41,
@@ -7406,7 +7447,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "b593e2ff-9764-4bbe-9f8f-e05781071e7b",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 372.94,
         "y": 15.3039989,
@@ -7490,7 +7531,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 70
+          "Radius": 55
         }
       },
       "CorePointId": 0,
@@ -7671,7 +7712,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 70
+          "Radius": 55
         }
       },
       "CorePointId": 0,
@@ -7769,7 +7810,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "bf2a6323-087e-4d49-a160-ea86b8295ac0",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 63.3200073,
         "y": 8.99399948,
@@ -7983,7 +8024,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "c5021df7-1750-44ff-ae44-137022a8bdac",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 365.55,
         "y": 13.35,
@@ -8495,7 +8536,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 70
+          "Radius": 55
         }
       },
       "CorePointId": 0,
@@ -9230,7 +9271,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "e0fb7ebc-0a4c-45a3-b5a3-ba5e6b1456ba",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": 64.6600342,
         "y": 9.084,
@@ -9260,7 +9301,7 @@
       "CorePointId": 0,
       "DelayToCanSpawnSec": 4,
       "Id": "e1986567-8367-44cd-9bfa-e5c20e9e1460",
-      "Infiltration": "Old Station",
+      "Infiltration": "House",
       "Position": {
         "x": -253.669983,
         "y": 11.57,
@@ -10352,7 +10393,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 70
+          "Radius": 55
         }
       },
       "CorePointId": 0,

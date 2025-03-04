@@ -665,6 +665,7 @@ public class BotWeaponGenerator(
             return cartridges;
         }
 
+        // Fallback to the magazine if possible, e.g. for revolvers
         return GetCompatibleCartridgesFromMagazineTemplate(weaponTemplate);
     }
 

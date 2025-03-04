@@ -69,14 +69,11 @@ public class GameController(
             return;
         }
 
-        _profileActivityService.SetActivityTimestamp(sessionId);
-
         // repeatableQuests are stored by in profile.Quests due to the responses of the client (e.g. Quests in
         // offraidData). Since we don't want to clutter the Quests list, we need to remove all completed (failed or
         // successful) repeatable quests. We also have to remove the Counters from the repeatableQuests
 
         var fullProfile = _profileHelper.GetFullProfile(sessionId);
-
         if (fullProfile is null)
         {
             _logger.Error($"{nameof(fullProfile)} is null on GameController.GameStart");
@@ -85,6 +82,7 @@ public class GameController(
 
         fullProfile.SptData ??= new Spt
         {
+            //TODO: complete
             Version = "Replace_me"
         };
         fullProfile.SptData.Migrations ??= new Dictionary<string, long>();
@@ -135,6 +133,12 @@ public class GameController(
             _profileFixerService.AddMissingHideoutBonusesToProfile(pmcProfile);
             _hideoutHelper.SetHideoutImprovementsToCompleted(pmcProfile);
             _hideoutHelper.UnlockHideoutWallInProfile(pmcProfile);
+
+            // Handle if player has been inactive for a long time, catch up on hideout update before the user goes to his hideout
+            if (!_profileActivityService.ActiveWithinLastMinutes(sessionId, _hideoutConfig.UpdateProfileHideoutWhenActiveWithinMinutes))
+            {
+                _hideoutHelper.UpdatePlayerHideout(sessionId);
+            }
         }
 
         LogProfileDetails(fullProfile);
@@ -152,6 +156,9 @@ public class GameController(
         }
 
         _seasonalEventService.GivePlayerSeasonalGifts(sessionId);
+
+        // Set activity timestamp at the end of the method, so that code that checks for an older timestamp (Updating hideout) can still run
+        _profileActivityService.SetActivityTimestamp(sessionId);
     }
 
     /// <summary>

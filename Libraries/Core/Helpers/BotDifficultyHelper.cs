@@ -32,7 +32,9 @@ public class BotDifficultyHelper(
     /// <returns>Difficulty object</returns>
     public DifficultyCategories GetBotDifficultySettings(string type, string desiredDifficulty, Bots botDb)
     {
-        var desiredType = type.ToLower();
+        var desiredType = _botHelper.IsBotPmc(type)
+            ? _botHelper.GetPmcSideByRole(type).ToLower()
+            : type.ToLower();
         if (!botDb.Types.ContainsKey(desiredType))
         {
             // No bot found, get fallback difficulty values
