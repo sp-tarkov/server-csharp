@@ -82,9 +82,10 @@ public class TraderController(
 
     /// <summary>
     /// Adjust trader item prices based on config value multiplier
+    /// only applies to items sold for currency
     /// </summary>
-    /// <param name="trader"></param>
-    /// <param name="multiplier"></param>
+    /// <param name="trader">Trader to adjust prices of</param>
+    /// <param name="multiplier">Coef to apply to traders' items' prices</param>
     protected void AdjustTraderItemPrices(Trader trader, double multiplier)
     {
         foreach (var kvp in trader.Assort?.BarterScheme)

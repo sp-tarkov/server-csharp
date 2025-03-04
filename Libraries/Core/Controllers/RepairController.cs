@@ -17,10 +17,10 @@ public class RepairController(
     ///     Handle TraderRepair event
     ///     Repair with trader
     /// </summary>
-    /// <param name="sessionId">session id</param>
+    /// <param name="sessionID">session id</param>
     /// <param name="body">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
-    /// <returns>item event router action</returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse TraderRepair(
         string sessionID,
         TraderRepairActionDataRequest body,
@@ -64,7 +64,7 @@ public class RepairController(
     /// <param name="sessionId">session id</param>
     /// <param name="body">endpoint request data</param>
     /// <param name="pmcData">player profile</param>
-    /// <returns></returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse RepairWithKit(
         string sessionId,
         RepairActionDataRequest body,

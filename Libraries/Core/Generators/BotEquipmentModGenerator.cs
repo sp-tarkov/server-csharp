@@ -40,7 +40,6 @@ public class BotEquipmentModGenerator(
 )
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-
     protected static HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
 
     // Slots that hold scopes
@@ -380,6 +379,11 @@ public class BotEquipmentModGenerator(
         return result;
     }
 
+    /// <summary>
+    /// Gets the minimum and maximum plate class levels from an array of plates
+    /// </summary>
+    /// <param name="platePool">Pool of plates to sort by armorClass to get min and max</param>
+    /// <returns>MinMax of armorClass from plate pool</returns>
     protected static MinMax<int> GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
         platePool.Sort(
@@ -406,12 +410,12 @@ public class BotEquipmentModGenerator(
         };
     }
 
-    /**
-     * Get the default plate an armor has in its db item
-     * @param armorItem Item to look up default plate
-     * @param modSlot front/back
-     * @returns Tpl of plate
-     */
+    /// <summary>
+    /// Get the default plate an armor has in its db item
+    /// </summary>
+    /// <param name="armorItem">Item to look up default plate</param>
+    /// <param name="modSlot">front/back</param>
+    /// <returns>Tpl of plate</returns>
     protected string? GetDefaultPlateTpl(TemplateItem armorItem, string modSlot)
     {
         var relatedItemDbModSlot = armorItem.Properties.Slots?.FirstOrDefault(slot => string.Equals(slot.Name, modSlot, StringComparison.OrdinalIgnoreCase));
@@ -419,12 +423,12 @@ public class BotEquipmentModGenerator(
         return relatedItemDbModSlot?.Props.Filters[0].Plate;
     }
 
-    /**
-     * Get the matching armor slot from the default preset matching passed in armor tpl
-     * @param presetItemId Id of preset
-     * @param modSlot front/back
-     * @returns Armor IItem
-     */
+    /// <summary>
+    /// Get the matching armor slot from the default preset matching passed in armor tpl
+    /// </summary>
+    /// <param name="armorItemTpl"></param>
+    /// <param name="modSlot"></param>
+    /// <returns>Armor IItem</returns>
     protected Item? GetDefaultPresetArmorSlot(string armorItemTpl, string modSlot)
     {
         var defaultPreset = _presetHelper.GetDefaultPreset(armorItemTpl);
@@ -432,7 +436,6 @@ public class BotEquipmentModGenerator(
         return defaultPreset?.Items?.FirstOrDefault(item =>
             string.Equals(item.SlotId, modSlot, StringComparison.OrdinalIgnoreCase));
     }
-
 
     /// <summary>
     ///     Add mods to a weapon using the provided mod pool
@@ -713,9 +716,16 @@ public class BotEquipmentModGenerator(
         return request.Weapon;
     }
 
+    /// <summary>
+    /// Does the passed in db item lack slot cartridges or chambers
+    /// </summary>
+    /// <param name="item">Item to check</param>
+    /// <returns>True it lacks cartridges/chamber slots</returns>
     protected bool ItemLacksSlotsCartridgesAndChambers(TemplateItem item)
     {
-        return item.Properties.Slots?.Count == 0 && item.Properties.Cartridges?.Count == 0 && item.Properties.Chambers?.Count == 0;
+        return item.Properties.Slots?.Count == 0
+               && item.Properties.Cartridges?.Count == 0
+               && item.Properties.Chambers?.Count == 0;
     }
 
     /// <summary>
@@ -734,7 +744,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    ///     Is this modslot a front or rear sight
+    ///     Is passed in modslot a front or rear sight
     /// </summary>
     /// <param name="modSlot">Slot to check</param>
     /// <param name="tpl"></param>
@@ -968,7 +978,7 @@ public class BotEquipmentModGenerator(
     /// <returns>itemHelper.getItem() result</returns>
     public KeyValuePair<bool, TemplateItem>? ChooseModToPutIntoSlot(ModToSpawnRequest request)
     {
-        /** Slot mod will fill */
+        // Slot mod will fill
         var parentSlot = request.ParentTemplate.Properties.Slots?.FirstOrDefault(i => i.Name == request.ModSlot);
         var weaponTemplate = _itemHelper.GetItem(request.Weapon[0].Template).Value;
 
@@ -1291,7 +1301,7 @@ public class BotEquipmentModGenerator(
         }
 
         // Required mod is not default or randomisable, use existing pool
-        if (request.ItemModPool.TryGetValue(request.ModSlot, out var modsForSlot))
+        if (!request.ItemModPool.TryGetValue(request.ModSlot, out var modsForSlot))
         {
             return null;
         }
@@ -1299,6 +1309,12 @@ public class BotEquipmentModGenerator(
         return modsForSlot;
     }
 
+    /// <summary>
+    /// Get a pool of mods from the default weapon preset for passed in weapon
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="weaponTemplate"></param>
+    /// <returns>Hashset of mods keyed by slot</returns>
     public HashSet<string> GetModPoolForDefaultSlot(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
         var matchingModFromPreset = GetMatchingModFromPreset(request, weaponTemplate);
@@ -1380,7 +1396,13 @@ public class BotEquipmentModGenerator(
         return request.ItemModPool[request.ModSlot];
     }
 
-    public Item? GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
+    /// <summary>
+    /// Get Desired item from preset
+    /// </summary>
+    /// <param name="request"></param>
+    /// <param name="weaponTemplate"></param>
+    /// <returns></returns>
+    protected Item? GetMatchingModFromPreset(ModToSpawnRequest request, TemplateItem weaponTemplate)
     {
         var matchingPreset = GetMatchingPreset(weaponTemplate, request.ParentTemplate.Id);
         return matchingPreset?.Items?.FirstOrDefault(item =>
@@ -1393,7 +1415,7 @@ public class BotEquipmentModGenerator(
     /// <param name="weaponTemplate">Weapons db template</param>
     /// <param name="parentItemTpl">Tpl of the parent item</param>
     /// <returns>Default preset found</returns>
-    public Preset? GetMatchingPreset(TemplateItem weaponTemplate, string parentItemTpl)
+    protected Preset? GetMatchingPreset(TemplateItem weaponTemplate, string parentItemTpl)
     {
         // Edge case - using mp5sd reciever means default mp5 handguard doesn't fit
         var isMp5sd = parentItemTpl == "5926f2e086f7745aae644231";
@@ -1493,7 +1515,7 @@ public class BotEquipmentModGenerator(
     /// <summary>
     ///     Check if mod exists in db + is for a required slot
     /// </summary>
-    /// <param name="modtoAdd">Db template of mod to check</param>
+    /// <param name="modToAdd">Db template of mod to check</param>
     /// <param name="slotAddedToTemplate">Slot object the item will be placed as child into</param>
     /// <param name="modSlot">Slot the mod will fill</param>
     /// <param name="parentTemplate">Db template of the mods being added</param>
