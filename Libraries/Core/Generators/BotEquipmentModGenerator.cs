@@ -60,6 +60,10 @@ public class BotEquipmentModGenerator(
     // Slots a weapon can store its stock in
     protected static HashSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
 
+    // Slots that hold cartridges
+    protected static HashSet<string> _cartridgeHolderSlots =
+        ["mod_magazine", "patron_in_weapon", "patron_in_weapon_000", "patron_in_weapon_001", "cartridges"];
+
     /// <summary>
     ///     Check mods are compatible and add to array
     /// </summary>
@@ -1480,7 +1484,7 @@ public class BotEquipmentModGenerator(
     /// <returns>string array</returns>
     public HashSet<string> GetAmmoContainers()
     {
-        return ["mod_magazine", "patron_in_weapon", "patron_in_weapon_000", "patron_in_weapon_001", "cartridges"];
+        return _cartridgeHolderSlots;
     }
 
     /// <summary>
