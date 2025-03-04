@@ -2,8 +2,14 @@
 
   <PropertyGroup>
     <PackageId>SPT.Server.Core</PackageId>
-    <Authors>SPT Team</Authors>
+    <Authors>Single Player Tarkov</Authors>
+    <PackageVersion>4.0.0-alpha.1</PackageVersion>
+    <Description>Core libaries for the Single Player Tarkov server.</Description>
+    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -18,6 +24,10 @@
   <ItemGroup>
     <PackageReference Include="System.IO.Hashing" Version="9.0.1" />
     <PackageReference Include="FastCloner" Version="3.3.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
 </Project>
