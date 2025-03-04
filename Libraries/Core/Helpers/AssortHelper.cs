@@ -142,7 +142,7 @@ public class AssortHelper(
     {
         var idsToRemove = _itemHelper.FindAndReturnChildrenByItems(assort.Items, itemID);
 
-        if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && lisToUse is not null && flea)
+        if (assort.BarterScheme.TryGetValue(itemID, out var lisToUse) && flea)
         {
             foreach (var barterScheme in lisToUse.SelectMany(barterSchemes => barterSchemes))
             {
