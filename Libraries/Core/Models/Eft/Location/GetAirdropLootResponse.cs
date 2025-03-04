@@ -6,7 +6,9 @@ namespace Core.Models.Eft.Location;
 
 public record GetAirdropLootResponse
 {
-    // The type of airdrop
+    /// <summary>
+    /// The type of airdrop
+    /// </summary>
     [JsonPropertyName("icon")]
     public AirdropTypeEnum? Icon
     {

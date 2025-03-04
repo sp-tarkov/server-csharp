@@ -5,9 +5,9 @@ namespace Core.Models.Eft.Quests;
 
 public record CompleteQuestRequestData : InventoryBaseActionRequestData
 {
-    /**
-     * Quest Id
-     */
+    /// <summary>
+    /// Quest Id
+    /// </summary>
     [JsonPropertyName("qid")]
     public string? QuestId
     {

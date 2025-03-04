@@ -5,9 +5,9 @@ namespace Core.Models.Spt.Bots;
 
 public record GenerateWeaponRequest
 {
-    /**
-     * Weapon to add mods to / result that is returned
-     */
+    /// <summary>
+    /// Weapon to add mods to / result that is returned
+    /// </summary>
     [JsonPropertyName("weapon")]
     public List<Item>? Weapon
     {
@@ -15,9 +15,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Pool of compatible mods to attach to weapon
-     */
+    /// <summary>
+    /// Pool of compatible mods to attach to weapon
+    /// </summary>
     [JsonPropertyName("modPool")]
     public GlobalMods? ModPool
     {
@@ -25,9 +25,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * ParentId of weapon
-     */
+    /// <summary>
+    /// ParentId of weapon
+    /// </summary>
     [JsonPropertyName("weaponId")]
     public string? WeaponId
     {
@@ -35,9 +35,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Weapon which mods will be generated on
-     */
+    /// <summary>
+    /// Weapon which mods will be generated on
+    /// </summary>
     [JsonPropertyName("parentTemplate")]
     public TemplateItem? ParentTemplate
     {
@@ -45,9 +45,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Chance values mod will be added
-     */
+    /// <summary>
+    /// Chance values mod will be added
+    /// </summary>
     [JsonPropertyName("modSpawnChances")]
     public Dictionary<string, double>? ModSpawnChances
     {
@@ -55,9 +55,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Ammo tpl to use when generating magazines/cartridges
-     */
+    /// <summary>
+    /// Ammo tpl to use when generating magazines/cartridges
+    /// </summary>
     [JsonPropertyName("ammoTpl")]
     public string? AmmoTpl
     {
@@ -65,9 +65,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Bot-specific properties
-     */
+    /// <summary>
+    /// Bot-specific properties
+    /// </summary>
     [JsonPropertyName("botData")]
     public BotData? BotData
     {
@@ -75,9 +75,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * limits placed on certain mod types per gun
-     */
+    /// <summary>
+    /// limits placed on certain mod types per gun
+    /// </summary>
     [JsonPropertyName("modLimits")]
     public BotModLimits? ModLimits
     {
@@ -85,9 +85,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Info related to the weapon being generated
-     */
+    /// <summary>
+    /// Info related to the weapon being generated
+    /// </summary>
     [JsonPropertyName("weaponStats")]
     public WeaponStats? WeaponStats
     {
@@ -95,9 +95,9 @@ public record GenerateWeaponRequest
         set;
     }
 
-    /**
-     * Array of item tpls the weapon does not support
-     */
+    /// <summary>
+    /// Array of item tpls the weapon does not support
+    /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
     public HashSet<string>? ConflictingItemTpls
     {
@@ -108,9 +108,9 @@ public record GenerateWeaponRequest
 
 public record BotData
 {
-    /**
-     * Role of bot weapon is generated for
-     */
+    /// <summary>
+    /// Role of bot weapon is generated for
+    /// </summary>
     [JsonPropertyName("role")]
     public string? Role
     {
@@ -118,9 +118,9 @@ public record BotData
         set;
     }
 
-    /**
-     * Level of the bot weapon is being generated for
-     */
+    /// <summary>
+    /// Level of the bot weapon is being generated for
+    /// </summary>
     [JsonPropertyName("level")]
     public int? Level
     {
@@ -128,9 +128,9 @@ public record BotData
         set;
     }
 
-    /**
-     * role of bot when accessing bot.json equipment config settings
-     */
+    /// <summary>
+    /// role of bot when accessing bot.json equipment config settings
+    /// </summary>
     [JsonPropertyName("equipmentRole")]
     public string? EquipmentRole
     {

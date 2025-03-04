@@ -26,6 +26,9 @@ public record ProcessBuyTradeRequestData : ProcessBaseTradeRequestData
         set;
     }
 
+    /// <summary>
+    /// Id of stack to take money from, is money tpl when Action is `SptInsure`
+    /// </summary>
     [JsonPropertyName("scheme_items")]
     public List<IdWithCount>? SchemeItems
     {

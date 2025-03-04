@@ -41,9 +41,9 @@ public record RepairConfig : BaseConfig
         set;
     }
 
-    /**
-     * INT gain multiplier per repaired item type
-     */
+    /// <summary>
+    /// INT gain multiplier per repaired item type
+    /// </summary>
     [JsonPropertyName("repairKitIntellectGainMultiplier")]
     public IntellectGainValues RepairKitIntellectGainMultiplier
     {
@@ -51,7 +51,9 @@ public record RepairConfig : BaseConfig
         set;
     }
 
-    // ** How much INT can be given to player per repair action */
+    /// <summary>
+    /// How much INT can be given to player per repair action
+    /// </summary>
     [JsonPropertyName("maxIntellectGainPerRepair")]
     public MaxIntellectGainValues MaxIntellectGainPerRepair
     {
@@ -110,9 +112,9 @@ public record MaxIntellectGainValues
 
 public record WeaponTreatmentRepairValues
 {
-    /**
-     * The chance to gain more weapon maintenance skill
-     */
+    /// <summary>
+    /// The chance to gain more weapon maintenance skill
+    /// </summary>
     [JsonPropertyName("critSuccessChance")]
     public double CritSuccessChance
     {
@@ -127,9 +129,9 @@ public record WeaponTreatmentRepairValues
         set;
     }
 
-    /**
-     * The chance to gain less weapon maintenance skill
-     */
+    /// <summary>
+    /// The chance to gain less weapon maintenance skill
+    /// </summary>
     [JsonPropertyName("critFailureChance")]
     public double CritFailureChance
     {
@@ -144,9 +146,9 @@ public record WeaponTreatmentRepairValues
         set;
     }
 
-    /**
-     * The multiplier used for calculating weapon maintenance XP
-     */
+    /// <summary>
+    /// The multiplier used for calculating weapon maintenance XP
+    /// </summary>
     [JsonPropertyName("pointGainMultiplier")]
     public double PointGainMultiplier
     {
@@ -226,9 +228,9 @@ public record BonusValues
         set;
     }
 
-    /**
-     * What dura is buff active between (min max of current max)
-     */
+    /// <summary>
+    /// What dura is buff active between (min max of current max)
+    /// </summary>
     [JsonPropertyName("activeDurabilityPercentMinMax")]
     public MinMax<int> ActiveDurabilityPercentMinMax
     {

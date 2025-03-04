@@ -26,9 +26,9 @@ public record BotDurability
     }
 }
 
-/**
- * Durability values to be used when a more specific bot type can't be found
- */
+/// <summary>
+/// Durability values to be used when a more specific bot type can't be found
+/// </summary>
 public record DefaultDurability
 {
     [JsonPropertyName("armor")]

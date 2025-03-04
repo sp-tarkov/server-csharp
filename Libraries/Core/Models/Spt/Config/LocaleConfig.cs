@@ -11,9 +11,9 @@ public record LocaleConfig : BaseConfig
         set;
     } = "spt-locale";
 
-    /**
-     * e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
-     */
+    /// <summary>
+    /// e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
+    /// </summary>
     [JsonPropertyName("gameLocale")]
     public string GameLocale
     {
@@ -21,9 +21,9 @@ public record LocaleConfig : BaseConfig
         set;
     }
 
-    /**
-     * e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
-     */
+    /// <summary>
+    /// e.g. ru/en/cn/fr etc, or 'system', will take computer locale setting
+    /// </summary>
     [JsonPropertyName("serverLocale")]
     public string ServerLocale
     {
@@ -31,9 +31,9 @@ public record LocaleConfig : BaseConfig
         set;
     }
 
-    /**
-     * Languages server can be translated into
-     */
+    /// <summary>
+    /// Languages server can be translated into
+    /// </summary>
     [JsonPropertyName("serverSupportedLocales")]
     public List<string> ServerSupportedLocales
     {

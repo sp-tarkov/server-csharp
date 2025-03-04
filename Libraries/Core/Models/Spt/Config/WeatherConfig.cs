@@ -101,9 +101,9 @@ public record WeatherValues
         set;
     }
 
-    /**
-     * How many hours to generate weather data into the future
-     */
+    /// <summary>
+    /// How many hours to generate weather data into the future
+    /// </summary>
     [JsonPropertyName("generateWeatherAmountHours")]
     public int? GenerateWeatherAmountHours
     {
@@ -111,9 +111,9 @@ public record WeatherValues
         set;
     }
 
-    /**
-     * Length of each weather period
-     */
+    /// <summary>
+    /// Length of each weather period
+    /// </summary>
     [JsonPropertyName("timePeriod")]
     public WeatherSettings<int>? TimePeriod
     {

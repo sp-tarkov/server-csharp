@@ -106,9 +106,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Weighting on how likely a bot will be Easy difficulty
-     */
+    /// <summary>
+    /// Weighting on how likely a bot will be Easy difficulty
+    /// </summary>
     [JsonPropertyName("BotEasy")]
     public int? BotEasy
     {
@@ -116,9 +116,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Weighting on how likely a bot will be Hard difficulty
-     */
+    /// <summary>
+    /// Weighting on how likely a bot will be Hard difficulty
+    /// </summary>
     [JsonPropertyName("BotHard")]
     public int? BotHard
     {
@@ -126,9 +126,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Weighting on how likely a bot will be Impossible difficulty
-     */
+    /// <summary>
+    /// Weighting on how likely a bot will be Impossible difficulty
+    /// </summary>
     [JsonPropertyName("BotImpossible")]
     public int? BotImpossible
     {
@@ -150,9 +150,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Maximum Number of bots that are currently alive/loading/delayed
-     */
+    /// <summary>
+    /// Maximum Number of bots that are currently alive/loading/delayed
+    /// </summary>
     [JsonPropertyName("BotMax")]
     public int? BotMax
     {
@@ -160,9 +160,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Is not used in 33420
-     */
+    /// <summary>
+    /// Is not used in 33420 TODO: still needed?
+    /// </summary>
     [JsonPropertyName("BotMaxPlayer")]
     public int? BotMaxPlayer
     {
@@ -170,9 +170,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Is not used in 33420
-     */
+    /// <summary>
+    /// Is not used in 33420 TODO: still needed?
+    /// </summary>
     [JsonPropertyName("BotMaxTimePlayer")]
     public int? BotMaxTimePlayer
     {
@@ -180,9 +180,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Does not even exist in the client in 33420
-     */
+    /// <summary>
+    /// Does not even exist in the client in 33420 TODO: still needed?
+    /// </summary>
     [JsonPropertyName("BotMaxPvE")]
     public int? BotMaxPvE
     {
@@ -190,9 +190,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * Weighting on how likely a bot will be Normal difficulty
-     */
+    /// <summary>
+    /// Weighting on how likely a bot will be Normal difficulty
+    /// </summary>
     [JsonPropertyName("BotNormal")]
     public int? BotNormal
     {
@@ -200,9 +200,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * How many bot slots that need to be open before trying to spawn new bots.
-     */
+    /// <summary>
+    /// How many bot slots that need to be open before trying to spawn new bots.
+    /// </summary>
     [JsonPropertyName("BotSpawnCountStep")]
     public int? BotSpawnCountStep
     {
@@ -210,9 +210,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * How often to check if bots are spawn-able. In seconds
-     */
+    /// <summary>
+    /// How often to check if bots are spawn-able. In seconds
+    /// </summary>
     [JsonPropertyName("BotSpawnPeriodCheck")]
     public int? BotSpawnPeriodCheck
     {
@@ -220,9 +220,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * The bot spawn will toggle on and off in intervals of Off(Min/Max) and On(Min/Max)
-     */
+    /// <summary>
+    /// The bot spawn will toggle on and off in intervals of Off(Min/Max) and On(Min/Max)
+    /// </summary>
     [JsonPropertyName("BotSpawnTimeOffMax")]
     public int? BotSpawnTimeOffMax
     {
@@ -251,9 +251,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * How soon bots will be allowed to spawn
-     */
+    /// <summary>
+    /// How soon bots will be allowed to spawn
+    /// </summary>
     [JsonPropertyName("BotStart")]
     public int? BotStart
     {
@@ -261,9 +261,9 @@ public record LocationBase
         set;
     }
 
-    /**
-     * After this long bots will no longer spawn
-     */
+    /// <summary>
+    /// After this long bots will no longer spawn
+    /// </summary>
     [JsonPropertyName("BotStop")]
     public int? BotStop
     {
@@ -1666,9 +1666,9 @@ public record ColliderProps
 
 public record Exit
 {
-    /**
-     * % Chance out of 100 exit will appear in raid
-     */
+    /// <summary>
+    /// % Chance out of 100 exit will appear in raid
+    /// </summary>
     [JsonPropertyName("Chance")]
     public double? Chance
     {
@@ -1950,9 +1950,9 @@ public record Wave
         set;
     }
 
-    /**
-     * OPTIONAL - Needs to be unique - Used by custom wave service to ensure same wave isnt added multiple times
-     */
+    /// <summary>
+    /// OPTIONAL - Needs to be unique - Used by custom wave service to ensure same wave isnt added multiple times
+    /// </summary>
     [JsonPropertyName("sptId")]
     public string? SptId
     {
@@ -1967,9 +1967,9 @@ public record Wave
         set;
     }
 
-    /**
-     * 'pve' and/or 'regular'
-     */
+    /// <summary>
+    /// 'pve' and/or 'regular'
+    /// </summary>
     [JsonPropertyName("SpawnMode")]
     public List<string>? SpawnMode
     {

@@ -58,9 +58,9 @@ public record HideoutProduction
         set;
     }
 
-    /**
-     * Tpl of item being crafted
-     */
+    /// <summary>
+    /// Tpl of item being crafted
+    /// </summary>
     [JsonPropertyName("endProduct")]
     public string? EndProduct
     {

@@ -5,9 +5,9 @@ namespace Core.Models.Eft.Hideout;
 
 public record HandleQTEEventRequestData : InventoryBaseActionRequestData
 {
-    /**
-     * true if QTE was successful, otherwise false
-     */
+    /// <summary>
+    /// true if QTE was successful, otherwise false
+    /// </summary>
     [JsonPropertyName("results")]
     public List<bool>? Results
     {
@@ -15,9 +15,9 @@ public record HandleQTEEventRequestData : InventoryBaseActionRequestData
         set;
     }
 
-    /**
-     * Id of the QTE object used from db/hideout/qte.json
-     */
+    /// <summary>
+    /// Id of the QTE object used from db/hideout/qte.json
+    /// </summary>
     [JsonPropertyName("id")]
     public string? Id
     {

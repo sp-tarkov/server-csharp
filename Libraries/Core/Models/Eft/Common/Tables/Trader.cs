@@ -422,13 +422,15 @@ public record TraderRepair
         get;
         set;
     }
-
+    /// <summary>
+    /// Doesn't exist in client object
+    /// </summary>
     [JsonPropertyName("excluded_id_list")]
     public List<string>? ExcludedIdList
     {
         get;
         set;
-    } // Doesn't exist in client object
+    }
 
     [JsonPropertyName("quality")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]

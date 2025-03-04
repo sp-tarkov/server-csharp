@@ -127,9 +127,9 @@ public record SendMessageDetails
         set;
     }
 
-    /**
-     * Optional - the MongoID of the dialogue message to reply to
-     */
+    /// <summary>
+    /// Optional - the MongoID of the dialogue message to reply to
+    /// </summary>
     [JsonPropertyName("replyTo")]
     public string? ReplyTo
     {

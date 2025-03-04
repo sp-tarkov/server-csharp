@@ -21,9 +21,9 @@ public record SeasonalEventConfig : BaseConfig
         set;
     }
 
-    /**
-     * event / botType / equipSlot / itemid
-     */
+    /// <summary>
+    /// event / botType / equipSlot / itemid
+    /// </summary>
     [JsonPropertyName("eventGear")]
     public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventGear
     {
@@ -31,9 +31,9 @@ public record SeasonalEventConfig : BaseConfig
         set;
     }
 
-    /**
-     * event / bot type / equipSlot / itemid
-     */
+    /// <summary>
+    /// event / bot type / equipSlot / itemid
+    /// </summary>
     [JsonPropertyName("eventLoot")]
     public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> EventLoot
     {
@@ -76,9 +76,9 @@ public record SeasonalEventConfig : BaseConfig
         set;
     }
 
-    /**
-     * key = event, second key = map name
-     */
+    /// <summary>
+    /// key = event, second key = map name
+    /// </summary>
     [JsonPropertyName("hostilitySettingsForEvent")]
     public Dictionary<string, Dictionary<string, List<AdditionalHostilitySettings>>> HostilitySettingsForEvent
     {
@@ -86,9 +86,9 @@ public record SeasonalEventConfig : BaseConfig
         set;
     }
 
-    /**
-     * Ids of containers on locations that only have christmas loot
-     */
+    /// <summary>
+    /// Ids of containers on locations that only have Christmas loot
+    /// </summary>
     [JsonPropertyName("christmasContainerIds")]
     public List<string> ChristmasContainerIds
     {
@@ -96,9 +96,9 @@ public record SeasonalEventConfig : BaseConfig
         set;
     }
 
-    /**
-     * Season - botType - location (body/feet/hands/head)
-     */
+    /// <summary>
+    /// Season - botType - location (body/feet/hands/head)
+    /// </summary>
     [JsonPropertyName("botAppearanceChanges")]
     public Dictionary<SeasonalEventType, Dictionary<string, Dictionary<string, Dictionary<string, int>>>> BotAppearanceChanges
     {

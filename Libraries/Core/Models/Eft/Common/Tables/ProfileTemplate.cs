@@ -189,9 +189,9 @@ public record ProfileTraderTemplate
         set;
     }
 
-    /**
-     * How many days is usage of the flea blocked for upon profile creation
-     */
+    /// <summary>
+    /// How many days is usage of the flea blocked for upon profile creation
+    /// </summary>
     [JsonPropertyName("fleaBlockedDays")]
     public int? FleaBlockedDays
     {
@@ -199,9 +199,9 @@ public record ProfileTraderTemplate
         set;
     }
 
-    /**
-     * What traders default to being locked on profile creation
-     */
+    /// <summary>
+    /// What traders default to being locked on profile creation
+    /// </summary>
     [JsonPropertyName("lockedByDefaultOverride")]
     public List<string>? LockedByDefaultOverride
     {
@@ -209,9 +209,9 @@ public record ProfileTraderTemplate
         set;
     }
 
-    /**
-     * What traders should have their clothing unlocked/purchased on creation
-     */
+    /// <summary>
+    /// What traders should have their clothing unlocked/purchased on creation
+    /// </summary>
     [JsonPropertyName("purchaseAllClothingByDefaultForTrader")]
     public List<string>? PurchaseAllClothingByDefaultForTrader
     {

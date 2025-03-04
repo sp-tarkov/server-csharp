@@ -24,9 +24,9 @@ public record BotBase
         set;
     }
 
-    /**
-     * SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
-     */
+    /// <summary>
+    /// SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
+    /// </summary>
     [JsonPropertyName("sessionId")]
     public string? SessionId
     {
@@ -149,9 +149,9 @@ public record BotBase
         set;
     }
 
-    /**
-     * Achievement id and timestamp
-     */
+    /// <summary>
+    /// Achievement id and timestamp
+    /// </summary>
     [JsonPropertyName("Achievements")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
     public Dictionary<string, long>? Achievements
@@ -218,9 +218,9 @@ public record BotBase
         set;
     }
 
-    /**
-     * SPT specific property used during bot generation in raid
-     */
+    /// <summary>
+    /// SPT specific property used during bot generation in raid
+    /// </summary>
     [JsonPropertyName("sptIsPmc")]
     public bool? IsPmc
     {
@@ -232,9 +232,9 @@ public record BotBase
 public record MoneyTransferLimits
 {
     // Resets every 24 hours in live
-    /**
-     * TODO: Implement
-     */
+    /// <summary>
+    /// TODO: Implement
+    /// </summary>
     [JsonPropertyName("nextResetTime")]
     public double? NextResetTime
     {
@@ -286,10 +286,9 @@ public record TaskConditionCounter
         get;
         set;
     }
-
-    /**
-     * Quest id
-     */
+    /// <summary>
+    /// Quest id
+    /// </summary>
     [JsonPropertyName("sourceId")]
     public string? SourceId
     {
@@ -857,9 +856,9 @@ public record BotBaseInventory
         set;
     }
 
-    /**
-     * Key is hideout area enum numeric as string e.g. "24", value is area _id
-     */
+    /// <summary>
+    /// Key is hideout area enum numeric as string e.g. "24", value is area _id
+    /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutAreaStashes")]
     public Dictionary<string, string>? HideoutAreaStashes
@@ -1560,9 +1559,9 @@ public record BackendCounter
 
 public record InsuredItem
 {
-    /**
-     * Trader Id item was insured by
-     */
+    /// <summary>
+    /// Trader ID item was insured by
+    /// </summary>
     [JsonPropertyName("tid")]
     public string? TId
     {
@@ -1690,18 +1689,18 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Seconds passed of production
-     */
+    /// <summary>
+    /// Seconds passed of production
+    /// </summary>
     public double? Progress
     {
         get;
         set;
     }
 
-    /**
-     * Is craft in some state of being worked on by client (crafting/ready to pick up)
-     */
+    /// <summary>
+    /// Is craft in some state of being worked on by client (crafting/ready to pick up)
+    /// </summary>
     [JsonPropertyName("inProgress")]
     public bool? InProgress
     {
@@ -1721,9 +1720,9 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Seconds needed to fully craft
-     */
+    /// <summary>
+    /// Seconds needed to fully craft
+    /// </summary>
     public double? ProductionTime
     {
         get;
@@ -1760,18 +1759,18 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Used in hideout production.json
-     */
+    /// <summary>
+    /// Used in hideout production.json
+    /// </summary>
     public bool? needFuelForAllProductionTime
     {
         get;
         set;
     }
 
-    /**
-     * Used when sending data to client
-     */
+    /// <summary>
+    /// Used when sending data to client
+    /// </summary>
     public bool? NeedFuelForAllProductionTime
     {
         get;
@@ -1785,9 +1784,9 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Some crafts are always inProgress, but need to be reset, e.g. water collector
-     */
+    /// <summary>
+    /// Some crafts are always inProgress, but need to be reset, e.g. water collector
+    /// </summary>
     [JsonPropertyName("sptIsComplete")]
     public bool? SptIsComplete
     {
@@ -1795,9 +1794,9 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Is the craft a Continuous, e.g bitcoins/water collector
-     */
+    /// <summary>
+    /// Is the craft a Continuous, e.g. bitcoins/water collector
+    /// </summary>
     [JsonPropertyName("sptIsContinuous")]
     public bool? SptIsContinuous
     {
@@ -1805,9 +1804,9 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    /**
-     * Stores a list of tools used in this craft and whether they're FiR, to give back once the craft is done
-     */
+    /// <summary>
+    /// Stores a list of tools used in this craft and whether they're FiR, to give back once the craft is done
+    /// </summary>
     [JsonPropertyName("sptRequiredTools")]
     public List<Item>? SptRequiredTools
     {
@@ -1815,7 +1814,9 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    // Craft is cultist circle sacrifice
+    /// <summary>
+    /// Craft is cultist circle sacrifice
+    /// </summary>
     [JsonPropertyName("sptIsCultistCircle")]
     public bool? SptIsCultistCircle
     {
@@ -1860,9 +1861,9 @@ public record BotHideoutArea
         set;
     }
 
-    /**
-     * Must be integer
-     */
+    /// <summary>
+    /// Must be integer
+    /// </summary>
     [JsonPropertyName("completeTime")]
     public double? CompleteTime
     {
@@ -1895,7 +1896,7 @@ public record BotHideoutArea
 public record HideoutSlot
 {
     /// <summary>
-    ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc)
+    ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc.)
     /// </summary>
     [JsonPropertyName("locationIndex")]
     public double? LocationIndex
@@ -1971,9 +1972,9 @@ public record Quests
         set;
     }
 
-    /**
-     * Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
-     */
+    /// <summary>
+    /// Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
+    /// </summary>
     [JsonPropertyName("completedConditions")]
     public List<string>? CompletedConditions
     {

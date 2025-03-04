@@ -23,9 +23,9 @@ public record SptProfile
         set;
     }
 
-    /**
-     * Clothing purchases
-     */
+    /// <summary>
+    /// Clothing purchases
+    /// </summary>
     [JsonPropertyName("suits")]
     public List<string>? Suits
     {
@@ -75,9 +75,9 @@ public record SptProfile
         set;
     }
 
-    /**
-     * Assort purchases made by player since last trader refresh
-     */
+    /// <summary>
+    /// Assort purchases made by player since last trader refresh
+    /// </summary>
     [JsonPropertyName("traderPurchases")]
     public Dictionary<string, Dictionary<string, TraderPurchaseData>?>? TraderPurchases
     {
@@ -85,9 +85,9 @@ public record SptProfile
         set;
     }
 
-    /**
-     * List of friend profile IDs
-     */
+    /// <summary>
+    /// List of friend profile IDs
+    /// </summary>
     [JsonPropertyName("friends")]
     public List<string>? FriendProfileIds
     {
@@ -122,9 +122,9 @@ public record TraderPurchaseData
 
 public record Info
 {
-    /**
-     * main profile id
-     */
+    /// <summary>
+    /// main profile id
+    /// </summary>
     [JsonPropertyName("id")]
     public string? ProfileId
     {
@@ -192,9 +192,9 @@ public record Characters
     }
 }
 
-/**
- * used by profile.userbuilds
- */
+/// <summary>
+/// used by profile.userbuilds
+/// </summary>
 public record UserBuilds
 {
     [JsonPropertyName("weaponBuilds")]
@@ -326,9 +326,9 @@ public record MagazineTemplateAmmoItem
     }
 }
 
-/**
- * Used by defaultEquipmentPresets.json
- */
+/// <summary>
+/// Used by defaultEquipmentPresets.json
+/// </summary>
 public record DefaultEquipmentPreset : EquipmentBuild
 {
     [JsonPropertyName("type")]
@@ -391,7 +391,7 @@ public record Dialogue
     }
 }
 
-// @Cleanup: Maybe the same as Dialogue?
+//TODO: @Cleanup: Maybe the same as Dialogue?
 public record DialogueInfo
 {
     [JsonPropertyName("attachmentsNew")]
@@ -699,9 +699,9 @@ public record UpdatableChatMember
 
 public record Spt
 {
-    /**
-     * What version of SPT was this profile made with
-     */
+    /// <summary>
+    /// What version of SPT was this profile made with
+    /// </summary>
     [JsonPropertyName("version")]
     public string? Version
     {
@@ -709,9 +709,9 @@ public record Spt
         set;
     }
 
-    /**
-     * What mods has this profile loaded at any point in time
-     */
+    /// <summary>
+    /// What mods has this profile loaded at any point in time
+    /// </summary>
     [JsonPropertyName("mods")]
     public List<ModDetails>? Mods
     {
@@ -719,9 +719,9 @@ public record Spt
         set;
     }
 
-    /**
-     * What gifts has this profile received and how many
-     */
+    /// <summary>
+    /// What gifts has this profile received and how many
+    /// </summary>
     [JsonPropertyName("receivedGifts")]
     public List<ReceivedGift>? ReceivedGifts
     {
@@ -729,9 +729,9 @@ public record Spt
         set;
     }
 
-    /**
-     * item TPLs blacklisted from being sold on flea for this profile
-     */
+    /// <summary>
+    /// item TPLs blacklisted from being sold on flea for this profile
+    /// </summary>
     [JsonPropertyName("blacklistedItemTpls")]
     public HashSet<string>? BlacklistedItemTemplates
     {
@@ -739,9 +739,9 @@ public record Spt
         set;
     }
 
-    /**
-     * key: daily type
-     */
+    /// <summary>
+    /// key: daily type
+    /// </summary>
     [JsonPropertyName("freeRepeatableRefreshUsedCount")]
     public Dictionary<string, int>? FreeRepeatableRefreshUsedCount
     {
@@ -749,9 +749,9 @@ public record Spt
         set;
     }
 
-    /**
-     * When was a profile migrated, value is timestamp
-     */
+    /// <summary>
+    /// When was a profile migrated, value is timestamp
+    /// </summary>
     [JsonPropertyName("migrations")]
     public Dictionary<string, long>? Migrations
     {
@@ -759,9 +759,9 @@ public record Spt
         set;
     }
 
-    /**
-     * Cultist circle rewards received that are one time use, key (md5) is a combination of sacrificed + reward items
-     */
+    /// <summary>
+    /// Cultist circle rewards received that are one time use, key (md5) is a combination of sacrificed + reward items
+    /// </summary>
     [JsonPropertyName("cultistRewards")]
     public Dictionary<string, AcceptedCultistReward>? CultistRewards
     {

@@ -4,9 +4,9 @@ namespace Core.Models.Eft.Inventory;
 
 public record InventorySplitRequestData : InventoryBaseActionRequestData
 {
-    /**
-     * Id of item to split
-     */
+    /// <summary>
+    /// Id of item to split
+    /// </summary>
     [JsonPropertyName("splitItem")]
     public string? SplitItem
     {
@@ -14,9 +14,9 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
         set;
     }
 
-    /**
-     * Id of new item stack
-     */
+    /// <summary>
+    /// Id of new item stack
+    /// </summary>
     [JsonPropertyName("newItem")]
     public string? NewItem
     {
@@ -24,9 +24,9 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
         set;
     }
 
-    /**
-     * Destination new item will be placed in
-     */
+    /// <summary>
+    /// Destination new item will be placed in
+    /// </summary>
     [JsonPropertyName("container")]
     public Container? Container
     {

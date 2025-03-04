@@ -178,9 +178,9 @@ public record Locations
         set;
     }
 
-    /**
-     * Holds a mapping of the linkages between locations on the UI
-     */
+    /// <summary>
+    /// Holds a mapping of the linkages between locations on the UI
+    /// </summary>
     [JsonPropertyName("base")]
     public LocationsBase? Base
     {

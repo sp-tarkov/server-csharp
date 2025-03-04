@@ -15,7 +15,9 @@ public record QuestConfig : BaseConfig
         set;
     } = "spt-quest";
 
-    // Hours to get/redeem items from quest mail keyed by profile type
+    /// <summary>
+    /// Hours to get/redeem items from quest mail keyed by profile type
+    /// </summary>
     [JsonPropertyName("mailRedeemTimeHours")]
     public Dictionary<string, double?>? MailRedeemTimeHours
     {
@@ -30,9 +32,9 @@ public record QuestConfig : BaseConfig
         set;
     }
 
-    /**
-     * Show non-seasonal quests be shown to player
-     */
+    /// <summary>
+    /// Show non-seasonal quests be shown to player
+    /// </summary>
     [JsonPropertyName("showNonSeasonalEventQuests")]
     public bool? ShowNonSeasonalEventQuests
     {
@@ -75,9 +77,9 @@ public record QuestConfig : BaseConfig
         set;
     }
 
-    /**
-     * Quests that the keyed game version do not see/access
-     */
+    /// <summary>
+    /// Quests that the keyed game version do not see/access
+    /// </summary>
     [JsonPropertyName("profileBlacklist")]
     public Dictionary<string, HashSet<string>>? ProfileBlacklist
     {
@@ -85,9 +87,9 @@ public record QuestConfig : BaseConfig
         set;
     }
 
-    /**
-     * key=questid, gameversions that can see/access quest
-     */
+    /// <summary>
+    /// key=questid, gameversions that can see/access quest
+    /// </summary>
     [JsonPropertyName("profileWhitelist")]
     public Dictionary<string, HashSet<string>>? ProfileWhitelist
     {
@@ -262,9 +264,9 @@ public record RepeatableQuestConfig
         set;
     }
 
-    /**
-     * Item base types to block when generating rewards
-     */
+    /// <summary>
+    /// Item base types to block when generating rewards
+    /// </summary>
     [JsonPropertyName("rewardBaseTypeBlacklist")]
     public HashSet<string>? RewardBaseTypeBlacklist
     {
@@ -272,9 +274,9 @@ public record RepeatableQuestConfig
         set;
     }
 
-    /**
-     * Item tplIds to ignore when generating rewards
-     */
+    /// <summary>
+    /// Item tplIds to ignore when generating rewards
+    /// </summary>
     [JsonPropertyName("rewardBlacklist")]
     public HashSet<string>? RewardBlacklist
     {

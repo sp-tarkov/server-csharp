@@ -14,9 +14,9 @@ public record BotConfig : BaseConfig
         set;
     } = "spt-bot";
 
-    /**
-     * How many variants of each bot should be generated on raid start
-     */
+    /// <summary>
+    /// How many variants of each bot should be generated on raid start
+    /// </summary>
     [JsonPropertyName("presetBatch")]
     public Dictionary<string, int>? PresetBatch
     {
@@ -24,9 +24,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to
-     */
+    /// <summary>
+    /// Bot roles that should not have PMC types (pmcBEAR/pmcUSEC) added as enemies to
+    /// </summary>
     [JsonPropertyName("botsToNotAddPMCsAsEnemiesTo")]
     public List<string> BotsToNotAddPMCsAsEnemiesTo
     {
@@ -34,9 +34,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * What bot types should be classified as bosses
-     */
+    /// <summary>
+    /// What bot types should be classified as bosses
+    /// </summary>
     [JsonPropertyName("bosses")]
     public List<string> Bosses
     {
@@ -44,9 +44,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Control weapon/armor durability min/max values for each bot type
-     */
+    /// <summary>
+    /// Control weapon/armor durability min/max values for each bot type
+    /// </summary>
     [JsonPropertyName("durability")]
     public BotDurability Durability
     {
@@ -54,9 +54,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Controls the percentage values of randomization item resources
-     */
+    /// <summary>
+    /// Controls the percentage values of randomization item resources
+    /// </summary>
     [JsonPropertyName("lootItemResourceRandomization")]
     public Dictionary<string, RandomisedResourceDetails> LootItemResourceRandomization
     {
@@ -64,9 +64,10 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Control what bots are added to a bots revenge list key: bottype, value: bottypes to revenge on seeing their death
-     */
+    /// <summary>
+    /// Control what bots are added to a bots revenge list <br/>
+    /// key: bottype, value: bottypes to revenge on seeing their death
+    /// </summary>
     [JsonPropertyName("revenge")]
     public Dictionary<string, List<string>> Revenge
     {
@@ -74,11 +75,11 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Control how many items are allowed to spawn on a bot
-     * key: bottype, value:
-     * <key: itemTpl: value: max item count>
-     */
+    /// <summary>
+    /// Control how many items are allowed to spawn on a bot <br/>
+    /// key: bottype, value: <br/>
+    /// key: itemTpl: value: max item count>
+    /// </summary>
     [JsonPropertyName("itemSpawnLimits")]
     public Dictionary<string, Dictionary<string, double>> ItemSpawnLimits
     {
@@ -86,9 +87,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Blacklist/whitelist items on a bot
-     */
+    /// <summary>
+    /// Blacklist/whitelist items on a bot
+    /// </summary>
     [JsonPropertyName("equipment")]
     public Dictionary<string, EquipmentFilters?> Equipment
     {
@@ -96,9 +97,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Show a bots botType value after their name
-     */
+    /// <summary>
+    /// Show a bots botType value after their name
+    /// </summary>
     [JsonPropertyName("showTypeInNickname")]
     public bool ShowTypeInNickname
     {
@@ -106,9 +107,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * What ai brain should a normal scav use per map
-     */
+    /// <summary>
+    /// What ai brain should a normal scav use per map
+    /// </summary>
     [JsonPropertyName("assaultBrainType")]
     public Dictionary<string, Dictionary<string, int>> AssaultBrainType
     {
@@ -116,9 +117,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * What ai brain should a player scav use per map
-     */
+    /// <summary>
+    /// What ai brain should a player scav use per map
+    /// </summary>
     [JsonPropertyName("playerScavBrainType")]
     public Dictionary<string, Dictionary<string, int>> PlayerScavBrainType
     {
@@ -126,9 +127,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Max number of bots that can be spawned in a raid at any one time
-     */
+    /// <summary>
+    /// Max number of bots that can be spawned in a raid at any one time
+    /// </summary>
     [JsonPropertyName("maxBotCap")]
     public Dictionary<string, int> MaxBotCap
     {
@@ -136,9 +137,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Chance scav has fake pscav name e.g. Scav name (player name)
-     */
+    /// <summary>
+    /// Chance scav has fake pscav name e.g. Scav name (player name)
+    /// </summary>
     [JsonPropertyName("chanceAssaultScavHasPlayerScavName")]
     public int ChanceAssaultScavHasPlayerScavName
     {
@@ -146,9 +147,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * How many stacks of secret ammo should a bot have in its bot secure container
-     */
+    /// <summary>
+    /// How many stacks of secret ammo should a bot have in its bot secure container
+    /// </summary>
     [JsonPropertyName("secureContainerAmmoStackCount")]
     public int SecureContainerAmmoStackCount
     {
@@ -156,9 +157,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Bot roles in this array will be given a dog tag on generation
-     */
+    /// <summary>
+    /// Bot roles in this array will be given a dog tag on generation
+    /// </summary>
     [JsonPropertyName("botRolesWithDogTags")]
     public HashSet<string> BotRolesWithDogTags
     {
@@ -166,9 +167,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Settings to control the items that get added into wallets on bots
-     */
+    /// <summary>
+    /// Settings to control the items that get added into wallets on bots
+    /// </summary>
     [JsonPropertyName("walletLoot")]
     public WalletLootSettings WalletLoot
     {
@@ -176,9 +177,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Currency weights, Keyed by botrole / currency
-     */
+    /// <summary>
+    /// Currency weights, Keyed by botrole / currency
+    /// </summary>
     [JsonPropertyName("currencyStackSize")]
     public Dictionary<string, Dictionary<string, Dictionary<string, double>>> CurrencyStackSize
     {
@@ -186,9 +187,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Tpls for low profile gas blocks
-     */
+    /// <summary>
+    /// Tpls for low profile gas blocks
+    /// </summary>
     [JsonPropertyName("lowProfileGasBlockTpls")]
     public HashSet<string> LowProfileGasBlockTpls
     {
@@ -196,9 +197,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/
-     */
+    /// <summary>
+    /// What bottypes should be excluded from having loot generated on them (backpack/pocket/vest) does not disable food/drink/special/
+    /// </summary>
     [JsonPropertyName("disableLootOnBotTypes")]
     public HashSet<string> DisableLootOnBotTypes
     {
@@ -206,9 +207,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Max length a bots name can be
-     */
+    /// <summary>
+    /// Max length a bots name can be
+    /// </summary>
     [JsonPropertyName("botNameLengthLimit")]
     public int BotNameLengthLimit
     {
@@ -216,9 +217,9 @@ public record BotConfig : BaseConfig
         set;
     }
 
-    /**
-     * Bot roles that must have a unique name when generated vs other bots in raid
-     */
+    /// <summary>
+    /// Bot roles that must have a unique name when generated vs other bots in raid
+    /// </summary>
     [JsonPropertyName("botRolesThatMustHaveUniqueName")]
     public HashSet<string> BotRolesThatMustHaveUniqueName
     {
@@ -227,9 +228,9 @@ public record BotConfig : BaseConfig
     }
 }
 
-/**
- * Number of bots to generate and store in cache on raid start per bot type
- */
+/// <summary>
+/// Number of bots to generate and store in cache on raid start per bot type
+/// </summary>
 public record PresetBatch
 {
     [JsonPropertyName("assault")]

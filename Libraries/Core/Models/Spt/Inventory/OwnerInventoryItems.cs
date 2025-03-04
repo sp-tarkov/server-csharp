@@ -5,6 +5,9 @@ namespace Core.Models.Spt.Inventory;
 
 public record OwnerInventoryItems
 {
+    /// <summary>
+    /// Inventory items from source
+    /// </summary>
     [JsonPropertyName("from")]
     public List<Item>? From
     {
@@ -12,6 +15,9 @@ public record OwnerInventoryItems
         set;
     }
 
+    /// <summary>
+    /// Inventory items at destination
+    /// </summary>
     [JsonPropertyName("to")]
     public List<Item>? To
     {

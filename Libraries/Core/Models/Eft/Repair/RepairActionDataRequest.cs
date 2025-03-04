@@ -12,27 +12,36 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
         set;
     }
 
+    /// <summary>
+    /// item to repair
+    /// </summary>
     [JsonPropertyName("target")]
     public string? Target
     {
         get;
         set;
-    } // item to repair
+    }
 }
 
 public record RepairKitsInfo
 {
+    /// <summary>
+    /// id of repair kit to use
+    /// </summary>
     [JsonPropertyName("_id")]
     public string? Id
     {
         get;
         set;
-    } // id of repair kit to use
+    }
 
+    /// <summary>
+    /// amount of units to reduce kit by
+    /// </summary>
     [JsonPropertyName("count")]
     public int? Count
     {
         get;
         set;
-    } // amount of units to reduce kit by
+    }
 }

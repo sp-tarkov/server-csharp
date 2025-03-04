@@ -71,9 +71,9 @@ public record Weather
         set;
     }
 
-    /**
-     * 1 - 3 light rain, 3+ 'rain'
-     */
+    /// <summary>
+    /// 1 - 3 light rain, 3+ 'rain'
+    /// </summary>
     [JsonPropertyName("rain")]
     public double? Rain
     {
@@ -102,16 +102,9 @@ public record Weather
         set;
     }
 
-    /**
-     * <
-     * -
-     * 0
-     * .
-     * 4
-     * =
-     * clear
-     * day
-     */
+    /// <summary>
+    /// < -0.4 = clear day
+    /// </summary>
     [JsonPropertyName("cloud")]
     public double? Cloud
     {

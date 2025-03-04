@@ -4,6 +4,9 @@ namespace Core.Models.Spt.Location;
 
 public record RaidChanges
 {
+    /// <summary>
+    /// What percentage of dynamic loot should the map contain
+    /// </summary>
     [JsonPropertyName("dynamicLootPercent")]
     public double? DynamicLootPercent
     {
@@ -11,6 +14,9 @@ public record RaidChanges
         set;
     }
 
+    /// <summary>
+    /// What percentage of static loot should the map contain
+    /// </summary>
     [JsonPropertyName("staticLootPercent")]
     public double? StaticLootPercent
     {
@@ -18,6 +24,9 @@ public record RaidChanges
         set;
     }
 
+    /// <summary>
+    /// How many seconds into the raid is the player simulated to spawn in at
+    /// </summary>
     [JsonPropertyName("simulatedRaidStartSeconds")]
     public double? SimulatedRaidStartSeconds
     {
@@ -25,7 +34,9 @@ public record RaidChanges
         set;
     }
 
-    /** How many minutes are in the raid total */
+    /// <summary>
+    /// How many minutes are in the raid total
+    /// </summary>
     [JsonPropertyName("RaidTimeMinutes")]
     public double? RaidTimeMinutes
     {
@@ -33,7 +44,9 @@ public record RaidChanges
         set;
     }
 
-    /** The new number of seconds required to avoid a run through */
+    /// <summary>
+    /// The new number of seconds required to avoid a run through
+    /// </summary>
     [JsonPropertyName("NewSurviveTimeSeconds")]
     public double? NewSurviveTimeSeconds
     {
@@ -41,7 +54,9 @@ public record RaidChanges
         set;
     }
 
-    /** The original number of seconds required to avoid a run through */
+    /// <summary>
+    /// The original number of seconds required to avoid a run through
+    /// </summary>
     [JsonPropertyName("OriginalSurvivalTimeSeconds")]
     public double? OriginalSurvivalTimeSeconds
     {
@@ -49,7 +64,9 @@ public record RaidChanges
         set;
     }
 
-    /** Any changes required to the extract list */
+    /// <summary>
+    /// Any changes required to the extract list
+    /// </summary>
     [JsonPropertyName("ExitChanges")]
     public List<ExtractChange>? ExitChanges
     {
