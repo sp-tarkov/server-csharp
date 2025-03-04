@@ -53,7 +53,7 @@ public class NotifierController(
     ///     Handle client/notifier/channel/create
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>NotifierChannel</returns>
     public NotifierChannel GetChannel(string sessionId)
     {
         return new NotifierChannel
@@ -67,9 +67,10 @@ public class NotifierController(
     }
 
     /// <summary>
+    /// Get the notifier server url
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>Notification server url</returns>
     public string GetServer(string sessionId)
     {
         return $"{_httpServerHelper.GetBackendUrl()}/notifierServer/get/{sessionId}";

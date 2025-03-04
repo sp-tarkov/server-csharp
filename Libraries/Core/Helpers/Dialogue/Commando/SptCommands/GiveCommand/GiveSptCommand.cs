@@ -29,7 +29,7 @@ public class GiveSptCommand(
     private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
-    protected readonly HashSet<string> _excludedPresetItems =
+    protected static readonly HashSet<string> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,

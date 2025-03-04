@@ -19,9 +19,9 @@ public class PrestigeCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetPrestige(string url, EmptyRequestData info, string sessionID)
+    public string GetPrestige(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_prestigeController.GetPrestige(sessionID, info));
+        return _httpResponseUtil.GetBody(_prestigeController.GetPrestige(sessionID));
     }
 
     /// <summary>

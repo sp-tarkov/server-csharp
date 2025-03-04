@@ -35,7 +35,7 @@ public class ProfileCallbacks(
      * Handle client/game/profile/list
      * Get the complete player profile (scav + pmc character)
      */
-    public string GetProfileData(string url, EmptyRequestData info, string sessionID)
+    public string GetProfileData(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.GetCompleteProfile(sessionID));
     }
@@ -49,7 +49,7 @@ public class ProfileCallbacks(
      * @param sessionID Session id
      * @returns Profile object
      */
-    public string RegenerateScav(string url, EmptyRequestData info, string sessionID)
+    public string RegenerateScav(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(
             new List<PmcData>
@@ -113,7 +113,7 @@ public class ProfileCallbacks(
     /**
      * Handle client/game/profile/nickname/reserved
      */
-    public string GetReservedNickname(string url, EmptyRequestData info, string sessionID)
+    public string GetReservedNickname(string url, EmptyRequestData _, string sessionID)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
         if (fullProfile?.ProfileInfo?.Username is not null)
@@ -128,7 +128,7 @@ public class ProfileCallbacks(
      * Handle client/profile/status
      * Called when creating a character when choosing a character face/voice
      */
-    public string GetProfileStatus(string url, EmptyRequestData info, string sessionID)
+    public string GetProfileStatus(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.GetProfileStatus(sessionID));
     }
@@ -169,7 +169,7 @@ public class ProfileCallbacks(
     /**
      * Handle /launcher/profiles
      */
-    public string GetAllMiniProfiles(string url, EmptyRequestData info, string sessionID)
+    public string GetAllMiniProfiles(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.NoBody(_profileController.GetMiniProfiles());
     }

@@ -253,7 +253,7 @@ public class HideoutController(
     /// Add a stash upgrade to profile
     /// </summary>
     /// <param name="output">Client response</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="profileParentHideoutArea"></param>
     /// <param name="dbHideoutArea"></param>
@@ -340,7 +340,7 @@ public class HideoutController(
     /// <summary>
     /// Include container upgrade in client response
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="areaType"></param>
     /// <param name="hideoutDbData"></param>
     /// <param name="hideoutStage"></param>
@@ -367,7 +367,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="addItemToHideoutRequest">request from client to place item in area slot</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse PutItemsInAreaSlots(PmcData pmcData, HideoutPutItemInRequestData addItemToHideoutRequest, string sessionID)
     {
@@ -453,7 +453,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Take item out of area request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse TakeItemsFromAreaSlots(PmcData pmcData, HideoutTakeItemOutRequestData request, string sessionID)
     {
@@ -494,7 +494,7 @@ public class HideoutController(
     /// <summary>
     /// Find resource item in hideout area, add copy to player inventory, remove Item from hideout slot
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="removeResourceRequest">client request</param>
     /// <param name="output">Client response</param>
@@ -550,7 +550,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Toggle area request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse ToggleArea(PmcData pmcData, HideoutToggleAreaRequestData request, string sessionID)
     {
@@ -576,7 +576,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse SingleProductionStart(PmcData pmcData, HideoutSingleProductionStartRequestData request, string sessionID)
     {
@@ -630,7 +630,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse ScavCaseProductionStart(PmcData pmcData, HideoutScavCaseStartRequestData request, string sessionID)
     {
@@ -731,7 +731,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Continuous production request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse ContinuousProductionStart(PmcData pmcData, HideoutContinuousProductionStartRequestData request, string sessionID)
     {
@@ -746,7 +746,7 @@ public class HideoutController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Remove production from area request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse TakeProduction(PmcData pmcData, HideoutTakeProductionRequestData request, string sessionID)
     {
@@ -791,7 +791,7 @@ public class HideoutController(
     /// <summary>
     /// Take recipe-type production out of hideout area and place into player inventory
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="recipe">Completed recipe of item</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Remove production from area request</param>
@@ -1099,7 +1099,7 @@ public class HideoutController(
     /// <summary>
     /// Handles generating scav case rewards and sending to player inventory
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Get rewards from scavcase craft request</param>
     /// <param name="output">Client response</param>

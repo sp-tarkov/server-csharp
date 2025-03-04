@@ -18,7 +18,7 @@ public class WeatherCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetWeather(string url, EmptyRequestData info, string sessionID)
+    public string GetWeather(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_weatherController.Generate());
     }
@@ -30,7 +30,7 @@ public class WeatherCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetLocalWeather(string url, EmptyRequestData info, string sessionID)
+    public string GetLocalWeather(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_weatherController.GenerateLocal(sessionID));
     }

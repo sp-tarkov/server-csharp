@@ -36,7 +36,7 @@ public class InventoryHelper(
 )
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
-    private readonly HashSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
+    private static readonly HashSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)

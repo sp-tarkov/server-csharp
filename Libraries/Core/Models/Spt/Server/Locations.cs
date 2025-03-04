@@ -7,7 +7,7 @@ public record Locations
 {
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
-    private readonly Dictionary<string, string> _locationMappings = new()
+    private static readonly Dictionary<string, string> _locationMappings = new()
     {
         // EFT
         { "factory4_day", "Factory4Day" },

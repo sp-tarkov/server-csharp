@@ -18,11 +18,8 @@ public class CustomizationCallbacks(
     /// <summary>
     ///     Handle client/trading/customization/storage
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetCustomisationUnlocks(string url, EmptyRequestData info, string sessionID)
+    public string GetCustomisationUnlocks(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_saveServer.GetProfile(sessionID).CustomisationUnlocks);
     }
@@ -30,11 +27,8 @@ public class CustomizationCallbacks(
     /// <summary>
     ///     Handle client/trading/customization
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTraderSuits(string url, EmptyRequestData info, string sessionID)
+    public string GetTraderSuits(string url, EmptyRequestData _, string sessionID)
     {
         var splitUrl = url.Split('/');
         var traderId = splitUrl[^3];
@@ -45,48 +39,36 @@ public class CustomizationCallbacks(
     /// <summary>
     ///     Handle CustomizationBuy event
     /// </summary>
-    /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData info, string sessionID)
+    public ItemEventRouterResponse BuyCustomisation(PmcData pmcData, BuyClothingRequestData request, string sessionID)
     {
-        return _customizationController.BuyCustomisation(pmcData, info, sessionID);
+        return _customizationController.BuyCustomisation(pmcData, request, sessionID);
     }
 
     /// <summary>
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetHideoutCustomisation(string url, EmptyRequestData info, string sessionID)
+    public string GetHideoutCustomisation(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID, info));
+        return _httpResponseUtil.GetBody(_customizationController.GetHideoutCustomisation(sessionID));
     }
 
     /// <summary>
     ///     Handle client/customization/storage
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetStorage(string url, EmptyRequestData info, string sessionID)
+    public string GetStorage(string url, EmptyRequestData _, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_customizationController.GetCustomisationStorage(sessionID, info));
+        return _httpResponseUtil.GetBody(_customizationController.GetCustomisationStorage(sessionID));
     }
 
     /// <summary>
     ///     Handle CustomizationSet
     /// </summary>
-    /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest info, string sessionID)
+    public ItemEventRouterResponse SetCustomisation(PmcData pmcData, CustomizationSetRequest request, string sessionID)
     {
-        return _customizationController.SetCustomisation(sessionID, info, pmcData);
+        return _customizationController.SetCustomisation(sessionID, request, pmcData);
     }
 }

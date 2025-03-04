@@ -21,13 +21,10 @@ public class ClientLogCallbacks(
     /// <summary>
     ///     Handle /singleplayer/log
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ClientLog(string url, ClientLogRequest info, string sessionID)
+    public string ClientLog(string url, ClientLogRequest request, string sessionID)
     {
-        _clientLogController.ClientLog(info);
+        _clientLogController.ClientLog(request);
         return _httpResponseUtil.NullResponse();
     }
 

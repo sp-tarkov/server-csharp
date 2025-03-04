@@ -40,7 +40,7 @@ public class BotInventoryGenerator(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
-    private readonly HashSet<EquipmentSlots> _excludedEquipmentSlots =
+    private static readonly HashSet<EquipmentSlots> _excludedEquipmentSlots =
     [
         EquipmentSlots.Pockets,
         EquipmentSlots.FirstPrimaryWeapon,

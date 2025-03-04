@@ -220,9 +220,8 @@ public class CustomizationController(
     ///     Handle client/hideout/customization/offer/list
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <param name="info"></param>
     /// <returns></returns>
-    public HideoutCustomisation GetHideoutCustomisation(string sessionId, EmptyRequestData info)
+    public HideoutCustomisation GetHideoutCustomisation(string sessionId)
     {
         return _databaseService.GetHideout().Customisation!;
     }
@@ -231,11 +230,9 @@ public class CustomizationController(
     ///     Handle client/customization/storage
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <param name="info"></param>
     /// <returns></returns>
     public List<CustomisationStorage> GetCustomisationStorage(
-        string sessionId,
-        EmptyRequestData info)
+        string sessionId)
     {
         var customisationResultsClone = _cloner.Clone(_databaseService.GetTemplates().CustomisationStorage);
 

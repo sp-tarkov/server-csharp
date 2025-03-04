@@ -61,7 +61,7 @@ public class LauncherCallbacks(
         return _httpResponseUtil.NoBody(_watermark.GetVersionTag());
     }
 
-    public string Ping(string url, EmptyRequestData info, string sessionID)
+    public string Ping(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody("pong!");
     }
@@ -81,7 +81,7 @@ public class LauncherCallbacks(
         return _httpResponseUtil.NoBody(_launcherController.GetLoadedServerMods());
     }
 
-    public string GetServerModsProfileUsed(string url, EmptyRequestData info, string sessionID)
+    public string GetServerModsProfileUsed(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_launcherController.GetServerModsProfileUsed(sessionID));
     }

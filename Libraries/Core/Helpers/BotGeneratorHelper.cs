@@ -29,6 +29,9 @@ public class BotGeneratorHelper(
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
+    // Equipment slot ids that do not conflict with other slots
+    protected static readonly HashSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+
     /// <summary>
     ///     Adds properties to an item
     ///     e.g. Repairable / HasHinge / Foldable / MaxDurability
@@ -331,8 +334,7 @@ public class BotGeneratorHelper(
     public ChooseRandomCompatibleModResult IsItemIncompatibleWithCurrentItems(List<Item> itemsEquipped, string tplToCheck, string equipmentSlot)
     {
         // Skip slots that have no incompatibilities
-        HashSet<string> slotsToCheck = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
-        if (slotsToCheck.Contains(equipmentSlot))
+        if (_slotsWithNoCompatIssues.Contains(equipmentSlot))
         {
             return new ChooseRandomCompatibleModResult
             {

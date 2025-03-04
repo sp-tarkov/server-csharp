@@ -57,11 +57,12 @@ public class InRaidController(
     }
 
     /// <summary>
+    /// Handle singleplayer/scav/traitorscavhostile
     /// Get a % chance a scav will be hostile to the player when they're also a scav
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>% chance scav is hostile to player</returns>
     public double GetTraitorScavHostileChance(string url, string sessionId)
     {
         return _inRaidConfig.PlayerScavHostileChancePercent;

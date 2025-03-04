@@ -3,7 +3,7 @@ using Core.Models.Eft.Common.Request;
 
 namespace Core.Models.Eft.Notes;
 
-public record NoteActionData : BaseInteractionRequestData
+public record NoteActionRequest : BaseInteractionRequestData
 {
     [JsonPropertyName("index")]
     public int? Index

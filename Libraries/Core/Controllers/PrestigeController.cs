@@ -20,13 +20,12 @@ public class PrestigeController(
 {
     /// <summary>
     ///     Handle /client/prestige/list
+    /// Get a collection of all possible prestiges
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <param name="info"></param>
-    /// <returns></returns>
+    /// <returns>Prestige</returns>
     public Prestige GetPrestige(
-        string sessionId,
-        EmptyRequestData info)
+        string sessionId)
     {
         return _databaseService.GetTemplates().Prestige;
     }
@@ -35,11 +34,11 @@ public class PrestigeController(
     ///     <para>Handle /client/prestige/obtain</para>
     ///     Going to Prestige 1 grants the below
     ///     <list type="bullet">
-    ///         <item>5% of skills should be transfered over</item>
-    ///         <item>5% of mastering should be transfered over</item>
-    ///         <item>Earned achievements should be transfered over</item>
-    ///         <item>Profile stats should be transfered over</item>
-    ///         <item>Prestige progress should be transfered over</item>
+    ///         <item>5% of skills should be transferred over</item>
+    ///         <item>5% of mastering should be transferred over</item>
+    ///         <item>Earned achievements should be transferred over</item>
+    ///         <item>Profile stats should be transferred over</item>
+    ///         <item>Prestige progress should be transferred over</item>
     ///         <item>Items and rewards for Prestige 1</item>
     ///     </list>
     ///     Going to Prestige 2 grants the below
@@ -66,7 +65,6 @@ public class PrestigeController(
         ObtainPrestigeRequestList request)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
-
         if (profile is not null)
         {
             var pendingPrestige = new PendingPrestige

@@ -33,9 +33,6 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/game/version/validate
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string VersionValidate(string url, VersionValidateRequestData info, string sessionID)
     {
@@ -45,14 +42,11 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/game/start
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GameStart(string url, EmptyRequestData info, string sessionID)
+    public string GameStart(string url, EmptyRequestData _, string sessionID)
     {
         var startTimestampSec = _timeUtil.GetTimeStamp();
-        _gameController.GameStart(url, info, sessionID, startTimestampSec);
+        _gameController.GameStart(url, sessionID, startTimestampSec);
         return _httpResponseUtil.GetBody(
             new GameStartResponse
             {
@@ -65,11 +59,8 @@ public class GameCallbacks(
     ///     Handle client/game/logout
     ///     Save profiles on game close
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GameLogout(string url, EmptyRequestData info, string sessionID)
+    public string GameLogout(string url, EmptyRequestData _, string sessionID)
     {
         _saveServer.SaveProfile(sessionID);
         return _httpResponseUtil.GetBody(
@@ -83,9 +74,6 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/game/config
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGameConfig(string url, GameEmptyCrcRequestData info, string sessionID)
     {
@@ -95,9 +83,6 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/game/mode
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGameMode(string url, GameModeRequestData info, string sessionID)
     {
@@ -107,11 +92,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/server/list
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetServer(string url, EmptyRequestData info, string sessionID)
+    public string GetServer(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_gameController.GetServer(sessionID));
     }
@@ -119,11 +101,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/match/group/current
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetCurrentGroup(string url, EmptyRequestData info, string sessionID)
+    public string GetCurrentGroup(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_gameController.GetCurrentGroup(sessionID));
     }
@@ -131,11 +110,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/checkVersion
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ValidateGameVersion(string url, EmptyRequestData info, string sessionID)
+    public string ValidateGameVersion(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_gameController.GetValidGameVersion(sessionID));
     }
@@ -143,11 +119,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/game/keepalive
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GameKeepalive(string url, EmptyRequestData info, string sessionID)
+    public string GameKeepalive(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_gameController.GetKeepAlive(sessionID));
     }
@@ -155,11 +128,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle singleplayer/settings/version
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetVersion(string url, EmptyRequestData info, string sessionID)
+    public string GetVersion(string url, EmptyRequestData _, string sessionID)
     {
         // change to be a proper type
         return _httpResponseUtil.NoBody(
@@ -173,11 +143,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle /client/report/send & /client/reports/lobby/send
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ReportNickname(string url, UIDRequestData info, string sessionID)
+    public string ReportNickname(string url, UIDRequestData request, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -185,23 +152,17 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle singleplayer/settings/getRaidTime
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetRaidTime(string url, GetRaidTimeRequest info, string sessionID)
+    public string GetRaidTime(string url, GetRaidTimeRequest request, string sessionID)
     {
-        return _httpResponseUtil.NoBody(_gameController.GetRaidTime(sessionID, info));
+        return _httpResponseUtil.NoBody(_gameController.GetRaidTime(sessionID, request));
     }
 
     /// <summary>
     ///     Handle /client/survey
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetSurvey(string url, EmptyRequestData info, string sessionID)
+    public string GetSurvey(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_gameController.GetSurvey(sessionID));
     }
@@ -209,11 +170,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/survey/view
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetSurveyView(string url, SendSurveyOpinionRequest info, string sessionID)
+    public string GetSurveyView(string url, SendSurveyOpinionRequest request, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -221,11 +179,8 @@ public class GameCallbacks(
     /// <summary>
     ///     Handle client/survey/opinion
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string SendSurveyOpinion(string url, SendSurveyOpinionRequest info, string sessionID)
+    public string SendSurveyOpinion(string url, SendSurveyOpinionRequest request, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }

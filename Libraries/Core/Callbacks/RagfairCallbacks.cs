@@ -125,7 +125,7 @@ public class RagfairCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetFleaPrices(string url, EmptyRequestData info, string sessionID)
+    public string GetFleaPrices(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_ragfairController.GetAllFleaPrices());
     }

@@ -13,15 +13,16 @@ public class BundleCallbacks(
     /// <summary>
     ///     Handle singleplayer/bundles
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetBundles(string url, EmptyRequestData info, string sessionID)
+    public string GetBundles(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_bundleLoader.GetBundles());
     }
 
+    /// <summary>
+    /// TODO: what does it do
+    /// </summary>
+    /// <returns></returns>
     public string GetBundle(string url, object info, string sessionID)
     {
         return "BUNDLE";

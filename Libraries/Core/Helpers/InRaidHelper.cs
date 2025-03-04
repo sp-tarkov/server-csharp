@@ -20,7 +20,7 @@ public class InRaidHelper(
 {
     protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected LostOnDeathConfig _lostOnDeathConfig = _configServer.GetConfig<LostOnDeathConfig>();
-    protected List<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
+    protected static readonly List<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
 
     /// <summary>
     ///     Deprecated. Reset the skill points earned in a raid to 0, ready for next raid.

@@ -43,6 +43,8 @@ public class RagfairOfferHelper(
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
+    protected static readonly HashSet<string> _currencies = ["all", "RUB", "USD", "EUR"];
+
     /// <summary>
     ///     Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see
     /// </summary>
@@ -935,8 +937,7 @@ public class RagfairOfferHelper(
         if (searchRequest.Currency > 0 && _paymentHelper.IsMoneyTpl(offerMoneyTypeTpl))
         {
             // Use 'currencies' as mapping for the money choice dropdown, e.g. 0 = all, 2 = "USD;
-            string[] currencies = ["all", "RUB", "USD", "EUR"];
-            if (_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl) != currencies[searchRequest.Currency.Value])
+            if(!_currencies.Contains(_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl)))
                 // Don't include item paid in wrong currency
             {
                 return false;

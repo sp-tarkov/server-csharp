@@ -15,11 +15,8 @@ public class LocationCallbacks(
     /// <summary>
     ///     Handle client/locations
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetLocationData(string url, EmptyRequestData info, string sessionID)
+    public string GetLocationData(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_locationController.GenerateAll(sessionID));
     }
@@ -27,9 +24,6 @@ public class LocationCallbacks(
     /// <summary>
     ///     Handle client/airdrop/loot
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetAirdropLoot(string url, GetAirdropLootRequest info, string sessionID)
     {

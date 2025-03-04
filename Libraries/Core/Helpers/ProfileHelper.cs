@@ -27,7 +27,7 @@ public class ProfileHelper(
     ConfigServer _configServer
 )
 {
-    protected readonly List<string> gameEditions = ["edge_of_darkness", "unheard_edition"];
+    protected static readonly HashSet<string> gameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
@@ -608,7 +608,7 @@ public class ProfileHelper(
 
     public bool HasAccessToRepeatableFreeRefreshSystem(PmcData pmcProfile)
     {
-        return gameEditions.Contains(pmcProfile.Info.GameVersion);
+        return gameEditionsWithFreeRefresh.Contains(pmcProfile.Info.GameVersion);
     }
 
     /// <summary>

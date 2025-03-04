@@ -76,7 +76,7 @@ public class QuestCallbacks(
     /// <returns></returns>
     public string ListQuests(string url, ListQuestsRequestData info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_questController.GetClientQuest(sessionID));
+        return _httpResponseUtil.GetBody(_questController.GetClientQuests(sessionID));
     }
 
     /// <summary>
@@ -86,7 +86,7 @@ public class QuestCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ActivityPeriods(string url, EmptyRequestData info, string sessionID)
+    public string ActivityPeriods(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_repeatableQuestController.GetClientRepeatableQuests(sessionID));
     }

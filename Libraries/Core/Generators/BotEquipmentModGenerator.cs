@@ -41,8 +41,10 @@ public class BotEquipmentModGenerator(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
-    protected HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
-    protected HashSet<string> _scopeIds =
+    protected static HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
+
+    // Slots that hold scopes
+    protected static HashSet<string> _scopeIds =
     [
         "mod_scope",
         "mod_mount",
@@ -52,6 +54,12 @@ public class BotEquipmentModGenerator(
         "mod_scope_002",
         "mod_scope_003"
     ];
+
+    // Slots that hold muzzles
+    protected static HashSet<string> _muzzleIds = ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"];
+
+    // Slots a weapon can store its stock in
+    protected static HashSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
 
     /// <summary>
     ///     Check mods are compatible and add to array
@@ -719,13 +727,10 @@ public class BotEquipmentModGenerator(
     /// <returns>True if it should</returns>
     public bool ShouldForceSubStockSlots(string modSlot, EquipmentFilters botEquipConfig, TemplateItem modToAddTemplate)
     {
-        // Slots a weapon can store its stock in
-        HashSet<string> stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
-
         // Can the stock hold child items
         var hasSubSlots = modToAddTemplate.Properties.Slots?.Count > 0;
 
-        return (stockSlots.Contains(modSlot) && hasSubSlots) || botEquipConfig.ForceStock.GetValueOrDefault(false);
+        return (_stockSlots.Contains(modSlot) && hasSubSlots) || botEquipConfig.ForceStock.GetValueOrDefault(false);
     }
 
     /// <summary>
@@ -793,7 +798,7 @@ public class BotEquipmentModGenerator(
     /// <returns>True if modSlot can have muzzle-related items</returns>
     public bool ModSlotCanHoldMuzzleDevices(string modSlot, string? modsParentId)
     {
-        return ((string[]) ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"]).Contains(modSlot.ToLower());
+        return _muzzleIds.Contains(modSlot.ToLower());
     }
 
     /// <summary>

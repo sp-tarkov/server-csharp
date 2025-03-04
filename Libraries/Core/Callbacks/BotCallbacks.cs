@@ -19,11 +19,8 @@ public class BotCallbacks(
     ///     Handle singleplayer/settings/bot/limit
     ///     Is called by client to define each bot roles wave limit
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetBotLimit(string url, EmptyRequestData info, string sessionID)
+    public string GetBotLimit(string url, EmptyRequestData _, string sessionID)
     {
         var splitUrl = url.Split('/');
         var type = splitUrl[^1];
@@ -33,11 +30,8 @@ public class BotCallbacks(
     /// <summary>
     ///     Handle singleplayer/settings/bot/difficulty
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetBotDifficulty(string url, EmptyRequestData info, string sessionID)
+    public string GetBotDifficulty(string url, EmptyRequestData _, string sessionID)
     {
         var splitUrl = url.Split('/');
         var type = splitUrl[^2].ToLower();
@@ -56,11 +50,8 @@ public class BotCallbacks(
     /// <summary>
     ///     Handle singleplayer/settings/bot/difficulties
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetAllBotDifficulties(string url, EmptyRequestData info, string sessionID)
+    public string GetAllBotDifficulties(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_botController.GetAllBotDifficulties());
     }
@@ -68,9 +59,6 @@ public class BotCallbacks(
     /// <summary>
     ///     Handle client/game/bot/generate
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GenerateBots(string url, GenerateBotsRequestData info, string sessionID)
     {
@@ -81,7 +69,7 @@ public class BotCallbacks(
     ///     Handle singleplayer/settings/bot/maxCap
     /// </summary>
     /// <returns></returns>
-    public string GetBotCap(string url, EmptyRequestData info, string sessionID)
+    public string GetBotCap(string url, EmptyRequestData _, string sessionID)
     {
         var splitUrl = url.Split('/');
         var location = splitUrl[^1];

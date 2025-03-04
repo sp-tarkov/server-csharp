@@ -14,18 +14,18 @@ public class NoteController(
     /// <summary>
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="body"></param>
+    /// <param name="request">Add note request</param>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse AddNote(
         PmcData pmcData,
-        NoteActionData body,
+        NoteActionRequest request,
         string sessionId)
     {
         var newNote = new Note
         {
-            Time = body.Note.Time,
-            Text = body.Note.Text
+            Time = request.Note.Time,
+            Text = request.Note.Text
         };
         pmcData.Notes.DataNotes.Add(newNote);
 
@@ -35,17 +35,17 @@ public class NoteController(
     /// <summary>
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="body"></param>
+    /// <param name="request">Edit note request</param>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse EditNote(
         PmcData pmcData,
-        NoteActionData body,
+        NoteActionRequest request,
         string sessionId)
     {
-        var noteToEdit = pmcData.Notes.DataNotes[body.Index!.Value];
-        noteToEdit.Time = body.Note.Time;
-        noteToEdit.Text = body.Note.Text;
+        var noteToEdit = pmcData.Notes.DataNotes[request.Index!.Value];
+        noteToEdit.Time = request.Note.Time;
+        noteToEdit.Text = request.Note.Text;
 
         return _eventOutputHolder.GetOutput(sessionId);
     }
@@ -53,15 +53,15 @@ public class NoteController(
     /// <summary>
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
-    /// <param name="body"></param>
+    /// <param name="request">Delete note request</param>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse DeleteNote(
         PmcData pmcData,
-        NoteActionData body,
+        NoteActionRequest request,
         string sessionId)
     {
-        pmcData.Notes?.DataNotes?.RemoveAt(body.Index!.Value);
+        pmcData.Notes?.DataNotes?.RemoveAt(request.Index!.Value);
 
         return _eventOutputHolder.GetOutput(sessionId);
     }

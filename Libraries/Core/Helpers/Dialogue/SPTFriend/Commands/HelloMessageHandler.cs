@@ -12,7 +12,7 @@ public class HelloMessageHandler(
     MailSendService _mailSendService,
     RandomUtil _randomUtil) : IChatMessageHandler
 {
-    protected HashSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
+    protected static readonly HashSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
 
     public int GetPriority()

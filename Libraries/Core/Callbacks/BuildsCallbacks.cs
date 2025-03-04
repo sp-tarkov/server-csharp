@@ -16,11 +16,8 @@ public class BuildsCallbacks(
     /// <summary>
     ///     Handle client/builds/list
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetBuilds(string url, EmptyRequestData info, string sessionID)
+    public string GetBuilds(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_buildController.GetUserBuilds(sessionID));
     }
@@ -29,51 +26,42 @@ public class BuildsCallbacks(
     ///     Handle client/builds/magazine/save
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="info"></param>
+    /// <param name="request"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string CreateMagazineTemplate(string url, SetMagazineRequest info, string sessionID)
+    public string CreateMagazineTemplate(string url, SetMagazineRequest request, string sessionID)
     {
-        _buildController.CreateMagazineTemplate(sessionID, info);
+        _buildController.CreateMagazineTemplate(sessionID, request);
         return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
     ///     Handle client/builds/weapon/save
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string SetWeapon(string url, PresetBuildActionRequestData info, string sessionID)
+    public string SetWeapon(string url, PresetBuildActionRequestData request, string sessionID)
     {
-        _buildController.SaveWeaponBuild(sessionID, info);
+        _buildController.SaveWeaponBuild(sessionID, request);
         return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
     ///     Handle client/builds/equipment/save
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string SetEquipment(string url, PresetBuildActionRequestData info, string sessionID)
+    public string SetEquipment(string url, PresetBuildActionRequestData request, string sessionID)
     {
-        _buildController.SaveEquipmentBuild(sessionID, info);
+        _buildController.SaveEquipmentBuild(sessionID, request);
         return _httpResponseUtil.NullResponse();
     }
 
     /// <summary>
     ///     Handle client/builds/delete
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string DeleteBuild(string url, RemoveBuildRequestData info, string sessionID)
+    public string DeleteBuild(string url, RemoveBuildRequestData request, string sessionID)
     {
-        _buildController.RemoveBuild(sessionID, info);
+        _buildController.RemoveBuild(sessionID, request);
         return _httpResponseUtil.NullResponse();
     }
 }

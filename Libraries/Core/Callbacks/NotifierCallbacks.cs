@@ -53,7 +53,7 @@ public class NotifierCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string CreateNotifierChannel(string url, EmptyRequestData info, string sessionID)
+    public string CreateNotifierChannel(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_notifierController.GetChannel(sessionID));
     }

@@ -48,12 +48,20 @@ public class InraidCallbacks(
         return _httpResponseUtil.NoBody(_inRaidController.GetInRaidConfig().RaidMenuSettings);
     }
 
-    public string GetTraitorScavHostileChance(string url, EmptyRequestData info, string sessionID)
+    /// <summary>
+    ///     Handle singleplayer/scav/traitorscavhostile
+    /// </summary>
+    /// <returns></returns>
+    public string GetTraitorScavHostileChance(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_inRaidController.GetTraitorScavHostileChance(url, sessionID));
     }
 
-    public string GetBossTypes(string url, EmptyRequestData info, string sessionID)
+    /// <summary>
+    ///     Handle singleplayer/bosstypes
+    /// </summary>
+    /// <returns></returns>
+    public string GetBossTypes(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_inRaidController.GetBossTypes(url, sessionID));
     }

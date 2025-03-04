@@ -1,4 +1,3 @@
-using Core.Models.Common;
 using Core.Models.Eft.Common.Tables;
 using Core.Models.Spt.Config;
 using Core.Models.Utils;
@@ -19,7 +18,7 @@ public class BotHelper(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected HashSet<string?> _pmcNames = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected static readonly HashSet<string?> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
     protected Dictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -46,7 +45,7 @@ public class BotHelper(
     /// <returns>true if is pmc</returns>
     public bool IsBotPmc(string? botRole)
     {
-        return _pmcNames.Contains(botRole?.ToLower());
+        return _pmcTypeIds.Contains(botRole?.ToLower());
     }
 
     public bool IsBotBoss(string botRole)

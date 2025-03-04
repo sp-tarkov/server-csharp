@@ -121,7 +121,7 @@ public class BaseInteractionRequestDataConverter : JsonConverter<BaseInteraction
             case ItemEventActions.ADD_NOTE:
             case ItemEventActions.EDIT_NOTE:
             case ItemEventActions.DELETE_NOTE:
-                return JsonSerializer.Deserialize<NoteActionData>(jsonText);
+                return JsonSerializer.Deserialize<NoteActionRequest>(jsonText);
             case ItemEventActions.MOVE:
                 return JsonSerializer.Deserialize<InventoryMoveRequestData>(jsonText);
             case ItemEventActions.REMOVE:

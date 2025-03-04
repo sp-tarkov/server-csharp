@@ -40,13 +40,30 @@ public class QuestController(
 )
 {
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
-    protected List<string> _questTypes = ["PickUp", "Exploration", "Elimination"];
+    protected static readonly List<string> _questTypes = ["PickUp", "Exploration", "Elimination"];
 
-    public List<Quest> GetClientQuest(string sessionId)
+    /// <summary>
+    /// Handle client/quest/list
+    /// Get all quests visible to player
+    /// Exclude quests with incomplete preconditions (level/loyalty)
+    /// </summary>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>Collection of Quest</returns>
+    public List<Quest> GetClientQuests(string sessionId)
     {
         return _questHelper.GetClientQuests(sessionId);
     }
 
+    /// <summary>
+    /// Handle QuestAccept event
+    /// Handle the client accepting a quest and starting it
+    /// Send starting rewards if any to player and
+    /// Send start notification if any to player
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="acceptedQuest">Quest accepted</param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse AcceptQuest(PmcData pmcData, AcceptQuestRequestData acceptedQuest, string sessionID)
     {
         var acceptQuestResponse = _eventOutputHolder.GetOutput(sessionID);
@@ -113,6 +130,12 @@ public class QuestController(
         return acceptQuestResponse;
     }
 
+    /// <summary>
+    /// Add a quests condition counters to chosen profile
+    /// </summary>
+    /// <param name="questConditions">Conditions to iterate over and possibly add to profile</param>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="questId">Quest where conditions originated</param>
     protected void AddTaskConditionCountersToProfile(List<QuestCondition>? questConditions, PmcData pmcData, string questId)
     {
         foreach (var condition in questConditions)
@@ -120,7 +143,7 @@ public class QuestController(
             if (pmcData.TaskConditionCounters.TryGetValue(condition.Id, out var counter))
             {
                 _logger.Error(
-                    $"Unable to add new task condition counter: {condition.ConditionType} for qeust: {questId} to profile: {pmcData.SessionId} as it already exists:"
+                    $"Unable to add new task condition counter: {condition.ConditionType} for quest: {questId} to profile: {pmcData.SessionId} as it already exists:"
                 );
             }
 
@@ -139,6 +162,16 @@ public class QuestController(
         }
     }
 
+    /// <summary>
+    /// TODO: Move this code into RepeatableQuestController
+    /// Handle the client accepting a repeatable quest and starting it
+    /// Send starting rewards if any to player and
+    /// Send start notification if any to player
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="acceptedQuest">Repeatable quest accepted</param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse AcceptRepeatableQuest(PmcData pmcData, AcceptQuestRequestData acceptedQuest, string sessionID)
     {
         // Create and store quest status object inside player profile
@@ -150,7 +183,7 @@ public class QuestController(
         pmcData.Quests.Add(newRepeatableQuest);
 
         // Look for the generated quest cache in profile.RepeatableQuests
-        var repeatableQuestProfile = GetRepeatableQuestFromProfile(pmcData, acceptedQuest);
+        var repeatableQuestProfile = GetRepeatableQuestFromProfile(pmcData, acceptedQuest.QuestId);
         if (repeatableQuestProfile is null)
         {
             _logger.Error(
@@ -177,16 +210,22 @@ public class QuestController(
         return response;
     }
 
-    protected RepeatableQuest GetRepeatableQuestFromProfile(PmcData pmcData, AcceptQuestRequestData acceptedQuest)
+    /// <summary>
+    /// Look for an accepted quest inside player profile, return quest that matches
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="questId">Quest id to return</param>
+    /// <returns>RepeatableQuest</returns>
+    protected RepeatableQuest GetRepeatableQuestFromProfile(PmcData pmcData, string questId)
     {
         foreach (var repeatableQuest in pmcData.RepeatableQuests)
         {
-            var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == acceptedQuest.QuestId);
+            var matchingQuest = repeatableQuest.ActiveQuests.FirstOrDefault(x => x.Id == questId);
             if (matchingQuest is not null)
             {
                 if (_logger.IsLogEnabled(LogLevel.Debug))
                 {
-                    _logger.Debug($"Accepted repeatable quest {acceptedQuest.QuestId} from {repeatableQuest.Name}");
+                    _logger.Debug($"Accepted repeatable quest: {questId} from: {repeatableQuest.Name}");
                 }
 
                 matchingQuest.SptRepatableGroupName = repeatableQuest.Name;
@@ -198,15 +237,32 @@ public class QuestController(
         return null;
     }
 
-    public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData info, string sessionId)
+    /// <summary>
+    /// Handle QuestComplete event
+    /// Update completed quest in profile
+    /// Add newly unlocked quests to profile
+    /// Also recalculate their level due to exp rewards
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Complete quest request</param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
+    public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData request, string sessionId)
     {
-        return _questHelper.CompleteQuest(pmcData, info, sessionId);
+        return _questHelper.CompleteQuest(pmcData, request, sessionId);
     }
 
-
-    public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData handoverQuestRequest, string sessionID)
+    /// <summary>
+    /// Handle QuestHandover event
+    /// Player hands over an item to trader to complete/partially complete quest
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Handover request</param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
+    public ItemEventRouterResponse HandoverQuest(PmcData pmcData, HandoverQuestRequestData request, string sessionID)
     {
-        var quest = _questHelper.GetQuestFromDb(handoverQuestRequest.QuestId, pmcData);
+        var quest = _questHelper.GetQuestFromDb(request.QuestId, pmcData);
         List<string> handoverQuestTypes = ["HandoverItem", "WeaponAssembly"];
         var output = _eventOutputHolder.GetOutput(sessionID);
 
@@ -215,7 +271,7 @@ public class QuestController(
 
         // Decrement number of items handed in
         QuestCondition? handoverRequirements = null;
-        foreach (var condition in quest.Conditions.AvailableForFinish.Where(condition => condition.Id == handoverQuestRequest.ConditionId))
+        foreach (var condition in quest.Conditions.AvailableForFinish.Where(condition => condition.Id == request.ConditionId))
         {
             // Not a handover quest type, skip
             if (!handoverQuestTypes.Contains(condition.ConditionType))
@@ -238,8 +294,8 @@ public class QuestController(
                             "repeatable-quest_handover_failed_condition_already_satisfied",
                             new
                             {
-                                questId = handoverQuestRequest.QuestId,
-                                conditionId = handoverQuestRequest.ConditionId,
+                                questId = request.QuestId,
+                                conditionId = request.ConditionId,
                                 profileCounter = counter.Value,
                                 value = handedInCount
                             }
@@ -255,18 +311,18 @@ public class QuestController(
 
         if (isItemHandoverQuest && handedInCount == 0)
         {
-            return ShowRepeatableQuestInvalidConditionError(handoverQuestRequest, output);
+            return ShowRepeatableQuestInvalidConditionError(request.QuestId, request.ConditionId, output);
         }
 
         var totalItemCountToRemove = 0d;
-        foreach (var itemHandover in handoverQuestRequest.Items)
+        foreach (var itemHandover in request.Items)
         {
             var matchingItemInProfile = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == itemHandover.Id);
             if (!(matchingItemInProfile is not null && handoverRequirements.Target.List.Contains(matchingItemInProfile.Template)))
                 // Item handed in by player doesn't match what was requested
             {
                 return ShowQuestItemHandoverMatchError(
-                    handoverQuestRequest,
+                    request,
                     matchingItemInProfile,
                     handoverRequirements,
                     output
@@ -342,22 +398,29 @@ public class QuestController(
 
         UpdateProfileTaskConditionCounterValue(
             pmcData,
-            handoverQuestRequest.ConditionId,
-            handoverQuestRequest.QuestId,
+            request.ConditionId,
+            request.QuestId,
             totalItemCountToRemove
         );
 
         return output;
     }
 
-    protected ItemEventRouterResponse ShowRepeatableQuestInvalidConditionError(HandoverQuestRequestData handoverQuestRequest, ItemEventRouterResponse output)
+    /// <summary>
+    /// Show warning to user and write to log that repeatable quest failed a condition check
+    /// </summary>
+    /// <param name="questId">Quest id that failed</param>
+    /// <param name="conditionId">Relevant condition id that failed</param>
+    /// <param name="output">Client response</param>
+    /// <returns>ItemEventRouterResponse</returns>
+    protected ItemEventRouterResponse ShowRepeatableQuestInvalidConditionError(string questId, string conditionId, ItemEventRouterResponse output)
     {
         var errorMessage = _localisationService.GetText(
             "repeatable-quest_handover_failed_condition_invalid",
             new
             {
-                questId = handoverQuestRequest.QuestId,
-                conditionId = handoverQuestRequest.ConditionId
+                questId = questId,
+                conditionId = conditionId
             }
         );
         _logger.Error(errorMessage);
@@ -365,6 +428,14 @@ public class QuestController(
         return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
     }
 
+    /// <summary>
+    /// Show warning to user and write to log quest item handed over did not match what is required
+    /// </summary>
+    /// <param name="handoverQuestRequest">Handover request</param>
+    /// <param name="itemHandedOver">Non-matching item found</param>
+    /// <param name="handoverRequirements">Quest handover requirements</param>
+    /// <param name="output">Response to send to user</param>
+    /// <returns>ItemEventRouterResponse</returns>
     protected ItemEventRouterResponse ShowQuestItemHandoverMatchError(HandoverQuestRequestData handoverQuestRequest, Item? itemHandedOver,
         QuestCondition? handoverRequirements, ItemEventRouterResponse output)
     {
@@ -382,6 +453,14 @@ public class QuestController(
         return _httpResponseUtil.AppendErrorToOutput(output, errorMessage);
     }
 
+    /// <summary>
+    /// Increment a backend counter stored value by an amount
+    /// Create counter if it does not exist
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="conditionId">Backend counter id to update</param>
+    /// <param name="questId">Quest id counter is associated with</param>
+    /// <param name="counterValue">Value to increment the backend counter with</param>
     protected void UpdateProfileTaskConditionCounterValue(PmcData pmcData, string conditionId, string questId, double counterValue)
     {
         if (pmcData.TaskConditionCounters.GetValueOrDefault(conditionId) != null)
@@ -400,6 +479,14 @@ public class QuestController(
         });
     }
 
+    /// <summary>
+    /// Handle /client/game/profile/items/moving - QuestFail
+    /// </summary>
+    /// <param name="pmcData">Players PMC profile</param>
+    /// <param name="request">Fail quest request</param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="output"></param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse FailQuest(PmcData pmcData, FailQuestRequestData request, string sessionID, ItemEventRouterResponse output)
     {
         _questHelper.FailQuest(pmcData, request, sessionID, output);

@@ -14,11 +14,8 @@ public class AchievementCallbacks(
     /// <summary>
     ///     Handle client/achievement/list
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetAchievements(string url, EmptyRequestData info, string sessionID)
+    public string GetAchievements(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_achievementController.GetAchievements(sessionID));
     }
@@ -26,11 +23,8 @@ public class AchievementCallbacks(
     /// <summary>
     ///     Handle client/achievement/statistic
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string Statistic(string url, EmptyRequestData info, string sessionID)
+    public string Statistic(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_achievementController.GetAchievementStatics(sessionID));
     }

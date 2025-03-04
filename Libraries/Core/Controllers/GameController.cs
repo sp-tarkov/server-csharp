@@ -56,10 +56,9 @@ public class GameController(
     ///     Handle client/game/start
     /// </summary>
     /// <param name="url"></param>
-    /// <param name="info"></param>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="startTimeStampMs"></param>
-    public void GameStart(string url, EmptyRequestData info, string? sessionId, long startTimeStampMs)
+    public void GameStart(string url, string? sessionId, long startTimeStampMs)
     {
         // Store client start time in app context
         _applicationContext.AddValue(ContextVariableType.CLIENT_START_TIMESTAMP, $"{sessionId}_{startTimeStampMs}");

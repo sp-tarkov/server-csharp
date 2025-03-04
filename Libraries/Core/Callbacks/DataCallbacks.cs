@@ -17,11 +17,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/settings
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetSettings(string url, EmptyRequestData info, string sessionID)
+    public string GetSettings(string url, EmptyRequestData _, string sessionID)
     {
         var returns = _httpResponseUtil.GetBody(_databaseService.GetSettings());
         return returns;
@@ -30,11 +27,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/globals
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetGlobals(string url, EmptyRequestData info, string sessionID)
+    public string GetGlobals(string url, EmptyRequestData _, string sessionID)
     {
         var globals = _databaseService.GetGlobals();
         var returns = _httpResponseUtil.GetBody(globals);
@@ -45,11 +39,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/items
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTemplateItems(string url, EmptyRequestData info, string sessionID)
+    public string GetTemplateItems(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetUnclearedBody(_databaseService.GetItems());
     }
@@ -57,11 +48,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/handbook/templates
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTemplateHandbook(string url, EmptyRequestData info, string sessionID)
+    public string GetTemplateHandbook(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHandbook());
     }
@@ -69,11 +57,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/customization
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTemplateSuits(string url, EmptyRequestData info, string sessionID)
+    public string GetTemplateSuits(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetTemplates().Customization);
     }
@@ -81,11 +66,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/account/customization
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTemplateCharacter(string url, EmptyRequestData info, string sessionID)
+    public string GetTemplateCharacter(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetTemplates().Character);
     }
@@ -93,11 +75,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/hideout/settings
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetHideoutSettings(string url, EmptyRequestData info, string sessionID)
+    public string GetHideoutSettings(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Settings);
     }
@@ -105,11 +84,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/hideout/areas
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetHideoutAreas(string url, EmptyRequestData info, string sessionID)
+    public string GetHideoutAreas(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Areas);
     }
@@ -117,11 +93,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/hideout/production/recipes
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetHideoutProduction(string url, EmptyRequestData info, string sessionID)
+    public string GetHideoutProduction(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetHideout().Production);
     }
@@ -129,11 +102,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/languages
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetLocalesLanguages(string url, EmptyRequestData info, string sessionID)
+    public string GetLocalesLanguages(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetLocales().Languages);
     }
@@ -141,11 +111,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/menu/locale
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetLocalesMenu(string url, EmptyRequestData info, string sessionID)
+    public string GetLocalesMenu(string url, EmptyRequestData _, string sessionID)
     {
         var localeId = url.Replace("/client/menu/locale/", "");
         var locales = _databaseService.GetLocales();
@@ -162,11 +129,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/locale
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetLocalesGlobal(string url, EmptyRequestData info, string sessionID)
+    public string GetLocalesGlobal(string url, EmptyRequestData _, string sessionID)
     {
         var localeId = url.Replace("/client/locale/", "");
         var locales = _databaseService.GetLocales();
@@ -178,11 +142,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/hideout/qte/list
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetQteList(string url, EmptyRequestData info, string sessionID)
+    public string GetQteList(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetUnclearedBody(_hideoutController.GetQteList(sessionID));
     }
@@ -190,11 +151,8 @@ public class DataCallbacks(
     /// <summary>
     ///     Handle client/items/prices/
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetItemPrices(string url, EmptyRequestData info, string sessionID)
+    public string GetItemPrices(string url, EmptyRequestData _, string sessionID)
     {
         var traderId = url.Replace("/client/items/prices/", "");
 

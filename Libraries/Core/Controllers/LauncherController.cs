@@ -33,9 +33,9 @@ public class LauncherController(
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     /// <summary>
-    /// 
+    /// Handle launcher connecting to server
     /// </summary>
-    /// <returns></returns>
+    /// <returns>ConnectResponse</returns>
     public ConnectResponse Connect()
     {
         // Get all possible profile types + filter out any that are blacklisted
@@ -82,7 +82,7 @@ public class LauncherController(
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="sessionId"></param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
     public Info? Find(string? sessionId)
     {

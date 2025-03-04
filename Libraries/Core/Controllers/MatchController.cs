@@ -25,8 +25,9 @@ public class MatchController(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
+    /// Handle client/match/available
     /// </summary>
-    /// <returns></returns>
+    /// <returns>True if server should be available</returns>
     public bool GetEnabled()
     {
         return _matchConfig.Enabled;
@@ -35,19 +36,19 @@ public class MatchController(
     /// <summary>
     ///     Handle client/match/group/delete
     /// </summary>
-    /// <param name="info"></param>
-    public void DeleteGroup(DeleteGroupRequest info)
+    /// <param name="request">Delete group request</param>
+    public void DeleteGroup(DeleteGroupRequest request)
     {
-        _matchLocationService.DeleteGroup(info);
+        _matchLocationService.DeleteGroup(request);
     }
 
     /// <summary>
     ///     Handle match/group/start_game
     /// </summary>
-    /// <param name="info"></param>
+    /// <param name="request">Start game request</param>
     /// <param name="sessionId">Session/Player id</param>
-    /// <returns></returns>
-    public ProfileStatusResponse JoinMatch(MatchGroupStartGameRequest info, string sessionId)
+    /// <returns>ProfileStatusResponse</returns>
+    public ProfileStatusResponse JoinMatch(MatchGroupStartGameRequest request, string sessionId)
     {
         var output = new ProfileStatusResponse
         {
@@ -79,9 +80,9 @@ public class MatchController(
     /// <summary>
     ///     Handle client/match/group/status
     /// </summary>
-    /// <param name="info"></param>
-    /// <returns></returns>
-    public MatchGroupStatusResponse GetGroupStatus(MatchGroupStatusRequest info)
+    /// <param name="request">Group status request</param>
+    /// <returns>MatchGroupStatusResponse</returns>
+    public MatchGroupStatusResponse GetGroupStatus(MatchGroupStatusRequest request)
     {
         return new MatchGroupStatusResponse
         {
@@ -115,7 +116,7 @@ public class MatchController(
     ///     Convert a difficulty value from pre-raid screen to a bot difficulty
     /// </summary>
     /// <param name="botDifficulty">dropdown difficulty value</param>
-    /// <returns>bot difficulty</returns>
+    /// <returns>Bot difficulty</returns>
     protected string ConvertDifficultyDropdownIntoBotDifficulty(string botDifficulty)
     {
         // Edge case medium - must be altered
@@ -131,8 +132,8 @@ public class MatchController(
     ///     Handle client/match/local/start
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <param name="request"></param>
-    /// <returns></returns>
+    /// <param name="request">Start raid request</param>
+    /// <returns>StartLocalRaidResponseData</returns>
     public StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
     {
         return _locationLifecycleService.StartLocalRaid(sessionId, request);
@@ -142,7 +143,7 @@ public class MatchController(
     ///     Handle client/match/local/end
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
-    /// <param name="request"></param>
+    /// <param name="request">Emd local raid request</param>
     public void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
     {
         _locationLifecycleService.EndLocalRaid(sessionId, request);

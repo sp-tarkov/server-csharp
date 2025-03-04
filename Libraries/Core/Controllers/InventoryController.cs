@@ -888,7 +888,7 @@ public class InventoryController(
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Merge stacks request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="output">Client response</param>
     public void MergeItem(PmcData pmcData, InventoryMergeRequestData request, string sessionID,
         ItemEventRouterResponse output)
@@ -978,7 +978,7 @@ public class InventoryController(
     /// </summary>
     /// <param name="pmcData">(unused, getOwnerInventoryItems() gets profile)</param>
     /// <param name="request">Split stack request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <param name="output">Client response</param>
     public void SplitItem(PmcData pmcData, InventorySplitRequestData request, string sessionID,
         ItemEventRouterResponse output)

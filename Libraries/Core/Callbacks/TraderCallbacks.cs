@@ -42,7 +42,7 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTraderSettings(string url, EmptyRequestData info, string sessionID)
+    public string GetTraderSettings(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_traderController.GetAllTraders(sessionID));
     }
@@ -54,7 +54,7 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetTrader(string url, EmptyRequestData info, string sessionID)
+    public string GetTrader(string url, EmptyRequestData _, string sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTrader/", "");
         return _httpResponseUtil.GetBody(_traderController.GetTrader(sessionID, traderID));
@@ -67,7 +67,7 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetAssort(string url, EmptyRequestData info, string sessionID)
+    public string GetAssort(string url, EmptyRequestData _, string sessionID)
     {
         var traderID = url.Replace("/client/trading/api/getTraderAssort/", "");
         return _httpResponseUtil.GetBody(_traderController.GetAssort(sessionID, traderID));
@@ -80,7 +80,7 @@ public class TraderCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetModdedTraderData(string url, EmptyRequestData info, string sessionID)
+    public string GetModdedTraderData(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NoBody(_traderConfig.ModdedTraders);
     }

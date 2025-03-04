@@ -27,7 +27,7 @@ public class ItemHelper(
     ICloner _cloner
 )
 {
-    protected readonly HashSet<string> _defaultInvalidBaseTypes =
+    protected static readonly HashSet<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -38,7 +38,7 @@ public class ItemHelper(
         BaseClasses.POCKETS
     ];
 
-    protected readonly HashSet<string> _slotsAsStrings =
+    protected static readonly HashSet<string> _slotsAsStrings =
     [
         EquipmentSlots.Headwear.ToString(),
         EquipmentSlots.Earpiece.ToString(),
@@ -56,7 +56,7 @@ public class ItemHelper(
         EquipmentSlots.Scabbard.ToString()
     ];
 
-    protected readonly HashSet<string> _dogTagTpls =
+    protected static readonly HashSet<string> _dogTagTpls =
     [
         ItemTpl.BARTER_DOGTAG_BEAR,
         ItemTpl.BARTER_DOGTAG_BEAR_EOD,
@@ -70,7 +70,7 @@ public class ItemHelper(
         ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
     ];
 
-    protected readonly HashSet<string> _softInsertIds =
+    protected static readonly HashSet<string> _softInsertIds =
     [
         "groin",
         "groin_back",
@@ -88,7 +88,7 @@ public class ItemHelper(
         "helmet_ears"
     ];
 
-    protected readonly HashSet<string> _removablePlateSlotIds =
+    protected static readonly HashSet<string> _removablePlateSlotIds =
     [
         "front_plate",
         "back_plate",

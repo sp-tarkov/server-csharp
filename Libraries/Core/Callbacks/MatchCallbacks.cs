@@ -34,7 +34,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ExitMatch(string url, EmptyRequestData info, string sessionID)
+    public string ExitMatch(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -42,11 +42,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/exit_from_menu
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ExitFromMenu(string url, EmptyRequestData info, string sessionID)
+    public string ExitFromMenu(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -54,11 +51,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/current
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GroupCurrent(string url, EmptyRequestData info, string sessionID)
+    public string GroupCurrent(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(
             new MatchGroupCurrentResponse
@@ -71,11 +65,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/looking/start
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string StartGroupSearch(string url, EmptyRequestData info, string sessionID)
+    public string StartGroupSearch(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -83,11 +74,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/looking/stop
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string StopGroupSearch(string url, EmptyRequestData info, string sessionID)
+    public string StopGroupSearch(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.NullResponse();
     }
@@ -95,9 +83,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/invite/send
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SendGroupInvite(string url, MatchGroupInviteSendRequest info, string sessionID)
     {
@@ -107,9 +92,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/invite/accept
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string AcceptGroupInvite(string url, RequestIdRequest info, string sessionID)
     {
@@ -160,11 +142,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/invite/cancel-all
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string CancelAllGroupInvite(string url, EmptyRequestData info, string sessionID)
+    public string CancelAllGroupInvite(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -172,9 +151,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/putMetrics
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string PutMetrics(string url, PutMetricsRequestData info, string sessionID)
     {
@@ -184,9 +160,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/analytics/event-disconnect
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string EventDisconnect(string url, PutMetricsRequestData info, string sessionID)
     {
@@ -196,11 +169,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/available
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string ServerAvailable(string url, EmptyRequestData info, string sessionID)
+    public string ServerAvailable(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_matchController.GetEnabled());
     }
@@ -208,9 +178,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle match/group/start_game
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string JoinMatch(string url, MatchGroupStartGameRequest info, string sessionID)
     {
@@ -220,11 +187,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/getMetricsConfig
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string GetMetrics(string url, EmptyRequestData info, string sessionID)
+    public string GetMetrics(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(_databaseService.GetMatch().Metrics);
     }
@@ -233,9 +197,6 @@ public class MatchCallbacks(
     ///     Called periodically while in a group
     ///     Handle client/match/group/status
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetGroupStatus(string url, MatchGroupStatusRequest info, string sessionID)
     {
@@ -245,9 +206,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/delete
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string DeleteGroup(string url, DeleteGroupRequest info, string sessionID)
     {
@@ -258,11 +216,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/leave
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string LeaveGroup(string url, EmptyRequestData info, string sessionID)
+    public string LeaveGroup(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -270,9 +225,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/player/remove
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string RemovePlayerFromGroup(string url, MatchGroupPlayerRemoveRequest info, string sessionID)
     {
@@ -282,9 +234,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/local/start
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string StartLocalRaid(string url, StartLocalRaidRequestData info, string sessionID)
     {
@@ -294,9 +243,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/local/end
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string EndLocalRaid(string url, EndLocalRaidRequestData info, string sessionID)
     {
@@ -307,9 +253,6 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/raid/configuration
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string GetRaidConfiguration(string url, GetRaidConfigurationRequestData info, string sessionID)
     {
@@ -332,11 +275,8 @@ public class MatchCallbacks(
     /// <summary>
     ///     Handle client/match/group/raid/ready
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string RaidReady(string url, EmptyRequestData info, string sessionID)
+    public string RaidReady(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }
@@ -348,7 +288,7 @@ public class MatchCallbacks(
     /// <param name="info"></param>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
-    public string NotRaidReady(string url, EmptyRequestData info, string sessionID)
+    public string NotRaidReady(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponseUtil.GetBody(true);
     }

@@ -38,11 +38,11 @@ public class NoteItemEventRouter : ItemEventRouterDefinition
         switch (url)
         {
             case ItemEventActions.ADD_NOTE:
-                return _noteCallbacks.AddNote(pmcData, body as NoteActionData, sessionID);
+                return _noteCallbacks.AddNote(pmcData, body as NoteActionRequest, sessionID);
             case ItemEventActions.EDIT_NOTE:
-                return _noteCallbacks.EditNote(pmcData, body as NoteActionData, sessionID);
+                return _noteCallbacks.EditNote(pmcData, body as NoteActionRequest, sessionID);
             case ItemEventActions.DELETE_NOTE:
-                return _noteCallbacks.DeleteNote(pmcData, body as NoteActionData, sessionID);
+                return _noteCallbacks.DeleteNote(pmcData, body as NoteActionRequest, sessionID);
             default:
                 throw new Exception($"NoteItemEventRouter being used when it cant handle route {url}");
         }
