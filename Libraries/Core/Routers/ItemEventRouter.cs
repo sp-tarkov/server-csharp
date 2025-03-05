@@ -42,7 +42,13 @@ public class ItemEventRouter
         _itemEventRouters = itemEventRouters.ToList();
         _cloner = cloner;
     }
-
+    
+    /// <summary>
+    /// Handles ItemEventRouter Requests and processes them.
+    /// </summary>
+    /// <param name="info"> Event request </param>
+    /// <param name="sessionID"> Session ID </param>
+    /// <returns> Item response </returns>
     public ItemEventRouterResponse HandleEvents(ItemEventRouterRequest info, string sessionID)
     {
         var output = _eventOutputHolder.GetOutput(sessionID);
