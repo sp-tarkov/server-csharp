@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <PackageId>SPT.Server.Core</PackageId>
+    <PackageId>SPTarkov.Server.Core</PackageId>
     <Authors>Single Player Tarkov</Authors>
     <PackageVersion>4.0.0-alpha.1</PackageVersion>
     <Description>Core libaries for the Single Player Tarkov server.</Description>
