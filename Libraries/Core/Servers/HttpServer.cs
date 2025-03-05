@@ -26,6 +26,11 @@ public class HttpServer(
     private readonly HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     private bool _started;
 
+    /// <summary>
+    /// Handle server loading event
+    /// </summary>
+    /// <param name="builder"> Server builder </param>
+    /// <exception cref="Exception"> Throws Exception when WebApplicationBuiler or WebApplication are null </exception>
     public void Load(WebApplicationBuilder? builder)
     {
         if (builder is null)
@@ -132,6 +137,11 @@ public class HttpServer(
         // This http request would be passed through the SPT Router and handled by an ICallback
     }
 
+    /// <summary>
+    /// Check against hardcoded values that determine it's from a local address
+    /// </summary>
+    /// <param name="remoteAddress"> Address to check </param>
+    /// <returns> True if its local </returns>
     private bool? IsLocalRequest(string? remoteAddress)
     {
         if (remoteAddress == null)

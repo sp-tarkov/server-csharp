@@ -66,10 +66,10 @@ public class RagfairServer(
         _ragfairRequiredItemsService.BuildRequiredItemTable();
     }
 
-    /**
-     * Get traders who need to be periodically refreshed
-     * @returns string array of traders
-     */
+    /// <summary>
+    /// Get traders who need to be periodically refreshed
+    /// </summary>
+    /// <returns> List of traders </returns>
     public List<string> GetUpdateableTraders()
     {
         return _ragfairConfig.Traders.Keys.ToList();
@@ -84,10 +84,10 @@ public class RagfairServer(
         return _ragfairCategoriesService.GetCategoriesFromOffers(offers, searchRequestData, fleaUnlocked);
     }
 
-    /**
-     * Disable/Hide an offer from flea
-     * @param offerId
-     */
+    /// <summary>
+    /// Disable/Hide an offer from flea
+    /// </summary>
+    /// <param name="offerId"> OfferID to hide </param>
     public void HideOffer(string offerId)
     {
         var offers = _ragfairOfferService.GetOffers();

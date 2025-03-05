@@ -130,14 +130,14 @@ public class SptHttpListener : IHttpListener
         }
     }
 
-    /**
-     * Send HTTP response back to sender
-     * @param sessionID Player id making request
-     * @param req Incoming request
-     * @param resp Outgoing response
-     * @param body Buffer
-     * @param output Server generated response data
-     */
+    /// <summary>
+    /// Send HTTP response back to sender
+    /// </summary>
+    /// <param name="sessionID"> Player id making request </param>
+    /// <param name="req"> Incoming request </param>
+    /// <param name="resp"> Outgoing response </param>
+    /// <param name="body"> Buffer </param>
+    /// <param name="output"> Server generated response data</param>
     public void SendResponse(
         string sessionID,
         HttpRequest req,
@@ -181,21 +181,21 @@ public class SptHttpListener : IHttpListener
         LogRequest(req, output);
     }
 
-    /**
-     * Is request flagged as debug enabled
-     * @param req Incoming request
-     * @returns True if request is flagged as debug
-     */
+    /// <summary>
+    /// Is request flagged as debug enabled
+    /// </summary>
+    /// <param name="req"> Incoming request </param>
+    /// <returns> True if request is flagged as debug </returns>
     protected bool IsDebugRequest(HttpRequest req)
     {
         return req.Headers.TryGetValue("responsecompressed", out var value) && value == "0";
     }
 
-    /**
-     * Log request if enabled
-     * @param req Incoming message request
-     * @param output Output string
-     */
+    /// <summary>
+    /// Log request if enabled
+    /// </summary>
+    /// <param name="req"> Log request if enabled </param>
+    /// <param name="output"> Output string </param>
     protected void LogRequest(HttpRequest req, string output)
     {
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
