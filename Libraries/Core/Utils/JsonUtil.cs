@@ -87,7 +87,7 @@ public class JsonUtil
     ///     Convert JSON into an object from a file
     /// </summary>
     /// <param name="file">The JSON File to read</param>
-    /// <returns></returns>
+    /// <returns>T</returns>
     public T? DeserializeFromFile<T>(string file)
     {
         if (!File.Exists(file))
@@ -106,7 +106,7 @@ public class JsonUtil
     /// </summary>
     /// <param name="file">The JSON File to read</param>
     /// <param name="type">The type of the object to deserialize to</param>
-    /// <returns></returns>
+    /// <returns>object</returns>
     public object? DeserializeFromFile(string file, Type type)
     {
         if (!File.Exists(file))

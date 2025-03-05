@@ -29,6 +29,11 @@ public class RagfairOfferHolder(
     protected HashSet<string> _expiredOfferIds = [];
     protected object _expiredOfferIdsLock = new();
 
+    /// <summary>
+    /// Get a ragfair offer by its id
+    /// </summary>
+    /// <param name="id">Ragfair offer id</param>
+    /// <returns>RagfairOffer</returns>
     public RagfairOffer? GetOfferById(string id)
     {
         lock (_offersByIdLock)
@@ -37,6 +42,11 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Get ragfair offers that match the passed in tpl
+    /// </summary>
+    /// <param name="templateId">Tpl to get offers for</param>
+    /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer>? GetOffersByTemplate(string templateId)
     {
         lock (_offersByTemplateLock)
@@ -56,6 +66,11 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Get all offers being sold by a trader
+    /// </summary>
+    /// <param name="traderId">Id of trader to get offers for</param>
+    /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer>? GetOffersByTrader(string traderId)
     {
         lock (_offersByTraderLock)
@@ -71,6 +86,10 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    ///  Get all ragfair offers
+    /// </summary>
+    /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer> GetOffers()
     {
         lock (_offersByIdLock)
@@ -84,6 +103,10 @@ public class RagfairOfferHolder(
         return [];
     }
 
+    /// <summary>
+    /// Add a collection of offers to ragfair
+    /// </summary>
+    /// <param name="offers">Offers to add</param>
     public void AddOffers(List<RagfairOffer> offers)
     {
         foreach (var offer in offers)
@@ -92,6 +115,10 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Add single offer to ragfair
+    /// </summary>
+    /// <param name="offer">Offer to add</param>
     public void AddOffer(RagfairOffer offer)
     {
         lock (_offersByIdLock)
@@ -128,10 +155,11 @@ public class RagfairOfferHolder(
         }
     }
 
-    /**
-     * Purge offer from offer cache
-     * @param offer Offer to remove
-     */
+    /// <summary>
+    /// Remove an offer from ragfair by id
+    /// </summary>
+    /// <param name="offerId">Offer id to remove</param>
+    /// <param name="checkTraderOffers">OPTIONAL - Should trader offers be checked for offer id</param>
     public void RemoveOffer(string offerId, bool checkTraderOffers = true)
     {
         lock (_offersByIdLock)
@@ -174,6 +202,10 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Remove all offers a trader has
+    /// </summary>
+    /// <param name="traderId">Trader id to remove offers from</param>
     public void RemoveAllOffersByTrader(string traderId)
     {
         lock (_offersByTraderLock)
@@ -191,6 +223,11 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Add offer to offersByTemplate cache
+    /// </summary>
+    /// <param name="template">Tpl to store offer against</param>
+    /// <param name="offer">Offer to store against tpl</param>
     protected void AddOfferByTemplates(string template, RagfairOffer offer)
     {
         lock (_offersByTemplateLock)
@@ -206,6 +243,11 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Cache an offer inside `offersByTrader` by trader id
+    /// </summary>
+    /// <param name="trader">Trader id to store offer against</param>
+    /// <param name="offer">Offer to store against</param>
     protected void AddOfferByTrader(string trader, RagfairOffer offer)
     {
         lock (_offersByTraderLock)
@@ -221,6 +263,12 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Is the passed in offer stale - end time > passed in time
+    /// </summary>
+    /// <param name="offer">Offer to check</param>
+    /// <param name="time">Time to check offer against</param>
+    /// <returns>True - offer is stale</returns>
     protected bool IsStale(RagfairOffer? offer, long time)
     {
         if (offer is null)
@@ -301,7 +349,7 @@ public class RagfairOfferHolder(
     /// <summary>
     /// Flag offers with an expiry before the passed in timestamp
     /// </summary>
-    /// <param name="timestamp"></param>
+    /// <param name="timestamp">Timestamp at point offer is 'expired'</param>
     public void FlagExpiredOffersAfterDate(long timestamp)
     {
         lock (_expiredOfferIdsLock)
@@ -322,6 +370,9 @@ public class RagfairOfferHolder(
         }
     }
 
+    /// <summary>
+    /// Remove all offers flagged as stale/expired
+    /// </summary>
     public void RemoveExpiredOffers()
     {
         lock (_expiredOfferIdsLock)
