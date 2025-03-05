@@ -130,28 +130,27 @@ public class RagfairOfferHolder(
                 offer.Id = hashUtil.Generate();
             }
 
-            var offerId = offer.Id;
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
             var sellerIsTrader = ragfairServerHelper.IsTrader(sellerId);
-            if (itemTpl != null &&
-                !(sellerIsTrader || profileHelper.IsPlayer(sellerId)) &&
-                _offersByTemplate.TryGetValue(itemTpl, out var offers) &&
-                offers?.Count >= _maxOffersPerTemplate
+            if (itemTpl != null
+                && !(sellerIsTrader || profileHelper.IsPlayer(sellerId))
+                && _offersByTemplate.TryGetValue(itemTpl, out var offers)
+                && offers?.Count >= _maxOffersPerTemplate
                )
             {
                 return;
             }
 
-            _offersById.Add(offerId, offer);
+            _offersById.Add(offer.Id, offer);
 
             if (sellerIsTrader)
             {
-                AddOfferByTrader(sellerId, offer);
+                AddOfferByTrader(sellerId, offer.Id);
             }
 
-            AddOfferByTemplates(itemTpl, offer);
+            AddOfferByTemplates(itemTpl, offer.Id);
         }
     }
 
@@ -227,18 +226,18 @@ public class RagfairOfferHolder(
     /// Add offer to offersByTemplate cache
     /// </summary>
     /// <param name="template">Tpl to store offer against</param>
-    /// <param name="offer">Offer to store against tpl</param>
-    protected void AddOfferByTemplates(string template, RagfairOffer offer)
+    /// <param name="offerId">Offer to store against tpl</param>
+    protected void AddOfferByTemplates(string template, string offerId)
     {
         lock (_offersByTemplateLock)
         {
             if (_offersByTemplate.ContainsKey(template))
             {
-                _offersByTemplate[template].Add(offer.Id);
+                _offersByTemplate[template].Add(offerId);
             }
             else
             {
-                _offersByTemplate.Add(template, [offer.Id]);
+                _offersByTemplate.Add(template, [offerId]);
             }
         }
     }
@@ -247,18 +246,18 @@ public class RagfairOfferHolder(
     /// Cache an offer inside `offersByTrader` by trader id
     /// </summary>
     /// <param name="trader">Trader id to store offer against</param>
-    /// <param name="offer">Offer to store against</param>
-    protected void AddOfferByTrader(string trader, RagfairOffer offer)
+    /// <param name="offerId">Offer to store against</param>
+    protected void AddOfferByTrader(string trader, string offerId)
     {
         lock (_offersByTraderLock)
         {
             if (_offersByTrader.ContainsKey(trader))
             {
-                _offersByTrader[trader].Add(offer.Id);
+                _offersByTrader[trader].Add(offerId);
             }
             else
             {
-                _offersByTrader.Add(trader, [offer.Id]);
+                _offersByTrader.Add(trader, [offerId]);
             }
         }
     }

@@ -223,7 +223,7 @@ public class RagfairOfferService(
 
         playerOffer.Items[0].Upd.OriginalStackObjectsCount = null;
         // Remove player offer from flea
-        ragfairOfferHolder.RemoveOffer(playerOffer.Id);
+        ragfairOfferHolder.RemoveOffer(playerOffer.Id, false);
 
         // Send failed offer items to player in mail
         var unstackedItems = UnstackOfferItems(playerOffer.Items);
