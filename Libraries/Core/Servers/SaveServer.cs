@@ -32,20 +32,20 @@ public class SaveServer(
     protected ConcurrentDictionary<string, SptProfile> profiles = new();
     protected ConcurrentDictionary<string, string> saveMd5 = new();
 
-    /**
-     * Add callback to occur prior to saving profile changes
-     * @param id Id for save callback
-     * @param callback Callback to execute prior to running SaveServer.saveProfile()
-     */
+    /// <summary>
+    /// Add callback to occur prior to saving profile changes
+    /// </summary>
+    /// <param name="id"> ID for the save callback </param>
+    /// <param name="callback"> Callback to execute prior to running SaveServer.saveProfile() </param>
     public void AddBeforeSaveCallback(string id, Func<SptProfile, SptProfile> callback)
     {
         onBeforeSaveCallbacks[id] = callback;
     }
 
-    /**
-     * Remove a callback from being executed prior to saving profile in SaveServer.saveProfile()
-     * @param id Id of callback to remove
-     */
+    /// <summary>
+    /// Remove a callback from being executed prior to saving profile in SaveServer.saveProfile()
+    /// </summary>
+    /// <param name="id"> ID of Callback to remove </param>
     public void RemoveBeforeSaveCallback(string id)
     {
         if (onBeforeSaveCallbacks.ContainsKey(id))
@@ -54,9 +54,9 @@ public class SaveServer(
         }
     }
 
-    /**
-     * Load all profiles in /user/profiles folder into memory (this.profiles)
-     */
+    /// <summary>
+    /// Load all profiles in /user/profiles folder into memory (this.profiles)
+    /// </summary>
     public void Load()
     {
         // get files to load
@@ -81,9 +81,9 @@ public class SaveServer(
         }
     }
 
-    /**
-     * Save changes for each profile from memory into user/profiles json
-     */
+    /// <summary>
+    /// Save changes for each profile from memory into user/profiles json
+    /// </summary>
     public void Save()
     {
         // Save every profile
@@ -99,11 +99,12 @@ public class SaveServer(
         }
     }
 
-    /**
-     * Get a player profile from memory
-     * @param sessionId Session id
-     * @returns ISptProfile
-     */
+    /// <summary>
+    /// Get a player profile from memory
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <returns> SptProfile of the player </returns>
+    /// <exception cref="Exception"> Thrown when sessionId is null / empty or no profiles with that ID are found </exception>
     public SptProfile GetProfile(string sessionId)
     {
         if (string.IsNullOrEmpty(sessionId))
@@ -129,20 +130,20 @@ public class SaveServer(
         return profiles.ContainsKey(id);
     }
 
-    /**
-     * Get all profiles from memory
-     * @returns Dictionary of ISptProfile
-     */
+    /// <summary>
+    /// Gets all profiles from memory
+    /// </summary>
+    /// <returns> Dictionary of Profiles with their ID as Keys. </returns>
     public Dictionary<string, SptProfile> GetProfiles()
     {
         return profiles.ToDictionary();
     }
 
-    /**
-     * Delete a profile by id
-     * @param sessionID Id of profile to remove
-     * @returns true when deleted, false when profile not found
-     */
+    /// <summary>
+    ///  Delete a profile by id (Does not remove the profile file!)
+    /// </summary>
+    /// <param name="sessionID"> ID of profile to remove </param>
+    /// <returns> True when deleted, false when profile not found </returns>
     public bool DeleteProfileById(string sessionID)
     {
         if (profiles.ContainsKey(sessionID))
@@ -156,10 +157,11 @@ public class SaveServer(
         return false;
     }
 
-    /**
-     * Create a new profile in memory with empty pmc/scav objects
-     * @param profileInfo Basic profile data
-     */
+    /// <summary>
+    /// Create a new profile in memory with empty pmc/scav objects
+    /// </summary>
+    /// <param name="profileInfo"> Basic profile data </param>
+    /// <exception cref="Exception"> Thrown when profile already exists </exception>
     public void CreateProfile(Info profileInfo)
     {
         if (profiles.ContainsKey(profileInfo.ProfileId))
@@ -181,20 +183,20 @@ public class SaveServer(
         );
     }
 
-    /**
-     * Add full profile in memory by key (info.id)
-     * @param profileDetails Profile to save
-     */
+    /// <summary>
+    /// Add full profile in memory by key (info.id)
+    /// </summary>
+    /// <param name="profileDetails"> Profile to save </param>
     public void AddProfile(SptProfile profileDetails)
     {
         profiles.TryAdd(profileDetails.ProfileInfo.ProfileId, profileDetails);
     }
 
-    /**
-     * Look up profile json in user/profiles by id and store in memory
-     * Execute saveLoadRouters callbacks after being loaded into memory
-     * @param sessionID Id of profile to store in memory
-     */
+    /// <summary>
+    /// Look up profile json in user/profiles by id and store in memory. <br/>
+    /// Execute saveLoadRouters callbacks after being loaded into memory.
+    /// </summary>
+    /// <param name="sessionID"> ID of profile to store in memory </param>
     public void LoadProfile(string sessionID)
     {
         var filename = $"{sessionID}.json";
@@ -213,12 +215,12 @@ public class SaveServer(
         }
     }
 
-    /**
-     * Save changes from in-memory profile to user/profiles json
-     * Execute onBeforeSaveCallbacks callbacks prior to being saved to json
-     * @param sessionID profile id (user/profiles/id.json)
-     * @returns time taken to save in MS
-     */
+    /// <summary>
+    /// Save changes from in-memory profile to user/profiles json
+    /// Execute onBeforeSaveCallbacks callbacks prior to being saved to json
+    /// </summary>
+    /// <param name="sessionID"> Profile id (user/profiles/id.json) </param>
+    /// <returns> Time taken to save the profile in seconds </returns>
     public long SaveProfile(string sessionID)
     {
         var filePath = $"{profileFilepath}{sessionID}.json";
@@ -261,11 +263,11 @@ public class SaveServer(
         return start.ElapsedMilliseconds;
     }
 
-    /**
-     * Remove a physical profile json from user/profiles
-     * @param sessionID Profile id to remove
-     * @returns true if file no longer exists
-     */
+    /// <summary>
+    /// Remove a physical profile json from user/profiles
+    /// </summary>
+    /// <param name="sessionID"> Profile ID to remove </param>
+    /// <returns> True if successful </returns>
     public bool RemoveProfile(string sessionID)
     {
         var file = $"{profileFilepath}{sessionID}.json";
