@@ -96,7 +96,10 @@ public class EventOutputHolder
             }
         );
     }
-
+    /// <summary>
+    /// Update output object with most recent values from player profile
+    /// </summary>
+    /// <param name="sessionId"> Session id </param>
     public void UpdateOutputProperties(string sessionId)
     {
         var pmcData = _profileHelper.GetPmcProfile(sessionId);
@@ -122,6 +125,10 @@ public class EventOutputHolder
         CleanUpCompleteCraftsInProfile(pmcData.Hideout.Production);
     }
 
+    /// <summary>
+    /// Required as continuous productions don't reset and stay at 100% completion but client thinks it hasn't started
+    /// </summary>
+    /// <param name="productions"> Productions in a profile </param>
     private void CleanUpCompleteCraftsInProfile(Dictionary<string, Production>? productions)
     {
         foreach (var production in productions)
@@ -140,7 +147,12 @@ public class EventOutputHolder
             }
         }
     }
-
+    
+    /// <summary>
+    /// Return all hideout Improvements from player profile, adjust completed Improvements' completed property to be true
+    /// </summary>
+    /// <param name="pmcData"> Player profile </param>
+    /// <returns> Dictionary of hideout improvements </returns>
     private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
     {
         foreach (var improvementKey in pmcData.Hideout.Improvements)
@@ -162,6 +174,12 @@ public class EventOutputHolder
         return pmcData.Hideout.Improvements;
     }
 
+    /// <summary>
+    /// Return productions from player profile except those completed crafts the client has already seen
+    /// </summary>
+    /// <param name="productions"> Productions from player profile </param>
+    /// <param name="sessionId"> Player session ID</param>
+    /// <returns> Dictionary of hideout productions </returns>
     private Dictionary<string, Production>? GetProductionsFromProfileAndFlagComplete(Dictionary<string, Production>? productions, string sessionId)
     {
         foreach (var production in productions)
@@ -219,7 +237,12 @@ public class EventOutputHolder
             limit.RemainingLimit = limit.TotalLimit;
         }
     }
-
+    
+    /// <summary>
+    /// Convert the internal trader data object into an object we can send to the client
+    /// </summary>
+    /// <param name="traderData"> Server data for traders </param>
+    /// <returns> Dict of trader id + TraderData </returns>
     private Dictionary<string, TraderData> ConstructTraderRelations(Dictionary<string, TraderInfo> traderData)
     {
         return traderData.ToDictionary(
