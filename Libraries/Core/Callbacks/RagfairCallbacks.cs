@@ -157,6 +157,6 @@ public class RagfairCallbacks(
     /// <returns></returns>
     public string GetFleaOfferById(string url, GetRagfairOfferByIdRequest info, string sessionID)
     {
-        return _httpResponseUtil.GetBody(_ragfairController.GetOfferById(sessionID, info));
+        return _httpResponseUtil.GetBody(_ragfairController.GetOfferByInternalId(sessionID, info));
     }
 }

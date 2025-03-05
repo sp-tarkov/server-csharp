@@ -18,12 +18,12 @@ public class NotifierCallbacks(
 )
 {
 
-    /**
-     * If we don't have anything to send, it's ok to not send anything back
-     * because notification requests can be long-polling. In fact, we SHOULD wait
-     * until we actually have something to send because otherwise we'd spam the client
-     * and the client would abort the connection due to spam.
-     */
+    /// <summary>
+    /// If we don't have anything to send, it's ok to not send anything back
+    /// because notification requests can be long-polling. In fact, we SHOULD wait
+    /// until we actually have something to send because otherwise we'd spam the client
+    /// and the client would abort the connection due to spam.
+    /// </summary>
     public void SendNotification(string sessionID, HttpRequest req, HttpResponse resp, object data)
     {
         var splittedUrl = req.Path.Value.Split("/");
@@ -38,9 +38,14 @@ public class NotifierCallbacks(
             .ContinueWith(text => httpServerHelper.SendTextJson(resp, text.Result));
     }
 
-    /** Handle push/notifier/get */
-    /** Handle push/notifier/getwebsocket */
-    // TODO: removed from client?
+
+    /// <summary>
+    /// TODO: removed from client?
+    /// Handle push/notifier/get
+    /// Handle push/notifier/getwebsocket
+    /// </summary>
+    /// <returns></returns>
+
     public string GetNotifier(string url, IRequestData info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();
@@ -49,9 +54,6 @@ public class NotifierCallbacks(
     /// <summary>
     ///     Handle client/notifier/channel/create
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string CreateNotifierChannel(string url, EmptyRequestData _, string sessionID)
     {
@@ -61,9 +63,6 @@ public class NotifierCallbacks(
     /// <summary>
     ///     Handle client/game/profile/select
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string SelectProfile(string url, UIDRequestData info, string sessionID)
     {
@@ -77,9 +76,6 @@ public class NotifierCallbacks(
 
     /// <summary>
     /// </summary>
-    /// <param name="url"></param>
-    /// <param name="info"></param>
-    /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
     public string Notify(string url, object info, string sessionID)
     {

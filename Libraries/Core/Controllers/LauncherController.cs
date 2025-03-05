@@ -55,10 +55,10 @@ public class LauncherController(
         };
     }
 
-    /**
-     * Get descriptive text for each of the profile edtions a player can choose, keyed by profile.json profile type e.g. "Edge Of Darkness"
-     * @returns Dictionary of profile types with related descriptive text
-     */
+    /// <summary>
+    /// Get descriptive text for each of the profile editions a player can choose, keyed by profile.json profile type e.g. "Edge Of Darkness"
+    /// </summary>
+    /// <returns>Dictionary of profile types with related descriptive text</returns>
     protected Dictionary<string, string> GetProfileDescriptions()
     {
         var result = new Dictionary<string, string>();
@@ -212,11 +212,11 @@ public class LauncherController(
         return sessionID;
     }
 
-    /**
-     * Handle launcher requesting profile be wiped
-     * @param info IRegisterData
-     * @returns Session id
-     */
+    /// <summary>
+    /// Handle launcher requesting profile be wiped
+    /// </summary>
+    /// <param name="info">Registration data</param>
+    /// <returns>Session id</returns>
     public string? Wipe(RegisterData info)
     {
         if (!_coreConfig.AllowProfileWipe)
@@ -245,10 +245,10 @@ public class LauncherController(
         return _coreConfig.CompatibleTarkovVersion;
     }
 
-    /**
-     * Get the mods the server has currently loaded
-     * @returns Dictionary of mod name and mod details
-     */
+    /// <summary>
+    /// Get the mods the server has currently loaded
+    /// </summary>
+    /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, PackageJsonData> GetLoadedServerMods()
     {
         var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
@@ -262,11 +262,11 @@ public class LauncherController(
         return result;
     }
 
-    /**
-     * Get the mods a profile has ever loaded into game with
-     * @param sessionId Player id
-     * @returns Array of mod details
-     */
+    /// <summary>
+    /// Get the mods a profile has ever loaded into game with
+    /// </summary>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns>Array of mod details</returns>
     public List<ModDetails> GetServerModsProfileUsed(string sessionId)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);

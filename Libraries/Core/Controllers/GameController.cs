@@ -456,10 +456,10 @@ public class GameController(
         }
     }
 
-    /**
-     * Mechanic sends players a measuring tape on profile start for some reason
-     * @param pmcProfile Player profile
-     */
+    /// <summary>
+    /// Mechanic sends players a measuring tape on profile start for some reason
+    /// </summary>
+    /// <param name="pmcProfile"></param>
     protected void SendMechanicGiftsToNewProfile(PmcData pmcProfile)
     {
         _giftService.SendGiftWithSilentReceivedCheck("MechanicGiftDay1", pmcProfile.SessionId, 1);

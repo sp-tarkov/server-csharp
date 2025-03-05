@@ -294,7 +294,7 @@ public class InventoryController(
     public void OpenRandomLootContainer(PmcData pmcData, OpenRandomLootContainerRequestData request, string sessionId,
         ItemEventRouterResponse output)
     {
-        /** Container player opened in their inventory */
+        // Container player opened in their inventory
         var openedItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
         var containerDetailsDb = _itemHelper.GetItem(openedItem.Template);
         var isSealedWeaponBox = containerDetailsDb.Value.Name.Contains("event_container_airdrop");

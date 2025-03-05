@@ -46,9 +46,9 @@ public class RepeatableQuestController(
     /// <summary>
     /// Handle RepeatableQuestChange event
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="changeRequest">Change quest request</param>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
     public ItemEventRouterResponse ChangeRepeatableQuest(PmcData pmcData, RepeatableQuestChangeRequest changeRequest,
         string sessionID)
@@ -250,8 +250,8 @@ public class RepeatableQuestController(
     /// <summary>
     /// Generate a repeatable quest
     /// </summary>
-    /// <param name="sessionId"></param>
-    /// <param name="pmcData"></param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="questTypePool">What type/level range of quests can be generated for player</param>
     /// <param name="repeatableConfig">Config for the quest type to generate</param>
     /// <returns></returns>
@@ -359,7 +359,7 @@ public class RepeatableQuestController(
     /// (if the are on "Succeed" but not "Completed" we keep them, to allow the player to complete them and get the rewards)
     /// The new quests generated are again persisted in profile.RepeatableQuests
     /// </summary>
-    /// <param name="sessionID"></param>
+    /// <param name="sessionID">Session/Player id</param>
     /// <returns>Array of repeatable quests</returns>
     public List<PmcDataRepeatableQuest> GetClientRepeatableQuests(string sessionID)
     {
@@ -495,7 +495,7 @@ public class RepeatableQuestController(
     /// Get repeatable quest data from profile from name (daily/weekly), creates base repeatable quest object if none exists
     /// </summary>
     /// <param name="repeatableConfig">daily/weekly config</param>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <returns>PmcDataRepeatableQuest</returns>
     protected PmcDataRepeatableQuest GetRepeatableQuestSubTypeFromProfile(RepeatableQuestConfig repeatableConfig,
         PmcData pmcData)
@@ -530,7 +530,7 @@ public class RepeatableQuestController(
     /// Check if a repeatable quest type (daily/weekly) is active for the given profile
     /// </summary>
     /// <param name="repeatableConfig">Repeatable quest config</param>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <returns>True if profile has access to repeatables</returns>
     protected bool CanProfileAccessRepeatableQuests(RepeatableQuestConfig repeatableConfig, PmcData pmcData)
     {
@@ -557,7 +557,7 @@ public class RepeatableQuestController(
     /// <summary>
     /// Does player have daily pmc quests unlocked
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <param name="repeatableConfig">Config of daily type to check</param>
     /// <returns>True if unlocked</returns>
     protected static bool PlayerHasDailyPmcQuestsUnlocked(PmcData pmcData, RepeatableQuestConfig repeatableConfig)
@@ -568,7 +568,7 @@ public class RepeatableQuestController(
     /// <summary>
     /// Does player have daily scav quests unlocked
     /// </summary>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     /// <returns>True if unlocked</returns>
     protected bool PlayerHasDailyScavQuestsUnlocked(PmcData pmcData)
     {
@@ -581,7 +581,7 @@ public class RepeatableQuestController(
     /// Expire quests and replace expired quests with ready-to-hand-in quests inside generatedRepeatables.activeQuests
     /// </summary>
     /// <param name="generatedRepeatables">Repeatables to process (daily/weekly)</param>
-    /// <param name="pmcData"></param>
+    /// <param name="pmcData">Players PMC profile</param>
     protected void ProcessExpiredQuests(PmcDataRepeatableQuest generatedRepeatables, PmcData pmcData)
     {
         var questsToKeep = new List<RepeatableQuest>();

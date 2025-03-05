@@ -339,12 +339,12 @@ public class DialogueController(
         return newAttachmentCount;
     }
 
-    /**
-     * Get messages from a specific dialog that have items not expired
-     * @param sessionId Session id
-     * @param dialogueId Dialog to get mail attachments from
-     * @returns Message array
-     */
+    /// <summary>
+    /// Get messages from a specific dialog that have items not expired
+    /// </summary>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="dialogueId">Dialog to get mail attachments from</param>
+    /// <returns>Message array</returns>
     protected List<Message> GetActiveMessagesFromDialog(string sessionId, string dialogueId)
     {
         var timeNow = _timeUtil.GetTimeStamp();
@@ -552,11 +552,11 @@ public class DialogueController(
         }
     }
 
-    /**
-     * Has a dialog message expired
-     * @param message Message to check expiry of
-     * @returns true or false
-     */
+    /// <summary>
+    /// Has a dialog message expired
+    /// </summary>
+    /// <param name="message">Message to check expiry of</param>
+    /// <returns>True = expired</returns>
     protected bool MessageHasExpired(Message message)
     {
         return _timeUtil.GetTimeStamp() > message.DateTime + (message.MaxStorageTime ?? 0);

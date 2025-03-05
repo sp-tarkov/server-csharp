@@ -171,9 +171,10 @@ public class HideoutCallbacks(
         return _hideoutController.HideoutCustomizationApply(sessionID, pmcData, request);
     }
 
-    /**
-     * Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
-     */
+    /// <summary>
+    /// Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
+    /// </summary>
+    /// <returns></returns>
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId)
     {
         return _hideoutController.HideoutCustomizationSetMannequinPose(sessionId, pmcData, request);

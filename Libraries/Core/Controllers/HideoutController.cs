@@ -1552,9 +1552,9 @@ public class HideoutController(
         return _databaseService.GetHideout().Qte;
     }
 
-    /**
-     * Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
-     */
+    /// <summary>
+    /// Function called every `hideoutConfig.runIntervalSeconds` seconds as part of onUpdate event
+    /// </summary>
     public void Update()
     {
         foreach (var sessionID in _saveServer.GetProfiles())

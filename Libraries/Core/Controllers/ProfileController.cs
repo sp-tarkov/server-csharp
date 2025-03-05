@@ -37,17 +37,20 @@ public class ProfileController(
     ProfileHelper _profileHelper
 )
 {
-    /**
-     * Handle /launcher/profiles
-     */
+    /// <summary>
+    /// Handle /launcher/profiles
+    /// </summary>
+    /// <returns></returns>
     public virtual List<MiniProfile> GetMiniProfiles()
     {
         return _saveServer.GetProfiles().Select(kvp => GetMiniProfile(kvp.Key)).ToList();
     }
 
-    /**
-     * Handle launcher/profile/info
-     */
+    /// <summary>
+    /// Handle launcher/profile/info
+    /// </summary>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns></returns>
     public virtual MiniProfile GetMiniProfile(string sessionID)
     {
         var profile = _saveServer.GetProfile(sessionID);
@@ -98,10 +101,11 @@ public class ProfileController(
         };
     }
 
-    /**
-     * Handle client/game/profile/list
-     * Return a full profile, scav and pmc profiles + meta data
-     */
+    /// <summary>
+    /// Handle client/game/profile/list
+    /// </summary>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns>Return a full profile, scav and pmc profiles + meta data</returns>
     public virtual List<PmcData> GetCompleteProfile(string sessionID)
     {
         return _profileHelper.GetCompleteProfile(sessionID);
@@ -129,9 +133,12 @@ public class ProfileController(
         return _playerScavGenerator.Generate(sessionID);
     }
 
-    /**
-     * Handle client/game/profile/nickname/validate
-     */
+    /// <summary>
+    /// Handle client/game/profile/nickname/validate
+    /// </summary>
+    /// <param name="request">Validate nickname request</param>
+    /// <param name="sessionID">Session/Player id</param>
+    /// <returns></returns>
     public virtual string ValidateNickname(ValidateNicknameRequestData request, string sessionID)
     {
         if (request.Nickname.Length < 3)

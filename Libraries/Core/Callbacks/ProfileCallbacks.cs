@@ -17,9 +17,10 @@ public class ProfileCallbacks(
     ProfileHelper _profileHelper
 )
 {
-    /**
-     * Handle client/game/profile/create
-     */
+    /// <summary>
+    /// Handle client/game/profile/create
+    /// </summary>
+    /// <returns></returns>
     public string CreateProfile(string url, ProfileCreateRequestData info, string sessionID)
     {
         var id = _profileController.CreateProfile(info, sessionID);
@@ -31,24 +32,22 @@ public class ProfileCallbacks(
         );
     }
 
-    /**
-     * Handle client/game/profile/list
-     * Get the complete player profile (scav + pmc character)
-     */
+    /// <summary>
+    /// Handle client/game/profile/list
+    /// Get the complete player profile (scav + pmc character) 
+    /// </summary>
+    /// <returns></returns>
     public string GetProfileData(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.GetCompleteProfile(sessionID));
     }
 
-    /**
-     * Handle client/game/profile/savage/regenerate
-     * Handle the creation of a scav profile for player
-     * Occurs post-raid and when profile first created immediately after character details are confirmed by player
-     * @param url
-     * @param info empty
-     * @param sessionID Session id
-     * @returns Profile object
-     */
+    /// <summary>
+    /// Handle client/game/profile/savage/regenerate
+    /// Handle the creation of a scav profile for player
+    /// Occurs post-raid and when profile first created immediately after character details are confirmed by player
+    /// </summary>
+    /// <returns></returns>
     public string RegenerateScav(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(
@@ -59,19 +58,21 @@ public class ProfileCallbacks(
         );
     }
 
-    /**
-     * Handle client/game/profile/voice/change event
-     */
+    /// <summary>
+    /// Handle client/game/profile/voice/change event
+    /// </summary>
+    /// <returns></returns>
     public string ChangeVoice(string url, ProfileChangeVoiceRequestData info, string sessionID)
     {
         _profileController.ChangeVoice(info, sessionID);
         return _httpResponse.NullResponse();
     }
 
-    /**
-     * Handle client/game/profile/nickname/change event
-     * Client allows player to adjust their profile name
-     */
+    /// <summary>
+    /// Handle client/game/profile/nickname/change event
+    /// Client allows player to adjust their profile name
+    /// </summary>
+    /// <returns></returns>
     public string ChangeNickname(string url, ProfileChangeNicknameRequestData info, string sessionID)
     {
         var output = _profileController.ChangeNickname(info, sessionID);
@@ -90,9 +91,10 @@ public class ProfileCallbacks(
         };
     }
 
-    /**
-     * Handle client/game/profile/nickname/validate
-     */
+    /// <summary>
+    /// Handle client/game/profile/nickname/validate
+    /// </summary>
+    /// <returns></returns>
     public string ValidateNickname(string url, ValidateNicknameRequestData info, string sessionID)
     {
         var output = _profileController.ValidateNickname(info, sessionID);
@@ -110,9 +112,10 @@ public class ProfileCallbacks(
         };
     }
 
-    /**
-     * Handle client/game/profile/nickname/reserved
-     */
+    /// <summary>
+    /// Handle client/game/profile/nickname/reserved
+    /// </summary>
+    /// <returns></returns>
     public string GetReservedNickname(string url, EmptyRequestData _, string sessionID)
     {
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
@@ -124,51 +127,57 @@ public class ProfileCallbacks(
         return _httpResponse.GetBody("SPTarkov");
     }
 
-    /**
-     * Handle client/profile/status
-     * Called when creating a character when choosing a character face/voice
-     */
+    /// <summary>
+    /// Handle client/profile/status
+    /// Called when creating a character when choosing a character face/voice
+    /// </summary>
+    /// <returns></returns>
     public string GetProfileStatus(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.GetProfileStatus(sessionID));
     }
 
-    /**
-     * Handle client/profile/view
-     * Called when viewing another players profile
-     */
+    /// <summary>
+    /// Handle client/profile/view
+    /// Called when viewing another players profile
+    /// </summary>
+    /// <returns></returns>
     public string GetOtherProfile(string url, GetOtherProfileRequest request, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.GetOtherProfile(sessionID, request));
     }
 
-    /**
-     * Handle client/profile/settings
-     */
+    /// <summary>
+    /// Handle client/profile/settings
+    /// </summary>
+    /// <returns></returns>
     public string GetProfileSettings(string url, GetProfileSettingsRequest info, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.SetChosenProfileIcon(sessionID, info));
     }
 
-    /**
-     * Handle client/game/profile/search
-     */
+    /// <summary>
+    /// Handle client/game/profile/search
+    /// </summary>
+    /// <returns></returns>
     public string SearchProfiles(string url, SearchProfilesRequestData info, string sessionID)
     {
         return _httpResponse.GetBody(_profileController.SearchProfiles(info, sessionID));
     }
 
-    /**
-     * Handle launcher/profile/info
-     */
+    /// <summary>
+    /// Handle launcher/profile/info
+    /// </summary>
+    /// <returns></returns>
     public string GetMiniProfile(string url, GetMiniProfileRequestData info, string sessionID)
     {
         return _httpResponse.NoBody(_profileController.GetMiniProfile(sessionID));
     }
 
-    /**
-     * Handle /launcher/profiles
-     */
+    /// <summary>
+    /// Handle /launcher/profiles
+    /// </summary>
+    /// <returns></returns>
     public string GetAllMiniProfiles(string url, EmptyRequestData _, string sessionID)
     {
         return _httpResponse.NoBody(_profileController.GetMiniProfiles());

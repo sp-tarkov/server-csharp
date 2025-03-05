@@ -125,11 +125,11 @@ public class Watermark
         Draw();
     }
 
-    /**
-     * Get a version string (x.x.x) or (x.x.x-BLEEDINGEDGE) OR (X.X.X (18xxx))
-     * @param withEftVersion Include the eft version this spt version was made for
-     * @returns string
-     */
+    /// <summary>
+    /// Get a version string (x.x.x) or (x.x.x-BLEEDINGEDGE) OR (X.X.X (18xxx))
+    /// </summary>
+    /// <param name="withEftVersion">Include the eft version this spt version was made for</param>
+    /// <returns></returns>
     public string GetVersionTag(bool withEftVersion = false)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
