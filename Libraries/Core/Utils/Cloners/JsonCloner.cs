@@ -1,8 +1,8 @@
 namespace Core.Utils.Cloners;
 
-/**
- * Disabled as FastCloner library is 15% faster and consumes less memory than Json serialization
- */
+/// <summary>
+/// Disabled as FastCloner library is 15% faster and consumes less memory than Json serialization
+/// </summary>
 public class JsonCloner : ICloner
 {
     protected JsonUtil _jsonUtil;

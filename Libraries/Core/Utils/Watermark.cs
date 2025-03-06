@@ -121,7 +121,6 @@ public class Watermark
         }
 
         SetTitle();
-        ResetCursor();
         Draw();
     }
 
@@ -144,11 +143,11 @@ public class Watermark
         return versionTag;
     }
 
-    /**
-     * Handle singleplayer/settings/version
-     * Get text shown in game on screen, can't be translated as it breaks bsgs client when certian characters are used
-     * @returns string
-     */
+    /// <summary>
+    /// Handle singleplayer/settings/version
+    /// Get text shown in game on screen, can't be translated as it breaks BSGs client when certain characters are used
+    /// </summary>
+    /// <returns>label text</returns>
     public string GetInGameVersionLabel()
     {
         var sptVersion = /*ProgramStatics.SPT_VERSION ||*/ sptConfig.SptVersion;
@@ -159,29 +158,17 @@ public class Watermark
         return $"{sptConfig.ProjectName} {versionTag}";
     }
 
-    /**
-     * Set window title
-     */
+    /// <summary>
+    /// Set window title
+    /// </summary>
     protected void SetTitle()
     {
         Console.Title = versionLabel;
     }
 
-    /**
-     * Reset console cursor to top
-     */
-    protected void ResetCursor()
-    {
-        /*
-        if (!ProgramStatics.COMPILED) {
-            process.stdout.write("\u001B[2J\u001B[0;0f");
-        }
-        */
-    }
-
-    /**
-     * Draw the watermark
-     */
+    /// <summary>
+    /// Draw watermark on screen
+    /// </summary>
     protected void Draw()
     {
         var result = new List<string>();

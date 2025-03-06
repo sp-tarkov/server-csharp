@@ -117,7 +117,7 @@ public class ModValidator(
             }
 
             // Returns if mod isnt compatible with this verison of spt
-            if (!IsModCombatibleWithSpt(modToValidate))
+            if (!IsModCompatibleWithSpt(modToValidate))
             {
                 errorsFound = true;
             }
@@ -173,21 +173,21 @@ public class ModValidator(
         return previndex - nextindex;
     }
 
-    /**
-     * Check for duplicate mods loaded, show error if any
-     * @param modPackageData map of mod package.json data
-     */
+    /// <summary>
+    /// Check for duplicate mods loaded, show error if any
+    /// </summary>
+    /// <param name="modPackageData">Dictionary of mod package.json data</param>
     protected void CheckForDuplicateMods(Dictionary<string, PackageJsonData> modPackageData)
     {
-        var grouppedMods = new Dictionary<string, List<PackageJsonData>>();
+        var groupedMods = new Dictionary<string, List<PackageJsonData>>();
 
         foreach (var mod in modPackageData.Values)
         {
             var name = $"{mod.Author}-{mod.Name}";
-            grouppedMods.Add(name, [..(grouppedMods.GetValueOrDefault(name) ?? []), mod]);
+            groupedMods.Add(name, [..(groupedMods.GetValueOrDefault(name) ?? []), mod]);
 
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
-            if (grouppedMods[name].Count > 1 && !skippedMods.Contains(name))
+            if (groupedMods[name].Count > 1 && !skippedMods.Contains(name))
             {
                 skippedMods.Add(name);
             }
@@ -200,24 +200,23 @@ public class ModValidator(
         }
     }
 
-    /**
-     * Returns an array of valid mods.
-     *
-     * @param mods mods to validate
-     * @returns array of mod folder names
-     */
+    /// <summary>
+    /// Returns an array of valid mods
+    /// </summary>
+    /// <param name="mods">mods to validate</param>
+    /// <returns>array of mod folder names</returns>
     protected List<SptMod> GetValidMods(List<SptMod> mods)
     {
         return mods.Where(ValidMod).ToList();
     }
 
 
-    /**
-     * Is the passed in mod compatible with the running server version
-     * @param mod Mod to check compatibiltiy with SPT
-     * @returns True if compatible
-     */
-    protected bool IsModCombatibleWithSpt(PackageJsonData mod)
+    /// <summary>
+    /// Is the passed in mod compatible with the running server version
+    /// </summary>
+    /// <param name="mod">Mod to check compatibility with SPT</param>
+    /// <returns>True if compatible</returns>
+    protected bool IsModCompatibleWithSpt(PackageJsonData mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
         var modName = $"{mod.Author}-${mod.Name}";
@@ -247,10 +246,10 @@ public class ModValidator(
         return true;
     }
 
-    /**
-     * Read loadorder.json (create if doesnt exist) and return sorted list of mods
-     * @returns string array of sorted mod names
-     */
+    /// <summary>
+    /// Read loadorder.json (create if doesnt exist) and return sorted list of mods
+    /// </summary>
+    /// <returns>string array of sorted mod names</returns>
     public List<string> SortModsLoadOrder()
     {
         // if loadorder.json exists: load it, otherwise generate load order
@@ -263,10 +262,10 @@ public class ModValidator(
         return modLoadOrder.GetLoadOrder();
     }
 
-    /**
-     * Compile mod and add into class property "imported"
-     * @param mod Name of mod to compile/add
-     */
+    /// <summary>
+    /// Compile mod and add into class property "imported"
+    /// </summary>
+    /// <param name="mod">Name of mod to compile/add</param>
     protected void AddMod(SptMod mod)
     {
         // Add mod to imported list
@@ -281,12 +280,11 @@ public class ModValidator(
         );
     }
 
-    /**
-     * Checks if a given mod should be loaded or skipped.
-     *
-     * @param pkg mod package.json data
-     * @returns
-     */
+    /// <summary>
+    /// Checks if a given mod should be loaded or skipped
+    /// </summary>
+    /// <param name="pkg">mod package.json data</param>
+    /// <returns></returns>
     protected bool ShouldSkipMod(PackageJsonData pkg)
     {
         return skippedMods.Contains($"{pkg.Author}-{pkg.Name}");
@@ -363,11 +361,11 @@ public class ModValidator(
         return true;
     }
 
-    /**
-     * Validate a mod passes a number of checks
-     * @param modName name of mod in /mods/ to validate
-     * @returns true if valid
-     */
+    /// <summary>
+    /// Validate a mod passes a number of checks
+    /// </summary>
+    /// <param name="mod">name of mod in /mods/ to validate</param>
+    /// <returns>true if valid</returns>
     protected bool ValidMod(SptMod mod)
     {
         var modName = mod.PackageJson.Name;
@@ -392,10 +390,10 @@ public class ModValidator(
             logger.Error(localisationService.GetText("modloader-is_client_mod", modName));
             return false;
         }
-
+        
         if (containsJs || containsTs)
         {
-            // TODO, needs new localisation!
+            // TODO: needs new localisation!
             logger.Error("The mod is an old server mod, JS/TS files detected");
             return false;
         }

@@ -7,9 +7,10 @@ using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Utils.Cloners;
 
-/**
- * Not in use at the moment
- */
+/// <summary>
+/// Not in use at the moment
+/// </summary>
+/// <param name="logger"></param>
 public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
 {
     private static Dictionary<Type, MemberInfo[]> MemberInfoCache = new();

@@ -61,31 +61,6 @@ public class ModLoadOrder(ICloner cloner)
         return loadBefore;
     }
 
-    /**
-     * TODO: Is this not needed at all?
-     */
-    public HashSet<string> GetModsOnLoadAfter(string mod)
-    {
-        if (!mods.ContainsKey(mod))
-        {
-            throw new Exception($"The mod {mod} does not exist!");
-        }
-
-        var config = mods[mod];
-
-        var loadAfter = new HashSet<string>(config.LoadAfter);
-
-        foreach (var loadAfterMod in loadAfter)
-        {
-            if (!mods.ContainsKey(loadAfterMod))
-            {
-                loadAfter.Remove(loadAfterMod);
-            }
-        }
-
-        return loadAfter;
-    }
-
     protected void InvertLoadBefore(string mod)
     {
         var loadBefore = GetModsOnLoadBefore(mod);

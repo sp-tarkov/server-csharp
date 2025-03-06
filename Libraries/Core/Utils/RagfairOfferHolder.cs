@@ -334,9 +334,9 @@ public class RagfairOfferHolder(
         }
     }
 
-    /**
-     * Clear out internal expiredOffers dictionary of all items
-     */
+    /// <summary>
+    /// Clear out internal expiredOffers dictionary of all items
+    /// </summary>
     public void ResetExpiredOfferIds()
     {
         lock (_expiredOfferIdsLock)

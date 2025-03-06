@@ -76,10 +76,10 @@ public class ItemTplGenerator(
         _logger.Info("Generating items finished");
     }
 
-    /**
-     * Return an object containing all items in the game with a generated name
-     * @returns An object containing a generated item name to item ID association
-     */
+    /// <summary>
+    /// Return an object containing all items in the game with a generated name
+    /// </summary>
+    /// <returns>An object containing a generated item name to item ID association</returns>
     private Dictionary<string, string> GenerateItemsObject()
     {
         var itemsObject = new Dictionary<string, string>();
@@ -175,10 +175,6 @@ public class ItemTplGenerator(
         return orderedItemsObject;
     }
 
-    /**
-     * @param orderedItemsObject The previously generated object of item name to item ID associations
-     * @returns
-     */
     private Dictionary<string, string> GenerateWeaponsObject()
     {
         var weaponsObject = new Dictionary<string, string>();
@@ -230,11 +226,11 @@ public class ItemTplGenerator(
         return orderedWeaponsObject;
     }
 
-    /**
-     * Clear any non-alpha numeric characters, and fix multiple underscores
-     * @param enumKey The enum key to sanitize
-     * @returns The sanitized enum key
-     */
+    /// <summary>
+    /// Clear any non-alpha numeric characters, and fix multiple underscores
+    /// </summary>
+    /// <param name="enumKey">The enum key to sanitize</param>
+    /// <returns>The sanitized enum key</returns>
     private string SanitizeEnumKey(string enumKey)
     {
         return enumKey
@@ -323,11 +319,11 @@ public class ItemTplGenerator(
         return true;
     }
 
-    /**
-     * Generate a prefix for the passed in item
-     * @param item The item to generate the prefix for
-     * @returns The prefix of the given item
-     */
+    /// <summary>
+    /// Generate a prefix for the passed in item
+    /// </summary>
+    /// <param name="item">The item to generate the prefix for</param>
+    /// <returns>The prefix of the given item</returns>
     private string GetItemPrefix(TemplateItem item)
     {
         var prefix = "";
@@ -422,11 +418,11 @@ public class ItemTplGenerator(
         return GetAmmoPrefix(items[ammoItem]);
     }
 
-    /**
-     * Return the name of the passed in item, formatted for use in an enum
-     * @param item The item to generate the name for
-     * @returns The name of the given item
-     */
+    /// <summary>
+    /// Return the name of the passed in item, formatted for use in an enum
+    /// </summary>
+    /// <param name="item">The item to generate the name for</param>
+    /// <returns>The name of the given item</returns>
     private string GetItemName(TemplateItem item)
     {
         string? itemName = null;

@@ -36,12 +36,14 @@ public class ImporterUtil
             .ContinueWith(res => (T) res.Result);
     }
 
-    /**
-     * Load files into objects recursively (asynchronous)
-     * @param filepath Path to folder with files
-     * @returns Promise
-     * <T> return T type associated with this class
-     */
+    /// <summary>
+    /// Load files into objects recursively (asynchronous)
+    /// </summary>
+    /// <param name="filepath">Path to folder with files</param>
+    /// <param name="loadedType"></param>
+    /// <param name="onReadCallback"></param>
+    /// <param name="onObjectDeserialized"></param>
+    /// <returns>Task</returns>
     protected async Task<object> LoadRecursiveAsync(
         string filepath,
         Type loadedType,
