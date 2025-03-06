@@ -199,6 +199,8 @@
     "modloader-error_parsing_mod_load_order": "分析模组加载顺序时出错",
     "modloader-incompatibilities_not_string_array": "模组%s package.json属性“incompatibilities”应该是字符串数组",
     "modloader-incompatible_mod_found": "模组 {{author}}-{{name}} 不兼容 {{incompatibleModName}}",
+    "modloader-installing_external_dependencies": "正在安装依赖 模组：{{name}} 作者：{{author}}",
+    "modloader-installing_external_dependencies_disabled": "作者{{author}} 的模组{{name}} 需要下载外部（非SPT）组件才能正常运行，但目前下载机制是关闭的。需要到这里：\n”{{configPath}}”将“{{configOption}}”设置为 true，然后重启服务器。\n\n允许此下载机制代表用户对所有{{name}} 模组将要下载的文件负全部责任。",
     "modloader-invalid_sptVersion_field": "模组 %s 在sptVersion字段中包含无效的semver字符串。有效值示例：https://github.com/npm/node-semver#versions",
     "modloader-invalid_version_property": "模组 %s package.json包含无效的版本字符串",
     "modloader-is_client_mod": "模组 %s 是一个客户端模组，应该被放置在这个文件夹：/spt/bepinex/plugins",
@@ -625,6 +627,7 @@
     "ragfair-unable_to_purchase_0_count_item": "无法购买数量为0的物品：%s",
     "ragfair-unable_to_remove_offer_doesnt_exist": "无法移除id：%s的报价，因为跳蚤市场中未找到",
     "ragfair-unable_to_remove_offer_not_found_in_profile": "存档：{{profileId}}中找不到报价：{{offerId}}因为报价未定义，正在创建",
+    "ragfair-generating_offers": "正在生成跳蚤报价……",
     "release-beta-disclaimer": "按下“OK”即表示您同意您不会获得任何技术支持，且该版本仅用于错误测试。 此版本不代表实际游戏体验，模组已被禁用，可能需要用户频繁新建存档。 在SPT官方Discord的报告频道里报告所有错误，或在SPT网站的问题页面报告。 如果您在指定时间内不按下“OK”，游戏将自动关闭。",
     "release-beta-disclaimer-accept": "用户已接受测试版免责声明",
     "release-beta-disclaimer-mods-enabled": "按下“OK”即表示您同意您不会获得任何技术支持，且该版本仅用于错误测试。 此版本不代表实际游戏体验，模组已启用，请不要报告模组产生的问题，也请别催促模组作者更新模组。 在SPT官方Discord的报告频道里报告所有错误，或在SPT网站的问题页面报告。 如果您在指定时间内不按下“OK”，游戏将自动关闭。",
@@ -706,7 +709,7 @@
     "watermark-discord_url": "https://discord.sp-tarkov.com",
     "watermark-do_not_report": "不 要 报 告",
     "watermark-free_of_charge": "该软件免费",
-    "watermark-issue_tracker_url": "https://github.com/sp-tarkov/server/",
+    "watermark-issue_tracker_url": "https://dev.sp-tarkov.com/SPT/Server/issues",
     "watermark-modding_disabled": "该 编 译 不 启 用 服 务 端 模 改",
     "watermark-no_support": "不 会 提 供 支 持",
     "watermark-not_an_issue": "这 不 是 个 问 题",
@@ -723,7 +726,6 @@
     "websocket-socket_lost_deleting_handle": "[WS] Socket丢失，正在删除句柄",
     "websocket-started": "websocket启动于%s",
     "chatbot-cannot_accept_any_more_of_gift": "你无法再接收这个礼物",
-    "chatbot-halloween_event_enabled": "万圣节活动已开启，请在进入战局前重启你的游戏",
     "chatbot-added_stash_rows_please_restart": "增加了2行仓库空间，请重启你的游戏",
     "chatbot-snow_enabled": "在服务器重新启动之前，之后所有的战局都将是雪地"
 }
