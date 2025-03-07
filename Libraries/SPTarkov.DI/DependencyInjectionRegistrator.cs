@@ -68,7 +68,14 @@ public static class DependencyInjectionRegistrator
 
     private static void RegisterGenericComponents(IServiceCollection builderServices, RegisterableType valueTuple)
     {
-        _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
+        try
+        {
+            _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
+        }
+        catch(ReflectionTypeLoadException ex)
+        {
+            Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
+        }
         _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
 
         var typeName = $"{valueTuple.RegisterableInterface.Namespace}.{valueTuple.RegisterableInterface.Name}";

@@ -1,4 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Build.props" />
 
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Assets</PackageId>
@@ -8,12 +10,9 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <OutputType>Library</OutputType>
-    <IsPackable>true</IsPackable>
     <ContentTargetFolders>content</ContentTargetFolders>
     <RootNamespace>SptAssets</RootNamespace>
   </PropertyGroup>

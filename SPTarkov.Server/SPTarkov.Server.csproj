@@ -1,5 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
+  <Import Project="..\Build.props" />
+
   <PropertyGroup>
     <PackageId>SPTarkov.Server</PackageId>
     <Authors>Single Player Tarkov</Authors>
@@ -8,14 +10,10 @@
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
-    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-    <Version>4.0.0</Version>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
