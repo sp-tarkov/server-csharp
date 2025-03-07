@@ -1,0 +1,36 @@
+﻿namespace SPTarkov.Server.Core.Models.Enums;
+
+public enum BonusType
+{
+    EnergyRegeneration,
+    HydrationRegeneration,
+    HealthRegeneration,
+    ExperienceRate,
+    QuestMoneyReward,
+    ScavCooldownTimer,
+    UnlockItemCraft,
+    UnlockItemPassiveCreation,
+    UnlockRandomItemCreation,
+    SkillLevelingBoost,
+    DebuffEndDelay,
+    RagfairCommission,
+    InsuranceReturnTime,
+    UnlockWeaponModification,
+    UnlockScavPlay,
+    UnlockAddOffer,
+    UnlockItemCharge,
+    ReceiveItemBonus,
+    UnlockUniqueId,
+    IncreaseCanisterSlots,
+    AdditionalSlots,
+    FuelConsumption,
+    RepairWeaponBonus,
+    RepairArmorBonus,
+    UnlockWeaponRepair,
+    UnlockArmorRepair,
+    StashSize,
+    MaximumEnergyReserve,
+    TextBonus,
+    SkillGroupLevelingBoost,
+    StashRows
+}

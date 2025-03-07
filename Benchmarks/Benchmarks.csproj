@@ -9,10 +9,10 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.0"/>
-    <ProjectReference Include="..\Libraries\Core\Core.csproj"/>
-    <ProjectReference Include="..\Libraries\SptAssets\SptAssets.csproj"/>
-    <ProjectReference Include="..\Libraries\SptCommon\SptCommon.csproj"/>
-    <ProjectReference Include="..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj"/>
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
   </ItemGroup>
 
   <ItemGroup>

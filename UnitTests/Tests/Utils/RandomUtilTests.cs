@@ -1,5 +1,5 @@
-using Core.Utils;
-using Core.Utils.Cloners;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;

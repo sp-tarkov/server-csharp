@@ -1,4 +1,4 @@
-using Core.Utils;
+using SPTarkov.Server.Core.Utils;
 
 namespace UnitTests.Tests.Utils;
 

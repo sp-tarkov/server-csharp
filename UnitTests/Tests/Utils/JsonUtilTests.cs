@@ -1,5 +1,5 @@
-using Core.Models.Enums;
-using Core.Utils;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Utils;
 
 namespace UnitTests.Tests.Utils;
 

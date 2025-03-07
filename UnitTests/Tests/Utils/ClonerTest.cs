@@ -1,6 +1,6 @@
-﻿using Core.Models.Spt.Templates;
-using Core.Utils;
-using Core.Utils.Cloners;
+﻿using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;
@@ -26,7 +26,7 @@ public class ClonerTest
         _templates = loadTask.Result;
         _jsonCloner = new JsonCloner(_jsonUtil);
         _reflectionsCloner = new ReflectionsCloner(new MockLogger<ReflectionsCloner>());
-        _fastCloner = new Core.Utils.Cloners.FastCloner();
+        _fastCloner = new SPTarkov.Server.Core.Utils.Cloners.FastCloner();
     }
 
     [TestMethod]

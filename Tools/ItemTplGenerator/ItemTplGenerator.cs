@@ -1,14 +1,14 @@
-using Core.Callbacks;
-using Core.DI;
-using Core.Helpers;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Enums;
-using Core.Models.Utils;
-using Core.Servers;
-using Core.Services;
-using Core.Utils;
-using SptCommon.Annotations;
-using SptCommon.Extensions;
+using SPTarkov.Server.Core.Callbacks;
+using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using Path = System.IO.Path;
 
 namespace ItemTplGenerator;
@@ -44,7 +44,7 @@ public class ItemTplGenerator(
 
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        enumDir = Path.Combine(projectDir.FullName, "Libraries", "Core", "Models", "Enums");
+        enumDir = Path.Combine(projectDir.FullName, "Libraries", "SPTarkov.Server.Core", "Models", "Enums");
         items = _databaseServer.GetTables().Templates.Items;
 
         // Generate an object containing all item name to ID associations

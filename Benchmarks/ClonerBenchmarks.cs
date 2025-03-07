@@ -1,8 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Benchmarks.Mock;
-using Core.Models.Spt.Templates;
-using Core.Utils;
-using Core.Utils.Cloners;
+using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace Benchmarks;
 
@@ -27,7 +27,7 @@ public class ClonerBenchmarks
         _templates = loadTask.Result;
         _jsonCloner = new JsonCloner(jsonUtil);
         _reflectionsCloner = new ReflectionsCloner(new MockLogger<ReflectionsCloner>());
-        _fastCloner = new Core.Utils.Cloners.FastCloner();
+        _fastCloner = new SPTarkov.Server.Core.Utils.Cloners.FastCloner();
     }
 
     [Benchmark]

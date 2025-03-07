@@ -1,13 +1,13 @@
-using Core.DI;
-using Core.Helpers;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Hideout;
-using Core.Models.Enums;
-using Core.Models.Utils;
-using Core.Servers;
-using Core.Services;
-using Core.Utils;
-using SptCommon.Annotations;
+using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Hideout;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Common.Annotations;
 using Path = System.IO.Path;
 
 namespace HideoutCraftQuestIdGenerator;
@@ -53,7 +53,7 @@ public class HideoutCraftQuestIdGenerator(
 
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        var productionPath = "Libraries\\SptAssets\\Assets\\database\\hideout\\production.json";
+        var productionPath = "Libraries\\SPTarkov.Server.Assets\\Assets\\database\\hideout\\production.json";
         var productionFilePath = Path.Combine(projectDir.FullName, productionPath);
 
         var updatedProductionJson = _jsonUtil.Serialize(_databaseServer.GetTables().Hideout.Production, true);
