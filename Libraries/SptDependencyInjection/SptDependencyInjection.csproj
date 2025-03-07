@@ -1,9 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <PackageId>SPT.Server.DI</PackageId>
-    <Authors>SPT Team</Authors>
+    <PackageId>SPTarkov.DI</PackageId>
+    <Authors>Single Player Tarkov</Authors>
+    <Description>Dependency injection shared library for the Single Player Tarkov projects.</Description>
+    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -17,6 +22,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SptCommon\SptCommon.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
 </Project>

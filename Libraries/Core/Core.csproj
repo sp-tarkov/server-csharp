@@ -3,7 +3,7 @@
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Core</PackageId>
     <Authors>Single Player Tarkov</Authors>
-    <Description>Core libaries for the Single Player Tarkov server.</Description>
+    <Description>Core library for the Single Player Tarkov server.</Description>
     <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>

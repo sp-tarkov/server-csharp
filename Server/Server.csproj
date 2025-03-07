@@ -1,9 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <PackageId>SPT.Server</PackageId>
-    <Authors>SPT Team</Authors>
+    <PackageId>SPTarkov.Server</PackageId>
+    <Authors>Single Player Tarkov</Authors>
+    <Description>Single Player Tarkov server launcher.</Description>
+    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <ServerGarbageCollection>true</ServerGarbageCollection>
     <EnableDefaultContentItems>false</EnableDefaultContentItems>
     <TargetFramework>net9.0</TargetFramework>
@@ -41,6 +46,10 @@
     <Content Include="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
   </ItemGroup>
 
 </Project>
