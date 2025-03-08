@@ -256,6 +256,11 @@ public class HideoutHelper(
         return hideoutProperties;
     }
 
+    /// <summary>
+    /// Does a water collection hideout area have a water filter installed
+    /// </summary>
+    /// <param name="waterCollector">Hideout area to check</param>
+    /// <returns></returns>
     protected bool DoesWaterCollectorHaveFilter(BotHideoutArea waterCollector)
     {
         // Can put filters in from L3
@@ -272,7 +277,7 @@ public class HideoutHelper(
     /// <summary>
     ///     Iterate over productions and update their progress timers
     /// </summary>
-    /// <param name="profileData">Profile to check for productions and update</param>
+    /// <param name="pmcData">Profile to check for productions and update</param>
     /// <param name="hideoutProperties">Hideout properties</param>
     protected void UpdateProductionTimers(
         PmcData pmcData,
