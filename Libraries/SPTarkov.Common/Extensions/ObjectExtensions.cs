@@ -32,10 +32,8 @@ public static class ObjectExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static bool ContainsJsonProp<T>(this object? obj, T key)
     {
-        if (obj == null)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
 
         return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
     }
