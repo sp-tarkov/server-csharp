@@ -129,23 +129,23 @@ public static class DependencyInjectionRegistrator
     private static void RegisterComponent(
         IServiceCollection builderServices,
         InjectionType injectionType,
-        Type registerableInterface,
-        Type imlementationType
+        Type registrableInterface,
+        Type implementationType
     )
     {
         switch (injectionType)
         {
             case InjectionType.Singleton:
-                builderServices.AddSingleton(registerableInterface, imlementationType);
+                builderServices.AddSingleton(registrableInterface, implementationType);
                 break;
             case InjectionType.Transient:
-                builderServices.AddTransient(registerableInterface, imlementationType);
+                builderServices.AddTransient(registrableInterface, implementationType);
                 break;
             case InjectionType.Scoped:
-                builderServices.AddScoped(registerableInterface, imlementationType);
+                builderServices.AddScoped(registrableInterface, implementationType);
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(injectionType), "unknown injection type");
         }
     }
 
