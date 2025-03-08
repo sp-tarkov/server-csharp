@@ -48,7 +48,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
         return false;
     }
 
-    public BackendErrorCodes GetErrorCode(List<Warning> warnings)
+    public static BackendErrorCodes GetErrorCode(List<Warning> warnings)
     {
         // Cast int to string to get the error code of 220 for Unknown Error.
         return warnings.FirstOrDefault()?.Code is null ? BackendErrorCodes.UnknownError : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;
