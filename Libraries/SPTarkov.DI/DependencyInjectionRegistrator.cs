@@ -98,20 +98,19 @@ public static class DependencyInjectionRegistrator
             }
 
             foreach (var matchedConstructor in constructorInfos)
-            foreach (var parameterInfo in matchedConstructor.GetParameters()
-                         .Where(
-                             p => p.ParameterType.IsGenericType &&
-                                  p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                         ))
             {
-                var parameters = parameterInfo.ParameterType.GetGenericArguments();
-                var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
-                RegisterComponent(
-                    builderServices,
-                    valueTuple.InjectableAttribute.InjectionType,
-                    parameterInfo.ParameterType,
-                    typedGeneric
-                );
+                var constructorParams = matchedConstructor.GetParameters();
+                foreach (var parameterInfo in constructorParams.Where(x => IsMatchingGenericType(x,typeName)))
+                {
+                    var parameters = parameterInfo.ParameterType.GetGenericArguments();
+                    var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
+                    RegisterComponent(
+                        builderServices,
+                        valueTuple.InjectableAttribute.InjectionType,
+                        parameterInfo.ParameterType,
+                        typedGeneric
+                    );
+                }
             }
         }
         catch (Exception e)
@@ -119,6 +118,12 @@ public static class DependencyInjectionRegistrator
             Console.WriteLine(e);
             throw;
         }
+    }
+
+    private static bool IsMatchingGenericType(ParameterInfo paramInfo, string typeName)
+    {
+        return paramInfo.ParameterType.IsGenericType &&
+               paramInfo.ParameterType.GetGenericTypeDefinition().FullName == typeName;
     }
 
     private static void RegisterComponent(
