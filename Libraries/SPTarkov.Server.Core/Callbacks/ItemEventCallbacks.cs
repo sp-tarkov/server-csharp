@@ -24,7 +24,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     /// </summary>
     /// <param name="warnings">The list of warnings to check for critical errors</param>
     /// <returns></returns>
-    public bool IsCriticalError(List<Warning>? warnings)
+    public static bool IsCriticalError(List<Warning>? warnings)
     {
         if (warnings is null)
         {
