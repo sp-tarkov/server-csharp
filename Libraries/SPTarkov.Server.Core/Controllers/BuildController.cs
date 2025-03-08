@@ -130,11 +130,10 @@ public class BuildController(
     /// <param name="request"></param>
     public void SaveEquipmentBuild(string sessionID, PresetBuildActionRequestData request)
     {
-        var buildType = "equipmentBuilds";
         var profile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = profile.CharacterData.PmcData;
 
-        List<EquipmentBuild> existingSavedEquipmentBuilds =
+        var existingSavedEquipmentBuilds =
             _saveServer.GetProfile(sessionID).UserBuildData.EquipmentBuilds;
 
         // Replace duplicate ID's. The first item is the base item.
@@ -150,7 +149,7 @@ public class BuildController(
             Items = request.Items
         };
 
-        var existingBuild = existingSavedEquipmentBuilds.FirstOrDefault(
+        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(
             build => build.Name == request.Name || build.Id == request.Id
         );
         if (existingBuild is not null)
