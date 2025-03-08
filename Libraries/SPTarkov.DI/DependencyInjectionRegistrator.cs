@@ -48,20 +48,22 @@ public static class DependencyInjectionRegistrator
             .GroupBy(t => t.RegisterableInterface.FullName);
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
-        foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
         {
-            if (valueTuple.TypeToRegister.IsGenericType)
+            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
             {
-                RegisterGenericComponents(builderServices, valueTuple);
-            }
-            else
-            {
-                RegisterComponent(
-                    builderServices,
-                    valueTuple.InjectableAttribute.InjectionType,
-                    valueTuple.RegisterableInterface,
-                    valueTuple.TypeToRegister
-                );
+                if (valueTuple.TypeToRegister.IsGenericType)
+                {
+                    RegisterGenericComponents(builderServices, valueTuple);
+                }
+                else
+                {
+                    RegisterComponent(
+                        builderServices,
+                        valueTuple.InjectableAttribute.InjectionType,
+                        valueTuple.RegisterableInterface,
+                        valueTuple.TypeToRegister
+                    );
+                }
             }
         }
     }
