@@ -343,8 +343,8 @@ public class QuestController(
                     output
                 );
 
-                // Complete
-                if (totalItemCountToRemove == handedInCount)
+                // Complete - handedInCount == totalItemCountToRemove
+                if (Math.Abs(totalItemCountToRemove - handedInCount) < 0.01)
                 {
                     break;
                 }
