@@ -1899,7 +1899,7 @@ public record HideoutSlot
     ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc.)
     /// </summary>
     [JsonPropertyName("locationIndex")]
-    public double? LocationIndex
+    public int? LocationIndex
     {
         get;
         set;
