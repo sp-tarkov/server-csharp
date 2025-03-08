@@ -199,16 +199,15 @@ public class BuildController(
 
         profile.UserBuildData.MagazineBuilds ??= [];
 
-        var existingArrayId = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item => item.Name == request.Name);
-        if (existingArrayId is not null)
+        // Check if template with desired name already exists and remove it
+        var magazineBuildToRemove = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item => item.Name == request.Name);
+        if (magazineBuildToRemove is not null)
         {
-            {
-                profile.UserBuildData.MagazineBuilds.Remove(existingArrayId);
-            }
-
-
-            profile.UserBuildData.MagazineBuilds.Add(result);
+            profile.UserBuildData.MagazineBuilds.Remove(magazineBuildToRemove);
         }
+
+        // Add new template to profile
+        profile.UserBuildData.MagazineBuilds.Add(result);
     }
 
     /// <summary>
