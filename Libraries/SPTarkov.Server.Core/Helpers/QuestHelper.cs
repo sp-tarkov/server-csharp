@@ -1028,7 +1028,7 @@ public class QuestHelper(
         var clientQuestsClone =
             _cloner.Clone(GetClientQuests(sessionID)); // Must be gathered prior to applyQuestReward() & failQuests()
 
-        var newQuestState = QuestStatusEnum.Success;
+        const QuestStatusEnum newQuestState = QuestStatusEnum.Success;
         UpdateQuestState(pmcData, newQuestState, completedQuestId);
         var questRewards = _questRewardHelper.ApplyQuestReward(
             pmcData,

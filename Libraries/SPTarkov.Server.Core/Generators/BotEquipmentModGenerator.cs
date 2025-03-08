@@ -313,9 +313,9 @@ public class BotEquipmentModGenerator(
         // Get lowest and highest plate classes available for this armor
         var minMaxArmorPlateClass = GetMinMaxArmorPlateClass(platesFromDb.ToList());
 
-        // Increment plate class level in attempt to get useable plate
+        // Increment plate class level in attempt to get usable plate
         var findCompatiblePlateAttempts = 0;
-        var maxAttempts = 3;
+        const int maxAttempts = 3;
         for (var i = 0; i < maxAttempts; i++)
         {
             var chosenArmorPlateLevelDouble = int.Parse(chosenArmorPlateLevelString) + 1;
@@ -832,16 +832,16 @@ public class BotEquipmentModGenerator(
         var isMount = _itemHelper.IsOfBaseclass(itemTplWithKeysToSort, BaseClasses.MOUNT);
 
         HashSet<string> sortedKeys = [];
-        var modRecieverKey = "mod_reciever";
-        var modMount001Key = "mod_mount_001";
-        var modGasBlockKey = "mod_gas_block";
-        var modPistolGrip = "mod_pistol_grip";
-        var modStockKey = "mod_stock";
-        var modBarrelKey = "mod_barrel";
-        var modHandguardKey = "mod_handguard";
-        var modMountKey = "mod_mount";
-        var modScopeKey = "mod_scope";
-        var modScope000Key = "mod_scope_000";
+        const string modRecieverKey = "mod_reciever";
+        const string modMount001Key = "mod_mount_001";
+        const string modGasBlockKey = "mod_gas_block";
+        const string modPistolGrip = "mod_pistol_grip";
+        const string modStockKey = "mod_stock";
+        const string modBarrelKey = "mod_barrel";
+        const string modHandguardKey = "mod_handguard";
+        const string modMountKey = "mod_mount";
+        const string modScopeKey = "mod_scope";
+        const string modScope000Key = "mod_scope_000";
 
         // Mounts are a special case, they need scopes first before more mounts
         if (isMount)

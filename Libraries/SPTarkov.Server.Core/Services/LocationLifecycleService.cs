@@ -550,7 +550,7 @@ public class LocationLifecycleService
             pmcData.CarExtractCounts[extractName]
         );
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -583,7 +583,7 @@ public class LocationLifecycleService
             pmcData.CoopExtractCounts[extractName]
         );
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -607,7 +607,7 @@ public class LocationLifecycleService
      */
     protected double GetFenceStandingAfterExtract(PmcData pmcData, double baseGain, double extractCount)
     {
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         var fenceStanding = pmcData.TradersInfo[fenceId].Standing;
 
         // get standing after taking extract x times, x.xx format, gain from extract can be no smaller than 0.01
@@ -823,7 +823,7 @@ public class LocationLifecycleService
         // Must occur AFTER experience is set and stats copied over
         pmcProfile.Stats.Eft.TotalSessionExperience = 0;
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
 
         // Clamp fence standing
         var currentFenceStanding = postRaidProfile.TradersInfo[fenceId].Standing;

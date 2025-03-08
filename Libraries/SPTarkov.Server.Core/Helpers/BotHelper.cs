@@ -70,7 +70,7 @@ public class BotHelper(
     /// <param name="typeToAdd">bot type to add to friendly list</param>
     public void AddBotToFriendlyList(DifficultyCategories difficultySettings, string typeToAdd)
     {
-        var friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
+        const string friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
 
         // Null guard
         if (difficultySettings.Mind[friendlyBotTypesKey] is null)
@@ -88,7 +88,7 @@ public class BotHelper(
     /// <param name="typesToAdd">bot type to add to revenge list</param>
     public void AddBotToRevengeList(DifficultyCategories difficultySettings, string[] typesToAdd)
     {
-        var revengePropKey = "REVENGE_BOT_TYPES";
+        const string revengePropKey = "REVENGE_BOT_TYPES";
 
         // Nothing to add
         if (typesToAdd is null)

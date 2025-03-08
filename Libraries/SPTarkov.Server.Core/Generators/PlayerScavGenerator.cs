@@ -216,7 +216,7 @@ public class PlayerScavGenerator(
     /// <returns>IBotType object</returns>
     protected BotType ConstructBotBaseTemplate(string botTypeForLoot)
     {
-        var baseScavType = "assault";
+        const string baseScavType = "assault";
         var asssaultBase = _cloner.Clone(_botHelper.GetBotTemplate(baseScavType));
 
         // Loot bot is same as base bot, return base with no modification

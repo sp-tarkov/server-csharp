@@ -63,7 +63,7 @@ public class ConfigServer
         }
 
         // Get all filepaths
-        var filepath = "./Assets/configs/";
+        const string filepath = "./Assets/configs/";
         var files = _fileUtil.GetFiles(filepath);
 
         // Add file content to result

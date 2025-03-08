@@ -98,7 +98,7 @@ public class HandbookHelper(
         var handbookItem = _databaseService.GetHandbook().Items?.FirstOrDefault(item => item.Id == tpl);
         if (handbookItem is null)
         {
-            var newValue = 0;
+            const int newValue = 0;
 
             if (!_handbookPriceCache.Items.ById.TryAdd(tpl, newValue))
             {
