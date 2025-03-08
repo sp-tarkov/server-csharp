@@ -40,10 +40,10 @@ public class BotEquipmentModGenerator(
 )
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected static HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
+    protected static readonly HashSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
 
     // Slots that hold scopes
-    protected static HashSet<string> _scopeIds =
+    protected static readonly HashSet<string> _scopeIds =
     [
         "mod_scope",
         "mod_mount",
@@ -55,14 +55,19 @@ public class BotEquipmentModGenerator(
     ];
 
     // Slots that hold muzzles
-    protected static HashSet<string> _muzzleIds = ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"];
+    protected static readonly HashSet<string> _muzzleIds = ["mod_muzzle", "mod_muzzle_000", "mod_muzzle_001"];
 
     // Slots a weapon can store its stock in
-    protected static HashSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
+    protected static readonly HashSet<string> _stockSlots = ["mod_stock", "mod_stock_000", "mod_stock_001", "mod_stock_akms"];
 
     // Slots that hold cartridges
-    protected static HashSet<string> _cartridgeHolderSlots =
-        ["mod_magazine", "patron_in_weapon", "patron_in_weapon_000", "patron_in_weapon_001", "cartridges"];
+    protected static readonly HashSet<string> _cartridgeHolderSlots =
+        [
+            "mod_magazine",
+            "patron_in_weapon",
+            "patron_in_weapon_000",
+            "patron_in_weapon_001",
+            "cartridges"];
 
     /// <summary>
     ///     Check mods are compatible and add to array
