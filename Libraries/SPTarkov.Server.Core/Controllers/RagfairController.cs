@@ -456,10 +456,9 @@ public class RagfairController
         var output = _eventOutputHolder.GetOutput(sessionID);
         var fullProfile = _profileHelper.GetFullProfile(sessionID);
 
-        var validationMessage = "";
-        if (!IsValidPlayerOfferRequest(offerRequest, validationMessage))
+        if (!IsValidPlayerOfferRequest(offerRequest))
         {
-            return _httpResponseUtil.AppendErrorToOutput(output, validationMessage);
+            return _httpResponseUtil.AppendErrorToOutput(output, "Unable to add offer, check server for error");
         }
 
         var typeOfOffer = GetOfferType(offerRequest);
@@ -492,9 +491,8 @@ public class RagfairController
     /// Is the item to be listed on the flea valid
     /// </summary>
     /// <param name="offerRequest">Client offer request</param>
-    /// <param name="validationMessage">message to show to player when offer is invalid</param>
     /// <returns>Is offer valid</returns>
-    protected bool IsValidPlayerOfferRequest(AddOfferRequestData offerRequest, string validationMessage)
+    protected bool IsValidPlayerOfferRequest(AddOfferRequestData offerRequest)
     {
         if (offerRequest?.Items is null || offerRequest.Items.Count == 0)
         {
