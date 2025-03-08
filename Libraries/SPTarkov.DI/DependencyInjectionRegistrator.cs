@@ -25,7 +25,7 @@ public static class DependencyInjectionRegistrator
                 {
                     var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable));
                     var registerableType = t;
-                    var registerableComponents = new List<RegisterableType>();
+                    var registerableComponents = new List<RegistrableType>();
                     foreach (var attribute in attributes)
                     {
                         // if we have a type override this takes priority
@@ -39,13 +39,13 @@ public static class DependencyInjectionRegistrator
                             registerableType = registerableType.GetInterfaces()[0];
                         }
 
-                        registerableComponents.Add(new RegisterableType(registerableType, t, attribute));
+                        registerableComponents.Add(new RegistrableType(registerableType, t, attribute));
                     }
 
                     return registerableComponents;
                 }
             )
-            .GroupBy(t => t.RegisterableInterface.FullName);
+            .GroupBy(t => t.RegistrableInterface.FullName);
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
         {
@@ -60,7 +60,7 @@ public static class DependencyInjectionRegistrator
                     RegisterComponent(
                         builderServices,
                         valueTuple.InjectableAttribute.InjectionType,
-                        valueTuple.RegisterableInterface,
+                        valueTuple.RegistrableInterface,
                         valueTuple.TypeToRegister
                     );
                 }
@@ -68,7 +68,7 @@ public static class DependencyInjectionRegistrator
         }
     }
 
-    private static void RegisterGenericComponents(IServiceCollection builderServices, RegisterableType valueTuple)
+    private static void RegisterGenericComponents(IServiceCollection builderServices, RegistrableType valueTuple)
     {
         try
         {
@@ -80,7 +80,7 @@ public static class DependencyInjectionRegistrator
         }
         _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
 
-        var typeName = $"{valueTuple.RegisterableInterface.Namespace}.{valueTuple.RegisterableInterface.Name}";
+        var typeName = $"{valueTuple.RegistrableInterface.Namespace}.{valueTuple.RegistrableInterface.Name}";
         try
         {
             var matchedConstructors = _allConstructors.Where(
@@ -166,12 +166,12 @@ public static class DependencyInjectionRegistrator
         );
     }
 
-    private class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
+    private sealed class RegistrableType(Type registrableInterface, Type typeToRegister, Injectable injectableAttribute)
     {
-        public Type RegisterableInterface
+        public Type RegistrableInterface
         {
             get;
-        } = registerableInterface;
+        } = registrableInterface;
 
         public Type TypeToRegister
         {
