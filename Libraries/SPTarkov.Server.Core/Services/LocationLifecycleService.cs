@@ -1147,71 +1147,17 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * Return the equipped items from a players inventory
- */
-    protected List<Item> GetEquippedGear(List<Item> items)
-    {
-        var inventorySlots = new HashSet<string>
-        {
-            "FirstPrimaryWeapon",
-            "SecondPrimaryWeapon",
-            "Holster",
-            "Scabbard",
-            "Compass",
-            "Headwear",
-            "Earpiece",
-            "Eyewear",
-            "FaceCover",
-            "ArmBand",
-            "ArmorVest",
-            "TacticalVest",
-            "Backpack",
-            "pocket1",
-            "pocket2",
-            "pocket3",
-            "pocket4",
-            "SpecialSlot1",
-            "SpecialSlot2",
-            "SpecialSlot3"
-        };
-
-        // Get an array of root player items
-        var inventoryItems = items.Where(item => inventorySlots.Contains(item.SlotId)).ToList();
-
-        // Loop through these items and get all of their children
-        var newItems = inventoryItems;
-        while (newItems.Count > 0)
-        {
-            var foundItems = new List<Item>();
-            foreach (var item in newItems)
-            {
-                // Find children of this item
-                foundItems.AddRange(items.Where(newItem => string.Equals(newItem.ParentId, item.Id, StringComparison.Ordinal)));
-            }
-
-            // Add these newly found items to our list of inventory items
-            inventoryItems.AddRange(inventoryItems);
-            inventoryItems.AddRange(foundItems);
-
-            // Now find the children of these items
-            newItems = foundItems;
-        }
-
-        return inventoryItems;
-    }
-
-/*
- * Checks to see if player survives. run through will return false
- */
+    /*
+     * Checks to see if player survives. run through will return false
+     */
     protected bool IsPlayerSurvived(EndRaidResult results)
     {
         return results.Result == ExitStatus.SURVIVED;
     }
 
-/*
- * Is the player dead after a raid - dead = anything other than "survived" / "runner"
- */
+    /*
+     * Is the player dead after a raid - dead = anything other than "survived" / "runner"
+     */
     protected bool IsPlayerDead(EndRaidResult results)
     {
         var deathEnums = new List<ExitStatus>
