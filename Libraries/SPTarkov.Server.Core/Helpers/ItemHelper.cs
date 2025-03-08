@@ -1080,6 +1080,11 @@ public class ItemHelper(
         }
     }
 
+    /// <summary>
+    /// Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.)
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns></returns>
     public List<Item> ReplaceIDs(List<Item> items)
     {
         foreach (var item in items)
@@ -1112,10 +1117,10 @@ public class ItemHelper(
     /// <param name="pmcData">Player profile</param>
     /// <param name="insuredItems">Insured items that should not have their IDs replaced</param>
     /// <param name="fastPanel">Quick slot panel</param>
-    /// <returns>List<Item></returns>
+    /// <returns>Items</returns>
     public List<Item> ReplaceIDs(
         List<Item> originalItems,
-        PmcData? pmcData = null,
+        PmcData? pmcData,
         List<InsuredItem>? insuredItems = null,
         Dictionary<string, string>? fastPanel = null)
     {
