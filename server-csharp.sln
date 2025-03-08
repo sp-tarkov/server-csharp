@@ -3,27 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server", "SPTarkov.Server\SPTarkov.Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Libraries\Core\Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Core", "Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj", "{AC8643DC-8779-4B4A-BBDA-2D4CC466F765}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{6C0681F9-4013-4579-82DA-0A9297984FD3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleMods", "ExampleMods\ExampleMods.csproj", "{0A144F80-31B1-4CA0-AB98-1DC77169A56D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{587959C2-5AFA-4B77-B327-566610F9A289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptDependencyInjection", "Libraries\SptDependencyInjection\SptDependencyInjection.csproj", "{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.DI", "Libraries\SPTarkov.DI\SPTarkov.DI.csproj", "{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemTplGenerator", "Tools\ItemTplGenerator\ItemTplGenerator.csproj", "{00897F10-1AB3-4DC7-8DF9-5EA1D0289ACF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptCommon", "SptCommon\SptCommon.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Common", "Libraries\SPTarkov.Common\SPTarkov.Common.csproj", "{DB049C81-DEC0-490D-AC06-7AF4DC8C0571}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SptAssets", "Libraries\SptAssets\SptAssets.csproj", "{4B973AC0-0C60-4853-9AF7-7CB69127473E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server.Assets", "Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj", "{4B973AC0-0C60-4853-9AF7-7CB69127473E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideoutCraftQuestIdGenerator", "Tools\HideoutCraftQuestIdGenerator\HideoutCraftQuestIdGenerator.csproj", "{C24B1FEB-F8AC-434E-998D-5DA4D1687295}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{6884273A-72E9-4035-B5BE-EE101C69F5F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,10 +43,6 @@ Global
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6C0681F9-4013-4579-82DA-0A9297984FD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A144F80-31B1-4CA0-AB98-1DC77169A56D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B4AF50D-B2C6-47D1-B567-EA4560D8CBA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -67,6 +63,10 @@ Global
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

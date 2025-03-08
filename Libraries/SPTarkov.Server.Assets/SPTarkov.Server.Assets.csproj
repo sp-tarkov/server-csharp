@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <Import Project="..\..\Build.props" />
+
+  <PropertyGroup>
+    <PackageId>SPTarkov.Server.Assets</PackageId>
+    <Authors>Single Player Tarkov</Authors>
+    <Description>Asset library for the Single Player Tarkov server.</Description>
+    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <OutputType>Library</OutputType>
+    <ContentTargetFolders>content</ContentTargetFolders>
+    <RootNamespace>SptAssets</RootNamespace>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Content Include="Assets\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath=""/>
+  </ItemGroup>
+
+</Project>

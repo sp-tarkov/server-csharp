@@ -1,6 +1,5 @@
-using Core.Utils;
-using Core.Utils.Cloners;
-using Newtonsoft.Json.Linq;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Cloners;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;
@@ -8,7 +7,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public sealed class RandomUtilTests
 {
-    private RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil()));
+    private readonly RandomUtil _randomUtil = new(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil()));
 
     [TestMethod]
     public void GetIntTest()
@@ -18,7 +17,10 @@ public sealed class RandomUtilTests
         {
             var result = _randomUtil.GetInt(0, 10);
 
-            if (result < 0 || result > 10) Assert.Fail($"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}.");
+            if (result < 0 || result > 10)
+            {
+                Assert.Fail($"GetInt(0, 10) out of range. Expected range [0, 10] but was {result}.");
+            }
         }
     }
 
@@ -30,7 +32,10 @@ public sealed class RandomUtilTests
         {
             var result = _randomUtil.GetInt(1, 10, true);
 
-            if (result < 1 || result > 9) Assert.Fail($"GetInt(10) out of range. Expected range [1, 9] but was {result}.");
+            if (result < 1 || result > 9)
+            {
+                Assert.Fail($"GetInt(10) out of range. Expected range [1, 9] but was {result}.");
+            }
         }
     }
 
@@ -42,7 +47,10 @@ public sealed class RandomUtilTests
         {
             var result = _randomUtil.GetDouble(0D, 10D);
 
-            if (result is < 0d or >= 10d) Assert.Fail($"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}.");
+            if (result is < 0d or >= 10d)
+            {
+                Assert.Fail($"GetDouble(0d, 10d) out of range. Expected range [0.0d, 9.999d] but was {result}.");
+            }
         }
     }
 
@@ -111,14 +119,20 @@ public sealed class RandomUtilTests
         {
             var result = _randomUtil.RandInt(0, 10);
 
-            if (result < 0 || result > 9) Assert.Fail($"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}.");
+            if (result < 0 || result > 9)
+            {
+                Assert.Fail($"RandInt(0, 10) out of range. Expected range [0, 9] but was {result}.");
+            }
         }
 
         for (var i = 0; i < 100; i++)
         {
             var result = _randomUtil.RandInt(10);
 
-            if (result < 0 || result > 9) Assert.Fail($"RandInt(10, null) out of range. Expected range [0, 9] but was {result}.");
+            if (result < 0 || result > 9)
+            {
+                Assert.Fail($"RandInt(10, null) out of range. Expected range [0, 9] but was {result}.");
+            }
         }
     }
 
@@ -129,29 +143,48 @@ public sealed class RandomUtilTests
         {
             var result = _randomUtil.RandNum(0, 10, 15);
 
-            if (result < 0 || result >= 10) Assert.Fail($"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}.");
+            if (result < 0 || result >= 10)
+            {
+                Assert.Fail($"RandNum(0, 10) out of range. Expected range [0, 9.999d] but was {result}.");
+            }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)
+            {
                 Assert.Fail($"RandNum(0, 10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values.");
+            }
         }
 
         for (var i = 0; i < 10000; i++)
         {
             var result = _randomUtil.RandNum(10);
 
-            if (result < 0 || result >= 10) Assert.Fail($"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}.");
+            if (result < 0 || result >= 10)
+            {
+                Assert.Fail($"RandNum(10) out of range. Expected range [0, 9.999d] but was {result}.");
+            }
 
             if (_randomUtil.GetNumberPrecision(result) > RandomUtil.MaxSignificantDigits)
+            {
                 Assert.Fail($"RandNum(10) precision of {result} exceeds the allowable precision ({RandomUtil.MaxSignificantDigits}) for the given values.");
+            }
         }
     }
 
     [TestMethod]
     public void ShuffleTest()
     {
-        var testList = new List<int>()
+        var testList = new List<int>
         {
-            1, 2, 3, 4, 5, 6, 7, 8, 9, 10
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10
         };
 
         var orig = new List<int>(testList);

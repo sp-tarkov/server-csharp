@@ -1,7 +1,7 @@
-using Core.Models.Logging;
-using Core.Models.Spt.Logging;
-using Core.Models.Utils;
-using SptCommon.Annotations;
+using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Logging;
+using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Common.Annotations;
 
 namespace HideoutCraftQuestIdGenerator;
 
@@ -9,11 +9,12 @@ namespace HideoutCraftQuestIdGenerator;
 public class SptBasicLogger<T> : ISptLogger<T>
 {
     private readonly string categoryName;
+
     public SptBasicLogger()
     {
         categoryName = typeof(T).Name;
     }
-    
+
     public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null,
         Exception? ex = null)
     {

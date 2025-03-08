@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <Import Project="..\..\Build.props" />
+  
+  <PropertyGroup>
+    <PackageId>SPTarkov.Common</PackageId>
+    <Authors>Single Player Tarkov</Authors>
+    <Description>Common shared library for the Single Player Tarkov projects.</Description>
+    <Copyright>Copyright (c) Single Player Tarkov 2025</Copyright>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <PackageProjectUrl>https://sp-tarkov.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/sp-tarkov/server-csharp</RepositoryUrl>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SemanticVersioning" Version="3.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" Visible="false" PackagePath="" />
+  </ItemGroup>
+
+</Project>

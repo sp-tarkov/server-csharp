@@ -1,21 +1,11 @@
-using Core.Models.Logging;
-using Core.Models.Spt.Logging;
-using Core.Models.Utils;
+using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Logging;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace UnitTests.Mock;
 
 public class MockLogger<T> : ISptLogger<T>
 {
-    public void LogWithColor(
-        string data,
-        Exception? ex = null,
-        LogTextColor? textColor = null,
-        LogBackgroundColor? backgroundColor = null
-    )
-    {
-        Console.WriteLine(data);
-    }
-
     public void LogWithColor(string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null)
     {
         throw new NotImplementedException();
@@ -59,6 +49,16 @@ public class MockLogger<T> : ISptLogger<T>
     public bool IsLogEnabled(LogLevel level)
     {
         return true;
+    }
+
+    public void LogWithColor(
+        string data,
+        Exception? ex = null,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null
+    )
+    {
+        Console.WriteLine(data);
     }
 
     public void WriteToLogFile(object body)

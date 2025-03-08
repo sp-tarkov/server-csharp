@@ -1,4 +1,4 @@
-using Core.Utils;
+using SPTarkov.Server.Core.Utils;
 
 namespace UnitTests.Tests.Utils;
 
@@ -10,7 +10,12 @@ public class MathUtilTests
     [TestMethod]
     public void ListSumTest()
     {
-        var test = new List<double> { 1.1f, 2.1f, 3.3f };
+        var test = new List<double>
+        {
+            1.1f,
+            2.1f,
+            3.3f
+        };
         const double expected = 6.5f;
 
         var actual = _mathUtil.ListSum(test);
@@ -25,40 +30,88 @@ public class MathUtilTests
     [TestMethod]
     public void ListCumSumTest()
     {
-        var test = new List<double> { 1f, 2f, 3f, 4f };
-        var expected = new List<double> { 1f, 3f, 6f, 10f };
+        var test = new List<double>
+        {
+            1f,
+            2f,
+            3f,
+            4f
+        };
+        var expected = new List<double>
+        {
+            1f,
+            3f,
+            6f,
+            10f
+        };
 
         var actual = _mathUtil.ListCumSum(test);
 
         for (var i = 0; i < actual.Count; i++)
+        {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
+            {
                 Assert.Fail($"ListCumSum() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
+            }
+        }
     }
 
     [TestMethod]
     public void ListProductTest()
     {
-        var test = new List<double> { 1f, 2f, 3f, 4f };
-        var expected = new List<double> { 2f, 4f, 6f, 8f };
+        var test = new List<double>
+        {
+            1f,
+            2f,
+            3f,
+            4f
+        };
+        var expected = new List<double>
+        {
+            2f,
+            4f,
+            6f,
+            8f
+        };
 
         var actual = _mathUtil.ListProduct(test, 2);
 
         for (var i = 0; i < actual.Count; i++)
+        {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
+            {
                 Assert.Fail($"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
+            }
+        }
     }
 
     [TestMethod]
     public void ListAddTest()
     {
-        var test = new List<double> { 1f, 2f, 3f, 4f };
-        var expected = new List<double> { 3f, 4f, 5f, 6f };
+        var test = new List<double>
+        {
+            1f,
+            2f,
+            3f,
+            4f
+        };
+        var expected = new List<double>
+        {
+            3f,
+            4f,
+            5f,
+            6f
+        };
 
         var actual = _mathUtil.ListAdd(test, 2);
 
         for (var i = 0; i < actual.Count; i++)
+        {
             if (Math.Abs(expected[i] - actual[i]) > 0.00001f)
+            {
                 Assert.Fail($"ListProduct() Expected: {string.Join(", ", expected)}, Actual: {string.Join(", ", actual)}");
+            }
+        }
     }
 
     [TestMethod]

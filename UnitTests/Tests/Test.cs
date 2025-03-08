@@ -1,6 +1,5 @@
-using Core.Models.Spt.Server;
-using Core.Models.Spt.Templates;
-using Core.Utils;
+using SPTarkov.Server.Core.Models.Spt.Templates;
+using SPTarkov.Server.Core.Utils;
 using UnitTests.Mock;
 
 namespace UnitTests.Tests;

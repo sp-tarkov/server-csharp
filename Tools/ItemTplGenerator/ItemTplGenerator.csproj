@@ -1,19 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <ServerGarbageCollection>true</ServerGarbageCollection>
-        <EnableDefaultContentItems>false</EnableDefaultContentItems>
-        <TargetFramework>net9.0</TargetFramework>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
-        <OutputType>Exe</OutputType>
-    </PropertyGroup>
+  <Import Project="..\..\Build.props" />
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\Libraries\Core\Core.csproj" />
-      <ProjectReference Include="..\..\Libraries\SptAssets\SptAssets.csproj" />
-      <ProjectReference Include="..\..\Libraries\SptDependencyInjection\SptDependencyInjection.csproj" />
-      <ProjectReference Include="..\..\SptCommon\SptCommon.csproj" />
-    </ItemGroup>
+  <PropertyGroup>
+    <ServerGarbageCollection>true</ServerGarbageCollection>
+    <EnableDefaultContentItems>false</EnableDefaultContentItems>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Server.Assets\SPTarkov.Server.Assets.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
+  </ItemGroup>
 
 </Project>

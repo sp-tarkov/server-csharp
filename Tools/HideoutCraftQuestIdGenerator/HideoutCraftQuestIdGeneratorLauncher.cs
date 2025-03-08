@@ -1,6 +1,6 @@
-using Core.Utils;
+using SPTarkov.Server.Core.Utils;
 using Microsoft.Extensions.DependencyInjection;
-using SptDependencyInjection;
+using SPTarkov.DI;
 
 namespace HideoutCraftQuestIdGenerator;
 

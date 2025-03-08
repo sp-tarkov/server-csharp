@@ -1,14 +1,13 @@
-using Core.Callbacks;
-using Core.DI;
-using Core.Helpers;
-using Core.Models.Eft.Common.Tables;
-using Core.Models.Eft.Hideout;
-using Core.Models.Enums;
-using Core.Models.Utils;
-using Core.Servers;
-using Core.Services;
-using Core.Utils;
-using SptCommon.Annotations;
+using SPTarkov.Server.Core.DI;
+using SPTarkov.Server.Core.Helpers;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Eft.Hideout;
+using SPTarkov.Server.Core.Models.Enums;
+using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Servers;
+using SPTarkov.Server.Core.Services;
+using SPTarkov.Server.Core.Utils;
+using SPTarkov.Common.Annotations;
 using Path = System.IO.Path;
 
 namespace HideoutCraftQuestIdGenerator;
@@ -21,13 +20,10 @@ public class HideoutCraftQuestIdGenerator(
     DatabaseServer _databaseServer,
     LocaleService _localeService,
     ItemHelper _itemHelper,
-    IEnumerable<OnLoad> _onLoadComponents
+    IEnumerable<IOnLoad> _onLoadComponents
 )
 {
-    private readonly List<QuestProductionOutput> _questProductionOutputList = [];
-    private readonly Dictionary<string, string> _questProductionMap = new();
-
-    private readonly HashSet<string> _blacklistedProductions =
+    private static readonly HashSet<string> _blacklistedProductions =
     [
         "6617cdb6b24b0ea24505f618", // Old event quest production "Radio Repeater" alt recipe
         "66140c4a9688754de10dac07", // Old event quest production "Documents with decrypted data"
@@ -36,11 +32,14 @@ public class HideoutCraftQuestIdGenerator(
         "67093210d514d26f8408612b" // Old event quest production "TG-Vi-24 true vaccine"
     ];
 
-    private readonly Dictionary<string, string> _forcedQuestToProductionAssociations = new()
+    private static readonly Dictionary<string, string> _forcedQuestToProductionAssociations = new()
     {
         // KEY = PRODUCTION, VALUE = QUEST
         { "63a571802116d261d2336cd1", "625d6ffaf7308432be1d44c5" } // Network Provider - Part 2
     };
+
+    private readonly Dictionary<string, string> _questProductionMap = new();
+    private readonly List<QuestProductionOutput> _questProductionOutputList = [];
 
     public async Task Run()
     {
@@ -54,7 +53,7 @@ public class HideoutCraftQuestIdGenerator(
 
         // Figure out our source and target directories
         var projectDir = Directory.GetParent("./").Parent.Parent.Parent.Parent.Parent;
-        var productionPath = "Libraries\\SptAssets\\Assets\\database\\hideout\\production.json";
+        var productionPath = "Libraries\\SPTarkov.Server.Assets\\Assets\\database\\hideout\\production.json";
         var productionFilePath = Path.Combine(projectDir.FullName, productionPath);
 
         var updatedProductionJson = _jsonUtil.Serialize(_databaseServer.GetTables().Hideout.Production, true);
@@ -129,7 +128,8 @@ public class HideoutCraftQuestIdGenerator(
             if (_forcedQuestToProductionAssociations.TryGetValue(production.Id, out var associatedQuestIdToComplete))
             {
                 // Found one, move to next production
-                _logger.Success($"FORCED - Updated: {production.Id} {production.EndProduct} ({_itemHelper.GetItemName(production.EndProduct)}) with quantity: {production.Count} to target quest: {associatedQuestIdToComplete}"
+                _logger.Success(
+                    $"FORCED - Updated: {production.Id} {production.EndProduct} ({_itemHelper.GetItemName(production.EndProduct)}) with quantity: {production.Count} to target quest: {associatedQuestIdToComplete}"
                 );
                 questCompleteRequirements[0].QuestId = associatedQuestIdToComplete;
 
@@ -214,7 +214,21 @@ public class HideoutCraftQuestIdGenerator(
 
 public class QuestProductionOutput
 {
-    public string QuestId { get; set; }
-    public string ItemTemplate { get; set; }
-    public double Quantity { get; set; }
+    public string QuestId
+    {
+        get;
+        set;
+    }
+
+    public string ItemTemplate
+    {
+        get;
+        set;
+    }
+
+    public double Quantity
+    {
+        get;
+        set;
+    }
 }

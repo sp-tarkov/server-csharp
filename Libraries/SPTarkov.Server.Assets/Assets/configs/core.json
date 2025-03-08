@@ -1,0 +1,198 @@
+{
+    "sptVersion": "4.0.0",
+    "projectName": "SPT",
+    "compatibleTarkovVersion": "0.16.0.35392",
+    "serverName": "SPT Server",
+    "profileSaveIntervalSeconds": 15,
+    "sptFriendNickname": "SPT",
+    "allowProfileWipe": true,
+    "bsgLogging": {
+        "verbosity": 6,
+        "sendToServer": false
+    },
+    "release": {
+        "betaDisclaimerTimeoutDelay": 30
+    },
+    "fixes": {
+        "fixShotgunDispersion": true,
+        "removeModItemsFromProfile": false,
+        "removeInvalidTradersFromProfile": false,
+        "fixProfileBreakingInventoryItemIssues": false
+    },
+    "survey": {
+        "locale": {
+            "en": {
+                "question_1": "An update to a popular mod that makes the game more realistic has been released, which of the following actions on discord will you do?",
+                "question_1_answer_1": "Ignore the changelog",
+                "question_1_answer_2": "Ignore the readme",
+                "question_1_answer_3": "Ask in general chat why the guns dont shoot",
+                "question_1_answer_4": "Argue with general chat when they tell you to read the readme",
+                "question_1_answer_5": "Install as many mods as you can at the same time and get mad when everything breaks",
+                "question_1_answer_6": "Inform general chat of your displeasure and get mad when they laugh at you",
+                "question_1_answer_7": "Tag staff to inform them of your displeasure of a mod you don't like being released",
+                "question_1_answer_8": "DM the author informing them of your displeasure at their mods existence",
+                "question_1_answer_9": "DM the author and inform them you are going to sue them",
+                "question_1_answer_10": "Stalk the author and create dozens of hub accounts to message them",
+                
+				"question_2": "You want to download an older version of SPT but you have been informed old versions cannot be downloaded, what do you do?",
+                "question_2_answer_1": "Get mad",
+                "question_2_answer_2": "Get REAL mad and voice your opinion in every possible chat you can",
+                "question_2_answer_3": "Travel around various discords informing anyone who listens what bad people SPT are",
+                "question_2_answer_4": "Create dozens of alt accounts to DM staff and inform them of your displeasure",
+                "question_2_answer_5": "Ask when the old SPT verison is coming back every day for weeks",
+                "title": "Feedback survey",
+                "time": "About 1 minute",
+                "description": "This was the second SPT survey, what a valuable use of 20 minutes that was.",
+                "farewell": "You knew the first survey didnt do anything yet you still submitted the second one, you're quite an odd one."
+            }
+        },
+        "survey": {
+            "id": 1,
+            "welcomePageData": {
+                "titleLocaleKey": "title",
+                "timeLocaleKey": "time",
+                "descriptionLocaleKey": "description"
+            },
+            "farewellPageData": {
+                "textLocaleKey": "farewell"
+            },
+            "pages": [[0, 1]],
+            "questions": [
+                {
+                    "id": 0,
+                    "sortIndex": 1,
+                    "titleLocaleKey": "question_1",
+                    "hintLocaleKey": "",
+                    "answerLimit": 10,
+                    "answerType": "MultiOption",
+                    "answers": [
+                        {
+                            "id": 0,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_1"
+                        },
+                        {
+                            "id": 1,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_2"
+                        },
+                        {
+                            "id": 2,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_3"
+                        },
+                        {
+                            "id": 3,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_4"
+                        },
+                        {
+                            "id": 4,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_5"
+                        },
+                        {
+                            "id": 5,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_6"
+                        },
+                        {
+                            "id": 6,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_7"
+                        },
+                        {
+                            "id": 7,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_8"
+                        },
+                        {
+                            "id": 8,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_9"
+                        },
+                        {
+                            "id": 9,
+                            "questionId": 0,
+                            "sortIndex": 1,
+                            "localeKey": "question_1_answer_10"
+                        }
+                    ]
+                },
+                {
+                    "id": 1,
+                    "sortIndex": 1,
+                    "titleLocaleKey": "question_2",
+                    "hintLocaleKey": "",
+                    "answerLimit": 5,
+                    "answerType": "SingleOption",
+                    "answers": [
+                        {
+                            "id": 0,
+                            "questionId": 1,
+                            "sortIndex": 1,
+                            "localeKey": "question_2_answer_1"
+                        },
+                        {
+                            "id": 1,
+                            "questionId": 1,
+                            "sortIndex": 1,
+                            "localeKey": "question_2_answer_2"
+                        },
+                        {
+                            "id": 2,
+                            "questionId": 1,
+                            "sortIndex": 1,
+                            "localeKey": "question_2_answer_3"
+                        },
+                        {
+                            "id": 3,
+                            "questionId": 1,
+                            "sortIndex": 1,
+                            "localeKey": "question_2_answer_4"
+                        },
+                        {
+                            "id": 4,
+                            "questionId": 1,
+                            "sortIndex": 1,
+                            "localeKey": "question_2_answer_5"
+                        }
+                    ]
+                }
+            ],
+            "isNew": false
+        }
+    },
+    "features": {
+        "compressProfile": false,
+        "chatbotFeatures": {
+            "sptFriendGiftsEnabled": true,
+            "commandoFeatures": {
+                "giveCommandEnabled": true
+            },
+            "commandUseLimits": {
+                "StashRows": 15
+            },
+            "ids": {
+                "commando": "6723fd51c5924c57ce0ca01e",
+                "spt": "6723fd51c5924c57ce0ca01f"
+            },
+			"enabledBots": {
+				"6723fd51c5924c57ce0ca01e": true,
+				"6723fd51c5924c57ce0ca01f": true
+			}
+        },
+        "createNewProfileTypesBlacklist": [],
+		"achievementProfileIdBlacklist": []
+    },
+    "customWatermarkLocaleKeys": []
+}
