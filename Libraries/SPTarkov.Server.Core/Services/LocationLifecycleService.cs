@@ -328,7 +328,7 @@ public class LocationLifecycleService
      * @param generateLoot OPTIONAL - Should loot be generated for the map before being returned
      * @returns LocationBase
      */
-    protected LocationBase GenerateLocationAndLoot(string name, bool generateLoot = true)
+    public virtual LocationBase GenerateLocationAndLoot(string name, bool generateLoot = true)
     {
         var location = _databaseService.GetLocation(name);
         var locationBaseClone = _cloner.Clone(location.Base);
