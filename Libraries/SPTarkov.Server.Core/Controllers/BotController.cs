@@ -223,7 +223,7 @@ public class BotController(
     /// <returns></returns>
     protected List<BotBase> GenerateBotWave(GenerateCondition generateRequest, BotGenerationDetails botGenerationDetails, string sessionId)
     {
-        var isEventBot = generateRequest.Role?.ToLower().Contains("event");
+        var isEventBot = generateRequest.Role?.Contains("event", StringComparison.OrdinalIgnoreCase);
         if (isEventBot.GetValueOrDefault(false))
         {
             // Add eventRole data + reassign role property to be base type
