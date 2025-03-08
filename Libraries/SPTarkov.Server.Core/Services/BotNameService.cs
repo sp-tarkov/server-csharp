@@ -21,7 +21,7 @@ public class BotNameService(
 )
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected object _lock = new();
+    protected readonly Lock _lockObject = new();
     protected HashSet<string> _usedNameCache = new();
 
     /// <summary>
@@ -113,7 +113,7 @@ public class BotNameService(
 
     private bool AddNameToCache(string name)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return _usedNameCache.Add(name);
         }
@@ -121,7 +121,7 @@ public class BotNameService(
 
     protected bool CacheContainsName(string name)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return _usedNameCache.Contains(name);
         }

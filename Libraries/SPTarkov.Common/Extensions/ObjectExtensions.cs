@@ -6,7 +6,7 @@ namespace SPTarkov.Common.Extensions;
 public static class ObjectExtensions
 {
     private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _indexedProperties = new();
-    private static readonly object _indexedPropertiesLockObject = new();
+    private static readonly Lock _indexedPropertiesLockObject = new();
 
     private static bool TryGetCachedProperty(Type type, string key, out PropertyInfo cachedProperty)
     {

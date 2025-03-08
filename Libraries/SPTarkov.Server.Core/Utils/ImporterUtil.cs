@@ -52,7 +52,7 @@ public class ImporterUtil
     )
     {
         var tasks = new List<Task>();
-        var dictionaryLock = new object();
+        var dictionaryLock = new Lock();
         var result = Activator.CreateInstance(loadedType);
 
         // get all filepaths
@@ -93,7 +93,7 @@ public class ImporterUtil
         Action<string>? onReadCallback,
         Action<string, object>? onObjectDeserialized,
         object result,
-        object dictionaryLock
+        Lock dictionaryLock
     )
     {
         try
@@ -135,7 +135,7 @@ public class ImporterUtil
         string directory,
         Type loadedType,
         object result,
-        object dictionaryLock
+        Lock dictionaryLock
     )
     {
         try

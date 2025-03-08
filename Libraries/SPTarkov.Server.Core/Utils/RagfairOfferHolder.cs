@@ -20,14 +20,14 @@ public class RagfairOfferHolder(
 {
     protected int _maxOffersPerTemplate = configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected Dictionary<string, RagfairOffer> _offersById = new();
-    protected object _offersByIdLock = new();
+    protected readonly Lock _offersByIdLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
-    protected object _offersByTemplateLock = new();
+    protected readonly Lock _offersByTemplateLock = new();
     protected Dictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
-    protected object _offersByTraderLock = new();
+    protected readonly Lock _offersByTraderLock = new();
 
     protected HashSet<string> _expiredOfferIds = [];
-    protected object _expiredOfferIdsLock = new();
+    protected readonly Lock _expiredOfferIdsLock = new();
 
     /// <summary>
     /// Get a ragfair offer by its id

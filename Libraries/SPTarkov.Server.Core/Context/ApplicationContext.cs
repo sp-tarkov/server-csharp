@@ -7,11 +7,11 @@ public class ApplicationContext
 {
     protected const short MaxSavedValues = 10;
     protected readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
-    private readonly Lock variablesLock = new();
+    private readonly Lock _lockObject = new();
 
     public ContextVariable? GetLatestValue(ContextVariableType type)
     {
-        lock (variablesLock)
+        lock (_lockObject)
         {
             if (variables.TryGetValue(type, out var savedValues))
             {
@@ -24,7 +24,7 @@ public class ApplicationContext
 
     public ICollection<ContextVariable> GetValues(ContextVariableType type)
     {
-        lock (variablesLock)
+        lock (_lockObject)
         {
             var values = new List<ContextVariable>();
             if (variables.TryGetValue(type, out var savedValues))
@@ -38,7 +38,7 @@ public class ApplicationContext
 
     public void AddValue(ContextVariableType type, object value)
     {
-        lock (variablesLock)
+        lock (_lockObject)
         {
             if (!variables.TryGetValue(type, out var savedValues))
             {
@@ -57,7 +57,7 @@ public class ApplicationContext
 
     public void ClearValues(ContextVariableType type)
     {
-        lock (variablesLock)
+        lock (_lockObject)
         {
             variables.Remove(type);
         }

@@ -12,7 +12,7 @@ namespace SPTarkov.Server.Core.Services;
 [Injectable(InjectionType.Singleton)]
 public class BotEquipmentModPoolService
 {
-    private readonly Lock _lock = new();
+    private readonly Lock _lockObject = new();
     protected bool _armorPoolGenerated;
     protected BotConfig _botConfig;
     protected ConfigServer _configServer;
@@ -121,7 +121,7 @@ public class BotEquipmentModPoolService
 
     private bool SetContainsTpl(HashSet<string> itemSet, string tpl)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return itemSet.Contains(tpl);
         }
@@ -129,7 +129,7 @@ public class BotEquipmentModPoolService
 
     private bool AddTplToSet(HashSet<string> itemSet, string itemToAddTpl)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return itemSet.Add(itemToAddTpl);
         }
@@ -137,7 +137,7 @@ public class BotEquipmentModPoolService
 
     private bool InitSetInDict(ConcurrentDictionary<string, HashSet<string>> dictionary, string slotName)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return dictionary.TryAdd(slotName, []);
         }
