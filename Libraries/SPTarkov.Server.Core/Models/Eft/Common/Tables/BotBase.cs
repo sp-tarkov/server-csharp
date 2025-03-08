@@ -1841,7 +1841,7 @@ public record BotHideoutArea
     }
 
     [JsonPropertyName("level")]
-    public double? Level
+    public int? Level
     {
         get;
         set;
@@ -1865,7 +1865,7 @@ public record BotHideoutArea
     /// Must be integer
     /// </summary>
     [JsonPropertyName("completeTime")]
-    public double? CompleteTime
+    public int? CompleteTime
     {
         get;
         set;

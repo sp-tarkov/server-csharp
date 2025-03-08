@@ -236,7 +236,7 @@ public class InventoryController(
                         var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == hideoutAreaType);
                         if (desiredArea is not null)
                         {
-                            desiredArea.Level = newValue;
+                            desiredArea.Level = (int?)newValue;
                         }
 
                         break;
