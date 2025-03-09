@@ -322,6 +322,12 @@ public class LocationLifecycleService
         }
     }
 
+    /// <summary>
+    /// Generate a maps base location (cloned) and loot
+    /// </summary>
+    /// <param name="name"> Map name </param>
+    /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
+    /// <returns> LocationBase </returns>
     /// <returns> LocationBase </returns>
     /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
     /// <param name="name"> Map name </param>
@@ -1178,8 +1184,8 @@ public class LocationLifecycleService
     }
 
     /// <summary>
-    /// </summary>
     /// Is the player dead after a raid - dead = anything other than "survived" / "runner"
+    /// </summary>
     /// <param name="results"> Post raid request </param>
     /// <returns> True if dead </returns>
     protected bool IsPlayerDead(EndRaidResult results)
