@@ -14,6 +14,13 @@ public record RaidSettings
         set;
     }
 
+    [JsonPropertyName("onlinePveRaidStates")]
+    public Dictionary<string, bool> OnlinePveRaidStates
+    {
+        get;
+        set;
+    } = [];
+
     [JsonPropertyName("location")]
     public string? Location
     {
