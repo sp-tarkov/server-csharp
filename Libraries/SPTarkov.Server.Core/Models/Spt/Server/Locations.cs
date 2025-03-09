@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -7,7 +8,7 @@ public record Locations
 {
     // sometimes we get the key or value given so save changing logic in each place
     // have it key both
-    private static readonly Dictionary<string, string> _locationMappings = new()
+    private readonly FrozenDictionary<string, string> _locationMappings = new Dictionary<string, string>
     {
         // EFT
         { "factory4_day", "Factory4Day" },
@@ -48,7 +49,7 @@ public record Locations
         { "Woods", "Woods" },
         { "Sandbox", "Sandbox" },
         { "SandboxHigh", "SandboxHigh" }
-    };
+    }.ToFrozenDictionary();
 
     private Dictionary<string, Eft.Common.Location>? _locationDictionaryCache;
 
@@ -209,7 +210,7 @@ public record Locations
     /// <returns></returns>
     public string GetMappedKey(string key)
     {
-        return _locationMappings.TryGetValue(key, out var value) ? value : key;
+        return _locationMappings.GetValueOrDefault(key, key);
     }
 
     private void HydrateDictionary()

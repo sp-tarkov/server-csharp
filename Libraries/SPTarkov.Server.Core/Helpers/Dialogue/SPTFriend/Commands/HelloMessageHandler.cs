@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
@@ -12,7 +13,7 @@ public class HelloMessageHandler(
     MailSendService _mailSendService,
     RandomUtil _randomUtil) : IChatMessageHandler
 {
-    protected static readonly HashSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
+    protected static readonly FrozenSet<string> _listOfGreetings = ["hello", "hi", "sup", "yo", "hey", "bonjour"];
 
 
     public int GetPriority()

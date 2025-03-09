@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 
@@ -29,7 +30,7 @@ public class GiveSptCommand(
     private static readonly Regex _commandRegex = new(@"^spt give (((([a-z]{2,5}) )?""(.+)""|\w+) )?([0-9]+)$");
 
     // Exception for flares
-    protected static readonly HashSet<string> _excludedPresetItems =
+    protected static readonly FrozenSet<string> _excludedPresetItems =
     [
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_RED,
         ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_GREEN,

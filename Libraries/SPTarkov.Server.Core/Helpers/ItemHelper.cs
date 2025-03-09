@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -27,7 +28,7 @@ public class ItemHelper(
     ICloner _cloner
 )
 {
-    protected static readonly HashSet<string> _defaultInvalidBaseTypes =
+    protected static readonly FrozenSet<string> _defaultInvalidBaseTypes =
     [
         BaseClasses.LOOT_CONTAINER,
         BaseClasses.MOB_CONTAINER,
@@ -38,7 +39,7 @@ public class ItemHelper(
         BaseClasses.POCKETS
     ];
 
-    protected static readonly HashSet<string> _slotsAsStrings =
+    protected static readonly FrozenSet<string> _slotsAsStrings =
     [
         EquipmentSlots.Headwear.ToString(),
         EquipmentSlots.Earpiece.ToString(),
@@ -56,7 +57,7 @@ public class ItemHelper(
         EquipmentSlots.Scabbard.ToString()
     ];
 
-    protected static readonly HashSet<string> _dogTagTpls =
+    protected static readonly FrozenSet<string> _dogTagTpls =
     [
         ItemTpl.BARTER_DOGTAG_BEAR,
         ItemTpl.BARTER_DOGTAG_BEAR_EOD,
@@ -70,7 +71,7 @@ public class ItemHelper(
         ItemTpl.BARTER_DOGTAG_USEC_PRESTIGE_2
     ];
 
-    protected static readonly HashSet<string> _softInsertIds =
+    protected static readonly FrozenSet<string> _softInsertIds =
     [
         "groin",
         "groin_back",
@@ -88,7 +89,7 @@ public class ItemHelper(
         "helmet_ears"
     ];
 
-    protected static readonly HashSet<string> _removablePlateSlotIds =
+    protected static readonly FrozenSet<string> _removablePlateSlotIds =
     [
         "front_plate",
         "back_plate",
@@ -451,7 +452,7 @@ public class ItemHelper(
 
     // Get all soft insert slot ids
     // @returns A List of soft insert ids (e.g. soft_armor_back, helmet_top)
-    public HashSet<string> GetSoftInsertSlotIds()
+    public FrozenSet<string> GetSoftInsertSlotIds()
     {
         return _softInsertIds;
     }
@@ -1980,7 +1981,7 @@ public class ItemHelper(
 
     // Get a list of slot names that hold removable plates
     // Returns Array of slot ids (e.g. front_plate)
-    public HashSet<string> GetRemovablePlateSlotIds()
+    public FrozenSet<string> GetRemovablePlateSlotIds()
     {
         return _removablePlateSlotIds;
     }

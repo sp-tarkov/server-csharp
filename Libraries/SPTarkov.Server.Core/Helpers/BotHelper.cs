@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -18,7 +19,7 @@ public class BotHelper(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected static readonly HashSet<string?> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
     protected Dictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>

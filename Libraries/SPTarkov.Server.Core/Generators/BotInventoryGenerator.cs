@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -39,7 +40,7 @@ public class BotInventoryGenerator(
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
-    private static readonly HashSet<EquipmentSlots> _excludedEquipmentSlots =
+    private static readonly FrozenSet<EquipmentSlots> _excludedEquipmentSlots =
     [
         EquipmentSlots.Pockets,
         EquipmentSlots.FirstPrimaryWeapon,

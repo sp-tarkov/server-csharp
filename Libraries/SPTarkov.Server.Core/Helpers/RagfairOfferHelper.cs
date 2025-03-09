@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -43,7 +44,7 @@ public class RagfairOfferHelper(
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
-    protected static readonly HashSet<string> _currencies = ["all", "RUB", "USD", "EUR"];
+    protected static readonly FrozenSet<string> _currencies = ["all", "RUB", "USD", "EUR"];
 
     /// <summary>
     ///     Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see

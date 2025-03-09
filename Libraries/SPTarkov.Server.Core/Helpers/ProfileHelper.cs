@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -27,7 +28,7 @@ public class ProfileHelper(
     ConfigServer _configServer
 )
 {
-    protected static readonly HashSet<string> gameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
+    protected static readonly FrozenSet<string> gameEditionsWithFreeRefresh = ["edge_of_darkness", "unheard_edition"];
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
