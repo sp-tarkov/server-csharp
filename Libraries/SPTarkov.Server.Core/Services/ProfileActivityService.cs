@@ -10,12 +10,12 @@ public class ProfileActivityService(
 {
     private readonly Dictionary<string, long> profileActivityTimestamps = new();
 
-    /**
-     * Was the requested profile active in the last requested minutes
-     * @param sessionId Profile to check
-     * @param minutes Minutes to check for activity in
-     * @returns True when profile was active within past x minutes
-     */
+    /// <summary>
+    /// Was the requested profile active in the last requested minutes
+    /// </summary>
+    /// <param name="sessionId"> Profile to check </param>
+    /// <param name="minutes"> Minutes to check for activity in </param>
+    /// <returns> True when profile was active within past x minutes </returns>
     public bool ActiveWithinLastMinutes(string sessionId, int minutes)
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
@@ -27,11 +27,11 @@ public class ProfileActivityService(
         return currentTimestamp - storedActivityTimestamp < minutes * 60;
     }
 
-    /**
-     * Get a list of profile ids that were active in the last x minutes
-     * @param minutes How many minutes from now to search for profiles
-     * @returns List of profile ids
-     */
+    /// <summary>
+    /// Get a list of profile ids that were active in the last x minutes
+    /// </summary>
+    /// <param name="minutes"> How many minutes from now to search for profiles </param>
+    /// <returns> List of profile ids </returns>
     public List<string> GetActiveProfileIdsWithinMinutes(int minutes)
     {
         var currentTimestamp = _timeUtil.GetTimeStamp();
@@ -55,10 +55,10 @@ public class ProfileActivityService(
         return result;
     }
 
-    /**
-     * Update the timestamp a profile was last observed active
-     * @param sessionId Profile to update
-     */
+    /// <summary>
+    /// Update the timestamp a profile was last observed active
+    /// </summary>
+    /// <param name="sessionId"> Profile to update </param>
     public void SetActivityTimestamp(string sessionId)
     {
         profileActivityTimestamps[sessionId] = _timeUtil.GetTimeStamp();

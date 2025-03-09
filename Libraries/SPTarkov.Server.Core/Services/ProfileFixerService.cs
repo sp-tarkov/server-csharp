@@ -401,11 +401,11 @@ public class ProfileFixerService(
         }
     }
 
-    /**
-     * Remove any entries from `pmcProfile.InsuredItems` that do not have a corresponding
-     * `pmcProfile.Inventory.items` entry
-     * @param pmcProfile
-     */
+    /// <summary>
+    /// Remove any entries from `pmcProfile.InsuredItems` that do not have a corresponding
+    /// `pmcProfile.Inventory.items` entry
+    /// </summary>
+    /// <param name="pmcProfile"> PMC Profile to fix </param>
     protected void FixOrphanedInsurance(PmcData pmcProfile) {
 
         // Check if the player inventory contains this item
@@ -526,10 +526,10 @@ public class ProfileFixerService(
         return slots;
     }
 
-    /**
-     * Check for and cap profile skills at 5100.
-     * @param pmcProfile profile to check and fix
-     */
+    /// <summary>
+    /// Check for and cap profile skills at 5100.
+    /// </summary>
+    /// <param name="pmcProfile"> Profile to check and fix </param>
     protected void CheckForSkillsOverMaxLevel(PmcData pmcProfile)
     {
         var skills = pmcProfile.Skills.Common;
@@ -540,11 +540,11 @@ public class ProfileFixerService(
         }
     }
 
-    /**
-     * Checks profile inventory for items that do not exist inside the items db
-     * @param sessionId Session id
-     * @param pmcProfile Profile to check inventory of
-     */
+    /// <summary>
+    /// Checks profile inventory for items that do not exist inside the items DB
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="fullProfile"> Profile to check inventory of </param>
     public void CheckForOrphanedModdedItems(string sessionId, SptProfile fullProfile)
     {
         var itemsDb = _databaseService.GetItems();
@@ -720,12 +720,13 @@ public class ProfileFixerService(
         }
     }
 
-    /**
-     * @param buildType The type of build, used for logging only
-     * @param build The build to check for invalid items
-     * @param itemsDb The items database to use for item lookup
-     * @returns True if the build should be removed from the build list, false otherwise
-     */
+    /// <summary>
+    /// Check whether a weapon build should be removed from the equipment list.
+    /// </summary>
+    /// <param name="buildType"> The type of build, used for logging only </param>
+    /// <param name="build"> The build to check for invalid items </param>
+    /// <param name="itemsDb"> The items database to use for item lookup </param>
+    /// <returns> True if the build should be removed from the build list, false otherwise </returns>
     protected bool ShouldRemoveWeaponEquipmentBuild(
         string buildType,
         UserBuild build,
@@ -773,11 +774,12 @@ public class ProfileFixerService(
         return false;
     }
 
-    /**
-     * @param magazineBuild The magazine build to check for validity
-     * @param itemsDb The items database to use for item lookup
-     * @returns True if the build should be removed from the build list, false otherwise
-     */
+    /// <summary>
+    /// Checks whether magazine build shou8ld be removed form the build list.
+    /// </summary>
+    /// <param name="magazineBuild"> The magazine build to check for validity </param>
+    /// <param name="itemsDb"> The items database to use for item lookup </param>
+    /// <returns> True if the build should be removed from the build list, false otherwise </returns>
     protected bool ShouldRemoveMagazineBuild(
         MagazineBuild magazineBuild,
         Dictionary<string, TemplateItem> itemsDb)
@@ -809,11 +811,11 @@ public class ProfileFixerService(
         return false;
     }
 
-    /**
-     * REQUIRED for dev profiles
-     * Iterate over players hideout areas and find what's built, look for missing bonuses those areas give and add them if missing
-     * @param pmcProfile Profile to update
-     */
+    /// <summary>
+    /// REQUIRED for dev profiles <br/>
+    /// Iterate over players hideout areas and find what's built, look for missing bonuses those areas give and add them if missing
+    /// </summary>
+    /// <param name="pmcProfile"> Profile to update </param>
     public void AddMissingHideoutBonusesToProfile(PmcData pmcProfile)
     {
         var dbHideoutAreas = _databaseService.GetHideout().Areas;
@@ -869,11 +871,12 @@ public class ProfileFixerService(
         }
     }
 
-    /**
-     * @param profileBonuses bonuses from profile
-     * @param bonus bonus to find
-     * @returns matching bonus
-     */
+    /// <summary>
+    /// Finds a bonus in a profile
+    /// </summary>
+    /// <param name="profileBonuses"> Bonuses from profile </param>
+    /// <param name="bonus"> Bonus to find </param>
+    /// <returns> Matching bonus </returns>
     protected Bonus? GetBonusFromProfile(List<Bonus>? profileBonuses, Bonus bonus)
     {
         // match by id first, used by "TextBonus" bonuses

@@ -8,11 +8,11 @@ public class PlayerService(
     DatabaseService _databaseService
 )
 {
-    /**
-     * Get level of player
-     * @param pmcData Player profile
-     * @returns Level of player
-     */
+    /// <summary>
+    /// Get level of player
+    /// </summary>
+    /// <param name="pmcData"> Player profile </param>
+    /// <returns> Level of the player </returns>
     public int? CalculateLevel(PmcData pmcData)
     {
         var accExp = 0;

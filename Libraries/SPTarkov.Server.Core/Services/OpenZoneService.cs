@@ -5,6 +5,9 @@ using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
+/// <summary>
+/// Service for adding new zones to a maps OpenZones property.
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class OpenZoneService(
     ISptLogger<OpenZoneService> _logger,
