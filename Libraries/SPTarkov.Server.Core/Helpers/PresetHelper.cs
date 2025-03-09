@@ -148,6 +148,11 @@ public class PresetHelper(
             return null;
         }
 
+        if (presetDetails.DefaultId is null)
+        {
+            return null;
+        }
+
         // Use default preset id from above cache to find the weapon/equipment preset
         if (!_defaultWeaponPresets.TryGetValue(presetDetails.DefaultId, out var defaultPreset))
         {
