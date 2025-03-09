@@ -45,6 +45,9 @@ public static class Program
             // Initialize Watermak
             watermark?.Initialize();
 
+            var appContext = serviceProvider.GetService<ApplicationContext>();
+            appContext?.AddValue(ContextVariableType.SERVICE_PROVIDER, serviceProvider);
+
             // Initialize PreSptMods
             var preSptLoadMods = serviceProvider.GetServices<IPreSptLoadMod>();
             foreach (var preSptLoadMod in preSptLoadMods)
@@ -52,7 +55,6 @@ public static class Program
                 preSptLoadMod.PreSptLoad();
             }
 
-            var appContext = serviceProvider.GetService<ApplicationContext>();
             // Add the Loaded Mod Assemblies for later
             appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, mods);
             // This is the builder that will get use by the HttpServer to start up the web application

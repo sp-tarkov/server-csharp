@@ -9,6 +9,22 @@ public class ApplicationContext
     protected readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
     private readonly Lock _lockObject = new();
 
+    private static ApplicationContext? _applicationContext;
+
+    /// <summary>
+    /// When ApplicationContext gets created by the DI container we store the singleton reference so we can provide it
+    /// statically for harmony patches!
+    /// </summary>
+    public ApplicationContext()
+    {
+        _applicationContext = this;
+    }
+
+    public static ApplicationContext? GetInstance()
+    {
+        return _applicationContext;
+    }
+
     public ContextVariable? GetLatestValue(ContextVariableType type)
     {
         lock (_lockObject)
