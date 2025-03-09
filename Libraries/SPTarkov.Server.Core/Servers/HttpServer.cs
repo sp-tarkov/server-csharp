@@ -133,7 +133,16 @@ public class HttpServer(
         }
 
 
-        _httpListeners.SingleOrDefault(l => l.CanHandle(sessionId, context.Request))?.Handle(sessionId, context.Request, context.Response);
+        try
+        {
+            _httpListeners.SingleOrDefault(l => l.CanHandle(sessionId, context.Request))?.Handle(sessionId, context.Request, context.Response);
+        }
+        catch (Exception ex)
+        {
+            _logger.Critical(ex.Message);
+            _logger.Critical(ex.StackTrace);
+        }
+
         // This http request would be passed through the SPT Router and handled by an ICallback
     }
 
