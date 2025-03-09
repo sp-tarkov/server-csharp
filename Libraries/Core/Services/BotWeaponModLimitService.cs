@@ -56,10 +56,10 @@ public class BotWeaponModLimitService(
     }
 
     /// <summary>
-    ///     Check if weapon mod item is on limited list + has surpassed the limit set for it
-    ///     Exception: Always allow ncstar backup mount
-    ///     Exception: Always allow scopes with a scope for a parent
-    ///     Exception: Always disallow mounts that hold only scopes once scope limit reached
+    ///     Check if weapon mod item is on limited list + has surpassed the limit set for it <br/>
+    ///     Exception: Always allow ncstar backup mount <br/>
+    ///     Exception: Always allow scopes with a scope for a parent <br/>
+    ///     Exception: Always disallow mounts that hold only scopes once scope limit reached <br/>
     ///     Exception: Always disallow mounts that hold only flashlights once flashlight limit reached
     /// </summary>
     /// <param name="botRole">role the bot has e.g. assault</param>

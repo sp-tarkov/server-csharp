@@ -123,7 +123,12 @@ public class CircleOfCultistService(
 
         return output;
     }
-
+    /// <summary>
+    /// Get the reward amount multiple value based on players hideout management skill + configs rewardPriceMultiplerMinMax values
+    /// </summary>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="cultistCircleSettings"> Circle config settings </param>
+    /// <returns> Reward Amount Multiplier </returns>
     private double GetRewardAmountMultiplier(PmcData pmcData, CultistCircleSettings cultistCircleSettings)
     {
         // Get a randomised value to multiply the sacrificed rouble cost by

@@ -12,6 +12,9 @@ using LogLevel = Core.Models.Spt.Logging.LogLevel;
 
 namespace Core.Services;
 
+/// <summary>
+/// Stores flea prices for items as well as methods to interact with them.
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService(
     ISptLogger<RagfairPriceService> _logger,
@@ -112,11 +115,11 @@ public class RagfairPriceService(
         return offerItems.Sum(item => GetFleaPriceForItem(item.Template));
     }
 
-    /**
-     * get the dynamic (flea) price for an item
-     * @param itemTpl item template id to look up
-     * @returns price in roubles
-     */
+    /// <summary>
+    /// Get the dynamic (flea) price for an item
+    /// </summary>
+    /// <param name="itemTpl"> Item template id to look up </param>
+    /// <returns> Price in roubles </returns>
     public double? GetDynamicPriceForItem(string itemTpl)
     {
         _databaseService.GetPrices().TryGetValue(itemTpl, out var value);

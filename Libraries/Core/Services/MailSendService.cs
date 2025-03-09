@@ -31,15 +31,17 @@ public class MailSendService(
     protected HashSet<MessageType> _messageTypes = [MessageType.NPC_TRADER, MessageType.FLEAMARKET_MESSAGE];
     protected HashSet<string> _slotNames = ["hideout", "main"];
 
-    /**
-     * Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale
-     * @param sessionId The session ID to send the message to
-     * @param trader The trader sending the message
-     * @param messageType What type the message will assume (e.g. QUEST_SUCCESS)
-     * @param message Text to send to the player
-     * @param items Optional items to send to player
-     * @param maxStorageTimeSeconds Optional time to collect items before they expire
-     */
+    /// <summary>
+    /// Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale
+    /// </summary>
+    /// <param name="sessionId"> The session ID to send the message to </param>
+    /// <param name="trader"> The trader sending the message </param>
+    /// <param name="messageType"> What type the message will assume (e.g. QUEST_SUCCESS) </param>
+    /// <param name="message"> Text to send to the player </param>
+    /// <param name="items"> Optional items to send to player </param>
+    /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
+    /// <param name="systemData"> </param>
+    /// <param name="ragfair"> </param>
     public void SendDirectNpcMessageToPlayer(
         string sessionId,
         string? trader,
@@ -97,15 +99,17 @@ public class MailSendService(
         SendMessageToPlayer(details);
     }
 
-    /**
-     * Send a message from an NPC (e.g. prapor) to the player with or without items
-     * @param sessionId The session ID to send the message to
-     * @param trader The trader sending the message
-     * @param messageType What type the message will assume (e.g. QUEST_SUCCESS)
-     * @param messageLocaleId The localised text to send to player
-     * @param items Optional items to send to player
-     * @param maxStorageTimeSeconds Optional time to collect items before they expire
-     */
+    /// <summary>
+    /// Send a message from an NPC (e.g. prapor) to the player with or without items
+    /// </summary>
+    /// <param name="sessionId"> The session ID to send the message to </param>
+    /// <param name="trader"> The trader sending the message </param>
+    /// <param name="messageType"> What type the message will assume (e.g. QUEST_SUCCESS) </param>
+    /// <param name="messageLocaleId"> The localised text to send to player </param>
+    /// <param name="items"> Optional items to send to player </param>
+    /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
+    /// <param name="systemData"></param>
+    /// <param name="ragfair"></param>
     public void SendLocalisedNpcMessageToPlayer(
         string sessionId,
         string? trader,
@@ -171,13 +175,14 @@ public class MailSendService(
         SendMessageToPlayer(details);
     }
 
-    /**
-     * Send a message from SYSTEM to the player with or without items
-     * @param sessionId The session ID to send the message to
-     * @param message The text to send to player
-     * @param items Optional items to send to player
-     * @param maxStorageTimeSeconds Optional time to collect items before they expire
-     */
+    /// <summary>
+    /// Send a message from SYSTEM to the player with or without items
+    /// </summary>
+    /// <param name="sessionId"> The session ID to send the message to </param>
+    /// <param name="message"> The text to send to player </param>
+    /// <param name="items"> Optional items to send to player </param>
+    /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
+    /// <param name="profileChangeEvents"></param>
     public void SendSystemMessageToPlayer(
         string sessionId,
         string message,
@@ -209,7 +214,14 @@ public class MailSendService(
 
         SendMessageToPlayer(details);
     }
-
+    /// <summary>
+    /// Send a message from SYSTEM to the player with or without items with localised text
+    /// </summary>
+    /// <param name="sessionId"> The session ID to send the message to </param>
+    /// <param name="messageLocaleId"> Id of key from locale file to send to player </param>
+    /// <param name="items"> Optional items to send to player </param>
+    /// <param name="profileChangeEvents"></param>
+    /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
     public void SendLocalisedSystemMessageToPlayer(
         string sessionId,
         string messageLocaleId,
@@ -241,14 +253,14 @@ public class MailSendService(
         SendMessageToPlayer(details);
     }
 
-    /**
-     * Send a USER message to a player with or without items
-     * @param sessionId The session ID to send the message to
-     * @param senderId Who is sending the message
-     * @param message The text to send to player
-     * @param items Optional items to send to player
-     * @param maxStorageTimeSeconds Optional time to collect items before they expire
-     */
+    /// <summary>
+    /// Send a USER message to a player with or without items
+    /// </summary>
+    /// <param name="sessionId"> The session ID to send the message to </param>
+    /// <param name="senderDetails"> Who is sending the message </param>
+    /// <param name="message"> The text to send to player </param>
+    /// <param name="items"> Optional items to send to player </param>
+    /// <param name="maxStorageTimeSeconds"> Optional time to collect items before they expire </param>
     public void SendUserMessageToPlayer(
         string sessionId,
         UserDialogInfo senderDetails,
@@ -276,11 +288,11 @@ public class MailSendService(
         SendMessageToPlayer(details);
     }
 
-    /**
-     * Large function to send messages to players from a variety of sources (SYSTEM/NPC/USER)
-     * Helper functions in this class are available to simplify common actions
-     * @param messageDetails Details needed to send a message to the player
-     */
+    /// <summary>
+    /// Large function to send messages to players from a variety of sources (SYSTEM/NPC/USER).
+    /// Helper functions in this class are available to simplify common actions
+    /// </summary>
+    /// <param name="messageDetails"> Details needed to send a message to the player </param>
     public void SendMessageToPlayer(SendMessageDetails messageDetails)
     {
         // Get dialog, create if doesn't exist
@@ -332,6 +344,12 @@ public class MailSendService(
         _notificationSendHelper.SendMessage(messageDetails.RecipientId, notificationMessage);
     }
 
+    /// <summary>
+    /// Send a message from the player to an NPC
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="targetNpcId"> NPC message is sent to </param>
+    /// <param name="message"> Text to send to NPC </param>
     public void SendPlayerMessageToNpc(string sessionId, string targetNpcId, string message)
     {
         var playerProfile = _saveServer.GetProfile(sessionId);
@@ -356,6 +374,12 @@ public class MailSendService(
         );
     }
 
+    /// <summary>
+    /// Create a message for storage inside a dialog in the player profile
+    /// </summary>
+    /// <param name="dialogId"> ID of dialog that will hold the message </param>
+    /// <param name="messageDetails"> Various details on what the message must contain/do </param>
+    /// <returns> Message </returns>
     private Message CreateDialogMessage(string dialogId, SendMessageDetails messageDetails)
     {
         Message message = new()
@@ -385,12 +409,13 @@ public class MailSendService(
         return message;
     }
 
-    /**
-     * @param recipientId The id of the recipient
-     * @param replyToId The id of the message to reply to
-     * @param dialogueId The id of the dialogue (traderId or profileId)
-     * @returns A new instance with data from the found message, otherwise undefined
-     */
+    /// <summary>
+    /// Finds the Message to reply to using the ID of the recipient, message and the dialogue.
+    /// </summary>
+    /// <param name="recipientId"> The ID of the recipient </param>
+    /// <param name="replyToId"> The ID of the message to reply to </param>
+    /// <param name="dialogueId"> The ID of the dialogue (traderId or profileId) </param>
+    /// <returns> A new instance with data from the found message, otherwise undefined </returns>
     protected ReplyTo? GetMessageToReplyTo(string recipientId, string replyToId, string dialogueId)
     {
         var currentDialogue = _dialogueHelper.GetDialogueFromProfile(recipientId, dialogueId);
@@ -417,12 +442,12 @@ public class MailSendService(
         };
     }
 
-    /**
-     * Add items to message and adjust various properties to reflect the items being added
-     * @param message Message to add items to
-     * @param itemsToSendToPlayer Items to add to message
-     * @param maxStorageTimeSeconds total time items are stored in mail before being deleted
-     */
+    /// <summary>
+    /// Add items to message and adjust various properties to reflect the items being added
+    /// </summary>
+    /// <param name="message"> Message to add items to </param>
+    /// <param name="itemsToSendToPlayer"> Items to add to message </param>
+    /// <param name="maxStorageTimeSeconds"> Total time the items are stored in mail before being deleted </param>
     private void AddRewardItemsToMessage(Message message, MessageItems? itemsToSendToPlayer, long? maxStorageTimeSeconds)
     {
         if ((itemsToSendToPlayer?.Data?.Count ?? 0) > 0)
@@ -434,6 +459,12 @@ public class MailSendService(
         }
     }
 
+    /// <summary>
+    /// Perform various sanitising actions on the items before they're considered ready for insertion into message
+    /// </summary>
+    /// <param name="dialogType"> The type of the dialog that will hold the reward items being processed </param>
+    /// <param name="messageDetails"> Details fo the message e.g. Text, items it has etc. </param>
+    /// <returns> Sanitised items </returns>
     private MessageItems ProcessItemsBeforeAddingToMail(MessageType? dialogType, SendMessageDetails messageDetails)
     {
         var items = _databaseService.GetItems();
@@ -544,11 +575,11 @@ public class MailSendService(
         return itemsToSendToPlayer;
     }
 
-    /**
-     * Try to find the most correct item to be the 'primary' item in a reward mail
-     * @param items Possible items to choose from
-     * @returns Chosen 'primary' item
-     */
+    /// <summary>
+    /// Try to find the most correct item to be the 'primary' item in a reward mail
+    /// </summary>
+    /// <param name="items"> Possible items to choose from </param>
+    /// <returns> Chosen 'primary' item </returns>
     private Item GetBaseItemFromRewards(List<Item>? items)
     {
         // Only one item in reward, return it
@@ -576,12 +607,13 @@ public class MailSendService(
         return items[0];
     }
 
-    /**
-     * Get a dialog with a specified entity (user/trader)
-     * Create and store empty dialog if none exists in profile
-     * @param messageDetails Data on what message should do
-     * @returns Relevant Dialogue
-     */
+    /// <summary>
+    /// Get a dialog with a specified entity (user/trader).
+    /// Create and store empty dialog if none exists in profile.
+    /// </summary>
+    /// <param name="messageDetails"> Data on what message should do </param>
+    /// <returns> Relevant Dialogue object </returns>
+    /// <exception cref="Exception"> Thrown when message not found </exception>
     private Dialogue GetDialog(SendMessageDetails messageDetails)
     {
         var senderId = GetMessageSenderIdByType(messageDetails);
@@ -610,11 +642,11 @@ public class MailSendService(
         return dialogsInProfile[senderId];
     }
 
-    /**
-     * Get the appropriate sender id by the sender enum type
-     * @param messageDetails
-     * @returns gets an id of the individual sending it
-     */
+    /// <summary>
+    ///  Get the appropriate sender id by the sender enum type
+    /// </summary>
+    /// <param name="messageDetails"> Data of the message </param>
+    /// <returns> Gets an id of the individual sending it </returns>
     private string? GetMessageSenderIdByType(SendMessageDetails messageDetails)
     {
         if (messageDetails.Sender == MessageType.SYSTEM_MESSAGE)

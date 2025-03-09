@@ -5,6 +5,9 @@ using SptCommon.Annotations;
 
 namespace Core.Services;
 
+/// <summary>
+/// Cache bots in a dictionary, keyed by the bots name, keying by name isnt ideal as its not unique but this is used by the post-raid system which doesnt have any bot ids, only name
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class MatchBotDetailsCacheService(
     ISptLogger<MatchBotDetailsCacheService> _logger,
@@ -13,6 +16,10 @@ public class MatchBotDetailsCacheService(
 {
     protected ConcurrentDictionary<string, BotBase> _botDetailsCache = new();
 
+    /// <summary>
+    /// Store a bot in the cache, keyed by its name.
+    /// </summary>
+    /// <param name="botToCache"> Bot details to cache </param>
     public void CacheBot(BotBase botToCache)
     {
         if (botToCache.Info.Nickname is null)
@@ -29,11 +36,20 @@ public class MatchBotDetailsCacheService(
         _botDetailsCache.TryAdd(key, botToCache);
     }
 
+    /// <summary>
+    /// Clean the cache of all bot details.
+    /// </summary>
     public void ClearCache()
     {
         _botDetailsCache.Clear();
     }
 
+    /// <summary>
+    /// Find a bot in the cache by its name and side.
+    /// </summary>
+    /// <param name="botName"> Name of bot to find </param>
+    /// <param name="botSide"> Side of the bot </param>
+    /// <returns></returns>
     public BotBase? GetBotByNameAndSide(string botName, string botSide)
     {
         var botInCache = _botDetailsCache.GetValueOrDefault($"{botName}{botSide}`", null);

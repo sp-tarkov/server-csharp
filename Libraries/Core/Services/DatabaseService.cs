@@ -25,17 +25,13 @@ public class DatabaseService(
 {
     protected bool isDataValid = true;
 
-    /**
-     * @returns assets/database/
-     */
+    /// <returns> assets/database/ </returns>
     public DatabaseTables GetTables()
     {
         return _databaseServer.GetTables();
     }
 
-    /**
-     * @returns assets/database/bots/
-     */
+    /// <returns> assets/database/bots/ </returns>
     public Bots GetBots()
     {
         if (_databaseServer.GetTables().Bots == null)
@@ -46,9 +42,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Bots!;
     }
 
-    /**
-     * @returns assets/database/globals.json
-     */
+    /// <returns> assets/database/globals.json </returns>
     public Globals GetGlobals()
     {
         if (_databaseServer.GetTables().Globals == null)
@@ -64,9 +58,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Globals!;
     }
 
-    /**
-     * @returns assets/database/hideout/
-     */
+    /// <returns> assets/database/hideout/ </returns>
     public Hideout GetHideout()
     {
         if (_databaseServer.GetTables().Hideout == null)
@@ -79,9 +71,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Hideout!;
     }
 
-    /**
-     * @returns assets/database/locales/
-     */
+    /// <returns> assets/database/locales/ </returns>
     public LocaleBase GetLocales()
     {
         if (_databaseServer.GetTables().Locales == null)
@@ -94,9 +84,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Locales!;
     }
 
-    /**
-     * @returns assets/database/locations
-     */
+    /// <returns> assets/database/locations </returns>
     public Locations GetLocations()
     {
         if (_databaseServer.GetTables().Locations == null)
@@ -109,11 +97,11 @@ public class DatabaseService(
         return _databaseServer.GetTables().Locations!;
     }
 
-    /**
-     * Get specific location by its Id
-     * @param locationId Desired location id
-     * @returns assets/database/locations/
-     */
+    /// <summary>
+    /// Get specific location by its ID
+    /// </summary>
+    /// <param name="locationId"> Desired location ID </param>
+    /// <returns> assets/database/locations/ </returns>
     public Location GetLocation(string locationId)
     {
         var locations = GetLocations();
@@ -126,9 +114,7 @@ public class DatabaseService(
         return desiredLocation;
     }
 
-    /**
-     * @returns assets/database/match/
-     */
+    /// <returns> assets/database/match/ </returns>
     public Match GetMatch()
     {
         if (_databaseServer.GetTables().Match == null)
@@ -141,9 +127,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Match!;
     }
 
-    /**
-     * @returns assets/database/server.json
-     */
+    /// <returns> assets/database/server.json </returns>
     public ServerBase GetServer()
     {
         if (_databaseServer.GetTables().Server == null)
@@ -159,9 +143,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Server!;
     }
 
-    /**
-     * @returns assets/database/settings.json
-     */
+    /// <returns> assets/database/settings.json </returns>
     public SettingsBase GetSettings()
     {
         if (_databaseServer.GetTables().Settings == null)
@@ -177,9 +159,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Settings!;
     }
 
-    /**
-     * @returns assets/database/templates/
-     */
+    /// <returns> assets/database/templates/ </returns>
     public Templates GetTemplates()
     {
         if (_databaseServer.GetTables().Templates == null)
@@ -195,9 +175,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates!;
     }
 
-    /**
-     * @returns assets/database/templates/achievements.json
-     */
+    /// <returns> assets/database/templates/achievements.json </returns>
     public List<Achievement> GetAchievements()
     {
         if (_databaseServer.GetTables().Templates?.Achievements == null)
@@ -213,9 +191,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Achievements!;
     }
 
-    /**
-     * @returns assets/database/templates/customisation.json
-     */
+    /// <returns> assets/database/templates/customisation.json </returns>
     public Dictionary<string, CustomizationItem?> GetCustomization()
     {
         if (_databaseServer.GetTables().Templates?.Customization == null)
@@ -231,9 +207,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Customization!;
     }
 
-    /**
-     * @returns assets/database/templates/handbook.json
-     */
+    /// <returns> assets/database/templates/handbook.json </returns>
     public HandbookBase GetHandbook()
     {
         if (_databaseServer.GetTables().Templates?.Handbook == null)
@@ -244,9 +218,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Handbook!;
     }
 
-    /**
-     * @returns assets/database/templates/items.json
-     */
+    /// <returns> assets/database/templates/items.json </returns>
     public Dictionary<string, TemplateItem> GetItems()
     {
         if (_databaseServer.GetTables().Templates?.Items == null)
@@ -257,9 +229,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Items!;
     }
 
-    /**
-     * @returns assets/database/templates/prices.json
-     */
+    /// <returns> assets/database/templates/prices.json </returns>
     public Dictionary<string, double> GetPrices()
     {
         if (_databaseServer.GetTables().Templates?.Prices == null)
@@ -270,9 +240,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Prices!;
     }
 
-    /**
-     * @returns assets/database/templates/profiles.json
-     */
+    /// <returns> assets/database/templates/profiles.json </returns>
     public ProfileTemplates GetProfiles()
     {
         if (_databaseServer.GetTables().Templates?.Profiles == null)
@@ -283,9 +251,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Profiles!;
     }
 
-    /**
-     * @returns assets/database/templates/quests.json
-     */
+    /// <returns> assets/database/templates/quests.json </returns>
     public Dictionary<string, Quest> GetQuests()
     {
         if (_databaseServer.GetTables().Templates?.Quests == null)
@@ -296,9 +262,7 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Quests!;
     }
 
-    /**
-     * @returns assets/database/traders/
-     */
+    /// <returns> assets/database/traders/ </returns>
     public Dictionary<string, Trader> GetTraders()
     {
         if (_databaseServer.GetTables().Traders == null)
@@ -309,11 +273,11 @@ public class DatabaseService(
         return _databaseServer.GetTables().Traders!;
     }
 
-    /**
-     * Get specific trader by their Id
-     * @param traderId Desired trader id
-     * @returns assets/database/traders/
-     */
+    /// <summary>
+    /// Get specific trader by their ID
+    /// </summary>
+    /// <param name="traderId"> Desired trader ID </param>
+    /// <returns> assets/database/traders/ </returns>
     public Trader GetTrader(string traderId)
     {
         var traders = GetTraders();
@@ -325,9 +289,7 @@ public class DatabaseService(
         return desiredTrader;
     }
 
-    /**
-     * @returns assets/database/locationServices/
-     */
+    /// <returns> assets/database/locationServices/ </returns>
     public LocationServices GetLocationServices()
     {
         if (_databaseServer.GetTables().Templates?.LocationServices == null)
@@ -338,9 +300,9 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.LocationServices!;
     }
 
-    /**
-     * Validates that the database doesn't contain invalid ID data
-     */
+    /// <summary>
+    /// Validates that the database doesn't contain invalid ID data
+    /// </summary>
     public void ValidateDatabase()
     {
         var start = Stopwatch.StartNew();
@@ -363,12 +325,12 @@ public class DatabaseService(
         }
     }
 
-    /**
-     * Validate that the given table only contains valid MongoIDs
-     * @param table Table to validate for MongoIDs
-     * @param tableType The type of table, used in output message
-     * @returns True if the table only contains valid data
-     */
+    /// <summary>
+    /// Validate that the given table only contains valid MongoIDs
+    /// </summary>
+    /// <param name="table"> Table to validate for MongoIDs</param>
+    /// <param name="tableType"> The type of table, used in output message </param>
+    /// <returns> True if the table only contains valid data </returns>
     private bool ValidateTable<T>(Dictionary<string, T> table, string tableType)
     {
         foreach (var keyValuePair in table)
@@ -383,10 +345,10 @@ public class DatabaseService(
         return true;
     }
 
-    /**
-     * Check if the database is valid
-     * @returns True if the database contains valid data, false otherwise
-     */
+    /// <summary>
+    /// Check if the database is valid
+    /// </summary>
+    /// <returns> True if the database contains valid data, false otherwise </returns>
     public bool IsDatabaseValid()
     {
         return isDataValid;

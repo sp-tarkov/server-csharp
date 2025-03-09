@@ -29,12 +29,12 @@ public class PmcChatResponseService(
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
     protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
 
-    /**
-     * For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
-     * @param sessionId Session id
-     * @param pmcVictims List of bots killed by player
-     * @param pmcData Player profile
-     */
+    /// <summary>
+    /// For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="pmcVictims"> List of bots killed by player </param>
+    /// <param name="pmcData"> Player profile </param>
     public void SendVictimResponse(string sessionId, List<Victim> pmcVictims, PmcData pmcData)
     {
         foreach (var victim in pmcVictims)
@@ -65,12 +65,12 @@ public class PmcChatResponseService(
         }
     }
 
-    /**
-     * Not fully implemented yet, needs method of acquiring killers details after raid
-     * @param sessionId Session id
-     * @param pmcData Players profile
-     * @param killer The bot who killed the player
-     */
+    /// <summary>
+    /// Not fully implemented yet, needs method of acquiring killers details after raid
+    /// </summary>
+    /// <param name="sessionId"> Session id </param>
+    /// <param name="pmcData"> Players profile </param>
+    /// <param name="killer"> The bot who killed the player </param>
     public void SendKillerResponse(string sessionId, PmcData pmcData, Aggressor killer)
     {
         if (killer is null)
@@ -128,13 +128,13 @@ public class PmcChatResponseService(
         _notificationSendHelper.SendMessageToPlayer(sessionId, killerDetails, message, MessageType.USER_MESSAGE);
     }
 
-    /**
-     * Choose a localised message to send the player (different if sender was killed or killed player)
-     * @param isVictim Is the message coming from a bot killed by the player
-     * @param pmcData Player profile
-     * @param victimData OPTIMAL - details of the pmc killed
-     * @returns Message from PMC to player
-     */
+    /// <summary>
+    /// Choose a localised message to send the player (different if sender was killed or killed player)
+    /// </summary>
+    /// <param name="isVictim"> Is the message coming from a bot killed by the player </param>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="victimData"> OPTIONAL - details of the pmc killed </param>
+    /// <returns> Message from PMC to player </returns>
     protected string? ChooseMessage(bool isVictim, PmcData pmcData, Victim? victimData = null)
     {
         // Positive/negative etc
@@ -189,22 +189,22 @@ public class PmcChatResponseService(
         return responseText;
     }
 
-    /**
-     * use map key to get a localised location name
-     * e.g. factory4_day becomes "Factory"
-     * @param locationKey location key to localise
-     * @returns Localised location name
-     */
+    /// <summary>
+    /// use map key to get a localised location name
+    /// e.g. factory4_day becomes "Factory"
+    /// </summary>
+    /// <param name="locationKey"> Location key to localise </param>
+    /// <returns> Localised location name </returns>
     protected string GetLocationName(string locationKey)
     {
         return _localeService.GetLocaleDb()[locationKey] ?? locationKey;
     }
 
-    /**
-     * Should capitalisation be stripped from the message response before sending
-     * @param isVictim Was responder a victim of player
-     * @returns true = should be stripped
-     */
+    /// <summary>
+    /// Should capitalisation be stripped from the message response before sending
+    /// </summary>
+    /// <param name="isVictim"> Was responder a victim of player </param>
+    /// <returns> True = should be stripped </returns>
     protected bool StripCapitalisation(bool isVictim)
     {
         var chance = isVictim
@@ -214,11 +214,11 @@ public class PmcChatResponseService(
         return _randomUtil.GetChance100(chance);
     }
 
-    /**
-     * Should capitalisation be stripped from the message response before sending
-     * @param isVictim Was responder a victim of player
-     * @returns true = should be stripped
-     */
+    /// <summary>
+    /// Should capitalisation be stripped from the message response before sending
+    /// </summary>
+    /// <param name="isVictim"> Was responder a victim of player </param>
+    /// <returns> True = should be stripped </returns>
     protected bool AllCaps(bool isVictim)
     {
         var chance = isVictim
@@ -228,11 +228,11 @@ public class PmcChatResponseService(
         return _randomUtil.GetChance100(chance);
     }
 
-    /**
-     * Should a suffix be appended to the end of the message being sent to player
-     * @param isVictim Was responder a victim of player
-     * @returns true = should be stripped
-     */
+    /// <summary>
+    /// Should a suffix be appended to the end of the message being sent to player
+    /// </summary>
+    /// <param name="isVictim"> Was responder a victim of player </param>
+    /// <returns> True = should be appended </returns>
     protected bool AppendSuffixToMessageEnd(bool isVictim)
     {
         var chance = isVictim
@@ -242,11 +242,11 @@ public class PmcChatResponseService(
         return _randomUtil.GetChance100(chance);
     }
 
-    /**
-     * Choose a type of response based on the weightings in pmc response config
-     * @param isVictim Was responder killed by player
-     * @returns Response type (positive/negative)
-     */
+    /// <summary>
+    /// Choose a type of response based on the weightings in pmc response config
+    /// </summary>
+    /// <param name="isVictim"> Was responder killed by player </param>
+    /// <returns> Response type (positive/negative) </returns>
     protected string ChooseResponseType(bool isVictim = true)
     {
         var responseWeights = isVictim
@@ -256,12 +256,12 @@ public class PmcChatResponseService(
         return _weightedRandomHelper.GetWeightedValue<string>(responseWeights);
     }
 
-    /**
-     * Get locale keys related to the type of response to send (victim/killer)
-     * @param keyType Positive/negative
-     * @param isVictim Was responder killed by player
-     * @returns
-     */
+    /// <summary>
+    /// Get locale keys related to the type of response to send (victim/killer)
+    /// </summary>
+    /// <param name="keyType"> Positive/negative </param>
+    /// <param name="isVictim"> Was responder killed by player </param>
+    /// <returns>List of response locale keys </returns>
     protected List<string> GetResponseLocaleKeys(string keyType, bool isVictim = true)
     {
         var keyBase = isVictim ? "pmcresponse-victim_" : "pmcresponse-killer_";
@@ -270,10 +270,10 @@ public class PmcChatResponseService(
         return keys.Where(x => x.StartsWith($"{keyBase}{keyType}")).ToList();
     }
 
-    /**
-     * Get all locale keys that start with `pmcresponse-suffix`
-     * @returns list of keys
-     */
+    /// <summary>
+    /// Get all locale keys that start with `pmcresponse-suffix`
+    /// </summary>
+    /// <returns> List of keys </returns>
     protected List<string> GetResponseSuffixLocaleKeys()
     {
         var keys = _localisationService.GetKeys();
@@ -281,12 +281,12 @@ public class PmcChatResponseService(
         return keys.Where(x => x.StartsWith("pmcresponse-suffix")).ToList();
     }
 
-    /**
-     * TODO: is this used?
-     * Randomly draw a victim of the list and return their details
-     * @param pmcVictims Possible victims to choose from
-     * @returns IUserDialogInfo
-     */
+    /// <summary>
+    /// Randomly draw a victim of the list and return their details
+    /// </summary>
+    /// <param name="pmcVictims"> Possible victims to choose from </param>
+    /// <returns> UserDialogInfo object </returns>
+    // TODO: is this used?
     protected UserDialogInfo ChooseRandomVictim(List<Victim> pmcVictims)
     {
         var randomVictim = _randomUtil.GetArrayValue(pmcVictims);
@@ -294,11 +294,11 @@ public class PmcChatResponseService(
         return GetVictimDetails(randomVictim);
     }
 
-    /**
-     * Convert a victim object into a IUserDialogInfo object
-     * @param pmcVictim victim to convert
-     * @returns IUserDialogInfo
-     */
+    /// <summary>
+    ///  Convert a victim object into a IUserDialogInfo object
+    /// </summary>
+    /// <param name="pmcVictim"> Victim to convert </param>
+    /// <returns> UserDialogInfo object </returns>
     protected UserDialogInfo GetVictimDetails(Victim pmcVictim)
     {
         var categories = new List<MemberCategory>
