@@ -317,7 +317,11 @@ public class BackupService
      */
     protected List<string> GetActiveServerMods()
     {
-        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES).GetValue<List<SptMod>>();
+        var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)?.GetValue<List<SptMod>>();
+        if (mods == null)
+        {
+            return [];
+        }
         List<string> result = [];
 
         foreach (var mod in mods)
