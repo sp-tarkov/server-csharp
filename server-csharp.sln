@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35527.113 d17.12
+VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SPTarkov.Server", "SPTarkov.Server\SPTarkov.Server.csproj", "{1F5ED9C6-8B1F-4776-85AB-B387CBBC5557}"
 EndProject
@@ -24,6 +24,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HideoutCraftQuestIdGenerator", "Tools\HideoutCraftQuestIdGenerator\HideoutCraftQuestIdGenerator.csproj", "{C24B1FEB-F8AC-434E-998D-5DA4D1687295}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmarks", "Benchmarks\Benchmarks.csproj", "{6884273A-72E9-4035-B5BE-EE101C69F5F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreateSqlLiteDb", "Tools\CreateSqlLiteDb\CreateSqlLiteDb.csproj", "{11F5512B-46AC-4623-8CB2-24D4D4F871D4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -67,6 +69,10 @@ Global
 		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6884273A-72E9-4035-B5BE-EE101C69F5F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11F5512B-46AC-4623-8CB2-24D4D4F871D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F5512B-46AC-4623-8CB2-24D4D4F871D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F5512B-46AC-4623-8CB2-24D4D4F871D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F5512B-46AC-4623-8CB2-24D4D4F871D4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -78,5 +84,6 @@ Global
 		{DB049C81-DEC0-490D-AC06-7AF4DC8C0571} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{4B973AC0-0C60-4853-9AF7-7CB69127473E} = {F084DDFD-89F3-44F9-89C3-5CA11F4CDEEF}
 		{C24B1FEB-F8AC-434E-998D-5DA4D1687295} = {587959C2-5AFA-4B77-B327-566610F9A289}
+		{11F5512B-46AC-4623-8CB2-24D4D4F871D4} = {587959C2-5AFA-4B77-B327-566610F9A289}
 	EndGlobalSection
 EndGlobal
