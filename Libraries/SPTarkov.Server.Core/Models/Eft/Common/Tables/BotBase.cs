@@ -836,7 +836,7 @@ public record BotBaseInventory
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("sortingTable")]
-    public string? SortingTable
+    public MongoId? SortingTable
     {
         get;
         set;
@@ -851,7 +851,7 @@ public record BotBaseInventory
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("questStashItems")]
-    public string? QuestStashItems
+    public MongoId? QuestStashItems
     {
         get;
         set;
@@ -884,7 +884,7 @@ public record BotBaseInventory
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutCustomizationStashId")]
-    public string? HideoutCustomizationStashId
+    public MongoId? HideoutCustomizationStashId
     {
         get;
         set;

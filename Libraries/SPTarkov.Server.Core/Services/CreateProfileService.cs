@@ -282,7 +282,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = new MongoId(pmcData.Inventory.HideoutCustomizationStashId),
+                    Id = pmcData.Inventory.HideoutCustomizationStashId,
                     Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION
                 }
             );
@@ -293,7 +293,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = new MongoId(pmcData.Inventory.SortingTable),
+                    Id = pmcData.Inventory.SortingTable,
                     Template = ItemTpl.SORTINGTABLE_SORTING_TABLE
                 }
             );
@@ -304,7 +304,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = new MongoId(pmcData.Inventory.QuestStashItems),
+                    Id = pmcData.Inventory.QuestStashItems,
                     Template = ItemTpl.STASH_QUESTOFFLINE
                 }
             );
@@ -315,7 +315,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = new MongoId(pmcData.Inventory.QuestRaidItems),
+                    Id = pmcData.Inventory.QuestRaidItems,
                     Template = ItemTpl.STASH_QUESTRAID
                 }
             );
