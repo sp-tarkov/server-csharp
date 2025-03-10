@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using Vitality = SPTarkov.Server.Core.Models.Eft.Profile.Vitality;
 
 
@@ -240,7 +241,7 @@ public class CreateProfileService(
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
     {
         var oldEquipmentId = pmcData.Inventory.Equipment;
-        pmcData.Inventory.Equipment = _hashUtil.Generate();
+        pmcData.Inventory.Equipment = new MongoId(_hashUtil.Generate());
 
         foreach (var item in pmcData.Inventory.Items)
         {
@@ -281,7 +282,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = pmcData.Inventory.HideoutCustomizationStashId,
+                    Id = new MongoId(pmcData.Inventory.HideoutCustomizationStashId),
                     Template = ItemTpl.HIDEOUTAREACONTAINER_CUSTOMIZATION
                 }
             );
@@ -292,7 +293,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = pmcData.Inventory.SortingTable,
+                    Id = new MongoId(pmcData.Inventory.SortingTable),
                     Template = ItemTpl.SORTINGTABLE_SORTING_TABLE
                 }
             );
@@ -303,7 +304,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = pmcData.Inventory.QuestStashItems,
+                    Id = new MongoId(pmcData.Inventory.QuestStashItems),
                     Template = ItemTpl.STASH_QUESTOFFLINE
                 }
             );
@@ -314,7 +315,7 @@ public class CreateProfileService(
             pmcData.Inventory.Items.Add(
                 new Item
                 {
-                    Id = pmcData.Inventory.QuestRaidItems,
+                    Id = new MongoId(pmcData.Inventory.QuestRaidItems),
                     Template = ItemTpl.STASH_QUESTRAID
                 }
             );

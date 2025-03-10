@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -59,7 +60,7 @@ public class BotWeaponGenerator(
     /// <param name="isPmc">Is weapon generated for a pmc</param>
     /// <param name="botLevel"></param>
     /// <returns>GenerateWeaponResult object</returns>
-    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotTypeInventory botTemplateInventory, string weaponParentId,
+    public GenerateWeaponResult GenerateRandomWeapon(string sessionId, string equipmentSlot, BotTypeInventory botTemplateInventory, MongoId weaponParentId,
         Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
         var weaponTpl = PickWeightedWeaponTemplateFromPool(equipmentSlot, botTemplateInventory);
@@ -107,7 +108,7 @@ public class BotWeaponGenerator(
     /// <param name="botLevel">The level of the bot.</param>
     /// <returns>GenerateWeaponResult object.</returns>
     public GenerateWeaponResult? GenerateWeaponByTpl(string sessionId, string weaponTpl, string slotName, BotTypeInventory botTemplateInventory,
-        string weaponParentId, Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
+        MongoId weaponParentId, Dictionary<string, double> modChances, string botRole, bool isPmc, int botLevel)
     {
         var modPool = botTemplateInventory.Mods;
         var weaponItemTemplate = _itemHelper.GetItem(weaponTpl).Value;
@@ -245,7 +246,7 @@ public class BotWeaponGenerator(
                 weaponWithModsList.Add(
                     new Item
                     {
-                        Id = _hashUtil.Generate(),
+                        Id = new MongoId(_hashUtil.Generate()),
                         Template = ammoTemplate,
                         ParentId = weaponWithModsList[0].Id,
                         SlotId = slotId,
@@ -278,14 +279,14 @@ public class BotWeaponGenerator(
     /// <param name="weaponItemTemplate">Database template for weapon</param>
     /// <param name="botRole">For durability values</param>
     /// <returns>Base weapon item in a list</returns>
-    protected List<Item> ConstructWeaponBaseList(string weaponTemplate, string weaponParentId, string equipmentSlot, TemplateItem weaponItemTemplate,
+    protected List<Item> ConstructWeaponBaseList(string weaponTemplate, MongoId weaponParentId, string equipmentSlot, TemplateItem weaponItemTemplate,
         string botRole)
     {
         return
         [
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = weaponTemplate,
                 ParentId = weaponParentId,
                 SlotId = equipmentSlot,
@@ -303,7 +304,7 @@ public class BotWeaponGenerator(
     /// <param name="itemTemplate">Item template</param>
     /// <param name="botRole">Bot role</param>
     /// <returns>List of weapon mods</returns>
-    protected List<Item> GetPresetWeaponMods(string weaponTemplate, string equipmentSlot, string weaponParentId, TemplateItem itemTemplate, string botRole)
+    protected List<Item> GetPresetWeaponMods(string weaponTemplate, string equipmentSlot, MongoId weaponParentId, TemplateItem itemTemplate, string botRole)
     {
         // Invalid weapon generated, fallback to preset
         _logger.Warning(_localisationService.GetText("bot-weapon_generated_incorrect_using_default", $"{weaponTemplate} - {itemTemplate.Name}"));
@@ -496,7 +497,7 @@ public class BotWeaponGenerator(
     {
         for (var i = 0; i < stackCount; i++)
         {
-            var id = _hashUtil.Generate();
+            var id = new MongoId(_hashUtil.Generate());
             _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 new HashSet<EquipmentSlots>
                 {
@@ -774,7 +775,7 @@ public class BotWeaponGenerator(
         weaponMods.Add(
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = ubglAmmoTpl,
                 ParentId = ubglMod.Id,
                 SlotId = "patron_in_weapon",

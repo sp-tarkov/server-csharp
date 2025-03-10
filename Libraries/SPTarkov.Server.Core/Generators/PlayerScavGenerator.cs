@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 
@@ -161,7 +162,7 @@ public class PlayerScavGenerator(
             {
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = itemTemplate.Id,
                     Upd = _botGeneratorHelper.GenerateExtraPropertiesForItem(itemTemplate)
                 }

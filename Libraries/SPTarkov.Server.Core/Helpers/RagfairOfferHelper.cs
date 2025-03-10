@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -753,7 +754,7 @@ public class RagfairOfferHelper(
             // Create an item template item
             var requestedItem = new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = requirement.Template,
                 Upd = new Upd
                 {

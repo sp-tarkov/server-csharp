@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -87,7 +88,7 @@ public class FenceBaseAssortGenerator(
             {
                 new()
                 {
-                    Id = hashUtil.Generate(),
+                    Id = new MongoId(hashUtil.Generate()),
                     Template = rootItemDb.Id,
                     ParentId = "hideout",
                     SlotId = "hideout",
@@ -132,13 +133,13 @@ public class FenceBaseAssortGenerator(
             };
 
             // Add barter data to base
-            baseFenceAssort.BarterScheme[itemWithChildrenToAdd[0].Id] = [[barterSchemeToAdd]];
+            baseFenceAssort.BarterScheme[itemWithChildrenToAdd[0].Id.Value] = [[barterSchemeToAdd]];
 
             // Add item to base
             baseFenceAssort.Items.AddRange(itemWithChildrenToAdd);
 
             // Add loyalty data to base
-            baseFenceAssort.LoyalLevelItems[itemWithChildrenToAdd[0].Id] = 1;
+            baseFenceAssort.LoyalLevelItems[itemWithChildrenToAdd[0].Id.Value] = 1;
         }
 
         // Add all default presets to base fence assort
@@ -184,7 +185,7 @@ public class FenceBaseAssortGenerator(
             var itemQualityModifier = itemHelper.GetItemQualityModifierForItems(itemAndChildren);
 
             // Multiply weapon+mods rouble price by quality modifier
-            baseFenceAssort.BarterScheme[itemAndChildren[0].Id] = new List<List<BarterScheme>>
+            baseFenceAssort.BarterScheme[itemAndChildren[0].Id.Value] = new List<List<BarterScheme>>
             {
                 new()
                 {
@@ -196,7 +197,7 @@ public class FenceBaseAssortGenerator(
                 }
             };
 
-            baseFenceAssort.LoyalLevelItems[itemAndChildren[0].Id] = 1;
+            baseFenceAssort.LoyalLevelItems[itemAndChildren[0].Id.Value] = 1;
         }
     }
 
@@ -282,7 +283,7 @@ public class FenceBaseAssortGenerator(
 
                 var mod = new Item
                 {
-                    Id = hashUtil.Generate(),
+                    Id = new MongoId(hashUtil.Generate()),
                     Template = plateTpl,
                     ParentId = armor[0].Id,
                     SlotId = requiredSlot.Name,
@@ -318,7 +319,7 @@ public class FenceBaseAssortGenerator(
                 armor.Add(
                     new Item
                     {
-                        Id = hashUtil.Generate(),
+                        Id = new MongoId(hashUtil.Generate()),
                         Template = plateSlot.Props.Filters[0].Plate, // `Plate` property appears to be the 'default' item for slot
                         ParentId = armor[0].Id,
                         SlotId = plateSlot.Name,

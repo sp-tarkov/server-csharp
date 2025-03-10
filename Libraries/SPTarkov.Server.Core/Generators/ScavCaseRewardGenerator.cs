@@ -332,6 +332,7 @@ public class ScavCaseRewardGenerator(
     ///     Also add a stack count to ammo and money
     /// </summary>
     /// <param name="rewardItems">items to convert</param>
+    /// <param name="rarity"></param>
     /// <returns>Product array</returns>
     protected List<List<Item>> RandomiseContainerItemRewards(List<TemplateItem> rewardItems, string rarity)
     {
@@ -343,7 +344,7 @@ public class ScavCaseRewardGenerator(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = rewardItemDb.Id,
                     Upd = null
                 }

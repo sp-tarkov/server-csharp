@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common;
@@ -221,9 +222,9 @@ public record LooseLootItemDistribution
 
 public record ComposedKey
 {
-    private string? _key;
+    private MongoId? _key;
     [JsonPropertyName("key")]
-    public string? Key
+    public MongoId? Key
     {
         get
         {
@@ -231,7 +232,7 @@ public record ComposedKey
         }
         set
         {
-            _key = string.Intern(value);
+            _key = value;
         }
     }
 }

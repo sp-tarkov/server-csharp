@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Notes;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -819,7 +820,7 @@ public record BotBaseInventory
     }
 
     [JsonPropertyName("equipment")]
-    public string? Equipment
+    public MongoId? Equipment
     {
         get;
         set;
@@ -842,7 +843,7 @@ public record BotBaseInventory
     }
 
     [JsonPropertyName("questRaidItems")]
-    public string? QuestRaidItems
+    public MongoId? QuestRaidItems
     {
         get;
         set;
@@ -1570,7 +1571,7 @@ public record InsuredItem
     }
 
     [JsonPropertyName("itemId")]
-    public string? ItemId
+    public MongoId? ItemId
     {
         get;
         set;

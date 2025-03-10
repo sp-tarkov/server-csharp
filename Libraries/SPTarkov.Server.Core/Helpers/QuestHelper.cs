@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -604,7 +605,7 @@ public class QuestHelper(
      */
     public void ChangeItemStack(
         PmcData pmcData,
-        string itemId,
+        MongoId itemId,
         int newStackSize,
         string sessionID,
         ItemEventRouterResponse output)

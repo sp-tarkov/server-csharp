@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 
@@ -18,7 +19,7 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
     /// Id of new item stack
     /// </summary>
     [JsonPropertyName("newItem")]
-    public string? NewItem
+    public MongoId? NewItem
     {
         get;
         set;

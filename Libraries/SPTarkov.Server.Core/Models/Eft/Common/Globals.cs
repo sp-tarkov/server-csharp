@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Enums;
@@ -8806,7 +8807,7 @@ public record FenceSettings
 {
     // MongoId
     [JsonPropertyName("FenceId")]
-    public string? FenceIdentifier
+    public MongoId? FenceIdentifier
     {
         get;
         set;

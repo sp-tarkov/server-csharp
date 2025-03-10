@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -139,7 +140,7 @@ public class AssortHelper(
      * @param itemID item id to remove from assort
      * @returns Modified assort
      */
-    public TraderAssort RemoveItemFromAssort(TraderAssort assort, string itemID, bool flea = false)
+    public TraderAssort RemoveItemFromAssort(TraderAssort assort, MongoId itemID, bool flea = false)
     {
         var idsToRemove = _itemHelper.FindAndReturnChildrenByItems(assort.Items, itemID);
 

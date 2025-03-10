@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.TraderCommand;
 
@@ -92,7 +93,7 @@ public class TraderSptCommand(
             [
                 new Item
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = Money.ROUBLES,
                     Upd = new Upd
                     {
@@ -100,7 +101,7 @@ public class TraderSptCommand(
                     },
                     ParentId = _hashUtil.Generate(),
                     SlotId = "main"
-                }
+                }   
             ],
             999999,
             [CreateProfileChangeEvent(profileChangeEventType, quantity, dbTrader.Id)]

@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -96,7 +97,7 @@ public class HideoutHelper(
                 production.SptRequiredTools.Add(
                     new Item
                     {
-                        Id = _hashUtil.Generate(),
+                        Id = new MongoId(_hashUtil.Generate()),
                         Template = toolItem.Template,
                         Upd = toolItem.Upd
                     }
@@ -1157,7 +1158,7 @@ public class HideoutHelper(
         btcProd.Products.Add(
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
                 Upd = new Upd
                 {
@@ -1332,7 +1333,7 @@ public class HideoutHelper(
                 [
                     new Item
                     {
-                        Id = _hashUtil.Generate(),
+                        Id = new MongoId(_hashUtil.Generate()),
                         Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
                         Upd = new Upd
                         {

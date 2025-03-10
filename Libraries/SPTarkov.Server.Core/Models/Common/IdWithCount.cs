@@ -8,7 +8,7 @@ public record IdWithCount
     /// ID of stack to take money from
     /// </summary>
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

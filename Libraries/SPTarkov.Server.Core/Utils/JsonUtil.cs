@@ -51,11 +51,12 @@ public class JsonUtil
             new EftEnumConverter<ExfiltrationType>(),
             new EftEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<EquipmentSlots>(),
-            new BaseInteractionRequestDataConverter()
+            new BaseInteractionRequestDataConverter(),
+            new StringToMongoIdConverter()
         }
     };
 
-    private static JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
+    private static JsonSerializerOptions _jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
     {
         WriteIndented = true
     };
@@ -140,7 +141,7 @@ public class JsonUtil
     /// <returns>Serialised object as JSON, or null</returns>
     public string? Serialize<T>(T? obj, bool indented = false)
     {
-        return obj == null ? null : JsonSerializer.Serialize(obj, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
+        return obj == null ? null : JsonSerializer.Serialize(obj, indented ? _jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
     }
 
     /// <summary>
@@ -152,7 +153,7 @@ public class JsonUtil
     /// <returns></returns>
     public string? Serialize(object? obj, Type type, bool indented = false)
     {
-        return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
+        return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? _jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
     }
 
     private void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
@@ -182,15 +183,15 @@ public class JsonUtil
             jsonSerializerOptionsNoIndent = noIndentConverter;
         }
 
-        if (!jsonSerializerOptionsIndented.IsReadOnly)
+        if (!_jsonSerializerOptionsIndented.IsReadOnly)
         {
-            AddConverter(jsonSerializerOptionsIndented, converter);
+            AddConverter(_jsonSerializerOptionsIndented, converter);
         }
         else
         {
-            var indentedConverter = new JsonSerializerOptions(jsonSerializerOptionsIndented);
+            var indentedConverter = new JsonSerializerOptions(_jsonSerializerOptionsIndented);
             AddConverter(indentedConverter, converter);
-            jsonSerializerOptionsIndented = indentedConverter;
+            _jsonSerializerOptionsIndented = indentedConverter;
         }
     }
 }

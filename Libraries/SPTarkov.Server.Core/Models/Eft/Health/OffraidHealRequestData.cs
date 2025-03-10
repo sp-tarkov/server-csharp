@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 
 namespace SPTarkov.Server.Core.Models.Eft.Health;
@@ -6,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Health;
 public record OffraidHealRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("item")]
-    public string? Item
+    public MongoId? Item
     {
         get;
         set;

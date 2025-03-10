@@ -173,10 +173,10 @@ public class FenceService(
         var createAssort = new CreateFenceAssortsResult
         {
             SptItems = [],
-            BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(),
-            LoyalLevelItems = new Dictionary<string, int>()
+            BarterScheme = new Dictionary<MongoId, List<List<BarterScheme>>>(),
+            LoyalLevelItems = new Dictionary<MongoId, int>()
         };
-        createAssort.BarterScheme[root.Id] =
+        createAssort.BarterScheme[root.Id.Value] =
         [
             [
                 new BarterScheme
@@ -187,7 +187,7 @@ public class FenceService(
             ]
         ];
         createAssort.SptItems.Add(clonedItems);
-        createAssort.LoyalLevelItems[root.Id] = 1;
+        createAssort.LoyalLevelItems[root.Id.Value] = 1;
 
         UpdateFenceAssorts(createAssort, fenceAssort);
     }
@@ -294,7 +294,7 @@ public class FenceService(
         // Is preset
         if (item.Upd?.SptPresetId != null)
         {
-            if (assort.BarterScheme.TryGetValue(item.Id, out var barterSchemeForPreset))
+            if (assort.BarterScheme.TryGetValue(item.Id.Value, out var barterSchemeForPreset))
             {
                 barterSchemeForPreset[0][0].Count *= presetModifier;
             }
@@ -303,7 +303,7 @@ public class FenceService(
         }
 
         // Normal item
-        if (assort.BarterScheme.TryGetValue(item.Id, out var barterScheme))
+        if (assort.BarterScheme.TryGetValue(item.Id.Value, out var barterScheme))
         {
             barterScheme[0][0].Count *= modifier;
         }
@@ -449,8 +449,8 @@ public class FenceService(
 
             // New assort to be added to existing assorts
             existingFenceAssorts.Items.AddRange(itemWithChildren);
-            existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
-            existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
+            existingFenceAssorts.BarterScheme[newRootItem.Id.Value] = newFenceAssorts.BarterScheme[newRootItem.Id.Value];
+            existingFenceAssorts.LoyalLevelItems[newRootItem.Id.Value] = newFenceAssorts.LoyalLevelItems[newRootItem.Id.Value];
         }
     }
 
@@ -569,8 +569,8 @@ public class FenceService(
         // Need to remove item from all areas of trader assort
         // delete assort.barter_scheme[rootItemToAdjust._id];
         // delete assort.loyal_level_items[rootItemToAdjust._id];
-        assort.BarterScheme.Remove(rootItemToAdjust.Id);
-        assort.LoyalLevelItems.Remove(rootItemToAdjust.Id);
+        assort.BarterScheme.Remove(rootItemToAdjust.Id.Value);
+        assort.LoyalLevelItems.Remove(rootItemToAdjust.Id.Value);
     }
 
     /**
@@ -699,8 +699,8 @@ public class FenceService(
         return new TraderAssort
         {
             Items = [],
-            BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(),
-            LoyalLevelItems = new Dictionary<string, int>(),
+            BarterScheme = new Dictionary<MongoId, List<List<BarterScheme>>>(),
+            LoyalLevelItems = new Dictionary<MongoId, int>(),
             NextResupply = GetNextFenceUpdateTimestamp()
         };
     }
@@ -715,8 +715,8 @@ public class FenceService(
         var result = new CreateFenceAssortsResult
         {
             SptItems = [],
-            BarterScheme = new Dictionary<string, List<List<BarterScheme>>>(),
-            LoyalLevelItems = new Dictionary<string, int>()
+            BarterScheme = new Dictionary<MongoId, List<List<BarterScheme>>>(),
+            LoyalLevelItems = new Dictionary<MongoId, int>()
         };
 
         var baseFenceAssortClone = _cloner.Clone(databaseService.GetTrader(Traders.FENCE).Assort);
@@ -797,7 +797,7 @@ public class FenceService(
 
             var itemIsPreset = presetHelper.IsPreset(chosenBaseAssortRoot.Id);
 
-            var price = baseFenceAssortClone.BarterScheme?[chosenBaseAssortRoot.Id][0][0].Count;
+            var price = baseFenceAssortClone.BarterScheme?[chosenBaseAssortRoot.Id.Value][0][0].Count;
             if (price == 0 || (price == 1 && !itemIsPreset) || price == 100)
             {
                 // Don't allow "special" items / presets
@@ -855,8 +855,8 @@ public class FenceService(
 
             assorts.SptItems.Add(desiredAssortItemAndChildrenClone);
 
-            assorts.BarterScheme[rootItemBeingAdded.Id] =
-                _cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id]);
+            assorts.BarterScheme[rootItemBeingAdded.Id.Value] =
+                _cloner.Clone(baseFenceAssortClone.BarterScheme[chosenBaseAssortRoot.Id.Value]);
 
             // Only adjust item price by quality for solo items, never multi-stack
             if (isSingleStack)
@@ -864,7 +864,7 @@ public class FenceService(
                 AdjustItemPriceByQuality(assorts.BarterScheme, rootItemBeingAdded, itemDbDetails);
             }
 
-            assorts.LoyalLevelItems[rootItemBeingAdded.Id] = loyaltyLevel;
+            assorts.LoyalLevelItems[rootItemBeingAdded.Id.Value] = loyaltyLevel;
         }
     }
 
@@ -982,7 +982,7 @@ public class FenceService(
      * @param itemTemplate Db template of item
      */
     protected void AdjustItemPriceByQuality(
-        Dictionary<string, List<List<BarterScheme>>> barterSchemes,
+        Dictionary<MongoId, List<List<BarterScheme>>> barterSchemes,
         Item itemRoot,
         TemplateItem itemTemplate
     )
@@ -1002,8 +1002,8 @@ public class FenceService(
             var multiplier = current / itemTotalMax;
 
             // Multiply item cost by desired multiplier
-            var basePrice = barterSchemes[itemRoot.Id][0][0].Count;
-            barterSchemes[itemRoot.Id][0][0].Count = Math.Round(basePrice.Value * multiplier.Value);
+            var basePrice = barterSchemes[itemRoot.Id.Value][0][0].Count;
+            barterSchemes[itemRoot.Id.Value][0][0].Count = Math.Round(basePrice.Value * multiplier.Value);
 
             return;
         }
@@ -1012,8 +1012,8 @@ public class FenceService(
         if (itemRoot.Upd?.Repairable != null || itemHelper.IsOfBaseclass(itemRoot.Template, BaseClasses.KEY_MECHANICAL))
         {
             var itemQualityModifier = itemHelper.GetItemQualityModifier(itemRoot);
-            var basePrice = barterSchemes[itemRoot.Id][0][0].Count;
-            barterSchemes[itemRoot.Id][0][0].Count = Math.Round((double) basePrice * itemQualityModifier);
+            var basePrice = barterSchemes[itemRoot.Id.Value][0][0].Count;
+            barterSchemes[itemRoot.Id.Value][0][0].Count = Math.Round((double) basePrice * itemQualityModifier);
         }
     }
 
@@ -1095,7 +1095,7 @@ public class FenceService(
 
                 // Set assort price
                 // Must be careful to use correct id as the item has had its IDs regenerated
-                assorts.BarterScheme[presetWithChildrenClone[0].Id] =
+                assorts.BarterScheme[presetWithChildrenClone[0].Id.Value] =
                 [
                     [
                         new BarterScheme
@@ -1105,7 +1105,7 @@ public class FenceService(
                         }
                     ]
                 ];
-                assorts.LoyalLevelItems[presetWithChildrenClone[0].Id] = loyaltyLevel;
+                assorts.LoyalLevelItems[presetWithChildrenClone[0].Id.Value] = loyaltyLevel;
 
                 weaponPresetsAddedCount++;
             }
@@ -1162,7 +1162,7 @@ public class FenceService(
 
             // Set assort price
             // Must be careful to use correct id as the item has had its IDs regenerated
-            assorts.BarterScheme[presetWithChildrenClone[0].Id] =
+            assorts.BarterScheme[presetWithChildrenClone[0].Id.Value] =
             [
                 [
                     new BarterScheme
@@ -1172,7 +1172,7 @@ public class FenceService(
                     }
                 ]
             ];
-            assorts.LoyalLevelItems[presetWithChildrenClone[0].Id] = loyaltyLevel;
+            assorts.LoyalLevelItems[presetWithChildrenClone[0].Id.Value] = loyaltyLevel;
 
             equipmentPresetsAddedCount++;
         }

@@ -17,6 +17,7 @@ using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -450,7 +451,7 @@ public class InventoryHelper(
     /// <param name="itemId">Items id to remove</param>
     /// <param name="sessionId">Session id</param>
     /// <param name="output">OPTIONAL - ItemEventRouterResponse</param>
-    public void RemoveItem(PmcData profile, string? itemId, string sessionId, ItemEventRouterResponse? output = null)
+    public void RemoveItem(PmcData profile, MongoId? itemId, string sessionId, ItemEventRouterResponse? output = null)
     {
         if (itemId is null)
         {

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
@@ -29,7 +30,7 @@ public record GenerateWeaponRequest
     /// ParentId of weapon
     /// </summary>
     [JsonPropertyName("weaponId")]
-    public string? WeaponId
+    public MongoId? WeaponId
     {
         get;
         set;

@@ -1,30 +1,23 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Item
 {
-    private string? _id;
-
     private string? _parentId;
 
-    private string? _SlotId;
+    private string? _slotId;
 
     private string? _tpl;
 
     // MongoId
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
-        get
-        {
-            return _id;
-        }
-        set
-        {
-            _id = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("_tpl")]
@@ -50,7 +43,7 @@ public record Item
         }
         set
         {
-            _parentId = value == null ? null : string.Intern(value);
+            _parentId = value == null ? null : value;
         }
     }
 
@@ -59,11 +52,11 @@ public record Item
     {
         get
         {
-            return _SlotId;
+            return _slotId;
         }
         set
         {
-            _SlotId = value == null ? null : string.Intern(value);
+            _slotId = value == null ? null : string.Intern(value);
         }
     }
 
@@ -95,7 +88,7 @@ public record HideoutItem
     /// Hideout inventory id that was used by improvement action
     /// </summary>
     [JsonPropertyName("_id")]
-    public string? _Id
+    public MongoId? _Id
     {
         get
         {
@@ -113,7 +106,7 @@ public record HideoutItem
     }
 
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

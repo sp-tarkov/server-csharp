@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -635,7 +636,7 @@ public class RepeatableQuestRewardGenerator(
     /// <returns> Object of "Reward"-item-type </returns>
     protected Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)
     {
-        var id = _hashUtil.Generate();
+        var id = new MongoId(_hashUtil.Generate());
         var questRewardItem = new Reward
         {
             Id = _hashUtil.Generate(),

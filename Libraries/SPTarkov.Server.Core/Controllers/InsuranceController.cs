@@ -231,9 +231,9 @@ public class InsuranceController(
     /// <param name="insured">The insurance object containing the items to evaluate</param>
     /// <param name="itemsMap">A Dictionary for quick item look-up by item ID</param>
     /// <returns>A dictionary containing parent item IDs to arrays of their attachment items</returns>
-    protected Dictionary<string, List<Item>> PopulateParentAttachmentsMap(string rootItemParentID, Insurance insured, Dictionary<string, Item> itemsMap)
+    protected Dictionary<MongoId, List<Item>> PopulateParentAttachmentsMap(string rootItemParentID, Insurance insured, Dictionary<string, Item> itemsMap)
     {
-        var mainParentToAttachmentsMap = new Dictionary<string, List<Item>>();
+        var mainParentToAttachmentsMap = new Dictionary<MongoId, List<Item>>();
         foreach (var insuredItem in insured.Items)
         {
             // Use the parent ID from the item to get the parent item.
@@ -301,16 +301,16 @@ public class InsuranceController(
             }
 
             // Update (or add to) the main-parent to attachments map.
-            if (mainParentToAttachmentsMap.ContainsKey(mainParent.Id))
+            if (mainParentToAttachmentsMap.ContainsKey(mainParent.Id.Value))
             {
-                if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id, out var parent))
+                if (mainParentToAttachmentsMap.TryGetValue(mainParent.Id.Value, out var parent))
                 {
                     parent.Add(insuredItem);
                 }
             }
             else
             {
-                mainParentToAttachmentsMap.TryAdd(mainParent.Id, [insuredItem]);
+                mainParentToAttachmentsMap.TryAdd(mainParent.Id.Value, [insuredItem]);
             }
         }
 
@@ -324,9 +324,9 @@ public class InsuranceController(
     /// <param name="parentAttachmentsMap">Dictionary containing parent item IDs to arrays of their attachment items</param>
     /// <param name="itemsMap">Hashset containing parent item IDs to arrays of their attachment items which are not moddable in-raid</param>
     /// <returns></returns>
-    protected Dictionary<string, List<Item>> RemoveNonModdableAttachments(Dictionary<string, List<Item>> parentAttachmentsMap, Dictionary<string, Item> itemsMap)
+    protected Dictionary<MongoId, List<Item>> RemoveNonModdableAttachments(Dictionary<MongoId, List<Item>> parentAttachmentsMap, Dictionary<string, Item> itemsMap)
     {
-        var updatedMap = new Dictionary<string, List<Item>>();
+        var updatedMap = new Dictionary<MongoId, List<Item>>();
 
         foreach (var map in parentAttachmentsMap)
         {
@@ -372,7 +372,7 @@ public class InsuranceController(
     /// <param name="insured">Insurance object containing the items to evaluate</param>
     /// <param name="toDelete">Hashset to keep track of items marked for deletion</param>
     /// <param name="parentAttachmentsMap">Dictionary containing parent item IDs to arrays of their attachment items</param>
-    protected void ProcessRegularItems(Insurance insured, HashSet<string> toDelete, Dictionary<string, List<Item>> parentAttachmentsMap)
+    protected void ProcessRegularItems(Insurance insured, HashSet<string> toDelete, Dictionary<MongoId, List<Item>> parentAttachmentsMap)
     {
         foreach (var insuredItem in insured.Items)
         {
@@ -389,7 +389,7 @@ public class InsuranceController(
                 // Check to see if this item is a parent in the parentAttachmentsMap. If so, do a look-up for *all* of
                 // its children and mark them for deletion as well. Additionally remove the parent (and its children)
                 // from the parentAttachmentsMap so that it's children are not rolled for later in the process.
-                if (parentAttachmentsMap.ContainsKey(insuredItem.Id))
+                if (parentAttachmentsMap.ContainsKey(insuredItem.Id.Value))
                 {
                     // This call will also return the parent item itself, queueing it for deletion as well.
                     var itemAndChildren = _itemHelper.FindAndReturnChildrenAsItems(
@@ -402,7 +402,7 @@ public class InsuranceController(
                     }
 
                     // Remove the parent (and its children) from the parentAttachmentsMap.
-                    parentAttachmentsMap.Remove(insuredItem.Id);
+                    parentAttachmentsMap.Remove(insuredItem.Id.Value);
                 }
                 else
                 {
@@ -420,7 +420,7 @@ public class InsuranceController(
     /// <param name="itemsMap">Dictionary for quick item look-up by item ID</param>
     /// <param name="insuredTraderId">Trader ID from the Insurance object</param>
     /// <param name="toDelete">Tracked attachment ids to be removed</param>
-    protected void ProcessAttachments(Dictionary<string, List<Item>> mainParentToAttachmentsMap, Dictionary<string, Item> itemsMap, string? insuredTraderId,
+    protected void ProcessAttachments(Dictionary<MongoId, List<Item>> mainParentToAttachmentsMap, Dictionary<string, Item> itemsMap, string? insuredTraderId,
         HashSet<string> toDelete)
     {
         foreach (var parentObj in mainParentToAttachmentsMap)
@@ -690,7 +690,7 @@ public class InsuranceController(
             itemsToPay.Add(
                 new IdWithCount
                 {
-                    Id = Money.ROUBLES, // TODO: update to handle different currencies
+                    Id = new MongoId(Money.ROUBLES), // TODO: update to handle different currencies
                     Count = _insuranceService.GetRoublePriceToInsureItemWithTrader(
                         pmcData,
                         inventoryItemsHash[key],

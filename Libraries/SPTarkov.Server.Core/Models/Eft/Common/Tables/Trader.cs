@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Services;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -29,7 +30,7 @@ public record Trader
     }
 
     [JsonPropertyName("questassort")]
-    public Dictionary<string, Dictionary<string, string>>? QuestAssort
+    public Dictionary<string, Dictionary<MongoId, string>>? QuestAssort
     {
         get;
         set;
@@ -465,14 +466,14 @@ public record TraderAssort
     }
 
     [JsonPropertyName("barter_scheme")]
-    public Dictionary<string, List<List<BarterScheme>>>? BarterScheme
+    public Dictionary<MongoId, List<List<BarterScheme>>>? BarterScheme
     {
         get;
         set;
     }
 
     [JsonPropertyName("loyal_level_items")]
-    public Dictionary<string, int>? LoyalLevelItems
+    public Dictionary<MongoId, int>? LoyalLevelItems
     {
         get;
         set;

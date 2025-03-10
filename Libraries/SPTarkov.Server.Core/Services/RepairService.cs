@@ -139,7 +139,7 @@ public class RepairService(
                 new IdWithCount
                 {
                     Count = Math.Round(repairCost),
-                    Id = Money.ROUBLES
+                    Id = new MongoId(Money.ROUBLES)
                 }
             ],
             TransactionId = traderId,

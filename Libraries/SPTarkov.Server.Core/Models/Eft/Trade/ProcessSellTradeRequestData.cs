@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Trade;
 
@@ -22,7 +23,7 @@ public record ProcessSellTradeRequestData : ProcessBaseTradeRequestData
 public record SoldItem
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

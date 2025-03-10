@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -424,7 +425,7 @@ public class LocationLootGenerator(
         var containerTpl = containerClone.Template.Items[0].Template;
 
         // Create new unique parent id to prevent any collisions
-        var parentId = _hashUtil.Generate();
+        var parentId = new MongoId(_hashUtil.Generate());
         containerClone.Template.Root = parentId;
         containerClone.Template.Items[0].Id = parentId;
 
@@ -1013,7 +1014,7 @@ public class LocationLootGenerator(
             itemWithMods.Add(
                 new Item
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = chosenTpl,
                     Upd = new Upd
                     {
@@ -1029,7 +1030,7 @@ public class LocationLootGenerator(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = chosenTpl
                 }
             ];
@@ -1043,7 +1044,7 @@ public class LocationLootGenerator(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = chosenTpl
                 }
             ];
@@ -1112,7 +1113,7 @@ public class LocationLootGenerator(
         [
             new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = chosenTpl
             }
         ];

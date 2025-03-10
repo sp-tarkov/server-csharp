@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -306,7 +307,7 @@ public class TradeController(
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(_hashUtil.Generate()),
             Template = Money.ROUBLES,
             Upd = new Upd
             {

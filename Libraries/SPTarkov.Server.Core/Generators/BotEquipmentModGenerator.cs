@@ -222,7 +222,7 @@ public class BotEquipmentModGenerator(
             }
 
             // Generate new id to ensure all items are unique on bot
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId(_hashUtil.Generate());
             equipment.Add(
                 CreateModItem(modId, modTpl, parentId, modSlotName, modTemplate.Value, settings.BotData.Role)
             );
@@ -641,12 +641,12 @@ public class BotEquipmentModGenerator(
                 request.WeaponStats.HasOptic = true;
             }
 
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId(_hashUtil.Generate());
             request.Weapon.Add(
                 CreateModItem(
                     modId,
                     modToAddTemplate.Value.Id,
-                    request.WeaponId,
+                    request.WeaponId.Value,
                     modSlot,
                     modToAddTemplate.Value,
                     request.BotData.Role
@@ -1471,7 +1471,7 @@ public class BotEquipmentModGenerator(
     /// <param name="modTemplate">Used to add additional properties in the upd object</param>
     /// <param name="botRole">The bots role mod is being created for</param>
     /// <returns>Item object</returns>
-    public Item CreateModItem(string modId, string modTpl, string parentId, string modSlot, TemplateItem modTemplate, string botRole)
+    public Item CreateModItem(MongoId modId, string modTpl, string parentId, string modSlot, TemplateItem modTemplate, string botRole)
     {
         return new Item
         {
@@ -1688,7 +1688,7 @@ public class BotEquipmentModGenerator(
     /// <param name="modPool">ModPool which should include available cartridges</param>
     /// <param name="cylinderMagParentId">The CylinderMagazine's UID</param>
     /// <param name="cylinderMagTemplate">The CylinderMagazine's template</param>
-    public void FillCamora(List<Item> items, Dictionary<string, Dictionary<string, HashSet<string>>> modPool, string cylinderMagParentId,
+    public void FillCamora(List<Item> items, Dictionary<string, Dictionary<string, HashSet<string>>> modPool, MongoId cylinderMagParentId,
         TemplateItem cylinderMagTemplate)
     {
         if (!modPool.TryGetValue(cylinderMagTemplate.Id, out var itemModPool))
@@ -1756,7 +1756,7 @@ public class BotEquipmentModGenerator(
         foreach (var slot in cylinderMagTemplate.Properties.Slots)
         {
             var modSlotId = slot.Name;
-            var modId = _hashUtil.Generate();
+            var modId = new MongoId(_hashUtil.Generate());
             items.Add(
                 new Item
                 {

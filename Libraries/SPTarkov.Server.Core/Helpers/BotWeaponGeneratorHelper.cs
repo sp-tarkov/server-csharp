@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -90,7 +91,7 @@ public class BotWeaponGeneratorHelper(
         [
             new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = magazineTpl
             }
         ];
@@ -122,7 +123,7 @@ public class BotWeaponGeneratorHelper(
         var ammoItems = _itemHelper.SplitStack(
             new Item
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = ammoTpl,
                 Upd = new Upd
                 {

@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -317,7 +318,7 @@ public class RewardHelper(
             {
                 // Is child mod
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
-                    // Propigate FiR status into child items
+                    // Propagate FiR status into child items
                 {
                     rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
                 }
@@ -335,7 +336,7 @@ public class RewardHelper(
                 _cloner.Clone(target)
             };
             // Here we generate a new id for the root item
-            target.Id = _hashUtil.Generate();
+            target.Id = new MongoId(_hashUtil.Generate());
 
             // Add cloned mods to root item array
             var clonedMods = _cloner.Clone(mods);

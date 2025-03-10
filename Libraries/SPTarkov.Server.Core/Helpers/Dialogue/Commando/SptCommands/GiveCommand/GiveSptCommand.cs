@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 
@@ -236,7 +237,7 @@ public class GiveSptCommand(
                 ammoBoxArray.Add(
                     new Item
                     {
-                        Id = _hashUtil.Generate(),
+                        Id = new MongoId(_hashUtil.Generate()),
                         Template = checkedItem.Value.Id
                     }
                 );
@@ -254,7 +255,7 @@ public class GiveSptCommand(
                     itemsToSend.Add(
                         new Item
                         {
-                            Id = _hashUtil.Generate(),
+                            Id = new MongoId(_hashUtil.Generate()),
                             Template = checkedItem.Value.Id,
                             Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                         }
@@ -265,7 +266,7 @@ public class GiveSptCommand(
             {
                 var itemToSend = new Item
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = checkedItem.Value.Id,
                     Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                 };

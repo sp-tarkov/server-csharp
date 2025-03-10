@@ -988,7 +988,7 @@ public class RagfairController
     /// <param name="itemIdsFromFleaOfferRequest">Request</param>
     /// <returns>GetItemsToListOnFleaFromInventoryResult</returns>
     protected GetItemsToListOnFleaFromInventoryResult GetItemsToListOnFleaFromInventory(PmcData pmcData,
-        List<string> itemIdsFromFleaOfferRequest)
+        List<MongoId> itemIdsFromFleaOfferRequest)
     {
         List<List<Item>> itemsToReturn = [];
         var errorMessage = string.Empty;
@@ -1182,7 +1182,7 @@ public class RagfairController
             [
                 new IdWithCount
                 {
-                    Id = _paymentHelper.GetCurrency(currency),
+                    Id = new MongoId(_paymentHelper.GetCurrency(currency)),
                     Count = Math.Round(value)
                 }
             ],

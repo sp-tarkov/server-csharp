@@ -537,7 +537,7 @@ public class TraderHelper(
             foreach (var item in traderAssorts.Items.Where(x => x.ParentId == "hideout"))
             {
                 // Get barter scheme (contains cost of item)
-                var barterScheme = traderAssorts.BarterScheme[item.Id].FirstOrDefault().FirstOrDefault();
+                var barterScheme = traderAssorts.BarterScheme[item.Id.Value].FirstOrDefault().FirstOrDefault();
 
                 // Convert into roubles
                 var roubleAmount = barterScheme.Template == Money.ROUBLES

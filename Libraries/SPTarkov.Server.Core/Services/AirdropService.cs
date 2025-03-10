@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -102,7 +103,7 @@ public class AirdropService(
     {
         var airdropContainer = new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(_hashUtil.Generate()),
             Template = string.Empty, // Picked later
             Upd = new Upd
             {

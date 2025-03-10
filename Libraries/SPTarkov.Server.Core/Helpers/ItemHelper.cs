@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -918,7 +919,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, maxStackSize ?? 0);
             var newStackClone = _cloner.Clone(itemToSplit);
 
-            newStackClone.Id = _hashUtil.Generate();
+            newStackClone.Id = new MongoId(_hashUtil.Generate());
             newStackClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             rootAndChildren.Add(newStackClone);
@@ -951,7 +952,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, itemMaxStackSize);
             var newItemClone = _cloner.Clone(itemToSplit);
 
-            newItemClone.Id = _hashUtil.Generate();
+            newItemClone.Id = new MongoId(_hashUtil.Generate());
             newItemClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             result.Add([newItemClone]);
@@ -977,13 +978,9 @@ public class ItemHelper(
         foreach (var barterId in desiredBarterIds)
         {
             var filterResult = itemsToSearch.Where(
-                item =>
-                {
-                    return by == "tpl"
-                        ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
-                        : item.Id.Equals(barterId, StringComparison.OrdinalIgnoreCase);
-                }
-            );
+                item => by == "tpl"
+                    ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
+                    : item.Id.Equals(barterId));
 
             matchingItems.AddRange(filterResult);
         }
@@ -1002,7 +999,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="itemWithChildren">Item with mods to update.</param>
     /// <param name="newId">New id to add on children of base item.</param>
-    public void ReplaceRootItemID(List<Item> itemWithChildren, string newId = "")
+    public void ReplaceRootItemID(List<Item> itemWithChildren, MongoId newId)
     {
         // original id on base item
         var oldId = itemWithChildren[0].Id;
@@ -1040,7 +1037,7 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId.ToString()));
         }
 
 
@@ -1052,7 +1049,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId(_hashUtil.Generate());
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1091,7 +1088,7 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId(_hashUtil.Generate());
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1148,7 +1145,7 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId.ToString()));
         }
 
 
@@ -1160,7 +1157,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = _hashUtil.Generate();
+            var newId = new MongoId(_hashUtil.Generate());
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1405,7 +1402,7 @@ public class ItemHelper(
      */
     public ItemSize GetItemSize(List<Item> items, string rootItemId)
     {
-        var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId, StringComparison.OrdinalIgnoreCase)).ToList()[0].Template).Value;
+        var rootTemplate = GetItem(items.Where(x => x.Id.Equals(rootItemId)).ToList()[0].Template).Value;
         var width = rootTemplate.Properties.Width;
         var height = rootTemplate.Properties.Height;
 
@@ -1547,7 +1544,7 @@ public class ItemHelper(
     public bool ItemIsInsideContainer(Item itemToCheck, string desiredContainerSlotId, List<Item> items)
     {
         // Get items parent
-        var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId, StringComparison.OrdinalIgnoreCase));
+        var parent = items.FirstOrDefault(item => item.Id.Equals(itemToCheck.ParentId));
         if (parent is null)
             // No parent, end of line, not inside container
         {
@@ -1786,7 +1783,7 @@ public class ItemHelper(
     {
         return new Item
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(_hashUtil.Generate()),
             Template = ammoTpl!,
             ParentId = parentId,
             SlotId = "cartridges",
@@ -1913,7 +1910,7 @@ public class ItemHelper(
             // Create basic item structure ready to add to weapon array
             Item modItemToAdd = new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(_hashUtil.Generate()),
                 Template = chosenTpl,
                 ParentId = result[0].Id,
                 SlotId = slot.Name
@@ -2001,17 +1998,17 @@ public class ItemHelper(
         {
             if (!idMappings.ContainsKey(mod.Id))
             {
-                idMappings[mod.Id] = _hashUtil.Generate();
+                idMappings[mod.Id] = new MongoId(_hashUtil.Generate());
             }
 
             // Has parentId + no remapping exists for its parent
             if (mod.ParentId is not null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
                 // Make remapping for items parentId
             {
-                idMappings[mod.ParentId] = _hashUtil.Generate();
+                idMappings[mod.ParentId] = new MongoId(_hashUtil.Generate());
             }
 
-            mod.Id = idMappings[mod.Id];
+            mod.Id = new MongoId(idMappings[mod.Id.ToString()]);
             if (mod.ParentId is not null)
             {
                 mod.ParentId = idMappings[mod.ParentId];
@@ -2034,16 +2031,16 @@ public class ItemHelper(
     // Optional: new id to use
     // Returns New root id
 
-    public string RemapRootItemId(List<Item> itemWithChildren, string? newId = null)
+    public string RemapRootItemId(List<Item> itemWithChildren, MongoId? newId = null)
     {
-        newId ??= _hashUtil.Generate();
+        newId ??= new MongoId(_hashUtil.Generate());
 
         var rootItemExistingId = itemWithChildren[0].Id;
 
         foreach (var item in itemWithChildren)
         {
             // Root, update id
-            if (item.Id.Equals(rootItemExistingId, StringComparison.OrdinalIgnoreCase))
+            if (item.Id.Equals(rootItemExistingId))
             {
                 item.Id = newId;
 
@@ -2072,7 +2069,7 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Check if the item's parent exists.
-            var parentExists = items.Any(parentItem => parentItem.Id.Equals(item.ParentId, StringComparison.OrdinalIgnoreCase));
+            var parentExists = items.Any(parentItem => parentItem.Id.Equals(item.ParentId));
 
             // If the parent does not exist and the item is not already a 'hideout' item, adopt the orphaned item by
             // setting the parent ID to the PMCs inventory equipment ID, the slot ID to 'hideout', and remove the location.
@@ -2094,7 +2091,7 @@ public class ItemHelper(
     public Dictionary<string, Item> GenerateItemsMap(List<Item> items)
     {
         // Convert list to dictionary, keyed by items Id
-        return items.ToDictionary(item => item.Id);
+        return items.ToDictionary(item => item.Id.ToString());
     }
 
     // Add a blank upd object to passed in item if it does not exist already

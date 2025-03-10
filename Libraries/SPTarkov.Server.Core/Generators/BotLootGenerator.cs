@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -487,7 +488,7 @@ public class BotLootGenerator(
                 continue;
             }
 
-            var newRootItemId = _hashUtil.Generate();
+            var newRootItemId = new MongoId(_hashUtil.Generate());
             List<Item> itemWithChildrenToAdd =
             [
                 new()
@@ -599,7 +600,7 @@ public class BotLootGenerator(
     /// </summary>
     /// <param name="walletId"> Wallet to add loot to</param>
     /// <returns>Generated list of currency stacks with the wallet as their parent</returns>
-    public List<List<Item>> CreateWalletLoot(string walletId)
+    public List<List<Item>> CreateWalletLoot(MongoId walletId)
     {
         List<List<Item>> result = [];
 
@@ -611,13 +612,13 @@ public class BotLootGenerator(
         for (var index = 0; index < itemCount; index++)
         {
             // Choose the size of the currency stack - default is 5k, 10k, 15k, 20k, 25k
-            var chosenStackCount = _weightedRandomHelper.GetWeightedValue<string>(_botConfig.WalletLoot.StackSizeWeight);
+            var chosenStackCount = _weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.StackSizeWeight);
             List<Item> items =
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
-                    Template = _weightedRandomHelper.GetWeightedValue<string>(_botConfig.WalletLoot.CurrencyWeight),
+                    Id = new MongoId(_hashUtil.Generate()),
+                    Template = _weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.CurrencyWeight),
                     ParentId = walletId,
                     Upd = new Upd
                     {
@@ -708,7 +709,7 @@ public class BotLootGenerator(
                 sessionId,
                 chosenWeaponType,
                 templateInventory,
-                botInventory.Equipment,
+                botInventory.Equipment.Value,
                 modChances,
                 botRole,
                 isPmc,

@@ -15,6 +15,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using Hideout = SPTarkov.Server.Core.Models.Spt.Hideout.Hideout;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
@@ -365,7 +366,7 @@ public class CircleOfCultistService(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = randomItemTplFromPool,
                     ParentId = cultistCircleStashId,
                     SlotId = CircleOfCultistSlotId,
@@ -454,7 +455,7 @@ public class CircleOfCultistService(
             [
                 new()
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(_hashUtil.Generate()),
                     Template = rewardTpl,
                     ParentId = cultistCircleStashId,
                     SlotId = CircleOfCultistSlotId,

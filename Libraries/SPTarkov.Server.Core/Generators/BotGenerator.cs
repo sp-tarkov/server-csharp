@@ -700,7 +700,7 @@ public class BotGenerator(
     /// <param name="profile">Profile to update</param>
     public void GenerateInventoryId(BotBase profile)
     {
-        var newInventoryItemId = _hashUtil.Generate();
+        var newInventoryItemId = new MongoId(_hashUtil.Generate());
 
         foreach (var item in profile.Inventory.Items)
         {
@@ -781,7 +781,7 @@ public class BotGenerator(
     {
         Item inventoryItem = new()
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(_hashUtil.Generate()),
             Template = GetDogtagTplByGameVersionAndSide(bot.Info.Side, bot.Info.GameVersion),
             ParentId = bot.Inventory.Equipment,
             SlotId = "Dogtag",

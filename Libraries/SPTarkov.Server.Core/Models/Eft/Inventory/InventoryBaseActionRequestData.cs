@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
 
 namespace SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -10,7 +11,7 @@ public abstract record InventoryBaseActionRequestData : BaseInteractionRequestDa
 public record To
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -41,7 +42,7 @@ public record To
 public record Container
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

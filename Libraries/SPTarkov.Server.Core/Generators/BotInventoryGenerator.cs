@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -113,12 +114,12 @@ public class BotInventoryGenerator(
     /// <returns>PmcInventory object</returns>
     public BotBaseInventory GenerateInventoryBase()
     {
-        var equipmentId = _hashUtil.Generate();
-        var stashId = _hashUtil.Generate();
-        var questRaidItemsId = _hashUtil.Generate();
-        var questStashItemsId = _hashUtil.Generate();
-        var sortingTableId = _hashUtil.Generate();
-        var hideoutCustomizationStashId = _hashUtil.Generate();
+        var equipmentId = new MongoId(_hashUtil.Generate());
+        var stashId = new MongoId(_hashUtil.Generate());
+        var questRaidItemsId = new MongoId(_hashUtil.Generate());
+        var questStashItemsId = new MongoId(_hashUtil.Generate());
+        var sortingTableId = new MongoId(_hashUtil.Generate());
+        var hideoutCustomizationStashId = new MongoId(_hashUtil.Generate());
 
         return new BotBaseInventory
         {
@@ -539,7 +540,7 @@ public class BotInventoryGenerator(
             }
 
             // Create root item
-            var id = _hashUtil.Generate();
+            var id = new MongoId(_hashUtil.Generate());
             Item item = new()
             {
                 Id = id,
@@ -707,7 +708,7 @@ public class BotInventoryGenerator(
             sessionId,
             weaponSlot.Slot.ToString(),
             templateInventory,
-            botInventory.Equipment,
+            botInventory.Equipment.Value,
             equipmentChances.WeaponModsChances,
             botRole,
             isPmc,

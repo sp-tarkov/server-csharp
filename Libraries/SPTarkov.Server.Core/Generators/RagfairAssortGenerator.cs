@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -122,8 +123,8 @@ public class RagfairAssortGenerator(
 
             var ragfairAssort = CreateRagfairAssortRootItem(
                 item.Id,
-                item.Id
-            ); // tplid and id must be the same so hideout recipe rewards work
+                new MongoId(item.Id)
+            ); // hack: tplid and id must be the same so hideout recipe rewards work
 
             results.Add([ragfairAssort]);
         }
@@ -149,11 +150,11 @@ public class RagfairAssortGenerator(
     /// <param name="tplId"> tplid to add to item </param>
     /// <param name="id"> id to add to item </param>
     /// <returns> Hydrated Item object </returns>
-    protected Item CreateRagfairAssortRootItem(string tplId, string? id = null)
+    protected Item CreateRagfairAssortRootItem(string tplId, MongoId? id = null)
     {
         if (string.IsNullOrEmpty(id))
         {
-            id = hashUtil.Generate();
+            id = new MongoId(hashUtil.Generate());
         }
 
         return new Item

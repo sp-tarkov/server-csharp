@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -133,7 +134,7 @@ public class ProfileFixerService(
                 if (!itemsHaveChildren)
                 {
                     var itemToAdjust = pmcProfile.Inventory.Items.FirstOrDefault(x => x.Id == mappingKvP.Key);
-                    itemToAdjust.Id = _hashUtil.Generate();
+                    itemToAdjust.Id = new MongoId(_hashUtil.Generate());
                     _logger.Warning($"Replace duplicate item Id: {mappingKvP.Key} with {itemToAdjust.Id}");
                 }
             }

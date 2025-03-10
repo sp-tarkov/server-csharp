@@ -637,7 +637,7 @@ public class RagfairOfferGenerator(
                 ? ragfairServerHelper.GetPresetItems(item)
                 : [item, ..itemHelper.FindAndReturnChildrenByAssort(item.Id, childAssortItems)];
 
-            if (!assortsClone.BarterScheme.TryGetValue(item.Id, out var barterScheme))
+            if (!assortsClone.BarterScheme.TryGetValue(item.Id.Value, out var barterScheme))
             {
                 logger.Warning(
                     localisationService.GetText(
@@ -654,7 +654,7 @@ public class RagfairOfferGenerator(
             }
 
             var barterSchemeItems = barterScheme[0];
-            var loyalLevel = assortsClone.LoyalLevelItems[item.Id];
+            var loyalLevel = assortsClone.LoyalLevelItems[item.Id.Value];
 
             var offer = CreateAndAddFleaOffer(traderID, time, items, barterSchemeItems, loyalLevel, (int?)item.Upd.StackObjectsCount ?? 1);
 

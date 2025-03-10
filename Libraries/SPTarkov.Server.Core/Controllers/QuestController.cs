@@ -337,7 +337,7 @@ public class QuestController(
                 // Remove single item with no children
                 _questHelper.ChangeItemStack(
                     pmcData,
-                    itemHandover.Id,
+                    itemHandover.Id.Value,
                     (int) (itemHandover.Count - itemCountToRemove),
                     sessionID,
                     output
