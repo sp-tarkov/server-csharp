@@ -246,7 +246,7 @@ public class BotWeaponGenerator(
                 weaponWithModsList.Add(
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = ammoTemplate,
                         ParentId = weaponWithModsList[0].Id,
                         SlotId = slotId,
@@ -286,7 +286,7 @@ public class BotWeaponGenerator(
         [
             new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = weaponTemplate,
                 ParentId = weaponParentId,
                 SlotId = equipmentSlot,
@@ -497,7 +497,7 @@ public class BotWeaponGenerator(
     {
         for (var i = 0; i < stackCount; i++)
         {
-            var id = new MongoId(_hashUtil.Generate());
+            var id = new MongoId();
             _botGeneratorHelper.AddItemWithChildrenToEquipmentSlot(
                 new HashSet<EquipmentSlots>
                 {
@@ -775,7 +775,7 @@ public class BotWeaponGenerator(
         weaponMods.Add(
             new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = ubglAmmoTpl,
                 ParentId = ubglMod.Id,
                 SlotId = "patron_in_weapon",

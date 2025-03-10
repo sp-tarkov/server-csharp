@@ -162,7 +162,7 @@ public class PlayerScavGenerator(
             {
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = itemTemplate.Id,
                     Upd = _botGeneratorHelper.GenerateExtraPropertiesForItem(itemTemplate)
                 }

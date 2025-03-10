@@ -222,7 +222,7 @@ public class BotEquipmentModGenerator(
             }
 
             // Generate new id to ensure all items are unique on bot
-            var modId = new MongoId(_hashUtil.Generate());
+            var modId = new MongoId();
             equipment.Add(
                 CreateModItem(modId, modTpl, parentId, modSlotName, modTemplate.Value, settings.BotData.Role)
             );
@@ -641,7 +641,7 @@ public class BotEquipmentModGenerator(
                 request.WeaponStats.HasOptic = true;
             }
 
-            var modId = new MongoId(_hashUtil.Generate());
+            var modId = new MongoId();
             request.Weapon.Add(
                 CreateModItem(
                     modId,
@@ -1756,7 +1756,7 @@ public class BotEquipmentModGenerator(
         foreach (var slot in cylinderMagTemplate.Properties.Slots)
         {
             var modSlotId = slot.Name;
-            var modId = new MongoId(_hashUtil.Generate());
+            var modId = new MongoId();
             items.Add(
                 new Item
                 {

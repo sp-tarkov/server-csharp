@@ -241,7 +241,7 @@ public class CreateProfileService(
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
     {
         var oldEquipmentId = pmcData.Inventory.Equipment;
-        pmcData.Inventory.Equipment = new MongoId(_hashUtil.Generate());
+        pmcData.Inventory.Equipment = new MongoId();
 
         foreach (var item in pmcData.Inventory.Items)
         {

@@ -133,7 +133,7 @@ public class ProfileSptCommand(
             [
                 new Item
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = Money.ROUBLES,
                     Upd = new Upd
                     {

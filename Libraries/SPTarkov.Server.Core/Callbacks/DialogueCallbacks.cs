@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -49,7 +50,7 @@ public class DialogueCallbacks(
         {
             new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 RegistrationId = 20,
                 DateTime = _timeUtil.GetTimeStamp(),
                 IsDeveloper = true,

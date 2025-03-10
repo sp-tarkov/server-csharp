@@ -134,7 +134,7 @@ public class ProfileFixerService(
                 if (!itemsHaveChildren)
                 {
                     var itemToAdjust = pmcProfile.Inventory.Items.FirstOrDefault(x => x.Id == mappingKvP.Key);
-                    itemToAdjust.Id = new MongoId(_hashUtil.Generate());
+                    itemToAdjust.Id = new MongoId();
                     _logger.Warning($"Replace duplicate item Id: {mappingKvP.Key} with {itemToAdjust.Id}");
                 }
             }

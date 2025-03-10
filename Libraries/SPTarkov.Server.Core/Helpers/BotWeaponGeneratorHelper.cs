@@ -91,7 +91,7 @@ public class BotWeaponGeneratorHelper(
         [
             new()
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = magazineTpl
             }
         ];
@@ -123,7 +123,7 @@ public class BotWeaponGeneratorHelper(
         var ammoItems = _itemHelper.SplitStack(
             new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = ammoTpl,
                 Upd = new Upd
                 {

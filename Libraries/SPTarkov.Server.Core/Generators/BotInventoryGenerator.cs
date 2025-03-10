@@ -114,12 +114,12 @@ public class BotInventoryGenerator(
     /// <returns>PmcInventory object</returns>
     public BotBaseInventory GenerateInventoryBase()
     {
-        var equipmentId = new MongoId(_hashUtil.Generate());
-        var stashId = new MongoId(_hashUtil.Generate());
-        var questRaidItemsId = new MongoId(_hashUtil.Generate());
-        var questStashItemsId = new MongoId(_hashUtil.Generate());
-        var sortingTableId = new MongoId(_hashUtil.Generate());
-        var hideoutCustomizationStashId = new MongoId(_hashUtil.Generate());
+        var equipmentId = new MongoId();
+        var stashId = new MongoId();
+        var questRaidItemsId = new MongoId();
+        var questStashItemsId = new MongoId();
+        var sortingTableId = new MongoId();
+        var hideoutCustomizationStashId = new MongoId();
 
         return new BotBaseInventory
         {
@@ -540,7 +540,7 @@ public class BotInventoryGenerator(
             }
 
             // Create root item
-            var id = new MongoId(_hashUtil.Generate());
+            var id = new MongoId();
             Item item = new()
             {
                 Id = id,

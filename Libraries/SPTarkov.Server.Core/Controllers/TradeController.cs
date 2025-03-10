@@ -307,7 +307,7 @@ public class TradeController(
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item
         {
-            Id = new MongoId(_hashUtil.Generate()),
+            Id = new MongoId(),
             Template = Money.ROUBLES,
             Upd = new Upd
             {

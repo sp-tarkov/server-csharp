@@ -425,7 +425,7 @@ public class LocationLootGenerator(
         var containerTpl = containerClone.Template.Items[0].Template;
 
         // Create new unique parent id to prevent any collisions
-        var parentId = new MongoId(_hashUtil.Generate());
+        var parentId = new MongoId();
         containerClone.Template.Root = parentId;
         containerClone.Template.Items[0].Id = parentId;
 
@@ -1014,7 +1014,7 @@ public class LocationLootGenerator(
             itemWithMods.Add(
                 new Item
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = chosenTpl,
                     Upd = new Upd
                     {
@@ -1030,7 +1030,7 @@ public class LocationLootGenerator(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = chosenTpl
                 }
             ];
@@ -1044,7 +1044,7 @@ public class LocationLootGenerator(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = chosenTpl
                 }
             ];
@@ -1113,7 +1113,7 @@ public class LocationLootGenerator(
         [
             new()
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = chosenTpl
             }
         ];

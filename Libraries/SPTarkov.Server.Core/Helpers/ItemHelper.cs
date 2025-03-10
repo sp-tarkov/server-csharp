@@ -919,7 +919,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, maxStackSize ?? 0);
             var newStackClone = _cloner.Clone(itemToSplit);
 
-            newStackClone.Id = new MongoId(_hashUtil.Generate());
+            newStackClone.Id = new MongoId();
             newStackClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             rootAndChildren.Add(newStackClone);
@@ -952,7 +952,7 @@ public class ItemHelper(
             var amount = Math.Min(remainingCount ?? 0, itemMaxStackSize);
             var newItemClone = _cloner.Clone(itemToSplit);
 
-            newItemClone.Id = new MongoId(_hashUtil.Generate());
+            newItemClone.Id = new MongoId();
             newItemClone.Upd.StackObjectsCount = amount;
             remainingCount -= amount;
             result.Add([newItemClone]);
@@ -1049,7 +1049,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = new MongoId(_hashUtil.Generate());
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1088,7 +1088,7 @@ public class ItemHelper(
         foreach (var item in items)
         {
             // Generate new id
-            var newId = new MongoId(_hashUtil.Generate());
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1157,7 +1157,7 @@ public class ItemHelper(
             }
 
             // Generate new id
-            var newId = new MongoId(_hashUtil.Generate());
+            var newId = new MongoId();
 
             // Keep copy of original id
             var originalId = item.Id;
@@ -1783,7 +1783,7 @@ public class ItemHelper(
     {
         return new Item
         {
-            Id = new MongoId(_hashUtil.Generate()),
+            Id = new MongoId(),
             Template = ammoTpl!,
             ParentId = parentId,
             SlotId = "cartridges",
@@ -1910,7 +1910,7 @@ public class ItemHelper(
             // Create basic item structure ready to add to weapon array
             Item modItemToAdd = new()
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = chosenTpl,
                 ParentId = result[0].Id,
                 SlotId = slot.Name
@@ -1998,14 +1998,14 @@ public class ItemHelper(
         {
             if (!idMappings.ContainsKey(mod.Id))
             {
-                idMappings[mod.Id] = new MongoId(_hashUtil.Generate());
+                idMappings[mod.Id] = new MongoId();
             }
 
             // Has parentId + no remapping exists for its parent
             if (mod.ParentId is not null && (!idMappings.ContainsKey(mod.ParentId) || idMappings?[mod.ParentId] is null))
                 // Make remapping for items parentId
             {
-                idMappings[mod.ParentId] = new MongoId(_hashUtil.Generate());
+                idMappings[mod.ParentId] = new MongoId();
             }
 
             mod.Id = new MongoId(idMappings[mod.Id.ToString()]);
@@ -2033,7 +2033,7 @@ public class ItemHelper(
 
     public string RemapRootItemId(List<Item> itemWithChildren, MongoId? newId = null)
     {
-        newId ??= new MongoId(_hashUtil.Generate());
+        newId ??= new MongoId();
 
         var rootItemExistingId = itemWithChildren[0].Id;
 

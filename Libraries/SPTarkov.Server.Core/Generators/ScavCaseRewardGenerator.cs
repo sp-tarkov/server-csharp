@@ -344,7 +344,7 @@ public class ScavCaseRewardGenerator(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = rewardItemDb.Id,
                     Upd = null
                 }

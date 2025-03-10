@@ -1014,7 +1014,7 @@ public class HideoutController(
             // Create root item
             var rewardToAdd = new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = recipe.EndProduct,
                 Upd = new Upd
                 {
@@ -1038,7 +1038,7 @@ public class HideoutController(
                 [
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = recipe.EndProduct
                     }
                 ]
@@ -1488,7 +1488,7 @@ public class HideoutController(
             // No child, add it
             if (existingMannequin is null)
             {
-                var standId = new MongoId(_hashUtil.Generate());
+                var standId = new MongoId();
                 var mannequinToAdd = new Item
                 {
                     Id = standId,
@@ -1501,7 +1501,7 @@ public class HideoutController(
                 // Add pocket child item
                 var mannequinPocketItemToAdd = new Item
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = pmcData.Inventory.Items.FirstOrDefault(
                             item => item.SlotId == "Pockets" && item.ParentId == pmcData.Inventory.Equipment
                         )

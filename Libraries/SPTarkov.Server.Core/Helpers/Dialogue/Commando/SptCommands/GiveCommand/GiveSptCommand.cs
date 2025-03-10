@@ -237,7 +237,7 @@ public class GiveSptCommand(
                 ammoBoxArray.Add(
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = checkedItem.Value.Id
                     }
                 );
@@ -255,7 +255,7 @@ public class GiveSptCommand(
                     itemsToSend.Add(
                         new Item
                         {
-                            Id = new MongoId(_hashUtil.Generate()),
+                            Id = new MongoId(),
                             Template = checkedItem.Value.Id,
                             Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                         }
@@ -266,7 +266,7 @@ public class GiveSptCommand(
             {
                 var itemToSend = new Item
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = checkedItem.Value.Id,
                     Upd = _itemHelper.GenerateUpdForItem(checkedItem.Value)
                 };

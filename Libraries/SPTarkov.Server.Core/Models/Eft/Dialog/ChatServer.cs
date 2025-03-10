@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Dialog;
 
 public record ChatServer
 {
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

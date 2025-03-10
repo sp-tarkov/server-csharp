@@ -366,7 +366,7 @@ public class CircleOfCultistService(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = randomItemTplFromPool,
                     ParentId = cultistCircleStashId,
                     SlotId = CircleOfCultistSlotId,
@@ -455,7 +455,7 @@ public class CircleOfCultistService(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = rewardTpl,
                     ParentId = cultistCircleStashId,
                     SlotId = CircleOfCultistSlotId,

@@ -88,7 +88,7 @@ public class FenceBaseAssortGenerator(
             {
                 new()
                 {
-                    Id = new MongoId(hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = rootItemDb.Id,
                     ParentId = "hideout",
                     SlotId = "hideout",
@@ -283,7 +283,7 @@ public class FenceBaseAssortGenerator(
 
                 var mod = new Item
                 {
-                    Id = new MongoId(hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = plateTpl,
                     ParentId = armor[0].Id,
                     SlotId = requiredSlot.Name,
@@ -319,7 +319,7 @@ public class FenceBaseAssortGenerator(
                 armor.Add(
                     new Item
                     {
-                        Id = new MongoId(hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = plateSlot.Props.Filters[0].Plate, // `Plate` property appears to be the 'default' item for slot
                         ParentId = armor[0].Id,
                         SlotId = plateSlot.Name,

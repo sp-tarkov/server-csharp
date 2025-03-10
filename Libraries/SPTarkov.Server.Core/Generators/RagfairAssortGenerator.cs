@@ -154,7 +154,7 @@ public class RagfairAssortGenerator(
     {
         if (string.IsNullOrEmpty(id))
         {
-            id = new MongoId(hashUtil.Generate());
+            id = new MongoId();
         }
 
         return new Item

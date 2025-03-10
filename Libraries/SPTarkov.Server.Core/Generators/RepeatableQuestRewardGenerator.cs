@@ -636,7 +636,7 @@ public class RepeatableQuestRewardGenerator(
     /// <returns> Object of "Reward"-item-type </returns>
     protected Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)
     {
-        var id = new MongoId(_hashUtil.Generate());
+        var id = new MongoId();
         var questRewardItem = new Reward
         {
             Id = _hashUtil.Generate(),

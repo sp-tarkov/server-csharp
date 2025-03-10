@@ -488,7 +488,7 @@ public class BotLootGenerator(
                 continue;
             }
 
-            var newRootItemId = new MongoId(_hashUtil.Generate());
+            var newRootItemId = new MongoId();
             List<Item> itemWithChildrenToAdd =
             [
                 new()
@@ -617,7 +617,7 @@ public class BotLootGenerator(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = _weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.CurrencyWeight),
                     ParentId = walletId,
                     Upd = new Upd

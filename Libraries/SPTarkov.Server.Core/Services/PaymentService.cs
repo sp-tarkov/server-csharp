@@ -227,7 +227,7 @@ public class PaymentService(
         // Create single currency item with all currency on it
         var rootCurrencyReward = new Item
         {
-            Id = new MongoId(_hashUtil.Generate()),
+            Id = new MongoId(),
             Template = currencyTpl,
             Upd = new Upd
             {

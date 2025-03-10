@@ -97,7 +97,7 @@ public class HideoutHelper(
                 production.SptRequiredTools.Add(
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = toolItem.Template,
                         Upd = toolItem.Upd
                     }
@@ -1158,7 +1158,7 @@ public class HideoutHelper(
         btcProd.Products.Add(
             new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
                 Upd = new Upd
                 {
@@ -1333,7 +1333,7 @@ public class HideoutHelper(
                 [
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = ItemTpl.BARTER_PHYSICAL_BITCOIN,
                         Upd = new Upd
                         {

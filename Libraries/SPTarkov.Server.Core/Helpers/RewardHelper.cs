@@ -336,7 +336,7 @@ public class RewardHelper(
                 _cloner.Clone(target)
             };
             // Here we generate a new id for the root item
-            target.Id = new MongoId(_hashUtil.Generate());
+            target.Id = new MongoId();
 
             // Add cloned mods to root item array
             var clonedMods = _cloner.Clone(mods);

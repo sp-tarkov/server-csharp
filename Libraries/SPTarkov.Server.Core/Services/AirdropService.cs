@@ -103,7 +103,7 @@ public class AirdropService(
     {
         var airdropContainer = new Item
         {
-            Id = new MongoId(_hashUtil.Generate()),
+            Id = new MongoId(),
             Template = string.Empty, // Picked later
             Upd = new Upd
             {

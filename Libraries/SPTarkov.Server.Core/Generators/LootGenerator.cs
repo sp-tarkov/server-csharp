@@ -62,7 +62,7 @@ public class LootGenerator(
                 result.Add(
                     new Item
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = chosenSealedContainer.Id,
                         Upd = new Upd
                         {
@@ -193,7 +193,7 @@ public class LootGenerator(
             // Add forced loot item to result
             var newLootItem = new Item
             {
-                Id = new MongoId(_hashUtil.Generate()),
+                Id = new MongoId(),
                 Template = forcedItemKvP.Key,
                 Upd = new Upd
                 {
@@ -342,7 +342,7 @@ public class LootGenerator(
 
         var newLootItem = new Item
         {
-            Id = new MongoId(_hashUtil.Generate()),
+            Id = new MongoId(),
             Template = randomItem.Id,
             Upd = new Upd
             {
@@ -586,7 +586,7 @@ public class LootGenerator(
                     {
                         new()
                         {
-                            Id = new MongoId(_hashUtil.Generate()),
+                            Id = new MongoId(),
                             Template = chosenAmmoBox.Id
                         }
                     };
@@ -626,7 +626,7 @@ public class LootGenerator(
                 {
                     new()
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = chosenRewardItem.Id
                     }
                 };
@@ -684,7 +684,7 @@ public class LootGenerator(
                 {
                     new()
                     {
-                        Id = new MongoId(_hashUtil.Generate()),
+                        Id = new MongoId(),
                         Template = chosenItem[0].Id
                     }
                 };
@@ -728,7 +728,7 @@ public class LootGenerator(
             [
                 new()
                 {
-                    Id = new MongoId(_hashUtil.Generate()),
+                    Id = new MongoId(),
                     Template = chosenRewardItemTpl
                 }
             ];
