@@ -216,10 +216,10 @@ public class CreateProfileService(
         return pmcData.Id;
     }
 
-    /**
-     * Delete a profile
-     * @param sessionID Id of profile to delete
-     */
+    /// <summary>
+    /// Delete a profile
+    /// </summary>
+    /// <param name="sessionID"> ID of profile to delete </param>
     protected void DeleteProfileBySessionId(string sessionID)
     {
         if (_saveServer.GetProfiles().ContainsKey(sessionID))
@@ -234,10 +234,10 @@ public class CreateProfileService(
         }
     }
 
-    /**
-     * make profiles pmcData.Inventory.equipment unique
-     * @param pmcData Profile to update
-     */
+    /// <summary>
+    /// Make profiles pmcData.Inventory.equipment unique
+    /// </summary>
+    /// <param name="pmcData"> Profile to update </param>
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
     {
         var oldEquipmentId = pmcData.Inventory.Equipment;
@@ -258,10 +258,10 @@ public class CreateProfileService(
         }
     }
 
-    /**
-     * For each trader reset their state to what a level 1 player would see
-     * @param sessionId Session id of profile to reset
-     */
+    /// <summary>
+    /// For each trader reset their state to what a level 1 player would see
+    /// </summary>
+    /// <param name="sessionId"> Session ID of profile to reset </param>
     protected void ResetAllTradersInProfile(string sessionId)
     {
         foreach (var traderId in _databaseService.GetTraders().Keys)
@@ -270,11 +270,11 @@ public class CreateProfileService(
         }
     }
 
-    /**
-     * Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable
-     * DOES NOT check that stash exists
-     * @param pmcData Profile to check
-     */
+    /// <summary>
+    /// Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable <br/>
+    /// DOES NOT check that stash exists
+    /// </summary>
+    /// <param name="pmcData"> Profile to check </param>
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
     {
         if (!pmcData.Inventory.Items.Any(item => item.Id == pmcData.Inventory.HideoutCustomizationStashId))
@@ -463,9 +463,9 @@ public class CreateProfileService(
         }
     }
 
-    /**
-     * Get the game edition of a profile chosen on creation in Launcher
-     */
+    /// <summary>
+    /// Get the game edition of a profile chosen on creation in Launcher
+    /// </summary>
     private string? GetGameEdition(SptProfile profile)
     {
         var edition = profile.CharacterData?.PmcData?.Info?.GameVersion;
@@ -487,13 +487,13 @@ public class CreateProfileService(
         }
     }
 
-    /**
-     * Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
-     * and send rewards to them in mail
-     * @param profileDetails Player profile
-     * @param sessionID Session id
-     * @param response Event router response
-     */
+    /// <summary>
+    /// Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
+    /// and send rewards to them in mail
+    /// </summary>
+    /// <param name="profileDetails"> Player profile </param>
+    /// <param name="sessionID"> Session ID </param>
+    /// <param name="response"> Event router response </param>
     protected void GivePlayerStartingQuestRewards(
         SptProfile profileDetails,
         string sessionID,

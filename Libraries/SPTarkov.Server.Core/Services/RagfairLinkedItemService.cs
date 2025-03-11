@@ -28,11 +28,11 @@ public class RagfairLinkedItemService(
         return set;
     }
 
-    /**
-     * Use ragfair linked item service to get an array of items that can fit on or in designated itemtpl
-     * @param itemTpl Item to get sub-items for
-     * @returns ITemplateItem array
-     */
+    /// <summary>
+    /// Use ragfair linked item service to get a list of items that can fit on or in designated item tpl
+    /// </summary>
+    /// <param name="itemTpl"> Item to get sub-items for </param>
+    /// <returns> TemplateItem list </returns>
     public List<TemplateItem> GetLinkedDbItems(string itemTpl)
     {
         var linkedItemsToWeaponTpls = GetLinkedItems(itemTpl);
@@ -55,9 +55,9 @@ public class RagfairLinkedItemService(
         );
     }
 
-    /**
-     * Create Dictionary of every item and the items associated with it
-     */
+    /// <summary>
+    /// Create Dictionary of every item and the items associated with it
+    /// </summary>
     protected void BuildLinkedItemTable()
     {
         var linkedItems = new Dictionary<MongoId, HashSet<MongoId>>();
@@ -93,11 +93,11 @@ public class RagfairLinkedItemService(
         return linkedItems[id];
     }
 
-    /**
-     * Add ammo to revolvers linked item dictionary
-     * @param cylinder Revolvers cylinder
-     * @param applyLinkedItems
-     */
+    /// <summary>
+    /// Add ammo to revolvers linked item dictionary
+    /// </summary>
+    /// <param name="cylinder"> Revolvers cylinder </param>
+    /// <param name="itemLinkedSet"> Set to add to </param>
     protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<MongoId> itemLinkedSet)
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");

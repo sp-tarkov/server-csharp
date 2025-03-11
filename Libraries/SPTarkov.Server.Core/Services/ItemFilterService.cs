@@ -6,7 +6,9 @@ using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
-
+/// <summary>
+/// Centralise the handling of blacklisting items, uses blacklist found in config/item.json, stores items that should not be used by players / broken items
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService(
     ISptLogger<ItemFilterService> _logger,
@@ -19,11 +21,11 @@ public class ItemFilterService(
 
     protected HashSet<MongoId>? _lootableItemBlacklistCache = [];
 
-    /**
-     * Check if the provided template id is blacklisted in config/item.json/blacklist
-     * @param tpl template id
-     * @returns true if blacklisted
-     */
+    /// <summary>
+    /// Check if the provided template id is blacklisted in config/item.json/blacklist
+    /// </summary>
+    /// <param name="tpl"> Template id</param>
+    /// <returns> True if blacklisted </returns>
     public bool ItemBlacklisted(MongoId tpl)
     {
         if (_itemBlacklistCache.Count == 0)
@@ -34,76 +36,76 @@ public class ItemFilterService(
         return _itemBlacklistCache.Contains(tpl);
     }
 
-    /**
-     * Check if item is blacklisted from being a reward for player
-     * @param tpl item tpl to check is on blacklist
-     * @returns True when blacklisted
-     */
+    /// <summary>
+    /// Check if item is blacklisted from being a reward for player
+    /// </summary>
+    /// <param name="tpl"> Item tpl to check is on blacklist </param>
+    /// <returns> True when blacklisted </returns>
     public bool ItemRewardBlacklisted(string tpl)
     {
         return _itemConfig.RewardItemBlacklist.Contains(tpl);
     }
 
-    /**
-     * Get an array of items that should never be given as a reward to player
-     * @returns string array of item tpls
-     */
+    /// <summary>
+    /// Get an HashSet of items that should never be given as a reward to player
+    /// </summary>
+    /// <returns> HashSet of item tpls </returns>
     public HashSet<MongoId> GetItemRewardBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemBlacklist);
     }
 
-    /**
-     * Get an array of item types that should never be given as a reward to player
-     * @returns string array of item base ids
-     */
+    /// <summary>
+    /// Get an HashSet of item types that should never be given as a reward to player
+    /// </summary>
+    /// <returns> HashSet of item base ids </returns>
     public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
     }
 
-    /**
-     * Return every template id blacklisted in config/item.json
-     * @returns string array of blacklisted template ids
-     */
+    /// <summary>
+    /// Return every template id blacklisted in config/item.json
+    /// </summary>
+    /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<MongoId> GetBlacklistedItems()
     {
         return _cloner.Clone(_itemConfig.Blacklist);
     }
 
-    /**
-     * Return every template id blacklisted in config/item.json/lootableItemBlacklist
-     * @returns string array of blacklisted template ids
-     */
+    /// <summary>
+    /// Return every template id blacklisted in config/item.json/lootableItemBlacklist
+    /// </summary>
+    /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<MongoId> GetBlacklistedLootableItems()
     {
         return _cloner.Clone(_itemConfig.LootableItemBlacklist);
     }
 
-    /**
-     * Check if the provided template id is boss item in config/item.json
-     * @param tpl template id
-     * @returns true if boss item
-     */
+    /// <summary>
+    /// Check if the provided template id is boss item in config/item.json
+    /// </summary>
+    /// <param name="tpl"> template id </param>
+    /// <returns> True if boss item </returns>
     public bool BossItem(MongoId tpl)
     {
         return _itemConfig.BossItems.Contains(tpl);
     }
 
-    /**
-     * Return boss items in config/item.json
-     * @returns string array of boss item template ids
-     */
+    /// <summary>
+    /// Return boss items in config/item.json
+    /// </summary>
+    /// <returns> HashSet of boss item template ids </returns>
     public HashSet<MongoId> GetBossItems()
     {
         return _cloner.Clone(_itemConfig.BossItems).ToHashSet();
     }
 
-    /**
-     * Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
-     * @param tpl template id
-     * @returns true if blacklisted
-     */
+    /// <summary>
+    ///  Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
+    /// </summary>
+    /// <param name="itemKey"> Template id</param>
+    /// <returns> True if blacklisted </returns>
     public bool IsLootableItemBlacklisted(MongoId itemKey)
     {
         if (!_lootableItemBlacklistCache.Any())
@@ -140,21 +142,21 @@ public class ItemFilterService(
         }
     }
 
-    /**
-     * Check if the provided template id is boss item in config/item.json
-     * @param tpl template id
-     * @returns true if boss item
-     */
+    /// <summary>
+    /// Check if the provided template id is boss item in config/item.json
+    /// </summary>
+    /// <param name="tpl"> Template id</param>
+    /// <returns> True if boss item </returns>
     public bool IsBossItem(MongoId tpl)
     {
         return _itemConfig.BossItems.Contains(tpl);
     }
 
-    /**
-     * Check if item is blacklisted from being a reward for player
-     * @param tpl item tpl to check is on blacklist
-     * @returns True when blacklisted
-     */
+    /// <summary>
+    /// Check if item is blacklisted from being a reward for player
+    /// </summary>
+    /// <param name="tpl"> Item tpl to check is on blacklist </param>
+    /// <returns> true when blacklisted </returns>
     public bool IsItemRewardBlacklisted(MongoId tpl)
     {
         return _itemConfig.RewardItemBlacklist.Contains(tpl);

@@ -267,7 +267,9 @@ public class PostDbLoadService(
         }
     }
 
-    // Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
+    /// <summary>
+    /// Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
+    /// </summary>
     protected void AdjustMapBotLimits()
     {
         var mapsDb = _databaseService.GetLocations().GetDictionary();
@@ -378,7 +380,9 @@ public class PostDbLoadService(
         }
     }
 
-// Make Rogues spawn later to allow for scavs to spawn first instead of rogues filling up all spawn positions
+    /// <summary>
+    /// Make Rogues spawn later to allow for scavs to spawn first instead of rogues filling up all spawn positions
+    /// </summary>
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
         var rogueSpawnDelaySeconds = _locationConfig.RogueLighthouseSpawnTimeSettings.WaitTimeSeconds;
@@ -398,7 +402,9 @@ public class PostDbLoadService(
         }
     }
 
-// Make non-trigger-spawned raiders spawn earlier + always
+    /// <summary>
+    /// Make non-trigger-spawned raiders spawn earlier + always
+    /// </summary>
     protected void AdjustLabsRaiderSpawnRate()
     {
         var labsBase = _databaseService.GetLocations().Laboratory.Base;
@@ -429,7 +435,10 @@ public class PostDbLoadService(
         }
     }
 
-// Adjust all hideout craft times to be no higher than the override
+    /// <summary>
+    /// Adjust all hideout craft times to be no higher than the override
+    /// </summary>
+    /// <param name="overrideSeconds"> Time in seconds </param>
     protected void AdjustHideoutBuildTimes(int overrideSeconds)
     {
         if (overrideSeconds == -1)
@@ -464,7 +473,9 @@ public class PostDbLoadService(
         }
     }
 
-// Blank out the "test" mail message from prapor
+    /// <summary>
+    /// Blank out the "test" mail message from prapor
+    /// </summary>
     protected void RemovePraporTestMessage()
     {
         // Iterate over all languages (e.g. "en", "fr")
@@ -475,7 +486,9 @@ public class PostDbLoadService(
         }
     }
 
-// Check for any missing assorts inside each traders assort.json data, checking against traders questassort.json
+    /// <summary>
+    /// Check for any missing assorts inside each traders assort.json data, checking against traders questassort.json
+    /// </summary>
     protected void ValidateQuestAssortUnlocksExist()
     {
         var db = _databaseService.GetTables();

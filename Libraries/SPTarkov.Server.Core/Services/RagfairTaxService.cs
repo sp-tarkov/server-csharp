@@ -37,16 +37,16 @@ public class RagfairTaxService(
         return _playerOfferTaxCache[offerIdToGet];
     }
 
-    /**
-     * // This method, along with CalculateItemWorth, is trying to mirror the client-side code found in the method "CalculateTaxPrice".
-     * // It's structured to resemble the client-side code as closely as possible - avoid making any big structure changes if it's not necessary.
-     * * @param item Item being sold on flea
-     * * @param pmcData player profile
-     * * @param requirementsValue
-     * * @param offerItemCount Number of offers being created
-     * * @param sellInOnePiece
-     * * @returns Tax in roubles
-     */
+    /// <summary>
+    /// This method, along with CalculateItemWorth, is trying to mirror the client-side code found in the method "CalculateTaxPrice".
+    /// It's structured to resemble the client-side code as closely as possible - avoid making any big structure changes if it's not necessary.
+    /// </summary>
+    /// <param name="item"> Item being sold on flea </param>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="requirementsValue"></param>
+    /// <param name="offerItemCount"> Number of offers being created </param>
+    /// <param name="sellInOnePiece"></param>
+    /// <returns> Tax in roubles </returns>
     public double CalculateTax(
         Item item,
         PmcData pmcData,
@@ -127,8 +127,16 @@ public class RagfairTaxService(
         return taxValue;
     }
 
-    // This method is trying to replicate the item worth calculation method found in the client code.
-    // Any inefficiencies or style issues are intentional and should not be fixed, to preserve the client-side code mirroring.
+    /// <summary>
+    /// This method is trying to replicate the item worth calculation method found in the client code.
+    /// Any inefficiencies or style issues are intentional and should not be fixed, to preserve the client-side code mirroring.
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="itemTemplate"></param>
+    /// <param name="itemCount"></param>
+    /// <param name="pmcData"></param>
+    /// <param name="isRootItem"></param>
+    /// <returns></returns>
     protected double CalculateItemWorth(
         Item item,
         TemplateItem itemTemplate,

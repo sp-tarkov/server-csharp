@@ -3,7 +3,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
@@ -14,23 +13,22 @@ namespace SPTarkov.Server.Core.Services.Mod;
 [Injectable]
 public class CustomItemService(
     ISptLogger<CustomItemService> logger,
-    HashUtil hashUtil,
     DatabaseService databaseService,
     ItemHelper itemHelper,
     ItemBaseClassService itemBaseClassService,
     ICloner cloner
 )
 {
-    /**
-     * Create a new item from a cloned item base
-     * WARNING - If no item id is supplied, an id will be generated, this id will be random every time you add an item and will not be the same on each subsequent server start
-     * Add to the items db
-     * Add to the flea market
-     * Add to the handbook
-     * Add to the locales
-     * @param newItemDetails Item details for the new item to be created
-     * @returns tplId of the new item created
-     */
+    /// <summary>
+    /// Create a new item from a cloned item base <br/>
+    /// WARNING - If no item id is supplied, an id will be generated, this id will be random every time you add an item and will not be the same on each subsequent server start <br/>
+    /// Add to the items db <br/>
+    /// Add to the flea market <br/>
+    /// Add to the handbook <br/>
+    /// Add to the locales
+    /// </summary>
+    /// <param name="newItemDetails"> Item details for the new item to be created </param>
+    /// <returns> tplId of the new item created </returns>
     public CreateItemResult CreateItemFromClone(NewItemFromCloneDetails newItemDetails)
     {
         var result = new CreateItemResult();
@@ -79,15 +77,15 @@ public class CustomItemService(
         return result;
     }
 
-    /**
-     * Create a new item without using an existing item as a template
-     * Add to the items db
-     * Add to the flea market
-     * Add to the handbook
-     * Add to the locales
-     * @param newItemDetails Details on what the item to be created
-     * @returns CreateItemResult containing the completed items Id
-     */
+    /// <summary>
+    /// Create a new item without using an existing item as a template <br/>
+    /// Add to the items db <br/>
+    /// Add to the flea market <br/>
+    /// Add to the handbook <br/>
+    /// Add to the locales <br/>
+    /// </summary>
+    /// <param name="newItemDetails"> Details on what the item to be created </param>
+    /// <returns> CreateItemResult containing the completed items ID </returns>
     public CreateItemResult CreateItem(NewItemDetails newItemDetails)
     {
         var result = new CreateItemResult();
@@ -102,7 +100,7 @@ public class CustomItemService(
             return result;
         }
 
-        AddToItemsDb(newItem.Id, newItem);
+        AddToItemsDb(newItem.Id.Value, newItem);
 
         AddToHandbookDb(newItem.Id, newItemDetails.HandbookParentId, newItemDetails.HandbookPriceRoubles);
 
@@ -122,13 +120,13 @@ public class CustomItemService(
 
         return result;
     }
-    
-    /**
-     * Iterates through supplied properties and updates the cloned items properties with them
-     * Complex objects cannot have overrides, they must be fully hydrated with values if they are to be used
-     * @param overrideProperties new properties to apply
-     * @param itemClone item to update
-     */
+
+    /// <summary>
+    /// Iterates through supplied properties and updates the cloned items properties with them
+    /// Complex objects cannot have overrides, they must be fully hydrated with values if they are to be used
+    /// </summary>
+    /// <param name="overrideProperties"> New properties to apply </param>
+    /// <param name="itemClone"> Item to update </param>
     protected void UpdateBaseItemPropertiesWithOverrides(Props? overrideProperties, TemplateItem itemClone)
     {
         if (overrideProperties is null)
@@ -142,12 +140,12 @@ public class CustomItemService(
         }
     }
 
-    /**
-     * Add a new item object to the in-memory representation of items.json
-     * @param newItemId id of the item to add to items.json
-     * @param itemToAdd Item to add against the new id
-     */
-    protected void AddToItemsDb(string newItemId, TemplateItem itemToAdd)
+    /// <summary>
+    /// Add a new item object to the in-memory representation of items.json
+    /// </summary>
+    /// <param name="newItemId"> ID of the item to add to items.json </param>
+    /// <param name="itemToAdd"> Item to add against the new id </param>
+    protected void AddToItemsDb(MongoId newItemId, TemplateItem itemToAdd)
     {
         if (!databaseService.GetItems().TryAdd(newItemId, itemToAdd))
         {
@@ -155,12 +153,12 @@ public class CustomItemService(
         }
     }
 
-    /**
-     * Add a handbook price for an item
-     * @param newItemId id of the item being added
-     * @param parentId parent id of the item being added
-     * @param priceRoubles price of the item being added
-     */
+    /// <summary>
+    /// Add a handbook price for an item
+    /// </summary>
+    /// <param name="newItemId"> ID of the item being added </param>
+    /// <param name="parentId"> Parent ID of the item being added </param>
+    /// <param name="priceRoubles"> Price of the item being added </param>
     protected void AddToHandbookDb(string newItemId, string parentId, double? priceRoubles)
     {
         databaseService
@@ -176,17 +174,17 @@ public class CustomItemService(
         // TODO: would we want to keep this the same or get them to send a HandbookItem
     }
 
-    /**
-     * Iterate through the passed in locale data and add to each locale in turn
-     * If data is not provided for each language EFT uses, the first object will be used in its place
-     * e.g.
-     * en[0]
-     * fr[1]
-     *
-     * No jp provided, so english will be used as a substitute
-     * @param localeDetails key is language, value are the new locale details
-     * @param newItemId id of the item being created
-     */
+    /// <summary>
+    /// Iterate through the passed in locale data and add to each locale in turn <br/>
+    /// If data is not provided for each language EFT uses, the first object will be used in its place <br/>
+    /// e.g. <br/>
+    /// en[0] <br/>
+    /// fr[1] <br/>
+    /// <br/>
+    /// No jp provided, so english will be used as a substitute
+    /// </summary>
+    /// <param name="localeDetails"> key is language, value are the new locale details </param>
+    /// <param name="newItemId"> ID of the item being created </param>
     protected void AddToLocaleDbs(Dictionary<string, LocaleDetails> localeDetails, string newItemId)
     {
         var languages = databaseService.GetLocales().Languages;
@@ -211,20 +209,20 @@ public class CustomItemService(
         }
     }
 
-    /**
-     * Add a price to the in-memory representation of prices.json, used to inform the flea of an items price on the market
-     * @param newItemId id of the new item
-     * @param fleaPriceRoubles Price of the new item
-     */
+    /// <summary>
+    /// Add a price to the in-memory representation of prices.json, used to inform the flea of an items price on the market
+    /// </summary>
+    /// <param name="newItemId"> ID of the new item </param>
+    /// <param name="fleaPriceRoubles"> Price of the new item </param>
     protected void AddToFleaPriceDb(string newItemId, double? fleaPriceRoubles)
     {
         databaseService.GetTemplates().Prices[newItemId] = fleaPriceRoubles ?? 0;
     }
 
-    /**
-     * Add a weapon to the hideout weapon shelf whitelist
-     * @param newItemId Weapon id to add
-     */
+    /// <summary>
+    /// Add a weapon to the hideout weapon shelf whitelist
+    /// </summary>
+    /// <param name="newItemId"> Weapon ID to add </param>
     protected void AddToWeaponShelf(string newItemId)
     {
         // Ids for wall stashes in db
@@ -244,12 +242,12 @@ public class CustomItemService(
         }
     }
 
-    /**
-     * Add a custom weapon to PMCs loadout
-     * @param weaponTpl Custom weapon tpl to add to PMCs
-     * @param weaponWeight The weighting for the weapon to be picked vs other weapons
-     * @param weaponSlot The slot the weapon should be added to (e.g. FirstPrimaryWeapon/SecondPrimaryWeapon/Holster)
-     */
+    /// <summary>
+    /// Add a custom weapon to PMCs load out
+    /// </summary>
+    /// <param name="weaponTpl"> Custom weapon tpl to add to PMCs </param>
+    /// <param name="weaponWeight"> The weighting for the weapon to be picked vs other weapons </param>
+    /// <param name="weaponSlot"> The slot the weapon should be added to (e.g. FirstPrimaryWeapon/SecondPrimaryWeapon/Holster) </param>
     public void AddCustomWeaponToPMCs(string weaponTpl, double weaponWeight, string weaponSlot)
     {
         var weapon = itemHelper.GetItem(weaponTpl);

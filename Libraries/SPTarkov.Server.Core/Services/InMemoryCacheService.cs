@@ -10,17 +10,21 @@ public class InMemoryCacheService(
 {
     protected Dictionary<string, object?> _cacheData = new();
 
-    // Store data into an in-memory object
-    // key to store data against
-    // Data to store in cache
+    /// <summary>
+    /// Store data into an in-memory object
+    /// </summary>
+    /// <param name="key"> Key to store data against </param>
+    /// <param name="dataToCache"> Data to store in cache </param>
     public void StoreByKey<T>(string key, T dataToCache)
     {
         _cacheData[key] = _cloner.Clone(dataToCache);
     }
 
-    // Retrieve data stored by a key
-    // key
-    // Stored data
+    /// <summary>
+    /// Retrieve data stored by a key
+    /// </summary>
+    /// <param name="key"> key</param>
+    /// <returns> Stored data </returns>
     public T? GetDataByKey<T>(string key)
     {
         if (_cacheData.ContainsKey(key))
@@ -31,22 +35,28 @@ public class InMemoryCacheService(
         return default;
     }
 
-    // Does data exist against the provided key
-    // Key to check for data against
-    // true if exists
+    /// <summary>
+    /// Does data exist against the provided key
+    /// </summary>
+    /// <param name="key"> Key to check for data against </param>
+    /// <returns> True if exists </returns>
     public bool HasStoredDataByKey(string key)
     {
         return _cacheData.ContainsKey(key);
     }
 
-    // Remove data stored against key
-    // Key to remove data against
+    /// <summary>
+    /// Remove data stored against key
+    /// </summary>
+    /// <param name="key"> Key to remove data against </param>
     public void ClearDataStoredByKey(string key)
     {
         _cacheData.Remove(key);
     }
 
-    // Remove all data stored
+    /// <summary>
+    /// Remove all data stored
+    /// </summary>
     public void ClearCache()
     {
         _cacheData.Clear();

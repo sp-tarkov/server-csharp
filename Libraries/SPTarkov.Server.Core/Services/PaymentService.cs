@@ -32,13 +32,13 @@ public class PaymentService(
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
-    /**
-     * Take money and insert items into return to server request
-     * @param pmcData Pmc profile
-     * @param request Buy item request
-     * @param sessionID Session id
-     * @param output Client response
-     */
+    /// <summary>
+    /// Take money and insert items into return to server request
+    /// </summary>
+    /// <param name="pmcData"> PMC Profile </param>
+    /// <param name="request"> Buy item request </param>
+    /// <param name="sessionID"> Session ID </param>
+    /// <param name="output"> Client response </param>
     public void PayMoney(PmcData pmcData, ProcessBuyTradeRequestData request, string sessionID, ItemEventRouterResponse output)
     {
         // May need to convert to trader currency
@@ -143,6 +143,12 @@ public class PaymentService(
         }
     }
 
+    /// <summary>
+    /// Get the item price of a specific traders assort
+    /// </summary>
+    /// <param name="traderAssortId"> ID of the assort to look up</param>
+    /// <param name="traderId"> ID of trader with assort </param>
+    /// <returns> Handbook rouble price of the item </returns>
     private double? GetTraderItemHandbookPriceRouble(string? traderAssortId, string traderId)
     {
         var purchasedAssortItem = _traderHelper.GetTraderAssortItemByAssortId(traderId, traderAssortId);
@@ -162,6 +168,14 @@ public class PaymentService(
         return assortItemPriceRouble;
     }
 
+    /// <summary>
+    /// Receive money back after selling
+    /// </summary>
+    /// <param name="pmcData"> PMC Profile</param>
+    /// <param name="amountToSend"> Money to send back </param>
+    /// <param name="request"> Sell Trade request data </param>
+    /// <param name="output"> Client response </param>
+    /// <param name="sessionID"> Session ID </param>
     public void GiveProfileMoney(PmcData pmcData, double? amountToSend, ProcessSellTradeRequestData request,
         ItemEventRouterResponse output, string sessionID)
     {
@@ -257,14 +271,14 @@ public class PaymentService(
         _traderHelper.LevelUp(request.TransactionId, pmcData);
     }
 
-    /**
-     * Remove currency from player stash/inventory and update client object with changes
-     * @param pmcData Player profile to find and remove currency from
-     * @param currencyTpl Type of currency to pay
-     * @param amountToPay money value to pay
-     * @param sessionID Session id
-     * @param output output object to send to client
-     */
+    /// <summary>
+    /// Remove currency from player stash/inventory and update client object with changes
+    /// </summary>
+    /// <param name="pmcData"> Player profile to find and remove currency from</param>
+    /// <param name="currencyTpl"> Type of currency to pay </param>
+    /// <param name="amountToPay"> Money value to pay </param>
+    /// <param name="sessionID"> Session ID </param>
+    /// <param name="output"> Client response </param>
     public void AddPaymentToOutput(
         PmcData pmcData,
         string currencyTpl,
@@ -338,14 +352,14 @@ public class PaymentService(
         }
     }
 
-    /**
-     * TODO - ensure money in containers inside secure container are LAST
-     * Get all money stacks in inventory and prioritise items in stash
-     * @param pmcData Player profile
-     * @param currencyTpl
-     * @param playerStashId Players stash id
-     * @returns Sorting money items
-     */
+    /// <summary>
+    /// Get all money stacks in inventory and prioritise items in stash
+    /// </summary>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="currencyTpl"> Currency to find </param>
+    /// <param name="playerStashId"> Players stash ID </param>
+    /// <returns> List of sorted money items </returns>
+    // TODO - ensure money in containers inside secure container are LAST
     protected List<Item> GetSortedMoneyItemsInInventory(PmcData pmcData, string currencyTpl, string playerStashId)
     {
         var moneyItemsInInventory = _itemHelper.FindBarterItems("tpl", pmcData.Inventory.Items, currencyTpl);
@@ -360,15 +374,15 @@ public class PaymentService(
         return moneyItemsInInventory;
     }
 
-    /**
-     * Prioritise player stash first over player inventory
-     * Post-raid healing would often take money out of the players pockets/secure container
-     * @param a First money stack item
-     * @param b Second money stack item
-     * @param inventoryItems players inventory items
-     * @param playerStashId Players stash id
-     * @returns sort order
-     */
+    /// <summary>
+    /// Prioritise player stash first over player inventory.
+    ///  Post-raid healing would often take money out of the players pockets/secure container.
+    /// </summary>
+    /// <param name="a"> First money stack item </param>
+    /// <param name="b"> Second money stack item </param>
+    /// <param name="inventoryItems"> Players inventory items </param>
+    /// <param name="playerStashId"> Players stash ID </param>
+    /// <returns> Sort order, -1 if in a, 1 if in b, 0 if they match </returns>
     protected int PrioritiseStashSort(Item a, Item b, List<Item> inventoryItems, string playerStashId)
     {
         // a in root of stash, prioritise
@@ -434,13 +448,13 @@ public class PaymentService(
         return 0;
     }
 
-    /**
-     * Recursively check items parents to see if it is inside the players inventory, not stash
-     * @param itemId item id to check
-     * @param inventoryItems player inventory
-     * @param playerStashId Players stash id
-     * @returns true if its in inventory
-     */
+    /// <summary>
+    /// Recursively check items parents to see if it is inside the players inventory, not stash
+    /// </summary>
+    /// <param name="itemId"> Item ID to check </param>
+    /// <param name="inventoryItems"> Player inventory </param>
+    /// <param name="playerStashId"> Players stash ID </param>
+    /// <returns> True if it's in inventory </returns>
     protected bool IsInStash(string itemId, List<Item> inventoryItems, string playerStashId)
     {
         var itemParent = inventoryItems.FirstOrDefault(item => item.Id == itemId);
