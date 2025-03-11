@@ -7,6 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record Item
 {
     private string? _slotId;
+    private string? _parentId;
 
     // MongoId
     [JsonPropertyName("_id")]
@@ -25,10 +26,16 @@ public record Item
     }
 
     [JsonPropertyName("parentId")]
-    public MongoId? ParentId
+    public string? ParentId
     {
-        get;
-        set;
+        get
+        {
+            return _parentId;
+        }
+        set
+        {
+            _parentId = value == null ? null : string.Intern(value);
+        }
     }
 
     [JsonPropertyName("slotId")]

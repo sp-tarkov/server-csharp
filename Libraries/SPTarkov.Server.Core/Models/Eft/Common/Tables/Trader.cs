@@ -293,7 +293,7 @@ public record TraderInsurance
 
     // MongoId
     [JsonPropertyName("excluded_category")]
-    public List<string>? ExcludedCategory
+    public List<MongoId>? ExcludedCategory
     {
         get;
         set;
