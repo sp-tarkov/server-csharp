@@ -10,12 +10,13 @@ public readonly partial struct MongoId : IEquatable<MongoId>
     {
         if (string.IsNullOrWhiteSpace(id) || id.Length != 24)
         {
-            throw new ArgumentOutOfRangeException($"Critical MongoId error: Incorrect length. id: {id}");
+            // TODO: Items.json root item has an empty parentId property
+            Console.WriteLine($"Critical MongoId error: Incorrect length. id: {id}");
         }
 
         if (!IsValidMongoId(id))
         {
-            throw new ArgumentException($"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}");
+            Console.WriteLine($"Critical MongoId error: Incorrect format. Must be a hexadecimal [a-f0-9] of 24 characters. id: {id}");
         }
 
         _stringId = string.Intern(id);
