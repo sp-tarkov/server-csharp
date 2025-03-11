@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -13,9 +14,9 @@ public class RagfairLinkedItemService(
     ISptLogger<RagfairLinkedItemService> logger
 )
 {
-    protected Dictionary<string, HashSet<string>> linkedItemsCache = new();
+    protected Dictionary<MongoId, HashSet<MongoId>> linkedItemsCache = new();
 
-    public HashSet<string> GetLinkedItems(string linkedSearchId)
+    public HashSet<MongoId> GetLinkedItems(MongoId linkedSearchId)
     {
         if (!linkedItemsCache.TryGetValue(linkedSearchId, out var set))
         {
@@ -59,11 +60,11 @@ public class RagfairLinkedItemService(
      */
     protected void BuildLinkedItemTable()
     {
-        var linkedItems = new Dictionary<string, HashSet<string>>();
+        var linkedItems = new Dictionary<MongoId, HashSet<MongoId>>();
 
         foreach (var item in databaseService.GetItems().Values)
         {
-            var itemLinkedSet = GetLinkedItems(linkedItems, item.Id);
+            var itemLinkedSet = GetLinkedItems(linkedItems, (MongoId) item.Id);
 
             ApplyLinkedItems(GetSlotFilters(item), item, itemLinkedSet);
             ApplyLinkedItems(GetChamberFilters(item), item, itemLinkedSet);
@@ -80,12 +81,12 @@ public class RagfairLinkedItemService(
         linkedItemsCache = linkedItems;
     }
 
-    protected void ApplyLinkedItems(HashSet<string> items, TemplateItem item, HashSet<string> itemLinkedSet)
+    protected void ApplyLinkedItems(HashSet<MongoId> items, TemplateItem item, HashSet<MongoId> itemLinkedSet)
     {
         itemLinkedSet.UnionWith(items);
     }
 
-    protected HashSet<string> GetLinkedItems(Dictionary<string, HashSet<string>> linkedItems, string id)
+    protected HashSet<MongoId> GetLinkedItems(Dictionary<MongoId, HashSet<MongoId>> linkedItems, MongoId id)
     {
         linkedItems.TryAdd(id, []);
 
@@ -97,7 +98,7 @@ public class RagfairLinkedItemService(
      * @param cylinder Revolvers cylinder
      * @param applyLinkedItems
      */
-    protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<string> itemLinkedSet)
+    protected void AddRevolverCylinderAmmoToLinkedItems(TemplateItem cylinder, HashSet<MongoId> itemLinkedSet)
     {
         var cylinderMod = cylinder.Properties.Slots?.FirstOrDefault(x => x.Name == "mod_magazine");
         if (cylinderMod != null)
@@ -113,9 +114,9 @@ public class RagfairLinkedItemService(
         }
     }
 
-    protected HashSet<string> GetSlotFilters(TemplateItem item)
+    protected HashSet<MongoId> GetSlotFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var slots = item.Properties?.Slots;
         if (slots is null)
@@ -131,9 +132,9 @@ public class RagfairLinkedItemService(
         return result;
     }
 
-    protected HashSet<string> GetChamberFilters(TemplateItem item)
+    protected HashSet<MongoId> GetChamberFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var chambers = item.Properties?.Chambers;
         if (chambers is null)
@@ -149,9 +150,9 @@ public class RagfairLinkedItemService(
         return result;
     }
 
-    protected HashSet<string> GetCartridgeFilters(TemplateItem item)
+    protected HashSet<MongoId> GetCartridgeFilters(TemplateItem item)
     {
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         var cartridges = item.Properties?.Cartridges;
         if (cartridges is null)

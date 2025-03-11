@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Customization;
 public record BuyClothingRequestData : InventoryBaseActionRequestData
 {
     [JsonPropertyName("offer")]
-    public string? Offer
+    public MongoId? Offer
     {
         get;
         set;

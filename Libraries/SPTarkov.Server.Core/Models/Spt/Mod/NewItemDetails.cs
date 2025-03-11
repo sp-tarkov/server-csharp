@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Mod;
@@ -19,7 +20,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     /// Id of the item to copy and use as a base
     /// </summary>
     [JsonPropertyName("itemTplToClone")]
-    public string? ItemTplToClone
+    public MongoId ItemTplToClone
     {
         get;
         set;
@@ -39,22 +40,22 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     /// ParentId for the new item (item type)
     /// </summary>
     [JsonPropertyName("parentId")]
-    public string? ParentId
+    public MongoId ParentId
     {
         get;
         set;
     }
 
     /// <summary>
-    /// the id the new item should have, leave blank to have one generated for you.
-    /// This is often known as the TplId, or TemplateId
+    /// The new items template id or _tpl
+    /// NOTE: This should never be auto generated. That's how you corrupt profiles.
     /// </summary>
     [JsonPropertyName("newId")]
-    public string? NewId
+    public MongoId NewId
     {
         get;
         set;
-    } = "";
+    }
 }
 
 public record NewItemDetailsBase
@@ -74,7 +75,7 @@ public record NewItemDetailsBase
     }
 
     [JsonPropertyName("handbookParentId")]
-    public string? HandbookParentId
+    public MongoId? HandbookParentId
     {
         get;
         set;
@@ -128,7 +129,7 @@ public record CreateItemResult
     }
 
     [JsonPropertyName("itemId")]
-    public string? ItemId
+    public MongoId? ItemId
     {
         get;
         set;

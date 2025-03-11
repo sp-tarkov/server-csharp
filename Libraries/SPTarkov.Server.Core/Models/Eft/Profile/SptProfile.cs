@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
@@ -126,7 +127,7 @@ public record Info
     /// main profile id
     /// </summary>
     [JsonPropertyName("id")]
-    public string? ProfileId
+    public MongoId? ProfileId
     {
         get;
         set;
@@ -222,7 +223,7 @@ public record UserBuilds
 public record UserBuild
 {
     [JsonPropertyName("Id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -239,7 +240,7 @@ public record UserBuild
 public record WeaponBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string? Root
+    public MongoId? Root
     {
         get;
         set;
@@ -256,7 +257,7 @@ public record WeaponBuild : UserBuild
 public record EquipmentBuild : UserBuild
 {
     [JsonPropertyName("Root")]
-    public string? Root
+    public MongoId? Root
     {
         get;
         set;
@@ -312,7 +313,7 @@ public record MagazineBuild : UserBuild
 public record MagazineTemplateAmmoItem
 {
     [JsonPropertyName("TemplateId")]
-    public string? TemplateId
+    public MongoId? TemplateId
     {
         get;
         set;
@@ -384,7 +385,7 @@ public record Dialogue
     }
 
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -409,7 +410,7 @@ public record DialogueInfo
     }
 
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -447,14 +448,14 @@ public record DialogueInfo
 public record Message
 {
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
     }
 
     [JsonPropertyName("uid")]
-    public string? UserId
+    public MongoId? UserId
     {
         get;
         set;
@@ -489,7 +490,7 @@ public record Message
     }
 
     [JsonPropertyName("templateId")]
-    public string? TemplateId
+    public MongoId? TemplateId
     {
         get;
         set;
@@ -638,7 +639,7 @@ public record MessagePreview
 public record MessageItems
 {
     [JsonPropertyName("stash")]
-    public string? Stash
+    public MongoId? Stash
     {
         get;
         set;
@@ -938,7 +939,7 @@ public record Insurance
     }
 
     [JsonPropertyName("traderId")]
-    public string? TraderId
+    public MongoId? TraderId
     {
         get;
         set;

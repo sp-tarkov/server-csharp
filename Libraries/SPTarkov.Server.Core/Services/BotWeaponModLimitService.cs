@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -82,7 +83,7 @@ public class BotWeaponModLimitService(
             if (weapon.Any(
                     item =>
                         _itemHelper.IsOfBaseclasses(
-                            item.Template,
+                            (MongoId) item.Template,
                             [
                                 BaseClasses.ASSAULT_SCOPE,
                                 BaseClasses.OPTIC_SCOPE,
@@ -98,8 +99,8 @@ public class BotWeaponModLimitService(
         }
 
         // Mods parent is scope and mod is scope, allow it (adds those mini-sights to the tops of sights)
-        var modIsScope = _itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.ScopeBaseTypes);
-        if (_itemHelper.IsOfBaseclasses(modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope)
+        var modIsScope = _itemHelper.IsOfBaseclasses((MongoId) modTemplate.Id, modLimits.ScopeBaseTypes);
+        if (_itemHelper.IsOfBaseclasses((MongoId) modsParent.Id, modLimits.ScopeBaseTypes) && modIsScope)
         {
             return false;
         }
@@ -117,8 +118,8 @@ public class BotWeaponModLimitService(
         // Mount has one slot and its for a mod_scope
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
             modTemplate.Properties.Slots?.Count == 1 &&
-            _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
-            !_itemHelper.IsOfBaseclass(modsParent.Id, BaseClasses.MOUNT) &&
+            _itemHelper.IsOfBaseclass((MongoId) modTemplate.Id, BaseClasses.MOUNT) &&
+            !_itemHelper.IsOfBaseclass((MongoId) modsParent.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_scope")
            )
         {
@@ -126,7 +127,7 @@ public class BotWeaponModLimitService(
         }
 
         // If mod is a light/laser, return if limit reached
-        var modIsLightOrLaser = _itemHelper.IsOfBaseclasses(modTemplate.Id, modLimits.FlashlightLaserBaseTypes);
+        var modIsLightOrLaser = _itemHelper.IsOfBaseclasses((MongoId) modTemplate.Id, modLimits.FlashlightLaserBaseTypes);
         if (modIsLightOrLaser)
         {
             return WeaponModLimitReached(
@@ -140,7 +141,7 @@ public class BotWeaponModLimitService(
         // Mod is a mount that can hold only flashlights ad limit is reached (don't want to add empty mounts if limit is reached)
         if (modLimits.Scope.Count >= modLimits.ScopeMax &&
             modTemplate.Properties.Slots?.Count == 1 &&
-            _itemHelper.IsOfBaseclass(modTemplate.Id, BaseClasses.MOUNT) &&
+            _itemHelper.IsOfBaseclass((MongoId) modTemplate.Id, BaseClasses.MOUNT) &&
             modTemplate.Properties.Slots.Any(slot => slot.Name == "mod_flashlight")
            )
         {

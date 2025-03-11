@@ -1,6 +1,7 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -8,25 +9,15 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record TemplateItem
 {
-    private string? _id;
-
     private string? _name;
-
-    private string? _parent;
 
     private string? _type;
 
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
-        get
-        {
-            return _id;
-        }
-        set
-        {
-            _id = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("_name")]
@@ -43,16 +34,10 @@ public record TemplateItem
     }
 
     [JsonPropertyName("_parent")]
-    public string? Parent
+    public MongoId? Parent
     {
-        get
-        {
-            return _parent;
-        }
-        set
-        {
-            _parent = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("_type")]
@@ -505,7 +490,7 @@ public record Props
     }
 
     [JsonPropertyName("ConflictingItems")]
-    public HashSet<string>? ConflictingItems
+    public HashSet<MongoId>? ConflictingItems
     {
         get;
         set;
@@ -3778,7 +3763,7 @@ public record SlotFilter
     }
 
     [JsonPropertyName("Filter")]
-    public HashSet<string>? Filter
+    public HashSet<MongoId>? Filter
     {
         get;
         set;

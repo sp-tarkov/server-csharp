@@ -100,7 +100,7 @@ public record GenerateWeaponRequest
     /// Array of item tpls the weapon does not support
     /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
-    public HashSet<string>? ConflictingItemTpls
+    public HashSet<MongoId>? ConflictingItemTpls
     {
         get;
         set;
@@ -181,7 +181,7 @@ public record BotModLimits
     }
 
     [JsonPropertyName("scopeBaseTypes")]
-    public List<string>? ScopeBaseTypes
+    public List<MongoId>? ScopeBaseTypes
     {
         get;
         set;
@@ -202,7 +202,7 @@ public record BotModLimits
     }
 
     [JsonPropertyName("flashlightLaserBaseTypes")]
-    public List<string>? FlashlightLaserBaseTypes
+    public List<MongoId>? FlashlightLaserBaseTypes
     {
         get;
         set;

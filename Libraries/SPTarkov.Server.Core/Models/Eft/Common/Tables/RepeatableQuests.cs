@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -102,7 +103,7 @@ public record RepeatableQuestDatabase
 public record RepeatableQuestStatus
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

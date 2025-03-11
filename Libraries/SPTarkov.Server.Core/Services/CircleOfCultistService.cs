@@ -297,7 +297,7 @@ public class CircleOfCultistService(
     /// <param name="cultistCircleStashId">Id of stash item</param>
     /// <returns>Array of item arrays</returns>
     protected List<List<Item>> GetRewardsWithinBudget(
-        List<string> rewardItemTplPool,
+        List<MongoId> rewardItemTplPool,
         double rewardBudget,
         string cultistCircleStashId,
         CultistCircleSettings circleConfig
@@ -630,13 +630,13 @@ public class CircleOfCultistService(
     /// <param name="craftingInfo">Do we return bonus items (hideout/task items)</param>
     /// <param name="cultistCircleConfig">Circle config</param>
     /// <returns>Array of tpls</returns>
-    protected List<string> GetCultistCircleRewardPool(
+    protected List<MongoId> GetCultistCircleRewardPool(
         string sessionId,
         PmcData pmcData,
         CircleCraftDetails craftingInfo,
         CultistCircleSettings cultistCircleConfig)
     {
-        var rewardPool = new HashSet<string>();
+        var rewardPool = new HashSet<MongoId>();
         var hideoutDbData = _databaseService.GetHideout();
         var itemsDb = _databaseService.GetItems();
 
@@ -647,7 +647,7 @@ public class CircleOfCultistService(
             .Select(templateItem => templateItem.Key);
 
         // Create set of unique values to ignore
-        var itemRewardBlacklist = new HashSet<string>();
+        var itemRewardBlacklist = new HashSet<MongoId>();
         itemRewardBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
         itemRewardBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
         itemRewardBlacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
@@ -707,8 +707,8 @@ public class CircleOfCultistService(
     /// <param name="rewardPool">Pool to add items to</param>
     protected void AddTaskItemRequirementsToRewardPool(
         PmcData pmcData,
-        HashSet<string> itemRewardBlacklist,
-        HashSet<string> rewardPool)
+        HashSet<MongoId> itemRewardBlacklist,
+        HashSet<MongoId> rewardPool)
     {
         var activeTasks = pmcData.Quests.Where(quest => quest.Status == QuestStatusEnum.Started);
         foreach (var task in activeTasks)
@@ -745,8 +745,8 @@ public class CircleOfCultistService(
     protected void AddHideoutUpgradeRequirementsToRewardPool(
         Hideout hideoutDbData,
         PmcData pmcData,
-        HashSet<string> itemRewardBlacklist,
-        HashSet<string> rewardPool)
+        HashSet<MongoId> itemRewardBlacklist,
+        HashSet<MongoId> rewardPool)
     {
         var dbAreas = hideoutDbData.Areas;
         foreach (var profileArea in GetPlayerAccessibleHideoutAreas(pmcData.Hideout.Areas))
@@ -812,9 +812,9 @@ public class CircleOfCultistService(
     /// <param name="itemRewardBlacklist">Item tpls to ignore</param>
     /// <param name="itemsShouldBeHighValue">Should these items meet the valuable threshold</param>
     /// <returns>Set of item tpls</returns>
-    protected HashSet<string> GenerateRandomisedItemsAndAddToRewardPool(
-        HashSet<string> rewardPool,
-        HashSet<string> itemRewardBlacklist,
+    protected HashSet<MongoId> GenerateRandomisedItemsAndAddToRewardPool(
+        HashSet<MongoId> rewardPool,
+        HashSet<MongoId> itemRewardBlacklist,
         bool itemsShouldBeHighValue)
     {
         var allItems = _itemHelper.GetItems();
@@ -828,7 +828,7 @@ public class CircleOfCultistService(
         {
             attempts++;
             var randomItem = _randomUtil.GetArrayValue(allItems);
-            if (itemRewardBlacklist.Contains(randomItem.Id) || !_itemHelper.IsValidItem(randomItem.Id))
+            if (itemRewardBlacklist.Contains((MongoId) randomItem.Id) || !_itemHelper.IsValidItem(randomItem.Id))
             {
                 continue;
             }
@@ -848,7 +848,7 @@ public class CircleOfCultistService(
                 _logger.Debug($"Added: {_itemHelper.GetItemName(randomItem.Id)}");
             }
 
-            rewardPool.Add(randomItem.Id);
+            rewardPool.Add((MongoId) randomItem.Id);
             currentItemCount++;
         }
 

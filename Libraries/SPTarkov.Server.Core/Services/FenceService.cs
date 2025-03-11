@@ -216,7 +216,7 @@ public class FenceService(
         double? total = 0D;
         foreach (var item in items)
         {
-            if (itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO))
+            if (itemHelper.IsOfBaseclass((MongoId) item.Template, BaseClasses.AMMO))
             {
                 total += handbookHelper.GetTemplatePrice(item.Template) * (item.Upd?.StackObjectsCount ?? 1);
             }
@@ -420,7 +420,7 @@ public class FenceService(
             );
 
             // Check if same type of item exists + its on list of item types to always stack
-            if (existingRootItem != null && ItemInPreventDupeCategoryList(newRootItem.Template))
+            if (existingRootItem != null && ItemInPreventDupeCategoryList((MongoId) newRootItem.Template))
             {
                 var existingFullItemTree = itemHelper.FindAndReturnChildrenAsItems(
                     existingFenceAssorts.Items,
@@ -479,7 +479,7 @@ public class FenceService(
         // Get count of weapons
         var currentWeaponPresetCount = rootPresetItems.Aggregate(
             0,
-            (count, item) => itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON) ? count + 1 : count
+            (count, item) => itemHelper.IsOfBaseclass((MongoId) item.Template, BaseClasses.WEAPON) ? count + 1 : count
         );
 
         // Get count of equipment
@@ -805,7 +805,7 @@ public class FenceService(
                 continue;
             }
 
-            if (priceLimits.ContainsKey(itemDbDetails.Parent) && price > priceLimits[itemDbDetails.Parent])
+            if (priceLimits.ContainsKey((MongoId) itemDbDetails.Parent) && price > priceLimits[(MongoId) itemDbDetails.Parent])
             {
                 // Too expensive for fence, try another item
                 i--;
@@ -900,7 +900,7 @@ public class FenceService(
         }
 
         var isMedical = itemHelper.IsOfBaseclasses(
-            rootItemBeingAdded.Template,
+            (MongoId) rootItemBeingAdded.Template,
             [
                 BaseClasses.MEDICAL,
                 BaseClasses.MEDKIT
@@ -908,7 +908,7 @@ public class FenceService(
         );
         var isGearAndHasSlots =
             itemHelper.IsOfBaseclasses(
-                rootItemBeingAdded.Template,
+                (MongoId) rootItemBeingAdded.Template,
                 [
                     BaseClasses.ARMORED_EQUIPMENT,
                     BaseClasses.SEARCHABLE_ITEM
@@ -966,10 +966,10 @@ public class FenceService(
             return false;
         }
 
-        return ItemInPreventDupeCategoryList(itemDbDetails.Id);
+        return ItemInPreventDupeCategoryList((MongoId) itemDbDetails.Id);
     }
 
-    protected bool ItemInPreventDupeCategoryList(string tpl)
+    protected bool ItemInPreventDupeCategoryList(MongoId tpl)
     {
         // Item type in config list
         return itemHelper.IsOfBaseclasses(tpl, traderConfig.Fence.PreventDuplicateOffersOfCategory);
@@ -1009,7 +1009,7 @@ public class FenceService(
         }
 
         // Adjust price based on durability
-        if (itemRoot.Upd?.Repairable != null || itemHelper.IsOfBaseclass(itemRoot.Template, BaseClasses.KEY_MECHANICAL))
+        if (itemRoot.Upd?.Repairable != null || itemHelper.IsOfBaseclass((MongoId) itemRoot.Template, BaseClasses.KEY_MECHANICAL))
         {
             var itemQualityModifier = itemHelper.GetItemQualityModifier(itemRoot);
             var basePrice = barterSchemes[itemRoot.Id.Value][0][0].Count;
@@ -1052,12 +1052,12 @@ public class FenceService(
         if (desiredWeaponPresetsCount > 0)
         {
             var weaponPresetRootItems = baseFenceAssort.Items.Where(
-                item => item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
+                item => item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass((MongoId) item.Template, BaseClasses.WEAPON)
             );
             while (weaponPresetsAddedCount < desiredWeaponPresetsCount)
             {
                 var randomPresetRoot = randomUtil.GetArrayValue(weaponPresetRootItems);
-                if (traderConfig.Fence.Blacklist.Contains(randomPresetRoot.Template))
+                if (traderConfig.Fence.Blacklist.Contains((MongoId) randomPresetRoot.Template))
                 {
                     continue;
                 }
@@ -1075,7 +1075,7 @@ public class FenceService(
                 // Check chosen item is below price cap
                 var itemPrice = handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
                                 itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
-                if (traderConfig.Fence.ItemCategoryRoublePriceLimit.TryGetValue(rootItemDb.Parent, out var priceLimitRouble))
+                if (traderConfig.Fence.ItemCategoryRoublePriceLimit.TryGetValue((MongoId) rootItemDb.Parent, out var priceLimitRouble))
                 {
                     if (itemPrice > priceLimitRouble)
                         // Too expensive, try again
@@ -1138,7 +1138,7 @@ public class FenceService(
             RemoveRandomModsOfItem(presetWithChildrenClone);
 
             // Check chosen item is below price cap
-            var priceLimitRouble = traderConfig.Fence.ItemCategoryRoublePriceLimit[rootItemDb.Parent];
+            var priceLimitRouble = traderConfig.Fence.ItemCategoryRoublePriceLimit[(MongoId) rootItemDb.Parent];
             var itemPrice =
                 handbookHelper.GetTemplatePriceForItems(presetWithChildrenClone) *
                 itemHelper.GetItemQualityModifierForItems(presetWithChildrenClone);
@@ -1342,7 +1342,7 @@ public class FenceService(
     protected int GetSingleItemStackCount(TemplateItem itemDbDetails)
     {
         MinMax<int>? overrideValues;
-        if (itemHelper.IsOfBaseclass(itemDbDetails.Id, BaseClasses.AMMO))
+        if (itemHelper.IsOfBaseclass((MongoId) itemDbDetails.Id, BaseClasses.AMMO))
         {
             overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
             if (overrideValues != null)
@@ -1476,7 +1476,7 @@ public class FenceService(
         }
 
         // Randomise Weapon durability
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass((MongoId) itemDetails.Id, BaseClasses.WEAPON))
         {
             var weaponDurabilityLimits = traderConfig.Fence.WeaponDurabilityPercentMinMax;
             var maxDuraMin = weaponDurabilityLimits.Max.Min / 100 * itemDetails.Properties.MaxDurability;
@@ -1499,7 +1499,7 @@ public class FenceService(
             return;
         }
 
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.REPAIR_KITS))
+        if (itemHelper.IsOfBaseclass((MongoId) itemDetails.Id, BaseClasses.REPAIR_KITS))
         {
             itemToAdjust.Upd.RepairKit = new UpdRepairKit
             {
@@ -1510,7 +1510,7 @@ public class FenceService(
         }
 
         // Mechanical key + has limited uses
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.KEY_MECHANICAL) &&
+        if (itemHelper.IsOfBaseclass((MongoId) itemDetails.Id, BaseClasses.KEY_MECHANICAL) &&
             (itemDetails.Properties.MaximumNumberOfUsage ?? 0) > 1)
         {
             itemToAdjust.Upd.Key = new UpdKey
@@ -1611,7 +1611,7 @@ public class FenceService(
     public FenceLevel GetFenceInfo(PmcData pmcData)
     {
         var fenceSettings = databaseService.GetGlobals().Configuration.FenceSettings;
-        var pmcFenceInfo = pmcData.TradersInfo[fenceSettings.FenceIdentifier];
+        var pmcFenceInfo = pmcData.TradersInfo[(MongoId) fenceSettings.FenceIdentifier];
 
         if (pmcFenceInfo == null)
         {

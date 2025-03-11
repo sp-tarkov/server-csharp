@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -487,7 +488,7 @@ public class BotGeneratorHelper(
         }
 
         // Check if the incoming item has any inventory items defined as incompatible
-        var blockingInventoryItem = itemsEquipped.FirstOrDefault(x => itemToEquip.Properties.ConflictingItems?.Contains(x.Template) ?? false);
+        var blockingInventoryItem = itemsEquipped.FirstOrDefault(x => itemToEquip.Properties.ConflictingItems?.Contains((MongoId) x.Template) ?? false);
         if (blockingInventoryItem is not null)
             // this.logger.warning(`3 incompatibility found between - {itemToEquip[1]._name} and {blockingInventoryItem._tpl} - {equipmentSlot}`)
         {

@@ -69,7 +69,7 @@ public class HideoutHelper(
         // - scav case recipe: Production time value is stored in attribute "ProductionType" with capital "P"
         if (pmcData.Hideout?.Production is null)
         {
-            pmcData.Hideout.Production = new Dictionary<string, Production?>();
+            pmcData.Hideout.Production = new Dictionary<MongoId, Production?>();
         }
 
         var modifiedProductionTime = GetAdjustedCraftTimeWithSkills(pmcData, body.RecipeId);
@@ -135,7 +135,7 @@ public class HideoutHelper(
         // - scav case recipe: Production time value is stored in attribute "ProductionType" with capital "P"
         if (pmcData.Hideout?.Production is null)
         {
-            pmcData.Hideout.Production = new Dictionary<string, Production?>();
+            pmcData.Hideout.Production = new Dictionary<MongoId, Production?>();
         }
 
         var modifiedProductionTime = GetAdjustedCraftTimeWithSkills(pmcData, body.RecipeId);

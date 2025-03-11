@@ -14,6 +14,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -150,7 +151,7 @@ public class LocationLifecycleService
             Transition = new Transition
             {
                 TransitionType = TransitionType.NONE,
-                TransitionRaidId = _hashUtil.Generate(),
+                TransitionRaidId = new MongoId(),
                 TransitionCount = 0,
                 VisitedLocations = []
             }
@@ -492,7 +493,7 @@ public class LocationLifecycleService
         var loot = _lootGenerator.CreateRandomLoot(_traderConfig.Fence.CoopExtractGift);
         var mailableLoot = new List<Item>();
 
-        var parentId = _hashUtil.Generate();
+        var parentId = new MongoId();
         foreach (var item in loot)
         {
             item.ParentId = parentId;
@@ -743,7 +744,7 @@ public class LocationLifecycleService
             // insert scav quest counters into pmc profile
             foreach (var counter in matchingCounters)
             {
-                pmcProfile.TaskConditionCounters[counter.Value.Id] = counter.Value;
+                pmcProfile.TaskConditionCounters[(MongoId) counter.Value.Id] = counter.Value;
             }
 
             // Find Matching PMC Quest
@@ -975,7 +976,7 @@ public class LocationLifecycleService
                             preRaidQuest.QId == postRaidQuest.QId && // Get matching pre-raid quest
                             preRaidQuest.Status != QuestStatusEnum.Success
                     ) && // Completed quest was not completed before raid started
-                    _databaseService.GetQuests().TryGetValue(postRaidQuest.QId, out var quest) &&
+                    _databaseService.GetQuests().TryGetValue((MongoId) postRaidQuest.QId, out var quest) &&
                     quest?.TraderId == Traders.LIGHTHOUSEKEEPER
             ) // Quest is from LK
             .ToList();
@@ -1006,7 +1007,7 @@ public class LocationLifecycleService
         var failedQuests = questsToProcess.Where(quest => quest.Status == QuestStatusEnum.MarkedAsFailed);
         foreach (var failedQuest in failedQuests)
         {
-            var dbQuest = _databaseService.GetQuests()[failedQuest.QId];
+            var dbQuest = _databaseService.GetQuests()[(MongoId) failedQuest.QId];
             if (dbQuest is null)
             {
                 continue;
@@ -1025,8 +1026,8 @@ public class LocationLifecycleService
  * Adjust server trader settings if they differ from data sent by client
  */
     protected void ApplyTraderStandingAdjustments(
-        Dictionary<string, TraderInfo>? tradersServerProfile,
-        Dictionary<string, TraderInfo>? tradersClientProfile
+        Dictionary<MongoId, TraderInfo>? tradersServerProfile,
+        Dictionary<MongoId, TraderInfo>? tradersClientProfile
     )
     {
         foreach (var traderId in tradersClientProfile)
@@ -1205,7 +1206,7 @@ public class LocationLifecycleService
         secondary.Encyclopedia = mergedDicts;
     }
 
-    protected void ProcessAchievementRewards(SptProfile fullProfile, Dictionary<string, long>? postRaidAchievements)
+    protected void ProcessAchievementRewards(SptProfile fullProfile, Dictionary<MongoId, long>? postRaidAchievements)
     {
         var sessionId = fullProfile.ProfileInfo.ProfileId;
         var pmcProfile = fullProfile.CharacterData.PmcData;

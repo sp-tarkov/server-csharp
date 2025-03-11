@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -155,7 +156,7 @@ public class RagfairServerHelper(
 
         // Item Types to return one of
         if (isWeaponPreset ||
-            itemHelper.IsOfBaseclasses(itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
+            itemHelper.IsOfBaseclasses((MongoId) itemDetails.Value.Id, ragfairConfig.Dynamic.ShowAsSingleStack)
            )
         {
             return 1;

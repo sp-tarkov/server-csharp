@@ -1,4 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common;
+﻿using SPTarkov.Server.Core.Models.Common;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
@@ -41,7 +42,7 @@ public record DatabaseTables
         set;
     }
 
-    public Dictionary<string, Trader>? Traders
+    public Dictionary<MongoId, Trader>? Traders
     {
         get;
         set;

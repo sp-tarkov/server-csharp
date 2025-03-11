@@ -611,7 +611,7 @@ public class LocationLootGenerator(
     /// <param name="containerTypeId">Container to get possible loot for</param>
     /// <param name="staticLootDist">staticLoot.json</param>
     /// <returns>ProbabilityObjectArray of item tpls + probability</returns>
-    protected ProbabilityObjectArray<string, float?> GetPossibleLootItemsForContainer(
+    protected ProbabilityObjectArray<MongoId, float?> GetPossibleLootItemsForContainer(
         string containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist)
     {
@@ -619,7 +619,7 @@ public class LocationLootGenerator(
         var seasonalItemTplBlacklist = _seasonalEventService.GetInactiveSeasonalEventItems();
 
         var itemDistribution =
-            new ProbabilityObjectArray<string, float?>(_mathUtil, _cloner);
+            new ProbabilityObjectArray<MongoId, float?>(_mathUtil, _cloner);
 
         var itemContainerDistribution = staticLootDist[containerTypeId]?.ItemDistribution;
         if (itemContainerDistribution is null)
@@ -643,7 +643,7 @@ public class LocationLootGenerator(
                 continue;
             }
 
-            itemDistribution.Add(new ProbabilityObject<string, float?>(icd.Tpl, icd.RelativeProbability.Value, null));
+            itemDistribution.Add(new ProbabilityObject<MongoId, float?>(icd.Tpl, icd.RelativeProbability.Value, null));
         }
 
         return itemDistribution;
@@ -795,7 +795,7 @@ public class LocationLootGenerator(
 
             // Ensure no blacklisted lootable items are in pool
             spawnPoint.Template.Items = spawnPoint.Template.Items.Where(
-                    item => !_itemFilterService.IsLootableItemBlacklisted(item.Template)
+                    item => !_itemFilterService.IsLootableItemBlacklisted((MongoId) item.Template)
                 )
                 .ToList();
 
@@ -803,7 +803,7 @@ public class LocationLootGenerator(
             if (!seasonalEventActive)
             {
                 spawnPoint.Template.Items = spawnPoint.Template.Items.Where(
-                        item => !seasonalItemTplBlacklist.Contains(item.Template)
+                        item => !seasonalItemTplBlacklist.Contains((MongoId) item.Template)
                     )
                     .ToList();
             }
@@ -943,7 +943,7 @@ public class LocationLootGenerator(
             }
 
             // Skip adding seasonal items when seasonal event is not active
-            if (!seasonalEventActive && seasonalItemTplBlacklist.Contains(firstLootItemTpl))
+            if (!seasonalEventActive && seasonalItemTplBlacklist.Contains((MongoId) firstLootItemTpl))
             {
                 continue;
             }
@@ -1004,7 +1004,7 @@ public class LocationLootGenerator(
         List<Item> itemWithMods = [];
 
         // Money/Ammo - don't rely on items in spawnPoint.template.Items so we can randomise it ourselves
-        if (_itemHelper.IsOfBaseclasses(chosenTpl, [BaseClasses.MONEY, BaseClasses.AMMO]))
+        if (_itemHelper.IsOfBaseclasses((MongoId) chosenTpl, [BaseClasses.MONEY, BaseClasses.AMMO]))
         {
             var stackCount =
                 itemTemplate.Properties.StackMaxSize == 1
@@ -1023,7 +1023,7 @@ public class LocationLootGenerator(
                 }
             );
         }
-        else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.AMMO_BOX))
+        else if (_itemHelper.IsOfBaseclass((MongoId) chosenTpl, BaseClasses.AMMO_BOX))
         {
             // Fill with cartridges
             List<Item> ammoBoxItem =
@@ -1037,7 +1037,7 @@ public class LocationLootGenerator(
             _itemHelper.AddCartridgesToAmmoBox(ammoBoxItem, itemTemplate);
             itemWithMods.AddRange(ammoBoxItem);
         }
-        else if (_itemHelper.IsOfBaseclass(chosenTpl, BaseClasses.MAGAZINE))
+        else if (_itemHelper.IsOfBaseclass((MongoId) chosenTpl, BaseClasses.MAGAZINE))
         {
             // Create array with just magazine
             List<Item> magazineItem =

@@ -139,7 +139,7 @@ public class ProfileSptCommand(
                     {
                         StackObjectsCount = 1
                     },
-                    ParentId = _hashUtil.Generate(),
+                    ParentId = new MongoId(),
                     SlotId = "main"
                 }
             ],
@@ -154,7 +154,7 @@ public class ProfileSptCommand(
     {
         var profileChangeEvent = new ProfileChangeEvent
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Type = ProfileChangeEventType.SkillPoints,
             Value = level * 100,
             Entity = skill.ToString()
@@ -167,7 +167,7 @@ public class ProfileSptCommand(
         var exp = _profileHelper.GetExperience(level);
         var profileChangeEvent = new ProfileChangeEvent
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Type = ProfileChangeEventType.ProfileLevel,
             Value = exp,
             Entity = null
@@ -179,7 +179,7 @@ public class ProfileSptCommand(
     {
         var profileChangeEvent = new ProfileChangeEvent
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Type = ProfileChangeEventType.ExamineAllItems,
             Value = null,
             Entity = null

@@ -464,7 +464,7 @@ public class BotGenerator(
         bot.Customization.Body = _weightedRandomHelper.GetWeightedValue<string>(appearance.Body);
 
         var bodyGlobalDictDb = _databaseService.GetGlobals().Configuration.Customization.Body;
-        var chosenBodyTemplate = _databaseService.GetCustomization()[bot.Customization.Body];
+        var chosenBodyTemplate = _databaseService.GetCustomization()[(MongoId) bot.Customization.Body];
 
         // Some bodies have matching hands, look up body to see if this is the case
         var chosenBody = bodyGlobalDictDb.FirstOrDefault(c => c.Key == chosenBodyTemplate?.Name.Trim());
@@ -687,7 +687,7 @@ public class BotGenerator(
     /// <returns></returns>
     public void AddIdsToBot(BotBase bot, BotGenerationDetails botGenerationDetails)
     {
-        var botId = _hashUtil.Generate();
+        var botId = new MongoId();
 
         bot.Id = botId;
         bot.Aid = botGenerationDetails.IsPmc.GetValueOrDefault(false) ? _hashUtil.GenerateAccountId() : 0;

@@ -1,5 +1,6 @@
 namespace SPTarkov.Server.Core.Models.Enums;
 
+// TODO: Should we regenerate these as MongoId objects instead of const strings?
 public static class BaseClasses
 {
     public const string WEAPON = "5422acb9af1c889c16000029";

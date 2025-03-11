@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -13,7 +14,7 @@ public record Reward
     } // TODO: Can be either string or number
 
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

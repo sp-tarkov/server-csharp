@@ -171,7 +171,7 @@ public class BotWeaponGenerator(
                 },
                 ModLimits = modLimits,
                 WeaponStats = new WeaponStats(),
-                ConflictingItemTpls = new HashSet<string>()
+                ConflictingItemTpls = []
             };
             weaponWithModsArray = _botEquipmentModGenerator.GenerateModsForWeapon(
                 sessionId,
@@ -577,7 +577,7 @@ public class BotWeaponGenerator(
     /// <param name="cartridgePool">Dictionary of all cartridges keyed by type e.g. Caliber556x45NATO</param>
     /// <param name="weaponTemplate">Weapon details from database we want to pick ammo for</param>
     /// <returns>Ammo template that works with the desired gun</returns>
-    protected string GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
+    protected string GetWeightedCompatibleAmmo(Dictionary<MongoId, Dictionary<MongoId, double>> cartridgePool, TemplateItem weaponTemplate)
     {
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
         if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Count == 0)
@@ -656,7 +656,7 @@ public class BotWeaponGenerator(
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get cartridges for</param>
     /// <returns>List of cartridge tpls</returns>
-    protected HashSet<string> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
+    protected HashSet<MongoId> GetCompatibleCartridgesFromWeaponTemplate(TemplateItem weaponTemplate)
     {
         ArgumentNullException.ThrowIfNull(weaponTemplate);
 
@@ -676,7 +676,7 @@ public class BotWeaponGenerator(
     /// <param name="weaponTemplate">Weapon db template to get magazine cartridges for</param>
     /// <returns>Hashset of cartridge tpls</returns>
     /// <exception cref="ArgumentNullException">Thrown when weaponTemplate is null.</exception>
-    protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate) {
+    protected HashSet<MongoId> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate) {
         ArgumentNullException.ThrowIfNull(weaponTemplate);
 
         // Get the first magazine's template from the weapon

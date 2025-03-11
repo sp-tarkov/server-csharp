@@ -1345,7 +1345,7 @@ public class HideoutController(
 
         if (output.ProfileChanges[sessionId].Improvements is null)
         {
-            output.ProfileChanges[sessionId].Improvements = new Dictionary<string, HideoutImprovement>();
+            output.ProfileChanges[sessionId].Improvements = new Dictionary<MongoId, HideoutImprovement>();
         }
 
         foreach (var improvement in improvements)
@@ -1357,7 +1357,7 @@ public class HideoutController(
             };
             output.ProfileChanges[sessionId].Improvements[improvement.Id] = improvementDetails;
 
-            pmcData.Hideout.Improvements ??= new Dictionary<string, HideoutImprovement>();
+            pmcData.Hideout.Improvements ??= new Dictionary<MongoId, HideoutImprovement>();
             pmcData.Hideout.Improvements[improvement.Id] = improvementDetails;
         }
 

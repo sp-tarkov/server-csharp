@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -196,7 +197,7 @@ public class MailSendService(
         // add items to message
         if (items?.Count > 0)
         {
-            var rootItemParentId = _hashUtil.Generate();
+            var rootItemParentId = new MongoId();
 
             details.Items.AddRange(_itemHelper.AdoptOrphanedItems(rootItemParentId, items));
             details.ItemsMaxStorageLifetimeSeconds = maxStorageTimeSeconds;
@@ -345,7 +346,7 @@ public class MailSendService(
         dialogWithNpc.Messages.Add(
             new Message
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 DateTime = _timeUtil.GetTimeStamp(),
                 HasRewards = false,
                 UserId = playerProfile.CharacterData.PmcData.Id,
@@ -360,7 +361,7 @@ public class MailSendService(
     {
         Message message = new()
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             UserId = dialogId,
             MessageType = messageDetails.DialogType,
             DateTime = _timeUtil.GetTimeStamp(),
@@ -460,7 +461,7 @@ public class MailSendService(
             // No parent id, generate random id and add (doesn't need to be actual parentId from db, only unique)
             if (parentItem?.ParentId is null)
             {
-                parentItem.ParentId = _hashUtil.Generate();
+                parentItem.ParentId = new MongoId();
             }
 
             // Prep return object
@@ -476,7 +477,7 @@ public class MailSendService(
             // Ensure item exits in items db
             foreach (var reward in messageDetails.Items)
             {
-                var itemTemplate = items[reward.Template];
+                var itemTemplate = items[(MongoId) reward.Template];
                 if (itemTemplate is null)
                 {
                     _logger.Error(
@@ -502,7 +503,7 @@ public class MailSendService(
                 }
 
                 // Boxes can contain sub-items
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.AMMO_BOX))
+                if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.AMMO_BOX))
                 {
                     // look for child cartridge objects
                     var childItems = messageDetails.Items?.Where(x => x.ParentId == reward.Id);

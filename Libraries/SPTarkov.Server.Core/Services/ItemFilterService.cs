@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -13,17 +14,17 @@ public class ItemFilterService(
     ConfigServer _configServer
 )
 {
-    protected HashSet<string>? _itemBlacklistCache = [];
+    protected HashSet<MongoId>? _itemBlacklistCache = [];
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
 
-    protected HashSet<string>? _lootableItemBlacklistCache = [];
+    protected HashSet<MongoId>? _lootableItemBlacklistCache = [];
 
     /**
      * Check if the provided template id is blacklisted in config/item.json/blacklist
      * @param tpl template id
      * @returns true if blacklisted
      */
-    public bool ItemBlacklisted(string tpl)
+    public bool ItemBlacklisted(MongoId tpl)
     {
         if (_itemBlacklistCache.Count == 0)
         {
@@ -47,7 +48,7 @@ public class ItemFilterService(
      * Get an array of items that should never be given as a reward to player
      * @returns string array of item tpls
      */
-    public HashSet<string> GetItemRewardBlacklist()
+    public HashSet<MongoId> GetItemRewardBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemBlacklist);
     }
@@ -56,7 +57,7 @@ public class ItemFilterService(
      * Get an array of item types that should never be given as a reward to player
      * @returns string array of item base ids
      */
-    public HashSet<string> GetItemRewardBaseTypeBlacklist()
+    public HashSet<MongoId> GetItemRewardBaseTypeBlacklist()
     {
         return _cloner.Clone(_itemConfig.RewardItemTypeBlacklist);
     }
@@ -65,7 +66,7 @@ public class ItemFilterService(
      * Return every template id blacklisted in config/item.json
      * @returns string array of blacklisted template ids
      */
-    public HashSet<string> GetBlacklistedItems()
+    public HashSet<MongoId> GetBlacklistedItems()
     {
         return _cloner.Clone(_itemConfig.Blacklist);
     }
@@ -74,7 +75,7 @@ public class ItemFilterService(
      * Return every template id blacklisted in config/item.json/lootableItemBlacklist
      * @returns string array of blacklisted template ids
      */
-    public HashSet<string> GetBlacklistedLootableItems()
+    public HashSet<MongoId> GetBlacklistedLootableItems()
     {
         return _cloner.Clone(_itemConfig.LootableItemBlacklist);
     }
@@ -84,7 +85,7 @@ public class ItemFilterService(
      * @param tpl template id
      * @returns true if boss item
      */
-    public bool BossItem(string tpl)
+    public bool BossItem(MongoId tpl)
     {
         return _itemConfig.BossItems.Contains(tpl);
     }
@@ -93,7 +94,7 @@ public class ItemFilterService(
      * Return boss items in config/item.json
      * @returns string array of boss item template ids
      */
-    public HashSet<string> GetBossItems()
+    public HashSet<MongoId> GetBossItems()
     {
         return _cloner.Clone(_itemConfig.BossItems).ToHashSet();
     }
@@ -103,7 +104,7 @@ public class ItemFilterService(
      * @param tpl template id
      * @returns true if blacklisted
      */
-    public bool IsLootableItemBlacklisted(string itemKey)
+    public bool IsLootableItemBlacklisted(MongoId itemKey)
     {
         if (!_lootableItemBlacklistCache.Any())
         {
@@ -113,7 +114,7 @@ public class ItemFilterService(
         return _lootableItemBlacklistCache.Contains(itemKey);
     }
 
-    public bool IsItemBlacklisted(string tpl)
+    public bool IsItemBlacklisted(MongoId tpl)
     {
         if (!_itemBlacklistCache.Any())
         {
@@ -144,7 +145,7 @@ public class ItemFilterService(
      * @param tpl template id
      * @returns true if boss item
      */
-    public bool IsBossItem(string tpl)
+    public bool IsBossItem(MongoId tpl)
     {
         return _itemConfig.BossItems.Contains(tpl);
     }
@@ -154,7 +155,7 @@ public class ItemFilterService(
      * @param tpl item tpl to check is on blacklist
      * @returns True when blacklisted
      */
-    public bool IsItemRewardBlacklisted(string tpl)
+    public bool IsItemRewardBlacklisted(MongoId tpl)
     {
         return _itemConfig.RewardItemBlacklist.Contains(tpl);
     }

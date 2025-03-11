@@ -157,7 +157,7 @@ public record AirdropLoot
     ///     Items to never allow - tpls
     /// </summary>
     [JsonPropertyName("itemBlacklist")]
-    public List<string> ItemBlacklist
+    public List<MongoId> ItemBlacklist
     {
         get;
         set;
@@ -167,7 +167,7 @@ public record AirdropLoot
     ///     Item type (parentId) to allow inside crate
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public List<string> ItemTypeWhitelist
+    public List<MongoId> ItemTypeWhitelist
     {
         get;
         set;
@@ -177,7 +177,7 @@ public record AirdropLoot
     ///     Item type/ item tpls to limit count of inside crate - key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, int> ItemLimits
+    public Dictionary<MongoId, int> ItemLimits
     {
         get;
         set;
@@ -187,7 +187,7 @@ public record AirdropLoot
     ///     Items to limit stack size of key: item tpl value: min/max stack size
     /// </summary>
     [JsonPropertyName("itemStackLimits")]
-    public Dictionary<string, MinMax<int>> ItemStackLimits
+    public Dictionary<MongoId, MinMax<int>> ItemStackLimits
     {
         get;
         set;
@@ -221,7 +221,7 @@ public record AirdropLoot
     }
 
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax<int>>? ForcedLoot
+    public Dictionary<MongoId, MinMax<int>>? ForcedLoot
     {
         get;
         set;

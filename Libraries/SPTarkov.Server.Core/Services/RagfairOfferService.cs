@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -164,7 +165,7 @@ public class RagfairOfferService(
         var staleOfferUserId = staleOffer.User.Id;
 
         var isTrader = ragfairServerHelper.IsTrader(staleOfferUserId);
-        var isPlayer = profileHelper.IsPlayer(staleOfferUserId.RegexReplace("^pmc", ""));
+        var isPlayer = profileHelper.IsPlayer(staleOfferUserId.ToString().RegexReplace("^pmc", ""));
 
         // Skip trader offers, managed by RagfairServer.update()
         if (isTrader)
@@ -229,7 +230,7 @@ public class RagfairOfferService(
         var unstackedItems = UnstackOfferItems(playerOffer.Items);
 
         // Need to regenerate Ids to ensure returned item(s) have correct parent values
-        var newParentId = hashUtil.Generate();
+        var newParentId = new MongoId();
         foreach (var item in unstackedItems)
         {
             // Refresh root items' parentIds

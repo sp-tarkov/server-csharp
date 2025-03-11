@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -103,7 +104,7 @@ public class InRaidHelper(
             {
                 // Has upd object + upd.SpawnedInSession property + not a quest item
                 return (item.Upd?.SpawnedInSession ?? false) &&
-                       !(dbItems[item.Template].Properties.QuestItem ?? false) &&
+                       !(dbItems[(MongoId) item.Template].Properties.QuestItem ?? false) &&
                        !(
                            _inRaidConfig.KeepFiRSecureContainerOnDeath &&
                            _itemHelper.ItemIsInsideContainer(item, "SecuredContainer", items)
@@ -164,7 +165,7 @@ public class InRaidHelper(
         }
 
         // Remove contents of fast panel
-        pmcData.Inventory.FastPanel = new Dictionary<string, string>();
+        pmcData.Inventory.FastPanel = new Dictionary<MongoId, MongoId>();
     }
 
     /// <summary>

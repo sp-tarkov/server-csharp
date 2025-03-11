@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services.Mod;
 
@@ -36,7 +37,7 @@ public class CustomItemService(
         var tables = databaseService.GetTables();
 
         // Generate new id for item if none supplied
-        var newItemId = GetOrGenerateIdForItem(newItemDetails.NewId);
+        var newItemId = newItemDetails.NewId;
 
         // Fail if itemId already exists
         if (tables.Templates.Items.ContainsKey(newItemId))
@@ -67,7 +68,7 @@ public class CustomItemService(
 
         itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (itemHelper.IsOfBaseclass(itemClone.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass((MongoId) itemClone.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItemId);
         }
@@ -95,9 +96,9 @@ public class CustomItemService(
         var newItem = newItemDetails.NewItem;
 
         // Fail if itemId already exists
-        if (tables.Templates.Items.ContainsKey(newItem.Id))
+        if (tables.Templates.Items.ContainsKey((MongoId) newItem.Id))
         {
-            result.Errors.Add($"ItemId already exists. {tables.Templates.Items[newItem.Id].Name}");
+            result.Errors.Add($"ItemId already exists. {tables.Templates.Items[(MongoId) newItem.Id].Name}");
             return result;
         }
 
@@ -111,7 +112,7 @@ public class CustomItemService(
 
         itemBaseClassService.HydrateItemBaseClassCache();
 
-        if (itemHelper.IsOfBaseclass(newItem.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass((MongoId) newItem.Id, BaseClasses.WEAPON))
         {
             AddToWeaponShelf(newItem.Id);
         }
@@ -121,17 +122,7 @@ public class CustomItemService(
 
         return result;
     }
-
-    /**
-     * If the id provided is an empty string, return a randomly generated guid, otherwise return the newId parameter
-     * @param newId id supplied to code
-     * @returns item id
-     */
-    protected string GetOrGenerateIdForItem(string newId)
-    {
-        return newId == "" ? hashUtil.Generate() : newId;
-    }
-
+    
     /**
      * Iterates through supplied properties and updates the cloned items properties with them
      * Complex objects cannot have overrides, they must be fully hydrated with values if they are to be used
@@ -269,7 +260,7 @@ public class CustomItemService(
             return;
         }
 
-        var baseWeaponModObject = new Dictionary<string, HashSet<string>?>();
+        var baseWeaponModObject = new Dictionary<string, HashSet<MongoId>?>();
 
         // Get all slots weapon has and create a dictionary of them with possible mods that slot into each
         var weaponSlots = weapon.Value.Properties.Slots;

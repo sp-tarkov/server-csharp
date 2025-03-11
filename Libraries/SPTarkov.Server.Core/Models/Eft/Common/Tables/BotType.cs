@@ -683,7 +683,7 @@ public record BodyPart
 public record BotTypeInventory
 {
     [JsonPropertyName("equipment")]
-    public Dictionary<EquipmentSlots, Dictionary<string, double>>? Equipment
+    public Dictionary<EquipmentSlots, Dictionary<MongoId, double>>? Equipment
     {
         get;
         set;

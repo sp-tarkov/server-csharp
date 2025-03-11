@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -107,7 +108,7 @@ public record ProfileChange
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("production")]
-    public Dictionary<string, Production>? Production
+    public Dictionary<MongoId, Production>? Production
     {
         get;
         set;
@@ -117,7 +118,7 @@ public record ProfileChange
     /// Hideout area improvement id
     /// </summary>
     [JsonPropertyName("improvements")]
-    public Dictionary<string, HideoutImprovement>? Improvements
+    public Dictionary<MongoId, HideoutImprovement>? Improvements
     {
         get;
         set;
@@ -138,7 +139,7 @@ public record ProfileChange
     }
 
     [JsonPropertyName("traderRelations")]
-    public Dictionary<string, TraderData>? TraderRelations
+    public Dictionary<MongoId, TraderData>? TraderRelations
     {
         get;
         set;

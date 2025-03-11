@@ -26,7 +26,7 @@ public class RagfairPriceService(
 )
 {
     private readonly RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
-    protected Dictionary<string, double>? _staticPrices;
+    protected Dictionary<MongoId, double>? _staticPrices;
 
     /// <summary>
     ///     Generate static (handbook) and dynamic (prices.json) flea prices, store inside class as dictionaries
@@ -47,10 +47,10 @@ public class RagfairPriceService(
     /// </summary>
     public void RefreshStaticPrices()
     {
-        _staticPrices = new Dictionary<string, double>();
+        _staticPrices = new Dictionary<MongoId, double>();
         foreach (var item in _databaseService.GetItems().Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase)))
         {
-            _staticPrices[item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
+            _staticPrices[(MongoId) item.Id] = _handbookHelper.GetTemplatePrice(item.Id);
         }
     }
 
@@ -104,7 +104,7 @@ public class RagfairPriceService(
     public double GetFleaPriceForOfferItems(List<Item> offerItems)
     {
         // Preset weapons take the direct prices.json value, otherwise they're massively inflated
-        if (_itemHelper.IsOfBaseclass(offerItems[0].Template, BaseClasses.WEAPON))
+        if (_itemHelper.IsOfBaseclass((MongoId) offerItems[0].Template, BaseClasses.WEAPON))
         {
             return GetFleaPriceForItem(offerItems[0].Template);
         }
@@ -139,7 +139,7 @@ public class RagfairPriceService(
     ///     This will refresh the caches prior to building the output
     /// </summary>
     /// <returns>Dictionary of item tpls and rouble cost</returns>
-    public Dictionary<string, double> GetAllFleaPrices()
+    public Dictionary<MongoId, double> GetAllFleaPrices()
     {
         var dynamicPrices = _databaseService.GetPrices();
         // Use dynamic prices first, fill in any gaps with data from static prices (handbook)
@@ -148,7 +148,7 @@ public class RagfairPriceService(
             .ToDictionary(x => x.Key, x => x.First().Value);
     }
 
-    public Dictionary<string, double> GetAllStaticPrices()
+    public Dictionary<MongoId, double> GetAllStaticPrices()
     {
         // Refresh the cache so we include any newly added custom items
         if (_staticPrices is null)
@@ -203,7 +203,7 @@ public class RagfairPriceService(
         foreach (var item in offerItems)
         {
             // Skip over armor inserts as those are not factored into item prices.
-            if (_itemHelper.IsOfBaseclass(item.Template, BaseClasses.BUILT_IN_INSERTS))
+            if (_itemHelper.IsOfBaseclass((MongoId) item.Template, BaseClasses.BUILT_IN_INSERTS))
             {
                 continue;
             }

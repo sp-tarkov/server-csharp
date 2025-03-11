@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -48,7 +49,7 @@ public class RepeatableQuestGenerator(
     public RepeatableQuest? GenerateRepeatableQuest(
         string sessionId,
         int pmcLevel,
-        Dictionary<string, TraderInfo> pmcTraderInfo,
+        Dictionary<MongoId, TraderInfo> pmcTraderInfo,
         QuestTypePool questTypePool,
         RepeatableQuestConfig repeatableConfig
     )
@@ -346,7 +347,7 @@ public class RepeatableQuestGenerator(
         }
 
         var availableForFinishCondition = quest.Conditions.AvailableForFinish[0];
-        availableForFinishCondition.Counter.Id = _hashUtil.Generate();
+        availableForFinishCondition.Counter.Id = new MongoId();
         availableForFinishCondition.Counter.Conditions = [];
 
         // Only add specific location condition if specific map selected
@@ -368,7 +369,7 @@ public class RepeatableQuestGenerator(
             )
         );
         availableForFinishCondition.Value = desiredKillCount;
-        availableForFinishCondition.Id = _hashUtil.Generate();
+        availableForFinishCondition.Id = new MongoId();
         quest.Location = GetQuestLocationByMapId(locationKey);
 
         quest.Rewards = _repeatableQuestRewardGenerator.GenerateReward(
@@ -428,7 +429,7 @@ public class RepeatableQuestGenerator(
     {
         return new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             DynamicLocale = true,
             Target = location,
             ConditionType = "Location"
@@ -454,7 +455,7 @@ public class RepeatableQuestGenerator(
     {
         var killConditionProps = new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             DynamicLocale = true,
             Target = target, // e,g, "AnyPmc"
             Value = 1,
@@ -561,7 +562,7 @@ public class RepeatableQuestGenerator(
                     x =>
                     {
                         // Whitelist can contain item tpls and item base type ids
-                        return itemIdsWhitelisted.Any(v => _itemHelper.IsOfBaseclass(x.Id, v)) ||
+                        return itemIdsWhitelisted.Any(v => _itemHelper.IsOfBaseclass((MongoId) x.Id, v)) ||
                                itemIdsWhitelisted.Contains(x.Id);
                     }
                 )
@@ -584,7 +585,7 @@ public class RepeatableQuestGenerator(
             itemSelection = itemSelection.Where(
                     x =>
                     {
-                        return itemIdsBlacklisted.All(v => !_itemHelper.IsOfBaseclass(x.Id, v)) ||
+                        return itemIdsBlacklisted.All(v => !_itemHelper.IsOfBaseclass((MongoId) x.Id, v)) ||
                                !itemIdsBlacklisted.Contains(x.Id);
                     }
                 )
@@ -649,7 +650,7 @@ public class RepeatableQuestGenerator(
             var itemUnitPrice = _itemHelper.GetItemPrice(itemSelected.Id).Value;
             var minValue = completionConfig.MinimumRequestedAmount.Value;
             var maxValue = completionConfig.MaximumRequestedAmount.Value;
-            if (_itemHelper.IsOfBaseclass(itemSelected.Id, BaseClasses.AMMO))
+            if (_itemHelper.IsOfBaseclass((MongoId) itemSelected.Id, BaseClasses.AMMO))
             {
                 // Prevent multiple ammo requirements from being picked
                 if (isAmmo > 0 && isAmmo < _maxRandomNumberAttempts)
@@ -740,7 +741,7 @@ public class RepeatableQuestGenerator(
 
         return new QuestCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Index = 0,
             ParentId = "",
             DynamicLocale = true,
@@ -805,23 +806,23 @@ public class RepeatableQuestGenerator(
 
         var exitStatusCondition = new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             DynamicLocale = true,
             Status = ["Survived"],
             ConditionType = "ExitStatus"
         };
         var locationCondition = new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             DynamicLocale = true,
             Target = locationTarget,
             ConditionType = "Location"
         };
 
-        quest.Conditions.AvailableForFinish[0].Counter.Id = _hashUtil.Generate();
+        quest.Conditions.AvailableForFinish[0].Counter.Id = new MongoId();
         quest.Conditions.AvailableForFinish[0].Counter.Conditions = [exitStatusCondition, locationCondition];
         quest.Conditions.AvailableForFinish[0].Value = numExtracts;
-        quest.Conditions.AvailableForFinish[0].Id = _hashUtil.Generate();
+        quest.Conditions.AvailableForFinish[0].Id = new MongoId();
         quest.Location = GetQuestLocationByMapId(locationKey.ToString());
 
         if (requiresSpecificExtract)
@@ -951,7 +952,7 @@ public class RepeatableQuestGenerator(
     {
         return new QuestConditionCounterCondition
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             DynamicLocale = true,
             ExitName = exit.Name,
             ConditionType = "ExitName"
@@ -994,7 +995,7 @@ public class RepeatableQuestGenerator(
         }
 
         var questClone = _cloner.Clone(questData);
-        questClone.Id = _hashUtil.Generate();
+        questClone.Id = new MongoId();
         questClone.TraderId = traderId;
 
         /*  in locale, these id correspond to the text of quests
@@ -1060,7 +1061,7 @@ public class RepeatableQuestGenerator(
             .Replace("{traderId}", desiredTraderId)
             .Replace("{templateId}", questClone.TemplateId);
 
-        questClone.QuestStatus.Id = _hashUtil.Generate();
+        questClone.QuestStatus.Id = new MongoId();
         questClone.QuestStatus.Uid = sessionId; // Needs to match user id
         questClone.QuestStatus.QId = questClone.Id; // Needs to match quest id
 

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -141,7 +142,7 @@ public record SendMessageDetails
 public record ProfileChangeEvent
 {
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

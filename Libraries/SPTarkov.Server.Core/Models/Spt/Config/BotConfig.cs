@@ -616,7 +616,7 @@ public record EquipmentFilters
     ///     Whitelist for weapon sight types allowed per gun
     /// </summary>
     [JsonPropertyName("weaponSightWhitelist")]
-    public Dictionary<string, List<string>> WeaponSightWhitelist
+    public Dictionary<MongoId, List<MongoId>> WeaponSightWhitelist
     {
         get;
         set;
@@ -930,7 +930,7 @@ public record EquipmentFilterDetails
     ///     Key: mod slot name e.g. mod_magazine, value: item tpls
     /// </summary>
     [JsonPropertyName("equipment")]
-    public Dictionary<string, HashSet<string>>? Equipment
+    public Dictionary<string, HashSet<MongoId>>? Equipment
     {
         get;
         set;
@@ -940,7 +940,7 @@ public record EquipmentFilterDetails
     ///     Key: equipment slot name e.g. FirstPrimaryWeapon, value: item tpls
     /// </summary>
     [JsonPropertyName("gear")]
-    public Dictionary<EquipmentSlots, HashSet<string>>? Gear
+    public Dictionary<EquipmentSlots, HashSet<MongoId>>? Gear
     {
         get;
         set;
@@ -950,7 +950,7 @@ public record EquipmentFilterDetails
     ///     Key: cartridge type e.g. Caliber23x75, value: item tpls
     /// </summary>
     [JsonPropertyName("cartridge")]
-    public Dictionary<string, HashSet<string>>? Cartridge
+    public Dictionary<string, HashSet<MongoId>>? Cartridge
     {
         get;
         set;

@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using Path = System.IO.Path;
 
 namespace ItemTplGenerator;
@@ -26,7 +27,7 @@ public class ItemTplGenerator(
     private readonly HashSet<string> collidedEnumKeys = [];
     private string enumDir;
     private IDictionary<string, string> itemOverrides;
-    private Dictionary<string, TemplateItem> items;
+    private Dictionary<MongoId, TemplateItem> items;
 
     public async Task Run()
     {
@@ -246,42 +247,42 @@ public class ItemTplGenerator(
             return "QUEST";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.BARTER_ITEM))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.BARTER_ITEM))
         {
             return "BARTER";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.THROW_WEAPON))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.THROW_WEAPON))
         {
             return "GRENADE";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.STIMULATOR))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.STIMULATOR))
         {
             return "STIM";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.MAGAZINE))
         {
             return "MAGAZINE";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.KEY_MECHANICAL))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.KEY_MECHANICAL))
         {
             return "KEY";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MOB_CONTAINER))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.MOB_CONTAINER))
         {
             return "SECURE";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.SIMPLE_CONTAINER))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.SIMPLE_CONTAINER))
         {
             return "CONTAINER";
         }
 
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.PORTABLE_RANGE_FINDER))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.PORTABLE_RANGE_FINDER))
         {
             return "RANGEFINDER";
         }
@@ -299,7 +300,7 @@ public class ItemTplGenerator(
         }
 
         var parentId = item.Parent;
-        return items[parentId].Name.ToUpper();
+        return items[(MongoId) parentId].Name.ToUpper();
     }
 
     private bool IsValidItem(TemplateItem item)
@@ -329,17 +330,17 @@ public class ItemTplGenerator(
         var prefix = "";
 
         // Prefix ammo with its caliber
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.AMMO))
         {
             prefix = GetAmmoPrefix(item);
         }
         // Prefix ammo boxes with their caliber
-        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO_BOX))
+        else if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.AMMO_BOX))
         {
             prefix = GetAmmoBoxPrefix(item);
         }
         // Prefix magazines with their caliber
-        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
+        else if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.MAGAZINE))
         {
             prefix = GetMagazinePrefix(item);
         }
@@ -358,12 +359,12 @@ public class ItemTplGenerator(
         var suffix = "";
 
         // Add mag size for magazines
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.MAGAZINE))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.MAGAZINE))
         {
             suffix = $"{item.Properties?.Cartridges?[0].MaxCount?.ToString()}RND";
         }
         // Add pack size for ammo boxes
-        else if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO_BOX))
+        else if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.AMMO_BOX))
         {
             suffix = $"{item.Properties.StackSlots[0]?.MaxCount.ToString()}RND";
         }
@@ -408,14 +409,14 @@ public class ItemTplGenerator(
     {
         var ammoItem = item.Properties?.StackSlots?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
-        return GetAmmoPrefix(items[ammoItem]);
+        return GetAmmoPrefix(items[(MongoId) ammoItem]);
     }
 
     private string GetMagazinePrefix(TemplateItem item)
     {
         var ammoItem = item.Properties?.Cartridges?[0]?.Props?.Filters?[0]?.Filter?.FirstOrDefault();
 
-        return GetAmmoPrefix(items[ammoItem]);
+        return GetAmmoPrefix(items[(MongoId) ammoItem]);
     }
 
     /// <summary>
@@ -436,7 +437,7 @@ public class ItemTplGenerator(
         // For the listed types, user the item's _name property
         else if (
             _itemHelper.IsOfBaseclasses(
-                item.Id,
+                (MongoId) item.Id,
                 [
                     BaseClasses.RANDOM_LOOT_CONTAINER,
                     BaseClasses.BUILT_IN_INSERTS,
@@ -448,7 +449,7 @@ public class ItemTplGenerator(
             itemName = item.Name.ToUpper();
         }
         // For the listed types, use the short name
-        else if (_itemHelper.IsOfBaseclasses(item.Id, [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]))
+        else if (_itemHelper.IsOfBaseclasses((MongoId) item.Id, [BaseClasses.AMMO, BaseClasses.AMMO_BOX, BaseClasses.MAGAZINE]))
         {
             if (localeDb.TryGetValue($"{item.Id} ShortName", out itemName))
             {
@@ -496,13 +497,13 @@ public class ItemTplGenerator(
         localeDb.TryGetValue($"{item.Id} Name", out var itemName);
 
         // Add grid size for lootable containers
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.LOOT_CONTAINER))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.LOOT_CONTAINER))
         {
             return $"{item.Properties.Grids[0]?.Props.CellsH}X{item.Properties.Grids[0]?.Props.CellsV}";
         }
 
         // Add ammo caliber to conflicting weapons
-        if (_itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON))
+        if (_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.WEAPON))
         {
             var caliber = CleanCaliber(item.Properties.AmmoCaliber.ToUpper());
 

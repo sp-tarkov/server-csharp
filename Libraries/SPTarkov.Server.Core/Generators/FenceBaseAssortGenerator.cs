@@ -41,13 +41,13 @@ public class FenceBaseAssortGenerator(
         foreach (var rootItemDb in itemHelper.GetItems().Where(IsValidFenceItem))
         {
             // Skip blacklisted items
-            if (itemFilterService.IsItemBlacklisted(rootItemDb.Id))
+            if (itemFilterService.IsItemBlacklisted((MongoId) rootItemDb.Id))
             {
                 continue;
             }
 
             // Skip reward item blacklist
-            if (itemFilterService.IsItemRewardBlacklisted(rootItemDb.Id))
+            if (itemFilterService.IsItemRewardBlacklisted((MongoId) rootItemDb.Id))
             {
                 continue;
             }
@@ -61,8 +61,8 @@ public class FenceBaseAssortGenerator(
             // Item base type blacklisted
             if (traderConfig.Fence.Blacklist.Count > 0)
             {
-                if (traderConfig.Fence.Blacklist.Contains(rootItemDb.Id) ||
-                    itemHelper.IsOfBaseclasses(rootItemDb.Id, traderConfig.Fence.Blacklist)
+                if (traderConfig.Fence.Blacklist.Contains((MongoId) rootItemDb.Id) ||
+                    itemHelper.IsOfBaseclasses((MongoId) rootItemDb.Id, traderConfig.Fence.Blacklist)
                    )
                 {
                     continue;
@@ -70,7 +70,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Only allow rigs with no slots (carrier rigs)
-            if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.VEST) &&
+            if (itemHelper.IsOfBaseclass((MongoId) rootItemDb.Id, BaseClasses.VEST) &&
                 (rootItemDb.Properties?.Slots?.Count ?? 0) > 0
                )
             {
@@ -78,7 +78,7 @@ public class FenceBaseAssortGenerator(
             }
 
             // Skip seasonal event items when not in seasonal event
-            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains(rootItemDb.Id))
+            if (traderConfig.Fence.BlacklistSeasonalItems && blockedSeasonalItems.Contains((MongoId) rootItemDb.Id))
             {
                 continue;
             }
@@ -100,7 +100,7 @@ public class FenceBaseAssortGenerator(
             };
 
             // Ensure ammo is not above penetration limit value
-            if (itemHelper.IsOfBaseclasses(rootItemDb.Id, [BaseClasses.AMMO_BOX, BaseClasses.AMMO]))
+            if (itemHelper.IsOfBaseclasses((MongoId) rootItemDb.Id, [BaseClasses.AMMO_BOX, BaseClasses.AMMO]))
             {
                 if (IsAmmoAbovePenetrationLimit(rootItemDb))
                 {
@@ -108,7 +108,7 @@ public class FenceBaseAssortGenerator(
                 }
             }
 
-            if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
+            if (itemHelper.IsOfBaseclass((MongoId) rootItemDb.Id, BaseClasses.AMMO_BOX))
                 // Only add cartridges to box if box has no children
             {
                 if (itemWithChildrenToAdd.Count == 1)
@@ -225,7 +225,7 @@ public class FenceBaseAssortGenerator(
     /// <returns> Penetration power of passed in item, undefined if it doesnt have a power </returns>
     protected double? GetAmmoPenetrationPower(TemplateItem rootItemDb)
     {
-        if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO_BOX))
+        if (itemHelper.IsOfBaseclass((MongoId) rootItemDb.Id, BaseClasses.AMMO_BOX))
         {
             // Get the cartridge tpl found inside ammo box
             var cartridgeTplInBox = rootItemDb.Properties.StackSlots[0].Props.Filters[0].Filter.FirstOrDefault();
@@ -242,7 +242,7 @@ public class FenceBaseAssortGenerator(
         }
 
         // Plain old ammo, get its pen property
-        if (itemHelper.IsOfBaseclass(rootItemDb.Id, BaseClasses.AMMO))
+        if (itemHelper.IsOfBaseclass((MongoId) rootItemDb.Id, BaseClasses.AMMO))
         {
             return rootItemDb.Properties.PenetrationPower;
         }

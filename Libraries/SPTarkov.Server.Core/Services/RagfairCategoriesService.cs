@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -19,7 +20,7 @@ public class RagfairCategoriesService(
     /// <param name="searchRequestData">Search criteria requested</param>
     /// <param name="fleaUnlocked">Can player see full flea yet (level 15 by default)</param>
     /// <returns>KVP of item tpls + count of offers</returns>
-    public Dictionary<string, int> GetCategoriesFromOffers(
+    public Dictionary<MongoId, int> GetCategoriesFromOffers(
         List<RagfairOffer> offers,
         SearchRequestData searchRequestData,
         bool fleaUnlocked)
@@ -62,7 +63,7 @@ public class RagfairCategoriesService(
                     return true;
                 }
             )
-            .GroupBy(x => x.Items.FirstOrDefault().Template)
+            .GroupBy(x => (MongoId) x.Items.FirstOrDefault().Template)
             .ToDictionary(group => group.Key, group => group.Count());
     }
 }

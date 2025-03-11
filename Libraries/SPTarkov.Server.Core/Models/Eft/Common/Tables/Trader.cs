@@ -267,17 +267,15 @@ public record TraderBase
 
 public record ItemBuyData
 {
-    // MongoId
     [JsonPropertyName("category")]
-    public List<string>? Category
+    public List<MongoId>? Category
     {
         get;
         set;
     }
 
-    // MongoId
     [JsonPropertyName("id_list")]
-    public List<string>? IdList
+    public List<MongoId>? IdList
     {
         get;
         set;

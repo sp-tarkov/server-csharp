@@ -196,7 +196,7 @@ public record FenceConfig
     /// Prevent duplicate offers of items of specific categories by parentId
     /// </summary>
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
-    public List<string> PreventDuplicateOffersOfCategory
+    public List<MongoId> PreventDuplicateOffersOfCategory
     {
         get;
         set;
@@ -213,7 +213,7 @@ public record FenceConfig
     /// Max rouble price before item is not listed on flea
     /// </summary>
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
-    public Dictionary<string, double?> ItemCategoryRoublePriceLimit
+    public Dictionary<MongoId, double?> ItemCategoryRoublePriceLimit
     {
         get;
         set;
@@ -250,7 +250,7 @@ public record FenceConfig
     }
 
     [JsonPropertyName("blacklist")]
-    public HashSet<string> Blacklist
+    public HashSet<MongoId> Blacklist
     {
         get;
         set;

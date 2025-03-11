@@ -90,7 +90,7 @@ public class RepeatableQuestRewardGenerator(
             rewards.Success.Add(
                 new Reward
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(),
                     Unknown = false,
                     GameMode = [],
                     AvailableInGameEditions = [],
@@ -162,7 +162,7 @@ public class RepeatableQuestRewardGenerator(
             // Add item rewards
             foreach (var itemReward in itemsToReward)
             {
-                rewards.Success.Add(GenerateItemReward(itemReward.Key.Id, itemReward.Value, rewardIndex));
+                rewards.Success.Add(GenerateItemReward((MongoId) itemReward.Key.Id, itemReward.Value, rewardIndex));
                 rewardIndex++;
             }
         }
@@ -172,7 +172,7 @@ public class RepeatableQuestRewardGenerator(
         {
             Reward reward = new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Unknown = false,
                 GameMode = [],
                 AvailableInGameEditions = [],
@@ -196,7 +196,7 @@ public class RepeatableQuestRewardGenerator(
             var targetSkill = _randomUtil.GetArrayValue(eliminationConfig.PossibleSkillRewards);
             Reward reward = new()
             {
-                Id = _hashUtil.Generate(),
+                Id = new MongoId(),
                 Unknown = false,
                 GameMode = [],
                 AvailableInGameEditions = [],
@@ -346,7 +346,7 @@ public class RepeatableQuestRewardGenerator(
             }
 
             // Handle edge case - ammo
-            if (_itemHelper.IsOfBaseclass(chosenItemFromPool.Id, BaseClasses.AMMO))
+            if (_itemHelper.IsOfBaseclass((MongoId) chosenItemFromPool.Id, BaseClasses.AMMO))
             {
                 // Don't reward ammo that stacks to less than what's allowed in config
                 if (chosenItemFromPool.Properties.StackMaxSize < repeatableConfig.RewardAmmoStackMinSize)
@@ -437,7 +437,7 @@ public class RepeatableQuestRewardGenerator(
         var isEligibleForStackSizeIncrease =
             _presetHelper.GetDefaultPresetOrItemPrice(item.Id) < maxRoublePriceToStack &&
             !_itemHelper.IsOfBaseclasses(
-                item.Id,
+                (MongoId) item.Id,
                 [
                     BaseClasses.WEAPON,
                     BaseClasses.ARMORED_EQUIPMENT,
@@ -572,7 +572,7 @@ public class RepeatableQuestRewardGenerator(
                 var chosenPreset = _cloner.Clone(randomPreset);
 
                 return new KeyValuePair<Reward, double>(
-                    GeneratePresetReward(chosenPreset.Encyclopedia, 1, rewardIndex, chosenPreset.Items),
+                    GeneratePresetReward((MongoId) chosenPreset.Encyclopedia, 1, rewardIndex, chosenPreset.Items),
                     presetPrice
                 );
             }
@@ -590,12 +590,12 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="preset"> Optional list of preset items </param>
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
-    protected Reward GeneratePresetReward(string tpl, int count, int index, List<Item>? preset, bool foundInRaid = true)
+    protected Reward GeneratePresetReward(MongoId tpl, int count, int index, List<Item>? preset, bool foundInRaid = true)
     {
-        var id = _hashUtil.Generate();
+        var id = new MongoId();
         var questRewardItem = new Reward
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Unknown = false,
             GameMode = [],
             AvailableInGameEditions = [],
@@ -634,12 +634,12 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="index"> All rewards will be appended to a list, for unknown reasons the client wants the index</param>
     /// <param name="foundInRaid"> If generated Item is found in raid, default True </param>
     /// <returns> Object of "Reward"-item-type </returns>
-    protected Reward GenerateItemReward(string tpl, double count, int index, bool foundInRaid = true)
+    protected Reward GenerateItemReward(MongoId tpl, double count, int index, bool foundInRaid = true)
     {
         var id = new MongoId();
         var questRewardItem = new Reward
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Unknown = false,
             GameMode = [],
             AvailableInGameEditions = [],
@@ -710,7 +710,7 @@ public class RepeatableQuestRewardGenerator(
                         return false;
                     }
 
-                    if (seasonalItems.Contains(itemTemplate.Id))
+                    if (seasonalItems.Contains((MongoId) itemTemplate.Id))
                     {
                         return false;
                     }
@@ -720,7 +720,7 @@ public class RepeatableQuestRewardGenerator(
                     );
 
                     return IsValidRewardItem(
-                        itemTemplate.Id,
+                        (MongoId) itemTemplate.Id,
                         repeatableQuestConfig,
                         traderWhitelist?.RewardBaseWhitelist
                     );
@@ -737,8 +737,8 @@ public class RepeatableQuestRewardGenerator(
     /// <param name="repeatableQuestConfig"> Config </param>
     /// <param name="itemBaseWhitelist"> Default null, specific trader item base classes</param>
     /// <returns> True if item is valid reward </returns>
-    protected bool IsValidRewardItem(string tpl, RepeatableQuestConfig repeatableQuestConfig,
-        List<string>? itemBaseWhitelist = null)
+    protected bool IsValidRewardItem(MongoId tpl, RepeatableQuestConfig repeatableQuestConfig,
+        List<MongoId>? itemBaseWhitelist = null)
     {
         // Return early if not valid item to give as reward
         if (!_itemHelper.IsValidItem(tpl))

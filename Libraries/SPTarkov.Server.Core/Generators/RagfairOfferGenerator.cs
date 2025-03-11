@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -122,7 +123,7 @@ public class RagfairOfferGenerator(
 
         // Hydrate ammo boxes with cartridges + ensure only 1 item is present (ammo box)
         // On offer refresh don't re-add cartridges to ammo box that already has cartridges
-        if (itemHelper.IsOfBaseclass(itemsClone[0].Template, BaseClasses.AMMO_BOX) && itemsClone.Count == 1)
+        if (itemHelper.IsOfBaseclass((MongoId) itemsClone[0].Template, BaseClasses.AMMO_BOX) && itemsClone.Count == 1)
         {
             itemHelper.AddCartridgesToAmmoBox(itemsClone, itemHelper.GetItem(rootItem.Template).Value);
         }
@@ -132,7 +133,7 @@ public class RagfairOfferGenerator(
 
         var offer = new RagfairOffer
         {
-            Id = hashUtil.Generate(),
+            Id = new MongoId(),
             InternalId = offerCounter,
             User = CreateUserDataForFleaOffer(userId, ragfairServerHelper.IsTrader(userId)),
             Root = rootItem.Id,
@@ -434,7 +435,7 @@ public class RagfairOfferGenerator(
             clonedAssort[0].ParentId = null;
             clonedAssort[0].SlotId = null;
 
-            CreateSingleOfferForItem(hashUtil.Generate(), clonedAssort, isPreset, itemToSellDetails.Value);
+            CreateSingleOfferForItem(new MongoId(), clonedAssort, isPreset, itemToSellDetails.Value);
         }
     }
 
@@ -490,7 +491,7 @@ public class RagfairOfferGenerator(
     /// <param name="isPreset"> Is item a weapon preset</param>
     /// <param name="itemToSellDetails"> Raw DB item details </param>
     protected void CreateSingleOfferForItem(
-        string sellerId,
+        MongoId sellerId,
         List<Item> itemWithChildren,
         bool isPreset,
         TemplateItem itemToSellDetails
@@ -511,7 +512,7 @@ public class RagfairOfferGenerator(
             !isBarterOffer &&
             itemWithChildren.Count == 1 &&
             itemHelper.IsOfBaseclasses(
-                itemWithChildren[0].Template,
+                (MongoId) itemWithChildren[0].Template,
                 ragfairConfig.Dynamic.Pack.ItemTypeWhitelist
             );
 
@@ -735,7 +736,7 @@ public class RagfairOfferGenerator(
 
         // Randomise armor + plates + armor related things
         if (itemHelper.ArmorItemCanHoldMods(rootItem.Template) ||
-            itemHelper.IsOfBaseclasses(rootItem.Template, [BaseClasses.ARMOR_PLATE, BaseClasses.ARMORED_EQUIPMENT])
+            itemHelper.IsOfBaseclasses((MongoId) rootItem.Template, [BaseClasses.ARMOR_PLATE, BaseClasses.ARMORED_EQUIPMENT])
            )
         {
             RandomiseArmorDurabilityValues(itemWithMods, currentMultiplier, maxMultiplier);
@@ -756,7 +757,7 @@ public class RagfairOfferGenerator(
         }
 
         // Randomise Weapons
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.WEAPON))
+        if (itemHelper.IsOfBaseclass((MongoId) itemDetails.Id, BaseClasses.WEAPON))
         {
             RandomiseWeaponDurability(itemWithMods[0], itemDetails, maxMultiplier, currentMultiplier);
 
@@ -796,7 +797,7 @@ public class RagfairOfferGenerator(
             return;
         }
 
-        if (itemHelper.IsOfBaseclass(itemDetails.Id, BaseClasses.FUEL))
+        if (itemHelper.IsOfBaseclass((MongoId) itemDetails.Id, BaseClasses.FUEL))
         {
             var totalCapacity = itemDetails.Properties.MaxResource;
             var remainingFuel = Math.Round((double) totalCapacity * maxMultiplier);

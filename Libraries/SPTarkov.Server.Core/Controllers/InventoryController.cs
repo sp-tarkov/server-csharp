@@ -13,6 +13,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -211,7 +212,7 @@ public class InventoryController(
                 case ProfileChangeEventType.ExamineAllItems:
                     {
                         var itemsToInspect = _itemHelper.GetItems().Where(x => x.Type != "Node");
-                        FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x => x.Id), fullProfile);
+                        FlagItemsAsInspectedAndRewardXp(itemsToInspect.Select(x => (MongoId) x.Id), fullProfile);
                         _logger.Success($"Flagged {itemsToInspect.Count()} items as examined");
 
                         break;
@@ -254,7 +255,7 @@ public class InventoryController(
     /// </summary>
     /// <param name="itemTpls">Inspected item tpls</param>
     /// <param name="fullProfile">Profile to add xp to</param>
-    protected void FlagItemsAsInspectedAndRewardXp(IEnumerable<string> itemTpls, SptProfile fullProfile)
+    protected void FlagItemsAsInspectedAndRewardXp(IEnumerable<MongoId> itemTpls, SptProfile fullProfile)
     {
         foreach (var itemTpl in itemTpls)
         {

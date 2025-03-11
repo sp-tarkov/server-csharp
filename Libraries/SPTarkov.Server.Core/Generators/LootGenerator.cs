@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -108,7 +109,7 @@ public class LootGenerator(
         {
             var weaponDefaultPresets = globalDefaultPresets.Where(
                     preset =>
-                        _itemHelper.IsOfBaseclass(preset.Encyclopedia, BaseClasses.WEAPON)
+                        _itemHelper.IsOfBaseclass((MongoId) preset.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToList();
 
@@ -179,7 +180,7 @@ public class LootGenerator(
     /// </summary>
     /// <param name="forcedLootDict">Dictionary of item tpls with minmax values</param>
     /// <returns>Array of Item</returns>
-    public List<Item> CreateForcedLoot(Dictionary<string, MinMax<int>> forcedLootDict)
+    public List<Item> CreateForcedLoot(Dictionary<MongoId, MinMax<int>> forcedLootDict)
     {
         var result = new List<Item>();
 
@@ -219,14 +220,14 @@ public class LootGenerator(
     /// <param name="blockSeasonalItemsOutOfSeason">Prevent seasonal items appearing outside their defined season</param>
     /// <returns>results of filtering + blacklist used</returns>
     protected ItemRewardPoolResults GetItemRewardPool(
-        HashSet<string> itemTplBlacklist,
-        List<string> itemTypeWhitelist,
+        HashSet<MongoId> itemTplBlacklist,
+        List<MongoId> itemTypeWhitelist,
         bool useRewardItemBlacklist,
         bool allowBossItems,
         bool blockSeasonalItemsOutOfSeason)
     {
         var itemsDb = _databaseService.GetItems().Values;
-        var itemBlacklist = new HashSet<string>();
+        var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith([.._itemFilterService.GetBlacklistedItems(), ..itemTplBlacklist]);
 
         if (useRewardItemBlacklist)
@@ -235,11 +236,13 @@ public class LootGenerator(
 
             // Get all items that match the blacklisted types and fold into item blacklist
             var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
-            var itemsMatchingTypeBlacklist = itemsDb
-                .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-                .Select(templateItem => templateItem.Id);
 
-            itemBlacklist.UnionWith([..rewardItemBlacklist, ..itemsMatchingTypeBlacklist]);
+            var itemsMatchingTypeBlacklist = itemsDb
+                .Where(templateItem => _itemHelper.IsOfBaseclasses((MongoId) templateItem.Parent, itemTypeBlacklist))
+                .Select(templateItem => templateItem.Id)
+                .ToHashSet();
+
+            itemBlacklist.UnionWith([..rewardItemBlacklist, ..(itemsMatchingTypeBlacklist as IEnumerable<MongoId>)!]);
         }
 
         if (!allowBossItems)
@@ -254,10 +257,10 @@ public class LootGenerator(
 
         var items = itemsDb.Where(
                 item =>
-                    !itemBlacklist.Contains(item.Id) &&
+                    !itemBlacklist.Contains((MongoId) item.Id) &&
                     string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
                     !item.Properties.QuestItem.GetValueOrDefault(false) &&
-                    itemTypeWhitelist.Contains(item.Parent)
+                    itemTypeWhitelist.Contains((MongoId) item.Parent)
             )
             .ToList();
 
@@ -299,9 +302,9 @@ public class LootGenerator(
     /// </summary>
     /// <param name="limits">limits as defined in config</param>
     /// <returns>record, key: item tplId, value: current/max item count allowed</returns>
-    protected Dictionary<string, ItemLimit> InitItemLimitCounter(Dictionary<string, int> limits)
+    protected Dictionary<MongoId, ItemLimit> InitItemLimitCounter(Dictionary<MongoId, int> limits)
     {
-        var itemTypeCounts = new Dictionary<string, ItemLimit>();
+        var itemTypeCounts = new Dictionary<MongoId, ItemLimit>();
         foreach (var itemTypeId in limits)
         {
             itemTypeCounts[itemTypeId.Key] = new ItemLimit
@@ -322,13 +325,13 @@ public class LootGenerator(
     /// <param name="options">item filters</param>
     /// <param name="result">array to add found item to</param>
     /// <returns>true if item was valid and added to pool</returns>
-    protected bool FindAndAddRandomItemToLoot(List<TemplateItem> items, Dictionary<string, ItemLimit> itemTypeCounts,
+    protected bool FindAndAddRandomItemToLoot(List<TemplateItem> items, Dictionary<MongoId, ItemLimit> itemTypeCounts,
         LootRequest options,
         List<Item> result)
     {
         var randomItem = _randomUtil.GetArrayValue(items);
 
-        var itemLimitCount = itemTypeCounts.TryGetValue(randomItem.Parent, out var randomItemLimitCount);
+        var itemLimitCount = itemTypeCounts.TryGetValue((MongoId) randomItem.Parent, out var randomItemLimitCount);
         if (!itemLimitCount && randomItemLimitCount?.Current > randomItemLimitCount?.Max)
         {
             return false;
@@ -381,7 +384,7 @@ public class LootGenerator(
         var min = item.Properties.StackMinRandom;
         var max = item.Properties.StackMaxSize;
 
-        if (options.ItemStackLimits.TryGetValue(item.Id, out var itemLimits))
+        if (options.ItemStackLimits.TryGetValue((MongoId) item.Id, out var itemLimits))
         {
             min = itemLimits.Min;
             max = itemLimits.Max;
@@ -399,8 +402,8 @@ public class LootGenerator(
     /// <param name="result">List to add chosen preset to</param>
     /// <returns>true if preset was valid and added to pool</returns>
     protected bool FindAndAddRandomPresetToLoot(List<Preset> presetPool,
-        Dictionary<string, ItemLimit> itemTypeCounts,
-        HashSet<string> itemBlacklist,
+        Dictionary<MongoId, ItemLimit> itemTypeCounts,
+        HashSet<MongoId> itemBlacklist,
         List<Item> result)
     {
         // Choose random preset and get details from item db using encyclopedia value (encyclopedia === tplId)
@@ -436,7 +439,7 @@ public class LootGenerator(
         }
 
         // Skip preset if root item is blacklisted
-        if (itemBlacklist.Contains(chosenPreset.Items[0].Template))
+        if (itemBlacklist.Contains((MongoId) chosenPreset.Items[0].Template))
         {
             return false;
         }
@@ -450,7 +453,7 @@ public class LootGenerator(
         }
 
         // Check chosen preset hasn't exceeded spawn limit
-        var hasItemLimitCount = itemTypeCounts.TryGetValue(itemDbDetails.Value.Parent, out var itemLimitCount);
+        var hasItemLimitCount = itemTypeCounts.TryGetValue((MongoId) itemDbDetails.Value.Parent, out var itemLimitCount);
         if (!hasItemLimitCount && itemLimitCount?.Current > itemLimitCount?.Max)
         {
             return false;
@@ -484,7 +487,7 @@ public class LootGenerator(
         List<List<Item>> itemsToReturn = [];
 
         // Choose a weapon to give to the player (weighted)
-        var chosenWeaponTpl = _weightedRandomHelper.GetWeightedValue<string>(
+        var chosenWeaponTpl = _weightedRandomHelper.GetWeightedValue(
             containerSettings.WeaponRewardWeight
         );
 
@@ -603,8 +606,8 @@ public class LootGenerator(
                     item =>
                         item.Parent == rewardKey &&
                         string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
-                        _itemFilterService.IsItemBlacklisted(item.Id) &&
-                        !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem(item.Id)) &&
+                        _itemFilterService.IsItemBlacklisted((MongoId) item.Id) &&
+                        !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem((MongoId) item.Id)) &&
                         item.Properties.QuestItem is null
                 );
 
@@ -662,7 +665,7 @@ public class LootGenerator(
 
             // Get items that fulfil reward type criteria from items that fit on gun
             var relatedItems = linkedItemsToWeapon?.Where(
-                item => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
+                item => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted((MongoId) item.Id)
             );
             if (relatedItems is null || !relatedItems.Any())
             {
@@ -766,7 +769,7 @@ public class LootGenerator(
             set;
         }
 
-        public HashSet<string> Blacklist
+        public HashSet<MongoId> Blacklist
         {
             get;
             set;

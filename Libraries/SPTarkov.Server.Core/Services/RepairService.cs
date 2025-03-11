@@ -72,7 +72,7 @@ public class RepairService(
         var repairRate = priceCoef <= 0 ? 1 : priceCoef / 100 + 1;
 
         var items = _databaseService.GetItems();
-        var itemToRepairDetails = items[itemToRepair.Template];
+        var itemToRepairDetails = items[(MongoId) itemToRepair.Template];
         var repairItemIsArmor = itemToRepairDetails.Properties.ArmorMaterial is not null;
 
         _repairHelper.UpdateItemDurability(
@@ -86,7 +86,7 @@ public class RepairService(
         );
 
         // get repair price
-        var itemRepairCost = items[itemToRepair.Template].Properties.RepairCost;
+        var itemRepairCost = items[(MongoId) itemToRepair.Template].Properties.RepairCost;
         if (itemRepairCost is null)
         {
             _logger.Error(
@@ -164,7 +164,7 @@ public class RepairService(
         // Handle kit repair of weapon
         if (
             repairDetails.RepairedByKit.GetValueOrDefault(false) &&
-            _itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
+            _itemHelper.IsOfBaseclass((MongoId) repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
         )
         {
             var skillPoints = GetWeaponRepairSkillPoints(repairDetails);
@@ -180,7 +180,7 @@ public class RepairService(
         if (
             repairDetails.RepairedByKit.GetValueOrDefault(false) &&
             _itemHelper.IsOfBaseclasses(
-                repairDetails.RepairedItem.Template,
+                (MongoId) repairDetails.RepairedItem.Template,
                 [
                     BaseClasses.ARMOR_PLATE,
                     BaseClasses.BUILT_IN_INSERTS
@@ -235,7 +235,7 @@ public class RepairService(
         if (repairDetails.RepairedByKit.GetValueOrDefault(false))
         {
             // Weapons/armor have different multipliers
-            var intRepairMultiplier = _itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
+            var intRepairMultiplier = _itemHelper.IsOfBaseclass((MongoId) repairDetails.RepairedItem.Template, BaseClasses.WEAPON)
                 ? _repairConfig.RepairKitIntellectGainMultiplier.Weapon
                 : _repairConfig.RepairKitIntellectGainMultiplier.Armor;
 
@@ -321,7 +321,7 @@ public class RepairService(
         }
 
         var itemsDb = _databaseService.GetItems();
-        var itemToRepairDetails = itemsDb[itemToRepair.Template];
+        var itemToRepairDetails = itemsDb[(MongoId) itemToRepair.Template];
         var repairItemIsArmor = itemToRepairDetails.Properties.ArmorMaterial is not null;
         var repairAmount = repairKits[0].Count / GetKitDivisor(itemToRepairDetails, repairItemIsArmor, pmcData);
         var shouldApplyDurabilityLoss = ShouldRepairKitApplyDurabilityLoss(
@@ -350,7 +350,7 @@ public class RepairService(
                 );
             }
 
-            var repairKitDetails = itemsDb[repairKitInInventory.Template];
+            var repairKitDetails = itemsDb[(MongoId) repairKitInInventory.Template];
             var repairKitReductionAmount = repairKit.Count;
 
             AddMaxResourceToKitIfMissing(repairKitDetails, repairKitInInventory);
@@ -506,7 +506,7 @@ public class RepairService(
         {
             if (
                 _itemHelper.IsOfBaseclasses(
-                    repairDetails.RepairedItem.Template,
+                    (MongoId) repairDetails.RepairedItem.Template,
                     [
                         BaseClasses.ARMOR,
                         BaseClasses.VEST,
@@ -519,7 +519,7 @@ public class RepairService(
                 var armorConfig = _repairConfig.RepairKit.Armor;
                 AddBuff(armorConfig, repairDetails.RepairedItem);
             }
-            else if (_itemHelper.IsOfBaseclass(repairDetails.RepairedItem.Template, BaseClasses.WEAPON))
+            else if (_itemHelper.IsOfBaseclass((MongoId) repairDetails.RepairedItem.Template, BaseClasses.WEAPON))
             {
                 var weaponConfig = _repairConfig.RepairKit.Weapon;
                 AddBuff(weaponConfig, repairDetails.RepairedItem);
@@ -654,7 +654,7 @@ public class RepairService(
     protected SkillTypes? GetItemSkillType(TemplateItem itemTemplate)
     {
         var isArmorRelated = _itemHelper.IsOfBaseclasses(
-            itemTemplate.Id,
+            (MongoId) itemTemplate.Id,
             [
                 BaseClasses.ARMOR,
                 BaseClasses.VEST,
@@ -677,12 +677,12 @@ public class RepairService(
             }
         }
 
-        if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.WEAPON))
+        if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.WEAPON))
         {
             return SkillTypes.WeaponTreatment;
         }
 
-        if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.KNIFE))
+        if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.KNIFE))
         {
             return SkillTypes.Melee;
         }

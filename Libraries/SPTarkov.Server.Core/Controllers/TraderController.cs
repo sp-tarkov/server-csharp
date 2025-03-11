@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -46,7 +47,8 @@ public class TraderController(
         var traders = _databaseService.GetTraders();
         foreach (var (traderId, trader) in traders)
         {
-            if (traderId is "ragfair" or Traders.LIGHTHOUSEKEEPER)
+            // TODO FIXME: This isn't going to work, shuts the compiler up for now
+            if (traderId == "ragfair" || traderId == new MongoId(Traders.LIGHTHOUSEKEEPER))
             {
                 continue;
             }

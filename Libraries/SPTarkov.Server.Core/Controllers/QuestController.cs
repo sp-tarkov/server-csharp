@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 
@@ -140,7 +141,7 @@ public class QuestController(
     {
         foreach (var condition in questConditions)
         {
-            if (pmcData.TaskConditionCounters.TryGetValue(condition.Id, out var counter))
+            if (pmcData.TaskConditionCounters.TryGetValue((MongoId) condition.Id, out var counter))
             {
                 _logger.Error(
                     $"Unable to add new task condition counter: {condition.ConditionType} for quest: {questId} to profile: {pmcData.SessionId} as it already exists:"
@@ -150,7 +151,7 @@ public class QuestController(
             switch (condition.ConditionType)
             {
                 case "SellItemToTrader":
-                    pmcData.TaskConditionCounters[condition.Id] = new TaskConditionCounter
+                    pmcData.TaskConditionCounters[(MongoId) condition.Id] = new TaskConditionCounter
                     {
                         Id = condition.Id,
                         SourceId = questId,

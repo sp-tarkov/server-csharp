@@ -171,9 +171,9 @@ public class AirdropService(
         var itemTypeBlacklist = _itemFilterService.GetItemRewardBaseTypeBlacklist();
         var itemsMatchingTypeBlacklist = _itemHelper.GetItems()
             .Where(templateItem => !string.IsNullOrEmpty(templateItem.Parent))
-            .Where(templateItem => _itemHelper.IsOfBaseclasses(templateItem.Parent, itemTypeBlacklist))
-            .Select(templateItem => templateItem.Id).ToHashSet();
-        var itemBlacklist = new HashSet<string>();
+            .Where(templateItem => _itemHelper.IsOfBaseclasses((MongoId) templateItem.Parent, itemTypeBlacklist))
+            .Select(templateItem => (MongoId) templateItem.Id).ToHashSet();
+        var itemBlacklist = new HashSet<MongoId>();
         itemBlacklist.UnionWith(lootSettingsByType.ItemBlacklist);
         itemBlacklist.UnionWith(_itemFilterService.GetItemRewardBlacklist());
         itemBlacklist.UnionWith(_itemFilterService.GetBossItems());

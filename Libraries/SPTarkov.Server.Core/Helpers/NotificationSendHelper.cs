@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Servers.Ws;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -57,7 +58,7 @@ public class NotificationSendHelper(
         dialog.New += 1;
         var message = new Message
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             UserId = dialog.Id,
             MessageType = messageType,
             DateTime = _timeUtil.GetTimeStamp(),

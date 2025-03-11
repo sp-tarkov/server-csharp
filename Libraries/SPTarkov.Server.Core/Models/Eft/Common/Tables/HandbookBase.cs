@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
@@ -22,7 +23,7 @@ public record HandbookBase
 public record HandbookCategory
 {
     [JsonPropertyName("Id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -30,7 +31,7 @@ public record HandbookCategory
 
     [JsonPropertyName("ParentId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public string? ParentId
+    public MongoId? ParentId
     {
         get;
         set;
@@ -62,7 +63,7 @@ public record HandbookCategory
 public record HandbookItem
 {
     [JsonPropertyName("Id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -70,7 +71,7 @@ public record HandbookItem
 
     [JsonPropertyName("ParentId")]
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public string? ParentId
+    public MongoId? ParentId
     {
         get;
         set;

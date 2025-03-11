@@ -104,13 +104,13 @@ public class ItemHelper(
      * @param slotId OPTIONAL - slotid of desired item
      * @returns True if pool contains item
      */
-    public bool HasItemWithTpl(List<Item> itemPool, string item, string slotId = null)
+    public bool HasItemWithTpl(List<Item> itemPool, MongoId item, string slotId = null)
     {
         // Filter the pool by slotId if provided
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.Any(poolItem => string.Equals(poolItem.Template, item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.Any(poolItem => poolItem.Template == item);
     }
 
     /**
@@ -120,13 +120,13 @@ public class ItemHelper(
      * @param slotId OPTIONAL - slotid of desired item
      * @returns Item or null
      */
-    public Item GetItemFromPoolByTpl(List<Item> itemPool, string item, string slotId = null)
+    public Item GetItemFromPoolByTpl(List<Item> itemPool, MongoId item, string slotId = null)
     {
         // Filter the pool by slotId if provided
         var filteredPool = slotId is not null ? itemPool.Where(item => item.SlotId?.StartsWith(slotId) ?? false) : itemPool;
 
         // Check if any item in the filtered pool matches the provided item
-        return filteredPool.FirstOrDefault(poolItem => poolItem.Template.Equals(item, StringComparison.OrdinalIgnoreCase));
+        return filteredPool.FirstOrDefault(poolItem => poolItem.Template == item);
     }
 
     /**
@@ -147,7 +147,7 @@ public class ItemHelper(
 
         foreach (var itemOf1 in item1)
         {
-            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template.Equals(itemOf1.Template, StringComparison.OrdinalIgnoreCase));
+            var itemOf2 = item2.FirstOrDefault(i2 => i2.Template == itemOf1.Template);
             if (itemOf2 is null)
             {
                 return false;
@@ -370,7 +370,7 @@ public class ItemHelper(
     // @param   string    tpl             the item template id to check
     // @param   string    baseClassTpl    the baseclass to check for
     // @return  bool                    is the tpl a descendent?
-    public bool IsOfBaseclass(string tpl, string baseClassTpl)
+    public bool IsOfBaseclass(MongoId tpl, MongoId baseClassTpl)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, [baseClassTpl]);
     }
@@ -379,7 +379,7 @@ public class ItemHelper(
     // @param string tpl Item to check base classes of
     // @param string[] baseClassTpls base classes to check for
     // @returns true if any supplied base classes match
-    public bool IsOfBaseclasses(string tpl, ICollection<string> baseClassTpls)
+    public bool IsOfBaseclasses(MongoId tpl, ICollection<MongoId> baseClassTpls)
     {
         return _itemBaseClassService.ItemHasBaseClass(tpl, baseClassTpls);
     }
@@ -472,7 +472,7 @@ public class ItemHelper(
     // found in the handbook. If the price can't be found at all return 0
     // @param List<string> tpls item tpls to look up the price of
     // @returns Total price in roubles
-    public double GetItemAndChildrenPrice(IEnumerable<string> tpls)
+    public double GetItemAndChildrenPrice(IEnumerable<MongoId?> tpls)
     {
         // Run getItemPrice for each tpl in tpls array, return sum
         return tpls.Aggregate(0, (total, tpl) => total + (int) GetItemPrice(tpl).GetValueOrDefault(0));
@@ -617,7 +617,7 @@ public class ItemHelper(
      */
     public double GetItemQualityModifierForItems(List<Item> itemWithChildren, bool skipArmorItemsWithoutDurability = false)
     {
-        if (IsOfBaseclass(itemWithChildren[0].Template, BaseClasses.WEAPON))
+        if (IsOfBaseclass((MongoId) itemWithChildren[0].Template, BaseClasses.WEAPON))
         {
             return Math.Round(GetItemQualityModifier(itemWithChildren[0]), 5);
         }
@@ -666,7 +666,7 @@ public class ItemHelper(
             return 1;
         }
 
-        if (skipArmorItemsWithoutDurability && IsOfBaseclass(item.Template, BaseClasses.ARMOR) && itemDetails?.Properties?.MaxDurability == 0
+        if (skipArmorItemsWithoutDurability && IsOfBaseclass((MongoId) item.Template, BaseClasses.ARMOR) && itemDetails?.Properties?.MaxDurability == 0
            )
         {
             return -1;
@@ -979,8 +979,8 @@ public class ItemHelper(
         {
             var filterResult = itemsToSearch.Where(
                 item => by == "tpl"
-                    ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
-                    : item.Id.Equals(barterId));
+                    ? item.Template == barterId
+                    : item.Id == barterId);
 
             matchingItems.AddRange(filterResult);
         }
@@ -1020,9 +1020,9 @@ public class ItemHelper(
     public void ReplaceProfileInventoryIds(BotBaseInventory inventory, List<InsuredItem>? insuredItems = null)
     {
         // Blacklist
-        var itemIdBlacklist = new HashSet<string>();
+        var itemIdBlacklist = new HashSet<MongoId?>();
         itemIdBlacklist.UnionWith(
-            new List<string>
+            new List<MongoId?>
             {
                 inventory.Equipment,
                 inventory.QuestRaidItems,
@@ -1037,7 +1037,7 @@ public class ItemHelper(
         // Add insured items ids to blacklist
         if (insuredItems is not null)
         {
-            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId.ToString()));
+            itemIdBlacklist.UnionWith(insuredItems.Select(x => x.ItemId));
         }
 
 
@@ -1071,9 +1071,9 @@ public class ItemHelper(
             }
 
             // Update quickslot id
-            if (inventory.FastPanel.ContainsKey(originalId))
+            if (inventory.FastPanel.ContainsKey((MongoId) originalId))
             {
-                inventory.FastPanel[originalId] = newId;
+                inventory.FastPanel[(MongoId) originalId] = newId;
             }
         }
     }
@@ -1179,9 +1179,9 @@ public class ItemHelper(
             }
 
             // Update quickslot id
-            if (pmcData.Inventory.FastPanel.ContainsKey(originalId))
+            if (pmcData.Inventory.FastPanel.ContainsKey((MongoId) originalId))
             {
-                pmcData.Inventory.FastPanel[originalId] = newId;
+                pmcData.Inventory.FastPanel[(MongoId) originalId] = newId;
             }
         }
 
@@ -1198,7 +1198,7 @@ public class ItemHelper(
     {
         foreach (var item in items)
         {
-            if (excludeCurrency && IsOfBaseclass(item.Template, BaseClasses.MONEY))
+            if (excludeCurrency && IsOfBaseclass((MongoId) item.Template, BaseClasses.MONEY))
             {
                 continue;
             }
@@ -1216,7 +1216,7 @@ public class ItemHelper(
     /// <param name="excludeCurrency">Skip adding FiR status to currency items</param>
     public void SetFoundInRaid(Item item, bool excludeCurrency = true)
     {
-        if (excludeCurrency && IsOfBaseclass(item.Template, BaseClasses.MONEY))
+        if (excludeCurrency && IsOfBaseclass((MongoId) item.Template, BaseClasses.MONEY))
         {
             return;
         }
@@ -1476,7 +1476,7 @@ public class ItemHelper(
         var cartridgeMaxStackSize = cartridgeDetails.Value.Properties.StackMaxSize;
 
         // Exit if ammo already exists in box
-        if (ammoBox.Any(item => item.Template.Equals(cartridgeTpl, StringComparison.OrdinalIgnoreCase)))
+        if (ammoBox.Any(item => item.Template == cartridgeTpl))
         {
             return;
         }
@@ -1620,7 +1620,7 @@ public class ItemHelper(
         double minSizeMultiplier = 0.25
     )
     {
-        var isUBGL = IsOfBaseclass(magTemplate.Id, BaseClasses.UBGL);
+        var isUBGL = IsOfBaseclass((MongoId) magTemplate.Id, BaseClasses.UBGL);
         if (isUBGL)
             // UBGL don't have mags
         {
@@ -1642,7 +1642,7 @@ public class ItemHelper(
 
         // Get max number of cartridges in magazine, choose random value between min/max
         var magProps = magTemplate.Properties;
-        var magazineCartridgeMaxCount = IsOfBaseclass(magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
+        var magazineCartridgeMaxCount = IsOfBaseclass((MongoId) magTemplate.Id, BaseClasses.SPRING_DRIVEN_CYLINDER)
             ? magProps?.Slots?.Count // Edge case for rotating grenade launcher magazine
             : magProps?.Cartridges?.FirstOrDefault()?.MaxCount;
 
@@ -1729,8 +1729,8 @@ public class ItemHelper(
     protected string? DrawAmmoTpl(
         string caliber,
         Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
-        string? fallbackCartridgeTpl = null,
-        ICollection<string>? cartridgeWhitelist = null
+        MongoId? fallbackCartridgeTpl = null,
+        ICollection<MongoId>? cartridgeWhitelist = null
     )
     {
         var ammos = staticAmmoDist.GetValueOrDefault(caliber, []);
@@ -1753,7 +1753,7 @@ public class ItemHelper(
         {
             // Whitelist exists and tpl not inside it, skip
             // Fixes 9x18mm kedr issues
-            if (cartridgeWhitelist is not null && !cartridgeWhitelist.Contains(icd.Tpl))
+            if (cartridgeWhitelist is not null && !cartridgeWhitelist.Contains((MongoId) icd.Tpl))
             {
                 continue;
             }
@@ -1833,7 +1833,7 @@ public class ItemHelper(
     /// </summary>
     /// <param name="desiredBaseType">Item base type wanted</param>
     /// <returns>Array of tpls</returns>
-    public List<string> GetItemTplsOfBaseType(string desiredBaseType)
+    public List<MongoId?> GetItemTplsOfBaseType(MongoId desiredBaseType)
     {
         return _databaseService.GetItems()
             .Values
@@ -1858,7 +1858,7 @@ public class ItemHelper(
     )
     {
         var result = itemToAdd;
-        HashSet<string> incompatibleModTpls = [];
+        HashSet<MongoId> incompatibleModTpls = [];
         foreach (var slot in itemToAddTemplate.Properties.Slots)
         {
             // If only required mods is requested, skip non-essential
@@ -1935,7 +1935,7 @@ public class ItemHelper(
     /// <param name="possibleTpls">Tpls to randomly choose from</param>
     /// <param name="incompatibleModTpls">Incompatible tpls to not allow</param>
     /// <returns>Chosen tpl or undefined</returns>
-    public string? GetCompatibleTplFromArray(HashSet<string> possibleTpls, HashSet<string> incompatibleModTpls)
+    public string? GetCompatibleTplFromArray(HashSet<MongoId> possibleTpls, HashSet<MongoId> incompatibleModTpls)
     {
         if (!possibleTpls.Any())
         {
@@ -2122,7 +2122,7 @@ public class ItemHelper(
 
     // Return all tpls from Money enum
     // Returns string tpls
-    public List<string> GetMoneyTpls()
+    public List<MongoId> GetMoneyTpls()
     {
         return [Money.ROUBLES, Money.DOLLARS, Money.EUROS, Money.GP];
     }

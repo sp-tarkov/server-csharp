@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 using System.Collections.Frozen;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -315,7 +316,7 @@ public class ProfileHelper(
         {
             Eft = new EftStats
             {
-                CarriedQuestItems = new List<string>(),
+                CarriedQuestItems = [],
                 DamageHistory = new DamageHistory
                 {
                     LethalDamagePart = "Head",
@@ -568,7 +569,7 @@ public class ProfileHelper(
             profile?.Bonuses?.Add(
                 new Bonus
                 {
-                    Id = _hashUtil.Generate(),
+                    Id = new MongoId(),
                     Value = rowsToAdd,
                     Type = BonusType.StashRows,
                     IsPassive = true,
@@ -653,7 +654,7 @@ public class ProfileHelper(
     {
         var fullFavorites = new List<Item>();
 
-        foreach (var itemId in profile.Inventory.FavoriteItems ?? new List<string>())
+        foreach (var itemId in profile.Inventory.FavoriteItems ?? [])
         {
             // When viewing another users profile, the client expects a full item with children, so get that
             var itemAndChildren = _itemHelper.FindAndReturnChildrenAsItems(profile.Inventory.Items, itemId);

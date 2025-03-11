@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -71,7 +72,7 @@ public record Transition
     }
 
     [JsonPropertyName("transitionRaidId")]
-    public string? TransitionRaidId
+    public MongoId? TransitionRaidId
     {
         get;
         set;

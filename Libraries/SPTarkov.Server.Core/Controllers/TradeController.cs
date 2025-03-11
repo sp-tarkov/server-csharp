@@ -266,7 +266,7 @@ public class TradeController(
         RagfairOffer fleaOffer,
         PmcData pmcData)
     {
-        return fleaOffer.LoyaltyLevel > pmcData.TradersInfo[fleaOffer.User.Id].LoyaltyLevel;
+        return fleaOffer.LoyaltyLevel > pmcData.TradersInfo[(MongoId) fleaOffer.User.Id].LoyaltyLevel;
     }
 
     /// <summary>
@@ -349,7 +349,7 @@ public class TradeController(
         foreach (var itemToSell in itemWithChildren)
         {
             var itemDetails = _itemHelper.GetItem(itemToSell.Template);
-            if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses(itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
+            if (!(itemDetails.Key && _itemHelper.IsOfBaseclasses((MongoId) itemDetails.Value.Id, traderDetails.ItemsBuy.Category)))
                 // Skip if tpl isn't item OR item doesn't fulfil match traders buy categories
             {
                 continue;

@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -127,7 +128,7 @@ public class RagfairOfferHolder(
             // Keep generating IDs until we get a unique one
             while (_offersById.ContainsKey(offer.Id))
             {
-                offer.Id = hashUtil.Generate();
+                offer.Id = new MongoId();
             }
 
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;
