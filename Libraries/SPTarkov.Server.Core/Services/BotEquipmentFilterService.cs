@@ -402,7 +402,7 @@ public class BotEquipmentFilterService
     /// <param name="showEditWarnings"></param>
     protected void AdjustWeighting(
         AdjustmentDetails? weightingAdjustments,
-        Dictionary<MongoId, Dictionary<MongoId, double>> botItemPool,
+        Dictionary<string, Dictionary<MongoId, double>> botItemPool,
         bool showEditWarnings = true)
     {
         if (weightingAdjustments is null)

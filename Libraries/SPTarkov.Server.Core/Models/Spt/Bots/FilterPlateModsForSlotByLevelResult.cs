@@ -13,7 +13,7 @@ public record FilterPlateModsForSlotByLevelResult
     }
 
     [JsonPropertyName("plateModTpls")]
-    public HashSet<string>? PlateModTemplates
+    public HashSet<MongoId>? PlateModTemplates
     {
         get;
         set;

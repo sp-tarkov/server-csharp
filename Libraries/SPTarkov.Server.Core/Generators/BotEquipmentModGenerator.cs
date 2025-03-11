@@ -254,7 +254,7 @@ public class BotEquipmentModGenerator(
     /// <param name="armorItem">The armor items db template</param>
     /// <returns>Array of plate tpls to choose from</returns>
     public FilterPlateModsForSlotByLevelResult FilterPlateModsForSlotByLevel(GenerateEquipmentProperties settings, string modSlot,
-        HashSet<string> existingPlateTplPool, TemplateItem armorItem)
+        HashSet<MongoId> existingPlateTplPool, TemplateItem armorItem)
     {
         var result = new FilterPlateModsForSlotByLevelResult
         {
@@ -309,7 +309,7 @@ public class BotEquipmentModGenerator(
         {
             // Plates found
             result.Result = Result.SUCCESS;
-            result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id).ToHashSet();
+            result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id.Value).ToHashSet();
 
             return result;
         }
@@ -384,7 +384,7 @@ public class BotEquipmentModGenerator(
 
         // Only return the items ids
         result.Result = Result.SUCCESS;
-        result.PlateModTemplates = platesOfDesiredLevel.Select(item => (MongoId) item.Id).ToHashSet();
+        result.PlateModTemplates = platesOfDesiredLevel.Select(item => item.Id.Value).ToHashSet();
 
         return result;
     }
@@ -1660,7 +1660,7 @@ public class BotEquipmentModGenerator(
     /// <param name="botEquipBlacklist">Equipment blacklist</param>
     /// <param name="modSlot">Slot mods belong to</param>
     /// <returns>Filtered array of mod tpls</returns>
-    public HashSet<string> FilterModsByBlacklist(HashSet<string> allowedMods, EquipmentFilterDetails? botEquipBlacklist, string modSlot)
+    public HashSet<MongoId> FilterModsByBlacklist(HashSet<MongoId> allowedMods, EquipmentFilterDetails? botEquipBlacklist, string modSlot)
     {
         // No blacklist, nothing to filter out
         if (botEquipBlacklist is null)
@@ -1668,7 +1668,7 @@ public class BotEquipmentModGenerator(
             return allowedMods;
         }
 
-        var result = new HashSet<string>();
+        var result = new HashSet<MongoId>();
 
         // Get item blacklist and mod equipment blacklist as one array
         botEquipBlacklist.Equipment.TryGetValue(modSlot, out var equipmentBlacklistValues);

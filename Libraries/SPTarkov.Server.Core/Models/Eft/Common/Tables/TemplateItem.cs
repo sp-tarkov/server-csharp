@@ -2602,7 +2602,7 @@ public record Props
 
     // Confirmed on client - MongoId
     [JsonPropertyName("TargetItemFilter")]
-    public List<string>? TargetItemFilter
+    public List<MongoId>? TargetItemFilter
     {
         get;
         set;

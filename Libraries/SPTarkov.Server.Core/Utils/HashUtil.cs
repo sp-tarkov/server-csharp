@@ -1,7 +1,6 @@
 using System.IO.Hashing;
 using System.Security.Cryptography;
 using System.Text;
-using System.Text.RegularExpressions;
 using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
