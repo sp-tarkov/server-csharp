@@ -14,7 +14,7 @@ public class CustomLocaleService(
 
     /// <summary>
     /// Path should link to a folder containing every locale that should be added to the server locales
-    /// e.g. en.json for english, fr.json for french
+    /// e.g. en.json for english, fr.json for french. <br/>
     /// Inside each JSON should be a Dictionary of the locale key and localised text
     /// </summary>
     /// <param name="locale">en/fr/de</param>
@@ -27,7 +27,7 @@ public class CustomLocaleService(
 
     /// <summary>
     /// Path should link to a folder containing every locale that should be added to the game locales
-    /// e.g. en.json for english, fr.json for french
+    /// e.g. en.json for english, fr.json for french. <br/>
     /// Inside each JSON should be a Dictionary of the locale key and localised text
     /// </summary>
     /// <param name="locale">en/fr/de</param>

@@ -15,10 +15,10 @@ public class LocaleService(
 {
     protected LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
 
-    /**
-     * Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
-     * @returns dictionary
-     */
+    /// <summary>
+    ///  Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
+    /// </summary>
+    /// <returns> Dictionary </returns>
     public Dictionary<string, string> GetLocaleDb()
     {
         if (_databaseServer.GetTables().Locales.Global.TryGetValue(GetDesiredGameLocale(), out var desiredLocale))
@@ -33,11 +33,11 @@ public class LocaleService(
         return _databaseServer.GetTables().Locales.Global["en"].Value;
     }
 
-    /**
-     * Gets the game locale key from the locale.json file,
-     * if value is 'system' get system locale
-     * @returns locale e.g en/ge/cz/cn
-     */
+    /// <summary>
+    /// Gets the game locale key from the locale.json file,
+    /// if value is 'system' get system locale
+    /// </summary>
+    /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredGameLocale()
     {
         if (_localeConfig.GameLocale.ToLower() == "system")
@@ -48,11 +48,11 @@ public class LocaleService(
         return _localeConfig.GameLocale.ToLower();
     }
 
-    /**
-     * Gets the game locale key from the locale.json file,
-     * if value is 'system' get system locale
-     * @returns locale e.g en/ge/cz/cn
-     */
+    /// <summary>
+    /// Gets the game locale key from the locale.json file,
+    /// if value is 'system' get system locale
+    /// </summary>
+    /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredServerLocale()
     {
         if (_localeConfig.ServerLocale.ToLower() == "system")
@@ -63,28 +63,28 @@ public class LocaleService(
         return _localeConfig.ServerLocale.ToLower();
     }
 
-    /**
-     * Get array of languages supported for localisation
-     * @returns array of locales e.g. en/fr/cn
-     */
+    /// <summary>
+    /// Get array of languages supported for localisation
+    /// </summary>
+    /// <returns> List of locales e.g. en/fr/cn </returns>
     public List<string> GetServerSupportedLocales()
     {
         return _localeConfig.ServerSupportedLocales;
     }
 
-    /**
-     * Get array of languages supported for localisation
-     * @returns array of locales e.g. en/fr/cn
-     */
+    /// <summary>
+    /// Get array of languages supported for localisation
+    /// </summary>
+    /// <returns> Dictionary of locales e.g. en/fr/cn </returns>
     public Dictionary<string, string> GetLocaleFallbacks()
     {
         return _localeConfig.Fallbacks;
     }
 
-    /**
-     * Get the full locale of the computer running the server lowercased e.g. en-gb / pt-pt
-     * @returns string
-     */
+    /// <summary>
+    /// Get the full locale of the computer running the server lowercased e.g. en-gb / pt-pt
+    /// </summary>
+    /// <returns> System locale as String </returns>
     public string GetPlatformForServerLocale()
     {
         var platformLocale = GetPlatformLocale();
@@ -124,10 +124,10 @@ public class LocaleService(
         return baseNameCode;
     }
 
-    /**
-     * Get the locale of the computer running the server
-     * @returns langage part of locale e.g. 'en' part of 'en-US'
-     */
+    /// <summary>
+    /// Get the locale of the computer running the server
+    /// </summary>
+    /// <returns> Language part of locale e.g. 'en' part of 'en-US' </returns>
     protected string GetPlatformForClientLocale()
     {
         var platformLocale = GetPlatformLocale();
@@ -150,12 +150,11 @@ public class LocaleService(
             return languageCode;
         }
 
-        /*
-        const regionCode = platformLocale.region?.toLocaleLowerCase();
-        if (regionCode && locales.global[regionCode]) {
-            return regionCode;
-        }
-        */
+        //
+        // const regionCode = platformLocale.region?.toLocaleLowerCase();
+        // if (regionCode && locales.global[regionCode]) {
+        //     return regionCode;
+        // }
 
         // BSG map DE to GE some reason
         if (baseNameCode == "de")
@@ -167,10 +166,10 @@ public class LocaleService(
         return "en";
     }
 
-    /**
-     * This is in a function so we can overwrite it during testing
-     * @returns The current platform locale
-     */
+    /// <summary>
+    /// This is in a function so we can overwrite it during testing
+    /// </summary>
+    /// <returns> The current platform locale </returns>
     protected CultureInfo GetPlatformLocale()
     {
         return CultureInfo.InstalledUICulture;

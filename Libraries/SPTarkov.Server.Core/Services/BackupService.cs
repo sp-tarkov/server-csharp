@@ -44,9 +44,9 @@ public class BackupService
         _backupConfig = configServer.GetConfig<BackupConfig>();
     }
 
-    /**
-     * Start the backup interval if enabled in config.
-     */
+    /// <summary>
+    /// Start the backup interval if enabled in config.
+    /// </summary>
     public void StartBackupSystem()
     {
         if (!_backupConfig.BackupInterval.Enabled)
@@ -75,14 +75,11 @@ public class BackupService
         );
     }
 
-    /**
-     * Initializes the backup process.
-     *
-     * This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
-     * up old backups if the number exceeds the configured maximum.
-     *
-     * @returns A promise that resolves when the backup process is complete.
-     */
+    /// <summary>
+    /// Initializes the backup process. <br/>
+    /// This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
+    /// up old backups if the number exceeds the configured maximum.
+    /// </summary>
     public void Init()
     {
         if (!IsEnabled())
@@ -146,11 +143,10 @@ public class BackupService
         CleanBackups();
     }
 
-    /**
-     * Check to see if the backup service is enabled via the config.
-     *
-     * @returns True if enabled, false otherwise.
-     */
+    /// <summary>
+    /// Check to see if the backup service is enabled via the config.
+    /// </summary>
+    /// <returns> True if enabled, false otherwise. </returns>
     protected bool IsEnabled()
     {
         if (_backupConfig.Enabled)
@@ -166,23 +162,21 @@ public class BackupService
         return false;
     }
 
-    /**
-     * Generates the target directory path for the backup. The directory path is constructed using the `directory` from
-     * the configuration and the current backup date.
-     *
-     * @returns The target directory path for the backup.
-     */
+    /// <summary>
+    /// Generates the target directory path for the backup. The directory path is constructed using the `directory` from
+    /// the configuration and the current backup date.
+    /// </summary>
+    /// <returns> The target directory path for the backup. </returns>
     protected string GenerateBackupTargetDir()
     {
         var backupDate = GenerateBackupDate();
         return Path.GetFullPath($"{_backupConfig.Directory}/{backupDate}");
     }
 
-    /**
-     * Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
-     *
-     * @returns The formatted backup date string.
-     */
+    /// <summary>
+    /// Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
+    /// </summary>
+    /// <returns> The formatted backup date string. </returns>
     protected string GenerateBackupDate()
     {
         var date = _timeUtil.GetDateTimeNow();
@@ -190,14 +184,11 @@ public class BackupService
         return $"{date.Year}-{date.Month}-{date.Day}_{date.Hour}-{date.Minute}-{date.Second}";
     }
 
-    /**
-     * Cleans up old backups in the backup directory.
-     *
-     * This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
-     * the configured maximum, it deletes the oldest backups.
-     *
-     * @returns A promise that resolves when the cleanup is complete.
-     */
+    /// <summary>
+    /// Cleans up old backups in the backup directory. <br/>
+    /// This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
+    /// the configured maximum, it deletes the oldest backups.
+    /// </summary>
     protected void CleanBackups()
     {
         var backupDir = _backupConfig.Directory;
@@ -230,12 +221,11 @@ public class BackupService
         return result;
     }
 
-    /**
-     * Retrieves and sorts the backup file paths from the specified directory.
-     *
-     * @param dir - The directory to search for backup files.
-     * @returns A promise that resolves to a List of sorted backup file paths.
-     */
+    /// <summary>
+    /// Retrieves and sorts the backup file paths from the specified directory.
+    /// </summary>
+    /// <param name="dir"> The directory to search for backup files. </param>
+    /// <returns> List of sorted backup file paths. </returns>
     private List<string> GetBackupPaths(string dir)
     {
         var backups = _fileUtil.GetDirectories(dir).ToList();
@@ -244,13 +234,12 @@ public class BackupService
         return backups;
     }
 
-    /**
-     * Compares two backup folder names based on their extracted dates.
-     *
-     * @param a - The name of the first backup folder.
-     * @param b - The name of the second backup folder.
-     * @returns The difference in time between the two dates in milliseconds, or `null` if either date is invalid.
-     */
+    /// <summary>
+    /// Compares two backup folder names based on their extracted dates.
+    /// </summary>
+    /// <param name="a"> The name of the first backup folder. </param>
+    /// <param name="b"> The name of the second backup folder. </param>
+    /// <returns> The difference in time between the two dates in milliseconds, or `null` if either date is invalid. </returns>
     private int CompareBackupDates(string a, string b)
     {
         var dateA = ExtractDateFromFolderName(a);
@@ -264,12 +253,11 @@ public class BackupService
         return (int) (dateA.Value.ToFileTimeUtc() - dateB.Value.ToFileTimeUtc());
     }
 
-    /**
-     * Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
-     *
-     * @param folderName - The name of the folder from which to extract the date.
-     * @returns A DateTime object if the folder name is in the correct format, otherwise null.
-     */
+    /// <summary>
+    /// Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
+    /// </summary>
+    /// <param name="folderName"> The name of the folder from which to extract the date. </param>
+    /// <returns> A DateTime object if the folder name is in the correct format, otherwise null. </returns>
     private DateTime? ExtractDateFromFolderName(string folderName)
     {
         // backup
@@ -290,12 +278,11 @@ public class BackupService
         return new DateTime(year, month, day, hour, minute, second);
     }
 
-    /**
-     * Removes excess backups from the backup directory.
-     *
-     * @param backups - A List of backup file names to be removed.
-     * @returns A promise that resolves when all specified backups have been removed.
-     */
+    /// <summary>
+    /// Removes excess backups from the backup directory.
+    /// </summary>
+    /// <param name="backupFilenames"> List of backup file names to be removed. </param>
+    /// <returns> A promise that resolves when all specified backups have been removed. </returns>
     private void RemoveExcessBackups(List<string> backupFilenames)
     {
         var filePathsToDelete = backupFilenames.Select(x => x);
@@ -310,11 +297,10 @@ public class BackupService
         }
     }
 
-    /**
-     * Get a List of active server mod details.
-     *
-     * @returns A List of mod names.
-     */
+    /// <summary>
+    /// Get a List of active server mod details.
+    /// </summary>
+    /// <returns> A List of mod names. </returns>
     protected List<string> GetActiveServerMods()
     {
         var mods = _applicationContext?.GetLatestValue(ContextVariableType.LOADED_MOD_ASSEMBLIES)?.GetValue<List<SptMod>>();

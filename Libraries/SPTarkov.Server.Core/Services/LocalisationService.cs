@@ -5,6 +5,9 @@ using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
+/// <summary>
+/// Handles translating server text into different langauges
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class LocalisationService
 {
@@ -41,7 +44,12 @@ public class LocalisationService
         );
         _i18nService.SetLocaleByKey(localeService.GetDesiredServerLocale());
     }
-
+    /// <summary>
+    /// Get a localised value using the passed in key
+    /// </summary>
+    /// <param name="key"> Key to look up locale for </param>
+    /// <param name="args"> optional arguments </param>
+    /// <returns> Localised string </returns>
     public string GetText(string key, object? args = null)
     {
         return args is null
@@ -49,16 +57,31 @@ public class LocalisationService
             : _i18nService.GetLocalised(key, args);
     }
 
+    /// <summary>
+    /// Get a localised value using the passed in key
+    /// </summary>
+    /// <param name="key"> Key to look up locale for </param>
+    /// <param name="value"> Value to localize </param>
+    /// <returns> Localised string </returns>
     public string GetText<T>(string key, T value) where T : IConvertible?
     {
         return _i18nService.GetLocalised(key, value);
     }
 
+    /// <summary>
+    /// Get all locale keys
+    /// </summary>
+    /// <returns> Generic collection of keys </returns>
     public ICollection<string> GetKeys()
     {
         return _i18nService.GetLocalisedKeys();
     }
 
+    /// <summary>
+    /// From the provided partial key, find all keys that start with text and choose a random match
+    /// </summary>
+    /// <param name="partialKey"> Key to match locale keys on </param>
+    /// <returns> Locale text </returns>
     public string GetRandomTextThatMatchesPartialKey(string partialKey)
     {
         var values = _localeService.GetLocaleKeysThatStartsWithValue(partialKey);
