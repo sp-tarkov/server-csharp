@@ -38,7 +38,7 @@ public class InventoryHelper(
 )
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
-    private static readonly FrozenSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
+    private static readonly FrozenSet<MongoId> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -1219,7 +1219,7 @@ public class InventoryHelper(
     {
         // Find matching _id in fast panel
 
-        if (!pmcData.Inventory.FastPanel.TryGetValue(itemBeingMoved.Id, out var fastPanelSlot))
+        if (!pmcData.Inventory.FastPanel.TryGetValue((MongoId) itemBeingMoved.Id, out var fastPanelSlot))
         {
             return;
         }
@@ -1238,7 +1238,7 @@ public class InventoryHelper(
         );
         if (!wasMovedToFastPanelAccessibleContainer)
         {
-            pmcData.Inventory.FastPanel[fastPanelSlot[0].ToString()] = "";
+            pmcData.Inventory.FastPanel[fastPanelSlot] = "";
         }
     }
 
@@ -1313,7 +1313,7 @@ public class InventoryHelper(
 
     public void ValidateInventoryUsesMongoIds(List<Item> itemsToValidate)
     {
-        var errors = itemsToValidate.Where(item => !_hashUtil.IsValidMongoId(item.Id))
+        var errors = itemsToValidate.Where(item => MongoId.IsValidMongoId(item.Id))
             .Select(item => $"Id: {item.Id} - tpl: {item.Template}")
             .ToList();
         foreach (var message in errors)

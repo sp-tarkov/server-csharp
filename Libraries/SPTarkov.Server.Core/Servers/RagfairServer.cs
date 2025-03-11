@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -75,7 +76,7 @@ public class RagfairServer(
         return _ragfairConfig.Traders.Keys.ToList();
     }
 
-    public Dictionary<string, int> GetAllActiveCategories(
+    public Dictionary<MongoId, int> GetAllActiveCategories(
         bool fleaUnlocked,
         SearchRequestData searchRequestData,
         List<RagfairOffer> offers

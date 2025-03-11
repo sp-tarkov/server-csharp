@@ -111,7 +111,7 @@ public class App
         try
         {
             // If the server has failed to start, skip any update calls
-            if (!_httpServer.IsStarted() || !_databaseService.IsDatabaseValid())
+            if (!_httpServer.IsStarted())
             {
                 return;
             }

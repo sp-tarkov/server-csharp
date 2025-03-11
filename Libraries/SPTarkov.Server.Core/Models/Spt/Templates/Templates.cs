@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 
@@ -7,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Templates;
 public record Templates
 {
     [JsonPropertyName("character")]
-    public List<string>? Character
+    public List<MongoId>? Character
     {
         get;
         set;
@@ -21,7 +22,7 @@ public record Templates
     }
 
     [JsonPropertyName("items")]
-    public Dictionary<string, TemplateItem>? Items
+    public Dictionary<MongoId, TemplateItem>? Items
     {
         get;
         set;
@@ -35,7 +36,7 @@ public record Templates
     }
 
     [JsonPropertyName("quests")]
-    public Dictionary<string, Quest>? Quests
+    public Dictionary<MongoId, Quest>? Quests
     {
         get;
         set;
@@ -56,7 +57,7 @@ public record Templates
     }
 
     [JsonPropertyName("customization")]
-    public Dictionary<string, CustomizationItem>? Customization
+    public Dictionary<MongoId, CustomizationItem>? Customization
     {
         get;
         set;
@@ -76,7 +77,7 @@ public record Templates
     /// Flea prices of items - gathered from online flea market dump
     /// </summary>
     [JsonPropertyName("prices")]
-    public Dictionary<string, double>? Prices
+    public Dictionary<MongoId, double>? Prices
     {
         get;
         set;

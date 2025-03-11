@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 
@@ -14,7 +15,7 @@ public record PresetBuildActionRequestData : IRequestData
     }
 
     [JsonPropertyName("Id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -31,7 +32,7 @@ public record PresetBuildActionRequestData : IRequestData
     }
 
     [JsonPropertyName("Root")]
-    public string? Root
+    public MongoId? Root
     {
         get;
         set;

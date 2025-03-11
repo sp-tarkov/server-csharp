@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -38,7 +39,7 @@ public record ModToSpawnRequest
     ///     Parent slot the item will be a part of
     /// </summary>
     [JsonPropertyName("botWeaponSightWhitelist")]
-    public Dictionary<string, List<string>>? BotWeaponSightWhitelist
+    public Dictionary<MongoId, List<MongoId>>? BotWeaponSightWhitelist
     {
         get;
         set;
@@ -58,7 +59,7 @@ public record ModToSpawnRequest
     ///     Pool of items to pick from
     /// </summary>
     [JsonPropertyName("itemModPool")]
-    public Dictionary<string, HashSet<string>>? ItemModPool
+    public Dictionary<string, HashSet<MongoId>>? ItemModPool
     {
         get;
         set;
@@ -118,7 +119,7 @@ public record ModToSpawnRequest
     ///     List of item tpls the weapon does not support
     /// </summary>
     [JsonPropertyName("conflictingItemTpls")]
-    public HashSet<string>? ConflictingItemTpls
+    public HashSet<MongoId>? ConflictingItemTpls
     {
         get;
         set;

@@ -4,6 +4,7 @@ using SPTarkov.Server.Core.Models.Spt.Presets;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -51,7 +52,7 @@ public class PresetHelper(
             _defaultWeaponPresets = tempPresets.Where(
                     p =>
                         p.Value.Encyclopedia != null &&
-                        _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
+                        _itemHelper.IsOfBaseclass((MongoId) p.Value.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToDictionary();
         }
@@ -97,7 +98,7 @@ public class PresetHelper(
      */
     public bool IsPresetBaseClass(string id, string baseClass)
     {
-        return IsPreset(id) && _itemHelper.IsOfBaseclass(GetPreset(id).Encyclopedia, baseClass);
+        return IsPreset(id) && _itemHelper.IsOfBaseclass((MongoId) GetPreset(id).Encyclopedia, baseClass);
     }
 
     public bool HasPreset(string templateId)

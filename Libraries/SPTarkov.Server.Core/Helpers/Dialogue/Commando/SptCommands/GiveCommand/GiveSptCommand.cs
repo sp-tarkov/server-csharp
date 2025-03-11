@@ -67,7 +67,7 @@ public class GiveSptCommand(
 
         var result = _commandRegex.Match(request.Text);
 
-        string item;
+        MongoId item;
         int quantity;
         bool isItemName;
         string? locale = null;
@@ -229,7 +229,7 @@ public class GiveSptCommand(
                 itemsToSend.AddRange(items);
             }
         }
-        else if (_itemHelper.IsOfBaseclass(checkedItem.Value.Id, BaseClasses.AMMO_BOX))
+        else if (_itemHelper.IsOfBaseclass((MongoId) checkedItem.Value.Id, BaseClasses.AMMO_BOX))
         {
             for (var i = 0; i < quantity; i++)
             {
@@ -317,10 +317,10 @@ public class GiveSptCommand(
     {
         return templateItem.Type != "Node" &&
                !_itemHelper.IsQuestItem(templateItem.Id) &&
-               !_itemFilterService.IsItemBlacklisted(templateItem.Id) &&
+               !_itemFilterService.IsItemBlacklisted((MongoId) templateItem.Id) &&
                (templateItem.Properties?.Prefab?.Path ?? "") != "" &&
                !_itemHelper.IsOfBaseclasses(
-                   templateItem.Id,
+                   (MongoId) templateItem.Id,
                    [
                        BaseClasses.HIDEOUT_AREA_CONTAINER, BaseClasses.LOOT_CONTAINER,
                        BaseClasses.RANDOM_LOOT_CONTAINER, BaseClasses.MOB_CONTAINER,

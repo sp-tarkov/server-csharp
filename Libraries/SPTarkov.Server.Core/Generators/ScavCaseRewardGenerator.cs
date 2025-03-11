@@ -119,31 +119,31 @@ public class ScavCaseRewardGenerator(
                         // Skip item if item id is on blacklist
                         if (
                             item.Type != "Item" ||
-                            _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
-                            _itemFilterService.IsItemBlacklisted(item.Id)
+                            _scavCaseConfig.RewardItemBlacklist.Contains((MongoId) item.Id) ||
+                            _itemFilterService.IsItemBlacklisted((MongoId) item.Id)
                         )
                         {
                             return false;
                         }
 
                         // Globally reward-blacklisted
-                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        if (_itemFilterService.IsItemRewardBlacklisted((MongoId) item.Id))
                         {
                             return false;
                         }
 
-                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem((MongoId) item.Id))
                         {
                             return false;
                         }
 
                         // Skip item if parent id is blacklisted
-                        if (_itemHelper.IsOfBaseclasses(item.Id, _scavCaseConfig.RewardItemParentBlacklist))
+                        if (_itemHelper.IsOfBaseclasses((MongoId) item.Id, _scavCaseConfig.RewardItemParentBlacklist))
                         {
                             return false;
                         }
 
-                        if (inactiveSeasonalItems.Contains(item.Id))
+                        if (inactiveSeasonalItems.Contains((MongoId) item.Id))
                         {
                             return false;
                         }
@@ -172,33 +172,33 @@ public class ScavCaseRewardGenerator(
                         }
 
                         // Not ammo, skip
-                        if (!_itemHelper.IsOfBaseclass(item.Id, BaseClasses.AMMO))
+                        if (!_itemHelper.IsOfBaseclass((MongoId) item.Id, BaseClasses.AMMO))
                         {
                             return false;
                         }
 
                         // Skip item if item id is on blacklist
                         if (
-                            _scavCaseConfig.RewardItemBlacklist.Contains(item.Id) ||
-                            _itemFilterService.IsItemBlacklisted(item.Id)
+                            _scavCaseConfig.RewardItemBlacklist.Contains((MongoId) item.Id) ||
+                            _itemFilterService.IsItemBlacklisted((MongoId) item.Id)
                         )
                         {
                             return false;
                         }
 
                         // Globally reward-blacklisted
-                        if (_itemFilterService.IsItemRewardBlacklisted(item.Id))
+                        if (_itemFilterService.IsItemRewardBlacklisted((MongoId) item.Id))
                         {
                             return false;
                         }
 
-                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem(item.Id))
+                        if (!_scavCaseConfig.AllowBossItemsAsRewards && _itemFilterService.IsBossItem((MongoId) item.Id))
                         {
                             return false;
                         }
 
                         // Skip seasonal items
-                        if (inactiveSeasonalItems.Contains(item.Id))
+                        if (inactiveSeasonalItems.Contains((MongoId) item.Id))
                         {
                             return false;
                         }
@@ -351,14 +351,14 @@ public class ScavCaseRewardGenerator(
             ];
             var rootItem = resultItem.FirstOrDefault();
 
-            if (_itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.AMMO_BOX))
+            if (_itemHelper.IsOfBaseclass((MongoId) rewardItemDb.Id, BaseClasses.AMMO_BOX))
             {
                 _itemHelper.AddCartridgesToAmmoBox(resultItem, rewardItemDb);
             }
             // Armor or weapon = use default preset from globals.json
             else if (
                 _itemHelper.ArmorItemHasRemovableOrSoftInsertSlots(rewardItemDb.Id) ||
-                _itemHelper.IsOfBaseclass(rewardItemDb.Id, BaseClasses.WEAPON)
+                _itemHelper.IsOfBaseclass((MongoId) rewardItemDb.Id, BaseClasses.WEAPON)
             )
             {
                 var preset = _presetHelper.GetDefaultPreset(rewardItemDb.Id);
@@ -375,7 +375,7 @@ public class ScavCaseRewardGenerator(
 
                 resultItem = presetAndMods;
             }
-            else if (_itemHelper.IsOfBaseclasses(rewardItemDb.Id, [BaseClasses.AMMO, BaseClasses.MONEY]))
+            else if (_itemHelper.IsOfBaseclasses((MongoId) rewardItemDb.Id, [BaseClasses.AMMO, BaseClasses.MONEY]))
             {
                 rootItem.Upd = new Upd
                 {
@@ -455,7 +455,7 @@ public class ScavCaseRewardGenerator(
     /// <returns>value to set stack count to</returns>
     protected int GetRandomAmountRewardForScavCase(TemplateItem itemToCalculate, string rarity)
     {
-        return itemToCalculate.Parent switch
+        return itemToCalculate.Parent.ToString() switch
         {
             BaseClasses.AMMO => GetRandomisedAmmoRewardStackSize(itemToCalculate),
             BaseClasses.MONEY => GetRandomisedMoneyRewardStackSize(itemToCalculate, rarity),
@@ -482,7 +482,7 @@ public class ScavCaseRewardGenerator(
     /// <returns>value to set stack count to</returns>
     protected int GetRandomisedMoneyRewardStackSize(TemplateItem itemToCalculate, string rarity)
     {
-        return itemToCalculate.Id switch
+        return itemToCalculate.Id.ToString() switch
         {
             Money.ROUBLES => _randomUtil.GetInt(
                 _scavCaseConfig.MoneyRewards.RubCount.GetByJsonProp<MinMax<int>>(rarity).Min,

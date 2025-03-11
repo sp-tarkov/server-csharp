@@ -11,7 +11,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 public record BotBase
 {
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -29,7 +29,7 @@ public record BotBase
     /// SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
     /// </summary>
     [JsonPropertyName("sessionId")]
-    public string? SessionId
+    public MongoId? SessionId
     {
         get;
         set;
@@ -94,14 +94,14 @@ public record BotBase
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("Encyclopedia")]
-    public Dictionary<string, bool>? Encyclopedia
+    public Dictionary<MongoId, bool>? Encyclopedia
     {
         get;
         set;
     }
 
     [JsonPropertyName("TaskConditionCounters")]
-    public Dictionary<string, TaskConditionCounter>? TaskConditionCounters
+    public Dictionary<MongoId, TaskConditionCounter>? TaskConditionCounters
     {
         get;
         set;
@@ -130,7 +130,7 @@ public record BotBase
     }
 
     [JsonPropertyName("TradersInfo")]
-    public Dictionary<string, TraderInfo>? TradersInfo
+    public Dictionary<MongoId, TraderInfo>? TradersInfo
     {
         get;
         set;
@@ -155,7 +155,7 @@ public record BotBase
     /// </summary>
     [JsonPropertyName("Achievements")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public Dictionary<string, long>? Achievements
+    public Dictionary<MongoId, long>? Achievements
     {
         get;
         set;
@@ -206,7 +206,7 @@ public record BotBase
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("WishList")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
-    public DictionaryOrList<string, int>? WishList
+    public DictionaryOrList<MongoId, int>? WishList
     {
         get;
         set;
@@ -268,7 +268,7 @@ public record MoneyTransferLimits
 public record TaskConditionCounter
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -291,7 +291,7 @@ public record TaskConditionCounter
     /// Quest id
     /// </summary>
     [JsonPropertyName("sourceId")]
-    public string? SourceId
+    public MongoId? SourceId
     {
         get;
         set;
@@ -301,7 +301,7 @@ public record TaskConditionCounter
 public record UnlockedInfo
 {
     [JsonPropertyName("unlockedProductionRecipe")]
-    public HashSet<string>? UnlockedProductionRecipe
+    public HashSet<MongoId>? UnlockedProductionRecipe
     {
         get;
         set;
@@ -629,73 +629,34 @@ public enum BanType
 
 public record Customization
 {
-    private string? _body;
-
-    private string? _dogtag;
-
-    private string? _feet;
-
-    private string? _hands;
-    private string? _head;
-
-    public string? Head
+    public MongoId? Head
     {
-        get
-        {
-            return _head;
-        }
-        set
-        {
-            _head = value == null ? null : string.Intern(value);
-        }
+        get;
+        set;
     }
 
-    public string? Body
+    public MongoId? Body
     {
-        get
-        {
-            return _body;
-        }
-        set
-        {
-            _body = value == null ? null : string.Intern(value);
-        }
+        get;
+        set;
     }
 
-    public string? Feet
+    public MongoId? Feet
     {
-        get
-        {
-            return _feet;
-        }
-        set
-        {
-            _feet = value == null ? null : string.Intern(value);
-        }
+        get;
+        set;
     }
 
-    public string? Hands
+    public MongoId? Hands
     {
-        get
-        {
-            return _hands;
-        }
-        set
-        {
-            _hands = value == null ? null : string.Intern(value);
-        }
+        get;
+        set;
     }
 
-    public string? DogTag
+    public MongoId? DogTag
     {
-        get
-        {
-            return _dogtag;
-        }
-        set
-        {
-            _dogtag = value == null ? null : string.Intern(value);
-        }
+        get;
+        set;
     }
 }
 
@@ -828,7 +789,7 @@ public record BotBaseInventory
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("stash")]
-    public string? Stash
+    public MongoId? Stash
     {
         get;
         set;
@@ -862,21 +823,21 @@ public record BotBaseInventory
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutAreaStashes")]
-    public Dictionary<string, string>? HideoutAreaStashes
+    public Dictionary<string, MongoId?>? HideoutAreaStashes
     {
         get;
         set;
     }
 
     [JsonPropertyName("fastPanel")]
-    public Dictionary<string, string>? FastPanel
+    public Dictionary<MongoId, MongoId>? FastPanel
     {
         get;
         set;
     }
 
     [JsonPropertyName("favoriteItems")]
-    public List<string>? FavoriteItems
+    public List<MongoId>? FavoriteItems
     {
         get;
         set;
@@ -994,7 +955,7 @@ public record Stats
 
 public record EftStats
 {
-    public List<string>? CarriedQuestItems
+    public List<MongoId>? CarriedQuestItems
     {
         get;
         set;
@@ -1103,13 +1064,13 @@ public record EftStats
 
 public record DroppedItem
 {
-    public string? QuestId
+    public MongoId? QuestId
     {
         get;
         set;
     }
 
-    public string? ItemId
+    public MongoId? ItemId
     {
         get;
         set;
@@ -1124,13 +1085,13 @@ public record DroppedItem
 
 public record FoundInRaidItem
 {
-    public string? QuestId
+    public MongoId? QuestId
     {
         get;
         set;
     }
 
-    public string? ItemId
+    public MongoId? ItemId
     {
         get;
         set;
@@ -1145,7 +1106,7 @@ public record Victim
         set;
     }
 
-    public string? ProfileId
+    public MongoId? ProfileId
     {
         get;
         set;
@@ -1245,7 +1206,7 @@ public record OverallCounters
 
 public record CounterKeyValue
 {
-    public List<string>? Key
+    public List<MongoId>? Key
     {
         get;
         set;
@@ -1274,7 +1235,7 @@ public record Aggressor
     }
 
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
-    public string? ProfileId
+    public MongoId? ProfileId
     {
         get;
         set;
@@ -1478,7 +1439,7 @@ public record DeathCause
         set;
     }
 
-    public string? WeaponId
+    public MongoId? WeaponId
     {
         get;
         set;
@@ -1493,7 +1454,7 @@ public record LastPlayerState
         set;
     }
 
-    public Dictionary<string, string>? Customization
+    public Dictionary<MongoId, MongoId>? Customization
     {
         get;
         set;
@@ -1537,7 +1498,7 @@ public record LastPlayerStateInfo
 public record BackendCounter
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -1564,7 +1525,7 @@ public record InsuredItem
     /// Trader ID item was insured by
     /// </summary>
     [JsonPropertyName("tid")]
-    public string? TId
+    public MongoId? TId
     {
         get;
         set;
@@ -1580,7 +1541,7 @@ public record InsuredItem
 
 public record Hideout
 {
-    public Dictionary<string, Production?>? Production
+    public Dictionary<MongoId, Production?>? Production
     {
         get;
         set;
@@ -1592,7 +1553,7 @@ public record Hideout
         set;
     }
 
-    public Dictionary<string, HideoutImprovement>? Improvements
+    public Dictionary<MongoId, HideoutImprovement>? Improvements
     {
         get;
         set;
@@ -1825,7 +1786,7 @@ public record Production // use this instead of productive and scavcase
         set;
     }
 
-    public string? RecipeId
+    public MongoId? RecipeId
     {
         get;
         set;
@@ -1887,7 +1848,7 @@ public record BotHideoutArea
     }
 
     [JsonPropertyName("lastRecipe")]
-    public string? LastRecipe
+    public MongoId? LastRecipe
     {
         get;
         set;
@@ -1977,7 +1938,7 @@ public record Quests
     /// Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
     /// </summary>
     [JsonPropertyName("completedConditions")]
-    public List<string>? CompletedConditions
+    public List<MongoId>? CompletedConditions
     {
         get;
         set;
@@ -2077,7 +2038,7 @@ public record RagfairInfo
 public record Bonus
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

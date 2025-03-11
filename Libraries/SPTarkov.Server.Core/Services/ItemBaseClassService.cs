@@ -1,6 +1,7 @@
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -13,7 +14,7 @@ public class ItemBaseClassService(
 )
 {
     private bool _cacheGenerated;
-    private Dictionary<string, HashSet<string>> _itemBaseClassesCache;
+    private Dictionary<MongoId, HashSet<MongoId>> _itemBaseClassesCache;
 
     /**
      * Create cache and store inside ItemBaseClassService
@@ -22,16 +23,16 @@ public class ItemBaseClassService(
     public void HydrateItemBaseClassCache()
     {
         // Clear existing cache
-        _itemBaseClassesCache = new Dictionary<string, HashSet<string>>();
+        _itemBaseClassesCache = new Dictionary<MongoId, HashSet<MongoId>>();
 
         var items = _databaseService.GetItems();
         var filteredDbItems = items.Where(x => string.Equals(x.Value.Type,"Item", StringComparison.OrdinalIgnoreCase));
         foreach (var item in filteredDbItems)
         {
             var itemIdToUpdate = item.Value.Id;
-            if (!_itemBaseClassesCache.ContainsKey(item.Value.Id))
+            if (!_itemBaseClassesCache.ContainsKey((MongoId) item.Value.Id))
             {
-                _itemBaseClassesCache[item.Value.Id] = [];
+                _itemBaseClassesCache[(MongoId) item.Value.Id] = [];
             }
 
             AddBaseItems(itemIdToUpdate, item.Value);
@@ -47,8 +48,8 @@ public class ItemBaseClassService(
      */
     protected void AddBaseItems(string itemIdToUpdate, TemplateItem item)
     {
-        _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
-        var parent = _databaseService.GetItems()[item.Parent];
+        _itemBaseClassesCache[itemIdToUpdate].Add((MongoId) item.Parent);
+        var parent = _databaseService.GetItems()[(MongoId) item.Parent];
 
         if (!string.IsNullOrEmpty(parent.Parent))
         {
@@ -62,7 +63,7 @@ public class ItemBaseClassService(
      * @param baseClass base class to check for
      * @returns true if item inherits from base class passed in
      */
-    public bool ItemHasBaseClass(string itemTpl, ICollection<string> baseClasses)
+    public bool ItemHasBaseClass(MongoId itemTpl, ICollection<MongoId> baseClasses)
     {
         if (!_cacheGenerated)
         {
@@ -122,7 +123,7 @@ public class ItemBaseClassService(
      * @param itemTpl item to get base classes for
      * @returns array of base classes
      */
-    public List<string> GetItemBaseClasses(string itemTpl)
+    public List<MongoId> GetItemBaseClasses(string itemTpl)
     {
         if (!_cacheGenerated)
         {

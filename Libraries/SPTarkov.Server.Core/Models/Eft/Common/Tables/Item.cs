@@ -6,11 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 public record Item
 {
-    private string? _parentId;
-
     private string? _slotId;
-
-    private string? _tpl;
 
     // MongoId
     [JsonPropertyName("_id")]
@@ -22,29 +18,17 @@ public record Item
 
     [JsonPropertyName("_tpl")]
     // MongoId
-    public string? Template
+    public MongoId? Template
     {
-        get
-        {
-            return _tpl;
-        }
-        set
-        {
-            _tpl = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("parentId")]
-    public string? ParentId
+    public MongoId? ParentId
     {
-        get
-        {
-            return _parentId;
-        }
-        set
-        {
-            _parentId = value == null ? null : value;
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("slotId")]
@@ -113,7 +97,7 @@ public record HideoutItem
     }
 
     [JsonPropertyName("_tpl")]
-    public string? Template
+    public MongoId? Template
     {
         get;
         set;

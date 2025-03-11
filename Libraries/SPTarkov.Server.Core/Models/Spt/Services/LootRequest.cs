@@ -50,7 +50,7 @@ public record LootRequest
     ///     Item tpl blacklist to exclude
     /// </summary>
     [JsonPropertyName("itemBlacklist")]
-    public HashSet<string>? ItemBlacklist
+    public HashSet<MongoId>? ItemBlacklist
     {
         get;
         set;
@@ -60,7 +60,7 @@ public record LootRequest
     ///     Item tpl whitelist to pick from
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public List<string>? ItemTypeWhitelist
+    public List<MongoId>? ItemTypeWhitelist
     {
         get;
         set;
@@ -70,14 +70,14 @@ public record LootRequest
     ///     key: item base type: value: max count
     /// </summary>
     [JsonPropertyName("itemLimits")]
-    public Dictionary<string, int>? ItemLimits
+    public Dictionary<MongoId, int>? ItemLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("itemStackLimits")]
-    public Dictionary<string, MinMax<int>>? ItemStackLimits
+    public Dictionary<MongoId, MinMax<int>>? ItemStackLimits
     {
         get;
         set;
@@ -127,7 +127,7 @@ public record LootRequest
     ///     Item tpls + count of items to force include
     /// </summary>
     [JsonPropertyName("forcedLoot")]
-    public Dictionary<string, MinMax<int>>? ForcedLoot
+    public Dictionary<MongoId, MinMax<int>>? ForcedLoot
     {
         get;
         set;

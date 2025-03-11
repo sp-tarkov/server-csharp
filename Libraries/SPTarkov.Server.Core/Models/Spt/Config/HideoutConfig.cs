@@ -230,7 +230,7 @@ public record CultistCircleSettings
     ///     Item tpls to exclude from the reward pool
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public List<string> RewardItemBlacklist
+    public List<MongoId> RewardItemBlacklist
     {
         get;
         set;

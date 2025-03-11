@@ -9763,7 +9763,7 @@ public record Preset
     /// Default presets have this property
     /// </summary>
     [JsonPropertyName("_encyclopedia")]
-    public string? Encyclopedia
+    public MongoId? Encyclopedia
     {
         get;
         set;

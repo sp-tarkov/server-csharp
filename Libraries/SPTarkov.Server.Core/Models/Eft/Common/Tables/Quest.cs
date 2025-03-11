@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -21,7 +22,7 @@ public record Quest
     ///     _id
     /// </summary>
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -296,7 +297,7 @@ public record QuestStatus
     }
 
     [JsonPropertyName("qid")]
-    public string? QId
+    public MongoId? QId
     {
         get;
         set;
@@ -379,7 +380,7 @@ public record QuestConditionTypes
 public record QuestCondition
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -687,7 +688,7 @@ public record QuestCondition
 public record QuestConditionCounter
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;
@@ -704,7 +705,7 @@ public record QuestConditionCounter
 public record QuestConditionCounterCondition
 {
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
         get;
         set;

@@ -313,7 +313,7 @@ public record Dynamic
     /// A multipler to apply to individual tpls price just prior to item quality adjustment
     /// </summary>
     [JsonPropertyName("itemPriceMultiplier")]
-    public Dictionary<string, double>? ItemPriceMultiplier
+    public Dictionary<MongoId, double>? ItemPriceMultiplier
     {
         get;
         set;
@@ -330,7 +330,7 @@ public record Dynamic
     /// Percentages to sell offers in each currency
     /// </summary>
     [JsonPropertyName("currencies")]
-    public Dictionary<string, double> Currencies
+    public Dictionary<MongoId, double> Currencies
     {
         get;
         set;
@@ -340,7 +340,7 @@ public record Dynamic
     /// Item tpls that should be forced to sell as a single item
     /// </summary>
     [JsonPropertyName("showAsSingleStack")]
-    public HashSet<string> ShowAsSingleStack
+    public HashSet<MongoId> ShowAsSingleStack
     {
         get;
         set;
@@ -477,7 +477,7 @@ public record BarterDetails
     /// Item Tpls to never be turned into a barter
     /// </summary>
     [JsonPropertyName("itemTypeBlacklist")]
-    public HashSet<string> ItemTypeBlacklist
+    public HashSet<MongoId> ItemTypeBlacklist
     {
         get;
         set;
@@ -520,7 +520,7 @@ public record PackDetails
     /// item types to allow being a pack
     /// </summary>
     [JsonPropertyName("itemTypeWhitelist")]
-    public HashSet<string> ItemTypeWhitelist
+    public HashSet<MongoId> ItemTypeWhitelist
     {
         get;
         set;
@@ -786,7 +786,7 @@ public record TieredFlea
     ///     key: tpl, value: playerlevel
     /// </summary>
     [JsonPropertyName("unlocksTpl")]
-    public Dictionary<string, int> UnlocksTpl
+    public Dictionary<MongoId, int> UnlocksTpl
     {
         get;
         set;
@@ -796,7 +796,7 @@ public record TieredFlea
     ///     key: item type id, value: playerlevel
     /// </summary>
     [JsonPropertyName("unlocksType")]
-    public Dictionary<string, int> UnlocksType
+    public Dictionary<MongoId, int> UnlocksType
     {
         get;
         set;

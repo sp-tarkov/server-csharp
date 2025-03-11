@@ -39,16 +39,7 @@ public class PostDbLoadService(
         // Mods that add items and use the baseClass service generate the cache including their items, the next mod that
         // add items gets left out,causing warnings
         _itemBaseClassService.HydrateItemBaseClassCache();
-
-        // Validate that only mongoIds exist in items, quests, and traders
-        // Kill the startup if not.
-        // TODO: We can probably remove this in a couple versions
-        _databaseService.ValidateDatabase();
-        if (!_databaseService.IsDatabaseValid())
-        {
-            throw new Exception("Server start failure, database invalid");
-        }
-
+        
         AddCustomLooseLootPositions();
 
         AdjustMinReserveRaiderSpawnChance();

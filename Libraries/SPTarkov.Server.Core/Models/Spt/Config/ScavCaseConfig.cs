@@ -34,14 +34,14 @@ public record ScavCaseConfig : BaseConfig
     }
 
     [JsonPropertyName("rewardItemParentBlacklist")]
-    public HashSet<string> RewardItemParentBlacklist
+    public HashSet<MongoId> RewardItemParentBlacklist
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardItemBlacklist")]
-    public HashSet<string> RewardItemBlacklist
+    public HashSet<MongoId> RewardItemBlacklist
     {
         get;
         set;

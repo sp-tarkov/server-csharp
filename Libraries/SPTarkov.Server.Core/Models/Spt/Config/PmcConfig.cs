@@ -65,7 +65,7 @@ public record PmcConfig : BaseConfig
     }
 
     [JsonPropertyName("globalLootBlacklist")]
-    public List<string> GlobalLootBlacklist
+    public List<MongoId> GlobalLootBlacklist
     {
         get;
         set;
@@ -380,7 +380,7 @@ public record SlotLootSettings
     /// Item tpl blacklist
     /// </summary>
     [JsonPropertyName("blacklist")]
-    public HashSet<string> Blacklist
+    public HashSet<MongoId> Blacklist
     {
         get;
         set;

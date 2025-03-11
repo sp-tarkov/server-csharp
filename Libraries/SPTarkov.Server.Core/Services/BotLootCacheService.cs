@@ -296,7 +296,7 @@ public class BotLootCacheService(
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.FOOD))
+                if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.FOOD))
                 {
                     foodItems[itemKvP.Key] = itemKvP.Value;
                 }
@@ -311,7 +311,7 @@ public class BotLootCacheService(
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.DRINK))
+                if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.DRINK))
                 {
                     drinkItems[itemKvP.Key] = itemKvP.Value;
                 }
@@ -326,7 +326,7 @@ public class BotLootCacheService(
             foreach (var itemKvP in combinedLootPool)
             {
                 var itemTemplate = _itemHelper.GetItem(itemKvP.Key).Value;
-                if (_itemHelper.IsOfBaseclass(itemTemplate.Id, BaseClasses.MONEY))
+                if (_itemHelper.IsOfBaseclass((MongoId) itemTemplate.Id, BaseClasses.MONEY))
                 {
                     currencyItems[itemKvP.Key] = itemKvP.Value;
                 }

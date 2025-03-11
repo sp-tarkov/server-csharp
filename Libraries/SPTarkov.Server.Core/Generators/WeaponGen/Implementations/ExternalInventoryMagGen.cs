@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
@@ -40,7 +41,7 @@ public class ExternalInventoryMagGen(
         var weapon = inventoryMagGen.GetWeaponTemplate();
         List<string> attemptedMagBlacklist = [];
         var defaultMagazineTpl = _botWeaponGeneratorHelper.GetWeaponsDefaultMagazineTpl(weapon);
-        var isShotgun = _itemHelper.IsOfBaseclass(weapon.Id, BaseClasses.SHOTGUN);
+        var isShotgun = _itemHelper.IsOfBaseclass((MongoId) weapon.Id, BaseClasses.SHOTGUN);
 
         var randomizedMagazineCount = _botWeaponGeneratorHelper.GetRandomizedMagazineCount(inventoryMagGen.GetMagCount());
         for (var i = 0; i < randomizedMagazineCount; i++)

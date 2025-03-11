@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -72,8 +73,8 @@ public class PMCLootGenerator
                 item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent) &&
+                    !blacklist.Contains((MongoId) item.Value.Id) &&
+                    !blacklist.Contains((MongoId) item.Value.Parent) &&
                     ItemFitsInto1By2Slot(item.Value)
             ).Select(x => x.Key);
 
@@ -106,9 +107,9 @@ public class PMCLootGenerator
         return _pocketLootPool;
     }
 
-    protected HashSet<string> GetLootBlacklist()
+    protected HashSet<MongoId> GetLootBlacklist()
     {
-        var blacklist = new HashSet<string>();
+        var blacklist = new HashSet<MongoId>();
         blacklist.UnionWith(_pmcConfig.PocketLoot.Blacklist);
         blacklist.UnionWith(_pmcConfig.GlobalLootBlacklist);
         blacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
@@ -140,8 +141,8 @@ public class PMCLootGenerator
                 item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent) &&
+                    !blacklist.Contains((MongoId) item.Value.Id) &&
+                    !blacklist.Contains((MongoId) item.Value.Parent) &&
                     ItemFitsInto2By2Slot(item.Value)
             ).Select(x => x.Key);
 
@@ -223,8 +224,8 @@ public class PMCLootGenerator
                 item =>
                     allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
                     _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent)
+                    !blacklist.Contains((MongoId) item.Value.Id) &&
+                    !blacklist.Contains((MongoId) item.Value.Parent)
             ).Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)

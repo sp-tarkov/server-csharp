@@ -1,3 +1,5 @@
+using SPTarkov.Server.Core.Models.Common;
+
 namespace SPTarkov.Server.Core.Models.Enums;
 
 public record Money
@@ -7,7 +9,7 @@ public record Money
     public const string DOLLARS = "5696686a4bdc2da3298b456a";
     public const string GP = "5d235b4d86f7742e017bc88a";
 
-    public static HashSet<string> GetMoneyTpls()
+    public static HashSet<MongoId> GetMoneyTpls()
     {
         return [ROUBLES, EUROS, DOLLARS, GP];
     }

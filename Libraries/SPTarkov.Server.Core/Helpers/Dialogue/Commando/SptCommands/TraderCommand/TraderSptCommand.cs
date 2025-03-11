@@ -99,9 +99,9 @@ public class TraderSptCommand(
                     {
                         StackObjectsCount = 1
                     },
-                    ParentId = _hashUtil.Generate(),
+                    ParentId = new MongoId(),
                     SlotId = "main"
-                }   
+                }
             ],
             999999,
             [CreateProfileChangeEvent(profileChangeEventType, quantity, dbTrader.Id)]
@@ -114,7 +114,7 @@ public class TraderSptCommand(
     {
         return new ProfileChangeEvent
         {
-            Id = _hashUtil.Generate(),
+            Id = new MongoId(),
             Type = profileChangeEventType,
             Value = quantity,
             Entity = dbTraderId

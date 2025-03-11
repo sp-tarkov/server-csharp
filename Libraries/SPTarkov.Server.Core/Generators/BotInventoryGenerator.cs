@@ -161,8 +161,8 @@ public class BotInventoryGenerator(
             QuestRaidItems = questRaidItemsId,
             QuestStashItems = questStashItemsId,
             SortingTable = sortingTableId,
-            HideoutAreaStashes = new Dictionary<string, string>(),
-            FastPanel = new Dictionary<string, string>(),
+            HideoutAreaStashes = new Dictionary<string, MongoId?>(),
+            FastPanel = new Dictionary<MongoId, MongoId>(),
             FavoriteItems = [],
             HideoutCustomizationStashId = hideoutCustomizationStashId
         };
@@ -391,10 +391,10 @@ public class BotInventoryGenerator(
     /// <param name="templateInventory"></param>
     /// <param name="isPmc">is bot a PMC</param>
     /// <returns></returns>
-    protected Dictionary<string, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory, bool isPmc)
+    protected Dictionary<MongoId, double> GetPocketPoolByGameEdition(string chosenGameVersion, BotTypeInventory templateInventory, bool isPmc)
     {
         return chosenGameVersion == GameEditions.UNHEARD && isPmc
-            ? new Dictionary<string, double>
+            ? new Dictionary<MongoId, double>
             {
                 [ItemTpl.POCKETS_1X4_TUE] = 1
             }
@@ -406,7 +406,7 @@ public class BotInventoryGenerator(
     /// </summary>
     /// <param name="templateEquipment">Equipment to filter TacticalVest of</param>
     /// <param name="botRole">Role of bot vests are being filtered for</param>
-    public void FilterRigsToThoseWithProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole)
+    public void FilterRigsToThoseWithProtection(Dictionary<EquipmentSlots, Dictionary<MongoId, double>> templateEquipment, string botRole)
     {
         var tacVestsWithArmor = templateEquipment[EquipmentSlots.TacticalVest]
             .Where(kvp => _itemHelper.ItemHasSlots(kvp.Key))
@@ -431,7 +431,7 @@ public class BotInventoryGenerator(
     /// <param name="templateEquipment">Equipment to filter TacticalVest by</param>
     /// <param name="botRole">Role of bot vests are being filtered for</param>
     /// <param name="allowEmptyResult">Should the function return all rigs when 0 unarmored are found</param>
-    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<string, double>> templateEquipment, string botRole,
+    public void FilterRigsToThoseWithoutProtection(Dictionary<EquipmentSlots, Dictionary<MongoId, double>> templateEquipment, string botRole,
         bool allowEmptyResult = true)
     {
         var tacVestsWithoutArmor = templateEquipment[EquipmentSlots.TacticalVest]
@@ -561,7 +561,7 @@ public class BotInventoryGenerator(
                 settings.RandomisationDetails.RandomisedArmorSlots.Contains(settings.RootEquipmentSlot.ToString()))
                 // Filter out mods from relevant blacklist
             {
-                settings.ModPool[pickedItemDb.Id] = GetFilteredDynamicModsForItem(
+                settings.ModPool[(MongoId) pickedItemDb.Id] = GetFilteredDynamicModsForItem(
                     pickedItemDb.Id,
                     botEquipBlacklist.Equipment
                 );
@@ -598,7 +598,7 @@ public class BotInventoryGenerator(
     /// <param name="itemTpl">Item mod pool is being retrieved and filtered</param>
     /// <param name="equipmentBlacklist">Blacklist to filter mod pool with</param>
     /// <returns>Filtered pool of mods</returns>
-    public Dictionary<string, HashSet<string>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, HashSet<string>> equipmentBlacklist)
+    public Dictionary<string, HashSet<MongoId>> GetFilteredDynamicModsForItem(string itemTpl, Dictionary<string, HashSet<MongoId>> equipmentBlacklist)
     {
         var modPool = _botEquipmentModPoolService.GetModsForGearSlot(itemTpl);
         foreach (var modSlot in modPool)

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
@@ -16,7 +17,7 @@ public record ItemConfig : BaseConfig
     /// Items that should be globally blacklisted
     /// </summary>
     [JsonPropertyName("blacklist")]
-    public HashSet<string> Blacklist
+    public HashSet<MongoId> Blacklist
     {
         get;
         set;
@@ -26,7 +27,7 @@ public record ItemConfig : BaseConfig
     /// Items that should not be lootable from any location
     /// </summary>
     [JsonPropertyName("lootableItemBlacklist")]
-    public HashSet<string> LootableItemBlacklist
+    public HashSet<MongoId> LootableItemBlacklist
     {
         get;
         set;
@@ -36,7 +37,7 @@ public record ItemConfig : BaseConfig
     /// items that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
-    public HashSet<string> RewardItemBlacklist
+    public HashSet<MongoId> RewardItemBlacklist
     {
         get;
         set;
@@ -46,7 +47,7 @@ public record ItemConfig : BaseConfig
     /// Item base types that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemTypeBlacklist")]
-    public HashSet<string> RewardItemTypeBlacklist
+    public HashSet<MongoId> RewardItemTypeBlacklist
     {
         get;
         set;
@@ -56,14 +57,14 @@ public record ItemConfig : BaseConfig
     /// Items that can only be found on bosses
     /// </summary>
     [JsonPropertyName("bossItems")]
-    public HashSet<string> BossItems
+    public HashSet<MongoId> BossItems
     {
         get;
         set;
     }
 
     [JsonPropertyName("handbookPriceOverride")]
-    public Dictionary<string, HandbookPriceOverride> HandbookPriceOverride
+    public Dictionary<MongoId, HandbookPriceOverride> HandbookPriceOverride
     {
         get;
         set;
@@ -96,7 +97,7 @@ public record HandbookPriceOverride
     /// NOT parentId from items.json, but handbook.json
     /// </summary>
     [JsonPropertyName("parentId")]
-    public string ParentId
+    public MongoId ParentId
     {
         get;
         set;

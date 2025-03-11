@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Routers;
 
@@ -78,8 +79,8 @@ public class EventOutputHolder
                                 ChangedItems = [],
                                 DeletedItems = []
                             },
-                            Production = new Dictionary<string, Production>(),
-                            Improvements = new Dictionary<string, HideoutImprovement>(),
+                            Production = new Dictionary<MongoId, Production>(),
+                            Improvements = new Dictionary<MongoId, HideoutImprovement>(),
                             Skills = new Skills
                             {
                                 Common = [],
@@ -87,7 +88,7 @@ public class EventOutputHolder
                                 Points = 0
                             },
                             Health = _cloner.Clone(pmcProfile.Health),
-                            TraderRelations = new Dictionary<string, TraderData>(),
+                            TraderRelations = new Dictionary<MongoId, TraderData>(),
                             QuestsStatus = []
                         }
                     }
@@ -129,7 +130,7 @@ public class EventOutputHolder
     /// Required as continuous productions don't reset and stay at 100% completion but client thinks it hasn't started
     /// </summary>
     /// <param name="productions"> Productions in a profile </param>
-    private void CleanUpCompleteCraftsInProfile(Dictionary<string, Production>? productions)
+    private void CleanUpCompleteCraftsInProfile(Dictionary<MongoId, Production>? productions)
     {
         foreach (var production in productions)
         {
@@ -153,7 +154,7 @@ public class EventOutputHolder
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <returns> Dictionary of hideout improvements </returns>
-    private Dictionary<string, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
+    private Dictionary<MongoId, HideoutImprovement>? GetImprovementsFromProfileAndFlagComplete(PmcData pmcData)
     {
         foreach (var improvementKey in pmcData.Hideout.Improvements)
         {
@@ -180,7 +181,7 @@ public class EventOutputHolder
     /// <param name="productions"> Productions from player profile </param>
     /// <param name="sessionId"> Player session ID</param>
     /// <returns> Dictionary of hideout productions </returns>
-    private Dictionary<string, Production>? GetProductionsFromProfileAndFlagComplete(Dictionary<string, Production>? productions, string sessionId)
+    private Dictionary<MongoId, Production>? GetProductionsFromProfileAndFlagComplete(Dictionary<MongoId, Production>? productions, string sessionId)
     {
         foreach (var production in productions)
         {
@@ -243,7 +244,7 @@ public class EventOutputHolder
     /// </summary>
     /// <param name="traderData"> Server data for traders </param>
     /// <returns> Dict of trader id + TraderData </returns>
-    private Dictionary<string, TraderData> ConstructTraderRelations(Dictionary<string, TraderInfo> traderData)
+    private Dictionary<MongoId, TraderData> ConstructTraderRelations(Dictionary<MongoId, TraderInfo> traderData)
     {
         return traderData.ToDictionary(
             trader => trader.Key,

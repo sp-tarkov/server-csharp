@@ -1,11 +1,12 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 
 namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record GetOffersResult
 {
     [JsonPropertyName("categories")]
-    public Dictionary<string, int>? Categories
+    public Dictionary<MongoId, int>? Categories
     {
         get;
         set;

@@ -642,17 +642,17 @@ public class BotLootGenerator(
     public void AddRequiredChildItemsToParent(TemplateItem? itemToAddTemplate, List<Item> itemToAddChildrenTo, bool isPmc, string botRole)
     {
         // Fill ammo box
-        if (_itemHelper.IsOfBaseclass(itemToAddTemplate.Id, BaseClasses.AMMO_BOX))
+        if (_itemHelper.IsOfBaseclass((MongoId) itemToAddTemplate.Id, BaseClasses.AMMO_BOX))
         {
             _itemHelper.AddCartridgesToAmmoBox(itemToAddChildrenTo, itemToAddTemplate);
         }
         // Make money a stack
-        else if (_itemHelper.IsOfBaseclass(itemToAddTemplate.Id, BaseClasses.MONEY))
+        else if (_itemHelper.IsOfBaseclass((MongoId) itemToAddTemplate.Id, BaseClasses.MONEY))
         {
             RandomiseMoneyStackSize(botRole, itemToAddTemplate, itemToAddChildrenTo[0]);
         }
         // Make ammo a stack
-        else if (_itemHelper.IsOfBaseclass(itemToAddTemplate.Id, BaseClasses.AMMO))
+        else if (_itemHelper.IsOfBaseclass((MongoId) itemToAddTemplate.Id, BaseClasses.AMMO))
         {
             RandomiseAmmoStackSize(isPmc, itemToAddTemplate, itemToAddChildrenTo[0]);
         }

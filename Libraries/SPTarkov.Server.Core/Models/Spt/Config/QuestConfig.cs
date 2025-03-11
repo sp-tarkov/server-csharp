@@ -268,7 +268,7 @@ public record RepeatableQuestConfig
     /// Item base types to block when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBaseTypeBlacklist")]
-    public HashSet<string>? RewardBaseTypeBlacklist
+    public HashSet<MongoId>? RewardBaseTypeBlacklist
     {
         get;
         set;
@@ -403,7 +403,7 @@ public record TraderWhitelist
     }
 
     [JsonPropertyName("rewardBaseWhitelist")]
-    public List<string>? RewardBaseWhitelist
+    public List<MongoId>? RewardBaseWhitelist
     {
         get;
         set;

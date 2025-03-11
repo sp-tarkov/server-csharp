@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -152,13 +153,13 @@ public class DatabaseImporter : IOnLoad
 
         // TODO: Fix loading of traders, so their full path is not included as the key
 
-        var tempTraders = new Dictionary<string, Trader>();
+        var tempTraders = new Dictionary<MongoId, Trader>();
 
         // temp fix for trader keys
         foreach (var trader in dataToImport.Traders)
         {
             // fix string for key
-            var tempKey = trader.Key.Split("/").Last();
+            var tempKey = trader.Key.ToString().Split("/").Last();
             tempTraders.Add(tempKey, trader.Value);
         }
 
@@ -168,7 +169,7 @@ public class DatabaseImporter : IOnLoad
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
-        this._logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
+        _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
     }
 

@@ -109,7 +109,7 @@ public class RagfairAssortGenerator(
             if (
                 ragfairConfig.Dynamic.RemoveSeasonalItemsWhenNotInEvent &&
                 !seasonalEventActive &&
-                seasonalItemTplBlacklist.Contains(item.Id)
+                seasonalItemTplBlacklist.Contains((MongoId) item.Id)
             )
             {
                 continue;

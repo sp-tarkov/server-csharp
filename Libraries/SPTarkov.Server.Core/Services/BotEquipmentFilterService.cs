@@ -7,6 +7,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -142,7 +143,7 @@ public class BotEquipmentFilterService
     /// </summary>
     /// <param name="botEquipmentRole">equipment role of bot to look up</param>
     /// <returns>Dictionary of weapon type and their whitelisted scope types</returns>
-    public Dictionary<string, List<string>> GetBotWeaponSightWhitelist(string botEquipmentRole)
+    public Dictionary<MongoId, List<MongoId>> GetBotWeaponSightWhitelist(string botEquipmentRole)
     {
         var botEquipmentSettings = _botConfig.Equipment[botEquipmentRole];
 
@@ -237,7 +238,7 @@ public class BotEquipmentFilterService
                 }
 
                 // Filter equipment slot items to just items in whitelist
-                baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key] = new Dictionary<string, double>();
+                baseBotNode.BotInventory.Equipment[equipmentSlotKey.Key] = new Dictionary<MongoId, double>();
                 foreach (var dict in botEquipment)
                 {
                     if (whitelistEquipmentForSlot.Contains(dict.Key))
@@ -345,7 +346,7 @@ public class BotEquipmentFilterService
     /// <param name="botItemPool">Bot item dictionary to adjust</param>
     protected void AdjustWeighting(
         AdjustmentDetails? weightingAdjustments,
-        Dictionary<EquipmentSlots, Dictionary<string, double>> botItemPool,
+        Dictionary<EquipmentSlots, Dictionary<MongoId, double>> botItemPool,
         bool showEditWarnings = true)
     {
         // TODO: bad typing by key with method below due to, EquipmentSlots
@@ -401,7 +402,7 @@ public class BotEquipmentFilterService
     /// <param name="showEditWarnings"></param>
     protected void AdjustWeighting(
         AdjustmentDetails? weightingAdjustments,
-        Dictionary<string, Dictionary<string, double>> botItemPool,
+        Dictionary<MongoId, Dictionary<MongoId, double>> botItemPool,
         bool showEditWarnings = true)
     {
         if (weightingAdjustments is null)

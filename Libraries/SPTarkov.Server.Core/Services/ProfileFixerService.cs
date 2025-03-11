@@ -85,7 +85,7 @@ public class ProfileFixerService(
                 }
 
                 // Otherwise we need to generate a new unique stash ID for this message's attachments
-                message.Items.Stash = _hashUtil.Generate();
+                message.Items.Stash = new MongoId();
                 message.Items.Data = _itemHelper.AdoptOrphanedItems(message.Items.Stash, message.Items.Data);
 
                 // Because `adoptOrphanedItems` sets the slotId to `hideout`, we need to re-set it to `main` to work with mail
@@ -171,7 +171,7 @@ public class ProfileFixerService(
         var playerIsUsec = pmcProfile.Info.Side.ToLower() == "usec";
 
         // Check Head
-        if (customizationDb[pmcProfile.Customization.Head] is null)
+        if (customizationDb[(MongoId) pmcProfile.Customization.Head] is null)
         {
             var defaultHead = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHead")
@@ -180,7 +180,7 @@ public class ProfileFixerService(
         }
 
         // check Body
-        if (customizationDb[pmcProfile.Customization.Body] is null)
+        if (customizationDb[(MongoId) pmcProfile.Customization.Body] is null)
         {
             var defaultBody = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecBody")
@@ -189,7 +189,7 @@ public class ProfileFixerService(
         }
 
         // check Hands
-        if (customizationDb[pmcProfile.Customization.Hands] is null)
+        if (customizationDb[(MongoId) pmcProfile.Customization.Hands] is null)
         {
             var defaultHands = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecHands")
@@ -198,7 +198,7 @@ public class ProfileFixerService(
         }
 
         // check Feet
-        if (customizationDb[pmcProfile.Customization.Feet] is null)
+        if (customizationDb[(MongoId) pmcProfile.Customization.Feet] is null)
         {
             var defaultFeet = playerIsUsec
                 ? customizationDbArray.FirstOrDefault(x => x.Name == "DefaultUsecFeet")
@@ -301,7 +301,7 @@ public class ProfileFixerService(
 
         for (var i = profileQuests.Count - 1; i >= 0; i--)
         {
-            if (!(quests.ContainsKey(profileQuests[i].QId) || activeRepeatableQuests.Any(x => x.Id == profileQuests[i].QId)))
+            if (!(quests.ContainsKey((MongoId) profileQuests[i].QId) || activeRepeatableQuests.Any(x => x.Id == profileQuests[i].QId)))
             {
                 _logger.Info($"Successfully removed orphaned quest: {profileQuests[i].QId} that doesn't exist in quest data");
                 profileQuests.RemoveAt(i);
@@ -320,7 +320,7 @@ public class ProfileFixerService(
 
         foreach (var profileQuest in profileQuests)
         {
-            var quest = quests.GetValueOrDefault(profileQuest.QId, null);
+            var quest = quests.GetValueOrDefault((MongoId) profileQuest.QId, null);
             if (quest is null)
             {
                 continue;
@@ -559,7 +559,7 @@ public class ProfileFixerService(
         {
             foreach (var item in inventoryItemsToCheck)
             {
-                if (!itemsDb.ContainsKey(item.Template))
+                if (!itemsDb.ContainsKey((MongoId) item.Template))
                 {
                     _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -634,7 +634,7 @@ public class ProfileFixerService(
                 foreach (var item in message.Items.Data)
                 {
                     // Check item exists in itemsDb
-                    if (!itemsDb.ContainsKey(item.Template))
+                    if (!itemsDb.ContainsKey((MongoId) item.Template))
                     {
                         _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
                     }
@@ -696,7 +696,7 @@ public class ProfileFixerService(
                 foreach (var successReward in activeQuest.Rewards.Success.Where(reward => reward.Type == RewardType.Item))
                 foreach (var item in successReward.Items)
                 {
-                    if (!itemsDb.ContainsKey(item.Template))
+                    if (!itemsDb.ContainsKey((MongoId) item.Template))
                     {
                         _logger.Warning(
                             $"Non-default quest: {activeQuest.Id} from trader: {activeQuest.TraderId} removed from RepeatableQuests list in profile"
@@ -730,12 +730,12 @@ public class ProfileFixerService(
     protected bool ShouldRemoveWeaponEquipmentBuild(
         string buildType,
         UserBuild build,
-        Dictionary<string, TemplateItem> itemsDb)
+        Dictionary<MongoId, TemplateItem> itemsDb)
     {
         if (buildType == "weapon")
             // Get items not found in items db
         {
-            foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+            foreach (var item in (build as WeaponBuild).Items.Where(item => !itemsDb.ContainsKey((MongoId) item.Template)))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -755,7 +755,7 @@ public class ProfileFixerService(
         if (buildType == "equipment")
             // Get items not found in items db
         {
-            foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey(item.Template)))
+            foreach (var item in (build as EquipmentBuild).Items.Where(item => !itemsDb.ContainsKey((MongoId) item.Template)))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.Template));
 
@@ -781,7 +781,7 @@ public class ProfileFixerService(
      */
     protected bool ShouldRemoveMagazineBuild(
         MagazineBuild magazineBuild,
-        Dictionary<string, TemplateItem> itemsDb)
+        Dictionary<MongoId, TemplateItem> itemsDb)
     {
         foreach (var item in magazineBuild.Items)
         {
@@ -792,7 +792,7 @@ public class ProfileFixerService(
             }
 
             // Check item exists in itemsDb
-            if (!itemsDb.ContainsKey(item.TemplateId))
+            if (!itemsDb.ContainsKey((MongoId) item.TemplateId))
             {
                 _logger.Error(_localisationService.GetText("fixer-mod_item_found", item.TemplateId));
 

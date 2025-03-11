@@ -114,11 +114,11 @@ public class RagfairOfferHelper(
     protected void CheckAndLockOfferFromPlayerTieredFlea(
         TieredFlea tieredFlea,
         RagfairOffer offer,
-        List<string> tieredFleaLimitTypes,
+        List<MongoId> tieredFleaLimitTypes,
         int playerLevel)
     {
         var offerItemTpl = offer.Items.FirstOrDefault().Template;
-        if (tieredFlea.AmmoTplUnlocks is not null && _itemHelper.IsOfBaseclass(offerItemTpl, BaseClasses.AMMO))
+        if (tieredFlea.AmmoTplUnlocks is not null && _itemHelper.IsOfBaseclass((MongoId) offerItemTpl, BaseClasses.AMMO))
         {
             if (tieredFlea.AmmoTplUnlocks.TryGetValue(offerItemTpl, out var unlockLevel) && playerLevel < unlockLevel)
             {
@@ -129,7 +129,7 @@ public class RagfairOfferHelper(
         }
 
         // Check for a direct level requirement for the offer item
-        if (tieredFlea.UnlocksTpl.TryGetValue(offerItemTpl, out var itemLevelRequirement))
+        if (tieredFlea.UnlocksTpl.TryGetValue((MongoId) offerItemTpl, out var itemLevelRequirement))
         {
             if (playerLevel < itemLevelRequirement)
             {
@@ -140,11 +140,11 @@ public class RagfairOfferHelper(
         }
 
         // Optimisation - Ensure the item has at least one of the limited base types
-        if (_itemHelper.IsOfBaseclasses(offerItemTpl, tieredFleaLimitTypes))
+        if (_itemHelper.IsOfBaseclasses((MongoId) offerItemTpl, tieredFleaLimitTypes))
             // Loop over flea types
         {
             foreach (var tieredItemType in tieredFleaLimitTypes
-                         .Where(tieredItemType => _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType)))
+                         .Where(tieredItemType => _itemHelper.IsOfBaseclass((MongoId) offerItemTpl, tieredItemType)))
             {
                 if (playerLevel < tieredFlea.UnlocksType[tieredItemType])
                 {
@@ -348,7 +348,7 @@ public class RagfairOfferHelper(
         var offerRootItem = offer.Items[0];
         /** Currency offer is sold for */
         var moneyTypeTpl = offer.Requirements[0].Template;
-        var isTraderOffer = _databaseService.GetTraders().ContainsKey(offer.User.Id);
+        var isTraderOffer = _databaseService.GetTraders().ContainsKey((MongoId) offer.User.Id);
 
         if (!isTraderOffer && playerIsFleaBanned)
         {
@@ -461,7 +461,7 @@ public class RagfairOfferHelper(
     /// <returns>True if item is locked, false if item is purchaseable</returns>
     protected bool TraderOfferLockedBehindLoyaltyLevel(RagfairOffer offer, PmcData pmcProfile)
     {
-        if (!pmcProfile.TradersInfo.TryGetValue(offer.User.Id, out var userTraderSettings))
+        if (!pmcProfile.TradersInfo.TryGetValue((MongoId) offer.User.Id, out var userTraderSettings))
         {
             _logger.Warning(
                 $"Trader: {offer.User.Id} not found in profile, assuming offer is not locked being loyalty level"
@@ -583,7 +583,7 @@ public class RagfairOfferHelper(
         var loyaltyLockedOffers = new HashSet<string>();
         foreach (var offer in offers.Where(offer => OfferIsFromTrader(offer)))
         {
-            if (pmcProfile.TradersInfo.TryGetValue(offer.User.Id, out var traderDetails) &&
+            if (pmcProfile.TradersInfo.TryGetValue((MongoId) offer.User.Id, out var traderDetails) &&
                 traderDetails.LoyaltyLevel < offer.LoyaltyLevel)
             {
                 loyaltyLockedOffers.Add(offer.Id);

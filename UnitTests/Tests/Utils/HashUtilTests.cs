@@ -1,3 +1,4 @@
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using UnitTests.Mock;
@@ -16,10 +17,10 @@ public class HashUtilTests
         for (var i = 0; i < 100; i++)
         {
             // Invalid mongoId character
-            var result = _hashUtil.Generate();
+            var result = new MongoId();
 
             // Invalid mongoId length
-            var test = _hashUtil.IsValidMongoId(result);
+            var test = MongoId.IsValidMongoId(result);
 
             Assert.AreEqual(
                 true,
@@ -43,7 +44,7 @@ public class HashUtilTests
     )]
     public void IsValidMongoIdTest(string mongoId, bool passes, string failMessage)
     {
-        var result = _hashUtil.IsValidMongoId(mongoId);
+        var result = MongoId.IsValidMongoId(mongoId);
         Assert.AreEqual(
             passes,
             result,

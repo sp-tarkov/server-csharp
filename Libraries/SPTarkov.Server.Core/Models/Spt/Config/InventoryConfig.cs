@@ -91,14 +91,14 @@ public record RewardDetails
     }
 
     [JsonPropertyName("rewardTplPool")]
-    public Dictionary<string, double>? RewardTplPool
+    public Dictionary<MongoId, double>? RewardTplPool
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardTypePool")]
-    public List<string>? RewardTypePool
+    public List<MongoId>? RewardTypePool
     {
         get;
         set;
@@ -108,7 +108,7 @@ public record RewardDetails
 public record SealedAirdropContainerSettings
 {
     [JsonPropertyName("weaponRewardWeight")]
-    public Dictionary<string, double> WeaponRewardWeight
+    public Dictionary<MongoId, double> WeaponRewardWeight
     {
         get;
         set;
@@ -132,21 +132,21 @@ public record SealedAirdropContainerSettings
     }
 
     [JsonPropertyName("weaponModRewardLimits")]
-    public Dictionary<string, MinMax<int>> WeaponModRewardLimits
+    public Dictionary<MongoId, MinMax<int>> WeaponModRewardLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("rewardTypeLimits")]
-    public Dictionary<string, MinMax<int>> RewardTypeLimits
+    public Dictionary<MongoId, MinMax<int>> RewardTypeLimits
     {
         get;
         set;
     }
 
     [JsonPropertyName("ammoBoxWhitelist")]
-    public List<string> AmmoBoxWhitelist
+    public List<MongoId> AmmoBoxWhitelist
     {
         get;
         set;

@@ -83,7 +83,7 @@ public readonly partial struct MongoId : IEquatable<MongoId>
         return other.Equals(ToString(), StringComparison.InvariantCultureIgnoreCase);
     }
 
-    public bool IsValidMongoId(string stringToCheck)
+    public static bool IsValidMongoId(string stringToCheck)
     {
         return MongoIdRegex().IsMatch(stringToCheck);
     }

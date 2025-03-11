@@ -276,7 +276,7 @@ public class RagfairController
     /// <param name="searchRequest">Client search request data</param>
     /// <param name="offers">Ragfair offers to get categories for</param>
     /// <returns>Record with templates + counts</returns>
-    protected Dictionary<string, int> GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest,
+    protected Dictionary<MongoId, int> GetSpecificCategories(PmcData pmcProfile, SearchRequestData searchRequest,
         List<RagfairOffer> offers)
     {
         // Linked/required search categories
@@ -300,7 +300,7 @@ public class RagfairController
                 _logger.Debug(_jsonUtil.Serialize(searchRequest));
             }
 
-            return new Dictionary<string, int>();
+            return new Dictionary<MongoId, int>();
         }
 
         return _ragfairServer.GetAllActiveCategories(playerHasFleaUnlocked, searchRequest, offerPool);
@@ -596,7 +596,7 @@ public class RagfairController
         var averageOfferPrice = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue((MongoId) newRootOfferItem.Template, out var itemPriceModifer))
         {
             averageOfferPrice *= itemPriceModifer;
         }
@@ -706,7 +706,7 @@ public class RagfairController
         var singleItemPrice = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(newRootOfferItem.Template, out var itemPriceModifer))
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue((MongoId) newRootOfferItem.Template, out var itemPriceModifer))
         {
             singleItemPrice *= itemPriceModifer;
         }
@@ -811,7 +811,7 @@ public class RagfairController
         var averageOfferPriceSingleItem = averages.Avg;
 
         // Check for and apply item price modifer if it exists in config
-        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue(rootItem.Template, out var itemPriceModifer))
+        if (_ragfairConfig.Dynamic.ItemPriceMultiplier.TryGetValue((MongoId) rootItem.Template, out var itemPriceModifer))
         {
             averageOfferPriceSingleItem *= itemPriceModifer;
         }
@@ -1197,12 +1197,12 @@ public class RagfairController
     /// Get prices for all items on flea
     /// </summary>
     /// <returns>Dictionary of tpl and item price</returns>
-    public Dictionary<string, double> GetAllFleaPrices()
+    public Dictionary<MongoId, double> GetAllFleaPrices()
     {
         return _ragfairPriceService.GetAllFleaPrices();
     }
 
-    public Dictionary<string, double> GetStaticPrices()
+    public Dictionary<MongoId, double> GetStaticPrices()
     {
         return _ragfairPriceService.GetAllStaticPrices();
     }

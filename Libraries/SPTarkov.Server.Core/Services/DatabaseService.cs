@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Common;
 using Hideout = SPTarkov.Server.Core.Models.Spt.Hideout.Hideout;
 using Locations = SPTarkov.Server.Core.Models.Spt.Server.Locations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
@@ -216,7 +217,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/templates/customisation.json
      */
-    public Dictionary<string, CustomizationItem?> GetCustomization()
+    public Dictionary<MongoId, CustomizationItem?> GetCustomization()
     {
         if (_databaseServer.GetTables().Templates?.Customization == null)
         {
@@ -247,7 +248,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/templates/items.json
      */
-    public Dictionary<string, TemplateItem> GetItems()
+    public Dictionary<MongoId, TemplateItem> GetItems()
     {
         if (_databaseServer.GetTables().Templates?.Items == null)
         {
@@ -260,7 +261,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/templates/prices.json
      */
-    public Dictionary<string, double> GetPrices()
+    public Dictionary<MongoId, double> GetPrices()
     {
         if (_databaseServer.GetTables().Templates?.Prices == null)
         {
@@ -286,7 +287,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/templates/quests.json
      */
-    public Dictionary<string, Quest> GetQuests()
+    public Dictionary<MongoId, Quest> GetQuests()
     {
         if (_databaseServer.GetTables().Templates?.Quests == null)
         {
@@ -299,7 +300,7 @@ public class DatabaseService(
     /**
      * @returns assets/database/traders/
      */
-    public Dictionary<string, Trader> GetTraders()
+    public Dictionary<MongoId, Trader> GetTraders()
     {
         if (_databaseServer.GetTables().Traders == null)
         {
@@ -336,59 +337,5 @@ public class DatabaseService(
         }
 
         return _databaseServer.GetTables().Templates?.LocationServices!;
-    }
-
-    /**
-     * Validates that the database doesn't contain invalid ID data
-     */
-    public void ValidateDatabase()
-    {
-        var start = Stopwatch.StartNew();
-
-        isDataValid =
-            ValidateTable(GetQuests(), "quest") &&
-            ValidateTable(GetTraders(), "trader") &&
-            ValidateTable(GetItems(), "item") &&
-            ValidateTable(GetCustomization(), "customization");
-
-        if (!isDataValid)
-        {
-            _logger.Error(_localisationService.GetText("database-invalid_data"));
-        }
-
-        start.Stop();
-        if (_logger.IsLogEnabled(LogLevel.Debug))
-        {
-            _logger.Debug($"ID validation took: {start.ElapsedMilliseconds}ms");
-        }
-    }
-
-    /**
-     * Validate that the given table only contains valid MongoIDs
-     * @param table Table to validate for MongoIDs
-     * @param tableType The type of table, used in output message
-     * @returns True if the table only contains valid data
-     */
-    private bool ValidateTable<T>(Dictionary<string, T> table, string tableType)
-    {
-        foreach (var keyValuePair in table)
-        {
-            if (!_hashUtil.IsValidMongoId(keyValuePair.Key))
-            {
-                _logger.Error($"Invalid {tableType} ID: '{keyValuePair.Key}'");
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Check if the database is valid
-     * @returns True if the database contains valid data, false otherwise
-     */
-    public bool IsDatabaseValid()
-    {
-        return isDataValid;
     }
 }

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 
@@ -6,10 +7,6 @@ namespace SPTarkov.Server.Core.Models.Eft.Ragfair;
 
 public record RagfairOffer
 {
-    private string? _id;
-
-    private string? _root;
-
     [JsonPropertyName("sellResult")]
     public List<SellResult>? SellResults
     {
@@ -18,16 +15,10 @@ public record RagfairOffer
     }
 
     [JsonPropertyName("_id")]
-    public string? Id
+    public MongoId? Id
     {
-        get
-        {
-            return _id;
-        }
-        set
-        {
-            _id = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("items")]
@@ -45,16 +36,10 @@ public record RagfairOffer
     }
 
     [JsonPropertyName("root")]
-    public string? Root
+    public MongoId? Root
     {
-        get
-        {
-            return _root;
-        }
-        set
-        {
-            _root = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("intId")]
@@ -223,19 +208,11 @@ public record OfferRequirement
 
 public record RagfairOfferUser
 {
-    private string? _id;
-
     [JsonPropertyName("id")]
-    public string? Id
+    public MongoId? Id
     {
-        get
-        {
-            return _id;
-        }
-        set
-        {
-            _id = string.Intern(value);
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("nickname")]
