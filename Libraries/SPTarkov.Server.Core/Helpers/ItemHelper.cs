@@ -452,7 +452,7 @@ public class ItemHelper(
 
     // Get all soft insert slot ids
     // @returns A List of soft insert ids (e.g. soft_armor_back, helmet_top)
-    public FrozenSet<string> GetSoftInsertSlotIds()
+    public static FrozenSet<string> GetSoftInsertSlotIds()
     {
         return _softInsertIds;
     }
@@ -1981,7 +1981,7 @@ public class ItemHelper(
 
     // Get a list of slot names that hold removable plates
     // Returns Array of slot ids (e.g. front_plate)
-    public FrozenSet<string> GetRemovablePlateSlotIds()
+    public static FrozenSet<string> GetRemovablePlateSlotIds()
     {
         return _removablePlateSlotIds;
     }
