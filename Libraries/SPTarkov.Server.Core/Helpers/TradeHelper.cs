@@ -275,7 +275,7 @@ public class TradeHelper(
             IncrementCirculateSoldToTraderCounter(profileWithItemsToSell, profileToReceiveMoney, sellRequest);
         }
 
-        var pattern = @"\s+";
+        const string pattern = @"\s+";
 
         // Find item in inventory and remove it
         foreach (var itemToBeRemoved in sellRequest.Items)
@@ -320,7 +320,7 @@ public class TradeHelper(
         ProcessSellTradeRequestData sellRequest
     )
     {
-        var circulateQuestId = "6663149f1d3ec95634095e75";
+        const string circulateQuestId = "6663149f1d3ec95634095e75";
         var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(
             quest => quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started
         );

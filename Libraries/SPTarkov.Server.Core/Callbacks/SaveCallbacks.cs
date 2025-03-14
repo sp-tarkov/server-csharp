@@ -28,9 +28,9 @@ public class SaveCallbacks(
         return "spt-save";
     }
 
-    public bool OnUpdate(long secondsSinceLastRun)
+    public bool OnUpdate(long timeSinceLastRun)
     {
-        if (secondsSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
+        if (timeSinceLastRun > _coreConfig.ProfileSaveIntervalInSeconds)
         {
             _saveServer.Save();
             return true;

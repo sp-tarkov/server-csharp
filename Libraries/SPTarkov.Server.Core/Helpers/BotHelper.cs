@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -18,7 +19,7 @@ public class BotHelper(
 {
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected static readonly HashSet<string?> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
+    protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
     protected Dictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -70,7 +71,7 @@ public class BotHelper(
     /// <param name="typeToAdd">bot type to add to friendly list</param>
     public void AddBotToFriendlyList(DifficultyCategories difficultySettings, string typeToAdd)
     {
-        var friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
+        const string friendlyBotTypesKey = "FRIENDLY_BOT_TYPES";
 
         // Null guard
         if (difficultySettings.Mind[friendlyBotTypesKey] is null)
@@ -88,7 +89,7 @@ public class BotHelper(
     /// <param name="typesToAdd">bot type to add to revenge list</param>
     public void AddBotToRevengeList(DifficultyCategories difficultySettings, string[] typesToAdd)
     {
-        var revengePropKey = "REVENGE_BOT_TYPES";
+        const string revengePropKey = "REVENGE_BOT_TYPES";
 
         // Nothing to add
         if (typesToAdd is null)

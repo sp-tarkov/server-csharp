@@ -11,15 +11,15 @@ public static class ListExtensions
 
     public static T PopFirst<T>(this IList<T> source)
     {
-        var r = source.First();
-        source.Remove(source.First());
+        var r = source[0];
+        source.Remove(source[0]);
         return r;
     }
 
     public static T PopLast<T>(this IList<T> source)
     {
-        var r = source.Last();
-        source.Remove(source.Last());
+        var r = source[^1];
+        source.Remove(source[^1]);
         return r;
     }
 }

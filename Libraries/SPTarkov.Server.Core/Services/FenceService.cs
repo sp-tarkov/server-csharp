@@ -28,19 +28,19 @@ public class FenceService(
     ICloner _cloner
 )
 {
-    /**
-     * Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts()
-     */
+    /// <summary>
+    /// Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts()
+    /// </summary>
     protected FenceAssortGenerationValues desiredAssortCounts;
 
-    /**
-     * Main assorts you see at all rep levels
-     */
+    /// <summary>
+    /// Main assorts you see at all rep levels
+    /// </summary>
     protected TraderAssort? fenceAssort;
 
-    /**
-     * Assorts shown on a separate tab when you max out fence rep
-     */
+    /// <summary>
+    /// Assorts shown on a separate tab when you max out fence rep
+    /// </summary>
     protected TraderAssort? fenceDiscountAssort;
 
     protected HashSet<string> fenceItemUpdCompareProperties =
@@ -56,65 +56,57 @@ public class FenceService(
         "RepairKit"
     ];
 
-    /**
-     * Time when some items in assort will be replaced
-     */
+    /// <summary>
+    /// Time when some items in assort will be replaced
+    /// </summary>
     protected long nextPartialRefreshTimestamp;
 
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
 
-    /**
-     * Replace main fence assort with new assort
-     * @param assort New assorts to replace old with
-     */
+    /// <summary>
+    /// Replace main fence assort with new assort
+    /// </summary>
+    /// <param name="assort"> New assorts to replace old with </param>
     public void SetFenceAssort(TraderAssort assort)
     {
         fenceAssort = assort;
     }
 
-    /**
-     * Replace discount fence assort with new assort
-     * @param assort New assorts to replace old with
-     */
-    public void SetDiscountFenceAssort(TraderAssort assort)
-    {
-        fenceDiscountAssort = assort;
-    }
-
-    /**
-     * Get main fence assort
-     * @return ITraderAssort
-     */
-    public TraderAssort? GetMainFenceAssort()
-    {
-        return fenceAssort;
-    }
-
-    /**
-     * Get discount fence assort
-     * @return ITraderAssort
-     */
-    public TraderAssort? GetDiscountFenceAssort()
-    {
-        return fenceDiscountAssort;
-    }
-
-    /**
-     * Replace high rep level fence assort with new assort
-     * @param discountAssort New assorts to replace old with
-     */
+    /// <summary>
+    /// Replace discount fence assort with new assort
+    /// </summary>
+    /// <param name="discountAssort"> New assorts to replace old with </param>
     public void SetFenceDiscountAssort(TraderAssort discountAssort)
     {
         fenceDiscountAssort = discountAssort;
     }
 
-    /**
-     * Get assorts player can purchase
-     * Adjust prices based on fence level of player
-     * @param pmcProfile Player profile
-     * @returns ITraderAssort
-     */
+    /// <summary>
+    /// Get main fence assort
+    /// </summary>
+    /// <returns> TraderAssort </returns>
+    public TraderAssort? GetMainFenceAssort()
+    {
+        return fenceAssort;
+    }
+
+    /// <summary>
+    /// Get discount fence assort
+    /// </summary>
+    /// <returns> TraderAssort </returns>
+    /// @return ITraderAssort
+    public TraderAssort? GetDiscountFenceAssort()
+    {
+        return fenceDiscountAssort;
+    }
+
+    /// <summary>
+    /// Get assorts player can purchase <br/>
+    /// Adjust prices based on fence level of player
+    /// </summary>
+    /// <param name="pmcProfile"> Player profile </param>
+    /// <returns> TraderAssort </returns>
     public TraderAssort GetFenceAssorts(PmcData pmcProfile)
     {
         if (traderConfig.Fence.RegenerateAssortsOnRefresh)
@@ -144,11 +136,11 @@ public class FenceService(
         return assort;
     }
 
-    /**
-     * Adds to fence assort a single item (with its children)
-     * @param items the items to add with all its childrens
-     * @param mainItem the most parent item of the array
-     */
+    /// <summary>
+    /// Adds to fence assort a single item (with its children)
+    /// </summary>
+    /// <param name="items"> The items to add with all its children </param>
+    /// <param name="mainItem"> The most parent item of the array </param>
     public void AddItemsToFenceAssort(List<Item> items, Item mainItem)
     {
         // HUGE THANKS TO LACYWAY AND LEAVES FOR PROVIDING THIS SOLUTION FOR SPT TO IMPLEMENT!!
@@ -192,12 +184,12 @@ public class FenceService(
         UpdateFenceAssorts(createAssort, fenceAssort);
     }
 
-    /**
-     * Calculates the overall price for an item (with all its children)
-     * @param itemTpl the item tpl to calculate the fence price for
-     * @param items the items (with its children) to calculate fence price for
-     * @returns the fence price of the item
-     */
+    /// <summary>
+    /// Calculates the overall price for an item (with all its children)
+    /// </summary>
+    /// <param name="itemTpl"> The item tpl to calculate the fence price for </param>
+    /// <param name="items"> The items (with its children) to calculate fence price for </param>
+    /// <returns> Price of the item for Fence </returns>
     public double? GetItemPrice(string itemTpl, List<Item> items)
     {
         return itemHelper.IsOfBaseclass(itemTpl, BaseClasses.AMMO_BOX)
@@ -205,12 +197,12 @@ public class FenceService(
             : handbookHelper.GetTemplatePrice(itemTpl) * traderConfig.Fence.ItemPriceMult;
     }
 
-    /**
-     * Calculate the overall price for an ammo box, where only one item is
-     * the ammo box itself and every other items are the bullets in that box
-     * @param items the ammo box (and all its children ammo items)
-     * @returns the price of the ammo box
-     */
+    /// <summary>
+    /// Calculate the overall price for an ammo box, where only one item is
+    /// the ammo box itself and every other items are the bullets in that box
+    /// </summary>
+    /// <param name="items"> The ammo box (and all its children ammo items) </param>
+    /// <returns> The price of the ammo box </returns>
     protected double? GetAmmoBoxPrice(List<Item> items)
     {
         double? total = 0D;
@@ -225,12 +217,12 @@ public class FenceService(
         return total;
     }
 
-    /**
-     * Adjust all items contained inside an assort by a multiplier
-     * @param assort (clone)Assort that contains items with prices to adjust
-     * @param itemMultiplier multiplier to use on items
-     * @param presetMultiplier preset multiplier to use on presets
-     */
+    /// <summary>
+    /// Adjust all items contained inside an assort by a multiplier
+    /// </summary>
+    /// <param name="assort"> (clone) Assort that contains items with prices to adjust </param>
+    /// <param name="itemMultiplier"> Multiplier to use on items </param>
+    /// <param name="presetMultiplier"> Multiplier to use on presets </param>
     protected void AdjustAssortItemPricesByConfigMultiplier(
         TraderAssort assort,
         double itemMultiplier,
@@ -244,12 +236,13 @@ public class FenceService(
         }
     }
 
-    /**
-     * Merge two trader assort files together
-     * @param firstAssort assort 1#
-     * @param secondAssort  assort #2
-     * @returns merged assort
-     */
+    /// <summary>
+    /// Merge two trader assort files together
+    /// </summary>
+    /// <param name="firstAssort"> Assort #1 </param>
+    /// <param name="secondAssort"> Assort #2 </param>
+    /// <returns> Merged assort </returns>
+    // TODO: can be moved to a helper?
     protected TraderAssort MergeAssorts(TraderAssort firstAssort, TraderAssort secondAssort)
     {
         foreach (var itemId in secondAssort.BarterScheme.Keys)
@@ -270,13 +263,13 @@ public class FenceService(
         return firstAssort;
     }
 
-    /**
-     * Adjust assorts price by a modifier
-     * @param item assort item details
-     * @param assort assort to be modified
-     * @param modifier value to multiply item price by
-     * @param presetModifier value to multiply preset price by
-     */
+    /// <summary>
+    /// Adjust assorts price by a modifier
+    /// </summary>
+    /// <param name="item"> Assort item details</param>
+    /// <param name="assort"> Assort to be modified </param>
+    /// <param name="modifier"> Value to multiply item price by </param>
+    /// <param name="presetModifier"> Value to multiply preset price by </param>
     protected void AdjustItemPriceByModifier(
         Item item,
         TraderAssort assort,
@@ -313,27 +306,27 @@ public class FenceService(
         }
     }
 
-    /**
-     * Get fence assorts with no price adjustments based on fence rep
-     * @returns ITraderAssort
-     */
+    /// <summary>
+    /// Get fence assorts with no price adjustments based on fence rep
+    /// </summary>
+    /// <returns> TraderAssort </returns>
     public TraderAssort GetRawFenceAssorts()
     {
         return MergeAssorts(_cloner.Clone(fenceAssort), _cloner.Clone(fenceDiscountAssort));
     }
 
-    /**
-     * Does fence need to perform a partial refresh because its passed the refresh timer defined in trader.json
-     * @returns true if it needs a partial refresh
-     */
+    /// <summary>
+    /// Does fence need to perform a partial refresh because its passed the refresh timer defined in trader.json
+    /// </summary>
+    /// <returns> True if it needs a partial refresh </returns>
     public bool NeedsPartialRefresh()
     {
         return timeUtil.GetTimeStamp() > nextPartialRefreshTimestamp;
     }
 
-    /**
-     * Replace a percentage of fence assorts with freshly generated items
-     */
+    /// <summary>
+    /// Replace a percentage of fence assorts with freshly generated items
+    /// </summary>
     public void PerformPartialRefresh()
     {
         var itemCountToReplace = GetCountOfItemsToReplace(traderConfig.Fence.AssortSize);
@@ -391,11 +384,11 @@ public class FenceService(
         IncrementPartialRefreshTime();
     }
 
-    /**
-     * Handle the process of folding new assorts into existing assorts, when a new assort exists already, increment its StackObjectsCount instead
-     * @param newFenceAssorts Assorts to fold into existing fence assorts
-     * @param existingFenceAssorts Current fence assorts new assorts will be added to
-     */
+    /// <summary>
+    /// Handle the process of folding new assorts into existing assorts, when a new assort exists already, increment its StackObjectsCount instead
+    /// </summary>
+    /// <param name="newFenceAssorts"> Assorts to fold into existing fence assorts </param>
+    /// <param name="existingFenceAssorts"> Current fence assorts, new assorts will be added to </param>
     protected void UpdateFenceAssorts(
         CreateFenceAssortsResult newFenceAssorts,
         TraderAssort existingFenceAssorts
@@ -454,20 +447,20 @@ public class FenceService(
         }
     }
 
-    /**
-     * Increment fence next refresh timestamp by current timestamp + partialRefreshTimeSeconds from config
-     */
+    /// <summary>
+    /// Increment fence next refresh timestamp by current timestamp + partialRefreshTimeSeconds from config
+    /// </summary>
     protected void IncrementPartialRefreshTime()
     {
         nextPartialRefreshTimestamp = timeUtil.GetTimeStamp() + traderConfig.Fence.PartialRefreshTimeSeconds;
     }
 
-    /**
-     * Get values that will hydrate the passed in assorts back to the desired counts
-     * @param assortItems Current assorts after items have been removed
-     * @param generationValues Base counts assorts should be adjusted to
-     * @returns IGenerationAssortValues object with adjustments needed to reach desired state
-     */
+    /// <summary>
+    /// Get values that will hydrate the passed in assorts back to the desired counts
+    /// </summary>
+    /// <param name="assortItems"> Current assorts after items have been removed </param>
+    /// <param name="generationValues"> Base counts assorts should be adjusted to </param>
+    /// <returns> GenerationAssortValues object with adjustments needed to reach desired state </returns>
     protected GenerationAssortValues GetItemCountsToGenerate(
         List<Item> assortItems,
         GenerationAssortValues generationValues
@@ -507,11 +500,11 @@ public class FenceService(
         };
     }
 
-    /**
-     * Delete desired number of items from assort (including children)
-     * @param itemCountToReplace
-     * @param discountItemCountToReplace
-     */
+    /// <summary>
+    /// Delete desired number of items from assort (including children)
+    /// </summary>
+    /// <param name="itemCountToReplace"> Number of items to replace </param>
+    /// <param name="assort"> Assort to adjust </param>
     protected void DeleteRandomAssorts(int itemCountToReplace, TraderAssort assort)
     {
         if (assort?.Items?.Count > 0)
@@ -524,11 +517,11 @@ public class FenceService(
         }
     }
 
-    /**
-     * Choose an item at random and remove it + mods from assorts
-     * @param assort Trader assort to remove item from
-     * @param rootItems Pool of root items to pick from to remove
-     */
+    /// <summary>
+    /// Choose an item at random and remove it + mods from assorts
+    /// </summary>
+    /// <param name="assort"> Trader assort to remove item from </param>
+    /// <param name="rootItems"> Pool of root items to pick from to remove </param>
     protected void RemoveRandomItemFromAssorts(TraderAssort assort, List<Item> rootItems)
     {
         // Pick a random root item to remove from Fence
@@ -573,20 +566,20 @@ public class FenceService(
         assort.LoyalLevelItems.Remove(rootItemToAdjust.Id);
     }
 
-    /**
-     * Get an integer rounded count of items to replace based on percentrage from traderConfig value
-     * @param totalItemCount total item count
-     * @returns rounded int of items to replace
-     */
+    /// <summary>
+    /// Get an integer rounded count of items to replace based on percentage from traderConfig value
+    /// </summary>
+    /// <param name="totalItemCount"> Total item count </param>
+    /// <returns> Rounded int of items to replace </returns>
     protected int GetCountOfItemsToReplace(int totalItemCount)
     {
         return (int) Math.Round(totalItemCount * (traderConfig.Fence.PartialRefreshChangePercent / 100));
     }
 
-    /**
-     * Get the count of items fence offers
-     * @returns number
-     */
+    /// <summary>
+    /// Get the count of items fence offers
+    /// </summary>
+    /// <returns> Number </returns>
     public int GetOfferCount()
     {
         if ((fenceAssort?.Items?.Count ?? 0) == 0)
@@ -597,10 +590,10 @@ public class FenceService(
         return fenceAssort.Items.Count;
     }
 
-    /**
-     * Create trader assorts for fence and store in fenceService cache
-     * Uses fence base cache generatedon server start as a base
-     */
+    /// <summary>
+    /// Create trader assorts for fence and store in fenceService cache
+    /// Uses fence base cache generation server start as a base
+    /// </summary>
     public void GenerateFenceAssorts()
     {
         // Reset refresh time now assorts are being generated
@@ -622,11 +615,11 @@ public class FenceService(
         SetFenceDiscountAssort(ConvertIntoFenceAssort(discountAssorts));
     }
 
-    /**
-     * Convert the intermediary assort data generated into format client can process
-     * @param intermediaryAssorts Generated assorts that will be converted
-     * @returns ITraderAssort
-     */
+    /// <summary>
+    /// Convert the intermediary assort data generated into format client can process
+    /// </summary>
+    /// <param name="intermediaryAssorts"> Generated assorts that will be converted </param>
+    /// <returns> TraderAssort in the correct data format for Fence </returns>
     protected TraderAssort ConvertIntoFenceAssort(CreateFenceAssortsResult intermediaryAssorts)
     {
         var result = CreateFenceAssortSkeleton();
@@ -641,10 +634,10 @@ public class FenceService(
         return result;
     }
 
-    /**
-     * Create object that contains calculated fence assort item values to make based on config
-     * Stored in desiredAssortCounts
-     */
+    /// <summary>
+    /// Create object that contains calculated fence assort item values to make based on config.
+    /// Stored in desiredAssortCounts
+    /// </summary>
     protected void CreateInitialFenceAssortGenerationValues()
     {
         var result = new FenceAssortGenerationValues
@@ -690,10 +683,10 @@ public class FenceService(
         desiredAssortCounts = result;
     }
 
-    /**
-     * Create skeleton to hold assort items
-     * @returns ITraderAssort object
-     */
+    /// <summary>
+    /// Create skeleton to hold assort items
+    /// </summary>
+    /// <returns> TraderAssort object </returns>
     protected TraderAssort CreateFenceAssortSkeleton()
     {
         return new TraderAssort
@@ -705,11 +698,12 @@ public class FenceService(
         };
     }
 
-    /**
-     * Hydrate assorts parameter object with generated assorts
-     * @param assortCount Number of assorts to generate
-     * @param assorts object to add created assorts to
-     */
+    /// <summary>
+    /// Hydrate assorts parameter object with generated assorts
+    /// </summary>
+    /// <param name="itemCounts"> Number of items to generate per type (Item, WeaponPreset, EquipmentPreset) </param>
+    /// <param name="loyaltyLevel"> Loyalty level to set new item to </param>
+    /// <returns> CreateFenceAssortResult object </returns>
     protected CreateFenceAssortsResult CreateAssorts(GenerationAssortValues itemCounts, int loyaltyLevel)
     {
         var result = new CreateFenceAssortsResult
@@ -742,14 +736,14 @@ public class FenceService(
         return result;
     }
 
-    /**
-     * Add item assorts to existing assort data
-     * @param assortCount Number to add
-     * @param assorts Assorts data to add to
-     * @param baseFenceAssortClone Base data to draw from
-     * @param itemTypeLimits
-     * @param loyaltyLevel Loyalty level to set new item to
-     */
+    /// <summary>
+    /// Add item assorts to existing assort data
+    /// </summary>
+    /// <param name="assortCount"> Number to add </param>
+    /// <param name="assorts"> Data to add to </param>
+    /// <param name="baseFenceAssortClone"> Base data to draw from </param>
+    /// <param name="itemTypeLimits"> Item limits per base class </param>
+    /// <param name="loyaltyLevel"> Loyalty level to set new item to </param>
     protected void AddItemAssorts(
         int? assortCount,
         CreateFenceAssortsResult assorts,
@@ -868,14 +862,14 @@ public class FenceService(
         }
     }
 
-    /**
-     * Find an assort item that matches the first parameter, also matches based on Upd properties
-     * e.g. salewa hp resource units left
-     * @param rootItemBeingAdded item to look for a match against
-     * @param itemDbDetails Db details of matching item
-     * @param itemsWithChildren Items to search through
-     * @returns Matching assort item
-     */
+    /// <summary>
+    /// Find an assort item that matches the first parameter, also matches based on Upd properties
+    /// e.g. salewa hp resource units left
+    /// </summary>
+    /// <param name="rootItemBeingAdded"> item to look for a match against </param>
+    /// <param name="itemDbDetails"> DB details of matching item </param>
+    /// <param name="itemsWithChildren"> Items to search through </param>
+    /// <returns> Matching assort item </returns>
     protected Item? GetMatchingItem(
         Item rootItemBeingAdded,
         TemplateItem itemDbDetails,
@@ -946,12 +940,12 @@ public class FenceService(
         return null;
     }
 
-    /**
-     * Should this item be forced into only 1 stack on fence
-     * @param existingItem Existing item from fence assort
-     * @param itemDbDetails Item we want to add db details
-     * @returns True item should be force stacked
-     */
+    /// <summary>
+    /// Should this item be forced into only 1 stack on fence
+    /// </summary>
+    /// <param name="existingItem"> Existing item from fence assort </param>
+    /// <param name="itemDbDetails"> Item we want to add DB details </param>
+    /// <returns> True item should be force stacked </returns>
     protected bool ItemShouldBeForceStacked(Item? existingItem, TemplateItem itemDbDetails)
     {
         // No existing item in assort
@@ -975,12 +969,12 @@ public class FenceService(
         return itemHelper.IsOfBaseclasses(tpl, traderConfig.Fence.PreventDuplicateOffersOfCategory);
     }
 
-    /**
-     * Adjust price of item based on what is left to buy (resource/uses left)
-     * @param barterSchemes All barter scheme for item having price adjusted
-     * @param itemRoot Root item having price adjusted
-     * @param itemTemplate Db template of item
-     */
+    /// <summary>
+    /// Adjust price of item based on what is left to buy (resource/uses left)
+    /// </summary>
+    /// <param name="barterSchemes"> All barter scheme for item having price adjusted </param>
+    /// <param name="itemRoot"> Root item having price adjusted </param>
+    /// <param name="itemTemplate"> DB template of item </param>
     protected void AdjustItemPriceByQuality(
         Dictionary<string, List<List<BarterScheme>>> barterSchemes,
         Item itemRoot,
@@ -1033,13 +1027,14 @@ public class FenceService(
         return null;
     }
 
-    /**
-     * Find presets in base fence assort and add desired number to 'assorts' parameter
-     * @param desiredWeaponPresetsCount
-     * @param assorts Assorts to add preset to
-     * @param baseFenceAssort Base data to draw from
-     * @param loyaltyLevel Which loyalty level is required to see/buy item
-     */
+    /// <summary>
+    /// Find presets in base fence assort and add desired number to 'assorts' parameter
+    /// </summary>
+    /// <param name="desiredWeaponPresetsCount"> How many WeaponPresets to add </param>
+    /// <param name="desiredEquipmentPresetsCount"> How many WeaponPresets to add </param>
+    /// <param name="assorts"> Assorts to add preset to </param>
+    /// <param name="baseFenceAssort"> Base data to draw from </param>
+    /// <param name="loyaltyLevel"> Loyalty level to set new presets to </param>
     protected void AddPresetsToAssort(
         int? desiredWeaponPresetsCount,
         int? desiredEquipmentPresetsCount,
@@ -1178,11 +1173,11 @@ public class FenceService(
         }
     }
 
-    /**
-     * Adjust plate / soft insert durability values
-     * @param armor Armor item array to add mods into
-     * @param itemDbDetails Armor items db template
-     */
+    /// <summary>
+    /// Adjust plate / soft insert durability values
+    /// </summary>
+    /// <param name="armor"> Armor item array to add mods into </param>
+    /// <param name="itemDbDetails"> Armor items db template </param>
     protected void RandomiseArmorModDurability(List<Item> armor, TemplateItem itemDbDetails)
     {
         // Armor has no mods, nothing to randomise
@@ -1207,11 +1202,11 @@ public class FenceService(
         }
     }
 
-    /**
-     * Randomise the durability values of items on armor with a passed in slot
-     * @param softInsertSlots Slots of items to randomise
-     * @param armorItemAndMods Array of armor + inserts to get items from
-     */
+    /// <summary>
+    /// Randomise the durability values of items on armor with a passed in slot
+    /// </summary>
+    /// <param name="softInsertSlots"> Slots of items to randomise </param>
+    /// <param name="armorItemAndMods"> Array of armor + inserts to get items from </param>
     protected void RandomiseArmorSoftInsertDurabilities(List<Slot> softInsertSlots, List<Item> armorItemAndMods)
     {
         foreach (var requiredSlot in softInsertSlots)
@@ -1264,12 +1259,12 @@ public class FenceService(
         }
     }
 
-    /**
-     * Randomise the durability values of plate items in armor
-     * Has chance to remove plate
-     * @param plateSlots Slots of items to randomise
-     * @param armorItemAndMods Array of armor + inserts to get items from
-     */
+    /// <summary>
+    /// Randomise the durability values of plate items in armor <br/>
+    /// Has chance to remove plate
+    /// </summary>
+    /// <param name="plateSlots"> Slots of items to randomise </param>
+    /// <param name="armorItemAndMods"> Array of armor + inserts to get items from </param>
     protected void RandomiseArmorInsertsDurabilities(List<Slot> plateSlots, List<Item> armorItemAndMods)
     {
         foreach (var plateSlot in plateSlots)
@@ -1334,11 +1329,11 @@ public class FenceService(
         }
     }
 
-    /**
-     * Get stack size of a singular item (no mods)
-     * @param itemDbDetails item being added to fence
-     * @returns Stack size
-     */
+    /// <summary>
+    /// Get stack size of a singular item (no mods)
+    /// </summary>
+    /// <param name="itemDbDetails"> Item being added to fence </param>
+    /// <returns> Stack size </returns>
     protected int GetSingleItemStackCount(TemplateItem itemDbDetails)
     {
         MinMax<int>? overrideValues;
@@ -1374,10 +1369,10 @@ public class FenceService(
         return 1;
     }
 
-    /**
-     * Remove parts of a weapon prior to being listed on flea
-     * @param itemAndMods Weapon to remove parts from
-     */
+    /// <summary>
+    /// Remove parts of a weapon prior to being listed on flea
+    /// </summary>
+    /// <param name="itemAndMods"> Weapon to remove parts from </param>
     protected void RemoveRandomModsOfItem(List<Item> itemAndMods)
     {
         // Items to be removed from inventory
@@ -1410,12 +1405,12 @@ public class FenceService(
         }
     }
 
-    /**
-     * Roll % chance check to see if item should be removed
-     * @param weaponMod Weapon mod being checked
-     * @param itemsBeingDeleted Current list of items on weapon being deleted
-     * @returns True if item will be removed
-     */
+    /// <summary>
+    /// Roll % chance check to see if item should be removed
+    /// </summary>
+    /// <param name="weaponMod"> Weapon mod being checked </param>
+    /// <param name="itemsBeingDeleted"> Current list of items on weapon being deleted </param>
+    /// <returns> True if item will be removed </returns>
     protected bool PresetModItemWillBeRemoved(Item weaponMod, HashSet<string> itemsBeingDeleted)
     {
         var slotIdsThatCanFail = traderConfig.Fence.PresetSlotsToRemoveChancePercent;
@@ -1430,11 +1425,11 @@ public class FenceService(
         return removalChance > randomChance && !itemsBeingDeleted.Contains(weaponMod.Id);
     }
 
-    /**
-     * Randomise items' Upd properties e.g. med packs/weapons/armor
-     * @param itemDetails Item being randomised
-     * @param itemToAdjust Item being edited
-     */
+    /// <summary>
+    /// Randomise items' Upd properties e.g. med packs/weapons/armor
+    /// </summary>
+    /// <param name="itemDetails"> Item being randomised </param>
+    /// <param name="itemToAdjust"> Item being edited </param>
     protected void RandomiseItemUpdProperties(TemplateItem itemDetails, Item itemToAdjust)
     {
         if (itemDetails.Properties == null)
@@ -1535,12 +1530,12 @@ public class FenceService(
         }
     }
 
-    /**
-     * Generate a randomised current and max durability value for an armor item
-     * @param itemDetails Item to create values for
-     * @param equipmentDurabilityLimits Max durability percent min/max values
-     * @returns Durability + MaxDurability values
-     */
+    /// <summary>
+    /// Generate a randomised current and max durability value for an armor item
+    /// </summary>
+    /// <param name="itemDetails"> Item to create values for </param>
+    /// <param name="equipmentDurabilityLimits"> Max durability percent min/max values </param>
+    /// <returns> Durability + MaxDurability values </returns>
     protected UpdRepairable GetRandomisedArmorDurabilityValues(
         TemplateItem itemDetails,
         ItemDurabilityCurrentMax equipmentDurabilityLimits
@@ -1564,11 +1559,11 @@ public class FenceService(
         };
     }
 
-    /**
-     * Construct item limit record to hold max and current item count
-     * @param limits limits as defined in config
-     * @returns record, key: item tplId, value: current/max item count allowed
-     */
+    /// <summary>
+    /// Construct item limit record to hold max and current item count
+    /// </summary>
+    /// <param name="limits"> Limits as defined in config </param>
+    /// <returns> Record, key: item tplId, value: current/max item count allowed </returns>
     protected Dictionary<string, (int current, int max)> InitItemLimitCounter(Dictionary<string, int> limits)
     {
         var itemTypeCounts = new Dictionary<string, (int current, int max)>();
@@ -1581,10 +1576,10 @@ public class FenceService(
         return itemTypeCounts;
     }
 
-    /**
-     * Get the next Update timestamp for fence
-     * @returns future timestamp
-     */
+    /// <summary>
+    /// Get the next Update timestamp for fence
+    /// </summary>
+    /// <returns> Future timestamp </returns>
     public long GetNextFenceUpdateTimestamp()
     {
         var time = timeUtil.GetTimeStamp();
@@ -1592,10 +1587,10 @@ public class FenceService(
         return time + updateSeconds;
     }
 
-    /**
-     * Get fence refresh time in seconds
-     * @returns Refresh time in seconds
-     */
+    /// <summary>
+    /// Get fence refresh time in seconds
+    /// </summary>
+    /// <returns> Refresh time in seconds </returns>
     protected int GetFenceRefreshTime()
     {
         var fence = traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == Traders.FENCE).Seconds;
@@ -1603,11 +1598,11 @@ public class FenceService(
         return randomUtil.GetInt((int) fence.Min, (int) fence.Max);
     }
 
-    /**
-     * Get fence level the passed in profile has
-     * @param pmcData Player profile
-     * @returns FenceLevel object
-     */
+    /// <summary>
+    /// Get fence level the passed in profile has
+    /// </summary>
+    /// <param name="pmcData"> Player profile </param>
+    /// <returns> FenceLevel object </returns>
     public FenceLevel GetFenceInfo(PmcData pmcData)
     {
         var fenceSettings = databaseService.GetGlobals().Configuration.FenceSettings;
@@ -1636,11 +1631,11 @@ public class FenceService(
         return fenceSettings.Levels[pmcFenceLevel];
     }
 
-    /**
-     * Remove or lower stack size of an assort from fence by id
-     * @param assortId assort id to adjust
-     * @param buyCount Count of items bought
-     */
+    /// <summary>
+    /// Remove or lower stack size of an assort from fence by id
+    /// </summary>
+    /// <param name="assortId"> Assort ID to adjust </param>
+    /// <param name="buyCount">`Count of items bought </param>
     public void AmendOrRemoveFenceOffer(string assortId, int buyCount)
     {
         var isNormalAssort = true;

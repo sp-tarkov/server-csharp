@@ -130,11 +130,10 @@ public class BuildController(
     /// <param name="request"></param>
     public void SaveEquipmentBuild(string sessionID, PresetBuildActionRequestData request)
     {
-        var buildType = "equipmentBuilds";
         var profile = _profileHelper.GetFullProfile(sessionID);
         var pmcData = profile.CharacterData.PmcData;
 
-        List<EquipmentBuild> existingSavedEquipmentBuilds =
+        var existingSavedEquipmentBuilds =
             _saveServer.GetProfile(sessionID).UserBuildData.EquipmentBuilds;
 
         // Replace duplicate ID's. The first item is the base item.
@@ -150,7 +149,7 @@ public class BuildController(
             Items = request.Items
         };
 
-        var existingBuild = existingSavedEquipmentBuilds.FirstOrDefault(
+        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(
             build => build.Name == request.Name || build.Id == request.Id
         );
         if (existingBuild is not null)
@@ -200,16 +199,15 @@ public class BuildController(
 
         profile.UserBuildData.MagazineBuilds ??= [];
 
-        var existingArrayId = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item => item.Name == request.Name);
-        if (existingArrayId is not null)
+        // Check if template with desired name already exists and remove it
+        var magazineBuildToRemove = profile.UserBuildData.MagazineBuilds.FirstOrDefault(item => item.Name == request.Name);
+        if (magazineBuildToRemove is not null)
         {
-            {
-                profile.UserBuildData.MagazineBuilds.Remove(existingArrayId);
-            }
-
-
-            profile.UserBuildData.MagazineBuilds.Add(result);
+            profile.UserBuildData.MagazineBuilds.Remove(magazineBuildToRemove);
         }
+
+        // Add new template to profile
+        profile.UserBuildData.MagazineBuilds.Add(result);
     }
 
     /// <summary>

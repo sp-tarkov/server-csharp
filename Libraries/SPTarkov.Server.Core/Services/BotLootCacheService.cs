@@ -20,7 +20,7 @@ public class BotLootCacheService(
     ICloner _cloner
 )
 {
-    protected object _lock = new();
+    protected readonly Lock _lockObject = new();
     protected Dictionary<string, BotLootCache> _lootCache = new();
 
     /// <summary>
@@ -28,7 +28,7 @@ public class BotLootCacheService(
     /// </summary>
     public void ClearCache()
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             _lootCache.Clear();
         }
@@ -49,7 +49,7 @@ public class BotLootCacheService(
         BotType botJsonTemplate,
         MinMax<double>? itemPriceMinMax = null)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             if (!BotRoleExistsInCache(botRole))
             {
@@ -60,7 +60,7 @@ public class BotLootCacheService(
 
         Dictionary<string, double> result = null;
         BotLootCache botRoleCache;
-        lock (_lock)
+        lock (_lockObject)
         {
             botRoleCache = _lootCache[botRole];
         }
@@ -448,7 +448,7 @@ public class BotLootCacheService(
         }
 
         BotLootCache cacheForRole;
-        lock (_lock)
+        lock (_lockObject)
         {
             cacheForRole = _lootCache[botRole];
 
@@ -544,7 +544,7 @@ public class BotLootCacheService(
     /// <returns>true if they exist</returns>
     protected bool BotRoleExistsInCache(string botRole)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             return _lootCache.ContainsKey(botRole);
         }
@@ -556,7 +556,7 @@ public class BotLootCacheService(
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        lock (_lock)
+        lock (_lockObject)
         {
             _lootCache.Add(
                 botRole,

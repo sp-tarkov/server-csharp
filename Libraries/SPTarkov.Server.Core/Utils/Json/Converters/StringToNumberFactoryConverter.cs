@@ -72,7 +72,7 @@ public class StringToNumberFactoryConverter : JsonConverterFactory
 
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
-            if (value == null)
+            if (EqualityComparer<T>.Default.Equals(value, default))
             {
                 value = default;
             }

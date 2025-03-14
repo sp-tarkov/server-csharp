@@ -304,7 +304,7 @@ public class ItemTplGenerator(
 
     private bool IsValidItem(TemplateItem item)
     {
-        var shrapnelId = "5943d9c186f7745a13413ac9";
+        const string shrapnelId = "5943d9c186f7745a13413ac9";
 
         if (item.Type != "Item")
         {

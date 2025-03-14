@@ -542,7 +542,7 @@ public class InsuranceController(
     /// <returns>Attachment count to remove</returns>
     protected double GetAttachmentCountToRemove(Dictionary<string, double> weightedAttachmentByPrice, string? traderId)
     {
-        var removeCount = 0;
+        const int removeCount = 0;
 
         if (_randomUtil.GetChance100(_insuranceConfig.ChanceNoAttachmentsTakenPercent))
         {

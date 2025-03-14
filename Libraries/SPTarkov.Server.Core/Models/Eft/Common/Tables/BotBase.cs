@@ -1841,7 +1841,7 @@ public record BotHideoutArea
     }
 
     [JsonPropertyName("level")]
-    public double? Level
+    public int? Level
     {
         get;
         set;
@@ -1865,7 +1865,7 @@ public record BotHideoutArea
     /// Must be integer
     /// </summary>
     [JsonPropertyName("completeTime")]
-    public double? CompleteTime
+    public int? CompleteTime
     {
         get;
         set;
@@ -1899,7 +1899,7 @@ public record HideoutSlot
     ///     SPT specific value to keep track of what index this slot is (0,1,2,3 etc.)
     /// </summary>
     [JsonPropertyName("locationIndex")]
-    public double? LocationIndex
+    public int? LocationIndex
     {
         get;
         set;

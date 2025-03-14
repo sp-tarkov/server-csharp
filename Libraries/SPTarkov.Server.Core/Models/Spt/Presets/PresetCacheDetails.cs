@@ -10,7 +10,7 @@
         }
 
         // Id of the default preset for this tpl
-        public string DefaultId
+        public string? DefaultId
         {
             get;
             set;

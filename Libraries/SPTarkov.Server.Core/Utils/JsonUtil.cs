@@ -14,7 +14,7 @@ namespace SPTarkov.Server.Core.Utils;
 [Injectable(InjectionType.Singleton)]
 public class JsonUtil
 {
-    private static readonly JsonSerializerOptions jsonSerializerOptionsNoIndent = new()
+    private static JsonSerializerOptions jsonSerializerOptionsNoIndent = new()
     {
         WriteIndented = false,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -55,7 +55,7 @@ public class JsonUtil
         }
     };
 
-    private static readonly JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
+    private static JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
     {
         WriteIndented = true
     };
@@ -153,5 +153,44 @@ public class JsonUtil
     public string? Serialize(object? obj, Type type, bool indented = false)
     {
         return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
+    }
+
+    private void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
+    {
+        if (!options.Converters.Any(c => c.GetType() == newConverter.GetType()))
+        {
+            options.Converters.Add(newConverter);
+        }
+    }
+
+    /// <summary>
+    ///     Register a Json converter to serializer options
+    /// </summary>
+    /// <param name="converter">The converter to add</param>
+    public void RegisterJsonConverter(JsonConverter converter)
+    {
+        // This might actually be a terrible thing to do, but it is what it is for now
+
+        if (!jsonSerializerOptionsNoIndent.IsReadOnly)
+        {
+            AddConverter(jsonSerializerOptionsNoIndent, converter);
+        }
+        else
+        {
+            var noIndentConverter = new JsonSerializerOptions(jsonSerializerOptionsNoIndent);
+            AddConverter(noIndentConverter, converter);
+            jsonSerializerOptionsNoIndent = noIndentConverter;
+        }
+
+        if (!jsonSerializerOptionsIndented.IsReadOnly)
+        {
+            AddConverter(jsonSerializerOptionsIndented, converter);
+        }
+        else
+        {
+            var indentedConverter = new JsonSerializerOptions(jsonSerializerOptionsIndented);
+            AddConverter(indentedConverter, converter);
+            jsonSerializerOptionsIndented = indentedConverter;
+        }
     }
 }

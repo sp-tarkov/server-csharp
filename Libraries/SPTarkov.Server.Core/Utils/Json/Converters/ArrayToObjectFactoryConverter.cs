@@ -42,7 +42,7 @@ public class ArrayToObjectFactoryConverter : JsonConverterFactory
 
         public override void Write(Utf8JsonWriter writer, T? value, JsonSerializerOptions options)
         {
-            if (value == null)
+            if (EqualityComparer<T>.Default.Equals(value, default))
             {
                 writer.WriteStartArray();
                 writer.WriteEndArray();

@@ -16,6 +16,7 @@ using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -36,7 +37,7 @@ public class InventoryHelper(
 )
 {
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
-    private static readonly HashSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
+    private static readonly FrozenSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)

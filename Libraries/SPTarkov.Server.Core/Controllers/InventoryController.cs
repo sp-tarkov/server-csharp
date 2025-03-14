@@ -236,7 +236,7 @@ public class InventoryController(
                         var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == hideoutAreaType);
                         if (desiredArea is not null)
                         {
-                            desiredArea.Level = newValue;
+                            desiredArea.Level = (int?)newValue;
                         }
 
                         break;
@@ -610,11 +610,10 @@ public class InventoryController(
     public void BindItem(PmcData pmcData, InventoryBindRequestData bindRequest, string sessionId,
         ItemEventRouterResponse output)
     {
-        foreach (var kvp in pmcData.Inventory.FastPanel.Where(kvp => kvp.Value == bindRequest.Index))
+        // Remove link
+        if (pmcData.Inventory.FastPanel.ContainsKey(bindRequest.Index))
         {
-            pmcData.Inventory.FastPanel.Remove(kvp.Key);
-
-            break;
+            pmcData.Inventory.FastPanel.Remove(bindRequest.Index);
         }
 
         // Create link between fast panel slot and requested item

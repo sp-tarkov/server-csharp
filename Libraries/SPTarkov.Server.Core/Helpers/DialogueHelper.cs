@@ -109,21 +109,21 @@ public class DialogueHelper(
         return profile.DialogueRecords ?? (profile.DialogueRecords = new Dictionary<string, Models.Eft.Profile.Dialogue>());
     }
 
+    /// <summary>
+    /// Find and return a profiles dialogue by id
+    /// </summary>
+    /// <param name="profileId">Profile to look in</param>
+    /// <param name="dialogueId">Dialog to return</param>
+    /// <returns>Dialogue</returns>
     public Models.Eft.Profile.Dialogue? GetDialogueFromProfile(string profileId, string dialogueId)
     {
-        Models.Eft.Profile.Dialogue? returnDialogue = null;
         var dialogues = GetDialogsForProfile(profileId);
-
-        foreach (var dialogue in dialogues.Values)
+        if (dialogues.TryGetValue(dialogueId, out var dialogue))
         {
-            if (dialogue.Id == dialogueId)
-            {
-                returnDialogue = dialogue;
-            }
-
-            break;
+            return dialogue;
         }
 
-        return returnDialogue;
+        _logger.Error($"Unable to find a dialogue with id: {dialogueId} in profile: {profileId}");
+        return null;
     }
 }

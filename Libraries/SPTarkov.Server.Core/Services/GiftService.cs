@@ -23,11 +23,11 @@ public class GiftService(
 {
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
 
-    /**
-     * Does a gift with a specific ID exist in db
-     * @param giftId Gift id to check for
-     * @returns True if it exists in db
-     */
+    /// <summary>
+    /// Does a gift with a specific ID exist in db
+    /// </summary>
+    /// <param name="giftId"> Gift id to check for </param>
+    /// <returns> True if it exists in db </returns>
     public bool GiftExists(string giftId)
     {
         return _giftConfig.Gifts.ContainsKey(giftId);
@@ -40,30 +40,30 @@ public class GiftService(
         return gift;
     }
 
-    /**
-     * Get dictionary of all gifts
-     * @returns Dict keyed by gift id
-     */
+    /// <summary>
+    /// Get dictionary of all gifts
+    /// </summary>
+    /// <returns> Dict keyed by gift id </returns>
     public Dictionary<string, Gift> GetGifts()
     {
         return _giftConfig.Gifts;
     }
 
-    /**
-     * Get an array of all gift ids
-     * @returns string array of gift ids
-     */
+    /// <summary>
+    /// Get an array of all gift ids
+    /// </summary>
+    /// <returns> String list of gift ids </returns>
     public List<string> GetGiftIds()
     {
         return _giftConfig.Gifts.Keys.ToList();
     }
 
-    /**
-     * Send player a gift from a range of sources
-     * @param playerId Player to send gift to / sessionId
-     * @param giftId Id of gift in configs/gifts.json to send player
-     * @returns outcome of sending gift to player
-     */
+    /// <summary>
+    /// Send player a gift from a range of sources
+    /// </summary>
+    /// <param name="playerId"> Player to send gift to / sessionID </param>
+    /// <param name="giftId"> ID of gift in configs/gifts.json to send player </param>
+    /// <returns> Outcome of sending gift to player </returns>
     public GiftSentResult SendGiftToPlayer(string playerId, string giftId)
     {
         var giftData = GetGiftById(giftId);
@@ -182,11 +182,11 @@ public class GiftService(
         return GiftSentResult.SUCCESS;
     }
 
-    /**
-     * Get sender id based on gifts sender type enum
-     * @param giftData Gift to send player
-     * @returns trader/user/system id
-     */
+    /// <summary>
+    /// Get sender id based on gifts sender type enum
+    /// </summary>
+    /// <param name="giftData"> Gift to send player </param>
+    /// <returns> trader/user/system id </returns>
     private string? GetSenderId(Gift giftData)
     {
         if (giftData.Sender == GiftSenderType.Trader)
@@ -202,11 +202,11 @@ public class GiftService(
         return null;
     }
 
-    /**
-     * Convert GiftSenderType into a dialog MessageType
-     * @param giftData Gift to send player
-     * @returns MessageType enum value
-     */
+    /// <summary>
+    /// Convert GiftSenderType into a dialog MessageType
+    /// </summary>
+    /// <param name="giftData"> Gift to send player </param>
+    /// <returns> MessageType enum value </returns>
     protected MessageType? GetMessageType(Gift giftData)
     {
         switch (giftData.Sender)
@@ -223,11 +223,11 @@ public class GiftService(
         }
     }
 
-    /**
-     * Prapor sends gifts to player for first week after profile creation
-     * @param sessionId Player id
-     * @param day What day to give gift for
-     */
+    /// <summary>
+    /// Prapor sends gifts to player for first week after profile creation
+    /// </summary>
+    /// <param name="sessionId"> Player ID </param>
+    /// <param name="day"> What day to give gift for </param>
     public void SendPraporStartingGift(string sessionId, int day)
     {
         var giftId = day switch
@@ -246,12 +246,12 @@ public class GiftService(
         }
     }
 
-    /**
-     * Send player a gift with silent received check
-     * @param giftId Id of gift to send
-     * @param sessionId Session id of player to send to
-     * @param giftCount OPTIONAL How many to send
-     */
+    /// <summary>
+    /// Send player a gift with silent received check
+    /// </summary>
+    /// <param name="giftId"> ID of gift to send </param>
+    /// <param name="sessionId"> Session ID of player to send to </param>
+    /// <param name="giftCount"> Optional, how many to send </param>
     public void SendGiftWithSilentReceivedCheck(string giftId, string? sessionId, int giftCount)
     {
         if (!_profileHelper.PlayerHasRecievedMaxNumberOfGift(sessionId, giftId, giftCount))

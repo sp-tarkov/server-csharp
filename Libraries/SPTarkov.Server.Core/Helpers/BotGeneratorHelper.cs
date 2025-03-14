@@ -10,6 +10,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -30,7 +31,7 @@ public class BotGeneratorHelper(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     // Equipment slot ids that do not conflict with other slots
-    protected static readonly HashSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+    protected static readonly FrozenSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
 
     /// <summary>
     ///     Adds properties to an item

@@ -30,10 +30,10 @@ public class RagfairOfferService(
     protected bool _playerOffersLoaded;
     protected RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
-    /**
-     * Get all offers
-     * @returns RagfairOffer array
-     */
+    /// <summary>
+    /// Get all offers
+    /// </summary>
+    /// <returns> List of RagfairOffers </returns>
     public List<RagfairOffer> GetOffers()
     {
         return ragfairOfferHolder.GetOffers();
@@ -54,30 +54,30 @@ public class RagfairOfferService(
         ragfairOfferHolder.AddOffer(offer);
     }
 
-    /**
-     * Does the offer exist on the ragfair
-     * @param offerId offer id to check for
-     * @returns offer exists - true
-     */
+    /// <summary>
+    /// Does the offer exist on the ragfair
+    /// </summary>
+    /// <param name="offerId"> Offer id to check for </param>
+    /// <returns> True when offer exists </returns>
     public bool DoesOfferExist(string offerId)
     {
         return ragfairOfferHolder.GetOfferById(offerId) != null;
     }
 
-    /**
-     * Remove an offer from ragfair by offer id
-     * @param offerId Offer id to remove
-     */
+    /// <summary>
+    /// Remove an offer from ragfair by offer id
+    /// </summary>
+    /// <param name="offerId"> Offer id to remove </param>
     public void RemoveOfferById(string offerId)
     {
         ragfairOfferHolder.RemoveOffer(offerId);
     }
 
-    /**
-     * Reduce size of an offer stack by specified amount
-     * @param offerId Offer to adjust stack size of
-     * @param amount How much to deduct from offers stack size
-     */
+    /// <summary>
+    /// Reduce size of an offer stack by specified amount
+    /// </summary>
+    /// <param name="offerId"> Offer to adjust stack size of </param>
+    /// <param name="amount"> How much to deduct from offers stack size </param>
     public void ReduceOfferQuantity(string offerId, int amount)
     {
         var offer = ragfairOfferHolder.GetOfferById(offerId);
@@ -99,11 +99,11 @@ public class RagfairOfferService(
         ragfairOfferHolder.RemoveAllOffersByTrader(traderId);
     }
 
-    /**
-     * Do the trader offers on flea need to be refreshed
-     * @param traderID Trader to check
-     * @returns true if they do
-     */
+    /// <summary>
+    /// Do the trader offers on flea need to be refreshed
+    /// </summary>
+    /// <param name="traderID"> Trader to check </param>
+    /// <returns> True if they do </returns>
     public bool TraderOffersNeedRefreshing(string traderID)
     {
         var trader = databaseService.GetTrader(traderID);
@@ -153,11 +153,10 @@ public class RagfairOfferService(
         ragfairOfferHolder.ResetExpiredOfferIds();
     }
 
-
-    /**
-     * Remove stale offer from flea
-     * @param staleOffer Stale offer to process
-     */
+    /// <summary>
+    /// Remove stale offer from flea
+    /// </summary>
+    /// <param name="staleOffer"> Stale offer to process </param>
     protected void ProcessStaleOffer(RagfairOffer staleOffer)
     {
         var staleOfferId = staleOffer.Id;
@@ -243,13 +242,13 @@ public class RagfairOfferService(
         profile.RagfairInfo.Offers.Splice(offerinProfileIndex, 1);
     }
 
-    /**
-     * Flea offer items are stacked up often beyond the StackMaxSize limit
-     * Un stack the items into an array of root items and their children
-     * Will create new items equal to the
-     * @param items Offer items to unstack
-     * @returns Unstacked array of items
-     */
+    /// <summary>
+    /// Flea offer items are stacked up often beyond the StackMaxSize limit.
+    /// Unstack the items into an array of root items and their children.
+    /// Will create new items equal to the stack.
+    /// </summary>
+    /// <param name="items"> Offer items to unstack </param>
+    /// <returns> Unstacked array of items </returns>
     protected List<Item> UnstackOfferItems(List<Item> items)
     {
         var result = new List<Item>();

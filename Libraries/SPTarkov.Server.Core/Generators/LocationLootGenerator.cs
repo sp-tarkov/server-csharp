@@ -1056,7 +1056,7 @@ public class LocationLootGenerator(
                     itemTemplate, // Magazine template
                     staticAmmoDist,
                     null,
-                    _locationConfig.MinFillLooseMagazinePercent / 100
+                    _locationConfig.MinFillLooseMagazinePercent / 100d
                 );
             }
 
@@ -1324,7 +1324,7 @@ public class LocationLootGenerator(
             itemTemplate,
             staticAmmoDist,
             null,
-            _locationConfig.MinFillStaticMagazinePercent / 100
+            _locationConfig.MinFillStaticMagazinePercent / 100d
         );
 
         // Replace existing magazine with above array

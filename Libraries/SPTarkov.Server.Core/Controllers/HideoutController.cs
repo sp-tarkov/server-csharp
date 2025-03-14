@@ -141,7 +141,7 @@ public class HideoutController(
 
             var timestamp = _timeUtil.GetTimeStamp();
 
-            profileHideoutArea.CompleteTime = Math.Round((double) (timestamp - ctime));
+            profileHideoutArea.CompleteTime = (int)Math.Round(timestamp - ctime.Value);
             profileHideoutArea.Constructing = true;
         }
     }

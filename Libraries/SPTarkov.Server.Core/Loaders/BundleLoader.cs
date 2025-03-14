@@ -149,28 +149,33 @@ namespace SPTarkov.Server.Core.Loaders
             }
         }
     }
-}
 
-public record BundleManifest
-{
-    [JsonPropertyName("manifest")]
-    public List<BundleManifestEntry> Manifest { get; set; }
-}
-
-public record BundleManifestEntry
-{
-    [JsonPropertyName("key")]
-    public string Key
+    public record BundleManifest
     {
-        get;
-        set;
+        [JsonPropertyName("manifest")]
+        public List<BundleManifestEntry> Manifest
+        {
+            get; set;
+        }
     }
 
-    [JsonPropertyName("dependencyKeys")]
-    public List<string>? DependencyKeys
+    public record BundleManifestEntry
     {
-        get;
-        set;
+        [JsonPropertyName("key")]
+        public string Key
+        {
+            get;
+            set;
+        }
+
+        [JsonPropertyName("dependencyKeys")]
+        public List<string>? DependencyKeys
+        {
+            get;
+            set;
+        }
     }
 }
+
+
 

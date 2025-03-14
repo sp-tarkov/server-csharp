@@ -6,7 +6,7 @@ namespace SPTarkov.Common.Extensions;
 public static class StringExtensions
 {
     private static readonly Dictionary<string, Regex> RegexCache = new();
-    private static readonly object RegexCacheLock = new();
+    private static readonly Lock RegexCacheLock = new();
 
     public static string RegexReplace(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, string newValue)
     {

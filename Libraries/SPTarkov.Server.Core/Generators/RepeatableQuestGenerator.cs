@@ -133,7 +133,7 @@ public class RepeatableQuestGenerator(
         var maxBodyPartsDifficulty = eliminationConfig.MinKills / bodyPartsConfig.MinProbability();
 
         // maxDistDifficulty is defined by 2, this could be a tuning parameter if we don't like the reward generation
-        var maxDistDifficulty = 2;
+        const int maxDistDifficulty = 2;
 
         var maxKillDifficulty = eliminationConfig.MaxKills;
 

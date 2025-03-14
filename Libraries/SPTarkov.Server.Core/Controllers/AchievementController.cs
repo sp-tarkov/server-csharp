@@ -40,7 +40,7 @@ public class AchievementController(
         var profiles = profileHelper.GetProfiles();
 
         var achievements = databaseService.GetAchievements();
-        foreach (var achievement in achievements) {
+        foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId))) {
             var percentage = 0;
             foreach (var (profileId, profile) in profiles) {
                 if (coreConfig.Features.AchievementProfileIdBlacklist.Contains(profileId))
@@ -53,7 +53,7 @@ public class AchievementController(
                     continue;
                 }
 
-                if (!profile.CharacterData.PmcData.Achievements.ContainsKey(achievement.Id))
+                if (!profile.CharacterData.PmcData.Achievements.ContainsKey(achievementId))
                 {
                     continue;
                 }
@@ -62,7 +62,7 @@ public class AchievementController(
             }
 
             percentage = (percentage / profiles.Count) * 100;
-            stats.Add(achievement.Id, percentage);
+            stats.Add(achievementId, percentage);
         }
 
         return new CompletedAchievementsResponse{ Elements = stats };

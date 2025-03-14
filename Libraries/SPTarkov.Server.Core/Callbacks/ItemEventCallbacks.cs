@@ -24,7 +24,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
     /// </summary>
     /// <param name="warnings">The list of warnings to check for critical errors</param>
     /// <returns></returns>
-    public bool IsCriticalError(List<Warning>? warnings)
+    public static bool IsCriticalError(List<Warning>? warnings)
     {
         if (warnings is null)
         {
@@ -48,7 +48,7 @@ public class ItemEventCallbacks(HttpResponseUtil _httpResponseUtil, ItemEventRou
         return false;
     }
 
-    public BackendErrorCodes GetErrorCode(List<Warning> warnings)
+    public static BackendErrorCodes GetErrorCode(List<Warning> warnings)
     {
         // Cast int to string to get the error code of 220 for Unknown Error.
         return warnings.FirstOrDefault()?.Code is null ? BackendErrorCodes.UnknownError : warnings.FirstOrDefault()?.Code ?? BackendErrorCodes.UnknownError;

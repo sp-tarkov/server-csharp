@@ -5,6 +5,9 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
+/// <summary>
+/// Cache the baseids for each item in the items db inside a dictionary
+/// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemBaseClassService(
     ISptLogger<ItemBaseClassService> _logger,
@@ -15,10 +18,10 @@ public class ItemBaseClassService(
     private bool _cacheGenerated;
     private Dictionary<string, HashSet<string>> _itemBaseClassesCache;
 
-    /**
-     * Create cache and store inside ItemBaseClassService
-     * Store a dict of an items tpl to the base classes it and its parents have
-     */
+    /// <summary>
+    /// Create cache and store inside ItemBaseClassService <br/>
+    /// Store a dict of an items tpl to the base classes it and its parents have
+    /// </summary>
     public void HydrateItemBaseClassCache()
     {
         // Clear existing cache
@@ -40,11 +43,11 @@ public class ItemBaseClassService(
         _cacheGenerated = true;
     }
 
-    /**
-     * Helper method, recursively iterate through items parent items, finding and adding ids to dictionary
-     * @param itemIdToUpdate item tpl to store base ids against in dictionary
-     * @param item item being checked
-     */
+    /// <summary>
+    /// Helper method, recursively iterate through items parent items, finding and adding ids to dictionary
+    /// </summary>
+    /// <param name="itemIdToUpdate"> Item tpl to store base ids against in dictionary </param>
+    /// <param name="item"> Item being checked </param>
     protected void AddBaseItems(string itemIdToUpdate, TemplateItem item)
     {
         _itemBaseClassesCache[itemIdToUpdate].Add(item.Parent);
@@ -56,12 +59,12 @@ public class ItemBaseClassService(
         }
     }
 
-    /**
-     * Does item tpl inherit from the requested base class
-     * @param itemTpl item to check base classes of
-     * @param baseClass base class to check for
-     * @returns true if item inherits from base class passed in
-     */
+    /// <summary>
+    /// Does item tpl inherit from the requested base class
+    /// </summary>
+    /// <param name="itemTpl"> ItemTpl item to check base classes of </param>
+    /// <param name="baseClasses"> BaseClass base class to check for </param>
+    /// <returns> true if item inherits from base class passed in </returns>
     public bool ItemHasBaseClass(string itemTpl, ICollection<string> baseClasses)
     {
         if (!_cacheGenerated)
@@ -107,21 +110,21 @@ public class ItemBaseClassService(
         return false;
     }
 
-    /**
-     * Check if cached item template is of type Item
-     * @param itemTemplateId item to check
-     * @returns true if item is of type Item
-     */
+    /// <summary>
+    ///  Check if cached item template is of type Item
+    /// </summary>
+    /// <param name="itemTemplateId"> ItemTemplateId item to check </param>
+    /// <returns> True if item is of type Item </returns>
     private bool CachedItemIsOfItemType(string itemTemplateId)
     {
         return string.Equals(_databaseService.GetItems()[itemTemplateId]?.Type,"Item", StringComparison.OrdinalIgnoreCase);
     }
 
-    /**
-     * Get base classes item inherits from
-     * @param itemTpl item to get base classes for
-     * @returns array of base classes
-     */
+    /// <summary>
+    ///  Get base classes item inherits from
+    /// </summary>
+    /// <param name="itemTpl"> ItemTpl item to get base classes for </param>
+    /// <returns> array of base classes </returns>
     public List<string> GetItemBaseClasses(string itemTpl)
     {
         if (!_cacheGenerated)

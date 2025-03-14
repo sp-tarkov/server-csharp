@@ -6,7 +6,7 @@ namespace SPTarkov.Common.Extensions;
 public static class ObjectExtensions
 {
     private static readonly Dictionary<Type, Dictionary<string, PropertyInfo>> _indexedProperties = new();
-    private static readonly object _indexedPropertiesLockObject = new();
+    private static readonly Lock _indexedPropertiesLockObject = new();
 
     private static bool TryGetCachedProperty(Type type, string key, out PropertyInfo cachedProperty)
     {
@@ -32,10 +32,8 @@ public static class ObjectExtensions
     /// <exception cref="ArgumentNullException"></exception>
     public static bool ContainsJsonProp<T>(this object? obj, T key)
     {
-        if (obj == null)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
+        ArgumentNullException.ThrowIfNull(obj);
+        ArgumentNullException.ThrowIfNull(key);
 
         return TryGetCachedProperty(obj.GetType(), key.ToString(), out _);
     }

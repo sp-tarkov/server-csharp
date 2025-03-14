@@ -19,5 +19,6 @@ public enum ContextVariableType
     TRANSIT_INFO = 5,
     APP_BUILDER = 6,
     LOADED_MOD_ASSEMBLIES = 7,
-    WEB_APPLICATION = 8
+    WEB_APPLICATION = 8,
+    SERVICE_PROVIDER = 9
 }

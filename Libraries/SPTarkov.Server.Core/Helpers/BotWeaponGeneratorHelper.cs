@@ -5,6 +5,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -20,7 +21,7 @@ public class BotWeaponGeneratorHelper(
     LocalisationService _localisationService
 )
 {
-    private static readonly HashSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
+    private static readonly FrozenSet<string> _magCheck = ["CylinderMagazine", "SpringDrivenCylinder"];
 
     /// <summary>
     ///     Get a randomized number of bullets for a specific magazine

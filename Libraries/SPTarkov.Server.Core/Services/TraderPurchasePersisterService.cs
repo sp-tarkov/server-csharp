@@ -20,12 +20,12 @@ public class TraderPurchasePersisterService(
 {
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
-    /**
-     * Get the purchases made from a trader for this profile before the last trader reset
-     * @param sessionId Session id
-     * @param traderId Trader to loop up purchases for
-     * @returns Dictionary of assort id and count purchased
-     */
+    /// <summary>
+    /// Get the purchases made from a trader for this profile before the last trader reset
+    /// </summary>
+    /// <param name="sessionId"> Session id </param>
+    /// <param name="traderId"> Trader to loop up purchases for </param>
+    /// <returns> Dictionary of assort id and count purchased </returns>
     public Dictionary<string, TraderPurchaseData>? GetProfileTraderPurchases(string sessionId, string traderId)
     {
         var profile = _profileHelper.GetFullProfile(sessionId);
@@ -43,13 +43,13 @@ public class TraderPurchasePersisterService(
         return null;
     }
 
-    /**
-     * Get a purchase made from a trader for requested profile before the last trader reset
-     * @param sessionId Session id
-     * @param traderId Trader to loop up purchases for
-     * @param assortId Id of assort to get data for
-     * @returns TraderPurchaseData
-     */
+    /// <summary>
+    /// Get a purchase made from a trader for requested profile before the last trader reset
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="traderId"> Trader to loop up purchases for </param>
+    /// <param name="assortId"> ID of assort to get data for </param>
+    /// <returns> TraderPurchaseData </returns>
     public TraderPurchaseData? GetProfileTraderPurchase(
         string sessionId,
         string traderId,
@@ -77,10 +77,10 @@ public class TraderPurchasePersisterService(
         return traderPurchases[assortId];
     }
 
-    /**
-     * Remove all trader purchase records from all profiles that exist
-     * @param traderId Traders id
-     */
+    /// <summary>
+    /// Remove all trader purchase records from all profiles that exist
+    /// </summary>
+    /// <param name="traderId"> Traders ID </param>
     public void ResetTraderPurchasesStoredInProfile(string traderId)
     {
         // Reset all profiles purchase dictionaries now a trader update has occured;
@@ -105,10 +105,10 @@ public class TraderPurchasePersisterService(
         _logger.Debug($"Reset trader: {traderId} assort buy limits");
     }
 
-    /**
-     * Iterate over all server profiles and remove specific trader purchase data that has passed the trader refresh time
-     * @param traderId Trader id
-     */
+    /// <summary>
+    /// Iterate over all server profiles and remove specific trader purchase data that has passed the trader refresh time
+    /// </summary>
+    /// <param name="traderId"> Trader ID </param>
     public void RemoveStalePurchasesFromProfiles(string traderId)
     {
         var profiles = _profileHelper.GetProfiles();

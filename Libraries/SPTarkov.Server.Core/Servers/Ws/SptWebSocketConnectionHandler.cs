@@ -22,7 +22,7 @@ public class SptWebSocketConnectionHandler(
 ) : IWebSocketConnectionHandler
 {
     protected WsPing _defaultNotification = new();
-    protected Lock _lockObject = new();
+    protected readonly Lock _lockObject = new();
     protected Dictionary<string, WebSocket> _sockets = new();
 
     public string GetHookUrl()

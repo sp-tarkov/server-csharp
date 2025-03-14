@@ -124,9 +124,9 @@ public class LocationLifecycleService
         _pmcConfig = _configServer.GetConfig<PmcConfig>();
     }
 
-    /**
-     * Handle client/match/local/start
-     */
+    /// <summary>
+    /// Handle client/match/local/start
+    /// </summary>
     public virtual StartLocalRaidResponseData StartLocalRaid(string sessionId, StartLocalRaidRequestData request)
     {
         _logger.Debug($"Starting: {request.Location}");
@@ -196,12 +196,12 @@ public class LocationLifecycleService
         return result;
     }
 
-    /**
-     * Replace map exits with scav exits when player is scavving
-     * @param playerSide Players side (savage/usec/bear)
-     * @param location id of map being loaded
-     * @param locationData Maps location base data
-     */
+    /// <summary>
+    /// Replace map exits with scav exits when player is scavving
+    /// </summary>
+    /// <param name="playerSide"> Players side (savage/usec/bear) </param>
+    /// <param name="location"> ID of map being loaded </param>
+    /// <param name="locationData"> Maps location base data </param>
     protected void AdjustExtracts(string playerSide, string location, LocationBase locationData)
     {
         var playerIsScav = playerSide.ToLower() == "savage";
@@ -228,10 +228,10 @@ public class LocationLifecycleService
         }
     }
 
-    /**
-     * Adjust the bot hostility values prior to entering a raid
-     * @param location map to adjust values of
-     */
+    /// <summary>
+    /// Adjust the bot hostility values prior to entering a raid
+    /// </summary>
+    /// <param name="location"> Map to adjust values of </param>
     protected void AdjustBotHostilitySettings(LocationBase location)
     {
         foreach (var botId in _pmcConfig.HostilitySettings)
@@ -322,13 +322,19 @@ public class LocationLifecycleService
         }
     }
 
-    /**
-     * Generate a maps base location (cloned) and loot
-     * @param name Map name
-     * @param generateLoot OPTIONAL - Should loot be generated for the map before being returned
-     * @returns LocationBase
-     */
-    protected LocationBase GenerateLocationAndLoot(string name, bool generateLoot = true)
+    /// <summary>
+    /// Generate a maps base location (cloned) and loot
+    /// </summary>
+    /// <param name="name"> Map name </param>
+    /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
+    /// <returns> LocationBase </returns>
+    /// <returns> LocationBase </returns>
+    /// <param name="generateLoot"> OPTIONAL - Should loot be generated for the map before being returned </param>
+    /// <param name="name"> Map name </param>
+    /// </summary>
+    /// Generate a maps base location (cloned) and loot
+    /// <summary>
+    public virtual LocationBase GenerateLocationAndLoot(string name, bool generateLoot = true)
     {
         var location = _databaseService.GetLocation(name);
         var locationBaseClone = _cloner.Clone(location.Base);
@@ -401,9 +407,9 @@ public class LocationLifecycleService
         return locationBaseClone;
     }
 
-    /**
-     * Handle client/match/local/end
-     */
+    /// <summary>
+    /// Handle client/match/local/end
+    /// </summary>
     public virtual void EndLocalRaid(string sessionId, EndLocalRaidRequestData request)
     {
         // Clear bot loot cache
@@ -510,11 +516,11 @@ public class LocationLifecycleService
         );
     }
 
-    /**
-     * Was extract by car
-     * @param extractName name of extract
-     * @returns True if extract was by car
-     */
+    /// <summary>
+    /// Was extract by car
+    /// </summary>
+    /// <param name="extractName"> Name of extract </param>
+    /// <returns> True if extract was by car </returns>
     protected bool ExtractWasViaCar(string extractName)
     {
         // exit name is undefined on death
@@ -531,12 +537,12 @@ public class LocationLifecycleService
         return _inRaidConfig.CarExtracts.Contains(extractName.Trim());
     }
 
-    /**
-     * Handle when a player extracts using a car - Add rep to fence
-     * @param extractName name of the extract used
-     * @param pmcData Player profile
-     * @param sessionId Session id
-     */
+    /// <summary>
+    /// Handle when a player extracts using a car - Add rep to fence
+    /// </summary>
+    /// <param name="extractName"> Name of the extract used </param>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="sessionId"> Session ID </param>
     protected void HandleCarExtract(string extractName, PmcData pmcData, string sessionId)
     {
         pmcData.CarExtractCounts?.TryAdd(extractName, 0);
@@ -550,7 +556,7 @@ public class LocationLifecycleService
             pmcData.CarExtractCounts[extractName]
         );
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -565,12 +571,12 @@ public class LocationLifecycleService
         scavData.TradersInfo[fenceId].LoyaltyLevel = pmcData.TradersInfo[fenceId].LoyaltyLevel;
     }
 
-    /**
-     * Handle when a player extracts using a coop extract - add rep to fence
-     * @param sessionId Session/player id
-     * @param pmcData Profile
-     * @param extractName Name of extract taken
-     */
+    /// <summary>
+    /// Handle when a player extracts using a coop extract - add rep to fence
+    /// </summary>
+    /// <param name="sessionId"> Session/player id </param>
+    /// <param name="pmcData"> Player profile </param>
+    /// <param name="extractName"> Name of extract taken </param>
     protected void HandleCoopExtract(string sessionId, PmcData pmcData, string extractName)
     {
         pmcData.CoopExtractCounts?.TryAdd(extractName, 0);
@@ -583,7 +589,7 @@ public class LocationLifecycleService
             pmcData.CoopExtractCounts[extractName]
         );
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         pmcData.TradersInfo[fenceId].Standing = newFenceStanding;
 
         // Check if new standing has leveled up trader
@@ -598,16 +604,16 @@ public class LocationLifecycleService
         scavData.TradersInfo[fenceId].LoyaltyLevel = pmcData.TradersInfo[fenceId].LoyaltyLevel;
     }
 
-    /**
-     * Get the fence rep gain from using a car or coop extract
-     * @param pmcData Profile
-     * @param baseGain amount gained for the first extract
-     * @param extractCount Number of times extract was taken
-     * @returns Fence standing after taking extract
-     */
+    /// <summary>
+    /// Get the fence rep gain from using a car or coop extract
+    /// </summary>
+    /// <param name="pmcData"> Profile </param>
+    /// <param name="baseGain"> Amount gained for the first extract </param>
+    /// <param name="extractCount"> Number of times extract was taken </param>
+    /// <returns> Fence standing after taking extract </returns>
     protected double GetFenceStandingAfterExtract(PmcData pmcData, double baseGain, double extractCount)
     {
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
         var fenceStanding = pmcData.TradersInfo[fenceId].Standing;
 
         // get standing after taking extract x times, x.xx format, gain from extract can be no smaller than 0.01
@@ -620,11 +626,11 @@ public class LocationLifecycleService
         return Math.Round(newFenceStanding, 2);
     }
 
-    /**
-     * Did player take a COOP extract
-     * @param extractName Name of extract player took
-     * @returns True if coop extract
-     */
+    /// <summary>
+    /// Did player take a COOP extract
+    /// </summary>
+    /// <param name="extractName"> Name of extract player took </param>
+    /// <returns> True if coop extract </returns>
     protected bool ExtractTakenWasCoop(string extractName)
     {
         // No extract name, not a coop extract
@@ -709,11 +715,11 @@ public class LocationLifecycleService
         _saveServer.SaveProfile(sessionId);
     }
 
-    /**
-     * Scav quest progress isnt transferred automatically from scav to pmc, we do this manually
-     * @param scavProfile Scav profile with quest progress post-raid
-     * @param pmcProfile Server pmc profile to copy scav quest progress into
-     */
+    /// <summary>
+    /// Scav quest progress isn't transferred automatically from scav to pmc, we do this manually
+    /// </summary>
+    /// <param name="scavProfile"> Scav profile with quest progress post-raid </param>
+    /// <param name="pmcProfile"> Server pmc profile to copy scav quest progress into </param>
     private void MigrateScavQuestProgressToPmcProfile(PmcData scavProfile, PmcData pmcProfile)
     {
         foreach (var scavQuest in scavProfile.Quests)
@@ -753,11 +759,11 @@ public class LocationLifecycleService
         }
     }
 
-    /**
-     * Does provided profile contain any condition counters
-     * @param profile Profile to check for condition counters
-     * @returns Profile has condition counters
-     */
+    /// <summary>
+    /// Does the provided profile contain any condition counters
+    /// </summary>
+    /// <param name="profile"> Profile to check for condition counters </param>
+    /// <returns> Profile has condition counters </returns>
     protected bool ProfileHasConditionCounters(PmcData profile)
     {
         if (profile.TaskConditionCounters is null)
@@ -768,15 +774,17 @@ public class LocationLifecycleService
         return profile.TaskConditionCounters.Count > 0;
     }
 
-    /**
-     * @param sessionId Player id
-     * @param pmcProfile Pmc profile
-     * @param scavProfile Scav profile
-     * @param isDead Player died/got left behind in raid
-     * @param isSurvived Not same as opposite of `isDead`, specific status
-     * @param request
-     * @param locationName
-     */
+    /// <summary>
+    /// Handles PMC Profile after the raid
+    /// </summary>
+    /// <param name="sessionId"> Player id </param>
+    /// <param name="fullProfile"> Pmc profile </param>
+    /// <param name="scavProfile"> Scav profile </param>
+    /// <param name="isDead"> Player died/got left behind in raid </param>
+    /// <param name="isSurvived"> Not same as opposite of `isDead`, specific status </param>
+    /// <param name="isTransfer"> Player transferred to another map </param>
+    /// <param name="request"> Client request data </param>
+    /// <param name="locationName"> Current finished Raid location </param>
     protected void HandlePostRaidPmc(
         string sessionId,
         SptProfile fullProfile,
@@ -823,7 +831,7 @@ public class LocationLifecycleService
         // Must occur AFTER experience is set and stats copied over
         pmcProfile.Stats.Eft.TotalSessionExperience = 0;
 
-        var fenceId = Traders.FENCE;
+        const string fenceId = Traders.FENCE;
 
         // Clamp fence standing
         var currentFenceStanding = postRaidProfile.TradersInfo[fenceId].Standing;
@@ -884,6 +892,13 @@ public class LocationLifecycleService
         }
     }
 
+    /// <summary>
+    /// On death Quest items are lost, the client does not clean up completed conditions for picking up those quest items,
+    /// If the completed conditions remain in the profile the player is unable to pick the item up again
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="lostQuestItems"> Quest items lost on player death </param>
+    /// <param name="profileQuests"> Quest status data from player profile </param>
     protected void CheckForAndFixPickupQuestsAfterDeath(
         string sessionId,
         List<Item> lostQuestItems,
@@ -953,11 +968,16 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * In 0.15 Lightkeeper quests do not give rewards in PvE, this issue also occurs in spt
- * We check for newly completed Lk quests and run them through the servers `CompleteQuest` process
- * This rewards players with items + craft unlocks + new trader assorts
- */
+
+    /// <summary>
+    /// In 0.15 Lightkeeper quests do not give rewards in PvE, this issue also occurs in spt.
+    /// We check for newly completed Lk quests and run them through the servers `CompleteQuest` process.
+    /// This rewards players with items + craft unlocks + new trader assorts.
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="postRaidQuests"> Quest statuses post-raid </param>
+    /// <param name="preRaidQuests"> Quest statuses pre-raid </param>
+    /// <param name="pmcProfile"> Players profile </param>
     protected void LightkeeperQuestWorkaround(
         string sessionId,
         List<QuestStatus> postRaidQuests,
@@ -997,10 +1017,12 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * Convert post-raid quests into correct format
- * Quest status comes back as a string version of the enum `Success`, not the expected value of 1
- */
+    /// <summary>
+    /// Convert post-raid quests into correct format.
+    /// Quest status comes back as a string version of the enum `Success`, not the expected value of 1.
+    /// </summary>
+    /// <param name="questsToProcess"> Quests data from client </param>
+    /// <returns> List of adjusted QuestStatus post-raid </returns>
     protected List<QuestStatus> ProcessPostRaidQuests(List<QuestStatus> questsToProcess)
     {
         var failedQuests = questsToProcess.Where(quest => quest.Status == QuestStatusEnum.MarkedAsFailed);
@@ -1021,9 +1043,11 @@ public class LocationLifecycleService
         return questsToProcess;
     }
 
-/*
- * Adjust server trader settings if they differ from data sent by client
- */
+    /// <summary>
+    /// Adjust server trader settings if they differ from data sent by client
+    /// </summary>
+    /// <param name="tradersServerProfile"> Server </param>
+    /// <param name="tradersClientProfile"> Client </param>
     protected void ApplyTraderStandingAdjustments(
         Dictionary<string, TraderInfo>? tradersServerProfile,
         Dictionary<string, TraderInfo>? tradersClientProfile
@@ -1046,9 +1070,11 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * Check if player used BTR or transit item sending service and send items to player via mail if found
- */
+    /// <summary>
+    /// Check if player used BTR or transit item sending service and send items to player via mail if found
+    /// </summary>
+    /// <param name="sessionId"> Session ID </param>
+    /// <param name="request"> End raid request from client </param>
     protected void HandleItemTransferEvent(string sessionId, EndLocalRaidRequestData request)
     {
         var transferTypes = new List<string>
@@ -1147,71 +1173,21 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * Return the equipped items from a players inventory
- */
-    protected List<Item> GetEquippedGear(List<Item> items)
-    {
-        var inventorySlots = new HashSet<string>
-        {
-            "FirstPrimaryWeapon",
-            "SecondPrimaryWeapon",
-            "Holster",
-            "Scabbard",
-            "Compass",
-            "Headwear",
-            "Earpiece",
-            "Eyewear",
-            "FaceCover",
-            "ArmBand",
-            "ArmorVest",
-            "TacticalVest",
-            "Backpack",
-            "pocket1",
-            "pocket2",
-            "pocket3",
-            "pocket4",
-            "SpecialSlot1",
-            "SpecialSlot2",
-            "SpecialSlot3"
-        };
-
-        // Get an array of root player items
-        var inventoryItems = items.Where(item => inventorySlots.Contains(item.SlotId)).ToList();
-
-        // Loop through these items and get all of their children
-        var newItems = inventoryItems;
-        while (newItems.Count > 0)
-        {
-            var foundItems = new List<Item>();
-            foreach (var item in newItems)
-            {
-                // Find children of this item
-                foundItems.AddRange(items.Where(newItem => string.Equals(newItem.ParentId, item.Id, StringComparison.Ordinal)));
-            }
-
-            // Add these newly found items to our list of inventory items
-            inventoryItems.AddRange(inventoryItems);
-            inventoryItems.AddRange(foundItems);
-
-            // Now find the children of these items
-            newItems = foundItems;
-        }
-
-        return inventoryItems;
-    }
-
-/*
- * Checks to see if player survives. run through will return false
- */
+    /// <summary>
+    /// Checks to see if player survives. run through will return false
+    /// </summary>
+    /// <param name="results"> Post raid request </param>
+    /// <returns> True if survived </returns>
     protected bool IsPlayerSurvived(EndRaidResult results)
     {
         return results.Result == ExitStatus.SURVIVED;
     }
 
-/*
- * Is the player dead after a raid - dead = anything other than "survived" / "runner"
- */
+    /// <summary>
+    /// Is the player dead after a raid - dead = anything other than "survived" / "runner"
+    /// </summary>
+    /// <param name="results"> Post raid request </param>
+    /// <returns> True if dead </returns>
     protected bool IsPlayerDead(EndRaidResult results)
     {
         var deathEnums = new List<ExitStatus>
@@ -1223,17 +1199,20 @@ public class LocationLifecycleService
         return deathEnums.Contains(results.Result.Value);
     }
 
-/*
- * Has the player moved from one map to another
- */
+    /// <summary>
+    /// Has the player moved from one map to another
+    /// </summary>
+    /// <param name="results"> Post raid request </param>
+    /// <returns> True if players transferred </returns>
     protected bool IsMapToMapTransfer(EndRaidResult results)
     {
         return results.Result == ExitStatus.TRANSIT;
     }
 
-/*
- * Reset the skill points earned in a raid to 0, ready for next raid
- */
+    /// <summary>
+    /// Reset the skill points earned in a raid to 0, ready for next raid
+    /// </summary>
+    /// <param name="commonSkills"> Profile common skills to update </param>
     protected void ResetSkillPointsEarnedDuringRaid(List<BaseSkill> commonSkills)
     {
         foreach (var skill in commonSkills)
@@ -1242,10 +1221,12 @@ public class LocationLifecycleService
         }
     }
 
-/*
- * merge two dictionaries together
- * Prioritise pair that has true as a value
- */
+    /// <summary>
+    /// Merge two dictionaries together.
+    /// Prioritise pair that has true as a value
+    /// </summary>
+    /// <param name="primary"> Main dictionary </param>
+    /// <param name="secondary"> Secondary dictionary </param>
     protected void MergePmcAndScavEncyclopedias(PmcData primary, PmcData secondary)
     {
         var mergedDicts = primary.Encyclopedia?.Union(secondary.Encyclopedia)
@@ -1259,6 +1240,11 @@ public class LocationLifecycleService
         secondary.Encyclopedia = mergedDicts;
     }
 
+    /// <summary>
+    /// Check for and add any rewards found via the gained achievements this raid
+    /// </summary>
+    /// <param name="fullProfile"> Profile to add customisations to </param>
+    /// <param name="postRaidAchievements"> All profile achievements at the end of a raid </param>
     protected void ProcessAchievementRewards(SptProfile fullProfile, Dictionary<string, long>? postRaidAchievements)
     {
         var sessionId = fullProfile.ProfileInfo.ProfileId;

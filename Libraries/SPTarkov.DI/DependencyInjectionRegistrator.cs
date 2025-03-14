@@ -25,7 +25,7 @@ public static class DependencyInjectionRegistrator
                 {
                     var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable));
                     var registerableType = t;
-                    var registerableComponents = new List<RegisterableType>();
+                    var registerableComponents = new List<RegistrableType>();
                     foreach (var attribute in attributes)
                     {
                         // if we have a type override this takes priority
@@ -39,34 +39,36 @@ public static class DependencyInjectionRegistrator
                             registerableType = registerableType.GetInterfaces()[0];
                         }
 
-                        registerableComponents.Add(new RegisterableType(registerableType, t, attribute));
+                        registerableComponents.Add(new RegistrableType(registerableType, t, attribute));
                     }
 
                     return registerableComponents;
                 }
             )
-            .GroupBy(t => t.RegisterableInterface.FullName);
+            .GroupBy(t => t.RegistrableInterface.FullName);
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
-        foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
         {
-            if (valueTuple.TypeToRegister.IsGenericType)
+            foreach (var valueTuple in groupedInjectables.OrderBy(t => t.InjectableAttribute.TypePriority))
             {
-                RegisterGenericComponents(builderServices, valueTuple);
-            }
-            else
-            {
-                RegisterComponent(
-                    builderServices,
-                    valueTuple.InjectableAttribute.InjectionType,
-                    valueTuple.RegisterableInterface,
-                    valueTuple.TypeToRegister
-                );
+                if (valueTuple.TypeToRegister.IsGenericType)
+                {
+                    RegisterGenericComponents(builderServices, valueTuple);
+                }
+                else
+                {
+                    RegisterComponent(
+                        builderServices,
+                        valueTuple.InjectableAttribute.InjectionType,
+                        valueTuple.RegistrableInterface,
+                        valueTuple.TypeToRegister
+                    );
+                }
             }
         }
     }
 
-    private static void RegisterGenericComponents(IServiceCollection builderServices, RegisterableType valueTuple)
+    private static void RegisterGenericComponents(IServiceCollection builderServices, RegistrableType valueTuple)
     {
         try
         {
@@ -78,7 +80,7 @@ public static class DependencyInjectionRegistrator
         }
         _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
 
-        var typeName = $"{valueTuple.RegisterableInterface.Namespace}.{valueTuple.RegisterableInterface.Name}";
+        var typeName = $"{valueTuple.RegistrableInterface.Namespace}.{valueTuple.RegistrableInterface.Name}";
         try
         {
             var matchedConstructors = _allConstructors.Where(
@@ -96,20 +98,19 @@ public static class DependencyInjectionRegistrator
             }
 
             foreach (var matchedConstructor in constructorInfos)
-            foreach (var parameterInfo in matchedConstructor.GetParameters()
-                         .Where(
-                             p => p.ParameterType.IsGenericType &&
-                                  p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                         ))
             {
-                var parameters = parameterInfo.ParameterType.GetGenericArguments();
-                var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
-                RegisterComponent(
-                    builderServices,
-                    valueTuple.InjectableAttribute.InjectionType,
-                    parameterInfo.ParameterType,
-                    typedGeneric
-                );
+                var constructorParams = matchedConstructor.GetParameters();
+                foreach (var parameterInfo in constructorParams.Where(x => IsMatchingGenericType(x,typeName)))
+                {
+                    var parameters = parameterInfo.ParameterType.GetGenericArguments();
+                    var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
+                    RegisterComponent(
+                        builderServices,
+                        valueTuple.InjectableAttribute.InjectionType,
+                        parameterInfo.ParameterType,
+                        typedGeneric
+                    );
+                }
             }
         }
         catch (Exception e)
@@ -119,26 +120,32 @@ public static class DependencyInjectionRegistrator
         }
     }
 
+    private static bool IsMatchingGenericType(ParameterInfo paramInfo, string typeName)
+    {
+        return paramInfo.ParameterType.IsGenericType &&
+               paramInfo.ParameterType.GetGenericTypeDefinition().FullName == typeName;
+    }
+
     private static void RegisterComponent(
         IServiceCollection builderServices,
         InjectionType injectionType,
-        Type registerableInterface,
-        Type imlementationType
+        Type registrableInterface,
+        Type implementationType
     )
     {
         switch (injectionType)
         {
             case InjectionType.Singleton:
-                builderServices.AddSingleton(registerableInterface, imlementationType);
+                builderServices.AddSingleton(registrableInterface, implementationType);
                 break;
             case InjectionType.Transient:
-                builderServices.AddTransient(registerableInterface, imlementationType);
+                builderServices.AddTransient(registrableInterface, implementationType);
                 break;
             case InjectionType.Scoped:
-                builderServices.AddScoped(registerableInterface, imlementationType);
+                builderServices.AddScoped(registrableInterface, implementationType);
                 break;
             default:
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(injectionType), "unknown injection type");
         }
     }
 
@@ -159,12 +166,12 @@ public static class DependencyInjectionRegistrator
         );
     }
 
-    private class RegisterableType(Type registerableInterface, Type typeToRegister, Injectable injectableAttribute)
+    private sealed class RegistrableType(Type registrableInterface, Type typeToRegister, Injectable injectableAttribute)
     {
-        public Type RegisterableInterface
+        public Type RegistrableInterface
         {
             get;
-        } = registerableInterface;
+        } = registrableInterface;
 
         public Type TypeToRegister
         {
