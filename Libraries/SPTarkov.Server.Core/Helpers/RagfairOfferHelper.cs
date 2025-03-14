@@ -104,12 +104,12 @@ public class RagfairOfferHelper(
     }
 
     /// <summary>
-    ///     Disable offer if item is flagged by tiered flea config
+    ///     Disable offer if item is flagged by tiered flea config based on player level
     /// </summary>
     /// <param name="tieredFlea">Tiered flea settings from ragfair config</param>
-    /// <param name="offer">Ragfair offer to check</param>
-    /// <param name="tieredFleaLimitTypes">Dict of item types with player level to be viewable</param>
-    /// <param name="playerLevel">Level of player viewing offer</param>
+    /// <param name="offer">Ragfair offer to evaluate</param>
+    /// <param name="tieredFleaLimitTypes">List of item types flagged with a required player level</param>
+    /// <param name="playerLevel">Current level of player viewing offer</param>
     protected void CheckAndLockOfferFromPlayerTieredFlea(
         TieredFlea tieredFlea,
         RagfairOffer offer,
@@ -117,10 +117,14 @@ public class RagfairOfferHelper(
         int playerLevel)
     {
         var offerItemTpl = offer.Items.FirstOrDefault().Template;
+
+        // Check if offer item is ammo
         if (tieredFlea.AmmoTplUnlocks is not null && _itemHelper.IsOfBaseclass(offerItemTpl, BaseClasses.AMMO))
         {
+            // Check if ammo is flagged with a level requirement
             if (tieredFlea.AmmoTplUnlocks.TryGetValue(offerItemTpl, out var unlockLevel) && playerLevel < unlockLevel)
             {
+                // Lock the offer if player's level is below the ammo's unlock requirement
                 offer.Locked = true;
 
                 return;
@@ -132,26 +136,26 @@ public class RagfairOfferHelper(
         {
             if (playerLevel < itemLevelRequirement)
             {
+                // Lock the offer if player's level is below the item's specific requirement
                 offer.Locked = true;
 
                 return;
             }
         }
 
-        // Optimisation - Ensure the item has at least one of the limited base types
-        if (_itemHelper.IsOfBaseclasses(offerItemTpl, tieredFleaLimitTypes))
-            // Loop over flea types
+        // Optimisation - Skip further checks if the item type isn't in the restricted types list
+        if (!_itemHelper.IsOfBaseclasses(offerItemTpl, tieredFleaLimitTypes))
         {
-            foreach (var tieredItemType in tieredFleaLimitTypes
-                         .Where(tieredItemType => _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType)))
-            {
-                if (playerLevel < tieredFlea.UnlocksType[tieredItemType])
-                {
-                    offer.Locked = true;
-                }
+            return;
+        }
 
-                break;
-            }
+        // Check if the item belongs to any restricted type and if player level is insufficient
+        if (tieredFleaLimitTypes
+            .Where(tieredItemType => _itemHelper.IsOfBaseclass(offerItemTpl, tieredItemType))
+            .Any(tieredItemType => playerLevel < tieredFlea.UnlocksType[tieredItemType]))
+        {
+            // Players level is below matching types requirement, flag as locked
+            offer.Locked = true;
         }
     }
 
