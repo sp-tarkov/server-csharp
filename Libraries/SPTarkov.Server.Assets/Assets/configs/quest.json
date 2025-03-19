@@ -199,14 +199,14 @@
             "season": "christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
-            "yearly": true  
+            "yearly": true
         },
         "675031f57775aada6b0f96a1": {
             "name": "Cheer up",
             "season": "christmas",
             "startTimestamp": 1701388800000,
             "endTimestamp": 1703980800000,
-            "yearly": true  
+            "yearly": true
         }
     },
     "repeatableQuests": [
@@ -415,7 +415,12 @@
                     "minRequestedBulletAmount": 15,
                     "maxRequestedBulletAmount": 40,
                     "useWhitelist": true,
-                    "useBlacklist": false
+                    "useBlacklist": false,
+                    "requiredItemsAreFiR": true,
+                    "requiredItemMinDurabilityMinMax": {
+                        "min": 60,
+                        "max": 80
+                    }
                 },
                 "Elimination": [
                     {
@@ -1012,7 +1017,8 @@
             "rewardAmmoStackMinSize": 5,
             "freeChangesAvailable": 2,
             "freeChanges": 2,
-            "keepDailyQuestTypeOnReplacement": false
+            "keepDailyQuestTypeOnReplacement": false,
+            "standingChangeCost": [0, 0.01]
         },
         {
             "id": "618035d38012292db3081bf0",
@@ -1874,7 +1880,8 @@
             "rewardBlacklist": ["627bce33f21bc425b06ab967", "59f32c3b86f77472a31742f0", "59f32bb586f774757e1e8442"],
             "rewardAmmoStackMinSize": 5,
             "freeChangesAvailable": 0,
-            "freeChanges": 0
+            "freeChanges": 0,
+            "standingChangeCost": [0, 0.01, 0.01]
         },
         {
             "id": "62825ef60e88d037dc1eb426",
@@ -2288,7 +2295,8 @@
             "rewardBlacklist": ["627bce33f21bc425b06ab967", "59f32c3b86f77472a31742f0", "59f32bb586f774757e1e8442"],
             "rewardAmmoStackMinSize": 5,
             "freeChangesAvailable": 0,
-            "freeChanges": 0
+            "freeChanges": 0,
+            "standingChangeCost": [0, 0.01]
         }
     ],
     "locationIdMap": {

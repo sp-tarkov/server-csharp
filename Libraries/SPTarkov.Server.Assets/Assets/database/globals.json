@@ -29651,7 +29651,7 @@
           "SavageCooldownModifier": 0.8,
           "ScavAttackSupport": false,
           "ScavCaseTimeModifier": 0.9,
-          "ScavEquipmentSpawnChanceModifier": 6,
+          "ScavEquipmentSpawnChanceModifier": 8,
           "TransitGridSize": {
             "x": 4,
             "y": 4,
@@ -29686,7 +29686,7 @@
           "SavageCooldownModifier": 0.7,
           "ScavAttackSupport": false,
           "ScavCaseTimeModifier": 0.8,
-          "ScavEquipmentSpawnChanceModifier": 9,
+          "ScavEquipmentSpawnChanceModifier": 12,
           "TransitGridSize": {
             "x": 4,
             "y": 5,
@@ -29721,7 +29721,7 @@
           "SavageCooldownModifier": 0.6,
           "ScavAttackSupport": false,
           "ScavCaseTimeModifier": 0.7,
-          "ScavEquipmentSpawnChanceModifier": 12,
+          "ScavEquipmentSpawnChanceModifier": 17,
           "TransitGridSize": {
             "x": 4,
             "y": 5,
@@ -29756,7 +29756,7 @@
           "SavageCooldownModifier": 0.5,
           "ScavAttackSupport": false,
           "ScavCaseTimeModifier": 0.6,
-          "ScavEquipmentSpawnChanceModifier": 15,
+          "ScavEquipmentSpawnChanceModifier": 20,
           "TransitGridSize": {
             "x": 5,
             "y": 5,
@@ -29791,7 +29791,7 @@
           "SavageCooldownModifier": 0.4,
           "ScavAttackSupport": true,
           "ScavCaseTimeModifier": 0.5,
-          "ScavEquipmentSpawnChanceModifier": 17,
+          "ScavEquipmentSpawnChanceModifier": 30,
           "TransitGridSize": {
             "x": 5,
             "y": 5,
@@ -29816,7 +29816,7 @@
     },
     "GameSearchingTimeout": 45,
     "GlobalItemPriceModifier": 1,
-    "GlobalLootChanceModifier": 0.15,
+    "GlobalLootChanceModifier": 0.18,
     "GlobalLootChanceModifierPvE": 0.2,
     "GraphicSettings": {
       "ExperimentalFogInCity": true

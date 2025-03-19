@@ -560,6 +560,7 @@ public record Completion : BaseQuestConfig
     /// <summary>
     /// Should supplied items be required FiR
     /// </summary>
+    [JsonPropertyName("requiredItemsAreFiR")]
     public bool? RequiredItemsAreFiR
     {
         get;

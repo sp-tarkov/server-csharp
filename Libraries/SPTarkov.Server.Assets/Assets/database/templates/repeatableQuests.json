@@ -99,7 +99,7 @@
 			}
         },
         "Completion": {
-            "_id": "61943a75eb60e11b7965cdbf4",
+            "_id": "67d02f62bcc8d767d075887a",
             "traderId": "58330581ace78e27b8b10cee",
             "location": "any",
             "image": "/files/quest/icon/616d993bc8c5ad2ab30ff6ba.jpg",
@@ -152,7 +152,7 @@
 			}
         },
         "Exploration": {
-            "_id": "65947c6afb90e7fcb40f8d684",
+            "_id": "67d02fa22fe89844420d48dc",
             "traderId": "54cb50c76803fa8b248b4571",
             "location": null,
             "image": "/files/quest/icon/616d993bc8c5ad2ab30ff6ba.jpg",
@@ -236,7 +236,7 @@
 			}
         },
         "Pickup": {
-            "_id": "64cfb3818db9f48b3f0b0a759",
+            "_id": "67d03016c971a7faef94af07",
             "traderId": "{traderId}",
             "location": "any",
             "image": "/files/quest/icon/62bd61b1b818ff064405b827.jpg",
