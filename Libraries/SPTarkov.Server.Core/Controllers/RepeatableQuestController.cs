@@ -139,7 +139,7 @@ public class RepeatableQuestController(
         repeatablesOfTypeInProfile.ChangeRequirement[newRepeatableQuest.Id] = new ChangeRequirement
         {
             ChangeCost = newRepeatableQuest.ChangeCost,
-            ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01])
+            ChangeStandingCost = _randomUtil.GetArrayValue(repeatableConfig.StandingChangeCost)
         };
 
         // Check if we should charge player for replacing quest
@@ -464,7 +464,7 @@ public class RepeatableQuestController(
                     new ChangeRequirement
                     {
                         ChangeCost = quest.ChangeCost,
-                        ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01]) // Randomise standing loss to replace
+                        ChangeStandingCost = _randomUtil.GetArrayValue(repeatableConfig.StandingChangeCost) // Randomise standing loss to replace
                     }
                 );
             }

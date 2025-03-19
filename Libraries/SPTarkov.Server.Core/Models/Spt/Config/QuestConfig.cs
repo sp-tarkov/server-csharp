@@ -311,6 +311,16 @@ public record RepeatableQuestConfig
         get;
         set;
     }
+
+    /// <summary>
+    ///  Reputation standing price for replacing a repeatable
+    /// </summary>
+    [JsonPropertyName("standingChangeCost")]
+    public IList<double>? StandingChangeCost
+    {
+        get;
+        set;
+    }
 }
 
 public record RewardScaling
