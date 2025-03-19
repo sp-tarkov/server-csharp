@@ -131,7 +131,12 @@ public class LocationLifecycleService
     {
         _logger.Debug($"Starting: {request.Location}");
 
-        var playerProfile = _profileHelper.GetPmcProfile(sessionId);
+        var playerProfile = _profileHelper.GetFullProfile(sessionId);
+
+        // Remove skill fatigue values
+        ResetSkillPointsEarnedDuringRaid(string.Equals(request.PlayerSide, "pmc", StringComparison.OrdinalIgnoreCase)
+            ? playerProfile.CharacterData.PmcData.Skills.Common
+            : playerProfile.CharacterData.ScavData.Skills.Common);
 
         // Raid is starting, adjust run times to reduce server load while player is in raid
         _ragfairConfig.RunIntervalSeconds = _ragfairConfig.RunIntervalValues.InRaid;
@@ -143,7 +148,7 @@ public class LocationLifecycleService
             ServerSettings = _databaseService.GetLocationServices(), // TODO - is this per map or global?
             Profile = new ProfileInsuredItems
             {
-                InsuredItems = playerProfile.InsuredItems
+                InsuredItems = playerProfile.CharacterData.PmcData.InsuredItems
             },
             LocationLoot = GenerateLocationAndLoot(request.Location, !request.ShouldSkipLootGeneration ?? true),
             TransitionType = TransitionType.NONE,
@@ -699,9 +704,6 @@ public class LocationLifecycleService
         // Must occur after encyclopedia updated
         MergePmcAndScavEncyclopedias(scavProfile, pmcProfile);
 
-        // Remove skill fatigue values
-        ResetSkillPointsEarnedDuringRaid(scavProfile.Skills.Common);
-
         // Scav died, regen scav loadout and reset timer
         if (isDead)
         {
@@ -843,9 +845,6 @@ public class LocationLifecycleService
 
         // MUST occur AFTER encyclopedia updated
         MergePmcAndScavEncyclopedias(pmcProfile, scavProfile);
-
-        // Remove skill fatigue values
-        ResetSkillPointsEarnedDuringRaid(pmcProfile.Skills.Common);
 
         // Handle temp, hydration, limb hp/effects
         _healthHelper.UpdateProfileHealthPostRaid(pmcProfile, postRaidProfile.Health, sessionId, isDead);
