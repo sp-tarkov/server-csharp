@@ -578,7 +578,7 @@ public class TraderHelper(
             // Get loyalty level details player has achieved with this trader
             // Uses lowest loyalty level as this function is used before a player has logged into server
             // We have no idea what player loyalty is with traders
-            var traderBuyBackPricePercent = traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
+            var traderBuyBackPricePercent = 100 - traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
 
             var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
             var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice, 0);
