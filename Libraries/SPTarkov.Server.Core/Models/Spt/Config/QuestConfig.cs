@@ -556,6 +556,25 @@ public record Completion : BaseQuestConfig
         get;
         set;
     }
+
+    /// <summary>
+    /// Should supplied items be required FiR
+    /// </summary>
+    public bool? RequiredItemsAreFiR
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
+    /// Should supplied items be required FiR
+    /// </summary>
+    [JsonPropertyName("requiredItemMinDurabilityMinMax")]
+    public MinMax<double>? RequiredItemMinDurabilityMinMax
+    {
+        get;
+        set;
+    }
 }
 
 public record Pickup : BaseQuestConfig
