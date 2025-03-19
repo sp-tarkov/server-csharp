@@ -674,10 +674,10 @@ public class ProfileHelper(
     {
         if (fullProfile?.CustomisationUnlocks == null)
         {
-            fullProfile.CustomisationUnlocks = new List<CustomisationStorage>();
+            fullProfile.CustomisationUnlocks = [];
         }
 
-        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == (string) reward.Target) ?? false)
+        if (fullProfile?.CustomisationUnlocks?.Any(u => u.Id == reward.Target) ?? false)
         {
             _logger.Warning($"Profile: {fullProfile.ProfileInfo.ProfileId} already has hideout customisaiton reward: {reward.Target}, skipping");
             return;
@@ -697,29 +697,26 @@ public class ProfileHelper(
 
             switch (matchingCustomisation.Parent)
             {
-                case "675ff48ce8d2356707079617":
-                    // MannequinPose
+                case CustomisationTypeId.MANNEQUIN_POSE:
                     rewardToStore.Type = CustomisationType.MANNEQUIN_POSE;
                     break;
-                case "6751848eba5968fd800a01d6":
-                    // Gestures
+                case CustomisationTypeId.GESTURES:
                     rewardToStore.Type = CustomisationType.GESTURE;
                     break;
-                case "67373f170eca6e03ab0d5391":
-                    // Floor
+                case CustomisationTypeId.FLOOR:
                     rewardToStore.Type = CustomisationType.FLOOR;
                     break;
-                case "6746fafabafff8500804880e":
-                    // DogTags
+                case CustomisationTypeId.DOG_TAGS:
                     rewardToStore.Type = CustomisationType.DOG_TAG;
                     break;
-                case "673b3f595bf6b605c90fcdc2":
-                    // Ceiling
+                case CustomisationTypeId.CEILING:
                     rewardToStore.Type = CustomisationType.CEILING;
                     break;
-                case "67373f1e5a5ee73f2a081baf":
-                    // Wall
+                case CustomisationTypeId.WALL:
                     rewardToStore.Type = CustomisationType.WALL;
+                    break;
+                case CustomisationTypeId.ENVIRONMENT_UI:
+                    rewardToStore.Type = CustomisationType.ENVIRONMENT;
                     break;
                 default:
                     _logger.Error($"Unhandled customisation unlock type: {matchingCustomisation.Parent} not added to profile");
