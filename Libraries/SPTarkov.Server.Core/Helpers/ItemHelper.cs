@@ -1981,7 +1981,7 @@ public class ItemHelper(
 
     // Get a list of slot names that hold removable plates
     // Returns Array of slot ids (e.g. front_plate)
-    public static FrozenSet<string> GetRemovablePlateSlotIds()
+    public FrozenSet<string> GetRemovablePlateSlotIds()
     {
         return _removablePlateSlotIds;
     }
