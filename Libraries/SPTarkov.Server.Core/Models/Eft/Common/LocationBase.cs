@@ -787,7 +787,7 @@ public record Transit
     {
         get;
         set;
-    } // TODO: Int in client
+    }
 
     [JsonPropertyName("active")]
     public bool? IsActive
@@ -798,6 +798,13 @@ public record Transit
 
     [JsonPropertyName("events")]
     public bool? Events
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("hideIfNoKey")]
+    public bool? HideIfNoKey
     {
         get;
         set;

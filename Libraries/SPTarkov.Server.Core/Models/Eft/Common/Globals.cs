@@ -93,6 +93,28 @@ public record PlayerSettings
         get;
         set;
     }
+
+    [JsonPropertyName("SearchSoundVolume")]
+    public SearchSoundVolumeSettings? SearchSoundVolume
+    {
+        get;
+        set;
+    }
+}
+
+public record SearchSoundVolumeSettings
+{
+    public double FpVolume
+    {
+        get;
+        set;
+    }
+
+    public double TpVolume
+    {
+        get;
+        set;
+    }
 }
 
 public record MovementRolloffMultiplier
@@ -628,6 +650,13 @@ public record Config
         set;
     }
 
+    [JsonPropertyName("AudioSettings")]
+    public GlobalAudioSettings? AudioSettings
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("content")]
     public Content? Content
     {
@@ -785,6 +814,13 @@ public record Config
 
     [JsonPropertyName("TransitSettings")]
     public TransitSettings? TransitSettings
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("Triggers")]
+    public Triggers? Triggers
     {
         get;
         set;
@@ -1337,13 +1373,6 @@ public record Config
         set;
     }
 
-    [JsonPropertyName("AudioSettings")]
-    public AudioSettings? AudioSettings
-    {
-        get;
-        set;
-    }
-
     public CoopSettings? CoopSettings
     {
         get;
@@ -1351,6 +1380,41 @@ public record Config
     }
 
     public PveSettings? PveSettings
+    {
+        get;
+        set;
+    }
+}
+
+public record GlobalAudioSettings
+{
+    [JsonPropertyName("RadioBroadcastSettings")]
+    public RadioBroadcastSettings? RadioBroadcastSettings
+    {
+        get;
+        set;
+    }
+}
+
+public record Triggers
+{
+    //TODO: add type
+    public object? HandlerDamage
+    {
+        get;
+        set;
+    }
+}
+
+public record HandlerDamageObject
+{
+    public int? Amount
+    {
+        get;
+        set;
+    }
+
+    public string? BodyPartColliderType
     {
         get;
         set;
@@ -9490,193 +9554,6 @@ public record BotPreset
 
     [JsonPropertyName("COEF_IF_MOVE")]
     public double? CoefIfMove
-    {
-        get;
-        set;
-    }
-}
-
-public record AudioSettings
-{
-    [JsonPropertyName("AudioGroupPresets")]
-    public List<AudioGroupPreset>? AudioGroupPresets
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("EnvironmentSettings")]
-    public EnvironmentSettings? EnvironmentSettings
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("HeadphonesSettings")]
-    public HeadphoneSettings HeadphonesSettings
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("MetaXRAudioPluginSettings")]
-    public MetaXRAudioPluginSettings? MetaXRAudioPluginSettings
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("PlayerSettings")]
-    public PlayerSettings? PlayerSettings
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("RadioBroadcastSettings")]
-    public RadioBroadcastSettings? RadioBroadcastSettings
-    {
-        get;
-        set;
-    }
-}
-
-public record AudioGroupPreset
-{
-    [JsonPropertyName("AngleToAllowBinaural")]
-    public double? AngleToAllowBinaural
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("DisabledBinauralByDistance")]
-    public bool? DisabledBinauralByDistance
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("DistanceToAllowBinaural")]
-    public double? DistanceToAllowBinaural
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("GroupType")]
-    public double? GroupType
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("HeightToAllowBinaural")]
-    public double? HeightToAllowBinaural
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Name")]
-    public string? Name
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("OcclusionEnabled")]
-    public bool? OcclusionEnabled
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("OcclusionIntensity")]
-    public double? OcclusionIntensity
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("OcclusionRolloffScale")]
-    public double? OcclusionRolloffScale
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("OverallVolume")]
-    public double? OverallVolume
-    {
-        get;
-        set;
-    }
-}
-
-public record EnvironmentSettings
-{
-    [JsonPropertyName("SnowStepsVolumeMultiplier")]
-    public double? SnowStepsVolumeMultiplier
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("SurfaceMultipliers")]
-    public List<SurfaceMultiplier>? SurfaceMultipliers
-    {
-        get;
-        set;
-    }
-}
-
-public record HeadphoneSettings
-{
-    public double FadeDuration
-    {
-        get;
-        set;
-    }
-
-    public string FadeIn
-    {
-        get;
-        set;
-    }
-
-    public string FadeOut
-    {
-        get;
-        set;
-    }
-}
-public record MetaXRAudioPluginSettings
-{
-    public bool? EnabledPluginErrorChecker
-    {
-        get;
-        set;
-    }
-
-    public double? OutputVolumeCheckCooldown
-    {
-        get;
-        set;
-    }
-}
-
-public record SurfaceMultiplier
-{
-    [JsonPropertyName("SurfaceType")]
-    public string? SurfaceType
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("VolumeMult")]
-    public double? VolumeMultiplier
     {
         get;
         set;

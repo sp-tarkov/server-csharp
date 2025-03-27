@@ -26931,316 +26931,6 @@
       }
     },
     "AudioSettings": {
-      "AudioGroupPresets": [
-        {
-          "AngleToAllowBinaural": 1000,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 1000,
-          "GroupType": 0,
-          "HeightToAllowBinaural": 1000,
-          "Name": "Gunshots",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 12,
-          "DisabledBinauralByDistance": true,
-          "DistanceToAllowBinaural": 10,
-          "GroupType": 1,
-          "HeightToAllowBinaural": 2,
-          "Name": "Weaponry",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 2,
-          "HeightToAllowBinaural": 10,
-          "Name": "Impacts",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 3,
-          "HeightToAllowBinaural": 10,
-          "Name": "Character",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 4,
-          "HeightToAllowBinaural": 10,
-          "Name": "Environment",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 12,
-          "DisabledBinauralByDistance": true,
-          "DistanceToAllowBinaural": 10,
-          "GroupType": 5,
-          "HeightToAllowBinaural": 2,
-          "Name": "Collisions",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 6,
-          "HeightToAllowBinaural": 10,
-          "Name": "Speech",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 0.7
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 7,
-          "HeightToAllowBinaural": 10,
-          "Name": "Distant",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 8,
-          "HeightToAllowBinaural": 10,
-          "Name": "NonspatialBypass",
-          "OcclusionEnabled": false,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 9,
-          "HeightToAllowBinaural": 10,
-          "Name": "Nonspatial",
-          "OcclusionEnabled": false,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 30,
-          "DisabledBinauralByDistance": false,
-          "DistanceToAllowBinaural": 60,
-          "GroupType": 10,
-          "HeightToAllowBinaural": 10,
-          "Name": "Voip",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 0.9,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 1000,
-          "DisabledBinauralByDistance": true,
-          "DistanceToAllowBinaural": 1000,
-          "GroupType": 11,
-          "HeightToAllowBinaural": 1000,
-          "Name": "Grenades",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        },
-        {
-          "AngleToAllowBinaural": 12,
-          "DisabledBinauralByDistance": true,
-          "DistanceToAllowBinaural": 10,
-          "GroupType": 12,
-          "HeightToAllowBinaural": 2,
-          "Name": "Windows",
-          "OcclusionEnabled": true,
-          "OcclusionIntensity": 1,
-          "OcclusionRolloffScale": 1,
-          "OverallVolume": 1
-        }
-      ],
-      "EnvironmentSettings": {
-        "SnowStepsVolumeMultiplier": 0.35,
-        "SurfaceMultipliers": [
-          {
-            "SurfaceType": "Concrete",
-            "VolumeMult": 0
-          },
-          {
-            "SurfaceType": "Metal",
-            "VolumeMult": 0.4
-          },
-          {
-            "SurfaceType": "Wood",
-            "VolumeMult": 0.5
-          },
-          {
-            "SurfaceType": "Soil",
-            "VolumeMult": 1
-          },
-          {
-            "SurfaceType": "Grass",
-            "VolumeMult": 1
-          },
-          {
-            "SurfaceType": "Asphalt",
-            "VolumeMult": 0.8
-          },
-          {
-            "SurfaceType": "Glass",
-            "VolumeMult": 0.1
-          },
-          {
-            "SurfaceType": "Gravel",
-            "VolumeMult": 1
-          },
-          {
-            "SurfaceType": "MetalThin",
-            "VolumeMult": 0.4
-          },
-          {
-            "SurfaceType": "Puddle",
-            "VolumeMult": 0.2
-          },
-          {
-            "SurfaceType": "Slate",
-            "VolumeMult": 0.3
-          },
-          {
-            "SurfaceType": "Tile",
-            "VolumeMult": 0.1
-          },
-          {
-            "SurfaceType": "WoodThick",
-            "VolumeMult": 0.5
-          },
-          {
-            "SurfaceType": "Swamp",
-            "VolumeMult": 0.5
-          },
-          {
-            "SurfaceType": "Garbage",
-            "VolumeMult": 0.5
-          },
-          {
-            "SurfaceType": "GarbageMetal",
-            "VolumeMult": 0.4
-          },
-          {
-            "SurfaceType": "Plastic",
-            "VolumeMult": 0.3
-          },
-          {
-            "SurfaceType": "WholeGlass",
-            "VolumeMult": 0.1
-          },
-          {
-            "SurfaceType": "WoodThin",
-            "VolumeMult": 0.5
-          }
-        ]
-      },
-      "HeadphonesSettings": {
-        "FadeDuration": 0.7,
-        "FadeIn": "InverseExponential",
-        "FadeOut": "EaseIn"
-      },
-      "MetaXRAudioPluginSettings": {
-        "EnabledPluginErrorChecker": true,
-        "OutputVolumeCheckCooldown": 0.3
-      },
-      "PlayerSettings": {
-        "BaseMaxMovementRolloff": 70,
-        "EnabledOcclusionDynamicRolloff": true,
-        "IndoorRolloffMult": 1,
-        "MinStepSoundRolloffMult": 0.5,
-        "MinStepSoundVolumeMult": 0.15,
-        "MovementRolloffMultipliers": [
-          {
-            "MovementState": "None",
-            "RolloffMultiplier": 1
-          },
-          {
-            "MovementState": "Run",
-            "RolloffMultiplier": 0.85
-          },
-          {
-            "MovementState": "Sprint",
-            "RolloffMultiplier": 0.95
-          },
-          {
-            "MovementState": "Stop",
-            "RolloffMultiplier": 0.85
-          },
-          {
-            "MovementState": "Land",
-            "RolloffMultiplier": 1
-          },
-          {
-            "MovementState": "Turn",
-            "RolloffMultiplier": 0.8
-          },
-          {
-            "MovementState": "Duck",
-            "RolloffMultiplier": 0.4
-          },
-          {
-            "MovementState": "Prone",
-            "RolloffMultiplier": 0.5
-          },
-          {
-            "MovementState": "Drop",
-            "RolloffMultiplier": 0.95
-          },
-          {
-            "MovementState": "Jump",
-            "RolloffMultiplier": 0.5
-          },
-          {
-            "MovementState": "Gear",
-            "RolloffMultiplier": 0.5
-          },
-          {
-            "MovementState": "VaultLand",
-            "RolloffMultiplier": 0.85
-          },
-          {
-            "MovementState": "VaultGeneric",
-            "RolloffMultiplier": 0.5
-          }
-        ],
-        "OutdoorRolloffMult": 0.98
-      },
       "RadioBroadcastSettings": {
         "EnabledBroadcast": false,
         "RadioStations": [
@@ -28060,6 +27750,13 @@
             "Savage"
           ],
           "voice": "Zombie_Medium"
+        },
+        {
+          "isNotRandom": true,
+          "side": [
+            "Savage"
+          ],
+          "voice": "BossAgroTagilla"
         }
       ],
       "SavageBody": {
@@ -32555,8 +32252,7 @@
           "628a60ae6b1d481ff772e9c8",
           "628b5638ad252a16da6dd245",
           "628b9c37a733087d0d7fe84b",
-          "5beed0f50db834001c062b12",
-          "674d6121c09f69dfb201a888"
+          "5beed0f50db834001c062b12"
         ]
       },
       {
@@ -34041,8 +33737,8 @@
         "TemplateId": "57347ca924597744596b4e71"
       },
       {
-        "MaxInLobby": 4,
-        "MaxInRaid": 4,
+        "MaxInLobby": 10,
+        "MaxInRaid": 10,
         "TemplateId": "5fca138c2a7b221b2852a5c6"
       },
       {
@@ -34729,6 +34425,31 @@
         "MaxInLobby": 0,
         "MaxInRaid": 0,
         "TemplateId": "67b72c64f753cf9f7a0a07aa"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "678f84bb9e85556ca60f0362"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "679ba90d269ddfea47012159"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 5,
+        "TemplateId": "67d3ed3271c17ff82e0a5b0b"
+      },
+      {
+        "MaxInLobby": 3,
+        "MaxInRaid": 99,
+        "TemplateId": "679b992329acd1f2f60985a5"
+      },
+      {
+        "MaxInLobby": 1,
+        "MaxInRaid": 5,
+        "TemplateId": "679b9819a2f2dd4da9023512"
       }
     ],
     "RunddansSettings": {
@@ -35410,6 +35131,302 @@
       "ScavPriceMod": 0.8,
       "UsecPriceMod": 1.05,
       "active": true
+    },
+    "Triggers": {
+      "HandlerDamage": {
+        "INTERACTIVE_Flametrap_00001_deadly": [
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 50,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Flametrap_00001_soft": [
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Guntrap_00001_deadly": [
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "Eyes"
+          }
+        ],
+        "INTERACTIVE_Guntrap_00001_soft": [
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "Eyes"
+          }
+        ],
+        "INTERACTIVE_Labyrinth_water_01_deadly": [
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 40,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Labyrinth_water_01_soft": [
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Lifting_grate_00001_deadly": [
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Lifting_grate_00001_soft": [
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Spikes_00001": [
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Spikes_traps_00001": [
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 2,
+            "BodyPartColliderType": "LeftThigh"
+          },
+          {
+            "Amount": 2,
+            "BodyPartColliderType": "RightThigh"
+          }
+        ],
+        "INTERACTIVE_Valve_00001_deadly": [
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 100,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ],
+        "INTERACTIVE_Valve_00001_soft": [
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightCalf"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "Pelvis"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RibcageUp"
+          },
+          {
+            "Amount": 5,
+            "BodyPartColliderType": "HeadCommon"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "RightUpperArm"
+          },
+          {
+            "Amount": 10,
+            "BodyPartColliderType": "LeftUpperArm"
+          }
+        ]
+      }
     },
     "TripwiresSettings": {
       "CollisionCapsuleCheckCoef": 2,

@@ -20,6 +20,13 @@
   "AveragePlayerLevel": 20,
   "Banners": [
     {
+      "id": "67d135bc9e0d93daf71d555e",
+      "pic": {
+        "path": "CONTENT/banners/banner_bigmap.png",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5464e0404bdc2d2a708b4567",
       "pic": {
         "path": "CONTENT/banners/banner_usec.jpg",
@@ -418,11 +425,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -465,11 +472,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -570,7 +577,7 @@
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 1,
@@ -580,7 +587,7 @@
   "BotMax": 19,
   "BotMaxPlayer": 9,
   "BotMaxPvE": 30,
-  "BotMaxTimePlayer": 1000,
+  "BotMaxTimePlayer": 0,
   "BotNormal": 50,
   "BotSpawnCountStep": 4,
   "BotSpawnPeriodCheck": 15,
@@ -589,7 +596,7 @@
   "BotSpawnTimeOnMax": 320,
   "BotSpawnTimeOnMin": 260,
   "BotStart": 20,
-  "BotStartPlayer": 210,
+  "BotStartPlayer": 0,
   "BotStop": 1500,
   "Description": "Very Big Map",
   "DisabledForScav": false,
@@ -801,7 +808,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 115
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -921,7 +928,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -951,7 +958,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -1405,7 +1412,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -1556,7 +1563,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -1890,7 +1897,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -2707,7 +2714,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -3160,7 +3167,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 120
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -3310,7 +3317,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 27,
@@ -3613,7 +3620,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -4104,9 +4111,9 @@
       "Id": "54021511-7a33-4470-868b-8a364ed64d1a",
       "Infiltration": "",
       "Position": {
-        "x": 255.4663,
-        "y": 1.21224034,
-        "z": -108.379227
+        "x": 252.05629,
+        "y": 1.16824031,
+        "z": -109.559219
       },
       "Rotation": 135.08139,
       "Sides": [
@@ -4277,7 +4284,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 6,
@@ -4427,7 +4434,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -4457,7 +4464,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -4609,7 +4616,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -4617,9 +4624,9 @@
       "Id": "5ec47a75-f6c1-4890-a158-f90283131500",
       "Infiltration": "",
       "Position": {
-        "x": 89.1170044,
-        "y": 1.34885907,
-        "z": -47.822998
+        "x": 89.96001,
+        "y": 1.34885764,
+        "z": -46.5050049
       },
       "Rotation": 204.6489,
       "Sides": [
@@ -4821,7 +4828,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -4851,7 +4858,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -5365,7 +5372,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -5665,7 +5672,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -6029,7 +6036,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 7,
@@ -6543,7 +6550,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -6634,7 +6641,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -7391,7 +7398,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -7753,7 +7760,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -7904,7 +7911,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -8236,7 +8243,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -8932,7 +8939,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -9265,7 +9272,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -9295,7 +9302,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 100
+          "Radius": 70
         }
       },
       "CorePointId": 28,
@@ -9386,7 +9393,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,
@@ -9659,7 +9666,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 110
+          "Radius": 70
         }
       },
       "CorePointId": 29,

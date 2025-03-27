@@ -20,6 +20,13 @@
   "AveragePlayerLevel": 25,
   "Banners": [
     {
+      "id": "67d1abc6c5fbfe1a95025e93",
+      "pic": {
+        "path": "CONTENT/banners/banner_interchange.jpg",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5464e0404bdc2d2a708b4567",
       "pic": {
         "path": "CONTENT/banners/banner_usec.jpg",
@@ -246,11 +253,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -293,11 +300,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -397,7 +404,7 @@
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 1,
