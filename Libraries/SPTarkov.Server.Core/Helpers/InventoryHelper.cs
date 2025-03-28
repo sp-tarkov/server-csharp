@@ -175,7 +175,10 @@ public class InventoryHelper(
             // Ensure item has upd object
             _itemHelper.AddUpdObjectToItem(item);
 
-            item.Upd.SpawnedInSession = foundInRaid;
+            // Ammo / currency can NEVER be FiR or have a 'SpawnedInSession' property
+            item.Upd.SpawnedInSession = _itemHelper.IsOfBaseclass(item.Template, BaseClasses.AMMO)
+                ? null
+                : foundInRaid;
         }
     }
 

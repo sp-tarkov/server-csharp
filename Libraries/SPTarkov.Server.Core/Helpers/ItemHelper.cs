@@ -1194,15 +1194,17 @@ public class ItemHelper(
     /// <summary>
     ///     Mark the passed in list of items as found in raid.
     ///     Modifies passed in items
+    ///     Will not flag ammo or currency as FiR
     /// </summary>
     /// <param name="items">The list of items to mark as FiR</param>
-    /// <param name="excludeCurrency">Skip adding FiR status to currency items</param>
-    public void SetFoundInRaid(List<Item> items, bool excludeCurrency = true)
+    public void SetFoundInRaid(List<Item> items)
     {
         foreach (var item in items)
         {
-            if (excludeCurrency && IsOfBaseclass(item.Template, BaseClasses.MONEY))
+            if (IsOfBaseclasses(item.Template, [BaseClasses.MONEY, BaseClasses.AMMO]))
             {
+                item.Upd.SpawnedInSession = null;
+
                 continue;
             }
 
@@ -1500,8 +1502,7 @@ public class ItemHelper(
                 ammoBox[0].Id,
                 cartridgeTpl,
                 (int) cartridgeCountToAdd,
-                location,
-                ammoBox[0].Upd?.SpawnedInSession ?? false
+                location
             );
 
             // In live no ammo box has the first cartridge item with a location
@@ -1531,8 +1532,7 @@ public class ItemHelper(
                 ammoBox[0].Id,
                 cartridgeTpl,
                 (int) ammoBoxMaxCartridgeCount,
-                0,
-                ammoBox[0].Upd?.SpawnedInSession ?? false
+                0
             )
         );
     }
@@ -1689,8 +1689,7 @@ public class ItemHelper(
                     magazineWithChildCartridges[0].Id,
                     cartridgeTpl,
                     cartridgeCountToAdd ?? 0,
-                    location,
-                    magazineWithChildCartridges[0].Upd?.SpawnedInSession ?? false
+                    location
                 )
             );
 
@@ -1774,27 +1773,24 @@ public class ItemHelper(
     /// <param name="ammoTpl">Cartridge to insert</param>
     /// <param name="stackCount">Count of cartridges inside parent</param>
     /// <param name="location">Location inside parent (e.g. 0, 1)</param>
-    /// <param name="foundInRaid">OPTIONAL - Are cartridges found in raid (SpawnedInSession)</param>
     /// <returns>Item</returns>
     public Item CreateCartridges(
         string parentId,
-        string? ammoTpl,
-        int? stackCount,
-        double location,
-        bool foundInRaid = false
+        string ammoTpl,
+        int stackCount,
+        double location
     )
     {
         return new Item
         {
             Id = _hashUtil.Generate(),
-            Template = ammoTpl!,
+            Template = ammoTpl,
             ParentId = parentId,
             SlotId = "cartridges",
             Location = location,
             Upd = new Upd
             {
-                StackObjectsCount = stackCount,
-                SpawnedInSession = foundInRaid
+                StackObjectsCount = stackCount
             }
         };
     }
