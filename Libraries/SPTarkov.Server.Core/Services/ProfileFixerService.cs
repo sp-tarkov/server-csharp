@@ -650,13 +650,18 @@ public class ProfileFixerService(
         }
 
         var clothingDb = _databaseService.GetTemplates().Customization;
-        foreach (var suitId in fullProfile.Suits.Where(suitId => !clothingDb.ContainsKey(suitId)))
+        foreach (var clothingItem in fullProfile.CustomisationUnlocks.Where(customisation => customisation.Type == CustomisationType.SUITE))
         {
-            _logger.Error(_localisationService.GetText("fixer-clothing_item_found", suitId));
-            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+            if (!clothingDb.ContainsKey(clothingItem.Id))
             {
-                fullProfile.Suits.Remove(suitId);
-                _logger.Warning($"Non-default suit purchase: {suitId} removed from profile");
+                // Item in profile not found in db, not good
+                _logger.Error(_localisationService.GetText("fixer-clothing_item_found", clothingItem));
+
+                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
+                {
+                    fullProfile.CustomisationUnlocks.Remove(clothingItem);
+                    _logger.Warning($"Non-default clothing purchase: {clothingItem} removed from profile");
+                }
             }
         }
 

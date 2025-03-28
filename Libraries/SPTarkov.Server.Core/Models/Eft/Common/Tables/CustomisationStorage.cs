@@ -6,7 +6,7 @@ public record CustomisationStorage
 {
     // Customisation.json/itemId
     [JsonPropertyName("id")]
-    public string? Id
+    public string Id
     {
         get;
         set;

@@ -230,21 +230,23 @@ public class TraderHelper(
     /// <summary>
     ///     Add a list of suit ids to a profiles suit list, no duplicates
     /// </summary>
-    /// <param name="fullProfile">Profile to add to</param>
-    /// <param name="suitIds">Suit Ids to add</param>
-    protected void AddSuitsToProfile(SptProfile fullProfile, List<string> suitIds)
+    /// <param name="fullProfile">Profile to add clothing to</param>
+    /// <param name="clothingIds">Clothing Ids to add to profile</param>
+    public void AddSuitsToProfile(SptProfile fullProfile, List<string> clothingIds)
     {
-        if (fullProfile.Suits is null)
-        {
-            fullProfile.Suits = [];
-        }
+        fullProfile.CustomisationUnlocks ??= [];
 
-        foreach (var suitId in suitIds)
-            // Don't add dupes
+        foreach (var suitId in clothingIds)
         {
-            if (!fullProfile.Suits.Contains(suitId))
+            if (!fullProfile.CustomisationUnlocks.Exists((customisation) => customisation.Id == suitId))
             {
-                fullProfile.Suits.Add(suitId);
+                // Clothing item doesn't exist in profile, add it
+                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage
+                {
+                    Id = suitId,
+                    Source = CustomisationSource.UNLOCKED_IN_GAME,
+                    Type = CustomisationType.SUITE
+                });
             }
         }
     }
