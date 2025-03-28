@@ -6,7 +6,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -84,6 +83,8 @@ public class PostDbLoadService(
 
         AdjustLocationBotValues();
 
+        MergeCustomHideoutAreas();
+
         if (_locationConfig.RogueLighthouseSpawnTimeSettings.Enabled)
         {
             FixRoguesSpawningInstantlyOnLighthouse();
@@ -124,6 +125,23 @@ public class PostDbLoadService(
 
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         _raidWeatherService.GenerateWeather(currentSeason);
+    }
+
+    private void MergeCustomHideoutAreas()
+    {
+        var hideout = _databaseService.GetHideout();
+        foreach (var customArea in hideout.CustomAreas)
+        {
+            // Check if exists
+            if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
+            {
+                _logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
+
+                continue;
+            }
+
+            hideout.Areas.Add(customArea);
+        }
     }
 
     /// <summary>
