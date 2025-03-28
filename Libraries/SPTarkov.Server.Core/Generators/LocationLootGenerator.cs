@@ -646,12 +646,16 @@ public class LocationLootGenerator(
 
     protected double GetLooseLootMultiplierForLocation(string location)
     {
-        return _locationConfig.LooseLootMultiplier[location];
+        return _locationConfig.LooseLootMultiplier.TryGetValue(location, out var value)
+            ? value
+            : _locationConfig.LooseLootMultiplier["default"];
     }
 
     protected double GetStaticLootMultiplierForLocation(string location)
     {
-        return _locationConfig.StaticLootMultiplier[location];
+        return _locationConfig.StaticLootMultiplier.TryGetValue(location, out var value)
+            ? value
+            : _locationConfig.StaticLootMultiplier["default"];
     }
 
     /// <summary>
