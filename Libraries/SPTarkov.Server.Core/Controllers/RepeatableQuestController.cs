@@ -470,8 +470,7 @@ public class RepeatableQuestController(
             }
 
             // Reset free repeatable values in player profile to defaults
-            generatedRepeatables.FreeChanges = repeatableConfig.FreeChanges;
-            generatedRepeatables.FreeChangesAvailable = repeatableConfig.FreeChanges;
+            generatedRepeatables.FreeChangesAvailable = generatedRepeatables.FreeChanges;
 
             returnData.Add(
                 new PmcDataRepeatableQuest
@@ -483,7 +482,7 @@ public class RepeatableQuestController(
                     InactiveQuests = generatedRepeatables.InactiveQuests,
                     ChangeRequirement = generatedRepeatables.ChangeRequirement,
                     FreeChanges = generatedRepeatables.FreeChanges,
-                    FreeChangesAvailable = generatedRepeatables.FreeChanges
+                    FreeChangesAvailable = generatedRepeatables.FreeChangesAvailable
                 }
             );
         }
@@ -504,10 +503,11 @@ public class RepeatableQuestController(
         var repeatableQuestDetails = pmcData.RepeatableQuests.FirstOrDefault(
             repeatable => repeatable.Name == repeatableConfig.Name
         );
+        var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
+
         if (repeatableQuestDetails is null)
         {
             // Not in profile, generate
-            var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
             repeatableQuestDetails = new PmcDataRepeatableQuest
             {
                 Id = repeatableConfig.Id,
@@ -521,6 +521,14 @@ public class RepeatableQuestController(
 
             // Add base object that holds repeatable data to profile
             pmcData.RepeatableQuests.Add(repeatableQuestDetails);
+        }
+
+        // There is a chance an invalid number of free changes was assigned to the profile in earlier versions
+        // reset the number if the user doesn't have access
+        if (!hasAccess)
+        {
+            repeatableQuestDetails.FreeChanges = 0;
+            repeatableQuestDetails.FreeChangesAvailable = 0;
         }
 
         return repeatableQuestDetails;
