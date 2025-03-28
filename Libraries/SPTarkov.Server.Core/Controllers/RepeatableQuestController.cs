@@ -415,7 +415,7 @@ public class RepeatableQuestController(
             var questTypePool = GenerateQuestPool(repeatableConfig, pmcData.Info.Level);
 
             // Add repeatable quests of this loops sub-type (daily/weekly)
-            for (var i = 0; i < GetQuestCount(repeatableConfig, pmcData); i++)
+            for (var i = 0; i < GetQuestCount(repeatableConfig, fullProfile); i++)
             {
                 var quest = new RepeatableQuest();
                 var lifeline = 0;
@@ -780,9 +780,10 @@ public class RepeatableQuestController(
     ///     Get count of repeatable quests profile should have access to
     /// </summary>
     /// <param name="repeatableConfig"></param>
+    /// <param name="fullProfile"></param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>Quest count</returns>
-    protected int GetQuestCount(RepeatableQuestConfig repeatableConfig, PmcData pmcData)
+    protected int GetQuestCount(RepeatableQuestConfig repeatableConfig, SptProfile fullProfile)
     {
         var questCount = repeatableConfig.NumQuests.GetValueOrDefault(0);
         if (questCount == 0)
@@ -791,7 +792,7 @@ public class RepeatableQuestController(
         }
 
         // Add elite bonus to daily quests
-        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData))
+        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, fullProfile.CharacterData.PmcData))
             // Elite charisma skill gives extra daily quest(s)
         {
             questCount += _databaseService
@@ -805,13 +806,8 @@ public class RepeatableQuestController(
                 .GetValueOrDefault(0);
         }
 
-        // Prestige level 2 gives additional daily and weekly
-        // do the logic for all other than "daily_savage"
-        // use bigger than or equal incase modders add more
-        if (repeatableConfig.Name.ToLower() != "daily_savage" && pmcData.Info.PrestigeLevel >= 2)
-        {
-            questCount++;
-        }
+        // Add any extra repeatable quests the profile has unlocked
+        questCount += (int)fullProfile.SptData.ExtraRepeatableQuests.GetValueOrDefault(repeatableConfig.Id, 0);
 
         return questCount;
     }

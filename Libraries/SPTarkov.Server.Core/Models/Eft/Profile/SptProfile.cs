@@ -779,6 +779,13 @@ public record Spt
         get;
         set;
     }
+
+    [JsonPropertyName("extraRepeatableQuests")]
+    public Dictionary<string, double>? ExtraRepeatableQuests
+    {
+        get;
+        set;
+    }
 }
 
 public record AcceptedCultistReward

@@ -150,7 +150,7 @@ namespace SPTarkov.Server.Core.Helpers
                         }
                     case RewardType.ExtraDailyQuest:
                         {
-                            _logger.Info("additional quests will be added when generating repeatables");
+                            _profileHelper.AddExtraRepeatableQuest(newProfile, reward.Target, (double)reward.Value);
                             break;
                         }
                     default:
