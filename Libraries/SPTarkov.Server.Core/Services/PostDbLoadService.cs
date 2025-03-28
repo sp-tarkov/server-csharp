@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -49,6 +50,8 @@ public class PostDbLoadService(
         }
 
         AddCustomLooseLootPositions();
+
+        MergeCustomAchievements();
 
         AdjustMinReserveRaiderSpawnChance();
 
@@ -121,6 +124,23 @@ public class PostDbLoadService(
 
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         _raidWeatherService.GenerateWeather(currentSeason);
+    }
+
+    /// <summary>
+    /// Merge custom achievements into achievement db table 
+    /// </summary>
+    protected void MergeCustomAchievements()
+    {
+        var achievements = _databaseService.GetAchievements();
+        foreach (var customAchievement in _databaseService.GetCustomAchievements()) {
+            if (achievements.Exists((a) => a.Id == customAchievement.Id))
+            {
+                _logger.Warning($"Unable to add custom achievement as id: ${customAchievement.Id} already exists");
+                continue;
+            }
+
+            achievements.Add(customAchievement);
+        }
     }
 
     private void RemoveNewBeginningRequirementFromPrestige()

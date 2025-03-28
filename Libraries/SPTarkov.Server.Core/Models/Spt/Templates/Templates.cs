@@ -103,6 +103,16 @@ public record Templates
     }
 
     /// <summary>
+    /// Achievements
+    /// </summary>
+    [JsonPropertyName("customAchievements")]
+    public List<Achievement>? CustomAchievements
+    {
+        get;
+        set;
+    }
+
+    /// <summary>
     /// Location services data
     /// </summary>
     [JsonPropertyName("locationServices")]
