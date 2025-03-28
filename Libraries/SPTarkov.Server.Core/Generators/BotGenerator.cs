@@ -328,6 +328,14 @@ public class BotGenerator(
             return _randomUtil.GetInt(experiences["normal"].Min, experiences["normal"].Max);
         }
 
+        // Some bots have -1/-1, shortcut result
+
+
+        if (result.Max == -1)
+        {
+            return -1;
+        }
+
         return _randomUtil.GetInt(result.Min, result.Max);
     }
 
