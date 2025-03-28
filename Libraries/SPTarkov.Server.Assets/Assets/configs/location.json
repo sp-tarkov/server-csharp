@@ -17,7 +17,8 @@
         "terminal": 1,
         "sandbox": 2.8,
         "sandbox_high": 2.8,
-        "town": 0
+        "town": 0,
+        "labyrinth": 3
     },
     "staticLootMultiplier": {
         "bigmap": 1,
@@ -37,7 +38,8 @@
         "terminal": 1,
         "sandbox": 1,
         "sandbox_high": 1,
-        "town": 1
+        "town": 1,
+        "labyrinth": 1
     },
     "customWaves": {
         "boss": {},
@@ -174,7 +176,8 @@
             "lighthouse": true,
             "laboratory": true,
             "rezervbase": true,
-            "sandbox": true
+            "sandbox": true,
+			"labyrinth": true
         },
         "containerTypesToNotRandomise": [
             "5d6fd45b86f774317075ed43",
