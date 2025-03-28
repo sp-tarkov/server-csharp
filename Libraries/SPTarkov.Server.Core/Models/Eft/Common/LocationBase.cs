@@ -2303,5 +2303,8 @@ public enum WildSpawnType
     infectedPmc,
     infectedCivil,
     infectedLaborant,
-    infectedTagilla
+    infectedTagilla,
+    bossTagillaAgro,
+    bossKillaAgro,
+    tagillaHelperAgro
 }
