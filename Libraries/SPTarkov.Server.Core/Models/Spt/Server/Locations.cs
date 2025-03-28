@@ -24,6 +24,7 @@ public record Locations
         { "shoreline", "Shoreline" },
         { "suburbs", "Suburbs" },
         { "tarkovstreets", "TarkovStreets" },
+        { "labyrinth", "Labyrinth" },
         { "terminal", "Terminal" },
         { "town", "Town" },
         { "woods", "Woods" },
@@ -47,6 +48,7 @@ public record Locations
         { "Terminal", "Terminal" },
         { "Town", "Town" },
         { "Woods", "Woods" },
+        { "Labyrinth", "Labyrinth" },
         { "Sandbox", "Sandbox" },
         { "SandboxHigh", "SandboxHigh" }
     }.ToFrozenDictionary();
@@ -139,6 +141,13 @@ public record Locations
 
     [JsonPropertyName("tarkovstreets")]
     public Eft.Common.Location? TarkovStreets
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("labyrinth")]
+    public Eft.Common.Location? Labyrinth
     {
         get;
         set;
