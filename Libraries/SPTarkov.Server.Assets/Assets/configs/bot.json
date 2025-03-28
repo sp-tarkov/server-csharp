@@ -789,6 +789,13 @@
       "lightIsActiveDayChancePercent": 25,
       "lightIsActiveNightChancePercent": 75
     },
+    "tagillahelperagro": {
+      "faceShieldIsActiveChancePercent": 100,
+      "forceStock": true,
+      "laserIsActiveChancePercent": 75,
+      "lightIsActiveDayChancePercent": 25,
+      "lightIsActiveNightChancePercent": 75
+    },
     "bosstest": {},
     "bosszryachiy": {
       "forceStock": true,
