@@ -123,7 +123,7 @@ public class LocationLootGenerator(
         if (
             !(
                 _locationConfig.ContainerRandomisationSettings.Enabled &&
-                _locationConfig.ContainerRandomisationSettings.Maps[locationId]
+                _locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
             )
         )
         {
