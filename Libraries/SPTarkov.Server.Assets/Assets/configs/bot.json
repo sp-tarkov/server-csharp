@@ -3042,7 +3042,10 @@
     "sectantWarrior": 10,
     "shooterBTR": 1,
     "skier": 10,
-    "test": 30
+    "test": 30,
+	"bossTagillaAgro": 5,
+	"bossKillaAgro": 5,
+	"tagillaHelperAgro": 5
   },
   "revenge": {
     "arenaFighter": [
