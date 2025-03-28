@@ -120,11 +120,7 @@ public class LocationLootGenerator(
         }
 
         // Randomisation is turned off globally or just turned off for this map
-        if (
-            !(
-                _locationConfig.ContainerRandomisationSettings.Enabled &&
-                _locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
-            )
+        if (!_locationConfig.ContainerRandomisationSettings.Enabled || !_locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
         )
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
