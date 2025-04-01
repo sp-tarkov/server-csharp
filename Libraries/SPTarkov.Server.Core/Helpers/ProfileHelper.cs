@@ -204,7 +204,8 @@ public class ProfileHelper(
             FreeRepeatableRefreshUsedCount = new Dictionary<string, int>(),
             Migrations = new Dictionary<string, long>(),
             CultistRewards = new Dictionary<string, AcceptedCultistReward>(),
-            PendingPrestige = null
+            PendingPrestige = null,
+            ExtraRepeatableQuests = new Dictionary<string, double>()
         };
     }
 
