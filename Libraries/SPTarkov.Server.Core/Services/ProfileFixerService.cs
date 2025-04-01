@@ -649,16 +649,18 @@ public class ProfileFixerService(
             }
         }
 
-        var clothing = _databaseService.GetTemplates().Customization;
-        foreach (var suit in fullProfile.Suits)
+        var clothingDb = _databaseService.GetTemplates().Customization;
+        foreach (var clothingItem in fullProfile.CustomisationUnlocks.Where(customisation => customisation.Type == CustomisationType.SUITE))
         {
-            if (suit is null)
+            if (!clothingDb.ContainsKey(clothingItem.Id))
             {
-                _logger.Error(_localisationService.GetText("fixer-clothing_item_found", suit));
+                // Item in profile not found in db, not good
+                _logger.Error(_localisationService.GetText("fixer-clothing_item_found", clothingItem));
+
                 if (_coreConfig.Fixes.RemoveModItemsFromProfile)
                 {
-                    fullProfile.Suits.Remove(suit);
-                    _logger.Warning($"Non-default suit purchase: {suit} removed from profile");
+                    fullProfile.CustomisationUnlocks.Remove(clothingItem);
+                    _logger.Warning($"Non-default clothing purchase: {clothingItem} removed from profile");
                 }
             }
         }
@@ -706,16 +708,14 @@ public class ProfileFixerService(
             }
         }
 
-        foreach (var TraderPurchase in fullProfile.TraderPurchases)
+        foreach (var TraderPurchaseKvP in fullProfile.TraderPurchases
+                     .Where(TraderPurchase => !_traderHelper.TraderEnumHasValue(TraderPurchase.Key)))
         {
-            if (!_traderHelper.TraderEnumHasValue(TraderPurchase.Key))
+            _logger.Error(_localisationService.GetText("fixer-trader_found", TraderPurchaseKvP.Key));
+            if (_coreConfig.Fixes.RemoveModItemsFromProfile)
             {
-                _logger.Error(_localisationService.GetText("fixer-trader_found", TraderPurchase.Key));
-                if (_coreConfig.Fixes.RemoveModItemsFromProfile)
-                {
-                    _logger.Warning($"Non-default trader: {TraderPurchase.Key} purchase removed from traderPurchases list in profile");
-                    fullProfile.TraderPurchases.Remove(TraderPurchase.Key);
-                }
+                _logger.Warning($"Non-default trader: {TraderPurchaseKvP.Key} purchase removed from traderPurchases list in profile");
+                fullProfile.TraderPurchases.Remove(TraderPurchaseKvP.Key);
             }
         }
     }

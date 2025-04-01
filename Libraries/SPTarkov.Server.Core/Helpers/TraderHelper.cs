@@ -230,21 +230,23 @@ public class TraderHelper(
     /// <summary>
     ///     Add a list of suit ids to a profiles suit list, no duplicates
     /// </summary>
-    /// <param name="fullProfile">Profile to add to</param>
-    /// <param name="suitIds">Suit Ids to add</param>
-    protected void AddSuitsToProfile(SptProfile fullProfile, List<string> suitIds)
+    /// <param name="fullProfile">Profile to add clothing to</param>
+    /// <param name="clothingIds">Clothing Ids to add to profile</param>
+    public void AddSuitsToProfile(SptProfile fullProfile, List<string> clothingIds)
     {
-        if (fullProfile.Suits is null)
-        {
-            fullProfile.Suits = [];
-        }
+        fullProfile.CustomisationUnlocks ??= [];
 
-        foreach (var suitId in suitIds)
-            // Don't add dupes
+        foreach (var suitId in clothingIds)
         {
-            if (!fullProfile.Suits.Contains(suitId))
+            if (!fullProfile.CustomisationUnlocks.Exists((customisation) => customisation.Id == suitId))
             {
-                fullProfile.Suits.Add(suitId);
+                // Clothing item doesn't exist in profile, add it
+                fullProfile.CustomisationUnlocks.Add(new CustomisationStorage
+                {
+                    Id = suitId,
+                    Source = CustomisationSource.UNLOCKED_IN_GAME,
+                    Type = CustomisationType.SUITE
+                });
             }
         }
     }
@@ -578,7 +580,7 @@ public class TraderHelper(
             // Get loyalty level details player has achieved with this trader
             // Uses lowest loyalty level as this function is used before a player has logged into server
             // We have no idea what player loyalty is with traders
-            var traderBuyBackPricePercent = traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
+            var traderBuyBackPricePercent = 100 - traderBase.LoyaltyLevels.FirstOrDefault().BuyPriceCoefficient;
 
             var itemHandbookPrice = _handbookHelper.GetTemplatePrice(tpl);
             var priceTraderBuysItemAt = _randomUtil.GetPercentOfValue(traderBuyBackPricePercent ?? 0, itemHandbookPrice, 0);

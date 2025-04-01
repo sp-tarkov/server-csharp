@@ -55,7 +55,7 @@ public class JsonUtil
         }
     };
 
-    private static JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
+    protected static JsonSerializerOptions jsonSerializerOptionsIndented = new(jsonSerializerOptionsNoIndent)
     {
         WriteIndented = true
     };
@@ -147,18 +147,19 @@ public class JsonUtil
     ///     Convert an object into JSON
     /// </summary>
     /// <param name="obj">Object to serialise</param>
-    /// <param name="type">Type of object being serialsied</param>
+    /// <param name="type">Type of object being serialized</param>
     /// <param name="indented">Should JSON be indented</param>
-    /// <returns></returns>
+    /// <returns>Serialized text</returns>
     public string? Serialize(object? obj, Type type, bool indented = false)
     {
         return obj == null ? null : JsonSerializer.Serialize(obj, type, indented ? jsonSerializerOptionsIndented : jsonSerializerOptionsNoIndent);
     }
 
-    private void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
+    protected static void AddConverter(JsonSerializerOptions options, JsonConverter newConverter)
     {
-        if (!options.Converters.Any(c => c.GetType() == newConverter.GetType()))
+        if (options.Converters.All(c => c.GetType() != newConverter.GetType()))
         {
+            // Doesn't exist, add
             options.Converters.Add(newConverter);
         }
     }

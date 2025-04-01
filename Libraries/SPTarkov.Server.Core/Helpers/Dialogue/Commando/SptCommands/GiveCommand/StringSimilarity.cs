@@ -22,7 +22,11 @@ public static class StringSimilarity
         for (var i = 0; i < str1.Length - (substringLength - 1); i++)
         {
             var substr1 = str1.Substring(i, substringLength);
-            map.Add(substr1, map.TryGetValue(substr1, out var value) ? value + 1 : 1);
+            var valueToAdd = map.TryGetValue(substr1, out var value) ? value + 1 : 1;
+            if (!map.TryAdd(substr1, valueToAdd))
+            {
+                map[substr1]++;
+            }
         }
 
         var match = 0;

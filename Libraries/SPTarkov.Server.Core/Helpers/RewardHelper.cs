@@ -317,9 +317,12 @@ public class RewardHelper(
             {
                 // Is child mod
                 if (reward.Items.FirstOrDefault().Upd.SpawnedInSession.GetValueOrDefault(false))
-                    // Propigate FiR status into child items
+                    // Propagate FiR status into child items
                 {
-                    rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
+                    if (!_itemHelper.IsOfBaseclasses(rewardItem.Template, [BaseClasses.AMMO, BaseClasses.MONEY]))
+                    {
+                        rewardItem.Upd.SpawnedInSession = reward.Items.FirstOrDefault()?.Upd.SpawnedInSession;
+                    }
                 }
 
                 mods.Add(rewardItem);

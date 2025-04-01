@@ -37,7 +37,7 @@ public record RaidChanges
     /// <summary>
     /// How many minutes are in the raid total
     /// </summary>
-    [JsonPropertyName("RaidTimeMinutes")]
+    [JsonPropertyName("raidTimeMinutes")]
     public double? RaidTimeMinutes
     {
         get;
@@ -47,7 +47,7 @@ public record RaidChanges
     /// <summary>
     /// The new number of seconds required to avoid a run through
     /// </summary>
-    [JsonPropertyName("NewSurviveTimeSeconds")]
+    [JsonPropertyName("newSurviveTimeSeconds")]
     public double? NewSurviveTimeSeconds
     {
         get;
@@ -57,7 +57,7 @@ public record RaidChanges
     /// <summary>
     /// The original number of seconds required to avoid a run through
     /// </summary>
-    [JsonPropertyName("OriginalSurvivalTimeSeconds")]
+    [JsonPropertyName("originalSurvivalTimeSeconds")]
     public double? OriginalSurvivalTimeSeconds
     {
         get;
@@ -67,7 +67,7 @@ public record RaidChanges
     /// <summary>
     /// Any changes required to the extract list
     /// </summary>
-    [JsonPropertyName("ExitChanges")]
+    [JsonPropertyName("exitChanges")]
     public List<ExtractChange>? ExitChanges
     {
         get;

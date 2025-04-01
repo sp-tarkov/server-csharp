@@ -139,7 +139,7 @@ public class RepeatableQuestController(
         repeatablesOfTypeInProfile.ChangeRequirement[newRepeatableQuest.Id] = new ChangeRequirement
         {
             ChangeCost = newRepeatableQuest.ChangeCost,
-            ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01])
+            ChangeStandingCost = _randomUtil.GetArrayValue(repeatableConfig.StandingChangeCost)
         };
 
         // Check if we should charge player for replacing quest
@@ -415,7 +415,7 @@ public class RepeatableQuestController(
             var questTypePool = GenerateQuestPool(repeatableConfig, pmcData.Info.Level);
 
             // Add repeatable quests of this loops sub-type (daily/weekly)
-            for (var i = 0; i < GetQuestCount(repeatableConfig, pmcData); i++)
+            for (var i = 0; i < GetQuestCount(repeatableConfig, fullProfile); i++)
             {
                 var quest = new RepeatableQuest();
                 var lifeline = 0;
@@ -464,14 +464,13 @@ public class RepeatableQuestController(
                     new ChangeRequirement
                     {
                         ChangeCost = quest.ChangeCost,
-                        ChangeStandingCost = _randomUtil.GetArrayValue([0, 0.01]) // Randomise standing loss to replace
+                        ChangeStandingCost = _randomUtil.GetArrayValue(repeatableConfig.StandingChangeCost) // Randomise standing loss to replace
                     }
                 );
             }
 
             // Reset free repeatable values in player profile to defaults
-            generatedRepeatables.FreeChanges = repeatableConfig.FreeChanges;
-            generatedRepeatables.FreeChangesAvailable = repeatableConfig.FreeChanges;
+            generatedRepeatables.FreeChangesAvailable = generatedRepeatables.FreeChanges;
 
             returnData.Add(
                 new PmcDataRepeatableQuest
@@ -483,7 +482,7 @@ public class RepeatableQuestController(
                     InactiveQuests = generatedRepeatables.InactiveQuests,
                     ChangeRequirement = generatedRepeatables.ChangeRequirement,
                     FreeChanges = generatedRepeatables.FreeChanges,
-                    FreeChangesAvailable = generatedRepeatables.FreeChanges
+                    FreeChangesAvailable = generatedRepeatables.FreeChangesAvailable
                 }
             );
         }
@@ -504,10 +503,11 @@ public class RepeatableQuestController(
         var repeatableQuestDetails = pmcData.RepeatableQuests.FirstOrDefault(
             repeatable => repeatable.Name == repeatableConfig.Name
         );
+        var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
+
         if (repeatableQuestDetails is null)
         {
             // Not in profile, generate
-            var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
             repeatableQuestDetails = new PmcDataRepeatableQuest
             {
                 Id = repeatableConfig.Id,
@@ -521,6 +521,14 @@ public class RepeatableQuestController(
 
             // Add base object that holds repeatable data to profile
             pmcData.RepeatableQuests.Add(repeatableQuestDetails);
+        }
+
+        // There is a chance an invalid number of free changes was assigned to the profile in earlier versions
+        // reset the number if the user doesn't have access
+        if (!hasAccess)
+        {
+            repeatableQuestDetails.FreeChanges = 0;
+            repeatableQuestDetails.FreeChangesAvailable = 0;
         }
 
         return repeatableQuestDetails;
@@ -772,9 +780,10 @@ public class RepeatableQuestController(
     ///     Get count of repeatable quests profile should have access to
     /// </summary>
     /// <param name="repeatableConfig"></param>
+    /// <param name="fullProfile"></param>
     /// <param name="pmcData">Player profile</param>
     /// <returns>Quest count</returns>
-    protected int GetQuestCount(RepeatableQuestConfig repeatableConfig, PmcData pmcData)
+    protected int GetQuestCount(RepeatableQuestConfig repeatableConfig, SptProfile fullProfile)
     {
         var questCount = repeatableConfig.NumQuests.GetValueOrDefault(0);
         if (questCount == 0)
@@ -783,7 +792,7 @@ public class RepeatableQuestController(
         }
 
         // Add elite bonus to daily quests
-        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, pmcData))
+        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, fullProfile.CharacterData.PmcData))
             // Elite charisma skill gives extra daily quest(s)
         {
             questCount += _databaseService
@@ -797,13 +806,8 @@ public class RepeatableQuestController(
                 .GetValueOrDefault(0);
         }
 
-        // Prestige level 2 gives additional daily and weekly
-        // do the logic for all other than "daily_savage"
-        // use bigger than or equal incase modders add more
-        if (repeatableConfig.Name.ToLower() != "daily_savage" && pmcData.Info.PrestigeLevel >= 2)
-        {
-            questCount++;
-        }
+        // Add any extra repeatable quests the profile has unlocked
+        questCount += (int)fullProfile.SptData.ExtraRepeatableQuests.GetValueOrDefault(repeatableConfig.Id, 0);
 
         return questCount;
     }

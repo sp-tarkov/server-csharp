@@ -1,5 +1,4 @@
 // This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe
-
 public static class Weapons
 {
     public const string ASSAULTCARBINE_762X39_OP_SKS = "587e02ff24597743df3deaeb";

@@ -54,7 +54,7 @@ public class BotEquipmentFilterService
             pmcProfile?.Info?.Level ?? 0
         );
 
-        var botEquipConfig = _botEquipmentConfig[botRole.ToLower()];
+        _botEquipmentConfig.TryGetValue(botRole.ToLower(), out var botEquipConfig);
         var randomisationDetails = _botHelper.GetBotRandomizationDetails(botLevel, botEquipConfig);
 
         if (botEquipmentBlacklist is not null || botEquipmentWhitelist is not null)

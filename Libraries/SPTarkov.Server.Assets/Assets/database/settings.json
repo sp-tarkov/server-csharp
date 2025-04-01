@@ -1,49 +1,711 @@
 {
-    "config": {
-        "MemoryManagementSettings": {
-            "HeapPreAllocationEnabled": false,
-            "HeapPreAllocationMB": 200,
-            "OverrideRamCleanerSettings": false,
-            "RamCleanerEnabled": false,
-            "GigabytesRequiredToDisableGCDuringRaid": 25,
-            "AggressiveGC": true
+  "config": {
+    "AFKTimeoutSeconds": 604800,
+    "AdditionalRandomDelaySeconds": 13,
+    "AudioSettings": {
+      "AudioGroupPresets": [
+        {
+          "AngleToAllowBinaural": 1000,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 1000,
+          "GroupType": 0,
+          "HeightToAllowBinaural": 1000,
+          "Name": "Gunshots",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
         },
-        "ReleaseProfiler": {
-            "Enabled": true,
-            "RecordTriggerValue": 2000,
-            "MaxRecords": 100
+        {
+          "AngleToAllowBinaural": 12,
+          "DisabledBinauralByDistance": true,
+          "DistanceToAllowBinaural": 10,
+          "GroupType": 1,
+          "HeightToAllowBinaural": 2,
+          "Name": "Weaponry",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 1
         },
-        "FramerateLimit": {
-            "MinFramerateLimit": 30,
-            "MaxFramerateLobbyLimit": 60,
-            "MaxFramerateGameLimit": 144
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 2,
+          "HeightToAllowBinaural": 10,
+          "Name": "Impacts",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 1
         },
-        "ClientSendRateLimit": 120,
-        "TurnOffLogging": false,
-        "NVidiaHighlights": false,
-        "WebDiagnosticsEnabled": false,
-        "KeepAliveInterval": 140,
-        "GroupStatusInterval": 60,
-        "GroupStatusButtonInterval": 7,
-        "PingServersInterval": 10,
-        "PingServerResultSendInterval": -1,
-        "WeaponOverlapDistanceCulling": 50,
-        "FirstCycleDelaySeconds": 20,
-        "SecondCycleDelaySeconds": 40,
-        "NextCycleDelaySeconds": 60,
-        "AdditionalRandomDelaySeconds": 13,
-        "Mark502and504AsNonImportant": true,
-        "DefaultRetriesCount": 1,
-        "CriticalRetriesCount": 1,
-        "AFKTimeoutSeconds": 604800,
-        "RequestsMadeThroughLobby": ["/client/mail/msg/send"],
-        "LobbyKeepAliveInterval": 1,
-        "RequestConfirmationTimeouts": [0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 18.8],
-        "ShouldEstablishLobbyConnection": false,
-		"NetworkStateView": {
-                "LossThreshold": 10,
-                "RttThreshold": 100
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 3,
+          "HeightToAllowBinaural": 10,
+          "Name": "Character",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 4,
+          "HeightToAllowBinaural": 10,
+          "Name": "Environment",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 12,
+          "DisabledBinauralByDistance": true,
+          "DistanceToAllowBinaural": 10,
+          "GroupType": 5,
+          "HeightToAllowBinaural": 2,
+          "Name": "Collisions",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 6,
+          "HeightToAllowBinaural": 10,
+          "Name": "Speech",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 0.7
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 7,
+          "HeightToAllowBinaural": 10,
+          "Name": "Distant",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 8,
+          "HeightToAllowBinaural": 10,
+          "Name": "NonspatialBypass",
+          "OcclusionEnabled": false,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 9,
+          "HeightToAllowBinaural": 10,
+          "Name": "Nonspatial",
+          "OcclusionEnabled": false,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 30,
+          "DisabledBinauralByDistance": false,
+          "DistanceToAllowBinaural": 60,
+          "GroupType": 10,
+          "HeightToAllowBinaural": 10,
+          "Name": "Voip",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 0.9,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 1000,
+          "DisabledBinauralByDistance": true,
+          "DistanceToAllowBinaural": 1000,
+          "GroupType": 11,
+          "HeightToAllowBinaural": 1000,
+          "Name": "Grenades",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        },
+        {
+          "AngleToAllowBinaural": 12,
+          "DisabledBinauralByDistance": true,
+          "DistanceToAllowBinaural": 10,
+          "GroupType": 12,
+          "HeightToAllowBinaural": 2,
+          "Name": "Windows",
+          "OcclusionEnabled": true,
+          "OcclusionIntensity": 1,
+          "OcclusionRolloffScale": 1,
+          "OverallVolume": 1
+        }
+      ],
+      "EnvironmentSettings": {
+        "AutumnLateSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
             },
-		"WsReconnectionDelays": [500, 3000, 5000]
-    }
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.6,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "AutumnSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.6,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "SpringEarlySettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.6,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "SpringSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.6,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "StormSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 1,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 1,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 1,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 1,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 1,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "SummerSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.6,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 0.5,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        },
+        "SurfaceMultipliers": [
+          {
+            "SurfaceType": "Concrete",
+            "VolumeMult": 0
+          },
+          {
+            "SurfaceType": "Metal",
+            "VolumeMult": 0.4
+          },
+          {
+            "SurfaceType": "Wood",
+            "VolumeMult": 0.5
+          },
+          {
+            "SurfaceType": "Soil",
+            "VolumeMult": 1
+          },
+          {
+            "SurfaceType": "Grass",
+            "VolumeMult": 1
+          },
+          {
+            "SurfaceType": "Asphalt",
+            "VolumeMult": 0.8
+          },
+          {
+            "SurfaceType": "Glass",
+            "VolumeMult": 0.1
+          },
+          {
+            "SurfaceType": "Gravel",
+            "VolumeMult": 1
+          },
+          {
+            "SurfaceType": "MetalThin",
+            "VolumeMult": 0.4
+          },
+          {
+            "SurfaceType": "Puddle",
+            "VolumeMult": 0.2
+          },
+          {
+            "SurfaceType": "Slate",
+            "VolumeMult": 0.3
+          },
+          {
+            "SurfaceType": "Tile",
+            "VolumeMult": 0.1
+          },
+          {
+            "SurfaceType": "WoodThick",
+            "VolumeMult": 0.5
+          },
+          {
+            "SurfaceType": "Swamp",
+            "VolumeMult": 0.5
+          },
+          {
+            "SurfaceType": "Garbage",
+            "VolumeMult": 0.5
+          },
+          {
+            "SurfaceType": "GarbageMetal",
+            "VolumeMult": 0.4
+          },
+          {
+            "SurfaceType": "Plastic",
+            "VolumeMult": 0.3
+          },
+          {
+            "SurfaceType": "WholeGlass",
+            "VolumeMult": 0.1
+          },
+          {
+            "SurfaceType": "WoodThin",
+            "VolumeMult": 0.5
+          }
+        ],
+        "WinterSettings": {
+          "RainSettings": [
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "None"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "Low"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "Med"
+            },
+            {
+              "IndoorVolumeMult": 1,
+              "OutdoorVolumeMult": 1,
+              "RainIntensity": "High"
+            }
+          ],
+          "StepsVolumeMultiplier": 0.35,
+          "WindMultipliers": [
+            {
+              "VolumeMult": 0.4,
+              "WindSpeed": "Light"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Moderate"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Strong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "VeryStrong"
+            },
+            {
+              "VolumeMult": 0.5,
+              "WindSpeed": "Hurricane"
+            }
+          ]
+        }
+      },
+      "HeadphonesSettings": {
+        "FadeDuration": 0.7,
+        "FadeIn": "InverseExponential",
+        "FadeOut": "EaseIn"
+      },
+      "MetaXRAudioPluginSettings": {
+        "EnabledPluginErrorChecker": true,
+        "OutputVolumeCheckCooldown": 0.3
+      },
+      "PlayerSettings": {
+        "BaseMaxMovementRolloff": 90,
+        "EnabledOcclusionDynamicRolloff": true,
+        "IndoorRolloffMult": 1,
+        "MinStepSoundRolloffMult": 0.5,
+        "MinStepSoundVolumeMult": 0.2,
+        "MovementRolloffMultipliers": [
+          {
+            "MovementState": "None",
+            "RolloffMultiplier": 1
+          },
+          {
+            "MovementState": "Run",
+            "RolloffMultiplier": 0.85
+          },
+          {
+            "MovementState": "Sprint",
+            "RolloffMultiplier": 0.95
+          },
+          {
+            "MovementState": "Stop",
+            "RolloffMultiplier": 0.85
+          },
+          {
+            "MovementState": "Land",
+            "RolloffMultiplier": 1
+          },
+          {
+            "MovementState": "Turn",
+            "RolloffMultiplier": 0.8
+          },
+          {
+            "MovementState": "Duck",
+            "RolloffMultiplier": 0.4
+          },
+          {
+            "MovementState": "Prone",
+            "RolloffMultiplier": 0.5
+          },
+          {
+            "MovementState": "Drop",
+            "RolloffMultiplier": 0.95
+          },
+          {
+            "MovementState": "Jump",
+            "RolloffMultiplier": 0.5
+          },
+          {
+            "MovementState": "Gear",
+            "RolloffMultiplier": 0.5
+          },
+          {
+            "MovementState": "VaultLand",
+            "RolloffMultiplier": 0.85
+          },
+          {
+            "MovementState": "VaultGeneric",
+            "RolloffMultiplier": 0.5
+          },
+          {
+            "MovementState": "Search",
+            "RolloffMultiplier": 0.2
+          }
+        ],
+        "OutdoorRolloffMult": 0.98,
+        "SearchSoundVolume": {
+          "FpVolume": 0.6,
+          "TpVolume": 0.45
+        }
+      }
+    },
+    "ClientSendRateLimit": 120,
+    "CriticalRetriesCount": 1,
+    "DefaultRetriesCount": 1,
+    "FirstCycleDelaySeconds": 20,
+    "FramerateLimit": {
+      "MaxFramerateGameLimit": 144,
+      "MaxFramerateLobbyLimit": 60,
+      "MinFramerateLimit": 30
+    },
+    "GroupStatusButtonInterval": 7,
+    "GroupStatusInterval": 60,
+    "KeepAliveInterval": 140,
+    "LobbyKeepAliveInterval": 1,
+    "Mark502and504AsNonImportant": true,
+    "MemoryManagementSettings": {
+      "AggressiveGC": true,
+      "GigabytesRequiredToDisableGCDuringRaid": 25,
+      "HeapPreAllocationEnabled": false,
+      "HeapPreAllocationMB": 200,
+      "OverrideRamCleanerSettings": false,
+      "RamCleanerEnabled": false
+    },
+    "NVidiaHighlights": false,
+    "NetworkStateView": {
+      "LossThreshold": 10,
+      "RttThreshold": 100
+    },
+    "NextCycleDelaySeconds": 60,
+    "PingServerResultSendInterval": -1,
+    "PingServersInterval": 10,
+    "ReleaseProfiler": {
+      "Enabled": true,
+      "MaxRecords": 100,
+      "RecordTriggerValue": 2000
+    },
+    "RequestConfirmationTimeouts": [
+      0.2,
+      0.4,
+      0.8,
+      1.6,
+      3.2,
+      6.4,
+      18.8
+    ],
+    "RequestsMadeThroughLobby": [
+      "/client/mail/msg/send"
+    ],
+    "SecondCycleDelaySeconds": 40,
+    "ShouldEstablishLobbyConnection": false,
+    "TurnOffLogging": false,
+    "WeaponOverlapDistanceCulling": 50,
+    "WebDiagnosticsEnabled": false,
+    "WsReconnectionDelays": [
+      500,
+      3000,
+      5000
+    ]
+  }
 }

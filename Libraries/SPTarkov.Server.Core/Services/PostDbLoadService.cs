@@ -50,6 +50,8 @@ public class PostDbLoadService(
 
         AddCustomLooseLootPositions();
 
+        MergeCustomAchievements();
+
         AdjustMinReserveRaiderSpawnChance();
 
         if (_coreConfig.Fixes.FixShotgunDispersion)
@@ -80,6 +82,8 @@ public class PostDbLoadService(
         AdjustLooseLootSpawnProbabilities();
 
         AdjustLocationBotValues();
+
+        MergeCustomHideoutAreas();
 
         if (_locationConfig.RogueLighthouseSpawnTimeSettings.Enabled)
         {
@@ -121,6 +125,40 @@ public class PostDbLoadService(
 
         var currentSeason = _seasonalEventService.GetActiveWeatherSeason();
         _raidWeatherService.GenerateWeather(currentSeason);
+    }
+
+    private void MergeCustomHideoutAreas()
+    {
+        var hideout = _databaseService.GetHideout();
+        foreach (var customArea in hideout.CustomAreas)
+        {
+            // Check if exists
+            if (hideout.Areas!.Exists(area => area.Id == customArea.Id))
+            {
+                _logger.Warning($"Unable to add new hideout area with Id: {customArea.Id} as ID is already in use, skipping");
+
+                continue;
+            }
+
+            hideout.Areas.Add(customArea);
+        }
+    }
+
+    /// <summary>
+    /// Merge custom achievements into achievement db table 
+    /// </summary>
+    protected void MergeCustomAchievements()
+    {
+        var achievements = _databaseService.GetAchievements();
+        foreach (var customAchievement in _databaseService.GetCustomAchievements()) {
+            if (achievements.Exists((a) => a.Id == customAchievement.Id))
+            {
+                _logger.Warning($"Unable to add custom achievement as id: ${customAchievement.Id} already exists");
+                continue;
+            }
+
+            achievements.Add(customAchievement);
+        }
     }
 
     private void RemoveNewBeginningRequirementFromPrestige()

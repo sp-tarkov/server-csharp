@@ -5620,7 +5620,7 @@
       "parentId": "hideout",
       "slotId": "hideout",
       "upd": {
-        "StackObjectsCount": 19900,
+        "StackObjectsCount": 20000,
         "BuyRestrictionMax": 150,
         "BuyRestrictionCurrent": 0
       }

@@ -1,0 +1,135 @@
+{
+  "containersGroups": {
+    "Loot_Spawn_01": {
+      "minContainers": 1,
+      "maxContainers": 3
+    },
+    "Loot_Spawn_04": {
+      "minContainers": 1,
+      "maxContainers": 3
+    },
+    "Loot_Spawn_03": {
+      "minContainers": 1,
+      "maxContainers": 3
+    },
+    "Loot_Spawn_05": {
+      "minContainers": 1,
+      "maxContainers": 3
+    },
+    "Loot_Main_06": {
+      "minContainers": 13,
+      "maxContainers": 17
+    },
+    "Loot_Spawn_02": {
+      "minContainers": 1,
+      "maxContainers": 3
+    }
+  },
+  "containers": {
+    "container_Labyrinth_DesignMain_00010": {
+      "groupId": "Loot_Spawn_03"
+    },
+    "container_Labyrinth_DesignMain_00015": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00005": {
+      "groupId": "Loot_Spawn_05"
+    },
+    "container_Labyrinth_DesignMain_00002": {
+      "groupId": "Loot_Spawn_04"
+    },
+    "container_Labyrinth_DesignMain_00021": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00017": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00001": {
+      "groupId": "Loot_Spawn_04"
+    },
+    "container_Labyrinth_Scripts_00008": {
+      "groupId": "Loot_Spawn_01"
+    },
+    "container_Labyrinth_DesignMain_00022": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00016": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00004": {
+      "groupId": "Loot_Spawn_05"
+    },
+    "container_Labyrinth_DesignMain_00006": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00000": {
+      "groupId": "Loot_Spawn_02"
+    },
+    "container_Labyrinth_DesignMain_00009": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00012": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00011": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00002": {
+      "groupId": "Loot_Spawn_02"
+    },
+    "container_Labyrinth_DesignMain_00000": {
+      "groupId": "Loot_Spawn_04"
+    },
+    "container_Labyrinth_DesignMain_00025": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00003": {
+      "groupId": "Loot_Spawn_03"
+    },
+    "container_Labyrinth_DesignMain_00003": {
+      "groupId": "Loot_Spawn_05"
+    },
+    "container_Labyrinth_DesignMain_00018": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00020": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00001": {
+      "groupId": "Loot_Spawn_02"
+    },
+    "container_Labyrinth_Scripts_00006": {
+      "groupId": "Loot_Spawn_01"
+    },
+    "container_Labyrinth_DesignMain_00019": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00014": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00007": {
+      "groupId": "Loot_Spawn_01"
+    },
+    "container_Labyrinth_DesignMain_00013": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00008": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_Scripts_00004": {
+      "groupId": "Loot_Spawn_03"
+    },
+    "container_Labyrinth_DesignMain_00024": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00023": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_ProfileEditor_00004": {
+      "groupId": "Loot_Main_06"
+    },
+    "container_Labyrinth_DesignMain_00007": {
+      "groupId": "Loot_Main_06"
+    }
+  }
+}

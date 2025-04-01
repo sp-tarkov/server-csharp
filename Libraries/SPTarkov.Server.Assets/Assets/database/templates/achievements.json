@@ -2293,12 +2293,12 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67af6cf23eaa62e233159589",
+        "target": "67e593b4f395047fc40b9de5",
         "loyaltyLevel": 4,
         "traderId": "5c0647fdd443bc2504c2d371",
         "items": [
           {
-            "_id": "67af6cf23eaa62e233159589",
+            "_id": "67e593b4f395047fc40b9de5",
             "_tpl": "674fe9a75e51f1c47c04ec23",
             "upd": {
               "Repairable": {
@@ -2308,87 +2308,87 @@
             }
           },
           {
-            "_id": "67af6cf23eaa62e23315958a",
+            "_id": "67e593b4f395047fc40b9de6",
             "_tpl": "674fe57721a9aa6be6045b96",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_handguard"
           },
           {
-            "_id": "67af6cf23eaa62e23315958b",
+            "_id": "67e593b4f395047fc40b9de7",
             "_tpl": "5c1cd46f2e22164bef5cfedb",
-            "parentId": "67af6cf23eaa62e23315958a",
+            "parentId": "67e593b4f395047fc40b9de6",
             "slotId": "mod_foregrip"
           },
           {
-            "_id": "67af6cf23eaa62e23315958c",
+            "_id": "67e593b4f395047fc40b9de8",
             "_tpl": "674fe89a4472d471fb0f07d8",
-            "parentId": "67af6cf23eaa62e23315958a",
+            "parentId": "67e593b4f395047fc40b9de6",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67af6cf23eaa62e23315958d",
+            "_id": "67e593b4f395047fc40b9de9",
             "_tpl": "674fe8dd362ea1f88b0e2792",
-            "parentId": "67af6cf23eaa62e23315958c",
+            "parentId": "67e593b4f395047fc40b9de8",
             "slotId": "mod_sight_front"
           },
           {
-            "_id": "67af6cf23eaa62e23315958e",
+            "_id": "67e593b4f395047fc40b9dea",
             "_tpl": "674fe8b9362ea1f88b0e278d",
-            "parentId": "67af6cf23eaa62e23315958c",
+            "parentId": "67e593b4f395047fc40b9de8",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67af6cf23eaa62e23315958f",
+            "_id": "67e593b4f395047fc40b9deb",
             "_tpl": "59f9d81586f7744c7506ee62",
-            "parentId": "67af6cf23eaa62e23315958e",
+            "parentId": "67e593b4f395047fc40b9dea",
             "slotId": "mod_scope"
           },
           {
-            "_id": "67af6cf23eaa62e233159590",
+            "_id": "67e593b4f395047fc40b9dec",
             "_tpl": "674fe8cf4472d471fb0f07df",
-            "parentId": "67af6cf23eaa62e23315958e",
+            "parentId": "67e593b4f395047fc40b9dea",
             "slotId": "mod_sight_rear"
           },
           {
-            "_id": "67af6cf23eaa62e233159591",
+            "_id": "67e593b4f395047fc40b9ded",
             "_tpl": "59fb137a86f7740adb646af1",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_muzzle"
           },
           {
-            "_id": "67af6cf23eaa62e233159592",
+            "_id": "67e593b4f395047fc40b9dee",
             "_tpl": "6087e663132d4d12c81fd96b",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_pistol_grip"
           },
           {
-            "_id": "67af6cf23eaa62e233159593",
+            "_id": "67e593b4f395047fc40b9def",
             "_tpl": "676017fe8cfeeba9f707c8d6",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_reciever"
           },
           {
-            "_id": "67af6cf23eaa62e233159594",
+            "_id": "67e593b4f395047fc40b9df0",
             "_tpl": "5ac78eaf5acfc4001926317a",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67af6cf23eaa62e233159595",
+            "_id": "67e593b4f395047fc40b9df1",
             "_tpl": "59ecc3dd86f7746dc827481c",
-            "parentId": "67af6cf23eaa62e233159594",
+            "parentId": "67e593b4f395047fc40b9df0",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67af6cf23eaa62e233159596",
+            "_id": "67e593b4f395047fc40b9df2",
             "_tpl": "674fe8f6f34d761ab8020cc8",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_magazine"
           },
           {
-            "_id": "67af6cf23eaa62e233159597",
+            "_id": "67e593b4f395047fc40b9df3",
             "_tpl": "6130ca3fd92c473c77020dbd",
-            "parentId": "67af6cf23eaa62e233159589",
+            "parentId": "67e593b4f395047fc40b9de5",
             "slotId": "mod_charge"
           }
         ],
@@ -4642,12 +4642,12 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67af6cf23eaa62e233159598",
+        "target": "67e593b4f395047fc40b9df4",
         "loyaltyLevel": 4,
         "traderId": "54cb50c76803fa8b248b4571",
         "items": [
           {
-            "_id": "67af6cf23eaa62e233159598",
+            "_id": "67e593b4f395047fc40b9df4",
             "_tpl": "674fe9a75e51f1c47c04ec23",
             "upd": {
               "Repairable": {
@@ -4657,81 +4657,81 @@
             }
           },
           {
-            "_id": "67af6cf23eaa62e233159599",
+            "_id": "67e593b4f395047fc40b9df5",
             "_tpl": "674fe57721a9aa6be6045b96",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_handguard"
           },
           {
-            "_id": "67af6cf23eaa62e23315959a",
+            "_id": "67e593b4f395047fc40b9df6",
             "_tpl": "5c1bc5612e221602b5429350",
-            "parentId": "67af6cf23eaa62e233159599",
+            "parentId": "67e593b4f395047fc40b9df5",
             "slotId": "mod_foregrip"
           },
           {
-            "_id": "67af6cf23eaa62e23315959b",
+            "_id": "67e593b4f395047fc40b9df7",
             "_tpl": "674fe89a4472d471fb0f07d8",
-            "parentId": "67af6cf23eaa62e233159599",
+            "parentId": "67e593b4f395047fc40b9df5",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67af6cf23eaa62e23315959c",
+            "_id": "67e593b4f395047fc40b9df8",
             "_tpl": "674fe8dd362ea1f88b0e2792",
-            "parentId": "67af6cf23eaa62e23315959b",
+            "parentId": "67e593b4f395047fc40b9df7",
             "slotId": "mod_sight_front"
           },
           {
-            "_id": "67af6cf23eaa62e23315959d",
+            "_id": "67e593b4f395047fc40b9df9",
             "_tpl": "674fe8b9362ea1f88b0e278d",
-            "parentId": "67af6cf23eaa62e23315959b",
+            "parentId": "67e593b4f395047fc40b9df7",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67af6cf23eaa62e23315959e",
+            "_id": "67e593b4f395047fc40b9dfa",
             "_tpl": "58491f3324597764bc48fa02",
-            "parentId": "67af6cf23eaa62e23315959d",
+            "parentId": "67e593b4f395047fc40b9df9",
             "slotId": "mod_scope"
           },
           {
-            "_id": "67af6cf23eaa62e23315959f",
+            "_id": "67e593b4f395047fc40b9dfb",
             "_tpl": "674fe8cf4472d471fb0f07df",
-            "parentId": "67af6cf23eaa62e23315959d",
+            "parentId": "67e593b4f395047fc40b9df9",
             "slotId": "mod_sight_rear"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a0",
+            "_id": "67e593b4f395047fc40b9dfc",
             "_tpl": "59fb137a86f7740adb646af1",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_muzzle"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a1",
+            "_id": "67e593b4f395047fc40b9dfd",
             "_tpl": "651580dc71a4f10aec4b6056",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_pistol_grip"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a2",
+            "_id": "67e593b4f395047fc40b9dfe",
             "_tpl": "676017fe8cfeeba9f707c8d6",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_reciever"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a3",
+            "_id": "67e593b4f395047fc40b9dff",
             "_tpl": "5ac78eaf5acfc4001926317a",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a4",
+            "_id": "67e593b4f395047fc40b9e00",
             "_tpl": "59ecc3dd86f7746dc827481c",
-            "parentId": "67af6cf23eaa62e2331595a3",
+            "parentId": "67e593b4f395047fc40b9dff",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67af6cf23eaa62e2331595a5",
+            "_id": "67e593b4f395047fc40b9e01",
             "_tpl": "674fe8f6f34d761ab8020cc8",
-            "parentId": "67af6cf23eaa62e233159598",
+            "parentId": "67e593b4f395047fc40b9df4",
             "slotId": "mod_magazine"
           }
         ],
@@ -5524,13 +5524,13 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67af6cf23eaa62e2331595a7",
+        "target": "67e593b4f395047fc40b9e03",
         "value": 1,
         "isEncoded": false,
         "findInRaid": true,
         "items": [
           {
-            "_id": "67af6cf23eaa62e2331595a7",
+            "_id": "67e593b4f395047fc40b9e03",
             "_tpl": "67614b3ab8c060ebb204b106",
             "upd": {
               "SpawnedInSession": true,
@@ -5609,5 +5609,184 @@
     "progressBarEnabled": false,
     "side": "All",
     "index": 9988
+  },
+  {
+    "id": "67a0e57117e34930e50075f3",
+    "imageUrl": "/files/achievement/67a0e5f3003a9986cb0f5b68.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "675998e314f914c3859afd4f",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 10000,
+          "type": "Elimination",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "675998e3167b0e8032fcb953",
+            "conditions": [
+              {
+                "id": "6759992545480dcba01d017f",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 10000,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": false,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 9987
+  },
+  {
+    "id": "67a0e57b972c11a3f50773b2",
+    "imageUrl": "/files/achievement/67a0e5f786681d1e210705f0.png",
+    "assetPath": "",
+    "rewards": [
+      {
+        "id": "67adb542156adef02cf72f19",
+        "unknown": false,
+        "gameMode": [],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67adafa1e6a915f9fd050f66",
+        "type": "CustomizationDirect"
+      },
+      {
+        "id": "67adb54a97a6912285458c51",
+        "unknown": false,
+        "gameMode": [],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67adaf8b1230c973bb0433a6",
+        "type": "CustomizationDirect"
+      },
+      {
+        "id": "67adb55681ca6dbbc27b93fd",
+        "unknown": false,
+        "gameMode": [],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67adaf95cd47a1ad3f014bc6",
+        "type": "CustomizationDirect"
+      }
+    ],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "675998e314f914c3859afd4f",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 10000,
+          "type": "Elimination",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "675998e3167b0e8032fcb953",
+            "conditions": [
+              {
+                "id": "6759992545480dcba01d017f",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 10000,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": false,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 9986
   }
 ]

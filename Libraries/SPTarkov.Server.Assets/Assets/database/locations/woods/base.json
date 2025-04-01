@@ -20,6 +20,13 @@
   "AveragePlayerLevel": 15,
   "Banners": [
     {
+      "id": "67d1acda2fb6a5d11b09d6fd",
+      "pic": {
+        "path": "CONTENT/banners/banner_woods.jpg",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5803a58524597710ca36fcb2",
       "pic": {
         "path": "CONTENT/banners/banner_terragroup.jpg",
@@ -368,11 +375,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -415,11 +422,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -520,7 +527,7 @@
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 1,

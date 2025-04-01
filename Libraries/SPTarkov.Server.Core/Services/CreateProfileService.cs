@@ -43,10 +43,10 @@ public class CreateProfileService(
     public string CreateProfile(string sessionId, ProfileCreateRequestData request)
     {
         var account = _cloner.Clone(_saveServer.GetProfile(sessionId));
-        var profileTemplate = _cloner.Clone(
+        var profileTemplateClone = _cloner.Clone(
             _databaseService.GetProfiles()?.GetByJsonProp<ProfileSides>(account.ProfileInfo.Edition)?.GetByJsonProp<TemplateSide>(request.Side.ToLower())
         );
-        var pmcData = profileTemplate.Character;
+        var pmcData = profileTemplateClone.Character;
 
         // Delete existing profile
         DeleteProfileBySessionId(sessionId);
@@ -113,9 +113,8 @@ public class CreateProfileService(
                 PmcData = pmcData,
                 ScavData = new PmcData()
             },
-            Suits = profileTemplate.Suits,
-            UserBuildData = profileTemplate.UserBuilds,
-            DialogueRecords = profileTemplate.Dialogues,
+            UserBuildData = profileTemplateClone.UserBuilds,
+            DialogueRecords = profileTemplateClone.Dialogues,
             SptData = _profileHelper.GetDefaultSptDataObject(),
             VitalityData = new Vitality(),
             InraidData = new Inraid(),
@@ -126,6 +125,8 @@ public class CreateProfileService(
         };
 
         AddCustomisationUnlocksToProfile(profileDetails);
+
+        _traderHelper.AddSuitsToProfile(profileDetails, profileTemplateClone.Suits);
 
         _profileFixerService.CheckForAndFixPmcProfileIssues(profileDetails.CharacterData.PmcData);
 
@@ -176,13 +177,13 @@ public class CreateProfileService(
 
         _saveServer.AddProfile(profileDetails);
 
-        if (profileTemplate.Trader.SetQuestsAvailableForStart ?? false)
+        if (profileTemplateClone.Trader.SetQuestsAvailableForStart ?? false)
         {
             _questHelper.AddAllQuestsToProfile(profileDetails.CharacterData.PmcData, [QuestStatusEnum.AvailableForStart]);
         }
 
         // Profile is flagged as wanting quests set to ready to hand in and collect rewards
-        if (profileTemplate.Trader.SetQuestsAvailableForFinish ?? false)
+        if (profileTemplateClone.Trader.SetQuestsAvailableForFinish ?? false)
         {
             _questHelper.AddAllQuestsToProfile(
                 profileDetails.CharacterData.PmcData,
