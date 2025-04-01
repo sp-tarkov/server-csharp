@@ -458,7 +458,7 @@ public class SeasonalEventService(
                 AddEventGearToBots(SeasonalEventType.Halloween);
                 AddEventGearToBots(SeasonalEventType.Christmas);
                 AddEventLootToBots(SeasonalEventType.Christmas);
-                AddEventBossesToMaps(SeasonalEventType.Halloween.ToString());
+                AddEventBossesToMaps("halloweensummon");
                 EnableHalloweenSummonEvent();
                 AddPumpkinsToScavBackpacks();
                 RenameBitcoin();
