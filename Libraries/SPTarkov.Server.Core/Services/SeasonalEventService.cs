@@ -1091,7 +1091,7 @@ public class SeasonalEventService(
         var maps = _databaseService.GetLocations().GetDictionary();
         foreach (var gifterMapSettings in gifterSettings)
         {
-            if (!maps.TryGetValue(gifterMapSettings.Map, out var mapData))
+            if (!maps.TryGetValue(_databaseService.GetLocations().GetMappedKey(gifterMapSettings.Map), out var mapData))
             {
                 _logger.Warning($"AddGifterBotToMaps() Map not found {gifterMapSettings.Map}");
 
