@@ -15,6 +15,7 @@ using SPTarkov.Server.Core.Utils.Json;
 using SPTarkov.Server;
 using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
+using SPTarkov.Server.Core.Models.Spt.Location;
 
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -290,7 +291,7 @@ public class GameController(
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
     /// <returns></returns>
-    public GetRaidTimeResponse GetRaidTime(string sessionId, GetRaidTimeRequest request)
+    public RaidChanges GetRaidTime(string sessionId, GetRaidTimeRequest request)
     {
         return _raidTimeAdjustmentService.GetRaidAdjustments(sessionId, request);
     }
