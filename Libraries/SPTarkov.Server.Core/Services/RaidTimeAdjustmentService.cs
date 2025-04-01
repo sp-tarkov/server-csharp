@@ -115,7 +115,7 @@ public class RaidTimeAdjustmentService(
         var startSeconds = raidAdjustments.SimulatedRaidStartSeconds.GetValueOrDefault(1);
         foreach (var wave in mapBase.Waves)
         {
-            // Dont let time fall below 0
+            // Don't let time fall below 0
             wave.TimeMin -= (int) Math.Max(startSeconds, 0);
             wave.TimeMax -= (int) Math.Max(startSeconds, 0);
         }
@@ -131,17 +131,22 @@ public class RaidTimeAdjustmentService(
     /// <param name="sessionId">Session id</param>
     /// <param name="request">Raid adjustment request</param>
     /// <returns>Response to send to client</returns>
-    public GetRaidTimeResponse GetRaidAdjustments(string sessionId, GetRaidTimeRequest request)
+    public RaidChanges GetRaidAdjustments(string sessionId, GetRaidTimeRequest request)
     {
         var globals = _databaseService.GetGlobals();
         var mapBase = _databaseService.GetLocation(request.Location.ToLower()).Base;
         var baseEscapeTimeMinutes = mapBase.EscapeTimeLimit;
 
         // Prep result object to return
-        var result = new GetRaidTimeResponse
+        var result = new RaidChanges
         {
-            NewSurviveTimeSeconds = null,
-            OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement
+            NewSurviveTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
+            OriginalSurvivalTimeSeconds = globals.Configuration.Exp.MatchEnd.SurvivedSecondsRequirement,
+            DynamicLootPercent = 100,
+            StaticLootPercent = 100,
+            SimulatedRaidStartSeconds = 0,
+            RaidTimeMinutes = baseEscapeTimeMinutes,
+            ExitChanges = []
         };
 
         // Pmc raid, send default
@@ -150,7 +155,7 @@ public class RaidTimeAdjustmentService(
             return result;
         }
 
-        // We're scav adjust values
+        // We're scav, adjust values
         var mapSettings = GetMapSettings(request.Location);
 
         // Chance of reducing raid time for scav, not guaranteed
@@ -173,25 +178,16 @@ public class RaidTimeAdjustmentService(
 
         // Time player spawns into the raid if it was online
         var simulatedRaidStartTimeMinutes = baseEscapeTimeMinutes - newRaidTimeMinutes;
+        result.SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60;
+        result.RaidTimeMinutes = newRaidTimeMinutes;
 
         // Calculate how long player needs to be in raid to get a `survived` extract status
         result.NewSurviveTimeSeconds = Math.Max(result.OriginalSurvivalTimeSeconds.Value - (baseEscapeTimeMinutes.Value - newRaidTimeMinutes) * 60, 0);
 
-        // State that we'll pass to loot generation
-        var raidChanges = new RaidChanges {
-            DynamicLootPercent = 100,
-            StaticLootPercent = 100,
-            RaidTimeMinutes = newRaidTimeMinutes,
-            OriginalSurvivalTimeSeconds = result.OriginalSurvivalTimeSeconds,
-            ExitChanges = [],
-            NewSurviveTimeSeconds = result.NewSurviveTimeSeconds,
-            SimulatedRaidStartSeconds = 0 };
-
         if (mapSettings.ReduceLootByPercent)
         {
-            raidChanges.DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent);
-            raidChanges.StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent);
-            raidChanges.SimulatedRaidStartSeconds = simulatedRaidStartTimeMinutes * 60;
+            result.DynamicLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinDynamicLootPercent);
+            result.StaticLootPercent = Math.Max(raidTimeRemainingPercent, mapSettings.MinStaticLootPercent);
         }
 
         _logger.Debug($"Reduced: {request.Location} raid time by: {chosenRaidReductionPercent}% to {newRaidTimeMinutes} minutes");
@@ -203,13 +199,13 @@ public class RaidTimeAdjustmentService(
         );
 
         var exitAdjustments = GetExitAdjustments(mapBase, newRaidTimeMinutes);
-        if (exitAdjustments is not null)
+        if (exitAdjustments.Any())
         {
-            raidChanges.ExitChanges.AddRange(exitAdjustments);
+            result.ExitChanges.AddRange(exitAdjustments);
         }
 
         // Store state to use in loot generation
-        _applicationContext.AddValue(ContextVariableType.RAID_ADJUSTMENTS, raidChanges);
+        _applicationContext.AddValue(ContextVariableType.RAID_ADJUSTMENTS, result);
 
         return result;
     }
