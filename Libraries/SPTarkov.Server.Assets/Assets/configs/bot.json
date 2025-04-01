@@ -255,7 +255,10 @@
     "bossKolontay",
     "bossPartisan",
     "followerBigPipe",
-    "followerBirdEye"
+    "followerBirdEye",
+	"bossTagillaAgro",
+	"bossKillaAgro",
+	"tagillaHelperAgro"
   ],
   "botNameLengthLimit": 19,
   "botRolesThatMustHaveUniqueName": [
@@ -710,6 +713,14 @@
       "lightIsActiveDayChancePercent": 75,
       "lightIsActiveNightChancePercent": 85
     },
+	"bosskillaagro": {
+      "faceShieldIsActiveChancePercent": 100,
+      "forceOnlyArmoredRigWhenNoArmor": true,
+      "forceStock": true,
+      "laserIsActiveChancePercent": 85,
+      "lightIsActiveDayChancePercent": 75,
+      "lightIsActiveNightChancePercent": 85
+    },
     "bossknight": {
       "faceShieldIsActiveChancePercent": 100,
       "forceOnlyArmoredRigWhenNoArmor": true,
@@ -765,6 +776,20 @@
       "lightIsActiveNightChancePercent": 75
     },
     "bosstagilla": {
+      "faceShieldIsActiveChancePercent": 100,
+      "forceStock": true,
+      "laserIsActiveChancePercent": 75,
+      "lightIsActiveDayChancePercent": 25,
+      "lightIsActiveNightChancePercent": 75
+    },
+    "bosstagillaagro": {
+      "faceShieldIsActiveChancePercent": 100,
+      "forceStock": true,
+      "laserIsActiveChancePercent": 75,
+      "lightIsActiveDayChancePercent": 25,
+      "lightIsActiveNightChancePercent": 75
+    },
+    "tagillahelperagro": {
       "faceShieldIsActiveChancePercent": 100,
       "forceStock": true,
       "laserIsActiveChancePercent": 75,
@@ -2743,6 +2768,8 @@
       "5c94bbff86f7747ee735c08f": 1
     },
     "bosskilla": {},
+    "bosskillaagro": {},
+    "tagillahelperagro": {},
     "bossknight": {},
     "bosskojaniy": {
       "5c94bbff86f7747ee735c08f": 1,
@@ -2755,6 +2782,7 @@
       "5eff09cd30a7dc22fd1ddfed": 1
     },
     "bosstagilla": {},
+    "bosstagillaagro": {},
     "bosstest": {},
     "bosszryachiy": {},
     "crazyassaultevent": {},
@@ -3022,7 +3050,10 @@
     "sectantWarrior": 10,
     "shooterBTR": 1,
     "skier": 10,
-    "test": 30
+    "test": 30,
+	"bossTagillaAgro": 5,
+	"bossKillaAgro": 5,
+	"tagillaHelperAgro": 5
   },
   "revenge": {
     "arenaFighter": [

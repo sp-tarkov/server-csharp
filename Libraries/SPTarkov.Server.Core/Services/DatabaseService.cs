@@ -191,6 +191,22 @@ public class DatabaseService(
         return _databaseServer.GetTables().Templates?.Achievements!;
     }
 
+    /// <returns> assets/database/templates/customAchievements.json </returns>
+    public List<Achievement> GetCustomAchievements()
+    {
+        if (_databaseServer.GetTables().Templates?.Achievements == null)
+        {
+            throw new Exception(
+                _localisationService.GetText(
+                    "database-data_at_path_missing",
+                    "assets/database/templates/customAchievements.json"
+                )
+            );
+        }
+
+        return _databaseServer.GetTables().Templates?.CustomAchievements!;
+    }
+
     /// <returns> assets/database/templates/customisation.json </returns>
     public Dictionary<string, CustomizationItem?> GetCustomization()
     {

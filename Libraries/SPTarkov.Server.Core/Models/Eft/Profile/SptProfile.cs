@@ -24,8 +24,9 @@ public record SptProfile
     }
 
     /// <summary>
-    /// Clothing purchases
+    /// No longer used as of 4.0.0
     /// </summary>
+    [Obsolete("Replaced with CustomisationUnlocks")]
     [JsonPropertyName("suits")]
     public List<string>? Suits
     {
@@ -95,6 +96,9 @@ public record SptProfile
         set;
     }
 
+    /// <summary>
+    /// Stores profile-related customisation, e.g. clothing / hideout walls / floors
+    /// </summary>
     [JsonPropertyName("customisationUnlocks")]
     public List<CustomisationStorage>? CustomisationUnlocks
     {
@@ -771,6 +775,13 @@ public record Spt
 
     [JsonPropertyName("pendingPrestige")]
     public PendingPrestige? PendingPrestige
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("extraRepeatableQuests")]
+    public Dictionary<string, double>? ExtraRepeatableQuests
     {
         get;
         set;

@@ -1488,7 +1488,7 @@ public class BotEquipmentModGenerator(
     ///     e.g. mod_magazine / patron_in_weapon_000
     /// </summary>
     /// <returns>string array</returns>
-    public FrozenSet<string> GetAmmoContainers()
+    public static FrozenSet<string> GetAmmoContainers()
     {
         return _cartridgeHolderSlots;
     }

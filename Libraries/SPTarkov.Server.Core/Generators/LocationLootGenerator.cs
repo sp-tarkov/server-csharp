@@ -120,11 +120,7 @@ public class LocationLootGenerator(
         }
 
         // Randomisation is turned off globally or just turned off for this map
-        if (
-            !(
-                _locationConfig.ContainerRandomisationSettings.Enabled &&
-                _locationConfig.ContainerRandomisationSettings.Maps[locationId]
-            )
+        if (!_locationConfig.ContainerRandomisationSettings.Enabled || !_locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
         )
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -650,12 +646,16 @@ public class LocationLootGenerator(
 
     protected double GetLooseLootMultiplierForLocation(string location)
     {
-        return _locationConfig.LooseLootMultiplier[location];
+        return _locationConfig.LooseLootMultiplier.TryGetValue(location, out var value)
+            ? value
+            : _locationConfig.LooseLootMultiplier["default"];
     }
 
     protected double GetStaticLootMultiplierForLocation(string location)
     {
-        return _locationConfig.StaticLootMultiplier[location];
+        return _locationConfig.StaticLootMultiplier.TryGetValue(location, out var value)
+            ? value
+            : _locationConfig.StaticLootMultiplier["default"];
     }
 
     /// <summary>

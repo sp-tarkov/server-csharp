@@ -48,7 +48,7 @@ public class BotController(
     public int GetBotPresetGenerationLimit(string type)
     {
 
-        if (!_botConfig.PresetBatch.TryGetValue(type.ToLower(), out var limit))
+        if (!_botConfig.PresetBatch.TryGetValue(type, out var limit))
         {
             _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
 
@@ -260,7 +260,7 @@ public class BotController(
             }
             catch (Exception e)
             {
-                _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message}");
+                _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message} {e.StackTrace}");
             }
         }
 

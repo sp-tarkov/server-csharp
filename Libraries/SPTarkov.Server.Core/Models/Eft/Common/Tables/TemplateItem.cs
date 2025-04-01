@@ -3026,6 +3026,13 @@ public record Props
         set;
     }
 
+    [JsonPropertyName("IsMountable")]
+    public bool? IsMountable
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("LightAndSoundShotAngle")]
     public double? LightAndSoundShotAngle
     {

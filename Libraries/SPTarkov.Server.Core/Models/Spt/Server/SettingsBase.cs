@@ -1,4 +1,5 @@
 ﻿using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Models.Spt.Server;
 
@@ -23,6 +24,13 @@ public record Config
 
     [JsonPropertyName("AdditionalRandomDelaySeconds")]
     public int? AdditionalRandomDelaySeconds
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("AudioSettings")]
+    public AudioSettings? AudioSettings
     {
         get;
         set;
@@ -204,6 +212,51 @@ public record Config
     }
 }
 
+public record AudioSettings
+{
+    [JsonPropertyName("AudioGroupPresets")]
+    public List<AudioGroupPreset>? AudioGroupPresets
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("EnvironmentSettings")]
+    public EnvironmentSettings? EnvironmentSettings
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("HeadphonesSettings")]
+    public HeadphoneSettings HeadphonesSettings
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("MetaXRAudioPluginSettings")]
+    public MetaXRAudioPluginSettings? MetaXRAudioPluginSettings
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("PlayerSettings")]
+    public PlayerSettings? PlayerSettings
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("RadioBroadcastSettings")]
+    public RadioBroadcastSettings? RadioBroadcastSettings
+    {
+        get;
+        set;
+    }
+}
+
 public record FramerateLimit
 {
     [JsonPropertyName("MaxFramerateGameLimit")]
@@ -308,6 +361,237 @@ public record NetworkStateView
 
     [JsonPropertyName("RttThreshold")]
     public int? RttThreshold
+    {
+        get;
+        set;
+    }
+}
+
+public record AudioGroupPreset
+{
+    [JsonPropertyName("AngleToAllowBinaural")]
+    public double? AngleToAllowBinaural
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("DisabledBinauralByDistance")]
+    public bool? DisabledBinauralByDistance
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("DistanceToAllowBinaural")]
+    public double? DistanceToAllowBinaural
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("GroupType")]
+    public double? GroupType
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("HeightToAllowBinaural")]
+    public double? HeightToAllowBinaural
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("Name")]
+    public string? Name
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("OcclusionEnabled")]
+    public bool? OcclusionEnabled
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("OcclusionIntensity")]
+    public double? OcclusionIntensity
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("OcclusionRolloffScale")]
+    public double? OcclusionRolloffScale
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("OverallVolume")]
+    public double? OverallVolume
+    {
+        get;
+        set;
+    }
+}
+
+public record EnvironmentSettings
+{
+    [JsonPropertyName("AutumnLateSettings")]
+    public SeasonEnvironmentSettings AutumnLateSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("AutumnSettings")]
+    public SeasonEnvironmentSettings AutumnSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("SpringEarlySettings")]
+    public SeasonEnvironmentSettings SpringEarlySettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("SpringSettings")]
+    public SeasonEnvironmentSettings SpringSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("StormSettings")]
+    public SeasonEnvironmentSettings StormSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("SummerSettings")]
+    public SeasonEnvironmentSettings SummerSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("WinterSettings")]
+    public SeasonEnvironmentSettings WinterSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("SurfaceMultipliers")]
+    public List<SurfaceMultiplier>? SurfaceMultipliers
+    {
+        get; set;
+    }
+}
+
+public record SeasonEnvironmentSettings
+{
+    [JsonPropertyName("RainSettings")]
+    public List<RainSetting> RainSettings
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("StepsVolumeMultiplier")]
+    public double StepsVolumeMultiplier
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("WindMultipliers")]
+    public List<WindMultiplier> WindMultipliers
+    {
+        get; set;
+    }
+}
+
+public record SurfaceMultiplier
+{
+    public string SurfaceType
+    {
+        get;
+        set;
+    }
+
+    public double VolumeMult
+    {
+        get;
+        set;
+    }
+}
+
+public record WindMultiplier
+{
+    [JsonPropertyName("VolumeMult")]
+    public double VolumeMult
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("WindSpeed")]
+    public string WindSpeed
+    {
+        get; set;
+    }
+}
+
+public record RainSetting
+{
+    [JsonPropertyName("IndoorVolumeMult")]
+    public int IndoorVolumeMult
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("OutdoorVolumeMult")]
+    public double OutdoorVolumeMult
+    {
+        get; set;
+    }
+
+    [JsonPropertyName("RainIntensity")]
+    public string RainIntensity
+    {
+        get; set;
+    }
+}
+
+public record HeadphoneSettings
+{
+    public double FadeDuration
+    {
+        get;
+        set;
+    }
+
+    public string FadeIn
+    {
+        get;
+        set;
+    }
+
+    public string FadeOut
+    {
+        get;
+        set;
+    }
+}
+public record MetaXRAudioPluginSettings
+{
+    public bool? EnabledPluginErrorChecker
+    {
+        get;
+        set;
+    }
+
+    public double? OutputVolumeCheckCooldown
     {
         get;
         set;

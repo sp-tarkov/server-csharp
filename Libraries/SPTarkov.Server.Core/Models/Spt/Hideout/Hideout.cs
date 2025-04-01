@@ -11,6 +11,12 @@ public record Hideout
         get;
         set;
     }
+    [JsonPropertyName("customAreas")]
+    public List<HideoutArea>? CustomAreas
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("customisation")]
     public HideoutCustomisation? Customisation

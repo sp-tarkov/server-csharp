@@ -681,7 +681,7 @@ public class RepeatableQuestGenerator(
 
             // Push a CompletionCondition with the item and the amount of the item
             chosenRequirementItemsTpls.Add(itemSelected.Id);
-            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Id, value));
+            quest.Conditions.AvailableForFinish.Add(GenerateCompletionAvailableForFinish(itemSelected.Id, value, repeatableConfig.QuestConfig.Completion));
 
             if (roublesBudget > 0)
             {
@@ -717,22 +717,20 @@ public class RepeatableQuestGenerator(
     ///     This is a helper method for GenerateCompletionQuest to create a completion condition (of which a completion quest
     ///     theoretically can have many)
     /// </summary>
-    /// <param name="itemTpl">id of the item to request</param>
-    /// <param name="value">amount of items of this specific type to request</param>
+    /// <param name="itemTpl">Id of the item to request</param>
+    /// <param name="value">Amount of items of this specific type to request</param>
+    /// <param name="completionConfig">Completion config from quest.json</param>
     /// <returns>object of "Completion"-condition</returns>
-    protected QuestCondition GenerateCompletionAvailableForFinish(string itemTpl, double value)
+    protected QuestCondition GenerateCompletionAvailableForFinish(string itemTpl,
+        double value,
+        Completion completionConfig)
     {
-        var minDurability = 0;
-        var onlyFoundInRaid = true;
-        if (
-            _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.WEAPON) ||
-            _itemHelper.IsOfBaseclass(itemTpl, BaseClasses.ARMOR)
-        )
-        {
-            minDurability = _randomUtil.GetArrayValue([60, 80]);
-        }
+        var onlyFoundInRaid = completionConfig.RequiredItemsAreFiR;
+        var minDurability = _itemHelper.IsOfBaseclasses(itemTpl, [BaseClasses.WEAPON, BaseClasses.ARMOR])
+            ? _randomUtil.GetArrayValue([completionConfig.RequiredItemMinDurabilityMinMax.Min, completionConfig.RequiredItemMinDurabilityMinMax.Max])
+            : 0;
 
-        // By default all collected items must be FiR, except dog tags
+        // Dog tags MUST NOT be FiR for them to work
         if (_itemHelper.IsDogtag(itemTpl))
         {
             onlyFoundInRaid = false;

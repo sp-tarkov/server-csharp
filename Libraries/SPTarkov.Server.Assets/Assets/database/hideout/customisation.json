@@ -629,6 +629,63 @@
       "systemName": "Target_Color1",
       "isEnabled": true,
       "itemId": "67585d2cd7a2703986067e99"
+    },
+    {
+      "id": "67adb25c7a0e0fce8574438c",
+      "conditions": [
+        {
+          "id": "67adb26efce3692da77f4e2e",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "conditionType": "Block"
+        }
+      ],
+      "type": "wall",
+      "index": 0,
+      "systemName": "Wall_Labyrinth",
+      "isEnabled": true,
+      "itemId": "67adafa1e6a915f9fd050f66"
+    },
+    {
+      "id": "67adb38d0217ccce16b5b08c",
+      "conditions": [
+        {
+          "id": "67adb39a6be8354a8f72b830",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "conditionType": "Block"
+        }
+      ],
+      "type": "floor",
+      "index": 0,
+      "systemName": "Floor_Labyrinth",
+      "isEnabled": true,
+      "itemId": "67adaf95cd47a1ad3f014bc6"
+    },
+    {
+      "id": "67adb4843fec17bf3ea9452e",
+      "conditions": [
+        {
+          "id": "67adb48fd05a78f5a5fc5260",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "conditionType": "Block"
+        }
+      ],
+      "type": "ceiling",
+      "index": 0,
+      "systemName": "Ceiling_Labyrinth",
+      "isEnabled": true,
+      "itemId": "67adaf8b1230c973bb0433a6"
     }
   ],
   "slots": [

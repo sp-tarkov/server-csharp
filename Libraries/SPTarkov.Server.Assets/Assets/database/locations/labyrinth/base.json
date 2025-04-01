@@ -1,0 +1,1338 @@
+{
+  "AccessKeys": [
+    "679b9819a2f2dd4da9023512"
+  ],
+  "AccessKeysPvE": [
+    "679b9819a2f2dd4da9023512"
+  ],
+  "Area": 0.0,
+  "AveragePlayTime": 25,
+  "AveragePlayerLevel": 15,
+  "BotAssault": 80,
+  "BotEasy": 10,
+  "BotHard": 40,
+  "BotImpossible": 0,
+  "BotMarksman": 20,
+  "BotMax": 30,
+  "BotMaxPlayer": 0,
+  "BotMaxPvE": 30,
+  "BotMaxTimePlayer": 0,
+  "BotNormal": 50,
+  "BotSpawnCountStep": 4,
+  "BotSpawnPeriodCheck": 15,
+  "BotSpawnTimeOffMax": 30,
+  "BotSpawnTimeOffMin": 20,
+  "BotSpawnTimeOnMax": 320,
+  "BotSpawnTimeOnMin": 260,
+  "BotStart": 10,
+  "BotStartPlayer": 0,
+  "BotStop": 1900,
+  "Description": "The Priozersk Natural Reserve was recently included into the list of state-protected wildlife reserves of the North-Western Federal District.",
+  "DisabledScavExits": "",
+  "EnableCoop": true,
+  "Enabled": false,
+  "EscapeTimeLimit": 40,
+  "EscapeTimeLimitCoop": 30,
+  "EscapeTimeLimitPVE": 40,
+  "ForceOnlineRaidInPVE": true,
+  "GenerateLocalLootCache": true,
+  "GlobalContainerChanceModifier": 1.0,
+  "GlobalLootChanceModifier": 1.0,
+  "GlobalLootChanceModifierPvE": 1.0,
+  "HeatmapCellSize": {
+    "x": 1.0,
+    "y": 2.0,
+    "z": 1.0
+  },
+  "HeatmapLayers": [
+    "AllCharactersPositions",
+    "AllBotsPositions",
+    "AllRealPlayersPositions",
+    "RealPlayersSavagesPositions",
+    "RealPlayersSavagesDeads",
+    "RealPlayersSavagesDamages",
+    "RealPlayersPmcPositions",
+    "RealPlayersPmcDeads",
+    "RealPlayersPmcDamages",
+    "RealPlayersPmcLaydownPositions",
+    "RealPlayersPmcEquipmentDropPositions",
+    "RealPlayersPmcHealingPositions",
+    "BotsBossPositions",
+    "BotsBossDeads",
+    "BotsBossDamages",
+    "BotsSavagesPositions",
+    "BotsSavagesDeads",
+    "BotsSavagesDamages",
+    "AllCharactersDamageSources",
+    "RealPlayerDamageSources",
+    "BotsDamageSources",
+    "LootPositions"
+  ],
+  "IconX": 500,
+  "IconY": 400,
+  "Insurance": false,
+  "IsSecret": false,
+  "Locked": false,
+  "MaxBotPerZone": 4,
+  "MaxCoopGroup": 14,
+  "MaxDistToFreePoint": 200,
+  "MaxPlayers": 5,
+  "MinDistToExitPoint": 30,
+  "MinDistToFreePoint": 50,
+  "MinPlayerLvlAccessKeys": 0,
+  "MinPlayers": 5,
+  "Name": "Labyrinth",
+  "NewSpawn": false,
+  "NewSpawnForPlayers": false,
+  "NonWaveGroupScenario": {
+    "Chance": 50.0,
+    "Enabled": true,
+    "MaxToBeGroup": 3,
+    "MinToBeGroup": 2
+  },
+  "OcculsionCullingEnabled": false,
+  "OfflineNewSpawn": false,
+  "OfflineOldSpawn": true,
+  "OldSpawn": true,
+  "OpenZones": "BotZone",
+  "PlayersRequestCount": -1,
+  "PmcMaxPlayersInGroup": 5,
+  "Preview": {
+    "path": "",
+    "rcid": ""
+  },
+  "RequiredPlayerLevelMax": 100,
+  "RequiredPlayerLevelMin": 0,
+  "Rules": "Normal",
+  "SafeLocation": false,
+  "ScavMaxPlayersInGroup": 4,
+  "Scene": {
+    "path": "maps/labyrinth_preset.bundle",
+    "rcid": "Labyrinth.scenespreset.asset"
+  },
+  "UnixDateTime": 1621511450,
+  "doors": [],
+  "exit_access_time": 10,
+  "exit_count": 1,
+  "exit_time": 90,
+  "filter_ex": [],
+  "limits": [
+    {
+      "items": [
+        "6389c8c5dbfd5e4b95197e6b"
+      ],
+      "max": 1,
+      "min": 0
+    }
+  ],
+  "matching_min_seconds": 60,
+  "sav_summon_seconds": 60,
+  "tmp_location_field_remove_me": 0,
+  "users_gather_seconds": 0,
+  "users_spawn_seconds_n": 120,
+  "users_spawn_seconds_n2": 200,
+  "users_summon_seconds": 0,
+  "waves": [
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "BotZone",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "BotZone",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 1,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "normal",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    },
+    {
+      "BotPreset": "hard",
+      "BotSide": "Savage",
+      "OpenZones": "",
+      "SpawnMode": [
+        "pve"
+      ],
+      "SpawnPoints": "",
+      "WildSpawnType": "assault",
+      "isPlayers": false,
+      "number": 0,
+      "slots_max": 0,
+      "slots_min": 0,
+      "time_max": -1,
+      "time_min": -1
+    }
+  ],
+  "AirdropParameters": [
+    {
+      "AirdropPointDeactivateDistance": 50,
+      "MinPlayersCountToSpawnAirdrop": 6,
+      "PlaneAirdropChance": 0.25,
+      "PlaneAirdropCooldownMax": 800,
+      "PlaneAirdropCooldownMin": 700,
+      "PlaneAirdropEnd": 1200,
+      "PlaneAirdropMax": 1,
+      "PlaneAirdropStartMax": 900,
+      "PlaneAirdropStartMin": 300,
+      "UnsuccessfulTryPenalty": 600
+    }
+  ],
+  "BossLocationSpawn": [
+    {
+      "BossName": "bossTagillaAgro",
+      "BossChance": 100.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": -1.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "bossKillaAgro",
+      "BossChance": 50.0,
+      "TriggerId": "EVENT_FOR_KILLA",
+      "SpawnMode": [
+        "pve",
+        "regular"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "bossKillaAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 1100.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "botEvent",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 35.0,
+      "TriggerId": "AGRO_HELPERS_EVENT",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 450.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "botEvent",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 50.0,
+      "TriggerId": "AGRO_HELPERS_EVENT",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 495.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "botEvent",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 35.0,
+      "TriggerId": "AGRO_HELPERS_EVENT",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 550.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "botEvent",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 0.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": -1.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 35.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": -1.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 35.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 30.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 50.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "0",
+      "Time": 10.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 100.0,
+      "TriggerId": "MASS_HELPERS_EVENT",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "2,3",
+      "Time": 1500.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "botEvent",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 80.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "2,3",
+      "Time": 800.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    },
+    {
+      "BossName": "tagillaHelperAgro",
+      "BossChance": 80.0,
+      "TriggerId": "",
+      "SpawnMode": [
+        "regular",
+        "pve"
+      ],
+      "BossZone": "",
+      "BossPlayer": false,
+      "BossDifficult": "normal",
+      "BossEscortType": "tagillaHelperAgro",
+      "BossEscortDifficult": "normal",
+      "BossEscortAmount": "2,3",
+      "Time": 1000.0,
+      "Supports": [],
+      "RandomTimeSpawn": false,
+      "ForceSpawn": false,
+      "IgnoreMaxBots": true,
+      "TriggerName": "",
+      "Delay": 0.0,
+      "DependKarma": false,
+      "DependKarmaPVE": false
+    }
+  ],
+  "BotLocationModifier": {
+    "AccuracySpeed": 1.0,
+    "AdditionalHostilitySettings": [
+      {
+        "BotRole": "pmcBEAR",
+        "AlwaysEnemies": [
+          "pmcBot",
+          "exUsec",
+          "bossBully",
+          "bossBoar",
+          "bossTagilla",
+          "bossKilla",
+          "bossKojaniy",
+          "bossSanitar",
+          "bossKolontay",
+          "bossGluhar",
+          "bossKnight"
+        ],
+        "ChancedEnemies": [
+          {
+            "EnemyChance": 70,
+            "Role": "assault"
+          },
+          {
+            "EnemyChance": 70,
+            "Role": "marksman"
+          },
+          {
+            "EnemyChance": 75,
+            "Role": "pmcUSEC"
+          }
+        ],
+        "Warn": [
+          "sectactPriestEvent"
+        ],
+        "Neutral": [
+          "sectantPriest",
+          "sectantWarrior"
+        ],
+        "AlwaysFriends": [
+          "bossZryachiy",
+          "followerZryachiy",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter"
+        ],
+        "SavagePlayerBehaviour": "Warn",
+        "BearPlayerBehaviour": "ChancedEnemies",
+        "BearEnemyChance": 75,
+        "UsecPlayerBehaviour": "ChancedEnemies",
+        "UsecEnemyChance": 90
+      },
+      {
+        "BotRole": "pmcUSEC",
+        "AlwaysEnemies": [
+          "pmcBot",
+          "bossBully",
+          "bossBoar",
+          "bossTagilla",
+          "bossKilla",
+          "bossKojaniy",
+          "bossSanitar",
+          "bossKolontay",
+          "bossGluhar"
+        ],
+        "ChancedEnemies": [
+          {
+            "EnemyChance": 70,
+            "Role": "assault"
+          },
+          {
+            "EnemyChance": 70,
+            "Role": "marksman"
+          },
+          {
+            "EnemyChance": 75,
+            "Role": "pmcBEAR"
+          },
+          {
+            "EnemyChance": 15,
+            "Role": "exUsec"
+          },
+          {
+            "EnemyChance": 15,
+            "Role": "bossKnight"
+          }
+        ],
+        "Warn": [
+          "sectactPriestEvent"
+        ],
+        "Neutral": [
+          "sectantPriest",
+          "sectantWarrior"
+        ],
+        "AlwaysFriends": [
+          "bossZryachiy",
+          "followerZryachiy",
+          "peacefullZryachiyEvent",
+          "ravangeZryachiyEvent",
+          "gifter"
+        ],
+        "SavagePlayerBehaviour": "Warn",
+        "BearPlayerBehaviour": "ChancedEnemies",
+        "BearEnemyChance": 90,
+        "UsecPlayerBehaviour": "ChancedEnemies",
+        "UsecEnemyChance": 75
+      },
+      {
+        "BotRole": "bossTagillaAgro",
+        "AlwaysFriends": [
+          "bossKillaAgro",
+          "tagillaHelperAgro"
+        ]
+      },
+      {
+        "BotRole": "bossKillaAgro",
+        "AlwaysFriends": [
+          "bossTagillaAgro",
+          "tagillaHelperAgro"
+        ]
+      },
+      {
+        "BotRole": "tagillaHelperAgro",
+        "AlwaysFriends": [
+          "bossTagillaAgro",
+          "bossKillaAgro"
+        ]
+      }
+    ],
+    "DistToActivate": 265.0,
+    "DistToActivatePvE": 265.0,
+    "DistToPersueAxemanCoef": 1.1,
+    "DistToSleep": 300.0,
+    "DistToSleepPvE": 300.0,
+    "FogVisibilityDistanceCoef": 1.0,
+    "FogVisibilitySpeedCoef": 1.0,
+    "GainSight": 1.0,
+    "KhorovodChance": 0,
+    "MagnetPower": 44.0,
+    "MarksmanAccuratyCoef": 1.0,
+    "MaxExfiltrationTime": 1800.0,
+    "MinExfiltrationTime": 1200.0,
+    "RainVisibilityDistanceCoef": 1.0,
+    "RainVisibilitySpeedCoef": 1.0,
+    "Scattering": 1.0,
+    "VisibleDistance": 1.0
+  },
+  "DisabledForScav": false,
+  "EventTrapsData": {
+    "MaxBarbedWires": 20,
+    "MaxTrapDoors": 9,
+    "MinBarbedWires": 10,
+    "MinTrapDoors": 5
+  },
+  "Events": {
+    "Halloween2024": {
+      "CrowdAttackBlockRadius": 100.0,
+      "CrowdAttackSpawnParams": [
+        {
+          "Difficulty": "easy",
+          "Role": "infectedAssault",
+          "Weight": 30
+        },
+        {
+          "Difficulty": "normal",
+          "Role": "infectedAssault",
+          "Weight": 110
+        },
+        {
+          "Difficulty": "hard",
+          "Role": "infectedAssault",
+          "Weight": 40
+        },
+        {
+          "Difficulty": "easy",
+          "Role": "infectedPmc",
+          "Weight": 15
+        },
+        {
+          "Difficulty": "normal",
+          "Role": "infectedPmc",
+          "Weight": 55
+        },
+        {
+          "Difficulty": "hard",
+          "Role": "infectedPmc",
+          "Weight": 20
+        },
+        {
+          "Difficulty": "easy",
+          "Role": "infectedCivil",
+          "Weight": 0
+        },
+        {
+          "Difficulty": "normal",
+          "Role": "infectedCivil",
+          "Weight": 0
+        },
+        {
+          "Difficulty": "hard",
+          "Role": "infectedCivil",
+          "Weight": 0
+        },
+        {
+          "Difficulty": "easy",
+          "Role": "infectedLaborant",
+          "Weight": 0
+        },
+        {
+          "Difficulty": "normal",
+          "Role": "infectedLaborant",
+          "Weight": 0
+        },
+        {
+          "Difficulty": "hard",
+          "Role": "infectedLaborant",
+          "Weight": 0
+        }
+      ],
+      "CrowdCooldownPerPlayerSec": 300.0,
+      "CrowdsLimit": 2,
+      "InfectedLookCoeff": 0.5,
+      "MaxCrowdAttackSpawnLimit": 18,
+      "MinInfectionPercentage": 0,
+      "MinSpawnDistToPlayer": 50.0,
+      "TargetPointSearchRadiusLimit": 200.0,
+      "ZombieCallDeltaRadius": 20.0,
+      "ZombieCallPeriodSec": 1.0,
+      "ZombieCallRadiusLimit": 200.0,
+      "ZombieMultiplier": 5.0
+    },
+    "Khorovod": {
+      "Chance": 0.0
+    }
+  },
+  "MatchMakerMinPlayersByWaitTime": [
+    {
+      "minPlayers": 4,
+      "time": 240
+    },
+    {
+      "minPlayers": 3,
+      "time": 300
+    },
+    {
+      "minPlayers": 2,
+      "time": 360
+    },
+    {
+      "minPlayers": 1,
+      "time": 420
+    }
+  ],
+  "MinMaxBots": [],
+  "NoGroupSpawn": true,
+  "SpawnPointParams": [
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "11ef32ab-7715-492c-9d58-f0ce32bba21f",
+      "Infiltration": "",
+      "Position": {
+        "x": 7.54,
+        "y": 0.11,
+        "z": 36.93
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "1df0fad3-e80f-447f-b782-5a3b046fdf9c",
+      "Infiltration": "",
+      "Position": {
+        "x": -23.83,
+        "y": 0.11,
+        "z": 20.08
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "34bfa5b1-709d-4204-97a2-519443ae0faa",
+      "Infiltration": "",
+      "Position": {
+        "x": 15.23,
+        "y": 0.15,
+        "z": 27.16
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "4c33535f-acf3-424c-8c7f-e3efd9a7424d",
+      "Infiltration": "",
+      "Position": {
+        "x": 19.0,
+        "y": 0.11,
+        "z": 10.91
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Player"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 20.0
+        }
+      },
+      "CorePointId": 0,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "503cf951-8e80-4ca0-aa2d-993f71a6a4a6",
+      "Infiltration": "Factory",
+      "Position": {
+        "x": 23.366436,
+        "y": 0.0740000457,
+        "z": 51.8831444
+      },
+      "Rotation": 2.68148041,
+      "Sides": [
+        "All"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Player"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 20.0
+        }
+      },
+      "CorePointId": 0,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "57254982-c470-440d-911a-e8854f42398a",
+      "Infiltration": "Factory",
+      "Position": {
+        "x": 5.97543669,
+        "y": 0.567000031,
+        "z": -33.4708557
+      },
+      "Rotation": 267.106842,
+      "Sides": [
+        "All"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Player"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 20.0
+        }
+      },
+      "CorePointId": 0,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "867576c4-1152-48ad-80bf-a802d7318379",
+      "Infiltration": "Factory",
+      "Position": {
+        "x": -50.2755623,
+        "y": 0.594000041,
+        "z": -15.8988571
+      },
+      "Rotation": 82.22065,
+      "Sides": [
+        "All"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "9d314492-e3b2-4fc0-868b-737271dc626e",
+      "Infiltration": "",
+      "Position": {
+        "x": 5.92,
+        "y": 0.14,
+        "z": 20.22
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Player"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 20.0
+        }
+      },
+      "CorePointId": 0,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "adee9078-b5a3-4f9e-b384-e984cbea15fc",
+      "Infiltration": "Factory",
+      "Position": {
+        "x": 42.8534355,
+        "y": -0.133999944,
+        "z": 31.4581432
+      },
+      "Rotation": 311.222046,
+      "Sides": [
+        "All"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Player"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 20.0
+        }
+      },
+      "CorePointId": 0,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "b776e3ed-a02d-4141-8eba-35d4746547ca",
+      "Infiltration": "Factory",
+      "Position": {
+        "x": -37.4425621,
+        "y": 0.5400001,
+        "z": 73.79514
+      },
+      "Rotation": 177.090744,
+      "Sides": [
+        "All"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 12.0
+        }
+      },
+      "CorePointId": 2,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "b99646de-9ffe-472f-af36-de2e20db2360",
+      "Infiltration": "",
+      "Position": {
+        "x": -9.92,
+        "y": 0.108,
+        "z": 23.92
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 3,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "bfa04354-335c-42c7-8ea6-4832126c6779",
+      "Infiltration": "",
+      "Position": {
+        "x": -24.785,
+        "y": 0.129,
+        "z": 32.32
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 1,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "cba8d318-1e80-444a-bf5e-b4fb0baecdd8",
+      "Infiltration": "",
+      "Position": {
+        "x": -10.91,
+        "y": 0.082,
+        "z": 6.08
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    },
+    {
+      "BotZoneName": "",
+      "Categories": [
+        "Bot",
+        "Boss"
+      ],
+      "ColliderParams": {
+        "_parent": "SpawnSphereParams",
+        "_props": {
+          "Center": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+          },
+          "Radius": 7.0
+        }
+      },
+      "CorePointId": 3,
+      "DelayToCanSpawnSec": 4.0,
+      "Id": "ec23c308-c362-4fdc-8fc7-dfe5808a804a",
+      "Infiltration": "",
+      "Position": {
+        "x": -11.18,
+        "y": 0.095,
+        "z": 35.7
+      },
+      "Rotation": 327.8234,
+      "Sides": [
+        "Savage"
+      ]
+    }
+  ],
+  "SpawnSafeDistanceMeters": 10,
+  "exits": [
+    {
+      "Chance": 100.0,
+      "ChancePVE": 100.0,
+      "Count": 0,
+      "CountPVE": 0,
+      "EntryPoints": "Factory",
+      "EventAvailable": false,
+      "ExfiltrationTime": 5.0,
+      "ExfiltrationTimePVE": 5.0,
+      "ExfiltrationType": "SharedTimer",
+      "Id": "",
+      "MaxTime": 905,
+      "MaxTimePVE": 905,
+      "MinTime": 900,
+      "MinTimePVE": 900,
+      "Name": "labir_exit",
+      "PassageRequirement": "Timer",
+      "PlayersCount": 0,
+      "PlayersCountPVE": 0,
+      "RequirementTip": ""
+    }
+  ],
+  "maxItemCountInLocation": [
+    {
+      "TemplateId": "634959225289190e5e773b3b",
+      "Value": 6
+    },
+    {
+      "TemplateId": "679b992329acd1f2f60985a5",
+      "Value": 2
+    },
+    {
+      "TemplateId": "679b9d55708cfcb2060b9ae3",
+      "Value": 1
+    },
+    {
+      "TemplateId": "679b9d4b3374fb14f40efe6d",
+      "Value": 1
+    },
+    {
+      "TemplateId": "679b9d43597ba2ed120c3d44",
+      "Value": 1
+    },
+    {
+      "TemplateId": "679b9cce4e4ed4b3b40ae5c5",
+      "Value": 1
+    },
+    {
+      "TemplateId": "679b9d6390622daf9708da76",
+      "Value": 1
+    },
+    {
+      "TemplateId": "679bab714e9ca6b3d80586b4",
+      "Value": 1
+    },
+    {
+      "TemplateId": "5fca138c2a7b221b2852a5c6",
+      "Value": 8
+    }
+  ],
+  "secretExits": [
+    {
+      "EligibleForPMC": true,
+      "EligibleForScav": true,
+      "ExfiltrationTime": 15.0,
+      "Id": "67e183377c6c2011970f3149",
+      "Name": "labyrinth_secret_tagilla_key"
+    }
+  ],
+  "transits": [
+    {
+      "activateAfterSec": 60,
+      "active": true,
+      "conditions": "WOO_TRANSIT_15_COND",
+      "description": "WOO_TRANSIT_15_DESC",
+      "events": false,
+      "id": 15,
+      "location": "factory4_day",
+      "name": "WOO_TRANSIT_15",
+      "target": "55f2d3fd4bdc2d5f408b4567",
+      "time": 20
+    },
+    {
+      "activateAfterSec": 60,
+      "active": true,
+      "conditions": "WOO_TRANSIT_16_COND",
+      "description": "WOO_TRANSIT_16_DESC",
+      "events": false,
+      "id": 16,
+      "location": "RezervBase",
+      "name": "WOO_TRANSIT_16",
+      "target": "5704e5fad2720bc05b8b4567",
+      "time": 20
+    },
+    {
+      "activateAfterSec": 60,
+      "active": true,
+      "conditions": "WOO_TRANSIT_17_COND",
+      "description": "WOO_TRANSIT_17_DESC",
+      "events": false,
+      "id": 17,
+      "location": "Lighthouse",
+      "name": "WOO_TRANSIT_17",
+      "target": "5704e4dad2720bb55b8b4567",
+      "time": 20
+    },
+    {
+      "activateAfterSec": 60,
+      "active": true,
+      "conditions": "WOO_TRANSIT_41_COND",
+      "description": "WOO_TRANSIT_41_DESC",
+      "events": false,
+      "id": 41,
+      "location": "bigmap",
+      "name": "WOO_TRANSIT_41",
+      "target": "56f40101d2720b2a4d8b45d6",
+      "time": 20
+    }
+  ],
+  "Id": "Labyrinth",
+  "_Id": "6733700029c367a3d40b02af",
+  "Loot": [],
+  "Banners": [
+    {
+      "id": "67e3f71e445e18765a052687",
+      "pic": {
+        "path": "CONTENT/banners/minotaur_banner.png",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "67e3f72fdb783364cd0a4b63",
+      "pic": {
+        "path": "CONTENT/banners/banner_Tagilla.jpg",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "64c0ad6af99768b777048f4e",
+      "pic": {
+        "path": "CONTENT/banners/banner_emissary.jpg",
+        "rcid": ""
+      }
+    }
+  ]
+}

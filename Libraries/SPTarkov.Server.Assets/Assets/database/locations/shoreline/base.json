@@ -20,6 +20,13 @@
   "AveragePlayerLevel": 25,
   "Banners": [
     {
+      "id": "67d1ac995df2d64de808e1d6",
+      "pic": {
+        "path": "CONTENT/banners/banner_shoreline.jpg",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5807c3f124597746bf2db2ce",
       "pic": {
         "path": "CONTENT/banners/banner_scav.jpg",
@@ -447,11 +454,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -494,11 +501,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -585,7 +592,7 @@
     "DistToPersueAxemanCoef": 1.1,
     "DistToSleep": 300,
     "DistToSleepPvE": 300,
-    "FogVisibilityDistanceCoef": -1.6,
+    "FogVisibilityDistanceCoef": 0,
     "FogVisibilitySpeedCoef": 0,
     "GainSight": 1.1,
     "KhorovodChance": 0,
@@ -600,7 +607,7 @@
     "MaxExfiltrationTime": 2000,
     "MinExfiltrationTime": 1500,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 0.8,
@@ -1736,7 +1743,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 112
+          "Radius": 80
         }
       },
       "CorePointId": 1,
@@ -1979,7 +1986,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 112
+          "Radius": 85
         }
       },
       "CorePointId": 1,
@@ -3522,7 +3529,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 112
+          "Radius": 75
         }
       },
       "CorePointId": 1,
@@ -3644,7 +3651,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 5
+          "Radius": 75
         }
       },
       "CorePointId": 1,
@@ -5946,7 +5953,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 30
+          "Radius": 80
         }
       },
       "CorePointId": 1,
@@ -5977,7 +5984,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 5
+          "Radius": 75
         }
       },
       "CorePointId": 1,
@@ -7214,7 +7221,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 112
+          "Radius": 80
         }
       },
       "CorePointId": 1,
@@ -8427,7 +8434,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 112
+          "Radius": 70
         }
       },
       "CorePointId": 1,
@@ -8942,7 +8949,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 25
+          "Radius": 65
         }
       },
       "CorePointId": 1,
@@ -9064,7 +9071,7 @@
             "y": 0,
             "z": 0
           },
-          "Radius": 5
+          "Radius": 65
         }
       },
       "CorePointId": 1,
@@ -9958,6 +9965,7 @@
       "conditions": "SHO_TRANSIT_24_COND",
       "description": "SHO_TRANSIT_24_DESC",
       "events": false,
+      "hideIfNoKey": false,
       "id": 24,
       "location": "Lighthouse",
       "name": "SHO_TRANSIT_24",
@@ -9970,10 +9978,24 @@
       "conditions": "SHO_TRANSIT_25_COND",
       "description": "SHO_TRANSIT_25_DESC",
       "events": false,
+      "hideIfNoKey": false,
       "id": 25,
       "location": "Terminal",
       "name": "SHO_TRANSIT_25",
       "target": "5704e5a4d2720bb45b8b4567",
+      "time": 20
+    },
+    {
+      "activateAfterSec": 60,
+      "active": true,
+      "conditions": "SHO_TRANSIT_43_COND",
+      "description": "SHO_TRANSIT_43_DESC",
+      "events": false,
+      "hideIfNoKey": true,
+      "id": 43,
+      "location": "Labyrinth",
+      "name": "SHO_TRANSIT_43",
+      "target": "6733700029c367a3d40b02af",
       "time": 20
     }
   ],

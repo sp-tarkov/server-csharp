@@ -24,6 +24,7 @@ public record Locations
         { "shoreline", "Shoreline" },
         { "suburbs", "Suburbs" },
         { "tarkovstreets", "TarkovStreets" },
+        { "labyrinth", "Labyrinth" },
         { "terminal", "Terminal" },
         { "town", "Town" },
         { "woods", "Woods" },
@@ -47,6 +48,7 @@ public record Locations
         { "Terminal", "Terminal" },
         { "Town", "Town" },
         { "Woods", "Woods" },
+        { "Labyrinth", "Labyrinth" },
         { "Sandbox", "Sandbox" },
         { "SandboxHigh", "SandboxHigh" }
     }.ToFrozenDictionary();
@@ -144,6 +146,13 @@ public record Locations
         set;
     }
 
+    [JsonPropertyName("labyrinth")]
+    public Eft.Common.Location? Labyrinth
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("terminal")]
     public Eft.Common.Location? Terminal
     {
@@ -217,6 +226,6 @@ public record Locations
     {
         var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
         _locationDictionaryCache = classProps
-            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location);
+            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location, StringComparer.OrdinalIgnoreCase);
     }
 }

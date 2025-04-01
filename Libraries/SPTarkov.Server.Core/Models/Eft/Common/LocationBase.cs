@@ -285,6 +285,13 @@ public record LocationBase
         set;
     }
 
+    [JsonPropertyName("EventTrapsData")]
+    public EventTrapsData? EventTrapsData
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("DisabledScavExits")]
     public string? DisabledScavExits
     {
@@ -572,6 +579,13 @@ public record LocationBase
         set;
     }
 
+    [JsonPropertyName("NoGroupSpawn")]
+    public bool? NoGroupSpawn
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("SpawnPointParams")]
     public List<SpawnPointParam>? SpawnPointParams
     {
@@ -681,6 +695,13 @@ public record LocationBase
         set;
     }
 
+    [JsonPropertyName("SpawnSafeDistanceMeters")]
+    public double? SpawnSafeDistanceMeters
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("exits")]
     public List<Exit>? Exits
     {
@@ -780,6 +801,33 @@ public record LocationBase
     }
 }
 
+public record EventTrapsData
+{
+    public double MaxBarbedWires
+    {
+        get;
+        set;
+    }
+
+    public double MaxTrapDoors
+    {
+        get;
+        set;
+    }
+
+    public double MinBarbedWires
+    {
+        get;
+        set;
+    }
+
+    public double MinTrapDoors
+    {
+        get;
+        set;
+    }
+}
+
 public record Transit
 {
     [JsonPropertyName("activateAfterSec")]
@@ -787,7 +835,7 @@ public record Transit
     {
         get;
         set;
-    } // TODO: Int in client
+    }
 
     [JsonPropertyName("active")]
     public bool? IsActive
@@ -798,6 +846,13 @@ public record Transit
 
     [JsonPropertyName("events")]
     public bool? Events
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("hideIfNoKey")]
+    public bool? HideIfNoKey
     {
         get;
         set;
@@ -2013,7 +2068,7 @@ public record Khorovod
 public record Halloween2024
 {
     [JsonPropertyName("CrowdAttackBlockRadius")]
-    public int? CrowdAttackBlockRadius
+    public double? CrowdAttackBlockRadius
     {
         get;
         set;
@@ -2027,7 +2082,7 @@ public record Halloween2024
     }
 
     [JsonPropertyName("CrowdCooldownPerPlayerSec")]
-    public int? CrowdCooldownPerPlayerSec
+    public double? CrowdCooldownPerPlayerSec
     {
         get;
         set;
@@ -2083,7 +2138,7 @@ public record Halloween2024
     }
 
     [JsonPropertyName("ZombieCallPeriodSec")]
-    public int? ZombieCallPeriodSec
+    public double? ZombieCallPeriodSec
     {
         get;
         set;
@@ -2248,5 +2303,8 @@ public enum WildSpawnType
     infectedPmc,
     infectedCivil,
     infectedLaborant,
-    infectedTagilla
+    infectedTagilla,
+    bossTagillaAgro,
+    bossKillaAgro,
+    tagillaHelperAgro
 }

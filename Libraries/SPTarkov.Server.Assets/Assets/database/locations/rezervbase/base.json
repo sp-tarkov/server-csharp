@@ -20,6 +20,13 @@
   "AveragePlayerLevel": 35,
   "Banners": [
     {
+      "id": "67d1ac705df2d64de808e1d2",
+      "pic": {
+        "path": "CONTENT/banners/banner_RezervBase.jpg",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5807bfe124597742a92e0a4c",
       "pic": {
         "path": "CONTENT/banners/norvinskzone.jpg",
@@ -356,11 +363,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -403,11 +410,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -532,7 +539,7 @@
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 0.6,
@@ -645,7 +652,7 @@
   "ForceOnlineRaidInPVE": false,
   "GenerateLocalLootCache": true,
   "GlobalContainerChanceModifier": 1,
-  "GlobalLootChanceModifier": 0.17,
+  "GlobalLootChanceModifier": 0.27,
   "GlobalLootChanceModifierPvE": 0.4,
   "HeatmapCellSize": {
     "x": 1,
@@ -719,7 +726,7 @@
   "NewSpawnForPlayers": false,
   "NonWaveGroupScenario": {
     "Chance": 50,
-    "Enabled": false,
+    "Enabled": true,
     "MaxToBeGroup": 3,
     "MinToBeGroup": 2
   },

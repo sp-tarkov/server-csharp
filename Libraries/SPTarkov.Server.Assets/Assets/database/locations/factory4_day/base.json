@@ -6,6 +6,13 @@
   "AveragePlayerLevel": 1,
   "Banners": [
     {
+      "id": "67d13656443d3073a3a92427",
+      "pic": {
+        "path": "CONTENT/banners/banner_factory4.png",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5464e0404bdc2d2a708b4567",
       "pic": {
         "path": "CONTENT/banners/banner_usec.jpg",
@@ -220,11 +227,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -267,11 +274,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 80,
             "Role": "marksman"
           },
           {
@@ -308,8 +315,8 @@
     "FogVisibilitySpeedCoef": 1,
     "GainSight": 1,
     "KhorovodChance": 0,
-    "LockSpawnCheckRadius": 150,
-    "LockSpawnCheckRadiusPvE": 150,
+    "LockSpawnCheckRadius": 120,
+    "LockSpawnCheckRadiusPvE": 120,
     "LockSpawnStartTime": 10,
     "LockSpawnStartTimePvE": 10,
     "LockSpawnStepTime": 50,
@@ -319,7 +326,7 @@
     "MaxExfiltrationTime": 900,
     "MinExfiltrationTime": 600,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 1,
     "RainVisibilitySpeedCoef": 1,
     "Scattering": 1,
@@ -416,7 +423,6 @@
       "CrowdCooldownPerPlayerSec": 300,
       "CrowdsLimit": 2,
       "InfectedLookCoeff": 0.5,
-      "InfectionPercentage": 0,
       "MaxCrowdAttackSpawnLimit": 13,
       "MinInfectionPercentage": 0,
       "MinSpawnDistToPlayer": 40,
@@ -4931,6 +4937,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4948,6 +4955,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4965,6 +4973,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4982,6 +4991,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,
@@ -4999,6 +5009,7 @@
     {
       "Chance": 100,
       "ChancePVE": 100,
+      "Count": 0,
       "CountPVE": 0,
       "EntryPoints": "Factory",
       "EventAvailable": false,

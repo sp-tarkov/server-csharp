@@ -128,14 +128,10 @@ public class CustomizationController(
     /// <returns>true if already purchased</returns>
     protected bool OutfitAlreadyPurchased(object suitId, string sessionId)
     {
-        var suits = _saveServer.GetProfile(sessionId).Suits;
+        var fullProfile = _profileHelper.GetFullProfile(sessionId);
 
-        if (suits is null || suits.Count == 0)
-        {
-            return false;
-        }
-
-        return suits.Contains(suitId);
+        // Check if clothing can be found by id
+        return fullProfile.CustomisationUnlocks.Exists(customisation => Equals(customisation.Id, suitId));
     }
 
     /// <summary>
