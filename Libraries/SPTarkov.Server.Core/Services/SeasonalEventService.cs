@@ -462,7 +462,17 @@ public class SeasonalEventService(
                 EnableHalloweenSummonEvent();
                 AddPumpkinsToScavBackpacks();
                 RenameBitcoin();
-                EnableSnow();
+                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false)) {
+                    if (_seasonalEventConfig.HostilitySettingsForEvent.TryGetValue("AprilFools", out var botData))
+                    {
+                        ReplaceBotHostility(botData);
+                    }
+                }
+
+                if (eventType.Settings?.ForceSeason != null) {
+                    _weatherConfig.OverrideSeason = eventType.Settings.ForceSeason;
+                }
+
                 break;
             default:
                 // Likely a mod event
@@ -600,7 +610,6 @@ public class SeasonalEventService(
     {
         var locations = _databaseService.GetLocations();
         var ignoreList = _locationConfig.NonMaps;
-        var useDefault = hostilitySettings is null;
 
         var props = locations.GetType().GetProperties();
 
@@ -617,13 +626,74 @@ public class SeasonalEventService(
                 continue;
             }
 
-            var newHostilitySettings = useDefault ? new List<AdditionalHostilitySettings>() : hostilitySettings[locationProp.Name];
-            if (newHostilitySettings is null)
+            // Try to get map 'default' first if it exists
+            if (!hostilitySettings.TryGetValue("Default", out var newHostilitySettings))
             {
-                continue;
+                // No 'default', try for location name
+                if (!hostilitySettings.TryGetValue(locationProp.Name, out newHostilitySettings))
+                {
+                    // no settings for map by name, skip map
+                    continue;
+                }
             }
 
-            location.Base.BotLocationModifier.AdditionalHostilitySettings = new List<AdditionalHostilitySettings>();
+            foreach (var settings in newHostilitySettings) {
+                var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
+                if (matchingBaseSettings is null)
+                {
+                    continue;
+                }
+
+                if (settings.AlwaysEnemies is not null)
+                {
+                    matchingBaseSettings.AlwaysEnemies = settings.AlwaysEnemies;
+                }
+
+                if (settings.AlwaysFriends is not null)
+                {
+                    matchingBaseSettings.AlwaysFriends = settings.AlwaysFriends;
+                }
+
+                if (settings.BearEnemyChance is not null)
+                {
+                    matchingBaseSettings.BearEnemyChance = settings.BearEnemyChance;
+                }
+
+                if (settings.ChancedEnemies is not null)
+                {
+                    matchingBaseSettings.ChancedEnemies = settings.ChancedEnemies;
+                }
+
+                if (settings.Neutral is not null)
+                {
+                    matchingBaseSettings.Neutral = settings.Neutral;
+                }
+
+                if (settings.SavageEnemyChance is not null)
+                {
+                    matchingBaseSettings.SavageEnemyChance = settings.SavageEnemyChance;
+                }
+
+                if (settings.SavagePlayerBehaviour is not null)
+                {
+                    matchingBaseSettings.SavagePlayerBehaviour = settings.SavagePlayerBehaviour;
+                }
+
+                if (settings.UsecEnemyChance is not null)
+                {
+                    matchingBaseSettings.UsecEnemyChance = settings.UsecEnemyChance;
+                }
+
+                if (settings.UsecPlayerBehaviour is not null)
+                {
+                    matchingBaseSettings.UsecPlayerBehaviour = settings.UsecPlayerBehaviour;
+                }
+
+                if (settings.Warn is not null)
+                {
+                    matchingBaseSettings.Warn = settings.Warn;
+                }
+            }
         }
     }
 
@@ -1097,7 +1167,7 @@ public class SeasonalEventService(
             ConfigureZombies(seasonalEvent.Settings.ZombieSettings);
         }
 
-        if (seasonalEvent.Settings?.ForceSeason is not null)
+        if (seasonalEvent.Settings?.ForceSeason != null)
         {
             _weatherConfig.OverrideSeason = seasonalEvent.Settings.ForceSeason;
         }
