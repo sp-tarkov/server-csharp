@@ -1024,12 +1024,16 @@ public class SeasonalEventService(
             if (!maps.TryGetValue(gifterMapSettings.Map, out var mapData))
             {
                 _logger.Warning($"AddGifterBotToMaps() Map not found {gifterMapSettings.Map}");
+
                 continue;
             }
 
-            // Dont add gifter to map twice
-            if (mapData.Base.BossLocationSpawn.Any(boss => boss.BossName == "gifter"))
+            // Don't add gifter to map twice
+            var existingGifter = mapData.Base.BossLocationSpawn.FirstOrDefault(boss => boss.BossName == "gifter");
+            if (existingGifter is not null)
             {
+                existingGifter.BossChance = gifterMapSettings.SpawnChance;
+
                 continue;
             }
 
