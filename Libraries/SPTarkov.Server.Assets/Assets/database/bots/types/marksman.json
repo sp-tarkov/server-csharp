@@ -2028,6 +2028,10 @@
       "min": 0
     },
     "reward": {
+      "easy": {
+        "max": -1,
+        "min": -1
+      },
       "hard": {
         "max": -1,
         "min": -1

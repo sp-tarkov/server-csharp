@@ -3074,7 +3074,7 @@
       "upd": {
         "UnlimitedCount": true,
         "StackObjectsCount": 9999999,
-        "BuyRestrictionMax": 2,
+        "BuyRestrictionMax": 4,
         "BuyRestrictionCurrent": 0
       }
     },
@@ -3559,7 +3559,19 @@
       "slotId": "Helmet_ears"
     },
     {
-      "_id": "678fb0f586f7d451620c4b12",
+      "_id": "67e5337781a202dc180bc022",
+      "_tpl": "679b9819a2f2dd4da9023512",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": true,
+        "StackObjectsCount": 9999999,
+        "BuyRestrictionMax": 2,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
+      "_id": "67eb25710eb297dd61111530",
       "_tpl": "5b44cf1486f77431723e3d05",
       "parentId": "hideout",
       "slotId": "hideout",
@@ -3571,67 +3583,67 @@
     {
       "_id": "6576eb0d424f2c87d30c760e",
       "_tpl": "6575c3b3dc9932aed601c5f4",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Soft_armor_front"
     },
     {
       "_id": "6576eb0d424f2c87d30c760f",
       "_tpl": "6575c3beefc786cd9101a5ed",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Soft_armor_back"
     },
     {
       "_id": "6576eb0d424f2c87d30c7610",
       "_tpl": "6575c3cdc6700bd6b40e8a90",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Soft_armor_left"
     },
     {
       "_id": "6576eb0d424f2c87d30c7611",
       "_tpl": "6575c3dfdc9932aed601c5f8",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "soft_armor_right"
     },
     {
       "_id": "6576eb0d424f2c87d30c7612",
       "_tpl": "6575c3ec52b7f8c76a05ee39",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Collar"
     },
     {
       "_id": "6576eb0d424f2c87d30c7613",
       "_tpl": "6575c3fd52b7f8c76a05ee3d",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Shoulder_l"
     },
     {
       "_id": "6576eb0d424f2c87d30c7614",
       "_tpl": "6575c40c52b7f8c76a05ee41",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Shoulder_r"
     },
     {
       "_id": "6576eb0d424f2c87d30c7615",
       "_tpl": "656fa8d700d62bcd2e024084",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Front_plate"
     },
     {
       "_id": "6576eb0d424f2c87d30c7616",
       "_tpl": "656fa8d700d62bcd2e024084",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Back_plate"
     },
     {
       "_id": "6576eb0d424f2c87d30c7617",
       "_tpl": "6557458f83942d705f0c4962",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Left_side_plate"
     },
     {
       "_id": "6576eb0d424f2c87d30c7618",
       "_tpl": "6557458f83942d705f0c4962",
-      "parentId": "678fb0f586f7d451620c4b12",
+      "parentId": "67eb25710eb297dd61111530",
       "slotId": "Right_side_plate"
     }
   ],
@@ -4841,7 +4853,7 @@
     "67877f6eecc0f807890600b7": [
       [
         {
-          "count": 116.2,
+          "count": 117.08,
           "_tpl": "569668774bdc2da2298b4568"
         }
       ]
@@ -5046,7 +5058,23 @@
         }
       ]
     ],
-    "678fb0f586f7d451620c4b12": [
+    "67e5337781a202dc180bc022": [
+      [
+        {
+          "count": 4,
+          "_tpl": "5734758f24597738025ee253"
+        },
+        {
+          "count": 2,
+          "_tpl": "5c12688486f77426843c7d32"
+        },
+        {
+          "count": 1,
+          "_tpl": "61bf83814088ec1a363d7097"
+        }
+      ]
+    ],
+    "67eb25710eb297dd61111530": [
       [
         {
           "count": 205400,
@@ -5228,6 +5256,7 @@
     "67877f6fecc0f80789060159": 1,
     "67877f6fecc0f8078906015f": 1,
     "67877f6fecc0f80789060165": 2,
-    "678fb0f586f7d451620c4b12": 4
+    "67e5337781a202dc180bc022": 1,
+    "67eb25710eb297dd61111530": 4
   }
 }

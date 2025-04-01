@@ -973,6 +973,42 @@
       }
     },
     {
+      "_id": "67e50e6d4e0adf4dec0eb281",
+      "_tpl": "67d3ed3271c17ff82e0a5b0b",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": true,
+        "StackObjectsCount": 9999999,
+        "BuyRestrictionMax": 1,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
+      "_id": "67e50e6d4e0adf4dec0eb284",
+      "_tpl": "679b9819a2f2dd4da9023512",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": true,
+        "StackObjectsCount": 9999999,
+        "BuyRestrictionMax": 2,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
+      "_id": "67e50e6d4e0adf4dec0eb287",
+      "_tpl": "67d3ed3271c17ff82e0a5b0b",
+      "parentId": "hideout",
+      "slotId": "hideout",
+      "upd": {
+        "UnlimitedCount": true,
+        "StackObjectsCount": 9999999,
+        "BuyRestrictionMax": 1,
+        "BuyRestrictionCurrent": 0
+      }
+    },
+    {
       "_id": "667eac90d135442276096594",
       "_tpl": "635267f063651329f75a4ee8",
       "parentId": "hideout",
@@ -1103,7 +1139,7 @@
     "676d24ce798491c5260f5d29": [
       [
         {
-          "count": 15079.36,
+          "count": 15307.83,
           "_tpl": "569668774bdc2da2298b4568"
         }
       ]
@@ -1797,6 +1833,38 @@
         }
       ]
     ],
+    "67e50e6d4e0adf4dec0eb281": [
+      [
+        {
+          "count": 2,
+          "_tpl": "62a09d3bcf4a99369e262447"
+        },
+        {
+          "count": 2,
+          "_tpl": "60b0f6c058e0b0481a09ad11"
+        },
+        {
+          "count": 1,
+          "_tpl": "5d03794386f77420415576f5"
+        }
+      ]
+    ],
+    "67e50e6d4e0adf4dec0eb284": [
+      [
+        {
+          "count": 268026,
+          "_tpl": "5449016a4bdc2d6f028b456f"
+        }
+      ]
+    ],
+    "67e50e6d4e0adf4dec0eb287": [
+      [
+        {
+          "count": 550560,
+          "_tpl": "5449016a4bdc2d6f028b456f"
+        }
+      ]
+    ],
     "667eac90d135442276096594": [
       [
         {
@@ -1896,6 +1964,9 @@
     "676d24d1798491c5260f5dec": 2,
     "676d24d1798491c5260f5def": 1,
     "676d24d1798491c5260f5df2": 1,
+    "67e50e6d4e0adf4dec0eb281": 1,
+    "67e50e6d4e0adf4dec0eb284": 1,
+    "67e50e6d4e0adf4dec0eb287": 2,
     "667eac90d135442276096594": 1
   }
 }
