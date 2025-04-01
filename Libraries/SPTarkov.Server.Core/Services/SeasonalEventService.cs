@@ -1050,7 +1050,8 @@ public class SeasonalEventService(
                     TriggerId = "",
                     TriggerName = "",
                     Delay = 0,
-                    IsRandomTimeSpawn = false
+                    IsRandomTimeSpawn = false,
+                    IgnoreMaxBots = true
                 }
             );
         }
