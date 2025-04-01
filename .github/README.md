@@ -2,7 +2,6 @@
 
 This is the Server project for the Single Player Tarkov mod for Escape From Tarkov. It can be run locally to replicate responses to the modified Escape From Tarkov client
 
-![Tests](https://github.com/sp-tarkov/server-csharp/actions/workflows/test.yaml/badge.svg)
 
 # Table of Contents
 
@@ -61,10 +60,8 @@ We're really excited that you're interested in contributing! Before submitting y
 
 - **master**  
   The default branch used for the latest stable release. This branch is protected and typically is only merged with release branches.
-- **4.0.0-DEV**
+- **development**
   The main branch for server development. PRs should target this.
-- **4.0.1-DEV**
-  Development for the next hotfix release. Hotfix releases include bug fixes and minor features that do not affect the coding structure of the project. Special care is taken to not break server mod stability. These always target the same version of EFT as the last minor release.
 
 ### Pull Request Guidelines
 
@@ -81,7 +78,7 @@ We're really excited that you're interested in contributing! Before submitting y
 
 ### Style Guide
 
- TODO: add style guidance
+ TODO: style guidance
  Ensure that your code is automatically formatted whenever you save a file.
 
 ### Tests
