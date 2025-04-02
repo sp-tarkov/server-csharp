@@ -13,6 +13,13 @@ public record GetRaidConfigurationRequestData : RaidSettings, IRequestData
         set;
     }
 
+    [JsonPropertyName("onlinePveRaidStates")]
+    public Dictionary<string, bool>? OnlinePveRaidStates
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("MaxGroupCount")]
     public int? MaxGroupCount
     {
