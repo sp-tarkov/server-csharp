@@ -761,6 +761,13 @@ public class SeasonalEventService(
 
     protected void ConfigureZombies(ZombieSettings zombieSettings)
     {
+        // Flag zombies as being enabled
+        var botData = _databaseService.GetBots();
+        if (!botData.Core.TryAdd("ACTIVE_HALLOWEEN_ZOMBIES_EVENT", true))
+        {
+            botData.Core["ACTIVE_HALLOWEEN_ZOMBIES_EVENT"] = true;
+        }
+
         var globals = _databaseService.GetGlobals();
         var infectionHalloween = globals.Configuration.SeasonActivity.InfectionHalloween;
         infectionHalloween.DisplayUIEnabled = true;
