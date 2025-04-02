@@ -29,14 +29,18 @@ For a full list of features, please see [FEATURES.md](FEATURES.md)
 
 This project has been built in [Visual Studio](https://visualstudio.microsoft.com/) (VS) and [Rider](https://www.jetbrains.com/rider/) using [.NET](https://dotnet.microsoft.com/en-us/)
 
+Minimum required Visual Studio version is `17.13.5`
+Minimum required Rider version is `2024.3`
+
+You only need one of the above.
+
 ### Initial Setup
 
-To prepare the project for development you will need to:
-
-1. Run `git clone https://github.com/sp-tarkov/server-csharp.git server` to clone the repository
-2. Run `git lfs pull` to download LFS files locally.
-3. Open the `project/server-csharp.sln` file in Visual Studio or Rider
-4. Run `Build > Build Solution (CTRL + SHIFT + B)` in the IDE
+1. Download and install the [.net 9.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/9.0).
+2. Run `git clone https://github.com/sp-tarkov/server-csharp.git server` to clone the repository
+3. Run `git lfs pull` to download LFS files locally.
+4. Open the `project/server-csharp.sln` file in Visual Studio or Rider
+5. Run `Build > Build Solution (CTRL + SHIFT + B)` in the IDE
 
 ## Development
 
