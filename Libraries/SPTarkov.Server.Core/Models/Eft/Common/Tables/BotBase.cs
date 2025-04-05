@@ -1459,19 +1459,19 @@ public record DamageStats
 
 public record DeathCause
 {
-    public string? DamageType
+    public DamageType? DamageType
     {
         get;
         set;
     }
 
-    public string? Side
+    public PlayerSide? Side
     {
         get;
         set;
     }
 
-    public string? Role
+    public WildSpawnType? Role
     {
         get;
         set;

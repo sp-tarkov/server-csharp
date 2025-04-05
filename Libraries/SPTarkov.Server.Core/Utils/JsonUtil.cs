@@ -51,6 +51,8 @@ public class JsonUtil
             new EftEnumConverter<ExfiltrationType>(),
             new EftEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<EquipmentSlots>(),
+            new EftListEnumConverter<PlayerSide>(),
+            new EftListEnumConverter<DamageType>(),
             new BaseInteractionRequestDataConverter()
         }
     };
