@@ -1465,7 +1465,7 @@ public record DeathCause
         set;
     }
 
-    public int? Side
+    public string? Side
     {
         get;
         set;
