@@ -1459,18 +1459,21 @@ public record DamageStats
 
 public record DeathCause
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public DamageType? DamageType
     {
         get;
         set;
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public PlayerSide? Side
     {
         get;
         set;
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public WildSpawnType? Role
     {
         get;
