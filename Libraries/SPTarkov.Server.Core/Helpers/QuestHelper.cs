@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -660,7 +662,7 @@ public class QuestHelper(
                     Template = item.Template,
                     ParentId = item.ParentId,
                     SlotId = item.SlotId,
-                    Location = (ItemLocation) item.Location,
+                    Location = item.Location,
                     Upd = new Upd
                     {
                         StackObjectsCount = item.Upd.StackObjectsCount
