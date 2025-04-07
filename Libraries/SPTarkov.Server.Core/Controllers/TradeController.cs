@@ -322,7 +322,7 @@ public class TradeController(
             sessionId,
             _traderHelper.GetTraderById(trader).ToString(),
             MessageType.MESSAGE_WITH_ITEMS,
-            _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("SoldItems", out var items) ? items : new List<string>()),
+            _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : new List<string>()),
             curencyReward.SelectMany(x => x).ToList(),
             _timeUtil.GetHoursAsSeconds(72)
         );
