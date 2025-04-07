@@ -184,8 +184,7 @@ public class InsuranceService(
         }
 
         // EoD has 30% faster returns
-        var editionModifier = globals.Configuration.Insurance.EditionSendingMessageTime[pmcData.Info.GameVersion];
-        if (editionModifier is not null)
+        if (globals.Configuration.Insurance.EditionSendingMessageTime.TryGetValue(pmcData.Info.GameVersion, out var editionModifier))
         {
             randomisedReturnTimeSeconds *= editionModifier.Multiplier.Value;
         }
