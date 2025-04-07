@@ -660,7 +660,7 @@ public class QuestHelper(
                     Template = item.Template,
                     ParentId = item.ParentId,
                     SlotId = item.SlotId,
-                    Location = (ItemLocation) item.Location,
+                    Location = item.Location,
                     Upd = new Upd
                     {
                         StackObjectsCount = item.Upd.StackObjectsCount
