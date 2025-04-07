@@ -304,6 +304,6 @@ public class RaidTimeAdjustmentService(
             result.Add(exitChange);
         }
 
-        return result.Count > 0 ? result : null;
+        return result;
     }
 }
