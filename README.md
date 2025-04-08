@@ -52,6 +52,10 @@ To debug the project in Visual Studio Code:
 1. Choose `Server` and `Spt Server Debug` in the debug dropdowns
 2. Choose `Debug > Start Debugging (F5)` to run the server
 
+With Rider:
+1. Choose the configuration called `SPTarkov.Server: Spt Server Debug`
+2. Hit `(Alt + F5)` To start Debugging
+
 ### Mod Debugging
 
 To debug a server mod in Visual Studio, you can copy the mod DLL into the `user/mods` folder and then start the server
@@ -62,22 +66,22 @@ We're really excited that you're interested in contributing! Before submitting y
 
 ### Branches
 
-- **master**  
+- **master**
   The default branch used for the latest stable release. This branch is protected and typically is only merged with release branches.
 - **development**
   The main branch for server development. PRs should target this.
 
 ### Pull Request Guidelines
 
-- **Keep Them Small**  
+- **Keep Them Small**
   If you're fixing a bug, try to keep the changes to the bug fix only. If you're adding a feature, try to keep the changes to the feature only. This will make it easier to review and merge your changes.
-- **Perform a Self-Review**  
+- **Perform a Self-Review**
   Before submitting your changes, review your own code. This will help you catch any mistakes you may have made.
-- **Remove Noise**  
+- **Remove Noise**
   Remove any unnecessary changes to white space, code style formatting, or some text change that has no impact related to the intention of the PR.
-- **Create a Meaningful Title**  
+- **Create a Meaningful Title**
   When creating a PR, make sure the title is meaningful and describes the changes you've made.
-- **Write Detailed Commit Messages**  
+- **Write Detailed Commit Messages**
   Bring out your table manners, speak the Queen's English and be on your best behaviour.
 
 ### Style Guide
