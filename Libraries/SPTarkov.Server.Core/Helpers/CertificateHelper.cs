@@ -29,6 +29,12 @@ namespace SPTarkov.Server.Core.Helpers
                 // Generate self-signed certificate
                 certificate = GenerateSelfSignedCertificate("localhost");
                 SaveCertificate(certificate); // Save cert and new key
+                certificate = LoadCertificate();
+                if (certificate == null)
+                {
+                    // if we are still null here there is a serious problem creating cert
+                    throw new Exception("Certificate could not be loaded for the second time.");
+                }
 
                 _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
             }
@@ -51,10 +57,14 @@ namespace SPTarkov.Server.Core.Helpers
                 // Generate self-signed certificate
                 certificate = GenerateSelfSignedCertificate("localhost");
                 SaveCertificatePfx(certificate); // Save cert
+                certificate = LoadCertificatePfx(); // load it after
+                if (certificate == null)
+                {
+                    // if we are still null here there is a serious problem creating cert
+                    throw new Exception("Certificate could not be loaded for the second time.");
+                }
 
                 _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
-                _logger.Success("First-time generation requires server be restarted for it to pick up cert");
-                Environment.Exit(1);
             }
 
             return certificate;

@@ -38,7 +38,7 @@
 
   <ItemGroup>
     <Content Include="Assets\**">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <None Remove="appsettings.json" />
     <Content Include="appsettings.json">
