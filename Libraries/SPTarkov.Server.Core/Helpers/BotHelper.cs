@@ -213,6 +213,7 @@ public class BotHelper(
                 return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
             }
 
+            // TODO: this keeps randomly null refing with nothing being null, plz fix smart person
             _pmcNameCache.TryAdd(cacheKey, matchingNames);
             eligibleNames = matchingNames;
         }

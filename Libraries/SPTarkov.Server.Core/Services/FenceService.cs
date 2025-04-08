@@ -146,7 +146,9 @@ public class FenceService(
         // HUGE THANKS TO LACYWAY AND LEAVES FOR PROVIDING THIS SOLUTION FOR SPT TO IMPLEMENT!!
         // Copy the item and its children
         var clonedItems = _cloner.Clone(itemHelper.FindAndReturnChildrenAsItems(items, mainItem.Id));
-        var root = clonedItems[0];
+        // I BLAME LACY FOR THIS ISSUE, I SPENT HOURS FIXING IT /s
+        // i think on node the one with hideout usually came first
+        var root = clonedItems.FirstOrDefault(x => x.SlotId == "hideout");
 
         var cost = GetItemPrice(root.Template, clonedItems);
 
@@ -437,13 +439,23 @@ public class FenceService(
             // if the Upd doesnt exist just initialize it
             if (newRootItem.Upd == null)
             {
-                newRootItem.Upd = new Upd();
+                newRootItem.Upd = new Upd()
+                {
+                    StackObjectsCount = 1
+                };
             }
 
             // New assort to be added to existing assorts
             existingFenceAssorts.Items.AddRange(itemWithChildren);
-            existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
-            existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
+            if (!existingFenceAssorts.BarterScheme.TryAdd(newRootItem.Id, newFenceAssorts.BarterScheme[newRootItem.Id]))
+            {
+                existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
+            }
+
+            if (!existingFenceAssorts.LoyalLevelItems.TryAdd(newRootItem.Id, newFenceAssorts.LoyalLevelItems[newRootItem.Id]))
+            {
+                existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
+            }
         }
     }
 
