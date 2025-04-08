@@ -447,15 +447,8 @@ public class FenceService(
 
             // New assort to be added to existing assorts
             existingFenceAssorts.Items.AddRange(itemWithChildren);
-            if (!existingFenceAssorts.BarterScheme.TryAdd(newRootItem.Id, newFenceAssorts.BarterScheme[newRootItem.Id]))
-            {
-                existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
-            }
-
-            if (!existingFenceAssorts.LoyalLevelItems.TryAdd(newRootItem.Id, newFenceAssorts.LoyalLevelItems[newRootItem.Id]))
-            {
-                existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
-            }
+            existingFenceAssorts.BarterScheme[newRootItem.Id] = newFenceAssorts.BarterScheme[newRootItem.Id];
+            existingFenceAssorts.LoyalLevelItems[newRootItem.Id] = newFenceAssorts.LoyalLevelItems[newRootItem.Id];
         }
     }
 
