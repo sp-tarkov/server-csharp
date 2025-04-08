@@ -76,14 +76,6 @@ public class InsuranceService(
         var globals = _databaseService.GetGlobals();
         foreach (var traderKvP in GetInsurance(sessionID))
         {
-            var traderEnum = _traderHelper.GetTraderById(traderKvP.Key);
-            if (traderEnum is null)
-            {
-                _logger.Error(_localisationService.GetText("insurance-trader_missing_from_enum", traderKvP.Key));
-
-                continue;
-            }
-
             var traderBase = _traderHelper.GetTrader(traderKvP.Key, sessionID);
             if (traderBase is null)
             {
