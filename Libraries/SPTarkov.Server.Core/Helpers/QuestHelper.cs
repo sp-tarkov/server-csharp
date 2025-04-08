@@ -741,8 +741,7 @@ public class QuestHelper(
             {
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     sessionID,
-                    _traderHelper.GetTraderById(quest?.TraderId ?? matchingRepeatableQuest?.TraderId)
-                        .ToString(), // Can be undefined when repeatable quest has been moved to inactiveQuests
+                    quest?.TraderId ?? matchingRepeatableQuest?.TraderId,
                     MessageType.QUEST_FAIL,
                     quest.FailMessageText,
                     questRewards.ToList(),
@@ -1379,7 +1378,7 @@ public class QuestHelper(
 
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
-            _traderHelper.GetTraderById(quest.TraderId).ToString(),
+            quest.TraderId,
             MessageType.QUEST_SUCCESS,
             quest.SuccessMessageText,
             questRewards,

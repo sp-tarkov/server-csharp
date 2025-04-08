@@ -110,7 +110,7 @@ public class InsuranceService(
             // Send "i will go look for your stuff" message from trader to player
             _mailSendService.SendLocalisedNpcMessageToPlayer(
                 sessionID,
-                traderEnum.ToString(),
+                traderKvP.Key,
                 MessageType.NPC_TRADER,
                 _randomUtil.GetArrayValue(dialogueTemplates["insuranceStart"] ?? ["INSURANCE START MESSAGE MISSING"]),
                 null,

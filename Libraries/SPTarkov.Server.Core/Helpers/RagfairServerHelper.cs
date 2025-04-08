@@ -129,7 +129,7 @@ public class RagfairServerHelper(
     {
         mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
-            traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
+            Traders.RAGMAN,
             MessageType.MESSAGE_WITH_ITEMS,
             goodsReturnedTemplate,
             returnedItems,

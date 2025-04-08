@@ -320,7 +320,7 @@ public class TradeController(
         // Send mail from trader
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
-            _traderHelper.GetTraderById(trader).ToString(),
+            trader,
             MessageType.MESSAGE_WITH_ITEMS,
             _randomUtil.GetArrayValue(_databaseService.GetTrader(trader).Dialogue.TryGetValue("soldItems", out var items) ? items : new List<string>()),
             curencyReward.SelectMany(x => x).ToList(),

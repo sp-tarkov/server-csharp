@@ -513,7 +513,7 @@ public class LocationLifecycleService
         // Send message from fence giving player reward generated above
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
-            _traderHelper.GetValidTraderIdByEnumValue(Traders.FENCE),
+            Traders.FENCE,
             MessageType.MESSAGE_WITH_ITEMS,
             _randomUtil.GetArrayValue(_traderConfig.Fence.CoopExtractGift.MessageLocaleIds),
             mailableLoot,
@@ -1137,7 +1137,7 @@ public class LocationLifecycleService
         // Send the items to the player
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
-            _traderHelper.GetValidTraderIdByEnumValue(traderId),
+            traderId,
             MessageType.BTR_ITEMS_DELIVERY,
             messageId,
             items,

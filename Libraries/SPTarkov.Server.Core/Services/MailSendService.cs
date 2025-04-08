@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -656,7 +657,12 @@ public class MailSendService(
 
         if (messageDetails.Sender == MessageType.NPC_TRADER || messageDetails.DialogType == MessageType.NPC_TRADER)
         {
-            return messageDetails.Trader is not null ? _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader) : null;
+            if (messageDetails.Trader == null && _logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Trader was null for {messageDetails.TemplateId}");
+            }
+
+            return messageDetails.Trader;
         }
 
         if (messageDetails.Sender == MessageType.USER_MESSAGE)
@@ -671,7 +677,7 @@ public class MailSendService(
 
         if (messageDetails.Trader is not null)
         {
-            return _traderHelper.GetValidTraderIdByEnumValue(messageDetails.Trader);
+            return messageDetails.Trader;
         }
 
         _logger.Warning($"Unable to handle message of type: {messageDetails.Sender}");
