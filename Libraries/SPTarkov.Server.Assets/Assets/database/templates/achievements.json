@@ -1,5 +1,125 @@
 [
   {
+    "id": "651413e9c31fcb0e163577c9",
+    "imageUrl": "/files/achievement/Rare_13.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "651413de1d1da18970b439e2",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 15,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "651413de80964f5176f559aa",
+            "conditions": [
+              {
+                "id": "651413e7ec69c70738548130",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "bossZryachiy"
+                ],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Rare",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": true,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
+    "id": "65141c30ec10ff011f17cc3b",
+    "imageUrl": "/files/achievement/Standard_35_1.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "65141c118356939b8a5dcb18",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141c114a94d94faf76714a",
+            "conditions": [
+              {
+                "id": "65141c2c4240e8676f8180e9",
+                "dynamicLocale": false,
+                "status": [
+                  "Killed"
+                ],
+                "conditionType": "ExitStatus"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
     "id": "660fe21454670811e304c045",
     "imageUrl": "/files/achievement/Maslenitsa2024.png",
     "assetPath": "",
@@ -140,6 +260,84 @@
     "progressBarEnabled": false,
     "side": "Pmc",
     "index": 1200
+  },
+  {
+    "id": "65141ab70dc723592b0f9482",
+    "imageUrl": "/files/achievement/Standard_23.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "65141a9264cf3ab72f7e268f",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141a92797468b6dce930d6",
+            "conditions": [
+              {
+                "id": "65141a9cea21eca381b7e45b",
+                "dynamicLocale": false,
+                "target": "AnyPmc",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              },
+              {
+                "id": "65141b1a16b83cee74509f20",
+                "dynamicLocale": false,
+                "target": [
+                  "Buffs_drink_vodka"
+                ],
+                "conditionType": "HealthBuff"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
   },
   {
     "id": "65141dd6303df252af1c72c9",
@@ -1426,6 +1624,177 @@
     "index": 1600
   },
   {
+    "id": "6634ca69ee506a5c3e61be56",
+    "imageUrl": "/files/achievement/S24Q2_ARRS2.png",
+    "assetPath": "",
+    "rewards": [
+      {
+        "id": "6706abdfc64e84d18e53f778",
+        "unknown": false,
+        "gameMode": [
+          "regular",
+          "pve"
+        ],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67f69946294538f55709cff4",
+        "value": 1,
+        "isEncoded": false,
+        "findInRaid": true,
+        "items": [
+          {
+            "_id": "67f69946294538f55709cff4",
+            "_tpl": "6638a5474e92f038531e210e",
+            "upd": {
+              "SpawnedInSession": true,
+              "StackObjectsCount": 1
+            }
+          }
+        ],
+        "type": "Item"
+      }
+    ],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6634c9f2da44501b7a7f7107",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 5,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6634c9f2859751c06fd4f320",
+            "conditions": [
+              {
+                "id": "6634ca60b2206f345bdd4dac",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 9997
+  },
+  {
+    "id": "6513f28cb49e3253755f47f3",
+    "imageUrl": "/files/achievement/Standard_13.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6513f2776fcf769579dcb213",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6513f27797103bea6ae0ec6d",
+            "conditions": [
+              {
+                "id": "6513f287a87d1a8f970f3ac6",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "bossZryachiy"
+                ],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
     "id": "66742c003a67b164a300fcbf",
     "imageUrl": "/files/achievement/KeySalvation.png",
     "assetPath": "",
@@ -1568,6 +1937,79 @@
     "progressBarEnabled": false,
     "side": "Pmc",
     "index": 1300
+  },
+  {
+    "id": "6512f16bde333c33d5127cbc",
+    "imageUrl": "/files/achievement/Standard_4.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6512fa32c22df3beb4c784ec",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6512fa327820cda3078b7386",
+            "conditions": [
+              {
+                "id": "6512fb2953bb3221a4633b32",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [
+                  "5fc64ea372b0dd78d51159dc"
+                ],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "sectantPriest",
+                  "sectantWarrior"
+                ],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 22,
+                  "to": 5
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
   },
   {
     "id": "65141a3059647d2cb3213c9e",
@@ -1814,6 +2256,55 @@
     "index": 3000
   },
   {
+    "id": "65141e37cf2f1c285e606361",
+    "imageUrl": "/files/achievement/Standard_30.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "65141e43ea19c90e85ad60f5",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141e43228fae16452d4a5f",
+            "conditions": [
+              {
+                "id": "65141e89290391d51161d574",
+                "dynamicLocale": false,
+                "target": "achiv_office",
+                "value": 1,
+                "conditionType": "VisitPlace"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
     "id": "668bf47c781d446fdc083711",
     "imageUrl": "/files/achievement/ArmsRaceEvent2024.png",
     "assetPath": "",
@@ -1886,6 +2377,193 @@
     "progressBarEnabled": false,
     "side": "Pmc",
     "index": 9993
+  },
+  {
+    "id": "6514184ec31fcb0e163577d2",
+    "imageUrl": "/files/achievement/Rare_20.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "651418430ab21e2a907ab76f",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 7,
+          "type": "Completion",
+          "oneSessionOnly": true,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6514184336f01da63f602162",
+            "conditions": [
+              {
+                "id": "6514184d03e721757ca5d27f",
+                "dynamicLocale": false,
+                "target": "AnyPmc",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Rare",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
+    "id": "65141eb5c31fcb0e163577dd",
+    "imageUrl": "/files/achievement/Standard_31.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "65141ecc4f29c8d1bc7d66ad",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141eccc68987ea3789392f",
+            "conditions": [
+              {
+                "id": "65141ed42b9fde0025039a2e",
+                "dynamicLocale": false,
+                "target": "achiv_plane",
+                "value": 1,
+                "conditionType": "VisitPlace"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
+    "id": "6514174fb1c08b0feb216d73",
+    "imageUrl": "/files/achievement/Standard_16.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6514172005d663354394968e",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141720df1f2d3bd55460d6",
+            "conditions": [
+              {
+                "id": "6514174ab2cce6e3be28fd12",
+                "dynamicLocale": false,
+                "target": "AnyPmc",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 500,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
   },
   {
     "id": "664f23e44702fd5db50ee732",
@@ -2111,6 +2789,74 @@
     "index": 400
   },
   {
+    "id": "6527ee4a647c29201011defe",
+    "imageUrl": "/files/achievement/Standard_43.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6527f2f2c4d6004e4edbba06",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6527f2f297f3f0094887163e",
+            "conditions": [
+              {
+                "id": "6527f3011dd276a0de4cbec2",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Savage",
+    "index": 99999
+  },
+  {
     "id": "6513f1feec10ff011f17c7ea",
     "imageUrl": "/files/achievement/Standard_12.png",
     "assetPath": "",
@@ -2293,12 +3039,12 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67e593b4f395047fc40b9de5",
+        "target": "67f69946294538f55709cff5",
         "loyaltyLevel": 4,
         "traderId": "5c0647fdd443bc2504c2d371",
         "items": [
           {
-            "_id": "67e593b4f395047fc40b9de5",
+            "_id": "67f69946294538f55709cff5",
             "_tpl": "674fe9a75e51f1c47c04ec23",
             "upd": {
               "Repairable": {
@@ -2308,87 +3054,87 @@
             }
           },
           {
-            "_id": "67e593b4f395047fc40b9de6",
+            "_id": "67f69946294538f55709cff6",
             "_tpl": "674fe57721a9aa6be6045b96",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_handguard"
           },
           {
-            "_id": "67e593b4f395047fc40b9de7",
+            "_id": "67f69946294538f55709cff7",
             "_tpl": "5c1cd46f2e22164bef5cfedb",
-            "parentId": "67e593b4f395047fc40b9de6",
+            "parentId": "67f69946294538f55709cff6",
             "slotId": "mod_foregrip"
           },
           {
-            "_id": "67e593b4f395047fc40b9de8",
+            "_id": "67f69946294538f55709cff8",
             "_tpl": "674fe89a4472d471fb0f07d8",
-            "parentId": "67e593b4f395047fc40b9de6",
+            "parentId": "67f69946294538f55709cff6",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67e593b4f395047fc40b9de9",
+            "_id": "67f69946294538f55709cff9",
             "_tpl": "674fe8dd362ea1f88b0e2792",
-            "parentId": "67e593b4f395047fc40b9de8",
+            "parentId": "67f69946294538f55709cff8",
             "slotId": "mod_sight_front"
           },
           {
-            "_id": "67e593b4f395047fc40b9dea",
+            "_id": "67f69946294538f55709cffa",
             "_tpl": "674fe8b9362ea1f88b0e278d",
-            "parentId": "67e593b4f395047fc40b9de8",
+            "parentId": "67f69946294538f55709cff8",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67e593b4f395047fc40b9deb",
+            "_id": "67f69946294538f55709cffb",
             "_tpl": "59f9d81586f7744c7506ee62",
-            "parentId": "67e593b4f395047fc40b9dea",
+            "parentId": "67f69946294538f55709cffa",
             "slotId": "mod_scope"
           },
           {
-            "_id": "67e593b4f395047fc40b9dec",
+            "_id": "67f69946294538f55709cffc",
             "_tpl": "674fe8cf4472d471fb0f07df",
-            "parentId": "67e593b4f395047fc40b9dea",
+            "parentId": "67f69946294538f55709cffa",
             "slotId": "mod_sight_rear"
           },
           {
-            "_id": "67e593b4f395047fc40b9ded",
+            "_id": "67f69946294538f55709cffd",
             "_tpl": "59fb137a86f7740adb646af1",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_muzzle"
           },
           {
-            "_id": "67e593b4f395047fc40b9dee",
+            "_id": "67f69946294538f55709cffe",
             "_tpl": "6087e663132d4d12c81fd96b",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_pistol_grip"
           },
           {
-            "_id": "67e593b4f395047fc40b9def",
+            "_id": "67f69946294538f55709cfff",
             "_tpl": "676017fe8cfeeba9f707c8d6",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_reciever"
           },
           {
-            "_id": "67e593b4f395047fc40b9df0",
+            "_id": "67f69946294538f55709d000",
             "_tpl": "5ac78eaf5acfc4001926317a",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67e593b4f395047fc40b9df1",
+            "_id": "67f69946294538f55709d001",
             "_tpl": "59ecc3dd86f7746dc827481c",
-            "parentId": "67e593b4f395047fc40b9df0",
+            "parentId": "67f69946294538f55709d000",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67e593b4f395047fc40b9df2",
+            "_id": "67f69946294538f55709d002",
             "_tpl": "674fe8f6f34d761ab8020cc8",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_magazine"
           },
           {
-            "_id": "67e593b4f395047fc40b9df3",
+            "_id": "67f69946294538f55709d003",
             "_tpl": "6130ca3fd92c473c77020dbd",
-            "parentId": "67e593b4f395047fc40b9de5",
+            "parentId": "67f69946294538f55709cff5",
             "slotId": "mod_charge"
           }
         ],
@@ -2463,6 +3209,56 @@
     "progressBarEnabled": false,
     "side": "All",
     "index": 9990
+  },
+  {
+    "id": "65141c80ec10ff011f17cc3e",
+    "imageUrl": "/files/achievement/Standard_27.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "65141c67c298bd8e42c6a145",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "65141c674882a3b653c932ef",
+            "conditions": [
+              {
+                "id": "65141c79e9e4d039163f3a78",
+                "dynamicLocale": false,
+                "status": [
+                  "Survived"
+                ],
+                "conditionType": "ExitStatus"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
   },
   {
     "id": "65140b55cf2f1c285e606414",
@@ -3855,6 +4651,80 @@
     "index": 2700
   },
   {
+    "id": "676094451fec2f7426093be6",
+    "imageUrl": "/files/achievement/676093bf2a7be2d1f706f0ec.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "67609450d8c6c5112221a710",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 100000,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "676094504fc891ced300dc7f",
+            "conditions": [
+              {
+                "id": "6760947663e90bab925dab41",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 10000,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 99999
+  },
+  {
     "id": "6529097eccf6aa5f8737b3d0",
     "imageUrl": "/files/achievement/Legendary_19.png",
     "assetPath": "",
@@ -4560,6 +5430,202 @@
     "index": 12000
   },
   {
+    "id": "6634cae870af846d2868dada",
+    "imageUrl": "/files/achievement/S24Q2_ARRS3.png",
+    "assetPath": "",
+    "rewards": [
+      {
+        "id": "6707ed1ad2e18b0e6a31ee76",
+        "unknown": false,
+        "gameMode": [
+          "regular",
+          "pve"
+        ],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67f69946294538f55709d005",
+        "value": 1,
+        "isEncoded": false,
+        "findInRaid": true,
+        "items": [
+          {
+            "_id": "67f69946294538f55709d005",
+            "_tpl": "6638a5474e92f038531e210e",
+            "upd": {
+              "SpawnedInSession": true,
+              "StackObjectsCount": 1
+            }
+          }
+        ],
+        "type": "Item"
+      }
+    ],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6634caf263da6c6a4304992c",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 5,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6634caf2073e81109cb49b7b",
+            "conditions": [
+              {
+                "id": "6634cb14d1dc9e283b46e58d",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 9998
+  },
+  {
+    "id": "651417d6ec10ff011f17cc31",
+    "imageUrl": "/files/achievement/Standard_17.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "651417a006964b0216b796f8",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 4,
+          "type": "Completion",
+          "oneSessionOnly": true,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "651417a013b1a888948d2fbb",
+            "conditions": [
+              {
+                "id": "651417cfac3354ffa1d2d48f",
+                "dynamicLocale": false,
+                "target": "AnyPmc",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [
+                  "5cadc190ae921500103bb3b6",
+                  "5e81c3cbac2bb513793cdc75",
+                  "5f36a0e5fbf956000b716b65",
+                  "5d3eb3b0a4b93615055e84d2",
+                  "5d67abc1a4b93614ec50137f",
+                  "5a7ae0c351dfba0017554310",
+                  "5b1fa9b25acfc40018633c01",
+                  "63088377b5cd696784087147",
+                  "6193a720f8ee7e52e42109ed",
+                  "602a9740da11d6478d5a06dc",
+                  "576a581d2459771e7b1bc4f1",
+                  "5448bd6b4bdc2dfc2f8b4569",
+                  "579204f224597773d619e051",
+                  "5a17f98cfcdbcb0980087290",
+                  "56d59856d2720bd8418b456a",
+                  "56e0598dd2720bb5668b45a6",
+                  "59f98b4986f7746f546d2cef",
+                  "5abccb7dd8ce87001773e277",
+                  "571a12c42459771f627b58a0",
+                  "5b3b713c5acfc4330140bd8d",
+                  "669fa3f88abd2662d80eee77",
+                  "669fa409933e898cce0c2166",
+                  "669fa39b48fc9f8db6035a0c",
+                  "669fa3d876116c89840b1217",
+                  "668fe5a998b5ad715703ddd6",
+                  "66015072e9f84d5680039678"
+                ],
+                "distance": {
+                  "value": 0,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Common",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "Pmc",
+    "index": 99999
+  },
+  {
     "id": "65141bdfcf2f1c285e606446",
     "imageUrl": "/files/achievement/Standard_25.png",
     "assetPath": "",
@@ -4642,12 +5708,12 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67e593b4f395047fc40b9df4",
+        "target": "67f69946294538f55709d006",
         "loyaltyLevel": 4,
         "traderId": "54cb50c76803fa8b248b4571",
         "items": [
           {
-            "_id": "67e593b4f395047fc40b9df4",
+            "_id": "67f69946294538f55709d006",
             "_tpl": "674fe9a75e51f1c47c04ec23",
             "upd": {
               "Repairable": {
@@ -4657,81 +5723,81 @@
             }
           },
           {
-            "_id": "67e593b4f395047fc40b9df5",
+            "_id": "67f69946294538f55709d007",
             "_tpl": "674fe57721a9aa6be6045b96",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_handguard"
           },
           {
-            "_id": "67e593b4f395047fc40b9df6",
+            "_id": "67f69946294538f55709d008",
             "_tpl": "5c1bc5612e221602b5429350",
-            "parentId": "67e593b4f395047fc40b9df5",
+            "parentId": "67f69946294538f55709d007",
             "slotId": "mod_foregrip"
           },
           {
-            "_id": "67e593b4f395047fc40b9df7",
+            "_id": "67f69946294538f55709d009",
             "_tpl": "674fe89a4472d471fb0f07d8",
-            "parentId": "67e593b4f395047fc40b9df5",
+            "parentId": "67f69946294538f55709d007",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67e593b4f395047fc40b9df8",
+            "_id": "67f69946294538f55709d00a",
             "_tpl": "674fe8dd362ea1f88b0e2792",
-            "parentId": "67e593b4f395047fc40b9df7",
+            "parentId": "67f69946294538f55709d009",
             "slotId": "mod_sight_front"
           },
           {
-            "_id": "67e593b4f395047fc40b9df9",
+            "_id": "67f69946294538f55709d00b",
             "_tpl": "674fe8b9362ea1f88b0e278d",
-            "parentId": "67e593b4f395047fc40b9df7",
+            "parentId": "67f69946294538f55709d009",
             "slotId": "mod_mount"
           },
           {
-            "_id": "67e593b4f395047fc40b9dfa",
+            "_id": "67f69946294538f55709d00c",
             "_tpl": "58491f3324597764bc48fa02",
-            "parentId": "67e593b4f395047fc40b9df9",
+            "parentId": "67f69946294538f55709d00b",
             "slotId": "mod_scope"
           },
           {
-            "_id": "67e593b4f395047fc40b9dfb",
+            "_id": "67f69946294538f55709d00d",
             "_tpl": "674fe8cf4472d471fb0f07df",
-            "parentId": "67e593b4f395047fc40b9df9",
+            "parentId": "67f69946294538f55709d00b",
             "slotId": "mod_sight_rear"
           },
           {
-            "_id": "67e593b4f395047fc40b9dfc",
+            "_id": "67f69946294538f55709d00e",
             "_tpl": "59fb137a86f7740adb646af1",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_muzzle"
           },
           {
-            "_id": "67e593b4f395047fc40b9dfd",
+            "_id": "67f69946294538f55709d00f",
             "_tpl": "651580dc71a4f10aec4b6056",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_pistol_grip"
           },
           {
-            "_id": "67e593b4f395047fc40b9dfe",
+            "_id": "67f69946294538f55709d010",
             "_tpl": "676017fe8cfeeba9f707c8d6",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_reciever"
           },
           {
-            "_id": "67e593b4f395047fc40b9dff",
+            "_id": "67f69946294538f55709d011",
             "_tpl": "5ac78eaf5acfc4001926317a",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67e593b4f395047fc40b9e00",
+            "_id": "67f69946294538f55709d012",
             "_tpl": "59ecc3dd86f7746dc827481c",
-            "parentId": "67e593b4f395047fc40b9dff",
+            "parentId": "67f69946294538f55709d011",
             "slotId": "mod_stock"
           },
           {
-            "_id": "67e593b4f395047fc40b9e01",
+            "_id": "67f69946294538f55709d013",
             "_tpl": "674fe8f6f34d761ab8020cc8",
-            "parentId": "67e593b4f395047fc40b9df4",
+            "parentId": "67f69946294538f55709d006",
             "slotId": "mod_magazine"
           }
         ],
@@ -5316,6 +6382,80 @@
     "index": 3050
   },
   {
+    "id": "676091c0f457869a94017a23",
+    "imageUrl": "/files/achievement/676093b76e682163da028a28.png",
+    "assetPath": "",
+    "rewards": [],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6760919bea0b8ae795c9cf71",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 1000000,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 1,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6760919b08a6df50916f00c9",
+            "conditions": [
+              {
+                "id": "676091b72c3f5a17880358f4",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 100000,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [
+                  "Head"
+                ],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 99999
+  },
+  {
     "id": "655b49bc91aa9e07687ae47c",
     "imageUrl": "/files/achievement/Standard_44.png",
     "assetPath": "",
@@ -5384,6 +6524,105 @@
     "progressBarEnabled": false,
     "side": "Pmc",
     "index": 1500
+  },
+  {
+    "id": "6634c8886e083a141f4aa3f4",
+    "imageUrl": "/files/achievement/S24Q2_ARRS1.png",
+    "assetPath": "",
+    "rewards": [
+      {
+        "id": "6706abfa3b44ddfcf586ab19",
+        "unknown": false,
+        "gameMode": [
+          "regular",
+          "pve"
+        ],
+        "availableInGameEditions": [],
+        "illustrationConfig": null,
+        "isHidden": false,
+        "target": "67f69946294538f55709d015",
+        "value": 1,
+        "isEncoded": false,
+        "findInRaid": true,
+        "items": [
+          {
+            "_id": "67f69946294538f55709d015",
+            "_tpl": "6638a5474e92f038531e210e",
+            "upd": {
+              "SpawnedInSession": true,
+              "StackObjectsCount": 1
+            }
+          }
+        ],
+        "type": "Item"
+      }
+    ],
+    "conditions": {
+      "availableForFinish": [
+        {
+          "id": "6634c942234642e3f2cb3623",
+          "index": 0,
+          "dynamicLocale": false,
+          "visibilityConditions": [],
+          "globalQuestCounterId": "",
+          "parentId": "",
+          "value": 5,
+          "type": "Completion",
+          "oneSessionOnly": false,
+          "completeInSeconds": 0,
+          "doNotResetIfCounterCompleted": false,
+          "isResetOnConditionFailed": false,
+          "isNecessary": false,
+          "counter": {
+            "id": "6634c942b584208879dcebe7",
+            "conditions": [
+              {
+                "id": "6634c96714aea75fd7ee417f",
+                "dynamicLocale": false,
+                "target": "Savage",
+                "compareMethod": ">=",
+                "value": 1,
+                "weapon": [
+                  "54491bb74bdc2d09088b4567"
+                ],
+                "distance": {
+                  "value": 10000,
+                  "compareMethod": ">="
+                },
+                "weaponModsInclusive": [],
+                "weaponModsExclusive": [],
+                "enemyEquipmentInclusive": [],
+                "enemyEquipmentExclusive": [],
+                "weaponCaliber": [],
+                "savageRole": [
+                  "shooterBTR"
+                ],
+                "bodyPart": [],
+                "daytime": {
+                  "from": 0,
+                  "to": 0
+                },
+                "enemyHealthEffects": [],
+                "resetOnSessionEnd": false,
+                "conditionType": "Kills"
+              }
+            ]
+          },
+          "conditionType": "CounterCreator"
+        }
+      ],
+      "fail": []
+    },
+    "instantComplete": false,
+    "showNotificationsInGame": false,
+    "showProgress": false,
+    "prefab": "",
+    "rarity": "Legendary",
+    "hidden": true,
+    "showConditions": false,
+    "progressBarEnabled": false,
+    "side": "All",
+    "index": 9996
   },
   {
     "id": "664f1f8768508d74604bf556",
@@ -5524,13 +6763,13 @@
         "availableInGameEditions": [],
         "illustrationConfig": null,
         "isHidden": false,
-        "target": "67e593b4f395047fc40b9e03",
+        "target": "67f69946294538f55709d017",
         "value": 1,
         "isEncoded": false,
         "findInRaid": true,
         "items": [
           {
-            "_id": "67e593b4f395047fc40b9e03",
+            "_id": "67f69946294538f55709d017",
             "_tpl": "67614b3ab8c060ebb204b106",
             "upd": {
               "SpawnedInSession": true,

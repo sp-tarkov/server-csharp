@@ -11263,7 +11263,7 @@
       "isPlayers": false,
       "number": 0,
       "slots_max": 3,
-      "slots_min": 0,
+      "slots_min": 1,
       "time_max": -1,
       "time_min": -1
     },
@@ -11279,7 +11279,7 @@
       "isPlayers": false,
       "number": 1,
       "slots_max": 3,
-      "slots_min": 0,
+      "slots_min": 1,
       "time_max": -1,
       "time_min": -1
     },
@@ -11295,7 +11295,7 @@
       "isPlayers": false,
       "number": 2,
       "slots_max": 3,
-      "slots_min": 0,
+      "slots_min": 1,
       "time_max": -1,
       "time_min": -1
     },
@@ -11407,7 +11407,7 @@
       "isPlayers": false,
       "number": 9,
       "slots_max": 1,
-      "slots_min": 0,
+      "slots_min": 1,
       "time_max": -1,
       "time_min": -1
     },
@@ -11502,8 +11502,8 @@
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 0,
-      "slots_max": 0,
-      "slots_min": 0,
+      "slots_max": 1,
+      "slots_min": 1,
       "time_max": -1,
       "time_min": -1
     }
