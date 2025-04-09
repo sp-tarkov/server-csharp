@@ -53,6 +53,8 @@ public class BotInventoryGenerator(
         EquipmentSlots.Earpiece
     ];
 
+    private readonly HashSet<string> _slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
+
     /// <summary>
     ///     Add equipment/weapons/loot to bot
     /// </summary>
@@ -457,8 +459,7 @@ public class BotInventoryGenerator(
     /// <returns>true when item added</returns>
     public bool GenerateEquipment(GenerateEquipmentProperties settings)
     {
-        HashSet<string> slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
-        double? spawnChance = slotsToCheck.Contains(settings.RootEquipmentSlot.ToString())
+        double? spawnChance = _slotsToCheck.Contains(settings.RootEquipmentSlot.ToString())
             ? 100
             : settings.SpawnChances.EquipmentChances.GetValueOrDefault(settings.RootEquipmentSlot.ToString());
 
