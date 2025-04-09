@@ -2,11 +2,13 @@ namespace SPTarkov.Server.Core.Models.Enums;
 
 public enum RewardType
 {
-    Skill,
     Experience,
+    Skill,
+    Item,
     TraderStanding,
     TraderUnlock,
-    Item,
+    Location,
+    Counter,
     AssortmentUnlock,
     ProductionScheme,
     TraderStandingReset,
@@ -14,7 +16,14 @@ public enum RewardType
     StashRows,
     Achievement,
     Pockets,
+    Quest,
     CustomizationOffer,
+    ExtraDailyQuest,
     CustomizationDirect,
-    ExtraDailyQuest
+    WebPromoCode,
+    NotificationPopup,
+    Customization = 116,
+    BattlePassExperience,
+    BattlePassCurrency,
+    ArenaArmoryItem = 100
 }

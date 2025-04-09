@@ -702,6 +702,13 @@ public record LocationBase
         set;
     }
 
+    [JsonPropertyName("OneTimeSpawn")]
+    public double? OneTimeSpawn
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("exits")]
     public List<Exit>? Exits
     {

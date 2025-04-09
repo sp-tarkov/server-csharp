@@ -583,6 +583,13 @@ public record Suit
         get;
         set;
     }
+
+    [JsonPropertyName("relatedBattlePassSeason")]
+    public int? RelatedBattlePassSeason
+    {
+        get;
+        set;
+    }
 }
 
 public record SuitRequirements
