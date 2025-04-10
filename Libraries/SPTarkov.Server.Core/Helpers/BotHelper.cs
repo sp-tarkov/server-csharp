@@ -214,7 +214,15 @@ public class BotHelper(
             }
 
             // TODO: this keeps randomly null refing with nothing being null, plz fix smart person
-            _pmcNameCache.TryAdd(cacheKey, matchingNames);
+            try
+            {
+                _pmcNameCache.TryAdd(cacheKey, matchingNames);
+            }
+            catch (Exception e)
+            {
+                _logger.Debug($"this keeps randomly null refing with nothing being null, plz fix smart person");
+                _logger.Debug(e.ToString());
+            }
             eligibleNames = matchingNames;
         }
 
