@@ -1232,7 +1232,7 @@
                 }
             ],
             "sender": "Trader",
-            "trader": "PRAPOR",
+            "trader": "54cb50c76803fa8b248b4571",
             "localeTextId": "5fd4c8b59e4b2a58b34bbd28 0",
             "collectionTimeHours": 48,
             "maxToSendPlayer": 5
@@ -1295,7 +1295,7 @@
                 }
             ],
             "sender": "Trader",
-            "trader": "PRAPOR",
+            "trader": "54cb50c76803fa8b248b4571",
             "localeTextId": "5fd4c8d49e4b2a58b34bbd29 0",
             "collectionTimeHours": 48,
             "maxToSendPlayer": 5
@@ -1314,7 +1314,7 @@
                 }
             ],
             "sender": "Trader",
-            "trader": "MECHANIC",
+            "trader": "5a7c2eca46aef81a7ca2145d",
             "localeTextId": "6776e324810eb26b880fb4a5 0",
             "collectionTimeHours": 72,
             "maxToSendPlayer": 1
