@@ -447,6 +447,25 @@ public class BotLootCacheService(
             filteredVestItems[itemKvP.Key] = itemKvP.Value;
         }
 
+        // Get secure loot (excluding magazines, bullets)
+        var filteredSecureLoot = new Dictionary<string, double>();
+        foreach (var itemKvP in secureLootPool)
+        {
+            var itemResult = _itemHelper.GetItem(itemKvP.Key);
+            if (itemResult.Value is null)
+            {
+                continue;
+            }
+
+            var itemTemplate = itemResult.Value;
+            if (IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties))
+            {
+                continue;
+            }
+
+            filteredSecureLoot[itemKvP.Key] = itemKvP.Value;
+        }
+
         BotLootCache cacheForRole;
         lock (_lockObject)
         {
@@ -464,7 +483,7 @@ public class BotLootCacheService(
             cacheForRole.BackpackLoot = filteredBackpackItems;
             cacheForRole.PocketLoot = filteredPocketItems;
             cacheForRole.VestLoot = filteredVestItems;
-            cacheForRole.SecureLoot = secureLootPool;
+            cacheForRole.SecureLoot = filteredSecureLoot;
         }
     }
 
