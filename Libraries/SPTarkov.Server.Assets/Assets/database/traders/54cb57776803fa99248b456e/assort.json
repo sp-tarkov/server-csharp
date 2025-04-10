@@ -992,7 +992,7 @@
       "upd": {
         "UnlimitedCount": true,
         "StackObjectsCount": 9999999,
-        "BuyRestrictionMax": 2,
+        "BuyRestrictionMax": 4,
         "BuyRestrictionCurrent": 0
       }
     },
@@ -1139,7 +1139,7 @@
     "676d24ce798491c5260f5d29": [
       [
         {
-          "count": 15307.83,
+          "count": 15192.74,
           "_tpl": "569668774bdc2da2298b4568"
         }
       ]
