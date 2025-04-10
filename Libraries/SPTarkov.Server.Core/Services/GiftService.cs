@@ -33,7 +33,7 @@ public class GiftService(
         return _giftConfig.Gifts.ContainsKey(giftId);
     }
 
-    public Gift GetGiftById(string giftId)
+    public Gift? GetGiftById(string giftId)
     {
         _giftConfig.Gifts.TryGetValue(giftId, out var gift);
 
@@ -89,7 +89,7 @@ public class GiftService(
             _logger.Warning($"Gift {giftId} has items but no collection time limit, defaulting to 48 hours");
         }
 
-        // Handle system messsages
+        // Handle system messages
         if (giftData.Sender == GiftSenderType.System)
         {
             // Has a localisable text id to send to player
