@@ -39,7 +39,7 @@ public record RepairKitsInfo
     /// amount of units to reduce kit by
     /// </summary>
     [JsonPropertyName("count")]
-    public int? Count
+    public float? Count
     {
         get;
         set;
