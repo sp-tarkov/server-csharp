@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -20,7 +21,7 @@ public class BotHelper(
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
     protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
-    protected Dictionary<string, List<string>> _pmcNameCache = new();
+    protected ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
     ///     Get a template object for the specified botRole from bots.types db
@@ -213,16 +214,8 @@ public class BotHelper(
                 return _randomUtil.GetCollectionValue(chosenFactionDetails.FirstNames);
             }
 
-            // TODO: this keeps randomly null refing with nothing being null, plz fix smart person
-            try
-            {
-                _pmcNameCache.TryAdd(cacheKey, matchingNames);
-            }
-            catch (Exception e)
-            {
-                _logger.Debug($"this keeps randomly null refing with nothing being null, plz fix smart person");
-                _logger.Debug(e.ToString());
-            }
+            _pmcNameCache.TryAdd(cacheKey, matchingNames);
+
             eligibleNames = matchingNames;
         }
 
