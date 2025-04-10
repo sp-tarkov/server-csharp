@@ -168,7 +168,7 @@ public class BotLootCacheService(
         Dictionary<string, double> backpackLootPool = new();
         Dictionary<string, double> pocketLootPool = new();
         Dictionary<string, double> vestLootPool = new();
-        Dictionary<string, double> secureLootTPool = new();
+        Dictionary<string, double> secureLootPool = new();
         Dictionary<string, double> combinedLootPool = new();
 
         if (isPmc)
@@ -212,7 +212,7 @@ public class BotLootCacheService(
                     AddItemsToPool(vestLootPool, kvp.Value);
                     break;
                 case "SecuredContainer":
-                    AddItemsToPool(secureLootTPool, kvp.Value);
+                    AddItemsToPool(secureLootPool, kvp.Value);
                     break;
                 case "Backpack":
                     AddItemsToPool(backpackLootPool, kvp.Value);
@@ -464,7 +464,7 @@ public class BotLootCacheService(
             cacheForRole.BackpackLoot = filteredBackpackItems;
             cacheForRole.PocketLoot = filteredPocketItems;
             cacheForRole.VestLoot = filteredVestItems;
-            cacheForRole.SecureLoot = secureLootTPool;
+            cacheForRole.SecureLoot = secureLootPool;
         }
     }
 
