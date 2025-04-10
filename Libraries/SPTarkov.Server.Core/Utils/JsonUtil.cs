@@ -50,6 +50,7 @@ public class JsonUtil
             new EftEnumConverter<RequirementState>(),
             new EftEnumConverter<ExfiltrationType>(),
             new EftEnumConverter<EquipmentSlots>(),
+            new EftEnumConverter<BuffType>(),
             new EftListEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<PlayerSide>(),
             new EftListEnumConverter<DamageType>(),

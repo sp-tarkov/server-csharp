@@ -109,9 +109,9 @@ public class RagfairTaxService(
                 _databaseService.GetGlobals().Configuration.RepairSettings.ItemEnhancementSettings;
             var priceModiferValue = buffType switch
             {
-                "DamageReduction" => itemEnhancementSettings.DamageReduction.PriceModifierValue.Value,
-                "MalfunctionProtections" => itemEnhancementSettings.MalfunctionProtections.PriceModifierValue.Value,
-                "WeaponSpread" => itemEnhancementSettings.WeaponSpread.PriceModifierValue.Value,
+                BuffType.DamageReduction => itemEnhancementSettings.DamageReduction.PriceModifierValue.Value,
+                BuffType.MalfunctionProtections => itemEnhancementSettings.MalfunctionProtections.PriceModifierValue.Value,
+                BuffType.WeaponSpread => itemEnhancementSettings.WeaponSpread.PriceModifierValue.Value,
                 _ => 1d
             };
             discountedTax *= 1.0 + Math.Abs(item.Upd.Buff.Value.Value - 1.0) * priceModiferValue;

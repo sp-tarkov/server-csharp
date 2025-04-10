@@ -551,7 +551,7 @@ public class RepairService(
         item.Upd.Buff = new UpdBuff
         {
             Rarity = bonusRarityName,
-            BuffType = bonusTypeName,
+            BuffType = Enum.Parse<BuffType>(bonusTypeName),
             Value = bonusValue,
             ThresholdDurability = _randomUtil.GetPercentOfValue(bonusThresholdPercent, item.Upd.Repairable.Durability.Value, 0)
         };
