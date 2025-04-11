@@ -109,7 +109,7 @@ public class WeightedRandomHelper(
     ///     Find the greated common divisor of all weights and use it on the passed in dictionary
     /// </summary>
     /// <param name="weightedDict">Values to reduce</param>
-    public void ReduceWeightValues(Dictionary<string, double> weightedDict)
+    public void ReduceWeightValues(IDictionary<string, double> weightedDict)
     {
         // No values, nothing to reduce
         if (weightedDict.Count == 0)
