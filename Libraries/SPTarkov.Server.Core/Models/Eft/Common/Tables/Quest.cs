@@ -437,7 +437,7 @@ public record QuestCondition
     {
         get;
         set;
-    } // TODO: string[] | string
+    }
 
     [JsonPropertyName("value")]
     [JsonConverter(typeof(StringToNumberFactoryConverter))]
@@ -511,11 +511,12 @@ public record QuestCondition
     }
 
     [JsonPropertyName("dogtagLevel")]
-    public object? DogtagLevel
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public int? DogtagLevel
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("traderId")]
     public string? TraderId
@@ -525,18 +526,20 @@ public record QuestCondition
     }
 
     [JsonPropertyName("maxDurability")]
-    public object? MaxDurability
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? MaxDurability
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("minDurability")]
-    public object? MinDurability
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? MinDurability
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("counter")]
     public QuestConditionCounter? Counter
@@ -720,11 +723,12 @@ public record QuestConditionCounterCondition
     }
 
     [JsonPropertyName("target")]
-    public object? Target
+    [JsonConverter(typeof(ListOrTConverterFactory))]
+    public ListOrT<string>? Target
     {
         get;
         set;
-    } // TODO: string[] | string
+    }
 
     [JsonPropertyName("completeInSeconds")]
     public int? CompleteInSeconds
@@ -773,7 +777,7 @@ public record QuestConditionCounterCondition
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("weapon")]
     public List<string>? Weapon
