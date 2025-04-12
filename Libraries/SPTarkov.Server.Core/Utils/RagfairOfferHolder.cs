@@ -27,7 +27,8 @@ public class RagfairOfferHolder(
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
 
     protected HashSet<string> _expiredOfferIds = [];
-    protected readonly Lock _expiredOfferIdsLock = new();
+    protected readonly Lock _expiredOfferIdsLock = new Lock();
+    protected readonly Lock _ragfairOperationLock = new Lock();
 
     /// <summary>
     /// Get a ragfair offer by its id
@@ -110,38 +111,41 @@ public class RagfairOfferHolder(
     /// <param name="offer">Offer to add</param>
     public void AddOffer(RagfairOffer offer)
     {
-        var sellerId = offer.User.Id;
-        // Keep generating IDs until we get a unique one
-        while (_offersById.ContainsKey(offer.Id))
+        lock (_ragfairOperationLock)
         {
-            offer.Id = _hashUtil.Generate();
-        }
+            var sellerId = offer.User.Id;
+            // Keep generating IDs until we get a unique one
+            while (_offersById.ContainsKey(offer.Id))
+            {
+                offer.Id = _hashUtil.Generate();
+            }
 
-        var itemTpl = offer.Items?.FirstOrDefault()?.Template;
-        // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
-        // for this template, just don't add in more
-        var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
-        if (
-            itemTpl != null
-            && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
-            && _offersByTemplate.TryGetValue(itemTpl, out var offers)
-            && offers?.Count >= _maxOffersPerTemplate
-        )
-        {
-            return;
-        }
+            var itemTpl = offer.Items?.FirstOrDefault()?.Template;
+            // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
+            // for this template, just don't add in more
+            var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
+            if (
+                itemTpl != null
+                && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
+                && _offersByTemplate.TryGetValue(itemTpl, out var offers)
+                && offers?.Count >= _maxOffersPerTemplate
+            )
+            {
+                return;
+            }
 
-        if (!_offersById.TryAdd(offer.Id, offer))
-        {
-            _logger.Warning($"Unable to add offer: {offer.Id}");
-        }
+            if (!_offersById.TryAdd(offer.Id, offer))
+            {
+                _logger.Warning($"Offer: {offer.Id} already exists");
+            }
 
-        if (sellerIsTrader)
-        {
-            AddOfferByTrader(sellerId, offer.Id);
-        }
+            if (sellerIsTrader)
+            {
+                AddOfferByTrader(sellerId, offer.Id);
+            }
 
-        AddOfferByTemplates(itemTpl, offer.Id);
+            AddOfferByTemplates(itemTpl, offer.Id);
+        }
     }
 
     /// <summary>
