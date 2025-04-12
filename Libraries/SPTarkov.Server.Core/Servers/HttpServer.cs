@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Primitives;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -92,24 +93,9 @@ public class HttpServer(
             _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
         }
 
-        // Extract headers for original IP detection
-        StringValues? realIp = null;
-        if (context.Request.Headers.ContainsKey("x-real-ip"))
-        {
-            realIp = context.Request.Headers["x-real-ip"];
-        }
-
-        StringValues? forwardedFor = null;
-        if (context.Request.Headers.ContainsKey("x-forwarded-for"))
-        {
-            forwardedFor = context.Request.Headers["x-forwarded-for"];
-        }
-
-        var clientIp = realIp.HasValue
-            ? realIp.Value.First()
-            : forwardedFor.HasValue
-                ? forwardedFor.Value.First()!.Split(",")[0].Trim()
-                : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
+        // Extract header for original IP detection
+        var realIp = context.GetHeaderIfExists("x-real-ip");
+        var clientIp = GetClientIp(context, realIp);
 
         if (_httpConfig.LogRequests)
         {
@@ -149,12 +135,25 @@ public class HttpServer(
         // This http request would be passed through the SPT Router and handled by an ICallback
     }
 
+    protected static string? GetClientIp(HttpContext context, StringValues? realIp)
+    {
+        if (realIp.HasValue)
+        {
+            return realIp.Value.First();
+        }
+
+        var forwardedFor = context.GetHeaderIfExists("x-forwarded-for");
+        return forwardedFor.HasValue
+                ? forwardedFor.Value.First()!.Split(",")[0].Trim()
+                : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
+    }
+
     /// <summary>
     /// Check against hardcoded values that determine it's from a local address
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>
-    private bool? IsLocalRequest(string? remoteAddress)
+    protected bool? IsLocalRequest(string? remoteAddress)
     {
         if (remoteAddress == null)
         {
