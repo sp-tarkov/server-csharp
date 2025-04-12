@@ -87,7 +87,10 @@ public class HttpServer(
         }
 
         context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
-        _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
+        if (sessionId != null)
+        {
+            _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
+        }
 
         // Extract headers for original IP detection
         StringValues? realIp = null;
