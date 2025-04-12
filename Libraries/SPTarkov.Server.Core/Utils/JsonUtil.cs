@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -51,6 +52,7 @@ public class JsonUtil
             new EftEnumConverter<ExfiltrationType>(),
             new EftEnumConverter<EquipmentSlots>(),
             new EftEnumConverter<BuffType>(),
+            new EftEnumConverter<BodyPartColliderType>(),
             new EftListEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<PlayerSide>(),
             new EftListEnumConverter<DamageType>(),

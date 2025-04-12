@@ -1398,8 +1398,22 @@ public record GlobalAudioSettings
 
 public record Triggers
 {
-    //TODO: add type
-    public object? HandlerDamage
+    public Dictionary<string, List<DamageData>>? HandlerDamage
+    {
+        get;
+        set;
+    }
+}
+
+public record DamageData
+{
+    public int? Amount
+    {
+        get;
+        set;
+    }
+
+    public BodyPartColliderType BodyPartColliderType
     {
         get;
         set;
