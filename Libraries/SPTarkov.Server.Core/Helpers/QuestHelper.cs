@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -193,7 +194,8 @@ public class QuestHelper(
     /// <returns>true if loyalty is high enough to fulfill quest requirement</returns>
     public bool TraderLoyaltyLevelRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var requiredLoyaltyLevel = questProperties.Value as double?;
+        var value = (JsonElement)questProperties.Value;
+        var requiredLoyaltyLevel = value.GetDouble();
         if (!profile.TradersInfo.TryGetValue(
                 questProperties.Target.IsItem
                     ? questProperties.Target.Item
@@ -208,7 +210,7 @@ public class QuestHelper(
 
         return CompareAvailableForValues(
             trader.LoyaltyLevel.Value,
-            requiredLoyaltyLevel.Value,
+            requiredLoyaltyLevel,
             questProperties.CompareMethod
         );
     }
