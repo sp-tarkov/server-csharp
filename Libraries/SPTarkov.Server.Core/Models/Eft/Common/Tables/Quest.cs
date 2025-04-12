@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json;
@@ -438,12 +439,29 @@ public record QuestCondition
         set;
     } // TODO: string[] | string
 
+    private double? _value;
     [JsonPropertyName("value")]
     public object? Value
     {
-        get;
-        set;
-    } // TODO: string | number
+        get => _value;
+        set
+        {
+            if (value is JsonElement element)
+            {
+                if (element.ValueKind == JsonValueKind.String)
+                {
+                    _value = double.Parse(element.GetString());
+                    return;
+                }
+
+                if (element.ValueKind == JsonValueKind.Number)
+                {
+                    _value = element.GetDouble();
+                    return;
+                }
+            }
+        }
+    }
 
     [JsonPropertyName("type")]
     public object? Type
