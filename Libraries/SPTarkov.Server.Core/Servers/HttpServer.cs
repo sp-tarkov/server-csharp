@@ -99,28 +99,8 @@ public class HttpServer(
 
         if (_httpConfig.LogRequests)
         {
-            var isLocalRequest = IsLocalRequest(clientIp);
-            if (isLocalRequest.HasValue)
-            {
-                if (isLocalRequest.Value)
-                {
-                    _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
-                }
-                else
-                {
-                    _logger.Info(
-                        _localisationService.GetText(
-                            "client_request_ip", new
-                            {
-                                ip = clientIp,
-                                url = context.Request.Path.Value
-                            }
-                        )
-                    );
-                }
-            }
+            LogRequest(context, clientIp, IsLocalRequest(clientIp));
         }
-
 
         try
         {
@@ -135,7 +115,33 @@ public class HttpServer(
         // This http request would be passed through the SPT Router and handled by an ICallback
     }
 
-    protected static string? GetClientIp(HttpContext context, StringValues? realIp)
+    /// <summary>
+    /// Log request - handle differently if request is local
+    /// </summary>
+    /// <param name="context">HttpContext of request</param>
+    /// <param name="clientIp">Ip of requester</param>
+    /// <param name="isLocalRequest">Is this local request</param>
+    protected void LogRequest(HttpContext context, string clientIp, bool isLocalRequest)
+    {
+        if (isLocalRequest)
+        {
+            _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
+        }
+        else
+        {
+            _logger.Info(
+                _localisationService.GetText(
+                    "client_request_ip", new
+                    {
+                        ip = clientIp,
+                        url = context.Request.Path.Value
+                    }
+                )
+            );
+        }
+    }
+
+    protected static string GetClientIp(HttpContext context, StringValues? realIp)
     {
         if (realIp.HasValue)
         {
@@ -153,11 +159,11 @@ public class HttpServer(
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>
-    protected bool? IsLocalRequest(string? remoteAddress)
+    protected bool IsLocalRequest(string? remoteAddress)
     {
         if (remoteAddress == null)
         {
-            return null;
+            return false;
         }
 
         return remoteAddress.StartsWith("127.0.0") ||
