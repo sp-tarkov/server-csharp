@@ -526,7 +526,6 @@ public record QuestCondition
     }
 
     [JsonPropertyName("maxDurability")]
-    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? MaxDurability
     {
         get;
@@ -534,7 +533,6 @@ public record QuestCondition
     }
 
     [JsonPropertyName("minDurability")]
-    [JsonConverter(typeof(StringToNumberFactoryConverter))]
     public double? MinDurability
     {
         get;
