@@ -361,6 +361,12 @@ public record Upd
         get;
         set;
     }
+
+    public bool? Lockable
+    {
+        get;
+        set;
+    }
 }
 
 public enum PinLockState
