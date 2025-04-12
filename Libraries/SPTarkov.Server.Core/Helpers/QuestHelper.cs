@@ -194,8 +194,6 @@ public class QuestHelper(
     /// <returns>true if loyalty is high enough to fulfill quest requirement</returns>
     public bool TraderLoyaltyLevelRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var value = (JsonElement)questProperties.Value;
-        var requiredLoyaltyLevel = value.GetDouble();
         if (!profile.TradersInfo.TryGetValue(
                 questProperties.Target.IsItem
                     ? questProperties.Target.Item
@@ -210,7 +208,7 @@ public class QuestHelper(
 
         return CompareAvailableForValues(
             trader.LoyaltyLevel.Value,
-            requiredLoyaltyLevel,
+            questProperties.Value.Value,
             questProperties.CompareMethod
         );
     }

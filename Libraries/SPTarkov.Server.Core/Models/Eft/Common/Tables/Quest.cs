@@ -439,28 +439,12 @@ public record QuestCondition
         set;
     } // TODO: string[] | string
 
-    private double? _value;
     [JsonPropertyName("value")]
-    public object? Value
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? Value
     {
-        get => _value;
-        set
-        {
-            if (value is JsonElement element)
-            {
-                if (element.ValueKind == JsonValueKind.String)
-                {
-                    _value = double.Parse(element.GetString());
-                    return;
-                }
-
-                if (element.ValueKind == JsonValueKind.Number)
-                {
-                    _value = element.GetDouble();
-                    return;
-                }
-            }
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("type")]
