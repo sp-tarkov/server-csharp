@@ -287,7 +287,7 @@ public class HideoutController(
         HashSet<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
         if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NOTSET))
         {
-            AddContainerUpgradeToClientOutput(sessionId, dbHideoutArea.Type, dbHideoutArea, hideoutStage, output);
+            AddContainerUpgradeToClientOutput(sessionId, keyForHideoutAreaStash, dbHideoutArea, hideoutStage, output);
         }
 
         // Some hideout areas (Gun stand) have child areas linked to it
@@ -297,9 +297,10 @@ public class HideoutController(
         if (childDbArea is not null)
         {
             // Add key/value to `hideoutAreaStashes` dictionary - used to link hideout area to inventory stash by its id
-            if (pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(childDbArea.Type.ToString()) is null)
+            var childAreaTypeKey = ((int) childDbArea.Type).ToString();
+            if (pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(childAreaTypeKey) is null)
             {
-                pmcData.Inventory.HideoutAreaStashes[childDbArea.Type.ToString()] = childDbArea.Id;
+                pmcData.Inventory.HideoutAreaStashes[childAreaTypeKey] = childDbArea.Id;
             }
 
             // Set child area level to same as parent area
@@ -311,7 +312,7 @@ public class HideoutController(
             AddUpdateInventoryItemToProfile(sessionId, pmcData, childDbArea, childDbAreaStage);
 
             // Inform client of the changes
-            AddContainerUpgradeToClientOutput(sessionId, childDbArea.Type, childDbArea, childDbAreaStage, output);
+            AddContainerUpgradeToClientOutput(sessionId, childAreaTypeKey, childDbArea, childDbAreaStage, output);
         }
     }
 
@@ -345,21 +346,19 @@ public class HideoutController(
     /// <summary>
     /// Include container upgrade in client response
     /// </summary>
-    /// <param name="sessionID">Session/Player id</param>
-    /// <param name="areaType"></param>
+    /// <param name="sessionId">Session/Player id</param>
+    /// <param name="changedHideoutStashesKey">Key of hideout area that's been upgraded</param>
     /// <param name="hideoutDbData"></param>
     /// <param name="hideoutStage"></param>
     /// <param name="output">Client response</param>
-    protected void AddContainerUpgradeToClientOutput(string sessionID, HideoutAreas? areaType, HideoutArea hideoutDbData, Stage hideoutStage,
+    protected void AddContainerUpgradeToClientOutput(string sessionId, string changedHideoutStashesKey, HideoutArea hideoutDbData, Stage hideoutStage,
         ItemEventRouterResponse output)
     {
-        if (output.ProfileChanges[sessionID].ChangedHideoutStashes is null)
-        {
-            output.ProfileChanges[sessionID].ChangedHideoutStashes = new Dictionary<string, HideoutStashItem>();
-        }
+        // Ensure ChangedHideoutStashes isn't null
+        output.ProfileChanges[sessionId].ChangedHideoutStashes ??= new Dictionary<string, HideoutStashItem>();
 
         // Inform client of changes
-        output.ProfileChanges[sessionID].ChangedHideoutStashes[areaType.ToString()] = new HideoutStashItem
+        output.ProfileChanges[sessionId].ChangedHideoutStashes[changedHideoutStashesKey] = new HideoutStashItem
         {
             Id = hideoutDbData.Id,
             Template = hideoutStage.Container
