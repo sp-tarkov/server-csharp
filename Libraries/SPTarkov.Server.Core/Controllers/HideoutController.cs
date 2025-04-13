@@ -253,12 +253,12 @@ public class HideoutController(
     /// Add a stash upgrade to profile
     /// </summary>
     /// <param name="output">Client response</param>
-    /// <param name="sessionID">Session/Player id</param>
+    /// <param name="sessionId">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="profileParentHideoutArea"></param>
     /// <param name="dbHideoutArea">Area of hideout player is upgrading</param>
     /// <param name="hideoutStage">Stage player is upgrading to</param>
-    protected void AddContainerImprovementToProfile(ItemEventRouterResponse output, string sessionID, PmcData pmcData, BotHideoutArea profileParentHideoutArea,
+    protected void AddContainerImprovementToProfile(ItemEventRouterResponse output, string sessionId, PmcData pmcData, BotHideoutArea profileParentHideoutArea,
         HideoutArea dbHideoutArea, Stage hideoutStage)
     {
         // Add key/value to `hideoutAreaStashes` dictionary - used to link hideout area to inventory stash by its id
@@ -273,13 +273,13 @@ public class HideoutController(
         }
 
         // Add/upgrade stash item in player inventory
-        AddUpdateInventoryItemToProfile(sessionID, pmcData, dbHideoutArea, hideoutStage);
+        AddUpdateInventoryItemToProfile(sessionId, pmcData, dbHideoutArea, hideoutStage);
 
         // Edge case, add/update `stand1/stand2/stand3` children
         if (dbHideoutArea.Type == HideoutAreas.EQUIPMENT_PRESETS_STAND)
             // Can have multiple 'standx' children depending on upgrade level
         {
-            AddMissingPresetStandItemsToProfile(sessionID, hideoutStage, pmcData, dbHideoutArea, output);
+            AddMissingPresetStandItemsToProfile(sessionId, hideoutStage, pmcData, dbHideoutArea, output);
         }
 
         // Don't inform client when upgraded area is hall of fame or equipment stand, BSG doesn't inform client this specific upgrade has occurred
@@ -287,7 +287,7 @@ public class HideoutController(
         HashSet<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
         if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NOTSET))
         {
-            AddContainerUpgradeToClientOutput(sessionID, dbHideoutArea.Type, dbHideoutArea, hideoutStage, output);
+            AddContainerUpgradeToClientOutput(sessionId, dbHideoutArea.Type, dbHideoutArea, hideoutStage, output);
         }
 
         // Some hideout areas (Gun stand) have child areas linked to it
@@ -308,10 +308,10 @@ public class HideoutController(
 
             // Add/upgrade stash item in player inventory
             var childDbAreaStage = childDbArea.Stages[profileParentHideoutArea.Level.ToString()];
-            AddUpdateInventoryItemToProfile(sessionID, pmcData, childDbArea, childDbAreaStage);
+            AddUpdateInventoryItemToProfile(sessionId, pmcData, childDbArea, childDbAreaStage);
 
             // Inform client of the changes
-            AddContainerUpgradeToClientOutput(sessionID, childDbArea.Type, childDbArea, childDbAreaStage, output);
+            AddContainerUpgradeToClientOutput(sessionId, childDbArea.Type, childDbArea, childDbAreaStage, output);
         }
     }
 
