@@ -256,15 +256,20 @@ public class HideoutController(
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="profileParentHideoutArea"></param>
-    /// <param name="dbHideoutArea"></param>
-    /// <param name="hideoutStage"></param>
+    /// <param name="dbHideoutArea">Area of hideout player is upgrading</param>
+    /// <param name="hideoutStage">Stage player is upgrading to</param>
     protected void AddContainerImprovementToProfile(ItemEventRouterResponse output, string sessionID, PmcData pmcData, BotHideoutArea profileParentHideoutArea,
         HideoutArea dbHideoutArea, Stage hideoutStage)
     {
         // Add key/value to `hideoutAreaStashes` dictionary - used to link hideout area to inventory stash by its id
-        if (!pmcData.Inventory.HideoutAreaStashes.ContainsKey(dbHideoutArea.Type.ToString()))
+        // Key is the enums value stored as a string, e.g. "27" for cultist circle
+        var keyForHideoutAreaStash = ((int) dbHideoutArea.Type).ToString();
+        if (!pmcData.Inventory.HideoutAreaStashes.ContainsKey(keyForHideoutAreaStash))
         {
-            pmcData.Inventory.HideoutAreaStashes[dbHideoutArea.Type.ToString()] = dbHideoutArea.Id;
+            if (!pmcData.Inventory.HideoutAreaStashes.TryAdd(keyForHideoutAreaStash, dbHideoutArea.Id))
+            {
+                _logger.Error($"Unable to add key: {dbHideoutArea.Type} to HideoutAreaStashes");
+            }
         }
 
         // Add/upgrade stash item in player inventory
@@ -277,7 +282,7 @@ public class HideoutController(
             AddMissingPresetStandItemsToProfile(sessionID, hideoutStage, pmcData, dbHideoutArea, output);
         }
 
-        // Dont inform client when upgraded area is hall of fame or equipment stand, BSG doesn't inform client this specifc upgrade has occurred
+        // Don't inform client when upgraded area is hall of fame or equipment stand, BSG doesn't inform client this specific upgrade has occurred
         // will break client if sent
         HashSet<HideoutAreas> check = [HideoutAreas.PLACE_OF_FAME];
         if (!check.Contains(dbHideoutArea.Type ?? HideoutAreas.NOTSET))
