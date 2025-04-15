@@ -1,6 +1,6 @@
 {
     "profiles": {
-        "Spt Server Debug": {
+        "Spt Server": {
             "commandName": "Project",
             "hotReloadEnabled": false,
             "workingDirectory": "$(OutputPath)"
