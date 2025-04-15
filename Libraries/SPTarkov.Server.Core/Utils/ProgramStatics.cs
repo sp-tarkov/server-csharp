@@ -12,11 +12,6 @@ public static partial class ProgramStatics
     {
         var _entryType = ProgramStatics.BuildType ?? EntryType.LOCAL;
 
-        Console.WriteLine($"Entry type: {_entryType}");
-        Console.WriteLine($"SPT Version: {_sptVersion}");
-        Console.WriteLine($"Commit: {_commit}");
-        Console.WriteLine($"Build time: {_buildTime}");
-
         switch (_entryType)
         {
             case EntryType.RELEASE:
