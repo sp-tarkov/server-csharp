@@ -378,14 +378,14 @@ public enum PinLockState
 
 public record UpdBuff
 {
-    [JsonPropertyName("rarity")]
+    [JsonPropertyName("Rarity")]
     public string? Rarity
     {
         get;
         set;
     }
 
-    [JsonPropertyName("buffType")]
+    [JsonPropertyName("BuffType")]
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public BuffType? BuffType
     {
@@ -393,14 +393,14 @@ public record UpdBuff
         set;
     }
 
-    [JsonPropertyName("value")]
+    [JsonPropertyName("Value")]
     public double? Value
     {
         get;
         set;
     }
 
-    [JsonPropertyName("thresholdDurability")]
+    [JsonPropertyName("ThresholdDurability")]
     public double? ThresholdDurability
     {
         get;
