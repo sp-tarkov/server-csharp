@@ -1413,6 +1413,7 @@ public record DamageData
         set;
     }
 
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public BodyPartColliderType BodyPartColliderType
     {
         get;
