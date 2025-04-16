@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;
 
@@ -17,6 +18,11 @@ public class ModDllLoader
         }
 
         var mods = new List<SptMod>();
+
+        if (!ProgramStatics.MODS())
+        {
+            return mods;
+        }
 
         // foreach directory in /user/mods/
         // treat this as the MOD

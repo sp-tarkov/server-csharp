@@ -21,12 +21,14 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        // Initialize the program variables
+        ProgramStatics.Initialize();
+
         // Search for mod dlls
         var mods = ModDllLoader.LoadAllMods();
+
         // Create web builder and logger
         var builder = CreateNewHostBuilder(args);
-        // Initialize the program variables TODO: this needs to be implemented properly
-        ProgramStatics.Initialize();
 
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
@@ -35,8 +37,13 @@ public static class Program
 
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
-        // register mod components from the filtered list
-        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
+
+        if (ProgramStatics.MODS())
+        {
+            // register mod components from the filtered list
+            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
+        }
+
         var serviceProvider = builder.Services.BuildServiceProvider();
         var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
         try
@@ -57,6 +64,7 @@ public static class Program
 
             // Add the Loaded Mod Assemblies for later
             appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, mods);
+
             // This is the builder that will get use by the HttpServer to start up the web application
             appContext?.AddValue(ContextVariableType.APP_BUILDER, builder);
 
@@ -89,11 +97,15 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Logging.ClearProviders();
-#if DEBUG
-        builder.Configuration.AddJsonFile("appsettings.Development.json", true, true);
-#else
-        builder.Configuration.AddJsonFile("appsettings.json", true, true);
-#endif
+
+        if (ProgramStatics.DEBUG())
+        {
+            builder.Configuration.AddJsonFile("appsettings.Development.json", true, true);
+        }
+        else
+        {
+            builder.Configuration.AddJsonFile("appsettings.json", true, true);
+        }
 
         builder.Host.UseSerilog((context, provider, logger) =>
         {
@@ -111,6 +123,11 @@ public static class Program
 
     private static List<SptMod> ValidateMods(List<SptMod> mods)
     {
+        if (!ProgramStatics.MODS())
+        {
+            return [];
+        }
+
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder();

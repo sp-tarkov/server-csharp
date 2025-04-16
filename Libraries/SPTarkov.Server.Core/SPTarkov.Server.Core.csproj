@@ -30,13 +30,14 @@
 
   <PropertyGroup>
     <!--  SPT specific  -->
-    <!--  using publish - provide flag to disable modding -p:DisableModding=true  -->
-    <SptVersion Condition="'$(SptVersion)' == ''">0.0.0</SptVersion>
+    <SptVersion Condition="'$(SptVersion)' == ''">4.0.0</SptVersion>
     <SptCommit Condition="'$(SptCommit)' == ''">a12b34</SptCommit>
     <SptBuildTime Condition="'$(SptBuildTime)' == ''">0000000000</SptBuildTime>
     <SptBuildType Condition="'$(SptBuildType)' == ''">LOCAL</SptBuildType>
+    <!--  BuildType options - LOCAL, DEBUG, RELEASE, BLEEDING_EDGE, BLEEDING_EDGE_MODS - *must be all caps*-->
   </PropertyGroup>
 
+  <!--  Generates the ProgramStatics class with the build information -->
   <Target Name="GenerateProgramStatics" BeforeTargets="BeforeBuild">
     <WriteLinesToFile
       File="Utils/ProgramStatics.Generated.cs"
