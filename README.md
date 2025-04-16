@@ -13,6 +13,7 @@ This is the Server project for the Single Player Tarkov mod for Escape From Tark
   - [Commands](#commands)
   - [Debugging](#debugging)
   - [Mod Debugging](#mod-debugging)
+- [Deployment]()
 - [Contributing](#contributing)
   - [Branches](#branchs)
   - [Pull Request Guidelines](#pull-request-guidelines)
@@ -48,10 +49,10 @@ You only need one of the above.
 
 ### Debugging
 
-To debug the project in Visual Studio Code:
-1. Choose `Server` and `Spt Server Debug` in the debug dropdowns
+To debug the project in Visual Studio Code:[SPTarkov.Server.Core.csproj](Libraries/SPTarkov.Server.Core/SPTarkov.Server.Core.csproj)
+1. Choose `Server` and `Spt Server` in the debug dropdowns
 2. Choose `Debug > Start Debugging (F5)` to run the server
-
+[SPTarkov.Server.Core.csproj](Libraries/SPTarkov.Server.Core/SPTarkov.Server.Core.csproj)
 With Rider:
 1. Choose the configuration called `SPTarkov.Server: Spt Server Debug`
 2. Hit `(Alt + F5)` To start Debugging
@@ -59,6 +60,19 @@ With Rider:
 ### Mod Debugging
 
 To debug a server mod in Visual Studio, you can copy the mod DLL into the `user/mods` folder and then start the server
+
+## Deployment
+
+To build the project via CLI:
+1. Open the terminal at the poject root
+2. Run command `dotnetn publish`
+- `-c Release` for release build
+- `-p:SptVersion=*.*.*` to set the version ProgramStatics uses
+- `-p:SptCommit=******` to set the commit ProgramStatics uses
+- `-p:SptBuildTime=*********` to set the buildTime ProgramStatic uses
+- `-p:SptBuildType=*********` to set the BuildType ProgramStatic uses
+- - Options for SptBuildType are in the EntryType Enum
+- - LOCAL, DEBUG, RELEASE, BLEEDING_EDGE, BLEEDING_EDGE_MODS - *must be all caps*
 
 ## Contributing
 
