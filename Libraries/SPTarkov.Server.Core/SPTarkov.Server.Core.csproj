@@ -47,10 +47,10 @@ namespace SPTarkov.Server.Core.Utils%3B
 
 public static partial class ProgramStatics
 {
-    public static string? _sptVersion = &quot;$(SptVersion)&quot;%3B
-    public static string? _commit = &quot;$(SptCommit)&quot;%3B
-    public static double? _buildTime = $(SptBuildTime)%3B
-    public static EntryType? BuildType = EntryType.$(SptBuildType)%3B
+    private static string? _sptVersion = &quot;$(SptVersion)&quot;%3B
+    private static string? _commit = &quot;$(SptCommit)&quot;%3B
+    private static double? _buildTime = $(SptBuildTime)%3B
+    private static EntryType? BuildType = EntryType.$(SptBuildType)%3B
 }
 " Overwrite="true"/>
     <ItemGroup>
