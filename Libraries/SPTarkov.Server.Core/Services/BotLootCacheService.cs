@@ -457,8 +457,7 @@ public class BotLootCacheService(
             filteredSecureLoot[itemKvP.Key] = itemKvP.Value;
         }
 
-        BotLootCache cacheForRole;
-        cacheForRole = _lootCache[botRole];
+        var cacheForRole = _lootCache[botRole];
         cacheForRole.HealingItems = healingItems;
         cacheForRole.DrugItems = drugItems;
         cacheForRole.FoodItems = foodItems;
