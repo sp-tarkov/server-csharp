@@ -2,6 +2,7 @@ using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.External;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Loaders;
 
@@ -13,13 +14,16 @@ public class PostDBModLoader(
 {
     public async Task OnLoad()
     {
-        _logger.Info("Loading PostDBLoadMod...");
-        foreach (var postDbLoadMod in _postDbLoadMods)
+        if (ProgramStatics.MODS())
         {
-            postDbLoadMod.PostDBLoad();
-        }
+            _logger.Info("Loading PostDBMods...");
+            foreach (var postDbLoadMod in _postDbLoadMods)
+            {
+                postDbLoadMod.PostDBLoad();
+            }
 
-        _logger.Info("Finished loading PostDBLoadMod...");
+            _logger.Info("Finished loading PostDBMods...");
+        }
     }
 
     public string GetRoute()
