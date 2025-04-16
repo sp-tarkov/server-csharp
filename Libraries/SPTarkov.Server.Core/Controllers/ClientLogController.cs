@@ -1,6 +1,7 @@
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Logging;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -17,13 +18,9 @@ public class ClientLogController(
     public void ClientLog(ClientLogRequest logRequest)
     {
         var message = $"[{logRequest.Source}] {logRequest.Message}";
-        /* TODO: what do we do with this?
+
         var color = logRequest.Color ?? LogTextColor.White;
         var backgroundColor = logRequest.BackgroundColor ?? LogBackgroundColor.Default;
-        */
-
-        // Allow supporting either string or enum levels
-        // Required due to the C# modules serializing enums as their name
 
         switch (logRequest.Level)
         {
@@ -38,7 +35,7 @@ public class ClientLogController(
                 _logger.Info(message);
                 break;
             case LogLevel.Custom:
-                _logger.Info(message /* TODO: , color.ToString(), backgroundColor.ToString()*/);
+                _logger.LogWithColor(message, color, backgroundColor, null);
                 break;
             case LogLevel.Debug:
                 _logger.Debug(message);
