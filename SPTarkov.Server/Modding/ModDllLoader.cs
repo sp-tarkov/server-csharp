@@ -106,11 +106,6 @@ public class ModDllLoader
             throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
         }
 
-        if (result.Assemblies is not null && result.PackageJson is not null)
-        {
-            Console.WriteLine($"Loaded: {result.PackageJson.Name} Version: {result.PackageJson.Version} by: {result.PackageJson.Author}");
-        }
-
         return result;
     }
 }
