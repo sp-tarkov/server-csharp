@@ -8774,6 +8774,446 @@
             "collectionTimeHours": 72,
             "associatedEvent": "Promo",
             "maxToSendPlayer": 5
-        }
+        },
+		"TOKTOK1M": {
+            "items": [{
+                            "_id": "68028e0f1f588b33430db5a7",
+                            "_tpl": "5449016a4bdc2d6f028b456f",
+                            "upd": {
+                                "StackObjectsCount": 1000000
+                            },
+                            "parentId": "68028e0f1f588b33430db5a5",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028e0f1f588b33430db5a9",
+                            "_tpl": "679b9819a2f2dd4da9023512",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028e0f1f588b33430db5a5",
+                            "slotId": "main"
+                        }
+                    ],
+            "sender": "System",
+            "messageText": "<ch>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</ch><cz>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</cz><en>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</en><fr>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</fr><ge>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</ge><hu>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</hu><it>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</it><jp>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</jp><kr>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</kr><pl>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</pl><po>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</po><sk>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</sk><es>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</es><es-mx>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</es-mx><tu>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</tu><ru>Подарок активирован. Благодарим вас за поддержку в TikTok — нас уже 1 миллион!</ru><ro>Thank you for claiming the gift. Cheers to 1 million TikTok subscribers — enjoy your reward!</ro>",
+            "collectionTimeHours": 72,
+            "associatedEvent": "Promo",
+            "maxToSendPlayer": 5
+		},
+		"CUPSERIES": {
+            "items": [{
+                            "_id": "68028d96d3cb0ac6af0d68bc",
+                            "_tpl": "5e4abc6786f77406812bd572",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68be",
+                            "_tpl": "5ed51652f6c34d2cc26336a1",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68c0",
+                            "_tpl": "5c0e531286f7747fa54205c2",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68c2",
+                            "_tpl": "5c10c8fd86f7743d7d706df3",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68c4",
+                            "_tpl": "5fca13ca637ee0341a484f46",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68c6",
+                            "_tpl": "637b60c3b7afa97bfc3d7001",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68c8",
+                            "_tpl": "5af0548586f7743a532b7e99",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68ca",
+                            "_tpl": "5af0548586f7743a532b7e99",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68cc",
+                            "_tpl": "5af0548586f7743a532b7e99",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68ce",
+                            "_tpl": "60098ad7c2240c0fe85c570a",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68d0",
+                            "_tpl": "5e8488fa988a8701445df1e4",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68d2",
+                            "_tpl": "5e8488fa988a8701445df1e4",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68d4",
+                            "_tpl": "5e8488fa988a8701445df1e4",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68d6",
+                            "_tpl": "590c657e86f77412b013051d",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d96d3cb0ac6af0d68d8",
+                            "_tpl": "5755383e24597772cb798966",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d96d3cb0ac6af0d68ba",
+                            "slotId": "main"
+                        }
+                    ],
+            "sender": "System",
+            "messageText": "<ch>CUPSERIES</ch><cz>CUPSERIES</cz><en>CUPSERIES</en><fr>CUPSERIES</fr><ge>CUPSERIES</ge><hu>CUPSERIES</hu><it>CUPSERIES</it><jp>CUPSERIES</jp><kr>CUPSERIES</kr><pl>CUPSERIES</pl><po>CUPSERIES</po><sk>CUPSERIES</sk><es>CUPSERIES</es><es-mx>CUPSERIES</es-mx><tu>CUPSERIES</tu><ru>CUPSERIES</ru><ro>CUPSERIES</ro>",
+            "collectionTimeHours": 72,
+            "associatedEvent": "Promo",
+            "maxToSendPlayer": 5
+		},
+		"ARENABATTLE": {
+            "items": [{
+                            "_id": "68028d91871ef768ce06e1fb",
+                            "_tpl": "675a0b8d4ff23436160d8031",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d91871ef768ce06e1f9",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d91871ef768ce06e1fd",
+                            "_tpl": "5c1267ee86f77416ec610f72",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d91871ef768ce06e1f9",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d91871ef768ce06e1ff",
+                            "_tpl": "5d235b4d86f7742e017bc88a",
+                            "upd": {
+                                "StackObjectsCount": 5
+                            },
+                            "parentId": "68028d91871ef768ce06e1f9",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d91871ef768ce06e201",
+                            "_tpl": "675a0288c3102563bd01c9c3",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d91871ef768ce06e1f9",
+                            "slotId": "main"
+                        }
+                    ],
+            "sender": "System",
+            "messageText": "<ch>ARENABATTLE</ch><cz>ARENABATTLE</cz><en>ARENABATTLE</en><fr>ARENABATTLE</fr><ge>ARENABATTLE</ge><hu>ARENABATTLE</hu><it>ARENABATTLE</it><jp>ARENABATTLE</jp><kr>ARENABATTLE</kr><pl>ARENABATTLE</pl><po>ARENABATTLE</po><sk>ARENABATTLE</sk><es>ARENABATTLE</es><es-mx>ARENABATTLE</es-mx><tu>ARENABATTLE</tu><ru>ARENABATTLE</ru><ro>ARENABATTLE</ro>",
+            "collectionTimeHours": 72,
+            "associatedEvent": "Promo",
+            "maxToSendPlayer": 5
+		},
+		"ROADMAP": {
+            "items": [{
+                            "_id": "68028d8b7eafe2e704062a68",
+                            "_tpl": "5b4329f05acfc47a86086aa1",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a69",
+                            "_tpl": "65711b07a330b8c9060f7b01",
+                            "parentId": "68028d8b7eafe2e704062a68",
+                            "slotId": "Helmet_top"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a6a",
+                            "_tpl": "65711b489eb8c145180dbb9d",
+                            "parentId": "68028d8b7eafe2e704062a68",
+                            "slotId": "Helmet_back"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a6b",
+                            "_tpl": "65711b9b65daf6aa960c9b1b",
+                            "parentId": "68028d8b7eafe2e704062a68",
+                            "slotId": "helmet_eyes"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a6c",
+                            "_tpl": "65711bc79eb8c145180dbba1",
+                            "parentId": "68028d8b7eafe2e704062a68",
+                            "slotId": "helmet_jaw"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a6d",
+                            "_tpl": "65711b706d197c216005b31c",
+                            "parentId": "68028d8b7eafe2e704062a68",
+                            "slotId": "Helmet_ears"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a77",
+                            "_tpl": "5e4ac41886f77406a511c9a8",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a78",
+                            "_tpl": "6575ef599c7cad336508e453",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "soft_armor_front"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a79",
+                            "_tpl": "6575ef6bf6a13a7b7100b093",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "soft_armor_back"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7a",
+                            "_tpl": "6575ef78da698a4e980677eb",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "soft_armor_left"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7b",
+                            "_tpl": "6575ef7f9c7cad336508e457",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "soft_armor_right"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7c",
+                            "_tpl": "656fae5f7c2d57afe200c0d7",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "front_plate"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7d",
+                            "_tpl": "656fae5f7c2d57afe200c0d7",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "back_plate"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7e",
+                            "_tpl": "6557458f83942d705f0c4962",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "left_side_plate"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a7f",
+                            "_tpl": "6557458f83942d705f0c4962",
+                            "parentId": "68028d8b7eafe2e704062a77",
+                            "slotId": "right_side_plate"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a81",
+                            "_tpl": "5f5e467b0bc58666c37e7821",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a83",
+                            "_tpl": "59e690b686f7746c9f75e848",
+                            "upd": {
+                                "StackObjectsCount": 60
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a85",
+                            "_tpl": "59e690b686f7746c9f75e848",
+                            "upd": {
+                                "StackObjectsCount": 60
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a87",
+                            "_tpl": "59e690b686f7746c9f75e848",
+                            "upd": {
+                                "StackObjectsCount": 60
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a89",
+                            "_tpl": "59e690b686f7746c9f75e848",
+                            "upd": {
+                                "StackObjectsCount": 60
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a8b",
+                            "_tpl": "5d1340cad7ad1a0b0b249869",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a8d",
+                            "_tpl": "5d1340cad7ad1a0b0b249869",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a8f",
+                            "_tpl": "5d1340cad7ad1a0b0b249869",
+                            "upd": {
+                                "StackObjectsCount": 1
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a90",
+                            "_tpl": "5d43021ca4b9362eab4b5e25",
+                            "upd": {
+                                "Repairable": {
+                                    "Durability": 100,
+                                    "MaxDurability": 100
+                                }
+                            },
+                            "parentId": "68028d8b7eafe2e704062a61",
+                            "slotId": "main"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a91",
+                            "_tpl": "5b07db875acfc40dc528a5f6",
+                            "parentId": "68028d8b7eafe2e704062a90",
+                            "slotId": "mod_pistol_grip"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a92",
+                            "_tpl": "5d1340cad7ad1a0b0b249869",
+                            "parentId": "68028d8b7eafe2e704062a90",
+                            "slotId": "mod_magazine"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a93",
+                            "_tpl": "59bfe68886f7746004266202",
+                            "parentId": "68028d8b7eafe2e704062a90",
+                            "slotId": "mod_reciever"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a94",
+                            "_tpl": "5c0a2cec0db834001b7ce47d",
+                            "parentId": "68028d8b7eafe2e704062a93",
+                            "slotId": "mod_scope"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a95",
+                            "_tpl": "55d35ee94bdc2d61338b4568",
+                            "parentId": "68028d8b7eafe2e704062a93",
+                            "slotId": "mod_barrel"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a96",
+                            "_tpl": "5cff9e5ed7ad1a09407397d4",
+                            "parentId": "68028d8b7eafe2e704062a95",
+                            "slotId": "mod_muzzle"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a97",
+                            "_tpl": "5cff9e84d7ad1a049e54ed55",
+                            "parentId": "68028d8b7eafe2e704062a96",
+                            "slotId": "mod_muzzle"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a98",
+                            "_tpl": "5d00ec68d7ad1a04a067e5be",
+                            "parentId": "68028d8b7eafe2e704062a95",
+                            "slotId": "mod_gas_block"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a99",
+                            "_tpl": "5d123102d7ad1a004e475fe5",
+                            "parentId": "68028d8b7eafe2e704062a93",
+                            "slotId": "mod_handguard"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9a",
+                            "_tpl": "5d124c01d7ad1a115c7d59fb",
+                            "parentId": "68028d8b7eafe2e704062a99",
+                            "slotId": "mod_mount_000"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9b",
+                            "_tpl": "5d124c01d7ad1a115c7d59fb",
+                            "parentId": "68028d8b7eafe2e704062a99",
+                            "slotId": "mod_mount_001"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9c",
+                            "_tpl": "57fd23e32459772d0805bcf1",
+                            "parentId": "68028d8b7eafe2e704062a99",
+                            "slotId": "mod_tactical_002"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9d",
+                            "_tpl": "637f57d2f5ef8c33840d36c4",
+                            "parentId": "68028d8b7eafe2e704062a99",
+                            "slotId": "mod_handguard"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9e",
+                            "_tpl": "5d124c1ad7ad1a12227c53a7",
+                            "parentId": "68028d8b7eafe2e704062a9d",
+                            "slotId": "mod_foregrip"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062a9f",
+                            "_tpl": "591af10186f774139d495f0e",
+                            "parentId": "68028d8b7eafe2e704062a90",
+                            "slotId": "mod_stock"
+                        }, {
+                            "_id": "68028d8b7eafe2e704062aa0",
+                            "_tpl": "5bb20dbcd4351e44f824c04e",
+                            "parentId": "68028d8b7eafe2e704062a90",
+                            "slotId": "mod_charge"
+                        }
+                    ],
+            "sender": "System",
+            "messageText": "<ch>ROADMAP</ch><cz>ROADMAP</cz><en>ROADMAP</en><fr>ROADMAP</fr><ge>ROADMAP</ge><hu>ROADMAP</hu><it>ROADMAP</it><jp>ROADMAP</jp><kr>ROADMAP</kr><pl>ROADMAP</pl><po>ROADMAP</po><sk>ROADMAP</sk><es>ROADMAP</es><es-mx>ROADMAP</es-mx><tu>ROADMAP</tu><ru>ROADMAP</ru><ro>ROADMAP</ro>",
+            "collectionTimeHours": 72,
+            "associatedEvent": "Promo",
+            "maxToSendPlayer": 5
+		}
     }
 }
