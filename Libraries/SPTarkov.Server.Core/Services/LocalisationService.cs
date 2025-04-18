@@ -22,7 +22,6 @@ public class LocalisationService
     public LocalisationService(
         ISptLogger<LocalisationService> logger,
         RandomUtil randomUtil,
-        CustomLocaleService customLocaleService,
         DatabaseServer databaseServer,
         LocaleService localeService,
         JsonUtil jsonUtil,
@@ -36,11 +35,11 @@ public class LocalisationService
         _i18nService = new I18nService(
             fileUtil,
             jsonUtil,
-            customLocaleService,
             localeService.GetServerSupportedLocales().ToHashSet(),
             localeService.GetLocaleFallbacks(),
             "en",
-            "./Assets/database/locales/server"
+            "./Assets/database/locales/server",
+            localeService
         );
         _i18nService.SetLocaleByKey(localeService.GetDesiredServerLocale());
     }
