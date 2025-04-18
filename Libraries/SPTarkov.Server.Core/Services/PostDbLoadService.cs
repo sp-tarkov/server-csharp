@@ -101,8 +101,6 @@ public class PostDbLoadService(
 
         RemoveNewBeginningRequirementFromPrestige();
 
-        RemovePraporTestMessage();
-
         ValidateQuestAssortUnlocksExist();
 
         if (_seasonalEventService.IsAutomaticEventDetectionEnabled())
@@ -145,7 +143,7 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Merge custom achievements into achievement db table 
+    /// Merge custom achievements into achievement db table
     /// </summary>
     protected void MergeCustomAchievements()
     {
@@ -516,19 +514,6 @@ public class PostDbLoadService(
             {
                 recipe.Locked = false;
             }
-        }
-    }
-
-    /// <summary>
-    /// Blank out the "test" mail message from prapor
-    /// </summary>
-    protected void RemovePraporTestMessage()
-    {
-        // Iterate over all languages (e.g. "en", "fr")
-        var locales = _databaseService.GetLocales();
-        foreach (var localeKvP in locales.Global)
-        {
-            locales.Global[localeKvP.Key].Value["61687e2c3e526901fa76baf9"] = "";
         }
     }
 

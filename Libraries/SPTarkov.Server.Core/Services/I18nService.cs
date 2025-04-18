@@ -11,7 +11,7 @@ public class I18nService
     private readonly Dictionary<string, string> _fallbacks;
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
-    private readonly CustomLocaleService _customLocaleService;
+    private readonly LocaleService _localeService;
 
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
     private HashSet<string> _locales;
@@ -20,11 +20,11 @@ public class I18nService
     public I18nService(
         FileUtil fileUtil,
         JsonUtil jsonUtil,
-        CustomLocaleService customLocaleService,
         HashSet<string> locales,
         Dictionary<string, string> fallbacks,
         string defaultLocale,
-        string directory
+        string directory,
+        LocaleService localeService
     )
     {
         _locales = locales;
@@ -32,8 +32,8 @@ public class I18nService
         _defaultLocale = defaultLocale;
         _directory = directory;
         _jsonUtil = jsonUtil;
-        _customLocaleService = customLocaleService;
         _fileUtil = fileUtil;
+        _localeService = localeService;
 
         Initialize();
     }
@@ -91,22 +91,28 @@ public class I18nService
 
     public string GetLocalisedValue(string key)
     {
+        // get loaded locales for set key
         if (!_loadedLocales.TryGetValue(_setLocale, out var locales))
         {
+            // if we are unable to get the "loadedLocales" for the set locale, return the key
             return key;
         }
 
+        // searching through loaded locales for given key
         if (!locales.Value.TryGetValue(key, out var value))
         {
+            // if the key is not found in loaded locales
+            // check if the key is found in the default locale
             _loadedLocales.TryGetValue(_defaultLocale, out var defaults);
             if (!defaults.Value.TryGetValue(key, out value))
             {
-                value = _customLocaleService.GetClientValue(_defaultLocale, key);
+                value = _localeService.GetLocaleDb(_defaultLocale).FirstOrDefault(x => x.Key == key).Value;
             }
 
             return value ?? key;
         }
 
+        // if the key is found in the server locale, return the value
         return value;
     }
 

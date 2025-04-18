@@ -6,9 +6,7 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using Serilog;
-using Serilog.Events;
 using Serilog.Exceptions;
-using Serilog.Extensions.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.Server.Logger;
@@ -32,7 +30,7 @@ public static class Program
 
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
-        // for harmony we use the original list, as some mods may only be bepinex patches only
+        // for harmony, we use the original list, as some mods may only be bepinex patches only
         HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
 
         // register SPT components
@@ -49,7 +47,7 @@ public static class Program
         try
         {
             var watermark = serviceProvider.GetService<Watermark>();
-            // Initialize Watermak
+            // Initialize Watermark
             watermark?.Initialize();
 
             var appContext = serviceProvider.GetService<ApplicationContext>();
@@ -72,7 +70,7 @@ public static class Program
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
 
-            // Run garbage collection now server is ready to start
+            // Run garbage collection now the server is ready to start
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
@@ -89,7 +87,6 @@ public static class Program
         {
             Console.WriteLine(ex);
             logger.LogCritical(ex, "Critical exception, stopping server...");
-            // throw ex;
         }
     }
 
