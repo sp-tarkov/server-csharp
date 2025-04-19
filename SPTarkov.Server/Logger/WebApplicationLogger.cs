@@ -13,7 +13,7 @@ public class SptWebApplicationLogger<T> : ISptLogger<T>
     private readonly ILogger _logger;
     private static ILogger? _fileLogger;
 
-    public SptWebApplicationLogger(ILoggerProvider provider)
+    public SptWebApplicationLogger(ILoggerFactory provider)
     {
         _logger = provider.CreateLogger(typeof(T).FullName ?? "SPT Logger Default Name");
         if (_fileLogger == null)

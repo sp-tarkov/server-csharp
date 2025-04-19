@@ -110,7 +110,7 @@ public class QuestController(
         // Send started text + any starting reward items found above to player
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
-            _traderHelper.GetTraderById(questFromDb.TraderId).ToString(),
+            questFromDb.TraderId,
             MessageType.QUEST_START,
             messageId,
             startedQuestRewardItems.ToList(),

@@ -219,7 +219,7 @@ public class ModValidator(
     protected bool IsModCompatibleWithSpt(PackageJsonData mod)
     {
         var sptVersion = ProgramStatics.SPT_VERSION() ?? sptConfig.SptVersion;
-        var modName = $"{mod.Author}-${mod.Name}";
+        var modName = $"{mod.Author}-{mod.Name}";
 
         // Error and prevent loading if sptVersion property is not a valid semver string
         if (!(semVer.IsValid(mod.SptVersion) || semVer.IsValidRange(mod.SptVersion)))

@@ -1,23 +1,16 @@
+using SPTarkov.Server.Core.Models.Enums;
+
 namespace SPTarkov.Server.Core.Utils;
 
-public static class ProgramStatics
+public static partial class ProgramStatics
 {
-    private static EntryType _entryType;
-
     private static bool _debug;
     private static bool _compiled;
     private static bool _mods;
 
-    private static string? _sptVersion;
-    private static string? _commit;
-    private static double? _buildTime;
-
-    private static BuildInfo buildInfo; // TODO get from buildinfo.json
-
     public static void Initialize()
     {
-        buildInfo = new BuildInfo();
-        _entryType = buildInfo.entryType.GetValueOrDefault(EntryType.LOCAL);
+        var _entryType = ProgramStatics.BuildType ?? EntryType.LOCAL;
 
         switch (_entryType)
         {
@@ -38,7 +31,7 @@ public static class ProgramStatics
                 _mods = true;
                 break;
             case EntryType.LOCAL:
-            default: // EntryType.LOCAL
+            default:
                 _debug = true;
                 _compiled = false;
                 _mods = true;
@@ -47,9 +40,9 @@ public static class ProgramStatics
     }
 
     // Public Static Getters
-    public static EntryType ENTRY_TYPE()
+    public static EntryType? ENTRY_TYPE()
     {
-        return _entryType;
+        return BuildType;
     }
 
     public static bool DEBUG()
@@ -80,48 +73,5 @@ public static class ProgramStatics
     public static double? BUILD_TIME()
     {
         return _buildTime;
-    }
-}
-
-public enum EntryType
-{
-    LOCAL,
-    DEBUG,
-    RELEASE,
-    BLEEDING_EDGE,
-    BLEEDING_EDGE_MODS
-}
-
-public class BuildInfo
-{
-    public BuildInfo()
-    {
-        sptVersion = "";
-        commit = "";
-        buildTime = 0;
-    }
-
-    public EntryType? entryType
-    {
-        get;
-        set;
-    }
-
-    public string? sptVersion
-    {
-        get;
-        set;
-    }
-
-    public string? commit
-    {
-        get;
-        set;
-    }
-
-    public double? buildTime
-    {
-        get;
-        set;
     }
 }

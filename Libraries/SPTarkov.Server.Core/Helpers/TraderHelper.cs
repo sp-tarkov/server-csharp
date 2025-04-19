@@ -625,6 +625,7 @@ public class TraderHelper(
     /// </summary>
     /// <param name="traderEnumValue">The trader enum value to validate</param>
     /// <returns>The validated trader enum value as a string, or an empty string if invalid</returns>
+    /// TODO: might not be needed
     public string GetValidTraderIdByEnumValue(string traderEnumValue)
     {
         var traderId = _databaseService.GetTraders();

@@ -17,7 +17,8 @@ public class CustomItemService(
     DatabaseService databaseService,
     ItemHelper itemHelper,
     ItemBaseClassService itemBaseClassService,
-    ICloner cloner
+    ICloner cloner,
+    LocaleService localeService
 )
 {
     /// <summary>
@@ -206,17 +207,9 @@ public class CustomItemService(
 
             newLocaleDetails ??= localeDetails[localeDetails.Keys.FirstOrDefault()];
 
-            // Create new record in locale file
-            if (!databaseService.GetLocales().Global.TryGetValue(shortNameKey.Key, out var desiredGlobal))
-            {
-                logger.Error($"Unable to add locale keys to {shortNameKey.Key}");
-
-                return;
-            }
-
-            desiredGlobal.Value[$"{newItemId} Name"] = newLocaleDetails.Name;
-            desiredGlobal.Value[$"{newItemId} ShortName"] = newLocaleDetails.ShortName;
-            desiredGlobal.Value[$"{newItemId} Description"] = newLocaleDetails.Description;
+            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} Name", newLocaleDetails.Name);
+            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} ShortName", newLocaleDetails.ShortName);
+            localeService.AddCustomClientLocale(shortNameKey.Key, $"{newItemId} Description", newLocaleDetails.Description);
         }
     }
 

@@ -6,9 +6,7 @@ using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using Serilog;
-using Serilog.Events;
 using Serilog.Exceptions;
-using Serilog.Extensions.Logging;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.Server.Logger;
@@ -21,28 +19,35 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        // Initialize the program variables
+        ProgramStatics.Initialize();
+
         // Search for mod dlls
         var mods = ModDllLoader.LoadAllMods();
+
         // Create web builder and logger
-        var builder = CreateNewHostBuilder(out var registeredLogger, args);
-        // Initialize the program variables TODO: this needs to be implemented properly
-        ProgramStatics.Initialize();
+        var builder = CreateNewHostBuilder(args);
 
         // validate and sort mods, this will also discard any mods that are invalid
         var sortedLoadedMods = ValidateMods(mods);
-        // for harmony we use the original list, as some mods may only be bepinex patches only
+        // for harmony, we use the original list, as some mods may only be bepinex patches only
         HarmonyBootstrapper.LoadAllPatches(mods.SelectMany(asm => asm.Assemblies).ToList());
 
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
-        // register mod components from the filtered list
-        DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
-        var logger = new SerilogLoggerProvider(registeredLogger).CreateLogger("Server");
+
+        if (ProgramStatics.MODS())
+        {
+            // register mod components from the filtered list
+            DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
+        }
+
+        var serviceProvider = builder.Services.BuildServiceProvider();
+        var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
         try
         {
-            var serviceProvider = builder.Services.BuildServiceProvider();
             var watermark = serviceProvider.GetService<Watermark>();
-            // Initialize Watermak
+            // Initialize Watermark
             watermark?.Initialize();
 
             var appContext = serviceProvider.GetService<ApplicationContext>();
@@ -57,6 +62,7 @@ public static class Program
 
             // Add the Loaded Mod Assemblies for later
             appContext?.AddValue(ContextVariableType.LOADED_MOD_ASSEMBLIES, mods);
+
             // This is the builder that will get use by the HttpServer to start up the web application
             appContext?.AddValue(ContextVariableType.APP_BUILDER, builder);
 
@@ -64,7 +70,7 @@ public static class Program
             var app = serviceProvider.GetService<App>();
             app?.Run().Wait();
 
-            // Run garbage collection now server is ready to start
+            // Run garbage collection now the server is ready to start
             GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Aggressive, true, true);
 
@@ -81,24 +87,47 @@ public static class Program
         {
             Console.WriteLine(ex);
             logger.LogCritical(ex, "Critical exception, stopping server...");
-            // throw ex;
         }
     }
 
-    private static WebApplicationBuilder CreateNewHostBuilder(out Serilog.Core.Logger logger, string[]? args = null)
+    private static WebApplicationBuilder CreateNewHostBuilder(string[]? args = null)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.Host.UseSerilog();
-        builder.Configuration.AddJsonFile("appsettings.json", true, true);
-        CreateAndRegisterLogger(builder, out logger);
+        builder.Logging.ClearProviders();
+
+        if (ProgramStatics.DEBUG())
+        {
+            builder.Configuration.AddJsonFile("appsettings.Development.json", true, true);
+        }
+        else
+        {
+            builder.Configuration.AddJsonFile("appsettings.json", true, true);
+        }
+
+        builder.Host.UseSerilog((context, provider, logger) =>
+        {
+            logger
+                .ReadFrom.Configuration(context.Configuration)
+                .ReadFrom.Services(provider)
+                .Enrich.FromLogContext()
+                .Enrich.WithExceptionDetails()
+                .Enrich.WithThreadName()
+                .Enrich.WithThreadId();
+        });
+
         return builder;
     }
 
     private static List<SptMod> ValidateMods(List<SptMod> mods)
     {
+        if (!ProgramStatics.MODS())
+        {
+            return [];
+        }
+
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
-        var builder = CreateNewHostBuilder(out _);
+        var builder = CreateNewHostBuilder();
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
         // register the mod validator components
@@ -110,21 +139,5 @@ public static class Program
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();
         return modValidator.ValidateAndSort(mods);
-    }
-
-    public static void CreateAndRegisterLogger(WebApplicationBuilder builder, out Serilog.Core.Logger logger)
-    {
-        builder.Logging.ClearProviders();
-        logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(builder.Configuration)
-# if DEBUG
-            .MinimumLevel.Debug()
-# endif
-            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .Enrich.WithThreadId()
-            .Enrich.WithExceptionDetails()
-            .CreateLogger();
-        builder.Logging.AddSerilog(logger);
     }
 }

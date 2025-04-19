@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -6,28 +7,28 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Common.Annotations;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class RagfairOfferHolder(
-    ISptLogger<RagfairOfferHolder> logger,
-    RagfairServerHelper ragfairServerHelper,
-    ProfileHelper profileHelper,
-    HashUtil hashUtil,
-    LocalisationService localisationService,
-    ConfigServer configServer)
+    ISptLogger<RagfairOfferHolder> _logger,
+    RagfairServerHelper _ragfairServerHelper,
+    ProfileHelper _profileHelper,
+    HashUtil _hashUtil,
+    LocalisationService _localisationService,
+    ConfigServer _configServer
+)
 {
-    protected int _maxOffersPerTemplate = configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
-    protected Dictionary<string, RagfairOffer> _offersById = new();
-    protected readonly Lock _offersByIdLock = new();
-    protected Dictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
-    protected readonly Lock _offersByTemplateLock = new();
-    protected Dictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
-    protected readonly Lock _offersByTraderLock = new();
+    protected int _maxOffersPerTemplate = _configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
+    protected ConcurrentDictionary<string, RagfairOffer> _offersById = new();
+    protected ConcurrentDictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
+    protected ConcurrentDictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
 
     protected HashSet<string> _expiredOfferIds = [];
-    protected readonly Lock _expiredOfferIdsLock = new();
+    protected readonly Lock _expiredOfferIdsLock = new Lock();
+    protected readonly Lock _ragfairOperationLock = new Lock();
 
     /// <summary>
     /// Get a ragfair offer by its id
@@ -36,10 +37,7 @@ public class RagfairOfferHolder(
     /// <returns>RagfairOffer</returns>
     public RagfairOffer? GetOfferById(string id)
     {
-        lock (_offersByIdLock)
-        {
-            return _offersById.GetValueOrDefault(id);
-        }
+        return _offersById.GetValueOrDefault(id);
     }
 
     /// <summary>
@@ -49,21 +47,18 @@ public class RagfairOfferHolder(
     /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer>? GetOffersByTemplate(string templateId)
     {
-        lock (_offersByTemplateLock)
+        // Get the offerIds we want to return
+        if (!_offersByTemplate.TryGetValue(templateId, out var offerIds))
         {
-            // Get the offerIds we want to return
-            if (!_offersByTemplate.TryGetValue(templateId, out var offerIds))
-            {
-                return null;
-            }
-
-            var result = _offersById
-                .Where(x => offerIds.Contains(x.Key))
-                .Select(x => x.Value)
-                .ToList();
-
-            return result;
+            return null;
         }
+
+        var result = _offersById
+            .Where(x => offerIds.Contains(x.Key))
+            .Select(x => x.Value)
+            .ToList();
+
+        return result;
     }
 
     /// <summary>
@@ -73,17 +68,15 @@ public class RagfairOfferHolder(
     /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer>? GetOffersByTrader(string traderId)
     {
-        lock (_offersByTraderLock)
+        if (!_offersByTrader.TryGetValue(traderId, out var offerIds))
         {
-            if (!_offersByTrader.TryGetValue(traderId, out var offerIds))
-            {
-                return null;
-            }
-
-            return offerIds.Select(offerId => _offersById.GetValueOrDefault(offerId))
-                .Where(offer => offer != null)
-                .ToList();
+            return null;
         }
+
+        return offerIds
+            .Select(offerId => _offersById.GetValueOrDefault(offerId))
+            .Where(offer => offer != null)
+            .ToList();
     }
 
     /// <summary>
@@ -92,12 +85,9 @@ public class RagfairOfferHolder(
     /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer> GetOffers()
     {
-        lock (_offersByIdLock)
+        if (_offersById.Count > 0)
         {
-            if (_offersById.Count > 0)
-            {
-                return _offersById.Values.ToList();
-            }
+            return _offersById.Values.ToList();
         }
 
         return [];
@@ -121,29 +111,33 @@ public class RagfairOfferHolder(
     /// <param name="offer">Offer to add</param>
     public void AddOffer(RagfairOffer offer)
     {
-        lock (_offersByIdLock)
+        lock (_ragfairOperationLock)
         {
             var sellerId = offer.User.Id;
             // Keep generating IDs until we get a unique one
             while (_offersById.ContainsKey(offer.Id))
             {
-                offer.Id = hashUtil.Generate();
+                offer.Id = _hashUtil.Generate();
             }
 
             var itemTpl = offer.Items?.FirstOrDefault()?.Template;
             // If it is an NPC PMC offer AND we have already reached the maximum amount of possible offers
             // for this template, just don't add in more
-            var sellerIsTrader = ragfairServerHelper.IsTrader(sellerId);
-            if (itemTpl != null
-                && !(sellerIsTrader || profileHelper.IsPlayer(sellerId))
+            var sellerIsTrader = _ragfairServerHelper.IsTrader(sellerId);
+            if (
+                itemTpl != null
+                && !(sellerIsTrader || _profileHelper.IsPlayer(sellerId))
                 && _offersByTemplate.TryGetValue(itemTpl, out var offers)
                 && offers?.Count >= _maxOffersPerTemplate
-               )
+            )
             {
                 return;
             }
 
-            _offersById.Add(offer.Id, offer);
+            if (!_offersById.TryAdd(offer.Id, offer))
+            {
+                _logger.Warning($"Offer: {offer.Id} already exists");
+            }
 
             if (sellerIsTrader)
             {
@@ -161,43 +155,37 @@ public class RagfairOfferHolder(
     /// <param name="checkTraderOffers">OPTIONAL - Should trader offers be checked for offer id</param>
     public void RemoveOffer(string offerId, bool checkTraderOffers = true)
     {
-        lock (_offersByIdLock)
+        if (!_offersById.TryGetValue(offerId, out var offer))
         {
-            if (!_offersById.TryGetValue(offerId, out var offer))
-            {
-                logger.Warning(localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
-                return;
-            }
+            _logger.Warning(_localisationService.GetText("ragfair-unable_to_remove_offer_doesnt_exist", offerId));
+            return;
+        }
 
-            _offersById.Remove(offer.Id);
+        if (!_offersById.TryRemove(offer.Id, out _))
+        {
+            _logger.Warning($"Unable to remove offer: {offer.Id}");
+        }
 
-            if (checkTraderOffers)
+        if (checkTraderOffers && _offersByTrader.ContainsKey(offer.User.Id))
+        {
+            _offersByTrader[offer.User.Id].Remove(offer.Id);
+            // This was causing a memory leak, we need to make sure that we remove
+            // the user ID from the cached offers after they dont have anything else
+            // on the flea placed. We regenerate the ID for the NPC users, making it
+            // continuously grow otherwise
+            if (_offersByTrader[offer.User.Id].Count == 0)
             {
-                lock (_offersByTraderLock)
+                if (!_offersByTrader.TryRemove(offer.User.Id, out _))
                 {
-                    if (_offersByTrader.ContainsKey(offer.User.Id))
-                    {
-                        _offersByTrader[offer.User.Id].Remove(offer.Id);
-                        // This was causing a memory leak, we need to make sure that we remove
-                        // the user ID from the cached offers after they dont have anything else
-                        // on the flea placed. We regenerate the ID for the NPC users, making it
-                        // continuously grow otherwise
-                        if (_offersByTrader[offer.User.Id].Count == 0)
-                        {
-                            _offersByTrader.Remove(offer.User.Id);
-                        }
-                    }
+                    _logger.Warning($"Unable to remove Trader offer: {offer.Id}");
                 }
             }
+        }
 
-            lock (_offersByTemplateLock)
-            {
-                var firstItem = offer.Items.FirstOrDefault();
-                if (_offersByTemplate.TryGetValue(firstItem.Template, out var offers))
-                {
-                    offers.Remove(offer.Id);
-                }
-            }
+        var firstItem = offer.Items.FirstOrDefault();
+        if (_offersByTemplate.TryGetValue(firstItem.Template, out var offers))
+        {
+            offers.Remove(offer.Id);
         }
     }
 
@@ -207,18 +195,18 @@ public class RagfairOfferHolder(
     /// <param name="traderId">Trader id to remove offers from</param>
     public void RemoveAllOffersByTrader(string traderId)
     {
-        lock (_offersByTraderLock)
+        if (_offersByTrader.TryGetValue(traderId, out var offerIdsToRemove))
         {
-            if (_offersByTrader.TryGetValue(traderId, out var offerIdsToRemove))
+            foreach (var offerId in offerIdsToRemove)
             {
-                foreach (var offerId in offerIdsToRemove)
+                if (!_offersById.TryRemove(offerId, out _))
                 {
-                    _offersById.Remove(offerId);
+                    _logger.Warning($"Unable to remove offer: {offerId}");
                 }
-
-                // Clear out linking table
-                _offersByTrader[traderId].Clear();
             }
+
+            // Clear out linking table
+            _offersByTrader[traderId].Clear();
         }
     }
 
@@ -229,16 +217,15 @@ public class RagfairOfferHolder(
     /// <param name="offerId">Offer to store against tpl</param>
     protected void AddOfferByTemplates(string template, string offerId)
     {
-        lock (_offersByTemplateLock)
+        if (_offersByTemplate.ContainsKey(template))
         {
-            if (_offersByTemplate.ContainsKey(template))
-            {
-                _offersByTemplate[template].Add(offerId);
-            }
-            else
-            {
-                _offersByTemplate.Add(template, [offerId]);
-            }
+            _offersByTemplate[template].Add(offerId);
+            return;
+        }
+
+        if (!_offersByTemplate.TryAdd(template, [offerId]))
+        {
+            _logger.Warning($"Unable to add offer: {offerId} to offersByTemplate");
         }
     }
 
@@ -249,16 +236,15 @@ public class RagfairOfferHolder(
     /// <param name="offerId">Offer to store against</param>
     protected void AddOfferByTrader(string trader, string offerId)
     {
-        lock (_offersByTraderLock)
+        if (_offersByTrader.ContainsKey(trader))
         {
-            if (_offersByTrader.ContainsKey(trader))
-            {
-                _offersByTrader[trader].Add(offerId);
-            }
-            else
-            {
-                _offersByTrader.Add(trader, [offerId]);
-            }
+            _offersByTrader[trader].Add(offerId);
+            return;
+        }
+
+        if (!_offersByTrader.TryAdd(trader, [offerId]))
+        {
+            _logger.Error($"Unable to add offer: {offerId} to offersByTrader");
         }
     }
 
@@ -286,7 +272,10 @@ public class RagfairOfferHolder(
     {
         lock (_expiredOfferIdsLock)
         {
-            _expiredOfferIds.Add(staleOfferId);
+            if (!_expiredOfferIds.Add(staleOfferId))
+            {
+                _logger.Warning($"Unable to add offer: {staleOfferId} to expired offers");
+            }
         }
     }
 
@@ -317,13 +306,13 @@ public class RagfairOfferHolder(
                 var offer = GetOfferById(expiredOfferId);
                 if (offer is null)
                 {
-                    logger.Warning($"offerId: {expiredOfferId} was not found !!");
+                    _logger.Warning($"offerId: {expiredOfferId} was not found !!");
                     continue;
                 }
+
                 if (offer?.Items?.Count == 0)
                 {
-                    logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
-
+                    _logger.Error($"Unable to process expired offer: {expiredOfferId}, it has no items");
                     continue;
                 }
 
@@ -355,7 +344,7 @@ public class RagfairOfferHolder(
         {
             foreach (var offer in GetOffers())
             {
-                if (_expiredOfferIds.Contains(offer.Id) || ragfairServerHelper.IsTrader(offer.User.Id))
+                if (_expiredOfferIds.Contains(offer.Id) || _ragfairServerHelper.IsTrader(offer.User.Id))
                 {
                     // Already flagged or trader offer (handled separately), skip
                     continue;
@@ -363,7 +352,10 @@ public class RagfairOfferHolder(
 
                 if (IsStale(offer, timestamp))
                 {
-                    _expiredOfferIds.Add(offer.Id);
+                    if (!_expiredOfferIds.Add(offer.Id))
+                    {
+                        _logger.Warning($"Unable to add offer: {offer.Id} to expired offers");
+                    }
                 }
             }
         }

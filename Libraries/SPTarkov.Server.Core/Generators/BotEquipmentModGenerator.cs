@@ -511,6 +511,12 @@ public class BotEquipmentModGenerator(
                 continue;
             }
 
+            // If the parent is a UBGL, the patron_in_weapon will be generated later - so skip it for now
+            if (modSlot == "patron_in_weapon" && _itemHelper.IsOfBaseclass(request.ParentTemplate.Id, BaseClasses.UBGL))
+            {
+                continue;
+            }
+
             // Check spawn chance of mod
             var modSpawnResult = ShouldModBeSpawned(
                 modsParentSlot,

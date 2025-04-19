@@ -296,15 +296,13 @@ public class GiveSptCommand(
     }
 
     /// <summary>
-    ///     Return the desired locale, falls back to english if it cannot be found
+    /// Return the desired locale, falls back to english if it cannot be found
     /// </summary>
     /// <param name="desiredLocale">Locale code, e.g. "fr" for french</param>
     /// <returns></returns>
     protected Dictionary<string, string> GetGlobalsLocale(string desiredLocale)
     {
-        return _databaseService.GetLocales().Global.TryGetValue(desiredLocale, out var locale)
-            ? locale.Value
-            : _databaseService.GetLocales().Global["en"].Value;
+        return _localeService.GetLocaleDb(desiredLocale);
     }
 
     /**

@@ -15,6 +15,11 @@ namespace SPTarkov.Server.Core.Helpers
         private const string certificatePfxPath = "./user/certs/certificate.pfx";
 
         //Todo: Finish off to match TS server
+        /// <summary>
+        /// Currently not in use
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
         public X509Certificate2 LoadOrGenerateCertificate()
         {
             if (!Directory.Exists("./user/certs"))
@@ -29,6 +34,12 @@ namespace SPTarkov.Server.Core.Helpers
                 // Generate self-signed certificate
                 certificate = GenerateSelfSignedCertificate("localhost");
                 SaveCertificate(certificate); // Save cert and new key
+                certificate = LoadCertificate();
+                if (certificate == null)
+                {
+                    // if we are still null here there is a serious problem creating cert
+                    throw new Exception("Certificate could not be loaded for the second time.");
+                }
 
                 _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
             }
@@ -44,20 +55,18 @@ namespace SPTarkov.Server.Core.Helpers
                 Directory.CreateDirectory("./user/certs");
             }
 
-            var certificate = LoadCertificatePfx();
-
-            if (certificate == null)
+            if (TryLoadCertificatePfx(out var cert))
             {
-                // Generate self-signed certificate
-                certificate = GenerateSelfSignedCertificate("localhost");
-                SaveCertificatePfx(certificate); // Save cert
-
-                _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
-                _logger.Success("First-time generation requires server be restarted for it to pick up cert");
-                Environment.Exit(1);
+                _logger.Success($"Loaded self-signed certificate ({certificatePath})");
+                return cert;
             }
-
-            return certificate;
+            else
+            {
+                // shit went wrong, throw a wobbly and close app
+                _logger.Critical("Certificate pfx could not be loaded. Stopping server...");
+                Environment.Exit(1);
+                return null;
+            }
         }
 
         private X509Certificate2? LoadCertificate()
@@ -73,10 +82,44 @@ namespace SPTarkov.Server.Core.Helpers
         }
 
         /// <summary>
+        /// if the cert exist, try load it, else create one and try load again
+        /// </summary>
+        /// <returns></returns>
+        private bool TryLoadCertificatePfx(out X509Certificate2? certificate)
+        {
+            X509Certificate2 cert = null;
+            if (!File.Exists(certificatePfxPath))
+            {
+                // file doesnt exist so create straight away
+                cert = GenerateSelfSignedCertificate("localhost");
+                SaveCertificatePfx(cert);
+                _logger.Success($"Generated and stored self-signed certificate ({certificatePath})");
+            }
+
+            try
+            {
+                //Archangel: For some reason despite this being deprecated this is the only way to load a certificate file
+                //No idea why, I want to eventually switch over to the other format so it lines up with the TS server
+                //But for now this works fine
+                certificate = new X509Certificate2(certificatePfxPath);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            if (certificate is not null)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Get a certificate from provided path and return
         /// </summary>
-        /// <param name="pfxPath">Path to pfx file</param>
-        /// <param name="certPassword">Optional password for certificate</param>
         /// <returns>X509Certificate2</returns>
         private X509Certificate2? LoadCertificatePfx()
         {
@@ -161,8 +204,8 @@ namespace SPTarkov.Server.Core.Helpers
 
                 // Convert the private key to PEM format (Base64 encoded)
                 var privateKeyString = "-----BEGIN PRIVATE KEY-----\n" +
-                                    Convert.ToBase64String(privateKeyBytes, Base64FormattingOptions.InsertLineBreaks) +
-                                    "\n-----END PRIVATE KEY-----";
+                                       Convert.ToBase64String(privateKeyBytes, Base64FormattingOptions.InsertLineBreaks) +
+                                       "\n-----END PRIVATE KEY-----";
 
                 _fileUtil.WriteFile(certificateKeyPath, privateKeyString);
             }
@@ -171,6 +214,5 @@ namespace SPTarkov.Server.Core.Helpers
                 _logger.Error($"Error saving certificate key: {ex.Message}");
             }
         }
-
     }
 }

@@ -458,6 +458,9 @@ public class LootGenerator(
 
         var presetAndMods = _itemHelper.ReplaceIDs(_cloner.Clone(chosenPreset.Items));
         _itemHelper.RemapRootItemId(presetAndMods);
+
+        _itemHelper.SetFoundInRaid(presetAndMods);
+
         // Add chosen preset tpl to result array
         foreach (var item in presetAndMods)
         {

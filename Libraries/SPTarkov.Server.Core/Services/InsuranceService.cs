@@ -76,14 +76,6 @@ public class InsuranceService(
         var globals = _databaseService.GetGlobals();
         foreach (var traderKvP in GetInsurance(sessionID))
         {
-            var traderEnum = _traderHelper.GetTraderById(traderKvP.Key);
-            if (traderEnum is null)
-            {
-                _logger.Error(_localisationService.GetText("insurance-trader_missing_from_enum", traderKvP.Key));
-
-                continue;
-            }
-
             var traderBase = _traderHelper.GetTrader(traderKvP.Key, sessionID);
             if (traderBase is null)
             {
@@ -110,7 +102,7 @@ public class InsuranceService(
             // Send "i will go look for your stuff" message from trader to player
             _mailSendService.SendLocalisedNpcMessageToPlayer(
                 sessionID,
-                traderEnum.ToString(),
+                traderKvP.Key,
                 MessageType.NPC_TRADER,
                 _randomUtil.GetArrayValue(dialogueTemplates["insuranceStart"] ?? ["INSURANCE START MESSAGE MISSING"]),
                 null,
@@ -184,8 +176,7 @@ public class InsuranceService(
         }
 
         // EoD has 30% faster returns
-        var editionModifier = globals.Configuration.Insurance.EditionSendingMessageTime[pmcData.Info.GameVersion];
-        if (editionModifier is not null)
+        if (globals.Configuration.Insurance.EditionSendingMessageTime.TryGetValue(pmcData.Info.GameVersion, out var editionModifier))
         {
             randomisedReturnTimeSeconds *= editionModifier.Multiplier.Value;
         }

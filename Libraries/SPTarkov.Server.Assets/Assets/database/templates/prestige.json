@@ -254,13 +254,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67e593abfb04b3c64c090188",
+          "target": "67f699408d7c5eb3fe15b21e",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67e593abfb04b3c64c090188",
+              "_id": "67f699408d7c5eb3fe15b21e",
               "_tpl": "6759bb94b8913ff13e049669",
               "upd": {
                 "SpawnedInSession": true,
@@ -284,13 +284,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67e593abfb04b3c64c09018a",
+          "target": "67f699408d7c5eb3fe15b220",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67e593abfb04b3c64c09018a",
+              "_id": "67f699408d7c5eb3fe15b220",
               "_tpl": "67614b542eb91250020f2b86",
               "upd": {
                 "SpawnedInSession": true,
@@ -378,12 +378,6 @@
               "5d235a5986f77443f6329bc6",
               "66b37eb4acff495a29492407",
               "59e3647686f774176a362507",
-              "590de71386f774347051a052",
-              "590de7e986f7741b096e5f32",
-              "590de92486f77423d9312a33",
-              "5937fd0086f7742bf33fc198",
-              "5937fc6786f7742cab753590",
-              "638df4cc7b560b03794a18d2",
               "5d650c3e815116009f6201d2",
               "60391b0fb847c71012789415",
               "67586bee39b1b82b0d0f9d06",
@@ -525,7 +519,19 @@
               "619bdf9cc9546643a67df6f8",
               "67614b3ab8c060ebb204b106",
               "619bdfd4c9546643a67df6fa",
-              "664a5480bfcc521bad3192ca"
+              "664a5480bfcc521bad3192ca",
+              "679b9d55708cfcb2060b9ae3",
+              "679b9d4b3374fb14f40efe6d",
+              "679b9d43597ba2ed120c3d44",
+              "679b9cce4e4ed4b3b40ae5c5",
+              "679b9d6390622daf9708da76",
+              "5df8a77486f77412672a1e3f",
+              "5df8a72c86f77412640e2e83",
+              "5df8a6a186f77412640e2e80",
+              "679b944d597ba2ed120c3d3c",
+              "679b946f90622daf9708da6d",
+              "679b94734e9ca6b3d80586a7",
+              "679b9477708cfcb2060b9ade"
             ],
             "excludedItems": []
           }
@@ -690,13 +696,13 @@
             "isBigImage": true
           },
           "isHidden": false,
-          "target": "67e593abfb04b3c64c09018c",
+          "target": "67f699408d7c5eb3fe15b222",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67e593abfb04b3c64c09018c",
+              "_id": "67f699408d7c5eb3fe15b222",
               "_tpl": "674d90b55704568fe60bc8f5",
               "upd": {
                 "SpawnedInSession": true,
@@ -826,13 +832,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67e593abfb04b3c64c09018e",
+          "target": "67f699408d7c5eb3fe15b224",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67e593abfb04b3c64c09018e",
+              "_id": "67f699408d7c5eb3fe15b224",
               "_tpl": "6759e07e4ff23436160d7fed",
               "upd": {
                 "SpawnedInSession": true,
@@ -890,13 +896,13 @@
             "isBigImage": false
           },
           "isHidden": false,
-          "target": "67e593abfb04b3c64c090190",
+          "target": "67f699408d7c5eb3fe15b226",
           "value": 1,
           "isEncoded": false,
           "findInRaid": true,
           "items": [
             {
-              "_id": "67e593abfb04b3c64c090190",
+              "_id": "67f699408d7c5eb3fe15b226",
               "_tpl": "67614b6b47c71ea3d40256d7",
               "upd": {
                 "SpawnedInSession": true,
@@ -1094,7 +1100,16 @@
               "619bdef8c9546643a67df6f6",
               "619bdf9cc9546643a67df6f8",
               "619bdfd4c9546643a67df6fa",
-              "67614b3ab8c060ebb204b106"
+              "67614b3ab8c060ebb204b106",
+              "679b944d597ba2ed120c3d3c",
+              "679b946f90622daf9708da6d",
+              "679b94734e9ca6b3d80586a7",
+              "679b9477708cfcb2060b9ade",
+              "679b9d43597ba2ed120c3d44",
+              "679b9d6390622daf9708da76",
+              "679b9cce4e4ed4b3b40ae5c5",
+              "679b9d4b3374fb14f40efe6d",
+              "679b9d55708cfcb2060b9ae3"
             ],
             "excludedItems": []
           }

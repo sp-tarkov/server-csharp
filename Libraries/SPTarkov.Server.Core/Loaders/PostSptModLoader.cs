@@ -16,17 +16,14 @@ public class PostSptModLoader(
     {
         if (ProgramStatics.MODS())
         {
-            // await _postSptModLoader.load();
-            // TODO: Huh?
-        }
+            _logger.Info("Loading PostSptMods...");
+            foreach (var postSptLoadMod in _postSptLoadMods)
+            {
+                postSptLoadMod.PostSptLoad();
+            }
 
-        _logger.Info("Loading PostSptMods...");
-        foreach (var postSptLoadMod in _postSptLoadMods)
-        {
-            postSptLoadMod.PostSptLoad();
+            _logger.Info("Finished loading PostSptMods...");
         }
-
-        _logger.Info("Finished loading PostSptMods...");
     }
 
     public string GetRoute()

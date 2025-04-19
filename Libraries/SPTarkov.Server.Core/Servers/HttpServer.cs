@@ -9,6 +9,7 @@ using SPTarkov.Server.Core.Services;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Primitives;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -87,51 +88,19 @@ public class HttpServer(
         }
 
         context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
-        _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
-
-        // Extract headers for original IP detection
-        StringValues? realIp = null;
-        if (context.Request.Headers.ContainsKey("x-real-ip"))
+        if (sessionId != null)
         {
-            realIp = context.Request.Headers["x-real-ip"];
+            _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
         }
 
-        StringValues? forwardedFor = null;
-        if (context.Request.Headers.ContainsKey("x-forwarded-for"))
-        {
-            forwardedFor = context.Request.Headers["x-forwarded-for"];
-        }
-
-        var clientIp = realIp.HasValue
-            ? realIp.Value.First()
-            : forwardedFor.HasValue
-                ? forwardedFor.Value.First()!.Split(",")[0].Trim()
-                : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
+        // Extract header for original IP detection
+        var realIp = context.GetHeaderIfExists("x-real-ip");
+        var clientIp = GetClientIp(context, realIp);
 
         if (_httpConfig.LogRequests)
         {
-            var isLocalRequest = IsLocalRequest(clientIp);
-            if (isLocalRequest.HasValue)
-            {
-                if (isLocalRequest.Value)
-                {
-                    _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
-                }
-                else
-                {
-                    _logger.Info(
-                        _localisationService.GetText(
-                            "client_request_ip", new
-                            {
-                                ip = clientIp,
-                                url = context.Request.Path.Value
-                            }
-                        )
-                    );
-                }
-            }
+            LogRequest(context, clientIp, IsLocalRequest(clientIp));
         }
-
 
         try
         {
@@ -147,15 +116,54 @@ public class HttpServer(
     }
 
     /// <summary>
+    /// Log request - handle differently if request is local
+    /// </summary>
+    /// <param name="context">HttpContext of request</param>
+    /// <param name="clientIp">Ip of requester</param>
+    /// <param name="isLocalRequest">Is this local request</param>
+    protected void LogRequest(HttpContext context, string clientIp, bool isLocalRequest)
+    {
+        if (isLocalRequest)
+        {
+            _logger.Info(_localisationService.GetText("client_request", context.Request.Path.Value));
+        }
+        else
+        {
+            _logger.Info(
+                _localisationService.GetText(
+                    "client_request_ip", new
+                    {
+                        ip = clientIp,
+                        url = context.Request.Path.Value
+                    }
+                )
+            );
+        }
+    }
+
+    protected static string GetClientIp(HttpContext context, StringValues? realIp)
+    {
+        if (realIp.HasValue)
+        {
+            return realIp.Value.First();
+        }
+
+        var forwardedFor = context.GetHeaderIfExists("x-forwarded-for");
+        return forwardedFor.HasValue
+                ? forwardedFor.Value.First()!.Split(",")[0].Trim()
+                : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
+    }
+
+    /// <summary>
     /// Check against hardcoded values that determine it's from a local address
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>
-    private bool? IsLocalRequest(string? remoteAddress)
+    protected bool IsLocalRequest(string? remoteAddress)
     {
         if (remoteAddress == null)
         {
-            return null;
+            return false;
         }
 
         return remoteAddress.StartsWith("127.0.0") ||

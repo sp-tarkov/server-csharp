@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -22,9 +23,9 @@ public class PMCLootGenerator
     private readonly SeasonalEventService _seasonalEventService;
     private readonly WeightedRandomHelper _weightedRandomHelper;
 
-    private Dictionary<string, double>? _backpackLootPool;
-    private Dictionary<string, double>? _pocketLootPool;
-    private Dictionary<string, double>? _vestLootPool;
+    private ConcurrentDictionary<string, double>? _backpackLootPool;
+    private ConcurrentDictionary<string, double>? _pocketLootPool;
+    private ConcurrentDictionary<string, double>? _vestLootPool;
 
     public PMCLootGenerator(
         ISptLogger<PMCLootGenerator> logger,
@@ -54,12 +55,12 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, double> GeneratePMCPocketLootPool(string botRole)
+    public ConcurrentDictionary<string, double> GeneratePMCPocketLootPool(string botRole)
     {
         // Hydrate loot dictionary if empty
         if (_pocketLootPool is null)
         {
-            _pocketLootPool = new Dictionary<string, double>();
+            _pocketLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Pockets;
@@ -82,7 +83,7 @@ public class PMCLootGenerator
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
-                    _pocketLootPool.Add(tpl, priceOverride);
+                    _pocketLootPool.TryAdd(tpl, priceOverride);
                 }
                 else
                 {
@@ -122,12 +123,12 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, double> GeneratePMCVestLootPool(string botRole)
+    public ConcurrentDictionary<string, double> GeneratePMCVestLootPool(string botRole)
     {
         // Hydrate loot dictionary if empty
         if (_vestLootPool is null)
         {
-            _vestLootPool = new Dictionary<string, double>();
+            _vestLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.TacticalVest;
@@ -150,7 +151,7 @@ public class PMCLootGenerator
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var overridePrice))
                 {
-                    _vestLootPool.Add(tpl, overridePrice);
+                    _vestLootPool.TryAdd(tpl, overridePrice);
                 }
                 else
                 {
@@ -205,12 +206,12 @@ public class PMCLootGenerator
     /// </summary>
     /// <param name="botRole"></param>
     /// <returns>Dictionary of string and number</returns>
-    public Dictionary<string, double> GeneratePMCBackpackLootPool(string botRole)
+    public ConcurrentDictionary<string, double> GeneratePMCBackpackLootPool(string botRole)
     {
         // Hydrate loot dictionary if empty
         if (_backpackLootPool is null)
         {
-            _backpackLootPool = new Dictionary<string, double>();
+            _backpackLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
                 _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Backpack;
@@ -232,7 +233,7 @@ public class PMCLootGenerator
             {
                 if (pmcPriceOverrides.TryGetValue(tpl, out var priceOverride))
                 {
-                    _backpackLootPool.Add(tpl, priceOverride);
+                    _backpackLootPool.TryAdd(tpl, priceOverride);
                 }
                 else
                 {

@@ -83,10 +83,10 @@ public class ProfileSptCommand(
                 break;
             case "skill":
                 {
-                    var enumSkill = Enum.GetValues(typeof(SkillTypes))
-                        .Cast<SkillTypes>()
+                    var enumSkill = Enum.GetValues<SkillTypes>()
+                        .Cast<SkillTypes?>()
                         .FirstOrDefault(
-                            t => t.ToString().ToLower() == skill
+                            t => t?.ToString().ToLower() == skill
                         );
 
                     if (enumSkill == null)
@@ -149,7 +149,7 @@ public class ProfileSptCommand(
         return request.DialogId;
     }
 
-    protected ProfileChangeEvent HandleSkillCommand(SkillTypes skill, int level)
+    protected ProfileChangeEvent HandleSkillCommand(SkillTypes? skill, int level)
     {
         var profileChangeEvent = new ProfileChangeEvent
         {

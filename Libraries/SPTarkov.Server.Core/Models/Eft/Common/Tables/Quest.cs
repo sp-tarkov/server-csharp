@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json;
@@ -436,14 +437,15 @@ public record QuestCondition
     {
         get;
         set;
-    } // TODO: string[] | string
+    }
 
     [JsonPropertyName("value")]
-    public object? Value
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public double? Value
     {
         get;
         set;
-    } // TODO: string | number
+    }
 
     [JsonPropertyName("type")]
     public object? Type
@@ -509,11 +511,12 @@ public record QuestCondition
     }
 
     [JsonPropertyName("dogtagLevel")]
-    public object? DogtagLevel
+    [JsonConverter(typeof(StringToNumberFactoryConverter))]
+    public int? DogtagLevel
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("traderId")]
     public string? TraderId
@@ -523,18 +526,18 @@ public record QuestCondition
     }
 
     [JsonPropertyName("maxDurability")]
-    public object? MaxDurability
+    public double? MaxDurability
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("minDurability")]
-    public object? MinDurability
+    public double? MinDurability
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("counter")]
     public QuestConditionCounter? Counter
@@ -718,11 +721,12 @@ public record QuestConditionCounterCondition
     }
 
     [JsonPropertyName("target")]
-    public object? Target
+    [JsonConverter(typeof(ListOrTConverterFactory))]
+    public ListOrT<string>? Target
     {
         get;
         set;
-    } // TODO: string[] | string
+    }
 
     [JsonPropertyName("completeInSeconds")]
     public int? CompleteInSeconds
@@ -771,7 +775,7 @@ public record QuestConditionCounterCondition
     {
         get;
         set;
-    } // TODO: number | string
+    }
 
     [JsonPropertyName("weapon")]
     public List<string>? Weapon

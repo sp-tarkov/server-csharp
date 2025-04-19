@@ -6,6 +6,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Dialog;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 
@@ -17,7 +18,6 @@ public class SendGiftMessageHandler(
     ConfigServer _configServer) : IChatMessageHandler
 {
     private readonly CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
-    private readonly string commandSent = string.Empty;
 
     public int GetPriority()
     {
@@ -26,10 +26,10 @@ public class SendGiftMessageHandler(
 
     public bool CanHandle(string message)
     {
-        return _giftService.GiftExists(message.ToLower());
+        return _giftService.GiftExists(message);
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender, object? extraInfo = null)
     {
         // Gifts may be disabled via config
         if (!_coreConfig.Features.ChatbotFeatures.SptFriendGiftsEnabled)
@@ -37,7 +37,8 @@ public class SendGiftMessageHandler(
             return;
         }
 
-        var giftSent = _giftService.SendGiftToPlayer(sessionId, commandSent);
+        var messageTest = ((SendMessageRequest) extraInfo).Text;
+        var giftSent = _giftService.SendGiftToPlayer(sessionId, messageTest);
         switch (giftSent)
         {
             case GiftSentResult.SUCCESS:

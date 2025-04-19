@@ -21,7 +21,8 @@ public class SeasonalEventService(
     BotHelper _botHelper,
     ProfileHelper _profileHelper,
     //DatabaseImporter _databaseImporter,
-    ConfigServer _configServer
+    ConfigServer _configServer,
+    LocaleService _localeService
 )
 {
     private bool _christmasEventActive;
@@ -761,6 +762,13 @@ public class SeasonalEventService(
 
     protected void ConfigureZombies(ZombieSettings zombieSettings)
     {
+        // Flag zombies as being enabled
+        var botData = _databaseService.GetBots();
+        if (!botData.Core.TryAdd("ACTIVE_HALLOWEEN_ZOMBIES_EVENT", true))
+        {
+            botData.Core["ACTIVE_HALLOWEEN_ZOMBIES_EVENT"] = true;
+        }
+
         var globals = _databaseService.GetGlobals();
         var infectionHalloween = globals.Configuration.SeasonActivity.InfectionHalloween;
         infectionHalloween.DisplayUIEnabled = true;
@@ -1053,9 +1061,8 @@ public class SeasonalEventService(
 
     protected void RenameBitcoin()
     {
-        var enLocale = _databaseService.GetLocales().Global["en"];
-        enLocale.Value[$"{ItemTpl.BARTER_PHYSICAL_BITCOIN} Name"] = "Physical SPT Coin";
-        enLocale.Value[$"{ItemTpl.BARTER_PHYSICAL_BITCOIN} ShortName"] = "0.2SPT";
+        _localeService.AddCustomClientLocale("en", $"{ItemTpl.BARTER_PHYSICAL_BITCOIN} Name", "Physical SPT Coin");
+        _localeService.AddCustomClientLocale("en", $"{ItemTpl.BARTER_PHYSICAL_BITCOIN} ShortName", "0.2SPT");
     }
 
     /// <summary>

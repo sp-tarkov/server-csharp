@@ -1,3 +1,4 @@
+using System.Text.Json;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -193,7 +194,6 @@ public class QuestHelper(
     /// <returns>true if loyalty is high enough to fulfill quest requirement</returns>
     public bool TraderLoyaltyLevelRequirementCheck(QuestCondition questProperties, PmcData profile)
     {
-        var requiredLoyaltyLevel = questProperties.Value as double?;
         if (!profile.TradersInfo.TryGetValue(
                 questProperties.Target.IsItem
                     ? questProperties.Target.Item
@@ -208,7 +208,7 @@ public class QuestHelper(
 
         return CompareAvailableForValues(
             trader.LoyaltyLevel.Value,
-            requiredLoyaltyLevel.Value,
+            questProperties.Value.Value,
             questProperties.CompareMethod
         );
     }
@@ -660,7 +660,7 @@ public class QuestHelper(
                     Template = item.Template,
                     ParentId = item.ParentId,
                     SlotId = item.SlotId,
-                    Location = (ItemLocation) item.Location,
+                    Location = item.Location,
                     Upd = new Upd
                     {
                         StackObjectsCount = item.Upd.StackObjectsCount
@@ -741,8 +741,7 @@ public class QuestHelper(
             {
                 _mailSendService.SendLocalisedNpcMessageToPlayer(
                     sessionID,
-                    _traderHelper.GetTraderById(quest?.TraderId ?? matchingRepeatableQuest?.TraderId)
-                        .ToString(), // Can be undefined when repeatable quest has been moved to inactiveQuests
+                    quest?.TraderId ?? matchingRepeatableQuest?.TraderId,
                     MessageType.QUEST_FAIL,
                     quest.FailMessageText,
                     questRewards.ToList(),
@@ -1379,7 +1378,7 @@ public class QuestHelper(
 
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionID,
-            _traderHelper.GetTraderById(quest.TraderId).ToString(),
+            quest.TraderId,
             MessageType.QUEST_SUCCESS,
             quest.SuccessMessageText,
             questRewards,

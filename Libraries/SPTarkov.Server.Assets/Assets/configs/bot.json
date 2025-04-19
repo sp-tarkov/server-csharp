@@ -1,244 +1,40 @@
 {
   "assaultBrainType": {
     "bigmap": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "factory4_day": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "factory4_night": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "interchange": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "laboratory": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "lighthouse": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "rezervbase": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "sandbox": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "sandbox_high": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "shoreline": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "tarkovstreets": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     },
     "woods": {
-      "arenaFighter": 0,
-      "arenaFighterEvent": 0,
-      "assault": 1,
-      "bossBoar": 0,
-      "bossGluhar": 0,
-      "bossKilla": 0,
-      "bossKnight": 0,
-      "bossSanitar": 0,
-      "bossTagilla": 0,
-      "bossZryachiy": 0,
-      "crazyAssaultEvent": 0,
-      "cursedAssault": 0,
-      "exUsec": 0,
-      "followerBigPipe": 0,
-      "followerBully": 0,
-      "followerGluharAssault": 0,
-      "followerSanitar": 0,
-      "pmcBot": 0
+      "assault": 1
     }
   },
   "bosses": [
@@ -256,9 +52,9 @@
     "bossPartisan",
     "followerBigPipe",
     "followerBirdEye",
-	"bossTagillaAgro",
-	"bossKillaAgro",
-	"tagillaHelperAgro"
+    "bossTagillaAgro",
+    "bossKillaAgro",
+    "tagillaHelperAgro"
   ],
   "botNameLengthLimit": 19,
   "botRolesThatMustHaveUniqueName": [
@@ -379,7 +175,7 @@
         },
         "weapon": {
           "highestMax": 100,
-          "lowestMax": 80,
+        "lowestMax": 85,
           "maxDelta": 10,
           "minDelta": 0,
           "minLimitPercent": 15
@@ -429,13 +225,15 @@
       },
       "follower": {
         "armor": {
+        "highestMaxPercent": 100,
+        "lowestMaxPercent": 90,
           "maxDelta": 10,
           "minDelta": 0,
           "minLimitPercent": 15
         },
         "weapon": {
           "highestMax": 100,
-          "lowestMax": 80,
+        "lowestMax": 85,
           "maxDelta": 40,
           "minDelta": 20,
           "minLimitPercent": 15
@@ -713,7 +511,7 @@
       "lightIsActiveDayChancePercent": 75,
       "lightIsActiveNightChancePercent": 85
     },
-	"bosskillaagro": {
+    "bosskillaagro": {
       "faceShieldIsActiveChancePercent": 100,
       "forceOnlyArmoredRigWhenNoArmor": true,
       "forceStock": true,
@@ -783,13 +581,6 @@
       "lightIsActiveNightChancePercent": 75
     },
     "bosstagillaagro": {
-      "faceShieldIsActiveChancePercent": 100,
-      "forceStock": true,
-      "laserIsActiveChancePercent": 75,
-      "lightIsActiveDayChancePercent": 25,
-      "lightIsActiveNightChancePercent": 75
-    },
-    "tagillahelperagro": {
       "faceShieldIsActiveChancePercent": 100,
       "forceStock": true,
       "laserIsActiveChancePercent": 75,
@@ -2738,6 +2529,13 @@
         "scopeLimit": 1
       }
     },
+    "tagillahelperagro": {
+      "faceShieldIsActiveChancePercent": 100,
+      "forceStock": true,
+      "laserIsActiveChancePercent": 75,
+      "lightIsActiveDayChancePercent": 25,
+      "lightIsActiveNightChancePercent": 75
+    },
     "test": {}
   },
   "itemSpawnLimits": {
@@ -2769,7 +2567,6 @@
     },
     "bosskilla": {},
     "bosskillaagro": {},
-    "tagillahelperagro": {},
     "bossknight": {},
     "bosskojaniy": {
       "5c94bbff86f7747ee735c08f": 1,
@@ -2895,6 +2692,7 @@
     "sectantwarrior": {},
     "shooterbtr": {},
     "skier": {},
+    "tagillahelperagro": {},
     "test": {}
   },
   "lootItemResourceRandomization": {
@@ -3001,12 +2799,14 @@
     "bossBully": 5,
     "bossGluhar": 5,
     "bossKilla": 5,
+    "bossKillaAgro": 5,
     "bossKnight": 5,
     "bossKojaniy": 5,
     "bossKolontay": 5,
     "bossPartisan": 5,
     "bossSanitar": 5,
     "bossTagilla": 5,
+    "bossTagillaAgro": 5,
     "bossTest": 10,
     "bossZryachiy": 5,
     "crazyAssaultEvent": 15,
@@ -3050,10 +2850,8 @@
     "sectantWarrior": 10,
     "shooterBTR": 1,
     "skier": 10,
-    "test": 30,
-	"bossTagillaAgro": 5,
-	"bossKillaAgro": 5,
-	"tagillaHelperAgro": 5
+    "tagillaHelperAgro": 5,
+    "test": 30
   },
   "revenge": {
     "arenaFighter": [

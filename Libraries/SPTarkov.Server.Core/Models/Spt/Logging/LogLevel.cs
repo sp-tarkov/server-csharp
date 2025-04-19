@@ -11,5 +11,3 @@ public enum LogLevel
     Debug,
     Trace
 }
-
-// TODO: needs to be moved to enums namespace

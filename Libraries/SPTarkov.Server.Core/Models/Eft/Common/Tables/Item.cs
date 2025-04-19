@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
 namespace SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -360,6 +361,12 @@ public record Upd
         get;
         set;
     }
+
+    public bool? Lockable
+    {
+        get;
+        set;
+    }
 }
 
 public enum PinLockState
@@ -379,7 +386,8 @@ public record UpdBuff
     }
 
     [JsonPropertyName("BuffType")]
-    public string? BuffType
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public BuffType? BuffType
     {
         get;
         set;

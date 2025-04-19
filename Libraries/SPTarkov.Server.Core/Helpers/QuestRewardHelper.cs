@@ -89,7 +89,7 @@ public class QuestRewardHelper(
     protected Quest GetQuestFromDb(string questId, PmcData pmcData)
     {
         // May be a repeatable quest
-        var quest = _databaseService.GetQuests()[questId];
+        var quest = _databaseService.GetQuests().FirstOrDefault(x => x.Key == questId).Value;
         if (quest == null)
             // Check daily/weekly objects
         {

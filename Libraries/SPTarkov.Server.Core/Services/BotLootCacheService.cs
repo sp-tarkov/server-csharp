@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -20,18 +21,14 @@ public class BotLootCacheService(
     ICloner _cloner
 )
 {
-    protected readonly Lock _lockObject = new();
-    protected Dictionary<string, BotLootCache> _lootCache = new();
+    protected ConcurrentDictionary<string, BotLootCache> _lootCache = new ConcurrentDictionary<string, BotLootCache>();
 
     /// <summary>
     ///     Remove cached bot loot data
     /// </summary>
     public void ClearCache()
     {
-        lock (_lockObject)
-        {
-            _lootCache.Clear();
-        }
+        _lootCache.Clear();
     }
 
     /// <summary>
@@ -49,21 +46,16 @@ public class BotLootCacheService(
         BotType botJsonTemplate,
         MinMax<double>? itemPriceMinMax = null)
     {
-        lock (_lockObject)
+        if (!BotRoleExistsInCache(botRole))
         {
-            if (!BotRoleExistsInCache(botRole))
-            {
-                InitCacheForBotRole(botRole);
-                AddLootToCache(botRole, isPmc, botJsonTemplate);
-            }
+            InitCacheForBotRole(botRole);
+            AddLootToCache(botRole, isPmc, botJsonTemplate);
         }
 
         Dictionary<string, double> result = null;
         BotLootCache botRoleCache;
-        lock (_lockObject)
-        {
-            botRoleCache = _lootCache[botRole];
-        }
+
+        botRoleCache = _lootCache[botRole];
 
         switch (lootType)
         {
@@ -123,8 +115,7 @@ public class BotLootCacheService(
 
         if (itemPriceMinMax is not null)
         {
-            var filteredResult = result.Where(
-                i =>
+            var filteredResult = result.Where(i =>
                 {
                     var itemPrice = _itemHelper.GetItemPrice(i.Key);
                     if (itemPriceMinMax?.Min is not null && itemPriceMinMax?.Max is not null)
@@ -168,15 +159,15 @@ public class BotLootCacheService(
         Dictionary<string, double> backpackLootPool = new();
         Dictionary<string, double> pocketLootPool = new();
         Dictionary<string, double> vestLootPool = new();
-        Dictionary<string, double> secureLootTPool = new();
+        Dictionary<string, double> secureLootPool = new();
         Dictionary<string, double> combinedLootPool = new();
 
         if (isPmc)
         {
             // Replace lootPool from bot json with our own generated list for PMCs
-            lootPool.Backpack = _cloner.Clone(_pmcLootGenerator.GeneratePMCBackpackLootPool(botRole));
-            lootPool.Pockets = _cloner.Clone(_pmcLootGenerator.GeneratePMCPocketLootPool(botRole));
-            lootPool.TacticalVest = _cloner.Clone(_pmcLootGenerator.GeneratePMCVestLootPool(botRole));
+            lootPool.Backpack = _cloner.Clone(_pmcLootGenerator.GeneratePMCBackpackLootPool(botRole)).ToDictionary();
+            lootPool.Pockets = _cloner.Clone(_pmcLootGenerator.GeneratePMCPocketLootPool(botRole)).ToDictionary();
+            lootPool.TacticalVest = _cloner.Clone(_pmcLootGenerator.GeneratePMCVestLootPool(botRole)).ToDictionary();
         }
 
         // Backpack/Pockets etc
@@ -212,7 +203,7 @@ public class BotLootCacheService(
                     AddItemsToPool(vestLootPool, kvp.Value);
                     break;
                 case "SecuredContainer":
-                    AddItemsToPool(secureLootTPool, kvp.Value);
+                    AddItemsToPool(secureLootPool, kvp.Value);
                     break;
                 case "Backpack":
                     AddItemsToPool(backpackLootPool, kvp.Value);
@@ -447,25 +438,38 @@ public class BotLootCacheService(
             filteredVestItems[itemKvP.Key] = itemKvP.Value;
         }
 
-        BotLootCache cacheForRole;
-        lock (_lockObject)
+        // Get secure loot (excluding magazines, bullets)
+        var filteredSecureLoot = new Dictionary<string, double>();
+        foreach (var itemKvP in secureLootPool)
         {
-            cacheForRole = _lootCache[botRole];
+            var itemResult = _itemHelper.GetItem(itemKvP.Key);
+            if (itemResult.Value is null)
+            {
+                continue;
+            }
 
-            cacheForRole.HealingItems = healingItems;
-            cacheForRole.DrugItems = drugItems;
-            cacheForRole.FoodItems = foodItems;
-            cacheForRole.DrinkItems = drinkItems;
-            cacheForRole.CurrencyItems = currencyItems;
-            cacheForRole.StimItems = stimItems;
-            cacheForRole.GrenadeItems = grenadeItems;
+            var itemTemplate = itemResult.Value;
+            if (IsBulletOrGrenade(itemTemplate.Properties) || IsMagazine(itemTemplate.Properties))
+            {
+                continue;
+            }
 
-            cacheForRole.SpecialItems = specialLootItems;
-            cacheForRole.BackpackLoot = filteredBackpackItems;
-            cacheForRole.PocketLoot = filteredPocketItems;
-            cacheForRole.VestLoot = filteredVestItems;
-            cacheForRole.SecureLoot = secureLootTPool;
+            filteredSecureLoot[itemKvP.Key] = itemKvP.Value;
         }
+
+        var cacheForRole = _lootCache[botRole];
+        cacheForRole.HealingItems = healingItems;
+        cacheForRole.DrugItems = drugItems;
+        cacheForRole.FoodItems = foodItems;
+        cacheForRole.DrinkItems = drinkItems;
+        cacheForRole.CurrencyItems = currencyItems;
+        cacheForRole.StimItems = stimItems;
+        cacheForRole.GrenadeItems = grenadeItems;
+        cacheForRole.SpecialItems = specialLootItems;
+        cacheForRole.BackpackLoot = filteredBackpackItems;
+        cacheForRole.PocketLoot = filteredPocketItems;
+        cacheForRole.VestLoot = filteredVestItems;
+        cacheForRole.SecureLoot = filteredSecureLoot;
     }
 
     protected void AddItemsToPool(Dictionary<string, double> poolToAddTo, Dictionary<string, double> poolOfItemsToAdd)
@@ -544,10 +548,7 @@ public class BotLootCacheService(
     /// <returns>true if they exist</returns>
     protected bool BotRoleExistsInCache(string botRole)
     {
-        lock (_lockObject)
-        {
-            return _lootCache.ContainsKey(botRole);
-        }
+        return _lootCache.ContainsKey(botRole);
     }
 
     /// <summary>
@@ -556,9 +557,8 @@ public class BotLootCacheService(
     /// <param name="botRole">Bot role to hydrate</param>
     protected void InitCacheForBotRole(string botRole)
     {
-        lock (_lockObject)
-        {
-            _lootCache.Add(
+        if (
+            !_lootCache.TryAdd(
                 botRole,
                 new BotLootCache
                 {
@@ -577,7 +577,10 @@ public class BotLootCacheService(
                     HealingItems = new Dictionary<string, double>(),
                     StimItems = new Dictionary<string, double>()
                 }
-            );
+            )
+        )
+        {
+            _logger.Error($"Unable to add loot cache for bot role: {botRole}");
         }
     }
 

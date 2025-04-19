@@ -3,6 +3,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 Server/user/
+SPTarkov.Server/user
+SPTarkov.Server/Assets
 
 # User-specific files
 *.rsuser
@@ -423,5 +425,3 @@ fabric.properties
 
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
-
-launchSettings.json

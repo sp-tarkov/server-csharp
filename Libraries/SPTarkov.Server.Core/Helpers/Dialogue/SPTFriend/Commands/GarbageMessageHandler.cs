@@ -21,7 +21,7 @@ public class GarbageMessageHandler(
         return message.ToLower() == "garbage";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         var beforeCollect = GC.GetTotalMemory(false) / 1024 / 1024;
 

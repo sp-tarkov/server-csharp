@@ -2,6 +2,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
 using SPTarkov.Server.Core.Models.Spt.Mod;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Modding;
 
@@ -17,6 +18,11 @@ public class ModDllLoader
         }
 
         var mods = new List<SptMod>();
+
+        if (!ProgramStatics.MODS())
+        {
+            return mods;
+        }
 
         // foreach directory in /user/mods/
         // treat this as the MOD
@@ -98,11 +104,6 @@ public class ModDllLoader
             result.PackageJson?.SptVersion == null)
         {
             throw new Exception($"The package.json file for {path} is missing one of these properties: name, author, licence, version or sptVersion");
-        }
-
-        if (result.Assemblies is not null && result.PackageJson is not null)
-        {
-            Console.WriteLine($"Loaded: {result.PackageJson.Name} Version: {result.PackageJson.Version} by: {result.PackageJson.Author}");
         }
 
         return result;

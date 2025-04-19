@@ -173,7 +173,7 @@ public class PmcChatResponseService(
         if (AppendSuffixToMessageEnd(isVictim))
         {
             var suffixText = _localisationService.GetText(_randomUtil.GetArrayValue(GetResponseSuffixLocaleKeys()));
-            responseText += $"{suffixText}";
+            responseText += $" {suffixText}";
         }
 
         if (StripCapitalisation(isVictim))

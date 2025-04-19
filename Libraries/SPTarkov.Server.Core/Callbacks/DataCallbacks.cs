@@ -11,7 +11,8 @@ public class DataCallbacks(
     HttpResponseUtil _httpResponseUtil,
     DatabaseService _databaseService,
     TraderController _traderController,
-    HideoutController _hideoutController
+    HideoutController _hideoutController,
+    LocaleService _localeService
 )
 {
     /// <summary>
@@ -133,10 +134,9 @@ public class DataCallbacks(
     public string GetLocalesGlobal(string url, EmptyRequestData _, string sessionID)
     {
         var localeId = url.Replace("/client/locale/", "");
-        var locales = _databaseService.GetLocales();
-        var result = locales.Global?[localeId].Value ?? locales.Global?.FirstOrDefault(m => m.Key == "en").Value.Value;
+        var locales = _localeService.GetLocaleDb(localeId);
 
-        return _httpResponseUtil.GetUnclearedBody(result);
+        return _httpResponseUtil.GetUnclearedBody(locales);
     }
 
     /// <summary>

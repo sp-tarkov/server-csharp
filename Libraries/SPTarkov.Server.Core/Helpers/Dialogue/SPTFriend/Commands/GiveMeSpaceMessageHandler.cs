@@ -28,7 +28,7 @@ public class GiveMeSpaceMessageHandler(
         return message.ToLower() == "givemespace";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         const string stashRowGiftId = "StashRows";
         var maxGiftsToSendCount = _coreConfig.Features.ChatbotFeatures.CommandUseLimits[stashRowGiftId] ?? 5;

@@ -8,6 +8,8 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Logging;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -50,7 +52,16 @@ public class JsonUtil
             new EftEnumConverter<RequirementState>(),
             new EftEnumConverter<ExfiltrationType>(),
             new EftEnumConverter<EquipmentSlots>(),
+            new EftEnumConverter<BuffType>(),
+            new EftEnumConverter<BodyPartColliderType>(),
+
+            new EftEnumConverter<SPTarkov.Server.Core.Models.Spt.Logging.LogLevel>(),
+            new EftEnumConverter<LogTextColor>(),
+            new EftEnumConverter<LogBackgroundColor>(),
+
             new EftListEnumConverter<EquipmentSlots>(),
+            new EftListEnumConverter<PlayerSide>(),
+            new EftListEnumConverter<DamageType>(),
             new BaseInteractionRequestDataConverter()
         }
     };
@@ -59,7 +70,6 @@ public class JsonUtil
     {
         WriteIndented = true
     };
-
 
     /// <summary>
     ///     Convert JSON into an object

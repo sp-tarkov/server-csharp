@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net.WebSockets;
 using System.Text;
 using SPTarkov.Server.Core.Helpers;
@@ -22,8 +23,7 @@ public class SptWebSocketConnectionHandler(
 ) : IWebSocketConnectionHandler
 {
     protected WsPing _defaultNotification = new();
-    protected readonly Lock _lockObject = new();
-    protected Dictionary<string, WebSocket> _sockets = new();
+    protected ConcurrentDictionary<string, WebSocket> _sockets = new();
 
     public string GetHookUrl()
     {
@@ -44,9 +44,9 @@ public class SptWebSocketConnectionHandler(
 
         _logger.Info(_localisationService.GetText("websocket-player_connected", playerInfoText));
 
-        lock (_lockObject)
+        if (!_sockets.TryAdd(sessionID, ws) && _logger.IsLogEnabled(LogLevel.Debug))
         {
-            _sockets.Add(sessionID, ws);
+            _logger.Debug($"[ws] player: {playerInfoText} has already connected");
         }
 
         return Task.CompletedTask;
@@ -70,13 +70,14 @@ public class SptWebSocketConnectionHandler(
         var splitUrl = context.Request.Path.Value.Split("/");
         var sessionID = splitUrl.Last();
 
-        lock (_lockObject)
+        if (!_sockets.Remove(sessionID, out _) && _logger.IsLogEnabled(LogLevel.Debug))
         {
-            _sockets.Remove(sessionID);
-            var playerProfile = _profileHelper.GetFullProfile(sessionID);
-            var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
-            _logger.Info($"[ws] player: {playerInfoText} has disconnected");
+            _logger.Debug($"[ws] Error removing socket for session: {sessionID}");
         }
+
+        var playerProfile = _profileHelper.GetFullProfile(sessionID);
+        var playerInfoText = $"{playerProfile.ProfileInfo.Username} ({sessionID})";
+        _logger.Info($"[ws] player: {playerInfoText} has disconnected");
     }
 
     public void SendMessage(string sessionID, WsNotificationEvent output)
@@ -110,7 +111,6 @@ public class SptWebSocketConnectionHandler(
         catch (Exception err)
         {
             _logger.Error(_localisationService.GetText("websocket-message_send_failed_with_error"), err);
-            Console.WriteLine(err);
         }
     }
 
@@ -121,6 +121,6 @@ public class SptWebSocketConnectionHandler(
 
     public WebSocket GetSessionWebSocket(string sessionID)
     {
-        return _sockets[sessionID];
+        return _sockets.GetValueOrDefault(sessionID);
     }
 }

@@ -595,7 +595,7 @@ public class InsuranceController(
         // Send the insurance message
         _mailSendService.SendLocalisedNpcMessageToPlayer(
             sessionId,
-            _traderHelper.GetTraderById(insurance.TraderId).ToString(),
+            insurance.TraderId,
             insurance.MessageType ?? MessageType.SYSTEM_MESSAGE,
             insurance.MessageTemplateId,
             insurance.Items,

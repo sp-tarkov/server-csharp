@@ -89,6 +89,7 @@ public class PlayerScavGenerator(
         scavData.Info.GameVersion = pmcDataClone.Info.GameVersion;
         scavData.Info.MemberCategory = MemberCategory.UniqueId;
         scavData.Info.LockedMoveCommands = true;
+        scavData.Info.MainProfileNickname = pmcDataClone.Info.Nickname;
         scavData.RagfairInfo = pmcDataClone.RagfairInfo;
         scavData.UnlockedInfo = pmcDataClone.UnlockedInfo;
 

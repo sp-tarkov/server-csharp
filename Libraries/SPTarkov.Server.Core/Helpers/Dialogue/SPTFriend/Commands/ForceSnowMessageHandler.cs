@@ -28,7 +28,7 @@ public class ForceSnowMessageHandler(
         return message.ToLower() == "itsonlysnowalan";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _weatherConfig.OverrideSeason = Season.WINTER;
 

@@ -115,6 +115,11 @@ public class RandomUtil(ISptLogger<RandomUtil> _logger, ICloner _cloner)
         // We can call `count` directly if it's a list
         if (collection is IList<T> list)
         {
+            if (!list.Any())
+            {
+                throw new InvalidOperationException("Sequence contains no elements.");
+            }
+
             return list[GetInt(0, list.Count - 1)];
         }
 

@@ -97,8 +97,15 @@ public class HealthController(
             // Can remove effects and limb has effects to remove
             foreach (var effectKvP in bodyPartToHeal.Effects)
             {
+                // Check enum has effectType
+                if (!Enum.TryParse<DamageEffectType>(effectKvP.Key, out var effect))
+                    // Enum doesnt contain this key
+                {
+                    continue;
+                }
+
                 // Check if healing item removes the effect on limb
-                if (!healItemEffectDetails.TryGetValue(Enum.Parse<DamageEffectType>(effectKvP.Key), out var matchingEffectFromHealingItem))
+                if (!healItemEffectDetails.TryGetValue(effect, out var matchingEffectFromHealingItem))
                     // Healing item doesn't have matching effect, it doesn't remove the effect
                 {
                     continue;

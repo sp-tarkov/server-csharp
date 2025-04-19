@@ -214,7 +214,12 @@ public class BotWeaponGenerator(
         {
             var ubglTemplate = _itemHelper.GetItem(ubglMod.Template).Value;
             ubglAmmoTpl = GetWeightedCompatibleAmmo(botTemplateInventory.Ammo, ubglTemplate);
-            FillUbgl(weaponWithModsArray, ubglMod, ubglAmmoTpl);
+            // this can be null - example - FollowerBoarClose2 can have an UBGL but doesnt have the ammo caliber defined in its json
+            // the default ammo passed from GetWeightCompatibleAmmo can be null
+            if (ubglAmmoTpl is not null)
+            {
+                FillUbgl(weaponWithModsArray, ubglMod, ubglAmmoTpl);
+            }
         }
 
         return new GenerateWeaponResult
@@ -576,7 +581,7 @@ public class BotWeaponGenerator(
     /// <param name="cartridgePool">Dictionary of all cartridges keyed by type e.g. Caliber556x45NATO</param>
     /// <param name="weaponTemplate">Weapon details from database we want to pick ammo for</param>
     /// <returns>Ammo template that works with the desired gun</returns>
-    protected string GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
+    protected string? GetWeightedCompatibleAmmo(Dictionary<string, Dictionary<string, double>> cartridgePool, TemplateItem weaponTemplate)
     {
         var desiredCaliber = GetWeaponCaliber(weaponTemplate);
         if (!cartridgePool.TryGetValue(desiredCaliber, out var cartridgePoolForWeapon) || cartridgePoolForWeapon?.Count == 0)
@@ -597,6 +602,7 @@ public class BotWeaponGenerator(
             }
 
             // Immediately returns, default ammo is guaranteed to be compatible
+            // it is not guaranteed to even have a default ammo
             return weaponTemplate.Properties.DefAmmo;
         }
 

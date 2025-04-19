@@ -796,7 +796,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (string.Equals(childItem.ParentId,baseItemId, StringComparison.Ordinal) && !result.ContainsKey(childItem.Id))
+            if (!result.ContainsKey(childItem.Id) && string.Equals(childItem.ParentId,baseItemId, StringComparison.Ordinal))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {

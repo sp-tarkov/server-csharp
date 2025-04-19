@@ -430,7 +430,7 @@ public class RepeatableQuestGenerator(
         {
             Id = _hashUtil.Generate(),
             DynamicLocale = true,
-            Target = location,
+            Target = new ListOrT<string>(location, null),
             ConditionType = "Location"
         };
     }
@@ -456,7 +456,7 @@ public class RepeatableQuestGenerator(
         {
             Id = _hashUtil.Generate(),
             DynamicLocale = true,
-            Target = target, // e,g, "AnyPmc"
+            Target = new ListOrT<string>(null, target), // e,g, "AnyPmc"
             Value = 1,
             ResetOnSessionEnd = false,
             EnemyHealthEffects = [],
@@ -470,7 +470,7 @@ public class RepeatableQuestGenerator(
 
         if (target.StartsWith("boss"))
         {
-            killConditionProps.Target = "Savage";
+            killConditionProps.Target = new ListOrT<string>(null, "Savage");
             killConditionProps.SavageRole = [target];
         }
 
@@ -812,7 +812,7 @@ public class RepeatableQuestGenerator(
         {
             Id = _hashUtil.Generate(),
             DynamicLocale = true,
-            Target = locationTarget,
+            Target = new ListOrT<string>(locationTarget, null),
             ConditionType = "Location"
         };
 

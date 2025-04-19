@@ -23669,6 +23669,276 @@
       "_name": "Saiga-12 FA",
       "_parent": "676408beba9ecbb20a005306",
       "_type": "Preset"
+    },
+    "67c86f58179c494df00eedf6": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab2f28dafe3b22670c9116",
+      "_id": "67c86f58179c494df00eedf6",
+      "_items": [
+        {
+          "_id": "67c8701892716de04e03a1c2",
+          "_tpl": "67ab2f28dafe3b22670c9116"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c3",
+          "_tpl": "65704de13e7bba58ea0285c8",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c4",
+          "_tpl": "65705c3c14f2ed6d7d0b7738",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c5",
+          "_tpl": "65705c777260e1139e091408",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c6",
+          "_tpl": "65705cb314f2ed6d7d0b773c",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c7",
+          "_tpl": "65705cea4916448ae1050897",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Collar"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c8",
+          "_tpl": "656f9d5900d62bcd2e02407c",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c8701892716de04e03a1c9",
+          "_tpl": "656f9d5900d62bcd2e02407c",
+          "parentId": "67c8701892716de04e03a1c2",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Body armor Kirasa N Green",
+      "_parent": "67c8701892716de04e03a1c2",
+      "_type": "Preset"
+    },
+    "67c86fc392716de04e03a1b6": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab2f94dafe3b22670c912c",
+      "_id": "67c86fc392716de04e03a1b6",
+      "_items": [
+        {
+          "_id": "67c86fe6f8615103060a6926",
+          "_tpl": "67ab2f94dafe3b22670c912c"
+        },
+        {
+          "_id": "67c86fe6f8615103060a6927",
+          "_tpl": "6570e025615f54368b04fcb0",
+          "parentId": "67c86fe6f8615103060a6926",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "67c86fe6f8615103060a6928",
+          "_tpl": "6570e0610b57c03ec90b96ef",
+          "parentId": "67c86fe6f8615103060a6926",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "67c86fe6f8615103060a6929",
+          "_tpl": "656fad8c498d1b7e3e071da0",
+          "parentId": "67c86fe6f8615103060a6926",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c86fe6f8615103060a692a",
+          "_tpl": "656fad8c498d1b7e3e071da0",
+          "parentId": "67c86fe6f8615103060a6926",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Body armor HighCom Trooper Coyote",
+      "_parent": "67c86fe6f8615103060a6926",
+      "_type": "Preset"
+    },
+    "67c87094d05729369306ce76": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab49aab9c7a1e18c095686",
+      "_id": "67c87094d05729369306ce76",
+      "_items": [
+        {
+          "_id": "67c87094d05729369306ce7d",
+          "_tpl": "67ab49aab9c7a1e18c095686"
+        },
+        {
+          "_id": "67c87094d05729369306ce7e",
+          "_tpl": "6570e83223c1f638ef0b0ede",
+          "parentId": "67c87094d05729369306ce7d",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "67c87094d05729369306ce7f",
+          "_tpl": "6570e87c23c1f638ef0b0ee2",
+          "parentId": "67c87094d05729369306ce7d",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "67c87094d05729369306ce80",
+          "_tpl": "6570e90b3a5689d85f08db97",
+          "parentId": "67c87094d05729369306ce7d",
+          "slotId": "Groin"
+        },
+        {
+          "_id": "67c87094d05729369306ce81",
+          "_tpl": "656f9fa0498d1b7e3e071d98",
+          "parentId": "67c87094d05729369306ce7d",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c87094d05729369306ce82",
+          "_tpl": "656f9fa0498d1b7e3e071d98",
+          "parentId": "67c87094d05729369306ce7d",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Vest Crye Precision AVS multicam",
+      "_parent": "67c87094d05729369306ce7d",
+      "_type": "Preset"
+    },
+    "67c870e5da2a209b2a0ed126": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab2eecfe82855dcc0f2af6",
+      "_id": "67c870e5da2a209b2a0ed126",
+      "_items": [
+        {
+          "_id": "67c870e5da2a209b2a0ed12a",
+          "_tpl": "67ab2eecfe82855dcc0f2af6"
+        },
+        {
+          "_id": "67c870e5da2a209b2a0ed12b",
+          "_tpl": "656fae5f7c2d57afe200c0d7",
+          "parentId": "67c870e5da2a209b2a0ed12a",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c870e5da2a209b2a0ed12c",
+          "_tpl": "656fae5f7c2d57afe200c0d7",
+          "parentId": "67c870e5da2a209b2a0ed12a",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Body armor Hexatac HPC Multicam",
+      "_parent": "67c870e5da2a209b2a0ed12a",
+      "_type": "Preset"
+    },
+    "67c87145e52edc36aa069ae6": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab4b2d6f7ae4aa550bbcf6",
+      "_id": "67c87145e52edc36aa069ae6",
+      "_items": [
+        {
+          "_id": "67c87145e52edc36aa069aec",
+          "_tpl": "67ab4b2d6f7ae4aa550bbcf6"
+        },
+        {
+          "_id": "67c87145e52edc36aa069aed",
+          "_tpl": "6575bc88c6700bd6b40e8a57",
+          "parentId": "67c87145e52edc36aa069aec",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "67c87145e52edc36aa069aee",
+          "_tpl": "6575bca0dc9932aed601c5d7",
+          "parentId": "67c87145e52edc36aa069aec",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "67c87145e52edc36aa069aef",
+          "_tpl": "656fae5f7c2d57afe200c0d7",
+          "parentId": "67c87145e52edc36aa069aec",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c87145e52edc36aa069af0",
+          "_tpl": "656fae5f7c2d57afe200c0d7",
+          "parentId": "67c87145e52edc36aa069aec",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Vest 5.11 Tactical TacTec Storm",
+      "_parent": "67c87145e52edc36aa069aec",
+      "_type": "Preset"
+    },
+    "67c871b6e0b64a07890a2f36": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "67ab2f5adafe3b22670c911f",
+      "_id": "67c871b6e0b64a07890a2f36",
+      "_items": [
+        {
+          "_id": "67c871b6e0b64a07890a2f41",
+          "_tpl": "67ab2f5adafe3b22670c911f"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f42",
+          "_tpl": "6575dd3e9e27f4a85e081142",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Soft_armor_front"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f43",
+          "_tpl": "6575dd519e27f4a85e081146",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Soft_armor_back"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f44",
+          "_tpl": "6575dd64945bf78edd04c438",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Soft_armor_left"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f45",
+          "_tpl": "6575dd6e9d3a0ddf660b9047",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "soft_armor_right"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f46",
+          "_tpl": "6575dd769d3a0ddf660b904b",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Collar"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f47",
+          "_tpl": "6575dd800546f8b1de093df6",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Groin"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f48",
+          "_tpl": "6575dd94945bf78edd04c43c",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Groin_back"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f49",
+          "_tpl": "65573fa5655447403702a816",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Front_plate"
+        },
+        {
+          "_id": "67c871b6e0b64a07890a2f4a",
+          "_tpl": "65573fa5655447403702a816",
+          "parentId": "67c871b6e0b64a07890a2f41",
+          "slotId": "Back_plate"
+        }
+      ],
+      "_name": "Body armor FORT Redut M Woodland",
+      "_parent": "67c871b6e0b64a07890a2f41",
+      "_type": "Preset"
     }
   },
   "LocationInfection": {
@@ -34450,6 +34720,11 @@
         "MaxInLobby": 2,
         "MaxInRaid": 5,
         "TemplateId": "679b9819a2f2dd4da9023512"
+      },
+      {
+        "MaxInLobby": 0,
+        "MaxInRaid": 0,
+        "TemplateId": "67ea616a74f765cefd009fb7"
       }
     ],
     "RunddansSettings": {
