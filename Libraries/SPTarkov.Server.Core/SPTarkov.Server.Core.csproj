@@ -54,9 +54,6 @@ public static partial class ProgramStatics
     private static EntryType? BuildType = EntryType.$(SptBuildType)%3B
 }
 " Overwrite="true"/>
-    <ItemGroup>
-      <Compile Include="Utils/ProgramStatics.cs"/>
-    </ItemGroup>
   </Target>
 
 </Project>
