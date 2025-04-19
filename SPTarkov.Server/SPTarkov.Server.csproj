@@ -15,6 +15,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
     <IsPackable>true</IsPackable>
+    <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\Assets\images\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
