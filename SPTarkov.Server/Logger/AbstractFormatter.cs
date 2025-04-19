@@ -1,3 +1,4 @@
+using System.Text;
 using Serilog.Events;
 using Serilog.Formatting;
 
@@ -7,6 +8,7 @@ public abstract class AbstractFormatter : ITextFormatter
 {
     public void Format(LogEvent logEvent, TextWriter output)
     {
+        Console.OutputEncoding = Encoding.UTF8;
         var newLine = Environment.NewLine;
         var timestamp = logEvent.Timestamp.ToString("HH:mm:ss.fff");
         var logLevel = logEvent.Level.ToString().ToUpper().Substring(0, 4);
