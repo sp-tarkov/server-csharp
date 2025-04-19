@@ -21,6 +21,7 @@
   <ItemGroup>
     <Content Include="Assets\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
   </ItemGroup>
 

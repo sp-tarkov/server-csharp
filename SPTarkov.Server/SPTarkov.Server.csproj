@@ -40,6 +40,7 @@
   <ItemGroup>
     <Content Include="Assets\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
     <None Remove="appsettings.json"/>
     <None Remove="appsettings.Development.json"/>
