@@ -52,15 +52,17 @@ public class SptDialogueChatBot(
             return SendPlayerHelpMessage(sessionId, request);
         }
 
+        var handler = _chatMessageHandlers.FirstOrDefault(h =>
+        {
+            return h.CanHandle(request.Text);
+        });
 
-        var handler = _chatMessageHandlers.FirstOrDefault(v => v.CanHandle(request.Text));
         if (handler is not null)
         {
-            handler.Process(sessionId, sptFriendUser, sender);
+            handler.Process(sessionId, sptFriendUser, sender, request);
 
             return request.DialogId;
         }
-
 
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

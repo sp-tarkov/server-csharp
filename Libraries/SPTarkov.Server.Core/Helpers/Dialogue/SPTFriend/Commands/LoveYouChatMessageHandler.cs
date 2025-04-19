@@ -22,7 +22,7 @@ public class LoveYouChatMessageHandler(
         return message.ToLower() == "love you";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _mailSendService.SendUserMessageToPlayer(
             sessionId,

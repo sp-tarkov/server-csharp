@@ -24,7 +24,7 @@ public class ForceChristmasMessageHandler(
         return message.ToLower() == "hohoho";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         var enableEventResult = _seasonalEventService.ForceSeasonalEvent(SeasonalEventType.Christmas);
         if (enableEventResult)

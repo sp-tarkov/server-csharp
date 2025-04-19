@@ -28,7 +28,7 @@ public class ForceSummerMessageHandler(
         return message.ToLower() == "givemesunshine";
     }
 
-    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData sender)
+    public void Process(string sessionId, UserDialogInfo sptFriendUser, PmcData? sender, object? extraInfo = null)
     {
         _weatherConfig.OverrideSeason = Season.SUMMER;
 
