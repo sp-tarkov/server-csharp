@@ -15,6 +15,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <OutputType>Exe</OutputType>
     <IsPackable>true</IsPackable>
+    <ApplicationIcon>..\Libraries\SPTarkov.Server.Assets\Assets\images\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,6 +40,7 @@
   <ItemGroup>
     <Content Include="Assets\**">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
     <None Remove="appsettings.json"/>
     <None Remove="appsettings.Development.json"/>
