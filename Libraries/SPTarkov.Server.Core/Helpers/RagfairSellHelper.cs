@@ -85,7 +85,7 @@ public class RagfairSellHelper(
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
-            _logger.Debug($"Rolling to sell: {itemSellCount}items(chance: {effectiveSellChance}%)");
+            _logger.Debug($"Rolling to sell: {itemSellCount} item(s) - (chance: {effectiveSellChance}%)");
         }
 
         // No point rolling for a sale on a 0% chance item, exit early
