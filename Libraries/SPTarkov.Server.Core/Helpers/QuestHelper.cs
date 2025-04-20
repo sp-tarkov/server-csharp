@@ -1006,15 +1006,14 @@ public class QuestHelper(
      * @param pmcData Profile to get hours for
      * @returns Hours item will be available for
      */
-    public double? GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
+    public double GetMailItemRedeemTimeHoursForProfile(PmcData pmcData)
     {
-        var value = _questConfig.MailRedeemTimeHours.GetValueOrDefault(pmcData.Info.GameVersion);
-        if (value is null)
+        if (!_questConfig.MailRedeemTimeHours.TryGetValue(pmcData.Info.GameVersion, out var value))
         {
-            return 0;
+            return _questConfig.MailRedeemTimeHours["default"] ?? 48;
         }
 
-        return value;
+        return value ?? 48;
     }
 
     public ItemEventRouterResponse CompleteQuest(PmcData pmcData, CompleteQuestRequestData body, string sessionID)

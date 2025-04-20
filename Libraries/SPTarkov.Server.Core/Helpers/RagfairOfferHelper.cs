@@ -796,13 +796,14 @@ public class RagfairOfferHelper(
             HandbookId = itemTpl
         };
 
+        var storagetime = _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile));
         _mailSendService.SendDirectNpcMessageToPlayer(
             offerOwnerSessionId,
             Traders.RAGMAN,
             MessageType.FLEAMARKET_MESSAGE,
             GetLocalisedOfferSoldMessage(itemTpl, boughtAmount),
             paymentItemsToSendToPlayer,
-            _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile).Value),
+            storagetime,
             null,
             ragfairDetails
         );
