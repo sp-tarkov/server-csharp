@@ -518,6 +518,11 @@ public class LocationLootGenerator(
         return containerClone;
     }
 
+    /// <summary>
+    /// Get the height/width of an item including its children
+    /// </summary>
+    /// <param name="items"></param>
+    /// <returns></returns>
     protected ItemSize? GetItemSize(List<Item>? items)
     {
         var rootItem = items[0];
