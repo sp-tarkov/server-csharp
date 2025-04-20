@@ -187,7 +187,7 @@ public class TimeUtil
     /// <returns></returns>
     public DateTime GetDateTimeFromTimeStamp(long timeStamp)
     {
-        return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).DateTime;
+        return DateTimeOffset.FromUnixTimeSeconds(timeStamp).DateTime;
     }
 
     /// <summary>
