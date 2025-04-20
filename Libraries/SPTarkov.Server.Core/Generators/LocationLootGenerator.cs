@@ -428,6 +428,10 @@ public class LocationLootGenerator(
 
         // Choose count of items to add to container
         var itemCountToAdd = GetWeightedCountOfContainerItems(containerTpl, staticLootDist, locationName);
+        if (itemCountToAdd == 0)
+        {
+            return containerClone;
+        }
 
         // Get all possible loot items for container
         var containerLootPool = GetPossibleLootItemsForContainer(containerTpl, staticLootDist);
