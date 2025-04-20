@@ -1,3 +1,4 @@
+using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -100,15 +101,14 @@ public class LocationLootGenerator(
         staticContainerCount += guaranteedContainers.Count;
 
         // Add loot to guaranteed containers and add to result
-        foreach (var container in guaranteedContainers)
+        foreach (var containerWithLoot in guaranteedContainers.Select(container => AddLootToContainer(
+                     container,
+                     staticForcedOnMapClone,
+                     staticLootDist.Value,
+                     staticAmmoDist,
+                     locationId
+                 )))
         {
-            var containerWithLoot = AddLootToContainer(
-                container,
-                staticForcedOnMapClone,
-                staticLootDist.Value,
-                staticAmmoDist,
-                locationId
-            );
             result.Add(containerWithLoot.Template);
 
             staticLootItemCount += containerWithLoot.Template.Items.Count;
@@ -413,7 +413,8 @@ public class LocationLootGenerator(
     protected StaticContainerData AddLootToContainer(StaticContainerData staticContainer,
         List<StaticForced>? staticForced,
         Dictionary<string, StaticLootDetails> staticLootDist,
-        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist, string locationName
+        Dictionary<string, List<StaticAmmoDetails>> staticAmmoDist,
+        string locationName
     )
     {
         var containerClone = _cloner.Clone(staticContainer);
@@ -443,17 +444,22 @@ public class LocationLootGenerator(
 
         // Draw random loot
         // Allow money to spawn more than once in container
-        var failedToFitCount = 0;
-        var locklist = _itemHelper.GetMoneyTpls();
+        var failedToFitAttemptCount = 0;
+        var lockList = _itemHelper.GetMoneyTpls();
 
         // Choose items to add to container, factor in weighting + lock money down
-        // Filter out items picked that're already in the above `tplsForced` array
+        // Filter out items picked that are already in the above `tplsForced` array
         var chosenTpls = containerLootPool
-            .Draw(itemCountToAdd, _locationConfig.AllowDuplicateItemsInStaticContainers, locklist)
+            .Draw(itemCountToAdd, _locationConfig.AllowDuplicateItemsInStaticContainers, lockList)
             .Where(tpl => !tplsForced.Contains(tpl));
 
         // Add forced loot to chosen item pool
         var tplsToAddToContainer = tplsForced.Concat(chosenTpls);
+        if (!tplsToAddToContainer.Any())
+        {
+            _logger.Warning($"Added no items to container: {containerTpl}");
+        }
+
         foreach (var tplToAdd in tplsToAddToContainer)
         {
             var chosenItemWithChildren = CreateStaticLootItem(tplToAdd, staticAmmoDist, parentId);
@@ -462,46 +468,47 @@ public class LocationLootGenerator(
                 continue;
             }
 
+            // Check if item should have children removed
             var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
             var itemSize = GetItemSize(items);
-            var width = itemSize.Width;
-            var height = itemSize.Height;
+            var itemWidth = itemSize.Width;
+            var itemHeight = itemSize.Height;
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(containerMap, width, height);
+            var result = _containerHelper.FindSlotForItem(containerMap, itemWidth, itemHeight);
             if (!result.Success.GetValueOrDefault(false))
             {
-                if (failedToFitCount > _locationConfig.FitLootIntoContainerAttempts)
+                if (failedToFitAttemptCount > _locationConfig.FitLootIntoContainerAttempts)
                     // x attempts to fit an item, container is probably full, stop trying to add more
                 {
                     break;
                 }
 
                 // Can't fit item, skip
-                failedToFitCount++;
+                failedToFitAttemptCount++;
 
                 continue;
             }
 
+            // Find somewhere for item inside container
             _containerHelper.FillContainerMapWithItem(
                 containerMap,
                 result.X.Value,
                 result.Y.Value,
-                width,
-                height,
+                itemWidth,
+                itemHeight,
                 result.Rotation.GetValueOrDefault(false)
             );
 
-            var rotation = result.Rotation.GetValueOrDefault(false) ? 1 : 0;
-
+            // Update root item properties with result of position finder
             items[0].SlotId = "main";
             items[0].Location = new ItemLocation
             {
                 X = result.X,
                 Y = result.Y,
-                R = rotation
+                R = result.Rotation.GetValueOrDefault(false) ? 1 : 0
             };
 
             // Add loot to container before returning
@@ -568,7 +575,7 @@ public class LocationLootGenerator(
     protected int GetWeightedCountOfContainerItems(string containerTypeId,
         Dictionary<string, StaticLootDetails> staticLootDist, string locationName)
     {
-        // Create probability array to calcualte the total count of lootable items inside container
+        // Create probability array to calculate the total count of lootable items inside container
         var itemCountArray =
             new ProbabilityObjectArray<int, float?>(_mathUtil, _cloner);
         var countDistribution = staticLootDist[containerTypeId]?.ItemCountDistribution;
