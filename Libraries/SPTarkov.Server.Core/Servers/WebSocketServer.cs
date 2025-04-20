@@ -2,6 +2,7 @@
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Ws;
 using SPTarkov.Common.Annotations;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -37,7 +38,10 @@ public class WebSocketServer(
         {
             if (webSocket.State == WebSocketState.Open)
             {
-                _logger.Info($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"WebSocketHandler \"{wsh.GetSocketId()}\" connected");
+                }
             }
 
             await wsh.OnConnection(webSocket, context);

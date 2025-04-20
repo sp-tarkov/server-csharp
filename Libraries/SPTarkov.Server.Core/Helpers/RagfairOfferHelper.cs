@@ -798,7 +798,7 @@ public class RagfairOfferHelper(
 
         _mailSendService.SendDirectNpcMessageToPlayer(
             offerOwnerSessionId,
-            _traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
+            Traders.RAGMAN,
             MessageType.FLEAMARKET_MESSAGE,
             GetLocalisedOfferSoldMessage(itemTpl, boughtAmount),
             paymentItemsToSendToPlayer,
