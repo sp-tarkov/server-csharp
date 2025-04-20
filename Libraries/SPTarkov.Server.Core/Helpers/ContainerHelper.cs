@@ -9,13 +9,15 @@ public class ContainerHelper
     /// <summary>
     ///     Finds a slot for an item in a given 2D container map
     /// </summary>
-    /// <param name="container2D">List of container with slots filled/free</param>
+    /// <param name="container2D">List of container with positions filled/free</param>
     /// <param name="itemWidth">Width of item</param>
     /// <param name="itemHeight">Height of item</param>
     /// <returns>Location to place item in container</returns>
     public FindSlotResult FindSlotForItem(int[][] container2D, int itemWidth, int itemHeight)
     {
+        // Assume not rotated
         var rotation = false;
+
         var minVolume = (itemWidth < itemHeight ? itemWidth : itemHeight) - 1;
         var containerY = container2D.Length;
         var containerX = container2D[0].Length;
@@ -37,38 +39,41 @@ public class ContainerHelper
                 continue;
             }
 
-            // Try each slot on the row (across = x)
+            // Go left to right across x-axis looking for free position
             for (var x = 0; x < limitX; x++)
             {
-                var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
-                if (foundSlot)
+                if (LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight))
                 {
+                    // Success, return result
                     return new FindSlotResult(true, x, y, rotation);
                 }
 
-                // Failed to find slot, rotate item and try again
-                if (!foundSlot && ItemBiggerThan1X1(itemWidth, itemHeight))
+                if (ItemBiggerThan1X1(itemWidth, itemHeight))
                 {
-                    // Bigger than 1x1, try rotating
-                    foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth); // Height/Width swapped
-                    if (foundSlot)
-                    {
-                        // Found a slot for it when rotated
-                        rotation = true;
-
-                        return new FindSlotResult(true, x, y, rotation);
-                    }
+                    // Pointless rotating a 1x1, try next position across
+                    continue;
                 }
+
+                // Bigger than 1x1, try rotating by swapping x and y values
+                if (!LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth))
+                {
+                    continue;
+                }
+
+                // Found a position for item when rotated
+                rotation = true;
+
+                return new FindSlotResult(true, x, y, rotation);
             }
         }
 
-        // Tried all possible holes, nothing big enough for the item
+        // Tried all possible positions, nothing big enough for item
         return new FindSlotResult(false);
     }
 
     protected static bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
     {
-        return itemWidth * itemHeight > 1;
+        return itemWidth + itemHeight > 2;
     }
 
     /// <summary>
