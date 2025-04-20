@@ -28,7 +28,7 @@ public class WeatherHelper(
         var twentyFourHoursMilliseconds = _timeUtil.GetHoursAsSeconds(24) * 1000;
         var currentTimestampMilliSeconds = timestamp.HasValue
             ? timestamp ?? 0
-            : _timeUtil.GetTimeStampFromEpoch();
+            : _timeUtil.GetTimeStamp();
 
         return _timeUtil.GetDateTimeFromTimeStamp(
             (long)

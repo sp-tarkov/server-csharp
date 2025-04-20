@@ -27,23 +27,23 @@ public class RaidWeatherService(
     public void GenerateWeather(Season currentSeason)
     {
         // When to start generating weather from in milliseconds
-        var staringTimestampMs = _timeUtil.GetTodayMidnightTimeStamp();
+        var staringTimestamp = _timeUtil.GetTodayMidnightTimeStamp();
 
         // How far into future do we generate weather
-        var futureTimestampToReachMs =
-            staringTimestampMs + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1) * 1000; // Convert to milliseconds
+        var futureTimestampToReach =
+            staringTimestamp + _timeUtil.GetHoursAsSeconds(_weatherConfig.Weather.GenerateWeatherAmountHours ?? 1);
 
         // Keep adding new weather until we have reached desired future date
-        var nextTimestampMs = staringTimestampMs;
-        while (nextTimestampMs <= futureTimestampToReachMs)
+        var nextTimestamp = staringTimestamp;
+        while (nextTimestamp <= futureTimestampToReach)
         {
-            var newWeatherToAddToCache = _weatherGenerator.GenerateWeather(currentSeason, nextTimestampMs);
+            var newWeatherToAddToCache = _weatherGenerator.GenerateWeather(currentSeason, nextTimestamp);
 
             // Add generated weather for time period to cache
             _weatherForecast.Add(newWeatherToAddToCache);
 
             // Increment timestamp so next loop can begin at correct time
-            nextTimestampMs += GetWeightedWeatherTimePeriodMs();
+            nextTimestamp += GetWeightedWeatherTimePeriod();
         }
     }
 
@@ -51,7 +51,7 @@ public class RaidWeatherService(
     ///     Get a time period to increment by, e.g. 15 or 30 minutes as milliseconds
     /// </summary>
     /// <returns>milliseconds</returns>
-    protected long GetWeightedWeatherTimePeriodMs()
+    protected long GetWeightedWeatherTimePeriod()
     {
         var chosenTimePeriodMinutes = _weightedRandomHelper.WeightedRandom(
                 _weatherConfig.Weather.TimePeriod.Values,
@@ -59,7 +59,7 @@ public class RaidWeatherService(
             )
             .Item;
 
-        return chosenTimePeriodMinutes * 60 * 1000; // Convert to milliseconds
+        return chosenTimePeriodMinutes * 60;
     }
 
     /// <summary>

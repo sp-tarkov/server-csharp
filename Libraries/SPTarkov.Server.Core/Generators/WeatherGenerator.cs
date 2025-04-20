@@ -140,10 +140,10 @@ public class WeatherGenerator(
         var formattedDate = _timeUtil.FormatDate(timestamp.HasValue ? _timeUtil.GetDateTimeFromTimeStamp(timestamp.Value) : DateTime.UtcNow);
         var datetimeBsgFormat = $"{formattedDate} {normalTime}";
 
-        weather.Timestamp = timestamp ?? _timeUtil.GetTimeStampFromEpoch(inRaidTime) / 1000; // matches weather.date
+        weather.Timestamp = timestamp ?? _timeUtil.GetTimeStamp(); // matches weather.date
         weather.Date = formattedDate; // matches weather.timestamp
         weather.Time = datetimeBsgFormat; // matches weather.timestamp
-        weather.SptInRaidTimestamp = _timeUtil.GetTimeStampFromEpoch(inRaidTime);
+        weather.SptInRaidTimestamp = weather.Timestamp;
     }
 
     protected WindDirection GetWeightedWindDirection(SeasonalValues weather)
