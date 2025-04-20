@@ -350,7 +350,11 @@ public class DialogueController(
         var timeNow = _timeUtil.GetTimeStamp();
         var dialogs = _dialogueHelper.GetDialogsForProfile(sessionId);
 
-        return dialogs[dialogueId].Messages?.Where(message => timeNow < message.DateTime + (message.MaxStorageTime ?? 0)).ToList() ?? [];
+        return dialogs[dialogueId].Messages?.Where(message =>
+        {
+            var checkTime = message.DateTime + (message.MaxStorageTime ?? 0);
+            return timeNow < checkTime;
+        }).ToList() ?? [];
     }
 
     /// <summary>
