@@ -42,7 +42,7 @@ public class ContainerHelper
             // Go left to right across x-axis looking for free position
             for (var x = 0; x < limitX; x++)
             {
-                if (LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight))
+                if (CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemWidth, itemHeight))
                 {
                     // Success, return result
                     return new FindSlotResult(true, x, y, rotation);
@@ -55,7 +55,7 @@ public class ContainerHelper
                 }
 
                 // Bigger than 1x1, try rotating by swapping x and y values
-                if (!LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth))
+                if (!CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemHeight, itemWidth))
                 {
                     continue;
                 }
@@ -77,58 +77,46 @@ public class ContainerHelper
     }
 
     /// <summary>
-    ///     Find a slot inside a container an item can be placed in
+    ///     Can an item of specified size be placed inside a 2d container at a specific position
     /// </summary>
-    /// <param name="container2D">Container to find space in</param>
-    /// <param name="containerX">Container x size</param>
-    /// <param name="containerY">Container y size</param>
-    /// <param name="x">???</param>
-    /// <param name="y">???</param>
-    /// <param name="itemW">Items width</param>
-    /// <param name="itemH">Items height</param>
+    /// <param name="container">Container to find space in</param>
+    /// <param name="containerWidth">Container x size</param>
+    /// <param name="containerHeight">Container y size</param>
+    /// <param name="startXPos">Starting x position for item</param>
+    /// <param name="startYPos">Starting y position for item</param>
+    /// <param name="itemWidth">Items width</param>
+    /// <param name="itemHeight">Items height</param>
     /// <returns>True - slot found</returns>
-    protected bool LocateSlot(
-        int[][] container2D,
-        int containerX,
-        int containerY,
-        int x,
-        int y,
-        int itemW,
-        int itemH)
+    protected bool CanItemBePlacedInContainerAtPosition(
+        int[][] container,
+        int containerWidth,
+        int containerHeight,
+        int startXPos,
+        int startYPos,
+        int itemWidth,
+        int itemHeight)
     {
-        var foundSlot = true;
-
-        for (var itemY = 0; itemY < itemH; itemY++)
+        // Check item isn't bigger than container when at position
+        if (startXPos + itemWidth > containerWidth || startYPos + itemHeight > containerHeight)
         {
-            if (foundSlot && y + itemH - 1 > containerY - 1)
-            {
-                foundSlot = false;
-                break;
-            }
+            return false;
+        }
 
-            // Does item fit x-ways across
-            for (var itemX = 0; itemX < itemW; itemX++)
+        // Check each position item will take up in container, go across and then down
+        for (var itemY = startYPos; itemY < startYPos + itemHeight; itemY++)
+        {
+            for (var itemX = startXPos; itemX < startXPos + itemWidth; itemX++)
             {
-                if (foundSlot && x + itemW - 1 > containerX - 1)
+                // e,g for a 2x2 item; [0,0] then [0,1] then [1,0] then [1,1]
+                if (container[itemY][itemX] != 0)
                 {
-                    foundSlot = false;
-                    break;
+                    // x,y Position blocked, can't place
+                    return false;
                 }
-
-                if (container2D[y + itemY][x + itemX] != 0)
-                {
-                    foundSlot = false;
-                    break;
-                }
-            }
-
-            if (!foundSlot)
-            {
-                break;
             }
         }
 
-        return foundSlot;
+        return true;
     }
 
     /// <summary>
