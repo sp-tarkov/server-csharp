@@ -441,12 +441,17 @@ public class BotGenerator(
             }
 
             List<string> tplsToRemove = [];
-            foreach (var (key, _) in propValue)
+            foreach (var value in propValue)
             {
-                if (_itemFilterService.IsLootableItemBlacklisted(key))
+                if (_itemFilterService.IsLootableItemBlacklisted(value.Key))
                 {
-                    tplsToRemove.Add(key);
+                    tplsToRemove.Add(value.Key);
                 }
+            }
+
+            if (tplsToRemove.Count > 0)
+            {
+                Console.WriteLine($"Removing {tplsToRemove.Count} blacklisted loot from {lootContainerKey}");
             }
 
             foreach (var blacklistedTplToRemove in tplsToRemove)

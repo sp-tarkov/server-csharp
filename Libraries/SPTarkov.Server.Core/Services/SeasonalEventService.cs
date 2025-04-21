@@ -80,6 +80,9 @@ public class SeasonalEventService(
     protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
+    protected HashSet<EquipmentSlots> _equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
+    protected HashSet<string> _lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
+
     /// <summary>
     ///     Get an array of christmas items found in bots inventories as loot
     /// </summary>
@@ -352,11 +355,9 @@ public class SeasonalEventService(
     public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
         var christmasItems = GetChristmasEventItems();
-        HashSet<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
-        HashSet<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
 
         // Remove christmas related equipment
-        foreach (var equipmentSlotKey in equipmentSlotsToFilter)
+        foreach (var equipmentSlotKey in _equipmentSlotsToFilter)
         {
             if (botInventory.Equipment[equipmentSlotKey] is null)
             {
@@ -378,7 +379,7 @@ public class SeasonalEventService(
 
         // Remove christmas related loot from loot containers
         var props = botInventory.Items.GetType().GetProperties();
-        foreach (var lootContainerKey in lootContainersToFilter)
+        foreach (var lootContainerKey in _lootContainersToFilter)
         {
             var prop = (Dictionary<string, double>?) props
                 .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase))
@@ -411,23 +412,6 @@ public class SeasonalEventService(
             {
                 prop.Remove(tplToRemove);
             }
-
-            // Get non-christmas items
-            var nonChristmasTpls = prop.Where(tpl => !christmasItems.Contains(tpl.Key));
-            if (!nonChristmasTpls.Any())
-            {
-                continue;
-            }
-
-            Dictionary<string, double> intermediaryDict = new();
-
-            foreach (var tpl in nonChristmasTpls)
-            {
-                intermediaryDict[tpl.Key] = prop[tpl.Key];
-            }
-
-            // Replace the original containerItems with the updated one
-            prop = intermediaryDict;
         }
     }
 
