@@ -362,7 +362,16 @@ public record Upd
         set;
     }
 
-    public bool? Lockable
+    public Lockable? Lockable // LockableComponent in the client
+    {
+        get;
+        set;
+    }
+}
+
+public record Lockable
+{
+    public bool? Locked
     {
         get;
         set;
