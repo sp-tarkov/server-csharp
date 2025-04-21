@@ -52,7 +52,8 @@ public class SeasonalEventService(
         ItemTpl.FACECOVER_FOX_MASK,
         ItemTpl.FACECOVER_GRINCH_MASK,
         ItemTpl.FACECOVER_HARE_MASK,
-        ItemTpl.FACECOVER_ROOSTER_MASK
+        ItemTpl.FACECOVER_ROOSTER_MASK,
+        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_FIREWORK
     ];
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
