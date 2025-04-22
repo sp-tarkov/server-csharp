@@ -381,9 +381,9 @@ public class SeasonalEventService(
         var props = botInventory.Items.GetType().GetProperties();
         foreach (var lootContainerKey in _lootContainersToFilter)
         {
-            var prop = (Dictionary<string, double>?) props
-                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase))
-                .GetValue(botInventory.Items);
+            var propInfo = props
+                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase));
+            var prop = (Dictionary<string, double>?) propInfo.GetValue(botInventory.Items);
 
             if (prop is null)
             {
@@ -399,19 +399,8 @@ public class SeasonalEventService(
                 );
             }
 
-            List<string> tplsToRemove = [];
-            foreach (var tplKey in prop)
-            {
-                if (christmasItems.Contains(tplKey.Key))
-                {
-                    tplsToRemove.Add(tplKey.Key);
-                }
-            }
-
-            foreach (var tplToRemove in tplsToRemove)
-            {
-                prop.Remove(tplToRemove);
-            }
+            var newProp = prop.Where(tpl => !christmasItems.Contains(tpl.Key)).ToDictionary();
+            propInfo.SetValue(botInventory.Items, newProp);
         }
     }
 
