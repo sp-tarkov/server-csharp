@@ -159,7 +159,7 @@ public class SptHttpListener : IHttpListener
             SendJson(resp, output, sessionID);
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Response: {output.Substring(0, Math.Min(output.Length, 4000))}");
+                _logger.Debug($"Response: {output}");
             }
 
             LogRequest(req, output);
@@ -200,7 +200,7 @@ public class SptHttpListener : IHttpListener
     {
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
-            var log = new Response(req.Method, output.Substring(0, Math.Min(output.Length, 2000)));
+            var log = new Response(req.Method, output);
             _requestLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
         }
     }
