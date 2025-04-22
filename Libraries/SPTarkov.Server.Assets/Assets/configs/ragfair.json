@@ -263,7 +263,7 @@
       "min": 7
     },
     "pack": {
-      "chancePercent": 6,
+      "chancePercent": 0.5,
       "itemCountMax": 17,
       "itemCountMin": 4,
       "itemTypeWhitelist": [

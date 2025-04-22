@@ -580,7 +580,7 @@ public class BotLootCacheService(
             )
         )
         {
-            _logger.Error($"Unable to add loot cache for bot role: {botRole}");
+            _logger.Info($"Unable to add loot cache for bot role: {botRole} - already exists");
         }
     }
 

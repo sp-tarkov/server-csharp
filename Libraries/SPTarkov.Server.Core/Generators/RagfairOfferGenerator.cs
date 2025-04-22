@@ -277,14 +277,14 @@ public class RagfairOfferGenerator(
     /// <returns> Flea rating value </returns>
     protected double? GetRating(string userId)
     {
+        // Player offer
         if (profileHelper.IsPlayer(userId))
-            // Player offer
         {
             return saveServer.GetProfile(userId).CharacterData?.PmcData?.RagfairInfo?.Rating;
         }
 
+        // Trader offer
         if (ragfairServerHelper.IsTrader(userId))
-            // Trader offer
         {
             return 1;
         }
