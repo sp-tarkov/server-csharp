@@ -37,6 +37,11 @@ public static partial class ProgramStatics
                 _mods = true;
                 break;
         }
+
+        Console.WriteLine($"SPTarkov.Server.Core: entrytype: {_entryType}");
+        Console.WriteLine($"SPTarkov.Server.Core: debug: {_debug}");
+        Console.WriteLine($"SPTarkov.Server.Core: compiled: {_compiled}");
+        Console.WriteLine($"SPTarkov.Server.Core: mods: {_mods}");
     }
 
     // Public Static Getters
