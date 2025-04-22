@@ -19,7 +19,6 @@ public class TraderController(
     TimeUtil _timeUtil,
     DatabaseService _databaseService,
     TraderAssortHelper _traderAssortHelper,
-    TraderAssortService _traderAssortService,
     ProfileHelper _profileHelper,
     TraderHelper _traderHelper,
     PaymentHelper _paymentHelper,
@@ -63,13 +62,6 @@ public class TraderController(
             if (_traderConfig.TraderPriceMultiplier != 1)
             {
                 AdjustTraderItemPrices(trader, _traderConfig.TraderPriceMultiplier);
-            }
-
-            // Create dict of pristine trader assorts on server start
-            if (_traderAssortService.GetPristineTraderAssort(traderId) == null)
-            {
-                var assortsClone = _cloner.Clone(trader.Assort);
-                _traderAssortService.SetPristineTraderAssort(traderId, assortsClone);
             }
 
             _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);

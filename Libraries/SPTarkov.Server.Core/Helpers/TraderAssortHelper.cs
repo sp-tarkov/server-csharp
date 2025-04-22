@@ -23,7 +23,6 @@ public class TraderAssortHelper(
     PaymentHelper _paymentHelper,
     RagfairAssortGenerator _ragfairAssortGenerator,
     RagfairOfferGenerator _ragfairOfferGenerator,
-    TraderAssortService _traderAssortService,
     LocalisationService _localisationService,
     TraderPurchasePersisterService _traderPurchasePersisterService,
     TraderHelper _traderHelper,
@@ -225,6 +224,6 @@ public class TraderAssortHelper(
     /// <returns>array of Items</returns>
     protected List<Item> GetPristineTraderAssorts(string traderId)
     {
-        return _cloner.Clone(_traderAssortService.GetPristineTraderAssort(traderId).Items);
+        return _cloner.Clone(_traderHelper.GetTraderAssortsByTraderId(traderId).Items);
     }
 }
