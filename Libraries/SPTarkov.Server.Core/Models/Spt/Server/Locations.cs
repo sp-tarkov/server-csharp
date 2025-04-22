@@ -189,7 +189,7 @@ public record Locations
     }
 
     /// <summary>
-    /// Holds a mapping of the linkages between locations on the UI
+    ///     Holds a mapping of the linkages between locations on the UI
     /// </summary>
     [JsonPropertyName("base")]
     public LocationsBase? Base
@@ -226,6 +226,7 @@ public record Locations
     {
         var classProps = typeof(Locations).GetProperties().Where(p => p.PropertyType == typeof(Eft.Common.Location) && p.Name != "Item");
         _locationDictionaryCache = classProps
-            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location, StringComparer.OrdinalIgnoreCase);
+            .ToDictionary(propertyInfo => propertyInfo.Name, propertyInfo => propertyInfo.GetValue(this, null) as Eft.Common.Location,
+                StringComparer.OrdinalIgnoreCase);
     }
 }

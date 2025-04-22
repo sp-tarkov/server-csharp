@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Routers;
 
@@ -96,8 +96,9 @@ public class EventOutputHolder
             }
         );
     }
+
     /// <summary>
-    /// Update output object with most recent values from player profile
+    ///     Update output object with most recent values from player profile
     /// </summary>
     /// <param name="sessionId"> Session id </param>
     public void UpdateOutputProperties(string sessionId)
@@ -126,7 +127,7 @@ public class EventOutputHolder
     }
 
     /// <summary>
-    /// Required as continuous productions don't reset and stay at 100% completion but client thinks it hasn't started
+    ///     Required as continuous productions don't reset and stay at 100% completion but client thinks it hasn't started
     /// </summary>
     /// <param name="productions"> Productions in a profile </param>
     private void CleanUpCompleteCraftsInProfile(Dictionary<string, Production>? productions)
@@ -149,7 +150,7 @@ public class EventOutputHolder
     }
 
     /// <summary>
-    /// Return all hideout Improvements from player profile, adjust completed Improvements' completed property to be true
+    ///     Return all hideout Improvements from player profile, adjust completed Improvements' completed property to be true
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <returns> Dictionary of hideout improvements </returns>
@@ -175,7 +176,7 @@ public class EventOutputHolder
     }
 
     /// <summary>
-    /// Return productions from player profile except those completed crafts the client has already seen
+    ///     Return productions from player profile except those completed crafts the client has already seen
     /// </summary>
     /// <param name="productions"> Productions from player profile </param>
     /// <param name="sessionId"> Player session ID</param>
@@ -239,7 +240,7 @@ public class EventOutputHolder
     }
 
     /// <summary>
-    /// Convert the internal trader data object into an object we can send to the client
+    ///     Convert the internal trader data object into an object we can send to the client
     /// </summary>
     /// <param name="traderData"> Server data for traders </param>
     /// <returns> Dict of trader id + TraderData </returns>

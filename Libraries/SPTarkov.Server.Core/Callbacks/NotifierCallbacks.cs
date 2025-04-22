@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Common.Request;
 using SPTarkov.Server.Core.Models.Eft.Notifier;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -17,12 +17,11 @@ public class NotifierCallbacks(
     HttpServerHelper httpServerHelper
 )
 {
-
     /// <summary>
-    /// If we don't have anything to send, it's ok to not send anything back
-    /// because notification requests can be long-polling. In fact, we SHOULD wait
-    /// until we actually have something to send because otherwise we'd spam the client
-    /// and the client would abort the connection due to spam.
+    ///     If we don't have anything to send, it's ok to not send anything back
+    ///     because notification requests can be long-polling. In fact, we SHOULD wait
+    ///     until we actually have something to send because otherwise we'd spam the client
+    ///     and the client would abort the connection due to spam.
     /// </summary>
     public void SendNotification(string sessionID, HttpRequest req, HttpResponse resp, object data)
     {
@@ -40,12 +39,11 @@ public class NotifierCallbacks(
 
 
     /// <summary>
-    /// TODO: removed from client?
-    /// Handle push/notifier/get
-    /// Handle push/notifier/getwebsocket
+    ///     TODO: removed from client?
+    ///     Handle push/notifier/get
+    ///     Handle push/notifier/getwebsocket
     /// </summary>
     /// <returns></returns>
-
     public string GetNotifier(string url, IRequestData info, string sessionID)
     {
         return _httpResponseUtil.EmptyArrayResponse();

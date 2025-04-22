@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
@@ -11,7 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -257,7 +257,7 @@ public class HideoutHelper(
     }
 
     /// <summary>
-    /// Does a water collection hideout area have a water filter installed
+    ///     Does a water collection hideout area have a water filter installed
     /// </summary>
     /// <param name="waterCollector">Hideout area to check</param>
     /// <returns></returns>
@@ -948,9 +948,8 @@ public class HideoutHelper(
     protected double GetTotalProductionTimeSeconds(string prodId)
     {
         return _databaseService.GetHideout()
-                   .Production.Recipes.FirstOrDefault(
-                       prod =>
-                           prod.Id == prodId
+                   .Production.Recipes.FirstOrDefault(prod =>
+                       prod.Id == prodId
                    )
                    ?.ProductionTime ??
                0;
@@ -1443,8 +1442,7 @@ public class HideoutHelper(
 
         // Get SkillGroupLevelingBoost object
         var combatBoostBonusDb = fameAreaDb.Stages[fameAreaProfile.Level.ToString()]
-            .Bonuses.FirstOrDefault(
-                bonus => bonus.Type.ToString() == "SkillGroupLevelingBoost"
+            .Bonuses.FirstOrDefault(bonus => bonus.Type.ToString() == "SkillGroupLevelingBoost"
             );
 
         // Get SkillGroupLevelingBoost object in profile

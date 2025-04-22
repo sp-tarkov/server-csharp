@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -24,7 +24,7 @@ public class GiftService(
     protected GiftsConfig _giftConfig = _configServer.GetConfig<GiftsConfig>();
 
     /// <summary>
-    /// Does a gift with a specific ID exist in db
+    ///     Does a gift with a specific ID exist in db
     /// </summary>
     /// <param name="giftId"> Gift id to check for </param>
     /// <returns> True if it exists in db </returns>
@@ -41,7 +41,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Get dictionary of all gifts
+    ///     Get dictionary of all gifts
     /// </summary>
     /// <returns> Dict keyed by gift id </returns>
     public Dictionary<string, Gift> GetGifts()
@@ -50,7 +50,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Get an array of all gift ids
+    ///     Get an array of all gift ids
     /// </summary>
     /// <returns> String list of gift ids </returns>
     public List<string> GetGiftIds()
@@ -59,7 +59,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Send player a gift from a range of sources
+    ///     Send player a gift from a range of sources
     /// </summary>
     /// <param name="playerId"> Player to send gift to / sessionID </param>
     /// <param name="giftId"> ID of gift in configs/gifts.json to send player </param>
@@ -183,7 +183,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Get sender id based on gifts sender type enum
+    ///     Get sender id based on gifts sender type enum
     /// </summary>
     /// <param name="giftData"> Gift to send player </param>
     /// <returns> trader/user/system id </returns>
@@ -203,7 +203,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Convert GiftSenderType into a dialog MessageType
+    ///     Convert GiftSenderType into a dialog MessageType
     /// </summary>
     /// <param name="giftData"> Gift to send player </param>
     /// <returns> MessageType enum value </returns>
@@ -224,7 +224,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Prapor sends gifts to player for first week after profile creation
+    ///     Prapor sends gifts to player for first week after profile creation
     /// </summary>
     /// <param name="sessionId"> Player ID </param>
     /// <param name="day"> What day to give gift for </param>
@@ -247,7 +247,7 @@ public class GiftService(
     }
 
     /// <summary>
-    /// Send player a gift with silent received check
+    ///     Send player a gift with silent received check
     /// </summary>
     /// <param name="giftId"> ID of gift to send </param>
     /// <param name="sessionId"> Session ID of player to send to </param>

@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -18,7 +18,7 @@ public class AssortHelper(
 )
 {
     /// <summary>
-    /// Remove assorts from a trader that have not been unlocked yet (via player completing corresponding quest)
+    ///     Remove assorts from a trader that have not been unlocked yet (via player completing corresponding quest)
     /// </summary>
     /// <param name="pmcProfile"></param>
     /// <param name="traderId">Traders id the assort belongs to</param>
@@ -65,7 +65,7 @@ public class AssortHelper(
     }
 
     /// <summary>
-    /// Get a quest id + the statuses quest can be in to unlock assort
+    ///     Get a quest id + the statuses quest can be in to unlock assort
     /// </summary>
     /// <param name="mergedQuestAssorts">quest assorts to search for assort id</param>
     /// <param name="assortId">Assort to look for linked quest id</param>

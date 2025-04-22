@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -21,7 +21,7 @@ public class BotLootCacheService(
     ICloner _cloner
 )
 {
-    protected ConcurrentDictionary<string, BotLootCache> _lootCache = new ConcurrentDictionary<string, BotLootCache>();
+    protected ConcurrentDictionary<string, BotLootCache> _lootCache = new();
 
     /// <summary>
     ///     Remove cached bot loot data

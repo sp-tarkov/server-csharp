@@ -1,7 +1,7 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Logger;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Logger;
@@ -9,9 +9,9 @@ namespace SPTarkov.Server.Logger;
 [Injectable]
 public class SptWebApplicationLogger<T> : ISptLogger<T>
 {
+    private static ILogger? _fileLogger;
 
     private readonly ILogger _logger;
-    private static ILogger? _fileLogger;
 
     public SptWebApplicationLogger(ILoggerFactory provider)
     {

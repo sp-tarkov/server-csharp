@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -6,8 +8,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -57,6 +57,10 @@ public class SeasonalEventService(
     ];
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
+
+    protected HashSet<EquipmentSlots> _equipmentSlotsToFilter =
+        [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
+
     private bool _halloweenEventActive;
 
     protected HashSet<string> _halloweenEventItems =
@@ -76,12 +80,10 @@ public class SeasonalEventService(
 
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected HashSet<string> _lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
     protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
-
-    protected HashSet<EquipmentSlots> _equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
-    protected HashSet<string> _lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
 
     /// <summary>
     ///     Get an array of christmas items found in bots inventories as loot
@@ -437,14 +439,16 @@ public class SeasonalEventService(
                 EnableHalloweenSummonEvent();
                 AddPumpkinsToScavBackpacks();
                 RenameBitcoin();
-                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false)) {
+                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false))
+                {
                     if (_seasonalEventConfig.HostilitySettingsForEvent.TryGetValue("AprilFools", out var botData))
                     {
                         ReplaceBotHostility(botData);
                     }
                 }
 
-                if (eventType.Settings?.ForceSeason != null) {
+                if (eventType.Settings?.ForceSeason != null)
+                {
                     _weatherConfig.OverrideSeason = eventType.Settings.ForceSeason;
                 }
 
@@ -612,7 +616,8 @@ public class SeasonalEventService(
                 }
             }
 
-            foreach (var settings in newHostilitySettings) {
+            foreach (var settings in newHostilitySettings)
+            {
                 var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
                 if (matchingBaseSettings is null)
                 {
@@ -790,8 +795,7 @@ public class SeasonalEventService(
         var result = new HashSet<string>();
 
         // Get only the locations with an infection above 0
-        var infectionKeys = locationInfections.Where(
-            location => locationInfections[location.Key] > 0
+        var infectionKeys = locationInfections.Where(location => locationInfections[location.Key] > 0
         );
 
         // Convert the infected location id into its generic location id

@@ -1,7 +1,7 @@
-using SPTarkov.Server.Core.Models.Spt.Logging;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Logging;
+using SPTarkov.Server.Core.Models.Utils;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -35,7 +35,7 @@ public class ClientLogController(
                 _logger.Info(message);
                 break;
             case LogLevel.Custom:
-                _logger.LogWithColor(message, color, backgroundColor, null);
+                _logger.LogWithColor(message, color, backgroundColor);
                 break;
             case LogLevel.Debug:
                 _logger.Debug(message);

@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -37,8 +37,6 @@ public class BotInventoryGenerator(
     ConfigServer _configServer
 )
 {
-    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-
     // Slots handled individually inside `GenerateAndAddEquipmentToBot`
     private static readonly FrozenSet<EquipmentSlots> _excludedEquipmentSlots =
     [
@@ -52,6 +50,8 @@ public class BotInventoryGenerator(
         EquipmentSlots.Headwear,
         EquipmentSlots.Earpiece
     ];
+
+    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     private readonly HashSet<string> _slotsToCheck = [EquipmentSlots.Pockets.ToString(), EquipmentSlots.SecuredContainer.ToString()];
 
@@ -386,7 +386,7 @@ public class BotInventoryGenerator(
     }
 
     /// <summary>
-    /// Get RootEquipmentPool id based on game version
+    ///     Get RootEquipmentPool id based on game version
     /// </summary>
     /// <param name="chosenGameVersion"></param>
     /// <param name="templateInventory"></param>

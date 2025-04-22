@@ -8,14 +8,14 @@ namespace SPTarkov.Server.Core.Context;
 public class ApplicationContext
 {
     protected const short MaxSavedValues = 10;
-    protected readonly ConcurrentDictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
 
     private static ApplicationContext? _applicationContext;
     private readonly ISptLogger<ApplicationContext> _logger;
+    protected readonly ConcurrentDictionary<ContextVariableType, LinkedList<ContextVariable>> variables = new();
 
     /// <summary>
-    /// When ApplicationContext gets created by the DI container we store the singleton reference so we can provide it
-    /// statically for harmony patches!
+    ///     When ApplicationContext gets created by the DI container we store the singleton reference so we can provide it
+    ///     statically for harmony patches!
     /// </summary>
     public ApplicationContext
     (

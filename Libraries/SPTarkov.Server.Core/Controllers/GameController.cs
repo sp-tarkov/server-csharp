@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -5,6 +6,7 @@ using SPTarkov.Server.Core.Models.Eft.Game;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
+using SPTarkov.Server.Core.Models.Spt.Location;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
@@ -12,10 +14,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Server;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using SPTarkov.Server.Core.Models.Spt.Location;
 
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -458,7 +457,7 @@ public class GameController(
     }
 
     /// <summary>
-    /// Mechanic sends players a measuring tape on profile start for some reason
+    ///     Mechanic sends players a measuring tape on profile start for some reason
     /// </summary>
     /// <param name="pmcProfile"></param>
     protected void SendMechanicGiftsToNewProfile(PmcData pmcProfile)
@@ -478,9 +477,8 @@ public class GameController(
         foreach (var mod in mods)
         {
             if (
-                fullProfile.SptData.Mods.Any(
-                    m =>
-                        m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name
+                fullProfile.SptData.Mods.Any(m =>
+                    m.Author == mod.PackageJson.Author && m.Version == mod.PackageJson.Version && m.Name == mod.PackageJson.Name
                 )
             )
             {

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using Path = System.IO.Path;
 
 namespace HideoutCraftQuestIdGenerator;
@@ -137,8 +137,8 @@ public class HideoutCraftQuestIdGenerator(
             }
 
             // Try to find the quest that matches this production
-            var questProductionOutputs = _questProductionOutputList.Where(
-                    output => output.ItemTemplate == production.EndProduct && output.Quantity == production.Count
+            var questProductionOutputs = _questProductionOutputList.Where(output =>
+                    output.ItemTemplate == production.EndProduct && output.Quantity == production.Count
                 )
                 .ToList();
 

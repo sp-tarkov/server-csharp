@@ -1,17 +1,17 @@
-using SPTarkov.Server.Core.Services.Image;
-using SPTarkov.Server.Core.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Services.Image;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Routers;
 
 [Injectable]
 public class ImageRouter
 {
+    private readonly ISptLogger<ImageRouter> _logger;
     protected FileUtil _fileUtil;
     protected HttpFileUtil _httpFileUtil;
     protected ImageRouterService _imageRouterService;
-    ISptLogger<ImageRouter> _logger;
 
     public ImageRouter(
         FileUtil fileUtil,

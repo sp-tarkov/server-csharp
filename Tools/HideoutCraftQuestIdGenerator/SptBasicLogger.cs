@@ -1,7 +1,7 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace HideoutCraftQuestIdGenerator;
 

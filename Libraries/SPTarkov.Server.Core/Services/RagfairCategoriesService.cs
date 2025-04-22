@@ -1,8 +1,8 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -26,8 +26,7 @@ public class RagfairCategoriesService(
     {
         // Get offers valid for search request, then reduce them down to just the counts
         return offers
-            .Where(
-                offer =>
+            .Where(offer =>
                 {
                     var isTraderOffer = offer.User.MemberType == MemberCategory.Trader;
 

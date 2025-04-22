@@ -13,7 +13,7 @@ public record InventoryConfig : BaseConfig
     } = "spt-inventory";
 
     /// <summary>
-    /// Should new items purchased by flagged as found in raid
+    ///     Should new items purchased by flagged as found in raid
     /// </summary>
     [JsonPropertyName("newItemsMarkedFound")]
     public bool NewItemsMarkedFound
@@ -37,7 +37,7 @@ public record InventoryConfig : BaseConfig
     }
 
     /// <summary>
-    /// Contains item tpls that the server should consider money and treat the same as roubles/euros/dollars
+    ///     Contains item tpls that the server should consider money and treat the same as roubles/euros/dollars
     /// </summary>
     [JsonPropertyName("customMoneyTpls")]
     public List<string> CustomMoneyTpls
@@ -47,7 +47,7 @@ public record InventoryConfig : BaseConfig
     }
 
     /// <summary>
-    /// Multipliers for skill gain when inside menus, NOT in-game
+    ///     Multipliers for skill gain when inside menus, NOT in-game
     /// </summary>
     [JsonPropertyName("skillGainMultiplers")]
     public Dictionary<string, double> SkillGainMultipliers
@@ -57,7 +57,7 @@ public record InventoryConfig : BaseConfig
     }
 
     /// <summary>
-    /// Container Tpls that should be deprioritised when choosing where to take money from for payments
+    ///     Container Tpls that should be deprioritised when choosing where to take money from for payments
     /// </summary>
     [JsonPropertyName("deprioritisedMoneyContainers")]
     public HashSet<string> DeprioritisedMoneyContainers
@@ -122,7 +122,7 @@ public record SealedAirdropContainerSettings
     }
 
     /// <summary>
-    /// Should contents be flagged as found in raid when opened
+    ///     Should contents be flagged as found in raid when opened
     /// </summary>
     [JsonPropertyName("foundInRaid")]
     public bool FoundInRaid

@@ -16,7 +16,7 @@ public record NewItemDetails : NewItemDetailsBase
 public record NewItemFromCloneDetails : NewItemDetailsBase
 {
     /// <summary>
-    /// Id of the item to copy and use as a base
+    ///     Id of the item to copy and use as a base
     /// </summary>
     [JsonPropertyName("itemTplToClone")]
     public string? ItemTplToClone
@@ -26,7 +26,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     }
 
     /// <summary>
-    /// Item properties that should be applied over the top of the cloned base
+    ///     Item properties that should be applied over the top of the cloned base
     /// </summary>
     [JsonPropertyName("overrideProperties")]
     public Props? OverrideProperties
@@ -36,7 +36,7 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     }
 
     /// <summary>
-    /// ParentId for the new item (item type)
+    ///     ParentId for the new item (item type)
     /// </summary>
     [JsonPropertyName("parentId")]
     public string? ParentId
@@ -46,8 +46,8 @@ public record NewItemFromCloneDetails : NewItemDetailsBase
     }
 
     /// <summary>
-    /// the id the new item should have, leave blank to have one generated for you.
-    /// This is often known as the TplId, or TemplateId
+    ///     the id the new item should have, leave blank to have one generated for you.
+    ///     This is often known as the TplId, or TemplateId
     /// </summary>
     [JsonPropertyName("newId")]
     public string? NewId

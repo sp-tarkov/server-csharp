@@ -1,5 +1,5 @@
-﻿using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -11,7 +11,7 @@ public class ProfileActivityService(
     private readonly Dictionary<string, long> profileActivityTimestamps = new();
 
     /// <summary>
-    /// Was the requested profile active in the last requested minutes
+    ///     Was the requested profile active in the last requested minutes
     /// </summary>
     /// <param name="sessionId"> Profile to check </param>
     /// <param name="minutes"> Minutes to check for activity in </param>
@@ -28,7 +28,7 @@ public class ProfileActivityService(
     }
 
     /// <summary>
-    /// Get a list of profile ids that were active in the last x minutes
+    ///     Get a list of profile ids that were active in the last x minutes
     /// </summary>
     /// <param name="minutes"> How many minutes from now to search for profiles </param>
     /// <returns> List of profile ids </returns>
@@ -56,7 +56,7 @@ public class ProfileActivityService(
     }
 
     /// <summary>
-    /// Update the timestamp a profile was last observed active
+    ///     Update the timestamp a profile was last observed active
     /// </summary>
     /// <param name="sessionId"> Profile to update </param>
     public void SetActivityTimestamp(string sessionId)

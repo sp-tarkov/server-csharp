@@ -1,6 +1,5 @@
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Common;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Models.Spt.Config;
 
@@ -42,7 +41,7 @@ public record RepairConfig : BaseConfig
     }
 
     /// <summary>
-    /// INT gain multiplier per repaired item type
+    ///     INT gain multiplier per repaired item type
     /// </summary>
     [JsonPropertyName("repairKitIntellectGainMultiplier")]
     public IntellectGainValues RepairKitIntellectGainMultiplier
@@ -52,7 +51,7 @@ public record RepairConfig : BaseConfig
     }
 
     /// <summary>
-    /// How much INT can be given to player per repair action
+    ///     How much INT can be given to player per repair action
     /// </summary>
     [JsonPropertyName("maxIntellectGainPerRepair")]
     public MaxIntellectGainValues MaxIntellectGainPerRepair
@@ -113,7 +112,7 @@ public record MaxIntellectGainValues
 public record WeaponTreatmentRepairValues
 {
     /// <summary>
-    /// The chance to gain more weapon maintenance skill
+    ///     The chance to gain more weapon maintenance skill
     /// </summary>
     [JsonPropertyName("critSuccessChance")]
     public double CritSuccessChance
@@ -130,7 +129,7 @@ public record WeaponTreatmentRepairValues
     }
 
     /// <summary>
-    /// The chance to gain less weapon maintenance skill
+    ///     The chance to gain less weapon maintenance skill
     /// </summary>
     [JsonPropertyName("critFailureChance")]
     public double CritFailureChance
@@ -147,7 +146,7 @@ public record WeaponTreatmentRepairValues
     }
 
     /// <summary>
-    /// The multiplier used for calculating weapon maintenance XP
+    ///     The multiplier used for calculating weapon maintenance XP
     /// </summary>
     [JsonPropertyName("pointGainMultiplier")]
     public double PointGainMultiplier
@@ -229,7 +228,7 @@ public record BonusValues
     }
 
     /// <summary>
-    /// What dura is buff active between (min max of current max)
+    ///     What dura is buff active between (min max of current max)
     /// </summary>
     [JsonPropertyName("activeDurabilityPercentMinMax")]
     public MinMax<int> ActiveDurabilityPercentMinMax

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -16,7 +17,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -44,7 +44,7 @@ public class RepeatableQuestController(
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
-    /// Handle RepeatableQuestChange event
+    ///     Handle RepeatableQuestChange event
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="changeRequest">Change quest request</param>
@@ -77,8 +77,7 @@ public class RepeatableQuestController(
         var replacedQuestTraderId = questToReplace.TraderId;
 
         // Update active quests to exclude the quest we're replacing
-        repeatablesOfTypeInProfile.ActiveQuests = repeatablesOfTypeInProfile.ActiveQuests.Where(
-                quest => quest.Id != changeRequest.QuestId
+        repeatablesOfTypeInProfile.ActiveQuests = repeatablesOfTypeInProfile.ActiveQuests.Where(quest => quest.Id != changeRequest.QuestId
             )
             .ToList();
 
@@ -91,8 +90,7 @@ public class RepeatableQuestController(
         repeatablesOfTypeInProfile.ChangeRequirement.Remove(changeRequest.QuestId);
 
         // Get config for this repeatable sub-type (daily/weekly/scav)
-        var repeatableConfig = _questConfig.RepeatableQuests.FirstOrDefault(
-            config => config.Name == repeatablesOfTypeInProfile.Name
+        var repeatableConfig = _questConfig.RepeatableQuests.FirstOrDefault(config => config.Name == repeatablesOfTypeInProfile.Name
         );
 
         // If the configuration dictates to replace with the same quest type, adjust the available quest types
@@ -183,9 +181,8 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Some accounts have access to free repeatable quest refreshes
-    /// Track the usage of them inside players profile
-    ///
+    ///     Some accounts have access to free repeatable quest refreshes
+    ///     Track the usage of them inside players profile
     /// </summary>
     /// <param name="fullProfile">Full player profile</param>
     /// <param name="repeatableSubType">Can be daily / weekly / scav repeatable</param>
@@ -227,7 +224,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Clean up the repeatables `changeRequirement` dictionary of expired data
+    ///     Clean up the repeatables `changeRequirement` dictionary of expired data
     /// </summary>
     /// <param name="repeatablesOfTypeInProfile">repeatables that have the replaced and new quest</param>
     /// <param name="replacedQuestId">Id of the replaced quest</param>
@@ -248,7 +245,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Generate a repeatable quest
+    ///     Generate a repeatable quest
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -289,7 +286,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Remove the provided quest from pmc and scav character profiles
+    ///     Remove the provided quest from pmc and scav character profiles
     /// </summary>
     /// <param name="fullProfile">Profile to remove quest from</param>
     /// <param name="questToReplaceId">Quest id to remove from profile</param>
@@ -309,8 +306,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Find a repeatable (daily/weekly/scav) from a players profile by its id
-    ///
+    ///     Find a repeatable (daily/weekly/scav) from a players profile by its id
     /// </summary>
     /// <param name="questId">Id of quest to find</param>
     /// <param name="pmcData">Profile that contains quests to look through</param>
@@ -339,25 +335,23 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Handle client/repeatalbeQuests/activityPeriods
-    /// Returns an array of objects in the format of repeatable quests to the client.
-    /// repeatableQuestObject = {
-    ///  *id: Unique Id,
-    ///name: "Daily",
-    ///endTime: the time when the quests expire
-    ///activeQuests: currently available quests in an array. Each element of quest type format(see assets/ database / templates / repeatableQuests.json).
-    ///inactiveQuests: the quests which were previously active(required by client to fail them if they are not completed)
-    /// }
-    ///
-    /// The method checks if the player level requirement for repeatable quests(e.g.daily lvl5, weekly lvl15) is met and if the previously active quests
-    /// are still valid.This ischecked by endTime persisted in profile accordning to the resetTime configured for each repeatable kind(daily, weekly)
-    /// in QuestCondig.js
-    ///
-    /// If the condition is met, new repeatableQuests are created, old quests(which are persisted in the profile.RepeatableQuests[i].activeQuests) are
-    /// moved to profile.RepeatableQuests[i].inactiveQuests.This memory is required to get rid of old repeatable quest data in the profile, otherwise
-    /// they'll litter the profile's Quests field.
-    /// (if the are on "Succeed" but not "Completed" we keep them, to allow the player to complete them and get the rewards)
-    /// The new quests generated are again persisted in profile.RepeatableQuests
+    ///     Handle client/repeatalbeQuests/activityPeriods
+    ///     Returns an array of objects in the format of repeatable quests to the client.
+    ///     repeatableQuestObject = {
+    ///     *id: Unique Id,
+    ///     name: "Daily",
+    ///     endTime: the time when the quests expire
+    ///     activeQuests: currently available quests in an array. Each element of quest type format(see assets/ database / templates / repeatableQuests.json).
+    ///     inactiveQuests: the quests which were previously active(required by client to fail them if they are not completed)
+    ///     }
+    ///     The method checks if the player level requirement for repeatable quests(e.g.daily lvl5, weekly lvl15) is met and if the previously active quests
+    ///     are still valid.This ischecked by endTime persisted in profile accordning to the resetTime configured for each repeatable kind(daily, weekly)
+    ///     in QuestCondig.js
+    ///     If the condition is met, new repeatableQuests are created, old quests(which are persisted in the profile.RepeatableQuests[i].activeQuests) are
+    ///     moved to profile.RepeatableQuests[i].inactiveQuests.This memory is required to get rid of old repeatable quest data in the profile, otherwise
+    ///     they'll litter the profile's Quests field.
+    ///     (if the are on "Succeed" but not "Completed" we keep them, to allow the player to complete them and get the rewards)
+    ///     The new quests generated are again persisted in profile.RepeatableQuests
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>Array of repeatable quests</returns>
@@ -491,7 +485,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Get repeatable quest data from profile from name (daily/weekly), creates base repeatable quest object if none exists
+    ///     Get repeatable quest data from profile from name (daily/weekly), creates base repeatable quest object if none exists
     /// </summary>
     /// <param name="repeatableConfig">daily/weekly config</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -500,8 +494,7 @@ public class RepeatableQuestController(
         PmcData pmcData)
     {
         // Get from profile, add if missing
-        var repeatableQuestDetails = pmcData.RepeatableQuests.FirstOrDefault(
-            repeatable => repeatable.Name == repeatableConfig.Name
+        var repeatableQuestDetails = pmcData.RepeatableQuests.FirstOrDefault(repeatable => repeatable.Name == repeatableConfig.Name
         );
         var hasAccess = _profileHelper.HasAccessToRepeatableFreeRefreshSystem(pmcData);
 
@@ -535,7 +528,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Check if a repeatable quest type (daily/weekly) is active for the given profile
+    ///     Check if a repeatable quest type (daily/weekly) is active for the given profile
     /// </summary>
     /// <param name="repeatableConfig">Repeatable quest config</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -563,7 +556,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Does player have daily pmc quests unlocked
+    ///     Does player have daily pmc quests unlocked
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="repeatableConfig">Config of daily type to check</param>
@@ -574,7 +567,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Does player have daily scav quests unlocked
+    ///     Does player have daily scav quests unlocked
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <returns>True if unlocked</returns>
@@ -586,7 +579,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Expire quests and replace expired quests with ready-to-hand-in quests inside generatedRepeatables.activeQuests
+    ///     Expire quests and replace expired quests with ready-to-hand-in quests inside generatedRepeatables.activeQuests
     /// </summary>
     /// <param name="generatedRepeatables">Repeatables to process (daily/weekly)</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -629,9 +622,9 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Used to create a quest pool during each cycle of repeatable quest generation. The pool will be subsequently
-    /// narrowed down during quest generation to avoid duplicate quests. Like duplicate extractions or elimination quests
-    /// where you have to e.g. kill scavs in same locations
+    ///     Used to create a quest pool during each cycle of repeatable quest generation. The pool will be subsequently
+    ///     narrowed down during quest generation to avoid duplicate quests. Like duplicate extractions or elimination quests
+    ///     where you have to e.g. kill scavs in same locations
     /// </summary>
     /// <param name="repeatableConfig">main repeatable quest config</param>
     /// <param name="pmcLevel">Players level</param>
@@ -680,8 +673,7 @@ public class RepeatableQuestController(
 
                 var allowedLocations =
                     targetKvP.Key == "Savage"
-                        ? possibleLocations.Where(
-                            location => location != ELocationName.laboratory
+                        ? possibleLocations.Where(location => location != ELocationName.laboratory
                         ) // Exclude labs for Savage targets.
                         : possibleLocations;
 
@@ -696,7 +688,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Create a pool of quests to generate quests from
+    ///     Create a pool of quests to generate quests from
     /// </summary>
     /// <param name="repeatableConfig">Main repeatable config</param>
     /// <returns>QuestTypePool</returns>
@@ -724,7 +716,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Get a dictionary of map locations the player can access based on their current level
+    ///     Get a dictionary of map locations the player can access based on their current level
     /// </summary>
     /// <param name="locations"></param>
     /// <param name="pmcLevel"></param>
@@ -754,7 +746,7 @@ public class RepeatableQuestController(
     }
 
     /// <summary>
-    /// Return true if the given pmcLevel is allowed on the given location
+    ///     Return true if the given pmcLevel is allowed on the given location
     /// </summary>
     /// <param name="location">location name to check</param>
     /// <param name="pmcLevel">level of the pmc</param>
@@ -792,7 +784,8 @@ public class RepeatableQuestController(
         }
 
         // Add elite bonus to daily quests
-        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) && _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, fullProfile.CharacterData.PmcData))
+        if (string.Equals(repeatableConfig.Name, "daily", StringComparison.OrdinalIgnoreCase) &&
+            _profileHelper.HasEliteSkillLevel(SkillTypes.Charisma, fullProfile.CharacterData.PmcData))
             // Elite charisma skill gives extra daily quest(s)
         {
             questCount += _databaseService
@@ -807,7 +800,7 @@ public class RepeatableQuestController(
         }
 
         // Add any extra repeatable quests the profile has unlocked
-        questCount += (int)fullProfile.SptData.ExtraRepeatableQuests.GetValueOrDefault(repeatableConfig.Id, 0);
+        questCount += (int) fullProfile.SptData.ExtraRepeatableQuests.GetValueOrDefault(repeatableConfig.Id, 0);
 
         return questCount;
     }

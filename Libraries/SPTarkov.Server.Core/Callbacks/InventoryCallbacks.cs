@@ -1,9 +1,9 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Quests;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -274,7 +274,7 @@ public class InventoryCallbacks(
     }
 
     /// <summary>
-    /// Handle game/profile/items/moving SetFavoriteItems
+    ///     Handle game/profile/items/moving SetFavoriteItems
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="info"></param>

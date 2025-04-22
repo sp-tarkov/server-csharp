@@ -1,4 +1,6 @@
 using System.Security.Cryptography;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -11,8 +13,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using Vitality = SPTarkov.Server.Core.Models.Eft.Profile.Vitality;
 
 
@@ -135,8 +135,9 @@ public class CreateProfileService(
             var achievementsDb = _databaseService.GetTemplates().Achievements;
             var achievementRewardItemsToSend = new List<Item>();
 
-            foreach (var (achievementId, achievement) in profileDetails.CharacterData.PmcData.Achievements) {
-                var rewards = achievementsDb.FirstOrDefault((achievementDb) => achievementDb.Id == achievementId)?.Rewards;
+            foreach (var (achievementId, achievement) in profileDetails.CharacterData.PmcData.Achievements)
+            {
+                var rewards = achievementsDb.FirstOrDefault(achievementDb => achievementDb.Id == achievementId)?.Rewards;
 
                 if (rewards is null)
                 {
@@ -144,11 +145,11 @@ public class CreateProfileService(
                 }
 
                 achievementRewardItemsToSend.AddRange(_rewardHelper.ApplyRewards(
-                        rewards,
-                        CustomisationSource.ACHIEVEMENT,
-                        profileDetails,
-                        profileDetails.CharacterData.PmcData,
-                        achievementId));
+                    rewards,
+                    CustomisationSource.ACHIEVEMENT,
+                    profileDetails,
+                    profileDetails.CharacterData.PmcData,
+                    achievementId));
             }
 
             if (achievementRewardItemsToSend.Count > 0)
@@ -217,7 +218,7 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// Delete a profile
+    ///     Delete a profile
     /// </summary>
     /// <param name="sessionID"> ID of profile to delete </param>
     protected void DeleteProfileBySessionId(string sessionID)
@@ -235,7 +236,7 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// Make profiles pmcData.Inventory.equipment unique
+    ///     Make profiles pmcData.Inventory.equipment unique
     /// </summary>
     /// <param name="pmcData"> Profile to update </param>
     protected void UpdateInventoryEquipmentId(PmcData pmcData)
@@ -259,7 +260,7 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// For each trader reset their state to what a level 1 player would see
+    ///     For each trader reset their state to what a level 1 player would see
     /// </summary>
     /// <param name="sessionId"> Session ID of profile to reset </param>
     protected void ResetAllTradersInProfile(string sessionId)
@@ -271,8 +272,8 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable <br/>
-    /// DOES NOT check that stash exists
+    ///     Ensure a profile has the necessary internal containers e.g. questRaidItems / sortingTable <br />
+    ///     DOES NOT check that stash exists
     /// </summary>
     /// <param name="pmcData"> Profile to check </param>
     protected void AddMissingInternalContainersToProfile(PmcData pmcData)
@@ -464,7 +465,7 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// Get the game edition of a profile chosen on creation in Launcher
+    ///     Get the game edition of a profile chosen on creation in Launcher
     /// </summary>
     private string? GetGameEdition(SptProfile profile)
     {
@@ -488,8 +489,8 @@ public class CreateProfileService(
     }
 
     /// <summary>
-    /// Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
-    /// and send rewards to them in mail
+    ///     Iterate over all quests in player profile, inspect rewards for the quests current state (accepted/completed)
+    ///     and send rewards to them in mail
     /// </summary>
     /// <param name="profileDetails"> Player profile </param>
     /// <param name="sessionID"> Session ID </param>

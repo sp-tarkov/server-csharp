@@ -1,75 +1,74 @@
-﻿using SPTarkov.Server.Core.Models.Utils;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
-namespace SPTarkov.Server.Core.Services
+namespace SPTarkov.Server.Core.Services;
+
+[Injectable(InjectionType.Singleton)]
+public class BundleHashCacheService
 {
-    [Injectable(InjectionType.Singleton)]
-    public class BundleHashCacheService
+    protected const string _bundleHashCachePath = "./user/cache/";
+    protected const string _cacheName = "bundleHashCache.json";
+    protected readonly Dictionary<string, uint> _bundleHashes = new();
+    private readonly FileUtil _fileUtil;
+    private readonly HashUtil _hashUtil;
+    private readonly JsonUtil _jsonUtil;
+    private readonly ISptLogger<BundleHashCacheService> _logger;
+
+    public BundleHashCacheService(
+        ISptLogger<BundleHashCacheService> logger,
+        JsonUtil jsonUtil,
+        HashUtil hashUtil,
+        FileUtil fileUtil)
     {
-        private readonly ISptLogger<BundleHashCacheService> _logger;
-        private readonly JsonUtil _jsonUtil;
-        private readonly HashUtil _hashUtil;
-        private readonly FileUtil _fileUtil;
-        protected readonly Dictionary<string, uint> _bundleHashes = new Dictionary<string, uint>();
-        protected const string _bundleHashCachePath = "./user/cache/";
-        protected const string _cacheName = "bundleHashCache.json";
+        _logger = logger;
+        _jsonUtil = jsonUtil;
+        _hashUtil = hashUtil;
+        _fileUtil = fileUtil;
+    }
 
-        public BundleHashCacheService(
-            ISptLogger<BundleHashCacheService> logger,
-            JsonUtil jsonUtil,
-            HashUtil hashUtil,
-            FileUtil fileUtil)
+    public uint GetStoredValue(string key)
+    {
+        if (!_bundleHashes.TryGetValue(key, out var value))
         {
-            _logger = logger;
-            _jsonUtil = jsonUtil;
-            _hashUtil = hashUtil;
-            _fileUtil = fileUtil;
+            return 0;
         }
 
-        public uint GetStoredValue(string key)
-        {
-            if (!_bundleHashes.TryGetValue(key, out var value))
-            {
-                return 0;
-            }
+        return value;
+    }
 
-            return value;
+    public void StoreValue(string bundlePath, uint hash)
+    {
+        _bundleHashes.Add(bundlePath, hash);
+
+        if (!Directory.Exists(_bundleHashCachePath))
+        {
+            Directory.CreateDirectory(_bundleHashCachePath);
         }
 
-        public void StoreValue(string bundlePath, uint hash)
-        {
-            _bundleHashes.Add(bundlePath, hash);
+        _fileUtil.WriteFile(Path.Join(_bundleHashCachePath, _cacheName), _jsonUtil.Serialize(_bundleHashes));
 
-            if (!Directory.Exists(_bundleHashCachePath))
-            {
-                Directory.CreateDirectory(_bundleHashCachePath);
-            }
+        _logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
+    }
 
-            _fileUtil.WriteFile(Path.Join(_bundleHashCachePath, _cacheName), _jsonUtil.Serialize(_bundleHashes));
+    public bool CalculateAndMatchHash(string BundlePath)
+    {
+        return MatchWithStoredHash(BundlePath, CalculateHash(BundlePath));
+    }
 
-            _logger.Debug($"Bundle: {bundlePath} hash stored in: ${_bundleHashCachePath}");
-        }
+    public void CalculateAndStoreHash(string BundlePath)
+    {
+        StoreValue(BundlePath, CalculateHash(BundlePath));
+    }
 
-        public bool CalculateAndMatchHash(string BundlePath)
-        {
-            return MatchWithStoredHash(BundlePath, CalculateHash(BundlePath));
-        }
+    public uint CalculateHash(string BundlePath)
+    {
+        var fileData = _fileUtil.ReadFile(BundlePath);
+        return _hashUtil.GenerateCrc32ForData(fileData);
+    }
 
-        public void CalculateAndStoreHash(string BundlePath)
-        {
-            StoreValue(BundlePath, CalculateHash(BundlePath));
-        }
-
-        public uint CalculateHash(string BundlePath)
-        {
-            var fileData = _fileUtil.ReadFile(BundlePath);
-            return _hashUtil.GenerateCrc32ForData(fileData);
-        }
-
-        public bool MatchWithStoredHash(string BundlePath, uint hash)
-        {
-            return GetStoredValue(BundlePath) == hash;
-        }
+    public bool MatchWithStoredHash(string BundlePath, uint hash)
+    {
+        return GetStoredValue(BundlePath) == hash;
     }
 }

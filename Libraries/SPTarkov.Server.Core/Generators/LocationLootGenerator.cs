@@ -1,5 +1,5 @@
-using System.Reflection.Metadata.Ecma335;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -11,7 +11,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -84,8 +83,7 @@ public class LocationLootGenerator(
         // Remove christmas items from loot data
         if (!_seasonalEventService.ChristmasEventEnabled())
         {
-            allStaticContainersOnMapClone = allStaticContainersOnMapClone.Where(
-                    item => !_seasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
+            allStaticContainersOnMapClone = allStaticContainersOnMapClone.Where(item => !_seasonalEventConfig.ChristmasContainerIds.Contains(item.Template.Id)
                 )
                 .ToList();
         }
@@ -121,7 +119,7 @@ public class LocationLootGenerator(
 
         // Randomisation is turned off globally or just turned off for this map
         if (!_locationConfig.ContainerRandomisationSettings.Enabled || !_locationConfig.ContainerRandomisationSettings.Maps.ContainsKey(locationId)
-        )
+           )
         {
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
@@ -207,8 +205,7 @@ public class LocationLootGenerator(
             foreach (var chosenContainerId in chosenContainerIds)
             {
                 // Look up container object from full list of containers on map
-                var containerObject = staticRandomisableContainersOnMap.FirstOrDefault(
-                    staticContainer => staticContainer.Template.Id == chosenContainerId
+                var containerObject = staticRandomisableContainersOnMap.FirstOrDefault(staticContainer => staticContainer.Template.Id == chosenContainerId
                 );
                 if (containerObject is null)
                 {
@@ -253,13 +250,12 @@ public class LocationLootGenerator(
     /// <returns>StaticContainerData array</returns>
     protected List<StaticContainerData> GetRandomisableContainersOnMap(List<StaticContainerData> staticContainers)
     {
-        return staticContainers.Where(
-                staticContainer =>
-                    staticContainer.Probability != 1 &&
-                    !staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) &&
-                    !_locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
-                        staticContainer.Template.Items[0].Template
-                    )
+        return staticContainers.Where(staticContainer =>
+                staticContainer.Probability != 1 &&
+                !staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) &&
+                !_locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+                    staticContainer.Template.Items[0].Template
+                )
             )
             .ToList();
     }
@@ -271,13 +267,12 @@ public class LocationLootGenerator(
     /// <returns>IStaticContainerData array</returns>
     protected List<StaticContainerData> GetGuaranteedContainers(List<StaticContainerData> staticContainersOnMap)
     {
-        return staticContainersOnMap.Where(
-                staticContainer =>
-                    staticContainer.Probability == 1 ||
-                    staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) ||
-                    _locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
-                        staticContainer.Template.Items[0].Template
-                    )
+        return staticContainersOnMap.Where(staticContainer =>
+                staticContainer.Probability == 1 ||
+                staticContainer.Template.IsAlwaysSpawn.GetValueOrDefault(false) ||
+                _locationConfig.ContainerRandomisationSettings.ContainerTypesToNotRandomise.Contains(
+                    staticContainer.Template.Items[0].Template
+                )
             )
             .ToList();
     }
@@ -519,7 +514,7 @@ public class LocationLootGenerator(
     }
 
     /// <summary>
-    /// Get the height/width of an item including its children
+    ///     Get the height/width of an item including its children
     /// </summary>
     /// <param name="items"></param>
     /// <returns></returns>
@@ -691,12 +686,12 @@ public class LocationLootGenerator(
         // Remove christmas items from loot data
         if (!_seasonalEventService.ChristmasEventEnabled())
         {
-            dynamicLootDist.Spawnpoints = dynamicLootDist.Spawnpoints.Where(
-                    point => !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
+            dynamicLootDist.Spawnpoints = dynamicLootDist.Spawnpoints.Where(point =>
+                    !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
                 )
                 .ToList();
-            dynamicLootDist.SpawnpointsForced = dynamicLootDist.SpawnpointsForced.Where(
-                    point => !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
+            dynamicLootDist.SpawnpointsForced = dynamicLootDist.SpawnpointsForced.Where(point =>
+                    !point.Template.Id.StartsWith("christmas", StringComparison.OrdinalIgnoreCase)
                 )
                 .ToList();
         }
@@ -809,16 +804,14 @@ public class LocationLootGenerator(
             }
 
             // Ensure no blacklisted lootable items are in pool
-            spawnPoint.Template.Items = spawnPoint.Template.Items.Where(
-                    item => !_itemFilterService.IsLootableItemBlacklisted(item.Template)
+            spawnPoint.Template.Items = spawnPoint.Template.Items.Where(item => !_itemFilterService.IsLootableItemBlacklisted(item.Template)
                 )
                 .ToList();
 
             // Ensure no seasonal items are in pool if not in-season
             if (!seasonalEventActive)
             {
-                spawnPoint.Template.Items = spawnPoint.Template.Items.Where(
-                        item => !seasonalItemTplBlacklist.Contains(item.Template)
+                spawnPoint.Template.Items = spawnPoint.Template.Items.Where(item => !seasonalItemTplBlacklist.Contains(item.Template)
                     )
                     .ToList();
             }
@@ -897,8 +890,7 @@ public class LocationLootGenerator(
             foreach (var itemTpl in lootToForceSingleAmountOnMap)
             {
                 // Get all spawn positions for item tpl in forced loot array
-                var items = forcedSpawnPoints.Where(
-                    forcedSpawnPoint => forcedSpawnPoint.Template.Items[0].Template == itemTpl
+                var items = forcedSpawnPoints.Where(forcedSpawnPoint => forcedSpawnPoint.Template.Items[0].Template == itemTpl
                 );
                 if (items is null || !items.Any())
                 {
@@ -975,8 +967,7 @@ public class LocationLootGenerator(
             forcedLootLocation.Template.Items = createItemResult.Items;
 
             // Push forced location into array as long as it doesnt exist already
-            var existingLocation = lootLocationTemplates.Any(
-                spawnPoint => spawnPoint.Id == locationTemplateToAdd.Id
+            var existingLocation = lootLocationTemplates.Any(spawnPoint => spawnPoint.Id == locationTemplateToAdd.Id
             );
             if (!existingLocation)
             {
@@ -993,8 +984,9 @@ public class LocationLootGenerator(
             }
         }
     }
+
     /// <summary>
-    /// Create array of item (with child items) and return
+    ///     Create array of item (with child items) and return
     /// </summary>
     /// <param name="chosenComposedKey"> Key we want to look up items for </param>
     /// <param name="items"> Location loot Template </param>

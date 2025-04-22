@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
@@ -168,14 +168,12 @@ public class DatabaseImporter : IOnLoad
 
         var validation = valid == ValidationResult.FAILED || valid == ValidationResult.NOT_FOUND ? "." : "";
         _logger.Info($"{_localisationService.GetText("importing_database_finish")}{validation}");
-        this._logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
+        _logger.Debug($"Database import took {timer.ElapsedMilliseconds}ms");
         _databaseServer.SetTables(dataToImport);
     }
 
     protected void OnReadValidate(string fileWithPath)
     {
-
-
         // Validate files
         //if (ProgramStatics.COMPILED && hashedFile && !ValidateFile(fileWithPath, data)) {
         //    this.valid = ValidationResult.FAILED;

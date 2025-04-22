@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -20,8 +20,8 @@ public class BotNameService(
     ConfigServer _configServer
 )
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected readonly Lock _lockObject = new();
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected HashSet<string> _usedNameCache = new();
 
     /// <summary>

@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -11,8 +13,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using BonusSettings = SPTarkov.Server.Core.Models.Spt.Config.BonusSettings;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 

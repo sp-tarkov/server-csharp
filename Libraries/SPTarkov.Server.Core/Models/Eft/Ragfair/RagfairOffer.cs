@@ -65,7 +65,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// Handbook price
+    ///     Handbook price
     /// </summary>
     [JsonPropertyName("itemsCost")]
     public double? ItemsCost
@@ -75,7 +75,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// Rouble price per item
+    ///     Rouble price per item
     /// </summary>
     [JsonPropertyName("requirementsCost")]
     public double? RequirementsCost
@@ -99,7 +99,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// True when offer is sold as pack
+    ///     True when offer is sold as pack
     /// </summary>
     [JsonPropertyName("sellInOnePiece")]
     public bool? SellInOnePiece
@@ -109,7 +109,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// Rouble price - same as requirementsCost
+    ///     Rouble price - same as requirementsCost
     /// </summary>
     [JsonPropertyName("summaryCost")]
     public double? SummaryCost
@@ -126,7 +126,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// Trader only
+    ///     Trader only
     /// </summary>
     [JsonPropertyName("unlimitedCount")]
     public bool? UnlimitedCount
@@ -165,7 +165,7 @@ public record RagfairOffer
     }
 
     /// <summary>
-    /// Tightly bound to offer.items[0].upd.stackObjectsCount
+    ///     Tightly bound to offer.items[0].upd.stackObjectsCount
     /// </summary>
     [JsonPropertyName("quantity")]
     public int? Quantity

@@ -5,9 +5,9 @@ namespace SPTarkov.Server.Modding;
 
 public class ModLoadOrder(ICloner cloner)
 {
+    protected Dictionary<string, PackageJsonData> loadOrder = new();
     protected Dictionary<string, PackageJsonData> mods = new();
     protected Dictionary<string, PackageJsonData> modsAvailable = new();
-    protected Dictionary<string, PackageJsonData> loadOrder = new();
 
     public Dictionary<string, PackageJsonData> SetModList(Dictionary<string, PackageJsonData> mods)
     {

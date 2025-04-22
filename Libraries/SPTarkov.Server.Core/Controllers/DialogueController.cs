@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Helpers.Dialogue;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -340,7 +340,7 @@ public class DialogueController(
     }
 
     /// <summary>
-    /// Get messages from a specific dialog that have items not expired
+    ///     Get messages from a specific dialog that have items not expired
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="dialogueId">Dialog to get mail attachments from</param>
@@ -503,9 +503,8 @@ public class DialogueController(
     {
         _mailSendService.SendPlayerMessageToNpc(sessionId, request.DialogId!, request.Text!);
 
-        return (_dialogueChatBots.FirstOrDefault(
-                        cb =>
-                            cb.GetChatBot().Id == request.DialogId
+        return (_dialogueChatBots.FirstOrDefault(cb =>
+                        cb.GetChatBot().Id == request.DialogId
                     )
                     ?.HandleMessage(sessionId, request) ??
                 request.DialogId) ??
@@ -557,7 +556,7 @@ public class DialogueController(
     }
 
     /// <summary>
-    /// Has a dialog message expired
+    ///     Has a dialog message expired
     /// </summary>
     /// <param name="message">Message to check expiry of</param>
     /// <returns>True = expired</returns>
@@ -567,7 +566,7 @@ public class DialogueController(
     }
 
     /// <summary>
-    /// Handle client/friend/request/send
+    ///     Handle client/friend/request/send
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent friend request</param>
@@ -618,7 +617,7 @@ public class DialogueController(
     }
 
     /// <summary>
-    /// Handle client/friend/delete
+    ///     Handle client/friend/delete
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <param name="request">Sent delete friend request</param>

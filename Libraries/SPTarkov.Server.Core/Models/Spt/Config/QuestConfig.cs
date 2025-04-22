@@ -16,7 +16,7 @@ public record QuestConfig : BaseConfig
     } = "spt-quest";
 
     /// <summary>
-    /// Hours to get/redeem items from quest mail keyed by profile type
+    ///     Hours to get/redeem items from quest mail keyed by profile type
     /// </summary>
     [JsonPropertyName("mailRedeemTimeHours")]
     public Dictionary<string, double?>? MailRedeemTimeHours
@@ -33,7 +33,7 @@ public record QuestConfig : BaseConfig
     }
 
     /// <summary>
-    /// Show non-seasonal quests be shown to player
+    ///     Show non-seasonal quests be shown to player
     /// </summary>
     [JsonPropertyName("showNonSeasonalEventQuests")]
     public bool? ShowNonSeasonalEventQuests
@@ -78,7 +78,7 @@ public record QuestConfig : BaseConfig
     }
 
     /// <summary>
-    /// Quests that the keyed game version do not see/access
+    ///     Quests that the keyed game version do not see/access
     /// </summary>
     [JsonPropertyName("profileBlacklist")]
     public Dictionary<string, HashSet<string>>? ProfileBlacklist
@@ -88,7 +88,7 @@ public record QuestConfig : BaseConfig
     }
 
     /// <summary>
-    /// key=questid, gameversions that can see/access quest
+    ///     key=questid, gameversions that can see/access quest
     /// </summary>
     [JsonPropertyName("profileWhitelist")]
     public Dictionary<string, HashSet<string>>? ProfileWhitelist
@@ -265,7 +265,7 @@ public record RepeatableQuestConfig
     }
 
     /// <summary>
-    /// Item base types to block when generating rewards
+    ///     Item base types to block when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBaseTypeBlacklist")]
     public HashSet<string>? RewardBaseTypeBlacklist
@@ -275,7 +275,7 @@ public record RepeatableQuestConfig
     }
 
     /// <summary>
-    /// Item tplIds to ignore when generating rewards
+    ///     Item tplIds to ignore when generating rewards
     /// </summary>
     [JsonPropertyName("rewardBlacklist")]
     public HashSet<string>? RewardBlacklist
@@ -313,7 +313,7 @@ public record RepeatableQuestConfig
     }
 
     /// <summary>
-    ///  Reputation standing price for replacing a repeatable
+    ///     Reputation standing price for replacing a repeatable
     /// </summary>
     [JsonPropertyName("standingChangeCost")]
     public IList<double>? StandingChangeCost
@@ -558,7 +558,7 @@ public record Completion : BaseQuestConfig
     }
 
     /// <summary>
-    /// Should supplied items be required FiR
+    ///     Should supplied items be required FiR
     /// </summary>
     [JsonPropertyName("requiredItemsAreFiR")]
     public bool? RequiredItemsAreFiR
@@ -568,7 +568,7 @@ public record Completion : BaseQuestConfig
     }
 
     /// <summary>
-    /// Should supplied items be required FiR
+    ///     Should supplied items be required FiR
     /// </summary>
     [JsonPropertyName("requiredItemMinDurabilityMinMax")]
     public MinMax<double>? RequiredItemMinDurabilityMinMax

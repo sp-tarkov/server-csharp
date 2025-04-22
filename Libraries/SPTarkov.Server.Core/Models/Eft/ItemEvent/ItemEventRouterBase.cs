@@ -114,7 +114,7 @@ public record ProfileChange
     }
 
     /// <summary>
-    /// Hideout area improvement id
+    ///     Hideout area improvement id
     /// </summary>
     [JsonPropertyName("improvements")]
     public Dictionary<string, HideoutImprovement>? Improvements
@@ -307,7 +307,7 @@ public record ItemChanges
 }
 
 /// <summary>
-/// Related to TraderInfo
+///     Related to TraderInfo
 /// </summary>
 public record TraderData
 {

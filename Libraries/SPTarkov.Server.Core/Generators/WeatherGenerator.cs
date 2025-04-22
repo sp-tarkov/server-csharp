@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Weather;
 using SPTarkov.Server.Core.Models.Enums;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -22,7 +22,7 @@ public class WeatherGenerator(
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
 
     /// <summary>
-    /// Get current + raid datetime and format into correct BSG format.
+    ///     Get current + raid datetime and format into correct BSG format.
     /// </summary>
     /// <param name="data"> Weather data </param>
     /// <returns> WeatherData </returns>
@@ -39,8 +39,8 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Get server uptime seconds multiplied by a multiplier and add to current time as seconds.
-    /// Formatted to BSGs requirements
+    ///     Get server uptime seconds multiplied by a multiplier and add to current time as seconds.
+    ///     Formatted to BSGs requirements
     /// </summary>
     /// <returns>Formatted time as String </returns>
     protected string GetBsgFormattedInRaidTime()
@@ -51,7 +51,7 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Get current time formatted to fit BSGs requirement
+    ///     Get current time formatted to fit BSGs requirement
     /// </summary>
     /// <param name="date"> Date to format into bsg style </param>
     /// <returns> Time formatted in BSG format </returns>
@@ -61,7 +61,7 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Return randomised Weather data with help of config/weather.json
+    ///     Return randomised Weather data with help of config/weather.json
     /// </summary>
     /// <param name="currentSeason"> The currently active season </param>
     /// <param name="timestamp"> Optional, what timestamp to generate the weather data at, defaults to now when not supplied </param>
@@ -112,7 +112,7 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Choose a temperature for the raid based on time of day
+    ///     Choose a temperature for the raid based on time of day
     /// </summary>
     /// <param name="weather"> What season Tarkov is currently in </param>
     /// <param name="inRaidTimestamp"> What time is the raid running at </param>
@@ -129,7 +129,7 @@ public class WeatherGenerator(
     }
 
     /// <summary>
-    /// Set Weather date/time/timestamp values to now
+    ///     Set Weather date/time/timestamp values to now
     /// </summary>
     /// <param name="weather"> Object to update </param>
     /// <param name="timestamp"> Optional, timestamp used </param>

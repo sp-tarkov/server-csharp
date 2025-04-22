@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Builds;
 using SPTarkov.Server.Core.Models.Eft.PresetBuild;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -51,8 +51,7 @@ public class BuildController(
             .ToList();
 
         // Get players secure container
-        var playerSecureContainer = profile?.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(
-            x => x.SlotId == secureContainerSlotId
+        var playerSecureContainer = profile?.CharacterData?.PmcData?.Inventory?.Items?.FirstOrDefault(x => x.SlotId == secureContainerSlotId
         );
 
         var firstDefaultItemsSecureContainer = defaultEquipmentPresetsClone?
@@ -149,8 +148,7 @@ public class BuildController(
             Items = request.Items
         };
 
-        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(
-            build => build.Name == request.Name || build.Id == request.Id
+        var existingBuild = existingSavedEquipmentBuilds?.FirstOrDefault(build => build.Name == request.Name || build.Id == request.Id
         );
         if (existingBuild is not null)
         {
@@ -211,8 +209,8 @@ public class BuildController(
     }
 
     /// <summary>
-    /// Handle client/builds/delete
-    /// Remove build from players profile
+    ///     Handle client/builds/delete
+    ///     Remove build from players profile
     /// </summary>
     /// <param name="idToRemove"></param>
     /// <param name="sessionId">Session/Player id</param>

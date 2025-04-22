@@ -41,7 +41,7 @@ public record PostRaidStats
     }
 
     /// <summary>
-    /// Only found in profile we get from client post raid
+    ///     Only found in profile we get from client post raid
     /// </summary>
     [JsonPropertyName("Arena")]
     public EftStats? Arena

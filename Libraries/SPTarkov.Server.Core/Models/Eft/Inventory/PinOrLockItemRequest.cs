@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 public record PinOrLockItemRequest : InventoryBaseActionRequestData
 {
     /// <summary>
-    /// Id of item being pinned
+    ///     Id of item being pinned
     /// </summary>
     [JsonPropertyName("Item")]
     public string? Item
@@ -16,7 +16,7 @@ public record PinOrLockItemRequest : InventoryBaseActionRequestData
     }
 
     /// <summary>
-    /// "Pinned"/"Locked"/"Free"
+    ///     "Pinned"/"Locked"/"Free"
     /// </summary>
     [JsonPropertyName("State")]
     [JsonConverter(typeof(JsonStringEnumConverter))]

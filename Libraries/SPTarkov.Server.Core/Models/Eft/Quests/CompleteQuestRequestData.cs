@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Quests;
 public record CompleteQuestRequestData : InventoryBaseActionRequestData
 {
     /// <summary>
-    /// Quest Id
+    ///     Quest Id
     /// </summary>
     [JsonPropertyName("qid")]
     public string? QuestId

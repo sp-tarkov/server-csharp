@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Spt.Location;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -44,6 +44,7 @@ public class RaidTimeAdjustmentService(
         {
             AdjustLootMultipliers(_locationConfig.LooseLootMultiplier, raidAdjustments.DynamicLootPercent);
         }
+
         if (raidAdjustments.StaticLootPercent < 100)
         {
             AdjustLootMultipliers(_locationConfig.StaticLootMultiplier, raidAdjustments.StaticLootPercent);
@@ -58,7 +59,7 @@ public class RaidTimeAdjustmentService(
             var exitToChange = mapBase.Exits.FirstOrDefault(exit => exit.Name == exitChange.Name);
             if (exitToChange is null)
             {
-                _logger.Debug($"Exit with Id: { exitChange.Name} not found, skipping");
+                _logger.Debug($"Exit with Id: {exitChange.Name} not found, skipping");
 
                 return;
             }

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Routers;
@@ -44,7 +44,7 @@ public class ItemEventRouter
     }
 
     /// <summary>
-    /// Handles ItemEventRouter Requests and processes them.
+    ///     Handles ItemEventRouter Requests and processes them.
     /// </summary>
     /// <param name="info"> Event request </param>
     /// <param name="sessionID"> Session ID </param>

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -35,21 +35,21 @@ public class RepeatableQuestRewardGenerator(
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
-    /// Generate the reward for a mission. A reward can consist of: <br/>
-    /// - Experience <br/>
-    /// - Money <br/>
-    /// - GP coins <br/>
-    /// - Weapon preset <br/>
-    /// - Items <br/>
-    /// - Trader Reputation <br/>
-    /// - Skill level experience <br/>
-    /// <br/>
-    /// The reward is dependent on the player level as given by the wiki. The exact mapping of pmcLevel to <br/>
-    /// experience / money / items / trader reputation can be defined in QuestConfig.js <br/>
-    /// <br/>
-    /// There's also a random variation of the reward the spread of which can be also defined in the config <br/>
-    /// <br/>
-    /// Additionally, a scaling factor w.r.t. quest difficulty going from 0.2...1 can be used
+    ///     Generate the reward for a mission. A reward can consist of: <br />
+    ///     - Experience <br />
+    ///     - Money <br />
+    ///     - GP coins <br />
+    ///     - Weapon preset <br />
+    ///     - Items <br />
+    ///     - Trader Reputation <br />
+    ///     - Skill level experience <br />
+    ///     <br />
+    ///     The reward is dependent on the player level as given by the wiki. The exact mapping of pmcLevel to <br />
+    ///     experience / money / items / trader reputation can be defined in QuestConfig.js <br />
+    ///     <br />
+    ///     There's also a random variation of the reward the spread of which can be also defined in the config <br />
+    ///     <br />
+    ///     Additionally, a scaling factor w.r.t. quest difficulty going from 0.2...1 can be used
     /// </summary>
     /// <param name="pmcLevel"> Level of player reward is being generated for </param>
     /// <param name="difficulty"> Reward scaling factor from 0.2 to 1 </param>
@@ -110,8 +110,7 @@ public class RepeatableQuestRewardGenerator(
         rewardIndex++;
 
         // Add preset weapon to reward if checks pass
-        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(
-            traderWhitelist => traderWhitelist.TraderId == traderId
+        var traderWhitelistDetails = repeatableConfig.TraderWhitelist.FirstOrDefault(traderWhitelist => traderWhitelist.TraderId == traderId
         );
         if (traderWhitelistDetails?.RewardCanBeWeapon ??
             (false && _randomUtil.GetChance100(traderWhitelistDetails.WeaponRewardChancePercent ?? 0))
@@ -132,8 +131,7 @@ public class RepeatableQuestRewardGenerator(
         if (rewardTplBlacklist is not null)
         {
             // Filter reward pool of items from blacklist, only use if there's at least 1 item remaining
-            var filteredRewardItemPool = inBudgetRewardItemPool.Where(
-                item => !rewardTplBlacklist.Contains(item.Id)
+            var filteredRewardItemPool = inBudgetRewardItemPool.Where(item => !rewardTplBlacklist.Contains(item.Id)
             );
             if (filteredRewardItemPool.Count() > 0)
             {
@@ -319,7 +317,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Get an array of items + stack size to give to player as reward that fit inside a rouble budget.
+    ///     Get an array of items + stack size to give to player as reward that fit inside a rouble budget.
     /// </summary>
     /// <param name="itemPool"> All possible items to choose rewards from </param>
     /// <param name="maxItemCount"> Total number of items to reward </param>
@@ -405,8 +403,8 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Get a count of cartridges that fits the rouble budget amount provided.<br/>
-    /// e.g. how many M80s for 50,000 roubles.
+    ///     Get a count of cartridges that fits the rouble budget amount provided.<br />
+    ///     e.g. how many M80s for 50,000 roubles.
     /// </summary>
     /// <param name="itemSelected"> Cartridge template </param>
     /// <param name="roublesBudget"> Rouble budget </param>
@@ -449,7 +447,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Get a randomised number a reward items stack size should be based on its handbook price
+    ///     Get a randomised number a reward items stack size should be based on its handbook price
     /// </summary>
     /// <param name="item"> Reward item to get stack size for </param>
     /// <returns> Matching stack size for the passed in items price </returns>
@@ -476,7 +474,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Select a number of items that have a collective value of the passed in parameter
+    ///     Select a number of items that have a collective value of the passed in parameter
     /// </summary>
     /// <param name="repeatableConfig"> Config </param>
     /// <param name="roublesBudget"> Total value of items to return </param>
@@ -518,7 +516,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Filters a list of reward Items within a budget.
+    ///     Filters a list of reward Items within a budget.
     /// </summary>
     /// <param name="rewardItems"> List of reward items to filter </param>
     /// <param name="roublesBudget"> The budget remaining for rewards </param>
@@ -527,8 +525,7 @@ public class RepeatableQuestRewardGenerator(
     protected List<TemplateItem> FilterRewardPoolWithinBudget(List<TemplateItem> rewardItems, double roublesBudget,
         double minPrice)
     {
-        return rewardItems.Where(
-                item =>
+        return rewardItems.Where(item =>
                 {
                     var itemPrice = _presetHelper.GetDefaultPresetOrItemPrice(item.Id);
                     return itemPrice < roublesBudget && itemPrice > minPrice;
@@ -538,7 +535,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Choose a random Weapon preset that fits inside a rouble amount limit
+    ///     Choose a random Weapon preset that fits inside a rouble amount limit
     /// </summary>
     /// <param name="roublesBudget"> Budget in roubles </param>
     /// <param name="rewardIndex"> Index of the reward </param>
@@ -581,7 +578,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Helper to create a reward item structured as required by the client
+    ///     Helper to create a reward item structured as required by the client
     /// </summary>
     /// <param name="tpl"> ItemId of the rewarded item </param>
     /// <param name="count"> Amount of items to give </param>
@@ -626,7 +623,7 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Helper to create a reward item structured as required by the client
+    ///     Helper to create a reward item structured as required by the client
     /// </summary>
     /// <param name="tpl"> ItemId of the rewarded item </param>
     /// <param name="count"> Amount of items to give</param>
@@ -682,11 +679,11 @@ public class RepeatableQuestRewardGenerator(
 
 
     /// <summary>
-    /// Picks rewardable items from items.json <br/>
-    /// This means they must: <br/>
-    /// - Fit into the inventory <br/>
-    /// - Shouldn't be keys <br/>
-    /// - Have a price greater than 0
+    ///     Picks rewardable items from items.json <br />
+    ///     This means they must: <br />
+    ///     - Fit into the inventory <br />
+    ///     - Shouldn't be keys <br />
+    ///     - Have a price greater than 0
     /// </summary>
     /// <param name="repeatableQuestConfig"> Config </param>
     /// <param name="tradderId"> ID of trader who will give reward to player </param>
@@ -700,8 +697,7 @@ public class RepeatableQuestRewardGenerator(
         // also check if the price is greater than 0; there are some items whose price can not be found
         // those are not in the game yet (e.g. AGS grenade launcher)
         return _databaseService.GetItems()
-            .Values.Where(
-                itemTemplate =>
+            .Values.Where(itemTemplate =>
                 {
                     // Base "Item" item has no parent, ignore it
                     if (itemTemplate.Parent == "")
@@ -714,8 +710,7 @@ public class RepeatableQuestRewardGenerator(
                         return false;
                     }
 
-                    var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(
-                        trader => trader.TraderId == traderId
+                    var traderWhitelist = repeatableQuestConfig.TraderWhitelist.FirstOrDefault(trader => trader.TraderId == traderId
                     );
 
                     return IsValidRewardItem(
@@ -729,8 +724,8 @@ public class RepeatableQuestRewardGenerator(
     }
 
     /// <summary>
-    /// Checks if an id is a valid item. Valid meaning that it's an item that may be a reward
-    /// or content of bot loot. Items that are tested as valid may be in a player backpack or stash.
+    ///     Checks if an id is a valid item. Valid meaning that it's an item that may be a reward
+    ///     or content of bot loot. Items that are tested as valid may be in a player backpack or stash.
     /// </summary>
     /// <param name="tpl"> Template id of item to check</param>
     /// <param name="repeatableQuestConfig"> Config </param>

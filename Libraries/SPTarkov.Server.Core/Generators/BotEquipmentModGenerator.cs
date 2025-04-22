@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -12,7 +13,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -40,7 +40,6 @@ public class BotEquipmentModGenerator(
     ICloner _cloner
 )
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected static readonly FrozenSet<string> _modSightIds = ["mod_sight_front", "mod_sight_rear"];
 
     // Slots that hold scopes
@@ -63,12 +62,15 @@ public class BotEquipmentModGenerator(
 
     // Slots that hold cartridges
     protected static readonly FrozenSet<string> _cartridgeHolderSlots =
-        [
-            "mod_magazine",
-            "patron_in_weapon",
-            "patron_in_weapon_000",
-            "patron_in_weapon_001",
-            "cartridges"];
+    [
+        "mod_magazine",
+        "patron_in_weapon",
+        "patron_in_weapon_000",
+        "patron_in_weapon_001",
+        "cartridges"
+    ];
+
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
 
     /// <summary>
     ///     Check mods are compatible and add to array
@@ -272,10 +274,9 @@ public class BotEquipmentModGenerator(
         }
 
         // Get the front/back/side weights based on bots level
-        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting.FirstOrDefault(
-            armorWeight =>
-                settings.BotData.Level >= armorWeight.LevelRange.Min &&
-                settings.BotData.Level <= armorWeight.LevelRange.Max
+        var plateSlotWeights = settings.BotEquipmentConfig?.ArmorPlateWeighting.FirstOrDefault(armorWeight =>
+            settings.BotData.Level >= armorWeight.LevelRange.Min &&
+            settings.BotData.Level <= armorWeight.LevelRange.Max
         );
 
         if (plateSlotWeights is null)
@@ -390,14 +391,13 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Gets the minimum and maximum plate class levels from an array of plates
+    ///     Gets the minimum and maximum plate class levels from an array of plates
     /// </summary>
     /// <param name="platePool">Pool of plates to sort by armorClass to get min and max</param>
     /// <returns>MinMax of armorClass from plate pool</returns>
     protected static MinMax<int> GetMinMaxArmorPlateClass(List<TemplateItem> platePool)
     {
-        platePool.Sort(
-            (x, y) =>
+        platePool.Sort((x, y) =>
             {
                 if (x.Properties.ArmorClass < y.Properties.ArmorClass)
                 {
@@ -421,7 +421,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Get the default plate an armor has in its db item
+    ///     Get the default plate an armor has in its db item
     /// </summary>
     /// <param name="armorItem">Item to look up default plate</param>
     /// <param name="modSlot">front/back</param>
@@ -434,7 +434,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Get the matching armor slot from the default preset matching passed in armor tpl
+    ///     Get the matching armor slot from the default preset matching passed in armor tpl
     /// </summary>
     /// <param name="armorItemTpl"></param>
     /// <param name="modSlot"></param>
@@ -733,7 +733,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Does the passed in db item lack slot cartridges or chambers
+    ///     Does the passed in db item lack slot cartridges or chambers
     /// </summary>
     /// <param name="item">Item to check</param>
     /// <returns>True it lacks cartridges/chamber slots</returns>
@@ -1032,9 +1032,8 @@ public class BotEquipmentModGenerator(
             if ((request.WeaponStats.HasOptic ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to low profile gas blocks when weapon has an optic
-                var onlyLowProfileGasBlocks = modPool.Where(
-                    tpl =>
-                        _botConfig.LowProfileGasBlockTpls.Contains(tpl)
+                var onlyLowProfileGasBlocks = modPool.Where(tpl =>
+                    _botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
                 if (onlyLowProfileGasBlocks.Any())
                 {
@@ -1044,8 +1043,7 @@ public class BotEquipmentModGenerator(
             else if ((request.WeaponStats.HasRearIronSight ?? false) && modPool.Count > 1)
             {
                 // Attempt to limit modpool to high profile gas blocks when weapon has rear iron sight + no front iron sight
-                var onlyHighProfileGasBlocks = modPool.Where(
-                    tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
+                var onlyHighProfileGasBlocks = modPool.Where(tpl => !_botConfig.LowProfileGasBlockTpls.Contains(tpl)
                 );
                 if (onlyHighProfileGasBlocks.Any())
                 {
@@ -1127,8 +1125,7 @@ public class BotEquipmentModGenerator(
         var weaponTpl = modSpawnRequest.Weapon[0].Template;
         modSpawnRequest.RandomisationSettings.MinimumMagazineSize.TryGetValue(weaponTpl, out var minMagSizeFromSettings);
         var minMagazineSize = minMagSizeFromSettings;
-        var desiredMagazineTpls = modPool.Where(
-            magTpl =>
+        var desiredMagazineTpls = modPool.Where(magTpl =>
             {
                 var magazineDb = _itemHelper.GetItem(magTpl).Value;
                 return magazineDb.Properties is not null && magazineDb.Properties.Cartridges.FirstOrDefault().MaxCount >= minMagazineSize;
@@ -1236,9 +1233,8 @@ public class BotEquipmentModGenerator(
             }
 
             // Check if existing weapon mods are incompatible with chosen item
-            var existingItemBlockingChoice = weapon.FirstOrDefault(
-                item =>
-                    pickedItemDetails.Value.Properties.ConflictingItems?.Contains(item.Template) ?? false
+            var existingItemBlockingChoice = weapon.FirstOrDefault(item =>
+                pickedItemDetails.Value.Properties.ConflictingItems?.Contains(item.Template) ?? false
             );
             if (existingItemBlockingChoice is not null)
             {
@@ -1326,7 +1322,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Get a pool of mods from the default weapon preset for passed in weapon
+    ///     Get a pool of mods from the default weapon preset for passed in weapon
     /// </summary>
     /// <param name="request"></param>
     /// <param name="weaponTemplate"></param>
@@ -1360,8 +1356,8 @@ public class BotEquipmentModGenerator(
 
         // Get an array of items that are allowed in slot from parent item
         // Check the filter of the slot to ensure a chosen mod fits
-        var parentSlotCompatibleItems = request.ParentTemplate.Properties.Slots?.FirstOrDefault(
-                slot => string.Equals(slot.Name.ToLower(), request.ModSlot.ToLower(), StringComparison.Ordinal)
+        var parentSlotCompatibleItems = request.ParentTemplate.Properties.Slots?.FirstOrDefault(slot =>
+                string.Equals(slot.Name.ToLower(), request.ModSlot.ToLower(), StringComparison.Ordinal)
             )
             ?.Props.Filters?[0].Filter;
 
@@ -1413,7 +1409,7 @@ public class BotEquipmentModGenerator(
     }
 
     /// <summary>
-    /// Get Desired item from preset
+    ///     Get Desired item from preset
     /// </summary>
     /// <param name="request"></param>
     /// <param name="weaponTemplate"></param>
@@ -1834,20 +1830,17 @@ public class BotEquipmentModGenerator(
                 // Check to see if mount has a scope slot (only include primary slot, ignore the rest like the backup sight slots)
                 // Should only find 1 as there's currently no items with a mod_scope AND a mod_scope_000
                 HashSet<string> filter = ["mod_scope", "mod_scope_000"];
-                var scopeSlot = itemDetails.Properties.Slots.Where(
-                    slot =>
-                        filter.Contains(slot.Name)
+                var scopeSlot = itemDetails.Properties.Slots.Where(slot =>
+                    filter.Contains(slot.Name)
                 );
 
                 // Mods scope slot found must allow ALL whitelisted scope types OR be a mount
-                if (scopeSlot?.All(
-                        slot =>
-                            slot.Props.Filters[0]
-                                .Filter.All(
-                                    tpl =>
-                                        _itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes) ||
-                                        _itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
-                                )
+                if (scopeSlot?.All(slot =>
+                        slot.Props.Filters[0]
+                            .Filter.All(tpl =>
+                                _itemHelper.IsOfBaseclasses(tpl, whitelistedSightTypes) ||
+                                _itemHelper.IsOfBaseclass(tpl, BaseClasses.MOUNT)
+                            )
                     ) ??
                     false)
                     // Add mod to allowed list

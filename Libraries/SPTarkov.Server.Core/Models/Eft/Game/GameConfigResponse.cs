@@ -68,7 +68,7 @@ public record GameConfigResponse
     }
 
     /// <summary>
-    /// Total in game time
+    ///     Total in game time
     /// </summary>
     [JsonPropertyName("totalInGame")]
     public double? TotalInGame

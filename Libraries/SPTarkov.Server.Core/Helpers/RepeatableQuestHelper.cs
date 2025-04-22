@@ -1,6 +1,6 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -17,8 +17,7 @@ public class RepeatableQuestHelper(
     /// <returns>EliminationConfig</returns>
     public EliminationConfig? GetEliminationConfigByPmcLevel(int pmcLevel, RepeatableQuestConfig repeatableConfig)
     {
-        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(
-            x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
+        return repeatableConfig.QuestConfig.Elimination.FirstOrDefault(x => pmcLevel >= x.LevelRange.Min && pmcLevel <= x.LevelRange.Max
         );
     }
 }

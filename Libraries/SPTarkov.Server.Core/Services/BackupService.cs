@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -45,7 +45,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Start the backup interval if enabled in config.
+    ///     Start the backup interval if enabled in config.
     /// </summary>
     public void StartBackupSystem()
     {
@@ -76,9 +76,9 @@ public class BackupService
     }
 
     /// <summary>
-    /// Initializes the backup process. <br/>
-    /// This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
-    /// up old backups if the number exceeds the configured maximum.
+    ///     Initializes the backup process. <br />
+    ///     This method orchestrates the profile backup service. Handles copying profiles to a backup directory and cleaning
+    ///     up old backups if the number exceeds the configured maximum.
     /// </summary>
     public void Init()
     {
@@ -144,7 +144,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Check to see if the backup service is enabled via the config.
+    ///     Check to see if the backup service is enabled via the config.
     /// </summary>
     /// <returns> True if enabled, false otherwise. </returns>
     protected bool IsEnabled()
@@ -163,8 +163,8 @@ public class BackupService
     }
 
     /// <summary>
-    /// Generates the target directory path for the backup. The directory path is constructed using the `directory` from
-    /// the configuration and the current backup date.
+    ///     Generates the target directory path for the backup. The directory path is constructed using the `directory` from
+    ///     the configuration and the current backup date.
     /// </summary>
     /// <returns> The target directory path for the backup. </returns>
     protected string GenerateBackupTargetDir()
@@ -174,7 +174,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
+    ///     Generates a formatted backup date string in the format `YYYY-MM-DD_hh-mm-ss`.
     /// </summary>
     /// <returns> The formatted backup date string. </returns>
     protected string GenerateBackupDate()
@@ -185,9 +185,9 @@ public class BackupService
     }
 
     /// <summary>
-    /// Cleans up old backups in the backup directory. <br/>
-    /// This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
-    /// the configured maximum, it deletes the oldest backups.
+    ///     Cleans up old backups in the backup directory. <br />
+    ///     This method reads the backup directory, and sorts backups by modification time. If the number of backups exceeds
+    ///     the configured maximum, it deletes the oldest backups.
     /// </summary>
     protected void CleanBackups()
     {
@@ -222,7 +222,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Retrieves and sorts the backup file paths from the specified directory.
+    ///     Retrieves and sorts the backup file paths from the specified directory.
     /// </summary>
     /// <param name="dir"> The directory to search for backup files. </param>
     /// <returns> List of sorted backup file paths. </returns>
@@ -235,7 +235,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Compares two backup folder names based on their extracted dates.
+    ///     Compares two backup folder names based on their extracted dates.
     /// </summary>
     /// <param name="a"> The name of the first backup folder. </param>
     /// <param name="b"> The name of the second backup folder. </param>
@@ -254,7 +254,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
+    ///     Extracts a date from a folder name string formatted as `YYYY-MM-DD_hh-mm-ss`.
     /// </summary>
     /// <param name="folderName"> The name of the folder from which to extract the date. </param>
     /// <returns> A DateTime object if the folder name is in the correct format, otherwise null. </returns>
@@ -279,7 +279,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Removes excess backups from the backup directory.
+    ///     Removes excess backups from the backup directory.
     /// </summary>
     /// <param name="backupFilenames"> List of backup file names to be removed. </param>
     /// <returns> A promise that resolves when all specified backups have been removed. </returns>
@@ -298,7 +298,7 @@ public class BackupService
     }
 
     /// <summary>
-    /// Get a List of active server mod details.
+    ///     Get a List of active server mod details.
     /// </summary>
     /// <returns> A List of mod names. </returns>
     protected List<string> GetActiveServerMods()
@@ -308,6 +308,7 @@ public class BackupService
         {
             return [];
         }
+
         List<string> result = [];
 
         foreach (var mod in mods)

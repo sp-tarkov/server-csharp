@@ -1,5 +1,8 @@
+using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -13,11 +16,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using System.Collections.Frozen;
-using System;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -37,8 +36,8 @@ public class InventoryHelper(
     ICloner _cloner
 )
 {
-    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     private static readonly FrozenSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
+    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -907,7 +906,8 @@ public class InventoryHelper(
     protected bool IsVertical(ItemLocation itemLocation)
     {
         var castValue = itemLocation.R.ToString();
-        return castValue == "1" || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase) || string.Equals(itemLocation.Rotation?.ToString(), "vertical", StringComparison.OrdinalIgnoreCase);
+        return castValue == "1" || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(itemLocation.Rotation?.ToString(), "vertical", StringComparison.OrdinalIgnoreCase);
     }
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)

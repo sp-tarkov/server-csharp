@@ -1,8 +1,8 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Spt.Presets;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -33,7 +33,10 @@ public class PresetController(
 
             // Get root items tpl
             var tpl = preset.Items.FirstOrDefault()?.Template;
-            result.TryAdd(tpl, new PresetCacheDetails{PresetIds = [] });
+            result.TryAdd(tpl, new PresetCacheDetails
+            {
+                PresetIds = []
+            });
 
             result.TryGetValue(tpl, out var details);
             details.PresetIds.Add(presetId);

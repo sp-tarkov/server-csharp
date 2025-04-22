@@ -255,7 +255,7 @@ public record ReserveRaiderSpawnChanceOverrides
 public record EquipmentLootSettings
 {
     /// <summary>
-    /// Percentage chance item will be added to equipment
+    ///     Percentage chance item will be added to equipment
     /// </summary>
     [JsonPropertyName("modSpawnChancePercent")]
     public Dictionary<string, double?> ModSpawnChancePercent
@@ -326,7 +326,7 @@ public record SplitWaveSettings
 public record CustomWaves
 {
     /// <summary>
-    /// Bosses spawn on raid start
+    ///     Bosses spawn on raid start
     /// </summary>
     [JsonPropertyName("boss")]
     public Dictionary<string, List<BossLocationSpawn>> Boss
@@ -354,7 +354,7 @@ public record BotTypeLimit : MinMax<int>
 }
 
 /// <summary>
-/// Multiplier to apply to the loot count for a given map
+///     Multiplier to apply to the loot count for a given map
 /// </summary>
 public record LootMultiplier
 {
@@ -495,7 +495,7 @@ public record ContainerRandomisationSettings
     }
 
     /// <summary>
-    /// What maps can use the container randomisation feature
+    ///     What maps can use the container randomisation feature
     /// </summary>
     [JsonPropertyName("maps")]
     public Dictionary<string, bool> Maps
@@ -505,7 +505,7 @@ public record ContainerRandomisationSettings
     }
 
     /// <summary>
-    /// Some container types don't work when randomised
+    ///     Some container types don't work when randomised
     /// </summary>
     [JsonPropertyName("containerTypesToNotRandomise")]
     public HashSet<string> ContainerTypesToNotRandomise
@@ -558,9 +558,8 @@ public record ScavRaidTimeConfigSettings
 
 public record ScavRaidTimeLocationSettings
 {
-
     /// <summary>
-    /// Should loot be reduced by same percent length of raid is reduced by
+    ///     Should loot be reduced by same percent length of raid is reduced by
     /// </summary>
     [JsonPropertyName("reduceLootByPercent")]
     public bool ReduceLootByPercent
@@ -570,7 +569,7 @@ public record ScavRaidTimeLocationSettings
     }
 
     /// <summary>
-    /// Smallest % of container loot that should be spawned
+    ///     Smallest % of container loot that should be spawned
     /// </summary>
     [JsonPropertyName("minStaticLootPercent")]
     public double MinStaticLootPercent
@@ -580,7 +579,7 @@ public record ScavRaidTimeLocationSettings
     }
 
     /// <summary>
-    /// Smallest % of loose loot that should be spawned
+    ///     Smallest % of loose loot that should be spawned
     /// </summary>
     [JsonPropertyName("minDynamicLootPercent")]
     public double MinDynamicLootPercent
@@ -590,7 +589,7 @@ public record ScavRaidTimeLocationSettings
     }
 
     /// <summary>
-    /// Chance raid time is reduced
+    ///     Chance raid time is reduced
     /// </summary>
     [JsonPropertyName("reducedChancePercent")]
     public double ReducedChancePercent
@@ -600,7 +599,7 @@ public record ScavRaidTimeLocationSettings
     }
 
     /// <summary>
-    /// How much should raid time be reduced - weighted
+    ///     How much should raid time be reduced - weighted
     /// </summary>
     [JsonPropertyName("reductionPercentWeights")]
     public Dictionary<string, double> ReductionPercentWeights
@@ -610,7 +609,7 @@ public record ScavRaidTimeLocationSettings
     }
 
     /// <summary>
-    /// Should bot waves be removed / spawn times be adjusted
+    ///     Should bot waves be removed / spawn times be adjusted
     /// </summary>
     [JsonPropertyName("adjustWaves")]
     public bool AdjustWaves

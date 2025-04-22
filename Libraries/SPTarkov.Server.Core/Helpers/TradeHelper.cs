@@ -1,18 +1,16 @@
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Eft.Trade;
 using SPTarkov.Server.Core.Models.Enums;
-using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -321,8 +319,7 @@ public class TradeHelper(
     )
     {
         const string circulateQuestId = "6663149f1d3ec95634095e75";
-        var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(
-            quest => quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started
+        var activeCirculateQuest = profileToReceiveMoney.Quests.FirstOrDefault(quest => quest.QId == circulateQuestId && quest.Status == QuestStatusEnum.Started
         );
 
         // Player not on Circulate quest ,exit
@@ -332,8 +329,8 @@ public class TradeHelper(
         }
 
         // Find related task condition
-        var taskCondition = profileToReceiveMoney.TaskConditionCounters.Values.FirstOrDefault(
-            condition => condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader"
+        var taskCondition = profileToReceiveMoney.TaskConditionCounters.Values.FirstOrDefault(condition =>
+            condition.SourceId == circulateQuestId && condition.Type == "SellItemToTrader"
         );
 
         // No relevant condtion in profile, nothing to increment
@@ -355,8 +352,7 @@ public class TradeHelper(
 
         // Get sellToTrader condition from quest
         var sellItemToTraderCondition = circulateQuestDb[circulateQuestId]
-            .Conditions.AvailableForFinish.FirstOrDefault(
-                condition => condition.ConditionType == "SellItemToTrader"
+            .Conditions.AvailableForFinish.FirstOrDefault(condition => condition.ConditionType == "SellItemToTrader"
             );
 
         // Quest doesnt have a sellItemToTrader condition, nothing to do
@@ -372,8 +368,7 @@ public class TradeHelper(
         foreach (var itemSoldToTrader in sellRequest.Items)
         {
             // Get sold items' details from profile
-            var itemDetails = profileWithItemsToSell.Inventory.Items.FirstOrDefault(
-                inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
+            var itemDetails = profileWithItemsToSell.Inventory.Items.FirstOrDefault(inventoryItem => inventoryItem.Id == itemSoldToTrader.Id
             );
             if (itemDetails is null)
             {

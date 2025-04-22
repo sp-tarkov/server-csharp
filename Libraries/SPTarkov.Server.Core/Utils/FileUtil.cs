@@ -1,5 +1,5 @@
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Utils;
 

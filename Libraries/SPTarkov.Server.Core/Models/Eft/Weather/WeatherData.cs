@@ -72,7 +72,7 @@ public record Weather
     }
 
     /// <summary>
-    /// 1 - 3 light rain, 3+ 'rain'
+    ///     1 - 3 light rain, 3+ 'rain'
     /// </summary>
     [JsonPropertyName("rain")]
     public double? Rain
@@ -103,7 +103,7 @@ public record Weather
     }
 
     /// <summary>
-    /// < -0.4 = clear day
+    ///     < -0.4 = clear day
     /// </summary>
     [JsonPropertyName("cloud")]
     public double? Cloud

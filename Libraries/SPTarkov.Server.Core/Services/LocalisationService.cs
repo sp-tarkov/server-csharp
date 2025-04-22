@@ -1,12 +1,12 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
 /// <summary>
-/// Handles translating server text into different langauges
+///     Handles translating server text into different langauges
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class LocalisationService
@@ -43,8 +43,9 @@ public class LocalisationService
         );
         _i18nService.SetLocaleByKey(localeService.GetDesiredServerLocale());
     }
+
     /// <summary>
-    /// Get a localised value using the passed in key
+    ///     Get a localised value using the passed in key
     /// </summary>
     /// <param name="key"> Key to look up locale for </param>
     /// <param name="args"> optional arguments </param>
@@ -57,7 +58,7 @@ public class LocalisationService
     }
 
     /// <summary>
-    /// Get a localised value using the passed in key
+    ///     Get a localised value using the passed in key
     /// </summary>
     /// <param name="key"> Key to look up locale for </param>
     /// <param name="value"> Value to localize </param>
@@ -68,7 +69,7 @@ public class LocalisationService
     }
 
     /// <summary>
-    /// Get all locale keys
+    ///     Get all locale keys
     /// </summary>
     /// <returns> Generic collection of keys </returns>
     public ICollection<string> GetKeys()
@@ -77,7 +78,7 @@ public class LocalisationService
     }
 
     /// <summary>
-    /// From the provided partial key, find all keys that start with text and choose a random match
+    ///     From the provided partial key, find all keys that start with text and choose a random match
     /// </summary>
     /// <param name="partialKey"> Key to match locale keys on </param>
     /// <returns> Locale text </returns>

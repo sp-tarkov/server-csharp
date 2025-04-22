@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Eft.Match;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using static SPTarkov.Server.Core.Services.MatchLocationService;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -25,7 +25,7 @@ public class MatchController(
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
-    /// Handle client/match/available
+    ///     Handle client/match/available
     /// </summary>
     /// <returns>True if server should be available</returns>
     public bool GetEnabled()

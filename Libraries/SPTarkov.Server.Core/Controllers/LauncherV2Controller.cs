@@ -1,3 +1,6 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Launcher;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -7,9 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
-using SPTarkov.Server.Core.Context;
 using Info = SPTarkov.Server.Core.Models.Eft.Profile.Info;
 
 namespace SPTarkov.Server.Core.Controllers;

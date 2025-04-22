@@ -10,7 +10,7 @@ public static partial class ProgramStatics
 
     public static void Initialize()
     {
-        var _entryType = ProgramStatics.BuildType ?? EntryType.LOCAL;
+        var _entryType = BuildType ?? EntryType.LOCAL;
 
         switch (_entryType)
         {

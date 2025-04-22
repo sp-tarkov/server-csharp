@@ -8,7 +8,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HideoutImproveAreaRequestData : InventoryBaseActionRequestData
 {
     /// <summary>
-    /// Hideout area id from areas.json
+    ///     Hideout area id from areas.json
     /// </summary>
     [JsonPropertyName("id")]
     public string? AreaId

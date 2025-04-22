@@ -8,13 +8,13 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class ClonerTest
 {
-    private Templates? _templates;
-
-    private ICloner _jsonCloner;
-    private ICloner _reflectionsCloner;
     private ICloner _fastCloner;
 
+    private ICloner _jsonCloner;
+
     private JsonUtil _jsonUtil;
+    private ICloner _reflectionsCloner;
+    private Templates? _templates;
 
     [TestInitialize]
     public void Setup()

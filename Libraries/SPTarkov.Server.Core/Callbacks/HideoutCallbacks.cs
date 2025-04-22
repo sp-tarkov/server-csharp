@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Hideout;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -172,7 +172,7 @@ public class HideoutCallbacks(
     }
 
     /// <summary>
-    /// Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
+    ///     Handle client/game/profile/items/moving - hideoutCustomizationSetMannequinPose
     /// </summary>
     /// <returns></returns>
     public ItemEventRouterResponse HideoutCustomizationSetMannequinPose(PmcData pmcData, HideoutCustomizationSetMannequinPoseRequest request, string sessionId)

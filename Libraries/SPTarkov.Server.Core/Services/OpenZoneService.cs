@@ -1,12 +1,12 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
 /// <summary>
-/// Service for adding new zones to a maps OpenZones property.
+///     Service for adding new zones to a maps OpenZones property.
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class OpenZoneService(

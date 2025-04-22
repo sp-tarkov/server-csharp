@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using BodyPart = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPart;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
@@ -509,7 +509,7 @@ public class BotGenerator(
                         Health = new CurrentMinMax
                         {
                             Current = _randomUtil.GetDouble(bodyParts.Head.Min, bodyParts.Head.Max),
-                            Maximum = (double) Math.Round(bodyParts.Head.Max)
+                            Maximum = Math.Round(bodyParts.Head.Max)
                         }
                     }
                 },
@@ -519,7 +519,7 @@ public class BotGenerator(
                         Health = new CurrentMinMax
                         {
                             Current = _randomUtil.GetDouble(bodyParts.Chest.Min, bodyParts.Chest.Max),
-                            Maximum = (double) Math.Round(bodyParts.Chest.Max)
+                            Maximum = Math.Round(bodyParts.Chest.Max)
                         }
                     }
                 },

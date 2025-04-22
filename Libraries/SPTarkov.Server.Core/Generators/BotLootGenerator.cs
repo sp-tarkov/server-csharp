@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -337,8 +337,7 @@ public class BotLootGenerator(
             return null;
         }
 
-        var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(
-            minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
+        var matchingValue = _pmcConfig?.LootItemLimitsRub?.FirstOrDefault(minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
 
         return matchingValue;
@@ -358,14 +357,13 @@ public class BotLootGenerator(
             return 0;
         }
 
-        var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(
-            minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
+        var matchingValue = _pmcConfig.MaxBackpackLootTotalRub.FirstOrDefault(minMaxValue => botLevel >= minMaxValue.Min && botLevel <= minMaxValue.Max
         );
         return matchingValue?.Value;
     }
 
     /// <summary>
-    ///  Get an array of the containers a bot has on them (pockets/backpack/vest)
+    ///     Get an array of the containers a bot has on them (pockets/backpack/vest)
     /// </summary>
     /// <param name="botInventory">Bot to check</param>
     /// <returns>Array of available slots</returns>
@@ -595,7 +593,7 @@ public class BotLootGenerator(
     }
 
     /// <summary>
-    /// Adds loot to the specified Wallet
+    ///     Adds loot to the specified Wallet
     /// </summary>
     /// <param name="walletId"> Wallet to add loot to</param>
     /// <returns>Generated list of currency stacks with the wallet as their parent</returns>
@@ -605,19 +603,19 @@ public class BotLootGenerator(
 
         // Choose how many stacks of currency will be added to wallet
         var itemCount = _randomUtil.GetInt(
-            (int) _botConfig.WalletLoot.ItemCount.Min,
-            (int) _botConfig.WalletLoot.ItemCount.Max
+            _botConfig.WalletLoot.ItemCount.Min,
+            _botConfig.WalletLoot.ItemCount.Max
         );
         for (var index = 0; index < itemCount; index++)
         {
             // Choose the size of the currency stack - default is 5k, 10k, 15k, 20k, 25k
-            var chosenStackCount = _weightedRandomHelper.GetWeightedValue<string>(_botConfig.WalletLoot.StackSizeWeight);
+            var chosenStackCount = _weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.StackSizeWeight);
             List<Item> items =
             [
                 new()
                 {
                     Id = _hashUtil.Generate(),
-                    Template = _weightedRandomHelper.GetWeightedValue<string>(_botConfig.WalletLoot.CurrencyWeight),
+                    Template = _weightedRandomHelper.GetWeightedValue(_botConfig.WalletLoot.CurrencyWeight),
                     ParentId = walletId,
                     Upd = new Upd
                     {
@@ -693,8 +691,8 @@ public class BotLootGenerator(
             ]
         );
         var randomisedWeaponCount = _randomUtil.GetInt(
-            (int) _pmcConfig.LooseWeaponInBackpackLootMinMax.Min,
-            (int) _pmcConfig.LooseWeaponInBackpackLootMinMax.Max
+            _pmcConfig.LooseWeaponInBackpackLootMinMax.Min,
+            _pmcConfig.LooseWeaponInBackpackLootMinMax.Max
         );
 
         if (randomisedWeaponCount <= 0)

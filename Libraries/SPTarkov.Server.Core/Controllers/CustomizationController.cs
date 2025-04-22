@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -12,7 +13,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -44,11 +44,10 @@ public class CustomizationController(
         var suits = _databaseService.GetTrader(traderId).Suits;
 
         var matchingSuits = suits?.Where(s => clothing.ContainsKey(s.SuiteId!)).ToList();
-        matchingSuits = matchingSuits?.Where(
-                s => clothing[s.SuiteId ?? string.Empty]
-                         ?.Properties?.Side?
-                         .Contains(pmcData?.Info?.Side ?? string.Empty) ??
-                     false
+        matchingSuits = matchingSuits?.Where(s => clothing[s.SuiteId ?? string.Empty]
+                                                      ?.Properties?.Side?
+                                                      .Contains(pmcData?.Info?.Side ?? string.Empty) ??
+                                                  false
             )
             .ToList();
 
@@ -121,7 +120,7 @@ public class CustomizationController(
     }
 
     /// <summary>
-    /// Has an outfit been purchased by a player
+    ///     Has an outfit been purchased by a player
     /// </summary>
     /// <param name="suitId">clothing id</param>
     /// <param name="sessionId">Session id of profile to check for clothing in</param>
@@ -135,7 +134,7 @@ public class CustomizationController(
     }
 
     /// <summary>
-    /// Get clothing offer from trader by suit id
+    ///     Get clothing offer from trader by suit id
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="offerId"></param>
@@ -192,7 +191,7 @@ public class CustomizationController(
     }
 
     /// <summary>
-    /// Get all suits from Traders
+    ///     Get all suits from Traders
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
