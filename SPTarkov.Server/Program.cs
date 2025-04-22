@@ -1,6 +1,7 @@
 using System.Runtime;
 using Serilog;
 using Serilog.Exceptions;
+using Serilog.Settings.Configuration;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
@@ -94,25 +95,22 @@ public static class Program
     {
         var builder = WebApplication.CreateBuilder(args);
         builder.Logging.ClearProviders();
+        builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
 
         if (ProgramStatics.DEBUG())
         {
-            builder.Configuration.AddJsonFile("appsettings.Development.json", true, true);
+            builder.Configuration.AddJsonFile("./appsettings.Development.json", true, true);
         }
         else
         {
-            builder.Configuration.AddJsonFile("appsettings.json", true, true);
+            builder.Configuration.AddJsonFile("./appsettings.json", true, true);
         }
 
         builder.Host.UseSerilog((context, provider, logger) =>
         {
             logger
                 .ReadFrom.Configuration(context.Configuration)
-                .ReadFrom.Services(provider)
-                .Enrich.FromLogContext()
-                .Enrich.WithExceptionDetails()
-                .Enrich.WithThreadName()
-                .Enrich.WithThreadId();
+                .ReadFrom.Services(provider);
         });
 
         return builder;
