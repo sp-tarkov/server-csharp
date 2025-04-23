@@ -223,10 +223,4 @@ public class SptHttpListener : IHttpListener
         resp.StartAsync().Wait();
         resp.CompleteAsync().Wait();
     }
-
-    private record Response(string Method, string jsonData);
-
-    private record Request(string Method, object output);
-
-    private record RequestData(string Url, object Headers, object Data);
 }
