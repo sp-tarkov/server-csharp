@@ -26,7 +26,6 @@ public class SptHttpListener : IHttpListener
     protected readonly JsonUtil _jsonUtil;
     protected readonly LocalisationService _localisationService;
     protected readonly ISptLogger<SptHttpListener> _logger;
-    protected readonly ISptLogger<RequestLogger> _requestLogger;
 
 
     protected readonly HttpRouter _router;
@@ -36,7 +35,6 @@ public class SptHttpListener : IHttpListener
         HttpRouter httpRouter,
         IEnumerable<ISerializer> serializers,
         ISptLogger<SptHttpListener> logger,
-        ISptLogger<RequestLogger> requestsLogger,
         JsonUtil jsonUtil,
         HttpResponseUtil httpHttpResponseUtil,
         LocalisationService localisationService
@@ -45,7 +43,6 @@ public class SptHttpListener : IHttpListener
         _router = httpRouter;
         _serializers = serializers;
         _logger = logger;
-        _requestLogger = requestsLogger;
         _httpResponseUtil = httpHttpResponseUtil;
         _localisationService = localisationService;
         _jsonUtil = jsonUtil;
@@ -156,7 +153,6 @@ public class SptHttpListener : IHttpListener
         {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
-            LogRequest(req, output);
             return;
         }
 
@@ -171,8 +167,6 @@ public class SptHttpListener : IHttpListener
         {
             SendZlibJson(resp, output, sessionID);
         }
-
-        LogRequest(req, output);
     }
 
     /// <summary>
@@ -185,20 +179,6 @@ public class SptHttpListener : IHttpListener
         return req.Headers.TryGetValue("responsecompressed", out var value) && value == "0";
     }
 
-    /// <summary>
-    ///     Log request if enabled
-    /// </summary>
-    /// <param name="req"> Log request if enabled </param>
-    /// <param name="output"> Output string </param>
-    protected void LogRequest(HttpRequest req, string output)
-    {
-        if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
-        {
-            var log = new Response(req.Method, output.Substring(0, Math.Min(output.Length, 8000)));
-            _requestLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
-        }
-    }
-
     public string GetResponse(string sessionID, HttpRequest req, string? body)
     {
         var output = _router.GetResponse(req, sessionID, body, out var deserializedObject);
@@ -208,13 +188,6 @@ public class SptHttpListener : IHttpListener
             _logger.Error(_localisationService.GetText("unhandled_response", req.Path.ToString()));
             _logger.Info(_jsonUtil.Serialize(deserializedObject));
             output = _httpResponseUtil.GetBody<object?>(null, BackendErrorCodes.HTTPNotFound, $"UNHANDLED RESPONSE: {req.Path.ToString()}");
-        }
-
-        if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
-        {
-            // Parse quest info into object
-            var log = new Request(req.Method, new RequestData(req.Path, req.Headers, deserializedObject));
-            _requestLogger.Info($"REQUEST={_jsonUtil.Serialize(log)}");
         }
 
         return output;
