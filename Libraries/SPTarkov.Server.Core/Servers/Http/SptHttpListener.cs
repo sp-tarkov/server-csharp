@@ -156,11 +156,6 @@ public class SptHttpListener : IHttpListener
         {
             // Send only raw response without transformation
             SendJson(resp, output, sessionID);
-            if (_logger.IsLogEnabled(LogLevel.Debug))
-            {
-                _logger.Debug($"Response: {output}");
-            }
-
             LogRequest(req, output);
             return;
         }
@@ -199,7 +194,7 @@ public class SptHttpListener : IHttpListener
     {
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
-            var log = new Response(req.Method, output);
+            var log = new Response(req.Method, output.Substring(0, Math.Min(output.Length, 8000)));
             _requestLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
         }
     }
