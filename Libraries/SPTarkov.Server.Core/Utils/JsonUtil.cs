@@ -24,6 +24,7 @@ public class JsonUtil
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         Converters =
         {
+            new BaseSptLoggerReferenceConverter(),
             new ListOrTConverterFactory(),
             new DictionaryOrListConverter(),
             new EftEnumConverter<SptAirdropTypeEnum>(),

@@ -123,7 +123,10 @@ public class BackupService
                 // Create absolute path to file
                 var relativeSourceFilePath = Path.Combine(_profileDir, profileFileName);
                 var absoluteDestinationFilePath = Path.Combine(targetDir, profileFileName);
-                _fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath);
+                if (!_fileUtil.CopyFile(relativeSourceFilePath, absoluteDestinationFilePath))
+                {
+                    _logger.Error($"Source file not found: {relativeSourceFilePath}. Cannot copy to: {absoluteDestinationFilePath}");
+                }
             }
 
             // Write a copy of active mods.

@@ -1,11 +1,9 @@
 using SPTarkov.Common.Annotations;
-using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable]
-public class FileUtil(
-    ISptLogger<FileUtil> _logger)
+public class FileUtil()
 {
     protected const string _modBasePath = "user/mods/";
 
@@ -69,6 +67,11 @@ public class FileUtil(
 
     public void WriteFile(string filePath, string fileContent)
     {
+        if (!DirectoryExists(Path.GetDirectoryName(filePath)))
+        {
+            CreateDirectory(Path.GetDirectoryName(filePath));
+        }
+
         if (!FileExists(filePath))
         {
             CreateFile(filePath);
@@ -93,16 +96,15 @@ public class FileUtil(
         stream.Close();
     }
 
-    public void DeleteFile(string filePath)
+    public bool DeleteFile(string filePath)
     {
         if (!FileExists(filePath))
         {
-            _logger.Error($"Unable to delete file, not found: {filePath}");
-
-            return;
+            return false;
         }
 
         File.Delete(filePath);
+        return true;
     }
 
     /// <summary>
@@ -111,12 +113,12 @@ public class FileUtil(
     /// <param name="copyFromPath">Source file to copy from</param>
     /// <param name="destinationFilePath"></param>
     /// <param name="overwrite">Should destination file be overwritten</param>
-    public void CopyFile(string copyFromPath, string destinationFilePath, bool overwrite = false)
+    public bool CopyFile(string copyFromPath, string destinationFilePath, bool overwrite = false)
     {
         // Check it exists first
         if (!FileExists(copyFromPath))
         {
-            _logger.Error($"Source file not found: {copyFromPath}. Cannot copy to: {destinationFilePath}");
+            return false;
         }
 
 
@@ -125,6 +127,7 @@ public class FileUtil(
 
         // Copy the file
         File.Copy(copyFromPath, destinationFilePath, overwrite);
+        return true;
     }
 
     /// <summary>

@@ -273,7 +273,11 @@ public class SaveServer(
         if (profiles.ContainsKey(sessionID))
         {
             profiles.TryRemove(sessionID, out _);
-            _fileUtil.DeleteFile(file);
+            if (!_fileUtil.DeleteFile(file))
+            {
+                _logger.Error($"Unable to delete file, not found: {file}");
+            }
+
         }
 
         return !_fileUtil.FileExists(file);

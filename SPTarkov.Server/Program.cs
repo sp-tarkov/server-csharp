@@ -1,7 +1,4 @@
 using System.Runtime;
-using Serilog;
-using Serilog.Exceptions;
-using Serilog.Settings.Configuration;
 using SPTarkov.Common.Semver;
 using SPTarkov.Common.Semver.Implementations;
 using SPTarkov.DI;
@@ -11,6 +8,7 @@ using SPTarkov.Server.Core.Models.External;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
+using SPTarkov.Server.Core.Utils.Logger;
 using SPTarkov.Server.Logger;
 using SPTarkov.Server.Modding;
 
@@ -45,6 +43,7 @@ public static class Program
 
         var serviceProvider = builder.Services.BuildServiceProvider();
         var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
+
         try
         {
             var watermark = serviceProvider.GetService<Watermark>();
@@ -89,6 +88,10 @@ public static class Program
             Console.WriteLine(ex);
             logger.LogCritical(ex, "Critical exception, stopping server...");
         }
+        finally
+        {
+            serviceProvider.GetService<SptLogger<object>>()?.DumpAndStop();
+        }
     }
 
     private static WebApplicationBuilder CreateNewHostBuilder(string[]? args = null)
@@ -96,22 +99,7 @@ public static class Program
         var builder = WebApplication.CreateBuilder(args);
         builder.Logging.ClearProviders();
         builder.Configuration.SetBasePath(Directory.GetCurrentDirectory());
-
-        if (ProgramStatics.DEBUG())
-        {
-            builder.Configuration.AddJsonFile("./appsettings.Development.json", true, true);
-        }
-        else
-        {
-            builder.Configuration.AddJsonFile("./appsettings.json", true, true);
-        }
-
-        builder.Host.UseSerilog((context, provider, logger) =>
-        {
-            logger
-                .ReadFrom.Configuration(context.Configuration)
-                .ReadFrom.Services(provider);
-        });
+        builder.Host.UseSptLogger();
 
         return builder;
     }
@@ -130,7 +118,7 @@ public static class Program
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
         // register the mod validator components
         var provider = builder.Services
-            .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptWebApplicationLogger<ModValidator>))
+            .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
             .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
             .AddSingleton<ModValidator>()
             .AddSingleton<ModLoadOrder>()
