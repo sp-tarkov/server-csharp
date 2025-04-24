@@ -4,6 +4,20 @@
       "type": "File",
       "logLevel": "Trace",
       "format": "[%date% %time%][%level%][%logger%] %message%",
+      "filePath": "./user/logs/kestrel/kestrel.txt",
+      "filters": [
+
+        {
+          "type": "Include",
+          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "matchingType": "Regex"
+        }
+      ]
+    },
+    {
+      "type": "File",
+      "logLevel": "Trace",
+      "format": "[%date% %time%][%level%][%logger%] %message%",
       "filePath": "./user/logs/spt/spt.txt",
       "filters": [
         {
@@ -33,7 +47,7 @@
     },
     {
       "type": "Console",
-      "logLevel": "Info",
+      "logLevel": "Trace",
       "format": "%message%",
       "filters": [
         {

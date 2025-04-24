@@ -12,7 +12,8 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
     private readonly SptLoggerQueueManager _loggerQueueManager;
 
     private const string ConfigurationPath = "./sptLogger.json";
-    private readonly SptLoggerConfiguration _config;
+    private const string ConfigurationPathDev = "./sptLogger.Development.json";
+    private SptLoggerConfiguration _config;
 
     ~SptLogger()
     {
@@ -24,13 +25,13 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         _category = typeof(T).FullName;
         _loggerQueueManager = loggerQueueManager;
 
-        if (fileUtil.FileExists(ConfigurationPath))
+        if (ProgramStatics.DEBUG())
         {
-            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(ConfigurationPath);
+            LoadConfig(fileUtil, jsonUtil, ConfigurationPathDev);
         }
         else
         {
-            throw new Exception($"Unable to find SPTLogger file '{ConfigurationPath}'");
+            LoadConfig(fileUtil, jsonUtil, ConfigurationPath);
         }
 
         if (_config == null)
@@ -40,6 +41,18 @@ public class SptLogger<T> : ISptLogger<T>, IDisposable
         }
 
         _loggerQueueManager.Initialize(_config);
+    }
+
+    private void LoadConfig(FileUtil fileUtil, JsonUtil jsonUtil, string sptloggerDevelopmentJson)
+    {
+        if (fileUtil.FileExists(sptloggerDevelopmentJson))
+        {
+            _config = jsonUtil.DeserializeFromFile<SptLoggerConfiguration>(sptloggerDevelopmentJson);
+        }
+        else
+        {
+            throw new Exception($"Unable to find SPTLogger file '{sptloggerDevelopmentJson}'");
+        }
     }
 
     public void OverrideCategory(string category)
