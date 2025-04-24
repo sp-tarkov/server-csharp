@@ -41,6 +41,11 @@ public static class Program
             DependencyInjectionRegistrator.RegisterModOverrideComponents(builder.Services, sortedLoadedMods.SelectMany(a => a.Assemblies).ToList());
         }
 
+        // initialize service to indicate we are not validating mods here
+        var modValidationContextUtil = new IsModValidationContextUtil();
+        modValidationContextUtil.SetModValidationContext(false);
+        builder.Services.AddSingleton(modValidationContextUtil);
+
         var serviceProvider = builder.Services.BuildServiceProvider();
         var logger = serviceProvider.GetService<ILoggerFactory>().CreateLogger("Server");
 
@@ -114,14 +119,21 @@ public static class Program
         // We need the SPT dependencies for the ModValidator, but mods are loaded before the web application
         // So we create a disposable web application that we will throw away after getting the mods to load
         var builder = CreateNewHostBuilder();
+
         // register SPT components
         DependencyInjectionRegistrator.RegisterSptComponents(typeof(Program).Assembly, typeof(App).Assembly, builder.Services);
+
+        // initialize service to use it in other services to determine if we are only validating mods
+        var modValidationContextUtil = new IsModValidationContextUtil();
+        modValidationContextUtil.SetModValidationContext();
+
         // register the mod validator components
         var provider = builder.Services
             .AddScoped(typeof(ISptLogger<ModValidator>), typeof(SptLogger<ModValidator>))
             .AddScoped(typeof(ISemVer), typeof(SemanticVersioningSemVer))
             .AddSingleton<ModValidator>()
             .AddSingleton<ModLoadOrder>()
+            .AddSingleton(modValidationContextUtil)
             .BuildServiceProvider();
         var modValidator = provider.GetRequiredService<ModValidator>();
         return modValidator.ValidateAndSort(mods);

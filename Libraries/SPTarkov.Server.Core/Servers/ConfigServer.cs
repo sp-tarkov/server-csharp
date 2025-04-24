@@ -14,17 +14,20 @@ public class ConfigServer
     protected FileUtil _fileUtil;
     protected JsonUtil _jsonUtil;
     protected ISptLogger<ConfigServer> _logger;
+    protected IsModValidationContextUtil _modValidationContextUtil;
     protected Dictionary<string, object> configs = new();
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,
         JsonUtil jsonUtil,
-        FileUtil fileUtil
+        FileUtil fileUtil,
+        IsModValidationContextUtil modValidationContextUtil
     )
     {
         _logger = logger;
         _jsonUtil = jsonUtil;
         _fileUtil = fileUtil;
+        _modValidationContextUtil = modValidationContextUtil;
         Initialize();
     }
 
@@ -57,7 +60,7 @@ public class ConfigServer
 
     public void Initialize()
     {
-        if (_logger.IsLogEnabled(LogLevel.Debug))
+        if (_logger.IsLogEnabled(LogLevel.Debug) && !_modValidationContextUtil.IsModValidationContext())
         {
             _logger.Debug("Importing configs...");
         }
