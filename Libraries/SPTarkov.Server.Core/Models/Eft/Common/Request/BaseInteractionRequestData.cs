@@ -25,20 +25,3 @@ public record BaseInteractionRequestData
         set;
     }
 }
-
-public record OwnerInfo
-{
-    [JsonPropertyName("id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("type")]
-    public string? Type
-    {
-        get;
-        set;
-    }
-}

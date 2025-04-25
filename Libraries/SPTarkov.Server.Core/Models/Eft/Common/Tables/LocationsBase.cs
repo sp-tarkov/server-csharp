@@ -18,31 +18,3 @@ public record LocationsBase
         set;
     }
 }
-
-public record Locations
-{
-    // Add properties as necessary
-}
-
-public record Path
-{
-    [JsonPropertyName("Source")]
-    public string? Source
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Destination")]
-    public string? Destination
-    {
-        get;
-        set;
-    }
-
-    public bool? Event
-    {
-        get;
-        set;
-    }
-}

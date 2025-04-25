@@ -19,20 +19,3 @@ public record NoteActionRequest : BaseInteractionRequestData
         set;
     }
 }
-
-public record Note
-{
-    [JsonPropertyName("Time")]
-    public double? Time
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("Text")]
-    public string? Text
-    {
-        get;
-        set;
-    }
-}

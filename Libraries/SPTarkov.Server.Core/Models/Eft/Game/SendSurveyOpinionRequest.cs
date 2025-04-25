@@ -26,27 +26,3 @@ public record SendSurveyOpinionRequest : IRequestData
         set;
     }
 }
-
-public record SurveyOpinionAnswer
-{
-    [JsonPropertyName("questionId")]
-    public int? QuestionId
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("answerType")]
-    public string? AnswerType
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("answers")]
-    public object? Answers
-    {
-        get;
-        set;
-    }
-}

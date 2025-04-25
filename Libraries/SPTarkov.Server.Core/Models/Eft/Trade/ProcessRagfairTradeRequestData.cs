@@ -13,27 +13,3 @@ public record ProcessRagfairTradeRequestData : InventoryBaseActionRequestData
         set;
     }
 }
-
-public record OfferRequest
-{
-    [JsonPropertyName("id")]
-    public string? Id
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("count")]
-    public int? Count
-    {
-        get;
-        set;
-    }
-
-    [JsonPropertyName("items")]
-    public List<IdWithCount>? Items
-    {
-        get;
-        set;
-    }
-}
