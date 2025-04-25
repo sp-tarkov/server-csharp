@@ -26,27 +26,3 @@ public record PmcData : BotBase
         set;
     }
 }
-
-public record PostRaidPmcData : PmcData
-{
-}
-
-public record PostRaidStats
-{
-    [JsonPropertyName("Eft")]
-    public EftStats? Eft
-    {
-        get;
-        set;
-    }
-
-    /// <summary>
-    ///     Only found in profile we get from client post raid
-    /// </summary>
-    [JsonPropertyName("Arena")]
-    public EftStats? Arena
-    {
-        get;
-        set;
-    }
-}
