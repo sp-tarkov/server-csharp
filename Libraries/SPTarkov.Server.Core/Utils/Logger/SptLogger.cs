@@ -1,6 +1,7 @@
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Utils;
+using SPTarkov.Server.Core.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils.Logger;

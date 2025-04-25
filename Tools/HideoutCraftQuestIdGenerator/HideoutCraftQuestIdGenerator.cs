@@ -1,3 +1,4 @@
+using HideoutCraftQuestIdGenerator.Models;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -209,26 +210,5 @@ public class HideoutCraftQuestIdGenerator(
         questRewards.Started?.ForEach(x => result.Add(x));
 
         return result;
-    }
-}
-
-public class QuestProductionOutput
-{
-    public string QuestId
-    {
-        get;
-        set;
-    }
-
-    public string ItemTemplate
-    {
-        get;
-        set;
-    }
-
-    public double Quantity
-    {
-        get;
-        set;
     }
 }

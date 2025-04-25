@@ -1,3 +1,6 @@
+using SPTarkov.Server.Core.Models.Enums.Logger;
+using SPTarkov.Server.Core.Models.Logging;
+
 namespace SPTarkov.Server.Core.Utils.Logger;
 
 public interface ILogHandler

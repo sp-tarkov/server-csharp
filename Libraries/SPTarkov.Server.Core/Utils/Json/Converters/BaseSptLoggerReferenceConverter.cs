@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using SPTarkov.Server.Core.Utils.Logger;
+using SPTarkov.Server.Core.Models.Logging;
 
 namespace SPTarkov.Server.Core.Utils.Json.Converters;
 
