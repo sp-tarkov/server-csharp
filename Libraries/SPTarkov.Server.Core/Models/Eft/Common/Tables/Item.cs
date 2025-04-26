@@ -646,8 +646,6 @@ public record UpdLight
 
 public record UpdDogtag
 {
-    private object? _side;
-
     [JsonPropertyName("AccountId")]
     public string? AccountId
     {

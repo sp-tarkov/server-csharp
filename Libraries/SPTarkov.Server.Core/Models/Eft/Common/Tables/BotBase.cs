@@ -1499,8 +1499,6 @@ public record DeathCause
 
 public record LastPlayerState
 {
-    private object? _equipment;
-
     public LastPlayerStateInfo? Info
     {
         get;
@@ -1516,15 +1514,8 @@ public record LastPlayerState
     // TODO: there is no definition on TS just any
     public object? Equipment
     {
-        get
-        {
-            return _equipment;
-        }
-        set
-        {
-            Console.WriteLine($"Equipment: {value}");
-            _equipment = value;
-        }
+        get;
+        set;
     }
 }
 
