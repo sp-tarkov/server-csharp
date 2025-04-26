@@ -763,20 +763,11 @@ public record BodyPartHealth
 
 public record BodyPartEffectProperties
 {
-    private object? _extraData;
-
     // TODO: this was any, what actual type is it?
     public object? ExtraData
     {
-        get
-        {
-            return _extraData;
-        }
-        set
-        {
-            Console.WriteLine($"ExtraData: {value}");
-            _extraData = value;
-        }
+        get;
+        set;
     }
 
     public double? Time
