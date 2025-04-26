@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Text.Json.Serialization;
 using SPTarkov.Common.Annotations;
@@ -180,7 +179,7 @@ public class BotController(
     /// <returns>List of generated bots</returns>
     protected List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
     {
-        var result = new ConcurrentBag<BotBase>();
+        var result = new List<BotBase>();
 
         var raidSettings = GetMostRecentRaidSettings();
 
@@ -202,12 +201,8 @@ public class BotController(
                         condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
                     _botHelper.IsBotPmc(condition.Role));
 
-                var wave = GenerateBotWave(condition, botWaveGenerationDetails, sessionId);
-                foreach (var bot in wave)
-                {
-                    result.Add(bot);
-                }
-            })));
+                result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
+            })).ToArray());
 
         stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -215,7 +210,7 @@ public class BotController(
             _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
         }
 
-        return result.ToList();
+        return result;
     }
 
     /// <summary>
@@ -244,37 +239,29 @@ public class BotController(
             _logger.Debug($"Generating wave of: {botGenerationDetails.BotCountToGenerate} bots of type: {role} {botGenerationDetails.BotDifficulty}");
         }
 
-        var results = new ConcurrentBag<BotBase>();
-        var tasks = new Task[botGenerationDetails.BotCountToGenerate.Value];
-
+        var results = new List<BotBase>();
         for (var i = 0; i < botGenerationDetails.BotCountToGenerate; i++)
         {
-            var task = Task.Run(() =>
+            try
             {
-                try
-                {
-                    var bot = _botGenerator.PrepareAndGenerateBot(sessionId, _cloner.Clone(botGenerationDetails));
+                var bot = _botGenerator.PrepareAndGenerateBot(sessionId, _cloner.Clone(botGenerationDetails));
 
-                    // The client expects the Side for PMCs to be `Savage`
-                    // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
-                    if (bot.Info.Side is "Bear" or "Usec")
-                    {
-                        bot.Info.Side = "Savage";
-                    }
-
-                    results.Add(bot);
-                    // Store bot details in cache so post-raid PMC messages can use data
-                    _matchBotDetailsCacheService.CacheBot(_cloner.Clone(bot));
-                }
-                catch (Exception e)
+                // The client expects the Side for PMCs to be `Savage`
+                // We do this here so it's after we cache the bot in the match details lookup, as when you die, they will have the right side
+                if (bot.Info.Side is "Bear" or "Usec")
                 {
-                    _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message} {e.StackTrace}");
+                    bot.Info.Side = "Savage";
                 }
-            });
-            tasks[i] = task;
+
+                results.Add(bot);
+                // Store bot details in cache so post-raid PMC messages can use data
+                _matchBotDetailsCacheService.CacheBot(_cloner.Clone(bot));
+            }
+            catch (Exception e)
+            {
+                _logger.Error($"Failed to generate bot: {botGenerationDetails.Role} #{i + 1}: {e.Message} {e.StackTrace}");
+            }
         }
-
-        Task.WaitAll(tasks);
 
         if (_logger.IsLogEnabled(LogLevel.Debug))
         {
@@ -284,7 +271,7 @@ public class BotController(
             );
         }
 
-        return results.ToList();
+        return results;
     }
 
     /// <summary>
