@@ -5,18 +5,18 @@ namespace SPTarkov.Common.Extensions;
 
 public static class StringExtensions
 {
-    private static readonly Dictionary<string, Regex> RegexCache = new();
-    private static readonly Lock RegexCacheLock = new();
+    private static readonly Dictionary<string, Regex> _regexCache = new();
+    private static readonly Lock _regexCacheLock = new();
 
     public static string RegexReplace(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, string newValue)
     {
         Regex regex;
-        lock (RegexCacheLock)
+        lock (_regexCacheLock)
         {
-            if (!RegexCache.TryGetValue(regexString, out regex))
+            if (!_regexCache.TryGetValue(regexString, out regex))
             {
                 regex = new Regex(regexString);
-                RegexCache[regexString] = regex;
+                _regexCache[regexString] = regex;
             }
         }
 
@@ -26,12 +26,12 @@ public static class StringExtensions
     public static bool RegexMatch(this string source, [StringSyntax(StringSyntaxAttribute.Regex)] string regexString, out Match? matchedString)
     {
         Regex regex;
-        lock (RegexCacheLock)
+        lock (_regexCacheLock)
         {
-            if (!RegexCache.TryGetValue(regexString, out regex))
+            if (!_regexCache.TryGetValue(regexString, out regex))
             {
                 regex = new Regex(regexString);
-                RegexCache[regexString] = regex;
+                _regexCache[regexString] = regex;
             }
         }
 
