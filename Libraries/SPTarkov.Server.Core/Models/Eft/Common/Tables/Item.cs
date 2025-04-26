@@ -670,17 +670,11 @@ public record UpdDogtag
     }
 
     [JsonPropertyName("Side")]
-    public object? Side
+    [JsonConverter(typeof(DogtagSideConverter))]
+    public DogtagSide? Side
     {
-        get
-        {
-            return _side;
-        }
-        set
-        {
-            Console.WriteLine($"Side: {value}");
-            _side = value;
-        }
+        get;
+        set;
     }
 
     [JsonPropertyName("Level")]
