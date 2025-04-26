@@ -763,11 +763,20 @@ public record BodyPartHealth
 
 public record BodyPartEffectProperties
 {
+    private object? _extraData;
+
     // TODO: this was any, what actual type is it?
     public object? ExtraData
     {
-        get;
-        set;
+        get
+        {
+            return _extraData;
+        }
+        set
+        {
+            Console.WriteLine($"ExtraData: {value}");
+            _extraData = value;
+        }
     }
 
     public double? Time
@@ -1490,6 +1499,8 @@ public record DeathCause
 
 public record LastPlayerState
 {
+    private object? _equipment;
+
     public LastPlayerStateInfo? Info
     {
         get;
@@ -1505,8 +1516,15 @@ public record LastPlayerState
     // TODO: there is no definition on TS just any
     public object? Equipment
     {
-        get;
-        set;
+        get
+        {
+            return _equipment;
+        }
+        set
+        {
+            Console.WriteLine($"Equipment: {value}");
+            _equipment = value;
+        }
     }
 }
 

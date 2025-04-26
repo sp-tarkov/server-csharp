@@ -169,11 +169,11 @@ public record ItemLocation
     }
 
     [JsonPropertyName("r")]
-    public object? R
+    public int R
     {
         get;
         set;
-    } // TODO: Can be string or number
+    }
 
     [JsonPropertyName("isSearched")]
     public bool? IsSearched
@@ -186,11 +186,11 @@ public record ItemLocation
     ///     SPT property?
     /// </summary>
     [JsonPropertyName("rotation")]
-    public object? Rotation
+    public bool? Rotation
     {
         get;
         set;
-    } // TODO: Can be string or boolean
+    }
 }
 
 public record Upd
@@ -646,6 +646,8 @@ public record UpdLight
 
 public record UpdDogtag
 {
+    private object? _side;
+
     [JsonPropertyName("AccountId")]
     public string? AccountId
     {
@@ -670,8 +672,15 @@ public record UpdDogtag
     [JsonPropertyName("Side")]
     public object? Side
     {
-        get;
-        set;
+        get
+        {
+            return _side;
+        }
+        set
+        {
+            Console.WriteLine($"Side: {value}");
+            _side = value;
+        }
     }
 
     [JsonPropertyName("Level")]
