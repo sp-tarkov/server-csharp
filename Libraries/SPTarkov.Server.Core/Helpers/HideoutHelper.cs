@@ -440,7 +440,7 @@ public class HideoutHelper(
         var production = pmcData.Hideout.Production[prodId];
 
         // Some items NEED power to craft (e.g. DSP)
-        if (production.needFuelForAllProductionTime == true && hideoutProperties.IsGeneratorOn)
+        if (production.needFuelForAllProductionTime.GetValueOrDefault() && hideoutProperties.IsGeneratorOn)
         {
             production.Progress += timeElapsed;
         }
