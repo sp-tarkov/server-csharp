@@ -437,7 +437,7 @@ public class HideoutHelper(
         var timeElapsed = GetTimeElapsedSinceLastServerTick(pmcData, hideoutProperties.IsGeneratorOn, recipe);
 
         // Increment progress by time passed
-        var production = pmcData.Hideout.Production[prodId]!;
+        var production = pmcData.Hideout.Production[prodId];
 
         // Some items NEED power to craft (e.g. DSP)
         if (production.needFuelForAllProductionTime == true && hideoutProperties.IsGeneratorOn)
