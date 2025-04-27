@@ -179,11 +179,11 @@ public record Quest
     ///     Becomes 'AppearStatus' inside client
     /// </summary>
     [JsonPropertyName("status")]
-    public object? Status
+    public int? Status
     {
         get;
         set;
-    } // TODO: string | number
+    }
 
     [JsonPropertyName("KeyQuest")]
     public bool? KeyQuest
@@ -447,11 +447,11 @@ public record QuestCondition
     }
 
     [JsonPropertyName("type")]
-    public object? Type
+    public string? Type
     {
         get;
         set;
-    } // TODO: boolean | string
+    }
 
     [JsonPropertyName("status")]
     public List<QuestStatusEnum>? Status
