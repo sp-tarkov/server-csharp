@@ -770,7 +770,7 @@ public record QuestConditionCounterCondition
     }
 
     [JsonPropertyName("value")]
-    public int? Value
+    public object? Value
     {
         get;
         set;
