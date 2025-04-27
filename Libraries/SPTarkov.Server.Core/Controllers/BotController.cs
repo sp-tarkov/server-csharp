@@ -39,6 +39,7 @@ public class BotController(
 {
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private static readonly Lock _botListLock = new();
 
     /// <summary>
     ///     Return the number of bot load-out varieties to be generated
@@ -201,7 +202,10 @@ public class BotController(
                         condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
                     _botHelper.IsBotPmc(condition.Role));
 
-                result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
+                lock (_botListLock)
+                {
+                    result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
+                }
             })).ToArray());
 
         stopwatch.Stop();
