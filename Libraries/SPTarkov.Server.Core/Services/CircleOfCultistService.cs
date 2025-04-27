@@ -58,7 +58,12 @@ public class CircleOfCultistService(
         HideoutCircleOfCultistProductionStartRequestData request
     )
     {
-        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(HideoutAreas.CIRCLE_OF_CULTISTS.ToString());
+        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int)HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
+
+        if (cultistCircleStashId is null)
+        {
+            _logger.Critical("Could not find cultist circle stash ID! This may result in no rewards...");
+        }
 
         // `cultistRecipes` just has single recipeId
         var cultistCraftData = _databaseService.GetHideout().Production.CultistRecipes.FirstOrDefault();
