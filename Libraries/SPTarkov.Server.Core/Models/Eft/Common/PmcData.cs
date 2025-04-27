@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Utils.Json.Converters;
 
@@ -20,7 +21,10 @@ public record PmcData : BotBase
         set;
     }
 
-    public object CheckedChambers
+    /// <summary>
+    /// Returns the list of IDs of the weapons, which the player has checked the chamber of in the last raid.
+    /// </summary>
+    public List<string> CheckedChambers
     {
         get;
         set;

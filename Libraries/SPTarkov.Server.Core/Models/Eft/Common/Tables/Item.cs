@@ -169,11 +169,11 @@ public record ItemLocation
     }
 
     [JsonPropertyName("r")]
-    public object? R
+    public int R
     {
         get;
         set;
-    } // TODO: Can be string or number
+    }
 
     [JsonPropertyName("isSearched")]
     public bool? IsSearched
@@ -186,11 +186,11 @@ public record ItemLocation
     ///     SPT property?
     /// </summary>
     [JsonPropertyName("rotation")]
-    public object? Rotation
+    public bool? Rotation
     {
         get;
         set;
-    } // TODO: Can be string or boolean
+    }
 }
 
 public record Upd
@@ -668,7 +668,8 @@ public record UpdDogtag
     }
 
     [JsonPropertyName("Side")]
-    public object? Side
+    [JsonConverter(typeof(DogtagSideConverter))]
+    public DogtagSide? Side
     {
         get;
         set;

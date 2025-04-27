@@ -438,8 +438,17 @@ public class HideoutHelper(
 
         // Increment progress by time passed
         var production = pmcData.Hideout.Production[prodId];
+
         // Some items NEED power to craft (e.g. DSP)
-        production.Progress += (production.needFuelForAllProductionTime ?? false) && !hideoutProperties.IsGeneratorOn ? 0 : timeElapsed;
+        if (production.needFuelForAllProductionTime.GetValueOrDefault() && hideoutProperties.IsGeneratorOn)
+        {
+            production.Progress += timeElapsed;
+        }
+        else if (!production.needFuelForAllProductionTime.GetValueOrDefault())
+            // Increment progress if production does not necessarily need fuel to continue
+        {
+            production.Progress += timeElapsed;
+        }
 
         // Limit progress to total production time if progress is over (dont run for continious crafts))
         if (!(recipe.Continuous ?? false))
@@ -1196,7 +1205,7 @@ public class HideoutHelper(
 
         if (!isGeneratorOn)
         {
-            timeElapsed *= (long) _databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel;
+            timeElapsed = (long) (timeElapsed * _databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel);
         }
 
         return timeElapsed;
