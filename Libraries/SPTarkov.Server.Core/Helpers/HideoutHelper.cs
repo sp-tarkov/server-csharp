@@ -444,7 +444,7 @@ public class HideoutHelper(
         {
             production.Progress += timeElapsed;
         }
-        else if (!(production.needFuelForAllProductionTime ?? false))
+        else if (!production.needFuelForAllProductionTime.GetValueOrDefault())
             // Increment progress if production does not necessarily need fuel to continue
         {
             production.Progress += timeElapsed;
