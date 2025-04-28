@@ -12,11 +12,8 @@ public class Test
     [TestInitialize]
     public void Setup()
     {
-<<<<<<< Updated upstream
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), new JsonUtil());
-=======
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()), new JsonUtil(new MockLogger<JsonUtil>()));
->>>>>>> Stashed changes
+
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), new JsonUtil(new MockLogger<JsonUtil>()));
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;

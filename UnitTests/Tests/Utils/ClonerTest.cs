@@ -19,13 +19,8 @@ public class ClonerTest
     [TestInitialize]
     public void Setup()
     {
-<<<<<<< Updated upstream
-        _jsonUtil = new JsonUtil();
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), _jsonUtil);
-=======
         _jsonUtil = new JsonUtil(new MockLogger<JsonUtil>());
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()), _jsonUtil);
->>>>>>> Stashed changes
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), _jsonUtil);
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;
