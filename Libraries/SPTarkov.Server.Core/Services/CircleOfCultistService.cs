@@ -58,11 +58,14 @@ public class CircleOfCultistService(
         HideoutCircleOfCultistProductionStartRequestData request
     )
     {
-        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int)HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
+        var output = _eventOutputHolder.GetOutput(sessionId);
 
+        var cultistCircleStashId = pmcData.Inventory.HideoutAreaStashes.GetValueOrDefault(((int)HideoutAreas.CIRCLE_OF_CULTISTS).ToString());
         if (cultistCircleStashId is null)
         {
-            _logger.Critical("Could not find cultist circle stash ID! This may result in no rewards...");
+            _logger.Error("Could not find cultist circle stash ID inside inventory! No rewards generated");
+
+            return output;
         }
 
         // `cultistRecipes` just has single recipeId
@@ -98,8 +101,6 @@ public class CircleOfCultistService(
             sacrificedItems,
             craftingInfo.Time
         );
-
-        var output = _eventOutputHolder.GetOutput(sessionId);
 
         // Remove sacrificed items from circle inventory
         foreach (var item in sacrificedItems)
