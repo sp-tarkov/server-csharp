@@ -134,7 +134,13 @@ public class EventOutputHolder
     {
         foreach (var production in productions)
         {
-            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
+            if (production.Value == null)
+            {
+                // cultist circle
+                // remove production in case client already issued a HideoutDeleteProductionCommand and the item is moved to stash
+                productions.Remove(production.Key);
+            }
+            else if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 // Water collector / Bitcoin etc
                 production.Value.SptIsComplete = false;
