@@ -362,20 +362,25 @@ public record Upd
         set;
     }
 
-    public Lockable? Lockable // LockableComponent in the client
+    public LockableComponent? Lockable
     {
         get;
         set;
     }
 }
 
-public record Lockable
+public record LockableKeyComponent
 {
-    public bool? Locked
-    {
-        get;
-        set;
-    }
+    public float? RelativeValue { get; set; }
+    public int? NumberOfUsages { get; set; }
+
+}
+
+public record LockableComponent
+{
+    public string[]? KeyIds { get; set; }
+    public bool? Locked { get; set; }
+    public LockableKeyComponent? KeyComponent { get; set; }
 }
 
 public enum PinLockState

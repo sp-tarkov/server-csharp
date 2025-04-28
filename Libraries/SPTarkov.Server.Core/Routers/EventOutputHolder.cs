@@ -33,15 +33,19 @@ public class EventOutputHolder
         _cloner = cloner;
     }
 
+    /// <summary>
+    /// Get a fresh/empty response to send to the client
+    /// </summary>
+    /// <param name="sessionId">Player id</param>
+    /// <returns>ItemEventRouterResponse</returns>
     public ItemEventRouterResponse GetOutput(string sessionId)
     {
-        var resultFound = _outputStore.TryGetValue(sessionId, out var result);
-        if (resultFound)
+        if (_outputStore.TryGetValue(sessionId, out var result))
         {
             return result;
         }
 
-        // Nothing found, reset to default
+        // Nothing found, Create new empty output response
         ResetOutput(sessionId);
         _outputStore.TryGetValue(sessionId, out result!);
 
@@ -54,9 +58,11 @@ public class EventOutputHolder
 
         if (_outputStore.ContainsKey(sessionId))
         {
+            // Dict contains existing output object, purge it
             _outputStore.Remove(sessionId);
         }
 
+        // Create fresh output object
         _outputStore.Add(
             sessionId,
             new ItemEventRouterResponse
@@ -134,7 +140,13 @@ public class EventOutputHolder
     {
         foreach (var production in productions)
         {
-            if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
+            if (production.Value == null)
+            {
+                // cultist circle
+                // remove production in case client already issued a HideoutDeleteProductionCommand and the item is moved to stash
+                productions.Remove(production.Key);
+            }
+            else if ((production.Value.SptIsComplete ?? false) && (production.Value.SptIsContinuous ?? false))
             {
                 // Water collector / Bitcoin etc
                 production.Value.SptIsComplete = false;
