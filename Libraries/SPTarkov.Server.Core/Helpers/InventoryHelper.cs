@@ -324,7 +324,7 @@ public class InventoryHelper(
             {
                 X = findSlotResult.X,
                 Y = findSlotResult.Y,
-                R = findSlotResult.Rotation.GetValueOrDefault(false) ? 1 : 0,
+                R = findSlotResult.Rotation.GetValueOrDefault(false) ? ItemLocation.Vertical : ItemLocation.Horizontal,
                 Rotation = findSlotResult.Rotation
             };
 
@@ -382,7 +382,7 @@ public class InventoryHelper(
             {
                 X = findSlotResult.X,
                 Y = findSlotResult.Y,
-                R = findSlotResult.Rotation.Value ? 1 : 0,
+                R = findSlotResult.Rotation.Value ? ItemLocation.Vertical : ItemLocation.Horizontal,
                 Rotation = findSlotResult.Rotation
             };
 
@@ -423,7 +423,7 @@ public class InventoryHelper(
             {
                 X = findSortingSlotResult.X,
                 Y = findSortingSlotResult.Y,
-                R = findSortingSlotResult.Rotation.Value ? 1 : 0,
+                R = findSortingSlotResult.Rotation.Value ? ItemLocation.Vertical : ItemLocation.Horizontal,
                 Rotation = findSortingSlotResult.Rotation
             };
         }
@@ -845,7 +845,15 @@ public class InventoryHelper(
             ItemLocation? itemLocation;
             if (item.Location is JsonElement)
             {
-                itemLocation = ((JsonElement) item.Location).ToObject<ItemLocation>();
+                try
+                {
+                    itemLocation = ((JsonElement) item.Location).ToObject<ItemLocation>();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("asdf");
+                    itemLocation = null;
+                }
             }
             else
             {
@@ -905,9 +913,9 @@ public class InventoryHelper(
 
     protected bool IsVertical(ItemLocation itemLocation)
     {
-        var castValue = itemLocation.R.ToString();
-        return castValue == "1" || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(itemLocation.Rotation?.ToString(), "vertical", StringComparison.OrdinalIgnoreCase);
+        if (itemLocation.R.Item1 == ItemRotation.Vertical) return true;
+        if (itemLocation.R.Item2 == 1) return true;
+        return false;
     }
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)

@@ -152,6 +152,15 @@ public record HideoutItem
     }
 }
 
+public enum ItemRotation
+{
+    // Token: 0x0400259F RID: 9631
+    Horizontal,
+    // Token: 0x040025A0 RID: 9632
+    Vertical
+}
+
+
 public record ItemLocation
 {
     [JsonPropertyName("x")]
@@ -169,7 +178,8 @@ public record ItemLocation
     }
 
     [JsonPropertyName("r")]
-    public int R
+    [JsonConverter(typeof (ObjectToTupleFactoryConverter))]
+    public Tuple<ItemRotation, int>? R
     {
         get;
         set;
@@ -191,6 +201,9 @@ public record ItemLocation
         get;
         set;
     }
+
+    public static Tuple<ItemRotation, int> Vertical = Tuple.Create(ItemRotation.Vertical, 1);
+    public static Tuple<ItemRotation, int> Horizontal = Tuple.Create(ItemRotation.Horizontal, 0);
 }
 
 public record Upd
