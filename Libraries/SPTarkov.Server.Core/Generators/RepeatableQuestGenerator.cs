@@ -30,6 +30,36 @@ public class RepeatableQuestGenerator(
     ICloner _cloner
 )
 {
+    /// <summary>
+    /// Body parts to present to the client as opposed to the body part information in quest data.
+    /// </summary>
+    private static readonly Dictionary<string, List<string>> _bodyPartsToClient = new()
+    {
+        {
+            "Arms", [
+                "LeftArm",
+                "RightArm"
+            ]
+        },
+        {
+            "Legs", [
+                "LeftLeg",
+                "RightLeg"
+            ]
+        },
+        {
+            "Head", [
+                "Head"
+            ]
+        },
+        {
+            "Chest", [
+                "Chest",
+                "Stomach"
+            ]
+        },
+    };
+
     protected int _maxRandomNumberAttempts = 6;
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
@@ -218,7 +248,15 @@ public class RepeatableQuestGenerator(
             {
                 // more than one part lead to an "OR" condition hence more parts reduce the difficulty
                 probability += bodyPartsConfig.Probability(bodyPart).Value;
-                bodyPartsToClient.Add(bodyPart);
+
+                if (_bodyPartsToClient.TryGetValue(bodyPart, out var bodyPartListToClient))
+                {
+                    bodyPartsToClient.AddRange(bodyPartListToClient);
+                }
+                else
+                {
+                    bodyPartsToClient.Add(bodyPart);
+                }
             }
 
             bodyPartDifficulty = 1 / probability;
