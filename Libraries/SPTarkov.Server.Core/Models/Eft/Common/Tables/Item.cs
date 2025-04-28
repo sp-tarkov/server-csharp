@@ -193,6 +193,20 @@ public record ItemLocation
     } // TODO: Can be string or boolean
 }
 
+public record UpdLockableKeyComponent
+{
+    public float? RelativeValue { get; set; }
+    public int? NumberOfUsages { get; set; }
+
+}
+
+public record UpdLockable
+{
+    public string[]? KeyIds { get; set; }
+    public bool Locked { get; set; }
+    public UpdLockableKeyComponent? KeyComponent { get; set; }
+}
+
 public record Upd
 {
     public UpdBuff? Buff
@@ -362,7 +376,7 @@ public record Upd
         set;
     }
 
-    public bool? Lockable
+    public UpdLockable? Lockable
     {
         get;
         set;
