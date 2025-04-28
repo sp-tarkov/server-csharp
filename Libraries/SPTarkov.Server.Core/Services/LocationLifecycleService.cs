@@ -861,6 +861,8 @@ public class LocationLifecycleService
 
             if (postRaidProfile.Stats.Eft.Aggressor is not null)
             {
+                // get the aggressor ID from the client request body
+                postRaidProfile.Stats.Eft.Aggressor.ProfileId = request.Results.KillerId;
                 _pmcChatResponseService.SendKillerResponse(sessionId, pmcProfile, postRaidProfile.Stats.Eft.Aggressor);
             }
 

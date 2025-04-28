@@ -258,8 +258,9 @@ public class BotController(
                 }
 
                 results.Add(bot);
+
                 // Store bot details in cache so post-raid PMC messages can use data
-                _matchBotDetailsCacheService.CacheBot(_cloner.Clone(bot));
+                _matchBotDetailsCacheService.CacheBot(bot);
             }
             catch (Exception e)
             {

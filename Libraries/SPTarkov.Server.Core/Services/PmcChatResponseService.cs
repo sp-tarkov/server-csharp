@@ -83,39 +83,27 @@ public class PmcChatResponseService(
             return;
         }
 
-        // find bot by name in cache
-        var killerDetailsInCache = _matchBotDetailsCacheService.GetBotByNameAndSide(killer.Name, killer.Side);
+        // find bot by id in cache
+        var killerDetailsInCache = _matchBotDetailsCacheService.GetBotById(killer.ProfileId);
         if (killerDetailsInCache is null)
         {
             return;
         }
 
-        // If killer wasn't a PMC, skip
-        var pmcTypes = new HashSet<string>
-        {
-            "pmcUSEC",
-            "pmcBEAR"
-        };
-        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role))
-        {
-            return;
-        }
-
-        // Because we've cached PMC sides as "Savage" for the client, we need to figure out
-        // what side it really is
-        var side = killerDetailsInCache.Info.Settings.Role == "pmcUSEC" ? "Usec" : "Bear";
+        // Because we've cached PMC sides as "Savage" for the client,
+        // we need to figure out what side it really is
+        var side = killerDetailsInCache.Side == DogtagSide.Usec ? "Usec" : "Bear";
 
         var killerDetails = new UserDialogInfo
         {
-            Id = killerDetailsInCache.Id,
+            Id = killer.ProfileId,
             Aid = killerDetailsInCache.Aid,
             Info = new UserDialogDetails
             {
-                Nickname = killerDetailsInCache.Info.Nickname,
+                Nickname = killerDetailsInCache.Nickname,
                 Side = side,
-                Level = killerDetailsInCache.Info.Level,
-                MemberCategory = killerDetailsInCache.Info.MemberCategory,
-                SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory
+                Level = killerDetailsInCache.Level,
+                MemberCategory = killerDetailsInCache.Type
             }
         };
 
