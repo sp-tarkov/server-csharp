@@ -12,6 +12,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Server.Core.Utils.Json;
+using BodyParts = SPTarkov.Server.Core.Constants.BodyParts;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -36,26 +37,26 @@ public class RepeatableQuestGenerator(
     private static readonly Dictionary<string, List<string>> _bodyPartsToClient = new()
     {
         {
-            "Arms", [
-                "LeftArm",
-                "RightArm"
+            BodyParts.Arms, [
+                BodyParts.LeftArm,
+                BodyParts.RightArm
             ]
         },
         {
-            "Legs", [
-                "LeftLeg",
-                "RightLeg"
+            BodyParts.Legs, [
+                BodyParts.LeftLeg,
+                BodyParts.RightLeg
             ]
         },
         {
-            "Head", [
-                "Head"
+            BodyParts.Head, [
+                BodyParts.Head
             ]
         },
         {
-            "Chest", [
-                "Chest",
-                "Stomach"
+            BodyParts.Chest, [
+                BodyParts.Chest,
+                BodyParts.Stomach
             ]
         },
     };
