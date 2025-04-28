@@ -12,7 +12,11 @@ public class Test
     [TestInitialize]
     public void Setup()
     {
+<<<<<<< Updated upstream
         var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), new JsonUtil());
+=======
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()), new JsonUtil(new MockLogger<JsonUtil>()));
+>>>>>>> Stashed changes
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;
@@ -21,7 +25,7 @@ public class Test
     [TestMethod]
     public void TestMethod1()
     {
-        var result = new JsonUtil().Serialize(_templates);
+        var result = new JsonUtil(new MockLogger<JsonUtil>()).Serialize(_templates);
         Console.WriteLine(result);
     }
 }

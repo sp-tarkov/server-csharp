@@ -7,7 +7,7 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class HashUtilTests
 {
-    protected HashUtil _hashUtil = new(new RandomUtil(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil())));
+    protected HashUtil _hashUtil = new(new RandomUtil(new MockLogger<RandomUtil>(), new JsonCloner(new JsonUtil(new MockLogger<JsonUtil>()))));
 
     [TestMethod]
     public void GenerateTest()

@@ -19,8 +19,13 @@ public class ClonerBenchmarks
     [GlobalSetup]
     public void Setup()
     {
+<<<<<<< Updated upstream
         var jsonUtil = new JsonUtil();
         var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(),
+=======
+        var jsonUtil = new JsonUtil(new MockLogger<JsonUtil>());
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()),
+>>>>>>> Stashed changes
             jsonUtil);
         var loadTask = importer.LoadRecursiveAsync<Templates>("./Assets/database/templates/");
         loadTask.Wait();

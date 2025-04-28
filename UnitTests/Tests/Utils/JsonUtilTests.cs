@@ -1,12 +1,13 @@
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils;
+using UnitTests.Mock;
 
 namespace UnitTests.Tests.Utils;
 
 [TestClass]
 public class JsonUtilTests
 {
-    protected JsonUtil _jsonUtil = new();
+    protected JsonUtil _jsonUtil = new(new MockLogger<JsonUtil>());
 
     [TestMethod]
     public void SerializeAndDeserialize_WithDictionaryOfETFEnum_ExpectCorrectParsing()

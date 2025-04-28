@@ -9,12 +9,20 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Utils.Json.Converters;
+<<<<<<< Updated upstream
+=======
+using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
+using SPTarkov.Server.Core.Models.Logging;
+using SPTarkov.Server.Core.Models.Spt.Logging;
+using SPTarkov.Server.Core.Models.Utils;
+>>>>>>> Stashed changes
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
-public class JsonUtil
+public class JsonUtil(ISptLogger<JsonUtil> logger)
 {
     private static JsonSerializerOptions jsonSerializerOptionsNoIndent = new()
     {
@@ -80,7 +88,17 @@ public class JsonUtil
     /// <returns>Deserialized object or null</returns>
     public T? Deserialize<T>(string? json)
     {
-        return string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize<T>(json, jsonSerializerOptionsNoIndent);
+        try
+        {
+            return string.IsNullOrEmpty(json)
+                ? default
+                : JsonSerializer.Deserialize<T>(json, jsonSerializerOptionsNoIndent);
+        }
+        catch (Exception e)
+        {
+            if (logger.IsLogEnabled(LogLevel.Debug)) logger.Debug("failed to parse json" + json);
+            throw e;
+        }
     }
 
     /// <summary>
@@ -91,7 +109,17 @@ public class JsonUtil
     /// <returns></returns>
     public object? Deserialize(string? json, Type type)
     {
-        return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
+        try
+        {
+            return string.IsNullOrEmpty(json)
+                ? null
+                : JsonSerializer.Deserialize(json, type, jsonSerializerOptionsNoIndent);
+        }
+        catch (Exception e)
+        {
+            if (logger.IsLogEnabled(LogLevel.Debug)) logger.Debug("failed to parse json" + json);
+            throw e;
+        }
     }
 
     /// <summary>
