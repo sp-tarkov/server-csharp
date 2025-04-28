@@ -1,5 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
 using System.Text.Json.Serialization;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Utils.Json.Converters;
@@ -13,6 +11,8 @@ public record TemplateItem
     private string? _name;
 
     private string? _parent;
+
+    private string _prototype;
 
     private string? _type;
 
@@ -75,7 +75,6 @@ public record TemplateItem
         set;
     }
 
-    private string _prototype;
     [JsonPropertyName("_proto")]
     public string? Prototype
     {
@@ -92,6 +91,9 @@ public record TemplateItem
 
 public record Props
 {
+    private string _backgroundColor;
+
+    private string _itemSound;
     private string? _metascoreGroup;
 
     private string? _rarityPvE;
@@ -161,7 +163,6 @@ public record Props
         set;
     }
 
-    private string _backgroundColor;
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor
     {
@@ -221,7 +222,6 @@ public record Props
         set;
     }
 
-    private string _itemSound;
     [JsonPropertyName("ItemSound")]
     public string? ItemSound
     {

@@ -1,12 +1,11 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
-using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Prestige;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -20,7 +19,7 @@ public class PrestigeController(
 {
     /// <summary>
     ///     Handle /client/prestige/list
-    /// Get a collection of all possible prestiges
+    ///     Get a collection of all possible prestiges
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Prestige</returns>

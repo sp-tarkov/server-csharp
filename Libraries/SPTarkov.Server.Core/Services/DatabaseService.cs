@@ -1,4 +1,6 @@
 using System.Diagnostics;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Bots;
@@ -7,8 +9,6 @@ using SPTarkov.Server.Core.Models.Spt.Templates;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using Hideout = SPTarkov.Server.Core.Models.Spt.Hideout.Hideout;
 using Locations = SPTarkov.Server.Core.Models.Spt.Server.Locations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
@@ -98,7 +98,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    /// Get specific location by its ID
+    ///     Get specific location by its ID
     /// </summary>
     /// <param name="locationId"> Desired location ID </param>
     /// <returns> assets/database/locations/ </returns>
@@ -290,7 +290,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    /// Get specific trader by their ID
+    ///     Get specific trader by their ID
     /// </summary>
     /// <param name="traderId"> Desired trader ID </param>
     /// <returns> assets/database/traders/ </returns>
@@ -317,7 +317,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    /// Validates that the database doesn't contain invalid ID data
+    ///     Validates that the database doesn't contain invalid ID data
     /// </summary>
     public void ValidateDatabase()
     {
@@ -342,7 +342,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    /// Validate that the given table only contains valid MongoIDs
+    ///     Validate that the given table only contains valid MongoIDs
     /// </summary>
     /// <param name="table"> Table to validate for MongoIDs</param>
     /// <param name="tableType"> The type of table, used in output message </param>
@@ -362,7 +362,7 @@ public class DatabaseService(
     }
 
     /// <summary>
-    /// Check if the database is valid
+    ///     Check if the database is valid
     /// </summary>
     /// <returns> True if the database contains valid data, false otherwise </returns>
     public bool IsDatabaseValid()

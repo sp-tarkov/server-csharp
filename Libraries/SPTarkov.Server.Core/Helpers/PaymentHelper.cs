@@ -1,7 +1,7 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 

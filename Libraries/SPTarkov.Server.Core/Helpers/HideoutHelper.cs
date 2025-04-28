@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
@@ -11,7 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -257,7 +257,7 @@ public class HideoutHelper(
     }
 
     /// <summary>
-    /// Does a water collection hideout area have a water filter installed
+    ///     Does a water collection hideout area have a water filter installed
     /// </summary>
     /// <param name="waterCollector">Hideout area to check</param>
     /// <returns></returns>
@@ -438,8 +438,17 @@ public class HideoutHelper(
 
         // Increment progress by time passed
         var production = pmcData.Hideout.Production[prodId];
+
         // Some items NEED power to craft (e.g. DSP)
-        production.Progress += (production.needFuelForAllProductionTime ?? false) && !hideoutProperties.IsGeneratorOn ? 0 : timeElapsed;
+        if (production.needFuelForAllProductionTime.GetValueOrDefault() && hideoutProperties.IsGeneratorOn)
+        {
+            production.Progress += timeElapsed;
+        }
+        else if (!production.needFuelForAllProductionTime.GetValueOrDefault())
+            // Increment progress if production does not necessarily need fuel to continue
+        {
+            production.Progress += timeElapsed;
+        }
 
         // Limit progress to total production time if progress is over (dont run for continious crafts))
         if (!(recipe.Continuous ?? false))
@@ -948,9 +957,8 @@ public class HideoutHelper(
     protected double GetTotalProductionTimeSeconds(string prodId)
     {
         return _databaseService.GetHideout()
-                   .Production.Recipes.FirstOrDefault(
-                       prod =>
-                           prod.Id == prodId
+                   .Production.Recipes.FirstOrDefault(prod =>
+                       prod.Id == prodId
                    )
                    ?.ProductionTime ??
                0;
@@ -1197,7 +1205,7 @@ public class HideoutHelper(
 
         if (!isGeneratorOn)
         {
-            timeElapsed *= (long) _databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel;
+            timeElapsed = (long) (timeElapsed * _databaseService.GetHideout().Settings.GeneratorSpeedWithoutFuel);
         }
 
         return timeElapsed;
@@ -1443,8 +1451,7 @@ public class HideoutHelper(
 
         // Get SkillGroupLevelingBoost object
         var combatBoostBonusDb = fameAreaDb.Stages[fameAreaProfile.Level.ToString()]
-            .Bonuses.FirstOrDefault(
-                bonus => bonus.Type.ToString() == "SkillGroupLevelingBoost"
+            .Bonuses.FirstOrDefault(bonus => bonus.Type.ToString() == "SkillGroupLevelingBoost"
             );
 
         // Get SkillGroupLevelingBoost object in profile

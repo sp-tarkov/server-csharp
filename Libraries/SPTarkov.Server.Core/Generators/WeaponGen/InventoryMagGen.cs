@@ -1,5 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Common.Annotations;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Generators.WeaponGen;
 

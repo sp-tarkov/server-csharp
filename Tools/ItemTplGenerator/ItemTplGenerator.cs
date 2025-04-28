@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Callbacks;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Helpers;
@@ -7,8 +9,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using Path = System.IO.Path;
 
 namespace ItemTplGenerator;
@@ -77,7 +77,7 @@ public class ItemTplGenerator(
     }
 
     /// <summary>
-    /// Return an object containing all items in the game with a generated name
+    ///     Return an object containing all items in the game with a generated name
     /// </summary>
     /// <returns>An object containing a generated item name to item ID association</returns>
     private Dictionary<string, string> GenerateItemsObject()
@@ -227,7 +227,7 @@ public class ItemTplGenerator(
     }
 
     /// <summary>
-    /// Clear any non-alpha numeric characters, and fix multiple underscores
+    ///     Clear any non-alpha numeric characters, and fix multiple underscores
     /// </summary>
     /// <param name="enumKey">The enum key to sanitize</param>
     /// <returns>The sanitized enum key</returns>
@@ -320,7 +320,7 @@ public class ItemTplGenerator(
     }
 
     /// <summary>
-    /// Generate a prefix for the passed in item
+    ///     Generate a prefix for the passed in item
     /// </summary>
     /// <param name="item">The item to generate the prefix for</param>
     /// <returns>The prefix of the given item</returns>
@@ -419,7 +419,7 @@ public class ItemTplGenerator(
     }
 
     /// <summary>
-    /// Return the name of the passed in item, formatted for use in an enum
+    ///     Return the name of the passed in item, formatted for use in an enum
     /// </summary>
     /// <param name="item">The item to generate the name for</param>
     /// <returns>The name of the given item</returns>

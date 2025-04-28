@@ -13,7 +13,7 @@ public record ItemConfig : BaseConfig
     } = "spt-item";
 
     /// <summary>
-    /// Items that should be globally blacklisted
+    ///     Items that should be globally blacklisted
     /// </summary>
     [JsonPropertyName("blacklist")]
     public HashSet<string> Blacklist
@@ -23,7 +23,7 @@ public record ItemConfig : BaseConfig
     }
 
     /// <summary>
-    /// Items that should not be lootable from any location
+    ///     Items that should not be lootable from any location
     /// </summary>
     [JsonPropertyName("lootableItemBlacklist")]
     public HashSet<string> LootableItemBlacklist
@@ -33,7 +33,7 @@ public record ItemConfig : BaseConfig
     }
 
     /// <summary>
-    /// items that should not be given as rewards
+    ///     items that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemBlacklist")]
     public HashSet<string> RewardItemBlacklist
@@ -43,7 +43,7 @@ public record ItemConfig : BaseConfig
     }
 
     /// <summary>
-    /// Item base types that should not be given as rewards
+    ///     Item base types that should not be given as rewards
     /// </summary>
     [JsonPropertyName("rewardItemTypeBlacklist")]
     public HashSet<string> RewardItemTypeBlacklist
@@ -53,7 +53,7 @@ public record ItemConfig : BaseConfig
     }
 
     /// <summary>
-    /// Items that can only be found on bosses
+    ///     Items that can only be found on bosses
     /// </summary>
     [JsonPropertyName("bossItems")]
     public HashSet<string> BossItems
@@ -70,7 +70,7 @@ public record ItemConfig : BaseConfig
     }
 
     /// <summary>
-    /// Presets to add to the globals.json `ItemPresets` dictionary on server start
+    ///     Presets to add to the globals.json `ItemPresets` dictionary on server start
     /// </summary>
     [JsonPropertyName("customItemGlobalPresets")]
     public List<Preset> CustomItemGlobalPresets
@@ -83,7 +83,7 @@ public record ItemConfig : BaseConfig
 public record HandbookPriceOverride
 {
     /// <summary>
-    /// Price in roubles
+    ///     Price in roubles
     /// </summary>
     [JsonPropertyName("price")]
     public double Price
@@ -93,7 +93,7 @@ public record HandbookPriceOverride
     }
 
     /// <summary>
-    /// NOT parentId from items.json, but handbook.json
+    ///     NOT parentId from items.json, but handbook.json
     /// </summary>
     [JsonPropertyName("parentId")]
     public string ParentId

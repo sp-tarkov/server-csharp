@@ -1,7 +1,7 @@
-﻿using SPTarkov.Server.Core.Models.Logging;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace ItemTplGenerator;
 
@@ -51,6 +51,17 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {data}");
     }
 
+    public void Log(
+        LogLevel level,
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null,
+        Exception? ex = null
+    )
+    {
+        throw new NotImplementedException();
+    }
+
     public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
     {
         Console.WriteLine($"{categoryName}: {body}");
@@ -59,5 +70,10 @@ public class SptBasicLogger<T> : ISptLogger<T>
     public bool IsLogEnabled(LogLevel level)
     {
         return true;
+    }
+
+    public void DumpAndStop()
+    {
+        throw new NotImplementedException();
     }
 }

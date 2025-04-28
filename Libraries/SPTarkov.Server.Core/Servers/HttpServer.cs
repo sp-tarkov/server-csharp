@@ -1,15 +1,15 @@
 ﻿using System.Net;
 using System.Security.Authentication;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
+using Microsoft.Extensions.Primitives;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers.Http;
 using SPTarkov.Server.Core.Services;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.Extensions.Primitives;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -28,7 +28,7 @@ public class HttpServer(
     private bool _started;
 
     /// <summary>
-    /// Handle server loading event
+    ///     Handle server loading event
     /// </summary>
     /// <param name="builder"> Server builder </param>
     /// <exception cref="Exception"> Throws Exception when WebApplicationBuiler or WebApplication are null </exception>
@@ -39,19 +39,18 @@ public class HttpServer(
             throw new Exception("WebApplicationBuilder is null in HttpServer.Load()");
         }
 
-        builder.WebHost.ConfigureKestrel(
-            options =>
+        builder.WebHost.ConfigureKestrel(options =>
+        {
+            options.Listen(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port, listenOptions =>
             {
-                options.Listen(IPAddress.Parse(_httpConfig.Ip), _httpConfig.Port, listenOptions =>
+                listenOptions.UseHttps(opts =>
                 {
-                    listenOptions.UseHttps(opts =>
-                    {
-                        opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
-                        opts.ServerCertificate = _certificateHelper.LoadOrGenerateCertificatePfx();
-                        opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
-                    });
+                    opts.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    opts.ServerCertificate = _certificateHelper.LoadOrGenerateCertificatePfx();
+                    opts.ClientCertificateMode = ClientCertificateMode.NoCertificate;
                 });
             });
+        });
 
         var app = builder.Build();
 
@@ -67,8 +66,7 @@ public class HttpServer(
             KeepAliveInterval = TimeSpan.FromSeconds(60)
         });
 
-        app?.Use(
-            (HttpContext req, RequestDelegate _) =>
+        app?.Use((HttpContext req, RequestDelegate _) =>
             {
                 return Task.Factory.StartNew(async () => await HandleFallback(req));
             }
@@ -116,7 +114,7 @@ public class HttpServer(
     }
 
     /// <summary>
-    /// Log request - handle differently if request is local
+    ///     Log request - handle differently if request is local
     /// </summary>
     /// <param name="context">HttpContext of request</param>
     /// <param name="clientIp">Ip of requester</param>
@@ -150,12 +148,12 @@ public class HttpServer(
 
         var forwardedFor = context.GetHeaderIfExists("x-forwarded-for");
         return forwardedFor.HasValue
-                ? forwardedFor.Value.First()!.Split(",")[0].Trim()
-                : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
+            ? forwardedFor.Value.First()!.Split(",")[0].Trim()
+            : context.Connection.RemoteIpAddress!.ToString().Split(":").Last();
     }
 
     /// <summary>
-    /// Check against hardcoded values that determine it's from a local address
+    ///     Check against hardcoded values that determine it's from a local address
     /// </summary>
     /// <param name="remoteAddress"> Address to check </param>
     /// <returns> True if its local </returns>

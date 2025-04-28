@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -32,7 +32,7 @@ public class PaymentService(
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
-    /// Take money and insert items into return to server request
+    ///     Take money and insert items into return to server request
     /// </summary>
     /// <param name="pmcData"> PMC Profile </param>
     /// <param name="request"> Buy item request </param>
@@ -45,7 +45,7 @@ public class PaymentService(
         var payToTrader = _traderHelper.TraderEnumHasValue(request.TransactionId);
 
         // Track the amounts of each type of currency involved in the trade.
-        Dictionary<string, double?> currencyAmounts = new Dictionary<string, double?>();
+        var currencyAmounts = new Dictionary<string, double?>();
 
         // Delete barter items and track currencies
         foreach (var itemRequest in request.SchemeItems)
@@ -143,7 +143,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Get the item price of a specific traders assort
+    ///     Get the item price of a specific traders assort
     /// </summary>
     /// <param name="traderAssortId"> ID of the assort to look up</param>
     /// <param name="traderId"> ID of trader with assort </param>
@@ -168,7 +168,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Receive money back after selling
+    ///     Receive money back after selling
     /// </summary>
     /// <param name="pmcData"> PMC Profile</param>
     /// <param name="amountToSend"> Money to send back </param>
@@ -244,7 +244,7 @@ public class PaymentService(
             Template = currencyTpl,
             Upd = new Upd
             {
-                StackObjectsCount = Math.Round((double) calcAmount)
+                StackObjectsCount = Math.Round(calcAmount)
             }
         };
 
@@ -271,7 +271,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Remove currency from player stash/inventory and update client object with changes
+    ///     Remove currency from player stash/inventory and update client object with changes
     /// </summary>
     /// <param name="pmcData"> Player profile to find and remove currency from</param>
     /// <param name="currencyTpl"> Type of currency to pay </param>
@@ -352,7 +352,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Get all money stacks in inventory and prioritise items in stash
+    ///     Get all money stacks in inventory and prioritise items in stash
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <param name="currencyTpl"> Currency to find </param>
@@ -374,8 +374,8 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Prioritise player stash first over player inventory.
-    ///  Post-raid healing would often take money out of the players pockets/secure container.
+    ///     Prioritise player stash first over player inventory.
+    ///     Post-raid healing would often take money out of the players pockets/secure container.
     /// </summary>
     /// <param name="a"> First money stack item </param>
     /// <param name="b"> Second money stack item </param>
@@ -448,7 +448,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Recursively check items parents to see if it is inside the players inventory, not stash
+    ///     Recursively check items parents to see if it is inside the players inventory, not stash
     /// </summary>
     /// <param name="itemId"> Item ID to check </param>
     /// <param name="inventoryItems"> Player inventory </param>

@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -8,8 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 
@@ -238,7 +238,7 @@ public class TraderHelper(
 
         foreach (var suitId in clothingIds)
         {
-            if (!fullProfile.CustomisationUnlocks.Exists((customisation) => customisation.Id == suitId))
+            if (!fullProfile.CustomisationUnlocks.Exists(customisation => customisation.Id == suitId))
             {
                 // Clothing item doesn't exist in profile, add it
                 fullProfile.CustomisationUnlocks.Add(new CustomisationStorage
@@ -403,7 +403,7 @@ public class TraderHelper(
             return null;
         }
 
-        return _randomUtil.GetInt((int) traderDetails.Seconds.Min, (int) traderDetails.Seconds.Max);
+        return _randomUtil.GetInt(traderDetails.Seconds.Min, traderDetails.Seconds.Max);
     }
 
     public TraderLoyaltyLevel GetLoyaltyLevel(string traderID, PmcData pmcData)
@@ -629,7 +629,8 @@ public class TraderHelper(
     public string GetValidTraderIdByEnumValue(string traderEnumValue)
     {
         var traderId = _databaseService.GetTraders();
-        var id = traderId.FirstOrDefault(x => x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
+        var id = traderId.FirstOrDefault(x =>
+            x.Value.Base.Id == traderEnumValue || string.Equals(x.Value.Base.Nickname, traderEnumValue, StringComparison.OrdinalIgnoreCase)).Key;
 
         return id;
     }

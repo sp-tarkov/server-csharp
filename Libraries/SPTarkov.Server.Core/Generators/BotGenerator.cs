@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using BodyPart = SPTarkov.Server.Core.Models.Eft.Common.Tables.BodyPart;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
@@ -431,30 +431,21 @@ public class BotGenerator(
         // Remove blacklisted loot from loot containers
         foreach (var lootContainerKey in lootContainersToFilter)
         {
-            var prop = props.FirstOrDefault(x => string.Equals(x.Name, lootContainerKey, StringComparison.CurrentCultureIgnoreCase));
-            var propValue = (Dictionary<string, double>) prop.GetValue(botInventory.Items);
+            var propInfo = props
+                .FirstOrDefault(x => string.Equals(x.Name, lootContainerKey, StringComparison.CurrentCultureIgnoreCase));
+            var prop = (Dictionary<string, double>?) propInfo.GetValue(botInventory.Items);
 
             // No container, skip
-            if (propValue?.Count == 0)
+            if (prop is null)
             {
                 continue;
             }
 
-            List<string> tplsToRemove = [];
-            foreach (var (key, _) in propValue)
+            var newProp = prop.Where(tpl =>
             {
-                if (_itemFilterService.IsLootableItemBlacklisted(key))
-                {
-                    tplsToRemove.Add(key);
-                }
-            }
-
-            foreach (var blacklistedTplToRemove in tplsToRemove)
-            {
-                propValue.Remove(blacklistedTplToRemove);
-            }
-
-            prop.SetValue(botInventory.Items, propValue);
+                return !_itemFilterService.IsLootableItemBlacklisted(tpl.Key);
+            }).ToDictionary();
+            propInfo.SetValue(botInventory.Items, newProp);
         }
     }
 
@@ -518,7 +509,7 @@ public class BotGenerator(
                         Health = new CurrentMinMax
                         {
                             Current = _randomUtil.GetDouble(bodyParts.Head.Min, bodyParts.Head.Max),
-                            Maximum = (double)Math.Round(bodyParts.Head.Max)
+                            Maximum = Math.Round(bodyParts.Head.Max)
                         }
                     }
                 },
@@ -528,7 +519,7 @@ public class BotGenerator(
                         Health = new CurrentMinMax
                         {
                             Current = _randomUtil.GetDouble(bodyParts.Chest.Min, bodyParts.Chest.Max),
-                            Maximum = (double)Math.Round(bodyParts.Chest.Max)
+                            Maximum = Math.Round(bodyParts.Chest.Max)
                         }
                     }
                 },
@@ -656,8 +647,8 @@ public class BotGenerator(
             return [];
         }
 
-        return skills.Select(
-                kvp =>
+        return skills
+            .Select(kvp =>
                 {
                     // Get skill from dict, skip if not found
                     var skill = kvp.Value;

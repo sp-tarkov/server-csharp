@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -6,8 +8,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -31,7 +31,7 @@ public class RagfairOfferService(
     protected RagfairConfig _ragfairConfig = configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
-    /// Get all offers
+    ///     Get all offers
     /// </summary>
     /// <returns> List of RagfairOffers </returns>
     public List<RagfairOffer> GetOffers()
@@ -55,7 +55,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Does the offer exist on the ragfair
+    ///     Does the offer exist on the ragfair
     /// </summary>
     /// <param name="offerId"> Offer id to check for </param>
     /// <returns> True when offer exists </returns>
@@ -65,7 +65,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Remove an offer from ragfair by offer id
+    ///     Remove an offer from ragfair by offer id
     /// </summary>
     /// <param name="offerId"> Offer id to remove </param>
     public void RemoveOfferById(string offerId)
@@ -74,7 +74,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Reduce size of an offer stack by specified amount
+    ///     Reduce size of an offer stack by specified amount
     /// </summary>
     /// <param name="offerId"> Offer to adjust stack size of </param>
     /// <param name="amount"> How much to deduct from offers stack size </param>
@@ -100,7 +100,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Do the trader offers on flea need to be refreshed
+    ///     Do the trader offers on flea need to be refreshed
     /// </summary>
     /// <param name="traderID"> Trader to check </param>
     /// <returns> True if they do </returns>
@@ -143,7 +143,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Process the expired ids and remove offers
+    ///     Process the expired ids and remove offers
     /// </summary>
     public void RemoveExpiredOffers()
     {
@@ -154,7 +154,7 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Remove stale offer from flea
+    ///     Remove stale offer from flea
     /// </summary>
     /// <param name="staleOffer"> Stale offer to process </param>
     protected void ProcessStaleOffer(RagfairOffer staleOffer)
@@ -243,9 +243,9 @@ public class RagfairOfferService(
     }
 
     /// <summary>
-    /// Flea offer items are stacked up often beyond the StackMaxSize limit.
-    /// Unstack the items into an array of root items and their children.
-    /// Will create new items equal to the stack.
+    ///     Flea offer items are stacked up often beyond the StackMaxSize limit.
+    ///     Unstack the items into an array of root items and their children.
+    ///     Will create new items equal to the stack.
     /// </summary>
     /// <param name="items"> Offer items to unstack </param>
     /// <returns> Unstacked array of items </returns>

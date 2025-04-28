@@ -97,7 +97,7 @@ public record CoreConfig : BaseConfig
     }
 
     /// <summary>
-    /// Commit hash build server was created from
+    ///     Commit hash build server was created from
     /// </summary>
     [JsonPropertyName("commit")]
     public string? Commit
@@ -107,7 +107,7 @@ public record CoreConfig : BaseConfig
     }
 
     /// <summary>
-    /// Timestamp of server build
+    ///     Timestamp of server build
     /// </summary>
     [JsonPropertyName("buildTime")]
     public string? BuildTime
@@ -117,7 +117,7 @@ public record CoreConfig : BaseConfig
     }
 
     /// <summary>
-    /// Server locale keys that will be added to the bottom of the startup watermark
+    ///     Server locale keys that will be added to the bottom of the startup watermark
     /// </summary>
     [JsonPropertyName("customWatermarkLocaleKeys")]
     public List<string>? CustomWatermarkLocaleKeys
@@ -130,16 +130,16 @@ public record CoreConfig : BaseConfig
 public record BsgLogging
 {
     /// <summary>
-    /// verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals. <br/>
-    /// complain to them about it! In all cases, better exceptions will be logged.<br/>
-    /// WARNING: trace-info logging will quickly create log files in the megabytes.<br/>
-    /// 0 - trace<br/>
-    /// 1 - debug<br/>
-    /// 2 - info<br/>
-    /// 3 - warn<br/>
-    /// 4 - error<br/>
-    /// 5 - fatal<br/>
-    /// 6 - off
+    ///     verbosity of what to log, yes I know this is backwards, but its how nlog deals with ordinals. <br />
+    ///     complain to them about it! In all cases, better exceptions will be logged.<br />
+    ///     WARNING: trace-info logging will quickly create log files in the megabytes.<br />
+    ///     0 - trace<br />
+    ///     1 - debug<br />
+    ///     2 - info<br />
+    ///     3 - warn<br />
+    ///     4 - error<br />
+    ///     5 - fatal<br />
+    ///     6 - off
     /// </summary>
     [JsonPropertyName("verbosity")]
     public int Verbosity
@@ -149,7 +149,7 @@ public record BsgLogging
     }
 
     /// <summary>
-    /// Should we send the logging to the server
+    ///     Should we send the logging to the server
     /// </summary>
     [JsonPropertyName("sendToServer")]
     public bool SendToServer
@@ -162,7 +162,7 @@ public record BsgLogging
 public record Release
 {
     /// <summary>
-    /// Disclaimer outlining the intended usage of bleeding edge
+    ///     Disclaimer outlining the intended usage of bleeding edge
     /// </summary>
     [JsonPropertyName("betaDisclaimerText")]
     public string? BetaDisclaimerText
@@ -172,7 +172,7 @@ public record Release
     }
 
     /// <summary>
-    /// Text logged when users agreed to terms
+    ///     Text logged when users agreed to terms
     /// </summary>
     [JsonPropertyName("betaDisclaimerAcceptText")]
     public string BetaDisclaimerAcceptText
@@ -182,7 +182,7 @@ public record Release
     }
 
     /// <summary>
-    /// Server mods loaded message
+    ///     Server mods loaded message
     /// </summary>
     [JsonPropertyName("serverModsLoadedText")]
     public string ServerModsLoadedText
@@ -192,7 +192,7 @@ public record Release
     }
 
     /// <summary>
-    /// Server mods loaded debug message text
+    ///     Server mods loaded debug message text
     /// </summary>
     [JsonPropertyName("serverModsLoadedDebugText")]
     public string ServerModsLoadedDebugText
@@ -202,7 +202,7 @@ public record Release
     }
 
     /// <summary>
-    /// Client mods loaded message
+    ///     Client mods loaded message
     /// </summary>
     [JsonPropertyName("clientModsLoadedText")]
     public string ClientModsLoadedText
@@ -212,7 +212,7 @@ public record Release
     }
 
     /// <summary>
-    /// Client mods loaded debug message text
+    ///     Client mods loaded debug message text
     /// </summary>
     [JsonPropertyName("clientModsLoadedDebugText")]
     public string ClientModsLoadedDebugText
@@ -220,8 +220,9 @@ public record Release
         get;
         set;
     }
+
     /// <summary>
-    /// Illegal plugins log message
+    ///     Illegal plugins log message
     /// </summary>
     [JsonPropertyName("illegalPluginsLoadedText")]
     public string IllegalPluginsLoadedText
@@ -231,7 +232,7 @@ public record Release
     }
 
     /// <summary>
-    /// Illegal plugins exception
+    ///     Illegal plugins exception
     /// </summary>
     [JsonPropertyName("illegalPluginsExceptionText")]
     public string IllegalPluginsExceptionText
@@ -241,7 +242,7 @@ public record Release
     }
 
     /// <summary>
-    /// Summary of release changes
+    ///     Summary of release changes
     /// </summary>
     [JsonPropertyName("releaseSummaryText")]
     public string? ReleaseSummaryText
@@ -251,7 +252,7 @@ public record Release
     }
 
     /// <summary>
-    /// Enables the cool watermark in-game
+    ///     Enables the cool watermark in-game
     /// </summary>
     [JsonPropertyName("isBeta")]
     public bool? IsBeta
@@ -261,7 +262,7 @@ public record Release
     }
 
     /// <summary>
-    /// Whether mods are enabled
+    ///     Whether mods are enabled
     /// </summary>
     [JsonPropertyName("isModdable")]
     public bool? IsModdable
@@ -271,7 +272,7 @@ public record Release
     }
 
     /// <summary>
-    /// Are mods loaded on the server?
+    ///     Are mods loaded on the server?
     /// </summary>
     [JsonPropertyName("isModded")]
     public bool IsModded
@@ -281,7 +282,7 @@ public record Release
     }
 
     /// <summary>
-    /// How long before the messagebox times out and closes the game
+    ///     How long before the messagebox times out and closes the game
     /// </summary>
     [JsonPropertyName("betaDisclaimerTimeoutDelay")]
     public int BetaDisclaimerTimeoutDelay
@@ -294,7 +295,7 @@ public record Release
 public record GameFixes
 {
     /// <summary>
-    /// Shotguns use a different value than normal guns causing huge pellet dispersion
+    ///     Shotguns use a different value than normal guns causing huge pellet dispersion
     /// </summary>
     [JsonPropertyName("fixShotgunDispersion")]
     public bool FixShotgunDispersion
@@ -304,7 +305,7 @@ public record GameFixes
     }
 
     /// <summary>
-    /// Remove items added by mods when the mod no longer exists - can fix dead profiles stuck at game load
+    ///     Remove items added by mods when the mod no longer exists - can fix dead profiles stuck at game load
     /// </summary>
     [JsonPropertyName("removeModItemsFromProfile")]
     public bool RemoveModItemsFromProfile
@@ -314,7 +315,7 @@ public record GameFixes
     }
 
     /// <summary>
-    /// Remove invalid traders from profile - trader data can be leftover when player removes trader mod
+    ///     Remove invalid traders from profile - trader data can be leftover when player removes trader mod
     /// </summary>
     [JsonPropertyName("removeInvalidTradersFromProfile")]
     public bool RemoveInvalidTradersFromProfile
@@ -324,7 +325,7 @@ public record GameFixes
     }
 
     /// <summary>
-    /// Fix issues that cause the game to not start due to inventory item issues
+    ///     Fix issues that cause the game to not start due to inventory item issues
     /// </summary>
     [JsonPropertyName("fixProfileBreakingInventoryItemIssues")]
     public bool FixProfileBreakingInventoryItemIssues
@@ -337,7 +338,7 @@ public record GameFixes
 public record ServerFeatures
 {
     /// <summary>
-    /// Controls whether the server attempts to download mod dependencies not included in the server's executable
+    ///     Controls whether the server attempts to download mod dependencies not included in the server's executable
     /// </summary>
     [JsonPropertyName("autoInstallModDependencies")]
     public bool AutoInstallModDependencies
@@ -361,7 +362,7 @@ public record ServerFeatures
     }
 
     /// <summary>
-    /// Keyed to profile type e.g. "Standard" or "SPT Developer"
+    ///     Keyed to profile type e.g. "Standard" or "SPT Developer"
     /// </summary>
     [JsonPropertyName("createNewProfileTypesBlacklist")]
     public HashSet<string> CreateNewProfileTypesBlacklist
@@ -371,7 +372,7 @@ public record ServerFeatures
     }
 
     /// <summary>
-    /// Profile ids to ignore when calculating achievement stats
+    ///     Profile ids to ignore when calculating achievement stats
     /// </summary>
     [JsonPropertyName("achievementProfileIdBlacklist")]
     public HashSet<string>? AchievementProfileIdBlacklist
@@ -405,7 +406,7 @@ public record ChatbotFeatures
     }
 
     /// <summary>
-    /// Human readable id to guid for each bot
+    ///     Human readable id to guid for each bot
     /// </summary>
     [JsonPropertyName("ids")]
     public Dictionary<string, string> Ids
@@ -415,7 +416,7 @@ public record ChatbotFeatures
     }
 
     /// <summary>
-    /// Bot Ids player is allowed to interact with
+    ///     Bot Ids player is allowed to interact with
     /// </summary>
     [JsonPropertyName("enabledBots")]
     public Dictionary<string, bool> EnabledBots

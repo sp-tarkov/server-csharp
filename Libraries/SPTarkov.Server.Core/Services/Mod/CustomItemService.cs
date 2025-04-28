@@ -1,12 +1,12 @@
-﻿using SPTarkov.Server.Core.Helpers;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services.Mod;
 
@@ -22,12 +22,12 @@ public class CustomItemService(
 )
 {
     /// <summary>
-    /// Create a new item from a cloned item base <br/>
-    /// WARNING - If no item id is supplied, an id will be generated, this id will be random every time you add an item and will not be the same on each subsequent server start <br/>
-    /// Add to the items db <br/>
-    /// Add to the flea market <br/>
-    /// Add to the handbook <br/>
-    /// Add to the locales
+    ///     Create a new item from a cloned item base <br />
+    ///     WARNING - If no item id is supplied, an id will be generated, this id will be random every time you add an item and will not be the same on each subsequent server start <br />
+    ///     Add to the items db <br />
+    ///     Add to the flea market <br />
+    ///     Add to the handbook <br />
+    ///     Add to the locales
     /// </summary>
     /// <param name="newItemDetails"> Item details for the new item to be created </param>
     /// <returns> tplId of the new item created </returns>
@@ -80,11 +80,11 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Create a new item without using an existing item as a template <br/>
-    /// Add to the items db <br/>
-    /// Add to the flea market <br/>
-    /// Add to the handbook <br/>
-    /// Add to the locales <br/>
+    ///     Create a new item without using an existing item as a template <br />
+    ///     Add to the items db <br />
+    ///     Add to the flea market <br />
+    ///     Add to the handbook <br />
+    ///     Add to the locales <br />
     /// </summary>
     /// <param name="newItemDetails"> Details on what the item to be created </param>
     /// <returns> CreateItemResult containing the completed items ID </returns>
@@ -124,7 +124,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// If the ID provided is an empty string, return a randomly generated guid, otherwise return the newId parameter
+    ///     If the ID provided is an empty string, return a randomly generated guid, otherwise return the newId parameter
     /// </summary>
     /// <param name="newId"> ID supplied to code </param>
     /// <returns> ItemID </returns>
@@ -134,8 +134,8 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Iterates through supplied properties and updates the cloned items properties with them
-    /// Complex objects cannot have overrides, they must be fully hydrated with values if they are to be used
+    ///     Iterates through supplied properties and updates the cloned items properties with them
+    ///     Complex objects cannot have overrides, they must be fully hydrated with values if they are to be used
     /// </summary>
     /// <param name="overrideProperties"> New properties to apply </param>
     /// <param name="itemClone"> Item to update </param>
@@ -153,7 +153,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Add a new item object to the in-memory representation of items.json
+    ///     Add a new item object to the in-memory representation of items.json
     /// </summary>
     /// <param name="newItemId"> ID of the item to add to items.json </param>
     /// <param name="itemToAdd"> Item to add against the new id </param>
@@ -166,7 +166,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Add a handbook price for an item
+    ///     Add a handbook price for an item
     /// </summary>
     /// <param name="newItemId"> ID of the item being added </param>
     /// <param name="parentId"> Parent ID of the item being added </param>
@@ -187,13 +187,13 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Iterate through the passed in locale data and add to each locale in turn <br/>
-    /// If data is not provided for each language EFT uses, the first object will be used in its place <br/>
-    /// e.g. <br/>
-    /// en[0] <br/>
-    /// fr[1] <br/>
-    /// <br/>
-    /// No jp provided, so english will be used as a substitute
+    ///     Iterate through the passed in locale data and add to each locale in turn <br />
+    ///     If data is not provided for each language EFT uses, the first object will be used in its place <br />
+    ///     e.g. <br />
+    ///     en[0] <br />
+    ///     fr[1] <br />
+    ///     <br />
+    ///     No jp provided, so english will be used as a substitute
     /// </summary>
     /// <param name="localeDetails"> key is language, value are the new locale details </param>
     /// <param name="newItemId"> ID of the item being created </param>
@@ -214,7 +214,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Add a price to the in-memory representation of prices.json, used to inform the flea of an items price on the market
+    ///     Add a price to the in-memory representation of prices.json, used to inform the flea of an items price on the market
     /// </summary>
     /// <param name="newItemId"> ID of the new item </param>
     /// <param name="fleaPriceRoubles"> Price of the new item </param>
@@ -224,7 +224,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Add a weapon to the hideout weapon shelf whitelist
+    ///     Add a weapon to the hideout weapon shelf whitelist
     /// </summary>
     /// <param name="newItemId"> Weapon ID to add </param>
     protected void AddToWeaponShelf(string newItemId)
@@ -247,7 +247,7 @@ public class CustomItemService(
     }
 
     /// <summary>
-    /// Add a custom weapon to PMCs loadout
+    ///     Add a custom weapon to PMCs loadout
     /// </summary>
     /// <param name="weaponTpl"> Custom weapon tpl to add to PMCs </param>
     /// <param name="weaponWeight"> The weighting for the weapon to be picked vs other weapons </param>

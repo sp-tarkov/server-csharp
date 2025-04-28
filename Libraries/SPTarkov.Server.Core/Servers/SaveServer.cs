@@ -1,6 +1,6 @@
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Diagnostics;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -8,7 +8,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers;
@@ -33,7 +32,7 @@ public class SaveServer(
     protected ConcurrentDictionary<string, string> saveMd5 = new();
 
     /// <summary>
-    /// Add callback to occur prior to saving profile changes
+    ///     Add callback to occur prior to saving profile changes
     /// </summary>
     /// <param name="id"> ID for the save callback </param>
     /// <param name="callback"> Callback to execute prior to running SaveServer.saveProfile() </param>
@@ -43,7 +42,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Remove a callback from being executed prior to saving profile in SaveServer.saveProfile()
+    ///     Remove a callback from being executed prior to saving profile in SaveServer.saveProfile()
     /// </summary>
     /// <param name="id"> ID of Callback to remove </param>
     public void RemoveBeforeSaveCallback(string id)
@@ -55,7 +54,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Load all profiles in /user/profiles folder into memory (this.profiles)
+    ///     Load all profiles in /user/profiles folder into memory (this.profiles)
     /// </summary>
     public void Load()
     {
@@ -82,7 +81,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Save changes for each profile from memory into user/profiles json
+    ///     Save changes for each profile from memory into user/profiles json
     /// </summary>
     public void Save()
     {
@@ -100,7 +99,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Get a player profile from memory
+    ///     Get a player profile from memory
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <returns> SptProfile of the player </returns>
@@ -131,7 +130,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Gets all profiles from memory
+    ///     Gets all profiles from memory
     /// </summary>
     /// <returns> Dictionary of Profiles with their ID as Keys. </returns>
     public Dictionary<string, SptProfile> GetProfiles()
@@ -140,7 +139,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    ///  Delete a profile by id (Does not remove the profile file!)
+    ///     Delete a profile by id (Does not remove the profile file!)
     /// </summary>
     /// <param name="sessionID"> ID of profile to remove </param>
     /// <returns> True when deleted, false when profile not found </returns>
@@ -158,7 +157,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Create a new profile in memory with empty pmc/scav objects
+    ///     Create a new profile in memory with empty pmc/scav objects
     /// </summary>
     /// <param name="profileInfo"> Basic profile data </param>
     /// <exception cref="Exception"> Thrown when profile already exists </exception>
@@ -184,7 +183,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Add full profile in memory by key (info.id)
+    ///     Add full profile in memory by key (info.id)
     /// </summary>
     /// <param name="profileDetails"> Profile to save </param>
     public void AddProfile(SptProfile profileDetails)
@@ -193,8 +192,8 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Look up profile json in user/profiles by id and store in memory. <br/>
-    /// Execute saveLoadRouters callbacks after being loaded into memory.
+    ///     Look up profile json in user/profiles by id and store in memory. <br />
+    ///     Execute saveLoadRouters callbacks after being loaded into memory.
     /// </summary>
     /// <param name="sessionID"> ID of profile to store in memory </param>
     public void LoadProfile(string sessionID)
@@ -202,7 +201,7 @@ public class SaveServer(
         var filename = $"{sessionID}.json";
         var filePath = $"{profileFilepath}{filename}";
         if (_fileUtil.FileExists(filePath))
-        // File found, store in profiles[]
+            // File found, store in profiles[]
         {
             profiles[sessionID] = _jsonUtil.DeserializeFromFile<SptProfile>(filePath);
         }
@@ -216,8 +215,8 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Save changes from in-memory profile to user/profiles json
-    /// Execute onBeforeSaveCallbacks callbacks prior to being saved to json
+    ///     Save changes from in-memory profile to user/profiles json
+    ///     Execute onBeforeSaveCallbacks callbacks prior to being saved to json
     /// </summary>
     /// <param name="sessionID"> Profile id (user/profiles/id.json) </param>
     /// <returns> Time taken to save the profile in seconds </returns>
@@ -264,7 +263,7 @@ public class SaveServer(
     }
 
     /// <summary>
-    /// Remove a physical profile json from user/profiles
+    ///     Remove a physical profile json from user/profiles
     /// </summary>
     /// <param name="sessionID"> Profile ID to remove </param>
     /// <returns> True if successful </returns>
@@ -274,7 +273,11 @@ public class SaveServer(
         if (profiles.ContainsKey(sessionID))
         {
             profiles.TryRemove(sessionID, out _);
-            _fileUtil.DeleteFile(file);
+            if (!_fileUtil.DeleteFile(file))
+            {
+                _logger.Error($"Unable to delete file, not found: {file}");
+            }
+
         }
 
         return !_fileUtil.FileExists(file);

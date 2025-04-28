@@ -1,8 +1,9 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers;
@@ -10,11 +11,11 @@ namespace SPTarkov.Server.Core.Servers;
 [Injectable(InjectionType.Singleton)]
 public class ConfigServer
 {
-    protected static readonly string[] acceptableFileExtensions = ["json", "jsonc"];
+    protected readonly string[] acceptableFileExtensions = ["json", "jsonc"];
     protected FileUtil _fileUtil;
     protected JsonUtil _jsonUtil;
     protected ISptLogger<ConfigServer> _logger;
-    protected Dictionary<string, object> configs = new();
+    private static Dictionary<string, object> _configs = new();
 
     public ConfigServer(
         ISptLogger<ConfigServer> logger,
@@ -25,18 +26,22 @@ public class ConfigServer
         _logger = logger;
         _jsonUtil = jsonUtil;
         _fileUtil = fileUtil;
-        Initialize();
+
+        if (_configs.Count == 0)
+        {
+            Initialize();
+        }
     }
 
     public T GetConfig<T>() where T : BaseConfig
     {
         var configKey = GetConfigKey(typeof(T));
-        if (!configs.ContainsKey(configKey.GetValue()))
+        if (!_configs.ContainsKey(configKey.GetValue()))
         {
             throw new Exception($"Config: {configKey} is undefined. Ensure you have not broken it via editing");
         }
 
-        return configs[configKey.GetValue()] as T;
+        return _configs[configKey.GetValue()] as T;
     }
 
     private ConfigTypes GetConfigKey(Type type)
@@ -52,7 +57,7 @@ public class ConfigServer
 
     public T GetConfigByString<T>(string configType) where T : BaseConfig
     {
-        return configs[configType] as T;
+        return _configs[configType] as T;
     }
 
     public void Initialize()
@@ -80,18 +85,9 @@ public class ConfigServer
                     throw new Exception($"Server will not run until the: {file} config error mentioned above is  fixed");
                 }
 
-                configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
+                _configs[$"spt-{_fileUtil.StripExtension(file)}"] = deserializedContent;
             }
         }
-
-        /** TODO: deal with this:
-        this.logger.info(`Commit hash: {
-            globalThis.G_COMMIT || "DEBUG"
-        }`);
-        this.logger.info(`Build date: {
-            globalThis.G_BUILDTIME || "DEBUG"
-        }`);
-        **/
     }
 
     private Type GetConfigTypeByFilename(string filename)

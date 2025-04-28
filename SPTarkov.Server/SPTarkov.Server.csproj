@@ -29,12 +29,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1"/>
     <PackageReference Include="Microsoft.Extensions.Http" Version="9.0.1"/>
-    <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
-    <PackageReference Include="Serilog.Enrichers.Context" Version="4.6.5"/>
-    <PackageReference Include="Serilog.Enrichers.Thread" Version="4.0.0"/>
-    <PackageReference Include="Serilog.Exceptions" Version="8.4.0"/>
-    <PackageReference Include="Serilog.Expressions" Version="5.0.0"/>
-    <PackageReference Include="Serilog.Sinks.Async" Version="2.1.0"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -42,14 +36,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <ExcludeFromSingleFile>True</ExcludeFromSingleFile>
     </Content>
-    <None Remove="appsettings.json"/>
-    <None Remove="appsettings.Development.json"/>
-    <Content Include="appsettings.json">
+    <None Update="sptLogger.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="appsettings.Development.json">
+    </None>
+    <None Update="sptLogger.Development.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

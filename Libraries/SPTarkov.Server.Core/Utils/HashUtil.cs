@@ -10,7 +10,7 @@ namespace SPTarkov.Server.Core.Utils;
 public partial class HashUtil(RandomUtil _randomUtil)
 {
     /// <summary>
-    /// Create a 24 character MongoId
+    ///     Create a 24 character MongoId
     /// </summary>
     /// <returns>24 character objectId</returns>
     public string Generate()

@@ -122,11 +122,11 @@ public class ProbabilityObjectArray<K, V> : List<ProbabilityObject<K, V>>
 
     /**
      * Get the maximum relative probability out of a ProbabilityObjectArray
-     *
+     * 
      * Example:
      * po = new ProbabilityObjectArray(new ProbabilityObject("a", 5), new ProbabilityObject("b", 1))
      * po.maxProbability() // returns 5
-     *
+     * 
      * @return      {number}                                                the maximum value of all relative probabilities in this ProbabilityObjectArray
      */
     public double MaxProbability()

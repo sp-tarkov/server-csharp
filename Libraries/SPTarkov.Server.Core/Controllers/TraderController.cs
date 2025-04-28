@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -19,7 +19,6 @@ public class TraderController(
     TimeUtil _timeUtil,
     DatabaseService _databaseService,
     TraderAssortHelper _traderAssortHelper,
-    TraderAssortService _traderAssortService,
     ProfileHelper _profileHelper,
     TraderHelper _traderHelper,
     PaymentHelper _paymentHelper,
@@ -65,13 +64,6 @@ public class TraderController(
                 AdjustTraderItemPrices(trader, _traderConfig.TraderPriceMultiplier);
             }
 
-            // Create dict of pristine trader assorts on server start
-            if (_traderAssortService.GetPristineTraderAssort(traderId) == null)
-            {
-                var assortsClone = _cloner.Clone(trader.Assort);
-                _traderAssortService.SetPristineTraderAssort(traderId, assortsClone);
-            }
-
             _traderPurchasePersisterService.RemoveStalePurchasesFromProfiles(traderId);
 
             // Set to next hour on clock or current time + 60 minutes
@@ -81,8 +73,8 @@ public class TraderController(
     }
 
     /// <summary>
-    /// Adjust trader item prices based on config value multiplier
-    /// only applies to items sold for currency
+    ///     Adjust trader item prices based on config value multiplier
+    ///     only applies to items sold for currency
     /// </summary>
     /// <param name="trader">Trader to adjust prices of</param>
     /// <param name="multiplier">Coef to apply to traders' items' prices</param>

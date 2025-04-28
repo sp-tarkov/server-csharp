@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Enums;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue;
 

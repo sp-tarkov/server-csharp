@@ -8,13 +8,16 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Utils.Cloners;
 
 /// <summary>
-/// Not in use at the moment
+///     Not in use at the moment
 /// </summary>
 /// <param name="logger"></param>
 public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
 {
-    private static Dictionary<Type, MemberInfo[]> MemberInfoCache = new();
-    private static Dictionary<Type, MethodInfo> AddMethodInfoCache = new();
+    private static readonly Dictionary<Type, MemberInfo[]> MemberInfoCache = new();
+    private static readonly Dictionary<Type, MethodInfo> AddMethodInfoCache = new();
+
+    private static readonly ConcurrentDictionary<Type, PropertyInfo> _itemPropertyInfoCache = new();
+    private static readonly ConcurrentDictionary<Type, PropertyInfo> _listPropertyInfoCache = new();
 
     public T? Clone<T>(T? obj)
     {
@@ -68,7 +71,10 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
             if (!AddMethodInfoCache.TryGetValue(objectType, out var addMethodInfo))
             {
                 addMethodInfo = objectType.GetMethod("Add", BindingFlags.Instance | BindingFlags.Public);
-                while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo)) ;
+                while (!AddMethodInfoCache.TryAdd(objectType, addMethodInfo))
+                {
+                    ;
+                }
             }
 
             var toCloneEnumerable = (IEnumerable) obj;
@@ -92,7 +98,10 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
             if (!MemberInfoCache.TryGetValue(objectType, out var memberInfos))
             {
                 memberInfos = objectType.GetMembers(BindingFlags.Public | BindingFlags.Instance);
-                while (!MemberInfoCache.TryAdd(objectType, memberInfos)) ;
+                while (!MemberInfoCache.TryAdd(objectType, memberInfos))
+                {
+                    ;
+                }
             }
 
             foreach (var member in memberInfos)
@@ -138,14 +147,13 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
         else
         {
             if (logger.IsLogEnabled(LogLevel.Debug))
+            {
                 logger.Debug($"Clone of type {objectType} is not supported");
+            }
         }
 
         return result;
     }
-
-    private static ConcurrentDictionary<Type, PropertyInfo> _itemPropertyInfoCache = new();
-    private static ConcurrentDictionary<Type, PropertyInfo> _listPropertyInfoCache = new();
 
     private async Task<object?> HandleSpecialClones(object obj, Type objectType)
     {
@@ -156,13 +164,19 @@ public class ReflectionsCloner(ISptLogger<ReflectionsCloner> logger) : ICloner
             if (!_itemPropertyInfoCache.TryGetValue(type, out var item))
             {
                 item = objectType.GetProperty("Item", BindingFlags.Public | BindingFlags.Instance);
-                while (!_itemPropertyInfoCache.TryAdd(type, item)) ;
+                while (!_itemPropertyInfoCache.TryAdd(type, item))
+                {
+                    ;
+                }
             }
 
             if (!_listPropertyInfoCache.TryGetValue(type, out var list))
             {
                 list = objectType.GetProperty("List", BindingFlags.Public | BindingFlags.Instance);
-                while (!_listPropertyInfoCache.TryAdd(type, list)) ;
+                while (!_listPropertyInfoCache.TryAdd(type, list))
+                {
+                    ;
+                }
             }
 
             item.GetSetMethod(true).Invoke(clone, [await Clone(item.GetValue(obj), item.PropertyType)]);

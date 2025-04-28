@@ -24,7 +24,7 @@ public record SptProfile
     }
 
     /// <summary>
-    /// No longer used as of 4.0.0
+    ///     No longer used as of 4.0.0
     /// </summary>
     [Obsolete("Replaced with CustomisationUnlocks")]
     [JsonPropertyName("suits")]
@@ -77,7 +77,7 @@ public record SptProfile
     }
 
     /// <summary>
-    /// Assort purchases made by player since last trader refresh
+    ///     Assort purchases made by player since last trader refresh
     /// </summary>
     [JsonPropertyName("traderPurchases")]
     public Dictionary<string, Dictionary<string, TraderPurchaseData>?>? TraderPurchases
@@ -87,7 +87,7 @@ public record SptProfile
     }
 
     /// <summary>
-    /// List of friend profile IDs
+    ///     List of friend profile IDs
     /// </summary>
     [JsonPropertyName("friends")]
     public List<string>? FriendProfileIds
@@ -97,7 +97,7 @@ public record SptProfile
     }
 
     /// <summary>
-    /// Stores profile-related customisation, e.g. clothing / hideout walls / floors
+    ///     Stores profile-related customisation, e.g. clothing / hideout walls / floors
     /// </summary>
     [JsonPropertyName("customisationUnlocks")]
     public List<CustomisationStorage>? CustomisationUnlocks
@@ -127,7 +127,7 @@ public record TraderPurchaseData
 public record Info
 {
     /// <summary>
-    /// main profile id
+    ///     main profile id
     /// </summary>
     [JsonPropertyName("id")]
     public string? ProfileId
@@ -197,7 +197,7 @@ public record Characters
 }
 
 /// <summary>
-/// used by profile.userbuilds
+///     used by profile.userbuilds
 /// </summary>
 public record UserBuilds
 {
@@ -331,7 +331,7 @@ public record MagazineTemplateAmmoItem
 }
 
 /// <summary>
-/// Used by defaultEquipmentPresets.json
+///     Used by defaultEquipmentPresets.json
 /// </summary>
 public record DefaultEquipmentPreset : EquipmentBuild
 {
@@ -704,7 +704,7 @@ public record UpdatableChatMember
 public record Spt
 {
     /// <summary>
-    /// What version of SPT was this profile made with
+    ///     What version of SPT was this profile made with
     /// </summary>
     [JsonPropertyName("version")]
     public string? Version
@@ -714,7 +714,7 @@ public record Spt
     }
 
     /// <summary>
-    /// What mods has this profile loaded at any point in time
+    ///     What mods has this profile loaded at any point in time
     /// </summary>
     [JsonPropertyName("mods")]
     public List<ModDetails>? Mods
@@ -724,7 +724,7 @@ public record Spt
     }
 
     /// <summary>
-    /// What gifts has this profile received and how many
+    ///     What gifts has this profile received and how many
     /// </summary>
     [JsonPropertyName("receivedGifts")]
     public List<ReceivedGift>? ReceivedGifts
@@ -734,7 +734,7 @@ public record Spt
     }
 
     /// <summary>
-    /// item TPLs blacklisted from being sold on flea for this profile
+    ///     item TPLs blacklisted from being sold on flea for this profile
     /// </summary>
     [JsonPropertyName("blacklistedItemTpls")]
     public HashSet<string>? BlacklistedItemTemplates
@@ -744,7 +744,7 @@ public record Spt
     }
 
     /// <summary>
-    /// key: daily type
+    ///     key: daily type
     /// </summary>
     [JsonPropertyName("freeRepeatableRefreshUsedCount")]
     public Dictionary<string, int>? FreeRepeatableRefreshUsedCount
@@ -754,7 +754,7 @@ public record Spt
     }
 
     /// <summary>
-    /// When was a profile migrated, value is timestamp
+    ///     When was a profile migrated, value is timestamp
     /// </summary>
     [JsonPropertyName("migrations")]
     public Dictionary<string, long>? Migrations
@@ -764,7 +764,7 @@ public record Spt
     }
 
     /// <summary>
-    /// Cultist circle rewards received that are one time use, key (md5) is a combination of sacrificed + reward items
+    ///     Cultist circle rewards received that are one time use, key (md5) is a combination of sacrificed + reward items
     /// </summary>
     [JsonPropertyName("cultistRewards")]
     public Dictionary<string, AcceptedCultistReward>? CultistRewards

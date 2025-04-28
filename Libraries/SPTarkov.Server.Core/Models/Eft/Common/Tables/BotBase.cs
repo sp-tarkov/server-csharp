@@ -25,7 +25,7 @@ public record BotBase
     }
 
     /// <summary>
-    /// SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
+    ///     SPT property - use to store player id - TODO - move to AID ( account id as guid of choice)
     /// </summary>
     [JsonPropertyName("sessionId")]
     public string? SessionId
@@ -150,7 +150,7 @@ public record BotBase
     }
 
     /// <summary>
-    /// Achievement id and timestamp
+    ///     Achievement id and timestamp
     /// </summary>
     [JsonPropertyName("Achievements")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]
@@ -219,7 +219,7 @@ public record BotBase
     }
 
     /// <summary>
-    /// SPT specific property used during bot generation in raid
+    ///     SPT specific property used during bot generation in raid
     /// </summary>
     [JsonPropertyName("sptIsPmc")]
     public bool? IsPmc
@@ -233,7 +233,7 @@ public record MoneyTransferLimits
 {
     // Resets every 24 hours in live
     /// <summary>
-    /// TODO: Implement
+    ///     TODO: Implement
     /// </summary>
     [JsonPropertyName("nextResetTime")]
     public double? NextResetTime
@@ -286,8 +286,9 @@ public record TaskConditionCounter
         get;
         set;
     }
+
     /// <summary>
-    /// Quest id
+    ///     Quest id
     /// </summary>
     [JsonPropertyName("sourceId")]
     public string? SourceId
@@ -857,7 +858,7 @@ public record BotBaseInventory
     }
 
     /// <summary>
-    /// Key is hideout area enum numeric as string e.g. "24", value is area _id
+    ///     Key is hideout area enum numeric as string e.g. "24", value is area _id
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("hideoutAreaStashes")]
@@ -1563,7 +1564,7 @@ public record BackendCounter
 public record InsuredItem
 {
     /// <summary>
-    /// Trader ID item was insured by
+    ///     Trader ID item was insured by
     /// </summary>
     [JsonPropertyName("tid")]
     public string? TId
@@ -1608,7 +1609,7 @@ public record Hideout
     }
 
     /// <summary>
-    /// 32 char hex value
+    ///     32 char hex value
     /// </summary>
     public string? Seed
     {
@@ -1693,7 +1694,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Seconds passed of production
+    ///     Seconds passed of production
     /// </summary>
     public double? Progress
     {
@@ -1702,7 +1703,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Is craft in some state of being worked on by client (crafting/ready to pick up)
+    ///     Is craft in some state of being worked on by client (crafting/ready to pick up)
     /// </summary>
     [JsonPropertyName("inProgress")]
     public bool? InProgress
@@ -1724,7 +1725,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Seconds needed to fully craft
+    ///     Seconds needed to fully craft
     /// </summary>
     public double? ProductionTime
     {
@@ -1763,7 +1764,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Used in hideout production.json
+    ///     Used in hideout production.json
     /// </summary>
     public bool? needFuelForAllProductionTime
     {
@@ -1772,7 +1773,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Used when sending data to client
+    ///     Used when sending data to client
     /// </summary>
     public bool? NeedFuelForAllProductionTime
     {
@@ -1788,7 +1789,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Some crafts are always inProgress, but need to be reset, e.g. water collector
+    ///     Some crafts are always inProgress, but need to be reset, e.g. water collector
     /// </summary>
     [JsonPropertyName("sptIsComplete")]
     public bool? SptIsComplete
@@ -1798,7 +1799,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Is the craft a Continuous, e.g. bitcoins/water collector
+    ///     Is the craft a Continuous, e.g. bitcoins/water collector
     /// </summary>
     [JsonPropertyName("sptIsContinuous")]
     public bool? SptIsContinuous
@@ -1808,7 +1809,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Stores a list of tools used in this craft and whether they're FiR, to give back once the craft is done
+    ///     Stores a list of tools used in this craft and whether they're FiR, to give back once the craft is done
     /// </summary>
     [JsonPropertyName("sptRequiredTools")]
     public List<Item>? SptRequiredTools
@@ -1818,7 +1819,7 @@ public record Production // use this instead of productive and scavcase
     }
 
     /// <summary>
-    /// Craft is cultist circle sacrifice
+    ///     Craft is cultist circle sacrifice
     /// </summary>
     [JsonPropertyName("sptIsCultistCircle")]
     public bool? SptIsCultistCircle
@@ -1865,7 +1866,7 @@ public record BotHideoutArea
     }
 
     /// <summary>
-    /// Must be integer
+    ///     Must be integer
     /// </summary>
     [JsonPropertyName("completeTime")]
     public int? CompleteTime
@@ -1976,7 +1977,7 @@ public record Quests
     }
 
     /// <summary>
-    /// Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
+    ///     Property does not exist in live profile data, but is used by ProfileChanges.questsStatus when sent to client
     /// </summary>
     [JsonPropertyName("completedConditions")]
     public List<string>? CompletedConditions

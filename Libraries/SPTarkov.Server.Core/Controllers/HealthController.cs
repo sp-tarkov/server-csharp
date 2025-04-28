@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,8 +12,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -208,7 +208,7 @@ public class HealthController(
     }
 
     /// <summary>
-    /// Apply effects to profile from consumable used
+    ///     Apply effects to profile from consumable used
     /// </summary>
     /// <param name="bodyValue">Hydration/Energy</param>
     /// <param name="consumptionDetails">Properties of consumed item</param>

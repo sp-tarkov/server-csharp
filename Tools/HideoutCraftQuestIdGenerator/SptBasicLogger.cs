@@ -1,7 +1,7 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Logging;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace HideoutCraftQuestIdGenerator;
 
@@ -51,13 +51,24 @@ public class SptBasicLogger<T> : ISptLogger<T>
         Console.WriteLine($"{categoryName}: {data}");
     }
 
-    public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
+    public void Log(
+        LogLevel level,
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null,
+        Exception? ex = null
+    )
     {
-        Console.WriteLine($"{categoryName}: {body}");
+        throw new NotImplementedException();
     }
 
     public bool IsLogEnabled(LogLevel level)
     {
         return true;
+    }
+
+    public void DumpAndStop()
+    {
+        throw new NotImplementedException();
     }
 }

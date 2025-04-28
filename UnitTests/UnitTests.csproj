@@ -1,13 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\Build.props" />
+  <Import Project="..\Build.props"/>
 
   <PropertyGroup>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastCloner" Version="3.3.2" />
+    <PackageReference Include="FastCloner" Version="3.3.2"/>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1"/>
     <PackageReference Include="MSTest" Version="3.6.1"/>
   </ItemGroup>
@@ -17,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj" />
-    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj" />
+    <ProjectReference Include="..\Libraries\SPTarkov.Server.Core\SPTarkov.Server.Core.csproj"/>
+    <ProjectReference Include="..\Libraries\SPTarkov.DI\SPTarkov.DI.csproj"/>
+    <ProjectReference Include="..\Libraries\SPTarkov.Common\SPTarkov.Common.csproj"/>
   </ItemGroup>
 
   <ItemGroup>

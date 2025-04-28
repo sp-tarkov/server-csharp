@@ -436,7 +436,7 @@ public record DifficultyCategories
 public record Experience
 {
     /// <summary>
-    /// key = bot difficulty
+    ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("aggressorBonus")]
     public Dictionary<string, double>? AggressorBonus
@@ -453,7 +453,7 @@ public record Experience
     }
 
     /// <summary>
-    /// key = bot difficulty
+    ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("reward")]
     public Dictionary<string, MinMax<int>>? Reward
@@ -463,7 +463,7 @@ public record Experience
     }
 
     /// <summary>
-    /// key = bot difficulty
+    ///     key = bot difficulty
     /// </summary>
     [JsonPropertyName("standingForKill")]
     public Dictionary<string, double>? StandingForKill
@@ -493,7 +493,7 @@ public record Generation
 public record GenerationData
 {
     /// <summary>
-    /// key: number of items, value: weighting
+    ///     key: number of items, value: weighting
     /// </summary>
     [JsonPropertyName("weights")]
     public Dictionary<double, double>? Weights
@@ -503,7 +503,7 @@ public record GenerationData
     }
 
     /// <summary>
-    /// Array of item tpls
+    ///     Array of item tpls
     /// </summary>
     [JsonPropertyName("whitelist")]
     [JsonConverter(typeof(ArrayToObjectFactoryConverter))]

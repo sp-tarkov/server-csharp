@@ -1,7 +1,7 @@
 namespace SPTarkov.Server.Core.Utils.Cloners;
 
 /// <summary>
-/// Disabled as FastCloner library is 15% faster and consumes less memory than Json serialization
+///     Disabled as FastCloner library is 15% faster and consumes less memory than Json serialization
 /// </summary>
 public class JsonCloner : ICloner
 {

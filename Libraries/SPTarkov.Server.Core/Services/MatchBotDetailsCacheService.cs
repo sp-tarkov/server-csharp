@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
 /// <summary>
-/// Cache bots in a dictionary, keyed by the bots name, keying by name isnt ideal as its not unique but this is used by the post-raid system which doesnt have any bot ids, only name
+///     Cache bots in a dictionary, keyed by the bots name, keying by name isnt ideal as its not unique but this is used by the post-raid system which doesnt have any bot ids, only name
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class MatchBotDetailsCacheService(
@@ -17,7 +17,7 @@ public class MatchBotDetailsCacheService(
     protected ConcurrentDictionary<string, BotBase> _botDetailsCache = new();
 
     /// <summary>
-    /// Store a bot in the cache, keyed by its name.
+    ///     Store a bot in the cache, keyed by its name.
     /// </summary>
     /// <param name="botToCache"> Bot details to cache </param>
     public void CacheBot(BotBase botToCache)
@@ -37,7 +37,7 @@ public class MatchBotDetailsCacheService(
     }
 
     /// <summary>
-    /// Clean the cache of all bot details.
+    ///     Clean the cache of all bot details.
     /// </summary>
     public void ClearCache()
     {
@@ -45,7 +45,7 @@ public class MatchBotDetailsCacheService(
     }
 
     /// <summary>
-    /// Find a bot in the cache by its name and side.
+    ///     Find a bot in the cache by its name and side.
     /// </summary>
     /// <param name="botName"> Name of bot to find </param>
     /// <param name="botSide"> Side of the bot </param>

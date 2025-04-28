@@ -132,7 +132,7 @@ public record Stage
     }
 
     /// <summary>
-    /// Containers inventory tpl
+    ///     Containers inventory tpl
     /// </summary>
     [JsonPropertyName("container")]
     public string? Container

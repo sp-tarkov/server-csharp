@@ -1,5 +1,5 @@
-using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Utils.Cloners;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -11,7 +11,7 @@ public class InMemoryCacheService(
     protected Dictionary<string, object?> _cacheData = new();
 
     /// <summary>
-    /// Store data into an in-memory object
+    ///     Store data into an in-memory object
     /// </summary>
     /// <param name="key"> Key to store data against </param>
     /// <param name="dataToCache"> Data to store in cache </param>
@@ -21,7 +21,7 @@ public class InMemoryCacheService(
     }
 
     /// <summary>
-    /// Retrieve data stored by a key
+    ///     Retrieve data stored by a key
     /// </summary>
     /// <param name="key"> key</param>
     /// <returns> Stored data </returns>
@@ -36,7 +36,7 @@ public class InMemoryCacheService(
     }
 
     /// <summary>
-    /// Does data exist against the provided key
+    ///     Does data exist against the provided key
     /// </summary>
     /// <param name="key"> Key to check for data against </param>
     /// <returns> True if exists </returns>
@@ -46,7 +46,7 @@ public class InMemoryCacheService(
     }
 
     /// <summary>
-    /// Remove data stored against key
+    ///     Remove data stored against key
     /// </summary>
     /// <param name="key"> Key to remove data against </param>
     public void ClearDataStoredByKey(string key)
@@ -55,7 +55,7 @@ public class InMemoryCacheService(
     }
 
     /// <summary>
-    /// Remove all data stored
+    ///     Remove all data stored
     /// </summary>
     public void ClearCache()
     {

@@ -2,12 +2,11 @@
 
 public enum LogLevel
 {
+    // The order are very important for the logger to calculate properly the logging level, do not change!
     Fatal,
     Error,
     Warn,
-    Success,
     Info,
-    Custom,
     Debug,
     Trace
 }

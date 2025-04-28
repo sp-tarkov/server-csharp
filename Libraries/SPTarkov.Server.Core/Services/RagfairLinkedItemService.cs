@@ -1,8 +1,8 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -28,7 +28,7 @@ public class RagfairLinkedItemService(
     }
 
     /// <summary>
-    /// Use ragfair linked item service to get an list of items that can fit on or in designated itemtpl
+    ///     Use ragfair linked item service to get an list of items that can fit on or in designated itemtpl
     /// </summary>
     /// <param name="itemTpl"> Item to get sub-items for </param>
     /// <returns> TemplateItem list </returns>
@@ -55,7 +55,7 @@ public class RagfairLinkedItemService(
     }
 
     /// <summary>
-    /// Create Dictionary of every item and the items associated with it
+    ///     Create Dictionary of every item and the items associated with it
     /// </summary>
     protected void BuildLinkedItemTable()
     {
@@ -93,7 +93,7 @@ public class RagfairLinkedItemService(
     }
 
     /// <summary>
-    /// Add ammo to revolvers linked item dictionary
+    ///     Add ammo to revolvers linked item dictionary
     /// </summary>
     /// <param name="cylinder"> Revolvers cylinder </param>
     /// <param name="itemLinkedSet"> Set to add to </param>

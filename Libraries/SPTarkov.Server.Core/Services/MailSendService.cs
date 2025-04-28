@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -33,7 +33,7 @@ public class MailSendService(
     protected HashSet<string> _slotNames = ["hideout", "main"];
 
     /// <summary>
-    /// Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale
+    ///     Send a message from an NPC (e.g. prapor) to the player with or without items using direct message text, do not look up any locale
     /// </summary>
     /// <param name="sessionId"> The session ID to send the message to </param>
     /// <param name="trader"> The trader sending the message </param>
@@ -101,7 +101,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Send a message from an NPC (e.g. prapor) to the player with or without items
+    ///     Send a message from an NPC (e.g. prapor) to the player with or without items
     /// </summary>
     /// <param name="sessionId"> The session ID to send the message to </param>
     /// <param name="trader"> The trader sending the message </param>
@@ -177,7 +177,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Send a message from SYSTEM to the player with or without items
+    ///     Send a message from SYSTEM to the player with or without items
     /// </summary>
     /// <param name="sessionId"> The session ID to send the message to </param>
     /// <param name="message"> The text to send to player </param>
@@ -215,8 +215,9 @@ public class MailSendService(
 
         SendMessageToPlayer(details);
     }
+
     /// <summary>
-    /// Send a message from SYSTEM to the player with or without items with localised text
+    ///     Send a message from SYSTEM to the player with or without items with localised text
     /// </summary>
     /// <param name="sessionId"> The session ID to send the message to </param>
     /// <param name="messageLocaleId"> Id of key from locale file to send to player </param>
@@ -255,7 +256,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Send a USER message to a player with or without items
+    ///     Send a USER message to a player with or without items
     /// </summary>
     /// <param name="sessionId"> The session ID to send the message to </param>
     /// <param name="senderDetails"> Who is sending the message </param>
@@ -290,8 +291,8 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Large function to send messages to players from a variety of sources (SYSTEM/NPC/USER).
-    /// Helper functions in this class are available to simplify common actions
+    ///     Large function to send messages to players from a variety of sources (SYSTEM/NPC/USER).
+    ///     Helper functions in this class are available to simplify common actions
     /// </summary>
     /// <param name="messageDetails"> Details needed to send a message to the player </param>
     public void SendMessageToPlayer(SendMessageDetails messageDetails)
@@ -346,7 +347,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Send a message from the player to an NPC
+    ///     Send a message from the player to an NPC
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="targetNpcId"> NPC message is sent to </param>
@@ -376,7 +377,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Create a message for storage inside a dialog in the player profile
+    ///     Create a message for storage inside a dialog in the player profile
     /// </summary>
     /// <param name="dialogId"> ID of dialog that will hold the message </param>
     /// <param name="messageDetails"> Various details on what the message must contain/do </param>
@@ -411,7 +412,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Finds the Message to reply to using the ID of the recipient, message and the dialogue.
+    ///     Finds the Message to reply to using the ID of the recipient, message and the dialogue.
     /// </summary>
     /// <param name="recipientId"> The ID of the recipient </param>
     /// <param name="replyToId"> The ID of the message to reply to </param>
@@ -444,7 +445,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Add items to message and adjust various properties to reflect the items being added
+    ///     Add items to message and adjust various properties to reflect the items being added
     /// </summary>
     /// <param name="message"> Message to add items to </param>
     /// <param name="itemsToSendToPlayer"> Items to add to message </param>
@@ -461,7 +462,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Perform various sanitising actions on the items before they're considered ready for insertion into message
+    ///     Perform various sanitising actions on the items before they're considered ready for insertion into message
     /// </summary>
     /// <param name="dialogType"> The type of the dialog that will hold the reward items being processed </param>
     /// <param name="messageDetails"> Details fo the message e.g. Text, items it has etc. </param>
@@ -577,7 +578,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Try to find the most correct item to be the 'primary' item in a reward mail
+    ///     Try to find the most correct item to be the 'primary' item in a reward mail
     /// </summary>
     /// <param name="items"> Possible items to choose from </param>
     /// <returns> Chosen 'primary' item </returns>
@@ -609,8 +610,8 @@ public class MailSendService(
     }
 
     /// <summary>
-    /// Get a dialog with a specified entity (user/trader).
-    /// Create and store empty dialog if none exists in profile.
+    ///     Get a dialog with a specified entity (user/trader).
+    ///     Create and store empty dialog if none exists in profile.
     /// </summary>
     /// <param name="messageDetails"> Data on what message should do </param>
     /// <returns> Relevant Dialogue object </returns>
@@ -644,7 +645,7 @@ public class MailSendService(
     }
 
     /// <summary>
-    ///  Get the appropriate sender id by the sender enum type
+    ///     Get the appropriate sender id by the sender enum type
     /// </summary>
     /// <param name="messageDetails"> Data of the message </param>
     /// <returns> Gets an id of the individual sending it </returns>

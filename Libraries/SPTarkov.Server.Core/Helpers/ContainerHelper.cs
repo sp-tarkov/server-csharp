@@ -9,13 +9,15 @@ public class ContainerHelper
     /// <summary>
     ///     Finds a slot for an item in a given 2D container map
     /// </summary>
-    /// <param name="container2D">List of container with slots filled/free</param>
+    /// <param name="container2D">List of container with positions filled/free</param>
     /// <param name="itemWidth">Width of item</param>
     /// <param name="itemHeight">Height of item</param>
     /// <returns>Location to place item in container</returns>
     public FindSlotResult FindSlotForItem(int[][] container2D, int itemWidth, int itemHeight)
     {
+        // Assume not rotated
         var rotation = false;
+
         var minVolume = (itemWidth < itemHeight ? itemWidth : itemHeight) - 1;
         var containerY = container2D.Length;
         var containerX = container2D[0].Length;
@@ -37,93 +39,84 @@ public class ContainerHelper
                 continue;
             }
 
-            // Try each slot on the row (across = x)
+            // Go left to right across x-axis looking for free position
             for (var x = 0; x < limitX; x++)
             {
-                var foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemWidth, itemHeight);
-                if (foundSlot)
+                if (CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemWidth, itemHeight))
                 {
+                    // Success, return result
                     return new FindSlotResult(true, x, y, rotation);
                 }
 
-                // Failed to find slot, rotate item and try again
-                if (!foundSlot && ItemBiggerThan1X1(itemWidth, itemHeight))
+                if (ItemBiggerThan1X1(itemWidth, itemHeight))
                 {
-                    // Bigger than 1x1, try rotating
-                    foundSlot = LocateSlot(container2D, containerX, containerY, x, y, itemHeight, itemWidth); // Height/Width swapped
-                    if (foundSlot)
-                    {
-                        // Found a slot for it when rotated
-                        rotation = true;
-
-                        return new FindSlotResult(true, x, y, rotation);
-                    }
+                    // Pointless rotating a 1x1, try next position across
+                    continue;
                 }
+
+                // Bigger than 1x1, try rotating by swapping x and y values
+                if (!CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemHeight, itemWidth))
+                {
+                    continue;
+                }
+
+                // Found a position for item when rotated
+                rotation = true;
+
+                return new FindSlotResult(true, x, y, rotation);
             }
         }
 
-        // Tried all possible holes, nothing big enough for the item
+        // Tried all possible positions, nothing big enough for item
         return new FindSlotResult(false);
     }
 
     protected static bool ItemBiggerThan1X1(int itemWidth, int itemHeight)
     {
-        return itemWidth * itemHeight > 1;
+        return itemWidth + itemHeight > 2;
     }
 
     /// <summary>
-    ///     Find a slot inside a container an item can be placed in
+    ///     Can an item of specified size be placed inside a 2d container at a specific position
     /// </summary>
-    /// <param name="container2D">Container to find space in</param>
-    /// <param name="containerX">Container x size</param>
-    /// <param name="containerY">Container y size</param>
-    /// <param name="x">???</param>
-    /// <param name="y">???</param>
-    /// <param name="itemW">Items width</param>
-    /// <param name="itemH">Items height</param>
+    /// <param name="container">Container to find space in</param>
+    /// <param name="containerWidth">Container x size</param>
+    /// <param name="containerHeight">Container y size</param>
+    /// <param name="startXPos">Starting x position for item</param>
+    /// <param name="startYPos">Starting y position for item</param>
+    /// <param name="itemWidth">Items width</param>
+    /// <param name="itemHeight">Items height</param>
     /// <returns>True - slot found</returns>
-    protected bool LocateSlot(
-        int[][] container2D,
-        int containerX,
-        int containerY,
-        int x,
-        int y,
-        int itemW,
-        int itemH)
+    protected bool CanItemBePlacedInContainerAtPosition(
+        int[][] container,
+        int containerWidth,
+        int containerHeight,
+        int startXPos,
+        int startYPos,
+        int itemWidth,
+        int itemHeight)
     {
-        var foundSlot = true;
-
-        for (var itemY = 0; itemY < itemH; itemY++)
+        // Check item isn't bigger than container when at position
+        if (startXPos + itemWidth > containerWidth || startYPos + itemHeight > containerHeight)
         {
-            if (foundSlot && y + itemH - 1 > containerY - 1)
-            {
-                foundSlot = false;
-                break;
-            }
+            return false;
+        }
 
-            // Does item fit x-ways across
-            for (var itemX = 0; itemX < itemW; itemX++)
+        // Check each position item will take up in container, go across and then down
+        for (var itemY = startYPos; itemY < startYPos + itemHeight; itemY++)
+        {
+            for (var itemX = startXPos; itemX < startXPos + itemWidth; itemX++)
             {
-                if (foundSlot && x + itemW - 1 > containerX - 1)
+                // e,g for a 2x2 item; [0,0] then [0,1] then [1,0] then [1,1]
+                if (container[itemY][itemX] != 0)
                 {
-                    foundSlot = false;
-                    break;
+                    // x,y Position blocked, can't place
+                    return false;
                 }
-
-                if (container2D[y + itemY][x + itemX] != 0)
-                {
-                    foundSlot = false;
-                    break;
-                }
-            }
-
-            if (!foundSlot)
-            {
-                break;
             }
         }
 
-        return foundSlot;
+        return true;
     }
 
     /// <summary>

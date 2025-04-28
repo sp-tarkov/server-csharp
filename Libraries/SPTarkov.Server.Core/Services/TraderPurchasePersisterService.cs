@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -21,7 +21,7 @@ public class TraderPurchasePersisterService(
     protected TraderConfig _traderConfig = _configServer.GetConfig<TraderConfig>();
 
     /// <summary>
-    /// Get the purchases made from a trader for this profile before the last trader reset
+    ///     Get the purchases made from a trader for this profile before the last trader reset
     /// </summary>
     /// <param name="sessionId"> Session id </param>
     /// <param name="traderId"> Trader to loop up purchases for </param>
@@ -44,7 +44,7 @@ public class TraderPurchasePersisterService(
     }
 
     /// <summary>
-    /// Get a purchase made from a trader for requested profile before the last trader reset
+    ///     Get a purchase made from a trader for requested profile before the last trader reset
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="traderId"> Trader to loop up purchases for </param>
@@ -78,7 +78,7 @@ public class TraderPurchasePersisterService(
     }
 
     /// <summary>
-    /// Remove all trader purchase records from all profiles that exist
+    ///     Remove all trader purchase records from all profiles that exist
     /// </summary>
     /// <param name="traderId"> Traders ID </param>
     public void ResetTraderPurchasesStoredInProfile(string traderId)
@@ -106,7 +106,7 @@ public class TraderPurchasePersisterService(
     }
 
     /// <summary>
-    /// Iterate over all server profiles and remove specific trader purchase data that has passed the trader refresh time
+    ///     Iterate over all server profiles and remove specific trader purchase data that has passed the trader refresh time
     /// </summary>
     /// <param name="traderId"> Trader ID </param>
     public void RemoveStalePurchasesFromProfiles(string traderId)

@@ -1,7 +1,7 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 

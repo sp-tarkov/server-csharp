@@ -1,23 +1,22 @@
 using System.Collections.Concurrent;
 using System.Linq.Expressions;
 using System.Reflection;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
 
 [Injectable(InjectionType.Singleton)]
 public class ImporterUtil
 {
+    protected readonly ConcurrentDictionary<Type, Delegate> lazyLoadDeserializationCache = [];
     protected FileUtil _fileUtil;
     protected JsonUtil _jsonUtil;
     protected ISptLogger<ImporterUtil> _logger;
     protected HashSet<string> directoriesToIgnore = ["./Assets/database/locales/server"];
 
     protected HashSet<string> filesToIgnore = ["bearsuits.json", "usecsuits.json", "archivedquests.json"];
-
-    protected readonly ConcurrentDictionary<Type, Delegate> lazyLoadDeserializationCache = [];
 
     public ImporterUtil(ISptLogger<ImporterUtil> logger, FileUtil fileUtil, JsonUtil jsonUtil)
     {
@@ -37,7 +36,7 @@ public class ImporterUtil
     }
 
     /// <summary>
-    /// Load files into objects recursively (asynchronous)
+    ///     Load files into objects recursively (asynchronous)
     /// </summary>
     /// <param name="filepath">Path to folder with files</param>
     /// <param name="loadedType"></param>
@@ -120,7 +119,7 @@ public class ImporterUtil
                         result,
                         isDictionary
                             ? [_fileUtil.StripExtension(file), fileDeserialized]
-                            : new object[] { fileDeserialized }
+                            : new[] { fileDeserialized }
                     );
                 }
             }
@@ -151,7 +150,7 @@ public class ImporterUtil
 
             lock (dictionaryLock)
             {
-                setMethod.Invoke(result, isDictionary ? [directory, loadedData] : new object[] { loadedData });
+                setMethod.Invoke(result, isDictionary ? [directory, loadedData] : new[] { loadedData });
             }
         }
         catch (Exception ex)
@@ -175,12 +174,12 @@ public class ImporterUtil
         var genericArgument = propertyType.GetGenericArguments()[0];
 
         var deserializeCall = Expression.Call(
-                Expression.Constant(_jsonUtil),
-                "DeserializeFromFile",
-                Type.EmptyTypes,
-                Expression.Constant(file),
-                Expression.Constant(genericArgument)
-            );
+            Expression.Constant(_jsonUtil),
+            "DeserializeFromFile",
+            Type.EmptyTypes,
+            Expression.Constant(file),
+            Expression.Constant(genericArgument)
+        );
 
         var typeAsExpression = Expression.TypeAs(deserializeCall, genericArgument);
 
@@ -208,13 +207,12 @@ public class ImporterUtil
         else
         {
             var matchedProperty = type.GetProperties()
-                .FirstOrDefault(
-                    prop =>
-                        string.Equals(
-                            prop.Name.ToLower(),
-                            _fileUtil.StripExtension(propertyName).ToLower(),
-                            StringComparison.Ordinal
-                        )
+                .FirstOrDefault(prop =>
+                    string.Equals(
+                        prop.Name.ToLower(),
+                        _fileUtil.StripExtension(propertyName).ToLower(),
+                        StringComparison.Ordinal
+                    )
                 );
 
             if (matchedProperty == null)

@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,8 +11,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using Info = SPTarkov.Server.Core.Models.Eft.Profile.Info;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -33,7 +33,7 @@ public class LauncherController(
     protected CoreConfig _coreConfig = _configServer.GetConfig<CoreConfig>();
 
     /// <summary>
-    /// Handle launcher connecting to server
+    ///     Handle launcher connecting to server
     /// </summary>
     /// <returns>ConnectResponse</returns>
     public ConnectResponse Connect()
@@ -56,7 +56,7 @@ public class LauncherController(
     }
 
     /// <summary>
-    /// Get descriptive text for each of the profile editions a player can choose, keyed by profile.json profile type e.g. "Edge Of Darkness"
+    ///     Get descriptive text for each of the profile editions a player can choose, keyed by profile.json profile type e.g. "Edge Of Darkness"
     /// </summary>
     /// <returns>Dictionary of profile types with related descriptive text</returns>
     protected Dictionary<string, string> GetProfileDescriptions()
@@ -80,7 +80,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
@@ -90,7 +89,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
@@ -109,7 +107,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
@@ -127,7 +124,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
@@ -154,7 +150,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <returns></returns>
     protected string GenerateProfileId()
@@ -165,7 +160,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="timeStamp"></param>
     /// <param name="counter"></param>
@@ -179,7 +173,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
@@ -196,7 +189,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="info"></param>
     /// <returns></returns>
@@ -213,7 +205,7 @@ public class LauncherController(
     }
 
     /// <summary>
-    /// Handle launcher requesting profile be wiped
+    ///     Handle launcher requesting profile be wiped
     /// </summary>
     /// <param name="info">Registration data</param>
     /// <returns>Session id</returns>
@@ -237,7 +229,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <returns></returns>
     public string GetCompatibleTarkovVersion()
@@ -246,7 +237,7 @@ public class LauncherController(
     }
 
     /// <summary>
-    /// Get the mods the server has currently loaded
+    ///     Get the mods the server has currently loaded
     /// </summary>
     /// <returns>Dictionary of mod name and mod details</returns>
     public Dictionary<string, PackageJsonData> GetLoadedServerMods()
@@ -263,7 +254,7 @@ public class LauncherController(
     }
 
     /// <summary>
-    /// Get the mods a profile has ever loaded into game with
+    ///     Get the mods a profile has ever loaded into game with
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>Array of mod details</returns>
@@ -280,7 +271,6 @@ public class LauncherController(
     }
 
     /// <summary>
-    ///
     /// </summary>
     /// <param name="profileMods"></param>
     /// <returns></returns>

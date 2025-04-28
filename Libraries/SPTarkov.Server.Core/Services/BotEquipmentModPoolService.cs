@@ -1,11 +1,11 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -45,7 +45,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Store dictionary of mods for each item passed in
+    ///     Store dictionary of mods for each item passed in
     /// </summary>
     /// <param name="items"> Items to find related mods and store in modPool </param>
     /// <param name="poolType"> Mod pool to choose from e.g. "weapon" for weaponModPool </param>
@@ -145,7 +145,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Empty the mod pool
+    ///     Empty the mod pool
     /// </summary>
     public void ResetPool()
     {
@@ -153,7 +153,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Get array of compatible mods for an items mod slot (generate pool if it doesn't exist already)
+    ///     Get array of compatible mods for an items mod slot (generate pool if it doesn't exist already)
     /// </summary>
     /// <param name="itemTpl"> Item to look up </param>
     /// <param name="slotName"> Slot to get compatible mods for </param>
@@ -170,7 +170,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Get mods for a piece of gear by its tpl
+    ///     Get mods for a piece of gear by its tpl
     /// </summary>
     /// <param name="itemTpl"> Items tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
@@ -187,7 +187,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Get mods for a weapon by its tpl
+    ///     Get mods for a weapon by its tpl
     /// </summary>
     /// <param name="itemTpl"> Weapons tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
@@ -202,7 +202,7 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Get required mods for a weapon by its tpl
+    ///     Get required mods for a weapon by its tpl
     /// </summary>
     /// <param name="itemTpl"> Weapons tpl to look up mods for </param>
     /// <returns> Dictionary of mods (keys are mod slot names) with array of compatible mod tpls as value </returns>
@@ -232,13 +232,12 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Create weapon mod pool and set generated flag to true
+    ///     Create weapon mod pool and set generated flag to true
     /// </summary>
     protected void GenerateWeaponPool()
     {
         var weapons = _databaseService.GetItems()
-            .Values.Where(
-                item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON)
+            .Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) && _itemHelper.IsOfBaseclass(item.Id, BaseClasses.WEAPON)
             );
         GeneratePool(weapons, "weapon");
 
@@ -247,22 +246,21 @@ public class BotEquipmentModPoolService
     }
 
     /// <summary>
-    /// Create gear mod pool and set generated flag to true
+    ///     Create gear mod pool and set generated flag to true
     /// </summary>
     protected void GenerateGearPool()
     {
         var gear = _databaseService.GetItems()
-            .Values.Where(
-                item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-                        _itemHelper.IsOfBaseclasses(
-                            item.Id,
-                            [
-                                BaseClasses.ARMORED_EQUIPMENT,
-                                BaseClasses.VEST,
-                                BaseClasses.ARMOR,
-                                BaseClasses.HEADWEAR
-                            ]
-                        )
+            .Values.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
+                                  _itemHelper.IsOfBaseclasses(
+                                      item.Id,
+                                      [
+                                          BaseClasses.ARMORED_EQUIPMENT,
+                                          BaseClasses.VEST,
+                                          BaseClasses.ARMOR,
+                                          BaseClasses.HEADWEAR
+                                      ]
+                                  )
             );
         GeneratePool(gear, "gear");
 

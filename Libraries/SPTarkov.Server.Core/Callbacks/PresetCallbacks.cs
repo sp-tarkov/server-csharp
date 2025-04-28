@@ -1,6 +1,6 @@
-﻿using SPTarkov.Server.Core.Controllers;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 

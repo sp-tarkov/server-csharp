@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -12,7 +13,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -42,8 +42,8 @@ public class InventoryController(
 )
 {
     /// <summary>
-    /// Move Item - change location of item with parentId and slotId, transfers items from one profile to another if fromOwner/toOwner is set in the body.
-    /// Otherwise, move is contained within the same profile_f
+    ///     Move Item - change location of item with parentId and slotId, transfers items from one profile to another if fromOwner/toOwner is set in the body.
+    ///     Otherwise, move is contained within the same profile_f
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="moveRequest">Move request data</param>
@@ -93,7 +93,8 @@ public class InventoryController(
 
             // Item is moving into or out of place of fame dog tag slot
             if (moveRequest.To?.Container != null &&
-                (moveRequest.To.Container.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase) || originalLocationSlotId.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase)))
+                (moveRequest.To.Container.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase) ||
+                 originalLocationSlotId.StartsWith("dogtag", StringComparison.OrdinalIgnoreCase)))
             {
                 _hideoutHelper.ApplyPlaceOfFameDogtagBonus(pmcData);
             }
@@ -109,7 +110,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Get an event router response with inventory trader message
+    ///     Get an event router response with inventory trader message
     /// </summary>
     /// <param name="output">Item event router response</param>
     protected void AppendTraderExploitErrorResponse(ItemEventRouterResponse output)
@@ -122,8 +123,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle /client/game/profile/items/moving - PinLock
-    /// Requires no response to client, only server change
+    ///     Handle /client/game/profile/items/moving - PinLock
+    ///     Requires no response to client, only server change
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Pin/Lock request data</param>
@@ -147,7 +148,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle /client/game/profile/items/moving SetFavoriteItems
+    ///     Handle /client/game/profile/items/moving SetFavoriteItems
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
@@ -160,7 +161,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle /client/game/profile/items/moving RedeemProfileReward
+    ///     Handle /client/game/profile/items/moving RedeemProfileReward
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
@@ -236,7 +237,7 @@ public class InventoryController(
                         var desiredArea = pmcData.Hideout.Areas.FirstOrDefault(area => area.Type == hideoutAreaType);
                         if (desiredArea is not null)
                         {
-                            desiredArea.Level = (int?)newValue;
+                            desiredArea.Level = (int?) newValue;
                         }
 
                         break;
@@ -250,7 +251,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Flag an item as seen in profiles encyclopedia + add inspect xp to profile
+    ///     Flag an item as seen in profiles encyclopedia + add inspect xp to profile
     /// </summary>
     /// <param name="itemTpls">Inspected item tpls</param>
     /// <param name="fullProfile">Profile to add xp to</param>
@@ -284,8 +285,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle OpenRandomLootContainer event
-    /// Handle event fired when a container is unpacked (e.g. halloween pumpkin)
+    ///     Handle OpenRandomLootContainer event
+    ///     Handle event fired when a container is unpacked (e.g. halloween pumpkin)
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
@@ -358,7 +359,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Edit an existing map marker
+    ///     Edit an existing map marker
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Edit marker request</param>
@@ -374,7 +375,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Delete a map marker
+    ///     Delete a map marker
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Delete marker request</param>
@@ -399,7 +400,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Add note to a map
+    ///     Add note to a map
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Add marker request</param>
@@ -434,7 +435,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Flag item as 'seen' by player in profile
+    ///     Flag item as 'seen' by player in profile
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
@@ -452,7 +453,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle examining an item
+    ///     Handle examining an item
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Examine item request</param>
@@ -501,7 +502,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Get the tplid of an item from the examine request object
+    ///     Get the tplid of an item from the examine request object
     /// </summary>
     /// <param name="request"></param>
     /// <param name="sessionId">Session/Player id</param>
@@ -583,8 +584,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Unbind an inventory item from quick access menu at bottom of player screen
-    /// Handle unbind event
+    ///     Unbind an inventory item from quick access menu at bottom of player screen
+    ///     Handle unbind event
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request"></param>
@@ -600,8 +601,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handle bind event
-    /// Bind an inventory item to the quick access menu at bottom of player screen
+    ///     Handle bind event
+    ///     Bind an inventory item to the quick access menu at bottom of player screen
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="bindRequest"></param>
@@ -621,7 +622,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Add a tag to an inventory item
+    ///     Add a tag to an inventory item
     /// </summary>
     /// <param name="pmcData">Profile with item to add tag to</param>
     /// <param name="request"></param>
@@ -655,7 +656,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Toggles "Toggleable" items like night vision goggles and face shields.
+    ///     Toggles "Toggleable" items like night vision goggles and face shields.
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Toggle request</param>
@@ -697,7 +698,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Handles folding of Weapons
+    ///     Handles folding of Weapons
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Fold item request</param>
@@ -740,9 +741,9 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Swap Item
-    /// used for "reload" if you have weapon in hands and magazine is somewhere else in rig or backpack in equipment
-    /// Also used to swap items using quick selection on character screen
+    ///     Swap Item
+    ///     used for "reload" if you have weapon in hands and magazine is somewhere else in rig or backpack in equipment
+    ///     Also used to swap items using quick selection on character screen
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Swap item request</param>
@@ -819,9 +820,9 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// TODO: Adds no data to output to send to client, is this by design?
-    /// Transfer items from one stack into another while keeping original stack
-    /// Used to take items from scav inventory into stash or to insert ammo into mags (shotgun ones) and reloading weapon by clicking "Reload"
+    ///     TODO: Adds no data to output to send to client, is this by design?
+    ///     Transfer items from one stack into another while keeping original stack
+    ///     Used to take items from scav inventory into stash or to insert ammo into mags (shotgun ones) and reloading weapon by clicking "Reload"
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Transfer item request</param>
@@ -882,8 +883,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Fully merge 2 inventory stacks together into one stack (merging where both stacks remain is called 'transfer')
-    /// Deletes item from `body.item` and adding number of stacks into `body.with`
+    ///     Fully merge 2 inventory stacks together into one stack (merging where both stacks remain is called 'transfer')
+    ///     Deletes item from `body.item` and adding number of stacks into `body.with`
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Merge stacks request</param>
@@ -973,7 +974,7 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Split Item stack - 1 stack into 2
+    ///     Split Item stack - 1 stack into 2
     /// </summary>
     /// <param name="pmcData">(unused, getOwnerInventoryItems() gets profile)</param>
     /// <param name="request">Split stack request</param>
@@ -1037,8 +1038,8 @@ public class InventoryController(
     }
 
     /// <summary>
-    /// Implements "Discard" functionality from Main menu (Stash etc.)
-    /// Removes item from PMC Profile
+    ///     Implements "Discard" functionality from Main menu (Stash etc.)
+    ///     Removes item from PMC Profile
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Discard item request</param>

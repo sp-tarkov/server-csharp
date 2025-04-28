@@ -1,5 +1,5 @@
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -39,8 +39,7 @@ public class QuestConditionHelper
         string questType,
         Func<QuestCondition, List<QuestCondition>>? furtherFilter = null)
     {
-        var filteredQuests = questConditions.Where(
-                c =>
+        var filteredQuests = questConditions.Where(c =>
                 {
                     if (c.ConditionType == questType)
                         // return true or run the passed in function

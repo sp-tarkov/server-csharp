@@ -93,7 +93,7 @@ public record Item
 public record HideoutItem
 {
     /// <summary>
-    /// Hideout inventory id that was used by improvement action
+    ///     Hideout inventory id that was used by improvement action
     /// </summary>
     [JsonPropertyName("_id")]
     public string? _Id
@@ -169,11 +169,11 @@ public record ItemLocation
     }
 
     [JsonPropertyName("r")]
-    public object? R
+    public int R
     {
         get;
         set;
-    } // TODO: Can be string or number
+    }
 
     [JsonPropertyName("isSearched")]
     public bool? IsSearched
@@ -183,28 +183,14 @@ public record ItemLocation
     }
 
     /// <summary>
-    /// SPT property?
+    ///     SPT property?
     /// </summary>
     [JsonPropertyName("rotation")]
-    public object? Rotation
+    public bool? Rotation
     {
         get;
         set;
-    } // TODO: Can be string or boolean
-}
-
-public record UpdLockableKeyComponent
-{
-    public float? RelativeValue { get; set; }
-    public int? NumberOfUsages { get; set; }
-
-}
-
-public record UpdLockable
-{
-    public string[]? KeyIds { get; set; }
-    public bool Locked { get; set; }
-    public UpdLockableKeyComponent? KeyComponent { get; set; }
+    }
 }
 
 public record Upd
@@ -240,7 +226,7 @@ public record Upd
     }
 
     /// <summary>
-    /// SPT specific property, not made by BSG
+    ///     SPT specific property, not made by BSG
     /// </summary>
     [JsonPropertyName("sptPresetId")]
     public string? SptPresetId
@@ -376,11 +362,25 @@ public record Upd
         set;
     }
 
-    public UpdLockable? Lockable
+    public LockableComponent? Lockable
     {
         get;
         set;
     }
+}
+
+public record LockableKeyComponent
+{
+    public float? RelativeValue { get; set; }
+    public int? NumberOfUsages { get; set; }
+
+}
+
+public record LockableComponent
+{
+    public string[]? KeyIds { get; set; }
+    public bool? Locked { get; set; }
+    public LockableKeyComponent? KeyComponent { get; set; }
 }
 
 public enum PinLockState
@@ -673,7 +673,8 @@ public record UpdDogtag
     }
 
     [JsonPropertyName("Side")]
-    public object? Side
+    [JsonConverter(typeof(DogtagSideConverter))]
+    public DogtagSide? Side
     {
         get;
         set;

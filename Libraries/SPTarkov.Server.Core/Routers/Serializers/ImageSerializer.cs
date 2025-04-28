@@ -1,5 +1,5 @@
-using SPTarkov.Server.Core.DI;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.DI;
 
 namespace SPTarkov.Server.Core.Routers.Serializers;
 

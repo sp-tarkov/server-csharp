@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\Build.props" />
+  <Import Project="..\..\Build.props"/>
 
   <PropertyGroup>
     <PackageId>SPTarkov.Server.Assets</PackageId>

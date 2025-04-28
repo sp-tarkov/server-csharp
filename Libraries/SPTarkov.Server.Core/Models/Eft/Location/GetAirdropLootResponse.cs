@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Location;
 public record GetAirdropLootResponse
 {
     /// <summary>
-    /// The type of airdrop
+    ///     The type of airdrop
     /// </summary>
     [JsonPropertyName("icon")]
     public AirdropTypeEnum? Icon

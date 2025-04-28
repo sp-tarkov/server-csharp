@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Spt.Dialog;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.ProfileCommand;
 
@@ -85,8 +85,7 @@ public class ProfileSptCommand(
                 {
                     var enumSkill = Enum.GetValues<SkillTypes>()
                         .Cast<SkillTypes?>()
-                        .FirstOrDefault(
-                            t => t?.ToString().ToLower() == skill
+                        .FirstOrDefault(t => t?.ToString().ToLower() == skill
                         );
 
                     if (enumSkill == null)

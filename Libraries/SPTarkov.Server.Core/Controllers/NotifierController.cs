@@ -1,8 +1,8 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Notifier;
 using SPTarkov.Server.Core.Models.Eft.Ws;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -25,7 +25,8 @@ public class NotifierController(
     /// <param name="sessionId">Session/Player id</param>
     public Task<List<WsNotificationEvent>> NotifyAsync(string sessionId)
     {
-        return Task.Factory.StartNew(() => {
+        return Task.Factory.StartNew(() =>
+        {
             // keep track of our timeout
             var counter = 0;
 
@@ -67,7 +68,7 @@ public class NotifierController(
     }
 
     /// <summary>
-    /// Get the notifier server url
+    ///     Get the notifier server url
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Notification server url</returns>

@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Runtime.Loader;
 using System.Text.Json;
 using SPTarkov.Server.Core.Models.Spt.Mod;
@@ -49,7 +48,7 @@ public class ModDllLoader
     }
 
     /// <summary>
-    /// Check the provided directory path for a dll and .json file, load into memory
+    ///     Check the provided directory path for a dll and .json file, load into memory
     /// </summary>
     /// <param name="path">Directory path that contains mod files</param>
     /// <returns>SptMod</returns>

@@ -7,7 +7,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Common;
 public record Location
 {
     /// <summary>
-    /// Map meta-data
+    ///     Map meta-data
     /// </summary>
     [JsonPropertyName("base")]
     public LocationBase? Base
@@ -17,7 +17,7 @@ public record Location
     }
 
     /// <summary>
-    /// Loose loot positions and item weights
+    ///     Loose loot positions and item weights
     /// </summary>
     [JsonPropertyName("looseLoot")]
     public LazyLoad<LooseLoot>? LooseLoot
@@ -27,7 +27,7 @@ public record Location
     }
 
     /// <summary>
-    /// Static loot item weights
+    ///     Static loot item weights
     /// </summary>
     [JsonPropertyName("staticLoot")]
     public LazyLoad<Dictionary<string, StaticLootDetails>>? StaticLoot
@@ -37,7 +37,7 @@ public record Location
     }
 
     /// <summary>
-    /// Static container positions and item weights
+    ///     Static container positions and item weights
     /// </summary>
     [JsonPropertyName("staticContainers")]
     public LazyLoad<StaticContainerDetails>? StaticContainers
@@ -54,7 +54,7 @@ public record Location
     }
 
     /// <summary>
-    /// All possible static containers on map + their assign groupings
+    ///     All possible static containers on map + their assign groupings
     /// </summary>
     [JsonPropertyName("statics")]
     public StaticContainer? Statics
@@ -64,7 +64,7 @@ public record Location
     }
 
     /// <summary>
-    /// All possible map extracts
+    ///     All possible map extracts
     /// </summary>
     [JsonPropertyName("allExtracts")]
     public Exit[] AllExtracts

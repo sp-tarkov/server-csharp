@@ -10,17 +10,17 @@ namespace Benchmarks;
 [MemoryDiagnoser]
 public class ClonerBenchmarks
 {
-    private Templates? _templates;
+    private ICloner _fastCloner;
 
     private ICloner _jsonCloner;
     private ICloner _reflectionsCloner;
-    private ICloner _fastCloner;
+    private Templates? _templates;
 
     [GlobalSetup]
     public void Setup()
     {
         var jsonUtil = new JsonUtil();
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()),
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(),
             jsonUtil);
         var loadTask = importer.LoadRecursiveAsync<Templates>("./Assets/database/templates/");
         loadTask.Wait();

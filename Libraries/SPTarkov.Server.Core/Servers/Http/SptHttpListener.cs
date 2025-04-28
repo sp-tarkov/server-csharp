@@ -1,14 +1,13 @@
 using System.Collections.Immutable;
 using System.IO.Compression;
 using System.Text;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Server;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Servers.Http;
@@ -131,7 +130,7 @@ public class SptHttpListener : IHttpListener
     }
 
     /// <summary>
-    /// Send HTTP response back to sender
+    ///     Send HTTP response back to sender
     /// </summary>
     /// <param name="sessionID"> Player id making request </param>
     /// <param name="req"> Incoming request </param>
@@ -159,7 +158,7 @@ public class SptHttpListener : IHttpListener
             SendJson(resp, output, sessionID);
             if (_logger.IsLogEnabled(LogLevel.Debug))
             {
-                _logger.Debug($"Response: {output.Substring(0, Math.Min(output.Length, 4000))}");
+                _logger.Debug($"Response: {output}");
             }
 
             LogRequest(req, output);
@@ -182,7 +181,7 @@ public class SptHttpListener : IHttpListener
     }
 
     /// <summary>
-    /// Is request flagged as debug enabled
+    ///     Is request flagged as debug enabled
     /// </summary>
     /// <param name="req"> Incoming request </param>
     /// <returns> True if request is flagged as debug </returns>
@@ -192,7 +191,7 @@ public class SptHttpListener : IHttpListener
     }
 
     /// <summary>
-    /// Log request if enabled
+    ///     Log request if enabled
     /// </summary>
     /// <param name="req"> Log request if enabled </param>
     /// <param name="output"> Output string </param>
@@ -200,7 +199,7 @@ public class SptHttpListener : IHttpListener
     {
         if (ProgramStatics.ENTRY_TYPE() != EntryType.RELEASE)
         {
-            var log = new Response(req.Method, output.Substring(0, Math.Min(output.Length, 2000)));
+            var log = new Response(req.Method, output);
             _requestLogger.Info($"RESPONSE={_jsonUtil.Serialize(log)}");
         }
     }

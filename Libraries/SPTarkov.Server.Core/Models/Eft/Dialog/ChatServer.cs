@@ -61,7 +61,7 @@ public record ChatServer
     }
 
     /// <summary>
-    /// Possibly removed
+    ///     Possibly removed
     /// </summary>
     [JsonPropertyName("IsDeveloper")]
     public bool? IsDeveloper

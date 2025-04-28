@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -7,13 +8,12 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
 /// <summary>
-/// Stores flea prices for items as well as methods to interact with them.
+///     Stores flea prices for items as well as methods to interact with them.
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class RagfairPriceService(
@@ -116,7 +116,7 @@ public class RagfairPriceService(
     }
 
     /// <summary>
-    /// Get the dynamic (flea) price for an item
+    ///     Get the dynamic (flea) price for an item
     /// </summary>
     /// <param name="itemTpl"> Item template id to look up </param>
     /// <returns> Price in roubles </returns>
@@ -445,9 +445,8 @@ public class RagfairPriceService(
         if (newOrReplacedModsInPresetVsDefault.Any())
         {
             // Add up cost of mods replaced
-            var modsReplacedByNewMods = newOrReplacedModsInPresetVsDefault.Where(
-                x =>
-                    presetResult.Preset.Items.Any(y => y.SlotId == x.SlotId)
+            var modsReplacedByNewMods = newOrReplacedModsInPresetVsDefault.Where(x =>
+                presetResult.Preset.Items.Any(y => y.SlotId == x.SlotId)
             );
 
             // Add up replaced mods price

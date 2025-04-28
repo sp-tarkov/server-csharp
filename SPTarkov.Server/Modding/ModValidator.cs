@@ -1,10 +1,10 @@
-﻿using SPTarkov.Server.Core.Models.Spt.Config;
+﻿using SPTarkov.Common.Semver;
+using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Mod;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Semver;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Modding;
@@ -20,8 +20,8 @@ public class ModValidator(
 {
     protected readonly string basepath = "user/mods/";
     protected readonly string modOrderPath = "user/mods/order.json";
-    protected Dictionary<string, int> order = [];
     protected Dictionary<string, SptMod> imported = [];
+    protected Dictionary<string, int> order = [];
     protected HashSet<string> skippedMods = [];
 
     protected CoreConfig sptConfig = configServer.GetConfig<CoreConfig>();
@@ -147,7 +147,10 @@ public class ModValidator(
         {
             if (ShouldSkipMod(mod.PackageJson))
             {
-                logger.Warning(localisationService.GetText("modloader-skipped_mod", new { mod }));
+                logger.Warning(localisationService.GetText("modloader-skipped_mod", new
+                {
+                    mod
+                }));
                 continue;
             }
 
@@ -174,7 +177,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    /// Check for duplicate mods loaded, show error if any
+    ///     Check for duplicate mods loaded, show error if any
     /// </summary>
     /// <param name="modPackageData">Dictionary of mod package.json data</param>
     protected void CheckForDuplicateMods(Dictionary<string, PackageJsonData> modPackageData)
@@ -184,7 +187,7 @@ public class ModValidator(
         foreach (var mod in modPackageData.Values)
         {
             var name = $"{mod.Author}-{mod.Name}";
-            groupedMods.Add(name, [..(groupedMods.GetValueOrDefault(name) ?? []), mod]);
+            groupedMods.Add(name, [..groupedMods.GetValueOrDefault(name) ?? [], mod]);
 
             // if there's more than one entry for a given mod it means there's at least 2 mods with the same author and name trying to load.
             if (groupedMods[name].Count > 1 && !skippedMods.Contains(name))
@@ -201,7 +204,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    /// Returns an array of valid mods
+    ///     Returns an array of valid mods
     /// </summary>
     /// <param name="mods">mods to validate</param>
     /// <returns>array of mod folder names</returns>
@@ -212,7 +215,7 @@ public class ModValidator(
 
 
     /// <summary>
-    /// Is the passed in mod compatible with the running server version
+    ///     Is the passed in mod compatible with the running server version
     /// </summary>
     /// <param name="mod">Mod to check compatibility with SPT</param>
     /// <returns>True if compatible</returns>
@@ -234,9 +237,9 @@ public class ModValidator(
             logger.Error(
                 localisationService.GetText("modloader-outdated_sptversion_field", new
                 {
-                    modName = modName,
+                    modName,
                     modVersion = mod.Version,
-                    desiredSptVersion = mod.SptVersion,
+                    desiredSptVersion = mod.SptVersion
                 })
             );
 
@@ -247,7 +250,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    /// Read loadorder.json (create if doesnt exist) and return sorted list of mods
+    ///     Read loadorder.json (create if doesnt exist) and return sorted list of mods
     /// </summary>
     /// <returns>string array of sorted mod names</returns>
     public List<string> SortModsLoadOrder()
@@ -263,7 +266,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    /// Compile mod and add into class property "imported"
+    ///     Compile mod and add into class property "imported"
     /// </summary>
     /// <param name="mod">Name of mod to compile/add</param>
     protected void AddMod(SptMod mod)
@@ -275,13 +278,13 @@ public class ModValidator(
             {
                 name = mod.PackageJson.Name,
                 version = mod.PackageJson.Version,
-                author = mod.PackageJson.Author,
+                author = mod.PackageJson.Author
             })
         );
     }
 
     /// <summary>
-    /// Checks if a given mod should be loaded or skipped
+    ///     Checks if a given mod should be loaded or skipped
     /// </summary>
     /// <param name="pkg">mod package.json data</param>
     /// <returns></returns>
@@ -309,7 +312,7 @@ public class ModValidator(
                     localisationService.GetText("modloader-missing_dependency", new
                     {
                         mod = modName,
-                        modDependency = modDependency
+                        modDependency
                     })
                 );
                 return false;
@@ -321,9 +324,9 @@ public class ModValidator(
                     localisationService.GetText("modloader-outdated_dependency", new
                     {
                         mod = modName,
-                        modDependency = modDependency,
+                        modDependency,
                         currentVersion = loadedMods[modDependency].Version,
-                        requiredVersion = requiredVersion
+                        requiredVersion
                     })
                 );
                 return false;
@@ -351,7 +354,7 @@ public class ModValidator(
                     {
                         author = mod.Author,
                         name = mod.Name,
-                        incompatibleModName = incompatibleModName
+                        incompatibleModName
                     })
                 );
                 return false;
@@ -362,7 +365,7 @@ public class ModValidator(
     }
 
     /// <summary>
-    /// Validate a mod passes a number of checks
+    ///     Validate a mod passes a number of checks
     /// </summary>
     /// <param name="mod">name of mod in /mods/ to validate</param>
     /// <returns>true if valid</returns>

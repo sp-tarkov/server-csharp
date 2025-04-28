@@ -89,7 +89,7 @@ public record HideoutConfig : BaseConfig
 public record HideoutCraftToAdd
 {
     /// <summary>
-    /// The new mongoId for the craft to use
+    ///     The new mongoId for the craft to use
     /// </summary>
     [JsonPropertyName("newId")]
     public string NewId
@@ -97,6 +97,7 @@ public record HideoutCraftToAdd
         get;
         set;
     }
+
     [JsonPropertyName("requirements")]
     public List<Requirement> Requirements
     {

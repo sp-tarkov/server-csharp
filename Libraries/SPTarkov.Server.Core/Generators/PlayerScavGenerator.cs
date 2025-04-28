@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 
@@ -376,7 +376,7 @@ public class PlayerScavGenerator(
 
         if (scavData?.Info != null)
         {
-            scavData.Info.SavageLockTime = Math.Round(_timeUtil.GetTimeStampFromEpoch() / 1000 + (scavLockDuration ?? 0));
+            scavData.Info.SavageLockTime = Math.Round(_timeUtil.GetTimeStamp() + (scavLockDuration ?? 0));
         }
 
         return scavData;

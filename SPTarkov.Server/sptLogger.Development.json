@@ -1,0 +1,71 @@
+{
+  "loggers": [
+    {
+      "type": "File",
+      "logLevel": "Trace",
+      "format": "[%date% %time%][%level%][%logger%] %message%",
+      "filePath": "./user/logs/kestrel/kestrel.txt",
+      "filters": [
+
+        {
+          "type": "Include",
+          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "matchingType": "Regex"
+        }
+      ]
+    },
+    {
+      "type": "File",
+      "logLevel": "Trace",
+      "format": "[%date% %time%][%level%][%logger%] %message%",
+      "filePath": "./user/logs/spt/spt.txt",
+      "filters": [
+        {
+          "type": "Exclude",
+          "name": ".*RequestLogger",
+          "matchingType": "Regex"
+        },
+        {
+          "type": "Exclude",
+          "name": "Microsoft\\.AspNetCore\\.Server\\.Kestrel.*",
+          "matchingType": "Regex"
+        }
+      ]
+    },
+    {
+      "type": "File",
+      "logLevel": "Trace",
+      "format": "[%date% %time%][%level%][%logger%] %message%",
+      "filePath": "./user/logs/requests/requests.txt",
+      "filters": [
+        {
+          "type": "Include",
+          "name": ".*RequestLogger",
+          "matchingType": "Regex"
+        }
+      ]
+    },
+    {
+      "type": "Console",
+      "logLevel": "Trace",
+      "format": "%message%",
+      "filters": [
+        {
+          "type": "Exclude",
+          "name": "Microsoft.*",
+          "matchingType": "Regex"
+        },
+        {
+          "type": "Exclude",
+          "name": ".*FileLogger",
+          "matchingType": "Regex"
+        },
+        {
+          "type": "Exclude",
+          "name": ".*RequestLogger",
+          "matchingType": "Regex"
+        }
+      ]
+    }
+  ]
+}

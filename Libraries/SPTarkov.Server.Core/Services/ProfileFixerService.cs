@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -246,14 +246,11 @@ public class ProfileFixerService(
         {
             if (pmcProfile.RepeatableQuests is not null && activeRepeatableQuests.Count > 0)
             {
-                var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(
-                    quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
+                var existsInActiveRepeatableQuests = activeRepeatableQuests.Any(quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
                 );
-                var existsInQuests = pmcProfile.Quests.Any(
-                    quest => quest.QId == TaskConditionCounterKvP.Value.SourceId
+                var existsInQuests = pmcProfile.Quests.Any(quest => quest.QId == TaskConditionCounterKvP.Value.SourceId
                 );
-                var isAchievementTracker = achievements.Any(
-                    quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
+                var isAchievementTracker = achievements.Any(quest => quest.Id == TaskConditionCounterKvP.Value.SourceId
                 );
 
                 // If task conditions id is neither in activeQuests, quests or achievements - it's stale and should be cleaned up
@@ -328,8 +325,7 @@ public class ProfileFixerService(
             // For started or successful quests, check for unlocks in the `Started` rewards
             if (profileQuest.Status is QuestStatusEnum.Started or QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards.Started?.Where(
-                    reward => reward.Type == RewardType.ProductionScheme
+                var productionRewards = quest.Rewards.Started?.Where(reward => reward.Type == RewardType.ProductionScheme
                 );
 
                 if (productionRewards is not null)
@@ -344,8 +340,7 @@ public class ProfileFixerService(
             // For successful quests, check for unlocks in the `Success` rewards
             if (profileQuest.Status is QuestStatusEnum.Success)
             {
-                var productionRewards = quest.Rewards.Success?.Where(
-                    reward => reward.Type == RewardType.ProductionScheme
+                var productionRewards = quest.Rewards.Success?.Where(reward => reward.Type == RewardType.ProductionScheme
                 );
 
                 if (productionRewards is not null)
@@ -402,12 +397,12 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Remove any entries from `pmcProfile.InsuredItems` that do not have a corresponding
-    /// `pmcProfile.Inventory.items` entry
+    ///     Remove any entries from `pmcProfile.InsuredItems` that do not have a corresponding
+    ///     `pmcProfile.Inventory.items` entry
     /// </summary>
     /// <param name="pmcProfile"> PMC Profile to fix </param>
-    protected void FixOrphanedInsurance(PmcData pmcProfile) {
-
+    protected void FixOrphanedInsurance(PmcData pmcProfile)
+    {
         // Check if the player inventory contains this item
         pmcProfile.InsuredItems = pmcProfile.InsuredItems
             .Where(insuredItem => pmcProfile.Inventory.Items.Any(item => item.Id == insuredItem.ItemId))
@@ -527,7 +522,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Check for and cap profile skills at 5100.
+    ///     Check for and cap profile skills at 5100.
     /// </summary>
     /// <param name="pmcProfile"> Profile to check and fix </param>
     protected void CheckForSkillsOverMaxLevel(PmcData pmcProfile)
@@ -541,7 +536,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Checks profile inventory for items that do not exist inside the items DB
+    ///     Checks profile inventory for items that do not exist inside the items DB
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="fullProfile"> Profile to check inventory of </param>
@@ -578,8 +573,7 @@ public class ProfileFixerService(
             // Remove invalid builds from weapon, equipment and magazine build lists
             var weaponBuilds = fullProfile.UserBuildData?.WeaponBuilds ?? new List<WeaponBuild>();
             fullProfile.UserBuildData.WeaponBuilds =
-                weaponBuilds.Where(
-                        build =>
+                weaponBuilds.Where(build =>
                         {
                             return !ShouldRemoveWeaponEquipmentBuild("weapon", build, itemsDb);
                         }
@@ -588,8 +582,7 @@ public class ProfileFixerService(
 
             var equipmentBuilds = fullProfile.UserBuildData.EquipmentBuilds ?? new List<EquipmentBuild>();
             fullProfile.UserBuildData.EquipmentBuilds =
-                equipmentBuilds.Where(
-                        build =>
+                equipmentBuilds.Where(build =>
                         {
                             return !ShouldRemoveWeaponEquipmentBuild("equipment", build, itemsDb);
                         }
@@ -597,8 +590,7 @@ public class ProfileFixerService(
                     .ToList();
 
             var magazineBuild = fullProfile.UserBuildData.MagazineBuilds ?? new List<MagazineBuild>();
-            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(
-                    build =>
+            fullProfile.UserBuildData.MagazineBuilds = magazineBuild.Where(build =>
                     {
                         return !ShouldRemoveMagazineBuild(build, itemsDb);
                     }
@@ -721,7 +713,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Check whether a weapon build should be removed from the equipment list.
+    ///     Check whether a weapon build should be removed from the equipment list.
     /// </summary>
     /// <param name="buildType"> The type of build, used for logging only </param>
     /// <param name="build"> The build to check for invalid items </param>
@@ -775,7 +767,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Checks whether magazine build shou8ld be removed form the build list.
+    ///     Checks whether magazine build shou8ld be removed form the build list.
     /// </summary>
     /// <param name="magazineBuild"> The magazine build to check for validity </param>
     /// <param name="itemsDb"> The items database to use for item lookup </param>
@@ -812,8 +804,8 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// REQUIRED for dev profiles <br/>
-    /// Iterate over players hideout areas and find what's built, look for missing bonuses those areas give and add them if missing
+    ///     REQUIRED for dev profiles <br />
+    ///     Iterate over players hideout areas and find what's built, look for missing bonuses those areas give and add them if missing
     /// </summary>
     /// <param name="pmcProfile"> Profile to update </param>
     public void AddMissingHideoutBonusesToProfile(PmcData pmcProfile)
@@ -872,7 +864,7 @@ public class ProfileFixerService(
     }
 
     /// <summary>
-    /// Finds a bonus in a profile
+    ///     Finds a bonus in a profile
     /// </summary>
     /// <param name="profileBonuses"> Bonuses from profile </param>
     /// <param name="bonus"> Bonus to find </param>
@@ -887,11 +879,10 @@ public class ProfileFixerService(
 
         return bonus.Type switch
         {
-            BonusType.StashSize => profileBonuses?.FirstOrDefault(
-                x => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId
+            BonusType.StashSize => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.TemplateId == bonus.TemplateId
             ),
-            BonusType.AdditionalSlots => profileBonuses?.FirstOrDefault(
-                x => x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible
+            BonusType.AdditionalSlots => profileBonuses?.FirstOrDefault(x =>
+                x.Type == bonus.Type && x?.Value == bonus?.Value && x?.IsVisible == bonus?.IsVisible
             ),
             _ => profileBonuses?.FirstOrDefault(x => x.Type == bonus.Type && x.Value == bonus.Value)
         };

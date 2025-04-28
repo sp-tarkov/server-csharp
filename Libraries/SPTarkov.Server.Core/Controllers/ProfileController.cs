@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -11,7 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -38,7 +38,7 @@ public class ProfileController(
 )
 {
     /// <summary>
-    /// Handle /launcher/profiles
+    ///     Handle /launcher/profiles
     /// </summary>
     /// <returns></returns>
     public virtual List<MiniProfile> GetMiniProfiles()
@@ -47,7 +47,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle launcher/profile/info
+    ///     Handle launcher/profile/info
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns></returns>
@@ -102,7 +102,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/list
+    ///     Handle client/game/profile/list
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <returns>Return a full profile, scav and pmc profiles + meta data</returns>
@@ -112,7 +112,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/create
+    ///     Handle client/game/profile/create
     /// </summary>
     /// <param name="request">Create profile request</param>
     /// <param name="sessionID">Player id</param>
@@ -123,8 +123,8 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Generate a player scav object
-    /// PMC profile MUST exist first before player-scav can be generated
+    ///     Generate a player scav object
+    ///     PMC profile MUST exist first before player-scav can be generated
     /// </summary>
     /// <param name="sessionID">Player id</param>
     /// <returns>PmcData</returns>
@@ -134,7 +134,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/nickname/validate
+    ///     Handle client/game/profile/nickname/validate
     /// </summary>
     /// <param name="request">Validate nickname request</param>
     /// <param name="sessionID">Session/Player id</param>
@@ -155,8 +155,8 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/nickname/change event
-    /// Client allows player to adjust their profile name
+    ///     Handle client/game/profile/nickname/change event
+    ///     Client allows player to adjust their profile name
     /// </summary>
     /// <param name="request">Change nickname request</param>
     /// <param name="sessionID">Player id</param>
@@ -183,7 +183,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/voice/change event
+    ///     Handle client/game/profile/voice/change event
     /// </summary>
     /// <param name="request">Change voice request</param>
     /// <param name="sessionID">Player id</param>
@@ -194,7 +194,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/game/profile/search
+    ///     Handle client/game/profile/search
     /// </summary>
     /// <param name="request">Search profiles request</param>
     /// <param name="sessionID">Player id</param>
@@ -221,7 +221,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/profile/status
+    ///     Handle client/profile/status
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
@@ -258,7 +258,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/profile/view
+    ///     Handle client/profile/view
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get other profile request</param>
@@ -345,7 +345,7 @@ public class ProfileController(
     }
 
     /// <summary>
-    /// Handle client/profile/settings
+    ///     Handle client/profile/settings
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request">Get profile settings request</param>

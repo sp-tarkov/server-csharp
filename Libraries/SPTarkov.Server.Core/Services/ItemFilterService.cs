@@ -1,12 +1,13 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
+
 /// <summary>
-/// Centralise the handling of blacklisting items, uses blacklist found in config/item.json, stores items that should not be used by players / broken items
+///     Centralise the handling of blacklisting items, uses blacklist found in config/item.json, stores items that should not be used by players / broken items
 /// </summary>
 [Injectable(InjectionType.Singleton)]
 public class ItemFilterService(
@@ -21,7 +22,7 @@ public class ItemFilterService(
     protected HashSet<string>? _lootableItemBlacklistCache = [];
 
     /// <summary>
-    /// Check if the provided template id is blacklisted in config/item.json/blacklist
+    ///     Check if the provided template id is blacklisted in config/item.json/blacklist
     /// </summary>
     /// <param name="tpl"> Template id</param>
     /// <returns> True if blacklisted </returns>
@@ -36,7 +37,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Check if item is blacklisted from being a reward for player
+    ///     Check if item is blacklisted from being a reward for player
     /// </summary>
     /// <param name="tpl"> Item tpl to check is on blacklist </param>
     /// <returns> True when blacklisted </returns>
@@ -46,7 +47,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Get an HashSet of items that should never be given as a reward to player
+    ///     Get an HashSet of items that should never be given as a reward to player
     /// </summary>
     /// <returns> HashSet of item tpls </returns>
     public HashSet<string> GetItemRewardBlacklist()
@@ -55,7 +56,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Get an HashSet of item types that should never be given as a reward to player
+    ///     Get an HashSet of item types that should never be given as a reward to player
     /// </summary>
     /// <returns> HashSet of item base ids </returns>
     public HashSet<string> GetItemRewardBaseTypeBlacklist()
@@ -64,7 +65,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Return every template id blacklisted in config/item.json
+    ///     Return every template id blacklisted in config/item.json
     /// </summary>
     /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<string> GetBlacklistedItems()
@@ -73,7 +74,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Return every template id blacklisted in config/item.json/lootableItemBlacklist
+    ///     Return every template id blacklisted in config/item.json/lootableItemBlacklist
     /// </summary>
     /// <returns> HashSet of blacklisted template ids </returns>
     public HashSet<string> GetBlacklistedLootableItems()
@@ -82,7 +83,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Check if the provided template id is boss item in config/item.json
+    ///     Check if the provided template id is boss item in config/item.json
     /// </summary>
     /// <param name="tpl"> template id </param>
     /// <returns> True if boss item </returns>
@@ -92,7 +93,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Return boss items in config/item.json
+    ///     Return boss items in config/item.json
     /// </summary>
     /// <returns> HashSet of boss item template ids </returns>
     public HashSet<string> GetBossItems()
@@ -101,7 +102,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    ///  Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
+    ///     Check if the provided template id is blacklisted in config/item.json/lootableItemBlacklist
     /// </summary>
     /// <param name="itemKey"> Template id</param>
     /// <returns> True if blacklisted </returns>
@@ -142,7 +143,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Check if the provided template id is boss item in config/item.json
+    ///     Check if the provided template id is boss item in config/item.json
     /// </summary>
     /// <param name="tpl"> Template id</param>
     /// <returns> True if boss item </returns>
@@ -152,7 +153,7 @@ public class ItemFilterService(
     }
 
     /// <summary>
-    /// Check if item is blacklisted from being a reward for player
+    ///     Check if item is blacklisted from being a reward for player
     /// </summary>
     /// <param name="tpl"> Item tpl to check is on blacklist </param>
     /// <returns> true when blacklisted </returns>

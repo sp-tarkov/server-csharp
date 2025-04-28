@@ -1,5 +1,8 @@
+using System.Collections.Frozen;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
@@ -13,10 +16,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -36,8 +36,8 @@ public class InventoryHelper(
     ICloner _cloner
 )
 {
-    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
     private static readonly FrozenSet<string> _variableSizeItemTypes = [BaseClasses.WEAPON, BaseClasses.FUNCTIONAL_MOD];
+    protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
     ///     Add multiple items to player stash (assuming they all fit)
@@ -652,10 +652,10 @@ public class InventoryHelper(
     ///     takes into account if item is folded
     /// </summary>
     /// <param name="itemTpl">Items template id</param>
-    /// <param name="itemID">Items id</param>
+    /// <param name="itemId">Items id</param>
     /// <param name="inventoryItemHash">Hashmap of inventory items</param>
     /// <returns>An array representing the [width, height] of the item</returns>
-    protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemID, InventoryItemHash inventoryItemHash)
+    protected List<int> GetSizeByInventoryItemHash(string itemTpl, string itemId, InventoryItemHash inventoryItemHash)
     {
         // Invalid item
         var (isValidItem, itemTemplate) = _itemHelper.GetItem(itemTpl);
@@ -686,7 +686,7 @@ public class InventoryHelper(
             return [1, 1]; // Invalid input data, return defaults
         }
 
-        var rootItem = inventoryItemHash.ByItemId[itemID];
+        var rootItem = inventoryItemHash.ByItemId[itemId];
 
         // Does root item support being folded
         var rootIsFoldable = itemTemplate.Properties.Foldable.GetValueOrDefault(false);
@@ -709,11 +709,12 @@ public class InventoryHelper(
             outX -= itemTemplate.Properties.SizeReduceRight.Value;
         }
 
-        // Calculate size contribution from child items/attachments
+        // Item can have child items that adjust its size
         if (_itemHelper.IsOfBaseclasses(itemTpl, _variableSizeItemTypes))
         {
             // Storage for root item and its children, store root item id for now
-            var toDo = new Queue<string>([itemID]);
+            // Will store child items that may have sub-children to process
+            var toDo = new Queue<string>([itemId]);
             while (toDo.Count > 0)
             {
                 // Lookup parent in `todo` and get all of its children, then loop over them
@@ -721,16 +722,16 @@ public class InventoryHelper(
                 {
                     foreach (var childItem in children)
                     {
-                        // Filtering child items outside of mod slots, such as those inside containers, without counting their ExtraSize attribute
-                        if (childItem.SlotId.IndexOf("mod_", StringComparison.Ordinal) < 0)
+                        // Skip mods that don't increase size. e.g. cartridges
+                        if (!childItem.SlotId.StartsWith("mod_", StringComparison.OrdinalIgnoreCase))
                         {
                             continue;
                         }
 
-                        // Add child to queue
+                        // Add child to processing queue to be checked for sub-children later
                         toDo.Enqueue(childItem.Id);
 
-                        // If the barrel is folded the space in the barrel is not counted
+                        // Get child item from db
                         var (isValid, template) = _itemHelper.GetItem(childItem.Template);
                         if (!isValid)
                         {
@@ -750,13 +751,14 @@ public class InventoryHelper(
                             continue;
                         }
 
+                        // Child mod can and is folded, don't include it in size calc
                         if (childIsFoldable && rootIsFolded && childIsFolded)
                         {
                             continue;
                         }
 
                         // Calculating child ExtraSize
-                        if (template.Properties.ExtraSizeForceAdd == true)
+                        if (template.Properties.ExtraSizeForceAdd.GetValueOrDefault(false))
                         {
                             forcedUp += template.Properties.ExtraSizeUp.Value;
                             forcedDown += template.Properties.ExtraSizeDown.Value;
@@ -781,6 +783,7 @@ public class InventoryHelper(
                     }
                 }
 
+                // Item has been processed, remove from queue
                 toDo.Dequeue();
             }
         }
@@ -903,7 +906,8 @@ public class InventoryHelper(
     protected bool IsVertical(ItemLocation itemLocation)
     {
         var castValue = itemLocation.R.ToString();
-        return castValue == "1" || castValue == "Vertical" || itemLocation.Rotation?.ToString() == "Vertical";
+        return castValue == "1" || string.Equals(castValue, "vertical", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(itemLocation.Rotation?.ToString(), "vertical", StringComparison.OrdinalIgnoreCase);
     }
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)

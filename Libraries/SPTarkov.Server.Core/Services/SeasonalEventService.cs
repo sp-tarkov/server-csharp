@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -6,8 +8,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -52,10 +52,15 @@ public class SeasonalEventService(
         ItemTpl.FACECOVER_FOX_MASK,
         ItemTpl.FACECOVER_GRINCH_MASK,
         ItemTpl.FACECOVER_HARE_MASK,
-        ItemTpl.FACECOVER_ROOSTER_MASK
+        ItemTpl.FACECOVER_ROOSTER_MASK,
+        ItemTpl.FLARE_RSP30_REACTIVE_SIGNAL_CARTRIDGE_FIREWORK
     ];
 
     private List<SeasonalEvent> _currentlyActiveEvents = [];
+
+    protected HashSet<EquipmentSlots> _equipmentSlotsToFilter =
+        [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
+
     private bool _halloweenEventActive;
 
     protected HashSet<string> _halloweenEventItems =
@@ -75,6 +80,7 @@ public class SeasonalEventService(
 
     protected HttpConfig _httpConfig = _configServer.GetConfig<HttpConfig>();
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
+    protected HashSet<string> _lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
     protected SeasonalEventConfig _seasonalEventConfig = _configServer.GetConfig<SeasonalEventConfig>();
     protected WeatherConfig _weatherConfig = _configServer.GetConfig<WeatherConfig>();
@@ -351,11 +357,9 @@ public class SeasonalEventService(
     public void RemoveChristmasItemsFromBotInventory(BotTypeInventory botInventory, string botRole)
     {
         var christmasItems = GetChristmasEventItems();
-        HashSet<EquipmentSlots> equipmentSlotsToFilter = [EquipmentSlots.FaceCover, EquipmentSlots.Headwear, EquipmentSlots.Backpack, EquipmentSlots.TacticalVest];
-        HashSet<string> lootContainersToFilter = ["Backpack", "Pockets", "TacticalVest"];
 
         // Remove christmas related equipment
-        foreach (var equipmentSlotKey in equipmentSlotsToFilter)
+        foreach (var equipmentSlotKey in _equipmentSlotsToFilter)
         {
             if (botInventory.Equipment[equipmentSlotKey] is null)
             {
@@ -377,11 +381,11 @@ public class SeasonalEventService(
 
         // Remove christmas related loot from loot containers
         var props = botInventory.Items.GetType().GetProperties();
-        foreach (var lootContainerKey in lootContainersToFilter)
+        foreach (var lootContainerKey in _lootContainersToFilter)
         {
-            var prop = (Dictionary<string, double>?) props
-                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase))
-                .GetValue(botInventory.Items);
+            var propInfo = props
+                .FirstOrDefault(p => string.Equals(p.Name.ToLower(), lootContainerKey.ToLower(), StringComparison.OrdinalIgnoreCase));
+            var prop = (Dictionary<string, double>?) propInfo.GetValue(botInventory.Items);
 
             if (prop is null)
             {
@@ -397,36 +401,8 @@ public class SeasonalEventService(
                 );
             }
 
-            List<string> tplsToRemove = [];
-            foreach (var tplKey in prop)
-            {
-                if (christmasItems.Contains(tplKey.Key))
-                {
-                    tplsToRemove.Add(tplKey.Key);
-                }
-            }
-
-            foreach (var tplToRemove in tplsToRemove)
-            {
-                prop.Remove(tplToRemove);
-            }
-
-            // Get non-christmas items
-            var nonChristmasTpls = prop.Where(tpl => !christmasItems.Contains(tpl.Key));
-            if (!nonChristmasTpls.Any())
-            {
-                continue;
-            }
-
-            Dictionary<string, double> intermediaryDict = new();
-
-            foreach (var tpl in nonChristmasTpls)
-            {
-                intermediaryDict[tpl.Key] = prop[tpl.Key];
-            }
-
-            // Replace the original containerItems with the updated one
-            prop = intermediaryDict;
+            var newProp = prop.Where(tpl => !christmasItems.Contains(tpl.Key)).ToDictionary();
+            propInfo.SetValue(botInventory.Items, newProp);
         }
     }
 
@@ -463,14 +439,16 @@ public class SeasonalEventService(
                 EnableHalloweenSummonEvent();
                 AddPumpkinsToScavBackpacks();
                 RenameBitcoin();
-                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false)) {
+                if (eventType.Settings is not null && eventType.Settings.ReplaceBotHostility.GetValueOrDefault(false))
+                {
                     if (_seasonalEventConfig.HostilitySettingsForEvent.TryGetValue("AprilFools", out var botData))
                     {
                         ReplaceBotHostility(botData);
                     }
                 }
 
-                if (eventType.Settings?.ForceSeason != null) {
+                if (eventType.Settings?.ForceSeason != null)
+                {
                     _weatherConfig.OverrideSeason = eventType.Settings.ForceSeason;
                 }
 
@@ -638,7 +616,8 @@ public class SeasonalEventService(
                 }
             }
 
-            foreach (var settings in newHostilitySettings) {
+            foreach (var settings in newHostilitySettings)
+            {
                 var matchingBaseSettings = location.Base.BotLocationModifier.AdditionalHostilitySettings.FirstOrDefault(x => x.BotRole == settings.BotRole);
                 if (matchingBaseSettings is null)
                 {
@@ -816,8 +795,7 @@ public class SeasonalEventService(
         var result = new HashSet<string>();
 
         // Get only the locations with an infection above 0
-        var infectionKeys = locationInfections.Where(
-            location => locationInfections[location.Key] > 0
+        var infectionKeys = locationInfections.Where(location => locationInfections[location.Key] > 0
         );
 
         // Convert the infected location id into its generic location id

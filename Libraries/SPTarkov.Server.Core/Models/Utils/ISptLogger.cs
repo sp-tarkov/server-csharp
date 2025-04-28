@@ -12,6 +12,7 @@ public interface ISptLogger<T>
     void Info(string data, Exception? ex = null);
     void Debug(string data, Exception? ex = null);
     void Critical(string data, Exception? ex = null);
-    void WriteToLogFile(string body, LogLevel level = LogLevel.Info);
+    void Log(LogLevel level, string data, LogTextColor? textColor = null, LogBackgroundColor? backgroundColor = null, Exception? ex = null);
     bool IsLogEnabled(LogLevel level);
+    void DumpAndStop();
 }

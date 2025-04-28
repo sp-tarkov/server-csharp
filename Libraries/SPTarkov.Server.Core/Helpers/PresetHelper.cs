@@ -1,9 +1,9 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Presets;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -48,10 +48,9 @@ public class PresetHelper(
         if (_defaultWeaponPresets is null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            _defaultWeaponPresets = tempPresets.Where(
-                    p =>
-                        p.Value.Encyclopedia != null &&
-                        _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
+            _defaultWeaponPresets = tempPresets.Where(p =>
+                    p.Value.Encyclopedia != null &&
+                    _itemHelper.IsOfBaseclass(p.Value.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToDictionary();
         }
@@ -68,10 +67,9 @@ public class PresetHelper(
         if (_defaultEquipmentPresets == null)
         {
             var tempPresets = _databaseService.GetGlobals().ItemPresets;
-            _defaultEquipmentPresets = tempPresets.Where(
-                    p =>
-                        p.Value.Encyclopedia != null &&
-                        _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
+            _defaultEquipmentPresets = tempPresets.Where(p =>
+                    p.Value.Encyclopedia != null &&
+                    _itemHelper.ArmorItemCanHoldMods(p.Value.Encyclopedia)
                 )
                 .ToDictionary();
         }
@@ -116,14 +114,14 @@ public class PresetHelper(
     }
 
     /// <summary>
-    /// Get a clone of a tpls presets
+    ///     Get a clone of a tpls presets
     /// </summary>
     /// <param name="templateId">Tpl to get presets for</param>
     /// <returns>List</returns>
     public List<Preset> GetPresets(string templateId)
     {
         // Try adn get preset ids from cache if they exist
-        if(!_lookup.TryGetValue(templateId, out var presetDetailsForTpl))
+        if (!_lookup.TryGetValue(templateId, out var presetDetailsForTpl))
         {
             // None found, early exit
             return [];
@@ -136,7 +134,7 @@ public class PresetHelper(
     }
 
     /// <summary>
-    /// Get a cloned default preset for passed in item tpl
+    ///     Get a cloned default preset for passed in item tpl
     /// </summary>
     /// <param name="templateId">Items tpl to get preset for</param>
     /// <returns>null if no default preset, otherwise Preset</returns>
@@ -167,7 +165,7 @@ public class PresetHelper(
     }
 
     /// <summary>
-    /// Get the presets root item tpl
+    ///     Get the presets root item tpl
     /// </summary>
     /// <param name="presetId">Preset id to look up</param>
     /// <returns>tpl mongoid</returns>

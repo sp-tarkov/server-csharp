@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 public record InventorySplitRequestData : InventoryBaseActionRequestData
 {
     /// <summary>
-    /// Id of item to split
+    ///     Id of item to split
     /// </summary>
     [JsonPropertyName("splitItem")]
     public string? SplitItem
@@ -15,7 +15,7 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
     }
 
     /// <summary>
-    /// Id of new item stack
+    ///     Id of new item stack
     /// </summary>
     [JsonPropertyName("newItem")]
     public string? NewItem
@@ -25,7 +25,7 @@ public record InventorySplitRequestData : InventoryBaseActionRequestData
     }
 
     /// <summary>
-    /// Destination new item will be placed in
+    ///     Destination new item will be placed in
     /// </summary>
     [JsonPropertyName("container")]
     public Container? Container

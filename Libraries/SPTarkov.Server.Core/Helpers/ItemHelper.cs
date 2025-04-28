@@ -1,4 +1,6 @@
+using System.Collections.Frozen;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -7,9 +9,7 @@ using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -94,7 +94,8 @@ public class ItemHelper(
         "front_plate",
         "back_plate",
         "left_side_plate",
-        "right_side_plate"];
+        "right_side_plate"
+    ];
 
     /**
      * Does the provided pool of items contain the desired item
@@ -458,7 +459,7 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// Does the passed in slot id match a soft insert id
+    ///     Does the passed in slot id match a soft insert id
     /// </summary>
     /// <param name="slotId">Id to check</param>
     /// <returns></returns>
@@ -796,7 +797,7 @@ public class ItemHelper(
             }
 
             // Items parentId matches root item AND returned items doesn't contain current child
-            if (!result.ContainsKey(childItem.Id) && string.Equals(childItem.ParentId,baseItemId, StringComparison.Ordinal))
+            if (!result.ContainsKey(childItem.Id) && string.Equals(childItem.ParentId, baseItemId, StringComparison.Ordinal))
             {
                 foreach (var item in FindAndReturnChildrenAsItems(items, childItem.Id))
                 {
@@ -970,14 +971,13 @@ public class ItemHelper(
     public List<Item> FindBarterItems(string by, List<Item> itemsToSearch, object desiredBarterItemIds)
     {
         // Find required items to take after buying (handles multiple items)
-        List<string> desiredBarterIds =
+        var desiredBarterIds =
             desiredBarterItemIds.GetType() == typeof(string) ? [(string) desiredBarterItemIds] : (List<string>) desiredBarterItemIds;
 
         List<Item> matchingItems = [];
         foreach (var barterId in desiredBarterIds)
         {
-            var filterResult = itemsToSearch.Where(
-                item =>
+            var filterResult = itemsToSearch.Where(item =>
                 {
                     return by == "tpl"
                         ? item.Template.Equals(barterId, StringComparison.OrdinalIgnoreCase)
@@ -1082,7 +1082,7 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.)
+    ///     Regenerate all GUIDs with new IDs, except special item types (e.g. quest, sorting table, etc.)
     /// </summary>
     /// <param name="items"></param>
     /// <returns></returns>
@@ -1315,10 +1315,9 @@ public class ItemHelper(
         var isRequiredSlot = false;
         if (parentTemplate.Key && parentTemplate.Value?.Properties?.Slots != null)
         {
-            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(
-                                 slot =>
-                                     slot?.Name == item?.SlotId &&
-                                     (slot?.Required ?? false)
+            isRequiredSlot = parentTemplate.Value?.Properties?.Slots?.Any(slot =>
+                                 slot?.Name == item?.SlotId &&
+                                 (slot?.Required ?? false)
                              ) ??
                              false;
         }
@@ -1357,7 +1356,7 @@ public class ItemHelper(
 
     /**
      * Determines if an item is an attachment that is currently attached to its parent item.
-     *
+     * 
      * @param item The item to check.
      * @returns true if the item is attached attachment, otherwise false.
      */
@@ -1370,15 +1369,15 @@ public class ItemHelper(
 
     /**
      * Retrieves the equipment parent item for a given item.
-     *
+     * 
      * This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the equipment
      * parent item. In other words, if you pass it an item id of a suppressor, it will traverse up the muzzle brake,
      * barrel, upper receiver, gun, nested backpack, and finally return the backpack Item that is equipped.
-     *
+     * 
      * It's important to note that traversal is expensive, so this method requires that you pass it a Dictionary of the items
      * to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
      * some of the performance concerns, as it allows for quick lookups of items by ID.
-     *
+     * 
      * @param itemId - The unique identifier of the item for which to find the equipment parent.
      * @param itemsMap - A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.
      * @returns The Item object representing the equipment parent of the given item, or `null` if no such parent exists.
@@ -1469,7 +1468,7 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// Add cartridges to the ammo box with correct max stack sizes
+    ///     Add cartridges to the ammo box with correct max stack sizes
     /// </summary>
     /// <param name="ammoBox">Box to add cartridges to</param>
     /// <param name="ammoBoxDetails">Item template from items db</param>
@@ -1922,7 +1921,6 @@ public class ItemHelper(
 
             // Include conflicting items of newly added mod in pool to be used for next mod choice
             incompatibleModTpls.UnionWith(modItemDbDetails.Properties.ConflictingItems);
-
         }
 
         return result;
@@ -2116,7 +2114,6 @@ public class ItemHelper(
         }
 
         return true;
-
     }
 
     // Return all tpls from Money enum

@@ -72,7 +72,7 @@ public record InsuranceConfig : BaseConfig
     }
 
     /// <summary>
-    /// Lowest rouble price for an attachment to be allowed to be taken
+    ///     Lowest rouble price for an attachment to be allowed to be taken
     /// </summary>
     [JsonPropertyName("minAttachmentRoublePriceToBeTaken")]
     public double MinAttachmentRoublePriceToBeTaken
@@ -82,7 +82,7 @@ public record InsuranceConfig : BaseConfig
     }
 
     /// <summary>
-    /// Chance out of 100% no attachments from a parent are taken
+    ///     Chance out of 100% no attachments from a parent are taken
     /// </summary>
     [JsonPropertyName("chanceNoAttachmentsTakenPercent")]
     public double ChanceNoAttachmentsTakenPercent

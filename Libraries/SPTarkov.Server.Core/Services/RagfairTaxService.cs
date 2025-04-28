@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -38,8 +38,8 @@ public class RagfairTaxService(
     }
 
     /// <summary>
-    /// This method, along with CalculateItemWorth, is trying to mirror the client-side code found in the method "CalculateTaxPrice".
-    /// It's structured to resemble the client-side code as closely as possible - avoid making any big structure changes if it's not necessary.
+    ///     This method, along with CalculateItemWorth, is trying to mirror the client-side code found in the method "CalculateTaxPrice".
+    ///     It's structured to resemble the client-side code as closely as possible - avoid making any big structure changes if it's not necessary.
     /// </summary>
     /// <param name="item"> Item being sold on flea </param>
     /// <param name="pmcData"> Player profile </param>
@@ -128,8 +128,8 @@ public class RagfairTaxService(
     }
 
     /// <summary>
-    /// This method is trying to replicate the item worth calculation method found in the client code.
-    /// Any inefficiencies or style issues are intentional and should not be fixed, to preserve the client-side code mirroring.
+    ///     This method is trying to replicate the item worth calculation method found in the client code.
+    ///     Any inefficiencies or style issues are intentional and should not be fixed, to preserve the client-side code mirroring.
     /// </summary>
     /// <param name="item"></param>
     /// <param name="itemTemplate"></param>
