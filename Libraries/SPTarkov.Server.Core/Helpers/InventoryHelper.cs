@@ -843,7 +843,7 @@ public class InventoryHelper(
         foreach (var item in containerItemHash)
         {
 
-            var (itemLocation, _) = ItemHelper.TryParseItemLocation(item);
+            var itemLocation = ItemHelper.TryParseItemLocation(item);
 
             if (itemLocation is null)
             {

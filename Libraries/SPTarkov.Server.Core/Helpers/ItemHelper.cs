@@ -860,65 +860,6 @@ public class ItemHelper(
     }
 
     /// <summary>
-    /// Given that the R field of item location can be string enum or int, provide a method to get the exact type
-    /// </summary>
-    /// <param name="item"></param>
-    /// <returns></returns>
-
-    public static (ItemLocation? itemLocation, LocationInGrid? locationInGrid) TryParseItemLocation(Item item)
-    {
-        if (item.Location is not JsonElement jsonLocation)
-        {
-            return ((ItemLocation?) item.Location, null);
-        }
-
-        var itemLocation = TryParseItemLocation(jsonLocation);
-        if (itemLocation != null)
-        {
-            return (itemLocation, null);
-        }
-
-        var locationInGrid = TryParseLocationInGrid(jsonLocation);
-        if (locationInGrid == null)
-        {
-            return (null, null);
-        }
-
-        itemLocation = new ItemLocation
-        {
-            X = locationInGrid.X,
-            Y = locationInGrid.Y,
-            IsSearched = locationInGrid.IsSearched,
-            R = locationInGrid.R == ItemRotation.Vertical ? 1 : 0
-        };
-        return (itemLocation, locationInGrid);
-
-        ItemLocation? TryParseItemLocation(JsonElement element)
-        {
-            try
-            {
-                return element.ToObject<ItemLocation>();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
-        LocationInGrid? TryParseLocationInGrid(JsonElement element)
-        {
-            try
-            {
-                return element.ToObject<LocationInGrid>();
-            }
-            catch
-            {
-                return null;
-            }
-        }
-    }
-
-    /// <summary>
     ///     Gets the identifier for a child using slotId, locationX and locationY.
     /// </summary>
     /// <param name="item">Item.</param>
@@ -2239,6 +2180,64 @@ public class ItemHelper(
             {
                 item.Upd.SpawnedInSession = null;
             }
+        }
+    }
+
+    /// <summary>
+    /// Given that the R field of item location can be string enum or int, provide a method to get the exact type
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>ItemLocation possible null</returns>
+    public static ItemLocation? TryParseItemLocation(Item item)
+    {
+        if (item.Location is not JsonElement jsonLocation)
+        {
+            return (ItemLocation?) item.Location;
+        }
+
+        var itemLocation = TryParseItemLocation(jsonLocation);
+        if (itemLocation != null)
+        {
+            return itemLocation;
+        }
+
+        var locationInGrid = TryParseLocationInGrid(jsonLocation);
+        if (locationInGrid == null)
+        {
+            return null;
+        }
+
+        itemLocation = new ItemLocation
+        {
+            X = locationInGrid.X,
+            Y = locationInGrid.Y,
+            IsSearched = locationInGrid.IsSearched,
+            R = locationInGrid.R == ItemRotation.Vertical ? 1 : 0
+        };
+        return itemLocation;
+    }
+
+    private static ItemLocation? TryParseItemLocation(JsonElement element)
+    {
+        try
+        {
+            return element.ToObject<ItemLocation>();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static LocationInGrid? TryParseLocationInGrid(JsonElement element)
+    {
+        try
+        {
+            return element.ToObject<LocationInGrid>();
+        }
+        catch
+        {
+            return null;
         }
     }
 }
