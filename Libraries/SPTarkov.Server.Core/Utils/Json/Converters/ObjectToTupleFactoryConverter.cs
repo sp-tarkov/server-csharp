@@ -21,6 +21,12 @@ public class ObjectToTupleFactoryConverter : JsonConverterFactory
         return (JsonConverter) Activator.CreateInstance(typeof(ObjectToTupleConverter<>).MakeGenericType(typeToConvert));
     }
 
+    public static IEnumerable<PropertyInfo> GetProperties(Type typeToConvert) => typeToConvert
+        .GetProperties()
+        .Where(p => p.CanRead)
+        .Where(p => !p.GetIndexParameters().Any())
+        .Where(p => Regex.IsMatch(p.Name, "^Item[0-9]+$"));
+
     private class ObjectToTupleConverter<T> : JsonConverter<T>
     {
 
@@ -31,11 +37,7 @@ public class ObjectToTupleFactoryConverter : JsonConverterFactory
                 throw new JsonException("invalid tuple passed");
             var constructors = typeToConvert.GetConstructors();
             if (constructors.Length == 0) throw new JsonException("invalid tuple passed");
-            var types = typeToConvert
-                .GetProperties()
-                .Where(p => p.CanRead)
-                .Where(p => !p.GetIndexParameters().Any())
-                .Where(p => Regex.IsMatch(p.Name, "^Item[0-9]+$"))
+            var types = GetProperties(typeToConvert)
                 .Select(p => p.PropertyType)
                 .ToArray();
             if (types is not { Length: >= 1 }) throw new JsonException("invalid tuple passed");
@@ -101,28 +103,12 @@ public class ObjectToTupleFactoryConverter : JsonConverterFactory
             var underlyingType = Nullable.GetUnderlyingType(type) ?? type;
             if (!underlyingType.Name.Contains("Tuple"))
                 throw new JsonException("invalid tuple passed");
-            var str = JsonSerializer.Serialize(value, options);
-            var parsed = JsonSerializer.Deserialize<ParseType>(str, options);
-            if (parsed.First != null)
-            {
-                JsonSerializer.Serialize(writer, parsed.First, options);
-                return;
-            }
-
-            if (parsed.Second != null)
-            {
-                JsonSerializer.Serialize(writer, parsed.Second, options);
-                return;
-            }
-
-            if (parsed.Third != null)
-            {
-                JsonSerializer.Serialize(writer, parsed.Third, options);
-                return;
-            }
-
-            // You should not reach here
-            Console.WriteLine("Error parsing tuple" + str);
+            var possibleValue = GetProperties(type)
+                .Select(p => p.GetValue(value))
+                .Where(p => p is not null)
+                .ToArray()
+                .First();
+            JsonSerializer.Serialize(writer, possibleValue, options);
         }
     }
 }
