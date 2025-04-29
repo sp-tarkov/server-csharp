@@ -5,7 +5,7 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils.Logger;
 
-[Injectable(InjectableTypeOverride = typeof(ISptLogger<>))]
+[Injectable(InjectableTypeOverride = typeof(ISptLogger<>), TypePriority = int.MinValue)]
 public class SptLogger<T> : ISptLogger<T>, IDisposable
 {
     private string _category;
