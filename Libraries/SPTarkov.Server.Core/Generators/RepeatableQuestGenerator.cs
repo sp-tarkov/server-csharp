@@ -279,21 +279,20 @@ public class RepeatableQuestGenerator(
             if (distance > 50)
             {
                 List<string> weaponTypeBlacklist = ["Shotgun", "Pistol"];
-                weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
-                        .Where(category => weaponTypeBlacklist
-                            .Contains(category.Key)
-                        );
+
+                // Filter out close range weapons from long distance requirement
+                weaponCategoryRequirementConfig
+                    .RemoveAll(category => weaponTypeBlacklist
+                        .Contains(category.Key));
             }
             else if (distance < 20)
             {
                 List<string> weaponTypeBlacklist = ["MarksmanRifle", "DMR"];
+
                 // Filter out far range weapons from close distance requirement
-                weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
-                        .Where(category => weaponTypeBlacklist
-                            .Contains(category.Key)
-                        );
+                weaponCategoryRequirementConfig
+                    .RemoveAll(category => weaponTypeBlacklist
+                        .Contains(category.Key));
             }
 
             // Pick a weighted weapon category
