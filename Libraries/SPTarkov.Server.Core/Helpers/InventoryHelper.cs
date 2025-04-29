@@ -845,7 +845,6 @@ public class InventoryHelper(
             ItemLocation? itemLocation;
             if (item.Location is JsonElement)
             {
-                Console.WriteLine(item.Location);
                 itemLocation = ((JsonElement) item.Location).ToObject<ItemLocation>();
             }
             else
