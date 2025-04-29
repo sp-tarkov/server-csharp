@@ -909,6 +909,12 @@ public record Config
         get;
         set;
     }
+    [JsonPropertyName("MailItemsExpirationTimeLimitWarning")]
+    public double? MailItemsExpirationTimeLimitWarning
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("BaseLoadTime")]
     public double? BaseLoadTime
@@ -8906,6 +8912,11 @@ public record FenceSettings
     }
 
     public double? PmcBotKillStandingMultiplier
+    {
+        get;
+        set;
+    }
+    public double? ScavEquipmentChancePercentThreshold
     {
         get;
         set;

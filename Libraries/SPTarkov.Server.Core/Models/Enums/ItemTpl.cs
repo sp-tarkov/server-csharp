@@ -1,5 +1,4 @@
 // This is an auto generated file, do not modify. Re-generate by running ItemTplGenerator.exe
-
 public static class ItemTpl
 {
     public const string AMMO_127X108_B32 = "5cde8864d7f00c0010373be1";
@@ -981,7 +980,7 @@ public static class ItemTpl
     public const string BARTER_LEGA_MEDAL = "6656560053eaaa7a23349c86";
     public const string BARTER_LIGHT_BULB = "5d1b392c86f77425243e98fe";
     public const string BARTER_LOCKED_CASE = "6740987b89d5e1ddc603f4f0";
-    public const string BARTER_LOCKED_EQUIPMENT_CRATE_BATTLE_PASS_SEASON_0 = "67cad1ec19b006e9e50f44d6";
+    public const string BARTER_LOCKED_EQUIPMENT_CRATE_BATTLEPASS_0 = "67cad1ec19b006e9e50f44d6";
     public const string BARTER_LOCKED_EQUIPMENT_CRATE_COMMON = "66588b514de4820934746dc6";
     public const string BARTER_LOCKED_EQUIPMENT_CRATE_EPIC = "6658285190486915542256c4";
     public const string BARTER_LOCKED_EQUIPMENT_CRATE_RARE = "66571bf06a723f7f005a0619";
@@ -1587,6 +1586,7 @@ public static class ItemTpl
     public const string DRUGS_IBUPROFEN_PAINKILLERS = "5af0548586f7743a532b7e99";
     public const string DRUGS_MORPHINE_INJECTOR = "544fb3f34bdc2d03748b456a";
     public const string DRUGS_VASELINE_BALM = "5755383e24597772cb798966";
+    public const string FACECOVER_ARENA_CUP_SERIES_BALACLAVA = "67f90180f07898267b0a4ed7";
     public const string FACECOVER_ASTRONOMER_MASK = "67602a39c8e72a73250de739";
     public const string FACECOVER_ATOMIC_DEFENSE_CQCM_BALLISTIC_MASK_DEMON = "67a5c61c7f52620c5b05b4d8";
     public const string FACECOVER_ATOMIC_DEFENSE_CQCM_BALLISTIC_MASK_EL_DA_DE_MUERTOS = "67a5c657782ce4655104db16";
@@ -1605,7 +1605,7 @@ public static class ItemTpl
     public const string FACECOVER_BALACLAVA_FEAR = "67a9ea004fb4a4a8a00d2828";
     public const string FACECOVER_BALACLAVA_GREEN = "67a9cc9cf05be177170bcd76";
     public const string FACECOVER_BALACLAVA_LUXURY = "67a9cd6ecade15e0f00123b8";
-    public const string FACECOVER_BALACLAVA_NOT_TODAY = "67a9cd381fb22063280728a6";
+    public const string FACECOVER_BALACLAVA_NOT_NICE = "67a9cd381fb22063280728a6";
     public const string FACECOVER_BALACLAVA_RED_NOSE = "67a9e9d04fb4a4a8a00d2826";
     public const string FACECOVER_BALACLAVA_RED_ONI = "67a9ea39de7fb0f19e077da6";
     public const string FACECOVER_BALACLAVA_SCARS = "67a9ccfff05be177170bcd78";
@@ -1647,7 +1647,9 @@ public static class ItemTpl
     public const string FACECOVER_HOCKEY_PLAYER_MASK_QUIET = "62a5c41e8ec41a51b34739c3";
     public const string FACECOVER_JASON_MASK = "5bd071d786f7747e707b93a3";
     public const string FACECOVER_LOWER_HALFMASK = "572b7fa524597762b747ce82";
-    public const string FACECOVER_LOWER_HALFMASK_BALACLAVAS_BALACLAVAS = "67a5fa01fafb8efd440694ba";
+    public const string FACECOVER_LOWER_HALFMASK_BALACLAVAS = "67a5fa01fafb8efd440694ba";
+    public const string FACECOVER_LOWER_HALFMASK_BALACLAVAS_GREEN = "67a5f9c8fafb8efd440694b8";
+    public const string FACECOVER_LOWER_HALFMASK_BALACLAVAS_RED = "67a5f9e7f7041a25760dda38";
     public const string FACECOVER_LOWER_HALFMASK_EL_DA_DE_MUERTOS = "67a5f989f7041a25760dda36";
     public const string FACECOVER_LOWER_HALFMASK_MOSS = "67a5f968fafb8efd440694b6";
     public const string FACECOVER_LOWER_HALFMASK_MULTICAM = "67a5f917dfdf568c9009af6b";
@@ -1837,7 +1839,7 @@ public static class ItemTpl
     public const string FLASHLIGHT_ULTRAFIRE_WF501B = "57d17c5e2459775a5c57d17d";
     public const string FLASHLIGHT_ZENIT_2D = "646f62fee779812413011ab7";
     public const string FLYER_ALEX_GREEN_POSTER = "675a06b84ff23436160d802f";
-    public const string FLYER_ARENA_POSTER = "675a0288c3102563bd01c9c3";
+    public const string FLYER_ARENA_POSTER = "675a04c01474133a0d0bb212";
     public const string FLYER_ARENA_POSTER_2 = "675a046b8f547d6cae01922e";
     public const string FLYER_DEN_OF_WOLVES_POSTER = "675a0eacf905bde03d0f8253";
     public const string FLYER_EXODUS_POSTER = "675a0d2d57dd12f0260c4a31";
@@ -1848,11 +1850,13 @@ public static class ItemTpl
     public const string FLYER_GIRL_POSTER_3 = "6759e6c39422e1708e0e9b81";
     public const string FLYER_GIRL_POSTER_4 = "6759e7a44ff23436160d7ff5";
     public const string FLYER_GIRL_POSTER_5 = "6759e8b1c3102563bd01c985";
+    public const string FLYER_GRENADE_GIRL_POSTER = "67f924adb45d94a2600a8cc8";
     public const string FLYER_GUNFIGHT_POSTER = "675a191f67c8eb5cd1035305";
     public const string FLYER_HELL_OR_HIGHWATER_POSTER = "675a125caf26c56ee109072a";
     public const string FLYER_HIGHWAY_POSTER = "675a0fbbb98bf391510bafcd";
     public const string FLYER_I_BEAR_LOOT_POSTER = "6759e07e4ff23436160d7fed";
     public const string FLYER_KILLA_AND_TAGILLA_POSTER = "675a04fdb8913ff13e0496bb";
+    public const string FLYER_KILLA_FANGIRL_POSTER = "67f924a9154a04c33b0a3c57";
     public const string FLYER_LAST_BREATH_POSTER = "679b944d597ba2ed120c3d3c";
     public const string FLYER_LAST_FLIGHT_POSTER = "675a1a244ff23436160d8033";
     public const string FLYER_RUN_POSTER = "675a1e502eac6c76e104ea1e";
@@ -1865,6 +1869,7 @@ public static class ItemTpl
     public const string FLYER_THE_AMBUSH_POSTER = "675a202b6aaafea7210915fd";
     public const string FLYER_THE_HUNTED_POSTER = "675a20c83fb2de89670113b4";
     public const string FLYER_THINGS_SURE_ARE_STRANGE_POSTER = "675a081c1474133a0d0bb214";
+    public const string FLYER_UNUSUAL_LEATHER_RIG_POSTER = "67f924b1b07831a6ef0ce317";
     public const string FLYER_USEC_POSTER = "675a213ff905bde03d0f8255";
     public const string FLYER_VASILY_POSTER = "675a1c129422e1708e0e9baa";
     public const string FLYER_WHAT_YOU_SEEK_POSTER = "6759bb94b8913ff13e049669";
@@ -1980,6 +1985,7 @@ public static class ItemTpl
     public const string GASBLOCK_SVDS_GAS_TUBE = "5c471c842e221615214259b5";
     public const string GASBLOCK_VPO101_GAS_TUBE = "5c5039be2e221602b177c9ff";
     public const string GRENADE_F1_HAND = "5710c24ad2720bc3458b45a3";
+    public const string GRENADE_F1_HAND_GRENADE_REDUCED_DELAY = "67b49e7335dec48e3e05e057";
     public const string GRENADE_M18_SMOKE_GRENADE_GREEN = "617aa4dd8166f034d57de9c5";
     public const string GRENADE_M67_HAND = "58d3db5386f77426186285a0";
     public const string GRENADE_MODEL_7290_FLASH_BANG = "619256e5f8af2c1a4e1f5d92";
@@ -2750,7 +2756,7 @@ public static class ItemTpl
     public const string LOOTCONTAINER_GROUND_CACHE = "5d6d2b5486f774785c2ba8ea";
     public const string LOOTCONTAINER_JACKET_114KEY = "59387ac686f77401442ddd61";
     public const string LOOTCONTAINER_JACKET_204KEY = "5914944186f774189e5e76c2";
-    public const string LOOTCONTAINER_JACKET_2X2 = "67adf4a95247ac91530fcec7";
+    public const string LOOTCONTAINER_JACKET_2X2 = "578f8778245977358849a9b5";
     public const string LOOTCONTAINER_JACKET_MACHINERYKEY = "5937ef2b86f77408a47244b3";
     public const string LOOTCONTAINER_LAB_TECHNICIAN_BODY = "6582e6c6edf14c4c6023adf2";
     public const string LOOTCONTAINER_LONG_WEAPON_BOX = "61aa1e6984ea0800645777f9";
@@ -2764,7 +2770,7 @@ public static class ItemTpl
     public const string LOOTCONTAINER_RATION_SUPPLY_CRATE = "5d6fd13186f77424ad2a8c69";
     public const string LOOTCONTAINER_SAFE = "578f8782245977354405a1e3";
     public const string LOOTCONTAINER_SCAV_BODY = "6582e6bb0c3b9823fe6d1840";
-    public const string LOOTCONTAINER_TECHNICAL_SUPPLY_CRATE_5X5 = "67adf5f7adc1f43b0702b826";
+    public const string LOOTCONTAINER_TECHNICAL_SUPPLY_CRATE_5X5 = "5d6fd45b86f774317075ed43";
     public const string LOOTCONTAINER_TOOLBOX_4X3 = "67adf54d1c58bd68b2002ff0";
     public const string LOOTCONTAINER_WEAPON_BOX_4X4 = "5909d7cf86f77470ee57d75a";
     public const string LOOTCONTAINER_WEAPON_BOX_5X2 = "5909d5ef86f77467974efbd8";
@@ -3621,6 +3627,7 @@ public static class ItemTpl
     public const string QUEST_PILOT_LOGBOOK = "66c0b90c8398582e4b0c2e27";
     public const string QUEST_PUMPING_STATION_OPERATION_REPORT = "619268ad78f4fa33f173dbe5";
     public const string QUEST_RADIO_TRANSMITTER_BODY = "6399f54b0a36db13c823ad21";
+    public const string QUEST_RECRUITERS_NOTES = "67f3fd9bdb1fbd5add090f96";
     public const string QUEST_REF_DIRT = "664fce7a90294949fe2d81cb";
     public const string QUEST_SECRET_COMPONENT = "64f5b4f71a5f313cb144c06c";
     public const string QUEST_SECURE_FLASH_DRIVE = "59f9ddae86f77407ab46e047";
@@ -3877,6 +3884,8 @@ public static class ItemTpl
     public const string REVOLVER_MILKOR_M32A1_MSGL_40MM_GRENADE_LAUNCHER = "6275303a9f372d6ea97f9ec7";
     public const string REVOLVER_MTS25512_12GA_SHOTGUN = "60db29ce99594040e04c4a27";
     public const string REVOLVER_RSH12_127X55 = "633ec7c2a6918cb895019c6c";
+    public const string ROCKET_725_SHG2 = "67446fdd752be02c220f27b3";
+    public const string ROCKETLAUNCHER_RSHG2_725MM_ROCKET_LAUNCHER = "676bf44c5539167c3603e869";
     public const string SECURE_CONTAINER_ALPHA = "544a11ac4bdc2d470e8b456a";
     public const string SECURE_CONTAINER_BETA = "5857a8b324597729ab0a0e7d";
     public const string SECURE_CONTAINER_BOSS = "5c0a794586f77461c458f892";
@@ -4203,7 +4212,7 @@ public static class ItemTpl
     public const string STOCK_M60E4_BUTT = "660126161347bc1a5f0f4dba";
     public const string STOCK_M60E6_BUTT = "6615202b96461aa8360271eb";
     public const string STOCK_M60E6_BUTTSTOCK_FDE = "661520fb6f8e1a96340afaa6";
-    public const string STOCK_M700_AB_ARMS_MODX_BUFFER_TUBE_SIDE_FOLDER_ADAPTER = "5cde77a9d7f00c000f261009";
+    public const string STOCK_M700_AB_ARMS_MODX_BUFFER_TUBE_ADAPTER = "5cde77a9d7f00c000f261009";
     public const string STOCK_M700_AB_ARMS_MODX_GEN_3_CHASSIS = "5cde739cd7f00c0010373bd3";
     public const string STOCK_M700_AI_AT_AICS_POLYMER_CHASSIS = "5d25d0ac8abbc3054f3e61f7";
     public const string STOCK_M700_HOGUE_OVERMOLDED_GHILLIE = "5bfeb32b0db834001a6694d9";
@@ -4241,7 +4250,7 @@ public static class ItemTpl
     public const string STOCK_MP431C_BUTTPAD = "611a31ce5b7ffe001b4649d1";
     public const string STOCK_MP9 = "5de910da8b6c4240ba2651b5";
     public const string STOCK_MPXMCX_MAXIM_DEFENSE_CQB = "5c5db6ee2e221600113fba54";
-    public const string STOCK_MPXMCX_PMM_ULSS_FOLDABLE = "5c5db6f82e2216003a0fe914";
+    public const string STOCK_MPXMCX_PMM_ULSS = "5c5db6f82e2216003a0fe914";
     public const string STOCK_MTS_2001 = "5adf23995acfc400185c2aeb";
     public const string STOCK_MTS25512_WOODEN = "612781056f3d944a17348d60";
     public const string STOCK_OPSKS_WOODEN = "587e0531245977466077a0f7";

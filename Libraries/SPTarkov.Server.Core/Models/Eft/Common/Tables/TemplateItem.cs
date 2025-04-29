@@ -163,6 +163,13 @@ public record Props
         set;
     }
 
+    [JsonPropertyName("WeightMultipliers")]
+    public object? WeightMultipliers
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("BackgroundColor")]
     public string? BackgroundColor
     {
@@ -270,8 +277,43 @@ public record Props
         set;
     }
 
+    [JsonPropertyName("ParticleCapacity")]
+    public double? ParticleCapacity
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ParticleDuration")]
+    public double? ParticleDuration
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ParticleSize")]
+    public double? ParticleSize
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("ExaminedByDefault")]
     public bool? ExaminedByDefault
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ExplosionRadius")]
+    public double? ExplosionRadius
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ExplosionStrength")]
+    public double? ExplosionStrength
     {
         get;
         set;
@@ -497,6 +539,34 @@ public record Props
         set;
     }
 
+    [JsonPropertyName("ComputableUnitDamage")]
+    public XY? ComputableUnitDamage
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ComputableUnitSize")]
+    public double? ComputableUnitSize
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("ComputableUnitType")]
+    public string? ComputableUnitType
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("CanUnloadAmmoByPlayer")]
+    public bool? CanUnloadAmmoByPlayer
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("CanRequireOnRagfair")]
     public bool? CanRequireOnRagfair
     {
@@ -703,6 +773,13 @@ public record Props
 
     [JsonPropertyName("Ergonomics")]
     public double? Ergonomics
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("UseAltMountBone")]
+    public bool? UseAltMountBone
     {
         get;
         set;
@@ -1470,6 +1547,12 @@ public record Props
 
     [JsonPropertyName("RepairComplexity")]
     public double? RepairComplexity
+    {
+        get;
+        set;
+    }
+    [JsonPropertyName("ResetAfterShot")]
+    public bool? ResetAfterShot
     {
         get;
         set;
@@ -2801,8 +2884,22 @@ public record Props
         set;
     }
 
+    [JsonPropertyName("ArmingTime")]
+    public double? ArmingTime
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("ProjectileCount")]
     public double? ProjectileCount
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("PropagationSpeed")]
+    public double? PropagationSpeed
     {
         get;
         set;
@@ -2927,13 +3024,6 @@ public record Props
         set;
     }
 
-    [JsonPropertyName("ExplosionStrength")]
-    public double? ExplosionStrength
-    {
-        get;
-        set;
-    }
-
     [JsonPropertyName("MinExplosionDistance")]
     public double? MinExplosionDistance
     {
@@ -2942,7 +3032,7 @@ public record Props
     }
 
     [JsonPropertyName("PenetrationPowerDiviation")]
-    public double? MinExplosiPenetrationPowerDiviationonDistance
+    public double? PenetrationPowerDiviation
     {
         get;
         set;
@@ -3007,6 +3097,27 @@ public record Props
 
     [JsonPropertyName("ArmorDistanceDistanceDamage")]
     public XYZ? ArmorDistanceDistanceDamage
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("BackBlastConeAngle")]
+    public double? BackBlastConeAngle
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("BackblastDamage")]
+    public XY? BackblastDamage
+    {
+        get;
+        set;
+    }
+
+    [JsonPropertyName("BackblastDistance")]
+    public double? BackblastDistance
     {
         get;
         set;
