@@ -2,7 +2,7 @@
 
 namespace SPTarkov.Server.Core.Models.Spt.Bots;
 
-public class BotDetailsForChatMessages
+public record BotDetailsForChatMessages
 {
     public string Nickname
     {
