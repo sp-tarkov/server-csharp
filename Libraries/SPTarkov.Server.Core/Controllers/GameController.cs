@@ -352,7 +352,7 @@ public class GameController(
             .Aggregate(0d, (sum, bonus) => sum + bonus.Value!.Value);
 
         // Player has energy deficit
-        if (Math.Abs(pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum ?? 1) <= _deviation)
+        if (pmcProfile.Health?.Energy?.Current - pmcProfile.Health?.Energy?.Maximum <= _deviation)
         {
             // Set new value, whatever is smallest
             pmcProfile.Health!.Energy!.Current += Math.Round(energyRegenPerHour * (diffSeconds!.Value / 3600));
@@ -363,7 +363,7 @@ public class GameController(
         }
 
         // Player has hydration deficit
-        if (Math.Abs(pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum ?? 1) <= _deviation)
+        if (pmcProfile.Health?.Hydration?.Current - pmcProfile.Health?.Hydration?.Maximum <= _deviation)
         {
             pmcProfile.Health!.Hydration!.Current += Math.Round(hydrationRegenPerHour * (diffSeconds!.Value / 3600));
             if (pmcProfile.Health.Hydration.Current > pmcProfile.Health.Hydration.Maximum)
