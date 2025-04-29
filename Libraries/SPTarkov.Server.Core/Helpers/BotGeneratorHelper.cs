@@ -651,7 +651,7 @@ public class BotGeneratorHelper(
                                 {
                                     X = findSlotResult.X,
                                     Y = findSlotResult.Y,
-                                    R = findSlotResult.Rotation ?? false ? 1 : 0
+                                    R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal
                                 }
                                 ;
                         }
