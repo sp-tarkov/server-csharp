@@ -503,7 +503,7 @@ public class LocationLootGenerator(
             {
                 X = result.X,
                 Y = result.Y,
-                R = result.Rotation.GetValueOrDefault(false) ? 1 : 0
+                R = result.Rotation.GetValueOrDefault(false) ? ItemRotation.Vertical : ItemRotation.Horizontal
             };
 
             // Add loot to container before returning
