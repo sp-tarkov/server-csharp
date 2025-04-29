@@ -904,12 +904,7 @@ public class InventoryHelper(
         return container2D;
     }
 
-    protected bool IsVertical(ItemLocation itemLocation)
-    {
-        if (itemLocation.R.Item1 == ItemRotation.Vertical) return true;
-        if (itemLocation.R.Item2 == 1) return true;
-        return false;
-    }
+    protected bool IsVertical(ItemLocation itemLocation) => itemLocation.IsVertical();
 
     protected InventoryItemHash GetInventoryItemHash(List<Item> inventoryItems)
     {

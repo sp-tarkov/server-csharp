@@ -204,6 +204,13 @@ public record ItemLocation
 
     public static Tuple<ItemRotation, int> Vertical = Tuple.Create(ItemRotation.Vertical, 1);
     public static Tuple<ItemRotation, int> Horizontal = Tuple.Create(ItemRotation.Horizontal, 0);
+
+    public bool IsVertical()
+    {
+        if (R.Item1 == ItemRotation.Vertical) return true;
+        if (R.Item2 == 1) return true;
+        return false;
+    }
 }
 
 public record Upd
