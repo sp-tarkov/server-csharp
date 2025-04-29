@@ -17,7 +17,6 @@ public class ObjectToTupleFactoryConverterTest()
     record TestObject
     {
         [JsonPropertyName("r")]
-        [JsonConverter(typeof (ObjectToTupleFactoryConverter))]
         public Tuple<ItemRotation?, int?, string?> R
         {
             get;

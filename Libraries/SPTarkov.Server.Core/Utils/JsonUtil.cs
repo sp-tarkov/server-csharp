@@ -63,7 +63,8 @@ public class JsonUtil
             new EftListEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<PlayerSide>(),
             new EftListEnumConverter<DamageType>(),
-            new BaseInteractionRequestDataConverter()
+            new BaseInteractionRequestDataConverter(),
+            new ObjectToTupleFactoryConverter()
         }
     };
 

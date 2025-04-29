@@ -13,8 +13,9 @@ public class ObjectToTupleFactoryConverter : JsonConverterFactory
 {
     public override bool CanConvert(Type typeToConvert)
     {
+        if (!typeToConvert.IsGenericType) return false;
         var generic = typeToConvert.GetGenericTypeDefinition();
-        return typeToConvert.IsGenericType && (generic == typeof(Tuple<,>) || generic == typeof(Tuple<,,>) || generic == typeof(Tuple<,,,>));
+        return generic == typeof(Tuple<,>) || generic == typeof(Tuple<,,>) || generic == typeof(Tuple<,,,>);
     }
 
     public override JsonConverter? CreateConverter(Type typeToConvert, JsonSerializerOptions options)
