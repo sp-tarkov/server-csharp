@@ -1,6 +1,8 @@
 using System.Collections.Frozen;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -1356,7 +1358,7 @@ public class ItemHelper(
 
     /**
      * Determines if an item is an attachment that is currently attached to its parent item.
-     * 
+     *
      * @param item The item to check.
      * @returns true if the item is attached attachment, otherwise false.
      */
@@ -1369,15 +1371,15 @@ public class ItemHelper(
 
     /**
      * Retrieves the equipment parent item for a given item.
-     * 
+     *
      * This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the equipment
      * parent item. In other words, if you pass it an item id of a suppressor, it will traverse up the muzzle brake,
      * barrel, upper receiver, gun, nested backpack, and finally return the backpack Item that is equipped.
-     * 
+     *
      * It's important to note that traversal is expensive, so this method requires that you pass it a Dictionary of the items
      * to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
      * some of the performance concerns, as it allows for quick lookups of items by ID.
-     * 
+     *
      * @param itemId - The unique identifier of the item for which to find the equipment parent.
      * @param itemsMap - A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.
      * @returns The Item object representing the equipment parent of the given item, or `null` if no such parent exists.
@@ -2178,6 +2180,64 @@ public class ItemHelper(
             {
                 item.Upd.SpawnedInSession = null;
             }
+        }
+    }
+
+    /// <summary>
+    /// Given that the R field of item location can be string enum or int, provide a method to get the exact type
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns>ItemLocation possible null</returns>
+    public static ItemLocation? TryParseItemLocation(Item item)
+    {
+        if (item.Location is not JsonElement jsonLocation)
+        {
+            return (ItemLocation?) item.Location;
+        }
+
+        var itemLocation = TryParseItemLocation(jsonLocation);
+        if (itemLocation != null)
+        {
+            return itemLocation;
+        }
+
+        var locationInGrid = TryParseLocationInGrid(jsonLocation);
+        if (locationInGrid == null)
+        {
+            return null;
+        }
+
+        itemLocation = new ItemLocation
+        {
+            X = locationInGrid.X,
+            Y = locationInGrid.Y,
+            IsSearched = locationInGrid.IsSearched,
+            R = locationInGrid.R == ItemRotation.Vertical ? 1 : 0
+        };
+        return itemLocation;
+    }
+
+    private static ItemLocation? TryParseItemLocation(JsonElement element)
+    {
+        try
+        {
+            return element.ToObject<ItemLocation>();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static LocationInGrid? TryParseLocationInGrid(JsonElement element)
+    {
+        try
+        {
+            return element.ToObject<LocationInGrid>();
+        }
+        catch
+        {
+            return null;
         }
     }
 }

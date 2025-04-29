@@ -842,15 +842,8 @@ public class InventoryHelper(
         // Check each item in container
         foreach (var item in containerItemHash)
         {
-            ItemLocation? itemLocation;
-            if (item.Location is JsonElement)
-            {
-                itemLocation = ((JsonElement) item.Location).ToObject<ItemLocation>();
-            }
-            else
-            {
-                itemLocation = (ItemLocation) item.Location;
-            }
+
+            var itemLocation = ItemHelper.TryParseItemLocation(item);
 
             if (itemLocation is null)
             {
