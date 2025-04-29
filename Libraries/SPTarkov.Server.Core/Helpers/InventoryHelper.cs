@@ -324,7 +324,7 @@ public class InventoryHelper(
             {
                 X = findSlotResult.X,
                 Y = findSlotResult.Y,
-                R = findSlotResult.Rotation.GetValueOrDefault(false) ? 1 : 0,
+                R = findSlotResult.Rotation.GetValueOrDefault(false) ? ItemRotation.Vertical : ItemRotation.Horizontal,
                 Rotation = findSlotResult.Rotation
             };
 
@@ -382,7 +382,7 @@ public class InventoryHelper(
             {
                 X = findSlotResult.X,
                 Y = findSlotResult.Y,
-                R = findSlotResult.Rotation.Value ? 1 : 0,
+                R = findSlotResult.Rotation.Value ? ItemRotation.Vertical : ItemRotation.Horizontal,
                 Rotation = findSlotResult.Rotation
             };
 
@@ -423,7 +423,7 @@ public class InventoryHelper(
             {
                 X = findSortingSlotResult.X,
                 Y = findSortingSlotResult.Y,
-                R = findSortingSlotResult.Rotation.Value ? 1 : 0,
+                R = findSortingSlotResult.Rotation.Value ? ItemRotation.Vertical : ItemRotation.Horizontal,
                 Rotation = findSortingSlotResult.Rotation
             };
         }
