@@ -44,7 +44,7 @@ public static class DependencyInjectionRegistrator
                     return registerableComponents;
                 }
             )
-            .GroupBy(t => t.RegistrableInterface.FullName);
+            .GroupBy(t => $"{t.RegistrableInterface.Namespace}.{t.RegistrableInterface.Name}");
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
         {
@@ -157,10 +157,7 @@ public static class DependencyInjectionRegistrator
         RegisterComponents(
             builderServices,
             serverLauncherAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable)))
-        );
-        RegisterComponents(
-            builderServices,
-            coreAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable)))
+                .Concat(coreAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable))))
         );
     }
 
