@@ -176,13 +176,6 @@ public record ItemLocation
         set;
     }
 
-    [JsonPropertyName("r")]
-    public int R
-    {
-        get;
-        set;
-    }
-
     [JsonPropertyName("isSearched")]
     public bool? IsSearched
     {
@@ -199,6 +192,22 @@ public record ItemLocation
         get;
         set;
     }
+
+    [JsonPropertyName("r")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ItemRotation R
+    {
+        get;
+        set;
+    }
+}
+
+public enum ItemRotation
+{
+    // Token: 0x0400259F RID: 9631
+    Horizontal,
+    // Token: 0x040025A0 RID: 9632
+    Vertical
 }
 
 public record Upd
