@@ -59,6 +59,7 @@ public class JsonUtil
             new EftEnumConverter<LogLevel>(),
             new EftEnumConverter<LogTextColor>(),
             new EftEnumConverter<LogBackgroundColor>(),
+            new EftEnumConverter<ItemRotation>(),
 
             new EftListEnumConverter<EquipmentSlots>(),
             new EftListEnumConverter<PlayerSide>(),
