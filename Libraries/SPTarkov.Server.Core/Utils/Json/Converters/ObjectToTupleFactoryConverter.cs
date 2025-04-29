@@ -47,7 +47,11 @@ public class ObjectToTupleFactoryConverter : JsonConverterFactory
                 try
                 {
                     // if we already have success, following values should be null
-                    if (success) values[i] = null;
+                    if (success)
+                    {
+                        values[i] = null;
+                        continue;
+                    }
                     var val = TryParseType(reader, types[i], options);
                     if (val is not null) success = true;
                     values[i] = val;

@@ -28,28 +28,51 @@ public class ObjectToTupleFactoryConverterTest()
     private JsonUtil _jsonUtil = new JsonUtil();
 
     [TestMethod]
-    public void TestEnumToObject()
+    public void TestReadEnumToObject()
     {
-        var json = "{ \"r\": \"Horizontal\" }";
+        var json = @"{ ""r"": ""Horizontal"" }";
         var testObject = _jsonUtil.Deserialize<TestObject>(json);
         Assert.AreEqual(testObject.R, new Tuple<ItemRotation?, int?, string?>(ItemRotation.Horizontal, null, null));
     }
 
     [TestMethod]
-    public void TestInt()
+    public void TestReadInt()
     {
-        var json = "{ \"r\": 0 }";
+        var json = @"{ ""r"": 0 }";
         var testObject = _jsonUtil.Deserialize<TestObject>(json);
         Assert.AreEqual(testObject.R, new Tuple<ItemRotation?, int?, string?>(null, 0, null));
     }
 
     [TestMethod]
-    public void TestString()
+    public void TestReadString()
     {
-        const string str = "Just some String";
-        var json = "{ \"r\": \"" + str + "\" }";
+        var json = @"{ ""r"": ""hello world"" }";
         Console.WriteLine(json);
         var testObject = _jsonUtil.Deserialize<TestObject>(json);
-        Assert.AreEqual(testObject.R, new Tuple<ItemRotation?, int?, string?>(null, null, str));
+        Assert.AreEqual(testObject.R, new Tuple<ItemRotation?, int?, string?>(null, null, "hello world"));
+    }
+
+    [TestMethod]
+    public void TestWriteEnum()
+    {
+        var obj = new TestObject { R = new Tuple<ItemRotation?, int?, string?>(ItemRotation.Horizontal,  1, "hello world"), };
+        var json = _jsonUtil.Serialize(obj);
+        Assert.AreEqual(@"{""r"":0}", json);
+    }
+
+    [TestMethod]
+    public void TestWriteInt()
+    {
+        var obj = new TestObject { R = new Tuple<ItemRotation?, int?, string?>(null,  1, "hello world"), };
+        var json = _jsonUtil.Serialize(obj);
+        Assert.AreEqual(@"{""r"":1}", json);
+    }
+
+    [TestMethod]
+    public void TestWriteString()
+    {
+        var obj = new TestObject { R = new Tuple<ItemRotation?, int?, string?>(null,  null, "hello world"), };
+        var json = _jsonUtil.Serialize(obj);
+        Assert.AreEqual(@"{""r"":""hello world""}", json);
     }
 }
