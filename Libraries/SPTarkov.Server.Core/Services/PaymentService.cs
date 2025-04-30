@@ -95,18 +95,17 @@ public class PaymentService(
         var totalCurrencyAmount = 0d;
 
         // Loop through each type of currency involved in the trade.
-        foreach (var currencyTpl in currencyAmounts)
+        foreach (var (currencyTpl, currencyAmount) in currencyAmounts)
         {
-            if (currencyTpl.Value <= 0)
+            if (currencyAmount <= 0)
             {
                 continue;
             }
 
-            var currencyAmount = currencyTpl.Value;
             totalCurrencyAmount += currencyAmount.Value;
 
             // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
-            AddPaymentToOutput(pmcData, currencyTpl.Key, currencyAmount.Value, sessionID, output);
+            AddPaymentToOutput(pmcData, currencyTpl, currencyAmount.Value, sessionID, output);
 
             // If there are warnings, exit early.
             if (output.Warnings?.Count > 0)
@@ -118,7 +117,7 @@ public class PaymentService(
             {
                 // Convert the amount to the trader's currency and update the sales sum.
                 var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
-                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl.Key),
+                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl),
                     _paymentHelper.GetCurrency(trader.Currency)
                 );
 
