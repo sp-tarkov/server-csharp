@@ -70,7 +70,7 @@ public class PaymentService(
                 {
                     // If the item is money, add its count to the currencyAmounts object.
                     // sometimes the currency can be in two parts, so it fails to tryadd the second part
-                    if (!currencyAmounts.TryAdd(item.Template, currencyAmounts.GetValueOrDefault(item.Template, 0) + itemRequest.Count))
+                    if (!currencyAmounts.TryAdd(item.Template, itemRequest.Count))
                     {
                         // if it fails, add the amount to the existing amount
                         currencyAmounts[item.Template] += itemRequest.Count;
@@ -83,7 +83,7 @@ public class PaymentService(
                 // Handle differently, `id` is the money type tpl
                 var currencyTpl = itemRequest.Id;
                 // sometimes the currency can be in two parts, so it fails to tryadd the second part
-                if (!currencyAmounts.TryAdd(currencyTpl, currencyAmounts.GetValueOrDefault(currencyTpl, 0) + itemRequest.Count))
+                if (!currencyAmounts.TryAdd(currencyTpl, itemRequest.Count))
                 {
                     // if it fails, add the amount to the existing amount
                     currencyAmounts[currencyTpl] += itemRequest.Count;
