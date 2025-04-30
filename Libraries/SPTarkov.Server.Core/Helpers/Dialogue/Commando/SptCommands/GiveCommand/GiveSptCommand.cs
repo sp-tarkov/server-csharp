@@ -111,8 +111,8 @@ public class GiveSptCommand(
                 _savedCommand.Remove(sessionId);
             }
 
-            isItemName = result.Groups[5].Value != null;
-            item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;
+            isItemName = (!string.IsNullOrEmpty(result.Groups[5].Value));
+            item = (!string.IsNullOrEmpty(result.Groups[5].Value)) ? result.Groups[5].Value : result.Groups[2].Value;
             quantity = +int.Parse(result.Groups[6].Value);
             if (quantity <= 0)
             {
