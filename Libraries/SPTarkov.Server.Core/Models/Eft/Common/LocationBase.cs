@@ -1955,6 +1955,13 @@ public record Wave
         set;
     }
 
+    [JsonPropertyName("KeepZoneOnSpawn")]
+    public bool? KeepZoneOnSpawn
+    {
+        get;
+        set;
+    }
+
     [JsonPropertyName("SpawnPoints")]
     public string? SpawnPoints
     {

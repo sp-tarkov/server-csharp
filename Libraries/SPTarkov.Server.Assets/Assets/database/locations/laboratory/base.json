@@ -10,6 +10,13 @@
   "AveragePlayerLevel": 45,
   "Banners": [
     {
+      "id": "67d1ad1b5df2d64de808e1da",
+      "pic": {
+        "path": "CONTENT/banners/banner_laboratory.jpg",
+        "rcid": ""
+      }
+    },
+    {
       "id": "5805f617245977100b2c1f41",
       "pic": {
         "path": "CONTENT/banners/tglabs.jpg",
@@ -489,11 +496,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -536,11 +543,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -577,8 +584,8 @@
     "FogVisibilitySpeedCoef": 1,
     "GainSight": 1,
     "KhorovodChance": 0,
-    "LockSpawnCheckRadius": 150,
-    "LockSpawnCheckRadiusPvE": 150,
+    "LockSpawnCheckRadius": 120,
+    "LockSpawnCheckRadiusPvE": 120,
     "LockSpawnStartTime": 10,
     "LockSpawnStartTimePvE": 10,
     "LockSpawnStepTime": 50,
@@ -588,7 +595,7 @@
     "MaxExfiltrationTime": 1800,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 1,
     "RainVisibilitySpeedCoef": 1,
     "Scattering": 1,
@@ -773,7 +780,7 @@
   "NewSpawnForPlayers": false,
   "NonWaveGroupScenario": {
     "Chance": 50,
-    "Enabled": false,
+    "Enabled": true,
     "MaxToBeGroup": 3,
     "MinToBeGroup": 2
   },
@@ -5733,6 +5740,10 @@
     {
       "TemplateId": "5c0530ee86f774697952d952",
       "Value": 2
+    },
+    {
+      "TemplateId": "676bf44c5539167c3603e869",
+      "Value": 0
     }
   ],
   "sav_summon_seconds": 60,

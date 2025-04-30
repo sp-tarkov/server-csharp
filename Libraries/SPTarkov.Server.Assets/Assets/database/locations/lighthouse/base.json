@@ -74,7 +74,7 @@
       "TriggerName": ""
     },
     {
-      "BossChance": 30,
+      "BossChance": 15,
       "BossDifficult": "normal",
       "BossEscortAmount": "0",
       "BossEscortDifficult": "normal",
@@ -98,7 +98,7 @@
       "TriggerName": "botEvent"
     },
     {
-      "BossChance": 30,
+      "BossChance": 20,
       "BossDifficult": "normal",
       "BossEscortAmount": "2",
       "BossEscortDifficult": "normal",
@@ -555,11 +555,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 80,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 80,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -602,11 +602,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 80,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 80,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -8408,6 +8408,10 @@
     {
       "TemplateId": "675aaa8f7f3c962069072b27",
       "Value": 2
+    },
+    {
+      "TemplateId": "676bf44c5539167c3603e869",
+      "Value": 0
     }
   ],
   "sav_summon_seconds": 60,
@@ -8467,6 +8471,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8474,7 +8479,7 @@
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 1,
-      "slots_max": 3,
+      "slots_max": 2,
       "slots_min": 0,
       "time_max": -1,
       "time_min": -1
@@ -8482,6 +8487,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8497,6 +8503,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8512,6 +8519,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8519,7 +8527,7 @@
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 3,
-      "slots_max": 3,
+      "slots_max": 2,
       "slots_min": 0,
       "time_max": -1,
       "time_min": -1
@@ -8527,14 +8535,16 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
-        "pve"
+        "pve",
+        "regular"
       ],
       "SpawnPoints": "Zone_Rocks",
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 4,
-      "slots_max": 0,
+      "slots_max": 2,
       "slots_min": 0,
       "time_max": -1,
       "time_min": -1
@@ -8542,8 +8552,10 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
-        "pve"
+        "pve",
+        "regular"
       ],
       "SpawnPoints": "Zone_Chalet",
       "WildSpawnType": "assault",
@@ -8557,6 +8569,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8572,6 +8585,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8587,14 +8601,16 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
-        "pve"
+        "pve",
+        "regular"
       ],
       "SpawnPoints": "Zone_LongRoad",
       "WildSpawnType": "assault",
       "isPlayers": false,
       "number": 8,
-      "slots_max": 0,
+      "slots_max": 2,
       "slots_min": 0,
       "time_max": -1,
       "time_min": -1
@@ -8602,6 +8618,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8617,6 +8634,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8632,6 +8650,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -8647,6 +8666,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
