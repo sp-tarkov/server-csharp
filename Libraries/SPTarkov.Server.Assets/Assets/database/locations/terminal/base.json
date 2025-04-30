@@ -100,20 +100,5 @@
   "Id": "Terminal",
   "_Id": "5704e5a4d2720bb45b8b4567",
   "Loot": [],
-  "Banners": [
-    {
-      "id": "5464e0404bdc2d2a708b4567",
-      "pic": {
-        "path": "CONTENT/banners/banner_usec.jpg",
-        "rcid": ""
-      }
-    },
-    {
-      "id": "5c1b857086f77465f465faa4",
-      "pic": {
-        "path": "CONTENT/banners/banner_scavraider.jpg",
-        "rcid": ""
-      }
-    }
-  ]
+  "Banners": []
 }
