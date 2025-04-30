@@ -94,7 +94,7 @@ public class Watermark
         var modding = _watermarkLocale.GetModding();
         var versionTag = GetVersionTag();
 
-        versionLabel = $"{sptConfig.ProjectName} {versionTag}";
+        versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
 
         text = [versionLabel];
         text = [..text, ..description];
