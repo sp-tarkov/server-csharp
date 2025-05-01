@@ -66,7 +66,7 @@ public class HttpServer(
             KeepAliveInterval = TimeSpan.FromSeconds(60)
         });
 
-        app.Use((HttpContext req, RequestDelegate _) =>
+        app?.Use((HttpContext req, RequestDelegate _) =>
             {
                 return Task.Factory.StartNew(async () => await HandleFallback(req));
             }
