@@ -1,3 +1,4 @@
+using System.Globalization;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -85,7 +86,7 @@ public class RewardHelper(
                     _traderHelper.AddStandingToTrader(
                         sessionId,
                         reward.Target,
-                        double.Parse(reward.Value.ToString())
+                        double.Parse(reward.Value.ToString(), CultureInfo.InvariantCulture)
                     );
                     break;
                 case RewardType.TraderUnlock:
