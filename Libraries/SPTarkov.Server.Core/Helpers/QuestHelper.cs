@@ -1,3 +1,4 @@
+using System.Globalization;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -67,7 +68,7 @@ public class QuestHelper(
             return true;
         }
 
-        var conditionValue = double.Parse(condition.Value.ToString());
+        var conditionValue = double.Parse(condition.Value.ToString(), CultureInfo.InvariantCulture);
         switch (condition.CompareMethod)
         {
             case ">=":

@@ -1,0 +1,25 @@
+# This workflow prevents pull requests from targeting the 'main' branch.
+name: Prevent PRs Targeting Main
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - edited
+jobs:
+  check_base_branch:
+    name: Check Target Branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Target Branch Check
+        if: github.event.pull_request.base.ref == 'main'
+        run: |
+          echo "::error::Pull requests targeting the 'main' branch are not allowed."
+          echo "Please change the target branch of this PR to 'develop' or a feature branch."
+          exit 1
+      - name: Target branch is allowed
+        if: github.event.pull_request.base.ref != 'main'
+        run: |
+          echo "Target branch (${{ github.event.pull_request.base.ref }}) is allowed. We good."
+          exit 0

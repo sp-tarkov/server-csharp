@@ -1,5 +1,4 @@
-﻿using System.Collections.Concurrent;
-using SPTarkov.Common.Annotations;
+﻿using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Context;
@@ -12,7 +11,7 @@ public class ApplicationContext
     private static ApplicationContext? _applicationContext;
     private readonly ISptLogger<ApplicationContext> _logger;
     private readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> _variables = new();
-    private readonly object _lockObject = new();
+    private readonly Lock _lockObject = new();
 
     /// <summary>
     ///     When ApplicationContext gets created by the DI container we store the singleton reference so we can provide it
@@ -62,7 +61,7 @@ public class ApplicationContext
         {
             if (!_variables.TryGetValue(type, out var savedValues))
             {
-                savedValues = new LinkedList<ContextVariable>();
+                savedValues = [];
                 if (!_variables.TryAdd(type, savedValues))
                 {
                     _logger.Error($"Unable to add context variable type: {type}");

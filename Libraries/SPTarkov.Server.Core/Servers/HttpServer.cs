@@ -21,6 +21,7 @@ public class HttpServer(
     CertificateHelper _certificateHelper,
     ApplicationContext _applicationContext,
     WebSocketServer _webSocketServer,
+    ProfileActivityService _profileActivityService,
     IEnumerable<IHttpListener> _httpListeners
 )
 {
@@ -88,16 +89,7 @@ public class HttpServer(
         context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
         if (sessionId != null)
         {
-            try
-            {
-                _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
-            }
-            catch (Exception ex)
-            {
-                _logger.Debug("Error while adding context value: " + ex.Message);
-                _logger.Critical(ex.StackTrace);
-                throw;
-            }
+            _profileActivityService.SetActivityTimestamp(sessionId);
         }
 
         // Extract header for original IP detection
