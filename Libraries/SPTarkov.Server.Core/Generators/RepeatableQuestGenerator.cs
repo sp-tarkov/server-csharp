@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -11,7 +12,7 @@ using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
 using SPTarkov.Server.Core.Utils.Collections;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Common.Annotations;
+using BodyParts = SPTarkov.Server.Core.Constants.BodyParts;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -30,6 +31,36 @@ public class RepeatableQuestGenerator(
     ICloner _cloner
 )
 {
+    /// <summary>
+    /// Body parts to present to the client as opposed to the body part information in quest data.
+    /// </summary>
+    private static readonly Dictionary<string, List<string>> _bodyPartsToClient = new()
+    {
+        {
+            BodyParts.Arms, [
+                BodyParts.LeftArm,
+                BodyParts.RightArm
+            ]
+        },
+        {
+            BodyParts.Legs, [
+                BodyParts.LeftLeg,
+                BodyParts.RightLeg
+            ]
+        },
+        {
+            BodyParts.Head, [
+                BodyParts.Head
+            ]
+        },
+        {
+            BodyParts.Chest, [
+                BodyParts.Chest,
+                BodyParts.Stomach
+            ]
+        },
+    };
+
     protected int _maxRandomNumberAttempts = 6;
     protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
@@ -218,7 +249,15 @@ public class RepeatableQuestGenerator(
             {
                 // more than one part lead to an "OR" condition hence more parts reduce the difficulty
                 probability += bodyPartsConfig.Probability(bodyPart).Value;
-                bodyPartsToClient.Add(bodyPart);
+
+                if (_bodyPartsToClient.TryGetValue(bodyPart, out var bodyPartListToClient))
+                {
+                    bodyPartsToClient.AddRange(bodyPartListToClient);
+                }
+                else
+                {
+                    bodyPartsToClient.Add(bodyPart);
+                }
             }
 
             bodyPartDifficulty = 1 / probability;
@@ -236,8 +275,7 @@ public class RepeatableQuestGenerator(
                 .GetDictionary()
                 .Select(x => x.Value)
                 .Where(x => x.Base?.Id != null)
-                .Select(
-                    x => new
+                .Select(x => new
                     {
                         x.Base.Id,
                         BossSpawn = x.Base.BossLocationSpawn
@@ -245,8 +283,7 @@ public class RepeatableQuestGenerator(
                 );
             // filter for the current boss to spawn on map
             var thisBossSpawns = bossSpawns
-                .Select(
-                    x => new
+                .Select(x => new
                     {
                         x.Id,
                         BossSpawn = x.BossSpawn
@@ -281,23 +318,20 @@ public class RepeatableQuestGenerator(
             if (distance > 50)
             {
                 List<string> weaponTypeBlacklist = ["Shotgun", "Pistol"];
-                weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
-                        .Where(
-                            category => weaponTypeBlacklist
-                                .Contains(category.Key)
-                        );
+
+                // Filter out close range weapons from long distance requirement
+                weaponCategoryRequirementConfig
+                    .RemoveAll(category => weaponTypeBlacklist
+                        .Contains(category.Key));
             }
             else if (distance < 20)
             {
                 List<string> weaponTypeBlacklist = ["MarksmanRifle", "DMR"];
+
                 // Filter out far range weapons from close distance requirement
-                weaponCategoryRequirementConfig =
-                    (ProbabilityObjectArray<string, List<string>>) weaponCategoryRequirementConfig
-                        .Where(
-                            category => weaponTypeBlacklist
-                                .Contains(category.Key)
-                        );
+                weaponCategoryRequirementConfig
+                    .RemoveAll(category => weaponTypeBlacklist
+                        .Contains(category.Key));
             }
 
             // Pick a weighted weapon category
@@ -383,7 +417,7 @@ public class RepeatableQuestGenerator(
     }
 
     /// <summary>
-    /// Get a number of kills needed to complete elimination quest
+    ///     Get a number of kills needed to complete elimination quest
     /// </summary>
     /// <param name="targetKey"> Target type desired e.g. anyPmc/bossBully/Savage </param>
     /// <param name="targetsConfig"> Config of the target </param>
@@ -541,8 +575,7 @@ public class RepeatableQuestGenerator(
             (double) (_mathUtil.Interp1(pmcLevel, levelsConfig, roublesConfig) * multi)
         );
         roublesBudget = Math.Max(roublesBudget, 5000d);
-        var itemSelection = possibleItemsToRetrievePool.Where(
-                x => _itemHelper.GetItemPrice(x.Id) < roublesBudget
+        var itemSelection = possibleItemsToRetrievePool.Where(x => _itemHelper.GetItemPrice(x.Id) < roublesBudget
             )
             .ToList();
 
@@ -557,8 +590,7 @@ public class RepeatableQuestGenerator(
                 .Where(p => p.MinPlayerLevel <= pmcLevel)
                 .SelectMany(x => x.ItemIds)
                 .ToHashSet(); //.Aggregate((a, p) => a.Concat(p.ItemIds), []);
-            itemSelection = itemSelection.Where(
-                    x =>
+            itemSelection = itemSelection.Where(x =>
                     {
                         // Whitelist can contain item tpls and item base type ids
                         return itemIdsWhitelisted.Any(v => _itemHelper.IsOfBaseclass(x.Id, v)) ||
@@ -581,8 +613,7 @@ public class RepeatableQuestGenerator(
                 .SelectMany(x => x.ItemIds)
                 .ToHashSet(); //.Aggregate(List<ItemsBlacklist> , (a, p) => a.Concat(p.ItemIds) );
 
-            itemSelection = itemSelection.Where(
-                    x =>
+            itemSelection = itemSelection.Where(x =>
                     {
                         return itemIdsBlacklisted.All(v => !_itemHelper.IsOfBaseclass(x.Id, v)) ||
                                !itemIdsBlacklisted.Contains(x.Id);
@@ -831,12 +862,11 @@ public class RepeatableQuestGenerator(
             var exitPool = mapExits.Where(exit => exit.Chance > 0).ToList();
 
             // Exclude exits with a requirement to leave (e.g. car extracts)
-            var possibleExits = exitPool.Where(
-                    exit =>
-                        exit.PassageRequirement is not null ||
-                        repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains(
-                            "PassageRequirement"
-                        )
+            var possibleExits = exitPool.Where(exit =>
+                    exit.PassageRequirement is not null ||
+                    repeatableConfig.QuestConfig.Exploration.SpecificExits.PassageRequirementWhitelist.Contains(
+                        "PassageRequirement"
+                    )
                 )
                 .ToList();
 
@@ -906,14 +936,12 @@ public class RepeatableQuestGenerator(
         findCondition.Target = new ListOrT<string>([itemTypeToFetchWithCount.ItemType], null);
         findCondition.Value = itemCountToFetch;
 
-        var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(
-            x => x.ConditionType == "CounterCreator"
+        var counterCreatorCondition = quest.Conditions.AvailableForFinish.FirstOrDefault(x => x.ConditionType == "CounterCreator"
         );
         // var locationCondition = counterCreatorCondition._props.counter.conditions.find(x => x._parent === "Location");
         // (locationCondition._props as ILocationConditionProps).target = [...locationTarget];
 
-        var equipmentCondition = counterCreatorCondition.Counter.Conditions.FirstOrDefault(
-            x => x.ConditionType == "Equipment"
+        var equipmentCondition = counterCreatorCondition.Counter.Conditions.FirstOrDefault(x => x.ConditionType == "Equipment"
         );
         equipmentCondition.EquipmentInclusive = [[itemTypeToFetchWithCount.ItemType]];
 

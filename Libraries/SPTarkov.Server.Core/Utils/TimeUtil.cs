@@ -167,7 +167,7 @@ public class TimeUtil
         // Create a new DateTime with the last full hour, 0 minutes, and 0 seconds
         var lastFullHour = new DateTime(now.Year, now.Month, now.Day, hours, 0, 0);
 
-        return ((DateTimeOffset) lastFullHour).ToUnixTimeMilliseconds();
+        return ((DateTimeOffset) lastFullHour).ToUnixTimeSeconds();
     }
 
     /// <summary>
@@ -187,19 +187,7 @@ public class TimeUtil
     /// <returns></returns>
     public DateTime GetDateTimeFromTimeStamp(long timeStamp)
     {
-        return DateTimeOffset.FromUnixTimeMilliseconds(timeStamp).DateTime;
-    }
-
-    /// <summary>
-    ///     Takes a date and gets difference between Epoch time and time provided resulting in a timestamp (date defaults to utcnow)
-    ///     This attempts to mimic gettime() in js
-    /// </summary>
-    /// <param name="date"></param>
-    /// <returns></returns>
-    public long GetTimeStampFromEpoch(DateTime? date = null)
-    {
-        var dateToCompare = date ?? DateTime.UtcNow;
-        return (long) (dateToCompare - DateTime.UnixEpoch).TotalMilliseconds;
+        return DateTimeOffset.FromUnixTimeSeconds(timeStamp).DateTime;
     }
 
     public int GetSecondsAsMilliseconds(int seconds)

@@ -1,6 +1,6 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Profile;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Routers.SaveLoad;
 

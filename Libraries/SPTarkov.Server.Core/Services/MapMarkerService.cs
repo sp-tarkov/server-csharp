@@ -1,9 +1,9 @@
 ﻿using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Inventory;
 using SPTarkov.Server.Core.Models.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -49,8 +49,7 @@ public class MapMarkerService(
         var mapItem = pmcData.Inventory.Items.FirstOrDefault(item => item.Id == request.Item);
 
         // remove marker
-        var markers = mapItem.Upd.Map.Markers.Where(
-                marker =>
+        var markers = mapItem.Upd.Map.Markers.Where(marker =>
                 {
                     return marker.X != request.X && marker.Y != request.Y;
                 }

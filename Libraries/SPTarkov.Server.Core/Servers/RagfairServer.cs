@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
 using SPTarkov.Server.Core.Models.Enums;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Servers;
 
@@ -67,7 +67,7 @@ public class RagfairServer(
     }
 
     /// <summary>
-    /// Get traders who need to be periodically refreshed
+    ///     Get traders who need to be periodically refreshed
     /// </summary>
     /// <returns> List of traders </returns>
     public List<string> GetUpdateableTraders()
@@ -85,7 +85,7 @@ public class RagfairServer(
     }
 
     /// <summary>
-    /// Disable/Hide an offer from flea
+    ///     Disable/Hide an offer from flea
     /// </summary>
     /// <param name="offerId"> OfferID to hide </param>
     public void HideOffer(string offerId)

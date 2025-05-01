@@ -13,7 +13,7 @@ This is the Server project for the Single Player Tarkov mod for Escape From Tark
   - [Commands](#commands)
   - [Debugging](#debugging)
   - [Mod Debugging](#mod-debugging)
-- [Deployment]()
+- [Deployment](#deployment)
 - [Contributing](#contributing)
   - [Branches](#branchs)
   - [Pull Request Guidelines](#pull-request-guidelines)

@@ -6,7 +6,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Hideout;
 public record HandleQTEEventRequestData : InventoryBaseActionRequestData
 {
     /// <summary>
-    /// true if QTE was successful, otherwise false
+    ///     true if QTE was successful, otherwise false
     /// </summary>
     [JsonPropertyName("results")]
     public List<bool>? Results
@@ -16,7 +16,7 @@ public record HandleQTEEventRequestData : InventoryBaseActionRequestData
     }
 
     /// <summary>
-    /// Id of the QTE object used from db/hideout/qte.json
+    ///     Id of the QTE object used from db/hideout/qte.json
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id

@@ -63,7 +63,7 @@ public record Templates
     }
 
     /// <summary>
-    /// The profile templates listed in the launcher on profile creation, split by account type (e.g. Standard) then side (e.g. bear/usec)
+    ///     The profile templates listed in the launcher on profile creation, split by account type (e.g. Standard) then side (e.g. bear/usec)
     /// </summary>
     [JsonPropertyName("profiles")]
     public ProfileTemplates? Profiles
@@ -73,7 +73,7 @@ public record Templates
     }
 
     /// <summary>
-    /// Flea prices of items - gathered from online flea market dump
+    ///     Flea prices of items - gathered from online flea market dump
     /// </summary>
     [JsonPropertyName("prices")]
     public Dictionary<string, double>? Prices
@@ -83,7 +83,7 @@ public record Templates
     }
 
     /// <summary>
-    /// Default equipment loadouts that show on main inventory screen
+    ///     Default equipment loadouts that show on main inventory screen
     /// </summary>
     [JsonPropertyName("defaultEquipmentPresets")]
     public List<DefaultEquipmentPreset>? DefaultEquipmentPresets
@@ -93,7 +93,7 @@ public record Templates
     }
 
     /// <summary>
-    /// Achievements
+    ///     Achievements
     /// </summary>
     [JsonPropertyName("achievements")]
     public List<Achievement>? Achievements
@@ -103,7 +103,7 @@ public record Templates
     }
 
     /// <summary>
-    /// Achievements
+    ///     Achievements
     /// </summary>
     [JsonPropertyName("customAchievements")]
     public List<Achievement>? CustomAchievements
@@ -113,7 +113,7 @@ public record Templates
     }
 
     /// <summary>
-    /// Location services data
+    ///     Location services data
     /// </summary>
     [JsonPropertyName("locationServices")]
     public LocationServices? LocationServices

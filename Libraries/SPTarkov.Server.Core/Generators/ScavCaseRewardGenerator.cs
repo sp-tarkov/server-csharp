@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -10,8 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -97,8 +97,7 @@ public class ScavCaseRewardGenerator(
         if (!_dbItemsCache.Any())
         {
             _dbItemsCache = _databaseService.GetItems()
-                .Values.Where(
-                    item =>
+                .Values.Where(item =>
                     {
                         // Base "Item" item has no parent, ignore it
                         if (item.Parent == "")
@@ -157,8 +156,7 @@ public class ScavCaseRewardGenerator(
         if (!_dbAmmoItemsCache.Any())
         {
             _dbAmmoItemsCache = _databaseService.GetItems()
-                .Values.Where(
-                    item =>
+                .Values.Where(item =>
                     {
                         // Base "Item" item has no parent, ignore it
                         if (item.Parent == "")
@@ -301,8 +299,7 @@ public class ScavCaseRewardGenerator(
     /// <returns>random ammo item from items.json</returns>
     protected TemplateItem GetRandomAmmo(string rarity)
     {
-        var possibleAmmoPool = _dbAmmoItemsCache.Where(
-            ammo =>
+        var possibleAmmoPool = _dbAmmoItemsCache.Where(ammo =>
             {
                 // Is ammo handbook price between desired range
                 var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(ammo.Id);
@@ -397,8 +394,7 @@ public class ScavCaseRewardGenerator(
         List<TemplateItem> dbItems,
         RewardCountAndPriceDetails itemFilters)
     {
-        return dbItems.Where(
-                item =>
+        return dbItems.Where(item =>
                 {
                     var handbookPrice = _ragfairPriceService.GetStaticPriceForItem(item.Id);
                     if (handbookPrice >= itemFilters.MinPriceRub && handbookPrice <= itemFilters.MaxPriceRub)
@@ -461,6 +457,7 @@ public class ScavCaseRewardGenerator(
             _ => 1
         };
     }
+
     /// <summary>
     ///     Randomises the size of ammo stacks
     /// </summary>
@@ -473,6 +470,7 @@ public class ScavCaseRewardGenerator(
             itemToCalculate.Properties.StackMaxSize ?? 0
         );
     }
+
     /// <summary>
     ///     Randomises the size of money stacks
     /// </summary>

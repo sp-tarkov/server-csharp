@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Ragfair;
@@ -6,8 +7,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
-using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -21,17 +20,17 @@ public class RagfairOfferHolder(
     ConfigServer _configServer
 )
 {
+    protected readonly Lock _expiredOfferIdsLock = new();
+    protected readonly Lock _ragfairOperationLock = new();
+
+    protected HashSet<string> _expiredOfferIds = [];
     protected int _maxOffersPerTemplate = _configServer.GetConfig<RagfairConfig>().Dynamic.OfferItemCount.Max;
     protected ConcurrentDictionary<string, RagfairOffer> _offersById = new();
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTemplate = new(); // key = tplId, value = list of offerIds
     protected ConcurrentDictionary<string, HashSet<string>> _offersByTrader = new(); // key = traderId, value = list of offerIds
 
-    protected HashSet<string> _expiredOfferIds = [];
-    protected readonly Lock _expiredOfferIdsLock = new Lock();
-    protected readonly Lock _ragfairOperationLock = new Lock();
-
     /// <summary>
-    /// Get a ragfair offer by its id
+    ///     Get a ragfair offer by its id
     /// </summary>
     /// <param name="id">Ragfair offer id</param>
     /// <returns>RagfairOffer</returns>
@@ -41,7 +40,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Get ragfair offers that match the passed in tpl
+    ///     Get ragfair offers that match the passed in tpl
     /// </summary>
     /// <param name="templateId">Tpl to get offers for</param>
     /// <returns>RagfairOffer list</returns>
@@ -62,7 +61,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Get all offers being sold by a trader
+    ///     Get all offers being sold by a trader
     /// </summary>
     /// <param name="traderId">Id of trader to get offers for</param>
     /// <returns>RagfairOffer list</returns>
@@ -80,7 +79,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    ///  Get all ragfair offers
+    ///     Get all ragfair offers
     /// </summary>
     /// <returns>RagfairOffer list</returns>
     public List<RagfairOffer> GetOffers()
@@ -94,7 +93,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Add a collection of offers to ragfair
+    ///     Add a collection of offers to ragfair
     /// </summary>
     /// <param name="offers">Offers to add</param>
     public void AddOffers(List<RagfairOffer> offers)
@@ -106,7 +105,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Add single offer to ragfair
+    ///     Add single offer to ragfair
     /// </summary>
     /// <param name="offer">Offer to add</param>
     public void AddOffer(RagfairOffer offer)
@@ -149,7 +148,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Remove an offer from ragfair by id
+    ///     Remove an offer from ragfair by id
     /// </summary>
     /// <param name="offerId">Offer id to remove</param>
     /// <param name="checkTraderOffers">OPTIONAL - Should trader offers be checked for offer id</param>
@@ -190,7 +189,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Remove all offers a trader has
+    ///     Remove all offers a trader has
     /// </summary>
     /// <param name="traderId">Trader id to remove offers from</param>
     public void RemoveAllOffersByTrader(string traderId)
@@ -211,7 +210,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Add offer to offersByTemplate cache
+    ///     Add offer to offersByTemplate cache
     /// </summary>
     /// <param name="template">Tpl to store offer against</param>
     /// <param name="offerId">Offer to store against tpl</param>
@@ -230,7 +229,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Cache an offer inside `offersByTrader` by trader id
+    ///     Cache an offer inside `offersByTrader` by trader id
     /// </summary>
     /// <param name="trader">Trader id to store offer against</param>
     /// <param name="offerId">Offer to store against</param>
@@ -249,7 +248,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Is the passed in offer stale - end time > passed in time
+    ///     Is the passed in offer stale - end time > passed in time
     /// </summary>
     /// <param name="offer">Offer to check</param>
     /// <param name="time">Time to check offer against</param>
@@ -280,7 +279,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Get total count of current expired offers
+    ///     Get total count of current expired offers
     /// </summary>
     /// <returns>Number of expired offers</returns>
     public int GetExpiredOfferCount()
@@ -292,7 +291,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Get an array of arrays of expired offer items + children
+    ///     Get an array of arrays of expired offer items + children
     /// </summary>
     /// <returns>Expired offer assorts</returns>
     public List<List<Item>> GetExpiredOfferItems()
@@ -324,7 +323,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Clear out internal expiredOffers dictionary of all items
+    ///     Clear out internal expiredOffers dictionary of all items
     /// </summary>
     public void ResetExpiredOfferIds()
     {
@@ -335,7 +334,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Flag offers with an expiry before the passed in timestamp
+    ///     Flag offers with an expiry before the passed in timestamp
     /// </summary>
     /// <param name="timestamp">Timestamp at point offer is 'expired'</param>
     public void FlagExpiredOffersAfterDate(long timestamp)
@@ -362,7 +361,7 @@ public class RagfairOfferHolder(
     }
 
     /// <summary>
-    /// Remove all offers flagged as stale/expired
+    ///     Remove all offers flagged as stale/expired
     /// </summary>
     public void RemoveExpiredOffers()
     {

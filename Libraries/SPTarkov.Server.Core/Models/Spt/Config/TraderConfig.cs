@@ -35,7 +35,7 @@ public record TraderConfig : BaseConfig
     }
 
     /// <summary>
-    /// Should trader reset times be set based on server start time (false = bsg time - on the hour)
+    ///     Should trader reset times be set based on server start time (false = bsg time - on the hour)
     /// </summary>
     [JsonPropertyName("tradersResetFromServerStart")]
     public bool TradersResetFromServerStart
@@ -83,7 +83,7 @@ public record UpdateTime
     }
 
     /// <summary>
-    /// Seconds between trader resets
+    ///     Seconds between trader resets
     /// </summary>
     [JsonPropertyName("seconds")]
     public MinMax<int> Seconds
@@ -166,7 +166,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Keyed to plate protection level
+    ///     Keyed to plate protection level
     /// </summary>
     [JsonPropertyName("chancePlateExistsInArmorPercent")]
     public Dictionary<string, double> ChancePlateExistsInArmorPercent
@@ -176,7 +176,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Key: item tpl
+    ///     Key: item tpl
     /// </summary>
     [JsonPropertyName("itemStackSizeOverrideMinMax")]
     public Dictionary<string, MinMax<int>?> ItemStackSizeOverrideMinMax
@@ -193,7 +193,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Prevent duplicate offers of items of specific categories by parentId
+    ///     Prevent duplicate offers of items of specific categories by parentId
     /// </summary>
     [JsonPropertyName("preventDuplicateOffersOfCategory")]
     public List<string> PreventDuplicateOffersOfCategory
@@ -210,7 +210,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Max rouble price before item is not listed on flea
+    ///     Max rouble price before item is not listed on flea
     /// </summary>
     [JsonPropertyName("itemCategoryRoublePriceLimit")]
     public Dictionary<string, double?> ItemCategoryRoublePriceLimit
@@ -220,7 +220,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Each slotid with % to be removed prior to listing on fence
+    ///     Each slotid with % to be removed prior to listing on fence
     /// </summary>
     [JsonPropertyName("presetSlotsToRemoveChancePercent")]
     public Dictionary<string, double?> PresetSlotsToRemoveChancePercent
@@ -230,7 +230,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Block seasonal items from appearing when season is inactive
+    ///     Block seasonal items from appearing when season is inactive
     /// </summary>
     [JsonPropertyName("blacklistSeasonalItems")]
     public bool BlacklistSeasonalItems
@@ -240,7 +240,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Max pen value allowed to be listed on flea - affects ammo + ammo boxes
+    ///     Max pen value allowed to be listed on flea - affects ammo + ammo boxes
     /// </summary>
     [JsonPropertyName("ammoMaxPenLimit")]
     public double AmmoMaxPenLimit
@@ -271,7 +271,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Smallest value player rep with fence can fall to
+    ///     Smallest value player rep with fence can fall to
     /// </summary>
     [JsonPropertyName("playerRepMin")]
     public double PlayerRepMin
@@ -281,7 +281,7 @@ public record FenceConfig
     }
 
     /// <summary>
-    /// Highest value player rep with fence can climb to
+    ///     Highest value player rep with fence can climb to
     /// </summary>
     [JsonPropertyName("playerRepMax")]
     public double PlayerRepMax
@@ -378,12 +378,12 @@ public record DiscountOptions
 }
 
 /// <summary>
-/// Custom trader data needed client side for things such as the clothing service
+///     Custom trader data needed client side for things such as the clothing service
 /// </summary>
 public record ModdedTraders
 {
     /// <summary>
-    /// Trader Ids to enable the clothing service for
+    ///     Trader Ids to enable the clothing service for
     /// </summary>
     [JsonPropertyName("clothingService")]
     public List<string> ClothingService

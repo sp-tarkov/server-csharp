@@ -1,8 +1,8 @@
 using System.Collections.Concurrent;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
-using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Common.Annotations;
 using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Eft.Common.Tables;
+using SPTarkov.Server.Core.Models.Utils;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -17,7 +17,7 @@ public class BotGenerationCacheService(
 
 
     /// <summary>
-    /// Store list of bots in cache, shuffle results before storage
+    ///     Store list of bots in cache, shuffle results before storage
     /// </summary>
     /// <param name="key"> Role bot is stored as (assault/bossTagilla etc.) </param>
     /// <param name="botsToStore"> Bots we want to store in the cache </param>
@@ -33,8 +33,8 @@ public class BotGenerationCacheService(
     }
 
     /// <summary>
-    /// Find and return a bot based on its role. <br/>
-    /// Remove bot from internal list so it can't be retrieved again.
+    ///     Find and return a bot based on its role. <br />
+    ///     Remove bot from internal list so it can't be retrieved again.
     /// </summary>
     /// <param name="key"> role to retrieve (assault/bossTagilla etc) </param>
     /// <returns> BotBase object </returns>
@@ -64,7 +64,7 @@ public class BotGenerationCacheService(
     }
 
     /// <summary>
-    /// Cache a bot that has been sent to the client in memory for later use post-raid to determine if player killed a traitor scav
+    ///     Cache a bot that has been sent to the client in memory for later use post-raid to determine if player killed a traitor scav
     /// </summary>
     /// <param name="botToStore"> Bot object to store </param>
     public void StoreUsedBot(BotBase botToStore)
@@ -73,8 +73,8 @@ public class BotGenerationCacheService(
     }
 
     /// <summary>
-    /// Get a bot by its profileId that has been generated and sent to client for current raid. <br/>
-    /// Cache is wiped post-raid in client/match/offline/end endOfflineRaid()
+    ///     Get a bot by its profileId that has been generated and sent to client for current raid. <br />
+    ///     Cache is wiped post-raid in client/match/offline/end endOfflineRaid()
     /// </summary>
     /// <param name="profileId"> ID of bot to get </param>
     /// <returns> BotBase object </returns>
@@ -84,7 +84,7 @@ public class BotGenerationCacheService(
     }
 
     /// <summary>
-    /// Remove all cached bot profiles from memory
+    ///     Remove all cached bot profiles from memory
     /// </summary>
     public void ClearStoredBots()
     {
@@ -93,7 +93,7 @@ public class BotGenerationCacheService(
     }
 
     /// <summary>
-    /// Does cache have a bot with requested key
+    ///     Does cache have a bot with requested key
     /// </summary>
     /// <returns> False if empty </returns>
     public bool CacheHasBotWithKey(string key, int size = 0)

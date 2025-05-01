@@ -20,8 +20,7 @@ public static class DependencyInjectionRegistrator
 
     public static void RegisterComponents(IServiceCollection builderServices, IEnumerable<Type> types)
     {
-        var groupedTypes = types.SelectMany(
-                t =>
+        var groupedTypes = types.SelectMany(t =>
                 {
                     var attributes = (Injectable[]) Attribute.GetCustomAttributes(t, typeof(Injectable));
                     var registerableType = t;
@@ -45,7 +44,7 @@ public static class DependencyInjectionRegistrator
                     return registerableComponents;
                 }
             )
-            .GroupBy(t => t.RegistrableInterface.FullName);
+            .GroupBy(t => $"{t.RegistrableInterface.Namespace}.{t.RegistrableInterface.Name}");
         // We get all injectable services to register them on our services
         foreach (var groupedInjectables in groupedTypes)
         {
@@ -74,21 +73,20 @@ public static class DependencyInjectionRegistrator
         {
             _allLoadedTypes ??= AppDomain.CurrentDomain.GetAssemblies().SelectMany(t => t.GetTypes()).ToList();
         }
-        catch(ReflectionTypeLoadException ex)
+        catch (ReflectionTypeLoadException ex)
         {
             Console.WriteLine($"COULD NOT LOAD TYPE: {ex}");
         }
+
         _allConstructors ??= _allLoadedTypes.SelectMany(t => t.GetConstructors()).ToList();
 
         var typeName = $"{valueTuple.RegistrableInterface.Namespace}.{valueTuple.RegistrableInterface.Name}";
         try
         {
-            var matchedConstructors = _allConstructors.Where(
-                c => c.GetParameters()
-                    .Any(
-                        p => p.ParameterType.IsGenericType &&
-                             p.ParameterType.GetGenericTypeDefinition().FullName == typeName
-                    )
+            var matchedConstructors = _allConstructors.Where(c => c.GetParameters()
+                .Any(p => p.ParameterType.IsGenericType &&
+                          p.ParameterType.GetGenericTypeDefinition().FullName == typeName
+                )
             );
 
             var constructorInfos = matchedConstructors.ToList();
@@ -100,7 +98,7 @@ public static class DependencyInjectionRegistrator
             foreach (var matchedConstructor in constructorInfos)
             {
                 var constructorParams = matchedConstructor.GetParameters();
-                foreach (var parameterInfo in constructorParams.Where(x => IsMatchingGenericType(x,typeName)))
+                foreach (var parameterInfo in constructorParams.Where(x => IsMatchingGenericType(x, typeName)))
                 {
                     var parameters = parameterInfo.ParameterType.GetGenericArguments();
                     var typedGeneric = valueTuple.TypeToRegister.MakeGenericType(parameters);
@@ -159,10 +157,7 @@ public static class DependencyInjectionRegistrator
         RegisterComponents(
             builderServices,
             serverLauncherAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable)))
-        );
-        RegisterComponents(
-            builderServices,
-            coreAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable)))
+                .Concat(coreAssembly.GetTypes().Where(type => Attribute.IsDefined(type, typeof(Injectable))))
         );
     }
 

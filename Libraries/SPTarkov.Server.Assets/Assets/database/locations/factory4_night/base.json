@@ -350,17 +350,17 @@
         ]
       }
     ],
-    "DistToActivate": 100,
-    "DistToActivatePvE": 100,
+    "DistToActivate": 140,
+    "DistToActivatePvE": 140,
     "DistToPersueAxemanCoef": 0.9,
-    "DistToSleep": 120,
-    "DistToSleepPvE": 120,
+    "DistToSleep": 150,
+    "DistToSleepPvE": 150,
     "FogVisibilityDistanceCoef": 1,
     "FogVisibilitySpeedCoef": 1,
     "GainSight": 1,
     "KhorovodChance": 0,
-    "LockSpawnCheckRadius": 150,
-    "LockSpawnCheckRadiusPvE": 150,
+    "LockSpawnCheckRadius": 120,
+    "LockSpawnCheckRadiusPvE": 120,
     "LockSpawnStartTime": 10,
     "LockSpawnStartTimePvE": 10,
     "LockSpawnStepTime": 50,
@@ -377,9 +377,9 @@
     "VisibleDistance": 1
   },
   "BotMarksman": 0,
-  "BotMax": 16,
+  "BotMax": 20,
   "BotMaxPlayer": 0,
-  "BotMaxPvE": 22,
+  "BotMaxPvE": 20,
   "BotMaxTimePlayer": 0,
   "BotNormal": 0,
   "BotSpawnCountStep": 3,
@@ -5132,6 +5132,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5148,6 +5149,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5164,6 +5166,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5180,6 +5183,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5196,6 +5200,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5212,6 +5217,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5228,6 +5234,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"
@@ -5244,6 +5251,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": true,
       "SpawnMode": [
         "regular",
         "pve"

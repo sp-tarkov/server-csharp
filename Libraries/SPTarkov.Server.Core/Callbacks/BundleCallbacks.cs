@@ -1,7 +1,7 @@
-﻿using SPTarkov.Server.Core.Loaders;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Loaders;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -20,7 +20,7 @@ public class BundleCallbacks(
     }
 
     /// <summary>
-    /// TODO: what does it do
+    ///     TODO: what does it do
     /// </summary>
     /// <returns></returns>
     public string GetBundle(string url, object info, string sessionID)

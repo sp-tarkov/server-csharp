@@ -1,3 +1,6 @@
+using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -10,9 +13,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -41,10 +41,10 @@ public class RagfairOfferHelper(
     ConfigServer _configServer)
 {
     protected const string _goodSoldTemplate = "5bdabfb886f7743e152e867e 0"; // Your {soldItem} {itemCount} items were bought by {buyerNickname}.
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     protected static readonly FrozenSet<string> _currencies = ["all", "RUB", "USD", "EUR"];
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     /// <summary>
     ///     Passthrough to ragfairOfferService.getOffers(), get flea offers a player should see
@@ -64,8 +64,7 @@ public class RagfairOfferHelper(
         var tieredFlea = _ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
         return _ragfairOfferService.GetOffers()
-            .Where(
-                offer =>
+            .Where(offer =>
                 {
                     if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
                     {
@@ -172,8 +171,7 @@ public class RagfairOfferHelper(
         var requiredOffers = _ragfairRequiredItemsService.GetRequiredItemsById(searchRequest.NeededSearchId);
         var tieredFlea = _ragfairConfig.TieredFlea;
         var tieredFleaLimitTypes = tieredFlea.UnlocksType;
-        return requiredOffers.Where(
-                offer =>
+        return requiredOffers.Where(offer =>
                 {
                     if (!PassesSearchFilterCriteria(searchRequest, offer, pmcData))
                     {
@@ -318,8 +316,7 @@ public class RagfairOfferHelper(
                 var lockedOffers = GetLoyaltyLockedOffers(possibleOffers, pmcData);
 
                 // Exclude locked offers + above loyalty locked offers if at least 1 was found
-                offersToSort = possibleOffers.Where(
-                        offer => !(offer.Locked.GetValueOrDefault(false) || lockedOffers.Contains(offer.Id))
+                offersToSort = possibleOffers.Where(offer => !(offer.Locked.GetValueOrDefault(false) || lockedOffers.Contains(offer.Id))
                     )
                     .ToList();
 
@@ -410,8 +407,7 @@ public class RagfairOfferHelper(
 
             if (
                     !traderAssorts[offer.User.Id]
-                        .Items.Any(
-                            item =>
+                        .Items.Any(item =>
                             {
                                 return item.Id == offer.Root;
                             }
@@ -434,8 +430,7 @@ public class RagfairOfferHelper(
     protected List<RagfairOffer> GetOffersInsideBuyRestrictionLimits(List<RagfairOffer> possibleOffers)
     {
         // Check offer has buy limit + is from trader + current buy count is at or over max
-        return possibleOffers.Where(
-                offer =>
+        return possibleOffers.Where(offer =>
                 {
                     if (
                         offer.BuyRestrictionMax is null &&
@@ -505,12 +500,10 @@ public class RagfairOfferHelper(
             traderAssorts.TryGetValue(offer.User.Id, out var assorts);
             if (assorts.BarterScheme
                 .Where(x => itemIds.Contains(x.Key))
-                .Any(
-                    barterKvP => barterKvP.Value
-                        .Any(
-                            subBarter => subBarter
-                                .Any(subBarter => subBarter.SptQuestLocked.GetValueOrDefault(false))
-                        )
+                .Any(barterKvP => barterKvP.Value
+                    .Any(subBarter => subBarter
+                        .Any(subBarter => subBarter.SptQuestLocked.GetValueOrDefault(false))
+                    )
                 ))
             {
                 return true;
@@ -796,13 +789,14 @@ public class RagfairOfferHelper(
             HandbookId = itemTpl
         };
 
+        var storagetime = _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile));
         _mailSendService.SendDirectNpcMessageToPlayer(
             offerOwnerSessionId,
-            _traderHelper.GetTraderById(Traders.RAGMAN).ToString(),
+            Traders.RAGMAN,
             MessageType.FLEAMARKET_MESSAGE,
             GetLocalisedOfferSoldMessage(itemTpl, boughtAmount),
             paymentItemsToSendToPlayer,
-            _timeUtil.GetHoursAsSeconds((int) _questHelper.GetMailItemRedeemTimeHoursForProfile(sellerProfile).Value),
+            storagetime,
             null,
             ragfairDetails
         );
@@ -942,7 +936,7 @@ public class RagfairOfferHelper(
         if (searchRequest.Currency > 0 && _paymentHelper.IsMoneyTpl(offerMoneyTypeTpl))
         {
             // Use 'currencies' as mapping for the money choice dropdown, e.g. 0 = all, 2 = "USD;
-            if(!_currencies.Contains(_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl)))
+            if (!_currencies.Contains(_ragfairHelper.GetCurrencyTag(offerMoneyTypeTpl)))
                 // Don't include item paid in wrong currency
             {
                 return false;

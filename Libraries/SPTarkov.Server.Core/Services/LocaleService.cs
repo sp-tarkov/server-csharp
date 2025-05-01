@@ -1,9 +1,8 @@
 using System.Globalization;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Server.Core.Utils.Json;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -16,11 +15,11 @@ public class LocaleService(
 {
     // we have to LazyLoad the data from the database and then combine it with the custom data before returning it
     protected LocaleConfig _localeConfig = _configServer.GetConfig<LocaleConfig>();
-    protected Dictionary<string, Dictionary<string, string>> customClientLocales = new Dictionary<string, Dictionary<string, string>>();
+    protected Dictionary<string, Dictionary<string, string>> customClientLocales = new();
 
     /// <summary>
-    /// Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
-    /// This will contain Custom locales added by mods
+    ///     Get the eft globals db file based on the configured locale in config/locale.json, if not found, fall back to 'en'
+    ///     This will contain Custom locales added by mods
     /// </summary>
     /// <returns> Dictionary of locales for desired language - en/fr/cn </returns>
     public Dictionary<string, string> GetLocaleDb(string? language = null)
@@ -40,7 +39,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Attempts to retrieve the locale database for the specified language key, including custom locales if available.
+    ///     Attempts to retrieve the locale database for the specified language key, including custom locales if available.
     /// </summary>
     /// <param name="languageKey">The language key for which the locale database should be retrieved.</param>
     /// <param name="localeToReturn">The resulting locale database as a dictionary, or null if the operation fails.</param>
@@ -66,9 +65,8 @@ public class LocaleService(
 
 
     /// <summary>
-    /// Combines the provided database locales with custom locales, ensuring that all entries are merged into a single dictionary.
-    /// Custom locale entries will overwrite existing keys from the database locales if conflicts occur.
-    ///
+    ///     Combines the provided database locales with custom locales, ensuring that all entries are merged into a single dictionary.
+    ///     Custom locale entries will overwrite existing keys from the database locales if conflicts occur.
     /// </summary>
     /// <param name="dbLocales">The dictionary containing locale entries from the database.</param>
     /// <param name="customLocales">The dictionary containing custom locale entries to be merged.</param>
@@ -79,8 +77,8 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Gets the game locale key from the locale.json file,
-    /// if value is 'system' get system locale
+    ///     Gets the game locale key from the locale.json file,
+    ///     if value is 'system' get system locale
     /// </summary>
     /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredGameLocale()
@@ -94,8 +92,8 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Gets the game locale key from the locale.json file,
-    /// if value is 'system' get system locale
+    ///     Gets the game locale key from the locale.json file,
+    ///     if value is 'system' get system locale
     /// </summary>
     /// <returns> Locale e.g en/ge/cz/cn </returns>
     public string GetDesiredServerLocale()
@@ -109,7 +107,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Get array of languages supported for localisation
+    ///     Get array of languages supported for localisation
     /// </summary>
     /// <returns> List of locales e.g. en/fr/cn </returns>
     public List<string> GetServerSupportedLocales()
@@ -118,7 +116,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Get array of languages supported for localisation
+    ///     Get array of languages supported for localisation
     /// </summary>
     /// <returns> Dictionary of locales e.g. en/fr/cn </returns>
     public Dictionary<string, string> GetLocaleFallbacks()
@@ -127,7 +125,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Get the full locale of the computer running the server lowercased e.g. en-gb / pt-pt
+    ///     Get the full locale of the computer running the server lowercased e.g. en-gb / pt-pt
     /// </summary>
     /// <returns> System locale as String </returns>
     public string GetPlatformForServerLocale()
@@ -170,7 +168,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Get the locale of the computer running the server
+    ///     Get the locale of the computer running the server
     /// </summary>
     /// <returns> Language part of locale e.g. 'en' part of 'en-US' </returns>
     protected string GetPlatformForClientLocale()
@@ -212,7 +210,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// This is in a function so we can overwrite it during testing
+    ///     This is in a function so we can overwrite it during testing
     /// </summary>
     /// <returns> The current platform locale </returns>
     protected CultureInfo GetPlatformLocale()
@@ -248,7 +246,7 @@ public class LocaleService(
     }
 
     /// <summary>
-    /// Blank out the "test" mail message from prapor
+    ///     Blank out the "test" mail message from prapor
     /// </summary>
     protected Dictionary<string, string> RemovePraporTestMessage(Dictionary<string, string> dbLocales)
     {

@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
@@ -8,9 +10,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -27,11 +27,10 @@ public class BotGeneratorHelper(
     ConfigServer _configServer
 )
 {
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-
     // Equipment slot ids that do not conflict with other slots
     protected static readonly FrozenSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
 
     /// <summary>
     ///     Adds properties to an item
@@ -509,9 +508,9 @@ public class BotGeneratorHelper(
     protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
     {
         return item?.Properties?.GetType().GetProperties()
-            .FirstOrDefault(x =>x.PropertyType == typeof(bool)
+            .FirstOrDefault(x => x.PropertyType == typeof(bool)
                                  && x.Name.ToLower() == blockingPropertyName
-                                 && (bool)x.GetValue(item.Properties)) is not null;
+                                 && (bool) x.GetValue(item.Properties)) is not null;
     }
 
     /// <summary>
@@ -618,9 +617,8 @@ public class BotGeneratorHelper(
                 }
 
                 // Get all root items in found container
-                var existingContainerItems = (inventory.Items ?? []).Where(
-                        item => item.ParentId == container.Id && item.SlotId == slotGrid.Name
-                    );
+                var existingContainerItems = (inventory.Items ?? []).Where(item => item.ParentId == container.Id && item.SlotId == slotGrid.Name
+                );
 
                 // Get root items in container we can iterate over to find out what space is free
                 var containerItemsToCheck = existingContainerItems.Where(x => x.SlotId == slotGrid.Name);
@@ -653,7 +651,7 @@ public class BotGeneratorHelper(
                                 {
                                     X = findSlotResult.X,
                                     Y = findSlotResult.Y,
-                                    R = findSlotResult.Rotation ?? false ? 1 : 0
+                                    R = findSlotResult.Rotation ?? false ? ItemRotation.Vertical : ItemRotation.Horizontal
                                 }
                                 ;
                         }

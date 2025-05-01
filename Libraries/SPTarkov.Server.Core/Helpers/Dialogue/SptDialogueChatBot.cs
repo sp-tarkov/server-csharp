@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando;
 using SPTarkov.Server.Core.Helpers.Dialogue.SPTFriend.Commands;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Callbacks;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue;
 

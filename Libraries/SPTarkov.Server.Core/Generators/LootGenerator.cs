@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -50,9 +50,8 @@ public class LootGenerator(
         {
             // Get list of all sealed containers from db - they're all the same, just for flavor
             var itemsDb = _itemHelper.GetItems();
-            var sealedWeaponContainerPool = itemsDb.Where(
-                item =>
-                    item.Name.Contains("event_container_airdrop")
+            var sealedWeaponContainerPool = itemsDb.Where(item =>
+                item.Name.Contains("event_container_airdrop")
             );
 
             for (var index = 0; index < sealedWeaponCrateCount; index++)
@@ -106,9 +105,8 @@ public class LootGenerator(
         );
         if (randomisedWeaponPresetCount > 0)
         {
-            var weaponDefaultPresets = globalDefaultPresets.Where(
-                    preset =>
-                        _itemHelper.IsOfBaseclass(preset.Encyclopedia, BaseClasses.WEAPON)
+            var weaponDefaultPresets = globalDefaultPresets.Where(preset =>
+                    _itemHelper.IsOfBaseclass(preset.Encyclopedia, BaseClasses.WEAPON)
                 )
                 .ToList();
 
@@ -139,13 +137,11 @@ public class LootGenerator(
         );
         if (randomisedArmorPresetCount > 0)
         {
-            var armorDefaultPresets = globalDefaultPresets.Where(
-                preset =>
-                    _itemHelper.ArmorItemCanHoldMods(preset.Encyclopedia)
+            var armorDefaultPresets = globalDefaultPresets.Where(preset =>
+                _itemHelper.ArmorItemCanHoldMods(preset.Encyclopedia)
             );
-            var levelFilteredArmorPresets = armorDefaultPresets.Where(
-                    armor =>
-                        IsArmorOfDesiredProtectionLevel(armor, options)
+            var levelFilteredArmorPresets = armorDefaultPresets.Where(armor =>
+                    IsArmorOfDesiredProtectionLevel(armor, options)
                 )
                 .ToList();
 
@@ -252,12 +248,11 @@ public class LootGenerator(
             itemBlacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
         }
 
-        var items = itemsDb.Where(
-                item =>
-                    !itemBlacklist.Contains(item.Id) &&
-                    string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
-                    !item.Properties.QuestItem.GetValueOrDefault(false) &&
-                    itemTypeWhitelist.Contains(item.Parent)
+        var items = itemsDb.Where(item =>
+                !itemBlacklist.Contains(item.Id) &&
+                string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
+                !item.Properties.QuestItem.GetValueOrDefault(false) &&
+                itemTypeWhitelist.Contains(item.Parent)
             )
             .ToList();
 
@@ -487,7 +482,7 @@ public class LootGenerator(
         List<List<Item>> itemsToReturn = [];
 
         // Choose a weapon to give to the player (weighted)
-        var chosenWeaponTpl = _weightedRandomHelper.GetWeightedValue<string>(
+        var chosenWeaponTpl = _weightedRandomHelper.GetWeightedValue(
             containerSettings.WeaponRewardWeight
         );
 
@@ -558,8 +553,7 @@ public class LootGenerator(
             if (rewardKey == BaseClasses.AMMO_BOX)
             {
                 // Get ammo boxes from db
-                var ammoBoxesDetails = containerSettings.AmmoBoxWhitelist.Select(
-                    tpl =>
+                var ammoBoxesDetails = containerSettings.AmmoBoxWhitelist.Select(tpl =>
                     {
                         var itemDetails = _itemHelper.GetItem(tpl);
                         return itemDetails.Value;
@@ -568,9 +562,8 @@ public class LootGenerator(
 
                 // Need to find boxes that matches weapons caliber
                 var weaponCaliber = weaponDetailsDb.Properties.AmmoCaliber;
-                var ammoBoxesMatchingCaliber = ammoBoxesDetails.Where(
-                    x =>
-                        x.Properties.AmmoCaliber == weaponCaliber
+                var ammoBoxesMatchingCaliber = ammoBoxesDetails.Where(x =>
+                    x.Properties.AmmoCaliber == weaponCaliber
                 );
                 if (!ammoBoxesMatchingCaliber.Any())
                 {
@@ -602,13 +595,12 @@ public class LootGenerator(
 
             // Get all items of the desired type + not quest items + not globally blacklisted
             var rewardItemPool = _databaseService.GetItems()
-                .Values.Where(
-                    item =>
-                        item.Parent == rewardKey &&
-                        string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
-                        _itemFilterService.IsItemBlacklisted(item.Id) &&
-                        !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem(item.Id)) &&
-                        item.Properties.QuestItem is null
+                .Values.Where(item =>
+                    item.Parent == rewardKey &&
+                    string.Equals(item.Type, "item", StringComparison.OrdinalIgnoreCase) &&
+                    _itemFilterService.IsItemBlacklisted(item.Id) &&
+                    !(containerSettings.AllowBossItems || _itemFilterService.IsBossItem(item.Id)) &&
+                    item.Properties.QuestItem is null
                 );
 
             if (!rewardItemPool.Any())
@@ -664,8 +656,7 @@ public class LootGenerator(
             }
 
             // Get items that fulfil reward type criteria from items that fit on gun
-            var relatedItems = linkedItemsToWeapon?.Where(
-                item => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
+            var relatedItems = linkedItemsToWeapon?.Where(item => item?.Parent == rewardKey && !_itemFilterService.IsItemBlacklisted(item.Id)
             );
             if (relatedItems is null || !relatedItems.Any())
             {
@@ -719,7 +710,7 @@ public class LootGenerator(
                 var preset = _presetHelper.GetDefaultPreset(chosenRewardItemTpl);
 
                 // Ensure preset has unique ids and is cloned so we don't alter the preset data stored in memory
-                List<Item> presetAndMods = _itemHelper.ReplaceIDs(preset.Items);
+                var presetAndMods = _itemHelper.ReplaceIDs(preset.Items);
 
                 _itemHelper.RemapRootItemId(presetAndMods);
                 itemsToReturn.Add(presetAndMods);
@@ -755,8 +746,7 @@ public class LootGenerator(
 
         return _randomUtil.GetArrayValue(
             GetItemRewardPool([], rewardContainerDetails.RewardTypePool, true, true, false)
-                .ItemPool.Select(
-                    item => item.Id
+                .ItemPool.Select(item => item.Id
                 )
         );
     }

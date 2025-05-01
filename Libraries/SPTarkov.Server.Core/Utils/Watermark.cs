@@ -1,10 +1,9 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Logging;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Server;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Utils;
 
@@ -95,7 +94,7 @@ public class Watermark
         var modding = _watermarkLocale.GetModding();
         var versionTag = GetVersionTag();
 
-        versionLabel = $"{sptConfig.ProjectName} {versionTag}";
+        versionLabel = $"{sptConfig.ProjectName} {versionTag} {sptConfig.CompatibleTarkovVersion}";
 
         text = [versionLabel];
         text = [..text, ..description];
@@ -125,7 +124,7 @@ public class Watermark
     }
 
     /// <summary>
-    /// Get a version string (x.x.x) or (x.x.x-BLEEDINGEDGE) OR (X.X.X (18xxx))
+    ///     Get a version string (x.x.x) or (x.x.x-BLEEDINGEDGE) OR (X.X.X (18xxx))
     /// </summary>
     /// <param name="withEftVersion">Include the eft version this spt version was made for</param>
     /// <returns></returns>
@@ -144,8 +143,8 @@ public class Watermark
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/version
-    /// Get text shown in game on screen, can't be translated as it breaks BSGs client when certain characters are used
+    ///     Handle singleplayer/settings/version
+    ///     Get text shown in game on screen, can't be translated as it breaks BSGs client when certain characters are used
     /// </summary>
     /// <returns>label text</returns>
     public string GetInGameVersionLabel()
@@ -159,7 +158,7 @@ public class Watermark
     }
 
     /// <summary>
-    /// Set window title
+    ///     Set window title
     /// </summary>
     protected void SetTitle()
     {
@@ -167,7 +166,7 @@ public class Watermark
     }
 
     /// <summary>
-    /// Draw watermark on screen
+    ///     Draw watermark on screen
     /// </summary>
     protected void Draw()
     {

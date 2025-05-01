@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -56,10 +56,10 @@ public class BotWeaponModLimitService(
     }
 
     /// <summary>
-    ///     Check if weapon mod item is on limited list + has surpassed the limit set for it <br/>
-    ///     Exception: Always allow ncstar backup mount <br/>
-    ///     Exception: Always allow scopes with a scope for a parent <br/>
-    ///     Exception: Always disallow mounts that hold only scopes once scope limit reached <br/>
+    ///     Check if weapon mod item is on limited list + has surpassed the limit set for it <br />
+    ///     Exception: Always allow ncstar backup mount <br />
+    ///     Exception: Always allow scopes with a scope for a parent <br />
+    ///     Exception: Always disallow mounts that hold only scopes once scope limit reached <br />
     ///     Exception: Always disallow mounts that hold only flashlights once flashlight limit reached
     /// </summary>
     /// <param name="botRole">role the bot has e.g. assault</param>
@@ -79,16 +79,15 @@ public class BotWeaponModLimitService(
         if (modsParent.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP || modTemplate.Id == ItemTpl.MOUNT_NCSTAR_MPR45_BACKUP)
         {
             // If weapon already has a longer ranged scope on it, allow ncstar to be spawned
-            if (weapon.Any(
-                    item =>
-                        _itemHelper.IsOfBaseclasses(
-                            item.Template,
-                            [
-                                BaseClasses.ASSAULT_SCOPE,
-                                BaseClasses.OPTIC_SCOPE,
-                                BaseClasses.SPECIAL_SCOPE
-                            ]
-                        )
+            if (weapon.Any(item =>
+                    _itemHelper.IsOfBaseclasses(
+                        item.Template,
+                        [
+                            BaseClasses.ASSAULT_SCOPE,
+                            BaseClasses.OPTIC_SCOPE,
+                            BaseClasses.SPECIAL_SCOPE
+                        ]
+                    )
                 ))
             {
                 return false;

@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
@@ -23,7 +23,6 @@ public class TraderAssortHelper(
     PaymentHelper _paymentHelper,
     RagfairAssortGenerator _ragfairAssortGenerator,
     RagfairOfferGenerator _ragfairOfferGenerator,
-    TraderAssortService _traderAssortService,
     LocalisationService _localisationService,
     TraderPurchasePersisterService _traderPurchasePersisterService,
     TraderHelper _traderHelper,
@@ -133,9 +132,8 @@ public class TraderAssortHelper(
     /// <param name="itemsTplsToRemove">Item TPLs the assort should not have</param>
     protected void RemoveItemsFromAssort(TraderAssort assortToFilter, HashSet<string> itemsTplsToRemove)
     {
-        assortToFilter.Items = assortToFilter.Items.Where(
-                item =>
-                    item.ParentId == "hideout" && itemsTplsToRemove.Contains(item.Template)
+        assortToFilter.Items = assortToFilter.Items.Where(item =>
+                item.ParentId == "hideout" && itemsTplsToRemove.Contains(item.Template)
             )
             .ToList();
     }
@@ -225,6 +223,6 @@ public class TraderAssortHelper(
     /// <returns>array of Items</returns>
     protected List<Item> GetPristineTraderAssorts(string traderId)
     {
-        return _cloner.Clone(_traderAssortService.GetPristineTraderAssort(traderId).Items);
+        return _cloner.Clone(_traderHelper.GetTraderAssortsByTraderId(traderId).Items);
     }
 }

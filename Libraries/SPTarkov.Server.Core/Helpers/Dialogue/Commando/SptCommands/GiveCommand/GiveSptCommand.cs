@@ -1,4 +1,6 @@
+using System.Collections.Frozen;
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers.Dialog.Commando.SptCommands;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
@@ -8,8 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers.Dialogue.Commando.SptCommands.GiveCommand;
 
@@ -111,8 +111,8 @@ public class GiveSptCommand(
                 _savedCommand.Remove(sessionId);
             }
 
-            isItemName = result.Groups[5].Value != null;
-            item = result.Groups[5].Value is not null ? result.Groups[5].Value : result.Groups[2].Value;
+            isItemName = (!string.IsNullOrEmpty(result.Groups[5].Value));
+            item = (!string.IsNullOrEmpty(result.Groups[5].Value)) ? result.Groups[5].Value : result.Groups[2].Value;
             quantity = +int.Parse(result.Groups[6].Value);
             if (quantity <= 0)
             {
@@ -146,16 +146,14 @@ public class GiveSptCommand(
                 var allAllowedItemNames = _itemHelper
                     .GetItems()
                     .Where(IsItemAllowed)
-                    .Select(
-                        i => localizedGlobal
-                            .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
-                            ?.ToLower()
+                    .Select(i => localizedGlobal
+                        .GetValueOrDefault($"{i.Id} Name", i.Properties.Name)
+                        ?.ToLower()
                     )
                     .Where(i => !string.IsNullOrEmpty(i));
 
                 var closestItemsMatchedByName = allAllowedItemNames
-                    .Select(
-                        i => new
+                    .Select(i => new
                         {
                             Match = StringSimilarity.Match(item, i, 2, true),
                             ItemName = i
@@ -296,7 +294,7 @@ public class GiveSptCommand(
     }
 
     /// <summary>
-    /// Return the desired locale, falls back to english if it cannot be found
+    ///     Return the desired locale, falls back to english if it cannot be found
     /// </summary>
     /// <param name="desiredLocale">Locale code, e.g. "fr" for french</param>
     /// <returns></returns>

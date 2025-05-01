@@ -1,3 +1,5 @@
+using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
@@ -8,9 +10,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -110,11 +110,10 @@ public class ProfileHelper(
         var allProfiles = _saveServer.GetProfiles().Values;
 
         // Find a profile that doesn't have same session id but has same name
-        return allProfiles.Any(
-            p =>
-                ProfileHasInfoProperty(p) &&
-                !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
-                StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower())
+        return allProfiles.Any(p =>
+            ProfileHasInfoProperty(p) &&
+            !StringsMatch(p.ProfileInfo.ProfileId, sessionID) && // SessionIds dont match
+            StringsMatch(p.CharacterData.PmcData.Info.LowerNickname.ToLower(), nicknameRequest.Nickname.ToLower())
         ); // Nicknames do
     }
 
@@ -733,7 +732,7 @@ public class ProfileHelper(
     }
 
     /// <summary>
-    /// Add the given number of extra repeatable quests for the given type of repeatable to the users profile
+    ///     Add the given number of extra repeatable quests for the given type of repeatable to the users profile
     /// </summary>
     /// <param name="fullProfile">Profile to add the extra repeatable to</param>
     /// <param name="repeatableId">The ID of the type of repeatable to increase</param>

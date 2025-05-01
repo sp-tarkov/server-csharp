@@ -1,11 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Controllers;
 using SPTarkov.Server.Core.DI;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Request;
-using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Dialog;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Callbacks;
 
@@ -73,7 +72,7 @@ public class DialogueCallbacks(
 
     /// <summary>
     ///     Handle client/mail/dialog/list
-    /// TODO: request properties are not handled
+    ///     TODO: request properties are not handled
     /// </summary>
     /// <returns></returns>
     public virtual string GetMailDialogList(string url, GetMailDialogListRequestData request, string sessionID)

@@ -23670,6 +23670,32 @@
       "_parent": "676408beba9ecbb20a005306",
       "_type": "Preset"
     },
+    "67a328326e3613a197068d05": {
+      "_changeWeaponName": false,
+      "_encyclopedia": "676bf44c5539167c3603e869",
+      "_id": "67a328326e3613a197068d05",
+      "_items": [
+        {
+          "_id": "67a328326e3613a197068d08",
+          "_tpl": "676bf44c5539167c3603e869",
+          "upd": {
+            "Repairable": {
+              "Durability": 100,
+              "MaxDurability": 100
+            }
+          }
+        },
+        {
+          "_id": "67a328326e3613a197068d09",
+          "_tpl": "67446fdd752be02c220f27b3",
+          "parentId": "67a328326e3613a197068d08",
+          "slotId": "patron_in_weapon"
+        }
+      ],
+      "_name": "rshg2_std",
+      "_parent": "67a328326e3613a197068d08",
+      "_type": "Preset"
+    },
     "67c86f58179c494df00eedf6": {
       "_changeWeaponName": false,
       "_encyclopedia": "67ab2f28dafe3b22670c9116",
@@ -29767,6 +29793,7 @@
         }
       },
       "PmcBotKillStandingMultiplier": 1,
+      "ScavEquipmentChancePercentThreshold": 5,
       "paidExitStandingNumerator": 0.2
     },
     "FractureCausedByBulletHit": {
@@ -32426,6 +32453,7 @@
     },
     "LegsOverdamage": 1,
     "LoadTimeSpeedProgress": 1,
+    "MailItemsExpirationTimeLimitWarning": 24,
     "Malfunction": {
       "AllowMalfForBots": false,
       "AmmoFeedWt": 0.2,
@@ -34725,6 +34753,11 @@
         "MaxInLobby": 0,
         "MaxInRaid": 0,
         "TemplateId": "67ea616a74f765cefd009fb7"
+      },
+      {
+        "MaxInLobby": 2,
+        "MaxInRaid": 2,
+        "TemplateId": "676bf44c5539167c3603e869"
       }
     ],
     "RunddansSettings": {

@@ -1,4 +1,6 @@
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -11,8 +13,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using BonusSettings = SPTarkov.Server.Core.Models.Spt.Config.BonusSettings;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
@@ -577,8 +577,8 @@ public class RepairService(
         var template = hasTemplate.Value;
 
         // Returns SkillTypes.LIGHT_VESTS/HEAVY_VESTS/WEAPON_TREATMENT
-        var itemSkillType = (SkillTypes) GetItemSkillType(template);
-        if (itemSkillType == null)
+        var itemSkillType = GetItemSkillType(template);
+        if (itemSkillType is null)
         {
             return false;
         }
@@ -598,8 +598,8 @@ public class RepairService(
             {
                 SkillTypes.LightVests,
                 SkillTypes.HeavyVests
-            }.Contains(itemSkillType) &&
-            _profileHelper.GetSkillFromProfile(pmcData, itemSkillType)?.Progress < 1000
+            }.Contains(itemSkillType.Value) &&
+            _profileHelper.GetSkillFromProfile(pmcData, itemSkillType.Value)?.Progress < 1000
         )
         {
             return false;
@@ -626,7 +626,7 @@ public class RepairService(
         var receivedDurabilityMaxPercent = buffSettings.ReceivedDurabilityMaxPercent;
 
         var skillLevel =
-            Math.Truncate((_profileHelper.GetSkillFromProfile(pmcData, itemSkillType)?.Progress ?? 0) / 100);
+            Math.Truncate((_profileHelper.GetSkillFromProfile(pmcData, itemSkillType.Value)?.Progress ?? 0) / 100);
 
         if (repairDetails.RepairPoints is null)
         {

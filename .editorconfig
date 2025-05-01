@@ -13,7 +13,10 @@ indent_size = 4
 trim_trailing_whitespace = true
 
 [*.json]
-ij_formatter_enabled = false
+ij_formatter_enabled = true
+indent_style = space
+indent_size = 2
+trim_trailing_whitespace = true
 
 # C# files
 [*.cs]

@@ -422,8 +422,9 @@ public record TraderRepair
         get;
         set;
     }
+
     /// <summary>
-    /// Doesn't exist in client object
+    ///     Doesn't exist in client object
     /// </summary>
     [JsonPropertyName("excluded_id_list")]
     public List<string>? ExcludedIdList

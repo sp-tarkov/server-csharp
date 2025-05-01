@@ -1,11 +1,11 @@
-﻿using SPTarkov.Server.Core.Models.Eft.Common;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
+using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -18,9 +18,9 @@ public class InRaidHelper(
     DatabaseService _databaseService
 )
 {
+    protected static readonly List<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
     protected InRaidConfig _inRaidConfig = _configServer.GetConfig<InRaidConfig>();
     protected LostOnDeathConfig _lostOnDeathConfig = _configServer.GetConfig<LostOnDeathConfig>();
-    protected static readonly List<string> _pocketSlots = ["pocket1", "pocket2", "pocket3", "pocket4"];
 
     /// <summary>
     ///     Deprecated. Reset the skill points earned in a raid to 0, ready for next raid.
@@ -98,8 +98,7 @@ public class InRaidHelper(
     {
         var dbItems = _databaseService.GetItems();
 
-        var itemsToRemovePropertyFrom = items.Where(
-            item =>
+        var itemsToRemovePropertyFrom = items.Where(item =>
             {
                 // Has upd object + upd.SpawnedInSession property + not a quest item
                 return (item.Upd?.SpawnedInSession ?? false) &&
@@ -130,8 +129,7 @@ public class InRaidHelper(
         foreach (var itemToAdd in itemsToAdd)
         {
             // Try to find index of item to determine if we should add or replace
-            var existingItemIndex = serverInventoryItems.FindIndex(
-                inventoryItem => inventoryItem.Id == itemToAdd.Id
+            var existingItemIndex = serverInventoryItems.FindIndex(inventoryItem => inventoryItem.Id == itemToAdd.Id
             );
             if (existingItemIndex == -1)
             {
@@ -212,8 +210,7 @@ public class InRaidHelper(
         var equipmentRootId = pmcProfile?.Inventory?.Equipment;
         var questRaidItemContainerId = pmcProfile?.Inventory?.QuestRaidItems;
 
-        return inventoryItems.Where(
-                item =>
+        return inventoryItems.Where(item =>
                 {
                     // Keep items flagged as kept after death
                     if (IsItemKeptAfterDeath(pmcProfile, item))

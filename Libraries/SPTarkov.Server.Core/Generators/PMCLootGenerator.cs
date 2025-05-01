@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -6,7 +7,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -63,19 +63,19 @@ public class PMCLootGenerator
             _pocketLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Pockets;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
+                    .Pockets;
 
             var allowedItemTypeWhitelist = _pmcConfig.PocketLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(
-                item =>
-                    allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent) &&
-                    ItemFitsInto1By2Slot(item.Value)
+            var itemsToAdd = items.Where(item =>
+                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
+                _itemHelper.IsValidItem(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Parent) &&
+                ItemFitsInto1By2Slot(item.Value)
             ).Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)
@@ -113,6 +113,7 @@ public class PMCLootGenerator
         blacklist.UnionWith(_pmcConfig.PocketLoot.Blacklist);
         blacklist.UnionWith(_pmcConfig.GlobalLootBlacklist);
         blacklist.UnionWith(_itemFilterService.GetBlacklistedItems());
+        blacklist.UnionWith(_itemFilterService.GetBlacklistedLootableItems());
         blacklist.UnionWith(_seasonalEventService.GetInactiveSeasonalEventItems());
 
         return blacklist;
@@ -131,19 +132,19 @@ public class PMCLootGenerator
             _vestLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.TacticalVest;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
+                    .TacticalVest;
 
             var allowedItemTypeWhitelist = _pmcConfig.VestLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(
-                item =>
-                    allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent) &&
-                    ItemFitsInto2By2Slot(item.Value)
+            var itemsToAdd = items.Where(item =>
+                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
+                _itemHelper.IsValidItem(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Parent) &&
+                ItemFitsInto2By2Slot(item.Value)
             ).Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)
@@ -214,18 +215,18 @@ public class PMCLootGenerator
             _backpackLootPool = new ConcurrentDictionary<string, double>();
             var items = _databaseService.GetItems();
             var pmcPriceOverrides =
-                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items.Backpack;
+                _databaseService.GetBots().Types[string.Equals(botRole, "pmcbear", StringComparison.OrdinalIgnoreCase) ? "bear" : "usec"].BotInventory.Items
+                    .Backpack;
 
             var allowedItemTypeWhitelist = _pmcConfig.BackpackLoot.Whitelist;
 
             var blacklist = GetLootBlacklist();
 
-            var itemsToAdd = items.Where(
-                item =>
-                    allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
-                    _itemHelper.IsValidItem(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Id) &&
-                    !blacklist.Contains(item.Value.Parent)
+            var itemsToAdd = items.Where(item =>
+                allowedItemTypeWhitelist.Contains(item.Value.Parent) &&
+                _itemHelper.IsValidItem(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Id) &&
+                !blacklist.Contains(item.Value.Parent)
             ).Select(x => x.Key);
 
             foreach (var tpl in itemsToAdd)

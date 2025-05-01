@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -9,8 +11,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -29,17 +29,17 @@ public class FenceService(
 )
 {
     /// <summary>
-    /// Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts()
+    ///     Desired baseline counts - Hydrated on initial assort generation as part of generateFenceAssorts()
     /// </summary>
     protected FenceAssortGenerationValues desiredAssortCounts;
 
     /// <summary>
-    /// Main assorts you see at all rep levels
+    ///     Main assorts you see at all rep levels
     /// </summary>
     protected TraderAssort? fenceAssort;
 
     /// <summary>
-    /// Assorts shown on a separate tab when you max out fence rep
+    ///     Assorts shown on a separate tab when you max out fence rep
     /// </summary>
     protected TraderAssort? fenceDiscountAssort;
 
@@ -57,7 +57,7 @@ public class FenceService(
     ];
 
     /// <summary>
-    /// Time when some items in assort will be replaced
+    ///     Time when some items in assort will be replaced
     /// </summary>
     protected long nextPartialRefreshTimestamp;
 
@@ -65,7 +65,7 @@ public class FenceService(
 
 
     /// <summary>
-    /// Replace main fence assort with new assort
+    ///     Replace main fence assort with new assort
     /// </summary>
     /// <param name="assort"> New assorts to replace old with </param>
     public void SetFenceAssort(TraderAssort assort)
@@ -74,7 +74,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Replace discount fence assort with new assort
+    ///     Replace discount fence assort with new assort
     /// </summary>
     /// <param name="discountAssort"> New assorts to replace old with </param>
     public void SetFenceDiscountAssort(TraderAssort discountAssort)
@@ -83,7 +83,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get main fence assort
+    ///     Get main fence assort
     /// </summary>
     /// <returns> TraderAssort </returns>
     public TraderAssort? GetMainFenceAssort()
@@ -92,7 +92,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get discount fence assort
+    ///     Get discount fence assort
     /// </summary>
     /// <returns> TraderAssort </returns>
     /// @return ITraderAssort
@@ -102,8 +102,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get assorts player can purchase <br/>
-    /// Adjust prices based on fence level of player
+    ///     Get assorts player can purchase <br />
+    ///     Adjust prices based on fence level of player
     /// </summary>
     /// <param name="pmcProfile"> Player profile </param>
     /// <returns> TraderAssort </returns>
@@ -137,7 +137,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Adds to fence assort a single item (with its children)
+    ///     Adds to fence assort a single item (with its children)
     /// </summary>
     /// <param name="items"> The items to add with all its children </param>
     /// <param name="mainItem"> The most parent item of the array </param>
@@ -187,7 +187,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Calculates the overall price for an item (with all its children)
+    ///     Calculates the overall price for an item (with all its children)
     /// </summary>
     /// <param name="itemTpl"> The item tpl to calculate the fence price for </param>
     /// <param name="items"> The items (with its children) to calculate fence price for </param>
@@ -200,8 +200,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Calculate the overall price for an ammo box, where only one item is
-    /// the ammo box itself and every other items are the bullets in that box
+    ///     Calculate the overall price for an ammo box, where only one item is
+    ///     the ammo box itself and every other items are the bullets in that box
     /// </summary>
     /// <param name="items"> The ammo box (and all its children ammo items) </param>
     /// <returns> The price of the ammo box </returns>
@@ -220,7 +220,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Adjust all items contained inside an assort by a multiplier
+    ///     Adjust all items contained inside an assort by a multiplier
     /// </summary>
     /// <param name="assort"> (clone) Assort that contains items with prices to adjust </param>
     /// <param name="itemMultiplier"> Multiplier to use on items </param>
@@ -239,7 +239,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Merge two trader assort files together
+    ///     Merge two trader assort files together
     /// </summary>
     /// <param name="firstAssort"> Assort #1 </param>
     /// <param name="secondAssort"> Assort #2 </param>
@@ -266,7 +266,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Adjust assorts price by a modifier
+    ///     Adjust assorts price by a modifier
     /// </summary>
     /// <param name="item"> Assort item details</param>
     /// <param name="assort"> Assort to be modified </param>
@@ -309,7 +309,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get fence assorts with no price adjustments based on fence rep
+    ///     Get fence assorts with no price adjustments based on fence rep
     /// </summary>
     /// <returns> TraderAssort </returns>
     public TraderAssort GetRawFenceAssorts()
@@ -318,7 +318,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Does fence need to perform a partial refresh because its passed the refresh timer defined in trader.json
+    ///     Does fence need to perform a partial refresh because its passed the refresh timer defined in trader.json
     /// </summary>
     /// <returns> True if it needs a partial refresh </returns>
     public bool NeedsPartialRefresh()
@@ -327,7 +327,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Replace a percentage of fence assorts with freshly generated items
+    ///     Replace a percentage of fence assorts with freshly generated items
     /// </summary>
     public void PerformPartialRefresh()
     {
@@ -387,7 +387,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Handle the process of folding new assorts into existing assorts, when a new assort exists already, increment its StackObjectsCount instead
+    ///     Handle the process of folding new assorts into existing assorts, when a new assort exists already, increment its StackObjectsCount instead
     /// </summary>
     /// <param name="newFenceAssorts"> Assorts to fold into existing fence assorts </param>
     /// <param name="existingFenceAssorts"> Current fence assorts, new assorts will be added to </param>
@@ -410,8 +410,7 @@ public class FenceService(
             }
 
             // Find a matching root item with same tpl in existing assort
-            var existingRootItem = existingFenceAssorts.Items.FirstOrDefault(
-                item => item.Template == newRootItem.Template && item.SlotId == "hideout"
+            var existingRootItem = existingFenceAssorts.Items.FirstOrDefault(item => item.Template == newRootItem.Template && item.SlotId == "hideout"
             );
 
             // Check if same type of item exists + its on list of item types to always stack
@@ -439,7 +438,7 @@ public class FenceService(
             // if the Upd doesnt exist just initialize it
             if (newRootItem.Upd == null)
             {
-                newRootItem.Upd = new Upd()
+                newRootItem.Upd = new Upd
                 {
                     StackObjectsCount = 1
                 };
@@ -453,7 +452,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Increment fence next refresh timestamp by current timestamp + partialRefreshTimeSeconds from config
+    ///     Increment fence next refresh timestamp by current timestamp + partialRefreshTimeSeconds from config
     /// </summary>
     protected void IncrementPartialRefreshTime()
     {
@@ -461,7 +460,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get values that will hydrate the passed in assorts back to the desired counts
+    ///     Get values that will hydrate the passed in assorts back to the desired counts
     /// </summary>
     /// <param name="assortItems"> Current assorts after items have been removed </param>
     /// <param name="generationValues"> Base counts assorts should be adjusted to </param>
@@ -506,7 +505,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Delete desired number of items from assort (including children)
+    ///     Delete desired number of items from assort (including children)
     /// </summary>
     /// <param name="itemCountToReplace"> Number of items to replace </param>
     /// <param name="assort"> Assort to adjust </param>
@@ -523,7 +522,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Choose an item at random and remove it + mods from assorts
+    ///     Choose an item at random and remove it + mods from assorts
     /// </summary>
     /// <param name="assort"> Trader assort to remove item from </param>
     /// <param name="rootItems"> Pool of root items to pick from to remove </param>
@@ -572,7 +571,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get an integer rounded count of items to replace based on percentage from traderConfig value
+    ///     Get an integer rounded count of items to replace based on percentage from traderConfig value
     /// </summary>
     /// <param name="totalItemCount"> Total item count </param>
     /// <returns> Rounded int of items to replace </returns>
@@ -582,7 +581,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get the count of items fence offers
+    ///     Get the count of items fence offers
     /// </summary>
     /// <returns> Number </returns>
     public int GetOfferCount()
@@ -596,8 +595,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Create trader assorts for fence and store in fenceService cache
-    /// Uses fence base cache generation server start as a base
+    ///     Create trader assorts for fence and store in fenceService cache
+    ///     Uses fence base cache generation server start as a base
     /// </summary>
     public void GenerateFenceAssorts()
     {
@@ -621,7 +620,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Convert the intermediary assort data generated into format client can process
+    ///     Convert the intermediary assort data generated into format client can process
     /// </summary>
     /// <param name="intermediaryAssorts"> Generated assorts that will be converted </param>
     /// <returns> TraderAssort in the correct data format for Fence </returns>
@@ -640,8 +639,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Create object that contains calculated fence assort item values to make based on config.
-    /// Stored in desiredAssortCounts
+    ///     Create object that contains calculated fence assort item values to make based on config.
+    ///     Stored in desiredAssortCounts
     /// </summary>
     protected void CreateInitialFenceAssortGenerationValues()
     {
@@ -664,32 +663,32 @@ public class FenceService(
         result.Normal.Item = traderConfig.Fence.AssortSize;
 
         result.Normal.WeaponPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.WeaponPresetMinMax.Min,
-            (int) traderConfig.Fence.WeaponPresetMinMax.Max
+            traderConfig.Fence.WeaponPresetMinMax.Min,
+            traderConfig.Fence.WeaponPresetMinMax.Max
         );
 
         result.Normal.EquipmentPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.EquipmentPresetMinMax.Min,
-            (int) traderConfig.Fence.EquipmentPresetMinMax.Max
+            traderConfig.Fence.EquipmentPresetMinMax.Min,
+            traderConfig.Fence.EquipmentPresetMinMax.Max
         );
 
         result.Discount.Item = traderConfig.Fence.DiscountOptions.AssortSize;
 
         result.Discount.WeaponPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Min,
-            (int) traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Max
+            traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Min,
+            traderConfig.Fence.DiscountOptions.WeaponPresetMinMax.Max
         );
 
         result.Discount.EquipmentPreset = randomUtil.GetInt(
-            (int) traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Min,
-            (int) traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Max
+            traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Min,
+            traderConfig.Fence.DiscountOptions.EquipmentPresetMinMax.Max
         );
 
         desiredAssortCounts = result;
     }
 
     /// <summary>
-    /// Create skeleton to hold assort items
+    ///     Create skeleton to hold assort items
     /// </summary>
     /// <returns> TraderAssort object </returns>
     protected TraderAssort CreateFenceAssortSkeleton()
@@ -704,7 +703,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Hydrate assorts parameter object with generated assorts
+    ///     Hydrate assorts parameter object with generated assorts
     /// </summary>
     /// <param name="itemCounts"> Number of items to generate per type (Item, WeaponPreset, EquipmentPreset) </param>
     /// <param name="loyaltyLevel"> Loyalty level to set new item to </param>
@@ -742,7 +741,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Add item assorts to existing assort data
+    ///     Add item assorts to existing assort data
     /// </summary>
     /// <param name="assortCount"> Number to add </param>
     /// <param name="assorts"> Data to add to </param>
@@ -868,8 +867,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Find an assort item that matches the first parameter, also matches based on Upd properties
-    /// e.g. salewa hp resource units left
+    ///     Find an assort item that matches the first parameter, also matches based on Upd properties
+    ///     e.g. salewa hp resource units left
     /// </summary>
     /// <param name="rootItemBeingAdded"> item to look for a match against </param>
     /// <param name="itemDbDetails"> DB details of matching item </param>
@@ -883,12 +882,10 @@ public class FenceService(
     {
         // Get matching root items
         var matchingItems = itemsWithChildren
-            .Where(
-                itemWithChildren => itemWithChildren.FirstOrDefault(
-                                        item => item.Template == rootItemBeingAdded.Template &&
-                                                string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase)
-                                    ) !=
-                                    null
+            .Where(itemWithChildren => itemWithChildren.FirstOrDefault(item => item.Template == rootItemBeingAdded.Template &&
+                                                                               string.Equals(item.ParentId, "hideout", StringComparison.OrdinalIgnoreCase)
+                                       ) !=
+                                       null
             )
             .SelectMany(i => i)
             .ToList();
@@ -946,7 +943,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Should this item be forced into only 1 stack on fence
+    ///     Should this item be forced into only 1 stack on fence
     /// </summary>
     /// <param name="existingItem"> Existing item from fence assort </param>
     /// <param name="itemDbDetails"> Item we want to add DB details </param>
@@ -975,7 +972,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Adjust price of item based on what is left to buy (resource/uses left)
+    ///     Adjust price of item based on what is left to buy (resource/uses left)
     /// </summary>
     /// <param name="barterSchemes"> All barter scheme for item having price adjusted </param>
     /// <param name="itemRoot"> Root item having price adjusted </param>
@@ -1033,7 +1030,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Find presets in base fence assort and add desired number to 'assorts' parameter
+    ///     Find presets in base fence assort and add desired number to 'assorts' parameter
     /// </summary>
     /// <param name="desiredWeaponPresetsCount"> How many WeaponPresets to add </param>
     /// <param name="desiredEquipmentPresetsCount"> How many WeaponPresets to add </param>
@@ -1051,8 +1048,8 @@ public class FenceService(
         var weaponPresetsAddedCount = 0;
         if (desiredWeaponPresetsCount > 0)
         {
-            var weaponPresetRootItems = baseFenceAssort.Items.Where(
-                item => item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
+            var weaponPresetRootItems = baseFenceAssort.Items.Where(item =>
+                item.Upd?.SptPresetId != null && itemHelper.IsOfBaseclass(item.Template, BaseClasses.WEAPON)
             );
             while (weaponPresetsAddedCount < desiredWeaponPresetsCount)
             {
@@ -1117,8 +1114,7 @@ public class FenceService(
             return;
         }
 
-        var equipmentPresetRootItems = baseFenceAssort.Items.Where(
-            item => item.Upd?.SptPresetId != null && itemHelper.ArmorItemCanHoldMods(item.Template)
+        var equipmentPresetRootItems = baseFenceAssort.Items.Where(item => item.Upd?.SptPresetId != null && itemHelper.ArmorItemCanHoldMods(item.Template)
         );
         while (equipmentPresetsAddedCount < desiredEquipmentPresetsCount)
         {
@@ -1179,7 +1175,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Adjust plate / soft insert durability values
+    ///     Adjust plate / soft insert durability values
     /// </summary>
     /// <param name="armor"> Armor item array to add mods into </param>
     /// <param name="itemDbDetails"> Armor items db template </param>
@@ -1208,7 +1204,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Randomise the durability values of items on armor with a passed in slot
+    ///     Randomise the durability values of items on armor with a passed in slot
     /// </summary>
     /// <param name="softInsertSlots"> Slots of items to randomise </param>
     /// <param name="armorItemAndMods"> Array of armor + inserts to get items from </param>
@@ -1265,8 +1261,8 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Randomise the durability values of plate items in armor <br/>
-    /// Has chance to remove plate
+    ///     Randomise the durability values of plate items in armor <br />
+    ///     Has chance to remove plate
     /// </summary>
     /// <param name="plateSlots"> Slots of items to randomise </param>
     /// <param name="armorItemAndMods"> Array of armor + inserts to get items from </param>
@@ -1302,8 +1298,7 @@ public class FenceService(
             );
 
             // Find items mod to apply durability changes to
-            var modItemToAdjust = armorWithMods.FirstOrDefault(
-                mod => string.Equals(
+            var modItemToAdjust = armorWithMods.FirstOrDefault(mod => string.Equals(
                     mod.SlotId,
                     plateSlot.Name,
                     StringComparison.OrdinalIgnoreCase
@@ -1335,7 +1330,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get stack size of a singular item (no mods)
+    ///     Get stack size of a singular item (no mods)
     /// </summary>
     /// <param name="itemDbDetails"> Item being added to fence </param>
     /// <returns> Stack size </returns>
@@ -1347,7 +1342,7 @@ public class FenceService(
             overrideValues = traderConfig.Fence.ItemStackSizeOverrideMinMax[itemDbDetails.Parent];
             if (overrideValues != null)
             {
-                return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+                return randomUtil.GetInt(overrideValues.Min, overrideValues.Max);
             }
 
             // No override, use stack max size from item db
@@ -1362,20 +1357,20 @@ public class FenceService(
         // Check for override in config, use values if exists
         if (traderConfig.Fence.ItemStackSizeOverrideMinMax.TryGetValue(itemDbDetails.Id, out overrideValues))
         {
-            return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+            return randomUtil.GetInt(overrideValues.Min, overrideValues.Max);
         }
 
         // Check for parent override
         if (traderConfig.Fence.ItemStackSizeOverrideMinMax.TryGetValue(itemDbDetails.Parent, out overrideValues))
         {
-            return randomUtil.GetInt((int) overrideValues.Min, (int) overrideValues.Max);
+            return randomUtil.GetInt(overrideValues.Min, overrideValues.Max);
         }
 
         return 1;
     }
 
     /// <summary>
-    /// Remove parts of a weapon prior to being listed on flea
+    ///     Remove parts of a weapon prior to being listed on flea
     /// </summary>
     /// <param name="itemAndMods"> Weapon to remove parts from </param>
     protected void RemoveRandomModsOfItem(List<Item> itemAndMods)
@@ -1411,7 +1406,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Roll % chance check to see if item should be removed
+    ///     Roll % chance check to see if item should be removed
     /// </summary>
     /// <param name="weaponMod"> Weapon mod being checked </param>
     /// <param name="itemsBeingDeleted"> Current list of items on weapon being deleted </param>
@@ -1431,7 +1426,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Randomise items' Upd properties e.g. med packs/weapons/armor
+    ///     Randomise items' Upd properties e.g. med packs/weapons/armor
     /// </summary>
     /// <param name="itemDetails"> Item being randomised </param>
     /// <param name="itemToAdjust"> Item being edited </param>
@@ -1536,7 +1531,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Generate a randomised current and max durability value for an armor item
+    ///     Generate a randomised current and max durability value for an armor item
     /// </summary>
     /// <param name="itemDetails"> Item to create values for </param>
     /// <param name="equipmentDurabilityLimits"> Max durability percent min/max values </param>
@@ -1565,7 +1560,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Construct item limit record to hold max and current item count
+    ///     Construct item limit record to hold max and current item count
     /// </summary>
     /// <param name="limits"> Limits as defined in config </param>
     /// <returns> Record, key: item tplId, value: current/max item count allowed </returns>
@@ -1582,7 +1577,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get the next Update timestamp for fence
+    ///     Get the next Update timestamp for fence
     /// </summary>
     /// <returns> Future timestamp </returns>
     public long GetNextFenceUpdateTimestamp()
@@ -1593,18 +1588,18 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Get fence refresh time in seconds
+    ///     Get fence refresh time in seconds
     /// </summary>
     /// <returns> Refresh time in seconds </returns>
     protected int GetFenceRefreshTime()
     {
         var fence = traderConfig.UpdateTime.FirstOrDefault(x => x.TraderId == Traders.FENCE).Seconds;
 
-        return randomUtil.GetInt((int) fence.Min, (int) fence.Max);
+        return randomUtil.GetInt(fence.Min, fence.Max);
     }
 
     /// <summary>
-    /// Get fence level the passed in profile has
+    ///     Get fence level the passed in profile has
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <returns> FenceLevel object </returns>
@@ -1637,7 +1632,7 @@ public class FenceService(
     }
 
     /// <summary>
-    /// Remove or lower stack size of an assort from fence by id
+    ///     Remove or lower stack size of an assort from fence by id
     /// </summary>
     /// <param name="assortId"> Assort ID to adjust </param>
     /// <param name="buyCount">`Count of items bought </param>

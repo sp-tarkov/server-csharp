@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Common;
 public record IdWithCount
 {
     /// <summary>
-    /// ID of stack to take money from
+    ///     ID of stack to take money from
     /// </summary>
     [JsonPropertyName("id")]
     public string? Id
@@ -15,7 +15,7 @@ public record IdWithCount
     }
 
     /// <summary>
-    /// Amount of money to take off player for treatment
+    ///     Amount of money to take off player for treatment
     /// </summary>
     [JsonPropertyName("count")]
     public double? Count

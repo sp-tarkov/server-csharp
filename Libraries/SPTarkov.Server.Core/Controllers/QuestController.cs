@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -11,7 +12,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 
@@ -39,13 +39,13 @@ public class QuestController(
     ICloner _cloner
 )
 {
-    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
     protected static readonly List<string> _questTypes = ["PickUp", "Exploration", "Elimination"];
+    protected QuestConfig _questConfig = _configServer.GetConfig<QuestConfig>();
 
     /// <summary>
-    /// Handle client/quest/list
-    /// Get all quests visible to player
-    /// Exclude quests with incomplete preconditions (level/loyalty)
+    ///     Handle client/quest/list
+    ///     Get all quests visible to player
+    ///     Exclude quests with incomplete preconditions (level/loyalty)
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>Collection of Quest</returns>
@@ -55,10 +55,10 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Handle QuestAccept event
-    /// Handle the client accepting a quest and starting it
-    /// Send starting rewards if any to player and
-    /// Send start notification if any to player
+    ///     Handle QuestAccept event
+    ///     Handle the client accepting a quest and starting it
+    ///     Send starting rewards if any to player and
+    ///     Send start notification if any to player
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="acceptedQuest">Quest accepted</param>
@@ -131,7 +131,7 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Add a quests condition counters to chosen profile
+    ///     Add a quests condition counters to chosen profile
     /// </summary>
     /// <param name="questConditions">Conditions to iterate over and possibly add to profile</param>
     /// <param name="pmcData">Players PMC profile</param>
@@ -163,10 +163,10 @@ public class QuestController(
     }
 
     /// <summary>
-    /// TODO: Move this code into RepeatableQuestController
-    /// Handle the client accepting a repeatable quest and starting it
-    /// Send starting rewards if any to player and
-    /// Send start notification if any to player
+    ///     TODO: Move this code into RepeatableQuestController
+    ///     Handle the client accepting a repeatable quest and starting it
+    ///     Send starting rewards if any to player and
+    ///     Send start notification if any to player
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="acceptedQuest">Repeatable quest accepted</param>
@@ -211,7 +211,7 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Look for an accepted quest inside player profile, return quest that matches
+    ///     Look for an accepted quest inside player profile, return quest that matches
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="questId">Quest id to return</param>
@@ -238,10 +238,10 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Handle QuestComplete event
-    /// Update completed quest in profile
-    /// Add newly unlocked quests to profile
-    /// Also recalculate their level due to exp rewards
+    ///     Handle QuestComplete event
+    ///     Update completed quest in profile
+    ///     Add newly unlocked quests to profile
+    ///     Also recalculate their level due to exp rewards
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Complete quest request</param>
@@ -253,8 +253,8 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Handle QuestHandover event
-    /// Player hands over an item to trader to complete/partially complete quest
+    ///     Handle QuestHandover event
+    ///     Player hands over an item to trader to complete/partially complete quest
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Handover request</param>
@@ -407,7 +407,7 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Show warning to user and write to log that repeatable quest failed a condition check
+    ///     Show warning to user and write to log that repeatable quest failed a condition check
     /// </summary>
     /// <param name="questId">Quest id that failed</param>
     /// <param name="conditionId">Relevant condition id that failed</param>
@@ -419,8 +419,8 @@ public class QuestController(
             "repeatable-quest_handover_failed_condition_invalid",
             new
             {
-                questId = questId,
-                conditionId = conditionId
+                questId,
+                conditionId
             }
         );
         _logger.Error(errorMessage);
@@ -429,7 +429,7 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Show warning to user and write to log quest item handed over did not match what is required
+    ///     Show warning to user and write to log quest item handed over did not match what is required
     /// </summary>
     /// <param name="handoverQuestRequest">Handover request</param>
     /// <param name="itemHandedOver">Non-matching item found</param>
@@ -454,8 +454,8 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Increment a backend counter stored value by an amount
-    /// Create counter if it does not exist
+    ///     Increment a backend counter stored value by an amount
+    ///     Create counter if it does not exist
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="conditionId">Backend counter id to update</param>
@@ -480,7 +480,7 @@ public class QuestController(
     }
 
     /// <summary>
-    /// Handle /client/game/profile/items/moving - QuestFail
+    ///     Handle /client/game/profile/items/moving - QuestFail
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="request">Fail quest request</param>

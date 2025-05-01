@@ -1,12 +1,12 @@
 using System.Collections.Concurrent;
+using System.Collections.Frozen;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
-using System.Collections.Frozen;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -18,9 +18,9 @@ public class BotHelper(
     ConfigServer _configServer
 )
 {
+    protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
     protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
     protected ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
@@ -141,8 +141,7 @@ public class BotHelper(
             return null;
         }
 
-        return botEquipConfig.Randomisation.FirstOrDefault(
-            randDetails => botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
+        return botEquipConfig.Randomisation.FirstOrDefault(randDetails => botLevel >= randDetails.LevelRange.Min && botLevel <= randDetails.LevelRange.Max
         );
     }
 

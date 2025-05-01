@@ -1,6 +1,6 @@
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Json;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -11,9 +11,9 @@ public class I18nService
     private readonly Dictionary<string, string> _fallbacks;
     private readonly FileUtil _fileUtil;
     private readonly JsonUtil _jsonUtil;
-    private readonly LocaleService _localeService;
 
     private readonly Dictionary<string, LazyLoad<Dictionary<string, string>>> _loadedLocales = new();
+    private readonly LocaleService _localeService;
     private HashSet<string> _locales;
     private string? _setLocale;
 
@@ -50,9 +50,8 @@ public class I18nService
         {
             _loadedLocales.Add(
                 _fileUtil.StripExtension(file),
-                new LazyLoad<Dictionary<string, string>>(
-                    () => _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
-                          new Dictionary<string, string>()
+                new LazyLoad<Dictionary<string, string>>(() => _jsonUtil.DeserializeFromFile<Dictionary<string, string>>(file) ??
+                                                               new Dictionary<string, string>()
                 )
             );
         }

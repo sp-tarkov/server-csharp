@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Spt.Location;
 public record RaidChanges
 {
     /// <summary>
-    /// What percentage of dynamic loot should the map contain
+    ///     What percentage of dynamic loot should the map contain
     /// </summary>
     [JsonPropertyName("dynamicLootPercent")]
     public double? DynamicLootPercent
@@ -15,7 +15,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// What percentage of static loot should the map contain
+    ///     What percentage of static loot should the map contain
     /// </summary>
     [JsonPropertyName("staticLootPercent")]
     public double? StaticLootPercent
@@ -25,7 +25,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// How many seconds into the raid is the player simulated to spawn in at
+    ///     How many seconds into the raid is the player simulated to spawn in at
     /// </summary>
     [JsonPropertyName("simulatedRaidStartSeconds")]
     public double? SimulatedRaidStartSeconds
@@ -35,7 +35,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// How many minutes are in the raid total
+    ///     How many minutes are in the raid total
     /// </summary>
     [JsonPropertyName("raidTimeMinutes")]
     public double? RaidTimeMinutes
@@ -45,7 +45,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// The new number of seconds required to avoid a run through
+    ///     The new number of seconds required to avoid a run through
     /// </summary>
     [JsonPropertyName("newSurviveTimeSeconds")]
     public double? NewSurviveTimeSeconds
@@ -55,7 +55,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// The original number of seconds required to avoid a run through
+    ///     The original number of seconds required to avoid a run through
     /// </summary>
     [JsonPropertyName("originalSurvivalTimeSeconds")]
     public double? OriginalSurvivalTimeSeconds
@@ -65,7 +65,7 @@ public record RaidChanges
     }
 
     /// <summary>
-    /// Any changes required to the extract list
+    ///     Any changes required to the extract list
     /// </summary>
     [JsonPropertyName("exitChanges")]
     public List<ExtractChange>? ExitChanges

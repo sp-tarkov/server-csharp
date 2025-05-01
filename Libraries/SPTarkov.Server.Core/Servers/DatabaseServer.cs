@@ -1,5 +1,5 @@
-﻿using SPTarkov.Server.Core.Models.Spt.Server;
-using SPTarkov.Common.Annotations;
+﻿using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Models.Spt.Server;
 
 namespace SPTarkov.Server.Core.Servers;
 

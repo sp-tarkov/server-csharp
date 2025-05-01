@@ -115,6 +115,7 @@ public static class Weapons
     public const string REVOLVER_40X46_MSGL = "6275303a9f372d6ea97f9ec7";
     public const string REVOLVER_9X19_CR_200DS = "624c2e8614da335f1e034d8c";
     public const string REVOLVER_9X33R_CR_50DS = "61a4c8884f95bc3b2c5dc96f";
+    public const string ROCKETLAUNCHER_725_RSHG_2 = "676bf44c5539167c3603e869";
     public const string SHOTGUN_12G_590A1 = "5e870397991fd70db46995c8";
     public const string SHOTGUN_12G_AA_12_GEN_1 = "66ffa9b66e19cc902401c5e8";
     public const string SHOTGUN_12G_AA_12_GEN_2 = "67124dcfa3541f2a1f0e788b";

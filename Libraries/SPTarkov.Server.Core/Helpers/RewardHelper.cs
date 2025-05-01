@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Hideout;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -215,15 +215,13 @@ public class RewardHelper(
         // Area that will be used to craft unlocked item
         var desiredHideoutAreaType = (HideoutAreas) int.Parse(craftUnlockReward.TraderId.ToString());
 
-        var matchingProductions = craftingRecipes.Where(
-                prod =>
-                    prod.AreaType == desiredHideoutAreaType &&
-                    //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
-                    prod.Requirements.Any(requirement => requirement.Type == "QuestComplete") &&
-                    prod.Requirements.Any(
-                        requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
-                    ) &&
-                    prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
+        var matchingProductions = craftingRecipes.Where(prod =>
+                prod.AreaType == desiredHideoutAreaType &&
+                //prod.requirements.some((requirement) => requirement.questId == questId) && // BSG don't store the quest id in requirement any more!
+                prod.Requirements.Any(requirement => requirement.Type == "QuestComplete") &&
+                prod.Requirements.Any(requirement => requirement.RequiredLevel == craftUnlockReward.LoyaltyLevel
+                ) &&
+                prod.EndProduct == craftUnlockReward.Items.FirstOrDefault().Template
             )
             .ToList();
 
@@ -231,9 +229,8 @@ public class RewardHelper(
         if (matchingProductions.Count != 1)
             // Multiple matches were found, last ditch attempt to match by questid (value we add manually to production.json via `gen:productionquests` command)
         {
-            matchingProductions = matchingProductions.Where(
-                    prod =>
-                        prod.Requirements.Any(requirement => requirement.QuestId == questId)
+            matchingProductions = matchingProductions.Where(prod =>
+                    prod.Requirements.Any(requirement => requirement.QuestId == questId)
                 )
                 .ToList();
         }
@@ -250,11 +247,10 @@ public class RewardHelper(
     protected List<Item> GetRewardItems(List<Reward> rewards, string gameVersion)
     {
         // Iterate over all rewards with the desired status, flatten out items that have a type of Item
-        var rewardItems = rewards.SelectMany(
-            reward =>
-                reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
-                    ? ProcessReward(reward)
-                    : []
+        var rewardItems = rewards.SelectMany(reward =>
+            reward.Type == RewardType.Item && RewardIsForGameEdition(reward, gameVersion)
+                ? ProcessReward(reward)
+                : []
         );
 
         return rewardItems.ToList();

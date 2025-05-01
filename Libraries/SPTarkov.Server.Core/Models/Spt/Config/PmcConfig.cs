@@ -15,7 +15,7 @@ public record PmcConfig : BaseConfig
     } = "spt-pmc";
 
     /// <summary>
-    /// What game version should the PMC have
+    ///     What game version should the PMC have
     /// </summary>
     [JsonPropertyName("gameVersionWeight")]
     public Dictionary<string, double> GameVersionWeight
@@ -25,7 +25,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// What account type should the PMC have
+    ///     What account type should the PMC have
     /// </summary>
     [JsonPropertyName("accountTypeWeight")]
     public Dictionary<MemberCategory, double> AccountTypeWeight
@@ -35,7 +35,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Global whitelist/blacklist of vest loot for PMCs
+    ///     Global whitelist/blacklist of vest loot for PMCs
     /// </summary>
     [JsonPropertyName("vestLoot")]
     public SlotLootSettings VestLoot
@@ -45,7 +45,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Global whitelist/blacklist of pocket loot for PMCs
+    ///     Global whitelist/blacklist of pocket loot for PMCs
     /// </summary>
     [JsonPropertyName("pocketLoot")]
     public SlotLootSettings PocketLoot
@@ -55,7 +55,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Global whitelist/blacklist of backpack loot for PMCs
+    ///     Global whitelist/blacklist of backpack loot for PMCs
     /// </summary>
     [JsonPropertyName("backpackLoot")]
     public SlotLootSettings BackpackLoot
@@ -72,7 +72,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Use difficulty defined in config/bot.json/difficulty instead of chosen difficulty dropdown value
+    ///     Use difficulty defined in config/bot.json/difficulty instead of chosen difficulty dropdown value
     /// </summary>
     [JsonPropertyName("useDifficultyOverride")]
     public bool UseDifficultyOverride
@@ -82,7 +82,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Difficulty override e.g. "AsOnline/Hard"
+    ///     Difficulty override e.g. "AsOnline/Hard"
     /// </summary>
     [JsonPropertyName("difficulty")]
     public string Difficulty
@@ -92,7 +92,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Chance out of 100 to have a complete gun in backpack
+    ///     Chance out of 100 to have a complete gun in backpack
     /// </summary>
     [JsonPropertyName("looseWeaponInBackpackChancePercent")]
     public double LooseWeaponInBackpackChancePercent
@@ -102,7 +102,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Chance out of 100 to have an enhancement applied to PMC weapon
+    ///     Chance out of 100 to have an enhancement applied to PMC weapon
     /// </summary>
     [JsonPropertyName("weaponHasEnhancementChancePercent")]
     public double WeaponHasEnhancementChancePercent
@@ -112,7 +112,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// MinMax count of weapons to have in backpack
+    ///     MinMax count of weapons to have in backpack
     /// </summary>
     [JsonPropertyName("looseWeaponInBackpackLootMinMax")]
     public MinMax<int> LooseWeaponInBackpackLootMinMax
@@ -129,7 +129,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Percentage chance PMC will be USEC
+    ///     Percentage chance PMC will be USEC
     /// </summary>
     [JsonPropertyName("isUsec")]
     public double IsUsec
@@ -139,7 +139,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// WildSpawnType enum value USEC PMCs use
+    ///     WildSpawnType enum value USEC PMCs use
     /// </summary>
     [JsonPropertyName("usecType")]
     public string UsecType
@@ -149,7 +149,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// WildSpawnType enum value BEAR PMCs use
+    ///     WildSpawnType enum value BEAR PMCs use
     /// </summary>
     [JsonPropertyName("bearType")]
     public string BearType
@@ -166,7 +166,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
+    ///     What 'brain' does a PMC use, keyed by map and side (USEC/BEAR) key: map location, value: type for usec/bear
     /// </summary>
     [JsonPropertyName("pmcType")]
     public Dictionary<string, Dictionary<string, Dictionary<string, double>>> PmcType
@@ -197,7 +197,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// How many levels above player level can a PMC be
+    ///     How many levels above player level can a PMC be
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMax")]
     public int BotRelativeLevelDeltaMax
@@ -207,7 +207,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// How many levels below player level can a PMC be
+    ///     How many levels below player level can a PMC be
     /// </summary>
     [JsonPropertyName("botRelativeLevelDeltaMin")]
     public int BotRelativeLevelDeltaMin
@@ -217,7 +217,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Force a number of healing items into PMCs secure container to ensure they can heal
+    ///     Force a number of healing items into PMCs secure container to ensure they can heal
     /// </summary>
     [JsonPropertyName("forceHealingItemsIntoSecure")]
     public bool ForceHealingItemsIntoSecure
@@ -248,7 +248,7 @@ public record PmcConfig : BaseConfig
     }
 
     /// <summary>
-    /// Should secure container loot from usec.json/bear.json be added to pmc bots secure
+    ///     Should secure container loot from usec.json/bear.json be added to pmc bots secure
     /// </summary>
     [JsonPropertyName("addSecureContainerLootFromBotConfig")]
     public bool AddSecureContainerLootFromBotConfig
@@ -289,7 +289,7 @@ public record PmcConfig : BaseConfig
 public record HostilitySettings
 {
     /// <summary>
-    /// Bot roles that are 100% an enemy
+    ///     Bot roles that are 100% an enemy
     /// </summary>
     [JsonPropertyName("additionalEnemyTypes")]
     public List<string>? AdditionalEnemyTypes
@@ -299,7 +299,7 @@ public record HostilitySettings
     }
 
     /// <summary>
-    /// Objects that determine the % chance another bot type is an enemy
+    ///     Objects that determine the % chance another bot type is an enemy
     /// </summary>
     [JsonPropertyName("chancedEnemies")]
     public List<ChancedEnemy>? ChancedEnemies
@@ -330,7 +330,7 @@ public record HostilitySettings
     }
 
     /// <summary>
-    /// Bot roles that are 100% a friendly
+    ///     Bot roles that are 100% a friendly
     /// </summary>
     [JsonPropertyName("additionalFriendlyTypes")]
     public List<string>? AdditionalFriendlyTypes
@@ -367,7 +367,7 @@ public record PmcTypes
 public record SlotLootSettings
 {
     /// <summary>
-    /// Item Type whitelist
+    ///     Item Type whitelist
     /// </summary>
     [JsonPropertyName("whitelist")]
     public HashSet<string> Whitelist
@@ -377,7 +377,7 @@ public record SlotLootSettings
     }
 
     /// <summary>
-    /// Item tpl blacklist
+    ///     Item tpl blacklist
     /// </summary>
     [JsonPropertyName("blacklist")]
     public HashSet<string> Blacklist

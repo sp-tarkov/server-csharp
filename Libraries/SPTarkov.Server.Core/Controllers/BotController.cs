@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json.Serialization;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
@@ -15,7 +16,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -39,15 +39,15 @@ public class BotController(
 {
     private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
     private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private static readonly Lock _botListLock = new();
 
     /// <summary>
-    /// Return the number of bot load-out varieties to be generated
+    ///     Return the number of bot load-out varieties to be generated
     /// </summary>
     /// <param name="type">bot Type we want the load-out gen count for</param>
     /// <returns>number of bots to generate</returns>
     public int GetBotPresetGenerationLimit(string type)
     {
-
         if (!_botConfig.PresetBatch.TryGetValue(type, out var limit))
         {
             _logger.Warning(_localisationService.GetText("bot-bot_preset_count_value_missing", type));
@@ -56,12 +56,11 @@ public class BotController(
         }
 
         return limit;
-
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/difficulty
-    /// Get the core.json difficulty settings from database/bots
+    ///     Handle singleplayer/settings/bot/difficulty
+    ///     Get the core.json difficulty settings from database/bots
     /// </summary>
     /// <returns></returns>
     public Dictionary<string, object> GetBotCoreDifficulty()
@@ -70,8 +69,8 @@ public class BotController(
     }
 
     /// <summary>
-    /// Get bot difficulty settings
-    /// Adjust PMC settings to ensure they engage the correct bot types
+    ///     Get bot difficulty settings
+    ///     Adjust PMC settings to ensure they engage the correct bot types
     /// </summary>
     /// <param name="type">what bot the server is requesting settings for</param>
     /// <param name="diffLevel">difficulty level server requested settings for</param>
@@ -100,7 +99,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Handle singleplayer/settings/bot/difficulties
+    ///     Handle singleplayer/settings/bot/difficulties
     /// </summary>
     /// <returns></returns>
     public Dictionary<string, Dictionary<string, DifficultyCategories>> GetAllBotDifficulties()
@@ -160,7 +159,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Generate bots for a wave
+    ///     Generate bots for a wave
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="request"></param>
@@ -173,7 +172,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Generate bots for passed in wave data
+    ///     Generate bots for passed in wave data
     /// </summary>
     /// <param name="request"></param>
     /// <param name="pmcProfile">Player generating bots</param>
@@ -193,17 +192,21 @@ public class BotController(
 
         Task.WaitAll((request.Conditions ?? [])
             .Select(condition => Task.Factory.StartNew(() =>
-        {
-            var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
-                condition,
-                pmcProfile,
-                allPmcsHaveSameNameAsPlayer,
-                raidSettings,
-                Math.Max(GetBotPresetGenerationLimit(condition.Role), condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
-                _botHelper.IsBotPmc(condition.Role));
+            {
+                var botWaveGenerationDetails = GetBotGenerationDetailsForWave(
+                    condition,
+                    pmcProfile,
+                    allPmcsHaveSameNameAsPlayer,
+                    raidSettings,
+                    Math.Max(GetBotPresetGenerationLimit(condition.Role),
+                        condition.Limit), // Choose largest between value passed in from request vs what's in bot.config
+                    _botHelper.IsBotPmc(condition.Role));
 
-            result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
-        })).ToArray());
+                lock (_botListLock)
+                {
+                    result.AddRange(GenerateBotWave(condition, botWaveGenerationDetails, sessionId));
+                }
+            })).ToArray());
 
         stopwatch.Stop();
         if (_logger.IsLogEnabled(LogLevel.Debug))
@@ -215,7 +218,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Generate bots for a single wave request
+    ///     Generate bots for a single wave request
     /// </summary>
     /// <param name="generateRequest"></param>
     /// <param name="botGenerationDetails"></param>
@@ -255,8 +258,9 @@ public class BotController(
                 }
 
                 results.Add(bot);
+
                 // Store bot details in cache so post-raid PMC messages can use data
-                _matchBotDetailsCacheService.CacheBot(_cloner.Clone(bot));
+                _matchBotDetailsCacheService.CacheBot(bot);
             }
             catch (Exception e)
             {
@@ -276,7 +280,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Pull raid settings from Application context
+    ///     Pull raid settings from Application context
     /// </summary>
     /// <returns>GetRaidConfigurationRequestData if it exists</returns>
     protected GetRaidConfigurationRequestData? GetMostRecentRaidSettings()
@@ -294,7 +298,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Get min/max level range values for a specific map
+    ///     Get min/max level range values for a specific map
     /// </summary>
     /// <param name="location">Map name e.g. factory4_day</param>
     /// <returns>MinMax values</returns>
@@ -304,7 +308,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Create a BotGenerationDetails for the bot generator to use
+    ///     Create a BotGenerationDetails for the bot generator to use
     /// </summary>
     /// <param name="condition">Data from client defining bot type and difficulty</param>
     /// <param name="pmcProfile">Player who is generating bots</param>
@@ -339,8 +343,8 @@ public class BotController(
     }
 
     /// <summary>
-    /// Get the max number of bots allowed on a map
-    /// Looks up location player is entering when getting cap value
+    ///     Get the max number of bots allowed on a map
+    ///     Looks up location player is entering when getting cap value
     /// </summary>
     /// <param name="location">The map location cap was requested for</param>
     /// <returns>bot cap for map</returns>
@@ -350,6 +354,7 @@ public class BotController(
         {
             return _botConfig.MaxBotCap["default"];
         }
+
         if (location == "default")
         {
             _logger.Warning(
@@ -361,7 +366,7 @@ public class BotController(
     }
 
     /// <summary>
-    /// Get weights for what each bot type should use as a brain - used by client
+    ///     Get weights for what each bot type should use as a brain - used by client
     /// </summary>
     /// <returns></returns>
     public AiBotBrainTypes GetAiBotBrainTypes()

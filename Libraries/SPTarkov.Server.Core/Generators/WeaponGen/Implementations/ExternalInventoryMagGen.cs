@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators.WeaponGen.Implementations;
@@ -158,8 +158,9 @@ public class ExternalInventoryMagGen(
             }
         }
     }
+
     /// <summary>
-    /// Get a random compatible external magazine for a weapon, exclude internal magazines from possible pool
+    ///     Get a random compatible external magazine for a weapon, exclude internal magazines from possible pool
     /// </summary>
     /// <param name="weaponTpl"> Weapon to get mag for </param>
     /// <param name="magazineBlacklist"> Blacklisted magazines </param>
@@ -176,8 +177,7 @@ public class ExternalInventoryMagGen(
         // All possible mags that fit into the weapon excluding blacklisted
         var magazinePool = magSlot.Props.Filters[0]
             .Filter.Where(x => !magazineBlacklist.Contains(x))
-            .Select(
-                x => _itemHelper.GetItem(x).Value
+            .Select(x => _itemHelper.GetItem(x).Value
             );
         if (magazinePool is null)
         {

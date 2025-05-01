@@ -12,7 +12,7 @@ public record LostOnDeathConfig : BaseConfig
     } = "spt-lostondeath";
 
     /// <summary>
-    /// What equipment in each slot should be lost on death
+    ///     What equipment in each slot should be lost on death
     /// </summary>
     [JsonPropertyName("equipment")]
     public LostEquipment Equipment
@@ -22,7 +22,7 @@ public record LostOnDeathConfig : BaseConfig
     }
 
     /// <summary>
-    /// Should special slot items be removed from quest inventory on death e.g. wifi camera/markers
+    ///     Should special slot items be removed from quest inventory on death e.g. wifi camera/markers
     /// </summary>
     [JsonPropertyName("specialSlotItems")]
     public bool SpecialSlotItems
@@ -32,7 +32,7 @@ public record LostOnDeathConfig : BaseConfig
     }
 
     /// <summary>
-    /// Should quest items be removed from quest inventory on death
+    ///     Should quest items be removed from quest inventory on death
     /// </summary>
     [JsonPropertyName("questItems")]
     public bool QuestItems

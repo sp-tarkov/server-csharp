@@ -13,7 +13,7 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
     }
 
     /// <summary>
-    /// item to repair
+    ///     item to repair
     /// </summary>
     [JsonPropertyName("target")]
     public string? Target
@@ -26,7 +26,7 @@ public record RepairActionDataRequest : InventoryBaseActionRequestData
 public record RepairKitsInfo
 {
     /// <summary>
-    /// id of repair kit to use
+    ///     id of repair kit to use
     /// </summary>
     [JsonPropertyName("_id")]
     public string? Id
@@ -36,7 +36,7 @@ public record RepairKitsInfo
     }
 
     /// <summary>
-    /// amount of units to reduce kit by
+    ///     amount of units to reduce kit by
     /// </summary>
     [JsonPropertyName("count")]
     public float? Count

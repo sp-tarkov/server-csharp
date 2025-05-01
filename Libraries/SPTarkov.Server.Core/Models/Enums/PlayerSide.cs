@@ -1,9 +1,8 @@
-﻿namespace SPTarkov.Server.Core.Models.Enums
+﻿namespace SPTarkov.Server.Core.Models.Enums;
+
+public enum PlayerSide
 {
-    public enum PlayerSide
-    {
-        Usec = 1,
-        Bear = 2,
-        Savage = 4
-    }
+    Usec = 1,
+    Bear = 2,
+    Savage = 4
 }

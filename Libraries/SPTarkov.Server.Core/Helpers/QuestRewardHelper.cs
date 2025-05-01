@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.ItemEvent;
@@ -8,8 +10,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -147,10 +147,9 @@ public class QuestRewardHelper(
                           .FirstOrDefault(p => p.Name == questStatus.ToString())
                           .GetValue(quest.Rewards) ??
                       new List<Reward>();
-        var currencyRewards = rewards.Where(
-            r =>
-                r.Type.ToString() == "Item" &&
-                _paymentHelper.IsMoneyTpl(r.Items.FirstOrDefault().Template)
+        var currencyRewards = rewards.Where(r =>
+            r.Type.ToString() == "Item" &&
+            _paymentHelper.IsMoneyTpl(r.Items.FirstOrDefault().Template)
         );
         foreach (var reward in currencyRewards)
         {

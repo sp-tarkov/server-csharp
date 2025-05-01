@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -8,7 +9,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -30,7 +30,7 @@ public class PmcChatResponseService(
     protected PmcChatResponse _pmcResponsesConfig = _configServer.GetConfig<PmcChatResponse>();
 
     /// <summary>
-    /// For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
+    ///     For each PMC victim of the player, have a chance to send a message to the player, can be positive or negative
     /// </summary>
     /// <param name="sessionId"> Session ID </param>
     /// <param name="pmcVictims"> List of bots killed by player </param>
@@ -66,7 +66,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Not fully implemented yet, needs method of acquiring killers details after raid
+    ///     Not fully implemented yet, needs method of acquiring killers details after raid
     /// </summary>
     /// <param name="sessionId"> Session id </param>
     /// <param name="pmcData"> Players profile </param>
@@ -83,39 +83,27 @@ public class PmcChatResponseService(
             return;
         }
 
-        // find bot by name in cache
-        var killerDetailsInCache = _matchBotDetailsCacheService.GetBotByNameAndSide(killer.Name, killer.Side);
+        // find bot by id in cache
+        var killerDetailsInCache = _matchBotDetailsCacheService.GetBotById(killer.ProfileId);
         if (killerDetailsInCache is null)
         {
             return;
         }
 
-        // If killer wasn't a PMC, skip
-        var pmcTypes = new HashSet<string>
-        {
-            "pmcUSEC",
-            "pmcBEAR"
-        };
-        if (!pmcTypes.Contains(killerDetailsInCache.Info.Settings.Role))
-        {
-            return;
-        }
-
-        // Because we've cached PMC sides as "Savage" for the client, we need to figure out
-        // what side it really is
-        var side = killerDetailsInCache.Info.Settings.Role == "pmcUSEC" ? "Usec" : "Bear";
+        // Because we've cached PMC sides as "Savage" for the client,
+        // we need to figure out what side it really is
+        var side = killerDetailsInCache.Side == DogtagSide.Usec ? "Usec" : "Bear";
 
         var killerDetails = new UserDialogInfo
         {
-            Id = killerDetailsInCache.Id,
+            Id = killer.ProfileId,
             Aid = killerDetailsInCache.Aid,
             Info = new UserDialogDetails
             {
-                Nickname = killerDetailsInCache.Info.Nickname,
+                Nickname = killerDetailsInCache.Nickname,
                 Side = side,
-                Level = killerDetailsInCache.Info.Level,
-                MemberCategory = killerDetailsInCache.Info.MemberCategory,
-                SelectedMemberCategory = killerDetailsInCache.Info.SelectedMemberCategory
+                Level = killerDetailsInCache.Level,
+                MemberCategory = killerDetailsInCache.Type
             }
         };
 
@@ -129,7 +117,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Choose a localised message to send the player (different if sender was killed or killed player)
+    ///     Choose a localised message to send the player (different if sender was killed or killed player)
     /// </summary>
     /// <param name="isVictim"> Is the message coming from a bot killed by the player </param>
     /// <param name="pmcData"> Player profile </param>
@@ -190,8 +178,8 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// use map key to get a localised location name
-    /// e.g. factory4_day becomes "Factory"
+    ///     use map key to get a localised location name
+    ///     e.g. factory4_day becomes "Factory"
     /// </summary>
     /// <param name="locationKey"> Location key to localise </param>
     /// <returns> Localised location name </returns>
@@ -201,7 +189,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Should capitalisation be stripped from the message response before sending
+    ///     Should capitalisation be stripped from the message response before sending
     /// </summary>
     /// <param name="isVictim"> Was responder a victim of player </param>
     /// <returns> True = should be stripped </returns>
@@ -215,7 +203,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Should capitalisation be stripped from the message response before sending
+    ///     Should capitalisation be stripped from the message response before sending
     /// </summary>
     /// <param name="isVictim"> Was responder a victim of player </param>
     /// <returns> True = should be stripped </returns>
@@ -229,7 +217,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Should a suffix be appended to the end of the message being sent to player
+    ///     Should a suffix be appended to the end of the message being sent to player
     /// </summary>
     /// <param name="isVictim"> Was responder a victim of player </param>
     /// <returns> True = should be appended </returns>
@@ -243,7 +231,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Choose a type of response based on the weightings in pmc response config
+    ///     Choose a type of response based on the weightings in pmc response config
     /// </summary>
     /// <param name="isVictim"> Was responder killed by player </param>
     /// <returns> Response type (positive/negative) </returns>
@@ -257,7 +245,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Get locale keys related to the type of response to send (victim/killer)
+    ///     Get locale keys related to the type of response to send (victim/killer)
     /// </summary>
     /// <param name="keyType"> Positive/negative </param>
     /// <param name="isVictim"> Was responder killed by player </param>
@@ -271,7 +259,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Get all locale keys that start with `pmcresponse-suffix`
+    ///     Get all locale keys that start with `pmcresponse-suffix`
     /// </summary>
     /// <returns> List of keys </returns>
     protected List<string> GetResponseSuffixLocaleKeys()
@@ -282,7 +270,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    /// Randomly draw a victim of the list and return their details
+    ///     Randomly draw a victim of the list and return their details
     /// </summary>
     /// <param name="pmcVictims"> Possible victims to choose from </param>
     /// <returns> UserDialogInfo object </returns>
@@ -295,7 +283,7 @@ public class PmcChatResponseService(
     }
 
     /// <summary>
-    ///  Convert a victim object into a IUserDialogInfo object
+    ///     Convert a victim object into a IUserDialogInfo object
     /// </summary>
     /// <param name="pmcVictim"> Victim to convert </param>
     /// <returns> UserDialogInfo object </returns>

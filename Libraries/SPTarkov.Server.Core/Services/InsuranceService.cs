@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using Insurance = SPTarkov.Server.Core.Models.Eft.Profile.Insurance;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
@@ -299,8 +299,7 @@ public class InsuranceService(
         AddInsuranceItemToArray(sessionId, traderId, itemToReturnToPlayer);
 
         // Remove item from insured items array as its been processed
-        pmcData.InsuredItems = pmcData.InsuredItems.Where(
-                item =>
+        pmcData.InsuredItems = pmcData.InsuredItems.Where(item =>
                 {
                     return item.ItemId != itemToReturnToPlayer.Id;
                 }

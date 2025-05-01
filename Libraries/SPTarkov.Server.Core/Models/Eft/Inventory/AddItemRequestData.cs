@@ -5,7 +5,7 @@ namespace SPTarkov.Server.Core.Models.Eft.Inventory;
 public record AddItemRequestData
 {
     /// <summary>
-    /// Trader id
+    ///     Trader id
     /// </summary>
     [JsonPropertyName("tid")]
     public string? TraderId

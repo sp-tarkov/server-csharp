@@ -26,7 +26,9 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
                 value = jsonUtil.Deserialize<T>(fileUtil.ReadFile($"{ProfileDataFilepath}{profileId}/{modKey}.json"));
                 if (value != null)
                 {
-                    while (!_profileDataCache.TryAdd(profileDataKey, value)) { }
+                    while (!_profileDataCache.TryAdd(profileDataKey, value))
+                    {
+                    }
                 }
             }
             else
@@ -34,6 +36,7 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
                 value = null;
             }
         }
+
         return (T?) value;
     }
 
@@ -43,12 +46,17 @@ public class ProfileDataService(ISptLogger<ProfileDataService> logger, FileUtil 
         {
             throw new ArgumentNullException(nameof(profileData));
         }
+
         var data = jsonUtil.Serialize(profileData, profileData.GetType());
         if (data == null)
         {
             throw new Exception("The profile data when serialized resulted in a null value");
         }
-        while(!_profileDataCache.TryAdd($"{profileId}:{modKey}", data)) { }
+
+        while (!_profileDataCache.TryAdd($"{profileId}:{modKey}", data))
+        {
+        }
+
         fileUtil.WriteFile($"{ProfileDataFilepath}{profileId}/{modKey}.json", data);
     }
 }

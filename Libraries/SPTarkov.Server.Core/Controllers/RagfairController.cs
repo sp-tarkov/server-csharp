@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Common;
@@ -14,7 +15,6 @@ using SPTarkov.Server.Core.Routers;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
@@ -105,7 +105,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Check all profiles and sell player offers / send player money for listing if it sold
+    ///     Check all profiles and sell player offers / send player money for listing if it sold
     /// </summary>
     public void Update()
     {
@@ -124,7 +124,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Handles client/ragfair/find
+    ///     Handles client/ragfair/find
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="searchRequest">Search request data</param>
@@ -188,7 +188,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Adjust ragfair offer stack count to match same value as traders assort stack count
+    ///     Adjust ragfair offer stack count to match same value as traders assort stack count
     /// </summary>
     /// <param name="offer">Flea offer to adjust stack size of</param>
     private void SetTraderOfferStackSize(RagfairOffer offer)
@@ -217,7 +217,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Update a trader flea offer with buy restrictions stored in the traders assort
+    ///     Update a trader flea offer with buy restrictions stored in the traders assort
     /// </summary>
     /// <param name="offer">Flea offer to update</param>
     /// <param name="fullProfile">Players full profile</param>
@@ -256,7 +256,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Add index to all offers passed in (0-indexed)
+    ///     Add index to all offers passed in (0-indexed)
     /// </summary>
     /// <param name="offers">Offers to add index value to</param>
     protected void AddIndexValueToOffers(List<RagfairOffer> offers)
@@ -270,7 +270,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Get categories for the type of search being performed, linked/required/all
+    ///     Get categories for the type of search being performed, linked/required/all
     /// </summary>
     /// <param name="pmcProfile"></param>
     /// <param name="searchRequest">Client search request data</param>
@@ -307,7 +307,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Is the flea search being performed a 'linked' search type
+    ///     Is the flea search being performed a 'linked' search type
     /// </summary>
     /// <param name="searchRequest">Search request</param>
     /// <returns>True = a 'linked' search type</returns>
@@ -317,7 +317,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Is the flea search being performed a 'required' search type
+    ///     Is the flea search being performed a 'required' search type
     /// </summary>
     /// <param name="searchRequest">Search request</param>
     /// <returns>True if it is a 'required' search type</returns>
@@ -327,7 +327,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Get offers for the client based on type of search being performed
+    ///     Get offers for the client based on type of search being performed
     /// </summary>
     /// <param name="searchRequest">Client search request data</param>
     /// <param name="itemsToAdd">Comes from ragfairHelper.filterCategories()</param>
@@ -354,7 +354,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Called when creating an offer on flea, fills values in top right corner
+    ///     Called when creating an offer on flea, fills values in top right corner
     /// </summary>
     /// <param name="getPriceRequest">Client request object</param>
     /// <param name="ignoreTraderOffers">OPTIONAL - Should trader offers be ignored in the calculation</param>
@@ -445,7 +445,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// List item(s) on flea for sale
+    ///     List item(s) on flea for sale
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="offerRequest">Flea list creation offer</param>
@@ -488,7 +488,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Is the item to be listed on the flea valid
+    ///     Is the item to be listed on the flea valid
     /// </summary>
     /// <param name="offerRequest">Client offer request</param>
     /// <returns>Is offer valid</returns>
@@ -512,7 +512,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Given a client request, determine what type of offer is being created single/multi/pack
+    ///     Given a client request, determine what type of offer is being created single/multi/pack
     /// </summary>
     /// <param name="offerRequest">Client request</param>
     /// <returns>FleaOfferType</returns>
@@ -542,9 +542,9 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Create a flea offer for multiples of the same item, can be single items or items with multiple in the stack
-    /// e.g. 2 ammo stacks of 30 cartridges each
-    /// Each item can be purchased individually
+    ///     Create a flea offer for multiples of the same item, can be single items or items with multiple in the stack
+    ///     e.g. 2 ammo stacks of 30 cartridges each
+    ///     Each item can be purchased individually
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="offerRequest">Offer request from client</param>
@@ -652,9 +652,9 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Create a flea offer for multiple items, can be single items or items with multiple in the stack
-    /// e.g. 2 ammo stacks of 30 cartridges each
-    /// The entire package must be purchased in one go
+    ///     Create a flea offer for multiple items, can be single items or items with multiple in the stack
+    ///     e.g. 2 ammo stacks of 30 cartridges each
+    ///     The entire package must be purchased in one go
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="offerRequest">Offer request from client</param>
@@ -762,8 +762,8 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Create a flea offer for a single item - includes an item with > 1 sized stack
-    /// e.g. 1 ammo stack of 30 cartridges
+    ///     Create a flea offer for a single item - includes an item with > 1 sized stack
+    ///     e.g. 1 ammo stack of 30 cartridges
     /// </summary>
     /// <param name="sessionID">Session/Player id</param>
     /// <param name="offerRequest">Offer request from client</param>
@@ -859,7 +859,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Charge player a listing fee for using flea, pulls charge from data previously sent by client
+    ///     Charge player a listing fee for using flea, pulls charge from data previously sent by client
     /// </summary>
     /// <param name="sessionId"></param>
     /// <param name="rootItem">Base item being listed (used when client tax cost not found and must be done on server)</param>
@@ -913,7 +913,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Create a flea offer for a player
+    ///     Create a flea offer for a player
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <param name="requirements"></param>
@@ -924,8 +924,7 @@ public class RagfairController
         bool sellInOnePiece)
     {
         const int loyalLevel = 1;
-        var formattedItems = items.Select(
-            item =>
+        var formattedItems = items.Select(item =>
             {
                 var isChild = items.Any(subItem => subItem.Id == item.ParentId);
 
@@ -940,8 +939,7 @@ public class RagfairController
             }
         );
 
-        var formattedRequirements = requirements.Select(
-            item => new BarterScheme
+        var formattedRequirements = requirements.Select(item => new BarterScheme
             {
                 Template = item.Template,
                 Count = item.Count,
@@ -955,13 +953,13 @@ public class RagfairController
             formattedItems.ToList(),
             formattedRequirements.ToList(),
             loyalLevel,
-            (int?)items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
+            (int?) items.FirstOrDefault()?.Upd?.StackObjectsCount ?? 1,
             sellInOnePiece
         );
     }
 
     /// <summary>
-    /// Get the handbook price in roubles for the items being listed
+    ///     Get the handbook price in roubles for the items being listed
     /// </summary>
     /// <param name="requirements"></param>
     /// <returns>Rouble price</returns>
@@ -982,7 +980,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Find items with their children from players inventory
+    ///     Find items with their children from players inventory
     /// </summary>
     /// <param name="pmcData">Players PMC profile</param>
     /// <param name="itemIdsFromFleaOfferRequest">Request</param>
@@ -1038,8 +1036,8 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Flag an offer as being ready for removal - sets expiry for very near future
-    /// Will be picked up by update() once expiry time has passed
+    ///     Flag an offer as being ready for removal - sets expiry for very near future
+    ///     Will be picked up by update() once expiry time has passed
     /// </summary>
     /// <param name="offerId">Id of offer to remove</param>
     /// <param name="sessionId">Session id of requesting player</param>
@@ -1058,7 +1056,7 @@ public class RagfairController
                     new
                     {
                         profileId = sessionId,
-                        offerId = offerId
+                        offerId
                     }
                 )
             );
@@ -1074,7 +1072,7 @@ public class RagfairController
                     "ragfair-offer_not_found_in_profile",
                     new
                     {
-                        offerId = offerId
+                        offerId
                     }
                 )
             );
@@ -1098,7 +1096,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Extend a flea offers active time
+    ///     Extend a flea offers active time
     /// </summary>
     /// <param name="extendRequest">Extend time request</param>
     /// <param name="sessionId">Session/Player id</param>
@@ -1167,7 +1165,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Create a basic trader request object with price and currency type
+    ///     Create a basic trader request object with price and currency type
     /// </summary>
     /// <param name="currency">What currency: RUB, EURO, USD</param>
     /// <param name="value">Amount of currency</param>
@@ -1194,7 +1192,7 @@ public class RagfairController
     }
 
     /// <summary>
-    /// Get prices for all items on flea
+    ///     Get prices for all items on flea
     /// </summary>
     /// <returns>Dictionary of tpl and item price</returns>
     public Dictionary<string, double> GetAllFleaPrices()

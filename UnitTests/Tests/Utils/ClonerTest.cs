@@ -8,19 +8,19 @@ namespace UnitTests.Tests.Utils;
 [TestClass]
 public class ClonerTest
 {
-    private Templates? _templates;
-
-    private ICloner _jsonCloner;
-    private ICloner _reflectionsCloner;
     private ICloner _fastCloner;
 
+    private ICloner _jsonCloner;
+
     private JsonUtil _jsonUtil;
+    private ICloner _reflectionsCloner;
+    private Templates? _templates;
 
     [TestInitialize]
     public void Setup()
     {
         _jsonUtil = new JsonUtil();
-        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(new MockLogger<FileUtil>()), _jsonUtil);
+        var importer = new ImporterUtil(new MockLogger<ImporterUtil>(), new FileUtil(), _jsonUtil);
         var loadTask = importer.LoadRecursiveAsync<Templates>("./TestAssets/");
         loadTask.Wait();
         _templates = loadTask.Result;

@@ -18,7 +18,29 @@
   "Area": 0,
   "AveragePlayTime": 35,
   "AveragePlayerLevel": 40,
-  "Banners": [],
+  "Banners": [
+    {
+      "id": "67d1ac822b87c1a5a30e5ae8",
+      "pic": {
+        "path": "CONTENT/banners/banner_Sandbox.jpg",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "63a9c1f5662a5b0a2c7fbde5",
+      "pic": {
+        "path": "CONTENT/banners/banner_City_final.jpg",
+        "rcid": ""
+      }
+    },
+    {
+      "id": "64c0acf85174e095610734a0",
+      "pic": {
+        "path": "CONTENT/banners/banner_sherpa.jpg",
+        "rcid": ""
+      }
+    }
+  ],
   "BossLocationSpawn": [
     {
       "BossChance": 30,
@@ -228,11 +250,11 @@
         "BotRole": "pmcBEAR",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -275,11 +297,11 @@
         "BotRole": "pmcUSEC",
         "ChancedEnemies": [
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "assault"
           },
           {
-            "EnemyChance": 70,
+            "EnemyChance": 100,
             "Role": "marksman"
           },
           {
@@ -311,7 +333,7 @@
     "DistToActivatePvE": 260,
     "DistToSleep": 300,
     "DistToSleepPvE": 300,
-    "FogVisibilityDistanceCoef": -1.6,
+    "FogVisibilityDistanceCoef": 0,
     "FogVisibilitySpeedCoef": 0,
     "GainSight": 1,
     "LockSpawnCheckRadius": 150,
@@ -324,7 +346,7 @@
     "MaxExfiltrationTime": 1500,
     "MinExfiltrationTime": 1200,
     "NonWaveSpawnBotsLimitPerPlayer": 10,
-    "NonWaveSpawnBotsLimitPerPlayerPvE": 15,
+    "NonWaveSpawnBotsLimitPerPlayerPvE": 10,
     "RainVisibilityDistanceCoef": 0.35,
     "RainVisibilitySpeedCoef": 0,
     "Scattering": 1,
@@ -6517,6 +6539,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -6532,6 +6555,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -6547,6 +6571,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -6562,6 +6587,7 @@
     {
       "BotPreset": "hard",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],
@@ -6577,6 +6603,7 @@
     {
       "BotPreset": "normal",
       "BotSide": "Savage",
+      "KeepZoneOnSpawn": false,
       "SpawnMode": [
         "pve"
       ],

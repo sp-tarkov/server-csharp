@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
@@ -9,7 +10,6 @@ using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -32,7 +32,7 @@ public class PaymentService(
     protected InventoryConfig _inventoryConfig = _configServer.GetConfig<InventoryConfig>();
 
     /// <summary>
-    /// Take money and insert items into return to server request
+    ///     Take money and insert items into return to server request
     /// </summary>
     /// <param name="pmcData"> PMC Profile </param>
     /// <param name="request"> Buy item request </param>
@@ -45,7 +45,7 @@ public class PaymentService(
         var payToTrader = _traderHelper.TraderEnumHasValue(request.TransactionId);
 
         // Track the amounts of each type of currency involved in the trade.
-        Dictionary<string, double?> currencyAmounts = new Dictionary<string, double?>();
+        var currencyAmounts = new Dictionary<string, double?>();
 
         // Delete barter items and track currencies
         foreach (var itemRequest in request.SchemeItems)
@@ -69,7 +69,12 @@ public class PaymentService(
                 else
                 {
                     // If the item is money, add its count to the currencyAmounts object.
-                    currencyAmounts.TryAdd(item.Template, currencyAmounts.GetValueOrDefault(item.Template, 0) + itemRequest.Count);
+                    // sometimes the currency can be in two parts, so it fails to tryadd the second part
+                    if (!currencyAmounts.TryAdd(item.Template, itemRequest.Count))
+                    {
+                        // if it fails, add the amount to the existing amount
+                        currencyAmounts[item.Template] += itemRequest.Count;
+                    }
                 }
             }
             else
@@ -77,7 +82,12 @@ public class PaymentService(
                 // Used by `SptInsure`
                 // Handle differently, `id` is the money type tpl
                 var currencyTpl = itemRequest.Id;
-                currencyAmounts.TryAdd(currencyTpl, currencyAmounts.GetValueOrDefault(currencyTpl, 0) + itemRequest.Count);
+                // sometimes the currency can be in two parts, so it fails to tryadd the second part
+                if (!currencyAmounts.TryAdd(currencyTpl, itemRequest.Count))
+                {
+                    // if it fails, add the amount to the existing amount
+                    currencyAmounts[currencyTpl] += itemRequest.Count;
+                }
             }
         }
 
@@ -85,18 +95,17 @@ public class PaymentService(
         var totalCurrencyAmount = 0d;
 
         // Loop through each type of currency involved in the trade.
-        foreach (var currencyTpl in currencyAmounts)
+        foreach (var (currencyTpl, currencyAmount) in currencyAmounts)
         {
-            if (currencyTpl.Value <= 0)
+            if (currencyAmount <= 0)
             {
                 continue;
             }
 
-            var currencyAmount = currencyTpl.Value;
             totalCurrencyAmount += currencyAmount.Value;
 
             // Find money stacks in inventory and remove amount needed + update output object to inform client of changes
-            AddPaymentToOutput(pmcData, currencyTpl.Key, currencyAmount.Value, sessionID, output);
+            AddPaymentToOutput(pmcData, currencyTpl, currencyAmount.Value, sessionID, output);
 
             // If there are warnings, exit early.
             if (output.Warnings?.Count > 0)
@@ -108,7 +117,7 @@ public class PaymentService(
             {
                 // Convert the amount to the trader's currency and update the sales sum.
                 var costOfPurchaseInCurrency = _handbookHelper.FromRUB(
-                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl.Key),
+                    _handbookHelper.InRUB(currencyAmount ?? 0, currencyTpl),
                     _paymentHelper.GetCurrency(trader.Currency)
                 );
 
@@ -143,7 +152,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Get the item price of a specific traders assort
+    ///     Get the item price of a specific traders assort
     /// </summary>
     /// <param name="traderAssortId"> ID of the assort to look up</param>
     /// <param name="traderId"> ID of trader with assort </param>
@@ -168,7 +177,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Receive money back after selling
+    ///     Receive money back after selling
     /// </summary>
     /// <param name="pmcData"> PMC Profile</param>
     /// <param name="amountToSend"> Money to send back </param>
@@ -244,7 +253,7 @@ public class PaymentService(
             Template = currencyTpl,
             Upd = new Upd
             {
-                StackObjectsCount = Math.Round((double) calcAmount)
+                StackObjectsCount = Math.Round(calcAmount)
             }
         };
 
@@ -271,7 +280,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Remove currency from player stash/inventory and update client object with changes
+    ///     Remove currency from player stash/inventory and update client object with changes
     /// </summary>
     /// <param name="pmcData"> Player profile to find and remove currency from</param>
     /// <param name="currencyTpl"> Type of currency to pay </param>
@@ -352,7 +361,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Get all money stacks in inventory and prioritise items in stash
+    ///     Get all money stacks in inventory and prioritise items in stash
     /// </summary>
     /// <param name="pmcData"> Player profile </param>
     /// <param name="currencyTpl"> Currency to find </param>
@@ -374,8 +383,8 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Prioritise player stash first over player inventory.
-    ///  Post-raid healing would often take money out of the players pockets/secure container.
+    ///     Prioritise player stash first over player inventory.
+    ///     Post-raid healing would often take money out of the players pockets/secure container.
     /// </summary>
     /// <param name="a"> First money stack item </param>
     /// <param name="b"> Second money stack item </param>
@@ -448,7 +457,7 @@ public class PaymentService(
     }
 
     /// <summary>
-    /// Recursively check items parents to see if it is inside the players inventory, not stash
+    ///     Recursively check items parents to see if it is inside the players inventory, not stash
     /// </summary>
     /// <param name="itemId"> Item ID to check </param>
     /// <param name="inventoryItems"> Player inventory </param>

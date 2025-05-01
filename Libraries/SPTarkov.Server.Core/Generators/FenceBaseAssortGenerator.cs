@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -7,7 +8,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Generators;
 
@@ -30,7 +30,7 @@ public class FenceBaseAssortGenerator(
     protected TraderConfig traderConfig = configServer.GetConfig<TraderConfig>();
 
     /// <summary>
-    /// Create base fence assorts dynamically and store in memory
+    ///     Create base fence assorts dynamically and store in memory
     /// </summary>
     public void GenerateFenceBaseAssorts()
     {
@@ -201,7 +201,7 @@ public class FenceBaseAssortGenerator(
     }
 
     /// <summary>
-    /// Check ammo in boxes + loose ammos has a penetration value above the configured value in trader.json / ammoMaxPenLimit
+    ///     Check ammo in boxes + loose ammos has a penetration value above the configured value in trader.json / ammoMaxPenLimit
     /// </summary>
     /// <param name="rootItemDb"> Ammo box or ammo item from items.db </param>
     /// <returns>True if penetration value is above limit set in config</returns>
@@ -218,7 +218,7 @@ public class FenceBaseAssortGenerator(
     }
 
     /// <summary>
-    /// Get the penetration power value of an ammo, works with ammo boxes and raw ammos
+    ///     Get the penetration power value of an ammo, works with ammo boxes and raw ammos
     /// </summary>
     /// <param name="rootItemDb"> Ammo box or ammo item from items.db </param>
     /// <returns> Penetration power of passed in item, undefined if it doesnt have a power </returns>
@@ -251,7 +251,7 @@ public class FenceBaseAssortGenerator(
     }
 
     /// <summary>
-    /// Add soft inserts + armor plates to an armor
+    ///     Add soft inserts + armor plates to an armor
     /// </summary>
     /// <param name="armor"> Armor item array to add mods into </param>
     /// <param name="itemDbDetails">Armor items db template</param>
@@ -337,7 +337,7 @@ public class FenceBaseAssortGenerator(
     }
 
     /// <summary>
-    /// Check if item is valid for being added to fence assorts
+    ///     Check if item is valid for being added to fence assorts
     /// </summary>
     /// <param name="item"> Item to check </param>
     /// <returns> True if valid fence item </returns>

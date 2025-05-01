@@ -445,49 +445,57 @@ public record EnvironmentSettings
     [JsonPropertyName("AutumnLateSettings")]
     public SeasonEnvironmentSettings AutumnLateSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("AutumnSettings")]
     public SeasonEnvironmentSettings AutumnSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("SpringEarlySettings")]
     public SeasonEnvironmentSettings SpringEarlySettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("SpringSettings")]
     public SeasonEnvironmentSettings SpringSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("StormSettings")]
     public SeasonEnvironmentSettings StormSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("SummerSettings")]
     public SeasonEnvironmentSettings SummerSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("WinterSettings")]
     public SeasonEnvironmentSettings WinterSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("SurfaceMultipliers")]
     public List<SurfaceMultiplier>? SurfaceMultipliers
     {
-        get; set;
+        get;
+        set;
     }
 }
 
@@ -496,19 +504,22 @@ public record SeasonEnvironmentSettings
     [JsonPropertyName("RainSettings")]
     public List<RainSetting> RainSettings
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("StepsVolumeMultiplier")]
     public double StepsVolumeMultiplier
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("WindMultipliers")]
     public List<WindMultiplier> WindMultipliers
     {
-        get; set;
+        get;
+        set;
     }
 }
 
@@ -532,13 +543,15 @@ public record WindMultiplier
     [JsonPropertyName("VolumeMult")]
     public double VolumeMult
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("WindSpeed")]
     public string WindSpeed
     {
-        get; set;
+        get;
+        set;
     }
 }
 
@@ -547,19 +560,22 @@ public record RainSetting
     [JsonPropertyName("IndoorVolumeMult")]
     public int IndoorVolumeMult
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("OutdoorVolumeMult")]
     public double OutdoorVolumeMult
     {
-        get; set;
+        get;
+        set;
     }
 
     [JsonPropertyName("RainIntensity")]
     public string RainIntensity
     {
-        get; set;
+        get;
+        set;
     }
 }
 
@@ -583,6 +599,7 @@ public record HeadphoneSettings
         set;
     }
 }
+
 public record MetaXRAudioPluginSettings
 {
     public bool? EnabledPluginErrorChecker

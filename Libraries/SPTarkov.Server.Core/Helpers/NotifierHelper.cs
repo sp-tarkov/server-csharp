@@ -1,6 +1,6 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Eft.Ws;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 

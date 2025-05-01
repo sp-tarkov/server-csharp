@@ -56,7 +56,7 @@ public record StartLocalRaidRequestData : IRequestData
     }
 
     /// <summary>
-    /// Should loot generation be skipped, default false
+    ///     Should loot generation be skipped, default false
     /// </summary>
     [JsonPropertyName("sptSkipLootGeneration")]
     public bool? ShouldSkipLootGeneration

@@ -1,9 +1,9 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -17,7 +17,7 @@ public class AchievementController(
     protected CoreConfig coreConfig = configServer.GetConfig<CoreConfig>();
 
     /// <summary>
-    /// Get base achievements
+    ///     Get base achievements
     /// </summary>
     /// <param name="sessionID">Session/player id</param>
     /// <returns></returns>
@@ -30,7 +30,7 @@ public class AchievementController(
     }
 
     /// <summary>
-    /// Shows % of 'other' players who've completed each achievement
+    ///     Shows % of 'other' players who've completed each achievement
     /// </summary>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>CompletedAchievementsResponse</returns>
@@ -40,9 +40,11 @@ public class AchievementController(
         var profiles = profileHelper.GetProfiles();
 
         var achievements = databaseService.GetAchievements();
-        foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId))) {
+        foreach (var achievementId in achievements.Select(achievement => achievement.Id).Where(achievementId => !string.IsNullOrEmpty(achievementId)))
+        {
             var percentage = 0;
-            foreach (var (profileId, profile) in profiles) {
+            foreach (var (profileId, profile) in profiles)
+            {
                 if (coreConfig.Features.AchievementProfileIdBlacklist.Contains(profileId))
                 {
                     continue;
@@ -61,10 +63,13 @@ public class AchievementController(
                 percentage++;
             }
 
-            percentage = (percentage / profiles.Count) * 100;
+            percentage = percentage / profiles.Count * 100;
             stats.Add(achievementId, percentage);
         }
 
-        return new CompletedAchievementsResponse{ Elements = stats };
+        return new CompletedAchievementsResponse
+        {
+            Elements = stats
+        };
     }
 }

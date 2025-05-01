@@ -41,6 +41,17 @@ public class MockLogger<T> : ISptLogger<T>
         Console.WriteLine(data);
     }
 
+    public void Log(
+        LogLevel level,
+        string data,
+        LogTextColor? textColor = null,
+        LogBackgroundColor? backgroundColor = null,
+        Exception? ex = null
+    )
+    {
+        throw new NotImplementedException();
+    }
+
     public void WriteToLogFile(string body, LogLevel level = LogLevel.Info)
     {
         throw new NotImplementedException();
@@ -49,6 +60,11 @@ public class MockLogger<T> : ISptLogger<T>
     public bool IsLogEnabled(LogLevel level)
     {
         return true;
+    }
+
+    public void DumpAndStop()
+    {
+        throw new NotImplementedException();
     }
 
     public void LogWithColor(

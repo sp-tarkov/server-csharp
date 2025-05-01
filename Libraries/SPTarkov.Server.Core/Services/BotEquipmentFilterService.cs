@@ -1,3 +1,5 @@
+using SPTarkov.Common.Annotations;
+using SPTarkov.Common.Extensions;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Enums;
@@ -5,8 +7,6 @@ using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
-using SPTarkov.Common.Extensions;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
@@ -164,8 +164,8 @@ public class BotEquipmentFilterService
     {
         var blacklistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(
-            equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
+        return (blacklistDetailsForBot?.Blacklist ?? []).FirstOrDefault(equipmentFilter =>
+            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
 
@@ -179,8 +179,8 @@ public class BotEquipmentFilterService
     {
         var whitelistDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(
-            equipmentFilter => playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
+        return (whitelistDetailsForBot?.Whitelist ?? []).FirstOrDefault(equipmentFilter =>
+            playerLevel >= equipmentFilter.LevelRange.Min && playerLevel <= equipmentFilter.LevelRange.Max
         );
     }
 
@@ -194,8 +194,7 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(
-            x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x => botLevel >= x.LevelRange.Min && botLevel <= x.LevelRange.Max
         );
     }
 
@@ -209,8 +208,8 @@ public class BotEquipmentFilterService
     {
         var weightingDetailsForBot = _botEquipmentConfig.GetValueOrDefault(botRole, null);
 
-        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(
-            x => playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max
+        return (weightingDetailsForBot?.WeightingAdjustmentsByBotLevel ?? []).FirstOrDefault(x =>
+            playerlevel >= x.LevelRange.Min && playerlevel <= x.LevelRange.Max
         );
     }
 

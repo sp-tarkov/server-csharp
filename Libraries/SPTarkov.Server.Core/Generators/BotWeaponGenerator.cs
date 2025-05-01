@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Generators.WeaponGen;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common;
@@ -10,7 +11,6 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Generators;
@@ -200,7 +200,7 @@ public class BotWeaponGenerator(
 
         // Add cartridge(s) to gun chamber(s)
         if (weaponItemTemplate.Properties?.Chambers?.Count > 0 &&
-             weaponItemTemplate.Properties.Chambers[0].Props.Filters[0].Filter.Contains(ammoTpl))
+            weaponItemTemplate.Properties.Chambers[0].Props.Filters[0].Filter.Contains(ammoTpl))
         {
             // Guns have variety of possible Chamber ids, patron_in_weapon/patron_in_weapon_000/patron_in_weapon_001
             var chamberSlotNames = weaponItemTemplate.Properties.Chambers.Select(chamberSlot => chamberSlot.Name);
@@ -363,8 +363,7 @@ public class BotWeaponGenerator(
             foreach (var modSlotTemplate in modTemplate.Properties.Slots?.Where(slot => slot.Required.GetValueOrDefault(false)) ?? [])
             {
                 var slotName = modSlotTemplate.Name;
-                var hasWeaponSlotItem = weaponItemList.Any(
-                    weaponItem => weaponItem.ParentId == mod.Id && weaponItem.SlotId == slotName
+                var hasWeaponSlotItem = weaponItemList.Any(weaponItem => weaponItem.ParentId == mod.Id && weaponItem.SlotId == slotName
                 );
                 if (!hasWeaponSlotItem)
                 {
@@ -639,7 +638,8 @@ public class BotWeaponGenerator(
             var magazineCaliberData = _itemHelper.GetItem(compatibleCartridgesInMagazine.FirstOrDefault()).Value.Properties.Caliber;
             cartridgePoolForWeapon = cartridgePool[magazineCaliberData];
 
-            foreach (var cartridgeKvP in cartridgePoolForWeapon) {
+            foreach (var cartridgeKvP in cartridgePoolForWeapon)
+            {
                 if (compatibleCartridgesInMagazine.Contains(cartridgeKvP.Key))
                 {
                     compatibleCartridges[cartridgeKvP.Key] = cartridgeKvP.Value;
@@ -676,12 +676,13 @@ public class BotWeaponGenerator(
     }
 
     /// <summary>
-    /// Get the cartridge ids from a weapon's magazine template that work with the weapon
+    ///     Get the cartridge ids from a weapon's magazine template that work with the weapon
     /// </summary>
     /// <param name="weaponTemplate">Weapon db template to get magazine cartridges for</param>
     /// <returns>Hashset of cartridge tpls</returns>
     /// <exception cref="ArgumentNullException">Thrown when weaponTemplate is null.</exception>
-    protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate) {
+    protected HashSet<string> GetCompatibleCartridgesFromMagazineTemplate(TemplateItem weaponTemplate)
+    {
         ArgumentNullException.ThrowIfNull(weaponTemplate);
 
         // Get the first magazine's template from the weapon
@@ -801,8 +802,7 @@ public class BotWeaponGenerator(
     /// <param name="magazineTemplate">Magazines db template</param>
     protected void AddOrUpdateMagazinesChildWithAmmo(List<Item> weaponWithMods, Item magazine, string chosenAmmoTpl, TemplateItem magazineTemplate)
     {
-        var magazineCartridgeChildItem = weaponWithMods.FirstOrDefault(
-            m => m.ParentId == magazine.Id && m.SlotId == "cartridges"
+        var magazineCartridgeChildItem = weaponWithMods.FirstOrDefault(m => m.ParentId == magazine.Id && m.SlotId == "cartridges"
         );
         if (magazineCartridgeChildItem is not null)
         {
@@ -824,6 +824,7 @@ public class BotWeaponGenerator(
 
             return;
         }
+
         weaponWithMods.RemoveAt(magazineIndex);
 
         // Insert new mag at same index position original was

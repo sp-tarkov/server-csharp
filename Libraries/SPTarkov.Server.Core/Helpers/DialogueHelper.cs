@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Profile;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -110,7 +110,7 @@ public class DialogueHelper(
     }
 
     /// <summary>
-    /// Find and return a profiles dialogue by id
+    ///     Find and return a profiles dialogue by id
     /// </summary>
     /// <param name="profileId">Profile to look in</param>
     /// <param name="dialogueId">Dialog to return</param>

@@ -909,6 +909,12 @@ public record Config
         get;
         set;
     }
+    [JsonPropertyName("MailItemsExpirationTimeLimitWarning")]
+    public double? MailItemsExpirationTimeLimitWarning
+    {
+        get;
+        set;
+    }
 
     [JsonPropertyName("BaseLoadTime")]
     public double? BaseLoadTime
@@ -8910,6 +8916,11 @@ public record FenceSettings
         get;
         set;
     }
+    public double? ScavEquipmentChancePercentThreshold
+    {
+        get;
+        set;
+    }
 }
 
 public record FenceLevel
@@ -9651,7 +9662,7 @@ public record Preset
     }
 
     /// <summary>
-    /// Default presets have this property
+    ///     Default presets have this property
     /// </summary>
     [JsonPropertyName("_encyclopedia")]
     public string? Encyclopedia

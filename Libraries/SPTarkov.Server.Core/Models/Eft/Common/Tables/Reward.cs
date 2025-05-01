@@ -56,7 +56,7 @@ public record Reward
     }
 
     /// <summary>
-    /// Hideout area id
+    ///     Hideout area id
     /// </summary>
     [JsonPropertyName("traderId")]
     public object? TraderId
@@ -94,7 +94,7 @@ public record Reward
     }
 
     /// <summary>
-    /// Game editions whitelisted to get reward
+    ///     Game editions whitelisted to get reward
     /// </summary>
     [JsonPropertyName("availableInGameEditions")]
     public HashSet<string>? AvailableInGameEditions
@@ -104,7 +104,7 @@ public record Reward
     }
 
     /// <summary>
-    /// Game editions blacklisted from getting reward
+    ///     Game editions blacklisted from getting reward
     /// </summary>
     [JsonPropertyName("notAvailableInGameEditions")]
     public HashSet<string>? NotAvailableInGameEditions

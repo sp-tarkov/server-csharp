@@ -1,3 +1,4 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Models.Eft.Common;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
@@ -5,7 +6,6 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -29,8 +29,8 @@ public class PostDbLoadService(
     protected ItemConfig _itemConfig = _configServer.GetConfig<ItemConfig>();
     protected LocationConfig _locationConfig = _configServer.GetConfig<LocationConfig>();
     protected LootConfig _lootConfig = _configServer.GetConfig<LootConfig>();
-    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
     protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    protected RagfairConfig _ragfairConfig = _configServer.GetConfig<RagfairConfig>();
 
     public void PerformPostDbLoadActions()
     {
@@ -143,13 +143,14 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Merge custom achievements into achievement db table
+    ///     Merge custom achievements into achievement db table
     /// </summary>
     protected void MergeCustomAchievements()
     {
         var achievements = _databaseService.GetAchievements();
-        foreach (var customAchievement in _databaseService.GetCustomAchievements()) {
-            if (achievements.Exists((a) => a.Id == customAchievement.Id))
+        foreach (var customAchievement in _databaseService.GetCustomAchievements())
+        {
+            if (achievements.Exists(a => a.Id == customAchievement.Id))
             {
                 _logger.Warning($"Unable to add custom achievement as id: {customAchievement.Id} already exists");
                 continue;
@@ -256,8 +257,7 @@ public class PostDbLoadService(
             foreach (var positionToAdd in positionsToAdd)
             {
                 // Exists already, add new items to existing positions pool
-                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(
-                    x => x.Template.Id == positionToAdd.Template.Id
+                var existingLootPosition = mapLooseLoot.Spawnpoints.FirstOrDefault(x => x.Template.Id == positionToAdd.Template.Id
                 );
 
                 if (existingLootPosition is not null)
@@ -298,7 +298,11 @@ public class PostDbLoadService(
     {
         var locations = _databaseService.GetLocations().GetDictionary();
 
-        var pmcTypes = new HashSet<string> { "pmcUSEC", "pmcBEAR" };
+        var pmcTypes = new HashSet<string>
+        {
+            "pmcUSEC",
+            "pmcBEAR"
+        };
         foreach (var locationkvP in locations)
         {
             if (locationkvP.Value?.Base?.BossLocationSpawn is null)
@@ -306,13 +310,13 @@ public class PostDbLoadService(
                 continue;
             }
 
-            locationkvP.Value.Base.BossLocationSpawn = locationkvP.Value.Base.BossLocationSpawn.Where(
-                (bossSpawn) => !pmcTypes.Contains(bossSpawn.BossName)).ToList();
+            locationkvP.Value.Base.BossLocationSpawn =
+                locationkvP.Value.Base.BossLocationSpawn.Where(bossSpawn => !pmcTypes.Contains(bossSpawn.BossName)).ToList();
         }
     }
 
     /// <summary>
-    /// Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
+    ///     Apply custom limits on bot types as defined in configs/location.json/botTypeLimits
     /// </summary>
     protected void AdjustMapBotLimits()
     {
@@ -379,8 +383,7 @@ public class PostDbLoadService(
 
             foreach (var (lootKey, newChanceValue) in mapAdjustments)
             {
-                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(
-                    spawnPoint => spawnPoint.Template.Id == lootKey
+                var lootPostionToAdjust = mapLooseLootData.Spawnpoints.FirstOrDefault(spawnPoint => spawnPoint.Template.Id == lootKey
                 );
                 if (lootPostionToAdjust is null)
                 {
@@ -425,7 +428,7 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Make Rogues spawn later to allow for scavs to spawn first instead of rogues filling up all spawn positions
+    ///     Make Rogues spawn later to allow for scavs to spawn first instead of rogues filling up all spawn positions
     /// </summary>
     protected void FixRoguesSpawningInstantlyOnLighthouse()
     {
@@ -447,15 +450,14 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Make non-trigger-spawned raiders spawn earlier + always
+    ///     Make non-trigger-spawned raiders spawn earlier + always
     /// </summary>
     protected void AdjustLabsRaiderSpawnRate()
     {
         var labsBase = _databaseService.GetLocations().Laboratory.Base;
 
         // Find spawns with empty string for triggerId/TriggerName
-        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(
-            bossSpawn => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
+        var nonTriggerLabsBossSpawns = labsBase.BossLocationSpawn.Where(bossSpawn => bossSpawn.TriggerId is null && bossSpawn.TriggerName is null
         );
 
         foreach (var boss in nonTriggerLabsBossSpawns)
@@ -480,7 +482,7 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Adjust all hideout craft times to be no higher than the override
+    ///     Adjust all hideout craft times to be no higher than the override
     /// </summary>
     /// <param name="overrideSeconds"> Time in seconds </param>
     protected void AdjustHideoutBuildTimes(int overrideSeconds)
@@ -518,7 +520,7 @@ public class PostDbLoadService(
     }
 
     /// <summary>
-    /// Check for any missing assorts inside each traders assort.json data, checking against traders questassort.json
+    ///     Check for any missing assorts inside each traders assort.json data, checking against traders questassort.json
     /// </summary>
     protected void ValidateQuestAssortUnlocksExist()
     {
@@ -563,10 +565,9 @@ public class PostDbLoadService(
     protected void SetAllDbItemsAsSellableOnFlea()
     {
         var dbItems = _databaseService.GetItems().Values.ToList();
-        foreach (var item in dbItems.Where(
-                     item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
-                             !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
-                             !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
+        foreach (var item in dbItems.Where(item => string.Equals(item.Type, "Item", StringComparison.OrdinalIgnoreCase) &&
+                                                   !item.Properties.CanSellOnRagfair.GetValueOrDefault(false) &&
+                                                   !_ragfairConfig.Dynamic.Blacklist.Custom.Contains(item.Id)
                  ))
         {
             item.Properties.CanSellOnRagfair = true;

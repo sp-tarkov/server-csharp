@@ -1,10 +1,10 @@
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.InRaid;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
-using SPTarkov.Common.Annotations;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -57,8 +57,8 @@ public class InRaidController(
     }
 
     /// <summary>
-    /// Handle singleplayer/scav/traitorscavhostile
-    /// Get a % chance a scav will be hostile to the player when they're also a scav
+    ///     Handle singleplayer/scav/traitorscavhostile
+    ///     Get a % chance a scav will be hostile to the player when they're also a scav
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>
@@ -69,7 +69,7 @@ public class InRaidController(
     }
 
     /// <summary>
-    /// Get all boss role types e.g. bossTagilla
+    ///     Get all boss role types e.g. bossTagilla
     /// </summary>
     /// <param name="url"></param>
     /// <param name="sessionId">Session/Player id</param>

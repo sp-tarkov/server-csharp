@@ -88,12 +88,20 @@ public record Item
         get;
         set;
     }
+#if !DEBUG
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData
+    {
+        get;
+        set;
+    }
+#endif
 }
 
 public record HideoutItem
 {
     /// <summary>
-    /// Hideout inventory id that was used by improvement action
+    ///     Hideout inventory id that was used by improvement action
     /// </summary>
     [JsonPropertyName("_id")]
     public string? _Id
@@ -168,13 +176,6 @@ public record ItemLocation
         set;
     }
 
-    [JsonPropertyName("r")]
-    public object? R
-    {
-        get;
-        set;
-    } // TODO: Can be string or number
-
     [JsonPropertyName("isSearched")]
     public bool? IsSearched
     {
@@ -183,14 +184,30 @@ public record ItemLocation
     }
 
     /// <summary>
-    /// SPT property?
+    ///     SPT property?
     /// </summary>
     [JsonPropertyName("rotation")]
-    public object? Rotation
+    public bool? Rotation
     {
         get;
         set;
-    } // TODO: Can be string or boolean
+    }
+
+    [JsonPropertyName("r")]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public ItemRotation R
+    {
+        get;
+        set;
+    }
+}
+
+public enum ItemRotation
+{
+    // Token: 0x0400259F RID: 9631
+    Horizontal,
+    // Token: 0x040025A0 RID: 9632
+    Vertical
 }
 
 public record Upd
@@ -226,7 +243,7 @@ public record Upd
     }
 
     /// <summary>
-    /// SPT specific property, not made by BSG
+    ///     SPT specific property, not made by BSG
     /// </summary>
     [JsonPropertyName("sptPresetId")]
     public string? SptPresetId
@@ -362,11 +379,33 @@ public record Upd
         set;
     }
 
-    public bool? Lockable
+    public LockableComponent? Lockable
     {
         get;
         set;
     }
+#if !DEBUG
+    [JsonExtensionData]
+    public Dictionary<string, object>? ExtensionData
+    {
+        get;
+        set;
+    }
+#endif
+}
+
+public record LockableKeyComponent
+{
+    public float? RelativeValue { get; set; }
+    public int? NumberOfUsages { get; set; }
+
+}
+
+public record LockableComponent
+{
+    public string[]? KeyIds { get; set; }
+    public bool? Locked { get; set; }
+    public LockableKeyComponent? KeyComponent { get; set; }
 }
 
 public enum PinLockState
@@ -659,7 +698,8 @@ public record UpdDogtag
     }
 
     [JsonPropertyName("Side")]
-    public object? Side
+    [JsonConverter(typeof(DogtagSideConverter))]
+    public DogtagSide? Side
     {
         get;
         set;

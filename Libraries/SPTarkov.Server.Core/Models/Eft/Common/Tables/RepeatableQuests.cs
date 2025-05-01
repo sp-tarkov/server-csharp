@@ -220,7 +220,7 @@ public record PmcDataRepeatableQuest
     }
 
     /// <summary>
-    /// What it costs to reset: QuestId, ChangeRequirement. Redundant to change requirements within RepeatableQuest
+    ///     What it costs to reset: QuestId, ChangeRequirement. Redundant to change requirements within RepeatableQuest
     /// </summary>
     [JsonIgnore(Condition = JsonIgnoreCondition.Never)]
     [JsonPropertyName("changeRequirement")]
@@ -265,7 +265,7 @@ public record ChangeRequirement
 public record ChangeCost
 {
     /// <summary>
-    /// What item it will take to reset daily
+    ///     What item it will take to reset daily
     /// </summary>
     [JsonPropertyName("templateId")]
     public string? TemplateId
@@ -275,7 +275,7 @@ public record ChangeCost
     }
 
     /// <summary>
-    /// Amount of item needed to reset
+    ///     Amount of item needed to reset
     /// </summary>
     [JsonPropertyName("count")]
     public int? Count

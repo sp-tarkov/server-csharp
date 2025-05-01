@@ -177,6 +177,7 @@
             "laboratory": true,
             "rezervbase": true,
             "sandbox": true,
+            "sandbox_high": true,
 			"labyrinth": true
         },
         "containerTypesToNotRandomise": [
