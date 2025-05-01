@@ -1,54 +1,49 @@
-﻿using SPTarkov.Common.Annotations;
+﻿using System.Collections.Concurrent;
+using SPTarkov.Common.Annotations;
 using SPTarkov.Server.Core.Utils;
 
 namespace SPTarkov.Server.Core.Services;
 
 [Injectable(InjectionType.Singleton)]
 public class ProfileActivityService(
-    TimeUtil _timeUtil
+    TimeUtil timeUtil
 )
 {
-    private readonly Dictionary<string, long> profileActivityTimestamps = new();
+    private readonly ConcurrentDictionary<string, long> _profileActivityTimestamps = new();
 
     /// <summary>
-    ///     Was the requested profile active in the last requested minutes
+    ///     Was the requested profile active within the last x minutes
     /// </summary>
     /// <param name="sessionId"> Profile to check </param>
     /// <param name="minutes"> Minutes to check for activity in </param>
     /// <returns> True when profile was active within past x minutes </returns>
     public bool ActiveWithinLastMinutes(string sessionId, int minutes)
     {
-        var currentTimestamp = _timeUtil.GetTimeStamp();
-        if (!profileActivityTimestamps.TryGetValue(sessionId, out var storedActivityTimestamp))
+        if (!_profileActivityTimestamps.TryGetValue(sessionId, out var storedActivityTimestamp))
         {
+            // No record, exit early
             return false;
         }
 
-        return currentTimestamp - storedActivityTimestamp < minutes * 60;
+        return timeUtil.GetTimeStamp() - storedActivityTimestamp < minutes * 60;
     }
 
     /// <summary>
     ///     Get a list of profile ids that were active in the last x minutes
     /// </summary>
     /// <param name="minutes"> How many minutes from now to search for profiles </param>
-    /// <returns> List of profile ids </returns>
+    /// <returns> List of active profile ids </returns>
     public List<string> GetActiveProfileIdsWithinMinutes(int minutes)
     {
-        var currentTimestamp = _timeUtil.GetTimeStamp();
+        var currentTimestamp = timeUtil.GetTimeStamp();
         var result = new List<string>();
 
-        foreach (var activity in profileActivityTimestamps ?? new Dictionary<string, long>())
+        foreach (var (sessionId, lastActivityTimestamp) in _profileActivityTimestamps)
         {
-            var lastActivityTimestamp = activity.Value;
-            if (lastActivityTimestamp == null)
-            {
-                continue;
-            }
-
             // Profile was active in last x minutes, add to return list
             if (currentTimestamp - lastActivityTimestamp < minutes * 60)
             {
-                result.Add(activity.Key);
+                result.Add(sessionId);
             }
         }
 
@@ -61,6 +56,9 @@ public class ProfileActivityService(
     /// <param name="sessionId"> Profile to update </param>
     public void SetActivityTimestamp(string sessionId)
     {
-        profileActivityTimestamps[sessionId] = _timeUtil.GetTimeStamp();
+        if(!_profileActivityTimestamps.TryAdd(sessionId, timeUtil.GetTimeStamp()))
+        {
+            _profileActivityTimestamps[sessionId] = timeUtil.GetTimeStamp();
+        }
     }
 }
