@@ -88,16 +88,7 @@ public class HttpServer(
         context.Request.Cookies.TryGetValue("PHPSESSID", out var sessionId);
         if (sessionId != null)
         {
-            try
-            {
-                _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
-            }
-            catch (Exception ex)
-            {
-                _logger.Debug("Error while adding context value: " + ex.Message);
-                _logger.Critical(ex.StackTrace);
-                throw;
-            }
+            _applicationContext.AddValue(ContextVariableType.SESSION_ID, sessionId);
         }
 
         // Extract header for original IP detection
@@ -115,7 +106,6 @@ public class HttpServer(
         }
         catch (Exception ex)
         {
-            _logger.Debug("Error handling request: " + context.Request.Path);
             _logger.Critical(ex.Message);
             _logger.Critical(ex.StackTrace);
         }

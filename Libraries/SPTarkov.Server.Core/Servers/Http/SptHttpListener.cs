@@ -88,7 +88,7 @@ public class SptHttpListener : IHttpListener
                     while (readTask.Result != 0)
                     {
                         readBytes += readTask.Result;
-                        totalRead.AddRange(memory[..readTask.Result].ToArray());
+                        totalRead.AddRange(memory.ToArray());
                         memory = new Memory<byte>(new byte[BodyReadBufferSize]);
                         readTask = req.Body.ReadAsync(memory).AsTask();
                         readTask.Wait();
