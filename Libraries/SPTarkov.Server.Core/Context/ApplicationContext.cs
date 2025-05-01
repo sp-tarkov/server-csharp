@@ -11,7 +11,8 @@ public class ApplicationContext
 
     private static ApplicationContext? _applicationContext;
     private readonly ISptLogger<ApplicationContext> _logger;
-    private readonly ConcurrentDictionary<ContextVariableType, (Lock lockObject, LinkedList<ContextVariable> values)> _variables = new();
+    private readonly Dictionary<ContextVariableType, LinkedList<ContextVariable>> _variables = new();
+    private readonly object _lockObject = new();
 
     /// <summary>
     ///     When ApplicationContext gets created by the DI container we store the singleton reference so we can provide it
@@ -30,59 +31,61 @@ public class ApplicationContext
 
     public ContextVariable? GetLatestValue(ContextVariableType type)
     {
-        if (_variables.TryGetValue(type, out var savedValues))
+        lock (_lockObject)
         {
-            lock (savedValues.lockObject)
+            if (_variables.TryGetValue(type, out var savedValues))
             {
-                return savedValues.values.Last!.Value;
+                return savedValues.Last!.Value;
             }
-        }
 
-        return null;
+            return null;
+        }
     }
 
     public ICollection<ContextVariable> GetValues(ContextVariableType type)
     {
-        var values = new List<ContextVariable>();
-        if (_variables.TryGetValue(type, out var savedValues))
+        lock (_lockObject)
         {
-            lock (savedValues.lockObject)
+            var values = new List<ContextVariable>();
+            if (_variables.TryGetValue(type, out var savedValues))
             {
-                values.AddRange(savedValues.Item2);
+                values.AddRange(savedValues);
             }
-        }
 
-        return values;
+            return values;
+        }
     }
 
     public void AddValue(ContextVariableType type, object value)
     {
-        if (!_variables.TryGetValue(type, out var savedValues))
+        lock (_lockObject)
         {
-            savedValues = new ValueTuple<Lock, LinkedList<ContextVariable>>();
-            savedValues.lockObject = new Lock();
-            savedValues.values = [];
-            if (!_variables.TryAdd(type, savedValues))
+            if (!_variables.TryGetValue(type, out var savedValues))
             {
-                _logger.Error($"Unable to add context variable type: {type}");
+                savedValues = new LinkedList<ContextVariable>();
+                if (!_variables.TryAdd(type, savedValues))
+                {
+                    _logger.Error($"Unable to add context variable type: {type}");
+                }
             }
-        }
 
-        lock (savedValues.lockObject)
-        {
-            if (savedValues.values.Count >= MaxSavedValues)
+            if (savedValues.Count >= MaxSavedValues)
             {
-                savedValues.values.RemoveFirst();
+                savedValues.RemoveFirst();
             }
-            savedValues.values.AddLast(new ContextVariable(value, type));
+
+            savedValues.AddLast(new ContextVariable(value, type));
         }
     }
 
     public void ClearValues(ContextVariableType type)
     {
-        if (!_variables.Remove(type, out _))
+        lock (_lockObject)
         {
-            _logger.Error($"Unable to clear context variable type: {type}");
+            if (!_variables.Remove(type, out _))
+            {
+                _logger.Error($"Unable to clear context variable type: {type}");
+            }
         }
     }
 }
