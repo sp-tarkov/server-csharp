@@ -17,6 +17,7 @@ using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Controllers;
 
@@ -126,7 +127,11 @@ public class BotController(
             {
                 // No bot of this type found, copy details from assault
                 result[botTypeLower] = result[Roles.Assault];
-                _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
+                if (_logger.IsLogEnabled(LogLevel.Debug))
+                {
+                    _logger.Debug($"Unable to find bot: {botTypeLower} in db, copying 'assault'");
+                }
+
                 continue;
             }
 
@@ -198,7 +203,12 @@ public class BotController(
             })).ToArray());
 
         stopwatch.Stop();
-        _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
+
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Took {stopwatch.ElapsedMilliseconds}ms to GenerateMultipleBotsAndCache()");
+        }
+
         return generatedBotList;
     }
 
@@ -227,7 +237,11 @@ public class BotController(
         }
 
         var role = botGenerationDetails.EventRole ?? botGenerationDetails.Role;
-        _logger.Debug($"Generating wave of: {botGenerationDetails.BotCountToGenerate} bots of type: {role} {botGenerationDetails.BotDifficulty}");
+
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug($"Generating wave of: {botGenerationDetails.BotCountToGenerate} bots of type: {role} {botGenerationDetails.BotDifficulty}");
+        }
 
         Parallel.For(0, botGenerationDetails.BotCountToGenerate.Value, (i) =>
         {
@@ -260,10 +274,13 @@ public class BotController(
             _matchBotDetailsCacheService.CacheBot(bot);
         });
 
-        _logger.Debug(
-            $"Generated: {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
-            $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty} bots"
-        );
+        if (_logger.IsLogEnabled(LogLevel.Debug))
+        {
+            _logger.Debug(
+                $"Generated: {botGenerationDetails.BotCountToGenerate} {botGenerationDetails.Role}" +
+                $"({botGenerationDetails.EventRole ?? botGenerationDetails.Role ?? ""}) {botGenerationDetails.BotDifficulty} bots"
+            );
+        }
     }
 
     /// <summary>

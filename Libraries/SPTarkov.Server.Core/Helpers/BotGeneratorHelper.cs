@@ -11,6 +11,7 @@ using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Servers;
 using SPTarkov.Server.Core.Services;
 using SPTarkov.Server.Core.Utils;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Helpers;
 
@@ -578,9 +579,12 @@ public class BotGeneratorHelper
                 if (missingContainerCount == equipmentSlots.Count)
                 {
                     // Bot doesn't have any containers we want to add item to
-                    _logger.Debug(
-                        $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
-                    );
+                    if (_logger.IsLogEnabled(LogLevel.Debug))
+                    {
+                        _logger.Debug(
+                            $"Unable to add item: {itemWithChildren.FirstOrDefault()?.Template} to bot as it lacks the following containers: {string.Join(",", equipmentSlots)}"
+                        );
+                    }
 
                     return ItemAddedResult.NO_CONTAINERS;
                 }
