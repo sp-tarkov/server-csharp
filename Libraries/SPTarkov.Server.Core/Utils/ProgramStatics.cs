@@ -32,7 +32,9 @@ public static partial class ProgramStatics
                 break;
             case EntryType.LOCAL:
             default:
+#if DEBUG
                 _debug = true;
+#endif
                 _compiled = false;
                 _mods = true;
                 break;
