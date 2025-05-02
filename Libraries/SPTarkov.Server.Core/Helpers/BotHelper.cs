@@ -1,6 +1,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Frozen;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Utils;
@@ -18,10 +19,18 @@ public class BotHelper(
     ConfigServer _configServer
 )
 {
-    protected static readonly FrozenSet<string> _pmcTypeIds = ["usec", "bear", "pmc", "pmcbear", "pmcusec"];
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    protected ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
+    private static readonly FrozenSet<string> _pmcTypeIds =
+        [
+            Sides.UsecLowercase,
+            Sides.BearLowercase,
+            Sides.PmcLowercase,
+            Sides.PmcBearLowercase,
+            Sides.PmcUsecLowercase
+        ];
+
+    private BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    private PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
     ///     Get a template object for the specified botRole from bots.types db
@@ -163,12 +172,12 @@ public class BotHelper(
     {
         if (string.Equals(_pmcConfig.BearType, botRole, StringComparison.OrdinalIgnoreCase))
         {
-            return "Bear";
+            return Sides.Bear;
         }
 
-        if (string.Equals(_pmcConfig.UsecType, botRole.ToLower(), StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(_pmcConfig.UsecType, botRole, StringComparison.OrdinalIgnoreCase))
         {
-            return "Usec";
+            return Sides.Usec;
         }
 
         return GetRandomizedPmcSide();
@@ -178,9 +187,9 @@ public class BotHelper(
     ///     Get a randomized PMC side based on bot config value 'isUsec'
     /// </summary>
     /// <returns>pmc side as string</returns>
-    protected string GetRandomizedPmcSide()
+    private string GetRandomizedPmcSide()
     {
-        return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? "Usec" : "Bear";
+        return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
     }
 
     /// <summary>
@@ -191,14 +200,14 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? "usec" : "bear")).ToLowerInvariant();
+        var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? Sides.UsecLowercase : Sides.BearLowercase)).ToLowerInvariant();
         var cacheKey = $"{chosenFaction}{maxLength}";
         if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
         {
             if (!_databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
             {
-                _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: USEC");
-                chosenFaction = "usec";
+                _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
+                chosenFaction = Sides.UsecLowercase;
                 chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
             }
 
@@ -206,7 +215,7 @@ public class BotHelper(
             if (!matchingNames.Any())
             {
                 _logger.Warning(
-                    $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead`,\n"
+                    $"Unable to filter: {chosenFaction} PMC names to only those under: {maxLength}, none found that match that criteria, selecting from entire name pool instead"
                 );
 
                 // Return a random string from names
