@@ -1203,6 +1203,7 @@ public class ItemHelper(
         {
             if (IsOfBaseclasses(item.Template, [BaseClasses.MONEY, BaseClasses.AMMO]))
             {
+                item.Upd ??= new Upd();
                 item.Upd.SpawnedInSession = null;
 
                 continue;
@@ -1356,7 +1357,7 @@ public class ItemHelper(
 
     /**
      * Determines if an item is an attachment that is currently attached to its parent item.
-     * 
+     *
      * @param item The item to check.
      * @returns true if the item is attached attachment, otherwise false.
      */
@@ -1369,15 +1370,15 @@ public class ItemHelper(
 
     /**
      * Retrieves the equipment parent item for a given item.
-     * 
+     *
      * This method traverses up the hierarchy of items starting from a given `itemId`, until it finds the equipment
      * parent item. In other words, if you pass it an item id of a suppressor, it will traverse up the muzzle brake,
      * barrel, upper receiver, gun, nested backpack, and finally return the backpack Item that is equipped.
-     * 
+     *
      * It's important to note that traversal is expensive, so this method requires that you pass it a Dictionary of the items
      * to traverse, where the keys are the item IDs and the values are the corresponding Item objects. This alleviates
      * some of the performance concerns, as it allows for quick lookups of items by ID.
-     * 
+     *
      * @param itemId - The unique identifier of the item for which to find the equipment parent.
      * @param itemsMap - A Dictionary containing item IDs mapped to their corresponding Item objects for quick lookup.
      * @returns The Item object representing the equipment parent of the given item, or `null` if no such parent exists.
