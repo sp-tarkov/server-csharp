@@ -3,6 +3,7 @@ using SPTarkov.Server.Core.Generators;
 using SPTarkov.Server.Core.Helpers;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Location;
+using SPTarkov.Server.Core.Models.Eft.Player;
 using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Config;
 using SPTarkov.Server.Core.Models.Spt.Services;
@@ -20,6 +21,7 @@ public class AirdropService(
     LootGenerator _lootGenerator,
     HashUtil _hashUtil,
     WeightedRandomHelper _weightedRandomHelper,
+    ContainerHelper _containerHelper,
     LocalisationService _localisationService,
     ItemFilterService _itemFilterService,
     ItemHelper _itemHelper)
@@ -59,18 +61,24 @@ public class AirdropService(
         var airdropConfig = GetAirdropLootConfigByType(airdropType);
 
         // generate loot to put into airdrop crate
-        var crateLoot = airdropConfig.UseForcedLoot.GetValueOrDefault(false)
+        var crateLootPool = airdropConfig.UseForcedLoot.GetValueOrDefault(false)
             ? _lootGenerator.CreateForcedLoot(airdropConfig.ForcedLoot)
             : _lootGenerator.CreateRandomLoot(airdropConfig);
 
         // Create airdrop crate and add to result in first spot
         var airdropCrateItem = GetAirdropCrateItem(airdropType);
 
-        // Add crate to front of list
-        crateLoot.Insert(0, airdropCrateItem);
+        // Filter loot pool to just items that fit crate
+        var crateLoot = GetLootThatFitsContainer(airdropCrateItem, crateLootPool);
 
-        // Re-parent loot items to crate we added above
-        foreach (var item in crateLoot)
+        // Flatten loot into single array ready to be returned
+        var flattenedCrateLoot = crateLoot.SelectMany(x => x).ToList();
+
+        // Add crate to front of loot rewards
+        flattenedCrateLoot.Insert(0, airdropCrateItem);
+
+        // Re-parent loot items to crate we just added
+        foreach (var item in flattenedCrateLoot)
         {
             if (item.Id == airdropCrateItem.Id)
                 // Crate itself, don't alter
@@ -79,7 +87,7 @@ public class AirdropService(
             }
 
             // no parentId = root item, make item have crate as parent
-            if (item.ParentId is null)
+            if (string.IsNullOrEmpty(item.ParentId))
             {
                 item.ParentId = airdropCrateItem.Id;
                 item.SlotId = "main";
@@ -89,8 +97,47 @@ public class AirdropService(
         return new GetAirdropLootResponse
         {
             Icon = airdropConfig.Icon,
-            Container = crateLoot
+            Container = flattenedCrateLoot
         };
+    }
+
+    /// <summary>
+    /// Check if the items provided fit into the passed in container
+    /// </summary>
+    /// <param name="container">Crate item to fit items into</param>
+    /// <param name="crateLootPool">Item pool to try and fit into container</param>
+    /// <returns>Items that will fit container</returns>
+    protected List<List<Item>> GetLootThatFitsContainer(Item container, List<List<Item>> crateLootPool)
+    {
+        var lootResult = new List<List<Item>>();
+        var containerMap = _itemHelper.GetContainerMapping(container.Template);
+
+        var failedToFitAttemptCount = 0;
+        foreach (var itemAndChildren in crateLootPool)
+        {
+            var itemSize = _itemHelper.GetItemSize(itemAndChildren, itemAndChildren[0].Id);
+
+            // look for open slot to put chosen item into
+            var result = _containerHelper.FindSlotForItem(containerMap, itemSize.Width, itemSize.Height);
+            if (result.Success.GetValueOrDefault(false))
+            {
+                // It Fits!
+                lootResult.AddRange(itemAndChildren);
+
+                continue;
+            }
+
+            if (failedToFitAttemptCount > 3)
+                // x attempts to fit an item, container is probably full, stop trying to add more
+            {
+                break;
+            }
+
+            // Can't fit item, skip
+            failedToFitAttemptCount++;
+        }
+
+        return lootResult;
     }
 
     /// <summary>

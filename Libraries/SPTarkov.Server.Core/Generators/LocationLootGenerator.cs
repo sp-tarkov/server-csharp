@@ -420,7 +420,7 @@ public class LocationLootGenerator(
         containerClone.Template.Root = parentId;
         containerClone.Template.Items[0].Id = parentId;
 
-        var containerMap = GetContainerMapping(containerTpl);
+        var containerMap = _itemHelper.GetContainerMapping(containerTpl);
 
         // Choose count of items to add to container
         var itemCountToAdd = GetWeightedCountOfContainerItems(containerTpl, staticLootDist, locationName);
@@ -547,22 +547,6 @@ public class LocationLootGenerator(
             Width = result[0],
             Height = result[1]
         };
-    }
-
-    /// <summary>
-    ///     Get a 2D grid of a container's item slots
-    /// </summary>
-    /// <param name="containerTpl">Tpl id of the container</param>
-    protected int[][] GetContainerMapping(string containerTpl)
-    {
-        // Get template from db
-        var containerTemplate = _itemHelper.GetItem(containerTpl).Value;
-
-        // Get height/width
-        var height = containerTemplate.Properties.Grids[0].Props.CellsV;
-        var width = containerTemplate.Properties.Grids[0].Props.CellsH;
-
-        return _inventoryHelper.GetBlankContainerMap(height.Value, width.Value);
     }
 
     /// <summary>

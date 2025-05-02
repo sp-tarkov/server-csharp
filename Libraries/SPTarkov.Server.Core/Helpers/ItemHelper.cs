@@ -1203,8 +1203,10 @@ public class ItemHelper(
         {
             if (IsOfBaseclasses(item.Template, [BaseClasses.MONEY, BaseClasses.AMMO]))
             {
-                item.Upd ??= new Upd();
-                item.Upd.SpawnedInSession = null;
+                if (item.Upd is not null)
+                {
+                    item.Upd.SpawnedInSession = null;
+                }
 
                 continue;
             }
@@ -2180,6 +2182,43 @@ public class ItemHelper(
                 item.Upd.SpawnedInSession = null;
             }
         }
+    }
+
+    /// <summary>
+    ///     Get a 2D grid of a container's item slots
+    /// </summary>
+    /// <param name="containerTpl">Tpl id of the container</param>
+    public int[][] GetContainerMapping(string containerTpl)
+    {
+        // Get template from db
+        var containerTemplate = GetItem(containerTpl).Value;
+
+        // Get height/width
+        var height = containerTemplate.Properties.Grids[0].Props.CellsV;
+        var width = containerTemplate.Properties.Grids[0].Props.CellsH;
+
+        return GetBlankContainerMap(height.Value, width.Value);
+    }
+
+    /// <summary>
+    ///     Get a blank two-dimensional representation of a container
+    /// </summary>
+    /// <param name="containerH">Horizontal size of container</param>
+    /// <param name="containerY">Vertical size of container</param>
+    /// <returns>Two-dimensional representation of container</returns>
+    public int[][] GetBlankContainerMap(int containerH, int containerY)
+    {
+        //var x = new int[containerY][];
+        //for (int i = 0; i < containerY; i++)
+        //{
+        //    x[i] = new int[containerH];
+        //}
+
+        //return x;
+
+        return Enumerable.Range(0, containerY)
+            .Select(i => new int[containerH])
+            .ToArray();
     }
 }
 

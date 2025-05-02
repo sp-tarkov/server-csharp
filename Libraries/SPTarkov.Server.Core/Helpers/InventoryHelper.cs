@@ -796,27 +796,6 @@ public class InventoryHelper(
     }
 
     /// <summary>
-    ///     Get a blank two-dimensional representation of a container
-    /// </summary>
-    /// <param name="containerH">Horizontal size of container</param>
-    /// <param name="containerY">Vertical size of container</param>
-    /// <returns>Two-dimensional representation of container</returns>
-    public int[][] GetBlankContainerMap(int containerH, int containerY)
-    {
-        //var x = new int[containerY][];
-        //for (int i = 0; i < containerY; i++)
-        //{
-        //    x[i] = new int[containerH];
-        //}
-
-        //return x;
-
-        return Enumerable.Range(0, containerY)
-            .Select(i => new int[containerH])
-            .ToArray();
-    }
-
-    /// <summary>
     ///     Get a 2d mapping of a container with what grid slots are filled
     /// </summary>
     /// <param name="containerH">Horizontal size of container</param>
@@ -827,7 +806,7 @@ public class InventoryHelper(
     public int[][] GetContainerMap(int containerH, int containerV, List<Item> itemList, string containerId)
     {
         // Create blank 2d map of container
-        var container2D = GetBlankContainerMap(containerH, containerV);
+        var container2D = _itemHelper.GetBlankContainerMap(containerH, containerV);
 
         // Get all items in players inventory keyed by their parentId and by ItemId
         var inventoryItemHash = GetInventoryItemHash(itemList);
@@ -1026,7 +1005,7 @@ public class InventoryHelper(
         var containerH = firstContainerGrid.Props.CellsH;
         var containerV = firstContainerGrid.Props.CellsV;
 
-        return GetBlankContainerMap(containerH.Value, containerV.Value);
+        return _itemHelper.GetBlankContainerMap(containerH.Value, containerV.Value);
     }
 
     /// <summary>
