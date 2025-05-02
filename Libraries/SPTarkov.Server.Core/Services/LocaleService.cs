@@ -244,10 +244,7 @@ public class LocaleService(
 
     public void RemoveCustomClientLocale(string locale, string localeKey)
     {
-        if (customClientLocales.TryGetValue(locale, out var localeDict))
-        {
-            localeDict.Remove(localeKey);
-        }
+        customClientLocales.Remove(localeKey);
     }
 
     private void AddToDictionary(string locale, string localeKey, string localeValue,
