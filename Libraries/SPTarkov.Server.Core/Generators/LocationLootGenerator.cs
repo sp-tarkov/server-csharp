@@ -467,7 +467,7 @@ public class LocationLootGenerator(
             var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
-            var itemSize = GetItemSize(items);
+            var itemSize = _itemHelper.GetItemSize(items, items[0].Id);
             var itemWidth = itemSize.Width;
             var itemHeight = itemSize.Height;
 
@@ -511,42 +511,6 @@ public class LocationLootGenerator(
         }
 
         return containerClone;
-    }
-
-    /// <summary>
-    ///     Get the height/width of an item including its children
-    /// </summary>
-    /// <param name="items"></param>
-    /// <returns></returns>
-    protected ItemSize? GetItemSize(List<Item>? items)
-    {
-        var rootItem = items[0];
-        if (items.Count == 1)
-        {
-            var itemTemplate = _itemHelper.GetItem(rootItem.Template).Value;
-            if (itemTemplate.Properties is null)
-            {
-                _logger.Error($"Unable to process item: {rootItem.Template}. it lacks _props");
-
-                return null;
-            }
-
-            // Single item, get items properties
-            return new ItemSize
-            {
-                Width = itemTemplate.Properties.Width.Value,
-                Height = itemTemplate.Properties.Height.Value
-            };
-        }
-
-
-        // Multi-mod-item, use helper to get size of item + attached mods
-        var result = _inventoryHelper.GetItemSize(rootItem.Template, rootItem.Id, items);
-        return new ItemSize
-        {
-            Width = result[0],
-            Height = result[1]
-        };
     }
 
     /// <summary>
