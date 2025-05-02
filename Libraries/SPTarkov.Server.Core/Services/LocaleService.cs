@@ -73,7 +73,21 @@ public class LocaleService(
     /// <returns>A dictionary representing the merged result of database and custom locales.</returns>
     private Dictionary<string, string> CombineDbWithCustomLocales(Dictionary<string, string> dbLocales, Dictionary<string, string> customLocales)
     {
-        return dbLocales.Union(customLocales).ToDictionary(x => x.Key, x => x.Value);
+        try
+        {
+            return dbLocales
+                .Concat(customLocales)
+                .GroupBy(kvp => kvp.Key)
+                .ToDictionary(
+                    group => group.Key,
+                    group => group.Last().Value
+                );
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
     }
 
     /// <summary>
@@ -241,7 +255,7 @@ public class LocaleService(
 
         if (!localeDictToAddTo.TryAdd(localeKey, localeValue))
         {
-            _logger.Error($"Unable to add: {localeKey} {localeValue} to custom locale dictionary: {locale}");
+            localeDictToAddTo[localeKey] = localeValue;
         }
     }
 
