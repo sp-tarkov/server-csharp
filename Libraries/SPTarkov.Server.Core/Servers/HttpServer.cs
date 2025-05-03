@@ -110,6 +110,9 @@ public class HttpServer(
             _logger.Debug("Error handling request: " + context.Request.Path);
             _logger.Critical(ex.Message);
             _logger.Critical(ex.StackTrace);
+#if DEBUG
+            throw; // added this so we can debug something.
+#endif
         }
 
         // This http request would be passed through the SPT Router and handled by an ICallback
