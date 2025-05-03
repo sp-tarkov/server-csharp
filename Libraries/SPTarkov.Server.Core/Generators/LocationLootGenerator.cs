@@ -463,16 +463,18 @@ public class LocationLootGenerator(
                 continue;
             }
 
+            if (tplToAdd == "5bf3e0490db83400196199af")
+            {
+                Console.WriteLine("yo");
+            }
+
             // Check if item should have children removed
             var items = _locationConfig.TplsToStripChildItemsFrom.Contains(tplToAdd)
                 ? [chosenItemWithChildren.Items[0]] // Strip children from parent
                 : chosenItemWithChildren.Items;
-            var itemSize = _itemHelper.GetItemSize(items, items[0].Id);
-            var itemWidth = itemSize.Width;
-            var itemHeight = itemSize.Height;
 
             // look for open slot to put chosen item into
-            var result = _containerHelper.FindSlotForItem(containerMap, itemWidth, itemHeight);
+            var result = _containerHelper.FindSlotForItem(containerMap, chosenItemWithChildren.Width, chosenItemWithChildren.Height);
             if (!result.Success.GetValueOrDefault(false))
             {
                 if (failedToFitAttemptCount > _locationConfig.FitLootIntoContainerAttempts)
@@ -492,8 +494,8 @@ public class LocationLootGenerator(
                 containerMap,
                 result.X.Value,
                 result.Y.Value,
-                itemWidth,
-                itemHeight,
+                chosenItemWithChildren.Width,
+                chosenItemWithChildren.Height,
                 result.Rotation.GetValueOrDefault(false)
             );
 
@@ -1316,14 +1318,14 @@ public class ContainerItem
     }
 
     [JsonPropertyName("width")]
-    public double? Width
+    public int? Width
     {
         get;
         set;
     }
 
     [JsonPropertyName("height")]
-    public double? Height
+    public int? Height
     {
         get;
         set;
