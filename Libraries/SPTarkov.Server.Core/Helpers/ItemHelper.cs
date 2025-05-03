@@ -2206,7 +2206,7 @@ public class ItemHelper(
     /// <param name="containerH">Horizontal size of container</param>
     /// <param name="containerY">Vertical size of container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public int[][] GetBlankContainerMap(int containerH, int containerY)
+    public int[][] GetBlankContainerMap(int containerY, int containerX)
     {
         //var x = new int[containerY][];
         //for (int i = 0; i < containerY; i++)
@@ -2217,7 +2217,7 @@ public class ItemHelper(
         //return x;
 
         return Enumerable.Range(0, containerY)
-            .Select(i => new int[containerH])
+            .Select(i => new int[containerX])
             .ToArray();
     }
 }

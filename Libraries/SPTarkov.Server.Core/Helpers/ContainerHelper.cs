@@ -10,15 +10,15 @@ public class ContainerHelper
     ///     Finds a slot for an item in a given 2D container map
     /// </summary>
     /// <param name="container2D">List of container with positions filled/free</param>
-    /// <param name="itemWidth">Width of item</param>
-    /// <param name="itemHeight">Height of item</param>
+    /// <param name="itemX">Width of item</param>
+    /// <param name="itemY">Height of item</param>
     /// <returns>Location to place item in container</returns>
-    public FindSlotResult FindSlotForItem(int[][] container2D, int itemWidth, int itemHeight)
+    public FindSlotResult FindSlotForItem(int[][] container2D, int? itemX, int? itemY)
     {
         // Assume not rotated
         var rotation = false;
 
-        var minVolume = (itemWidth < itemHeight ? itemWidth : itemHeight) - 1;
+        var minVolume = (itemX < itemY ? itemX : itemY) - 1;
         var containerY = container2D.Length;
         var containerX = container2D[0].Length;
         var limitY = containerY - minVolume;
@@ -42,20 +42,20 @@ public class ContainerHelper
             // Go left to right across x-axis looking for free position
             for (var x = 0; x < limitX; x++)
             {
-                if (CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemWidth, itemHeight))
+                if (CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemX!.Value, itemY!.Value))
                 {
                     // Success, return result
                     return new FindSlotResult(true, x, y, rotation);
                 }
 
-                if (ItemBiggerThan1X1(itemWidth, itemHeight))
+                if (ItemBiggerThan1X1(itemX!.Value, itemY!.Value))
                 {
                     // Pointless rotating a 1x1, try next position across
                     continue;
                 }
 
                 // Bigger than 1x1, try rotating by swapping x and y values
-                if (!CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemHeight, itemWidth))
+                if (!CanItemBePlacedInContainerAtPosition(container2D, containerX, containerY, x, y, itemY!.Value, itemX!.Value))
                 {
                     continue;
                 }
@@ -132,8 +132,8 @@ public class ContainerHelper
         int[][] container2D,
         int x,
         int y,
-        int itemW,
-        int itemH,
+        int? itemW,
+        int? itemH,
         bool rotate)
     {
         // Swap height/width if we want to fit it in rotated

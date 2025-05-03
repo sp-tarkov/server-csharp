@@ -803,10 +803,10 @@ public class InventoryHelper(
     /// <param name="itemList">Players inventory items</param>
     /// <param name="containerId">Id of the container</param>
     /// <returns>Two-dimensional representation of container</returns>
-    public int[][] GetContainerMap(int containerH, int containerV, List<Item> itemList, string containerId)
+    public int[][] GetContainerMap(int sizeX, int sizeY, List<Item> itemList, string containerId)
     {
         // Create blank 2d map of container
-        var container2D = _itemHelper.GetBlankContainerMap(containerH, containerV);
+        var containerYX = _itemHelper.GetBlankContainerMap(sizeY, sizeX);
 
         // Get all items in players inventory keyed by their parentId and by ItemId
         var inventoryItemHash = GetInventoryItemHash(itemList);
@@ -815,7 +815,7 @@ public class InventoryHelper(
         if (!inventoryItemHash.ByParentId.TryGetValue(containerId, out var containerItemHash))
             // No items in container, exit early
         {
-            return container2D;
+            return containerYX;
         }
 
         // Check each item in container
@@ -854,14 +854,14 @@ public class InventoryHelper(
                 try
                 {
                     var rowIndex = itemLocation.Y + y;
-                    var containerRow = container2D[rowIndex.Value];
-                    if (containerRow is null)
+                    var containerX = containerYX[rowIndex.Value];
+                    if (containerX is null)
                     {
                         _logger.Error($"Unable to find container: {containerId} row line: {itemLocation.Y + y}");
                     }
 
                     // Fill the corresponding cells in the container map to show the slot is taken
-                    Array.Fill(containerRow, 1, itemLocation.X.Value, fW);
+                    Array.Fill(containerX, 1, itemLocation.X.Value, fW);
                 }
                 catch (Exception ex)
                 {
@@ -879,7 +879,7 @@ public class InventoryHelper(
             }
         }
 
-        return container2D;
+        return containerYX;
     }
 
     protected bool IsVertical(ItemLocation itemLocation)
