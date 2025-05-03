@@ -103,8 +103,8 @@ csharp_style_expression_bodied_operators = false:warning
 csharp_style_expression_bodied_properties = false:warning
 csharp_style_expression_bodied_indexers = false:warning
 csharp_style_expression_bodied_accessors = false:warning
-csharp_style_expression_bodied_lambdas = false:warning
 csharp_style_expression_bodied_local_functions = false:warning
+csharp_style_expression_bodied_lambdas = true
 
 # Pattern matching
 csharp_style_prefer_pattern_matching = false:warning
