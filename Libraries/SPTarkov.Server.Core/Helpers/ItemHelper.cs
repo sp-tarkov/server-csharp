@@ -1447,8 +1447,8 @@ public class ItemHelper(
 
         return new ItemSize
         {
-            Width = width ?? 0 + sizeLeft + sizeRight + forcedLeft + forcedRight,
-            Height = height ?? 0 + sizeUp + sizeDown + forcedUp + forcedDown
+            Width = (width ?? 0) + sizeLeft + sizeRight + forcedLeft + forcedRight,
+            Height = (height ?? 0) + sizeUp + sizeDown + forcedUp + forcedDown
         };
     }
 
