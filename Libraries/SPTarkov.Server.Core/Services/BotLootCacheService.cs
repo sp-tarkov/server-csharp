@@ -8,6 +8,7 @@ using SPTarkov.Server.Core.Models.Enums;
 using SPTarkov.Server.Core.Models.Spt.Bots;
 using SPTarkov.Server.Core.Models.Utils;
 using SPTarkov.Server.Core.Utils.Cloners;
+using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 
 namespace SPTarkov.Server.Core.Services;
 
@@ -17,7 +18,6 @@ public class BotLootCacheService(
     ItemHelper _itemHelper,
     PMCLootGenerator _pmcLootGenerator,
     LocalisationService _localisationService,
-    RagfairPriceService _ragfairPriceService,
     ICloner _cloner
 )
 {
@@ -580,7 +580,10 @@ public class BotLootCacheService(
             )
         )
         {
-            _logger.Info($"Unable to add loot cache for bot role: {botRole} - already exists");
+            if (_logger.IsLogEnabled(LogLevel.Debug))
+            {
+                _logger.Debug($"Unable to add loot cache for bot role: {botRole} - already exists");
+            }
         }
     }
 

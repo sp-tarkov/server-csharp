@@ -1,5 +1,6 @@
 using System.Collections.Frozen;
 using SPTarkov.Common.Annotations;
+using SPTarkov.Server.Core.Constants;
 using SPTarkov.Server.Core.Context;
 using SPTarkov.Server.Core.Models.Eft.Common.Tables;
 using SPTarkov.Server.Core.Models.Eft.Match;
@@ -15,22 +16,44 @@ using LogLevel = SPTarkov.Server.Core.Models.Spt.Logging.LogLevel;
 namespace SPTarkov.Server.Core.Helpers;
 
 [Injectable]
-public class BotGeneratorHelper(
-    ISptLogger<BotGeneratorHelper> _logger,
-    RandomUtil _randomUtil,
-    DurabilityLimitsHelper _durabilityLimitsHelper,
-    ItemHelper _itemHelper,
-    InventoryHelper _inventoryHelper,
-    ContainerHelper _containerHelper,
-    ApplicationContext _applicationContext,
-    LocalisationService _localisationService,
-    ConfigServer _configServer
-)
+public class BotGeneratorHelper
 {
     // Equipment slot ids that do not conflict with other slots
-    protected static readonly FrozenSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
-    protected BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    protected PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private static readonly FrozenSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+
+    private readonly BotConfig _botConfig;
+    private readonly ISptLogger<BotGeneratorHelper> _logger;
+    private readonly RandomUtil _randomUtil;
+    private readonly DurabilityLimitsHelper _durabilityLimitsHelper;
+    private readonly ItemHelper _itemHelper;
+    private readonly InventoryHelper _inventoryHelper;
+    private readonly ContainerHelper _containerHelper;
+    private readonly ApplicationContext _applicationContext;
+    private readonly LocalisationService _localisationService;
+    private readonly string[] _pmcTypes;
+
+    public BotGeneratorHelper(ISptLogger<BotGeneratorHelper> logger,
+        RandomUtil randomUtil,
+        DurabilityLimitsHelper durabilityLimitsHelper,
+        ItemHelper itemHelper,
+        InventoryHelper inventoryHelper,
+        ContainerHelper containerHelper,
+        ApplicationContext applicationContext,
+        LocalisationService localisationService,
+        ConfigServer configServer)
+    {
+        _logger = logger;
+        _randomUtil = randomUtil;
+        _durabilityLimitsHelper = durabilityLimitsHelper;
+        _itemHelper = itemHelper;
+        _inventoryHelper = inventoryHelper;
+        _containerHelper = containerHelper;
+        _applicationContext = applicationContext;
+        _localisationService = localisationService;
+        _botConfig = configServer.GetConfig<BotConfig>();
+        var pmcConfig = configServer.GetConfig<PmcConfig>();
+        _pmcTypes = [pmcConfig.UsecType.ToLower(), pmcConfig.BearType.ToLower()];
+    }
 
     /// <summary>
     ///     Adds properties to an item
@@ -392,9 +415,8 @@ public class BotGeneratorHelper(
         }
 
         // Does an equipped item have a property that blocks the desired item - check for prop "BlocksX" .e.g BlocksEarpiece / BlocksFaceCover
-        var blockingPropertyName = $"blocks{equipmentSlot}";
         var templateItems = equippedItemsDb.ToList();
-        var blockingItem = templateItems.FirstOrDefault(item => HasBlockingProperty(item, blockingPropertyName));
+        var blockingItem = templateItems.FirstOrDefault(item => HasBlockingProperty(item, equipmentSlot));
         if (blockingItem is not null)
             // this.logger.warning(`1 incompatibility found between - {itemToEquip[1]._name} and {blockingItem._name} - {equipmentSlot}`);
         {
@@ -424,7 +446,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksHeadwear ?? false)
         {
-            var existingHeadwear = itemsEquipped.FirstOrDefault(x => x.SlotId == "Headwear");
+            var existingHeadwear = itemsEquipped.FirstOrDefault(x => x.SlotId == Containers.Headwear);
             if (existingHeadwear is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -440,7 +462,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksFaceCover.GetValueOrDefault(false))
         {
-            var existingFaceCover = itemsEquipped.FirstOrDefault(item => item.SlotId == "FaceCover");
+            var existingFaceCover = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.FaceCover);
             if (existingFaceCover is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -456,7 +478,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksEarpiece.GetValueOrDefault(false))
         {
-            var existingEarpiece = itemsEquipped.FirstOrDefault(item => item.SlotId == "Earpiece");
+            var existingEarpiece = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.Earpiece);
             if (existingEarpiece is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -472,7 +494,7 @@ public class BotGeneratorHelper(
         // Does item being checked get blocked/block existing item
         if (itemToEquip.Properties.BlocksArmorVest.GetValueOrDefault(false))
         {
-            var existingArmorVest = itemsEquipped.FirstOrDefault(item => item.SlotId == "ArmorVest");
+            var existingArmorVest = itemsEquipped.FirstOrDefault(item => item.SlotId == Containers.ArmorVest);
             if (existingArmorVest is not null)
             {
                 return new ChooseRandomCompatibleModResult
@@ -505,12 +527,9 @@ public class BotGeneratorHelper(
         };
     }
 
-    protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
+    private bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
     {
-        return item?.Properties?.GetType().GetProperties()
-            .FirstOrDefault(x => x.PropertyType == typeof(bool)
-                                 && x.Name.ToLower() == blockingPropertyName
-                                 && (bool) x.GetValue(item.Properties)) is not null;
+        return item != null && item.Blocks.TryGetValue(blockingPropertyName, out var blocks) && blocks;
     }
 
     /// <summary>
@@ -520,11 +539,8 @@ public class BotGeneratorHelper(
     /// <returns>Equipment role (e.g. pmc / assault / bossTagilla)</returns>
     public string GetBotEquipmentRole(string botRole)
     {
-        string[] pmcs = [_pmcConfig.UsecType.ToLower(), _pmcConfig.BearType.ToLower()];
-        return pmcs.Contains(
-            botRole.ToLower()
-        )
-            ? "pmc"
+        return _pmcTypes.Contains(botRole, StringComparer.OrdinalIgnoreCase)
+            ? Sides.PmcLowercase
             : botRole;
     }
 
