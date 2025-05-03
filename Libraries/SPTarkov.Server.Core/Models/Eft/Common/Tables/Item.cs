@@ -194,7 +194,6 @@ public record ItemLocation
     }
 
     [JsonPropertyName("r")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public ItemRotation R
     {
         get;
