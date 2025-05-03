@@ -803,7 +803,7 @@ public class BotGenerator(
     /// <returns>item tpl</returns>
     public string GetDogtagTplByGameVersionAndSide(string side, string gameVersion)
     {
-        if (string.Equals(side, Sides.UsecLowercase, StringComparison.OrdinalIgnoreCase))
+        if (string.Equals(side, Sides.Usec, StringComparison.OrdinalIgnoreCase))
         {
             switch (gameVersion)
             {

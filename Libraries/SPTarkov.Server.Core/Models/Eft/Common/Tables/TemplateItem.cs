@@ -94,6 +94,7 @@ public record TemplateItem
     /// <summary>
     /// Used for easy access during bot generation to any slot/container this item is blocking.
     /// </summary>
+    [JsonIgnore]
     public Dictionary<string, bool> Blocks
     {
         get

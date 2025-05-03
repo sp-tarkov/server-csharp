@@ -19,7 +19,13 @@ namespace SPTarkov.Server.Core.Helpers;
 public class BotGeneratorHelper
 {
     // Equipment slot ids that do not conflict with other slots
-    private static readonly FrozenSet<string> _slotsWithNoCompatIssues = ["Scabbard", "Backpack", "SecureContainer", "Holster", "ArmBand"];
+    private static readonly FrozenSet<string> _slotsWithNoCompatIssues = [
+        EquipmentSlots.Scabbard.ToString(),
+        EquipmentSlots.Backpack.ToString(),
+        EquipmentSlots.SecuredContainer.ToString(),
+        EquipmentSlots.Holster.ToString(),
+        EquipmentSlots.ArmBand.ToString()
+    ];
 
     private readonly BotConfig _botConfig;
     private readonly ISptLogger<BotGeneratorHelper> _logger;
@@ -540,7 +546,7 @@ public class BotGeneratorHelper
     public string GetBotEquipmentRole(string botRole)
     {
         return _pmcTypes.Contains(botRole, StringComparer.OrdinalIgnoreCase)
-            ? Sides.PmcLowercase
+            ? Sides.PmcEquipmentRole
             : botRole;
     }
 
@@ -548,7 +554,7 @@ public class BotGeneratorHelper
     ///     Adds an item with all its children into specified equipmentSlots, wherever it fits.
     /// </summary>
     /// <param name="equipmentSlots">Slot to add item+children into</param>
-    /// <param name="rootItemId">Root item id to use as mod items parentid</param>
+    /// <param name="rootItemId">Root item id to use as mod items parentId</param>
     /// <param name="rootItemTplId">Root itms tpl id</param>
     /// <param name="itemWithChildren">Item to add</param>
     /// <param name="inventory">Inventory to add item+children into</param>

@@ -318,8 +318,6 @@ public class BotController(
     /// <param name="pmcProfile">Player who is generating bots</param>
     /// <param name="allPmcsHaveSameNameAsPlayer">Should all PMCs have same name as player</param>
     /// <param name="raidSettings">Settings chosen pre-raid by player in client</param>
-    /// <param name="botCountToGenerate">How many bots to generate</param>
-    /// <param name="generateAsPmc">Force bot being generated to be a PMC</param>
     /// <returns>BotGenerationDetails</returns>
     private BotGenerationDetails GetBotGenerationDetailsForWave(
         GenerateCondition condition,

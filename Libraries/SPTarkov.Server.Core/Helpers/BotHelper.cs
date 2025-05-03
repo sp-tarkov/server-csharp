@@ -21,16 +21,15 @@ public class BotHelper(
 {
     private static readonly FrozenSet<string> _pmcTypeIds =
         [
-            Sides.UsecLowercase,
-            Sides.BearLowercase,
-            Sides.PmcLowercase,
-            Sides.PmcBearLowercase,
-            Sides.PmcUsecLowercase
+            Sides.Usec.ToLower(),
+            Sides.Bear.ToLower(),
+            Sides.PmcBear.ToLower(),
+            Sides.PmcUsec.ToLower()
         ];
 
-    private BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
-    private PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
-    private ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
+    private readonly BotConfig _botConfig = _configServer.GetConfig<BotConfig>();
+    private readonly PmcConfig _pmcConfig = _configServer.GetConfig<PmcConfig>();
+    private readonly ConcurrentDictionary<string, List<string>> _pmcNameCache = new();
 
     /// <summary>
     ///     Get a template object for the specified botRole from bots.types db
@@ -200,14 +199,14 @@ public class BotHelper(
     /// <returns>name of PMC</returns>
     public string GetPmcNicknameOfMaxLength(int maxLength, string? side = null)
     {
-        var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? Sides.UsecLowercase : Sides.BearLowercase)).ToLowerInvariant();
+        var chosenFaction = (side ?? (_randomUtil.GetInt(0, 1) == 0 ? Sides.Usec : Sides.Bear)).ToLowerInvariant();
         var cacheKey = $"{chosenFaction}{maxLength}";
         if (!_pmcNameCache.TryGetValue(cacheKey, out var eligibleNames))
         {
             if (!_databaseService.GetBots().Types.TryGetValue(chosenFaction, out var chosenFactionDetails))
             {
                 _logger.Error($"Unknown faction: {chosenFaction} Defaulting to: {Sides.Usec}");
-                chosenFaction = Sides.UsecLowercase;
+                chosenFaction = Sides.Usec.ToLower();
                 chosenFactionDetails = _databaseService.GetBots().Types[chosenFaction];
             }
 
