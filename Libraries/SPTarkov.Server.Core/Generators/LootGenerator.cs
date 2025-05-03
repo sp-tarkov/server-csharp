@@ -36,9 +36,9 @@ public class LootGenerator(
     /// </summary>
     /// <param name="options">parameters to adjust how loot is generated</param>
     /// <returns>An array of loot items</returns>
-    public List<Item> CreateRandomLoot(LootRequest options)
+    public List<List<Item>> CreateRandomLoot(LootRequest options)
     {
-        var result = new List<Item>();
+        var result = new List<List<Item>>();
         var itemTypeCounts = InitItemLimitCounter(options.ItemLimits);
 
         // Handle sealed weapon containers
@@ -58,7 +58,7 @@ public class LootGenerator(
             {
                 // Choose one at random + add to results array
                 var chosenSealedContainer = _randomUtil.GetArrayValue(sealedWeaponContainerPool);
-                result.Add(
+                result.Add([
                     new Item
                     {
                         Id = _hashUtil.Generate(),
@@ -69,7 +69,7 @@ public class LootGenerator(
                             SpawnedInSession = true
                         }
                     }
-                );
+                ]);
             }
         }
 
@@ -175,9 +175,9 @@ public class LootGenerator(
     /// </summary>
     /// <param name="forcedLootDict">Dictionary of item tpls with minmax values</param>
     /// <returns>Array of Item</returns>
-    public List<Item> CreateForcedLoot(Dictionary<string, MinMax<int>> forcedLootDict)
+    public List<List<Item>> CreateForcedLoot(Dictionary<string, MinMax<int>> forcedLootDict)
     {
-        var result = new List<Item>();
+        var result = new List<List<Item>>();
 
         var forcedItems = forcedLootDict;
 
@@ -199,7 +199,7 @@ public class LootGenerator(
             };
 
             var splitResults = _itemHelper.SplitStack(newLootItem);
-            result.AddRange(splitResults);
+            result.Add(splitResults);
         }
 
         return result;
@@ -319,7 +319,7 @@ public class LootGenerator(
     /// <returns>true if item was valid and added to pool</returns>
     protected bool FindAndAddRandomItemToLoot(List<TemplateItem> items, Dictionary<string, ItemLimit> itemTypeCounts,
         LootRequest options,
-        List<Item> result)
+        List<List<Item>> result)
     {
         var randomItem = _randomUtil.GetArrayValue(items);
 
@@ -353,7 +353,7 @@ public class LootGenerator(
         }
 
         newLootItem.Template = randomItem.Id;
-        result.Add(newLootItem);
+        result.Add([newLootItem]);
 
         if (randomItemLimitCount is not null)
             // Increment item count as it's in limit array
@@ -396,7 +396,7 @@ public class LootGenerator(
     protected bool FindAndAddRandomPresetToLoot(List<Preset> presetPool,
         Dictionary<string, ItemLimit> itemTypeCounts,
         HashSet<string> itemBlacklist,
-        List<Item> result)
+        List<List<Item>> result)
     {
         // Choose random preset and get details from item db using encyclopedia value (encyclopedia === tplId)
         var chosenPreset = _randomUtil.GetArrayValue(presetPool);
@@ -457,10 +457,7 @@ public class LootGenerator(
         _itemHelper.SetFoundInRaid(presetAndMods);
 
         // Add chosen preset tpl to result array
-        foreach (var item in presetAndMods)
-        {
-            result.Add(item);
-        }
+        result.Add(presetAndMods);
 
         if (itemLimitCount is not null)
             // Increment item count as item has been chosen and its inside itemLimitCount dictionary

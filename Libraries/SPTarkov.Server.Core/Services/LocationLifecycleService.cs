@@ -503,11 +503,14 @@ public class LocationLifecycleService
         var mailableLoot = new List<Item>();
 
         var parentId = _hashUtil.Generate();
-        foreach (var item in loot)
+        foreach (var itemAndChildren in loot)
         {
-            item.ParentId = parentId;
-            mailableLoot.Add(item);
+            // Set all root items parent to new id
+            itemAndChildren[0].ParentId = parentId;
         }
+
+        // Flatten
+        mailableLoot.AddRange(loot.SelectMany(x => x));
 
         // Send message from fence giving player reward generated above
         _mailSendService.SendLocalisedNpcMessageToPlayer(
