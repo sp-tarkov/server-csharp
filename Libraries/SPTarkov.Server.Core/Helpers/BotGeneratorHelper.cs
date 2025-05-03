@@ -533,7 +533,7 @@ public class BotGeneratorHelper
         };
     }
 
-    private bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
+    protected bool HasBlockingProperty(TemplateItem? item, string blockingPropertyName)
     {
         return item != null && item.Blocks.TryGetValue(blockingPropertyName, out var blocks) && blocks;
     }

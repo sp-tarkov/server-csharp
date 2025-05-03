@@ -186,7 +186,7 @@ public class BotHelper(
     ///     Get a randomized PMC side based on bot config value 'isUsec'
     /// </summary>
     /// <returns>pmc side as string</returns>
-    private string GetRandomizedPmcSide()
+    protected string GetRandomizedPmcSide()
     {
         return _randomUtil.GetChance100(_pmcConfig.IsUsec) ? Sides.Usec : Sides.Bear;
     }

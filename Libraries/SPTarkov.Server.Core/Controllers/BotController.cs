@@ -179,7 +179,7 @@ public class BotController(
     /// <param name="pmcProfile">Player generating bots</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns>List of generated bots</returns>
-    private List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
+    protected List<BotBase> GenerateBotWaves(GenerateBotsRequestData request, PmcData? pmcProfile, string sessionId)
     {
         var generatedBotList = new List<BotBase>();
         var raidSettings = GetMostRecentRaidSettings();
@@ -220,7 +220,7 @@ public class BotController(
     /// <param name="botList">List of bots to fill</param>
     /// <param name="sessionId">Session/Player id</param>
     /// <returns></returns>
-    private void GenerateBotWave(
+    protected void GenerateBotWave(
         GenerateCondition generateRequest,
         BotGenerationDetails botGenerationDetails,
         List<BotBase> botList,
@@ -319,7 +319,7 @@ public class BotController(
     /// <param name="allPmcsHaveSameNameAsPlayer">Should all PMCs have same name as player</param>
     /// <param name="raidSettings">Settings chosen pre-raid by player in client</param>
     /// <returns>BotGenerationDetails</returns>
-    private BotGenerationDetails GetBotGenerationDetailsForWave(
+    protected BotGenerationDetails GetBotGenerationDetailsForWave(
         GenerateCondition condition,
         PmcData? pmcProfile,
         bool allPmcsHaveSameNameAsPlayer,
