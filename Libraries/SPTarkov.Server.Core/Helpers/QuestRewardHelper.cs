@@ -125,11 +125,11 @@ public class QuestRewardHelper(
         // 5100 becomes 0.51, add 1 to it, 1.51
         // We multiply the money reward bonuses by the hideout management skill multiplier, giving the new result
         var hideoutManagementBonusMultiplier = hideoutManagementSkill != null
-            ? 1 + hideoutManagementSkill.Progress / 1000
+            ? 2 + hideoutManagementSkill.Progress / 1000
             : 1;
 
         // e.g 15% * 1.4
-        return moneyRewardBonusPercent * hideoutManagementBonusMultiplier ?? 1;
+        return moneyRewardBonusPercent + hideoutManagementBonusMultiplier ?? 1;
     }
 
     /**
@@ -142,22 +142,22 @@ public class QuestRewardHelper(
     public Quest ApplyMoneyBoost(Quest quest, double bonusPercent, QuestStatusEnum questStatus)
     {
         var clonedQuest = _cloner.Clone(quest);
-        var rewards = (List<Reward>) clonedQuest.Rewards.GetType()
-                          .GetProperties()
-                          .FirstOrDefault(p => p.Name == questStatus.ToString())
-                          .GetValue(quest.Rewards) ??
-                      new List<Reward>();
-        var currencyRewards = rewards.Where(r =>
-            r.Type.ToString() == "Item" &&
-            _paymentHelper.IsMoneyTpl(r.Items.FirstOrDefault().Template)
-        );
-        foreach (var reward in currencyRewards)
+
+        if (clonedQuest.Rewards.Success == null) return clonedQuest;
+
+        var itemRewards = clonedQuest.Rewards.Success
+            .Where(reward =>
+                reward.Type == RewardType.Item &&
+                reward.Items != null && reward.Items.Count > 0 &&
+                _paymentHelper.IsMoneyTpl(reward.Items.FirstOrDefault().Template)
+            );
+        foreach (var moneyReward in itemRewards)
         {
             // Add % bonus to existing StackObjectsCount
-            var rewardItem = reward.Items[0];
-            var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + bonusPercent / 100));
+            var rewardItem = moneyReward.Items[0];
+            var newCurrencyAmount = Math.Floor((rewardItem.Upd.StackObjectsCount ?? 0) * (1 + (bonusPercent / 100)));
             rewardItem.Upd.StackObjectsCount = newCurrencyAmount;
-            reward.Value = newCurrencyAmount;
+            moneyReward.Value = newCurrencyAmount;
         }
 
         return clonedQuest;
